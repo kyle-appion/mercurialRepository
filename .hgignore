@@ -1,0 +1,22 @@
+syntax: glob
+
+#######################################
+## PLATFORM PREFERENCES
+#######################################
+# Ignore the MacOs folder thingy
+.DS_Store
+.DS_STORE
+.ds_store
+
+#######################################
+## OUTPUT PREFERENCES
+#######################################
+# We don't care about the compiled files.
+bin/**
+obj/**
+
+#######################################
+## ENVIRONMENT PREFERENCES
+#######################################
+# We don't care about user preferences.
+**.tmp
