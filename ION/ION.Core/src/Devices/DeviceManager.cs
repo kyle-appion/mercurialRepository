@@ -4,6 +4,20 @@ using System.Threading.Tasks;
 
 namespace ION.Core.Devices {
   /// <summary>
+  /// The delegate that is notified when a device is found by an active or
+  /// passive scan.
+  /// </summary>
+  /// <param name="deviceManager"></param>
+  /// <param name="device"></param>
+  public delegate void OnDeviceFound(IDeviceManager deviceManager, IDevice device);
+  /// <summary>
+  /// The delegate that is notified when the device manager's state changes.
+  /// </summary>
+  /// <param name="deviceManager"></param>
+  /// <param name="device"></param>
+  public delegate void OnDeviceManagerStateChanged(IDeviceManager deviceManager, IDevice device);
+
+  /// <summary>
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
   /// and access of devices within the ION application.
   /// </summary>
@@ -11,17 +25,22 @@ namespace ION.Core.Devices {
     /// <summary>
     /// An event handler that will be notified when a device is found by a scan.
     /// </summary>
-    event EventHandler<IDevice<ISerialNumber>> onDeviceFound;
+    event OnDeviceFound onDeviceFound;
     /// <summary>
     /// An event handler that will be notified when a device's state has
     /// changed.
+    /// <para>
+    /// Note: This is different from registering directly to a particular device
+    /// in that this event will be fired when any device's state changes, not
+    /// just the registered device's.
+    /// </para>
     /// </summary>
-    event EventHandler<IDevice<ISerialNumber>> onDeviceStateChanged;
+    event OnDeviceStateChanged onDeviceStateChanged;
     /// <summary>
     /// An event handler that will be notified when the device manager's
     /// state changes.
     /// </summary>
-    event EventHandler<ECommState> onDeviceMangaerStateChanged;
+    event OnDeviceManagerStateChanged onDeviceMangaerStateChanged;
 
     /// <summary>
     /// Used to query a specific device from the device manager.
@@ -33,7 +52,7 @@ namespace ION.Core.Devices {
     /// <param name="serialNumber"></param>
     /// <returns>The found device or null if not device could be found with
     /// the given serial number.</returns>
-    IDevice<ISerialNumber> this[ISerialNumber serialNumber] { get; }
+    IDevice this[ISerialNumber serialNumber] { get; }
 
     /// <summary>
     /// A list of all the devices that are known by the device manager.
@@ -43,11 +62,11 @@ namespace ION.Core.Devices {
     /// that is persistently known).
     /// </para>
     /// </summary>
-    List<IDevice<ISerialNumber>> knownDevices { get; }
+    List<IDevice> knownDevices { get; }
     /// <summary>
     /// A list of all the devices that the device manager has found, but has
     /// </summary>
-    List<IDevice<ISerialNumber>> foundDevices { get; }
+    List<IDevice> foundDevices { get; }
 
     /// <summary>
     /// Queries the current state of the device manager.
@@ -120,13 +139,13 @@ namespace ION.Core.Devices {
     /// <param name="device"></param>
     /// <returns>A Task that will return true when the device has connected, or
     /// false if the connection attempt failed.</returns>
-    Task<bool> ConnectDevice(IDevice<ISerialNumber> device);
+    Task<bool> ConnectDevice(IDevice device);
 
     /// <summary>
     /// Disconnects the given device from the application.
     /// </summary>
     /// <param name="device"></param>
-    void DisconnectDevice(IDevice<ISerialNumber> device);
+    void DisconnectDevice(IDevice device);
   }
 
 

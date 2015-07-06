@@ -106,7 +106,7 @@ namespace ION.Core.Util {
     /// <summary>
     /// Enumerates the possible log levels of the logger.
     /// </summary>
-    public static enum Level {
+    public enum Level {
       Debug,
       Verbose,
       Error,

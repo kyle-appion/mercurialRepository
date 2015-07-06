@@ -103,7 +103,7 @@ namespace ION.Core.Devices.Protocols {
     /// </summary>
     public Unit unit { get; private set; }
 
-    public UnitEntry(ESensorType sensorType, Unit unit) {
+    public UnitEntry(ESensorType sensorType, Unit unit) : this() {
       this.sensorType = sensorType;
       this.unit = unit;
     }

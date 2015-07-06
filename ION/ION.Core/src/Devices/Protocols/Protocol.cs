@@ -4,22 +4,31 @@ using ION.Core.Measure;
 using ION.Core.Sensors;
 
 namespace ION.Core.Devices.Protocols {
-  public interface IProtocol<T> {
+  public class ProtocolUtil {
+    /// <summary>
+    /// The array of supported BLE protocols.
+    /// </summary>
+    public static IGaugeProtocol[] BLE_PROTOCOLS = new IGaugeProtocol[] {
+      new BleV1Protocol(),
+    };
+  }
+
+  public interface IProtocol {
     /// <summary>
     /// Queries the version of the protocol.
     /// </summary>
     int version { get; }
+  }
 
+  public interface IGaugeProtocol : IProtocol {
     /// <summary>
-    /// Parsed the provided packet. If the packet cannot be parsed, this method will
+    /// Parses the provided packet. If the packet cannot be parsed, this method will
     /// throw an argument exception.
     /// </summary>
     /// <param name="packet">The packet to parse.</param>
     /// <returns></returns>
-    T Parse(byte[] packet);
-  }
+    GaugePacket ParsePacket(byte[] packet);
 
-  public interface IGaugeProtocol : IProtocol<GaugePacket> {
     /// <summary>
     /// Creates a packet that, when received by a remote terminus, will set the unit
     /// for a given sensor.
@@ -78,7 +87,7 @@ namespace ION.Core.Devices.Protocols {
     /// <param name="version"></param>
     /// <param name="battery"></param>
     /// <param name="readings"></param>
-    public GaugePacket(int version, int battery, GaugeReading[] readings) {
+    public GaugePacket(int version, int battery, GaugeReading[] readings) : this() {
       this.version = version;
       this.battery = battery;
       this.gaugeReadings = readings;
@@ -98,7 +107,7 @@ namespace ION.Core.Devices.Protocols {
     /// </summary>
     public Scalar reading { get; private set; }
 
-    public GaugeReading(ESensorType sensorType, Scalar reading) {
+    public GaugeReading(ESensorType sensorType, Scalar reading) : this() {
       this.sensorType = sensorType;
       this.reading = reading;
     }

@@ -6,12 +6,16 @@ using ION.Core.Measure;
 using ION.Core.Util;
 
 namespace ION.Core.Devices.Protocols {
+  /// <summary>
+  /// This protocol was the first bluetooth LE protocol used by most gauges.
+  /// This protocol is primarily used during active communications.
+  /// </summary>
   public class BleV1Protocol : IGaugeProtocol {
     // Overriden from IGaugeProtocol
-    int version { get { return 1; } }
+    public int version { get { return 1; } }
 
-    // Override from IGaugeProtocol
-    public GaugePacket Parse(byte[] packet) {
+    // Overridden from IGaugeProtocol
+    public GaugePacket ParsePacket(byte[] packet) {
       packet = Trim(packet);
       using (BinaryReader r = new BinaryReader(new MemoryStream(packet))) {
         int len = packet.Length;

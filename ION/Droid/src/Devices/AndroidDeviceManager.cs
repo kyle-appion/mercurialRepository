@@ -5,10 +5,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 using Android.Bluetooth;
+using Android.Content;
 
 using ION.Core.Connections;
 using ION.Core.Devices;
 using ION.Core.Util;
+
+using ION.Droid.Connections;
 
 namespace ION.Droid.Devices {
   /// <summary>
@@ -34,11 +37,11 @@ namespace ION.Droid.Devices {
     private static readonly long DELAY_TRANSITION = 1000;
 
     // Overridden from IDeviceManager
-    public event EventHandler<IDevice> onDeviceFound;
+    public event OnDeviceFound onDeviceFound;
     // Overridden from IDeviceManager
-    public event EventHandler<IDevice> onDeviceStateChanged;
+    public event OnDeviceStateChanged onDeviceStateChanged;
     // Overridden from IDeviceManager
-    public event EventHandler<ECommState> onDeviceManagerStateChanged;
+    public event OnDeviceManagerStateChanged onDeviceManagerStateChanged;
 
     // Overridden from IDeviceManager
     public IDevice this[ISerialNumber serialNumber] {
@@ -72,6 +75,15 @@ namespace ION.Droid.Devices {
     }
 
     /// <summary>
+    /// The android context that the device manager is running in.
+    /// </summary>
+    private Context context { private get; private set; }
+    /// <summary>
+    /// The android backend bluetooth communication system.
+    /// </summary>
+    private BluetoothAdapter adapter { private get; private set; }
+
+    /// <summary>
     /// The mapping of known devices.
     /// </summary>
     private Dictionary<ISerialNumber, IDevice> __knownDevices = new Dictionary<ISerialNumber, IDevice>();
@@ -79,28 +91,25 @@ namespace ION.Droid.Devices {
     /// The mapping of unknown devices.
     /// </summary>
     private Dictionary<ISerialNumber, IDevice> __foundDevices = new Dictionary<ISerialNumber, IDevice>();
-    /// <summary>
-    /// The android backend bluetooth communication system.
-    /// </summary>
-    private BluetoothAdapter __adapter;
-
-    public AndroidDeviceManager() {
-      __adapter = BluetoothAdapter.DefaultAdapter;
+    
+    public AndroidDeviceManager(Context context) {
+      this.context = context;
+      adapter = BluetoothAdapter.DefaultAdapter;
     }
 
     // Overridden from IDeviceManager
     public Task<bool> Enable() {
       return Task.Factory.StartNew(() => {
         Log.V(this, "Enabling bluetooth");
-        if (!__adapter.Enable()) {
+        if (!adapter.Enable()) {
           return false;
         }
 
         DateTime start = DateTime.Now;
-        while (!__adapter.IsEnabled) {
+        while (!adapter.IsEnabled) {
           if (DateTime.Now.Millisecond - start.Millisecond > TIMEOUT_ENABLE) {
             Log.E(this, "Failed to enable bluetooth");
-            __adapter.Disable();
+            adapter.Disable();
             return false;
           }
         }
@@ -198,10 +207,27 @@ namespace ION.Droid.Devices {
     // Overridden from ILeScanCallback
     public void OnLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
       // TODO ahodder@appioninc.com: Allocate found devices, determine protocols and register them
+      if (!IsAppionDevice(device)) {
+        Log.D(this, "Ignoring non-ION device: " + device.Name);
+        return;
+      }
+
+      IConnection connection = new LEConnection(device, context);
     }
 
     // Overridden from IDisposable
     public void Dispose() {
+    }
+
+    /// <summary>
+    /// Attempts to deduce whether or not the given bluetooth device is a valid
+    /// ION device.
+    /// </summary>
+    /// <param name="device"></param>
+    /// <returns></returns>
+    private bool IsAppionDevice(BluetoothDevice device) {
+      // TODO ahodder@appioninc.com: This must be updated per supported device type.
+      return GaugeSerialNumber.IsValid(device.Name);
     }
 
     /// <summary>
@@ -213,11 +239,11 @@ namespace ION.Droid.Devices {
       // TODO ahodder@appioninc.com: Determine whether or not we are actually classic scanning.
       return Task.Factory.StartNew(() => {
         Log.V(this, "Starting classic scan");
-        if (!__adapter.StartDiscovery()) {
+        if (!adapter.StartDiscovery()) {
           throw new Exception("Failed to start classic discovery");
         }
 
-        while (__adapter.IsDiscovering) {
+        while (adapter.IsDiscovering) {
           Thread.Sleep(50);
         }
       });
@@ -234,8 +260,8 @@ namespace ION.Droid.Devices {
       // TODO ahodder@appioninc.com: Determine whether or not we are actually classic scanning.
       return Task.Factory.StartNew(() => {
         Log.V(this, "Cancelling classic scan");
-        if (__adapter.IsDiscovering) {
-          __adapter.CancelDiscovery();
+        if (adapter.IsDiscovering) {
+          adapter.CancelDiscovery();
         }
 
         DateTime start = DateTime.Now;
@@ -256,7 +282,7 @@ namespace ION.Droid.Devices {
       // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.
       return Task.Factory.StartNew(() => {
         Log.V(this, "Starting LE scan");
-        if (!__adapter.StartLeScan(this)) {
+        if (!adapter.StartLeScan(this)) {
           throw new Exception("Failed to start LE scan");
         }
 
@@ -279,7 +305,7 @@ namespace ION.Droid.Devices {
       // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.
       return Task.Factory.StartNew(() => {
         Log.V(this, "Stopping LE scan");
-        __adapter.StopLeScan(this);
+        adapter.StopLeScan(this);
 
         DateTime start = DateTime.Now;
 

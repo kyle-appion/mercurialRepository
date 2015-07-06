@@ -23,6 +23,11 @@ namespace ION.Core.Devices {
     /// solidifying an enumeration in which products may be identified.
     /// </summary>
     ushort batchId { get; }
+
+    /// <summary>
+    /// Queries the type of device that this serial number is representative of.
+    /// </summary>
+    EDeviceType deviceType { get; }
 	}
 
   /// <summary>
@@ -56,11 +61,14 @@ namespace ION.Core.Devices {
   /// </code>
   /// </summary>
   public class GaugeSerialNumber : ISerialNumber {
+    // Overridden from ISerialNumber
     public string rawSerial { get; private set; }
-
+    // Overridden from ISerialNumber
     public DateTime manufactureDate { get; private set; }
-
+    // Overridden from ISerialNumber
     public ushort batchId { get; private set; }
+    // Overridden from ISerialNumber
+    public EDeviceType deviceType { get { return EDeviceType.Gauge; } }
 
     /// <summary>
     /// Queries the gauge type that the serial number is representative of.
@@ -99,6 +107,20 @@ namespace ION.Core.Devices {
     }
 
     /// <summary>
+    /// Determines whether or not the given serial number is a valid GaugeSerialNumber.
+    /// </summary>
+    /// <param name="serial"></param>
+    /// <returns></returns>
+    public static bool IsValid(string serial) {
+      try {
+        Parse(serial);
+        return true;
+      } catch (ArgumentException) {
+        return false;
+      }
+    }
+
+    /// <summary>
     /// Parses out a GaugeSerialNumber from the given serial. If the given serial
     /// is not a valid GaugeSerialNumber we will throw an ArguementException
     /// </summary>
@@ -116,8 +138,6 @@ namespace ION.Core.Devices {
       string rawYearCode = serial.Substring(2, 2);
       char rawMonthCode = serial[4];
       string rawBatchId = serial.Substring(5, 4);
-
-
 
       return new GaugeSerialNumber(serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId), GaugeTypeUtils.FromString(rawGaugeType));
     }

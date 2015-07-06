@@ -4,6 +4,20 @@ using System.Threading.Tasks;
 
 namespace ION.Core.Connections {
   /// <summary>
+  /// The delegate that is notified when a connection's state is changed.
+  /// </summary>
+  /// <param name="connection"></param>
+  /// <param name="state"></param>
+  /// <returns></returns>
+  public delegate void OnConnectionStateChanged(IConnection connection, EConnectionState state);
+  /// <summary>
+  /// The delegate that is notified when a connection received a new packet.
+  /// </summary>
+  /// <param name="connection"></param>
+  /// <param name="packet"></param>
+  /// <returns></returns>
+  public delegate void OnDataReceived(IConnection connection, byte[] packet);
+  /// <summary>
   /// IConnection is the contract that will wrap the physical connection between the
   /// application and a remote terminus.
   /// </summary>
@@ -11,12 +25,12 @@ namespace ION.Core.Connections {
     /// <summary>
     /// The event registry that will be notified when the connection's state changes.
     /// </summary>
-    event EventHandler<EConnectionState> onStateChanged;
+    event OnConnectionStateChanged onStateChanged;
     /// <summary>
     /// The event registrt that will be notified when the connection receives a new
     /// data packet.
     /// </summary>
-    event EventHandler<byte[]> onDataReceived;
+    event OnDataReceived onDataReceived;
     /// <summary>
     /// Queries the current state of the connection.
     /// </summary>
@@ -48,6 +62,10 @@ namespace ION.Core.Connections {
     /// Queries the native connection object that this connection is wrapping.
     /// </summary>
     object nativeDevice { get; }
+    /// <summary>
+    /// The timeout that is applied when connecting to the remote terminal.
+    /// </summary>
+    TimeSpan connectionTimeout { get; set; }
 
     /// <summary>
     /// Attempts to connect the connection's remote terminus.

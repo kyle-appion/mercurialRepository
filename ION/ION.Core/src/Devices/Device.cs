@@ -1,6 +1,7 @@
 ﻿using System;
 
 using ION.Core.Connections;
+using ION.Core.Devices.Protocols;
 using ION.Core.Sensors;
 
 namespace ION.Core.Devices {
@@ -17,6 +18,13 @@ namespace ION.Core.Devices {
   }
 
   /// <summary>
+  /// The delegate that is notified when the device's state changes.
+  /// </summary>
+  /// <param name="device"></param>
+  /// <param name="state"></param>
+  public delegate void OnDeviceStateChanged(IDevice device, EConnectionState state);
+
+  /// <summary>
   /// The contract for an ION device.
   /// </summary>
   public interface IDevice {
@@ -24,7 +32,7 @@ namespace ION.Core.Devices {
     /// The event registery that will be notified when the device's
     /// connection state changes
     /// </summary>
-    event EventHandler<EConnectionState> onStateChanged;
+    event OnDeviceStateChanged onStateChanged;
     /// <summary>
     /// Queries the serial number of the device.
     /// </summary>
@@ -38,22 +46,31 @@ namespace ION.Core.Devices {
     /// remote terminus.
     /// </summary>
     IConnection connection { get; }
+    /// <summary>
+    /// Queries the protocol that the device is using to format communications
+    /// with the connection.
+    /// </summary>
+    IProtocol protocol { get; }
   }
 
   /// <summary>
   /// A GaugeDevice is a device that contains 1 or more sensors.
   /// </summary>
   public class GaugeDevice : IDevice {
-    // Overriden from IDevice
-    public GaugeSerialNumber serialNumber { get; private set; }
-    // Overriden from IDevice
+    // Overridden from IDevice
+    public event OnDeviceStateChanged onStateChanged;
+    // Overridden from IDevice
+    public ISerialNumber serialNumber { get { return __serialNumber; } }
+    // Overridden from IDevice
     public string name { get; set; }
-    // Override from IDevice
+    // Overridden from IDevice
     public IConnection connection { get; private set; }
+    // Overridden from IDevice
+    public IProtocol protocol { get { return __protocol; } }
     /// <summary>
     /// The device manager who is managing this device.
     /// </summary>
-    private IDeviceManager deviceManager { private get; private set; }
+    private IDeviceManager deviceManager { get; set; }
     /// <summary>
     /// The sensors that are contained within the gauge.
     /// </summary>
@@ -67,10 +84,16 @@ namespace ION.Core.Devices {
       }
     }
 
-    public GaugeDevice(IDeviceManager deviceManager, IConnection connection, GaugeSerialNumber serialNumber) {
+    private GaugeSerialNumber __serialNumber;
+    private IGaugeProtocol __protocol;
+
+    public GaugeDevice(IDeviceManager deviceManager, GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
       this.deviceManager = deviceManager;
+      __serialNumber = serialNumber;
       this.connection = connection;
-      this.serialNumber = serialNumber;
+      __protocol = protocol;
+
+      name = serialNumber.ToString();
     }
   }
 }
