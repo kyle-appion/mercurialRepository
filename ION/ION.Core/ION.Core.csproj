@@ -47,7 +47,10 @@
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Devices\GaugeType.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
+    <Compile Include="src\Threading\LimitedConcurrentTaskScheduler.cs" />
     <Compile Include="src\Util\Log.cs" />
+    <Compile Include="src\Devices\DeviceFactory.cs" />
+    <Compile Include="src\Util\ByteUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup />

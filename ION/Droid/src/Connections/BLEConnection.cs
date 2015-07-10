@@ -50,54 +50,64 @@ namespace ION.Droid.Connections {
     // Overridden from IConnection
     public event OnDataReceived onDataReceived;
     // Overridden from IConnection
-    public EConnectionState connectionState { 
-      get;
+    public EConnectionState connectionState {
+      get { return __connectionState; }
       private set {
-        connectionState = value;
-        onStateChanged(this, connectionState);
+        __connectionState = value;
+        if (onStateChanged != null) {
+          onStateChanged(this, __connectionState);
+        }
       }
-    }
+    } EConnectionState __connectionState;
     // Overridden from IConnection
-    public string name { get { return nativeDevice.Name; } }
+    public string name { get { return __nativeDevice.Name; } }
     // Overridden from IConnection
     public int rssi { get; private set; }
     // Overridden from IConnection
     public bool isRssiReliable { get; private set; }
     // Overridden from IConnection
     public byte[] lastPacket {
-      get;
+      get { return __lastPacket; }
       private set {
-        lastPacket = value;
+        __lastPacket = value;
         timeLastPacketReceived = DateTime.Now;
-        onDataReceived(this, lastPacket);
+        if (onDataReceived != null) {
+          onDataReceived(this, __lastPacket);
+        }
       }
-    }
+    } byte[] __lastPacket;
     // Overridden from IConnection
     public DateTime timeLastPacketReceived { get; private set; }
     // Overridden from IConnection
-    public BluetoothDevice nativeDevice { get; private set; }
+    public object nativeDevice {
+      get {
+        return __nativeDevice;
+      }
+    } BluetoothDevice __nativeDevice;
     // Overridden from IConnection
     public TimeSpan connectionTimeout { get; set; }
 
     /// <summary>
     /// The android context necessary for creating BLE connections.
     /// </summary>
-    private Context __context { private get; private set; }
+    private Context __context { get; set; }
     /// <summary>
     /// The gatt object that is used to manage the native connection state.
     /// </summary>
-    private BluetoothGatt __gatt { private get; private set; }
+    private BluetoothGatt __gatt { get; set; }
     /// <summary>
     /// The characteristic that the connection will read incoming data from.
     /// </summary>
-    private BluetoothGattCharacteristic __read { private get; private set; }
+    private BluetoothGattCharacteristic __read { get; set; }
     /// <summary>
     /// The characteristic that the connection will write outgoing data to.
     /// </summary>
-    private BluetoothGattCharacteristic __write { private get; private set; }
+    private BluetoothGattCharacteristic __write { get; set; }
 
     public BLEConnection(BluetoothDevice device, Context context) {
-      nativeDevice = device;
+      __nativeDevice = device;
+      __context = context;
+      connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
     }
 
     // Overridden from IConnection
@@ -109,7 +119,7 @@ namespace ION.Droid.Connections {
 
         DateTime start = DateTime.Now;
 
-        __gatt = nativeDevice.ConnectGatt(__context, false, this);
+        __gatt = __nativeDevice.ConnectGatt(__context, false, this);
 
         while (EConnectionState.Connected != connectionState) {
           if (DateTime.Now - start > connectionTimeout) {

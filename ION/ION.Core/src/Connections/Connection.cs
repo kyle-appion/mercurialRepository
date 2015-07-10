@@ -57,7 +57,7 @@ namespace ION.Core.Connections {
     /// <summary>
     /// The time that the last packet was received by the connection.
     /// </summary>
-    DateTime timeLastPacketRecieved { get; }
+    DateTime timeLastPacketReceived { get; }
     /// <summary>
     /// Queries the native connection object that this connection is wrapping.
     /// </summary>

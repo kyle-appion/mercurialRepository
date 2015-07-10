@@ -1,8 +1,28 @@
 ﻿<Properties StartupItem="iOS/ION.iOS.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Appion iPad Mini" />
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Droid/src/Activity/DeviceManagerActivity.cs">
+    <Files>
+      <File FileName="Droid/src/Activity/DeviceManagerActivity.cs" Line="494" Column="18" />
+      <File FileName="ION.Core/src/Util/Log.cs" Line="1" Column="1" />
+      <File FileName="Droid/src/Util/LogPrinter.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Devices/DeviceFactory.cs" Line="1" Column="1" />
+      <File FileName="Droid/src/Widgets/ExpandableContentELVAdapter.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Devices/DeviceManager.cs" Line="1" Column="1" />
+      <File FileName="Droid/src/Widgets/IONExpandableListViewAdapter.cs" Line="483" Column="8" />
+      <File FileName="ION.Core/src/Devices/Protocols/UnitLookup.cs" Line="32" Column="30" />
+      <File FileName="Droid/src/Devices/AndroidDeviceManager.cs" Line="308" Column="23" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Protocols/Protocol.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Protocols/BleV1Protocol.cs" Line="19" Column="36" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Device.cs" Line="179" Column="10" NotebookId="1" />
+      <File FileName="ION.Core/src/Util/ByteUtils.cs" Line="13" Column="44" NotebookId="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
+    <BreakpointStore>
+      <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.Core/src/Devices/Device.cs" line="148" column="1" />
+      <Breakpoint file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.Core/src/Devices/Protocols/BleV1Protocol.cs" line="77" column="1" />
+    </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.ION.Droid AndroidDesignerPreferredDevice="Nexus 4" />
 </Properties>

@@ -169,6 +169,14 @@ namespace ION.Core.Measure {
       return o1.amount <= o2;
     }
 
+    public static bool operator !=(Scalar o1, Scalar o2) {
+      return !(o1 == o2);
+    }
+
+    public static bool operator ==(Scalar o1, Scalar o2) {
+      return o1.amount == o2.amount && o1.unit.Equals(o2.unit);
+    }
+
     /// <summary>
     /// Asserts that the two units are compatible with eachother.
     /// </summary>
@@ -179,6 +187,26 @@ namespace ION.Core.Measure {
       if (!o1.IsCompatible(o2)) {
         throw new ArithmeticException("Cannot perform operation: " + o1 + " is incompatible with " + o2);
       }
+    }
+  }
+
+  /// <summary>
+  /// An event that is used to retrieve a scalar that has been changed.
+  /// </summary>
+  public sealed class ScalarChangedEvent {
+    /// <summary>
+    /// The scalar that the catalyst was before the event fired.
+    /// </summary>
+    /// <value>The old scalar.</value>
+    public Scalar oldScalar { get; private set; }
+    /// <summary>
+    /// The new scalar of the catalyst.
+    /// </summary>
+    public Scalar newScalar { get; private set; }
+
+    public ScalarChangedEvent(Scalar oldScalar, Scalar newScalar) {
+      this.oldScalar = oldScalar;
+      this.newScalar = newScalar;
     }
   }
 }

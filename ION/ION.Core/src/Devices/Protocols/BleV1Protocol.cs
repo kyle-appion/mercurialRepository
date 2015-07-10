@@ -15,8 +15,8 @@ namespace ION.Core.Devices.Protocols {
     public int version { get { return 1; } }
 
     // Overridden from IGaugeProtocol
-    public GaugePacket ParsePacket(byte[] packet) {
-      packet = Trim(packet);
+    public GaugePacket ParsePacket(byte[] packetIn) {
+      byte[] packet = Trim(packetIn);
       using (BinaryReader r = new BinaryReader(new MemoryStream(packet))) {
         int len = packet.Length;
 
@@ -37,7 +37,7 @@ namespace ION.Core.Devices.Protocols {
 
         for (int i = 0; i < gaugeCount; i++) {
           int exponent = r.ReadByte();
-          int encodedReading = r.ReadByte();
+          int encodedReading = r.ReadInt32();
           int unitCode = r.ReadByte();
 
           double reading = encodedReading / Math.Pow(10, exponent);

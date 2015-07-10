@@ -1,6 +1,7 @@
 ﻿using System;
 
 using ION.Core.Measure;
+using ION.Core.Util;
 
 namespace ION.Core.Sensors {
 
@@ -112,17 +113,22 @@ namespace ION.Core.Sensors {
     public event OnReadingChanged readingChanged;
     // TODO ahodder@appioninc.com: Throw an exception if the value reading does not match the sensor type.
     /// <summary>
-    /// Queries the current reading of the sensor provider.
+    /// Queries the current measurement of the sensor provider.
     /// </summary>
     /// <value>The reading.</value>
-    public Scalar reading { get {
-      return reading;
-      } protected set {
-        reading = value;
+    public Scalar measurement {
+      get {
+        return __measurement;
+      }
+      protected set {
+        if (!SensorUtils.IsCompatibleWith(sensorType, value.unit)) {
+          throw new ArgumentException("Cannot set sensor measurement: " + sensorType + " cannot receive scalar " + value);
+        }
+        __measurement = value;
         lastUpdate = DateTime.Now;
         PerformOnReadingChanged();
       }
-    }
+    } Scalar __measurement;
     /// <summary>
     /// Queries whether or not the sensor's readings are relative. Relative readings are
     /// readings that are offset from a known and mutable source. Absolute readings are
@@ -133,9 +139,12 @@ namespace ION.Core.Sensors {
     /// A convenience property to get or set the sensor's unit. Note: if the unit is not
     /// compatible with the sensor, an ArgumentException will be thrown.
     /// </summary>
-    public Unit unit { get { return reading.unit; } set {
-        unit = value;
-        reading = reading.ConvertTo(unit);
+    public Unit unit {
+      get {
+        return measurement.unit;
+      }
+      set {
+        measurement = measurement.ConvertTo(unit);
       }
     }
     /// <summary>
@@ -153,8 +162,23 @@ namespace ION.Core.Sensors {
     public Sensor(ESensorType sensorType, bool relative, Scalar initialReading) {
       // TODO ahodder@appioninc.com: Assert reading to sensor type.
       this.sensorType = sensorType;
-      reading = initialReading;
+      measurement = initialReading;
       isRelative = relative;
+    }
+
+    /// <summary>
+    /// Attempts to force the reading of the sensor into the provided scalar.
+    /// Note: This really should never be used except by the data provider for
+    /// the sensor.
+    /// </summary>
+    /// <param name="scalar">Scalar.</param>
+    // TODO ahodder@appioninc.com: Consider using a passed delegate to an internal event handler to bypass the need of this method.
+    public void TryForceMeasurementSet(Scalar scalar) {
+      try {
+        measurement = scalar;
+      } catch (Exception e) {
+        Log.E(this, "Failed to set sensor reading to " + scalar, e);
+      }
     }
 
     /// <summary>
@@ -162,7 +186,7 @@ namespace ION.Core.Sensors {
     /// </summary>
     private void PerformOnReadingChanged() {
       if (readingChanged != null) {
-        readingChanged(this, reading);
+        readingChanged(this, measurement);
       }
     }
   }

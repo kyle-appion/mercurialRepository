@@ -14,8 +14,8 @@ namespace ION.Core.Devices {
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
   /// <param name="deviceManager"></param>
-  /// <param name="device"></param>
-  public delegate void OnDeviceManagerStateChanged(IDeviceManager deviceManager, IDevice device);
+  /// <param name="state"></param>
+  public delegate void OnDeviceManagerStateChanged(IDeviceManager deviceManager, EDeviceManagerState state);
 
   /// <summary>
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
@@ -40,7 +40,7 @@ namespace ION.Core.Devices {
     /// An event handler that will be notified when the device manager's
     /// state changes.
     /// </summary>
-    event OnDeviceManagerStateChanged onDeviceMangaerStateChanged;
+    event OnDeviceManagerStateChanged onDeviceManagerStateChanged;
 
     /// <summary>
     /// Used to query a specific device from the device manager.
@@ -54,6 +54,10 @@ namespace ION.Core.Devices {
     /// the given serial number.</returns>
     IDevice this[ISerialNumber serialNumber] { get; }
 
+    /// <summary>
+    /// Queries a list of all the devices within the device manager. 
+    /// </summary>
+    List<IDevice> devices { get; }
     /// <summary>
     /// A list of all the devices that are known by the device manager.
     /// <para>
@@ -71,7 +75,7 @@ namespace ION.Core.Devices {
     /// <summary>
     /// Queries the current state of the device manager.
     /// </summary>
-    ECommState state{ get; }
+    EDeviceManagerState state{ get; }
 
     /// <summary>
     /// Requests that the device manager enable its communication backend.
@@ -101,7 +105,7 @@ namespace ION.Core.Devices {
     /// yet, it will be prevented from running. If a scan is not currently running,
     /// we will return quietly.
     /// </summary>
-    Task StopActiveScan();
+    void StopActiveScan();
 
     /// <summary>
     /// Informs the DeviceManager that a passive scan has been requested. A
@@ -124,7 +128,7 @@ namespace ION.Core.Devices {
     /// yet, it will be prevented from running. If a scan is not currently running,
     /// we will return quietly.
     /// </summary>
-    Task StopPassiveScan();
+    void StopPassiveScan();
 
     /// <summary>
     /// Forgets all devices that the device manager has found, but are not known.
@@ -152,7 +156,7 @@ namespace ION.Core.Devices {
   /// <summary>
   /// Enumerates the possible states that a DeviceManager can be in.
   /// </summary>
-  public enum ECommState {
+  public enum EDeviceManagerState {
     /// <summary>
     /// The DeviceManager's communication backend is currently disabled.
     /// </summary>

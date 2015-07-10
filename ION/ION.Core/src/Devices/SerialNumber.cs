@@ -92,10 +92,12 @@ namespace ION.Core.Devices {
       }
     }
 
+    // Overridden from object
     public override int GetHashCode() {
       return rawSerial.GetHashCode();
     }
 
+    // Overridden from object
     public override bool Equals(Object other) {
       if (this == other) {
         return true;
@@ -104,6 +106,11 @@ namespace ION.Core.Devices {
       } else {
         return false;
       }
+    }
+
+    // Overridden from object
+    public override string ToString() {
+      return rawSerial;
     }
 
     /// <summary>

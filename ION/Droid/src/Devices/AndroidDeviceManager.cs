@@ -9,6 +9,8 @@ using Android.Content;
 
 using ION.Core.Connections;
 using ION.Core.Devices;
+using ION.Core.Devices.Protocols;
+using ION.Core.Threading;
 using ION.Core.Util;
 
 using ION.Droid.Connections;
@@ -18,23 +20,27 @@ namespace ION.Droid.Devices {
   /// The android implementation of a DeviceManager. Uses bluetooth
   /// as its communication backend.
   /// </summary>
-  public class AndroidDeviceManager : IDeviceManager, BluetoothAdapter.ILeScanCallback, IDisposable {
+  public class AndroidDeviceManager : Java.Lang.Object, IDeviceManager, BluetoothAdapter.ILeScanCallback {
     /// <summary>
     /// The timeout that is applied to the device manager being enabled.
     /// </summary>
-    private static readonly long TIMEOUT_ENABLE = 10000;
+    private const long TIMEOUT_ENABLE = 10000;
     /// <summary>
     /// The timeout for a LE scan.
     /// </summary>
-    private static readonly long TIMEOUT_LE_ACTIVE_SCAN = 2500;
+    private const long TIMEOUT_LE_ACTIVE_SCAN = 2500;
+    /// <summary>
+    /// The time for a passive le scan.
+    /// </summary>
+    private const long TIMEOUT_LE_PASSIVE_SCAN = 500;
     /// <summary>
     /// The timeout for a classic scan.
     /// </summary>
-    private static readonly long TIMEOUT_CLASSIC_ACTIVE_SCAN = 15000;
+    private const long TIMEOUT_CLASSIC_ACTIVE_SCAN = 15000;
     /// <summary>
     /// The delay that occurs when touching the bluetooth adapter.
     /// </summary>
-    private static readonly long DELAY_TRANSITION = 1000;
+    private const long DELAY_TRANSITION = 1000;
 
     // Overridden from IDeviceManager
     public event OnDeviceFound onDeviceFound;
@@ -46,42 +52,67 @@ namespace ION.Droid.Devices {
     // Overridden from IDeviceManager
     public IDevice this[ISerialNumber serialNumber] {
       get {
-        IDevice ret = __knownDevices[serialNumber];
+        IDevice ret = null;
+
+        if (__knownDevices.ContainsKey(serialNumber)) {
+          ret = __knownDevices[serialNumber];
+        }
 
         if (ret == null) {
-          ret = __foundDevices[serialNumber];
+          if (__foundDevices.ContainsKey(serialNumber)) {
+            ret = __foundDevices[serialNumber];
+          }
         }
 
         return ret;
       }
     }
+    // Overridden from IDeviceManager
+    public List<IDevice> devices {
+      get {
+        List<IDevice> ret = new List<IDevice>();
 
-    // Overridden from IDeviceManager
-    public List<IDevice> knownDevices { get { return __knownDevices.Values.ToList(); } }
-    // Overridden from IDeviceManager
-    public List<IDevice> foundDevices { get { return __knownDevices.Values.ToList(); } }
-
-    // Overridden from IDeviceManager
-    public ECommState state {
-      get;
-      private set {
-        state = value;
-        if (onDeviceStateChanged != null) {
-          onDeviceManagerStateChanged(this, state);
-        } else {
-          Log.D(this, "Cannot notify device manager state changed: event handler is dead");
+        foreach (IDevice device in knownDevices) {
+          ret.Add(device);
         }
+
+        foreach (IDevice device in foundDevices) {
+          ret.Add(device);
+        }
+
+        Log.D("AndroidDeviceManager", "Devices: " + ret.Count);
+
+        return ret;
       }
     }
+    // Overridden from IDeviceManager
+    public List<IDevice> knownDevices { get { Log.D("AndroidDeviceManager", "KnownDevices: " + __knownDevices.Count); return __knownDevices.Values.ToList(); } }
+    // Overridden from IDeviceManager
+    public List<IDevice> foundDevices { get { Log.D("AndroidDeviceManager", "FoundDevices: " + __foundDevices.Count); return __foundDevices.Values.ToList(); } }
+    // Overridden from IDeviceManager
+    public EDeviceManagerState state {
+      get {
+        return __state;
+      }
+      private set {
+        Log.D(this, "Setting state to: " + value);
+        __state = value;
+        if (onDeviceManagerStateChanged != null) {
+          onDeviceManagerStateChanged(this, __state);
+        } else {
+          Log.D(this, this + " Cannot notify device manager state changed: event handler is dead");
+        }
+      }
+    } EDeviceManagerState __state;
 
     /// <summary>
     /// The android context that the device manager is running in.
     /// </summary>
-    private Context context { private get; private set; }
+    private Context context { get; set; }
     /// <summary>
     /// The android backend bluetooth communication system.
     /// </summary>
-    private BluetoothAdapter adapter { private get; private set; }
+    private BluetoothAdapter adapter { get; set; }
 
     /// <summary>
     /// The mapping of known devices.
@@ -91,15 +122,50 @@ namespace ION.Droid.Devices {
     /// The mapping of unknown devices.
     /// </summary>
     private Dictionary<ISerialNumber, IDevice> __foundDevices = new Dictionary<ISerialNumber, IDevice>();
+    /// <summary>
+    /// The scheduler that will allow us to post our tasks in order.
+    /// </summary>
+    /// <value>The scheduler.</value>
+//    private LimitedConcurrentTaskScheduler scheduler { get; set; }
+    /// <summary>
+    /// The factory that will create all of the thats that are need for
+    /// the device manager.
+    /// </summary>
+    /// <value>The task factory.</value>
+//    private TaskFactory taskFactory { get; set; }
+    /// <summary>
+    /// The source of stopping an active scan prematurely.
+    /// </summary>
+    private CancellationTokenSource activeScanStopper { get; set; }
+    /// <summary>
+    /// The source of stopping a passive scan prematurely.
+    /// </summary>
+    private CancellationTokenSource passiveScanStopper { get; set; }
+
+    private OnDeviceStateChanged onDeviceStateChangedDelegate;
     
     public AndroidDeviceManager(Context context) {
       this.context = context;
       adapter = BluetoothAdapter.DefaultAdapter;
+//      scheduler = new LimitedConcurrentTaskScheduler(1);
+//      taskFactory = new TaskFactory(scheduler);
+
+      if (adapter.IsEnabled) {
+        state = EDeviceManagerState.Idle;
+      } else {
+        state = EDeviceManagerState.Disabled;
+      }
+
+      onDeviceStateChangedDelegate = ((IDevice device) => {
+        onDeviceStateChanged(device);
+      });
     }
 
     // Overridden from IDeviceManager
     public Task<bool> Enable() {
       return Task.Factory.StartNew(() => {
+        state = EDeviceManagerState.Enabling;
+
         Log.V(this, "Enabling bluetooth");
         if (!adapter.Enable()) {
           return false;
@@ -110,9 +176,12 @@ namespace ION.Droid.Devices {
           if (DateTime.Now.Millisecond - start.Millisecond > TIMEOUT_ENABLE) {
             Log.E(this, "Failed to enable bluetooth");
             adapter.Disable();
+            state = EDeviceManagerState.Disabled;
             return false;
           }
         }
+
+        state = EDeviceManagerState.Idle;
 
         return true;
       });
@@ -120,58 +189,147 @@ namespace ION.Droid.Devices {
 
     // Overridden from IDeviceManager
     public Task<bool> DoActiveScan() {
-      return Task.Factory.StartNew(() => {
-        try {
-          // Classic scan
-          DoClassicScanAsync().Wait(TimeSpan.FromMilliseconds(TIMEOUT_CLASSIC_ACTIVE_SCAN));
-          DoCancelClassicScanAsync().Wait();
+      lock (this) {
+        if (activeScanStopper != null) {
+          return Task.Factory.StartNew(() => { return true; });
+        } else {
+          activeScanStopper = new CancellationTokenSource();
+          var token = activeScanStopper.Token;
 
-          // LE scan
-          DoLeScanAsync(TIMEOUT_LE_ACTIVE_SCAN).Wait(TimeSpan.FromMilliseconds(TIMEOUT_LE_ACTIVE_SCAN + 100));
-          DoCancelLeScanAsync().Wait();
+          return Task.Factory.StartNew(() => {
+            try {
+              token.ThrowIfCancellationRequested();
 
-          return true;
-        } catch (Exception e) {
-          Log.E(this, "Cannot perform active scan: ", e);
-          return false;
+              Log.D(this, "Start DoActiveScan");
+              state = EDeviceManagerState.ActiveScanning;
+              DateTime timer;
+
+              if (passiveScanStopper != null) {
+                passiveScanStopper.Cancel();
+                passiveScanStopper = null;
+              }
+
+              Task leScan = Task.Factory.StartNew(() => {
+                DoLeScan(TIMEOUT_LE_ACTIVE_SCAN);
+              });
+
+              timer = DateTime.Now;
+              while (!leScan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_LE_ACTIVE_SCAN * 2)) {
+                token.ThrowIfCancellationRequested();
+
+                Thread.Sleep(10);
+              }
+
+              if (!leScan.IsCompleted) {
+                Log.D(this, "Stop DoActiveScan: Failed to complete le scan");
+                return false;
+              }
+
+              Task classicScan = Task.Factory.StartNew(() => {
+                DoClassicScan();
+              });
+
+              timer = DateTime.Now;
+              while (!classicScan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_CLASSIC_ACTIVE_SCAN * 2)) {
+                token.ThrowIfCancellationRequested();
+
+                Thread.Sleep(10);
+              }
+
+              if (!classicScan.IsCompleted) {
+                Log.D(this, "Stop DoActiveScan: Failed to complete classic scan");
+                return false;
+              }
+
+
+              Log.D(this, "Stop DoActiveScan: ok");
+              return true;
+            } finally {
+              adapter.StopLeScan(this);
+              adapter.CancelDiscovery();
+              activeScanStopper = null;
+              state = EDeviceManagerState.Idle;
+            }
+          }, activeScanStopper.Token);
         }
-      });
+      }
     }
 
     // Overridden from IDeviceManager
-    public Task StopActiveScan() {
-      return Task.Factory.StartNew(() => {
-        DoCancelClassicScanAsync().Wait();
-        DoCancelLeScanAsync().Wait();
-      });
+    public void StopActiveScan() {
+      lock (this) {
+        if (activeScanStopper != null) {
+          activeScanStopper.Cancel();
+        }
+      }
     }
 
     // Overridden from IDeviceManager
     public Task<bool> DoPassiveScan() {
-      return Task.Factory.StartNew(() => {
-        try {
-          DoLeScanAsync(TIMEOUT_LE_ACTIVE_SCAN).Wait(TimeSpan.FromMilliseconds(TIMEOUT_LE_ACTIVE_SCAN + 100));
-          DoCancelLeScanAsync().Wait();
+      lock (this) {
+        if (passiveScanStopper != null) {
+          return Task.Factory.StartNew(() => { return true; });
+        } else {
+          passiveScanStopper = new CancellationTokenSource();
+          var token = passiveScanStopper.Token;
 
-          return true;
-        } catch (Exception e) {
-          Log.E(this, "Cannot perform passive scan: ", e);
-          return false;
+          return Task.Factory.StartNew(() => {
+            try {
+              token.ThrowIfCancellationRequested();
+
+              Log.D(this, "Start DoPassiveScan");
+              state = EDeviceManagerState.PassiveScanning;
+
+              if (activeScanStopper != null) {
+                activeScanStopper.Cancel();
+                activeScanStopper = null;
+              }
+
+              Task leScan = Task.Factory.StartNew(() => {
+                DoLeScan(TIMEOUT_LE_PASSIVE_SCAN);
+              });
+              DateTime timer = DateTime.Now;
+              while (!leScan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_LE_ACTIVE_SCAN * 2)) {
+                token.ThrowIfCancellationRequested();
+
+                Thread.Sleep(10);
+              }
+
+              if (!leScan.IsCompleted) {
+                Log.D(this, "Stop DoPassiveScan: Failed to complete le scan");
+                return false;
+              }
+
+              Log.D(this, "Stop DoPassiveScan: ok");
+
+              return true;
+            } finally {
+              adapter.StopLeScan(this);
+              adapter.CancelDiscovery();
+              passiveScanStopper = null;
+              state = EDeviceManagerState.Idle;
+            }
+          }, passiveScanStopper.Token);
         }
-      });
+      }
     }
 
     // Overridden from IDeviceManager
-    public Task StopPassiveScan() {
-      return Task.Factory.StartNew(() => {
-        DoCancelLeScanAsync().Wait();
-      });
+    public void StopPassiveScan() {
+      lock (this) {
+        if (passiveScanStopper != null) {
+          passiveScanStopper.Cancel();
+        }
+      }
     }
 
     // Overridden from IDeviceManager
     public void ForgetFoundDevices() {
-      __foundDevices.Clear();
-      state = state; // Posts a refresh event to the observers
+      foreach (IDevice device in __foundDevices.Values.ToArray()) {
+        UnregisterDevice(device);
+      }
+      // Needed?
+//      state = state; // Posts a refresh event to the observers
     }
 
     // Overridden from IDeviceManager
@@ -207,16 +365,63 @@ namespace ION.Droid.Devices {
     // Overridden from ILeScanCallback
     public void OnLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
       // TODO ahodder@appioninc.com: Allocate found devices, determine protocols and register them
-      if (!IsAppionDevice(device)) {
-        Log.D(this, "Ignoring non-ION device: " + device.Name);
-        return;
-      }
+      Log.D(this, "Found device: " + device.Name);
+      try {
+        if (!IsAppionDevice(device)) {
+          Log.D(this, "Ignoring non-ION device: " + device.Name);
+          return;
+        }
 
-      IConnection connection = new LEConnection(device, context);
+        GaugeSerialNumber serialNumber;
+        try {
+          serialNumber = GaugeSerialNumber.Parse(device.Name);
+        } catch (ArgumentException) {
+          Log.E(this, "Invalid GaugeSerialNumber: device.Name");
+          return;
+        }
+
+        IDevice ret = this[serialNumber];
+
+        if (ret == null) {
+          IConnection connection = new BLEConnection(device, context);
+          DeviceFactory factory = DeviceFactory.FindFactoryFor(serialNumber);
+          ret = factory.Create(this, serialNumber, connection, ProtocolUtil.BLE_PROTOCOLS[0]);
+          FoundDevice(ret);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to resolve newly found device", e);
+      }
     }
 
-    // Overridden from IDisposable
-    public void Dispose() {
+    /// <summary>
+    /// Registers the device to the found devices mapping.
+    /// </summary>
+    /// <param name="device"></param>
+    private void FoundDevice(IDevice device) {
+      device.onStateChanged += onDeviceStateChangedDelegate;
+      __foundDevices.Add(device.serialNumber, device);
+      onDeviceFound(this, device);
+    }
+
+    /// <summary>
+    /// Registers the device to the known devices mapping.
+    /// </summary>
+    /// <param name="device"></param>
+    private void RegisterDevice(IDevice device) {
+      device.onStateChanged += onDeviceStateChangedDelegate;
+      __foundDevices.Remove(device.serialNumber);
+      __knownDevices.Add(device.serialNumber, device);
+      onDeviceFound(this, device);
+    }
+
+    /// <summary>
+    /// Fully unregisters the device from the device manager.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    private void UnregisterDevice(IDevice device) {
+      device.onStateChanged -= onDeviceStateChangedDelegate;
+      __foundDevices.Remove(device.serialNumber);
+      __knownDevices.Remove(device.serialNumber);
     }
 
     /// <summary>
@@ -231,88 +436,44 @@ namespace ION.Droid.Devices {
     }
 
     /// <summary>
-    /// An asynchrous bluetooth classic scan call. This procedure will perform a
+    /// A blocking bluetooth classic scan call. This procedure will perform a
     /// classic scan that lasts as long as android deems necessary.
     /// </summary>
     /// <returns></returns>
-    private Task DoClassicScanAsync() {
+    private void DoClassicScan() {
       // TODO ahodder@appioninc.com: Determine whether or not we are actually classic scanning.
-      return Task.Factory.StartNew(() => {
-        Log.V(this, "Starting classic scan");
-        if (!adapter.StartDiscovery()) {
-          throw new Exception("Failed to start classic discovery");
-        }
+      Log.V(this, "Starting classic scan");
+      if (!adapter.StartDiscovery()) {
+        throw new Exception("Failed to start classic discovery");
+      }
 
-        while (adapter.IsDiscovering) {
-          Thread.Sleep(50);
-        }
-      });
+      while (adapter.IsDiscovering) {
+        Thread.Sleep(50);
+      }
+
+      adapter.CancelDiscovery();
+
+      Thread.Sleep(250);
     }
 
     /// <summary>
-    /// Cancels a classic scan in a clean way that [hopefully] won't rape android's
-    /// bluetooth stack. It was noticed on the original java based application that
-    /// repreated touching of the bluetooth adapter in a quick fachion would ruin the
-    /// adapter's state, making future communication unreliable.
-    /// </summary>
-    /// <returns></returns>
-    private Task DoCancelClassicScanAsync() {
-      // TODO ahodder@appioninc.com: Determine whether or not we are actually classic scanning.
-      return Task.Factory.StartNew(() => {
-        Log.V(this, "Cancelling classic scan");
-        if (adapter.IsDiscovering) {
-          adapter.CancelDiscovery();
-        }
-
-        DateTime start = DateTime.Now;
-
-        while (DateTime.Now.Millisecond - start.Millisecond < DELAY_TRANSITION) {
-          Thread.Sleep(50);
-        }
-      });
-    }
-
-    /// <summary>
-    /// An asynchronous bluetooth le scan call. This procedure will perform a BLE
+    /// A blocking bluetooth le scan call. This procedure will perform a BLE
     /// scan operation for the given duration.
     /// </summary>
     /// <param name="durationMillis"></param>
     /// <returns></returns>
-    private Task DoLeScanAsync(long durationMillis) {
-      // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.
-      return Task.Factory.StartNew(() => {
+    private void DoLeScan(long durationMillis) {
+      try {
+        // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.
         Log.V(this, "Starting LE scan");
         if (!adapter.StartLeScan(this)) {
           throw new Exception("Failed to start LE scan");
         }
 
-        DateTime start = DateTime.Now;
-
-        while (DateTime.Now.Millisecond - start.Millisecond < durationMillis) {
-          Thread.Sleep(50);
-        }
-      });
-    }
-
-    /// <summary>
-    /// Cancels a LE scan in a clean way that [hopefully] won't rape android's
-    /// bluetooth stack. As with a classic scan, but much more pronounced with LE,
-    /// android's bluetooth stack would become immensely unstable with repeated,
-    /// frequent access to the adapter state.
-    /// </summary>
-    /// <returns></returns>
-    private Task DoCancelLeScanAsync() {
-      // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.
-      return Task.Factory.StartNew(() => {
-        Log.V(this, "Stopping LE scan");
+        Thread.Sleep(TimeSpan.FromMilliseconds(durationMillis));
+      } finally {
         adapter.StopLeScan(this);
-
-        DateTime start = DateTime.Now;
-
-        while (DateTime.Now.Millisecond - start.Millisecond < DELAY_TRANSITION) {
-          Thread.Sleep(50);
-        }
-      });
+      }
     }
 
     /*
@@ -329,7 +490,7 @@ namespace ION.Droid.Devices {
     /// <param name="device"></param>
     private void NotifyDeviceStateChanged(IDevice device) {
       if (onDeviceStateChanged != null) {
-        onDeviceStateChanged(this, device);
+        onDeviceStateChanged(device);
       } else {
         Log.D(this, "Cannot notify device state change: event handler is dead");
       }

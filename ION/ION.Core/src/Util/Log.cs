@@ -12,6 +12,22 @@ namespace ION.Core.Util {
     /// The current log level of the log class.
     /// </summary>
     public static Level logLevel { get; set; }
+    /// <summary>
+    /// The printer that is delegated to print for the logger.
+    /// </summary>
+    /// <value>The printer.</value>
+    public static IPrinter printer {
+      get {
+        return __printer;
+      }
+      set {
+        if (value == null) {
+          __printer = new DeadPrinter();
+        } else {
+          __printer = value;
+        }
+      }
+    } static IPrinter __printer;
 
     static Log() {
       #if DEBUG
@@ -30,9 +46,9 @@ namespace ION.Core.Util {
     public static void D(object tag, string message, Exception e = null) {
       if (Level.Debug >= logLevel) {
         if (e == null) {
-          Print("D", FormatTag(tag), message);
+          printer.Print(Level.Debug, FormatTag(tag), message);
         } else {
-          Print("D", FormatTag(tag), message, e.ToString());
+          printer.Print(Level.Debug, FormatTag(tag), message, e.ToString());
         }
       }
 
@@ -48,9 +64,9 @@ namespace ION.Core.Util {
     public static void V(object tag, string message, Exception e = null) {
       if (Level.Verbose >= logLevel) {
         if (e == null) {
-          Print("V", FormatTag(tag), message);
+          printer.Print(Level.Verbose, FormatTag(tag), message);
         } else {
-          Print("V", FormatTag(tag), message, e.ToString());
+          printer.Print(Level.Verbose, FormatTag(tag), message, e.ToString());
         }
       }
     }
@@ -64,9 +80,9 @@ namespace ION.Core.Util {
     public static void E(object tag, string message, Exception e = null) {
       if (Level.Error >= logLevel) {
         if (e == null) {
-          Print("E", FormatTag(tag), message);
+          printer.Print(Level.Error, FormatTag(tag), message);
         } else {
-          Print("E", FormatTag(tag), message, e.ToString());
+          printer.Print(Level.Error, FormatTag(tag), message, e.ToString());
         }
       }
     }
@@ -84,24 +100,6 @@ namespace ION.Core.Util {
       }
     }
 
-    /// <summary>
-    /// Prints the log to the platform console.
-    /// </summary>
-    /// <param name="tag"></param>
-    /// <param name="msg"></param>
-    private static void Print(string level, string tag, string msg) {
-      Console.WriteLine("{0}   {1,15}: {2}", level, tag, msg);
-    }
-
-    /// <summary>
-    /// Prints the log to the platform console.
-    /// </summary>
-    /// <param name="tag"></param>
-    /// <param name="msg"></param>
-    /// <param name="error"></param>
-    private static void Print(string level, string tag, string msg, string error) {
-      Console.WriteLine("{0}   {1,15}: {2}\n{3}", level, tag, msg, error);
-    }
 
     /// <summary>
     /// Enumerates the possible log levels of the logger.
@@ -111,5 +109,37 @@ namespace ION.Core.Util {
       Verbose,
       Error,
     }
+
+    private class DeadPrinter : IPrinter {
+      // Overridden from IPrinter
+      public void Print(Level level, string tag, string msg) {
+        // Nope
+      }
+
+      // Overridden from IPrinter
+      public void Print(Level level, string tag, string msg, string error) {
+        // Nope
+      }
+    }
+  }
+
+  /// <summary>
+  /// Console printer for the logger..
+  /// </summary>
+  public interface IPrinter {
+    /// <summary>
+    /// Prints the log to the platform console.
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <param name="msg"></param>
+    void Print(Log.Level level, string tag, string msg);
+    
+    /// <summary>
+    /// Prints the log to the platform console.
+    /// </summary>
+    /// <param name="tag"></param>
+    /// <param name="msg"></param>
+    /// <param name="error"></param>
+    void Print(Log.Level level, string tag, string msg, string error);
   }
 }

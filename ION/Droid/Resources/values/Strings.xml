@@ -1,5 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="hello">Hello World, Click Me!</string>
 	<string name="app_name">ION.Droid</string>
+
+  <!--
+  GENERAL APPLICATION STRINGS
+  -->
+  <string name="available">Available</string>
+  <string name="connect">Connect</string>
+  <string name="connected">Connected</string>
+  <string name="disconnect_all">Disconnect All</string>
+  <string name="disconnected">Disconnected</string>
+  <string name="name">Name</string>
+  <string name="scan">Scan</string>
+  <string name="scanning">Scanning</string>
+
+  <!--
+  DEVICE MANAGER
+  -->
+  <string name="device_manager_add_all_to_workbench">Add all to Workbench</string>
+  <string name="device_manager_batch_connected_actions">Connected Device Actions</string>
+  <string name="device_manager_batch_long_range_actions">Long Range Device Actions</string>
+  <string name="device_manager_batch_new_device_actions">New Device Found Actions</string>
+  <string name="device_manager_batch_available_actions">Available Device Actions</string>
+  <string name="device_manager_batch_disconnected_actions">Disconnected Device Actions</string>
+  <string name="device_manager_new_devices_found">New Devices Found</string>
+  <string name="device_manager_no_devices_found">No devices available. Press scan to discover available nearby devices.</string>
+
+
+  <!--
+  DEVICES
+  -->
+  <string name="device_av760">AV760</string>
+  <string name="device_p300">P300</string>
+  <string name="device_p500">P500</string>
+  <string name="device_p800">P800</string>
+  <string name="device_serial_number">Serial Number</string>
+  <string name="device_type">Device Type</string>
+  <string name="device_unknown">Unknown Device</string>
+  <string name="long_range_mode">Long-Range Mode</string>
+
+  <!--
+  MEASUREMENT
+  -->
+  <string name="measurement">Measurement</string>
+  <string name="measurement_humidity">Humidity</string>
+  <string name="measurement_pressure">Pressure</string>
+  <string name="measurement_temperature">Temperature</string>
+  <string name="measurement_vacuum">Vacuum</string>
+  <string name="measurement_unknown">Unknown</string>
+
+  <!--
+  WORKBENCH
+  -->
 </resources>
