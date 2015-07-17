@@ -41,7 +41,7 @@ namespace ION.IOS.Util {
   /// us to easily access iOS locized strings using a string itself
   /// as the key.
   /// </summary>
-  public static class IOSStringss {
+  public static class IOSStrings {
 
     /// <summary>
     /// Uses the string as a key input to retrieve a localized string

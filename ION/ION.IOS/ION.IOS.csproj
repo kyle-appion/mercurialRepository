@@ -118,14 +118,15 @@
     <Folder Include="src\ViewController\" />
     <Folder Include="src\ViewController\DeviceManager\" />
     <Folder Include="Resources\Icons\" />
+    <Folder Include="Resources\language.lproj\" />
   </ItemGroup>
   <ItemGroup>
-    <BundleResource Include="Resources\Locaizable.strings" />
     <BundleResource Include="Resources\Icons\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\Icons\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Icons\ic_render_gaugeav760.png" />
     <BundleResource Include="Resources\Icons\ic_render_gaugep300.png" />
     <BundleResource Include="Resources\Icons\ic_render_gaugep500.png" />
     <BundleResource Include="Resources\Icons\ic_render_gaugep800.png" />
+    <BundleResource Include="Resources\language.lproj\Localizable.strings" />
   </ItemGroup>
 </Project>

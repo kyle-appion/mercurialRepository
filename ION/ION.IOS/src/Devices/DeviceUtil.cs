@@ -26,22 +26,22 @@ namespace ION.Core.Devices {
     public static string GetTypeString(this EDeviceModel deviceModel) {
       switch (deviceModel) {
         case EDeviceModel.AV760: {
-          return Strings.Device.Model.AV760;
+          return Strings.Device.Model.AV760.FromResources();
         }
         case EDeviceModel.HT: {
-          return Strings.Device.Model.HT;
+          return Strings.Device.Model.HT.FromResources();
         }
         case EDeviceModel.P300: {
-          return Strings.Device.Model.P300; 
+          return Strings.Device.Model.P300.FromResources(); 
         }
         case EDeviceModel.P500: {
-          return Strings.Device.Model.P500;
+          return Strings.Device.Model.P500.FromResources();
         }
         case EDeviceModel.P800: {
-          return Strings.Device.Model.P800;
+          return Strings.Device.Model.P800.FromResources();
         }
         default:{
-          return Strings.Device.Model.UNKNOWN;
+          return Strings.Device.Model.UNKNOWN.FromResources();
         }
       }
     }
