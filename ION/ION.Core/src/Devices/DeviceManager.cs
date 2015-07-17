@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ION.Core.Devices {
@@ -21,7 +22,7 @@ namespace ION.Core.Devices {
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
   /// and access of devices within the ION application.
   /// </summary>
-  public interface IDeviceManager {
+  public interface IDeviceManager : IDisposable {
     /// <summary>
     /// An event handler that will be notified when a device is found by a scan.
     /// </summary>
@@ -150,7 +151,7 @@ namespace ION.Core.Devices {
     /// </summary>
     /// <param name="device"></param>
     void DisconnectDevice(IDevice device);
-  }
+  } // End IDeviceManager
 
 
   /// <summary>
@@ -186,5 +187,5 @@ namespace ION.Core.Devices {
     /// The DeviceManager is currently performing a passive scan.
     /// </summary>
     PassiveScanning,
-  }
+  } // End EDeviceManagerState
 }

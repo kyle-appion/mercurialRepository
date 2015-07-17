@@ -37,12 +37,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\iOS\ION.iOS.csproj">
-      <Project>{E4F6F40B-057E-441D-B944-7646EF8549F4}</Project>
-      <Name>ION.iOS</Name>
-      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Droid\ION.Droid.csproj">
       <Project>{71313512-D5C3-4E37-BCFB-88A36B5C080B}</Project>
       <Name>ION.Droid</Name>

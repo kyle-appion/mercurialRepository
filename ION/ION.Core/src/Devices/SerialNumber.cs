@@ -2,32 +2,95 @@
 
 namespace ION.Core.Devices {
   /// <summary>
+  /// Enumerates the ION device models that Appion has manufactured.
+  /// </summary>
+  public enum EDeviceModel {
+    P300,
+    P500,
+    P800,
+    AV760,
+    _3XTM, // I kind of hate how greg names products some times
+    HT,
+  }
+
+  /// <summary>
+  /// Common extensions for EDeviceModel.
+  /// </summary>
+  public static class DeviceModelExtensions {
+    /// <summary>
+    /// Queries the model code of the EDeviceModel. If the model code cannot
+    /// be extracted, we will throw an ArgumentException.
+    /// </summary>
+    /// <returns>The model code.</returns>
+    /// <param name="deviceModel">Device model.</param>
+    public static string GetModelCode(this EDeviceModel deviceModel) {
+      switch (deviceModel) {
+      case EDeviceModel.P300: { return "P3"; }
+      case EDeviceModel.P500: { return "P5"; }
+      case EDeviceModel.P800: { return "P8"; }
+      case EDeviceModel.AV760: { return "V7"; }
+      case EDeviceModel._3XTM: { return "T3"; }
+      case EDeviceModel.HT: { return "HT"; }
+      default: {
+          throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
+        }
+      }
+    }
+  }
+
+  /// <summary>
+  /// A class that provides util functions for EDeviceModel.
+  /// </summary>
+  public partial class DeviceModelUtils {
+    /// <summary>
+    /// Converts the given model code to a DeviceModel. If the model code is not a valid
+    /// code, we will throw an ArgumentException.
+    /// </summary>
+    /// <returns>The device model from string.</returns>
+    /// <param name="modelCode">Model code.</param>
+    public static EDeviceModel GetDeviceModelFromCode(string modelCode) {
+      modelCode = modelCode.ToUpper();
+
+      foreach (EDeviceModel model in Enum.GetValues(typeof(EDeviceModel))) {
+        if (model.GetModelCode().Equals(modelCode)) {
+          return model;
+        }
+      }
+
+      throw new ArgumentException("Cannot get device model: unrecognized code " + modelCode);
+    }
+  }
+
+
+  /// <summary>
   /// SerialNumber is the basic unit of identification for Appion products.
   /// </summary>
   public interface ISerialNumber : IComparable<ISerialNumber> {
+    /// <summary>
+    /// Queries the model of the device that this serial number represents.
+    /// </summary>
+    /// <value>The device model.</value>
+    EDeviceModel deviceModel { get; }
+    /// <summary>
+    /// Queries the type of device that this serial number is representative of.
+    /// </summary>
+    EDeviceType deviceType { get; }
     /// <summary>
     /// Queries the serial number as a raw string. This is useful when
     /// printing the serial number.
     /// </summary>
     string rawSerial { get; }
-
     /// <summary>
     /// Queries the date that the product (and implicitly the serial number)
     /// was created.
     /// </summary>
     DateTime manufactureDate { get; }
-
     /// <summary>
     /// Queries the batch id of the serial number (and implicitly the product).
     /// Used to identify where in the batch the product was as well as
     /// solidifying an enumeration in which products may be identified.
     /// </summary>
     ushort batchId { get; }
-
-    /// <summary>
-    /// Queries the type of device that this serial number is representative of.
-    /// </summary>
-    EDeviceType deviceType { get; }
 	}
 
   /// <summary>
@@ -62,26 +125,21 @@ namespace ION.Core.Devices {
   /// </summary>
   public class GaugeSerialNumber : ISerialNumber {
     // Overridden from ISerialNumber
+    public EDeviceModel deviceModel { get; private set; }
+    // Overridden from ISerialNumber
+    public EDeviceType deviceType { get { return EDeviceType.Gauge; } }
+    // Overridden from ISerialNumber
     public string rawSerial { get; private set; }
     // Overridden from ISerialNumber
     public DateTime manufactureDate { get; private set; }
     // Overridden from ISerialNumber
     public ushort batchId { get; private set; }
-    // Overridden from ISerialNumber
-    public EDeviceType deviceType { get { return EDeviceType.Gauge; } }
 
-    /// <summary>
-    /// Queries the gauge type that the serial number is representative of.
-    /// </summary>
-    /// <value>The type of the gauge.</value>
-    public EGaugeType gaugeType { get; private set; }
-
-
-    public GaugeSerialNumber(string rawSerial, DateTime manufactureDate, ushort batchId, EGaugeType gaugeType) {
+    public GaugeSerialNumber(EDeviceModel model, string rawSerial, DateTime manufactureDate, ushort batchId) {
+      this.deviceModel = model;
       this.rawSerial = rawSerial;
       this.manufactureDate = manufactureDate;
       this.batchId = batchId;
-      this.gaugeType = gaugeType;
     }
 
     public int CompareTo(ISerialNumber other) {
@@ -141,12 +199,13 @@ namespace ION.Core.Devices {
         throw new ArgumentException("Cannot parse serial: expected serial of length 9, received length " + serial.Length);
       }
 
-      string rawGaugeType = serial.Substring(0, 2);
+      string rawDeviceModel = serial.Substring(0, 2);
       string rawYearCode = serial.Substring(2, 2);
       char rawMonthCode = serial[4];
       string rawBatchId = serial.Substring(5, 4);
+      EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
 
-      return new GaugeSerialNumber(serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId), GaugeTypeUtils.FromString(rawGaugeType));
+      return new GaugeSerialNumber(deviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
     }
 
     /// <summary>
@@ -180,7 +239,7 @@ namespace ION.Core.Devices {
       }
 
       return new DateTime(year, month, 1);
-    } 
+    }
   }
 }
 

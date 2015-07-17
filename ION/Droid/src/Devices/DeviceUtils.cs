@@ -28,7 +28,7 @@ namespace ION.Droid.Devices {
       switch (device.type) {
         case EDeviceType.Gauge: {
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;
-          return GetGaugeIcon(serialNumber.gaugeType);
+          return GetGaugeIcon(serialNumber.deviceModel);
         }
         default: {
           return Resource.Drawable.ic_logo_appiondefault;
@@ -41,18 +41,18 @@ namespace ION.Droid.Devices {
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static int GetGaugeIcon(EGaugeType type) {
+    public static int GetGaugeIcon(EDeviceModel type) {
       switch (type) {
-        case EGaugeType.P300: {
+        case EDeviceModel.P300: {
           return Resource.Drawable.ic_render_gaugep300;
         }
-        case EGaugeType.P500: {
+        case EDeviceModel.P500: {
           return Resource.Drawable.ic_render_gaugep500;
         }
-        case EGaugeType.P800: {
+        case EDeviceModel.P800: {
           return Resource.Drawable.ic_render_gaugep800;
         }
-        case EGaugeType.AV760: {
+        case EDeviceModel.AV760: {
           return Resource.Drawable.ic_render_gaugeav760;
         }
         default: {
@@ -70,7 +70,7 @@ namespace ION.Droid.Devices {
       switch (device.type) {
         case EDeviceType.Gauge: {
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;
-          return GetGaugeProductName(serialNumber.gaugeType);
+          return GetGaugeProductName(serialNumber.deviceModel);
         }
         default: {
           return Resource.String.device_unknown;
@@ -83,18 +83,18 @@ namespace ION.Droid.Devices {
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    public static int GetGaugeProductName(EGaugeType type) {
+    public static int GetGaugeProductName(EDeviceModel type) {
       switch (type) {
-        case EGaugeType.P300: {
+        case EDeviceModel.P300: {
           return Resource.String.device_p300;
         }
-        case EGaugeType.P500: {
+        case EDeviceModel.P500: {
           return Resource.String.device_p500;
         }
-        case EGaugeType.P800: {
+        case EDeviceModel.P800: {
           return Resource.String.device_p800;
         }
-        case EGaugeType.AV760: {
+        case EDeviceModel.AV760: {
           return Resource.String.device_av760;
         }
         default: {

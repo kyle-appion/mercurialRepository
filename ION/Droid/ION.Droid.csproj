@@ -234,4 +234,7 @@
   <ItemGroup>
     <AndroidResource Include="Resources\menu\scan.xml" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\App\" />
+  </ItemGroup>
 </Project>

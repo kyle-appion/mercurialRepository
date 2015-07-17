@@ -162,6 +162,11 @@ namespace ION.Droid.Devices {
     }
 
     // Overridden from IDeviceManager
+    public void Dispose() {
+      // TODO ahodder@appioninc.com: Properly dispose of the device manager (this means nuke all delegates from event handlers)!
+    }
+
+    // Overridden from IDeviceManager
     public Task<bool> Enable() {
       return Task.Factory.StartNew(() => {
         state = EDeviceManagerState.Enabling;
@@ -261,6 +266,7 @@ namespace ION.Droid.Devices {
         if (activeScanStopper != null) {
           activeScanStopper.Cancel();
         }
+        activeScanStopper = null;
       }
     }
 
@@ -320,6 +326,7 @@ namespace ION.Droid.Devices {
         if (passiveScanStopper != null) {
           passiveScanStopper.Cancel();
         }
+        passiveScanStopper = null;
       }
     }
 
@@ -376,7 +383,7 @@ namespace ION.Droid.Devices {
         try {
           serialNumber = GaugeSerialNumber.Parse(device.Name);
         } catch (ArgumentException) {
-          Log.E(this, "Invalid GaugeSerialNumber: device.Name");
+          Log.E(this, "Invalid GaugeSerialNumber: " + device.Name);
           return;
         }
 
@@ -461,7 +468,6 @@ namespace ION.Droid.Devices {
     /// scan operation for the given duration.
     /// </summary>
     /// <param name="durationMillis"></param>
-    /// <returns></returns>
     private void DoLeScan(long durationMillis) {
       try {
         // TODO ahodder@appioninc.com: Determine whether or not we are actually le scanning.

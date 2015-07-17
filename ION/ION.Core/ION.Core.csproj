@@ -45,13 +45,17 @@
     <Compile Include="src\Measure\Unit.cs" />
     <Compile Include="src\Measure\Units.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
-    <Compile Include="src\Devices\GaugeType.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Threading\LimitedConcurrentTaskScheduler.cs" />
     <Compile Include="src\Util\Log.cs" />
     <Compile Include="src\Devices\DeviceFactory.cs" />
     <Compile Include="src\Util\ByteUtils.cs" />
+    <Compile Include="src\App\ION.cs" />
+    <Compile Include="src\Devices\DeviceUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup />
+  <ItemGroup>
+    <Folder Include="src\App\" />
+  </ItemGroup>
 </Project>

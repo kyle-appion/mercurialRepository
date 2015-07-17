@@ -56,7 +56,7 @@ namespace ION.Core.Devices {
   internal class P300DeviceFactory : DeviceFactory {
     // Overridden from IDeviceFactory
     public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EGaugeType.P300 == ((GaugeSerialNumber)serialNumber).gaugeType;
+      return serialNumber is GaugeSerialNumber && EDeviceModel.P300 == ((GaugeSerialNumber)serialNumber).deviceModel;
     }
 
     // Overridden from IDeviceFactory
@@ -75,7 +75,7 @@ namespace ION.Core.Devices {
   internal class P500DeviceFactory : DeviceFactory {
     // Overridden from IDeviceFactory
     public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EGaugeType.P500 == ((GaugeSerialNumber)serialNumber).gaugeType;
+      return serialNumber is GaugeSerialNumber && EDeviceModel.P500 == ((GaugeSerialNumber)serialNumber).deviceModel;
     }
 
     // Overridden from IDeviceFactory
@@ -92,7 +92,7 @@ namespace ION.Core.Devices {
   internal class P800DeviceFactory : DeviceFactory {
     // Overridden from IDeviceFactory
     public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EGaugeType.P800 == ((GaugeSerialNumber)serialNumber).gaugeType;
+      return serialNumber is GaugeSerialNumber && EDeviceModel.P800 == ((GaugeSerialNumber)serialNumber).deviceModel;
     }
 
     // Overridden from IDeviceFactory
@@ -109,7 +109,7 @@ namespace ION.Core.Devices {
   internal class AV760DeviceFactory : DeviceFactory {
     // Overridden from IDeviceFactory
     public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EGaugeType.AV760 == ((GaugeSerialNumber)serialNumber).gaugeType;
+      return serialNumber is GaugeSerialNumber && EDeviceModel.AV760 == ((GaugeSerialNumber)serialNumber).deviceModel;
     }
 
     // Overridden from IDeviceFactory

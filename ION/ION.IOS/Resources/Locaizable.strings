@@ -1,0 +1,23 @@
+﻿/*
+This file contains all of the key/content string lookups for the ION
+iOS application.
+
+All entries within this file should be reflected in the Util.Strings.cs
+file.
+*/
+
+/* DEVICE */
+"device_name" = "Device Name";
+"device_serial_number" = "Serial Number";
+"device_type" = "Device Type";
+
+
+/* DEVICE MANAGER */
+
+/* DEVICE MODEL */
+"device_model_3xtm" = "3XTM";
+"device_model_av760" = "AV760";
+"device_model_ht" = "HT";
+"device_model_p300" = "P300";
+"device_model_p500" = "P500";
+"device_model_p800" = "P800";

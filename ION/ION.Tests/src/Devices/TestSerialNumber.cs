@@ -7,9 +7,9 @@ using ION.Core.Devices;
 namespace ION.TestFixtures.Devices {
   [TestFixture]
   public class TestSerialNumber {
-    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER1= new GaugeSerialNumber("P315F0025", new DateTime(2015, 6, 1), 25, EGaugeType.P300);
-    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER2 = new GaugeSerialNumber("P315F0025", new DateTime(2015, 6, 1), 25, EGaugeType.P300);
-    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER3 = new GaugeSerialNumber("P815F0025", new DateTime(2015, 6, 1), 25, EGaugeType.P800);
+    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER1= new GaugeSerialNumber(EDeviceModel.P300, "P315F0025", new DateTime(2015, 6, 1), 25);
+    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER2 = new GaugeSerialNumber(EDeviceModel.P500, "P515F0025", new DateTime(2015, 6, 1), 25);
+    private static readonly GaugeSerialNumber VALID_GAUGE_SERIAL_NUMBER3 = new GaugeSerialNumber(EDeviceModel.P800, "P815F0025", new DateTime(2015, 6, 1), 25);
 
     [Test]
     public void TestGaugeSerialNumber_AreEqual() {

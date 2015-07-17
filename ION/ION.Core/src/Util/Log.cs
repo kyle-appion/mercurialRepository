@@ -87,6 +87,16 @@ namespace ION.Core.Util {
       }
     }
 
+    public static void C(object tag, string message, Exception e = null) {
+      if (Level.Critical >= logLevel) {
+        if (e == null) {
+          printer.Print(Level.Debug, FormatTag(tag), message);
+        } else {
+          printer.Print(Level.Debug, FormatTag(tag), message, e.ToString());
+        }
+      }
+    }
+
     /// <summary>
     /// Unpacks the tag into a useful string.
     /// </summary>
@@ -108,6 +118,7 @@ namespace ION.Core.Util {
       Debug,
       Verbose,
       Error,
+      Critical,
     }
 
     private class DeadPrinter : IPrinter {

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.iOS", "iOS\ION.iOS.csproj", "{E4F6F40B-057E-441D-B944-7646EF8549F4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.Droid", "Droid\ION.Droid.csproj", "{71313512-D5C3-4E37-BCFB-88A36B5C080B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.UITests", "UITests\ION.UITests.csproj", "{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}"
@@ -12,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.Tests", "ION.Tests\ION.Tests.csproj", "{1A6B7B25-7631-44A4-B1EF-2084D7D4C08A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.Core", "ION.Core\ION.Core.csproj", "{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.IOS", "ION.IOS\ION.IOS.csproj", "{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -60,6 +60,18 @@ Global
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Release|iPhone.Build.0 = Release|Any CPU
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|iPhone.Build.0 = Debug|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|Any CPU.Build.0 = Release|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhone.ActiveCfg = Release|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhone.Build.0 = Release|iPhone
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Debug|iPhone.ActiveCfg = Debug|Any CPU
@@ -72,18 +84,6 @@ Global
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Release|iPhone.Build.0 = Release|Any CPU
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|iPhone.Build.0 = Debug|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|Any CPU.ActiveCfg = Release|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|Any CPU.Build.0 = Release|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|iPhone.ActiveCfg = Release|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|iPhone.Build.0 = Release|iPhone
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{E4F6F40B-057E-441D-B944-7646EF8549F4}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0
@@ -95,6 +95,7 @@ Global
 		$0.TextStylePolicy = $2
 		$2.TabWidth = 2
 		$2.IndentWidth = 2
+		$2.EolMarker = Unix
 		$2.inheritsSet = VisualStudio
 		$2.inheritsScope = text/plain
 		$2.scope = text/plain
@@ -102,6 +103,7 @@ Global
 		$3.inheritsSet = null
 		$3.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $4
+		$4.IndentSwitchBody = True
 		$4.NamespaceBraceStyle = EndOfLine
 		$4.ClassBraceStyle = EndOfLine
 		$4.InterfaceBraceStyle = EndOfLine
@@ -110,6 +112,7 @@ Global
 		$4.MethodBraceStyle = EndOfLine
 		$4.ConstructorBraceStyle = EndOfLine
 		$4.DestructorBraceStyle = EndOfLine
+		$4.EmbeddedStatementPlacement = DoNotCare
 		$4.BeforeMethodDeclarationParentheses = False
 		$4.BeforeMethodCallParentheses = False
 		$4.BeforeConstructorDeclarationParentheses = False

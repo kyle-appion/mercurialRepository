@@ -16,7 +16,7 @@ namespace ION.Core.Devices {
     /// A marker for an unknown device.
     /// </summary>
     Unknown,
-  }
+  } // End EDeviceType
 
   /// <summary>
   /// The delegate that is notified when the device's state changes.
@@ -28,7 +28,7 @@ namespace ION.Core.Devices {
   /// <summary>
   /// The contract for an ION device.
   /// </summary>
-  public interface IDevice {
+  public interface IDevice : IDisposable {
     /// <summary>
     /// The event registery that will be notified when the device's
     /// connection state changes
@@ -182,6 +182,11 @@ namespace ION.Core.Devices {
           Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
       });
+    }
+
+    // Overridden from IDevice
+    public void Dispose() {
+      // TODO ahodder@appioninc.com: Implement this and release all callbacks
     }
 
     /// <summary>
