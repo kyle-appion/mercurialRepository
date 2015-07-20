@@ -1,20 +1,19 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Appion iPad Mini" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/Devices/DeviceUtil.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/Connections/IOSLeConnection.cs">
     <Files>
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs" Line="53" Column="5" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSectionCell.cs" Line="24" Column="41" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSectionCell.designer.cs" Line="8" Column="24" />
-      <File FileName="ION.Core/src/Devices/Device.cs" Line="10" Column="3" />
-      <File FileName="ION.IOS/src/Devices/DeviceUtil.cs" Line="30" Column="10" />
-      <File FileName="ION.IOS/Resources/Locaizable.strings" Line="23" Column="30" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.cs" Line="29" Column="30" NotebookId="1" />
-      <File FileName="ION.IOS/src/Util/Strings.cs" Line="49" Column="1" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.designer.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/Connections/IOSLeConnection.cs" Line="232" Column="30" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSensorView.cs" Line="16" Column="19" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSensorView.designer.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Device.cs" Line="1" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/Droid/src/Widgets/ExpandableContentELVAdapter.cs" line="242" column="1" />
+      <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/Droid/src/Widgets/ExpandableContentELVAdapter.cs" line="242" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

@@ -1,10 +1,12 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 using CoreBluetooth;
 using Foundation;
 
 using ION.Core.Connections;
+using ION.Core.Util;
 
 namespace ION.IOS.Connections {
   public class IOSLeConnection : IConnection {
@@ -16,19 +18,19 @@ namespace ION.IOS.Connections {
     /// <summary>
     /// The Rx service that will contain the characteristic needed for reading.
     /// </summary>
-    private CBUUID READ_SERVICE = Inflate("ffe0");
+    private static readonly CBUUID READ_SERVICE = Inflate("ffe0");
     /// <summary>
     /// The Rx characteristic.
     /// </summary>
-    private CBUUID READ_CHARACTERISTIC = Inflate("ffe4");
+    private static readonly CBUUID READ_CHARACTERISTIC = Inflate("ffe4");
     /// <summary>
     /// The Tx service that will contain the characteristic needed for writing.
     /// </summary>
-    private CBUUID WRITE_SERVICE = Inflate("ffe5");
+    private static readonly CBUUID WRITE_SERVICE = Inflate("ffe5");
     /// <summary>
     /// The Tx characteristic.
     /// </summary>
-    private CBUUID WRITE_CHARACTERISITIC = Inflate("ffe9");
+    private static readonly CBUUID WRITE_CHARACTERISITIC = Inflate("ffe9");
 
     /// <summary>
     /// A utility method used to create the UUIDs necessary for use of the
@@ -59,9 +61,9 @@ namespace ION.IOS.Connections {
     // Overridden from IConnection
     public string name { get { return __nativeDevice.Name; } }
     // Overridden from IConnection
-    public int rssi { get; private set; }
+    public int rssi { get { return (int)__nativeDevice.RSSI; } }
     // Overridden from IConnection
-    public bool isRssiReliable { get; private set; }
+    public bool isRssiReliable { get { return __nativeDevice.IsConnected; } }
     // Overridden from IConnection
     public byte[] lastPacket {
       get {
@@ -91,6 +93,10 @@ namespace ION.IOS.Connections {
     /// </summary>
     private CBCentralManager centeralManager { get; set; }
     /// <summary>
+    /// The delegate that will received discovered service events.
+    /// </summary>
+    private EventHandler<NSErrorEventArgs> onServiceDiscoveredDelegate;
+    /// <summary>
     /// The delegate that will receive discovered characteristic events.
     /// </summary>
     private EventHandler<CBServiceEventArgs> onCharacteristicDiscoveredDelegate;
@@ -98,7 +104,7 @@ namespace ION.IOS.Connections {
     /// The delegate that will received updates when the connection's characteristic
     /// changes.
     /// </summary>
-    private EventHandler<CBDescriptorEventArgs> onCharacteristicChangedDelegate;
+    private EventHandler<CBCharacteristicEventArgs> onCharacteristicChangedDelegate;
     /// <summary>
     /// The characteristic that we will read the device data from.
     /// </summary>
@@ -108,34 +114,55 @@ namespace ION.IOS.Connections {
     /// </summary>
     private CBCharacteristic write { get; set; }
 
+
+    /// <summary>
+    /// Creates a new iOS connection wrapper.
+    /// </summary>
+    /// <param name="centeralManager">Centeral manager.</param>
+    /// <param name="peripheral">Peripheral.</param>
     public IOSLeConnection(CBCentralManager centeralManager, CBPeripheral peripheral) {
       this.centeralManager = centeralManager;
       __nativeDevice = peripheral;
 
+      onServiceDiscoveredDelegate = ((object obj, NSErrorEventArgs args) => {
+        foreach (CBService service in __nativeDevice.Services) {
+          __nativeDevice.DiscoverCharacteristics(service);
+        }
+      });
+
       onCharacteristicDiscoveredDelegate = (object obj, CBServiceEventArgs args) => {
+        Log.D(this, "discovered characteristic");
         if (EConnectionState.Connecting == connectionState) {
           if (ValidateServices()) {
             connectionState = EConnectionState.Connected;
+          } else {
+            Log.E(this, "Failed to resolve characteristics");
           }
         }
       };
 
-      onCharacteristicChangedDelegate = (object obj, CBDescriptorEventArgs args) => {
-        if (args.Descriptor.Characteristic.Equals(read)) { 
+      onCharacteristicChangedDelegate = (object obj, CBCharacteristicEventArgs args) => {
+        if (args.Characteristic.Equals(read)) {
+          Log.D(this, "Received read characterstic value");
           lastPacket = read.Value.ToArray();
+        } else {
+          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
         }
       };
 
+      __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
+      __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-      __nativeDevice.UpdatedValue += onCharacteristicChangedDelegate;
 
+      connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
     }
 
     // Overridden from IConnection
     public void Dispose() {
+      __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
-      __nativeDevice.UpdatedValue -= onCharacteristicChangedDelegate;
+      __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
     }
 
     // Overridden from IConnection
@@ -156,12 +183,33 @@ namespace ION.IOS.Connections {
 
         centeralManager.ConnectPeripheral(__nativeDevice, options);
 
-        while (EConnectionState.Connected != connectionState) {
+        while (!__nativeDevice.IsConnected) {
           if (DateTime.Now - start > connectionTimeout) {
+            Log.D(this, "timeout: failed to connect");
             Disconnect();
-            break;
+            return false;
+          } else {
+            Thread.Sleep(TimeSpan.FromMilliseconds(10));
           }
         }
+
+        Thread.Sleep(TimeSpan.FromMilliseconds(1000));
+
+        __nativeDevice.DiscoverServices((CBUUID[])null);
+
+        while (EConnectionState.Connected != connectionState) {
+          if (DateTime.Now - start > connectionTimeout) {
+            Log.D(this, "timeout: failed to validate services");
+            Disconnect();
+            return false;
+          } else {
+            Thread.Sleep(TimeSpan.FromMilliseconds(10));
+          }
+        }
+
+        __nativeDevice.SetNotifyValue(true, read);
+
+        Log.D(this, "Connected successfully");
 
         return EConnectionState.Connected == connectionState;
       });
@@ -194,15 +242,20 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <returns></returns>
     private bool ValidateServices() {
+      Log.D(this, "Validating services...");
+
       read = null;
       write = null;
 
       foreach (CBService service in __nativeDevice.Services) {
-        foreach (CBCharacteristic characteristic in service.Characteristics) {
-          if (READ_CHARACTERISTIC.Equals(characteristic.UUID)) {
-            read = characteristic;
-          } else if (WRITE_CHARACTERISITIC.Equals(characteristic.UUID)) {
-            write = characteristic;
+        if (service != null && service.Characteristics != null) {
+          // Apparently services can be null after discovery?
+          foreach (CBCharacteristic characteristic in service.Characteristics) {
+            if (READ_CHARACTERISTIC.Equals(characteristic.UUID)) {
+              read = characteristic;
+            } else if (WRITE_CHARACTERISITIC.Equals(characteristic.UUID)) {
+              write = characteristic;
+            }
           }
         }
       }

@@ -73,12 +73,25 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\button_gold.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\button_black.png">
+      <InProject>false</InProject>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\DeviceManagerSectionCell.xib" />
     <InterfaceDefinition Include="src\Storyboard\DeviceManagerDeviceCell.xib" />
+    <InterfaceDefinition Include="src\Storyboard\DeviceManagerSensorView.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -104,6 +117,11 @@
     </Compile>
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Util\Strings.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSensorView.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSensorView.designer.cs">
+      <DependentUpon>DeviceManagerSensorView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Sensors\Sensor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup />
@@ -119,6 +137,7 @@
     <Folder Include="src\ViewController\DeviceManager\" />
     <Folder Include="Resources\Icons\" />
     <Folder Include="Resources\language.lproj\" />
+    <Folder Include="src\Sensors\" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\Icons\ic_logo_appiondefault.png" />

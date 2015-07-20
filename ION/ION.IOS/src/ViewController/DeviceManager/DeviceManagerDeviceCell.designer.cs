@@ -15,6 +15,12 @@ namespace ION.IOS.ViewController.DeviceManager
 		UIKit.UIActivityIndicatorView activityConnectActivity { get; set; }
 
 		[Outlet]
+		UIKit.UIButton buttonConnect { get; set; }
+
+		[Outlet]
+		UIKit.UIView containerSensor { get; set; }
+
+		[Outlet]
 		UIKit.UIImageView iconDevice { get; set; }
 
 		[Outlet]
@@ -31,19 +37,24 @@ namespace ION.IOS.ViewController.DeviceManager
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (buttonConnect != null) {
+				buttonConnect.Dispose ();
+				buttonConnect = null;
+			}
+
+			if (activityConnectActivity != null) {
+				activityConnectActivity.Dispose ();
+				activityConnectActivity = null;
+			}
+
+			if (containerSensor != null) {
+				containerSensor.Dispose ();
+				containerSensor = null;
+			}
+
 			if (iconDevice != null) {
 				iconDevice.Dispose ();
 				iconDevice = null;
-			}
-
-			if (labelDeviceType != null) {
-				labelDeviceType.Dispose ();
-				labelDeviceType = null;
-			}
-
-			if (labelDeviceName != null) {
-				labelDeviceName.Dispose ();
-				labelDeviceName = null;
 			}
 
 			if (iconExpandIndicator != null) {
@@ -51,9 +62,14 @@ namespace ION.IOS.ViewController.DeviceManager
 				iconExpandIndicator = null;
 			}
 
-			if (activityConnectActivity != null) {
-				activityConnectActivity.Dispose ();
-				activityConnectActivity = null;
+			if (labelDeviceName != null) {
+				labelDeviceName.Dispose ();
+				labelDeviceName = null;
+			}
+
+			if (labelDeviceType != null) {
+				labelDeviceType.Dispose ();
+				labelDeviceType = null;
 			}
 
 			if (labelSerialNumber != null) {

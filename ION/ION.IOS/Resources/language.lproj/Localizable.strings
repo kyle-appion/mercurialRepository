@@ -22,3 +22,13 @@ file.
 "device_model_p500" = "P500";
 "device_model_p800" = "P800";
 "device_model_unknown" = "Unknown Device";
+
+/* SENSOR */
+
+/* SENSOR TYPE */
+"sensor_type_length" = "Length";
+"sensor_type_mass" = "Mass";
+"sensor_type_pressure" = "Pressure";
+"sensor_type_temperature" = "Temperature";
+"sensor_type_vacuum" = "Vacuum";
+"sensor_type_unknown" = "Unknown";

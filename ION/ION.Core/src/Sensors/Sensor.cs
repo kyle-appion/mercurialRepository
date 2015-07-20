@@ -22,7 +22,7 @@ namespace ION.Core.Sensors {
   /// A simple utility class that will provide functions that aid in the use of the
   /// ESensorType in conjunction with an ISensor.
   /// </summary>
-  public class SensorUtils {
+  public partial class SensorUtils {
     /// <summary>
     /// The default pressure units to use for sensors that do not provide their own
     /// unit list.

@@ -494,151 +494,148 @@ namespace ION.Droid
 			public const int img_handle_right = 2130837580;
 			
 			// aapt resource value: 0x7f02004d
-			public const int monoandroidsplash = 2130837581;
+			public const int np_analyzer_slot = 2130837581;
 			
 			// aapt resource value: 0x7f02004e
-			public const int np_analyzer_slot = 2130837582;
+			public const int np_blue_left_curve_corner = 2130837582;
 			
 			// aapt resource value: 0x7f02004f
-			public const int np_blue_left_curve_corner = 2130837583;
+			public const int np_blue_right_curve_corner = 2130837583;
 			
 			// aapt resource value: 0x7f020050
-			public const int np_blue_right_curve_corner = 2130837584;
+			public const int np_blue_tab = 2130837584;
 			
 			// aapt resource value: 0x7f020051
-			public const int np_blue_tab = 2130837585;
+			public const int np_bordered_gray_square = 2130837585;
 			
 			// aapt resource value: 0x7f020052
-			public const int np_bordered_gray_square = 2130837586;
+			public const int np_bordered_green_square = 2130837586;
 			
 			// aapt resource value: 0x7f020053
-			public const int np_bordered_green_square = 2130837587;
+			public const int np_bordered_light_blue_square = 2130837587;
 			
 			// aapt resource value: 0x7f020054
-			public const int np_bordered_light_blue_square = 2130837588;
+			public const int np_bordered_light_gray_square = 2130837588;
 			
 			// aapt resource value: 0x7f020055
-			public const int np_bordered_light_gray_square = 2130837589;
+			public const int np_bordered_padding_square = 2130837589;
 			
 			// aapt resource value: 0x7f020056
-			public const int np_bordered_padding_square = 2130837590;
+			public const int np_bordered_red_square = 2130837590;
 			
 			// aapt resource value: 0x7f020057
-			public const int np_bordered_red_square = 2130837591;
+			public const int np_bordered_transparent_square = 2130837591;
 			
 			// aapt resource value: 0x7f020058
-			public const int np_bordered_transparent_square = 2130837592;
+			public const int np_bordered_white_square = 2130837592;
 			
 			// aapt resource value: 0x7f020059
-			public const int np_bordered_white_square = 2130837593;
+			public const int np_bordered_yellow_square = 2130837593;
 			
 			// aapt resource value: 0x7f02005a
-			public const int np_bordered_yellow_square = 2130837594;
+			public const int np_empty_viewer_curve_left = 2130837594;
 			
 			// aapt resource value: 0x7f02005b
-			public const int np_empty_viewer_curve_left = 2130837595;
+			public const int np_empty_viewer_curve_right = 2130837595;
 			
 			// aapt resource value: 0x7f02005c
-			public const int np_empty_viewer_curve_right = 2130837596;
+			public const int np_half_rounded_square_lower_white = 2130837596;
 			
 			// aapt resource value: 0x7f02005d
-			public const int np_half_rounded_square_lower_white = 2130837597;
+			public const int np_half_rounded_square_upper_blue = 2130837597;
 			
 			// aapt resource value: 0x7f02005e
-			public const int np_half_rounded_square_upper_blue = 2130837598;
+			public const int np_half_rounded_square_upper_red = 2130837598;
 			
 			// aapt resource value: 0x7f02005f
-			public const int np_half_rounded_square_upper_red = 2130837599;
+			public const int np_half_rounded_square_upper_white = 2130837599;
 			
 			// aapt resource value: 0x7f020060
-			public const int np_half_rounded_square_upper_white = 2130837600;
+			public const int np_left_side_handle = 2130837600;
 			
 			// aapt resource value: 0x7f020061
-			public const int np_left_side_handle = 2130837601;
+			public const int np_rect_white_black_border = 2130837601;
 			
 			// aapt resource value: 0x7f020062
-			public const int np_rect_white_black_border = 2130837602;
+			public const int np_red_left_curve_corner = 2130837602;
 			
 			// aapt resource value: 0x7f020063
-			public const int np_red_left_curve_corner = 2130837603;
+			public const int np_red_right_curve_corner = 2130837603;
 			
 			// aapt resource value: 0x7f020064
-			public const int np_red_right_curve_corner = 2130837604;
+			public const int np_red_tab = 2130837604;
 			
 			// aapt resource value: 0x7f020065
-			public const int np_red_tab = 2130837605;
+			public const int np_right_side_handle = 2130837605;
 			
 			// aapt resource value: 0x7f020066
-			public const int np_right_side_handle = 2130837606;
+			public const int np_rounded_rect_blue = 2130837606;
 			
 			// aapt resource value: 0x7f020067
-			public const int np_rounded_rect_blue = 2130837607;
+			public const int np_rounded_rect_gold = 2130837607;
 			
 			// aapt resource value: 0x7f020068
-			public const int np_rounded_rect_gold = 2130837608;
+			public const int np_rounded_rect_green = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int np_rounded_rect_green = 2130837609;
+			public const int np_rounded_rect_light_blue = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int np_rounded_rect_light_blue = 2130837610;
+			public const int np_rounded_rect_red = 2130837610;
 			
 			// aapt resource value: 0x7f02006b
-			public const int np_rounded_rect_red = 2130837611;
+			public const int np_rounded_rect_white = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int np_rounded_rect_white = 2130837612;
+			public const int np_rounded_square_middle = 2130837612;
 			
 			// aapt resource value: 0x7f02006d
-			public const int np_rounded_square_middle = 2130837613;
+			public const int np_selection_bottom_gold = 2130837613;
 			
 			// aapt resource value: 0x7f02006e
-			public const int np_selection_bottom_gold = 2130837614;
+			public const int np_square_black_border_white_background = 2130837614;
 			
 			// aapt resource value: 0x7f02006f
-			public const int np_square_black_border_white_background = 2130837615;
+			public const int np_viewer_curve_left_background = 2130837615;
 			
 			// aapt resource value: 0x7f020070
-			public const int np_viewer_curve_left_background = 2130837616;
+			public const int np_viewer_curve_right_background = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int np_viewer_curve_right_background = 2130837617;
+			public const int np_viewer_sub_bot = 2130837617;
 			
 			// aapt resource value: 0x7f020072
-			public const int np_viewer_sub_bot = 2130837618;
+			public const int np_viewer_sub_handle = 2130837618;
 			
 			// aapt resource value: 0x7f020073
-			public const int np_viewer_sub_handle = 2130837619;
+			public const int np_viewer_sub_mid = 2130837619;
 			
 			// aapt resource value: 0x7f020074
-			public const int np_viewer_sub_mid = 2130837620;
+			public const int selector_button_close_x = 2130837620;
 			
 			// aapt resource value: 0x7f020075
-			public const int selector_button_close_x = 2130837621;
+			public const int selector_button_gold_black = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public const int selector_button_gold_black = 2130837622;
+			public const int selector_group_indicator_black = 2130837622;
 			
 			// aapt resource value: 0x7f020077
-			public const int selector_group_indicator_black = 2130837623;
+			public const int selector_group_indicator_white = 2130837623;
 			
 			// aapt resource value: 0x7f020078
-			public const int selector_group_indicator_white = 2130837624;
+			public const int selector_ic_arrow_down = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public const int selector_ic_arrow_down = 2130837625;
+			public const int selector_ic_arrow_up = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public const int selector_ic_arrow_up = 2130837626;
+			public const int selector_shsc = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public const int selector_shsc = 2130837627;
+			public const int selector_text_blackgold = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public const int selector_text_blackgold = 2130837628;
-			
-			// aapt resource value: 0x7f02007d
-			public const int shape_circle_gold = 2130837629;
+			public const int shape_circle_gold = 2130837628;
 			
 			static Drawable()
 			{
@@ -754,8 +751,8 @@ namespace ION.Droid
 		public partial class Menu
 		{
 			
-			// aapt resource value: 0x7f090000
-			public const int scan = 2131296256;
+			// aapt resource value: 0x7f080000
+			public const int scan = 2131230720;
 			
 			static Menu()
 			{
@@ -869,22 +866,6 @@ namespace ION.Droid
 			}
 			
 			private String()
-			{
-			}
-		}
-		
-		public partial class Style
-		{
-			
-			// aapt resource value: 0x7f080000
-			public const int Mono_Android_Theme_Splash = 2131230720;
-			
-			static Style()
-			{
-				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
-			}
-			
-			private Style()
 			{
 			}
 		}
