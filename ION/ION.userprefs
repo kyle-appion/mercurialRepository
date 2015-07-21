@@ -1,14 +1,18 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Appion iPad Mini" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/Connections/IOSLeConnection.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs">
     <Files>
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.designer.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/Connections/IOSLeConnection.cs" Line="232" Column="30" />
-      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSensorView.cs" Line="16" Column="19" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.cs" Line="10" Column="1" />
+      <File FileName="ION.IOS/Main.cs" Line="1" Column="1" />
+      <File FileName="Droid/Resources/values/Colors.xml" Line="14" Column="32" />
+      <File FileName="ION.IOS/src/Util/Strings.cs" Line="26" Column="44" />
+      <File FileName="Droid/src/Activity/DeviceManagerActivity.cs" Line="64" Column="14" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSectionCell.cs" Line="26" Column="50" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSensorView.cs" Line="11" Column="76" NotebookId="1" />
       <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerSensorView.designer.cs" Line="1" Column="1" NotebookId="1" />
-      <File FileName="ION.Core/src/Devices/Device.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerDeviceCell.designer.cs" Line="42" Column="10" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs" Line="110" Column="7" NotebookId="1" />
+      <File FileName="ION.IOS/src/Util/Colors.cs" Line="27" Column="36" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

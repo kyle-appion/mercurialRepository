@@ -89,9 +89,8 @@
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
-    <InterfaceDefinition Include="src\Storyboard\DeviceManagerSectionCell.xib" />
-    <InterfaceDefinition Include="src\Storyboard\DeviceManagerDeviceCell.xib" />
     <InterfaceDefinition Include="src\Storyboard\DeviceManagerSensorView.xib" />
+    <InterfaceDefinition Include="Resources\src\Storyboard\DeviceManagerDeviceCellSingleExpanded.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -107,21 +106,18 @@
     <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.designer.cs">
       <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSectionCell.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSectionCell.designer.cs">
-      <DependentUpon>DeviceManagerSectionCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerDeviceCell.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerDeviceCell.designer.cs">
-      <DependentUpon>DeviceManagerDeviceCell.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Util\Strings.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSensorView.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerSensorView.designer.cs">
-      <DependentUpon>DeviceManagerSensorView.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Sensors\Sensor.cs" />
+    <Compile Include="src\Util\Colors.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceCell.designer.cs">
+      <DependentUpon>DeviceCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\SectionCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SectionCell.designer.cs">
+      <DependentUpon>SectionCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup />
@@ -147,5 +143,8 @@
     <BundleResource Include="Resources\Icons\ic_render_gaugep500.png" />
     <BundleResource Include="Resources\Icons\ic_render_gaugep800.png" />
     <BundleResource Include="Resources\language.lproj\Localizable.strings" />
+    <BundleResource Include="Resources\.DS_Store" />
+    <BundleResource Include="Resources\src\.DS_Store" />
+    <BundleResource Include="Resources\src\Storyboard\DeviceManagerSectionCell" />
   </ItemGroup>
 </Project>

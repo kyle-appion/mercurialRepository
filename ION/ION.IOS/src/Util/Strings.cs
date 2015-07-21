@@ -15,9 +15,15 @@ namespace ION.IOS.Util {
   /// safely access resource strings.
   /// </summary>
   public static class Strings {
+
     public static class Device {
       public const string
+        AVAILABLE = "device_available",
+        CONNECTED = "device_connected",
+        DISCONNECTED = "device_disconnected",
+        LONG_RANGE = "device_long_range",
         NAME = "device_name",
+        NEW_DEVICES = "device_new_devices",
         SERIAL_NUMBER = "device_serial_number",
         TYPE = "device_type"
         ;

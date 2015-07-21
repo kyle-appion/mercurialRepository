@@ -7,7 +7,12 @@ file.
 */
 
 /* DEVICE */
+"device_available" = "Available";
+"device_connected" = "Connected";
+"device_disconnected" = "Disconnected";
+"device_long_range" = "Long Range";
 "device_name" = "Device Name";
+"device_new_devices" = "New Devices Found";
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
 

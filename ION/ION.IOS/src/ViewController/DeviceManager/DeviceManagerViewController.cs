@@ -2,13 +2,18 @@ using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
 
+using CoreGraphics;
 using Foundation;
 using UIKit;
 
 using ION.Core.App;
+using ION.Core.Connections;
 using ION.Core.Devices;
+using ION.Core.Measure;
+using ION.Core.Sensors;
 using ION.Core.Util;
 
+using ION.IOS.Util;
 using ION.IOS.ViewController;
 
 namespace ION.IOS.ViewController.DeviceManager {
@@ -77,17 +82,56 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <param name="device">Device.</param>
     private void HandleDeviceStateChanged(IDevice device) {
       Log.D(this, "Handling device state changed!");
+      deviceSource.SetDevices(ion.deviceManager.devices);
     }
 	} // End DeviceManagerViewController
-
 
   /// <summary>
   /// The table source that will provide the cell views for the device
   /// manager's table view 
   /// </summary>
   internal class DeviceSource : UITableViewSource {
-    private const string CELL_DEVICE = "cell_device";
+    private static readonly DeviceGroup
+      CONNECTED = new DeviceGroup(Strings.Device.CONNECTED.FromResources(), Colors.GREEN),
+      LONG_RANGE = new DeviceGroup(Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE),
+      NEW_DEVICES = new DeviceGroup(Strings.Device.NEW_DEVICES.FromResources(), Colors.LIGHT_GRAY),
+      AVAILABLE = new DeviceGroup(Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW),
+      DISCONNECTED = new DeviceGroup(Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
 
+    /// <summary>
+    /// Collection of all the groups that can exist in the device source as a section.
+    /// </summary>
+    private static readonly DeviceGroup[] GROUPS = new DeviceGroup[] {
+      CONNECTED,
+      LONG_RANGE,
+      NEW_DEVICES,
+      AVAILABLE,
+      DISCONNECTED,
+    };
+
+    /// <summary>
+    /// The key that is used to fetch a section nib height.
+    /// </summary>
+    private const string CELL_SECTION = "cell_section";
+    /// <summary>
+    /// The key that is used to fetch a device cell nib.
+    /// </summary>
+    private const string CELL_DEVICE = "cell_device";
+    /// <summary>
+    /// The key that is used to fetcht the height of the sensor nib.
+    /// </summary>
+    private const string CELL_SENSOR = "cell_sensor";
+
+    /// <summary>
+    /// The indexer that will retrieve an IDevice from the source
+    /// at the given index.
+    /// </summary>
+    /// <param name="indexPath">Index path.</param>
+    public IDevice this[NSIndexPath indexPath] {
+      get {
+        return __items[__sections[indexPath.Section]][indexPath.Row];
+      }
+    }
 
     /// <summary>
     /// The table view that this entity is a source to.
@@ -95,9 +139,18 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <value>The table view.</value>
     private UITableView tableView { get; set; }
     /// <summary>
-    /// The devices that are present within the source.
+    /// The sections of devices within the source.
     /// </summary>
-    private List<IDevice> __devices = new List<IDevice>();
+    /// <value>The sections.</value>
+    private List<DeviceGroup> __sections;
+    /// <summary>
+    /// The mapping of section to content.
+    /// </summary>
+    private  Dictionary<DeviceGroup, List<IDevice>> __items;
+    /// <summary>
+    /// A lookup table for the heights of all the cells.
+    /// </summary>
+    private Dictionary<string, nfloat> __cellHeights = new Dictionary<string, nfloat>();
 
     /*
     /// <summary>
@@ -112,35 +165,77 @@ namespace ION.IOS.ViewController.DeviceManager {
 
     public DeviceSource(UITableView tableView, List<IDevice> devices) {
       this.tableView = tableView;
+
       tableView.RegisterNibForCellReuse(DeviceManagerDeviceCell.CreateNib(), CELL_DEVICE);
+
+      __cellHeights[CELL_SECTION] = tableView.DequeueReusableCell(CELL_SECTION).Frame.Size.Height;
+      __cellHeights[CELL_DEVICE] = tableView.DequeueReusableCell(CELL_DEVICE).Frame.Size.Height;
+      __cellHeights[CELL_SENSOR] = DeviceManagerSensorView.CreateNib(tableView).Frame.Size.Height;
+
+      __sections = new List<DeviceGroup>(GROUPS);
+      __items = new Dictionary<DeviceGroup, List<IDevice>>();
+      foreach (DeviceGroup group in __sections) {
+        __items.Add(group, new List<IDevice>());
+      }
+
       SetDevices(devices);
     }
 
     // Overridden from UITableViewSource
     public override nint NumberOfSections(UITableView tableView) {
-      return 1;
+      return __sections.Count;
     }
 
     // Overridden from UITableViewSource
     public override nint RowsInSection(UITableView tableview, nint section) {
-      return __devices.Count;
+      return (nint)__items[__sections[(int)section]].Count;
     }
 
-    /*
+    // Overridden from UITableViewSource
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      
+      IDevice device = this[indexPath];
+
+      nfloat ret = __cellHeights[CELL_DEVICE];
+
+      if (/*is expanded*/ true) {
+        if (device is GaugeDevice) {
+          nfloat sh = __cellHeights[CELL_SENSOR] * (((GaugeDevice)device).sensorCount - 1);
+          if (sh < 0) {
+            sh = 0;
+          }
+
+          ret += sh;
+        }
+      }
+
+      return ret;
     }
-    */
+
+    // Overridden from UITableViewSource
+    public UIView GetViewForHeader(UITableView tableView, int section) {
+      var sectionCell = tableView.DequeueReusableCell(CELL_SECTION);
+      /*
+      sectionCell.Apply((int)RowsInSection(tableView, section), __sections[section].title, () => {
+        Log.D(this, "Section " + section + " clicked");
+      });
+      */
+      return sectionCell;
+    }
+
+    // Overridden from UITableViewSource
+    public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
+      return __cellHeights[CELL_SECTION];
+    }
 
     // Overridden from UITableViewSource
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
       // Gets the next cell or creates one from the registered nib.
       UITableViewCell cell = tableView.DequeueReusableCell(CELL_DEVICE);
 
-      IDevice device = __devices[(int)indexPath.Item];
+      IDevice device = this[indexPath];
 
       if (cell is DeviceManagerDeviceCell) {
-        ((DeviceManagerDeviceCell)cell).Apply(device);
+        UpdateDeviceCellToDevice(tableView, (DeviceManagerDeviceCell)cell, true, device);
       }
 
       return cell;
@@ -151,11 +246,153 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="devices">Devices.</param>
     public void SetDevices(List<IDevice> devices) {
-      __devices.Clear();
+      foreach (DeviceGroup group in __sections) {
+        Log.D(this, "Clearing " + group.title);
+        __items[group].Clear();
+      }
 
-      __devices.AddRange(devices);
+      foreach (IDevice device in devices) {
+        DeviceGroup group = GetDeviceGroupForDevice(device);
+        __items[group].Add(device);
+      }
 
       tableView.ReloadData();
     }
+
+    /// <summary>
+    /// Updates the given DeviceManagerDeviceCell's content to that of the given device.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    private void UpdateDeviceCellToDevice(UITableView tableView, DeviceManagerDeviceCell deviceCell, bool expanded, IDevice device) {
+      deviceCell.iconDevice.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
+      deviceCell.labelDeviceType.Text = device.serialNumber.deviceModel.GetTypeString();
+      deviceCell.labelDeviceName.Text = device.name;
+
+      deviceCell.buttonConnect.TouchUpInside += (object obj, EventArgs args) => {
+        // TODO ahodder@appioninc.com: memory leak
+        if (EConnectionState.Disconnected == device.connection.connectionState) {
+          device.connection.Connect();
+        } else {
+          device.connection.Disconnect();
+        }
+      };
+
+      // Create a gesture that will allow the view to toggle its "expansion state"
+      UITapGestureRecognizer tapper = new UITapGestureRecognizer(() => {
+        deviceCell.viewContainerExpanded.Hidden = !deviceCell.viewContainerExpanded.Hidden;
+        var hidden = deviceCell.viewContainerExpanded.Hidden;
+        if (hidden) {
+          ExpandDeviceCell(deviceCell.viewContainerExpanded);
+        } else {
+          CollapseDeviceCell(deviceCell.viewContainerExpanded);
+        }
+
+//        deviceCell.viewContainerExpanded.Hidden = !hidden;
+      });
+      // TODO ahodder@appioninc.com: memory leak
+      deviceCell.viewContent.AddGestureRecognizer(tapper);
+
+      if (expanded) {
+        deviceCell.labelDeviceSerialNumber.Text = device.serialNumber.ToString();
+
+        switch (device.type) {
+          case EDeviceType.Gauge: {
+            UpdateDeviceCellSensors(deviceCell.viewContainerSensor, (GaugeDevice)device);
+            break;
+          }
+          default: {
+            Log.E(this, "Failed to update device content");
+            break;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// </summary>
+    /// <param name="tableView"></param>
+    /// <param name="container"></param>
+    /// <param name="device"></param>
+    private void UpdateDeviceCellSensors(UIView container, GaugeDevice gauge) {
+      UIView[] subviews = container.Subviews;
+
+      // Ensure we have the proper number of views in the container
+      if (subviews.Length >= gauge.sensorCount) {
+        for (int i = subviews.Length - 1; i >= gauge.sensorCount; i--) {
+          subviews[i].RemoveFromSuperview();
+        }
+      }
+
+      while (container.Subviews.Length < gauge.sensorCount) {
+        UIView view = DeviceManagerSensorView.CreateNib(container);
+        container.AddSubview(view);
+      }
+
+      for (int i = 0; i < container.Subviews.Length; i++) {
+        UpdateSensorCellToSensor((DeviceManagerSensorView)container.Subviews[i], gauge[i]);
+      }
+    }
+
+    /// <summary>
+    /// Updates a gauge device sensor view to the given sensor.
+    /// </summary>
+    /// <param name="view"></param>
+    /// <param name="sensor"></param>
+    private void UpdateSensorCellToSensor(DeviceManagerSensorView view, Sensor sensor) {
+      view.labelSensorMeasurement.Text = sensor.sensorType.GetTypeString();
+      view.labelSensorMeasurement.Text = sensor.measurement.ToString();
+
+      sensor.readingChanged += (Sensor obj, Scalar reading) => {
+        // TODO ahodder@appioninc.com: Memory leak
+        view.labelSensorMeasurement.Text = reading.ToString();
+      };
+    }
+
+    /// <summary>
+    /// Expands the device cell's content view.
+    /// </summary>
+    private void ExpandDeviceCell(UIView container) {
+      // TODO ahodder@appioninc.com: Implement ExpandDeviceCell
+    }
+
+    /// <summary>
+    /// Collapses the device cell's content view.
+    /// </summary>
+    /// <param name="container">Container.</param>
+    private void CollapseDeviceCell(UIView container) {
+      // TODO ahodder@appioninc.com: Implement CollapseDeviceCell
+    }
+
+    /// <summary>
+    /// Maps the given device to a device group.
+    /// </summary>
+    /// <returns>The device group for device.</returns>
+    /// <param name="device">Device.</param>
+    private DeviceGroup GetDeviceGroupForDevice(IDevice device) {
+      if (!device.isKnown && device.isNearby) {
+        return NEW_DEVICES;
+      } else if (device.isKnown && device.isNearby) {
+        return AVAILABLE;
+      } else if (EConnectionState.Connected == device.connection.connectionState) {
+        return CONNECTED;
+      } else if (EConnectionState.Broadcasting == device.connection.connectionState) {
+        return LONG_RANGE;
+      } else {
+        return DISCONNECTED;
+      }
+    }
+
+    /// <summary>
+    /// The struct that will represent a section within the device source.
+    /// </summary>
+    internal struct DeviceGroup {
+      public string title { get; private set; }
+      public CGColor color { get; private set; }
+
+      public DeviceGroup(string title, CGColor color) : this() {
+        this.title = title;
+        this.color = color;
+      }
+    } // End DeviceGroup
   } // End DeviceSource
 }
