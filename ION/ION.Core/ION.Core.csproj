@@ -8,9 +8,10 @@
     <OutputType>Library</OutputType>
     <RootNamespace>ION.Core</RootNamespace>
     <AssemblyName>ION.Core</AssemblyName>
-    <TargetFrameworkProfile>Profile24</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
+    <NuGetPackageImportStamp>da5b5145</NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +39,15 @@
     <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
     <Compile Include="src\Devices\Protocols\Protocol.cs" />
     <Compile Include="src\Devices\Protocols\UnitLookup.cs" />
+    <Compile Include="src\Fluids\BaseFluidManager.cs" />
+    <Compile Include="src\Fluids\Fluid.cs" />
+    <Compile Include="src\Fluids\IFluidManager.cs" />
+    <Compile Include="src\Fluids\Parser\IFluidParser.cs" />
+    <Compile Include="src\Fluids\Parser\BinaryFluidParser.cs" />
+    <Compile Include="src\IO\IFile.cs" />
+    <Compile Include="src\IO\Path.cs" />
+    <Compile Include="src\IO\Preferences\IPreferences.cs" />
+    <Compile Include="src\IO\Preferences\BasePreferences.cs" />
     <Compile Include="src\Measure\Converter.cs" />
     <Compile Include="src\Measure\Dimension.cs" />
     <Compile Include="src\Measure\Quantity.cs" />
@@ -46,16 +56,26 @@
     <Compile Include="src\Measure\Units.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
-    <Compile Include="src\Threading\LimitedConcurrentTaskScheduler.cs" />
     <Compile Include="src\Util\Log.cs" />
     <Compile Include="src\Devices\DeviceFactory.cs" />
     <Compile Include="src\Util\ByteUtils.cs" />
     <Compile Include="src\App\ION.cs" />
     <Compile Include="src\Devices\DeviceUtil.cs" />
+    <Compile Include="src\App\Viewer.cs" />
+    <Compile Include="src\IO\IFileManager.cs" />
+    <Compile Include="src\IO\IFolder.cs" />
+    <Compile Include="src\IO\BinaryReaderExtension.cs" />
+    <Compile Include="src\Content\Manifold.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <ItemGroup />
   <ItemGroup>
-    <Folder Include="src\App\" />
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\Content\" />
   </ItemGroup>
 </Project>

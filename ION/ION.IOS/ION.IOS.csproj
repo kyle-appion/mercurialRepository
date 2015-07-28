@@ -68,6 +68,12 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
+    <Reference Include="PCLStorage">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.dll</HintPath>
+    </Reference>
+    <Reference Include="PCLStorage.Abstractions">
+      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
@@ -93,8 +99,10 @@
     <InterfaceDefinition Include="Resources\src\Storyboard\DeviceManagerDeviceCellSingleExpanded.xib" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
@@ -118,23 +126,27 @@
     <Compile Include="src\ViewController\DeviceManager\SectionCell.designer.cs">
       <DependentUpon>SectionCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\DeviceManager\SensorCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SensorCell.designer.cs">
+      <DependentUpon>SensorCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\IO\IosFileManager.cs" />
   </ItemGroup>
+  <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="src\App\" />
+    <Folder Include="src\IO\" />
+    <Folder Include="Resources\fluids\" />
+    <Folder Include="..\ION.CoreExtensions\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="src\App\" />
-    <Folder Include="src\ViewController\" />
-    <Folder Include="src\ViewController\DeviceManager\" />
-    <Folder Include="Resources\Icons\" />
-    <Folder Include="Resources\language.lproj\" />
-    <Folder Include="src\Sensors\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BundleResource Include="Resources\Icons\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\Icons\ic_menu_moreoverflow.png" />
@@ -146,5 +158,102 @@
     <BundleResource Include="Resources\.DS_Store" />
     <BundleResource Include="Resources\src\.DS_Store" />
     <BundleResource Include="Resources\src\Storyboard\DeviceManagerSectionCell" />
+    <BundleResource Include="Resources\fluids\R11.dat" />
+    <BundleResource Include="Resources\fluids\R113.dat" />
+    <BundleResource Include="Resources\fluids\R114.dat" />
+    <BundleResource Include="Resources\fluids\R115.dat" />
+    <BundleResource Include="Resources\fluids\R116.dat" />
+    <BundleResource Include="Resources\fluids\R12.dat" />
+    <BundleResource Include="Resources\fluids\R1216.dat" />
+    <BundleResource Include="Resources\fluids\R123.dat" />
+    <BundleResource Include="Resources\fluids\R1233ZD.dat" />
+    <BundleResource Include="Resources\fluids\R1234YF.dat" />
+    <BundleResource Include="Resources\fluids\R1234ZE.dat" />
+    <BundleResource Include="Resources\fluids\R124.dat" />
+    <BundleResource Include="Resources\fluids\R125.dat" />
+    <BundleResource Include="Resources\fluids\R13.dat" />
+    <BundleResource Include="Resources\fluids\R134A.dat" />
+    <BundleResource Include="Resources\fluids\R14.dat" />
+    <BundleResource Include="Resources\fluids\R141B.dat" />
+    <BundleResource Include="Resources\fluids\R142B.dat" />
+    <BundleResource Include="Resources\fluids\R143A.dat" />
+    <BundleResource Include="Resources\fluids\R152A.dat" />
+    <BundleResource Include="Resources\fluids\R161.dat" />
+    <BundleResource Include="Resources\fluids\R21.dat" />
+    <BundleResource Include="Resources\fluids\R218.dat" />
+    <BundleResource Include="Resources\fluids\R22.dat" />
+    <BundleResource Include="Resources\fluids\R227EA.dat" />
+    <BundleResource Include="Resources\fluids\R23.dat" />
+    <BundleResource Include="Resources\fluids\R236EA.dat" />
+    <BundleResource Include="Resources\fluids\R236FA.dat" />
+    <BundleResource Include="Resources\fluids\R245CA.dat" />
+    <BundleResource Include="Resources\fluids\R245FA.dat" />
+    <BundleResource Include="Resources\fluids\R32.dat" />
+    <BundleResource Include="Resources\fluids\R365MFC.dat" />
+    <BundleResource Include="Resources\fluids\R40.dat" />
+    <BundleResource Include="Resources\fluids\R401A.dat" />
+    <BundleResource Include="Resources\fluids\R401B.dat" />
+    <BundleResource Include="Resources\fluids\R401C.dat" />
+    <BundleResource Include="Resources\fluids\R402A.dat" />
+    <BundleResource Include="Resources\fluids\R402B.dat" />
+    <BundleResource Include="Resources\fluids\R404A.PPF.dat" />
+    <BundleResource Include="Resources\fluids\R404A.dat" />
+    <BundleResource Include="Resources\fluids\R407A.dat" />
+    <BundleResource Include="Resources\fluids\R407B.dat" />
+    <BundleResource Include="Resources\fluids\R407C.PPF.dat" />
+    <BundleResource Include="Resources\fluids\R407C.dat" />
+    <BundleResource Include="Resources\fluids\R407D.dat" />
+    <BundleResource Include="Resources\fluids\R407E.dat" />
+    <BundleResource Include="Resources\fluids\R407F.dat" />
+    <BundleResource Include="Resources\fluids\R408A.dat" />
+    <BundleResource Include="Resources\fluids\R409A.dat" />
+    <BundleResource Include="Resources\fluids\R41.dat" />
+    <BundleResource Include="Resources\fluids\R410A.PPF.dat" />
+    <BundleResource Include="Resources\fluids\R410A.dat" />
+    <BundleResource Include="Resources\fluids\R410B.dat" />
+    <BundleResource Include="Resources\fluids\R411A.dat" />
+    <BundleResource Include="Resources\fluids\R411B.dat" />
+    <BundleResource Include="Resources\fluids\R413A.dat" />
+    <BundleResource Include="Resources\fluids\R415A.dat" />
+    <BundleResource Include="Resources\fluids\R415B.dat" />
+    <BundleResource Include="Resources\fluids\R419A.dat" />
+    <BundleResource Include="Resources\fluids\R420A.dat" />
+    <BundleResource Include="Resources\fluids\R421A.dat" />
+    <BundleResource Include="Resources\fluids\R421B.dat" />
+    <BundleResource Include="Resources\fluids\R422A.dat" />
+    <BundleResource Include="Resources\fluids\R422B.dat" />
+    <BundleResource Include="Resources\fluids\R422C.dat" />
+    <BundleResource Include="Resources\fluids\R422D.dat" />
+    <BundleResource Include="Resources\fluids\R423A.dat" />
+    <BundleResource Include="Resources\fluids\R424A.dat" />
+    <BundleResource Include="Resources\fluids\R425A.dat" />
+    <BundleResource Include="Resources\fluids\R427A.dat" />
+    <BundleResource Include="Resources\fluids\R428A.dat" />
+    <BundleResource Include="Resources\fluids\R430A.dat" />
+    <BundleResource Include="Resources\fluids\R432A.dat" />
+    <BundleResource Include="Resources\fluids\R433A.dat" />
+    <BundleResource Include="Resources\fluids\R434A.dat" />
+    <BundleResource Include="Resources\fluids\R436A.dat" />
+    <BundleResource Include="Resources\fluids\R436B.dat" />
+    <BundleResource Include="Resources\fluids\R438A.dat" />
+    <BundleResource Include="Resources\fluids\R441A.dat" />
+    <BundleResource Include="Resources\fluids\R443A.dat" />
+    <BundleResource Include="Resources\fluids\R500.dat" />
+    <BundleResource Include="Resources\fluids\R501.dat" />
+    <BundleResource Include="Resources\fluids\R502.dat" />
+    <BundleResource Include="Resources\fluids\R503.dat" />
+    <BundleResource Include="Resources\fluids\R504.dat" />
+    <BundleResource Include="Resources\fluids\R507A.PPF.dat" />
+    <BundleResource Include="Resources\fluids\R507A.dat" />
+    <BundleResource Include="Resources\fluids\R508A.dat" />
+    <BundleResource Include="Resources\fluids\R508B.dat" />
+    <BundleResource Include="Resources\fluids\R509A.dat" />
+    <BundleResource Include="Resources\fluids\R510A.dat" />
+    <BundleResource Include="Resources\fluids\R512A.dat" />
+    <BundleResource Include="Resources\fluids\RC318.dat" />
+    <BundleResource Include="Resources\fluids\RE143A.dat" />
+    <BundleResource Include="Resources\fluids\RE245CB2.dat" />
+    <BundleResource Include="Resources\fluids\RE245FA2.dat" />
+    <BundleResource Include="Resources\fluids\RE347MCC.dat" />
   </ItemGroup>
 </Project>

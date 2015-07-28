@@ -1,10 +1,14 @@
 ﻿using Foundation;
 using UIKit;
 
+using PCLStorage;
+
 using ION.Core.App;
+using ION.Core.Fluids;
 using ION.Core.Util;
 
 using ION.IOS.Devices;
+using ION.IOS.IO;
 using ION.IOS.Util;
 
 namespace ION.IOS {
@@ -23,11 +27,14 @@ namespace ION.IOS {
     public IION ion { get; private set; }
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
-      BaseION bi = new BaseION();
-      bi.deviceManager = new IOSDeviceManager(ion);
-
       // Initialize the application state.
-      ion = AppState.APP = bi;
+      BaseION bi = new BaseION();
+      ion = AppState.context = bi;
+      bi.fileManager = new IosFileManager();
+      bi.deviceManager = new IOSDeviceManager(ion);
+      bi.fluidManager = new BaseFluidManager(ion);
+
+      TestFluids();
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
@@ -64,6 +71,11 @@ namespace ION.IOS {
 
     public override void WillTerminate(UIApplication application) {
       // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
+    }
+
+    private async void TestFluids() {
+      Fluid fluid = await ion.fluidManager.GetFluidAsync("R11");
+      Log.D(this, fluid.name);
     }
   }
 }

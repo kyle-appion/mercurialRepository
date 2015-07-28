@@ -1,6 +1,8 @@
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 using CoreGraphics;
 using Foundation;
@@ -31,7 +33,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     private DeviceSource deviceSource { get; set; }
 
 		public DeviceManagerViewController (IntPtr handle) : base (handle) {
-      ion = AppState.APP;
+      ion = AppState.context;
 		}
 
     // Overridden from UIViewController
@@ -82,7 +84,9 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <param name="device">Device.</param>
     private void HandleDeviceStateChanged(IDevice device) {
       Log.D(this, "Handling device state changed!");
-      deviceSource.SetDevices(ion.deviceManager.devices);
+      Task.Factory.StartNew(() => {
+        deviceSource.SetDevices(ion.deviceManager.devices);
+      }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
     }
 	} // End DeviceManagerViewController
 
@@ -112,15 +116,15 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <summary>
     /// The key that is used to fetch a section nib height.
     /// </summary>
-    private const string CELL_SECTION = "cell_section";
+    private const string CELL_SECTION = "cellSection";
     /// <summary>
     /// The key that is used to fetch a device cell nib.
     /// </summary>
-    private const string CELL_DEVICE = "cell_device";
+    private const string CELL_DEVICE = "cellDevice";
     /// <summary>
     /// The key that is used to fetcht the height of the sensor nib.
     /// </summary>
-    private const string CELL_SENSOR = "cell_sensor";
+    private const string CELL_SENSOR = "cellSensor";
 
     /// <summary>
     /// The indexer that will retrieve an IDevice from the source
@@ -166,11 +170,10 @@ namespace ION.IOS.ViewController.DeviceManager {
     public DeviceSource(UITableView tableView, List<IDevice> devices) {
       this.tableView = tableView;
 
-      tableView.RegisterNibForCellReuse(DeviceManagerDeviceCell.CreateNib(), CELL_DEVICE);
 
       __cellHeights[CELL_SECTION] = tableView.DequeueReusableCell(CELL_SECTION).Frame.Size.Height;
       __cellHeights[CELL_DEVICE] = tableView.DequeueReusableCell(CELL_DEVICE).Frame.Size.Height;
-      __cellHeights[CELL_SENSOR] = DeviceManagerSensorView.CreateNib(tableView).Frame.Size.Height;
+      __cellHeights[CELL_SENSOR] = tableView.DequeueReusableCell(CELL_SENSOR).Frame.Size.Height;
 
       __sections = new List<DeviceGroup>(GROUPS);
       __items = new Dictionary<DeviceGroup, List<IDevice>>();
@@ -197,7 +200,7 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       nfloat ret = __cellHeights[CELL_DEVICE];
 
-      if (/*is expanded*/ true) {
+      if (true) { // Is expanded
         if (device is GaugeDevice) {
           nfloat sh = __cellHeights[CELL_SENSOR] * (((GaugeDevice)device).sensorCount - 1);
           if (sh < 0) {
@@ -211,14 +214,19 @@ namespace ION.IOS.ViewController.DeviceManager {
       return ret;
     }
 
+
     // Overridden from UITableViewSource
-    public UIView GetViewForHeader(UITableView tableView, int section) {
-      var sectionCell = tableView.DequeueReusableCell(CELL_SECTION);
-      /*
-      sectionCell.Apply((int)RowsInSection(tableView, section), __sections[section].title, () => {
-        Log.D(this, "Section " + section + " clicked");
-      });
-      */
+    public UIView GetViewForFooter(UITableView tableView, int section) {
+      var sectionCell = (SectionCell)tableView.DequeueReusableCell(CELL_DEVICE);
+
+      var deviceGroup = __sections[section];
+
+      sectionCell.labelTitle.Text = deviceGroup.title;
+      sectionCell.labelCounter.Text = __items[deviceGroup].Count + "";
+
+//      sectionCell.Apply((int)RowsInSection(tableView, section), __sections[section].title, () => {
+//        Log.D(this, "Section " + section + " clicked");
+//      });
       return sectionCell;
     }
 
@@ -229,14 +237,19 @@ namespace ION.IOS.ViewController.DeviceManager {
 
     // Overridden from UITableViewSource
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
-      // Gets the next cell or creates one from the registered nib.
-      UITableViewCell cell = tableView.DequeueReusableCell(CELL_DEVICE);
-
-      IDevice device = this[indexPath];
-
-      if (cell is DeviceManagerDeviceCell) {
-        UpdateDeviceCellToDevice(tableView, (DeviceManagerDeviceCell)cell, true, device);
+      // TODO ahodder@appioninc.com: Erm... This should be fixed at some point
+      if (!(this[indexPath] is GaugeDevice)) {
+        throw new Exception("Cannot get set for device of type " + this[indexPath].GetType().Name);
       }
+
+      Log.D(this, "updating cell");
+
+      GaugeDevice gauge = (GaugeDevice)this[indexPath];
+
+      // Gets the next cell or creates one from the registered nib.
+      DeviceCell cell = (DeviceCell)tableView.DequeueReusableCell(CELL_DEVICE);
+
+      UpdateDeviceCellToDevice(tableView, cell, true, gauge);
 
       return cell;
     }
@@ -247,7 +260,6 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <param name="devices">Devices.</param>
     public void SetDevices(List<IDevice> devices) {
       foreach (DeviceGroup group in __sections) {
-        Log.D(this, "Clearing " + group.title);
         __items[group].Clear();
       }
 
@@ -263,12 +275,12 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// Updates the given DeviceManagerDeviceCell's content to that of the given device.
     /// </summary>
     /// <param name="device">Device.</param>
-    private void UpdateDeviceCellToDevice(UITableView tableView, DeviceManagerDeviceCell deviceCell, bool expanded, IDevice device) {
+    private void UpdateDeviceCellToDevice(UITableView tableView, DeviceCell deviceCell, bool expanded, GaugeDevice device) {
       deviceCell.iconDevice.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       deviceCell.labelDeviceType.Text = device.serialNumber.deviceModel.GetTypeString();
       deviceCell.labelDeviceName.Text = device.name;
 
-      deviceCell.buttonConnect.TouchUpInside += (object obj, EventArgs args) => {
+      deviceCell.buttonDeviceToggleConnect.TouchUpInside += (object obj, EventArgs args) => {
         // TODO ahodder@appioninc.com: memory leak
         if (EConnectionState.Disconnected == device.connection.connectionState) {
           device.connection.Connect();
@@ -276,6 +288,8 @@ namespace ION.IOS.ViewController.DeviceManager {
           device.connection.Disconnect();
         }
       };
+
+      deviceCell.activityDeviceConnection.Hidden = !(EConnectionState.Connecting == device.connection.connectionState);
 
       // Create a gesture that will allow the view to toggle its "expansion state"
       UITapGestureRecognizer tapper = new UITapGestureRecognizer(() => {
@@ -290,14 +304,14 @@ namespace ION.IOS.ViewController.DeviceManager {
 //        deviceCell.viewContainerExpanded.Hidden = !hidden;
       });
       // TODO ahodder@appioninc.com: memory leak
-      deviceCell.viewContent.AddGestureRecognizer(tapper);
+      deviceCell.viewDeviceContent.AddGestureRecognizer(tapper);
 
       if (expanded) {
         deviceCell.labelDeviceSerialNumber.Text = device.serialNumber.ToString();
 
         switch (device.type) {
           case EDeviceType.Gauge: {
-            UpdateDeviceCellSensors(deviceCell.viewContainerSensor, (GaugeDevice)device);
+            UpdateDeviceCellSensors(deviceCell.viewDeviceSensorContainer, (GaugeDevice)device);
             break;
           }
           default: {
@@ -324,12 +338,12 @@ namespace ION.IOS.ViewController.DeviceManager {
       }
 
       while (container.Subviews.Length < gauge.sensorCount) {
-        UIView view = DeviceManagerSensorView.CreateNib(container);
+        UIView view = tableView.DequeueReusableCell(CELL_SENSOR);
         container.AddSubview(view);
       }
 
       for (int i = 0; i < container.Subviews.Length; i++) {
-        UpdateSensorCellToSensor((DeviceManagerSensorView)container.Subviews[i], gauge[i]);
+        UpdateSensorCellToSensor((SensorCell)container.Subviews[i], gauge[i]);
       }
     }
 
@@ -338,7 +352,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="view"></param>
     /// <param name="sensor"></param>
-    private void UpdateSensorCellToSensor(DeviceManagerSensorView view, Sensor sensor) {
+    private void UpdateSensorCellToSensor(SensorCell view, Sensor sensor) {
       view.labelSensorMeasurement.Text = sensor.sensorType.GetTypeString();
       view.labelSensorMeasurement.Text = sensor.measurement.ToString();
 

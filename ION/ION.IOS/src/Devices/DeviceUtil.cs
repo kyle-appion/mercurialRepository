@@ -68,7 +68,7 @@ namespace ION.Core.Devices {
           return UIImage.FromBundle("Icons/ic_render_gaugep800.png");
         }
         case EDeviceModel.AV760: {
-          return UIImage.FromBundle("Icons/ic_render_gaugepav760.png");
+          return UIImage.FromBundle("Icons/ic_render_gaugeav760.png");
         }
         default: {
           return UIImage.FromBundle("Icons/ic_logo_appiondefault.png");

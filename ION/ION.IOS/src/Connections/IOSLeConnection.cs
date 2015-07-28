@@ -52,6 +52,7 @@ namespace ION.IOS.Connections {
         return __connectionState;
       }
       set {
+        Log.D(this, __nativeDevice.Name + "'s ConnectionState: " + value);
         __connectionState = value;
         if (onStateChanged != null) {
           onStateChanged(this, __connectionState);
@@ -171,7 +172,6 @@ namespace ION.IOS.Connections {
         if (EConnectionState.Disconnected != connectionState) {
           return false;
         }
-
         connectionState = EConnectionState.Connecting;
 
         DateTime start = DateTime.Now;
@@ -184,6 +184,7 @@ namespace ION.IOS.Connections {
         centeralManager.ConnectPeripheral(__nativeDevice, options);
 
         while (!__nativeDevice.IsConnected) {
+          Log.D(this, "???");
           if (DateTime.Now - start > connectionTimeout) {
             Log.D(this, "timeout: failed to connect");
             Disconnect();
@@ -193,8 +194,11 @@ namespace ION.IOS.Connections {
           }
         }
 
+        Log.D(this, "low level connection resolved");
+
         Thread.Sleep(TimeSpan.FromMilliseconds(1000));
 
+        Log.D(this, "Discovering services");
         __nativeDevice.DiscoverServices((CBUUID[])null);
 
         while (EConnectionState.Connected != connectionState) {

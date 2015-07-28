@@ -51,13 +51,16 @@
                                         <include reference="2N8-VG-wyS"/>
                                     </mask>
                                 </variation>
+                                <variation key="widthClass=regular" ambiguous="YES">
+                                    <rect key="frame" x="739" y="0.0" width="20" height="20"/>
+                                </variation>
                             </activityIndicatorView>
                             <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="86" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                                 <rect key="frame" x="0.0" y="72" width="600" height="528"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell_section" rowHeight="48" id="twj-UL-Uiv" userLabel="cellSection" customClass="SectionCell">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellSection" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellSection" rowHeight="48" id="twj-UL-Uiv" userLabel="cellSection" customClass="SectionCell">
+                                        <rect key="frame" x="0.0" y="22" width="600" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="twj-UL-Uiv" id="lLf-Ng-yd2">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -115,8 +118,8 @@
                                             <outlet property="labelTitle" destination="TrK-0B-luw" id="Zg7-yW-Gcz"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="118" id="Q3o-RC-fAp" userLabel="cellDevice" customClass="DeviceCell">
-                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellDevice" selectionStyle="default" indentationWidth="10" rowHeight="118" id="Q3o-RC-fAp" userLabel="cellDevice" customClass="DeviceCell" reuseIdentifier="cellDevice">
+                                        <rect key="frame" x="0.0" y="70" width="600" height="118"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Q3o-RC-fAp" id="JbU-fj-4rJ">
                                             <autoresizingMask key="autoresizingMask"/>
@@ -201,7 +204,7 @@
                                                                 </mask>
                                                             </variation>
                                                         </view>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0gx-HC-shU" userLabel="labelDeviceName">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device Name" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0gx-HC-shU" userLabel="labelDeviceName" fixedFrame="YES">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -210,7 +213,7 @@
                                                                 <rect key="frame" x="8" y="23" width="295" height="21"/>
                                                             </variation>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device Type" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XNF-f8-a4v" userLabel="labelDeviceType">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Device Type" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XNF-f8-a4v" userLabel="labelDeviceType" fixedFrame="YES">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -307,8 +310,8 @@
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Cfc-0i-grR" userLabel="viewDeviceSensorContainer">
                                                             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                                                             <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <variation key="widthClass=compact" ambiguous="YES" misplaced="YES">
-                                                                <rect key="frame" x="0.0" y="21" width="352" height="48"/>
+                                                            <variation key="widthClass=compact" ambiguous="YES">
+                                                                <rect key="frame" x="0.0" y="21" width="338" height="0.0"/>
                                                             </variation>
                                                         </view>
                                                     </subviews>
@@ -338,7 +341,7 @@
                                                         </mask>
                                                     </variation>
                                                     <variation key="widthClass=compact" ambiguous="YES">
-                                                        <rect key="frame" x="0.0" y="48" width="352" height="69"/>
+                                                        <rect key="frame" x="7" y="48" width="338" height="69"/>
                                                         <mask key="subviews">
                                                             <include reference="jqo-9e-XYf"/>
                                                             <include reference="Cfc-0i-grR"/>
@@ -429,6 +432,79 @@
                                             <outlet property="viewDeviceSensorContainer" destination="Cfc-0i-grR" id="sOQ-tb-nYC"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellSensor" selectionStyle="default" indentationWidth="10" rowHeight="48" id="gyS-pT-E5i" userLabel="cellSensor" customClass="SensorCell" reuseIdentifier="cellSensor">
+                                        <rect key="frame" x="0.0" y="188" width="600" height="48"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gyS-pT-E5i" id="LZC-0d-AB0">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Temperature" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D4F-TU-cUt" userLabel="labelSensorType">
+                                                    <rect key="frame" x="24" y="13" width="75" height="20"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="75" id="9G3-4t-nDC"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="12"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kww-55-pk0" userLabel="labelSensorMeasurement">
+                                                    <rect key="frame" x="107" y="13" width="42" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zrn-cc-Uwd" userLabel="buttonAddToAnalyzer">
+                                                    <rect key="frame" x="505" y="0.0" width="48" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="48" id="0SP-8i-VjG"/>
+                                                        <constraint firstAttribute="height" constant="48" id="9iT-N9-eBz"/>
+                                                    </constraints>
+                                                    <state key="normal" title="Button" image="ButtonGold">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="noN-PI-xOm" userLabel="buttonAddToWorkbench">
+                                                    <rect key="frame" x="458" y="0.0" width="48" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="48" id="IvJ-tO-RmS"/>
+                                                        <constraint firstAttribute="width" constant="48" id="dWk-Cy-amT"/>
+                                                    </constraints>
+                                                    <state key="normal" image="ButtonGold">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wMz-9g-uzc" userLabel="buttonAdd">
+                                                    <rect key="frame" x="505" y="0.0" width="48" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="48" id="B7k-bZ-4yW"/>
+                                                        <constraint firstAttribute="width" constant="48" id="pci-2D-EgQ"/>
+                                                    </constraints>
+                                                    <state key="normal" image="ButtonGold">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="centerY" secondItem="kww-55-pk0" secondAttribute="centerY" id="Ads-bQ-hOG"/>
+                                                <constraint firstItem="wMz-9g-uzc" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="FCe-Lc-wF1"/>
+                                                <constraint firstItem="kww-55-pk0" firstAttribute="leading" secondItem="D4F-TU-cUt" secondAttribute="trailing" constant="8" id="FQc-da-0br"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="zrn-cc-Uwd" secondAttribute="trailing" constant="40" id="I7P-Hz-VM7"/>
+                                                <constraint firstItem="zrn-cc-Uwd" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="StR-0Q-mLW"/>
+                                                <constraint firstAttribute="trailing" secondItem="noN-PI-xOm" secondAttribute="trailing" id="bVp-ir-Tvr"/>
+                                                <constraint firstItem="D4F-TU-cUt" firstAttribute="leading" secondItem="LZC-0d-AB0" secondAttribute="leadingMargin" constant="24" id="f1o-Ei-lLN"/>
+                                                <constraint firstAttribute="centerY" secondItem="D4F-TU-cUt" secondAttribute="centerY" id="fpF-eN-UNl"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="wMz-9g-uzc" secondAttribute="trailing" constant="40" id="lwc-dm-QJB"/>
+                                                <constraint firstItem="noN-PI-xOm" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="qLr-iA-EX8"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="buttonAdd" destination="wMz-9g-uzc" id="uQI-t0-0fz"/>
+                                            <outlet property="buttonAddToAnalyzer" destination="zrn-cc-Uwd" id="VHE-pr-EGs"/>
+                                            <outlet property="buttonAddToWorkbench" destination="noN-PI-xOm" id="xtc-pB-JeH"/>
+                                            <outlet property="labelSensorMeasurement" destination="kww-55-pk0" id="t6I-0F-hN4"/>
+                                            <outlet property="labelSensorType" destination="D4F-TU-cUt" id="3c9-h2-Yx2"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>
@@ -483,7 +559,7 @@
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2YH-bH-8Rr" id="VfF-mS-yf5">
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGd-5y-tTu" userLabel="viewHeaderBar">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tGd-5y-tTu" userLabel="viewHeaderBar" misplaced="YES">
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="32"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Deice Type" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S20-fk-jpu" userLabel="labelDeviceType">
@@ -498,7 +574,7 @@
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CSt-dK-b6k" userLabel="buttonConnectionState">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CSt-dK-b6k" userLabel="buttonConnectionState" misplaced="YES">
                                                     <rect key="frame" x="560" y="0.0" width="32" height="32"/>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="32" id="ArH-Vf-Gnc"/>
@@ -529,7 +605,7 @@
                                                 <constraint firstItem="S20-fk-jpu" firstAttribute="top" secondItem="tGd-5y-tTu" secondAttribute="top" constant="6" id="oGW-ej-VGC"/>
                                             </constraints>
                                         </view>
-                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o4D-iI-4BR" userLabel="dividerHeaderBody">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o4D-iI-4BR" userLabel="dividerHeaderBody" misplaced="YES">
                                             <rect key="frame" x="8" y="32" width="584" height="2"/>
                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <constraints>
@@ -839,6 +915,7 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
+                                <rect key="frame" x="0.0" y="22" width="400" height="166"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -854,5 +931,12 @@
     </scenes>
     <resources>
         <image name="ButtonGold" width="64" height="64"/>
+        <image name="ButtonBlack" width="64" height="64"/>
+        <image name="Icons/ic_logo_appiondefault.png" width="512" height="512"/>
+        <image name="Icons/ic_menu_moreoverflow.png" width="64" height="64"/>
+        <image name="Icons/ic_render_gaugeav760.png" width="64" height="64"/>
+        <image name="Icons/ic_render_gaugep300.png" width="64" height="64"/>
+        <image name="Icons/ic_render_gaugep500.png" width="64" height="64"/>
+        <image name="Icons/ic_render_gaugep800.png" width="64" height="64"/>
     </resources>
 </document>
