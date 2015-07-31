@@ -83,7 +83,7 @@ namespace ION.Core.Devices {
     /// </summary>
     /// <returns>A task that will return true if the backend was enabled,
     /// false otherwise</returns>
-    Task<bool> Enable();
+    Task<bool> EnableAsync();
 
     /// <summary>
     /// Informs the DeviceManager that an active scan has been requested. It is
@@ -99,7 +99,7 @@ namespace ION.Core.Devices {
     /// </para>
     /// </summary>
     /// <returns></returns>
-    Task<bool> DoActiveScan();
+    Task<bool> DoActiveScanAsync();
 
     /// <summary>
     /// Terminates a currently running active scan. If the scan has not started
@@ -122,7 +122,7 @@ namespace ION.Core.Devices {
     /// <returns>A task that will return true when the passive scan completes its
     /// procedure or false if the scan failed. Note: true will be returned even if
     /// the scan is interrupted by an active scan.</returns>
-    Task<bool> DoPassiveScan();
+    Task<bool> DoPassiveScanAsync();
 
     /// <summary>
     /// Terminates a currently running passive scan. If the scan has not started
@@ -144,7 +144,7 @@ namespace ION.Core.Devices {
     /// <param name="device"></param>
     /// <returns>A Task that will return true when the device has connected, or
     /// false if the connection attempt failed.</returns>
-    Task<bool> ConnectDevice(IDevice device);
+    Task<bool> ConnectDeviceAsync(IDevice device);
 
     /// <summary>
     /// Disconnects the given device from the application.

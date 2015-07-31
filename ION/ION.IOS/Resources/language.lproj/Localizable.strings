@@ -18,6 +18,8 @@ file.
 
 
 /* DEVICE MANAGER */
+"device_manager_scan" = "Scan";
+"device_manager_scanning" = "Scanning";
 
 /* DEVICE MODEL */
 "device_model_3xtm" = "3XTM";

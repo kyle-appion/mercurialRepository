@@ -28,6 +28,13 @@ namespace ION.IOS.Util {
         TYPE = "device_type"
         ;
 
+      public static class Manager {
+        public const string
+          SCAN = "device_manager_scan",
+          SCANNING = "device_manager_scanning"
+          ;
+      }
+
       public static class Model {
         public const string
           _3XTM = "device_model_3xtm",

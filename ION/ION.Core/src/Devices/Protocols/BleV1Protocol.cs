@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 
 using ION.Core.Measure;
+using ION.Core.IO;
 using ION.Core.Util;
 
 namespace ION.Core.Devices.Protocols {
@@ -37,7 +38,7 @@ namespace ION.Core.Devices.Protocols {
 
         for (int i = 0; i < gaugeCount; i++) {
           int exponent = r.ReadByte();
-          int encodedReading = r.ReadInt32();
+          int encodedReading = r.ReadInt32BE();
           int unitCode = r.ReadByte();
 
           double reading = encodedReading / Math.Pow(10, exponent);

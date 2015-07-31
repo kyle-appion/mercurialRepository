@@ -18,7 +18,7 @@ namespace ION.IOS.Connections {
     /// <summary>
     /// The Rx service that will contain the characteristic needed for reading.
     /// </summary>
-    private static readonly CBUUID READ_SERVICE = Inflate("ffe0");
+//    private static readonly CBUUID READ_SERVICE = Inflate("ffe0");
     /// <summary>
     /// The Rx characteristic.
     /// </summary>
@@ -26,7 +26,7 @@ namespace ION.IOS.Connections {
     /// <summary>
     /// The Tx service that will contain the characteristic needed for writing.
     /// </summary>
-    private static readonly CBUUID WRITE_SERVICE = Inflate("ffe5");
+//    private static readonly CBUUID WRITE_SERVICE = Inflate("ffe5");
     /// <summary>
     /// The Tx characteristic.
     /// </summary>
@@ -132,7 +132,6 @@ namespace ION.IOS.Connections {
       });
 
       onCharacteristicDiscoveredDelegate = (object obj, CBServiceEventArgs args) => {
-        Log.D(this, "discovered characteristic");
         if (EConnectionState.Connecting == connectionState) {
           if (ValidateServices()) {
             connectionState = EConnectionState.Connected;
@@ -144,7 +143,6 @@ namespace ION.IOS.Connections {
 
       onCharacteristicChangedDelegate = (object obj, CBCharacteristicEventArgs args) => {
         if (args.Characteristic.Equals(read)) {
-          Log.D(this, "Received read characterstic value");
           lastPacket = read.Value.ToArray();
         } else {
           Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
@@ -167,56 +165,49 @@ namespace ION.IOS.Connections {
     }
 
     // Overridden from IConnection
-    public Task<bool> Connect() {
-      return Task.Factory.StartNew(() => {
-        if (EConnectionState.Disconnected != connectionState) {
+    public async Task<bool> Connect() {
+      if (EConnectionState.Disconnected != connectionState) {
+        return false;
+      }
+      connectionState = EConnectionState.Connecting;
+
+      DateTime start = DateTime.Now;
+
+      PeripheralConnectionOptions options = new PeripheralConnectionOptions();
+      options.NotifyOnConnection = true;
+      options.NotifyOnDisconnection = true;
+      options.NotifyOnNotification = true;
+
+      centeralManager.ConnectPeripheral(__nativeDevice, options);
+
+      while (!__nativeDevice.IsConnected) {
+        Log.D(this, "???");
+        if (DateTime.Now - start > connectionTimeout) {
+          Log.D(this, "timeout: failed to connect");
+          Disconnect();
           return false;
+        } else {
+          await Task.Delay(10);
         }
-        connectionState = EConnectionState.Connecting;
+      }
 
-        DateTime start = DateTime.Now;
+      await Task.Delay(100);
 
-        PeripheralConnectionOptions options = new PeripheralConnectionOptions();
-        options.NotifyOnConnection = true;
-        options.NotifyOnDisconnection = true;
-        options.NotifyOnNotification = true;
+      __nativeDevice.DiscoverServices((CBUUID[])null);
 
-        centeralManager.ConnectPeripheral(__nativeDevice, options);
-
-        while (!__nativeDevice.IsConnected) {
-          Log.D(this, "???");
-          if (DateTime.Now - start > connectionTimeout) {
-            Log.D(this, "timeout: failed to connect");
-            Disconnect();
-            return false;
-          } else {
-            Thread.Sleep(TimeSpan.FromMilliseconds(10));
-          }
+      while (EConnectionState.Connected != connectionState) {
+        if (DateTime.Now - start > connectionTimeout) {
+          Log.D(this, "timeout: failed to validate services");
+          Disconnect();
+          return false;
+        } else {
+          await Task.Delay(10);
         }
+      }
 
-        Log.D(this, "low level connection resolved");
+      __nativeDevice.SetNotifyValue(true, read);
 
-        Thread.Sleep(TimeSpan.FromMilliseconds(1000));
-
-        Log.D(this, "Discovering services");
-        __nativeDevice.DiscoverServices((CBUUID[])null);
-
-        while (EConnectionState.Connected != connectionState) {
-          if (DateTime.Now - start > connectionTimeout) {
-            Log.D(this, "timeout: failed to validate services");
-            Disconnect();
-            return false;
-          } else {
-            Thread.Sleep(TimeSpan.FromMilliseconds(10));
-          }
-        }
-
-        __nativeDevice.SetNotifyValue(true, read);
-
-        Log.D(this, "Connected successfully");
-
-        return EConnectionState.Connected == connectionState;
-      });
+      return EConnectionState.Connected == connectionState;
     }
 
     // Overridden from IConnection
@@ -227,7 +218,7 @@ namespace ION.IOS.Connections {
 
     // Overridden from IConnection
     public Task<bool> Write(byte[] packet) {
-      return Task.Factory.StartNew(() => {
+      return Task.Run(() => {
         if (EConnectionState.Connected != connectionState) {
           return false;
         }
@@ -246,8 +237,6 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <returns></returns>
     private bool ValidateServices() {
-      Log.D(this, "Validating services...");
-
       read = null;
       write = null;
 

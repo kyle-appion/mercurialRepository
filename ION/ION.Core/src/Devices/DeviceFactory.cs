@@ -114,7 +114,7 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceFactory
     public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Pressure, true, Units.Pressure.PASCAL.OfScalar(0)) };
+      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Vacuum, true, Units.Pressure.PASCAL.OfScalar(0)) };
 
       return new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol, sensors);
     }

@@ -87,11 +87,7 @@ namespace ION.IOS.Devices {
       private set {
         Log.D(this, "Setting state to: " + value);
         __state = value;
-        if (onDeviceManagerStateChanged != null) {
-          onDeviceManagerStateChanged(this, __state);
-        } else {
-          Log.D(this, "Cannot notify device manager state changed: event handler is dead");
-        }
+        NotifyDeviceManagerStateChanged();
       }
     } EDeviceManagerState __state;
 
@@ -201,63 +197,62 @@ namespace ION.IOS.Devices {
     }
 
     // Overridden from IDeviceManager
-    public Task<bool> Enable() {
-      return Task.Factory.StartNew(() => {
+    public Task<bool> EnableAsync() {
+      return Task.Run(() => {
         Log.E(this, "Cannot enable hardware: not implemented");
         return false;
       });
     }
 
     // Overridden from IDeviceManager
-    public Task<bool> DoActiveScan() {
-      lock (this) {
-        if (EDeviceManagerState.Idle != state) {
-          return Task.Factory.StartNew(() => {
-            Log.D(this, "Cannot perform active scan: device manager not idle");
-            return false;
-          });
-        } else {
-          StopScan(); // TODO ahodder@appioninc.com: Ensure this doesn't cause a deadlock
+    public async Task<bool> DoActiveScanAsync() {
+      if (EDeviceManagerState.Idle != state) {
+        Log.D(this, "Cannot perform active scan: device manager not idle");
+        return false;
+      } else {
+        StopScan(); // TODO ahodder@appioninc.com: Ensure this doesn't cause a deadlock
 
-          scanStopper = new CancellationTokenSource();
-          var token = scanStopper.Token;
+        scanStopper = new CancellationTokenSource();
+        var token = scanStopper.Token;
 
-          return Task.Factory.StartNew(() => {
-            try {
+        Log.D(this, "Start DoActiveScan");
+        state = EDeviceManagerState.ActiveScanning;
+
+        bool ret = await Task.Run(() => {
+          try {
+            token.ThrowIfCancellationRequested();
+
+            Task scan = Task.Run(() => {
+              DoLeScan(TIMEOUT_ACTIVE_SCAN);
+            });
+
+            DateTime timer = DateTime.Now;
+            while (!scan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN * 2)) {
               token.ThrowIfCancellationRequested();
 
-              Log.D(this, "Start DoActiveScan");
-              state = EDeviceManagerState.ActiveScanning;
-
-              Task scan = Task.Factory.StartNew(() => {
-                DoLeScan(TIMEOUT_ACTIVE_SCAN);
-              });
-
-              DateTime timer = DateTime.Now;
-              while (!scan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN * 2)) {
-                token.ThrowIfCancellationRequested();
-
-                Thread.Sleep(10);
-              }
-
-              if (!scan.IsCompleted) {
-                Log.D(this, "Stop DoActiveScan: Failed to complete le scan");
-                return false;
-              }
-
-              Log.D(this, "Stop DoActiveScan: ok");
-
-              return true;
-            } catch (Exception e) {
-              Log.E(this, "Failed to perform active scan", e);
-              return false;
-            } finally {
-              centralManager.StopScan();
-              StopScan();
-              state = EDeviceManagerState.Idle;
+              Thread.Sleep(10);
             }
-          }, scanStopper.Token);
-        }
+
+            if (!scan.IsCompleted) {
+              Log.D(this, "Stop DoActiveScan: Failed to complete le scan");
+              return false;
+            }
+
+            Log.D(this, "Stop DoActiveScan: ok");
+
+            return true;
+          } catch (Exception e) {
+            Log.E(this, "Failed to perform active scan", e);
+            return false;
+          } finally {
+            centralManager.StopScan();
+          }
+        }, scanStopper.Token);
+
+        Log.D(this, "Stop DoActiveScan with result " + ret);
+        StopScan();
+        state = EDeviceManagerState.Idle;
+        return ret;
       }
     }
 
@@ -267,55 +262,55 @@ namespace ION.IOS.Devices {
     }
 
     // Overridden from IDeviceManager
-    public Task<bool> DoPassiveScan() {
-      lock (this) {
-        if (EDeviceManagerState.Idle != state) {
-          return Task.Factory.StartNew(() => {
-            Log.D(this, "Cannot perform passive scan: device manager not idle");
-            return false;
-          });
-        } else {
-          StopScan(); // TODO ahodder@appioninc.com: Ensure this doesn't cause a deadlock
+    public async Task<bool> DoPassiveScanAsync() {
+      if (EDeviceManagerState.Idle != state) {
+        Log.D(this, "Cannot perform passive scan: device manager not idle");
+        return false;
+      } else {
+        StopScan(); // TODO ahodder@appioninc.com: Ensure this doesn't cause a deadlock
 
-          scanStopper = new CancellationTokenSource();
-          var token = scanStopper.Token;
+        scanStopper = new CancellationTokenSource();
+        var token = scanStopper.Token;
 
-          return Task.Factory.StartNew(() => {
-            try {
+        Log.D(this, "Start DoActiveScan");
+        state = EDeviceManagerState.PassiveScanning;
+
+        bool ret = await Task.Run(() => {
+          try {
+            token.ThrowIfCancellationRequested();
+
+            Task scan = Task.Run(() => {
+              DoLeScan(TIMEOUT_ACTIVE_SCAN);
+            });
+
+            DateTime timer = DateTime.Now;
+            while (!scan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN * 2)) {
               token.ThrowIfCancellationRequested();
 
-              Log.D(this, "Start DoActiveScan");
-              state = EDeviceManagerState.PassiveScanning;
-
-              Task scan = Task.Factory.StartNew(() => {
-                DoLeScan(TIMEOUT_ACTIVE_SCAN);
-              });
-
-              DateTime timer = DateTime.Now;
-              while (!scan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN * 2)) {
-                token.ThrowIfCancellationRequested();
-
-                Thread.Sleep(10);
-              }
-
-              if (!scan.IsCompleted) {
-                Log.D(this, "Stop DoPassiveScan: Failed to complete le scan");
-                return false;
-              }
-
-              Log.D(this, "Stop DoPassiveScan: ok");
-
-              return true;
-            } catch (Exception e) {
-              Log.E(this, "Faild to perform passive scan", e);
-              return false;
-            } finally {
-              centralManager.StopScan();
-              StopScan();
-              state = EDeviceManagerState.Idle;
+              Thread.Sleep(10);
             }
-          }, scanStopper.Token);
-        }
+
+            if (!scan.IsCompleted) {
+              Log.D(this, "Stop DoPassiveScan: Failed to complete le scan");
+              return false;
+            }
+
+            Log.D(this, "Stop DoPassiveScan: ok");
+
+            return true;
+          } catch (Exception e) {
+            Log.E(this, "Faild to perform passive scan", e);
+            return false;
+          } finally {
+            centralManager.StopScan();
+          }
+        }, scanStopper.Token);
+
+
+        Log.D(this, "Stop DoPassiveScanAsync with result " + ret);
+        StopScan();
+        state = EDeviceManagerState.Idle;
+        return ret;
       }
     }
 
@@ -332,24 +327,25 @@ namespace ION.IOS.Devices {
     }
 
     // Overridden from IDeviceManager
-    public Task<bool> ConnectDevice(IDevice device) {
-      return Task.Factory.StartNew(() => {
-        bool connected = device.connection.Connect().Result;
+    public async Task<bool> ConnectDeviceAsync(IDevice device) {
+      Log.D(this, "Starting to connect device " + device.serialNumber);
+      bool connected = await device.connection.Connect();
+      Log.D(this, "Connection resolved with value " + connected);
 
-        if (connected) {
-          if (__foundDevices.ContainsKey(device.serialNumber)) {
-            __foundDevices.Remove(device.serialNumber);
-          }
 
-          if (!__knownDevices.ContainsKey(device.serialNumber)) {
-            __knownDevices[device.serialNumber] = device;
-          }
+      if (connected) {
+        if (__foundDevices.ContainsKey(device.serialNumber)) {
+          __foundDevices.Remove(device.serialNumber);
         }
 
-        NotifyDeviceStateChanged(device);
+        if (!__knownDevices.ContainsKey(device.serialNumber)) {
+          __knownDevices[device.serialNumber] = device;
+        }
+      }
 
-        return connected;
-      });
+      NotifyDeviceStateChanged(device);
+
+      return connected;
     }
 
     // Overridden from IDeviceManager
@@ -437,11 +433,27 @@ namespace ION.IOS.Devices {
       }
     }
 
+    /// <summary>
+    /// Notifies the on device found event handler that a new device was found.
+    /// </summary>
+    /// <param name="device">Device.</param>
     private void NotifyDeviceFound(IDevice device) {
       if (onDeviceFound != null) {
         onDeviceFound(this, device);
       } else {
         Log.D(this, "Cannot notify device found: event handler is dead");
+      }
+    }
+
+    /// <summary>
+    /// Notifies the on device manager state changed handler that the device manager's
+    /// state has changed.
+    /// </summary>
+    private void NotifyDeviceManagerStateChanged() {
+        if (onDeviceManagerStateChanged != null) {
+        onDeviceManagerStateChanged(this, state);
+      } else {
+        Log.D(this, "Cannot notify device manager state changed: event handler is dead");
       }
     }
 

@@ -42,7 +42,7 @@ namespace ION.IOS.ViewController.Main {
       base.ViewDidLoad();
 
       buttonScan.TouchUpInside += (object sender, EventArgs e) => {
-        ion.deviceManager.DoActiveScan();
+        ion.deviceManager.DoActiveScanAsync();
       };
 
       tableDeviceList.Source = deviceSource = new DeviceSource(tableDeviceList, ion.deviceManager.devices);
@@ -50,6 +50,8 @@ namespace ION.IOS.ViewController.Main {
       ion.deviceManager.onDeviceFound += HandleDeviceFound;
       ion.deviceManager.onDeviceManagerStateChanged += HandleDeviceManagerStateChanged;
       ion.deviceManager.onDeviceStateChanged += HandleDeviceStateChanged;
+
+      HandleDeviceManagerStateChanged(ion.deviceManager, ion.deviceManager.state);
     }
 
     // Overridden from UIViewController
@@ -67,7 +69,6 @@ namespace ION.IOS.ViewController.Main {
     /// <param name="dm">Dm.</param>
     /// <param name="device">Device.</param>
     private void HandleDeviceFound(IDeviceManager dm, IDevice device) {
-      Log.D(this, "Handling device found!");
       deviceSource.SetDevices(ion.deviceManager.devices);
     }
 
@@ -76,7 +77,16 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <param name="dm">Dm.</param>
     private void HandleDeviceManagerStateChanged(IDeviceManager dm, EDeviceManagerState state) {
-      Log.D(this, "Handling device manager state changed!");
+      switch (state) {
+        case EDeviceManagerState.ActiveScanning: {
+          buttonScan.TitleLabel.Text = Strings.Device.Manager.SCANNING.FromResources();
+          break;
+        }
+        default: {
+          buttonScan.TitleLabel.Text = Strings.Device.Manager.SCAN.FromResources();
+          break;
+        }
+      }
     }
 
     /// <summary>
@@ -84,7 +94,6 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <param name="device">Device.</param>
     private void HandleDeviceStateChanged(IDevice device) {
-      Log.D(this, "Handling device state changed!");
       Task.Factory.StartNew(() => {
         deviceSource.SetDevices(ion.deviceManager.devices);
       }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
@@ -217,23 +226,21 @@ namespace ION.IOS.ViewController.Main {
 
 
     // Overridden from UITableViewSource
-    public UIView GetViewForFooter(UITableView tableView, int section) {
-      var sectionCell = (SectionCell)tableView.DequeueReusableCell(CELL_DEVICE);
+    public override UIView GetViewForHeader(UITableView tableView, nint section) {
+      var sectionCell = (SectionCell)tableView.DequeueReusableCell(CELL_SECTION);
 
-      var deviceGroup = __sections[section];
+      var deviceGroup = __sections[(int)section];
 
       sectionCell.labelTitle.Text = deviceGroup.title;
       sectionCell.labelCounter.Text = __items[deviceGroup].Count + "";
 
-//      sectionCell.Apply((int)RowsInSection(tableView, section), __sections[section].title, () => {
-//        Log.D(this, "Section " + section + " clicked");
-//      });
       return sectionCell;
     }
 
     // Overridden from UITableViewSource
     public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-      return __cellHeights[CELL_SECTION];
+      var ret = __cellHeights[CELL_SECTION];
+      return ret;
     }
 
     // Overridden from UITableViewSource
@@ -242,8 +249,6 @@ namespace ION.IOS.ViewController.Main {
       if (!(this[indexPath] is GaugeDevice)) {
         throw new Exception("Cannot get set for device of type " + this[indexPath].GetType().Name);
       }
-
-      Log.D(this, "updating cell");
 
       GaugeDevice gauge = (GaugeDevice)this[indexPath];
 
@@ -384,12 +389,12 @@ namespace ION.IOS.ViewController.Main {
     /// <returns>The device group for device.</returns>
     /// <param name="device">Device.</param>
     private DeviceGroup GetDeviceGroupForDevice(IDevice device) {
-      if (!device.isKnown && device.isNearby) {
+      if (EConnectionState.Connected == device.connection.connectionState) {
+        return CONNECTED;
+      } else if (!device.isKnown && device.isNearby) {
         return NEW_DEVICES;
       } else if (device.isKnown && device.isNearby) {
         return AVAILABLE;
-      } else if (EConnectionState.Connected == device.connection.connectionState) {
-        return CONNECTED;
       } else if (EConnectionState.Broadcasting == device.connection.connectionState) {
         return LONG_RANGE;
       } else {

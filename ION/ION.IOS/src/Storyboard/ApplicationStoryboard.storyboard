@@ -9,7 +9,7 @@
         <!--viewControllerDeviceManager-->
         <scene sceneID="8">
             <objects>
-                <viewController storyboardIdentifier="deviceManagerViewController" title="Device Manager" id="9" userLabel="viewControllerDeviceManager" customClass="DeviceManagerViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="deviceManagerViewController" id="9" userLabel="viewControllerDeviceManager" customClass="DeviceManagerViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="6"/>
                         <viewControllerLayoutGuide type="bottom" id="7"/>
@@ -55,11 +55,11 @@
                                     <rect key="frame" x="739" y="0.0" width="20" height="20"/>
                                 </variation>
                             </activityIndicatorView>
-                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="86" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="25">
+                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                                 <rect key="frame" x="0.0" y="72" width="600" height="528"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellSection" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellSection" rowHeight="48" id="twj-UL-Uiv" userLabel="cellSection" customClass="SectionCell">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellSection" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSection" rowHeight="48" id="twj-UL-Uiv" userLabel="cellSection" customClass="SectionCell">
                                         <rect key="frame" x="0.0" y="22" width="600" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="twj-UL-Uiv" id="lLf-Ng-yd2">
@@ -126,6 +126,9 @@
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="buO-mP-pTQ" userLabel="iconDevice">
                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
+                                                    <accessibility key="accessibilityConfiguration">
+                                                        <accessibilityTraits key="traits" none="YES" image="YES" notEnabled="YES"/>
+                                                    </accessibility>
                                                     <constraints>
                                                         <constraint firstAttribute="width" constant="48" id="Dc2-2c-6jb"/>
                                                         <constraint firstAttribute="height" constant="48" id="u8V-zA-OEl"/>
@@ -462,16 +465,9 @@
                                                     <state key="normal" title="Button" image="ButtonGold">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
-                                                </button>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="noN-PI-xOm" userLabel="buttonAddToWorkbench">
-                                                    <rect key="frame" x="458" y="0.0" width="48" height="48"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="48" id="IvJ-tO-RmS"/>
-                                                        <constraint firstAttribute="width" constant="48" id="dWk-Cy-amT"/>
-                                                    </constraints>
-                                                    <state key="normal" image="ButtonGold">
-                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                    </state>
+                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="297" y="0.0" width="48" height="48"/>
+                                                    </variation>
                                                 </button>
                                                 <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wMz-9g-uzc" userLabel="buttonAdd">
                                                     <rect key="frame" x="505" y="0.0" width="48" height="48"/>
@@ -482,20 +478,71 @@
                                                     <state key="normal" image="ButtonGold">
                                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                     </state>
+                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="297" y="0.0" width="48" height="48"/>
+                                                    </variation>
+                                                </button>
+                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="noN-PI-xOm" userLabel="buttonAddToWorkbench">
+                                                    <rect key="frame" x="458" y="0.0" width="48" height="48"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="48" id="IvJ-tO-RmS"/>
+                                                        <constraint firstAttribute="width" constant="48" id="dWk-Cy-amT"/>
+                                                    </constraints>
+                                                    <state key="normal" image="ButtonGold">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="251" y="0.0" width="48" height="48"/>
+                                                    </variation>
                                                 </button>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="noN-PI-xOm" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="3sv-oG-H8I"/>
                                                 <constraint firstAttribute="centerY" secondItem="kww-55-pk0" secondAttribute="centerY" id="Ads-bQ-hOG"/>
                                                 <constraint firstItem="wMz-9g-uzc" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="FCe-Lc-wF1"/>
                                                 <constraint firstItem="kww-55-pk0" firstAttribute="leading" secondItem="D4F-TU-cUt" secondAttribute="trailing" constant="8" id="FQc-da-0br"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="zrn-cc-Uwd" secondAttribute="trailing" constant="40" id="I7P-Hz-VM7"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="wMz-9g-uzc" secondAttribute="trailing" constant="40" id="J13-Ny-vIV"/>
                                                 <constraint firstItem="zrn-cc-Uwd" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="StR-0Q-mLW"/>
+                                                <constraint firstItem="zrn-cc-Uwd" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="TIo-Pw-2s2"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="zrn-cc-Uwd" secondAttribute="trailing" constant="40" id="WkI-8i-poT"/>
                                                 <constraint firstAttribute="trailing" secondItem="noN-PI-xOm" secondAttribute="trailing" id="bVp-ir-Tvr"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="noN-PI-xOm" secondAttribute="trailing" constant="88" id="eYf-np-Iuk"/>
                                                 <constraint firstItem="D4F-TU-cUt" firstAttribute="leading" secondItem="LZC-0d-AB0" secondAttribute="leadingMargin" constant="24" id="f1o-Ei-lLN"/>
                                                 <constraint firstAttribute="centerY" secondItem="D4F-TU-cUt" secondAttribute="centerY" id="fpF-eN-UNl"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="wMz-9g-uzc" secondAttribute="trailing" constant="40" id="lwc-dm-QJB"/>
                                                 <constraint firstItem="noN-PI-xOm" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="qLr-iA-EX8"/>
+                                                <constraint firstItem="wMz-9g-uzc" firstAttribute="top" secondItem="LZC-0d-AB0" secondAttribute="topMargin" constant="-8" id="rXw-ta-Phs"/>
+                                                <constraint firstItem="noN-PI-xOm" firstAttribute="leading" secondItem="zrn-cc-Uwd" secondAttribute="trailing" constant="8" id="yAF-B4-vIt"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="3sv-oG-H8I"/>
+                                                    <exclude reference="eYf-np-Iuk"/>
+                                                    <exclude reference="yAF-B4-vIt"/>
+                                                    <exclude reference="J13-Ny-vIV"/>
+                                                    <exclude reference="rXw-ta-Phs"/>
+                                                    <exclude reference="TIo-Pw-2s2"/>
+                                                    <exclude reference="WkI-8i-poT"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="constraints">
+                                                    <include reference="3sv-oG-H8I"/>
+                                                    <exclude reference="bVp-ir-Tvr"/>
+                                                    <include reference="eYf-np-Iuk"/>
+                                                    <exclude reference="qLr-iA-EX8"/>
+                                                    <exclude reference="yAF-B4-vIt"/>
+                                                    <exclude reference="FCe-Lc-wF1"/>
+                                                    <include reference="J13-Ny-vIV"/>
+                                                    <exclude reference="lwc-dm-QJB"/>
+                                                    <include reference="rXw-ta-Phs"/>
+                                                    <exclude reference="I7P-Hz-VM7"/>
+                                                    <exclude reference="StR-0Q-mLW"/>
+                                                    <include reference="TIo-Pw-2s2"/>
+                                                    <include reference="WkI-8i-poT"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <connections>
                                             <outlet property="buttonAdd" destination="wMz-9g-uzc" id="uQI-t0-0fz"/>
@@ -506,6 +553,10 @@
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
+                                <sections/>
+                                <variation key="widthClass=compact" misplaced="YES">
+                                    <rect key="frame" x="0.0" y="72" width="400" height="528"/>
+                                </variation>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>

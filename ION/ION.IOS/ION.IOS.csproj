@@ -97,7 +97,6 @@
     <InterfaceDefinition Include="src\Storyboard\NavigationItem~ipad.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
-    <InterfaceDefinition Include="src\ViewController\Main\ApplicationStoryboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
   </ItemGroup>
   <ItemGroup>
