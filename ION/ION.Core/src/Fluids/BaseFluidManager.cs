@@ -88,10 +88,6 @@ namespace ION.Core.Fluids {
       fluidName = fluidName + EXT_FLUID;
       var dir = await GetRootDir();
 
-      foreach (IFile f in await dir.GetFileListAsync()) {
-        Log.D(this, f.fullPath);
-      }
-
       if (!await dir.ContainsFileAsync(fluidName)) {
         throw new FileNotFoundException(dir.fullPath + fluidName);
       }

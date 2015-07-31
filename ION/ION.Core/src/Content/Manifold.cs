@@ -1,5 +1,6 @@
 ﻿using System;
 
+using ION.Core.Fluids;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 
@@ -52,7 +53,28 @@ namespace ION.Core.Content {
       }
     } Sensor __secondarySensor;
 
+    /// <summary>
+    /// The fluid that the manifold is expected to work with.
+    /// </summary>
+    public Fluid fluid {
+      get {
+        return __fluid;
+      }
+      set {
+        __fluid = fluid;
+        NotifyChanged();
+      }
+    } Fluid __fluid;
+
     public Manifold() {
+    }
+
+    // Overridden from IDispose
+    public void Dispose() {
+      primarySensor.readingChanged -= OnManifoldSensorChanged;
+      if (__secondarySensor != null) {
+        __secondarySensor.readingChanged -= OnManifoldSensorChanged;
+      }
     }
 
     /// <summary>
@@ -61,7 +83,7 @@ namespace ION.Core.Content {
     /// <param name="sensor"></param>
     /// <param name="reading"></param>
     private void OnManifoldSensorChanged(Sensor sensor, Scalar reading) {
-
+      NotifyChanged();
     }
 
     /// <summary>

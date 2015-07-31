@@ -13,7 +13,7 @@ using ION.IOS.Util;
 /// THIS CLASS IS DEDICATED TO PROVIDED IOS EXLCUSIVE EXTENSIONS TO THE DEVICE UTIL
 /// CLASS IN THE CORE LIBRARY. AS SUCH, LEAVE THE FUCKING NAMESPACE ALONE!
 /// </summary>
-namespace ION.Core.Devices {
+namespace ION.IOS.Devices {
   /// <summary>
   /// The iOS native device model extensions.
   /// </summary>
@@ -47,7 +47,7 @@ namespace ION.Core.Devices {
     }
   } // End DeviceModelExtensions
 
-  public partial class DeviceUtil {
+  public static partial class DeviceUtil {
     /// <summary>
     /// Constructs a UIImage for the given device model. By default the
     /// method will cache the UIImage as to not rape the HDD, however,

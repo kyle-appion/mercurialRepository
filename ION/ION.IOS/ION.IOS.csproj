@@ -68,12 +68,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
-    <Reference Include="PCLStorage">
-      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.dll</HintPath>
+    <Reference Include="FlyoutNavigation">
+      <HintPath>..\Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
     </Reference>
-    <Reference Include="PCLStorage.Abstractions">
-      <HintPath>..\packages\PCLStorage.1.0.2\lib\portable-Xamarin.iOS+Xamarin.Mac\PCLStorage.Abstractions.dll</HintPath>
-    </Reference>
+    <Reference Include="MonoTouch.Dialog-1" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
@@ -94,43 +92,87 @@
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
-    <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\DeviceManagerSensorView.xib" />
-    <InterfaceDefinition Include="Resources\src\Storyboard\DeviceManagerDeviceCellSingleExpanded.xib" />
+    <InterfaceDefinition Include="src\Storyboard\NavigationItem~iphone.xib" />
+    <InterfaceDefinition Include="src\Storyboard\NavigationItem~ipad.xib" />
+    <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
+    <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
+    <InterfaceDefinition Include="src\ViewController\Main\ApplicationStoryboard.storyboard" />
+    <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Info.plist" />
     <None Include="Entitlements.plist" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="AppDelegate.cs" />
     <Compile Include="src\Connections\IOSLeConnection.cs" />
     <Compile Include="src\Util\LogPrinter.cs" />
     <Compile Include="src\Devices\IOSDeviceManager.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.designer.cs">
-      <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Util\Colors.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceCell.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceCell.designer.cs">
+    <Compile Include="src\IO\IosFileManager.cs" />
+    <Compile Include="src\ViewController\Navigation\NavigationViewController.cs" />
+    <Compile Include="src\ViewController\Navigation\NavigationViewController.designer.cs">
+      <DependentUpon>NavigationViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Navigation\NavigationItem.cs" />
+    <Compile Include="src\ViewController\Navigation\NavigationItem.designer.cs">
+      <DependentUpon>NavigationItem.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Navigation\NavigationSection.cs" />
+    <Compile Include="src\ViewController\Navigation\NavigationSection.designer.cs">
+      <DependentUpon>NavigationSection.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Calculators\PressureTemperatureViewController.cs" />
+    <Compile Include="src\ViewController\Calculators\PressureTemperatureViewController.designer.cs">
+      <DependentUpon>PressureTemperatureViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.cs" />
+    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.designer.cs">
+      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\ViewController\Main\DeviceCell.cs" />
+    <Compile Include="src\ViewController\Main\DeviceCell.designer.cs">
       <DependentUpon>DeviceCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\DeviceManager\SectionCell.cs" />
-    <Compile Include="src\ViewController\DeviceManager\SectionCell.designer.cs">
+    <Compile Include="src\ViewController\Main\DeviceManagerViewController.cs" />
+    <Compile Include="src\ViewController\Main\DeviceManagerViewController.designer.cs">
+      <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\SectionCell.cs" />
+    <Compile Include="src\ViewController\Main\SectionCell.designer.cs">
       <DependentUpon>SectionCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\DeviceManager\SensorCell.cs" />
-    <Compile Include="src\ViewController\DeviceManager\SensorCell.designer.cs">
+    <Compile Include="src\ViewController\Main\SensorCell.cs" />
+    <Compile Include="src\ViewController\Main\SensorCell.designer.cs">
       <DependentUpon>SensorCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\IO\IosFileManager.cs" />
+    <Compile Include="src\ViewController\Main\AnalyzerViewController.cs" />
+    <Compile Include="src\ViewController\Main\AnalyzerViewController.designer.cs">
+      <DependentUpon>AnalyzerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\WorkbenchViewController.cs" />
+    <Compile Include="src\ViewController\Main\WorkbenchViewController.designer.cs">
+      <DependentUpon>WorkbenchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
+    <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
+      <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\UI\Toast.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.designer.cs">
+      <DependentUpon>FluidManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\WorkbenchViewer.cs" />
+    <Compile Include="src\ViewController\Main\WorkbenchViewer.designer.cs">
+      <DependentUpon>WorkbenchViewer.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -139,6 +181,11 @@
     <Folder Include="src\IO\" />
     <Folder Include="Resources\fluids\" />
     <Folder Include="..\ION.CoreExtensions\" />
+    <Folder Include="src\ViewController\Navigation\" />
+    <Folder Include="src\ViewController\Calculators\" />
+    <Folder Include="src\ViewController\Main\" />
+    <Folder Include="src\UI\" />
+    <Folder Include="src\ViewController\Ancillary\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
@@ -255,5 +302,11 @@
     <BundleResource Include="Resources\fluids\RE245CB2.dat" />
     <BundleResource Include="Resources\fluids\RE245FA2.dat" />
     <BundleResource Include="Resources\fluids\RE347MCC.dat" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="flyoutnavigation">
+      <Version>1.5.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

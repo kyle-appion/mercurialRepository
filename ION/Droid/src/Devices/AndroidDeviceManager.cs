@@ -10,7 +10,6 @@ using Android.Content;
 using ION.Core.Connections;
 using ION.Core.Devices;
 using ION.Core.Devices.Protocols;
-using ION.Core.Threading;
 using ION.Core.Util;
 
 using ION.Droid.Connections;
