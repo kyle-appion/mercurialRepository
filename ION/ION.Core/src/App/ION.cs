@@ -1,5 +1,7 @@
 ﻿using System;
 
+using ION.Core.Content;
+using ION.Core.Database;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.IO;
@@ -36,6 +38,11 @@ namespace ION.Core.App {
   /// </summary>
   public interface IION : IDisposable {
     /// <summary>
+    /// The database that will store all of the application data.
+    /// </summary>
+    /// <value>The database.</value>
+    IONDatabase database { get;}
+    /// <summary>
     /// The FileSystem that will allow the ion context to access the native
     /// platforms files.
     /// </summary>
@@ -50,15 +57,32 @@ namespace ION.Core.App {
     /// maintaining the applications fluids.
     /// </summary>
     IFluidManager fluidManager { get; }
+    /// <summary>
+    /// The current primary workbench for the ION context.
+    /// </summary>
+    /// <value>The current workbench.</value>
+    Workbench currentWorkbench { get; }
   } // End IION
 
+  /// <summary>
+  /// An extremely simple implementation of ion.
+  /// </summary>
   public class BaseION : IION {
+    // Overridden from IION
+    public IONDatabase database { get; set; }
     // Overridden from IION
     public IFileManager fileManager { get; set; }
     // Overridden from IION
     public IDeviceManager deviceManager { get; set; }
     // Overridden from IION
     public IFluidManager fluidManager { get; set; }
+    // Overridden from IION
+    public Workbench currentWorkbench { get; set; }
+
+
+    public BaseION() {
+      currentWorkbench = new Workbench();
+    }
 
     // Overridden from IION
     public void Dispose() {

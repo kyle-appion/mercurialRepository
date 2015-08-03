@@ -1,7 +1,14 @@
-﻿using Foundation;
+﻿using System;
+using System.IO;
+
+using Foundation;
 using UIKit;
 
+using SQLite.Net;
+using SQLite.Net.Interop;
+
 using ION.Core.App;
+using ION.Core.Database;
 using ION.Core.Fluids;
 using ION.Core.Util;
 
@@ -55,23 +62,21 @@ namespace ION.IOS.App {
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // Initialize the application state.
+
       BaseION bi = new BaseION();
       ion = AppState.context = bi;
       bi.fileManager = new IosFileManager();
       bi.deviceManager = new IOSDeviceManager(ion);
       bi.fluidManager = new BaseFluidManager(ion);
+      var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
+      bi.database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, bi);
+
+      bi.deviceManager.Init();
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
       Window.RootViewController = STORYBOARD.InstantiateInitialViewController();
-      /*
-      deviceManagerViewController = 
-      workbenchViewController = (WorkbenchViewController)STORYBOARD.InstantiateViewController("workbenchViewController");
-      analyzerViewController = (AnalyzerViewController)STORYBOARD.InstantiateViewController("analyzerViewController");
-      pressureTemperatureViewController = (PressureTemperatureViewController)STORYBOARD.InstantiateViewController("pressureTemperatureViewController");
-      superheatSubCoolViewController = (SuperheatSubcoolViewController)STORYBOARD.InstantiateViewController("superheatSubcoolViewController");
-      */
 
       // make the window visible
       Window.MakeKeyAndVisible();

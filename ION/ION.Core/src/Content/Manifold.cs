@@ -66,7 +66,8 @@ namespace ION.Core.Content {
       }
     } Fluid __fluid;
 
-    public Manifold() {
+    public Manifold(Sensor primarySensor) {
+      this.primarySensor = primarySensor;
     }
 
     // Overridden from IDispose

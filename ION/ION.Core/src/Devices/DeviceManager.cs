@@ -86,6 +86,10 @@ namespace ION.Core.Devices {
     Task<bool> EnableAsync();
 
     /// <summary>
+    /// Initializes the device manager.
+    /// </summary>
+    Task Init();
+    /// <summary>
     /// Informs the DeviceManager that an active scan has been requested. It is
     /// up to the implementation to determine what qualifies as an active scan. 
     /// <para>
@@ -137,6 +141,17 @@ namespace ION.Core.Devices {
     /// refreshed.
     /// </summary>
     void ForgetFoundDevices();
+
+    /// <summary>
+    /// Creates a new device using the provided serial number, connection identifier
+    /// and protocol. If the device cannot be created because of an invalid connection
+    /// identifier, then an AgumentException will be raised.
+    /// </summary>
+    /// <returns>The device.</returns>
+    /// <param name="serialNumber">Serial number.</param>
+    /// <param name="connectionIdentifier">Connection identifier.</param>
+    /// <param name="protocol">Protocol.</param>
+    IDevice CreateDevice(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
 
     /// <summary>
     /// Attempts to connect to the given device. 

@@ -9,7 +9,7 @@ using ION.Core.Connections;
 using ION.Core.Util;
 
 namespace ION.IOS.Connections {
-  public class IOSLeConnection : IConnection {
+  public class IosLeConnection : IConnection {
     /// <summary>
     /// The base UUID that identifies services, charactertistics and descriptors
     /// within the BluetoothGatt API.
@@ -61,6 +61,8 @@ namespace ION.IOS.Connections {
     } EConnectionState __connectionState;
     // Overridden from IConnection
     public string name { get { return __nativeDevice.Name; } }
+    // Overridden from IConnection
+    public string address { get { return __nativeDevice.Identifier.AsString(); } }
     // Overridden from IConnection
     public int rssi { get { return (int)__nativeDevice.RSSI; } }
     // Overridden from IConnection
@@ -121,7 +123,7 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <param name="centeralManager">Centeral manager.</param>
     /// <param name="peripheral">Peripheral.</param>
-    public IOSLeConnection(CBCentralManager centeralManager, CBPeripheral peripheral) {
+    public IosLeConnection(CBCentralManager centeralManager, CBPeripheral peripheral) {
       this.centeralManager = centeralManager;
       __nativeDevice = peripheral;
 

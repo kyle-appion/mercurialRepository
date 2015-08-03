@@ -57,7 +57,7 @@
                             </activityIndicatorView>
                             <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                                 <rect key="frame" x="0.0" y="72" width="600" height="528"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" restorationIdentifier="cellSection" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSection" rowHeight="48" id="twj-UL-Uiv" userLabel="cellSection" customClass="SectionCell">
                                         <rect key="frame" x="0.0" y="22" width="600" height="48"/>
@@ -624,10 +624,10 @@
             </objects>
             <point key="canvasLocation" x="2443" y="793"/>
         </scene>
-        <!--Workbench View Controller-->
+        <!--workbenchViewController-->
         <scene sceneID="67">
             <objects>
-                <viewController storyboardIdentifier="workbenchViewController" id="68" customClass="WorkbenchViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="workbenchViewController" id="68" userLabel="workbenchViewController" customClass="WorkbenchViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="65"/>
                         <viewControllerLayoutGuide type="bottom" id="66"/>
@@ -642,7 +642,7 @@
                                     <constraint firstAttribute="height" constant="44" id="lQT-Sw-V55"/>
                                 </constraints>
                                 <items>
-                                    <navigationItem title="Title" id="bnB-2V-YmV"/>
+                                    <navigationItem title="Workbench" id="bnB-2V-YmV"/>
                                 </items>
                                 <variation key="default">
                                     <mask key="constraints">
@@ -655,11 +655,11 @@
                                     </mask>
                                 </variation>
                             </navigationBar>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="232" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="KE8-5M-Bos">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="none" rowHeight="142" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="KE8-5M-Bos">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" red="0.93725490196078431" green="0.93725490196078431" blue="0.95686274509803926" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="142" id="ekp-1k-dDA" customClass="WorkbenchViewer">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellViewer" rowHeight="142" id="ekp-1k-dDA" userLabel="cellViewer" customClass="WorkbenchViewer">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="ekp-1k-dDA" id="eYG-VT-tFG">
@@ -671,7 +671,7 @@
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Header" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zrj-iD-pqp" userLabel="labelHeader">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="VJU-qP-F2c" userLabel="iconConnect">
@@ -801,7 +801,7 @@
                                                                 <constraint firstAttribute="height" constant="64" id="dw2-vV-htb"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="65"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                             <variation key="default">
                                                                 <mask key="constraints">
@@ -862,7 +862,7 @@
                                                                 <constraint firstAttribute="height" constant="21" id="3Ak-vM-GC4"/>
                                                             </constraints>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                             <variation key="default">
                                                                 <mask key="constraints">
@@ -897,13 +897,13 @@
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="psig" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h8p-uf-mbZ" userLabel="labelUnit">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Disconnected" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0nH-JC-PlS" userLabel="labelConnectionStatus">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                     </subviews>
@@ -1107,6 +1107,52 @@
                                             <outlet property="labelUnit" destination="h8p-uf-mbZ" id="1wj-Tc-7Bs"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellAdd" rowHeight="32" id="zfr-7I-hzX" userLabel="cellAdd" customClass="WorkbenchAddCell">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zfr-7I-hzX" id="8Ii-B1-hNr">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsl-pK-rCR">
+                                                    <rect key="frame" x="-23" y="-15" width="46" height="30"/>
+                                                    <state key="normal" title="Add Another Viewer" backgroundImage="ButtonGold">
+                                                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                    </state>
+                                                </button>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="fsl-pK-rCR" firstAttribute="leading" secondItem="8Ii-B1-hNr" secondAttribute="leadingMargin" id="YN9-B3-gWD"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="fsl-pK-rCR" secondAttribute="trailing" id="ilV-Pn-IbN"/>
+                                                <constraint firstAttribute="centerX" secondItem="fsl-pK-rCR" secondAttribute="centerX" id="jL8-dy-NrA"/>
+                                                <constraint firstAttribute="centerY" secondItem="fsl-pK-rCR" secondAttribute="centerY" id="lAw-AJ-Syd"/>
+                                            </constraints>
+                                            <variation key="default">
+                                                <mask key="subviews">
+                                                    <exclude reference="fsl-pK-rCR"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <exclude reference="YN9-B3-gWD"/>
+                                                    <exclude reference="ilV-Pn-IbN"/>
+                                                    <exclude reference="jL8-dy-NrA"/>
+                                                    <exclude reference="lAw-AJ-Syd"/>
+                                                </mask>
+                                            </variation>
+                                            <variation key="widthClass=compact">
+                                                <mask key="subviews">
+                                                    <include reference="fsl-pK-rCR"/>
+                                                </mask>
+                                                <mask key="constraints">
+                                                    <include reference="YN9-B3-gWD"/>
+                                                    <include reference="ilV-Pn-IbN"/>
+                                                    <include reference="jL8-dy-NrA"/>
+                                                    <include reference="lAw-AJ-Syd"/>
+                                                </mask>
+                                            </variation>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="buttonAdd" destination="fsl-pK-rCR" id="OyS-Uv-feH"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </prototypes>
                                 <variation key="widthClass=compact" fixedFrame="YES">
                                     <rect key="frame" x="0.0" y="72" width="400" height="528"/>
@@ -1142,6 +1188,9 @@
                             </mask>
                         </variation>
                     </view>
+                    <connections>
+                        <outlet property="tableContent" destination="KE8-5M-Bos" id="vEt-XV-lB0"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="70" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

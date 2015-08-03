@@ -172,9 +172,7 @@ namespace ION.IOS.Devices {
           IDevice ret = this[serialNumber];
 
           if (ret == null) {
-            IConnection connection = new IOSLeConnection(centralManager, args.Peripheral);
-            DeviceFactory factory = DeviceFactory.FindFactoryFor(serialNumber);
-            ret = factory.Create(this, serialNumber, connection, ProtocolUtil.BLE_PROTOCOLS[0]);
+            ret = CreateDevice(serialNumber, args.Peripheral.Identifier.AsString(), 0);
             FoundDevice(ret);
           }
         } catch (Exception e) {
@@ -193,6 +191,20 @@ namespace ION.IOS.Devices {
     public void Dispose() {
       foreach (IDevice device in devices) {
         device.onStateChanged -= onDeviceStateChangedDelegate;
+      }
+    }
+
+    // Overridden from IDeviceManager
+    public async Task Init() {
+      Log.D(this, "Querying for all known devices");
+      try {
+        var devices = await ion.database.deviceDao.QueryForAllAsync();
+        foreach (IDevice device in devices) {
+          Log.D(this, "loading device " + device);
+          RegisterDevice(device);
+        } 
+      } catch (Exception e) {
+        Log.E(this, "Failed to init", e);
       }
     }
 
@@ -327,6 +339,17 @@ namespace ION.IOS.Devices {
     }
 
     // Overridden from IDeviceManager
+    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionIdentifier, int protocol) {
+      var peripheral = centralManager.RetrievePeripheralsWithIdentifiers(new Foundation.NSUuid(connectionIdentifier))[0];
+      if (peripheral == null) {
+        throw new ArgumentException("Cannot create device: " + connectionIdentifier + " is not a valid connection identifier");
+      }
+      IConnection connection = new IosLeConnection(centralManager, peripheral);
+      DeviceFactory factory = DeviceFactory.FindFactoryFor(serialNumber);
+      return factory.Create(this, serialNumber, connection, ProtocolUtil.BLE_PROTOCOLS[0]);
+    }
+
+    // Overridden from IDeviceManager
     public async Task<bool> ConnectDeviceAsync(IDevice device) {
       Log.D(this, "Starting to connect device " + device.serialNumber);
       bool connected = await device.connection.Connect();
@@ -344,6 +367,7 @@ namespace ION.IOS.Devices {
       }
 
       NotifyDeviceStateChanged(device);
+      await ion.database.deviceDao.SaveAsync(device);
 
       return connected;
     }

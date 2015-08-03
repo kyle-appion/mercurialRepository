@@ -45,13 +45,13 @@ namespace ION.IOS.ViewController.Main {
         ion.deviceManager.DoActiveScanAsync();
       };
 
-      tableDeviceList.Source = deviceSource = new DeviceSource(tableDeviceList, ion.deviceManager.devices);
-
       ion.deviceManager.onDeviceFound += HandleDeviceFound;
       ion.deviceManager.onDeviceManagerStateChanged += HandleDeviceManagerStateChanged;
       ion.deviceManager.onDeviceStateChanged += HandleDeviceStateChanged;
 
       HandleDeviceManagerStateChanged(ion.deviceManager, ion.deviceManager.state);
+
+      tableDeviceList.Source = deviceSource = new DeviceSource(ion, tableDeviceList, ion.deviceManager.devices);
     }
 
     // Overridden from UIViewController
@@ -148,6 +148,11 @@ namespace ION.IOS.ViewController.Main {
     }
 
     /// <summary>
+    /// The ion context.
+    /// </summary>
+    /// <value>The ion.</value>
+    private IION ion { get; set; }
+    /// <summary>
     /// The table view that this entity is a source to.
     /// </summary>
     /// <value>The table view.</value>
@@ -177,9 +182,9 @@ namespace ION.IOS.ViewController.Main {
     private Dictionary<EDeviceState, List<IDevice>> __content = new Dictionary<EDeviceState, IDevice>();
     */
 
-    public DeviceSource(UITableView tableView, List<IDevice> devices) {
+    public DeviceSource(IION ion, UITableView tableView, List<IDevice> devices) {
+      this.ion = ion;
       this.tableView = tableView;
-
 
       __cellHeights[CELL_SECTION] = tableView.DequeueReusableCell(CELL_SECTION).Frame.Size.Height;
       __cellHeights[CELL_DEVICE] = tableView.DequeueReusableCell(CELL_DEVICE).Frame.Size.Height;
@@ -289,7 +294,8 @@ namespace ION.IOS.ViewController.Main {
       deviceCell.buttonDeviceToggleConnect.TouchUpInside += (object obj, EventArgs args) => {
         // TODO ahodder@appioninc.com: memory leak
         if (EConnectionState.Disconnected == device.connection.connectionState) {
-          device.connection.Connect();
+          ion.deviceManager.ConnectDeviceAsync(device);
+          ion.currentWorkbench.Add(new ION.Core.Content.Manifold(device[0]));
         } else {
           device.connection.Disconnect();
         }

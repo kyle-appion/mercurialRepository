@@ -41,6 +41,11 @@ namespace ION.Core.Connections {
     /// </summary>
     string name { get; }
     /// <summary>
+    /// Queries the unique address of the connection.
+    /// </summary>
+    /// <value>The address.</value>
+    string address { get; }
+    /// <summary>
     /// Queries the current received signal strength of the connection. Some connections
     /// will have more reliable RSSI updates than others.
     /// </summary>

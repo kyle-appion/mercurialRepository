@@ -13,37 +13,37 @@ namespace ION.IOS
 	partial class WorkbenchViewer
 	{
 		[Outlet]
-		UIKit.UIImageView iconAlarm { get; set; }
+		public UIKit.UIImageView iconAlarm { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView iconArrow { get; set; }
+    public UIKit.UIImageView iconArrow { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView iconBattery { get; set; }
+    public UIKit.UIImageView iconBattery { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView iconConnect { get; set; }
+    public UIKit.UIImageView iconConnect { get; set; }
 
 		[Outlet]
-		UIKit.UIImageView iconSensor { get; set; }
+    public UIKit.UIImageView iconSensor { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelAlarm { get; set; }
+    public UIKit.UILabel labelAlarm { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelConnectionStatus { get; set; }
+    public UIKit.UILabel labelConnectionStatus { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelHeader { get; set; }
+    public UIKit.UILabel labelHeader { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelMeasurement { get; set; }
+    public UIKit.UILabel labelMeasurement { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelSerialNumber { get; set; }
+    public UIKit.UILabel labelSerialNumber { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelUnit { get; set; }
+    public UIKit.UILabel labelUnit { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
