@@ -38,7 +38,7 @@ namespace ION.IOS.ViewController.Main {
 
       ion = AppState.context;
 
-      source = new ViewerSource(tableContent, ion.currentWorkbench);
+      source = new ViewerSource(this, ion.currentWorkbench);
 
       tableContent.Source = source;
 
@@ -79,9 +79,13 @@ namespace ION.IOS.ViewController.Main {
     private const string CELL_ADD = "cellAdd";
 
     /// <summary>
-    /// The table view that this source is providing to.
+    /// The workbench view controller that we are sourcing for.
     /// </summary>
-    private UITableView __tableView;
+    private WorkbenchViewController __workbenchController;
+    /// <summary>
+    /// The workbench controller's table view.
+    /// </summary>
+    private UITableView __table;
     /// <summary>
     /// The list of manifolds that we are displaying as viewers.
     /// </summary>
@@ -91,12 +95,13 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     private Dictionary<string, nfloat> __cellHeights = new Dictionary<string, nfloat>();
 
-    public ViewerSource(UITableView tableView, Workbench workbench) {
-      __tableView = tableView;
+    public ViewerSource(WorkbenchViewController workbenchViewController, Workbench workbench) {
+      __workbenchController = workbenchViewController;
       __workbench = workbench;
+      __table = __workbenchController.tableContent;
 
-      __cellHeights[CELL_VIEWER] = tableView.DequeueReusableCell(CELL_VIEWER).Frame.Size.Height;
-      __cellHeights[CELL_ADD] = tableView.DequeueReusableCell(CELL_ADD).Frame.Size.Height;
+      __cellHeights[CELL_VIEWER] = __table.DequeueReusableCell(CELL_VIEWER).Frame.Size.Height;
+      __cellHeights[CELL_ADD] = __table.DequeueReusableCell(CELL_ADD).Frame.Size.Height;
     }
 
     // Overridden from UIViewController
@@ -119,7 +124,7 @@ namespace ION.IOS.ViewController.Main {
       var secCount = NumberOfSections(tableView); 
       if (section <= secCount - 2) {
         Log.D(this, __cellHeights[CELL_VIEWER] + "");
-        return 142;//__cellHeights[CELL_VIEWER];
+        return 138;//__cellHeights[CELL_VIEWER];
       } else if (section == secCount - 1) {
         return 32;//__cellHeights[CELL_ADD];
       } else {
@@ -140,8 +145,49 @@ namespace ION.IOS.ViewController.Main {
         });
         return add;
       } else {
-        var viewer = (WorkbenchViewer)tableView.DequeueReusableCell(CELL_VIEWER);
-        viewer.manifold = __workbench[(int)section];
+        var viewer = (Viewer)tableView.DequeueReusableCell(CELL_VIEWER);
+        var manifold = __workbench[(int)section];
+        viewer.manifold = manifold;
+        viewer.onViewerClicked = () => {
+          var dialog = UIAlertController.Create("BAD STRING Context Menu", "BAD STRING Selected a viewer context item", UIAlertControllerStyle.ActionSheet);
+
+          if (manifold.primarySensor is GaugeDeviceSensor) {
+            var sensor = manifold.primarySensor as GaugeDeviceSensor;
+            // Append gauge device sensor context items
+            if (sensor.device.isConnected) {
+              dialog.AddAction(UIAlertAction.Create("BAD STRING Disconnect", UIAlertActionStyle.Default, (action) => {
+                sensor.device.connection.Disconnect();
+              }));
+            } else {
+              dialog.AddAction(UIAlertAction.Create("BAD STRING Reconnect", UIAlertActionStyle.Default, (action) => {
+                sensor.device.connection.Connect();
+              }));
+            }
+          }
+
+          dialog.AddAction(UIAlertAction.Create("BAD STRING Alarms", UIAlertActionStyle.Default, (action) => {
+            Toast.New(__table, "Alarms coming soon!");
+          }));
+
+          dialog.AddAction(UIAlertAction.Create("BAD STRING Add Subview", UIAlertActionStyle.Default, (action) => {
+            Toast.New(__table, "Subviews coming soon!");
+          }));
+
+          dialog.AddAction(UIAlertAction.Create("BAD STRING Rename", UIAlertActionStyle.Default, (action) => {
+            Toast.New(__table, "Rename coming soon!");
+          }));
+
+          dialog.AddAction(UIAlertAction.Create("BAD STRING Cancel", UIAlertActionStyle.Cancel, null));
+
+          // Requires for iPad- we must specify a source for the action sheet
+          // since it is displayed as a popover
+          var popover = dialog.PopoverPresentationController;
+          if (popover != null) {
+            popover.SourceView = tableView;
+            popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
+          }
+          __workbenchController.PresentViewController(dialog, true, null);
+        };
         return viewer;
       }
     }

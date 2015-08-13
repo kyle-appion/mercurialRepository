@@ -162,10 +162,6 @@
     <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.designer.cs">
       <DependentUpon>FluidManagerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Main\WorkbenchViewer.cs" />
-    <Compile Include="src\ViewController\Main\WorkbenchViewer.designer.cs">
-      <DependentUpon>WorkbenchViewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\ViewController\Main\WorkbenchAddCell.cs" />
     <Compile Include="src\ViewController\Main\WorkbenchAddCell.designer.cs">
       <DependentUpon>WorkbenchAddCell.cs</DependentUpon>
@@ -197,6 +193,10 @@
       <DependentUpon>SerialNumberCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Sensors\SensorExtensions.cs" />
+    <Compile Include="src\ViewController\Main\Viewer.cs" />
+    <Compile Include="src\ViewController\Main\Viewer.designer.cs">
+      <DependentUpon>Viewer.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
