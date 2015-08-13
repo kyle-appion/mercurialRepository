@@ -125,17 +125,17 @@ namespace ION.Core.Devices {
     /// <summary>
     /// The sensors that are contained within the gauge.
     /// </summary>
-    public Sensor[] sensors { get; private set; }
+    public GaugeDeviceSensor[] sensors { get; internal set; }
     /// <summary>
     /// Queries the number of sensors that are present in the gauge.
     /// </summary>
-    public int sensorCount { get { return sensors.Length; } }
+    public int sensorCount { get { return (sensors != null) ? sensors.Length : 0; } }
     /// <summary>
     /// Queries the sensor at the given index.
     /// </summary>
     /// <param name="index"></param>
     /// <returns></returns>
-    public Sensor this[int index] {
+    public GaugeDeviceSensor this[int index] {
       get {
         return sensors[index];
       }
@@ -144,16 +144,18 @@ namespace ION.Core.Devices {
       }
     }
 
-    public GaugeDevice(IDeviceManager deviceManager, GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol, Sensor[] sensors) {
+    public GaugeDevice(IDeviceManager deviceManager, GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
       this.deviceManager = deviceManager;
       __serialNumber = serialNumber;
       this.connection = connection;
       __protocol = protocol;
-      this.sensors = sensors;
       name = serialNumber.ToString();
 
       connection.onStateChanged += ((IConnection conn, EConnectionState state) => {
         NotifyOfStateChange();
+        foreach (GaugeDeviceSensor sensor in sensors) {
+          sensor.NotifySensorStateChanged();
+        }
       });
 
       connection.onDataReceived += ((IConnection conn, byte[] packet) => {
@@ -163,6 +165,8 @@ namespace ION.Core.Devices {
           if (sensorCount == gp.gaugeReadings.Length) {
             battery = gp.battery;
 
+            var changed = false;
+
             for (int i = 0; i < sensorCount; i++) {
               GaugeReading reading = gp.gaugeReadings[i];
               if (reading.sensorType != this[i].sensorType) {
@@ -170,16 +174,20 @@ namespace ION.Core.Devices {
                   this[i].sensorType + " is not valid with received type " + reading.sensorType);
               }
               if (this[i].measurement != gp.gaugeReadings[i].reading) {
-                this[i].TryForceMeasurementSet(gp.gaugeReadings[i].reading);
+                this[i].measurement = gp.gaugeReadings[i].reading;
+                changed = true;
               }
             }
 
-            NotifyOfStateChange();
+            if (changed) {
+              NotifyOfStateChange();
+            }
           } else {
             throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
           }
         } catch (Exception e) {
-          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
+          // TODO ahodder@appioninc.com: Consider exposing?
+//          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
       });
     }

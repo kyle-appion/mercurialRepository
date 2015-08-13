@@ -29,7 +29,23 @@ namespace ION.Core.Content {
     /// <summary>
     /// The primary sensor for the manifold.
     /// </summary>
-    public Sensor primarySensor { get; private set; }
+    public Sensor primarySensor {
+      get {
+        return __primarySensor;
+      }
+      private set {
+        if (__primarySensor != null) {
+          __primarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+        }
+
+        __primarySensor = value;
+
+        if (__primarySensor != null) {
+          __primarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+          OnManifoldSensorChanged(__primarySensor);
+        }
+      }
+    } Sensor __primarySensor;
 
     /// <summary>
     /// The secondary sensor for the manifold.
@@ -41,13 +57,14 @@ namespace ION.Core.Content {
 
       set {
         if (__secondarySensor != null) {
-          __secondarySensor.readingChanged -= OnManifoldSensorChanged;
+          __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
         }
 
         __secondarySensor = value;
 
         if (__secondarySensor != null) {
-          __secondarySensor.readingChanged += OnManifoldSensorChanged;
+          __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+          OnManifoldSensorChanged(__secondarySensor);
         }
         NotifyChanged();
       }
@@ -72,9 +89,9 @@ namespace ION.Core.Content {
 
     // Overridden from IDispose
     public void Dispose() {
-      primarySensor.readingChanged -= OnManifoldSensorChanged;
+      primarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       if (__secondarySensor != null) {
-        __secondarySensor.readingChanged -= OnManifoldSensorChanged;
+        __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       }
     }
 
@@ -83,7 +100,7 @@ namespace ION.Core.Content {
     /// </summary>
     /// <param name="sensor"></param>
     /// <param name="reading"></param>
-    private void OnManifoldSensorChanged(Sensor sensor, Scalar reading) {
+    private void OnManifoldSensorChanged(Sensor sensor) {
       NotifyChanged();
     }
 

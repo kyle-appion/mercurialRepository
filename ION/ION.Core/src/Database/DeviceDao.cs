@@ -59,7 +59,12 @@ namespace ION.Core.Database {
       Log.D(this, "Saving...");
       var device = await DeconstructAsync(item);
       database.BeginTransaction();
-      int affected = database.InsertOrReplace(device);
+      int affected = 0;
+      if (device.id == -1) {
+        affected = database.Insert(device);
+      } else {
+        affected = database.Update(device);
+      }
       database.Commit();
       Log.D(this, "affected " + affected + " rows");
       return affected > 0;
@@ -136,6 +141,10 @@ namespace ION.Core.Database {
     public DateTime lastConnected { get; set; }
     public string connectionAddress { get; set; }
     public int protocol { get; set; }
+
+    public Device() {
+      id = -1;
+    }
 
     // Overridden from Object
     public override string ToString() {

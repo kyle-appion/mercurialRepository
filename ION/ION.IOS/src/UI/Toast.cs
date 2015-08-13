@@ -4,6 +4,8 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 
+using ION.Core.Util;
+
 namespace ION.IOS.UI {
   public class Toast : UIView {
     /// <summary>
@@ -28,13 +30,11 @@ namespace ION.IOS.UI {
     public long duration { get; set; }
 
     public Toast() {
-      Init();
+      Initialize();
     }
 
     // Overridden from IOView
-    public void Init() {
-      base.Init();
-
+    public void Initialize() {
       label = new UILabel();
       label.BackgroundColor = UIColor.Clear;
       label.TextColor = UIColor.White;
@@ -59,6 +59,7 @@ namespace ION.IOS.UI {
     }
 
     private static void ShowToast(UIView parent, string message, long duration) {
+      Log.D("Toast", "Toast {" + message + "}");
       int toastsInParent = 0;
       foreach (UIView baby in parent.Subviews) {
         if (baby is Toast) {

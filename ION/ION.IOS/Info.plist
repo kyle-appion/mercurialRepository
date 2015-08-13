@@ -43,5 +43,9 @@
 	<string>LaunchScreen</string>
 	<key>UIMainNibFile</key>
 	<string>LaunchScreen</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
+	</array>
 </dict>
 </plist>

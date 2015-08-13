@@ -72,14 +72,14 @@
       <HintPath>..\Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
     </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net-PCL.3.0.5\lib\Xamarin.iOS10\SQLite.Net.dll</HintPath>
     </Reference>
     <Reference Include="SQLite.Net.Platform.XamarinIOS.Unified">
       <HintPath>..\packages\SQLite.Net-PCL.3.0.5\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -89,24 +89,22 @@
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\button_gold.png">
-      <InProject>false</InProject>
-    </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\button_black.png">
-      <InProject>false</InProject>
-    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\img_bgd_carbon.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\buttonBlack.9.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\buttonGold.9.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
-    <InterfaceDefinition Include="src\Storyboard\DeviceManagerSensorView.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationItem~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationItem~ipad.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
     <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
+    <InterfaceDefinition Include="Resources\View.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -120,7 +118,6 @@
     <Compile Include="src\Devices\IOSDeviceManager.cs" />
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Util\Strings.cs" />
-    <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
     <Compile Include="src\ViewController\Navigation\NavigationViewController.cs" />
@@ -144,22 +141,10 @@
       <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\App\AppDelegate.cs" />
-    <Compile Include="src\ViewController\Main\DeviceCell.cs" />
-    <Compile Include="src\ViewController\Main\DeviceCell.designer.cs">
-      <DependentUpon>DeviceCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\DeviceManagerViewController.cs" />
     <Compile Include="src\ViewController\Main\DeviceManagerViewController.designer.cs">
       <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Main\SectionCell.cs" />
-    <Compile Include="src\ViewController\Main\SectionCell.designer.cs">
-      <DependentUpon>SectionCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\SensorCell.cs" />
-    <Compile Include="src\ViewController\Main\SensorCell.designer.cs">
-      <DependentUpon>SensorCell.cs</DependentUpon>
-    </Compile>
+    <Compile Include="src\ViewController\Main\DeviceManagerViewController.cs" />
     <Compile Include="src\ViewController\Main\AnalyzerViewController.cs" />
     <Compile Include="src\ViewController\Main\AnalyzerViewController.designer.cs">
       <DependentUpon>AnalyzerViewController.cs</DependentUpon>
@@ -186,6 +171,32 @@
       <DependentUpon>WorkbenchAddCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Connections\IosLeConnection.cs" />
+    <Compile Include="src\Util\NSExtensions.cs" />
+    <Compile Include="src\UI\NinePatchImageFactory.cs" />
+    <Compile Include="src\UI\NinePatchImageView.cs" />
+    <Compile Include="src\UI\NinePatchButtonView.cs" />
+    <Compile Include="src\UI\NinePatchButtonView.designer.cs">
+      <DependentUpon>NinePatchButtonView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\DeviceManagerSource.cs" />
+    <Compile Include="src\ViewController\Main\DeviceSource.cs" />
+    <Compile Include="src\ViewController\Main\SensorCell.cs" />
+    <Compile Include="src\ViewController\Main\SensorCell.designer.cs">
+      <DependentUpon>SensorCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\DeviceCell.cs" />
+    <Compile Include="src\ViewController\Main\DeviceCell.designer.cs">
+      <DependentUpon>DeviceCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\HeaderCell.cs" />
+    <Compile Include="src\ViewController\Main\HeaderCell.designer.cs">
+      <DependentUpon>HeaderCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\SerialNumberCell.cs" />
+    <Compile Include="src\ViewController\Main\SerialNumberCell.designer.cs">
+      <DependentUpon>SerialNumberCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Sensors\SensorExtensions.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -5,12 +5,84 @@ using System;
 using Foundation;
 using UIKit;
 
-namespace ION.IOS
-{
-	public partial class WorkbenchViewer : UITableViewCell
-	{
-		public WorkbenchViewer (IntPtr handle) : base (handle)
-		{
+using ION.Core.Connections;
+using ION.Core.Content;
+using ION.Core.Devices;
+using ION.Core.Sensors;
+
+using ION.IOS.Devices;
+using ION.IOS.Sensors;
+
+namespace ION.IOS.ViewController.Main {
+	public partial class WorkbenchViewer : UITableViewCell {
+
+    public Manifold manifold {
+      get {
+        return __manifold;
+      }
+      set {
+        if (__manifold != null) {
+          __manifold.onManifoldChanged -= OnManifoldChanged;
+        }
+
+        __manifold = value;
+
+        if (__manifold != null) {
+          __manifold.onManifoldChanged += OnManifoldChanged;
+          OnManifoldChanged(__manifold);
+        }
+      }
+    } Manifold __manifold;
+
+		public WorkbenchViewer (IntPtr handle) : base (handle) {
+      // Nope
 		}
+
+    // Overridden from UITableViewCell
+    public override void RemoveFromSuperview() {
+      base.RemoveFromSuperview();
+
+      manifold = null;
+    }
+
+    private void UpdateToGaugeDeviceSensor(GaugeDeviceSensor sensor) {
+      // Set header content
+      labelHeader.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ": " + sensor.device.name;
+
+      // Set primary Content
+      iconSensor.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
+      var measurement = sensor.measurement;
+      labelMeasurement.Text = measurement.amount + "";
+
+      // Set footer content
+      labelConnectionStatus.Hidden = EConnectionState.Connected == sensor.device.connection.connectionState;
+      labelUnit.Text = measurement.unit.ToString();
+    }
+
+    private void UpdateToSensor(Sensor sensor) {
+      // Set header content      
+      labelHeader.Text = sensor.sensorType.GetTypeString() + ": " + sensor.name;
+
+      // Set primary content
+      var measurement = sensor.measurement;
+      labelMeasurement.Text = measurement.amount + "";
+
+      // Set footer content
+      labelConnectionStatus.Hidden = true;
+      labelUnit.Text = measurement.unit.ToString();
+    }
+
+    /// <summary>
+    /// Called when the viewer's manifold changes.
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    private void OnManifoldChanged(Manifold manifold) {
+      var sensor = manifold.primarySensor as GaugeDeviceSensor;
+      if (sensor != null) {
+        UpdateToGaugeDeviceSensor(sensor);
+      } else {
+        UpdateToSensor(sensor);
+      }
+    }
 	}
 }

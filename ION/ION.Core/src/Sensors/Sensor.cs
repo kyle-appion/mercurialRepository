@@ -19,6 +19,44 @@ namespace ION.Core.Sensors {
   }
 
   /// <summary>
+  /// Some utility extensions around the sensor type enum.
+  /// </summary>
+  public static class SensorTypeExtensions {
+    /// <summary>
+    /// Queries the default unit for the given sensor type.
+    /// </summary>
+    /// <returns>The default unit.</returns>
+    /// <param name="sensorType">Sensor type.</param>
+    public static Unit GetDefaultUnit(this ESensorType sensorType) {
+      switch (sensorType) {
+        /*
+        case ESensorType.Humidity: {
+          return DEFAULT_HUMIDITY_UNITS[0];
+        }
+        case ESensorType.Length: {
+          return DEFAULT_LENGTH_UNITS[0];
+        }
+        case ESensorType.Mass: {
+          return DEFAULT_MASS_UNITS[0];
+        }
+*/
+        case ESensorType.Pressure: {
+            return SensorUtils.DEFAULT_PRESSURE_UNITS[0];
+          }
+        case ESensorType.Temperature:{
+            return SensorUtils.DEFAULT_TEMPERATURE_UNITS[0];
+          }
+        case ESensorType.Vacuum: {
+            return SensorUtils.DEFAULT_VACUUM_UNITS[0];
+          }
+        default: {
+            throw new ArgumentException("Cannot get default unit for " + sensorType);
+          }
+      }
+    }
+  }
+
+  /// <summary>
   /// A simple utility class that will provide functions that aid in the use of the
   /// ESensorType in conjunction with an ISensor.
   /// </summary>
@@ -58,7 +96,7 @@ namespace ION.Core.Sensors {
       Units.Pressure.PSIA,
       Units.Pressure.KILOPASCAL,
     };
-    
+
     /// <summary>
     /// Determines whether or not the given unit is valid with the provided sensor type.
     /// </summary>
@@ -102,91 +140,109 @@ namespace ION.Core.Sensors {
   /// </summary>
   public class Sensor {
     /// <summary>
-    /// The delegate that is fired when the sensor's reading is changed.
+    /// The delegate that will be notified when the sensor's state
+    /// is changed. Note: the measurement change can be cause by either/or
+    /// a change to the unit or magnitude.
     /// </summary>
-    /// <param name="sensor"></param>
-    /// <param name="reading"></param>
-    public delegate void OnReadingChanged(Sensor sensor, Scalar reading);
+    public delegate void OnSensorStateChanged(Sensor sensor);
+
     /// <summary>
-    /// The event pool that fires events when the sensor's reading changes.
+    /// The event that will be notified when the sensor changes.
     /// </summary>
-    public event OnReadingChanged readingChanged;
-    // TODO ahodder@appioninc.com: Throw an exception if the value reading does not match the sensor type.
+    public event OnSensorStateChanged onSensorStateChangedEvent;
+
     /// <summary>
-    /// Queries the current measurement of the sensor provider.
+    /// The type of sensor this is. From this, the base conversion unit is
+    /// derived as well as sensor uses.
     /// </summary>
-    /// <value>The reading.</value>
-    public Scalar measurement {
-      get {
-        return __measurement;
-      }
-      protected set {
-        if (!SensorUtils.IsCompatibleWith(sensorType, value.unit)) {
-          throw new ArgumentException("Cannot set sensor measurement: " + sensorType + " cannot receive scalar " + value);
-        }
-        __measurement = value;
-        lastUpdate = DateTime.Now;
-        PerformOnReadingChanged();
-      }
-    } Scalar __measurement;
+    public ESensorType sensorType { get; private set; }
     /// <summary>
-    /// Queries whether or not the sensor's readings are relative. Relative readings are
-    /// readings that are offset from a known and mutable source. Absolute readings are
-    /// readings that regardless of other parameters is exactly known.
+    /// Whether or not the sensor's reading is relative.
     /// </summary>
     public bool isRelative { get; private set; }
     /// <summary>
-    /// A convenience property to get or set the sensor's unit. Note: if the unit is not
-    /// compatible with the sensor, an ArgumentException will be thrown.
+    /// The custom name for the specific sensor. 
+    /// </summary>
+    public string name {
+      get {
+        return __name;
+      }
+      set {
+        __name = value;
+        NotifySensorStateChanged();
+      }
+    } string __name;
+    /// <summary>
+    /// The unit that the sensor's measurement is quantitated in.
     /// </summary>
     public Unit unit {
       get {
         return measurement.unit;
       }
       set {
-        measurement = measurement.ConvertTo(unit);
+        measurement = measurement.ConvertTo(value);
+        NotifySensorStateChanged();
       }
     }
     /// <summary>
-    /// Queries the type of sensor that this object is representing.
+    /// The measurement of the sensor.
     /// </summary>
-    public ESensorType sensorType { get; private set; }
+    public Scalar measurement {
+      get {
+        return __measurement;
+      }
+      set {
+        if (!value.unit.IsCompatible(unit)) {
+          throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
+        }
+        __measurement = value;
+        NotifySensorStateChanged();
+      }
+    } Scalar __measurement;
     /// <summary>
-    /// Queries the last time that this sensor had is reading changed. Note: for sensors
-    /// that are newly created, this will be the sensor's creation time.
+    /// The maxumimum measurement that the sensor can accurately measure.
     /// </summary>
-    /// <value>The last update.</value>
-    public DateTime lastUpdate { get; protected set; }
+    public Scalar maxMeasurement { get; set; }
+    /// <summary>
+    /// The minumum measurement that the sensor can acurrately measure.
+    /// </summary>
+    public Scalar minMeasurement { get; set; }
+    /// <summary>
+    /// Whether or not the sensor is overloaded. The reading cannot be regarded
+    /// as reliable if the measurement is overloaded.
+    /// </summary>
+    public bool isOverloaded {
+      get {
+        return maxMeasurement != null && measurement >= maxMeasurement;
+      }
+    }
 
-
-    public Sensor(ESensorType sensorType, bool relative, Scalar initialReading) {
-      // TODO ahodder@appioninc.com: Assert reading to sensor type.
+    /// <summary>
+    /// Creates a new sensor.
+    /// </summary>
+    /// <param name="sensorType">Sensor type.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Sensor(ESensorType sensorType, bool isRelative=true)
+      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative) { 
+    }
+    /// <summary>
+    /// Creates a new sensor.
+    /// </summary>
+    /// <param name="sensorType">Sensor type.</param>
+    /// <param name="initialMeasurement">Initial measurement.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true) {
       this.sensorType = sensorType;
-      measurement = initialReading;
-      isRelative = relative;
+      this.__measurement = initialMeasurement;
+      this.isRelative = isRelative;
     }
 
     /// <summary>
-    /// Attempts to force the reading of the sensor into the provided scalar.
-    /// Note: This really should never be used except by the data provider for
-    /// the sensor.
+    /// Notifies the sensors event that the sensor state changed.
     /// </summary>
-    /// <param name="scalar">Scalar.</param>
-    // TODO ahodder@appioninc.com: Consider using a passed delegate to an internal event handler to bypass the need of this method.
-    public void TryForceMeasurementSet(Scalar scalar) {
-      try {
-        measurement = scalar;
-      } catch (Exception e) {
-        Log.E(this, "Failed to set sensor reading to " + scalar, e);
-      }
-    }
-
-    /// <summary>
-    /// Posts an event to the readingChanged event.
-    /// </summary>
-    private void PerformOnReadingChanged() {
-      if (readingChanged != null) {
-        readingChanged(this, measurement);
+    public void NotifySensorStateChanged() {
+      if (onSensorStateChangedEvent != null) {
+        onSensorStateChangedEvent(this);
       }
     }
   }

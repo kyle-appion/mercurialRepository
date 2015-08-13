@@ -61,11 +61,13 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceFactory
     public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      Log.D(this, "Creating P300...");
-      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Pressure, true, Units.Pressure.PASCAL.OfScalar(0)) };
-      Log.D(this, "Created sensors...");
+      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
 
-      return new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol, sensors);
+      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
+      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(300);
+      device.sensors = new GaugeDeviceSensor[] { sensor };
+
+      return device;
     }
   } // End P300DeviceFactory
 
@@ -80,9 +82,13 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceFactory
     public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Pressure, true, Units.Pressure.PASCAL.OfScalar(0)) };
+      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
 
-      return new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol, sensors);
+      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
+      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(500);
+      device.sensors = new GaugeDeviceSensor[] { sensor };
+
+      return device;
     }
   } // End P500DeviceFactory
 
@@ -97,9 +103,13 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceFactory
     public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Pressure, true, Units.Pressure.PASCAL.OfScalar(0)) };
+      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
 
-      return new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol, sensors);
+      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
+      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(800);
+      device.sensors = new GaugeDeviceSensor[] { sensor };
+
+      return device;
     }
   } // End P800DeviceFactory
 
@@ -114,9 +124,13 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceFactory
     public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      Sensor[] sensors = new Sensor[] { new Sensor(ESensorType.Vacuum, true, Units.Pressure.PASCAL.OfScalar(0)) };
+      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
 
-      return new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol, sensors);
+      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Vacuum, true);
+      sensor.maxMeasurement = Units.Pressure.MICRON.OfScalar(760000);
+      device.sensors = new GaugeDeviceSensor[] { sensor };
+
+      return device;
     }
   } // End AV760DeviceFactory
 }

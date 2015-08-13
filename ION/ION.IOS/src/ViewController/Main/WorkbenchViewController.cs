@@ -6,9 +6,14 @@ using UIKit;
 
 using ION.Core.App;
 using ION.Core.Content;
+using ION.Core.Devices;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Util;
+
+using ION.IOS.Devices;
+using ION.IOS.Sensors;
+using ION.IOS.UI;
 
 namespace ION.IOS.ViewController.Main {
 	public partial class WorkbenchViewController : UIViewController {
@@ -92,11 +97,12 @@ namespace ION.IOS.ViewController.Main {
 
       __cellHeights[CELL_VIEWER] = tableView.DequeueReusableCell(CELL_VIEWER).Frame.Size.Height;
       __cellHeights[CELL_ADD] = tableView.DequeueReusableCell(CELL_ADD).Frame.Size.Height;
-
-      var sensor = new Sensor(ESensorType.Pressure, true, Units.Pressure.PSIA.OfScalar(100));
-      __workbench.Add(new Manifold(sensor));
     }
 
+    // Overridden from UIViewController
+    public override void RowSelected(UITableView tableView, NSIndexPath path) {
+      
+    }
 
     // Overridden from UITableViewSource
     public override nint NumberOfSections(UITableView tableView) {
@@ -129,20 +135,13 @@ namespace ION.IOS.ViewController.Main {
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
       if (section == NumberOfSections(tableView) - 1) {
         var add = (WorkbenchAddCell)tableView.DequeueReusableCell(CELL_ADD);
+        add.clicked = (() => {
+          Toast.New(tableView, "Clicked 'Add New Viewer'");
+        });
         return add;
       } else {
         var viewer = (WorkbenchViewer)tableView.DequeueReusableCell(CELL_VIEWER);
-        var manifold = __workbench[(int)section];
-
-        viewer.labelHeader.Text = "Type" + ": " + "Sensor name";
-
-        var measurement = manifold.primarySensor.measurement;
-
-        viewer.labelMeasurement.Text = measurement.amount + "";
-
-        viewer.labelUnit.Text = measurement.unit.ToString();
-        viewer.labelSerialNumber.Text = "Sensor serial number goes here";
-
+        viewer.manifold = __workbench[(int)section];
         return viewer;
       }
     }

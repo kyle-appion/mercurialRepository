@@ -5,12 +5,29 @@ using System;
 using Foundation;
 using UIKit;
 
-namespace ION.IOS
-{
-	public partial class WorkbenchAddCell : UITableViewCell
-	{
-		public WorkbenchAddCell (IntPtr handle) : base (handle)
-		{
+namespace ION.IOS.ViewController.Main {
+	public partial class WorkbenchAddCell : UITableViewCell {
+
+    /// <summary>
+    /// The action that will be triggered when the cell is clicked.
+    /// </summary>
+    /// <value>The clicked.</value>
+    public Action clicked { get; set; }
+
+		public WorkbenchAddCell (IntPtr handle) : base (handle) {
 		}
+
+    // Overridden from UITableViewCell
+    public override void AwakeFromNib() {
+      base.AwakeFromNib();
+
+      buttonAdd.TouchUpInside += (object sender, EventArgs e) => {
+        if (clicked != null) {
+          clicked();
+        }
+      };
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+    }
 	}
 }

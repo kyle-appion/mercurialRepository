@@ -7,13 +7,13 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace ION.IOS
+namespace ION.IOS.ViewController.Main
 {
 	[Register ("WorkbenchAddCell")]
 	partial class WorkbenchAddCell
 	{
 		[Outlet]
-		UIKit.UIButton buttonAdd { get; set; }
+		public ION.IOS.UI.NinePatchButtonView buttonAdd { get; private set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

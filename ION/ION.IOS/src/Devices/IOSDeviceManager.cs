@@ -182,6 +182,29 @@ namespace ION.IOS.Devices {
         Log.D(this, "Device discovered");
       };
 
+      /*
+      centralManager.DisconnectedPeripheral += (object sender, CBPeripheralErrorEventArgs e) => {
+        var peripheral = e.Peripheral;
+        if (!IsAppionDevice(peripheral)) {
+          return;
+        }
+
+        Log.D(this, "Peripheral disconnected");
+        GaugeSerialNumber serialNumber;
+        try {
+          serialNumber = GaugeSerialNumber.Parse(peripheral.Name);
+        } catch (ArgumentException) {
+          Log.E(this, "Failed to parse peripheral serial number: " + peripheral.Name);
+          return;
+        }
+
+        IDevice device = this[serialNumber];
+        if (device != null) {
+          device.connection.Disconnect();
+        }
+      };
+      */
+
       onDeviceStateChangedDelegate = ((IDevice device) => {
         onDeviceStateChanged(device);
       });

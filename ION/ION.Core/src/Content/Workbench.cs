@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using ION.Core.Sensors;
+
 namespace ION.Core.Content {
   /// <summary>
   /// A workbench is a simple container that will hold a collection of manifolds.
@@ -52,6 +54,23 @@ namespace ION.Core.Content {
     }
 
     /// <summary>
+    /// Adds the given sensor to the workbench. If the sensor is already present
+    /// within the workbench, the sensor will not be added.
+    /// </summary>
+    /// <returns><c>true</c>, if sensor was added, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool AddSensor(Sensor sensor) {
+      if (ContainsSensor(sensor)) {
+        return false;
+      } else {
+        var add = new Manifold(sensor);
+        __manifolds.Add(add);
+        NotifyManifoldAdded(add);
+        return true;
+      }
+    }
+
+    /// <summary>
     /// Removes the manifold from the workbench.
     /// </summary>
     /// <param name="manifold">Manifold.</param>
@@ -67,6 +86,22 @@ namespace ION.Core.Content {
       foreach (Manifold m in __manifolds) {
         Remove(m);
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the workbench contains the given sensor as a primary
+    /// sensor to a manifold that exists within the workbench.
+    /// </summary>
+    /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool ContainsSensor(Sensor sensor) {
+      foreach (Manifold manifold in __manifolds) {
+        if (manifold.primarySensor.Equals(sensor)) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>

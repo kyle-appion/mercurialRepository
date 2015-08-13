@@ -34,13 +34,25 @@ namespace ION.Core.Measure {
       __amount = amount;
     }
 
+    // Overridden from Object
     public override string ToString() {
       return amount + " " + unit;
     }
 
+    // Overridden from Object
     public override int GetHashCode() {
       int h = ((Double)amount).GetHashCode();
       return h ^ unit.GetHashCode();
+    }
+
+    // Overridden from Object
+    public override bool Equals(object obj) {
+      var other = obj as Scalar;
+      if (other == null) {
+        return false;
+      } else {
+        return unit == other.unit && amount == other.amount;
+      }
     }
 
     public bool AssertEquals(Scalar other, double epsilon) {

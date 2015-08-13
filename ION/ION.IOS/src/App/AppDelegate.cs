@@ -63,6 +63,8 @@ namespace ION.IOS.App {
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // Initialize the application state.
 
+//      application.SetStatusBarHidden(true, UIStatusBarAnimation.None);
+
       BaseION bi = new BaseION();
       ion = AppState.context = bi;
       bi.fileManager = new IosFileManager();
