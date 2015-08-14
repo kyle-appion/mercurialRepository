@@ -5,6 +5,8 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.IOS.UI;
+
 namespace ION.IOS.ViewController.Main {
 	public partial class WorkbenchAddCell : UITableViewCell {
 
@@ -26,8 +28,8 @@ namespace ION.IOS.ViewController.Main {
           clicked();
         }
       };
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
     }
 	}
 }

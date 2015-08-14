@@ -10,6 +10,8 @@ using ION.Core.Connections;
 using ION.Core.Devices;
 using ION.Core.Util;
 
+using ION.IOS.UI;
+
 namespace ION.IOS.ViewController.Main {
   /// <description>
   /// This source is used to provide device cells to the device manager view controller's
@@ -128,16 +130,29 @@ namespace ION.IOS.ViewController.Main {
         }
 
         var gaugeDevice = deviceItem.device as GaugeDevice;
-
         var cell = tableView.DequeueReusableCell(CELL_SENSOR) as SensorCell;
+        var sensor = gaugeDevice[row];
 
-        cell.onWorkbenchClicked = () => {
-          var sensor = gaugeDevice[row];
-          if (!ion.currentWorkbench.ContainsSensor(sensor)) {
-            ion.currentWorkbench.AddSensor(sensor);
-          }
-        };
-        cell.Update(gaugeDevice[row]);
+        if (ion.currentWorkbench.ContainsSensor(sensor)) {
+//          cell.onWorkbenchClicked = null;
+
+          cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("np_white_background_bordered").AsNinePatch(), UIControlState.Normal);
+          cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("np_white_background_bordered").AsNinePatch(), UIControlState.Highlighted);
+
+          cell.buttonWorkbench.SetImage(UIImage.FromBundle("ic_device_on_workbench"), UIControlState.Normal);
+        } else {
+          cell.onWorkbenchClicked = () => {
+            if (!ion.currentWorkbench.ContainsSensor(sensor)) {
+              ion.currentWorkbench.AddSensor(sensor);
+            }
+          };
+          cell.Update(gaugeDevice[row]);
+
+          cell.buttonWorkbench.SetImage(UIImage.FromBundle("ic_device_add_to_workbench"), UIControlState.Normal);
+
+          cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+          cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
+        }
 
         return cell;
       }
@@ -171,16 +186,14 @@ namespace ION.IOS.ViewController.Main {
       var cell = tableView.DequeueReusableCell(CELL_DEVICE) as DeviceCell;
 
       cell.onBackgroundClicked = () => {
-        Log.D(this, "onBackgroundClicked");
         item.expanded = !item.expanded;
-//        tableView.ReloadSections(new NSIndexSet((nuint)section), UITableViewRowAnimation.Left);
         tableView.ReloadData();
       };
       cell.onDeviceConnectClicked = () => {
         if (EConnectionState.Disconnected == item.device.connection.connectionState) {
-          item.device.connection.Connect();
+          ion.deviceManager.ConnectDeviceAsync(item.device);
         } else {
-          item.device.connection.Disconnect();
+          ion.deviceManager.DisconnectDevice(item.device);
         }
       };
       cell.Update(item.device);

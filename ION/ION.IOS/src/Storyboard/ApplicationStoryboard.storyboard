@@ -21,52 +21,10 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="CarbonBackground" translatesAutoresizingMaskIntoConstraints="NO" id="qfq-ZZ-134">
                                 <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                 <variation key="widthClass=compact" fixedFrame="YES">
-                                    <rect key="frame" x="0.0" y="64" width="405" height="541"/>
+                                    <rect key="frame" x="0.0" y="20" width="405" height="585"/>
                                 </variation>
                             </imageView>
-                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="23">
-                                <rect key="frame" x="0.0" y="20" width="600" height="44"/>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <color key="barTintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                <textAttributes key="titleTextAttributes">
-                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                </textAttributes>
-                                <items>
-                                    <navigationItem title="Device Manager" id="24">
-                                        <barButtonItem key="rightBarButtonItem" style="plain" id="52">
-                                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="51">
-                                                <rect key="frame" x="0.0" y="0.0" width="69" height="30"/>
-                                                <state key="normal" title="Scanning">
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                            </button>
-                                        </barButtonItem>
-                                    </navigationItem>
-                                </items>
-                            </navigationBar>
-                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="34">
-                                <rect key="frame" x="539" y="0.0" width="20" height="20"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="0oN-2B-nmH"/>
-                                    <constraint firstAttribute="height" constant="20" id="2N8-VG-wyS"/>
-                                </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="0oN-2B-nmH"/>
-                                        <exclude reference="2N8-VG-wyS"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=compact">
-                                    <mask key="constraints">
-                                        <include reference="0oN-2B-nmH"/>
-                                        <include reference="2N8-VG-wyS"/>
-                                    </mask>
-                                </variation>
-                                <variation key="widthClass=regular" ambiguous="YES">
-                                    <rect key="frame" x="739" y="0.0" width="20" height="20"/>
-                                </variation>
-                            </activityIndicatorView>
-                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="64" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="25">
+                            <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="none" allowsSelection="NO" rowHeight="64" sectionHeaderHeight="10" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                                 <rect key="frame" x="0.0" y="72" width="600" height="528"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="sectionIndexBackgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -283,7 +241,7 @@
                                                                 </mask>
                                                             </variation>
                                                         </imageView>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G8L-EK-ZrX" userLabel="buttonDeviceConnect" customClass="NinePatchButtonView">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="G8L-EK-ZrX" userLabel="buttonDeviceConnect">
                                                             <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="64" id="1rg-fq-ULf"/>
@@ -488,20 +446,20 @@
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="760000 micron" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Zk-rV-FQX" userLabel="labelSensorMeasurement">
                                                             <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
-                                                            <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="17"/>
+                                                            <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="16"/>
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                             <variation key="widthClass=compact" fixedFrame="YES">
                                                                 <rect key="frame" x="8" y="27.5" width="202" height="21"/>
                                                             </variation>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZ9-OB-7NE" userLabel="buttonAdd" customClass="NinePatchButtonView">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pZ9-OB-7NE" userLabel="buttonAdd">
                                                             <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="48" id="0Rk-U4-wKD"/>
                                                                 <constraint firstAttribute="height" constant="48" id="THX-7m-WsU"/>
                                                             </constraints>
-                                                            <state key="normal" title="Button" backgroundImage="ButtonGold">
+                                                            <state key="normal" backgroundImage="ButtonGold">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                             <variation key="default">
@@ -517,13 +475,13 @@
                                                                 </mask>
                                                             </variation>
                                                         </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rEZ-TG-ob3" userLabel="buttonWorkbench" customClass="NinePatchButtonView">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rEZ-TG-ob3" userLabel="buttonWorkbench">
                                                             <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="48" id="3if-Um-kTG"/>
                                                                 <constraint firstAttribute="height" constant="48" id="Tt6-R8-7Rc"/>
                                                             </constraints>
-                                                            <state key="normal" title="Button" backgroundImage="ButtonGold">
+                                                            <state key="normal" backgroundImage="ButtonGold">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                             <variation key="default">
@@ -539,13 +497,13 @@
                                                                 </mask>
                                                             </variation>
                                                         </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m2d-mu-6m4" userLabel="buttonAnalyzer" customClass="NinePatchButtonView">
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="m2d-mu-6m4" userLabel="buttonAnalyzer">
                                                             <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="48" id="RJX-Xj-hzu"/>
                                                                 <constraint firstAttribute="height" constant="48" id="kQq-8I-FHa"/>
                                                             </constraints>
-                                                            <state key="normal" title="Button" backgroundImage="ButtonGold">
+                                                            <state key="normal" backgroundImage="ButtonGold">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                             <variation key="default">
@@ -706,33 +664,24 @@
                                     </tableViewCell>
                                 </prototypes>
                                 <sections/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="0.0" y="72" width="400" height="528"/>
-                                </variation>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="34" firstAttribute="top" secondItem="10" secondAttribute="topMargin" id="8K9-Q3-hd6"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="34" secondAttribute="trailing" constant="25" id="FAH-n2-BN0"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="23" secondAttribute="trailing" constant="-16" id="HQK-Tp-hky"/>
-                            <constraint firstItem="23" firstAttribute="top" secondItem="6" secondAttribute="bottom" id="Ng2-Up-74k"/>
-                            <constraint firstItem="25" firstAttribute="top" secondItem="23" secondAttribute="bottom" constant="9" id="OPP-Vg-DNs"/>
-                            <constraint firstItem="25" firstAttribute="leading" secondItem="10" secondAttribute="leadingMargin" constant="-16" id="XhT-Ia-sNu"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="34" secondAttribute="trailing" constant="25" id="crE-wq-T3x"/>
-                            <constraint firstItem="34" firstAttribute="top" secondItem="10" secondAttribute="topMargin" id="fB6-z6-E0y"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="25" secondAttribute="trailing" constant="-16" id="hy0-qS-81P"/>
-                            <constraint firstItem="23" firstAttribute="leading" secondItem="10" secondAttribute="leadingMargin" constant="-16" id="lYx-Ym-nR2"/>
-                            <constraint firstItem="25" firstAttribute="top" secondItem="23" secondAttribute="bottom" constant="9" id="psp-yY-iHp"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="25" secondAttribute="bottom" constant="-1" id="tSV-Dk-dOd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="25" secondAttribute="trailing" constant="-16" id="UZH-0E-DGT"/>
+                            <constraint firstItem="25" firstAttribute="top" secondItem="6" secondAttribute="bottom" id="bEh-54-FF0"/>
+                            <constraint firstItem="25" firstAttribute="leading" secondItem="10" secondAttribute="leadingMargin" constant="-16" id="htx-hQ-NJ6"/>
+                            <constraint firstItem="7" firstAttribute="top" secondItem="25" secondAttribute="bottom" id="tjG-02-eLf"/>
                         </constraints>
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="qfq-ZZ-134"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="crE-wq-T3x"/>
-                                <exclude reference="fB6-z6-E0y"/>
+                                <exclude reference="UZH-0E-DGT"/>
+                                <exclude reference="bEh-54-FF0"/>
+                                <exclude reference="htx-hQ-NJ6"/>
+                                <exclude reference="tjG-02-eLf"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -740,14 +689,14 @@
                                 <include reference="qfq-ZZ-134"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="crE-wq-T3x"/>
-                                <include reference="fB6-z6-E0y"/>
+                                <include reference="UZH-0E-DGT"/>
+                                <include reference="bEh-54-FF0"/>
+                                <include reference="htx-hQ-NJ6"/>
+                                <include reference="tjG-02-eLf"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
-                        <outlet property="buttonScan" destination="51" id="ixu-HS-3CS"/>
-                        <outlet property="spinnerScanActivity" destination="34" id="name-outlet-34"/>
                         <outlet property="tableDeviceList" destination="25" id="name-outlet-25"/>
                     </connections>
                 </viewController>
@@ -785,7 +734,7 @@
         <!--workbenchViewController-->
         <scene sceneID="67">
             <objects>
-                <viewController storyboardIdentifier="workbenchViewController" id="68" userLabel="workbenchViewController" customClass="WorkbenchViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="workbenchViewController" modalTransitionStyle="flipHorizontal" id="68" userLabel="workbenchViewController" customClass="WorkbenchViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="65"/>
                         <viewControllerLayoutGuide type="bottom" id="66"/>
@@ -821,8 +770,11 @@
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="8" y="6" width="186" height="20.5"/>
+                                                                    </variation>
                                                                 </label>
-                                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Qg-N7-Urd" userLabel="imageConnection">
+                                                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Qg-N7-Urd" userLabel="buttonConnection">
                                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                                     <constraints>
                                                                         <constraint firstAttribute="height" constant="32" id="s8B-cF-zAi"/>
@@ -834,13 +786,14 @@
                                                                             <exclude reference="uEh-al-UMK"/>
                                                                         </mask>
                                                                     </variation>
-                                                                    <variation key="widthClass=compact">
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="264" y="0.0" width="32" height="32"/>
                                                                         <mask key="constraints">
                                                                             <include reference="s8B-cF-zAi"/>
                                                                             <include reference="uEh-al-UMK"/>
                                                                         </mask>
                                                                     </variation>
-                                                                </imageView>
+                                                                </button>
                                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="fMO-1E-KWe" userLabel="imageBattery">
                                                                     <rect key="frame" x="0.0" y="0.0" width="240" height="128"/>
                                                                     <constraints>
@@ -853,7 +806,8 @@
                                                                             <exclude reference="rLM-Nk-0T8"/>
                                                                         </mask>
                                                                     </variation>
-                                                                    <variation key="widthClass=compact">
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="202" y="0.0" width="64" height="32"/>
                                                                         <mask key="constraints">
                                                                             <include reference="UqP-cR-ept"/>
                                                                             <include reference="rLM-Nk-0T8"/>
@@ -889,7 +843,8 @@
                                                                     <exclude reference="wRd-Za-NDK"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="widthClass=compact">
+                                                            <variation key="widthClass=compact" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="0.0" width="304" height="32"/>
                                                                 <mask key="subviews">
                                                                     <include reference="XG5-ch-gLs"/>
                                                                     <include reference="9Qg-N7-Urd"/>
@@ -918,7 +873,8 @@
                                                                     <exclude reference="GwV-H4-f6a"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="widthClass=compact">
+                                                            <variation key="widthClass=compact" misplaced="YES">
+                                                                <rect key="frame" x="8" y="32" width="288" height="1"/>
                                                                 <mask key="constraints">
                                                                     <include reference="GwV-H4-f6a"/>
                                                                 </mask>
@@ -959,7 +915,8 @@
                                                                             <exclude reference="iRh-Cu-z2e"/>
                                                                         </mask>
                                                                     </variation>
-                                                                    <variation key="widthClass=compact">
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="72" y="0.0" width="224" height="64"/>
                                                                         <mask key="constraints">
                                                                             <include reference="iRh-Cu-z2e"/>
                                                                         </mask>
@@ -989,7 +946,8 @@
                                                                     <exclude reference="A3X-pU-Zv7"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="widthClass=compact">
+                                                            <variation key="widthClass=compact" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="32" width="304" height="64"/>
                                                                 <mask key="subviews">
                                                                     <include reference="wj3-sc-bve"/>
                                                                     <include reference="WRm-il-oPy"/>
@@ -1037,12 +995,18 @@
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="99" y="0.0" width="106" height="20.5"/>
+                                                                    </variation>
                                                                 </label>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="micron" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="udx-se-ySB">
                                                                     <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                                     <nil key="highlightedColor"/>
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="243" y="0.0" width="52.5" height="20.5"/>
+                                                                    </variation>
                                                                 </label>
                                                             </subviews>
                                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -1076,7 +1040,8 @@
                                                                     <exclude reference="V3y-LX-AeG"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="widthClass=compact">
+                                                            <variation key="widthClass=compact" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="96" width="304" height="21"/>
                                                                 <mask key="subviews">
                                                                     <include reference="hY1-tu-xly"/>
                                                                     <include reference="ame-ku-bZd"/>
@@ -1113,7 +1078,8 @@
                                                                             <exclude reference="eS6-4r-QMn"/>
                                                                         </mask>
                                                                     </variation>
-                                                                    <variation key="widthClass=compact">
+                                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                                        <rect key="frame" x="0.0" y="0.0" width="304" height="21"/>
                                                                         <mask key="constraints">
                                                                             <include reference="eS6-4r-QMn"/>
                                                                         </mask>
@@ -1138,7 +1104,8 @@
                                                                     <exclude reference="guT-s3-KLj"/>
                                                                 </mask>
                                                             </variation>
-                                                            <variation key="widthClass=compact">
+                                                            <variation key="widthClass=compact" misplaced="YES">
+                                                                <rect key="frame" x="0.0" y="117" width="304" height="21"/>
                                                                 <mask key="subviews">
                                                                     <include reference="1Mi-jQ-kfV"/>
                                                                 </mask>
@@ -1197,7 +1164,8 @@
                                                             <exclude reference="zI2-k1-S98"/>
                                                         </mask>
                                                     </variation>
-                                                    <variation key="widthClass=compact">
+                                                    <variation key="widthClass=compact" misplaced="YES">
+                                                        <rect key="frame" x="8" y="0.0" width="304" height="138"/>
                                                         <mask key="subviews">
                                                             <include reference="OCm-uP-rc2"/>
                                                             <include reference="6hk-XR-gYM"/>
@@ -1254,9 +1222,9 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
+                                            <outlet property="buttonConnection" destination="9Qg-N7-Urd" id="l3R-Ag-7br"/>
                                             <outlet property="imageAlarmIcon" destination="ame-ku-bZd" id="lHm-1k-3hu"/>
                                             <outlet property="imageBattery" destination="fMO-1E-KWe" id="sG1-oz-bGc"/>
-                                            <outlet property="imageConnection" destination="9Qg-N7-Urd" id="l3R-Ag-7br"/>
                                             <outlet property="imageSensor" destination="wj3-sc-bve" id="D7b-dn-bKe"/>
                                             <outlet property="labelAlarm" destination="hY1-tu-xly" id="36y-er-TlF"/>
                                             <outlet property="labelConnectionStatus" destination="Cjm-8N-a9S" id="ZYN-vO-TsF"/>
@@ -1278,7 +1246,7 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zfr-7I-hzX" id="8Ii-B1-hNr">
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsl-pK-rCR" customClass="NinePatchButtonView">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fsl-pK-rCR">
                                                     <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="32" id="npb-9T-GwP"/>
@@ -1333,7 +1301,7 @@
                                 </prototypes>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="KE8-5M-Bos" firstAttribute="top" secondItem="65" secondAttribute="bottom" id="0bf-Jr-wxH"/>
                             <constraint firstAttribute="trailingMargin" secondItem="KE8-5M-Bos" secondAttribute="trailing" constant="-16" id="8So-Yh-odn"/>
@@ -1368,9 +1336,9 @@
                                 <include reference="erj-Uw-zEc"/>
                                 <include reference="0bf-Jr-wxH"/>
                                 <include reference="8So-Yh-odn"/>
-                                <include reference="A3u-K4-zIl"/>
+                                <exclude reference="A3u-K4-zIl"/>
                                 <include reference="RFp-Ny-pdl"/>
-                                <include reference="qeJ-NS-fs2"/>
+                                <exclude reference="qeJ-NS-fs2"/>
                             </mask>
                         </variation>
                     </view>
@@ -1784,7 +1752,7 @@
                                             </mask>
                                         </variation>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gXd-on-216" userLabel="buttonPressureUnit" customClass="NinePatchButtonView">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gXd-on-216" userLabel="buttonPressureUnit">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="eAQ-6A-iHg"/>
@@ -2020,7 +1988,7 @@
                                             </mask>
                                         </variation>
                                     </label>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tnH-JX-egC" userLabel="buttonTemperatureUnit" customClass="NinePatchButtonView">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tnH-JX-egC" userLabel="buttonTemperatureUnit">
                                         <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="32" id="Jqq-v4-WOy"/>

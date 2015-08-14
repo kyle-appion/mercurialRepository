@@ -13,33 +13,28 @@ namespace ION.IOS.ViewController.Main
 	partial class DeviceCell
 	{
 		[Outlet]
-    public UIKit.UIActivityIndicatorView activityDeviceConnecting { get; set; }
+		public UIKit.UIActivityIndicatorView activityDeviceConnecting { get; private set; }
 
 		[Outlet]
-    public ION.IOS.UI.NinePatchButtonView buttonDeviceConnect { get; set; }
+		public UIKit.UIButton buttonDeviceConnect { get; private set; }
 
 		[Outlet]
-    public UIKit.UIImageView imageDeviceIcon { get; set; }
+		public UIKit.UIImageView imageDeviceIcon { get; private set; }
 
 		[Outlet]
-    public UIKit.UILabel labelDeviceName { get; set; }
+		public UIKit.UILabel labelDeviceName { get; private set; }
 
 		[Outlet]
-    public UIKit.UILabel labelDeviceType { get; set; }
+		public UIKit.UILabel labelDeviceType { get; private set; }
 
 		[Outlet]
-    public UIKit.UIView viewBackground { get; set; }
+		public UIKit.UIView viewBackground { get; private set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (viewBackground != null) {
-				viewBackground.Dispose ();
-				viewBackground = null;
-			}
-
-			if (imageDeviceIcon != null) {
-				imageDeviceIcon.Dispose ();
-				imageDeviceIcon = null;
+			if (activityDeviceConnecting != null) {
+				activityDeviceConnecting.Dispose ();
+				activityDeviceConnecting = null;
 			}
 
 			if (buttonDeviceConnect != null) {
@@ -47,9 +42,14 @@ namespace ION.IOS.ViewController.Main
 				buttonDeviceConnect = null;
 			}
 
-			if (activityDeviceConnecting != null) {
-				activityDeviceConnecting.Dispose ();
-				activityDeviceConnecting = null;
+			if (imageDeviceIcon != null) {
+				imageDeviceIcon.Dispose ();
+				imageDeviceIcon = null;
+			}
+
+			if (labelDeviceName != null) {
+				labelDeviceName.Dispose ();
+				labelDeviceName = null;
 			}
 
 			if (labelDeviceType != null) {
@@ -57,9 +57,9 @@ namespace ION.IOS.ViewController.Main
 				labelDeviceType = null;
 			}
 
-			if (labelDeviceName != null) {
-				labelDeviceName.Dispose ();
-				labelDeviceName = null;
+			if (viewBackground != null) {
+				viewBackground.Dispose ();
+				viewBackground = null;
 			}
 		}
 	}

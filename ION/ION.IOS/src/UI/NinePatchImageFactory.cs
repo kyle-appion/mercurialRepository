@@ -125,7 +125,7 @@ namespace ION.IOS.UI {
 
       float[,] alphaImage = GetAlphasFromImage(ninePatch, 0, 0, width * height);
 
-      // The width scale section of a ninepatch is only valid from 0 - image.width EXCLUDING the first and last pixel (cntd.)
+      // The width scale section of a ninepatch is only valid from 0 - image.width EXCLUDING the first and last pixel (ctnd.)
       float[] npWidthBar = new float[width];
       float[] npHeightBar = new float[height];
       for (int w = 0; w < width; w++) {
@@ -176,7 +176,9 @@ namespace ION.IOS.UI {
 
       // Ensure that the image is valid
       if (left == -1 || right == -1 || top == -1 || bottom == -1) {
-        throw new ArgumentException("Cannot create ninepatch image: ninepatch scale bars invalid {l:" + left + ", t: " + top + ", r:" + right + " b:" + bottom + "}");
+        Log.E("NinePathImageFactory", "Failed to parse ninepatch. Returning image instead.");
+        return ninePatch;
+//        throw new ArgumentException("Cannot create ninepatch image: ninepatch scale bars invalid {l:" + left + ", t: " + top + ", r:" + right + " b:" + bottom + "}");
       }
 
       var cropImage = ninePatch.Crop(new CGRect(1, 1, width - 3, height - 3));

@@ -56,5 +56,7 @@ convertPdf() {
   done
 }
 
-convertPdf
-#convertPng 32 # convert 64 convert 96
+#convertPdf
+convertPng 32
+convertPng 64
+convertPng 96

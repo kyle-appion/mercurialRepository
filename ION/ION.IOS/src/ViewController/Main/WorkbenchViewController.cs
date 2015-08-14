@@ -14,6 +14,7 @@ using ION.Core.Util;
 using ION.IOS.Devices;
 using ION.IOS.Sensors;
 using ION.IOS.UI;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Main {
 	public partial class WorkbenchViewController : UIViewController {
@@ -35,6 +36,11 @@ namespace ION.IOS.ViewController.Main {
     // Overridden from UIViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
+
+      Title = Strings.Workbench.SELF.FromResources();
+//      this.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, delegate {
+//        Toast.New(tableContent, "Huh?!");
+//      });
 
       ion = AppState.context;
 
@@ -123,7 +129,6 @@ namespace ION.IOS.ViewController.Main {
     public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
       var secCount = NumberOfSections(tableView); 
       if (section <= secCount - 2) {
-        Log.D(this, __cellHeights[CELL_VIEWER] + "");
         return 138;//__cellHeights[CELL_VIEWER];
       } else if (section == secCount - 1) {
         return 32;//__cellHeights[CELL_ADD];
@@ -149,17 +154,17 @@ namespace ION.IOS.ViewController.Main {
         var manifold = __workbench[(int)section];
         viewer.manifold = manifold;
         viewer.onViewerClicked = () => {
-          var dialog = UIAlertController.Create("BAD STRING Context Menu", "BAD STRING Selected a viewer context item", UIAlertControllerStyle.ActionSheet);
+          var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.ActionSheet);
 
           if (manifold.primarySensor is GaugeDeviceSensor) {
             var sensor = manifold.primarySensor as GaugeDeviceSensor;
             // Append gauge device sensor context items
             if (sensor.device.isConnected) {
-              dialog.AddAction(UIAlertAction.Create("BAD STRING Disconnect", UIAlertActionStyle.Default, (action) => {
+              dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
                 sensor.device.connection.Disconnect();
               }));
             } else {
-              dialog.AddAction(UIAlertAction.Create("BAD STRING Reconnect", UIAlertActionStyle.Default, (action) => {
+              dialog.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
                 sensor.device.connection.Connect();
               }));
             }
@@ -173,11 +178,16 @@ namespace ION.IOS.ViewController.Main {
             Toast.New(__table, "Subviews coming soon!");
           }));
 
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Rename", UIAlertActionStyle.Default, (action) => {
+          dialog.AddAction(UIAlertAction.Create(Strings.RENAME.FromResources(), UIAlertActionStyle.Default, (action) => {
             Toast.New(__table, "Rename coming soon!");
           }));
 
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Cancel", UIAlertActionStyle.Cancel, null));
+          dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE.FromResources(), UIAlertActionStyle.Default, (action) => {
+            __workbench.Remove(manifold);
+            __table.ReloadData();
+          }));
+
+          dialog.AddAction(UIAlertAction.Create(Strings.CANCEL.FromResources(), UIAlertActionStyle.Cancel, null));
 
           // Requires for iPad- we must specify a source for the action sheet
           // since it is displayed as a popover

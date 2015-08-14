@@ -5,6 +5,7 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.Core.App;
 using ION.Core.Sensors;
 using ION.Core.Util;
 
@@ -84,28 +85,27 @@ namespace ION.IOS.ViewController.Main {
     // Overriden from UITableCellView
     public override void AwakeFromNib() {
       base.AwakeFromNib();
-      buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
-      buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+      buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonWorkbench.TouchUpInside += (object sender, EventArgs e) => {
-        Log.D(this, "Workbench clicked");
         if (onWorkbenchClicked != null) {
           onWorkbenchClicked();
         }
       };
 
-      buttonAnalyzer.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
-      buttonAnalyzer.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+      buttonAnalyzer.Hidden = true; // TODO ahodder@appioninc.com: Hidden until analyzer is implemented.
+      buttonAnalyzer.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonAnalyzer.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonAnalyzer.TouchUpInside += (object sender, EventArgs e) => {
-        Log.D(this, "Analyzer clicked");
         if (onAnalyzerClicked != null) {
           onAnalyzerClicked();
         }
       };
 
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+      buttonAdd.Hidden = true; // TODO ahodder@appioninc.com: Hidden until viewcontroller call support is working.
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonAdd.TouchUpInside += (object sender, EventArgs e) => {
-        Log.D(this, "Add clicked");
         if (onAddClicked != null) {
           onAddClicked();
         }

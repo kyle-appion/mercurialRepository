@@ -96,6 +96,27 @@
     <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\img_bgd_carbon.png" />
     <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\buttonBlack.9.png" />
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\buttonGold.9.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\ic_devices_on_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_100.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_75.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_50.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_25.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\np_white_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\np_green_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\np_light_blue_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\np_red_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_c3_disconnected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_c3_paired.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -169,12 +190,10 @@
     <Compile Include="src\Connections\IosLeConnection.cs" />
     <Compile Include="src\Util\NSExtensions.cs" />
     <Compile Include="src\UI\NinePatchImageFactory.cs" />
-    <Compile Include="src\UI\NinePatchImageView.cs" />
     <Compile Include="src\UI\NinePatchButtonView.cs" />
     <Compile Include="src\UI\NinePatchButtonView.designer.cs">
       <DependentUpon>NinePatchButtonView.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Main\DeviceManagerSource.cs" />
     <Compile Include="src\ViewController\Main\DeviceSource.cs" />
     <Compile Include="src\ViewController\Main\SensorCell.cs" />
     <Compile Include="src\ViewController\Main\SensorCell.designer.cs">
@@ -197,6 +216,7 @@
     <Compile Include="src\ViewController\Main\Viewer.designer.cs">
       <DependentUpon>Viewer.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\UI\UIImageExtensions.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -210,6 +230,7 @@
     <Folder Include="src\ViewController\Main\" />
     <Folder Include="src\UI\" />
     <Folder Include="src\ViewController\Ancillary\" />
+    <Folder Include="Resources\output\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
@@ -326,6 +347,85 @@
     <BundleResource Include="Resources\fluids\RE245CB2.dat" />
     <BundleResource Include="Resources\fluids\RE245FA2.dat" />
     <BundleResource Include="Resources\fluids\RE347MCC.dat" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_100.imageset\img_battery_100.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_25.imageset\img_battery_25.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_action_accept.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_action_edit.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_alarm_active.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_alarm_add.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleleft_gold.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleleft_white.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleright_gold.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleright_white.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downblack.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downfloor.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downwhite.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_trenddown.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_trendup.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upblack.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upcieling.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upwhite.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_association.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_association_linked.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_broadcast.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_disconnected.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_paired.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_connected.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_connected_gray.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_disconnected.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_disconnected_gray.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_bookmark.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_compressor.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add-return.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add-to-analyzer.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_on-analyzer.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_on-wbench.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_document.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_drawer.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_expansionchamber.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_folder.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_list.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_analyzer.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_certificate.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_certificates.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_devmanager.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_power.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_ptconversion.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_screenshot.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_supersub.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_workbench.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_power.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_refresh.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugeav760.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep300.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep500.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep800.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_search.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_settings.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_subview_dropdown.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_swap.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\ic_trash.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_background_connected.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_background_disconnected.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_dialog.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_gaugeface.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_blue.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_gray.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_white.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_subviewdisplay.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_button_blackclosex.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_button_down_gold.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_button_up_gold.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_button_whiteclosex.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_gradient_scan.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_handle_left.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_handle_right.pdf" />
+    <BundleResource Include="Resources\output\TRASH\pdf\img_selection.pdf" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

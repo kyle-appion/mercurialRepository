@@ -13,43 +13,33 @@ namespace ION.IOS.ViewController.Main
 	partial class SensorCell
 	{
 		[Outlet]
-		public ION.IOS.UI.NinePatchButtonView buttonAdd { get; set; }
+		public UIKit.UIButton buttonAdd { get; private set; }
 
 		[Outlet]
-    public ION.IOS.UI.NinePatchButtonView buttonAnalyzer { get; set; }
+		public UIKit.UIButton buttonAnalyzer { get; private set; }
 
 		[Outlet]
-    public ION.IOS.UI.NinePatchButtonView buttonWorkbench { get; set; }
+		public UIKit.UIButton buttonWorkbench { get; private set; }
 
 		[Outlet]
-    public UIKit.UILabel labelSensorMeasurement { get; set; }
+		public UIKit.UILabel labelSensorMeasurement { get; private set; }
 
 		[Outlet]
-    public UIKit.UILabel labelSensorType { get; set; }
+		public UIKit.UILabel labelSensorType { get; private set; }
 
 		[Outlet]
-    public UIKit.UIView viewBackground { get; set; }
+		public UIKit.UIView viewBackground { get; private set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (viewBackground != null) {
-				viewBackground.Dispose ();
-				viewBackground = null;
-			}
-
-			if (labelSensorType != null) {
-				labelSensorType.Dispose ();
-				labelSensorType = null;
-			}
-
-			if (labelSensorMeasurement != null) {
-				labelSensorMeasurement.Dispose ();
-				labelSensorMeasurement = null;
-			}
-
 			if (buttonAdd != null) {
 				buttonAdd.Dispose ();
 				buttonAdd = null;
+			}
+
+			if (buttonAnalyzer != null) {
+				buttonAnalyzer.Dispose ();
+				buttonAnalyzer = null;
 			}
 
 			if (buttonWorkbench != null) {
@@ -57,9 +47,19 @@ namespace ION.IOS.ViewController.Main
 				buttonWorkbench = null;
 			}
 
-			if (buttonAnalyzer != null) {
-				buttonAnalyzer.Dispose ();
-				buttonAnalyzer = null;
+			if (labelSensorMeasurement != null) {
+				labelSensorMeasurement.Dispose ();
+				labelSensorMeasurement = null;
+			}
+
+			if (labelSensorType != null) {
+				labelSensorType.Dispose ();
+				labelSensorType = null;
+			}
+
+			if (viewBackground != null) {
+				viewBackground.Dispose ();
+				viewBackground = null;
 			}
 		}
 	}

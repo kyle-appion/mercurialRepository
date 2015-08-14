@@ -19,7 +19,7 @@ namespace ION.IOS.ViewController.Main
     public UIKit.UIImageView imageBattery { get; set; }
 
 		[Outlet]
-    public UIKit.UIImageView imageConnection { get; set; }
+    public UIKit.UIButton buttonConnection { get; set; }
 
 		[Outlet]
     public UIKit.UIImageView imageSensor { get; set; }
@@ -77,9 +77,9 @@ namespace ION.IOS.ViewController.Main
 				labelHeader = null;
 			}
 
-			if (imageConnection != null) {
-				imageConnection.Dispose ();
-				imageConnection = null;
+      if (buttonConnection != null) {
+        buttonConnection.Dispose ();
+        buttonConnection = null;
 			}
 
 			if (imageBattery != null) {

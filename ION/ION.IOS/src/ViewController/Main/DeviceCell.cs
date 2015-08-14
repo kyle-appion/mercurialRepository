@@ -32,14 +32,14 @@ namespace ION.IOS.ViewController.Main {
       }
       set {
         if (__device != null) {
-          __device.onStateChanged -= OnDeviceStateChanged;
+          __device.onContentChanged -= OnDeviceContentChanged;
         }
 
         __device = value;
 
         if (__device != null) {
-          __device.onStateChanged += OnDeviceStateChanged;
-          OnDeviceStateChanged(__device);
+          __device.onContentChanged += OnDeviceContentChanged;
+          OnDeviceContentChanged(__device);
         }
       }
     } IDevice __device;
@@ -58,8 +58,8 @@ namespace ION.IOS.ViewController.Main {
         }
       }));
 
-      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold"), UIControlState.Normal);
-      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack"), UIControlState.Highlighted);
+      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonDeviceConnect.TouchUpInside += (object sender, EventArgs e) => {
         if (onDeviceConnectClicked != null) {
           onDeviceConnectClicked();
@@ -75,7 +75,7 @@ namespace ION.IOS.ViewController.Main {
       this.device = device;      
     }
 
-    private void OnDeviceStateChanged(IDevice device) {
+    private void OnDeviceContentChanged(IDevice device) {
       imageDeviceIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       labelDeviceType.Text = device.serialNumber.deviceModel.GetTypeString();
       labelDeviceName.Text = device.name;

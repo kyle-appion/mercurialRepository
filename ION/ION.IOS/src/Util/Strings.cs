@@ -15,21 +15,29 @@ namespace ION.IOS.Util {
   /// safely access resource strings.
   /// </summary>
   public static class Strings {
+    public const String
+      CANCEL = "cancel",
+      RENAME = "rename",
+      UNKNOWN = "unknown"
+      ;
 
     public static class Device {
       public const string
         AVAILABLE = "device_available",
         CONNECTED = "device_connected",
+        DISCONNECT = "device_disconnect",
         DISCONNECTED = "device_disconnected",
         LONG_RANGE = "device_long_range",
         NAME = "device_name",
         NEW_DEVICES = "device_new_devices",
+        RECONNECT = "device_reconnect",
         SERIAL_NUMBER = "device_serial_number",
         TYPE = "device_type"
         ;
 
       public static class Manager {
         public const string
+          SELF = "device_manager",
           SCAN = "device_manager_scan",
           SCANNING = "device_manager_scanning"
           ;
@@ -61,6 +69,14 @@ namespace ION.IOS.Util {
           ;
       } // End Strings.Sensor.Type
     } // End Strings.Sensor
+
+    public static class Workbench {
+      public const string
+        SELF = "workbench",
+        REMOVE = "workbench_remove",
+        SELECT_VIEWER_ACTION = "workbench_select_viewer_action"
+        ;
+    } // End Strings.Workbench
   } // End Strings
 
   /// <summary>

@@ -26,6 +26,12 @@ namespace ION.Core.Devices {
   public delegate void OnDeviceStateChanged(IDevice device);
 
   /// <summary>
+  /// The delegate that is notified when the device's content changes
+  /// (ie. readings, name etc...).
+  /// </summary>
+  public delegate void OnDeviceContentChanged(IDevice device);
+
+  /// <summary>
   /// The contract for an ION device.
   /// </summary>
   public interface IDevice : IDisposable {
@@ -34,6 +40,11 @@ namespace ION.Core.Devices {
     /// connection state changes
     /// </summary>
     event OnDeviceStateChanged onStateChanged;
+    /// <summary>
+    /// The event registery that will be notified when the device's
+    /// content changes.
+    /// </summary>
+    event OnDeviceContentChanged onContentChanged;
     /// <summary>
     /// Queries the serial number of the device.
     /// </summary>
@@ -88,6 +99,8 @@ namespace ION.Core.Devices {
     // Overridden from IDevice
     public event OnDeviceStateChanged onStateChanged;
     // Overridden from IDevice
+    public event OnDeviceContentChanged onContentChanged;
+    // Overridden from IDevice
     public ISerialNumber serialNumber { get { return __serialNumber; } } GaugeSerialNumber __serialNumber;
     // Overridden from IDevice
     public EDeviceType type { get { return __serialNumber.deviceType; } }
@@ -98,7 +111,7 @@ namespace ION.Core.Devices {
       }
       set {
         __name = value;
-        NotifyOfStateChange();
+        NotifyOfContentChange();
       }
     } string __name;
     // Overridden from IDevice
@@ -180,7 +193,7 @@ namespace ION.Core.Devices {
             }
 
             if (changed) {
-              NotifyOfStateChange();
+              NotifyOfContentChange();
             }
           } else {
             throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
@@ -203,6 +216,15 @@ namespace ION.Core.Devices {
     private void NotifyOfStateChange() {
       if (onStateChanged != null) {
         onStateChanged(this);
+      }
+    }
+
+    /// <summary>
+    /// Notifies the device's onContentChange delegates that it has changed.
+    /// </summary>
+    private void NotifyOfContentChange() {
+      if (onContentChanged != null) {
+        onContentChanged(this);
       }
     }
   }

@@ -17,14 +17,11 @@ namespace ION.IOS.UI {
 
     // Overridden from UIButton
     public override void SetBackgroundImage(UIImage image, UIControlState state) {
-      Log.D(this, "setBackgroundImage");
-      var v = NinePatchImageFactory.CreateResizableNinePatchImage(image);
-      base.SetBackgroundImage(v, state);
+      base.SetBackgroundImage(NinePatchImageFactory.CreateResizableNinePatchImage(image), state);
     }
 
     // Overridden from UIButton
     public override void SetImage(UIImage image, UIControlState state) {
-      Log.D(this, "setImage");
       base.SetImage(NinePatchImageFactory.CreateResizableNinePatchImage(image), state);
     }
 	}

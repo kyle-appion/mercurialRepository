@@ -13,32 +13,16 @@ namespace ION.IOS.ViewController.Main
 	partial class DeviceManagerViewController
 	{
 		[Outlet]
-		UIKit.UIButton buttonScan { get; set; }
+		public UIKit.UIView deviceManagerViewController { get; set; }
 
 		[Outlet]
-		UIKit.UIView deviceManagerViewController { get; set; }
-
-		[Outlet]
-		UIKit.UIActivityIndicatorView spinnerScanActivity { get; set; }
-
-		[Outlet]
-		UIKit.UITableView tableDeviceList { get; set; }
+		public UIKit.UITableView tableDeviceList { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (buttonScan != null) {
-				buttonScan.Dispose ();
-				buttonScan = null;
-			}
-
 			if (deviceManagerViewController != null) {
 				deviceManagerViewController.Dispose ();
 				deviceManagerViewController = null;
-			}
-
-			if (spinnerScanActivity != null) {
-				spinnerScanActivity.Dispose ();
-				spinnerScanActivity = null;
 			}
 
 			if (tableDeviceList != null) {

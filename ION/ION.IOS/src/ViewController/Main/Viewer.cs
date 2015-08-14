@@ -50,11 +50,12 @@ namespace ION.IOS.ViewController.Main {
     public override void AwakeFromNib() {
       base.AwakeFromNib();
 
+      viewBackground.Layer.CornerRadius = 10f;
+
       viewBackground.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         if (onViewerClicked != null) {
           onViewerClicked();
         }
-
       }));
     }
 
@@ -68,6 +69,32 @@ namespace ION.IOS.ViewController.Main {
     private void UpdateToGaugeDeviceSensor(GaugeDeviceSensor sensor) {
       // Set header content
       labelHeader.Text = sensor.device.serialNumber.deviceModel.GetTypeString() + ": " + sensor.device.name;
+
+      if (sensor.device.isConnected) {
+        imageBattery.Hidden = false;
+        imageBattery.TintColor = new UIColor(Colors.BLACK);
+        if (sensor.device.battery >= 100) {
+          imageBattery.Image = UIImage.FromBundle("img_battery_100");
+        } else if (sensor.device.battery >= 75) {
+          imageBattery.Image = UIImage.FromBundle("img_battery_75");
+        } else if (sensor.device.battery >= 50) {
+          imageBattery.Image = UIImage.FromBundle("img_battery_50");
+        } else if (sensor.device.battery >= 25) {
+          imageBattery.TintColor = new UIColor(Colors.RED);
+          imageBattery.Image = UIImage.FromBundle("img_battery_25");
+        } else {
+          imageBattery.TintColor = new UIColor(Colors.RED);
+          imageBattery.Image = UIImage.FromBundle("img_battery_0");
+        }
+
+        buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_green_background_bordered").AsNinePatch(), UIControlState.Normal);
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_connected").AsNinePatch(), UIControlState.Normal);
+      } else {
+        imageBattery.Hidden = true;
+
+        buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_red_background_bordered").AsNinePatch(), UIControlState.Normal);
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected").AsNinePatch(), UIControlState.Normal);
+      }
 
       // Set primary content
       imageSensor.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);

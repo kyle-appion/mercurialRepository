@@ -35,9 +35,10 @@ namespace ION.IOS.ViewController.Main {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      buttonScan.TouchUpInside += (object sender, EventArgs e) => {
+      NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
         ion.deviceManager.DoActiveScanAsync();
-      };
+      });
 
       ion.deviceManager.onDeviceFound += HandleDeviceFound;
       ion.deviceManager.onDeviceManagerStateChanged += HandleDeviceManagerStateChanged;
@@ -112,11 +113,11 @@ namespace ION.IOS.ViewController.Main {
     private void HandleDeviceManagerStateChanged(IDeviceManager dm, EDeviceManagerState state) {
       switch (state) {
         case EDeviceManagerState.ActiveScanning: {
-          buttonScan.TitleLabel.Text = Strings.Device.Manager.SCANNING.FromResources();
+          NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
           break;
         }
         default: {
-          buttonScan.TitleLabel.Text = Strings.Device.Manager.SCAN.FromResources();
+          NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
           break;
         }
       }

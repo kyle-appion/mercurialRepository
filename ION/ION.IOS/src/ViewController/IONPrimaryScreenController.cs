@@ -11,6 +11,7 @@ using FlyoutNavigation;
 using ION.Core.Util;
 
 using ION.IOS.App;
+using ION.IOS.Util;
 using ION.IOS.ViewController.Main;
 using ION.IOS.ViewController.Calculators;
 
@@ -66,6 +67,7 @@ namespace ION.IOS.ViewController {
       // Create the navigation drawer
       navigation = new FlyoutNavigationController();
       navigation.View.Frame = UIScreen.MainScreen.Bounds;
+//      navigation.NavigationController.View.BackgroundColor = new UIColor(Colors.BLACK);
       View.AddSubview(navigation.View);
 
       navigation.NavigationRoot = new RootElement("Navigation Menu") {

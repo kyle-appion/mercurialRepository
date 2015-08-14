@@ -6,18 +6,26 @@ All entries within this file should be reflected in the Util.Strings.cs
 file.
 */
 
+/* APP */
+"cancel" = "Cancel";
+"rename" = "Rename";
+"unknown" = "Unknown";
+
 /* DEVICE */
 "device_available" = "Available";
 "device_connected" = "Connected";
+"device_disconnect" = "Disconnect";
 "device_disconnected" = "Disconnected";
 "device_long_range" = "Long Range";
 "device_name" = "Device Name";
 "device_new_devices" = "New Devices Found";
+"device_reconnect" = "Reconnect";
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
 
 
 /* DEVICE MANAGER */
+"device_manager" = "Device Manager";
 "device_manager_scan" = "Scan";
 "device_manager_scanning" = "Scanning";
 
@@ -39,3 +47,8 @@ file.
 "sensor_type_temperature" = "Temperature";
 "sensor_type_vacuum" = "Vacuum";
 "sensor_type_unknown" = "Unknown";
+
+/* WORKBENCH */
+"workbench" = "Workbench";
+"workbench_remove" = "Remove From Workbench";
+"workbench_select_viewer_action" = "Select a viewer action";
