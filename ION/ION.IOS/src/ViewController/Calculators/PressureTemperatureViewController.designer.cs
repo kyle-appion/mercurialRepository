@@ -13,9 +13,6 @@ namespace ION.IOS.ViewController.Calculators
 	partial class PressureTemperatureViewController
 	{
 		[Outlet]
-		public UIKit.UIButton buttonHelp { get; set; }
-
-		[Outlet]
     public UIKit.UIButton buttonPressureUnit { get; set; }
 
 		[Outlet]
@@ -72,11 +69,6 @@ namespace ION.IOS.ViewController.Calculators
 			if (labelFluidName != null) {
 				labelFluidName.Dispose ();
 				labelFluidName = null;
-			}
-
-			if (buttonHelp != null) {
-				buttonHelp.Dispose ();
-				buttonHelp = null;
 			}
 
 			if (switchDewBubble != null) {

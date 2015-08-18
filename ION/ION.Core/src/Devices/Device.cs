@@ -84,6 +84,12 @@ namespace ION.Core.Devices {
     /// Queries whether or not the device is known by it device manager.
     /// </summary>
     bool isKnown { get; }
+
+    /// <summary>
+    /// Informs the device that is should hanldle the given packet.
+    /// </summary>
+    /// <param name="packet">Packet.</param>
+    void HandlePacket(byte[] packet);
   }
 
   /// <summary>
@@ -172,42 +178,47 @@ namespace ION.Core.Devices {
       });
 
       connection.onDataReceived += ((IConnection conn, byte[] packet) => {
-        try {
-          GaugePacket gp = protocol.ParsePacket(packet);
-
-          if (sensorCount == gp.gaugeReadings.Length) {
-            battery = gp.battery;
-
-            var changed = false;
-
-            for (int i = 0; i < sensorCount; i++) {
-              GaugeReading reading = gp.gaugeReadings[i];
-              if (reading.sensorType != this[i].sensorType) {
-                throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-                  this[i].sensorType + " is not valid with received type " + reading.sensorType);
-              }
-              if (this[i].measurement != gp.gaugeReadings[i].reading) {
-                this[i].measurement = gp.gaugeReadings[i].reading;
-                changed = true;
-              }
-            }
-
-            if (changed) {
-              NotifyOfContentChange();
-            }
-          } else {
-            throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
-          }
-        } catch (Exception e) {
-          // TODO ahodder@appioninc.com: Consider exposing?
-//          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
-        }
+        HandlePacket(packet);
       });
     }
 
     // Overridden from IDevice
     public void Dispose() {
       // TODO ahodder@appioninc.com: Implement this and release all callbacks
+    }
+
+    // Overridden from IDevice
+    public void HandlePacket(byte[] packet) {
+      try {
+        GaugePacket gp = __protocol.ParsePacket(packet);
+
+        if (sensorCount == gp.gaugeReadings.Length) {
+          battery = gp.battery;
+
+          var changed = false;
+
+          for (int i = 0; i < sensorCount; i++) {
+            GaugeReading reading = gp.gaugeReadings[i];
+            if (reading.sensorType != this[i].sensorType) {
+              throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
+                this[i].sensorType + " is not valid with received type " + reading.sensorType);
+            }
+            if (this[i].measurement != gp.gaugeReadings[i].reading) {
+              this[i].measurement = gp.gaugeReadings[i].reading;
+              changed = true;
+            }
+          }
+
+          if (changed) {
+            NotifyOfContentChange();
+          }
+        } else {
+          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
+        }
+      } catch (Exception e) {
+        // TODO ahodder@appioninc.com: Consider exposing?
+        //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
+      }
     }
 
     /// <summary>

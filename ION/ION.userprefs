@@ -1,16 +1,23 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/Main/DeviceManagerSource.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/Devices/IOSDeviceManager.cs">
     <Files>
-      <File FileName="ION.IOS/src/ViewController/Main/DeviceManagerViewController.cs" Line="54" Column="50" />
-      <File FileName="ION.IOS/src/ViewController/Main/SensorCell.designer.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/Main/SingleSensorDeviceCell.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/Main/SingleSensorDeviceCell.designer.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/Main.cs" Line="1" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/Main/SensorView.cs" Line="76" Column="33" />
-      <File FileName="ION.IOS/src/ViewController/Main/SensorView.designer.cs" Line="24" Column="12" />
-      <File FileName="ION.IOS/src/ViewController/Main/DeviceCell.cs" Line="38" Column="113" NotebookId="1" />
-      <File FileName="ION.IOS/src/ViewController/Main/DeviceManagerSource.cs" Line="99" Column="58" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/Main/DeviceManagerViewController.cs" Line="33" Column="30" />
+      <File FileName="ION.IOS/src/Connections/IosLeConnection.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Devices/Device.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/Main/WorkbenchViewController.cs" Line="163" Column="41" />
+      <File FileName="ION.IOS/Main.cs" Line="14" Column="1" />
+      <File FileName="ION.Core/src/Devices/DeviceFactory.cs" Line="135" Column="7" />
+      <File FileName="ION.Core/src/Devices/Protocols/Protocol.cs" Line="43" Column="5" />
+      <File FileName="ION.IOS/src/ViewController/Main/SensorCell.cs" Line="134" Column="44" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/Main/DeviceSource.cs" Line="341" Column="25" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/BaseIONViewController.cs" Line="38" Column="56" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/IONPrimaryScreenController.cs" Line="107" Column="71" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/SerialNumber.cs" Line="32" Column="49" NotebookId="1" />
+      <File FileName="ION.IOS/src/Devices/IOSDeviceManager.cs" Line="160" Column="33" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Protocols/BaseBinaryProtocol.cs" Line="13" Column="19" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Protocols/BleV1Protocol.cs" Line="16" Column="25" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Protocols/BleV3Protocol.cs" Line="66" Column="20" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

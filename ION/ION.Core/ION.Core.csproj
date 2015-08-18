@@ -72,6 +72,10 @@
     <Compile Include="src\Database\DeviceDao.cs" />
     <Compile Include="src\Util\DateTime.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
+    <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
+    <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
+    <Compile Include="src\Devices\Protocols\BleV2Protocol.cs" />
+    <Compile Include="src\Devices\ScanMode.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

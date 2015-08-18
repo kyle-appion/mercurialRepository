@@ -131,6 +131,7 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorUpdated(Sensor sensor) {
+      Log.D(this, sensor.measurement + "");
       labelSensorType.Text = sensor.sensorType.GetTypeString();
       labelSensorMeasurement.Text = sensor.measurement.ToString();
     }

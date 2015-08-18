@@ -33,6 +33,23 @@ namespace ION.IOS.ViewController.Main {
     private const string CELL_SERIAL_NUMBER = "cellSerialNumber";
 
     /// <summary>
+    /// The maximum number of devices that can be expanded.
+    /// </summary>
+    /// <value>The max expanded.</value>
+    public int maxExpanded {
+      get {
+        return __maxExpanded;
+      }
+      set {
+        __maxExpanded = value;
+        if (__maxExpanded < 1) {
+          __maxExpanded = 1;
+        }
+        EnsureExpansionCount();
+      }
+    } int __maxExpanded = 1;
+
+    /// <summary>
     /// The ION context.
     /// </summary>
     /// <value>The ion.</value>
@@ -46,6 +63,10 @@ namespace ION.IOS.ViewController.Main {
     /// The items that the source will provide cells for.
     /// </summary>
     private List<Item> __items = new List<Item>();
+    /// <summary>
+    /// The queue of items that have been expanded.
+    /// </summary>
+    private List<IDevice> __expansionHistory = new List<IDevice>();
 
 
     public DeviceSource(IION ion, UITableView table) {
@@ -64,7 +85,7 @@ namespace ION.IOS.ViewController.Main {
       switch (item.type) {
         case SectionType.Device:
           var deviceItem = item as DeviceItem;
-          if (deviceItem.expanded) {
+          if (IsDeviceExpanded(deviceItem.device)) {
             var gaugeDevice = deviceItem.device as GaugeDevice;
             return gaugeDevice.sensorCount + 1;
           } else {
@@ -145,8 +166,14 @@ namespace ION.IOS.ViewController.Main {
             if (!ion.currentWorkbench.ContainsSensor(sensor)) {
               ion.currentWorkbench.AddSensor(sensor);
             }
+            // TODO ahodder@appioninc.com: Fix this to reload the exact cell.
+            // I could not figure it out. Every time I call
+            // table.ReloadRows(new NSIndexPath[] { indexPath }, Fade);
+            // the reload would update the row and delete the rest of the table.
+            //Am confused and hating of this call.
+            table.ReloadData();
           };
-          cell.Update(gaugeDevice[row]);
+          cell.Update(sensor);
 
           cell.buttonWorkbench.SetImage(UIImage.FromBundle("ic_device_add_to_workbench"), UIControlState.Normal);
 
@@ -177,6 +204,103 @@ namespace ION.IOS.ViewController.Main {
     }
 
     /// <summary>
+    /// Queries the index path of the given device.
+    /// </summary>
+    /// <returns>The index path of device or null if the device is not in the source.</returns>
+    /// <param name="device">Device.</param>
+    public NSIndexPath GetIndexPathOfDevice(IDevice device) {
+      for (int i = 0; i < __items.Count; i++) {
+        var deviceItem = __items[i] as DeviceItem;
+        if (deviceItem == null) {
+          continue;
+        }
+        if (deviceItem.device.Equals(device)) {
+          return NSIndexPath.FromIndex((nuint)i);
+        }
+      }
+
+      return null;
+    }
+
+    /// <summary>
+    /// Queries whether or not the given device is expanded.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is device expanded the specified device; otherwise, <c>false</c>.</returns>
+    /// <param name="device">Device.</param>
+    public bool IsDeviceExpanded(IDevice device) {
+      return __expansionHistory.Contains(device);
+    }
+
+    /// <summary>
+    /// Expands the given device. If the number of expanded devices
+    /// exceeds the max number of expanded items, then we will collpase the oldest
+    /// expanded items. If the given index path does not point to a valid device item,
+    /// then the expand will silently fail.
+    /// </summary>
+    /// <param name="indexPath">Index path.</param>
+    public void ExpandDevice(IDevice device) {
+      var deviceItem = __items[(int)GetIndexPathOfDevice(device).Section] as DeviceItem;
+      if (deviceItem == null || IsDeviceExpanded(device)) {
+        return;
+      }
+      __expansionHistory.Add(device);
+      EnsureExpansionCount();
+      table.ReloadData();
+    }
+
+    /// <summary>
+    /// Collapses the given device. If the given index path does not
+    /// point to a valid device item, then the expand will silently fail.
+    /// </summary>
+    /// <param name="indexPath">Index path.</param>
+    public void CollapseDevice(IDevice device) {
+      var deviceItem = __items[(int)GetIndexPathOfDevice(device).Section] as DeviceItem;
+      if (deviceItem == null || !IsDeviceExpanded(device)) {
+        return;
+      }
+
+      __expansionHistory.Remove(deviceItem.device);
+      table.ReloadData();
+    }
+
+    /// <summary>
+    /// Toggles whether or not the given index path is expanded. If the given index path
+    /// does not point to a valid device item, then the toggle will silently fail.
+    /// </summary>
+    /// <param name="indexPath">Index path.</param>
+    public void ToggleDevice(NSIndexPath indexPath) {
+      var deviceItem = __items[(int)indexPath.Section] as DeviceItem;
+      if (deviceItem == null) {
+        return;
+      }
+      if (IsDeviceExpanded(deviceItem.device)) {
+        CollapseDevice(deviceItem.device);
+      } else {
+        ExpandDevice(deviceItem.device);
+      }
+    }
+
+    /// <summary>
+    /// Toggles the expansion state of the given device.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    public void ToggleDevice(IDevice device) {
+      ToggleDevice(GetIndexPathOfDevice(device));
+    }
+
+    /// <summary>
+    /// If we have too many devices expanded, we will start collapsing the oldest expanded
+    /// items.
+    /// </summary>
+    private void EnsureExpansionCount() {
+      while (maxExpanded < __expansionHistory.Count) {
+        var device = __expansionHistory[0];
+        __expansionHistory.RemoveAt(0);
+        CollapseDevice(device);
+      }
+    }
+
+    /// <summary>
     /// Gets the DeviceItem's cell view (constructing one if necessary).
     /// </summary>
     /// <param name="tableView">Table view.</param>
@@ -186,8 +310,9 @@ namespace ION.IOS.ViewController.Main {
       var cell = tableView.DequeueReusableCell(CELL_DEVICE) as DeviceCell;
 
       cell.onBackgroundClicked = () => {
-        item.expanded = !item.expanded;
-        tableView.ReloadData();
+        ToggleDevice(NSIndexPath.FromRowSection(0, section));
+//        item.expanded = !item.expanded;
+//        tableView.ReloadData();
       };
       cell.onDeviceConnectClicked = () => {
         if (EConnectionState.Disconnected == item.device.connection.connectionState) {
@@ -213,6 +338,7 @@ namespace ION.IOS.ViewController.Main {
       cell.labelCounter.Text = item.group.devices.Count + "";
       cell.labelHeader.Text = item.group.title;
       cell.viewBackground.BackgroundColor = new UIColor(item.group.color);
+      cell.buttonOptions.TintColor = UIColor.White;
 
       return cell;
     }
@@ -252,7 +378,6 @@ namespace ION.IOS.ViewController.Main {
   internal class DeviceItem : Item {
     public SectionType type { get { return SectionType.Device; } }
     public IDevice device { get; private set; }
-    public bool expanded { get; set; }
 
     public DeviceItem(IDevice device) {
       this.device = device;

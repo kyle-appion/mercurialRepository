@@ -16,14 +16,19 @@ namespace ION.IOS.ViewController.Calculators {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      buttonHelp.TouchUpInside += (object obj, EventArgs e) => {
-        Toast.New(this.View, "helpie help helperson clicked");
-      };
+      Title = "BAD STRING P/T Calculator";
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem("BS Help", UIBarButtonItemStyle.Plain, delegate {
+        Toast.New(View, "helpie mchelperson was clicked");
+      });
+
+      View.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        editPressure.ResignFirstResponder();
+        editTemperature.ResignFirstResponder();
+      }));
 
       viewFluidTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        PresentViewController(((FluidManagerViewController)this.Storyboard.InstantiateViewController("fluidManagerViewController")), true, () => {
-          
-        });
+        var sb = Storyboard.InstantiateViewController("fluidManagerViewController");
+        NavigationController.PushViewController(sb, true);
       }));
 
       viewAssignPressureSensor.AddGestureRecognizer(new UITapGestureRecognizer(() => {

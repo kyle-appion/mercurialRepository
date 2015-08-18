@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
+using CoreGraphics;
 using Foundation;
 using UIKit;
 
@@ -12,10 +13,11 @@ using ION.Core.Devices;
 using ION.Core.Measure;
 using ION.Core.Util;
 
+using ION.IOS.UI;
 using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Main {
-	public partial class DeviceManagerViewController : UIViewController {
+	public partial class DeviceManagerViewController : BaseIONViewController {
     /// <summary>
     /// The ion context for this view controller.
     /// </summary>
@@ -35,9 +37,43 @@ namespace ION.IOS.ViewController.Main {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      // TODO ahodder@appioninc.com: This asserts that the view controller is be opened
+      // with the intent to return a sensor.
+      InitNavigationBar("ic_nav_device_manager", true);
+      backAction = () => {
+        Log.D(this, "Back clicked");
+      };
+      /*
+      var container = new UIView();
+
+      var image = new UIImageView(UIImage.FromBundle("ic_nav_device_manager"));
+      image.Frame = new CGRect(0, 0, 30, 30);
+      image.ContentMode = UIViewContentMode.ScaleAspectFit;
+
+      var back = new UIBarButtonItem();
+      back.Image = UIImage.FromBundle("ic_nav_device_manager");
+      back.Style = UIBarButtonItemStyle.Plain;
+        
+      NavigationItem.LeftBarButtonItem = back;
+      */
+
+      /*
+      if (NavigationItem.BackBarButtonItem != null) {
+        var item = NavigationItem.BackBarButtonItem;
+        item.Image = UIImage.FromBundle("ic_bluetooth_connected");
+        item.Title = "Hi";
+      }
+      */
+
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
-        ion.deviceManager.DoActiveScanAsync();
+        if (EDeviceManagerState.ActiveScanning == ion.deviceManager.state) {
+          ion.deviceManager.StopActiveScan();
+        } else if (EDeviceManagerState.Idle == ion.deviceManager.state) {
+          ion.deviceManager.DoActiveScanAsync();
+        } else {
+          Toast.New("BAD STRING Failed to initiate scan: invalid state");
+        }
       });
 
       ion.deviceManager.onDeviceFound += HandleDeviceFound;
@@ -130,6 +166,14 @@ namespace ION.IOS.ViewController.Main {
     private void HandleDeviceStateChanged(IDevice device) {
       Task.Factory.StartNew(() => {
         UpdateSourceContent();
+      }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
+
+      Task.Factory.StartNew(() => {
+        Log.D(this, "Device connection state: " + device.connection.connectionState);
+        if (device.isConnected) {
+          Log.D(this, "Expanding");
+          deviceSource.ExpandDevice(device);
+        }
       }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
     }
 	} // End DeviceManagerViewController

@@ -11,12 +11,14 @@ namespace ION.Core.Devices.Protocols {
   /// This protocol was the first bluetooth LE protocol used by most gauges.
   /// This protocol is primarily used during active communications.
   /// </summary>
-  public class BleV1Protocol : IGaugeProtocol {
+  public class BleV1Protocol : BaseBinaryProtocol {
     // Overriden from IGaugeProtocol
-    public int version { get { return 1; } }
+    public override int version { get { return 1; } }
+    // Overridden from IGagueProtocol
+    public override bool supportsBroadcasting { get { return false; } }
 
     // Overridden from IGaugeProtocol
-    public GaugePacket ParsePacket(byte[] packetIn) {
+    public override GaugePacket ParsePacket(byte[] packetIn) {
       byte[] packet = Trim(packetIn);
       using (BinaryReader r = new BinaryReader(new MemoryStream(packet))) {
         int len = packet.Length;
@@ -52,38 +54,21 @@ namespace ION.Core.Devices.Protocols {
     }
 
     // Overridden from IGaugeProtocol
-    public byte[] CreateSetUnitCommand(int sensorIndex, Sensors.ESensorType sensorType, Unit unit) {
+    public override byte[] CreateSetUnitCommand(int sensorIndex, Sensors.ESensorType sensorType, Unit unit) {
       Log.E(this, "Failed to CreateSetUnitCommand: not implemented");
       return new byte[] { 0x00 };
     }
 
     // Overridden from IGaugeProtocol
-    public byte[] CreateZeroSensorCommand(int sensorIndex) {
+    public override byte[] CreateZeroSensorCommand(int sensorIndex) {
       Log.E(this, "Failed to CreateZeroSensorCommand: not implemented");
       return new byte[] { 0x00 };
     }
 
     // Overriden from IGaugeProtocol
-    public byte[] CreateSetAltitudeCommand(Scalar altitude) {
+    public override byte[] CreateSetAltitudeCommand(Scalar altitude) {
       Log.E(this, "Failed to CreateSetAltitudeCommand: not implemented");
       return new byte[] { 0x00 };
-    }
-
-    /// <summary>
-    /// Trims the trailing null bytes out of the packet.
-    /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
-    protected byte[] Trim(byte[] data) {
-      int index = data.Length - 1;
-
-      while (data[index] == 0 && index >= 0) {
-        index--;
-      }
-
-      byte[] ret = new byte[index + 1];
-      Array.Copy(data, 0, ret, 0, ret.Length);
-      return ret;
     }
   }
 }

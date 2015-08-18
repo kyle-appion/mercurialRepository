@@ -40,6 +40,9 @@ namespace ION.IOS.Devices {
         case EDeviceModel.P800: {
           return Strings.Device.Model.P800.FromResources();
         }
+        case EDeviceModel.PT800: {
+          return Strings.Device.Model.PT800.FromResources();
+        }
         default:{
           return Strings.Device.Model.UNKNOWN.FromResources();
         }
@@ -59,16 +62,16 @@ namespace ION.IOS.Devices {
       // TODO ahodder@appioninc.com: Implement caching
       switch (deviceModel) {
         case EDeviceModel.P300: {
-          return UIImage.FromBundle("Icons/ic_render_gaugep300.png");
+          return UIImage.FromBundle("ic_render_gauge_p300");
         }
         case EDeviceModel.P500: {
-          return UIImage.FromBundle("Icons/ic_render_gaugep500.png");
+          return UIImage.FromBundle("ic_render_gauge_p500");
         }
         case EDeviceModel.P800: {
-          return UIImage.FromBundle("Icons/ic_render_gaugep800.png");
+          return UIImage.FromBundle("ic_render_gauge_p800");
         }
         case EDeviceModel.AV760: {
-          return UIImage.FromBundle("Icons/ic_render_gaugeav760.png");
+          return UIImage.FromBundle("ic_render_gauge_av760");
         }
         default: {
           return UIImage.FromBundle("Icons/ic_logo_appiondefault.png");

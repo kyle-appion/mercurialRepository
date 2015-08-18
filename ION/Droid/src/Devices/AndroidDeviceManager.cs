@@ -391,7 +391,7 @@ namespace ION.Droid.Devices {
         if (ret == null) {
           IConnection connection = new BLEConnection(device, context);
           DeviceFactory factory = DeviceFactory.FindFactoryFor(serialNumber);
-          ret = factory.Create(this, serialNumber, connection, ProtocolUtil.BLE_PROTOCOLS[0]);
+          ret = factory.Create(this, serialNumber, connection, Protocol.PROTOCOLS[0]);
           FoundDevice(ret);
         }
       } catch (Exception e) {

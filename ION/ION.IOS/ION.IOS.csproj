@@ -117,6 +117,28 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_c3_disconnected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_c3_paired.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gauge_av760.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gauge_p300.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gauge_p500.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gauge_p800.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_menu_overflow.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\ic_nav_devmanager.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\ic_nav_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\ic_nav_supersub.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\ic_nav_ptconversion.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gauge_pt800.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -124,8 +146,8 @@
     <InterfaceDefinition Include="src\Storyboard\NavigationItem~ipad.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
-    <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
     <InterfaceDefinition Include="Resources\View.xib" />
+    <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -137,7 +159,6 @@
     <Compile Include="Main.cs" />
     <Compile Include="src\Util\LogPrinter.cs" />
     <Compile Include="src\Devices\IOSDeviceManager.cs" />
-    <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
@@ -217,6 +238,10 @@
       <DependentUpon>Viewer.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UI\UIImageExtensions.cs" />
+    <Compile Include="src\ViewController\BaseIONViewController.cs" />
+    <Compile Include="src\Devices\DeviceUtil.cs" />
+    <Compile Include="src\Devices\LeScanMode.cs" />
+    <Compile Include="src\App\IosION.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -231,6 +256,7 @@
     <Folder Include="src\UI\" />
     <Folder Include="src\ViewController\Ancillary\" />
     <Folder Include="Resources\output\" />
+    <Folder Include="Resources\Icons\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
@@ -240,12 +266,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <BundleResource Include="Resources\Icons\ic_logo_appiondefault.png" />
-    <BundleResource Include="Resources\Icons\ic_menu_moreoverflow.png" />
-    <BundleResource Include="Resources\Icons\ic_render_gaugeav760.png" />
-    <BundleResource Include="Resources\Icons\ic_render_gaugep300.png" />
-    <BundleResource Include="Resources\Icons\ic_render_gaugep500.png" />
-    <BundleResource Include="Resources\Icons\ic_render_gaugep800.png" />
     <BundleResource Include="Resources\language.lproj\Localizable.strings" />
     <BundleResource Include="Resources\.DS_Store" />
     <BundleResource Include="Resources\src\.DS_Store" />
@@ -426,6 +446,8 @@
     <BundleResource Include="Resources\output\TRASH\pdf\img_handle_left.pdf" />
     <BundleResource Include="Resources\output\TRASH\pdf\img_handle_right.pdf" />
     <BundleResource Include="Resources\output\TRASH\pdf\img_selection.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
+    <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

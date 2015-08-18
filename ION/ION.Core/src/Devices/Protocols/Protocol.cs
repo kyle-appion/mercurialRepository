@@ -4,13 +4,33 @@ using ION.Core.Measure;
 using ION.Core.Sensors;
 
 namespace ION.Core.Devices.Protocols {
-  public class ProtocolUtil {
+  public class Protocol {
     /// <summary>
     /// The array of supported BLE protocols.
     /// </summary>
-    public static IGaugeProtocol[] BLE_PROTOCOLS = new IGaugeProtocol[] {
+    public static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {
       new BleV1Protocol(),
+      new BleV2Protocol(),
+      new BleV3Protocol(),
     };
+
+    /// <summary>
+    /// Queries the protocol that matches the given version. If not protocol is
+    /// found, we will return null.
+    /// </summary>
+    /// <returns>The protocol from version.</returns>
+    /// <param name="version">Version.</param>
+    public static IGaugeProtocol FindProtocolFromVersion(int version) {
+      // Could be made more efficient with a binary search if the protocol count
+      // keeps increasing.
+      foreach (IGaugeProtocol protocol in PROTOCOLS) {
+        if (protocol.version == version) {
+          return protocol;
+        }
+      }
+
+      return null;
+    }
   }
 
   public interface IProtocol {
@@ -18,6 +38,12 @@ namespace ION.Core.Devices.Protocols {
     /// Queries the version of the protocol.
     /// </summary>
     int version { get; }
+
+    /// <summary>
+    /// Queries whether or not the protocol supports broadcasting.
+    /// </summary>
+    /// <value><c>true</c> if supports broadcasting; otherwise, <c>false</c>.</value>
+    bool supportsBroadcasting { get; }
   }
 
   public interface IGaugeProtocol : IProtocol {

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using CoreBluetooth;
 using CoreFoundation;
+using Foundation;
 
 using ION.Core.App;
 using ION.Core.Connections;
@@ -103,6 +104,12 @@ namespace ION.IOS.Devices {
     /// </summary>
     private CBCentralManager centralManager { get; set; }
     /// <summary>
+    /// The scan mode that will delegate out how the device manager performs a
+    /// device scan.
+    /// </summary>
+    /// <value>The scan mode.</value>
+    private IScanMode scanMode { get; set; }
+    /// <summary>
     /// The source of stopping a scan prematurely.
     /// </summary>
     private CancellationTokenSource scanStopper { get; set; }
@@ -129,16 +136,14 @@ namespace ION.IOS.Devices {
       // die when the device manager does.
       centralManager.UpdatedState += (object obj, EventArgs args) => {
         switch (centralManager.State) {
-        case CBCentralManagerState.PoweredOn:
-          {
-            state = EDeviceManagerState.Idle;
-            break;
-          }
-        case CBCentralManagerState.Resetting:
-          {
-            state = EDeviceManagerState.Enabling;
-            break;
-          }
+        case CBCentralManagerState.PoweredOn: {
+          state = EDeviceManagerState.Idle;
+          break;
+        }
+        case CBCentralManagerState.Resetting: {
+          state = EDeviceManagerState.Enabling;
+          break;
+        }
         case CBCentralManagerState.PoweredOff: // Fallthrough
         case CBCentralManagerState.Unauthorized: // Fallthrough
         case CBCentralManagerState.Unsupported: // Fallthrough
@@ -153,6 +158,14 @@ namespace ION.IOS.Devices {
       centralManager.DiscoveredPeripheral += (object obj, CBDiscoveredPeripheralEventArgs args) => {
         Log.D(this, "Discovered Peripheral");
         string name = args.Peripheral.Name;
+        if (name == null) {
+          if (args.AdvertisementData != null) {
+            var data = args.AdvertisementData[CBAdvertisement.DataLocalNameKey] as NSString;
+            if (data != null) {
+              name = data.ToString();
+            }
+          }
+        }
         Log.D(this, "Found device: " + name);
 
         try {
@@ -169,11 +182,26 @@ namespace ION.IOS.Devices {
             return;
           }
 
+          var v = args.AdvertisementData[CBAdvertisement.DataManufacturerDataKey];
+          byte[] scanRecord = new byte[20];
+          if (v != null) {
+            scanRecord = ((NSData)v).ToArray();
+            Log.D(this, name + " scanRecord before: " + String.Join(", ", scanRecord));
+            var bytes = new byte[20];
+            Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
+            scanRecord = bytes;
+          }
+          Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
+
           IDevice ret = this[serialNumber];
 
           if (ret == null) {
-            ret = CreateDevice(serialNumber, args.Peripheral.Identifier.AsString(), 0);
+            ret = CreateDevice(serialNumber, args.Peripheral.Identifier.AsString(), scanRecord[0]);
             FoundDevice(ret);
+          }
+
+          if (ret.protocol.supportsBroadcasting) {
+            ret.HandlePacket(scanRecord);            
           }
         } catch (Exception e) {
           Log.E(this, "Failed to resolve newly found device", e);
@@ -185,6 +213,15 @@ namespace ION.IOS.Devices {
       onDeviceStateChangedDelegate = ((IDevice device) => {
         NotifyDeviceStateChanged(device);
       });
+
+      scanMode = new LeScanMode(centralManager);
+      scanMode.onScanStateChanged += (IScanMode scanMode, bool scanning) => {
+        if (scanning) {
+          state = EDeviceManagerState.ActiveScanning;
+        } else {
+          state = EDeviceManagerState.Idle;
+        }
+      };
     }
 
     // Overridden from IDeviceManager
@@ -217,7 +254,12 @@ namespace ION.IOS.Devices {
     }
 
     // Overridden from IDeviceManager
-    public async Task<bool> DoActiveScanAsync() {
+    public Task<bool> DoActiveScanAsync() {
+      if (scanMode != null) {
+        scanMode.Scan(TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN));
+      }
+      return (Task<bool>)null;
+      /*
       if (EDeviceManagerState.Idle != state) {
         Log.D(this, "Cannot perform active scan: device manager not idle");
         return false;
@@ -266,11 +308,17 @@ namespace ION.IOS.Devices {
         state = EDeviceManagerState.Idle;
         return ret;
       }
+      */
     }
 
     // Overridden from IDeviceManager
     public void StopActiveScan() {
+      if (scanMode != null) {
+        scanMode.Stop();
+      }
+      /*
       StopScan();
+      */
     }
 
     // Overridden from IDeviceManager
@@ -346,7 +394,12 @@ namespace ION.IOS.Devices {
       }
       IConnection connection = new IosLeConnection(centralManager, peripheral);
       DeviceFactory factory = DeviceFactory.FindFactoryFor(serialNumber);
-      return factory.Create(this, serialNumber, connection, ProtocolUtil.BLE_PROTOCOLS[0]);
+      var p = Protocol.FindProtocolFromVersion(protocol);
+      if (p == null) {
+        Log.D(this, "Found deprecated device with out broadcasting. Asserting protocol 1");
+        p = Protocol.FindProtocolFromVersion(1);
+      }
+      return factory.Create(this, serialNumber, connection, p);
     }
 
     // Overridden from IDeviceManager
@@ -450,11 +503,13 @@ namespace ION.IOS.Devices {
     /// </summary>
     /// <param name="device"></param>
     private void NotifyDeviceStateChanged(IDevice device) {
-      if (onDeviceStateChanged != null) {
-        onDeviceStateChanged(device);
-      } else {
-        Log.D(this, "Cannot notify device state change: event handler is dead");
-      }
+      ion.PostToMain(() => {
+        if (onDeviceStateChanged != null) {
+          onDeviceStateChanged(device);
+        } else {
+          Log.D(this, "Cannot notify device state change: event handler is dead");
+        }
+      });
     }
 
     /// <summary>
@@ -462,11 +517,13 @@ namespace ION.IOS.Devices {
     /// </summary>
     /// <param name="device">Device.</param>
     private void NotifyDeviceFound(IDevice device) {
-      if (onDeviceFound != null) {
-        onDeviceFound(this, device);
-      } else {
-        Log.D(this, "Cannot notify device found: event handler is dead");
-      }
+      ion.PostToMain(() => {
+        if (onDeviceFound != null) {
+          onDeviceFound(this, device);
+        } else {
+          Log.D(this, "Cannot notify device found: event handler is dead");
+        }
+      });
     }
 
     /// <summary>
@@ -474,11 +531,14 @@ namespace ION.IOS.Devices {
     /// state has changed.
     /// </summary>
     private void NotifyDeviceManagerStateChanged() {
+      // Post the update message to the main thread.
+      ion.PostToMain(() => {
         if (onDeviceManagerStateChanged != null) {
-        onDeviceManagerStateChanged(this, state);
-      } else {
-        Log.D(this, "Cannot notify device manager state changed: event handler is dead");
-      }
+          onDeviceManagerStateChanged(this, state);
+        } else {
+          Log.D(this, "Cannot notify device manager state changed: event handler is dead");
+        }
+      });
     }
 
     /// <summary>

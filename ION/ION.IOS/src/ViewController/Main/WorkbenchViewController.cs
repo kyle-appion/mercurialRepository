@@ -146,7 +146,10 @@ namespace ION.IOS.ViewController.Main {
       if (section == NumberOfSections(tableView) - 1) {
         var add = (WorkbenchAddCell)tableView.DequeueReusableCell(CELL_ADD);
         add.clicked = (() => {
-          Toast.New(tableView, "Clicked 'Add New Viewer'");
+          var sb = __workbenchController.Storyboard.InstantiateViewController("deviceManagerViewController");
+          // TODO ahodder@appioninc.com: Set initialial arguments.
+          __workbenchController.NavigationController.PushViewController(sb, true);
+//          Toast.New(tableView, "Clicked 'Add New Viewer'");
         });
         return add;
       } else {

@@ -18,6 +18,7 @@ namespace ION.Core.Devices {
       new P300DeviceFactory(),
       new P500DeviceFactory(),
       new P800DeviceFactory(),
+      new PT800DeviceFactory(),
       new AV760DeviceFactory(),
     };
 
@@ -112,6 +113,32 @@ namespace ION.Core.Devices {
       return device;
     }
   } // End P800DeviceFactory
+
+  /// <summary>
+  /// Creates a new PT800 device.
+  /// </summary>
+  internal class PT800DeviceFactory : DeviceFactory {
+    // Overridden from IDeviceFactory
+    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
+      return serialNumber is GaugeSerialNumber && EDeviceModel.PT800 == ((GaugeSerialNumber)serialNumber).deviceModel;
+    }
+
+    // Overridden from IDeviceFactory
+    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
+      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
+
+      var ps = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
+      ps.maxMeasurement = Units.Pressure.PSIG.OfScalar(800);
+
+      var ts = new GaugeDeviceSensor(device, 0, ESensorType.Temperature, false);
+      ps.maxMeasurement = Units.Temperature.CELSIUS.OfScalar(150);
+      ps.minMeasurement = Units.Temperature.CELSIUS.OfScalar(-40);
+
+      device.sensors = new GaugeDeviceSensor[] { ps };
+
+      return device;
+    }
+  } // End PT800DeviceFactory
 
   /// <summary>
   /// Creates a new AV760 device.

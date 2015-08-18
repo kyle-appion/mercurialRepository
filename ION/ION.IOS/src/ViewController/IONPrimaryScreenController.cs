@@ -72,8 +72,8 @@ namespace ION.IOS.ViewController {
 
       navigation.NavigationRoot = new RootElement("Navigation Menu") {
         new Section ("MAIN") {
-          new StringElement ("Analyzer"),
-          new StringElement ("Device Manager"),
+//          new StringElement ("Analyzer"),
+//          new StringElement ("Device Manager"),
           new StringElement ("Workbench"),
         },
         new Section ("CALCULATORS") {
@@ -104,8 +104,8 @@ namespace ION.IOS.ViewController {
 
       //navigation.ViewControllers = mainNavigation.Concat(calculatorNavigation, reportNavigation, configurationNavigation, exitNavigation);
       navigation.ViewControllers = new UIViewController[] {
-        new UINavigationController ((AnalyzerViewController)this.Storyboard.InstantiateViewController("analyzerViewController")),
-        new UINavigationController ((DeviceManagerViewController)this.Storyboard.InstantiateViewController("deviceManagerViewController")),
+//        new UINavigationController ((AnalyzerViewController)this.Storyboard.InstantiateViewController("analyzerViewController")),
+//        new UINavigationController ((DeviceManagerViewController)this.Storyboard.InstantiateViewController("deviceManagerViewController")),
         new UINavigationController ((WorkbenchViewController)this.Storyboard.InstantiateViewController("workbenchViewController")),
         new UINavigationController ((PressureTemperatureViewController)this.Storyboard.InstantiateViewController("pressureTemperatureViewController")),
         new UINavigationController ((SuperheatSubcoolViewController)this.Storyboard.InstantiateViewController("superheatSubcoolViewController")),

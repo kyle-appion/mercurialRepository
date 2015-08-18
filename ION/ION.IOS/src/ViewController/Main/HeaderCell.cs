@@ -23,7 +23,6 @@ namespace ION.IOS.ViewController.Main {
       base.AwakeFromNib();
 
       buttonOptions.TouchUpInside += (object sender, EventArgs e) => {
-        Log.D(this, "Options clicked");
         if (onOptionsClicked != null) {
           onOptionsClicked();
         }

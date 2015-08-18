@@ -62,34 +62,12 @@ namespace ION.Core.App {
     /// </summary>
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; }
+
+    /// <summary>
+    /// Posts the action to the main message pump for execution on the main thread.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    void PostToMain(Action action);
   } // End IION
-
-  /// <summary>
-  /// An extremely simple implementation of ion.
-  /// </summary>
-  public class BaseION : IION {
-    // Overridden from IION
-    public IONDatabase database { get; set; }
-    // Overridden from IION
-    public IFileManager fileManager { get; set; }
-    // Overridden from IION
-    public IDeviceManager deviceManager { get; set; }
-    // Overridden from IION
-    public IFluidManager fluidManager { get; set; }
-    // Overridden from IION
-    public Workbench currentWorkbench { get; set; }
-
-
-    public BaseION() {
-      currentWorkbench = new Workbench();
-    }
-
-    // Overridden from IION
-    public void Dispose() {
-      if (deviceManager != null) {
-        deviceManager.Dispose();
-      }
-    }
-  } // End BaseION
 }
 

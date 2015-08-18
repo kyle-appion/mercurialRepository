@@ -72,15 +72,7 @@ namespace ION.IOS.App {
 
 //      application.SetStatusBarHidden(true, UIStatusBarAnimation.None);
 
-      BaseION bi = new BaseION();
-      ion = AppState.context = bi;
-      bi.fileManager = new IosFileManager();
-      bi.deviceManager = new IOSDeviceManager(ion);
-      bi.fluidManager = new BaseFluidManager(ion);
-      var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
-      bi.database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, bi);
-
-      bi.deviceManager.Init();
+      ion = AppState.context = new IosION();
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);

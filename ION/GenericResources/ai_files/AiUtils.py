@@ -44,6 +44,10 @@ def export_to_png(inputFile, outputDir, temporaryDir='/output', width=-1, height
     print 'Failed to export', fn, 'to PNG'
     return 1
 
+def export_to_pdf(inputFile, outputDir, temporaryDir):
+  '''
+  '''
+
 def get_file_name(path):
   '''
   Queries the name of the file using the given path. If the path has a file

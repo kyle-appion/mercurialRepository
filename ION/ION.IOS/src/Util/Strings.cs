@@ -51,6 +51,7 @@ namespace ION.IOS.Util {
           P300 = "device_model_p300",
           P500 = "device_model_p500",
           P800 = "device_model_p800",
+          PT800 = "device_model_pt800",
           UNKNOWN = "device_model_unknown"
           ;
       } // End Strings.Device.Model
