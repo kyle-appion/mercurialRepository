@@ -102,7 +102,7 @@ namespace ION.IOS.ViewController.Main {
       var item = __items[(int)section];
       switch (item.type) {
         case SectionType.Device:
-          return 64;
+          return 48;
         default:
           return 48;
       }
@@ -338,7 +338,6 @@ namespace ION.IOS.ViewController.Main {
       cell.labelCounter.Text = item.group.devices.Count + "";
       cell.labelHeader.Text = item.group.title;
       cell.viewBackground.BackgroundColor = new UIColor(item.group.color);
-      cell.buttonOptions.TintColor = UIColor.White;
 
       return cell;
     }

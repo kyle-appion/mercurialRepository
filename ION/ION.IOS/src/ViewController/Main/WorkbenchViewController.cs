@@ -17,7 +17,7 @@ using ION.IOS.UI;
 using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Main {
-	public partial class WorkbenchViewController : UIViewController {
+	public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -37,10 +37,12 @@ namespace ION.IOS.ViewController.Main {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      InitNavigationBar("ic_nav_workbench", false);
+      backAction = () => {
+        root.navigation.ToggleMenu();
+      };
+
       Title = Strings.Workbench.SELF.FromResources();
-//      this.NavigationItem.LeftBarButtonItem = new UIBarButtonItem(UIBarButtonSystemItem.Action, delegate {
-//        Toast.New(tableContent, "Huh?!");
-//      });
 
       ion = AppState.context;
 

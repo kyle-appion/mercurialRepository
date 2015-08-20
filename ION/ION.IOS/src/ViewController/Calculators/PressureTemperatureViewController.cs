@@ -6,10 +6,11 @@ using Foundation;
 using UIKit;
 
 using ION.IOS.UI;
+using ION.IOS.ViewController;
 using ION.IOS.ViewController.Ancillary;
 
 namespace ION.IOS.ViewController.Calculators {
-	public partial class PressureTemperatureViewController : UIViewController {
+	public partial class PressureTemperatureViewController : BaseIONViewController {
 		public PressureTemperatureViewController (IntPtr handle) : base (handle) {
 		}
 

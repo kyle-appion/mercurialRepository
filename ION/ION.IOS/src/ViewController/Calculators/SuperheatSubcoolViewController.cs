@@ -5,8 +5,10 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.IOS.ViewController;
+
 namespace ION.IOS.ViewController.Calculators {
-	public partial class SuperheatSubcoolViewController : UIViewController {
+	public partial class SuperheatSubcoolViewController : BaseIONViewController {
 		public SuperheatSubcoolViewController (IntPtr handle) : base (handle) {
 		}
 	}

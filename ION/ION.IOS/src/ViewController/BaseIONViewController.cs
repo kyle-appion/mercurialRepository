@@ -13,7 +13,12 @@ namespace ION.IOS.ViewController {
     /// The action that is called when the back button is clicked in the navigation
     /// bar.
     /// </summary>
-    public Action backAction;
+    public Action backAction { get; set; }
+    /// <summary>
+    /// The primary root view controller for the application.
+    /// </summary>
+    /// <param name="handle">Handle.</param>
+    public IONPrimaryScreenController root { get; set; }
 
     public BaseIONViewController(IntPtr handle) : base(handle) {
       // Nope

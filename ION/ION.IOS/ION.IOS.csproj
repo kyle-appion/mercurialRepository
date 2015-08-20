@@ -139,6 +139,12 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gauge_pt800.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\np_gold_background_horiz_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -200,10 +206,6 @@
       <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UI\Toast.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.designer.cs">
-      <DependentUpon>FluidManagerViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\ViewController\Main\WorkbenchAddCell.cs" />
     <Compile Include="src\ViewController\Main\WorkbenchAddCell.designer.cs">
       <DependentUpon>WorkbenchAddCell.cs</DependentUpon>
@@ -242,6 +244,16 @@
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Devices\LeScanMode.cs" />
     <Compile Include="src\App\IosION.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidCell.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidCell.designer.cs">
+      <DependentUpon>FluidCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Ancillary\FluidSource.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.cs" />
+    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.designer.cs">
+      <DependentUpon>FluidManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Util\CGExtensions.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -257,6 +269,7 @@
     <Folder Include="src\ViewController\Ancillary\" />
     <Folder Include="Resources\output\" />
     <Folder Include="Resources\Icons\" />
+    <Folder Include="Resources\assets\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
@@ -448,6 +461,7 @@
     <BundleResource Include="Resources\output\TRASH\pdf\img_selection.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
+    <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

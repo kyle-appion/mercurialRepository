@@ -58,8 +58,9 @@ namespace ION.IOS.ViewController.Main {
         }
       }));
 
-      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("np_gold_background_horiz_bordered").AsNinePatch(), UIControlState.Normal);
       buttonDeviceConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
+      buttonDeviceConnect.TintColor = UIColor.Black;
       buttonDeviceConnect.TouchUpInside += (object sender, EventArgs e) => {
         if (onDeviceConnectClicked != null) {
           onDeviceConnectClicked();
@@ -72,7 +73,18 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <param name="device">Device.</param>
     public void Update(IDevice device) {
-      this.device = device;      
+      this.device = device;
+      switch (device.connection.connectionState) {
+        case EConnectionState.Connecting:
+          buttonDeviceConnect.SetImage(null, UIControlState.Normal);
+          break;
+        case EConnectionState.Connected:
+          buttonDeviceConnect.SetImage(UIImage.FromBundle("ic_bluetooth_connected"), UIControlState.Normal);
+          break;
+        default:
+          buttonDeviceConnect.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected"), UIControlState.Normal);
+          break;
+      }
     }
 
     private void OnDeviceContentChanged(IDevice device) {

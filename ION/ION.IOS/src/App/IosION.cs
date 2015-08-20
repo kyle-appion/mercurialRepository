@@ -32,11 +32,13 @@ namespace ION.IOS.App {
     public IosION() {
       fileManager = new IosFileManager();
       deviceManager = new IOSDeviceManager(this);
-      fluidManager = new BaseFluidManager(this);
+      var fm = new BaseFluidManager(this);
+      fluidManager = fm;
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this);
 
       deviceManager.Init();
+      fm.Init();
 
       currentWorkbench = new Workbench();
     }

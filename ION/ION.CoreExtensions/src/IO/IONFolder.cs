@@ -54,18 +54,18 @@ namespace ION.Core.IO {
     }
 
     // Overridden from IFolder
-    public Task<IFolder> GetFolderAsync(string name, FileAccessResponse accessResponse = FileAccessResponse.FailIfMissing) {
+    public Task<IFolder> GetFolderAsync(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing) {
       return Task.Run(() => {
         var dir = System.IO.Path.Combine(__nativeFolder.FullName, name);
 
         if (Directory.Exists(dir)) {
-          if (FileAccessResponse.FailIfExists == accessResponse) {
+          if (EFileAccessResponse.FailIfExists == accessResponse) {
             throw new IOException("Cannot get folder " + dir + ": folder already exists.");
           } else {
             return (IFolder) new IONFolder(new DirectoryInfo(dir));
           }
         } else {
-          if (FileAccessResponse.FailIfMissing == accessResponse) {
+          if (EFileAccessResponse.FailIfMissing == accessResponse) {
             throw new FileNotFoundException("Cannot get folder " + dir + ": doesn't exist.");
           } else {
             return (IFolder)new IONFolder(Directory.CreateDirectory(dir));
@@ -75,20 +75,26 @@ namespace ION.Core.IO {
     }
 
     // Overridden from IFolder
-    public Task<IFile> GetFileAsync(string name, FileAccessResponse accessReponse = FileAccessResponse.FailIfMissing) {
+    public Task<IFile> GetFileAsync(string name, EFileAccessResponse accessReponse = EFileAccessResponse.FailIfMissing) {
       return Task.Run(() => {
         var file = System.IO.Path.Combine(__nativeFolder.FullName, name);
 
         if (File.Exists(file)) {
-          if (FileAccessResponse.FailIfExists == accessReponse) {
+          if (EFileAccessResponse.FailIfExists == accessReponse) {
             throw new IOException("Cannot get File " + file + ": file already exists.");
           } else {
+            if (EFileAccessResponse.ReplaceIfExists == accessReponse) {
+              File.Create(file).Close();
+            }
             return (IFile) new IONFile(new FileInfo(file));
           }
         } else {
-          if (FileAccessResponse.FailIfMissing == accessReponse) {
+          if (EFileAccessResponse.FailIfMissing == accessReponse) {
             throw new FileNotFoundException("Cannot get file " + file + ": doesn't exist.");
           } else {
+            if (EFileAccessResponse.CreateIfMissing == accessReponse) {
+              File.Create(file).Close();
+            }
             return (IFile) new IONFile(new FileInfo(file));
           }
         }

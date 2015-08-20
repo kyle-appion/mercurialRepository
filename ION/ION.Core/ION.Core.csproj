@@ -76,6 +76,7 @@
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
     <Compile Include="src\Devices\Protocols\BleV2Protocol.cs" />
     <Compile Include="src\Devices\ScanMode.cs" />
+    <Compile Include="src\IO\Properties.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

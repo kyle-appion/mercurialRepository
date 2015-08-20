@@ -37,7 +37,7 @@ namespace ION.Core.IO {
     /// </summary>
     /// <param name="name">Name.</param>
     /// <param name="accessResponse"></param>
-    Task<IFolder> GetFolderAsync(string name, FileAccessResponse accessResponse = FileAccessResponse.FailIfMissing);
+    Task<IFolder> GetFolderAsync(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
     /// <summary>
     /// Creates a new file within this folder. The access response describes
     /// the action taken for acquiring the file.
@@ -45,7 +45,7 @@ namespace ION.Core.IO {
     /// <param name="name"></param>
     /// <param name="collisionResponse"></param>
     /// <returns></returns>
-    Task<IFile> GetFileAsync(string name, FileAccessResponse accessResponse = FileAccessResponse.FailIfMissing);
+    Task<IFile> GetFileAsync(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
     /// <summary>
     /// Queries a list of all the folders (not files) that are in the current directory.
     /// </summary>
@@ -72,7 +72,7 @@ namespace ION.Core.IO {
     Task DeleteAsync();
   }
 
-  public enum FileAccessResponse {
+  public enum EFileAccessResponse {
     CreateIfMissing,
     FailIfMissing,
 

@@ -21,38 +21,8 @@ namespace ION.IOS.ViewController {
     /// The view controller that will manage the navigation items for the screen.
     /// </summary>
     /// <value>The navigation.</value>
-    protected FlyoutNavigationController navigation { get; private set; }
+    public FlyoutNavigationController navigation { get; private set; }
 
-
-    /// <summary>
-    /// The main navigation items. These lead to primary screen controllers. [Except for
-    /// the device manager, but that screen is so critical to the application that it
-    /// belongs in this category.]
-    /// </summary>
-    private UIViewController[] mainNavigation { get; set; }
-
-    /// <summary>
-    /// The calculator navigation items. These lead to the calculator tools that will aid
-    /// the technician in calculating properties of a job or work effort.
-    /// </summary>
-    private UIViewController[] calculatorNavigation { get; set; }
-
-    /// <summary>
-    /// The navigation items that will let the user view reports abouts jobs and/or other
-    /// work that has been saved by the application.
-    /// </summary>
-    private UIViewController[] reportNavigation { get; set; }
-
-    /// <summary>
-    /// The navigation items that will be used to allow the user to configure the application
-    /// or get help in how to use some of its features.
-    /// </summary>
-    private UIViewController[] configurationNavigation { get; set; }
-
-    /// <summary>
-    /// The navigation items that will be used to allow the user to exit the application.
-    /// </summary>
-    private UIViewController[] exitNavigation { get; set; }
 
 		public IONPrimaryScreenController (IntPtr handle) : base (handle) {
       // Nope
@@ -61,8 +31,6 @@ namespace ION.IOS.ViewController {
     // Overridden from UIViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-
-      InitControllers();
 
       // Create the navigation drawer
       navigation = new FlyoutNavigationController();
@@ -101,7 +69,7 @@ namespace ION.IOS.ViewController {
         }
         */
       };
-
+      /*
       //navigation.ViewControllers = mainNavigation.Concat(calculatorNavigation, reportNavigation, configurationNavigation, exitNavigation);
       navigation.ViewControllers = new UIViewController[] {
 //        new UINavigationController ((AnalyzerViewController)this.Storyboard.InstantiateViewController("analyzerViewController")),
@@ -110,29 +78,35 @@ namespace ION.IOS.ViewController {
         new UINavigationController ((PressureTemperatureViewController)this.Storyboard.InstantiateViewController("pressureTemperatureViewController")),
         new UINavigationController ((SuperheatSubcoolViewController)this.Storyboard.InstantiateViewController("superheatSubcoolViewController")),
       };
+      */
+      navigation.ViewControllers = BuildViewControllers();
       // Create the menu
     }
 
-    private void InitControllers() {
-      InitMainControllers();
-      InitCalculatorControllers();
+    /// <summary>
+    /// Constructs and initialized the view controllers that are used in the application.
+    /// </summary>
+    /// <returns>The view controllers.</returns>
+    private UIViewController[] BuildViewControllers() {
+      var ret = new UINavigationController[] {
+        new UINavigationController(InflateViewController<WorkbenchViewController>("workbenchViewController")),
+        new UINavigationController(InflateViewController<PressureTemperatureViewController>("pressureTemperatureViewController")),
+        new UINavigationController(InflateViewController<SuperheatSubcoolViewController>("superheatSubcoolViewController")),
+      };
+
+      return ret;
     }
 
-    private void InitMainControllers() {
-      var app = UIApplication.SharedApplication.Delegate as AppDelegate;
-      mainNavigation = new UIViewController[] {
-        app.analyzerViewController,
-        app.deviceManagerViewController,
-        app.workbenchViewController,
-      };
-    }
-
-    private void InitCalculatorControllers() {
-      var app = UIApplication.SharedApplication.Delegate as AppDelegate;
-      calculatorNavigation = new UIViewController[] {
-        app.pressureTemperatureViewController,
-        app.superheatSubCoolViewController,
-      };
+    /// <summary>
+    /// Inflates an ION view controller from the storyboard.
+    /// </summary>
+    /// <returns>The view controller.</returns>
+    /// <param name="key">Key.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    private T InflateViewController<T>(string key) where T : BaseIONViewController {
+      var ret = (T)Storyboard.InstantiateViewController(key);
+      ret.root = this;
+      return ret;
     }
 	}
 }

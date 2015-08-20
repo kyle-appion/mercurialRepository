@@ -5,9 +5,82 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.Core.App;
+using ION.Core.Fluids;
+
+using ION.IOS.Util;
+using ION.IOS.ViewController;
+
 namespace ION.IOS.ViewController.Ancillary {
-	public partial class FluidManagerViewController : UIViewController {
+	public partial class FluidManagerViewController : BaseIONViewController {
+
+    private const int SECTION_FAVORITE = 0;
+    private const int SECTION_LIBRARY = 1;
+
+    /// <summary>
+    /// The current fluid that the view controller has selected.
+    /// </summary>
+    /// <value>The selected fluid.</value>
+    public string selectedFluid { get; set; }
+
+    /// <summary>
+    /// The ion instance for the view controller.
+    /// </summary>
+    /// <value>The ion.</value>
+    private IION ion { get; set; }
+    /// <summary>
+    /// The fluid manager.
+    /// </summary>
+    /// <value>The fluid manager.</value>
+    private IFluidManager fluidManager { get; set; }
+
+
+
     public FluidManagerViewController (IntPtr handle) : base (handle) {
+      // Nope
 		}
+
+    // Overridden from UIViewController
+    public override void ViewDidLoad() {
+      base.ViewDidLoad();
+
+      ion = AppState.context;
+      fluidManager = ion.fluidManager;
+
+      fluidManager.onFluidPreferenceChanged += (IFluidManager fluidManager, string fluidName) => {
+        UpdateTableContent();
+      };
+
+      switchContent.ValueChanged += (object sender, EventArgs e) => {
+        UpdateTableContent();
+      };
+      switchContent.SelectedSegment = SECTION_FAVORITE;
+    }
+
+    /// <summary>
+    /// Updates the content of the view's table.
+    /// </summary>
+    private async void UpdateTableContent() {
+      FluidSource source = null;
+
+      switch ((int)switchContent.SelectedSegment) {
+        case SECTION_FAVORITE:
+          source = new FluidSource(table, fluidManager, fluidManager.preferredFluids);
+          break;
+        case SECTION_LIBRARY:
+          source = new FluidSource(table, fluidManager, await fluidManager.GetAvailableFluidNamesAsync());
+          break;
+      }
+
+      source.selectedFluid = selectedFluid;
+      source.onFluidSelected += (string fluidName) => {
+        selectedFluid = fluidName;
+        viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(fluidManager.GetFluidColor(fluidName));
+        labelFluidName.Text = fluidName;  
+      };
+
+      table.Source = source;
+      table.ReloadData();
+    }
 	}
 }

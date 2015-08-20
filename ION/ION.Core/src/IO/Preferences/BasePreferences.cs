@@ -44,7 +44,7 @@ namespace ION.Core.IO.Preferences {
 
     // Overridden from IPreference
     public void Dispose() {
-      // Nope
+      __content.Clear();
     }
 
     // Overridden from IPreference
@@ -201,6 +201,9 @@ namespace ION.Core.IO.Preferences {
           using (var reader = new BinaryReader(await file.OpenForReadingAsync())) {
             // Read the preferene file version
             var version = reader.ReadInt32();
+            if (CURRENT_VERSION != version) {
+              throw new IOException("Cannot open preferences: invalid version " + version);
+            }
             // Read how many items are stored in the preference file.
             var items = reader.ReadInt32();
 

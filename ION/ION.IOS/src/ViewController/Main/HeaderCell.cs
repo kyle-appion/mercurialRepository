@@ -22,6 +22,10 @@ namespace ION.IOS.ViewController.Main {
     public override void AwakeFromNib() {
       base.AwakeFromNib();
 
+//      buttonOptions.BackgroundColor = UIColor.Blue;
+//      buttonOptions.SetImage(UIImage.FromBundle("ic_menu_overflow"), UIControlState.Normal);
+      buttonOptions.SetImage(null, UIControlState.Normal);
+      buttonOptions.TintColor = UIColor.Red;
       buttonOptions.TouchUpInside += (object sender, EventArgs e) => {
         if (onOptionsClicked != null) {
           onOptionsClicked();

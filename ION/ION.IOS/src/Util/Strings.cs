@@ -57,6 +57,14 @@ namespace ION.IOS.Util {
       } // End Strings.Device.Model
     } // End Strings.Device
 
+    public static class Fluid {
+      public static class Manager {
+        public const string
+          SELF = "fluid_manager"
+          ;
+      } // End Strings.Fluid.Manager
+    } // End Strings.Fluid
+
     public static class Sensor {
       public static class Type {
         public const string

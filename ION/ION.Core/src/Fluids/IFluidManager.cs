@@ -3,9 +3,25 @@ using System.Threading.Tasks;
 
 namespace ION.Core.Fluids {
   /// <summary>
+  /// Called when a fluid manager's fluid preferences change (ie. when a fluid
+  /// is [un]marked preferred).
+  /// </summary>
+  public delegate void OnFluidPreferenceChanged(IFluidManager fluidManager, string fluidName);
+  /// <summary>
   /// The contract for managing a collection of fluids.
   /// </summary>
   public interface IFluidManager {
+
+    /// <summary>
+    /// The event handler that will be notified when the preferred fluids list changes.
+    /// </summary>
+    event OnFluidPreferenceChanged onFluidPreferenceChanged;
+    /// <summary>
+    /// Queries the list of preferred fluids.
+    /// </summary>
+    /// <value>The preferred fluids.</value>
+    List<string> preferredFluids { get; }
+
     /// <summary>
     /// Queries a list of the identifiers(name) of the fluids that are available
     /// from the fluid manager.
@@ -21,17 +37,26 @@ namespace ION.Core.Fluids {
     Task<Fluid> GetFluidAsync(string fluidName);
 
     /// <summary>
+    /// Queries whether or not the given fluid is preferred.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is fluid preferred the specified fluidName; otherwise, <c>false</c>.</returns>
+    /// <param name="fluidName">Fluid name.</param>
+    bool IsFluidPreferred(string fluidName);
+
+    /// <summary>
+    /// Queries the ARGB8888 color for the given fluid. If the fluid does not
+    /// exist, or does not have a color, then a default color will be returned.
+    /// </summary>
+    /// <returns>The fluid color.</returns>
+    /// <param name="fluidName">Fluid name.</param>
+    int GetFluidColor(string fluidName);
+
+    /// <summary>
     /// Marks whether or not the the named fluid is a preferred fluid. Preferred
     /// fluids are easier for the user to interact with and are generally
     /// preloaded.
     /// </summary>
     /// <param name="fluidName"></param>
-    void MarkFluidAsPreferredAsync(string fluidName, bool preferred=true);
-
-    /// <summary>
-    /// Queries a list of the application's preferred fluids.
-    /// </summary>
-    /// <returns></returns>
-    Task<List<Fluid>> GetPreferredFluidsAsync();
+    void MarkFluidAsPreferred(string fluidName, bool preferred=true);
   }
 }

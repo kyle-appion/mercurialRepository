@@ -9,28 +9,23 @@ using System.CodeDom.Compiler;
 
 namespace ION.IOS.ViewController.Ancillary
 {
-	[Register ("FluidManagerViewController")]
-	partial class FluidManagerViewController
+	[Register ("FluidCell")]
+	partial class FluidCell
 	{
 		[Outlet]
-		public UIKit.UILabel labelFluidName { get; set; }
+		public UIKit.UIImageView iconFavorite { get; set; }
 
 		[Outlet]
-		public UIKit.UISegmentedControl switchContent { get; set; }
+    public UIKit.UIImageView iconSelected { get; set; }
 
 		[Outlet]
-		public UIKit.UITableView table { get; set; }
+    public UIKit.UILabel labelFluidName { get; set; }
 
 		[Outlet]
-		public UIKit.UIView viewFluidColor { get; set; }
+    public UIKit.UIView viewFluidColor { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (switchContent != null) {
-				switchContent.Dispose ();
-				switchContent = null;
-			}
-
 			if (viewFluidColor != null) {
 				viewFluidColor.Dispose ();
 				viewFluidColor = null;
@@ -41,9 +36,14 @@ namespace ION.IOS.ViewController.Ancillary
 				labelFluidName = null;
 			}
 
-			if (table != null) {
-				table.Dispose ();
-				table = null;
+			if (iconFavorite != null) {
+				iconFavorite.Dispose ();
+				iconFavorite = null;
+			}
+
+			if (iconSelected != null) {
+				iconSelected.Dispose ();
+				iconSelected = null;
 			}
 		}
 	}

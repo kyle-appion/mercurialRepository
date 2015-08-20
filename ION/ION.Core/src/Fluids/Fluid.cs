@@ -28,6 +28,11 @@ namespace ION.Core.Fluids {
     /// The maximum temperature for the fluid. This is necessary for all lookups.
     /// </summary>
     public double tmax { get; private set; }
+    /// <summary>
+    /// The ARGB8888 color of the fluid.
+    /// </summary>
+    /// <value>The color.</value>
+    public int color { get; set; }
 
     /// <summary>
     /// The interval between temperatures within the table.

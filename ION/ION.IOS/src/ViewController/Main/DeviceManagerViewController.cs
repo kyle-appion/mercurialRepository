@@ -43,27 +43,6 @@ namespace ION.IOS.ViewController.Main {
       backAction = () => {
         Log.D(this, "Back clicked");
       };
-      /*
-      var container = new UIView();
-
-      var image = new UIImageView(UIImage.FromBundle("ic_nav_device_manager"));
-      image.Frame = new CGRect(0, 0, 30, 30);
-      image.ContentMode = UIViewContentMode.ScaleAspectFit;
-
-      var back = new UIBarButtonItem();
-      back.Image = UIImage.FromBundle("ic_nav_device_manager");
-      back.Style = UIBarButtonItemStyle.Plain;
-        
-      NavigationItem.LeftBarButtonItem = back;
-      */
-
-      /*
-      if (NavigationItem.BackBarButtonItem != null) {
-        var item = NavigationItem.BackBarButtonItem;
-        item.Image = UIImage.FromBundle("ic_bluetooth_connected");
-        item.Title = "Hi";
-      }
-      */
 
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
@@ -72,7 +51,7 @@ namespace ION.IOS.ViewController.Main {
         } else if (EDeviceManagerState.Idle == ion.deviceManager.state) {
           ion.deviceManager.DoActiveScanAsync();
         } else {
-          Toast.New("BAD STRING Failed to initiate scan: invalid state");
+          Toast.New(View, "BAD STRING Failed to initiate scan: invalid state");
         }
       });
 

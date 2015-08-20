@@ -39,6 +39,11 @@ file.
 "device_model_pt800" = "PT800";
 "device_model_unknown" = "Unknown Device";
 
+/* FLUIDS */
+
+/* FLUID MANAGER */
+"fluid_manager" = "Refrigerant Manager";
+
 /* SENSOR */
 
 /* SENSOR TYPE */
