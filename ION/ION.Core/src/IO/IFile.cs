@@ -22,31 +22,31 @@ namespace ION.Core.IO {
     /// Queries the size of the file. If the size could not be determined, then
     /// we will return -1;
     /// </summary>
-    Task<long> GetSizeAsync();
+    long GetSize();
     /// <summary>
     /// Opens the file for reading.
     /// </summary>
     /// <returns></returns>
-    Task<Stream> OpenForReadingAsync();
+    Stream OpenForReading();
     /// <summary>
     /// Opens the file for writing.
     /// </summary>
     /// <returns></returns>
-    Task<Stream> OpenForWritingAsync(bool append = false);
+    Stream OpenForWriting(bool append = false);
     /// <summary>
     /// Queries whether or not the file exists.
     /// </summary>
     /// <returns>The async.</returns>
-    Task<bool> ExistsAsync();
+    bool Exists();
     /// <summary>
     /// Creates the file if it doesn't already exist. If it does exist, nothing
     /// will happen.
     /// </summary>
     /// <returns>True if the file was created (or existed), false otherwise.</returns>
-    Task<bool> CreateAsync();
+    bool Create();
     /// <summary>
     /// Deletes the file.
     /// </summary>
-    Task DeleteAsync();
+    void Delete();
   }
 }

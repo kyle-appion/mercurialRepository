@@ -122,9 +122,18 @@ namespace ION.IOS.Devices {
 
     public IOSDeviceManager(IION ion) {
       this.ion = ion;
+    }
 
+    // Overridden from IDeviceManager
+    public async Task InitAsync() {
       centralManager = new CBCentralManager(DispatchQueue.CurrentQueue);
       centralManager.Init();
+
+      scanMode = new LeScanMode(centralManager);
+
+      onDeviceStateChangedDelegate = ((IDevice device) => {
+        NotifyDeviceStateChanged(device);
+      });
 
       if (CBCentralManagerState.PoweredOn == centralManager.State) {
         state = EDeviceManagerState.Idle;
@@ -132,108 +141,8 @@ namespace ION.IOS.Devices {
         state = EDeviceManagerState.Disabled;
       }
 
-      // Note ahodder@appioninc.com: We don't need to retain the delegate as the central manager will
-      // die when the device manager does.
-      centralManager.UpdatedState += (object obj, EventArgs args) => {
-        switch (centralManager.State) {
-        case CBCentralManagerState.PoweredOn: {
-          state = EDeviceManagerState.Idle;
-          break;
-        }
-        case CBCentralManagerState.Resetting: {
-          state = EDeviceManagerState.Enabling;
-          break;
-        }
-        case CBCentralManagerState.PoweredOff: // Fallthrough
-        case CBCentralManagerState.Unauthorized: // Fallthrough
-        case CBCentralManagerState.Unsupported: // Fallthrough
-        case CBCentralManagerState.Unknown: // Fallthrough
-        default:
-          {
-            Log.D(this, "Unknown CBCenteralManagerState: " + centralManager.State);
-            break;
-          }
-        }
-      };
-      centralManager.DiscoveredPeripheral += (object obj, CBDiscoveredPeripheralEventArgs args) => {
-        Log.D(this, "Discovered Peripheral");
-        string name = args.Peripheral.Name;
-        if (name == null) {
-          if (args.AdvertisementData != null) {
-            var data = args.AdvertisementData[CBAdvertisement.DataLocalNameKey] as NSString;
-            if (data != null) {
-              name = data.ToString();
-            }
-          }
-        }
-        Log.D(this, "Found device: " + name);
-
-        try {
-          if (!IsAppionDevice(args.Peripheral)) {
-            Log.D(this, "Ignoring non-ION device: " + name);
-            return;
-          }
-
-          GaugeSerialNumber serialNumber;
-          try {
-            serialNumber = GaugeSerialNumber.Parse(name);
-          } catch (ArgumentException) {
-            Log.E(this, "Invalid GaugeSerialNumber: " + name);
-            return;
-          }
-
-          var v = args.AdvertisementData[CBAdvertisement.DataManufacturerDataKey];
-          byte[] scanRecord = new byte[20];
-          if (v != null) {
-            scanRecord = ((NSData)v).ToArray();
-            Log.D(this, name + " scanRecord before: " + String.Join(", ", scanRecord));
-            var bytes = new byte[20];
-            Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
-            scanRecord = bytes;
-          }
-          Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
-
-          IDevice ret = this[serialNumber];
-
-          if (ret == null) {
-            ret = CreateDevice(serialNumber, args.Peripheral.Identifier.AsString(), scanRecord[0]);
-            FoundDevice(ret);
-          }
-
-          if (ret.protocol.supportsBroadcasting) {
-            ret.HandlePacket(scanRecord);            
-          }
-        } catch (Exception e) {
-          Log.E(this, "Failed to resolve newly found device", e);
-        }
-
-        Log.D(this, "Device discovered");
-      };
-
-      onDeviceStateChangedDelegate = ((IDevice device) => {
-        NotifyDeviceStateChanged(device);
-      });
-
-      scanMode = new LeScanMode(centralManager);
-      scanMode.onScanStateChanged += (IScanMode scanMode, bool scanning) => {
-        if (scanning) {
-          state = EDeviceManagerState.ActiveScanning;
-        } else {
-          state = EDeviceManagerState.Idle;
-        }
-      };
-    }
-
-    // Overridden from IDeviceManager
-    public void Dispose() {
-      foreach (IDevice device in devices) {
-        device.onStateChanged -= onDeviceStateChangedDelegate;
-      }
-    }
-
-    // Overridden from IDeviceManager
-    public async Task Init() {
       Log.D(this, "Querying for all known devices");
+
       try {
         var devices = await ion.database.deviceDao.QueryForAllAsync();
         foreach (IDevice device in devices) {
@@ -243,6 +152,21 @@ namespace ION.IOS.Devices {
       } catch (Exception e) {
         Log.E(this, "Failed to init", e);
       }
+
+      centralManager.UpdatedState += OnCentralManagerStateUpdated;
+      centralManager.DiscoveredPeripheral += OnCentralManagerPeripheralDiscovered;
+      scanMode.onScanStateChanged += OnScanModeStateChanged;
+    }
+
+    // Overridden from IDeviceManager
+    public void Dispose() {
+      foreach (IDevice device in devices) {
+        device.onStateChanged -= onDeviceStateChangedDelegate;
+      }
+
+      centralManager.UpdatedState -= OnCentralManagerStateUpdated;
+      centralManager.DiscoveredPeripheral -= OnCentralManagerPeripheralDiscovered;
+      scanMode.onScanStateChanged -= OnScanModeStateChanged;
     }
 
     // Overridden from IDeviceManager
@@ -259,56 +183,6 @@ namespace ION.IOS.Devices {
         scanMode.Scan(TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN));
       }
       return (Task<bool>)null;
-      /*
-      if (EDeviceManagerState.Idle != state) {
-        Log.D(this, "Cannot perform active scan: device manager not idle");
-        return false;
-      } else {
-        StopScan(); // TODO ahodder@appioninc.com: Ensure this doesn't cause a deadlock
-
-        scanStopper = new CancellationTokenSource();
-        var token = scanStopper.Token;
-
-        Log.D(this, "Start DoActiveScan");
-        state = EDeviceManagerState.ActiveScanning;
-
-        bool ret = await Task.Run(() => {
-          try {
-            token.ThrowIfCancellationRequested();
-
-            Task scan = Task.Run(() => {
-              DoLeScan(TIMEOUT_ACTIVE_SCAN);
-            });
-
-            DateTime timer = DateTime.Now;
-            while (!scan.IsCompleted && DateTime.Now - timer < TimeSpan.FromMilliseconds(TIMEOUT_ACTIVE_SCAN * 2)) {
-              token.ThrowIfCancellationRequested();
-
-              Thread.Sleep(10);
-            }
-
-            if (!scan.IsCompleted) {
-              Log.D(this, "Stop DoActiveScan: Failed to complete le scan");
-              return false;
-            }
-
-            Log.D(this, "Stop DoActiveScan: ok");
-
-            return true;
-          } catch (Exception e) {
-            Log.E(this, "Failed to perform active scan", e);
-            return false;
-          } finally {
-            centralManager.StopScan();
-          }
-        }, scanStopper.Token);
-
-        Log.D(this, "Stop DoActiveScan with result " + ret);
-        StopScan();
-        state = EDeviceManagerState.Idle;
-        return ret;
-      }
-      */
     }
 
     // Overridden from IDeviceManager
@@ -550,6 +424,102 @@ namespace ION.IOS.Devices {
           scanStopper.Cancel();
         }
         scanStopper = null;
+      }
+    }
+
+    /// <summary>
+    /// Called when the central manager's state changes.
+    /// </summary>
+    /// <param name="obj">Object.</param>
+    /// <param name="args">Arguments.</param>
+    private void OnCentralManagerStateUpdated(object obj, EventArgs args) {
+      switch (centralManager.State) {
+        case CBCentralManagerState.PoweredOn:
+          state = EDeviceManagerState.Idle;
+          break;
+        case CBCentralManagerState.Resetting:
+          state = EDeviceManagerState.Enabling;
+          break;
+        case CBCentralManagerState.PoweredOff: // Fallthrough
+        case CBCentralManagerState.Unauthorized: // Fallthrough
+        case CBCentralManagerState.Unsupported: // Fallthrough
+        case CBCentralManagerState.Unknown: // Fallthrough
+        default:
+          Log.D(this, "Unknown CBCenteralManagerState: " + centralManager.State);
+          break;
+      }
+    }
+
+    /// <summary>
+    /// Called when the central manager discovers a new peripheral.
+    /// </summary>
+    /// <param name="obj">Object.</param>
+    /// <param name="args">Arguments.</param>
+    private void OnCentralManagerPeripheralDiscovered(object obj, CBDiscoveredPeripheralEventArgs args) {
+      Log.D(this, "Discovered Peripheral");
+      string name = args.Peripheral.Name;
+      if (name == null) {
+        if (args.AdvertisementData != null) {
+          var data = args.AdvertisementData[CBAdvertisement.DataLocalNameKey] as NSString;
+          if (data != null) {
+            name = data.ToString();
+          }
+        }
+      }
+      Log.D(this, "Found device: " + name);
+
+      try {
+        if (!IsAppionDevice(args.Peripheral)) {
+          Log.D(this, "Ignoring non-ION device: " + name);
+          return;
+        }
+
+        GaugeSerialNumber serialNumber;
+        try {
+          serialNumber = GaugeSerialNumber.Parse(name);
+        } catch (ArgumentException) {
+          Log.E(this, "Invalid GaugeSerialNumber: " + name);
+          return;
+        }
+
+        var v = args.AdvertisementData[CBAdvertisement.DataManufacturerDataKey];
+        byte[] scanRecord = new byte[20];
+        if (v != null) {
+          scanRecord = ((NSData)v).ToArray();
+          Log.D(this, name + " scanRecord before: " + String.Join(", ", scanRecord));
+          var bytes = new byte[20];
+          Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
+          scanRecord = bytes;
+        }
+        Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
+
+        IDevice ret = this[serialNumber];
+
+        if (ret == null) {
+          ret = CreateDevice(serialNumber, args.Peripheral.Identifier.AsString(), scanRecord[0]);
+          FoundDevice(ret);
+        }
+
+        if (ret.protocol.supportsBroadcasting) {
+          ret.HandlePacket(scanRecord);            
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to resolve newly found device", e);
+      }
+
+      Log.D(this, "Device discovered");
+    }
+
+    /// <summary>
+    /// Called when the device manager's scan mode changes scan state.
+    /// </summary>
+    /// <param name="scanMode">Scan mode.</param>
+    /// <param name="scanning">If set to <c>true</c> scanning.</param>
+    public void OnScanModeStateChanged(IScanMode scanMode, bool scanning) {
+      if (scanning) {
+        state = EDeviceManagerState.ActiveScanning;
+      } else {
+        state = EDeviceManagerState.Idle;
       }
     }
   } // End IOSDeviceManager

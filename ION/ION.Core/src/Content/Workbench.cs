@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 using ION.Core.Sensors;
 
@@ -7,6 +8,7 @@ namespace ION.Core.Content {
   /// <summary>
   /// A workbench is a simple container that will hold a collection of manifolds.
   /// </summary>
+  [DataContract(Name="Workbench")]
   public class Workbench {
     public delegate void OnManifoldAdded(Workbench workbench, Manifold manifold);
     public delegate void OnManifoldRemoved(Workbench workbench, Manifold manifold);
@@ -32,7 +34,11 @@ namespace ION.Core.Content {
     /// <summary>
     /// The backing list of manifolds for the workbench.
     /// </summary>
-    private List<Manifold> __manifolds = new List<Manifold>();
+    public List<Manifold> manifolds {
+      get {
+        return new List<Manifold>(__manifolds);
+      }
+    } List<Manifold> __manifolds = new List<Manifold>();
 
     public Workbench() {
     }
@@ -125,6 +131,6 @@ namespace ION.Core.Content {
         onManifoldRemoved(this, manifold);
       }
     }
-  }
+  } // End Workbench
 }
 

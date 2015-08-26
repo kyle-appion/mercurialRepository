@@ -23,13 +23,13 @@ namespace ION.Core.IO {
     /// </summary>
     /// <returns>The folder async.</returns>
     /// <param name="name">Name.</param>
-    Task<bool> ContainsFolderAsync(string name);
+    bool ContainsFolder(string name);
     /// <summary>
     /// Queries whether or not the folder contains a file witht the given local name.
     /// </summary>
     /// <returns>The file async.</returns>
     /// <param name="name">Name.</param>
-    Task<bool> ContainsFileAsync(string name);
+    bool ContainsFile(string name);
     /// <summary>
     /// Gets a subfolder within this directory. The access response describes 
     /// the action taken for acquiring the folder.
@@ -37,7 +37,7 @@ namespace ION.Core.IO {
     /// </summary>
     /// <param name="name">Name.</param>
     /// <param name="accessResponse"></param>
-    Task<IFolder> GetFolderAsync(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
+    IFolder GetFolder(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
     /// <summary>
     /// Creates a new file within this folder. The access response describes
     /// the action taken for acquiring the file.
@@ -45,31 +45,29 @@ namespace ION.Core.IO {
     /// <param name="name"></param>
     /// <param name="collisionResponse"></param>
     /// <returns></returns>
-    Task<IFile> GetFileAsync(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
+    IFile GetFile(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing);
     /// <summary>
     /// Queries a list of all the folders (not files) that are in the current directory.
     /// </summary>
     /// <returns></returns>
-    Task<List<IFolder>> GetFolderListAsync();
+    List<IFolder> GetFolderList();
     /// <summary>
     /// Queries a list of all the files (not folders) that are in the current directory.
     /// </summary>
-    /// <returns>The file list async.</returns>
-    Task<List<IFile>> GetFileListAsync();
+    /// <returns>The file list.</returns>
+    List<IFile> GetFileList();
     /// <summary>
     /// Queries whether or not the folder exists.
     /// </summary>
-    /// <returns>The async.</returns>
-    Task<bool> ExistsAsync();
+    bool Exists();
     /// <summary>
     /// Creates this IFolder if it does not already exist.
     /// </summary>
-    /// <returns>The async.</returns>
-    Task<bool> CreateAsync();
+    bool Create();
     /// <summary>
     /// Deletes the folder and all of its content. Note: THIS IS DANGEROUS!
     /// </summary>
-    Task DeleteAsync();
+    void Delete();
   }
 
   public enum EFileAccessResponse {

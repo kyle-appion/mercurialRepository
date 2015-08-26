@@ -39,7 +39,7 @@ namespace ION.Core.IO {
     /// <returns>The file.</returns>
     /// <param name="file">File.</param>
     public async static Task<Properties> FromFileAsync(IFile file) {
-      using (var reader = new System.IO.StreamReader(await file.OpenForReadingAsync())) { 
+      using (var reader = new System.IO.StreamReader(file.OpenForReading())) { 
         var dict = new Dictionary<string, string>();
 
         string line = null;

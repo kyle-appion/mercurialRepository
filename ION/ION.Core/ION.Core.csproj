@@ -45,7 +45,6 @@
     <Compile Include="src\Fluids\Parser\IFluidParser.cs" />
     <Compile Include="src\Fluids\Parser\BinaryFluidParser.cs" />
     <Compile Include="src\IO\IFile.cs" />
-    <Compile Include="src\IO\Path.cs" />
     <Compile Include="src\IO\Preferences\IPreferences.cs" />
     <Compile Include="src\IO\Preferences\BasePreferences.cs" />
     <Compile Include="src\Measure\Converter.cs" />
@@ -77,6 +76,17 @@
     <Compile Include="src\Devices\Protocols\BleV2Protocol.cs" />
     <Compile Include="src\Devices\ScanMode.cs" />
     <Compile Include="src\IO\Properties.cs" />
+    <Compile Include="src\Util\IReleasable.cs" />
+    <Compile Include="src\IO\IParser.cs" />
+    <Compile Include="src\Content\Parsers\ManifoldParser.cs" />
+    <Compile Include="src\Content\Parsers\WorkbenchParser.cs" />
+    <Compile Include="src\App\IONManager.cs" />
+    <Compile Include="src\Sensors\Properties\AbstractSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\AlternateUnitSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\HoldSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\ISensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\MaxSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -89,6 +99,7 @@
   <ItemGroup>
     <Folder Include="src\Content\" />
     <Folder Include="src\Database\" />
+    <Folder Include="src\Content\Parsers\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

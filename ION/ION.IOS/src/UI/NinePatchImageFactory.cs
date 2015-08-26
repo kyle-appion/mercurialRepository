@@ -129,7 +129,7 @@ namespace ION.IOS.UI {
       float[] npWidthBar = new float[width];
       float[] npHeightBar = new float[height];
       for (int w = 0; w < width; w++) {
-        npWidthBar[w] = alphaImage[w,0]; 
+        npWidthBar[w] = alphaImage[w,0];
       }
       for (int h = 0; h < height; h++) {
         npHeightBar[h] = alphaImage[0,h];
@@ -143,7 +143,7 @@ namespace ION.IOS.UI {
       // width and height extremes. (ie. a width pixel cannot be at 0,0)
 
       // Find the left-most ninepatch scale indicator
-      for (int i = 1; i < npWidthBar.Length - 1; i++) {
+      for (int i = 1; i < width - 1; i++) {
         if (npWidthBar[i] == 1) {
           left = i;
           break;
@@ -151,7 +151,7 @@ namespace ION.IOS.UI {
       }
 
       // Find the right-most ninepatch scale indicator
-      for (int i = npWidthBar.Length - 2; i > 0; i--) {
+      for (int i = width - 2; i > 0; i--) {
         if (npWidthBar[i] == 1) {
           right = i;
           break;
@@ -159,7 +159,7 @@ namespace ION.IOS.UI {
       }
 
       // Find the top-most ninepatch scale indicator
-      for (int i = 1; i < npHeightBar.Length - 1; i++) {
+      for (int i = 1; i < height - 1; i++) {
         if (npHeightBar[i] == 1) {
           top = i;
           break;
@@ -167,7 +167,7 @@ namespace ION.IOS.UI {
       }
 
       // Find the bottom-most ninepatch scale indicator
-      for (int i = npHeightBar.Length - 2; i > 0; i--) {
+      for (int i = height - 2; i > 0; i--) {
         if (npHeightBar[i] == 1) {
           bottom = i;
           break;

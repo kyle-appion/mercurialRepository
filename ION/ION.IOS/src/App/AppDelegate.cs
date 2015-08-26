@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 
 using Foundation;
 using UIKit;
@@ -33,7 +34,7 @@ namespace ION.IOS.App {
     /// The current ion context for the application.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion { get; private set; }
+    public IosION ion { get; private set; }
 
     /// <summary>
     /// The instance of the device manager view controller that will allow the user to select
@@ -60,7 +61,14 @@ namespace ION.IOS.App {
     /// </summary>
     public SuperheatSubcoolViewController superheatSubCoolViewController { get; private set; }
 
+
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
+      // TODO ahodder@appioninc.com:
+      // Prevents an exception from being thrown when the navigation controller's delegate is changed.
+      // See the following link: http://forums.xamarin.com/discussion/39470/installed-5-9-build-431-event-registration-is-overwriting-existing-delegate-error
+      // This line exposes a bug that will allow delegates (presumably app wide) to be set,
+      // however, registering to events will nuke the delegate.
+      UIApplication.CheckForEventAndDelegateMismatches = false;
       // Initialize the application state.
       // Set Navigation Bar preferences
       var nb = UINavigationBar.Appearance;
@@ -72,7 +80,8 @@ namespace ION.IOS.App {
 
 //      application.SetStatusBarHidden(true, UIStatusBarAnimation.None);
 
-      ion = AppState.context = new IosION();
+      AppState.context = ion = new IosION();
+      ion.Init().Wait();
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);

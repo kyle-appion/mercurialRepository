@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using SQLite.Net;
 using SQLite.Net.Interop;
@@ -7,7 +8,7 @@ using ION.Core.App;
 using ION.Core.Devices;
 
 namespace ION.Core.Database {
-  public class IONDatabase : SQLiteConnection {
+  public class IONDatabase : SQLiteConnection, IIONManager {
 
     /// <summary>
     /// The ion context that this database is running within.
@@ -20,11 +21,14 @@ namespace ION.Core.Database {
     /// <value>The device DAO.</value>
     public IDao<IDevice> deviceDao { get; private set; }
     
-
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
       // Create the database
       deviceDao = new DeviceDao(this);
+    }
+
+    // Overridden from IIONManager
+    public async Task InitAsync() {
     }
   }
 }

@@ -138,9 +138,9 @@ namespace ION.Core.IO.Preferences {
 
     // Overridden from IPreferences
     public Task<bool> Commit() {
-      return Task.Run(async () => {
+      return Task.Factory.StartNew(() => {
         try {
-          using (BinaryWriter writer = new BinaryWriter(await __file.OpenForWritingAsync())) {
+          using (BinaryWriter writer = new BinaryWriter(__file.OpenForWriting())) {
             // Write the preference serialization version
             writer.Write(CURRENT_VERSION);
             // Write the number of items that we will be persiting
@@ -191,14 +191,14 @@ namespace ION.Core.IO.Preferences {
     /// <param name="file"></param>
     /// <returns></returns>
     public static Task<BasePreferences> OpenAsync(IFile file) {
-      return Task.Run(async () => {
-        if (await file.GetSizeAsync() <= 0) {
+      return Task.Factory.StartNew(() => {
+        if (file.GetSize() <= 0) {
           Log.D(typeof(BasePreferences).Name, "File returned size as empty. Creating new preference file");
           return new BasePreferences(file);
         } else {
           var content = new Dictionary<string, object>();
 
-          using (var reader = new BinaryReader(await file.OpenForReadingAsync())) {
+          using (var reader = new BinaryReader(file.OpenForReading())) {
             // Read the preferene file version
             var version = reader.ReadInt32();
             if (CURRENT_VERSION != version) {

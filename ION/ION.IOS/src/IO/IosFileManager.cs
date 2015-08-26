@@ -1,31 +1,36 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 
+using ION.Core.App;
 using ION.Core.IO;
 
 namespace ION.IOS.IO {
   public class IosFileManager : IFileManager {
-    // Overridden from IFileManager
-    public Task<IFolder> GetAssetDirectoryAsync() {
-      return Task.Run(() => {
-        var cd = System.IO.Directory.GetCurrentDirectory();
 
-        return (IFolder)new IONFolder(new System.IO.DirectoryInfo(cd));//System.IO.Path.Combine(cd, "Resources")));
-      });
+    // Overridden from IFileManager
+    public async Task InitAsync() {
     }
 
     // Overridden from IFileManager
-    public Task<IFolder> GetApplicationInternalDirectoryAsync() {
-      return Task.Run(() => {
-        return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
-      });
+    public void Dispose() {
     }
 
     // Overridden from IFileManager
-    public Task<IFolder> GetApplicationExternalDirectoryAsync() {
-      return Task.Run(() => {
-        return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
-      });
+    public IFolder GetAssetDirectory() {
+      var cd = System.IO.Directory.GetCurrentDirectory();   
+      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(cd));
+//      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)));
+    }
+
+    // Overridden from IFileManager
+    public IFolder GetApplicationInternalDirectory() {
+      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
+    }
+
+    // Overridden from IFileManager
+    public IFolder GetApplicationExternalDirectory() {
+      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
     }
   }
 }

@@ -38,47 +38,17 @@ namespace ION.IOS.ViewController {
 //      navigation.NavigationController.View.BackgroundColor = new UIColor(Colors.BLACK);
       View.AddSubview(navigation.View);
 
-      navigation.NavigationRoot = new RootElement("Navigation Menu") {
-        new Section ("MAIN") {
+      navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
+        new Section (Strings.Navigation.MAIN) {
 //          new StringElement ("Analyzer"),
 //          new StringElement ("Device Manager"),
-          new StringElement ("Workbench"),
+          new StringElement (Strings.Workbench.SELF),
         },
-        new Section ("CALCULATORS") {
-          new StringElement("P/T Chart"),
-          new StringElement("Superheat/Subcool"),
+        new Section (Strings.Navigation.CALCULATORS) {
+          new StringElement(Strings.Fluid.PT_CHART),
+          new StringElement(Strings.Fluid.SUPERHEAT_SUBCOOL),
         },
-        /*
-        // TODO ahodder@appioninc.com: Localize these strings
-        new Section("MAIN") {
-          from vc in mainNavigation select new UIViewElement(vc.Title, vc.View, false) as Element
-        },
-        new Section("CALCUATORS") {
-          from vc in calculatorNavigation select new UIViewElement(vc.Title, vc.View, false) as Element
-        },
-        */
-        /*
-        new Section("REPORTS") {
-          from vc in reportNavigation select new UIViewElement(vc.Title, vc.View, false) as Element
-        },
-        new Section("CONFIGURATION") {
-          from vc in configurationNavigation select new UIViewElement(vc.Title, vc.View, false) as Element
-        },
-        new Section("EXIT") {
-          from vc in exitNavigation select new UIViewElement(vc.Title, vc.View, false) as Element
-        }
-        */
       };
-      /*
-      //navigation.ViewControllers = mainNavigation.Concat(calculatorNavigation, reportNavigation, configurationNavigation, exitNavigation);
-      navigation.ViewControllers = new UIViewController[] {
-//        new UINavigationController ((AnalyzerViewController)this.Storyboard.InstantiateViewController("analyzerViewController")),
-//        new UINavigationController ((DeviceManagerViewController)this.Storyboard.InstantiateViewController("deviceManagerViewController")),
-        new UINavigationController ((WorkbenchViewController)this.Storyboard.InstantiateViewController("workbenchViewController")),
-        new UINavigationController ((PressureTemperatureViewController)this.Storyboard.InstantiateViewController("pressureTemperatureViewController")),
-        new UINavigationController ((SuperheatSubcoolViewController)this.Storyboard.InstantiateViewController("superheatSubcoolViewController")),
-      };
-      */
       navigation.ViewControllers = BuildViewControllers();
       // Create the menu
     }

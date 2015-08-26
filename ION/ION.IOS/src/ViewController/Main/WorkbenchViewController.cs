@@ -6,6 +6,7 @@ using UIKit;
 
 using ION.Core.App;
 using ION.Core.Content;
+using ION.Core.Content.Parsers;
 using ION.Core.Devices;
 using ION.Core.Measure;
 using ION.Core.Sensors;
@@ -23,6 +24,11 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <value>The ion.</value>
     private IION ion { get; set; }
+    /// <summary>
+    /// The workbench that we are working with.
+    /// </summary>
+    /// <value>The workbench.</value>
+    private Workbench workbench { get; set; }
     /// <summary>
     /// The source that will provide Viewer views to the table view.
     /// </summary>
@@ -45,8 +51,10 @@ namespace ION.IOS.ViewController.Main {
       Title = Strings.Workbench.SELF.FromResources();
 
       ion = AppState.context;
+      workbench = ion.currentWorkbench;
 
-      source = new ViewerSource(this, ion.currentWorkbench);
+      source = new ViewerSource(this, workbench);
+      source.onRequestViewerDelegate = OnRequestViewer;
 
       tableContent.Source = source;
 
@@ -61,12 +69,26 @@ namespace ION.IOS.ViewController.Main {
     }
 
     /// <summary>
+    /// Called when the viewer source wishes to request a new viewer.
+    /// </summary>
+    private void OnRequestViewer() {
+      var sb = InflateViewController<DeviceManagerViewController>("deviceManagerViewController");
+      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+        workbench.AddSensor(sensor);
+      };
+      // TODO ahodder@appioninc.com: Set initialial arguments.
+      NavigationController.PushViewController(sb, true);
+      //          Toast.New(tableView, "Clicked 'Add New Viewer'");
+    }
+
+    /// <summary>
     /// Called when the workbench adds a new manifold.
     /// </summary>
     /// <param name="workbench">Workbench.</param>
     /// <param name="manifold">Manifold.</param>
-    private void OnManifoldAdded(Workbench workbench, Manifold manifold) {
+    private async void OnManifoldAdded(Workbench workbench, Manifold manifold) {
       tableContent.ReloadData();
+      await ion.SaveWorkbenchAsync();
     }
 
     /// <summary>
@@ -74,142 +96,9 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <param name="workbench">Workbench.</param>
     /// <param name="manifold">Manifold.</param>
-    private void OnManifoldRemoved(Workbench workbench, Manifold manifold) {
+    private async void OnManifoldRemoved(Workbench workbench, Manifold manifold) {
       tableContent.ReloadData();
+      await ion.SaveWorkbenchAsync();
     }
 	}
-
-  /// <summary>
-  /// The table source that will provide viewers to the table for display.
-  /// </summary>
-  internal class ViewerSource : UITableViewSource {
-    private const string CELL_VIEWER = "cellViewer";
-    private const string CELL_ADD = "cellAdd";
-
-    /// <summary>
-    /// The workbench view controller that we are sourcing for.
-    /// </summary>
-    private WorkbenchViewController __workbenchController;
-    /// <summary>
-    /// The workbench controller's table view.
-    /// </summary>
-    private UITableView __table;
-    /// <summary>
-    /// The list of manifolds that we are displaying as viewers.
-    /// </summary>
-    private Workbench __workbench;
-    /// <summary>
-    /// A lookup table for heghts of all cells.
-    /// </summary>
-    private Dictionary<string, nfloat> __cellHeights = new Dictionary<string, nfloat>();
-
-    public ViewerSource(WorkbenchViewController workbenchViewController, Workbench workbench) {
-      __workbenchController = workbenchViewController;
-      __workbench = workbench;
-      __table = __workbenchController.tableContent;
-
-      __cellHeights[CELL_VIEWER] = __table.DequeueReusableCell(CELL_VIEWER).Frame.Size.Height;
-      __cellHeights[CELL_ADD] = __table.DequeueReusableCell(CELL_ADD).Frame.Size.Height;
-    }
-
-    // Overridden from UIViewController
-    public override void RowSelected(UITableView tableView, NSIndexPath path) {
-      
-    }
-
-    // Overridden from UITableViewSource
-    public override nint NumberOfSections(UITableView tableView) {
-      return __workbench.count + 1;
-    }
-
-    // Overridden from UITableViewSource
-    public override nint RowsInSection(UITableView tableView, nint section) {
-      return 0;
-    }
-
-    // Overridden from UITableViewSource
-    public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-      var secCount = NumberOfSections(tableView); 
-      if (section <= secCount - 2) {
-        return 138;//__cellHeights[CELL_VIEWER];
-      } else if (section == secCount - 1) {
-        return 32;//__cellHeights[CELL_ADD];
-      } else {
-        return 0;
-      }
-    }
-
-    // Overridden from UITableViewSource
-//    public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-//    }
-
-    // Overridden from UITableViewSource
-    public override UIView GetViewForHeader(UITableView tableView, nint section) {
-      if (section == NumberOfSections(tableView) - 1) {
-        var add = (WorkbenchAddCell)tableView.DequeueReusableCell(CELL_ADD);
-        add.clicked = (() => {
-          var sb = __workbenchController.Storyboard.InstantiateViewController("deviceManagerViewController");
-          // TODO ahodder@appioninc.com: Set initialial arguments.
-          __workbenchController.NavigationController.PushViewController(sb, true);
-//          Toast.New(tableView, "Clicked 'Add New Viewer'");
-        });
-        return add;
-      } else {
-        var viewer = (Viewer)tableView.DequeueReusableCell(CELL_VIEWER);
-        var manifold = __workbench[(int)section];
-        viewer.manifold = manifold;
-        viewer.onViewerClicked = () => {
-          var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.ActionSheet);
-
-          if (manifold.primarySensor is GaugeDeviceSensor) {
-            var sensor = manifold.primarySensor as GaugeDeviceSensor;
-            // Append gauge device sensor context items
-            if (sensor.device.isConnected) {
-              dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-                sensor.device.connection.Disconnect();
-              }));
-            } else {
-              dialog.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-                sensor.device.connection.Connect();
-              }));
-            }
-          }
-
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Alarms", UIAlertActionStyle.Default, (action) => {
-            Toast.New(__table, "Alarms coming soon!");
-          }));
-
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Add Subview", UIAlertActionStyle.Default, (action) => {
-            Toast.New(__table, "Subviews coming soon!");
-          }));
-
-          dialog.AddAction(UIAlertAction.Create(Strings.RENAME.FromResources(), UIAlertActionStyle.Default, (action) => {
-            Toast.New(__table, "Rename coming soon!");
-          }));
-
-          dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE.FromResources(), UIAlertActionStyle.Default, (action) => {
-            __workbench.Remove(manifold);
-            __table.ReloadData();
-          }));
-
-          dialog.AddAction(UIAlertAction.Create(Strings.CANCEL.FromResources(), UIAlertActionStyle.Cancel, null));
-
-          // Requires for iPad- we must specify a source for the action sheet
-          // since it is displayed as a popover
-          var popover = dialog.PopoverPresentationController;
-          if (popover != null) {
-            popover.SourceView = tableView;
-            popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
-          }
-          __workbenchController.PresentViewController(dialog, true, null);
-        };
-        return viewer;
-      }
-    }
-
-    // Overridden from UITableViewSource
-    public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
-      return null;
-    }
-  }
 }

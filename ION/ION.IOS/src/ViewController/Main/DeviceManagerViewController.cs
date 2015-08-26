@@ -19,6 +19,17 @@ using ION.IOS.Util;
 namespace ION.IOS.ViewController.Main {
 	public partial class DeviceManagerViewController : BaseIONViewController {
     /// <summary>
+    /// The delegate that is used to pass a sensor back from the device manager.
+    /// </summary>
+    public delegate void OnSensorReturn(GaugeDeviceSensor sensor);
+
+    /// <summary>
+    /// The action that will be fired when the user selects a sensor for returning 
+    /// within the device manager.
+    /// </summary>
+    public OnSensorReturn onSensorReturnDelegate;
+
+    /// <summary>
     /// The ion context for this view controller.
     /// </summary>
     /// <value>The ion.</value>
@@ -40,9 +51,7 @@ namespace ION.IOS.ViewController.Main {
       // TODO ahodder@appioninc.com: This asserts that the view controller is be opened
       // with the intent to return a sensor.
       InitNavigationBar("ic_nav_device_manager", true);
-      backAction = () => {
-        Log.D(this, "Back clicked");
-      };
+
 
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
@@ -61,7 +70,16 @@ namespace ION.IOS.ViewController.Main {
 
       HandleDeviceManagerStateChanged(ion.deviceManager, ion.deviceManager.state);
 
-      tableDeviceList.Source = deviceSource = new DeviceSource(ion, tableDeviceList);
+      table.Source = deviceSource = new DeviceSource(ion, table);
+      deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
+        Log.D(this, "clicky, clicky");
+        if (onSensorReturnDelegate != null) {
+          onSensorReturnDelegate(sensor);
+          NavigationController.PopViewController(true);
+          return true;
+        }
+        return false;
+      };
       UpdateSourceContent();
     }
 
@@ -72,6 +90,8 @@ namespace ION.IOS.ViewController.Main {
       ion.deviceManager.onDeviceFound -= HandleDeviceFound;
       ion.deviceManager.onDeviceManagerStateChanged -= HandleDeviceManagerStateChanged;
       ion.deviceManager.onDeviceStateChanged -= HandleDeviceStateChanged;
+
+      table.Source = null;
     }
 
     /// <summary>

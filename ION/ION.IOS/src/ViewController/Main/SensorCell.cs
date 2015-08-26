@@ -13,7 +13,7 @@ using ION.IOS.Sensors;
 using ION.IOS.UI;
 
 namespace ION.IOS.ViewController.Main {
-	public partial class SensorCell : UITableViewCell {
+	public partial class SensorCell : UITableViewCell, IReleasable {
 
     /// <summary>
     /// The action that will be called when the workbench button
@@ -82,9 +82,15 @@ namespace ION.IOS.ViewController.Main {
       // Nope
 		}
 
+    // Overridden from IReleasable
+    public void Release() {
+      sensor = null;
+    }
+
     // Overriden from UITableCellView
     public override void AwakeFromNib() {
       base.AwakeFromNib();
+
       buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonWorkbench.TouchUpInside += (object sender, EventArgs e) => {
@@ -103,6 +109,7 @@ namespace ION.IOS.ViewController.Main {
       };
 
       buttonAdd.Hidden = true; // TODO ahodder@appioninc.com: Hidden until viewcontroller call support is working.
+      buttonAdd.SetImage(UIImage.FromBundle("ic_device_add"), UIControlState.Normal);
       buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
       buttonAdd.TouchUpInside += (object sender, EventArgs e) => {
@@ -113,8 +120,8 @@ namespace ION.IOS.ViewController.Main {
     }
 
     // Overridden from UITabelCellView
-    public override void RemoveFromSuperview() {
-      base.RemoveFromSuperview();
+    public override void PrepareForReuse() {
+      base.PrepareForReuse();
       sensor = null;
     }
 
@@ -132,7 +139,7 @@ namespace ION.IOS.ViewController.Main {
     /// <param name="sensor">Sensor.</param>
     private void OnSensorUpdated(Sensor sensor) {
       Log.D(this, sensor.measurement + "");
-      labelSensorType.Text = sensor.sensorType.GetTypeString();
+      labelSensorType.Text = sensor.type.GetTypeString();
       labelSensorMeasurement.Text = sensor.measurement.ToString();
     }
   }

@@ -13,21 +13,21 @@ namespace ION.IOS.ViewController.Main
 	partial class DeviceManagerViewController
 	{
 		[Outlet]
-		public UIKit.UIView deviceManagerViewController { get; set; }
+		public UIKit.UIView deviceManagerViewController { get; private set; }
 
 		[Outlet]
-		public UIKit.UITableView tableDeviceList { get; set; }
+		UIKit.UITableView table { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (table != null) {
+				table.Dispose ();
+				table = null;
+			}
+
 			if (deviceManagerViewController != null) {
 				deviceManagerViewController.Dispose ();
 				deviceManagerViewController = null;
-			}
-
-			if (tableDeviceList != null) {
-				tableDeviceList.Dispose ();
-				tableDeviceList = null;
 			}
 		}
 	}

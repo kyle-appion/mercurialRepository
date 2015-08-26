@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using ION.Core.App;
+
 namespace ION.Core.Devices {
   /// <summary>
   /// The delegate that is notified when a device is found by an active or
@@ -22,7 +24,7 @@ namespace ION.Core.Devices {
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
   /// and access of devices within the ION application.
   /// </summary>
-  public interface IDeviceManager : IDisposable {
+  public interface IDeviceManager : IIONManager {
     /// <summary>
     /// An event handler that will be notified when a device is found by a scan.
     /// </summary>
@@ -85,10 +87,6 @@ namespace ION.Core.Devices {
     /// false otherwise</returns>
     Task<bool> EnableAsync();
 
-    /// <summary>
-    /// Initializes the device manager.
-    /// </summary>
-    Task Init();
     /// <summary>
     /// Informs the DeviceManager that an active scan has been requested. It is
     /// up to the implementation to determine what qualifies as an active scan. 

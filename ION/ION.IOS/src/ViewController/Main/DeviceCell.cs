@@ -13,7 +13,7 @@ using ION.IOS.Devices;
 using ION.IOS.UI;
 
 namespace ION.IOS.ViewController.Main {
-	public partial class DeviceCell : UITableViewCell {
+	public partial class DeviceCell : UITableViewCell, IReleasable {
 
     /// <summary>
     /// The action that is called when the background view is clicked.
@@ -48,6 +48,11 @@ namespace ION.IOS.ViewController.Main {
       // Nope
 		}
 
+    // Overridden from IReleasable
+    public void Release() {
+      device = null;
+    }
+
     // Overridden from UITableViewCell
     public override void AwakeFromNib() {
       base.AwakeFromNib();
@@ -66,6 +71,13 @@ namespace ION.IOS.ViewController.Main {
           onDeviceConnectClicked();
         }
       };
+    }
+
+    // Overridden from UITableViewCell
+    public override void PrepareForReuse() {
+      base.PrepareForReuse();
+
+      device = null;
     }
 
     /// <summary>

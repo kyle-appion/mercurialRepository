@@ -134,7 +134,7 @@ namespace ION.Core.Devices {
       ps.maxMeasurement = Units.Temperature.CELSIUS.OfScalar(150);
       ps.minMeasurement = Units.Temperature.CELSIUS.OfScalar(-40);
 
-      device.sensors = new GaugeDeviceSensor[] { ps };
+      device.sensors = new GaugeDeviceSensor[] { ps, ts };
 
       return device;
     }

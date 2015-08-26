@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Ancillary {
     /// <summary>
     /// Updates the content of the view's table.
     /// </summary>
-    private async void UpdateTableContent() {
+    private void UpdateTableContent() {
       FluidSource source = null;
 
       switch ((int)switchContent.SelectedSegment) {
@@ -68,7 +68,7 @@ namespace ION.IOS.ViewController.Ancillary {
           source = new FluidSource(table, fluidManager, fluidManager.preferredFluids);
           break;
         case SECTION_LIBRARY:
-          source = new FluidSource(table, fluidManager, await fluidManager.GetAvailableFluidNamesAsync());
+          source = new FluidSource(table, fluidManager, fluidManager.GetAvailableFluidNames());
           break;
       }
 

@@ -20,8 +20,24 @@ namespace ION.IOS.ViewController {
     /// <param name="handle">Handle.</param>
     public IONPrimaryScreenController root { get; set; }
 
+    /// <summary>
+    /// Whether or not the viewcontroller was created as a popover or a primary screen.
+    /// </summary>
+    /// <value><c>true</c> if is pop over; otherwise, <c>false</c>.</value>
+    private bool isPopOver { get; set; }
+
     public BaseIONViewController(IntPtr handle) : base(handle) {
       // Nope
+    }
+
+    // Overridden from ViewController
+    public override void ViewDidAppear(bool animated) {
+      base.ViewDidAppear(animated);
+    }
+
+    // Overridden from ViewController
+    public override void ViewWillDisappear(bool animated) {
+      base.ViewDidDisappear(animated);
     }
 
     /// <summary>
@@ -35,6 +51,8 @@ namespace ION.IOS.ViewController {
         Log.D(this, "Failed to initialize navigation bar: null");
         return;
       }
+      /*
+      isPopOver = popViewController;
 
       var leftContainer = new UIView();
       leftContainer.Frame = new CGRect(0, 0, 50, 40);
@@ -53,15 +71,27 @@ namespace ION.IOS.ViewController {
       icon.ContentMode = UIViewContentMode.ScaleAspectFit;
 
       leftContainer.AddSubview(icon);
-      /*
-      leftContainer.AddConstraint(NSLayoutConstraint.Create(leftContainer, NSLayoutAttribute.Trailing, NSLayoutRelation.Equal, 
-        icon, NSLayoutAttribute.Trailing, (nfloat)1, (nfloat)0));
-      */
-      
       var left = new UIBarButtonItem(leftContainer);
       left.Style = UIBarButtonItemStyle.Bordered;
 
       NavigationItem.LeftBarButtonItem = left;
+
+      if (popViewController) {
+        NavigationController.InteractivePopGestureRecognizer.Delegate = new UIGestureRecognizerDelegate();
+      }
+      */
+    }
+
+    /// <summary>
+    /// Inflates an ION view controller from the storyboard.
+    /// </summary>
+    /// <returns>The view controller.</returns>
+    /// <param name="key">Key.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    protected T InflateViewController<T>(string key) where T : BaseIONViewController {
+      var ret = (T)Storyboard.InstantiateViewController(key);
+      ret.root = root;
+      return ret;
     }
   }
 }

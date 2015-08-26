@@ -41,17 +41,18 @@ namespace ION.Core.Database {
       var ret = new List<IDevice>();
 
       foreach (Device device in database.Table<Device>().AsEnumerable()) {
-        ret.Add(await InflateAsync(device));
+        var d = await InflateAsync(device);
+        if (d != null) {
+          ret.Add(d);
+        }
       }
 
       return ret;
     }
 
     // Overridden from IDao
-    public Task<long> CountAsync() {
-      return Task.Run(() => {
-        return (long)database.Table<Device>().Count();
-      });
+    public async Task<long> CountAsync() {
+      return (long)database.Table<Device>().Count();
     }
 
     // Overridden from IDao
@@ -76,16 +77,14 @@ namespace ION.Core.Database {
     /// <returns>The database id of the device with the given serial number
     /// or null if the serial number is not present within the database.</returns>
     /// <param name="serialNumber">Serial number.</param>
-    private Task<Device> QueryForUsingSerialNumberAsync(ISerialNumber serialNumber) {
-      return Task.Run(() => {
-        try {
-          var serial = serialNumber.ToString();
-          return database.Table<Device>().Where(x => x.serialNumber == serial).First();
-        } catch (Exception e) {
-          Log.E(this, "Failed to query for serial number async", e);
-          return null;
-        }
-      });
+    private async Task<Device> QueryForUsingSerialNumberAsync(ISerialNumber serialNumber) {
+      try {
+        var serial = serialNumber.ToString();
+        return database.Table<Device>().Where(x => x.serialNumber == serial).First();
+      } catch (Exception e) {
+        Log.E(this, "Failed to query for serial number async", e);
+        return null;
+      }
     }
 
     /// <summary>
@@ -93,17 +92,15 @@ namespace ION.Core.Database {
     /// </summary>
     /// <returns>The I device.</returns>
     /// <param name="device">Device.</param>
-    private Task<IDevice> InflateAsync(Device device) {
-      return Task.Run(() => {
-        Log.D(this, "Inflated: " + device.ToString());
-        try {
+    private async Task<IDevice> InflateAsync(Device device) {
+      Log.D(this, "Inflated: " + device.ToString());
+      try {
         var serialNumber = GaugeSerialNumber.Parse(device.serialNumber);
         return database.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, device.protocol);
-        } catch (Exception e) {
-          Log.E(this, "Cannot inflate device", e);
-          return null;
-        }
-      });
+      } catch (Exception e) {
+        Log.E(this, "Cannot inflate device", e);
+        return null;
+      }
     }
 
     /// <summary>

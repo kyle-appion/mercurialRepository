@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using ION.Core.Content;
 using ION.Core.Database;
@@ -68,6 +69,8 @@ namespace ION.Core.App {
     /// </summary>
     /// <param name="action">Action.</param>
     void PostToMain(Action action);
+
+    Task SaveWorkbenchAsync();
   } // End IION
 }
 

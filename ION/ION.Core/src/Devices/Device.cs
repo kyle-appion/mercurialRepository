@@ -199,9 +199,9 @@ namespace ION.Core.Devices {
 
           for (int i = 0; i < sensorCount; i++) {
             GaugeReading reading = gp.gaugeReadings[i];
-            if (reading.sensorType != this[i].sensorType) {
+            if (reading.sensorType != this[i].type) {
               throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-                this[i].sensorType + " is not valid with received type " + reading.sensorType);
+                this[i].type + " is not valid with received type " + reading.sensorType);
             }
             if (this[i].measurement != gp.gaugeReadings[i].reading) {
               this[i].measurement = gp.gaugeReadings[i].reading;
@@ -215,7 +215,7 @@ namespace ION.Core.Devices {
         } else {
           throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
         }
-      } catch (Exception e) {
+      } catch (Exception) {
         // TODO ahodder@appioninc.com: Consider exposing?
         //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
       }

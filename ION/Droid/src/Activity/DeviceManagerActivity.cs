@@ -678,7 +678,7 @@ namespace ION.Droid.Activities {
       vh.childPosition = childPosition;
       vh.sensor = sensor;
 
-      vh.sensorType.SetText(DeviceUtils.GetSensorTypeName(sensor.sensorType));
+      vh.sensorType.SetText(DeviceUtils.GetSensorTypeName(sensor.type));
       // TODO ahodder@appioninc.com: Format the scalar
       vh.sensorReading.Text = sensor.measurement.ToString();
 

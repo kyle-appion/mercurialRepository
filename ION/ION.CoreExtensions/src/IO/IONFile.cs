@@ -27,44 +27,42 @@ namespace ION.Core.IO {
     }
 
     // Overridden from IFile
-    public Task<long> GetSizeAsync() {
-      return Task.Run(() =>  __nativeFile.Length);
+    public long GetSize() {
+      return __nativeFile.Length;
     }
 
     // Overridden from IFile
-    public Task<Stream> OpenForReadingAsync() {
-      return Task.Run(() => (Stream)__nativeFile.OpenRead());
+    public Stream OpenForReading() {
+      return __nativeFile.OpenRead();
     }
 
     // Overridden from IFile
-    public Task<Stream> OpenForWritingAsync(bool append = false) {
-      return Task.Run(() => {
+    public Stream OpenForWriting(bool append = false) {
+      if (__nativeFile.Exists) {
         if (append) {
-          return (Stream)__nativeFile.Open(FileMode.Append);
+          return __nativeFile.Open(FileMode.Append);
         } else {
-          return (Stream)__nativeFile.OpenWrite();
+          return __nativeFile.OpenWrite();
         }
-      });
+      } else {
+        return __nativeFile.Create();
+      }
     }
 
     // Overridden from IFile
-    public Task<bool> ExistsAsync() {
-      return Task.Run(() => {
-        return __nativeFile.Exists;
-      });
+    public bool Exists() {
+      return __nativeFile.Exists;
     }
 
     // Overridden from IFile
-    public Task<bool> CreateAsync() {
-      return Task.Run(() => {
-        __nativeFile.Create();
-        return __nativeFile.Exists;
-      });
+    public bool Create() {
+      __nativeFile.Create();
+      return __nativeFile.Exists;
     }
 
     // Overridden from IFile
-    public Task DeleteAsync() {
-      return Task.Run(() => __nativeFile.Delete());
+    public void Delete() {
+      __nativeFile.Delete();
     }
   }
 }

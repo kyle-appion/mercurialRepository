@@ -145,6 +145,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -254,6 +258,11 @@
       <DependentUpon>FluidManagerViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Util\CGExtensions.cs" />
+    <Compile Include="src\ViewController\Main\DefaultSubviewCell.cs" />
+    <Compile Include="src\ViewController\Main\DefaultSubviewCell.designer.cs">
+      <DependentUpon>DefaultSubviewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Main\ViewerSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -268,7 +277,6 @@
     <Folder Include="src\UI\" />
     <Folder Include="src\ViewController\Ancillary\" />
     <Folder Include="Resources\output\" />
-    <Folder Include="Resources\Icons\" />
     <Folder Include="Resources\assets\" />
   </ItemGroup>
   <ItemGroup>

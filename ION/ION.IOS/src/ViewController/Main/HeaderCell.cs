@@ -8,7 +8,7 @@ using UIKit;
 using ION.Core.Util;
 
 namespace ION.IOS.ViewController.Main {
-	public partial class HeaderCell : UITableViewCell {
+	public partial class HeaderCell : UITableViewCell, IReleasable {
     /// <summary>
     /// The action that will called when the options button is clicked.
     /// </summary>
@@ -31,6 +31,10 @@ namespace ION.IOS.ViewController.Main {
           onOptionsClicked();
         }
       };
+    }
+
+    // Overridden from IReleasable
+    public void Release() {
     }
 	}
 }

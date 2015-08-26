@@ -46,6 +46,12 @@ namespace ION.IOS.ViewController.Main {
       // Nope
 		}
 
+    /// <summary>
+    /// The old battery level to prevent from reloading the battery image.
+    /// </summary>
+    /// <value>The old batterty.</value>
+    private int oldBattery { get; set; }
+
     // Overridden from UITableViewCell
     public override void AwakeFromNib() {
       base.AwakeFromNib();
@@ -60,8 +66,8 @@ namespace ION.IOS.ViewController.Main {
     }
 
     // Overridden from UITableViewCell
-    public override void RemoveFromSuperview() {
-      base.RemoveFromSuperview();
+    public override void PrepareForReuse() {
+      base.PrepareForReuse();
 
       manifold = null;
     }
@@ -73,27 +79,31 @@ namespace ION.IOS.ViewController.Main {
       if (sensor.device.isConnected) {
         imageBattery.Hidden = false;
         imageBattery.TintColor = new UIColor(Colors.BLACK);
-        if (sensor.device.battery >= 100) {
-          imageBattery.Image = UIImage.FromBundle("img_battery_100");
-        } else if (sensor.device.battery >= 75) {
-          imageBattery.Image = UIImage.FromBundle("img_battery_75");
-        } else if (sensor.device.battery >= 50) {
-          imageBattery.Image = UIImage.FromBundle("img_battery_50");
-        } else if (sensor.device.battery >= 25) {
-          imageBattery.TintColor = new UIColor(Colors.RED);
-          imageBattery.Image = UIImage.FromBundle("img_battery_25");
-        } else {
-          imageBattery.TintColor = new UIColor(Colors.RED);
-          imageBattery.Image = UIImage.FromBundle("img_battery_0");
+        if (oldBattery != sensor.device.battery) {
+          if (sensor.device.battery >= 100) {
+            imageBattery.Image = UIImage.FromBundle("img_battery_100");
+          } else if (sensor.device.battery >= 75) {
+            imageBattery.Image = UIImage.FromBundle("img_battery_75");
+          } else if (sensor.device.battery >= 50) {
+            imageBattery.Image = UIImage.FromBundle("img_battery_50");
+          } else if (sensor.device.battery >= 25) {
+            imageBattery.TintColor = new UIColor(Colors.RED);
+            imageBattery.Image = UIImage.FromBundle("img_battery_25");
+          } else {
+            imageBattery.TintColor = new UIColor(Colors.RED);
+            imageBattery.Image = UIImage.FromBundle("img_battery_0");
+          }
+          oldBattery = sensor.device.battery;
         }
 
+        // TODO ahodder@appioninc.com: Prevent from constantly loading these images.
         buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_green_background_bordered").AsNinePatch(), UIControlState.Normal);
-        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_connected").AsNinePatch(), UIControlState.Normal);
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_connected"), UIControlState.Normal);
       } else {
         imageBattery.Hidden = true;
 
         buttonConnection.SetBackgroundImage(UIImage.FromBundle("np_red_background_bordered").AsNinePatch(), UIControlState.Normal);
-        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected").AsNinePatch(), UIControlState.Normal);
+        buttonConnection.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected"), UIControlState.Normal);
       }
 
       // Set primary content
@@ -130,7 +140,7 @@ namespace ION.IOS.ViewController.Main {
 
     private void UpdateToSensor(Sensor sensor) {
       // Set header content      
-      labelHeader.Text = sensor.sensorType.GetTypeString() + ": " + sensor.name;
+      labelHeader.Text = sensor.type.GetTypeString() + ": " + sensor.name;
 
       // Set primary content
       var measurement = sensor.measurement;

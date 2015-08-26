@@ -40,9 +40,15 @@ file.
 "device_model_unknown" = "Unknown Device";
 
 /* FLUIDS */
+"fluid_pt_chart" = "P/T Chart";
+"fluid_superheat_subcool" = "Superheat/Subcool";
 
 /* FLUID MANAGER */
 "fluid_manager" = "Refrigerant Manager";
+
+/* NAVIGATION DRAWER */
+"navigation_calculators" = "CALCULATORS";
+"navigation_main" = "MAIN";
 
 /* SENSOR */
 

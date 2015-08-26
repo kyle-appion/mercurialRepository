@@ -66,21 +66,30 @@ namespace ION.Core.Fluids {
     /// <summary>
     /// A lookup cache that will allow us to store commonly used fluids.
     /// </summary>
-    private Dictionary<string, WeakReference> __cache = new Dictionary<string, WeakReference>();
+    private readonly Dictionary<string, WeakReference> __cache = new Dictionary<string, WeakReference>();
 
     public BaseFluidManager(IION ion) {
       this.ion = ion;
+      preferredFluids = new List<string>();
     }
 
     // Overridden from IFluidManager
-    public async Task<List<string>> GetAvailableFluidNamesAsync() {
+    public async Task InitAsync() {
+    }
+
+    // Overridden from IFluidManager
+    public void Dispose() {
+      __cache.Clear();
+    }
+
+    // Overridden from IFluidManager
+    public List<string> GetAvailableFluidNames() {
       Log.D(this, "Looking for all fluids");
-      var dir = await GetRootDir();
+      var dir = GetRootDir();
 
       var ret = new List<string>();
-      foreach (IFile file in await dir.GetFileListAsync()) {
+      foreach (IFile file in dir.GetFileList()) {
         var fluidName = Regex.Replace(file.name, "\\" + EXT_FLUID, "");
-        Log.D(this, "Found fluid: " + fluidName);
         ret.Add(fluidName);
       }
 
@@ -96,7 +105,7 @@ namespace ION.Core.Fluids {
         ret = reference.Target as Fluid;
       }
 
-      if (ret == null) {
+      if (ret == null && HasFluid(fluidName)) {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));
       }
@@ -149,18 +158,31 @@ namespace ION.Core.Fluids {
     /// </summary>
     public async Task Init() {
       try {
-        var dir = await ion.fileManager.GetApplicationInternalDirectoryAsync();
-        preferences = await BasePreferences.OpenAsync(await dir.GetFileAsync(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
-        var assetsDir = await ion.fileManager.GetAssetDirectoryAsync();
-        var propsFile = await assetsDir.GetFileAsync(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
+        var dir = ion.fileManager.GetApplicationInternalDirectory();
+        preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
+        var assetsDir = ion.fileManager.GetAssetDirectory();
+        var propsFile = assetsDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
         fluidColors = await Properties.FromFileAsync(propsFile);
         var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS);
         preferredFluids = preferred.Split(',').ToList();
       } catch (Exception e) { 
         Log.E(this, "Failed to initialize fluid manager", e);
       }
+    }
 
-//      await GetAvailableFluidNamesAsync();
+    /// <summary>
+    /// Queries whether or not the given fluid is available for loading.
+    /// </summary>
+    /// <returns><c>true</c> if this instance has fluid the specified fluidName; otherwise, <c>false</c>.</returns>
+    /// <param name="fluidName">Fluid name.</param>
+    private bool HasFluid(string fluidName) {
+      foreach (var fn in GetAvailableFluidNames()) {
+        if (Regex.Replace(fn, "\\" + EXT_FLUID, "").Equals(fluidName)) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>
@@ -168,29 +190,31 @@ namespace ION.Core.Fluids {
     /// </summary>
     /// <param name="fluidName"></param>
     /// <returns></returns>
-    private async Task<Fluid> LoadFluidAsync(string fluidName) {
-      fluidName = fluidName + EXT_FLUID;
-      var dir = await GetRootDir();
+    private Task<Fluid> LoadFluidAsync(string fluidName) {
+      return Task.Factory.StartNew(() => {
+        fluidName = fluidName + EXT_FLUID;
+        var dir = GetRootDir();
 
-      if (!await dir.ContainsFileAsync(fluidName)) {
-        throw new FileNotFoundException(dir.fullPath + fluidName);
-      }
+        if (!dir.ContainsFile(fluidName)) {
+          throw new FileNotFoundException(dir.fullPath + fluidName);
+        }
 
-      var file = await dir.GetFileAsync(fluidName);
+        var file = dir.GetFile(fluidName);
 
-      var ret = new BinaryFluidParser().ParseFluid(await file.OpenForReadingAsync());
-      ret.color = GetFluidColor(ret.name);
-      return ret;
+        var ret = new BinaryFluidParser().ParseFluid(file.OpenForReading());
+        ret.color = GetFluidColor(ret.name);
+        return ret;
+      });
     }
 
     /// <summary>
     /// Queries the root directory for the FluidManager.
     /// </summary>
     /// <returns></returns>
-    private async Task<IFolder> GetRootDir() {
+    private IFolder GetRootDir() {
       var fm = ion.fileManager;
-      var dir = await fm.GetAssetDirectoryAsync();
-      return await dir.GetFolderAsync(PATH_FLUIDS);
+      var dir = fm.GetAssetDirectory();
+      return dir.GetFolder(PATH_FLUIDS);
     }
 
     /// <summary>

@@ -155,7 +155,7 @@ namespace ION.Core.Sensors {
     /// The type of sensor this is. From this, the base conversion unit is
     /// derived as well as sensor uses.
     /// </summary>
-    public ESensorType sensorType { get; private set; }
+    public ESensorType type { get; private set; }
     /// <summary>
     /// Whether or not the sensor's reading is relative.
     /// </summary>
@@ -232,7 +232,7 @@ namespace ION.Core.Sensors {
     /// <param name="initialMeasurement">Initial measurement.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true) {
-      this.sensorType = sensorType;
+      this.type = sensorType;
       this.__measurement = initialMeasurement;
       this.isRelative = isRelative;
     }

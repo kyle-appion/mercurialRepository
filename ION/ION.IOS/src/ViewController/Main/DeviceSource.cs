@@ -33,6 +33,16 @@ namespace ION.IOS.ViewController.Main {
     private const string CELL_SERIAL_NUMBER = "cellSerialNumber";
 
     /// <summary>
+    /// The delegate that is called when a sensor's add button is clicked.
+    /// </summary>
+    public delegate bool OnSensorAddClicked(GaugeDeviceSensor sensor, NSIndexPath indexPath);
+    /// <summary>
+    /// The action that will be called on a sensor's add button click.
+    /// </summary>
+    /// <value>The on sensor add clicked.</value>
+    public OnSensorAddClicked onSensorAddClicked { get; set; }
+
+    /// <summary>
     /// The maximum number of devices that can be expanded.
     /// </summary>
     /// <value>The max expanded.</value>
@@ -72,6 +82,14 @@ namespace ION.IOS.ViewController.Main {
     public DeviceSource(IION ion, UITableView table) {
       this.ion = ion;
       this.table = table;
+    }
+
+    // Overridden from UITableViewSource
+    public override void CellDisplayingEnded(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath) {
+      var releasable = cell as IReleasable;
+      if (releasable != null) {
+        releasable.Release();
+      }
     }
 
     // Overridden from UITableViewSource
@@ -154,6 +172,7 @@ namespace ION.IOS.ViewController.Main {
         var cell = tableView.DequeueReusableCell(CELL_SENSOR) as SensorCell;
         var sensor = gaugeDevice[row];
 
+        /*
         if (ion.currentWorkbench.ContainsSensor(sensor)) {
 //          cell.onWorkbenchClicked = null;
 
@@ -173,6 +192,7 @@ namespace ION.IOS.ViewController.Main {
             //Am confused and hating of this call.
             table.ReloadData();
           };
+
           cell.Update(sensor);
 
           cell.buttonWorkbench.SetImage(UIImage.FromBundle("ic_device_add_to_workbench"), UIControlState.Normal);
@@ -180,6 +200,17 @@ namespace ION.IOS.ViewController.Main {
           cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
           cell.buttonWorkbench.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Highlighted);
         }
+        */
+
+        cell.buttonWorkbench.Hidden = true;
+        cell.buttonAnalyzer.Hidden = true;
+
+        cell.buttonAdd.Hidden = onSensorAddClicked == null;
+        cell.onAddClicked = () => {
+          if (onSensorAddClicked != null) {
+            onSensorAddClicked(sensor, indexPath);
+          }
+        };
 
         return cell;
       }

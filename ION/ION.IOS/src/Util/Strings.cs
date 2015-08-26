@@ -15,76 +15,88 @@ namespace ION.IOS.Util {
   /// safely access resource strings.
   /// </summary>
   public static class Strings {
-    public const String
-      CANCEL = "cancel",
-      RENAME = "rename",
-      UNKNOWN = "unknown"
-      ;
+    public static readonly String
+    CANCEL = "cancel".FromResources(),
+    RENAME = "rename".FromResources(),
+    UNKNOWN = "unknown"
+    ;
 
     public static class Device {
-      public const string
-        AVAILABLE = "device_available",
-        CONNECTED = "device_connected",
-        DISCONNECT = "device_disconnect",
-        DISCONNECTED = "device_disconnected",
-        LONG_RANGE = "device_long_range",
-        NAME = "device_name",
-        NEW_DEVICES = "device_new_devices",
-        RECONNECT = "device_reconnect",
-        SERIAL_NUMBER = "device_serial_number",
-        TYPE = "device_type"
-        ;
+      public static readonly string
+      AVAILABLE = "device_available".FromResources(),
+      CONNECTED = "device_connected".FromResources(),
+      DISCONNECT = "device_disconnect".FromResources(),
+      DISCONNECTED = "device_disconnected".FromResources(),
+      LONG_RANGE = "device_long_range".FromResources(),
+      NAME = "device_name".FromResources(),
+      NEW_DEVICES = "device_new_devices".FromResources(),
+      RECONNECT = "device_reconnect".FromResources(),
+      SERIAL_NUMBER = "device_serial_number".FromResources(),
+      TYPE = "device_type".FromResources()
+      ;
 
       public static class Manager {
-        public const string
-          SELF = "device_manager",
-          SCAN = "device_manager_scan",
-          SCANNING = "device_manager_scanning"
-          ;
+        public static readonly string
+        SELF = "device_manager".FromResources(),
+        SCAN = "device_manager_scan".FromResources(),
+        SCANNING = "device_manager_scanning".FromResources()
+        ;
       }
 
       public static class Model {
-        public const string
-          _3XTM = "device_model_3xtm",
-          AV760 = "device_model_av760",
-          HT = "device_model_ht",
-          P300 = "device_model_p300",
-          P500 = "device_model_p500",
-          P800 = "device_model_p800",
-          PT800 = "device_model_pt800",
-          UNKNOWN = "device_model_unknown"
-          ;
+        public static readonly string
+        _3XTM = "device_model_3xtm".FromResources(),
+        AV760 = "device_model_av760".FromResources(),
+        HT = "device_model_ht".FromResources(),
+        P300 = "device_model_p300".FromResources(),
+        P500 = "device_model_p500".FromResources(),
+        P800 = "device_model_p800".FromResources(),
+        PT800 = "device_model_pt800".FromResources(),
+        UNKNOWN = "device_model_unknown".FromResources()
+        ;
       } // End Strings.Device.Model
     } // End Strings.Device
 
     public static class Fluid {
+      public static readonly string
+      PT_CHART = "fluid_pt_chart".FromResources(),
+      SUPERHEAT_SUBCOOL = "fluid_superheat_subcool".FromResources()
+      ;
       public static class Manager {
-        public const string
-          SELF = "fluid_manager"
-          ;
+        public static readonly string
+        SELF = "fluid_manager".FromResources()
+        ;
       } // End Strings.Fluid.Manager
     } // End Strings.Fluid
 
+    public static class Navigation {
+      public static readonly string
+      CALCULATORS = "naviation_calculators".FromResources(),
+      EXIT = "navigation_exit".FromResources(),
+      MAIN = "navigation_main".FromResources()
+      ;
+    } // End Strings.Navigation
+
     public static class Sensor {
       public static class Type {
-        public const string
-          LENGTH = "sensor_type_length",
-          HUMIDITY = "sensor_type_humidity",
-          MASS = "sensor_type_mass",
-          PRESSURE = "sensor_type_pressure",
-          TEMPERATURE = "sensor_type_temperature",
-          VACUUM = "sensor_type_vacuum",
-          UNKNOWN = "sensor_type_unknown"
-          ;
+        public static readonly string
+        LENGTH = "sensor_type_length".FromResources(),
+        HUMIDITY = "sensor_type_humidity".FromResources(),
+        MASS = "sensor_type_mass".FromResources(),
+        PRESSURE = "sensor_type_pressure".FromResources(),
+        TEMPERATURE = "sensor_type_temperature".FromResources(),
+        VACUUM = "sensor_type_vacuum".FromResources(),
+        UNKNOWN = "sensor_type_unknown".FromResources()
+        ;
       } // End Strings.Sensor.Type
     } // End Strings.Sensor
 
     public static class Workbench {
-      public const string
-        SELF = "workbench",
-        REMOVE = "workbench_remove",
-        SELECT_VIEWER_ACTION = "workbench_select_viewer_action"
-        ;
+      public static readonly string
+      SELF = "workbench".FromResources(),
+      REMOVE = "workbench_remove".FromResources(),
+      SELECT_VIEWER_ACTION = "workbench_select_viewer_action".FromResources()
+      ;
     } // End Strings.Workbench
   } // End Strings
 

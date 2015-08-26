@@ -6,6 +6,7 @@ namespace ION.Core.IO {
   /// Some convenience extensions for BinaryReader, such as the greatly forgotten
   /// big-endian byte order preference.
   /// </summary>
+  // TODO ahodder@appioninc.com: Delete this class
   public static class BinaryReaderExtension {
     /// <summary>
     /// Reverse the specified bytes.
@@ -16,7 +17,7 @@ namespace ION.Core.IO {
       return bytes;
     }
 
-    public static byte[] ReadBytesRequired(this BinaryReader reader, int byteCount) {
+    public static byte[] ReadBytesRequired(this System.IO.BinaryReader reader, int byteCount) {
       var ret = reader.ReadBytes(byteCount);
 
       if (ret.Length != byteCount) {

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using ION.Core.App;
+
 namespace ION.Core.Fluids {
   /// <summary>
   /// Called when a fluid manager's fluid preferences change (ie. when a fluid
@@ -10,12 +12,13 @@ namespace ION.Core.Fluids {
   /// <summary>
   /// The contract for managing a collection of fluids.
   /// </summary>
-  public interface IFluidManager {
+  public interface IFluidManager : IIONManager {
 
     /// <summary>
     /// The event handler that will be notified when the preferred fluids list changes.
     /// </summary>
     event OnFluidPreferenceChanged onFluidPreferenceChanged;
+
     /// <summary>
     /// Queries the list of preferred fluids.
     /// </summary>
@@ -27,7 +30,7 @@ namespace ION.Core.Fluids {
     /// from the fluid manager.
     /// </summary>
     /// <returns></returns>
-    Task<List<string>> GetAvailableFluidNamesAsync();
+    List<string> GetAvailableFluidNames();
 
     /// <summary>
     /// Queries a fluid with the given name.

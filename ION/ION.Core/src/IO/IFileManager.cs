@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using ION.Core.App;
+
 namespace ION.Core.IO {
   /// <summary>
   /// The contract that allows the core to interact with the platform storage.
   /// </summary>
-  public interface IFileManager {
+  public interface IFileManager : IIONManager {
     /// <summary>
     /// Queries the directory that the application's resources/assets are held.
     /// </summary>
     /// <returns>The application directory async.</returns>
-    Task<IFolder> GetAssetDirectoryAsync();
+    IFolder GetAssetDirectory();
     /// <summary>
     /// Queries the directory that allows core to interact with files that are
     /// saved to the application's local storage. ie. for android, this will 
@@ -18,7 +20,7 @@ namespace ION.Core.IO {
     /// roaming.
     /// </summary>
     /// <returns>The application directory.</returns>
-    Task<IFolder> GetApplicationInternalDirectoryAsync();
+    IFolder GetApplicationInternalDirectory();
     /// <summary>
     /// Queries the directory that allows the application interact with files
     /// that are located "far" away from the application. ie. for android this
@@ -26,7 +28,7 @@ namespace ION.Core.IO {
     /// not the System directory.
     /// </summary>
     /// <returns>The external directory.</returns>
-    Task<IFolder> GetApplicationExternalDirectoryAsync();
+    IFolder GetApplicationExternalDirectory();
   }
 }
 
