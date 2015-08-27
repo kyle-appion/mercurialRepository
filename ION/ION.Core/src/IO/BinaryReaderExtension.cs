@@ -124,7 +124,11 @@ namespace ION.Core.IO {
     /// <returns>The float64.</returns>
     /// <param name="reader">Reader.</param>
     public static double ReadFloat64BE(this BinaryReader reader) {
-      return BitConverter.DoubleToInt64Bits(reader.ReadInt64BE());
+      var bytes = reader.ReadBytesRequired(sizeof(double));
+      if (BitConverter.IsLittleEndian) {
+        bytes = bytes.Reverse();
+      }
+      return BitConverter.ToDouble(bytes, 0);
     }
   }
 }

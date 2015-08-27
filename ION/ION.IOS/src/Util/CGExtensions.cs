@@ -18,8 +18,6 @@ namespace ION.IOS.Util {
       var green = (argb >> 8) & 0xff;
       var blue = (argb >> 0) & 0xff;
 
-      Log.D("CGExtensions", "full: " + argb.ToString("x8") + " a: " + alpha.ToString("x8") + " r: " + red.ToString("x8") + " g: " + green.ToString("x8") + " b: " + blue.ToString("x8"));
-
       return UIColor.FromRGBA(red, green, blue, alpha);
     }
   }

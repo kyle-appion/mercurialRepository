@@ -29,6 +29,10 @@ namespace ION.Core.Fluids {
     // This is stupid and unsafe as it is not friendly for other platforms.
     private const string FLUID_COLORS_FILE = "assets/refrigerantcolors.properties";
     /// <summary>
+    /// The preference key that is used to retrieve the last used fluid for the fluid manager.
+    /// </summary>
+    private const string KEY_LAST_USED_FLUID = "last_used_fluid";
+    /// <summary>
     /// The key that is used to retrieve the preferred fluids from preferences.
     /// </summary>
     private const string KEY_PREFERRED_FLUIDS = "preferred_fluids";
@@ -48,8 +52,18 @@ namespace ION.Core.Fluids {
     // Overridden from IFluidManager
     public event OnFluidPreferenceChanged onFluidPreferenceChanged;
 
+    // Overridden from IFliudManager
+    public Fluid lastUsedFluid { get; private set; }
+
     // Overridden from IFluidManager
-    public List<string> preferredFluids { get; private set; }
+    public List<string> preferredFluids {
+      get {
+        return new List<string>(__preferredFluids);
+      }
+      private set {
+        __preferredFluids = value;
+      }
+    } List<string> __preferredFluids;
     /// <summary>
     /// The backing ION context for the fluid manager.
     /// </summary>
@@ -75,6 +89,34 @@ namespace ION.Core.Fluids {
 
     // Overridden from IFluidManager
     public async Task InitAsync() {
+      try {
+        var dir = ion.fileManager.GetApplicationInternalDirectory();
+        preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
+        var assetsDir = ion.fileManager.GetAssetDirectory();
+        var propsFile = assetsDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
+        fluidColors = await Properties.FromFileAsync(propsFile);
+
+        preferredFluids = new List<string>();
+        var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, null);
+        if (preferred != null) {
+          Log.D(this, "Preferred fluids: " + preferred + ".");
+          var parts = preferred.Split(',');
+          if (parts.Length > 0) {
+            preferredFluids = parts.ToList();
+          }
+        }
+
+        var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, null);
+        if (fluidName == null) {
+          var fluidNames = GetAvailableFluidNames();
+          if (fluidNames.Count > 0) {
+            fluidName = fluidNames[0];
+          }
+        }
+        await GetFluidAsync(fluidName);
+      } catch (Exception e) { 
+        Log.E(this, "Failed to initialize fluid manager", e);
+      }
     }
 
     // Overridden from IFluidManager
@@ -84,7 +126,6 @@ namespace ION.Core.Fluids {
 
     // Overridden from IFluidManager
     public List<string> GetAvailableFluidNames() {
-      Log.D(this, "Looking for all fluids");
       var dir = GetRootDir();
 
       var ret = new List<string>();
@@ -98,6 +139,7 @@ namespace ION.Core.Fluids {
 
     // Overridden from IFluidManager
     public async Task<Fluid> GetFluidAsync(string fluidName) {
+      Log.D(this, "Getting fluid of name " + fluidName + ".");
       Fluid ret = null;
 
       if (__cache.ContainsKey(fluidName)) {
@@ -109,6 +151,10 @@ namespace ION.Core.Fluids {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));
       }
+
+      lastUsedFluid = ret;
+      preferences.SetString(KEY_LAST_USED_FLUID, fluidName);
+      await preferences.Commit();
 
       return ret;
     }
@@ -136,14 +182,16 @@ namespace ION.Core.Fluids {
 
     // Overridden from IFluidManager
     public void MarkFluidAsPreferred(string fluidName, bool preferred) {
+      if (fluidName == null || fluidName.Equals("")) {
+        return;
+      }
+
       if (preferred) {
-        if (fluidName != null && !fluidName.Equals("") && !preferredFluids.Contains(fluidName)) {
-          preferredFluids.Add(fluidName);
+        if (!__preferredFluids.Contains(fluidName)) {
+          __preferredFluids.Add(fluidName);
         }
       } else {
-        if (preferredFluids.Contains(fluidName)) {
-          preferredFluids.Remove(fluidName);
-        }
+        __preferredFluids.Remove(fluidName);
       }
 
       if (onFluidPreferenceChanged != null) {
@@ -151,23 +199,6 @@ namespace ION.Core.Fluids {
       }
 
       CommitPreferredFluids();
-    }
-
-    /// <summary>
-    /// Initializes the BaseFluidManager.
-    /// </summary>
-    public async Task Init() {
-      try {
-        var dir = ion.fileManager.GetApplicationInternalDirectory();
-        preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
-        var assetsDir = ion.fileManager.GetAssetDirectory();
-        var propsFile = assetsDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
-        fluidColors = await Properties.FromFileAsync(propsFile);
-        var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS);
-        preferredFluids = preferred.Split(',').ToList();
-      } catch (Exception e) { 
-        Log.E(this, "Failed to initialize fluid manager", e);
-      }
     }
 
     /// <summary>
@@ -190,21 +221,19 @@ namespace ION.Core.Fluids {
     /// </summary>
     /// <param name="fluidName"></param>
     /// <returns></returns>
-    private Task<Fluid> LoadFluidAsync(string fluidName) {
-      return Task.Factory.StartNew(() => {
-        fluidName = fluidName + EXT_FLUID;
-        var dir = GetRootDir();
+    private async Task<Fluid> LoadFluidAsync(string fluidName) {
+      fluidName = fluidName + EXT_FLUID;
+      var dir = GetRootDir();
 
-        if (!dir.ContainsFile(fluidName)) {
-          throw new FileNotFoundException(dir.fullPath + fluidName);
-        }
+      if (!dir.ContainsFile(fluidName)) {
+        throw new FileNotFoundException(dir.fullPath + fluidName);
+      }
 
-        var file = dir.GetFile(fluidName);
+      var file = dir.GetFile(fluidName);
 
-        var ret = new BinaryFluidParser().ParseFluid(file.OpenForReading());
-        ret.color = GetFluidColor(ret.name);
-        return ret;
-      });
+      var ret = new BinaryFluidParser().ParseFluid(file.OpenForReading());
+      ret.color = GetFluidColor(ret.name);
+      return ret;
     }
 
     /// <summary>

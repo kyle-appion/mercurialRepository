@@ -42,7 +42,7 @@ namespace ION.Core.Devices.Protocols {
           int encodedReading = r.ReadInt16BE();
           int unitCode = r.ReadByte();
 
-          double reading = encodedReading / Math.Pow(10, exponent);
+          double reading = encodedReading / System.Math.Pow(10, exponent);
 
           UnitEntry ue = UnitLookup.GetUnitEntry(unitCode);
           readings[i] = new GaugeReading(ue.sensorType, ue.unit.OfScalar(reading));

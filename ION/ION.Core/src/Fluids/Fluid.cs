@@ -69,7 +69,7 @@ namespace ION.Core.Fluids {
     public Fluid(string name, double tmin, double tmax, double step, int rows, double[] temperatures, double[] bubblePressures, double[] dewPressures) {
       this.name = name;
       this.tmin = tmin;
-      this.tmax = tmin;
+      this.tmax = tmax;
       this.step = step;
       this.rows = rows;
       this.temperatures = temperatures;
@@ -159,11 +159,11 @@ namespace ION.Core.Fluids {
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
 
       if (i >= 0) {
-        return TEMPERATURE.OfScalar(bubblePressures[i]);
+        return PRESSURE.OfScalar(bubblePressures[i]);
       } else {
         i = ~i;
         double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
-        return TEMPERATURE.OfScalar(Interpolate(magnitude, bubblePressures[i], bubblePressures[i + 1]));
+        return PRESSURE.OfScalar(Interpolate(magnitude, bubblePressures[i], bubblePressures[i + 1]));
       }
     }
 
@@ -194,7 +194,8 @@ namespace ION.Core.Fluids {
       } else {
         i = ~i;
         double magnitude = FindMagnitudeOf(dewPressure.amount, dewPressures[i], dewPressures[i + 1]);
-        return TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i], temperatures[i + 1]));
+        var ret = TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i], temperatures[i + 1]));
+        return ret;
       }
     }
 
@@ -217,11 +218,11 @@ namespace ION.Core.Fluids {
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
 
       if (i >= 0) {
-        return TEMPERATURE.OfScalar(dewPressures[i]);
+        return PRESSURE.OfScalar(dewPressures[i]);
       } else {
         i = ~i;
         double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
-        return TEMPERATURE.OfScalar(Interpolate(magnitude, dewPressures[i], dewPressures[i + 1]));
+        return PRESSURE.OfScalar(Interpolate(magnitude, dewPressures[i], dewPressures[i + 1]));
       }
     }
 
@@ -281,5 +282,13 @@ namespace ION.Core.Fluids {
     private static double Interpolate(double magnitude, double lower, double higher) {
       return lower + (higher - lower) * magnitude;
     }
+
+    /// <summary>
+    /// Enumerates the state that a fluid can be on.
+    /// </summary>
+    public enum State {
+      Bubble,
+      Dew,
+    } // End State
   }
 }

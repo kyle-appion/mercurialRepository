@@ -19,10 +19,10 @@ namespace ION.IOS.ViewController.Calculators
     public UIKit.UIButton buttonTemperatureUnit { get; set; }
 
 		[Outlet]
-    public UIKit.UITextView editPressure { get; set; }
+    public UIKit.UITextField editPressure { get; set; }
 
 		[Outlet]
-    public UIKit.UITextView editTemperature { get; set; }
+    public UIKit.UITextField editTemperature { get; set; }
 
 		[Outlet]
     public UIKit.UIImageView iconPressure { get; set; }

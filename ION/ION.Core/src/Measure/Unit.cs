@@ -734,7 +734,7 @@ namespace ION.Core.Measure {
         int pow = p1 * r2 + p2 * r1;
         int root = r1 * r2;
         if (pow != 0) {
-          int gcd = Gcd(Math.Abs(pow), root);
+          int gcd = Gcd(System.Math.Abs(pow), root);
           result[index++] = new Element(unit, pow / gcd, root / gcd);
         }
       }
@@ -842,7 +842,7 @@ namespace ION.Core.Measure {
         Element[] e = ((ProductUnit)unit).__elements;
         elms = new Element[e.Length];
         for (int i = 0; i < e.Length; i++) {
-          int gcd = Gcd(Math.Abs(e[i].pow * n), e[i].root);
+          int gcd = Gcd(System.Math.Abs(e[i].pow * n), e[i].root);
           elms[i] = new Element(e[i].unit, e[i].pow * n / gcd, e[i].root / gcd);
         }
       } else {
@@ -863,7 +863,7 @@ namespace ION.Core.Measure {
         Element[] e = ((ProductUnit) unit).__elements;
         elms = new Element[e.Length];
         for (int i = 0; i < e.Length; i++) {
-          int gcd = Gcd(Math.Abs(e[i].pow), e[i].root * n);
+          int gcd = Gcd(System.Math.Abs(e[i].pow), e[i].root * n);
           elms[i] = new Element(e[i].unit, e[i].pow / gcd, e[i].root * n / gcd);
         }
       } else {

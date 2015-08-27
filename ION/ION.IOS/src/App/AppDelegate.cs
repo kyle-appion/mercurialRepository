@@ -81,7 +81,12 @@ namespace ION.IOS.App {
 //      application.SetStatusBarHidden(true, UIStatusBarAnimation.None);
 
       AppState.context = ion = new IosION();
-      ion.Init().Wait();
+      try {
+        ion.Init().Wait();
+      } catch (Exception e) {
+        Log.E(this, "Failed to initialize ion.", e);
+        Environment.Exit(1);
+      }
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);

@@ -11,6 +11,7 @@ using ION.Core.App;
 using ION.Core.Connections;
 using ION.Core.Devices;
 using ION.Core.Measure;
+using ION.Core.Sensors;
 using ION.Core.Util;
 
 using ION.IOS.UI;
@@ -27,7 +28,27 @@ namespace ION.IOS.ViewController.Main {
     /// The action that will be fired when the user selects a sensor for returning 
     /// within the device manager.
     /// </summary>
-    public OnSensorReturn onSensorReturnDelegate;
+    public OnSensorReturn onSensorReturnDelegate { get; set; }
+
+    /// <summary>
+    /// The filter that is used to limit the devices that are displayed in the view controller.
+    /// </summary>
+    public IFilter<Sensor> displayFilter {
+      get {      
+        return __displayFilter;
+      }
+      set {
+        if (value == null) {
+          value = new YesFilter<Sensor>();
+        }
+
+        __displayFilter = value;
+
+        if (deviceSource != null) {
+          deviceSource.sensorFilter = __displayFilter;
+        }
+      }
+    } IFilter<Sensor> __displayFilter = new YesFilter<Sensor>();
 
     /// <summary>
     /// The ion context for this view controller.
@@ -71,8 +92,8 @@ namespace ION.IOS.ViewController.Main {
       HandleDeviceManagerStateChanged(ion.deviceManager, ion.deviceManager.state);
 
       table.Source = deviceSource = new DeviceSource(ion, table);
+      deviceSource.sensorFilter = displayFilter;
       deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
-        Log.D(this, "clicky, clicky");
         if (onSensorReturnDelegate != null) {
           onSensorReturnDelegate(sensor);
           NavigationController.PopViewController(true);
@@ -108,6 +129,20 @@ namespace ION.IOS.ViewController.Main {
       groups.AddRange(new DeviceGroup[] { connected, longRange, newDevices, available, disconnected });
 
       foreach (IDevice device in ion.deviceManager.devices) {
+        if (device is GaugeDevice) {
+          var gauge = (GaugeDevice)device;
+          bool hasSensor = false;
+          foreach (var sensor in gauge.sensors) {
+            if (displayFilter.Matches(sensor)) {
+              hasSensor = true;
+              break;
+            }
+          }
+          if (!hasSensor) {
+            continue;
+          }
+        }
+        
         if (EConnectionState.Connected == device.connection.connectionState) {
           connected.devices.Add(device);
         } else if (EConnectionState.Broadcasting == device.connection.connectionState) {

@@ -1,5 +1,6 @@
 ﻿using System;
 
+using ION.Core.Devices;
 using ION.Core.Measure;
 using ION.Core.Util;
 
@@ -21,7 +22,7 @@ namespace ION.Core.Sensors {
   /// <summary>
   /// Some utility extensions around the sensor type enum.
   /// </summary>
-  public static class SensorTypeExtensions {
+  public static class SensorExtensions {
     /// <summary>
     /// Queries the default unit for the given sensor type.
     /// </summary>
@@ -40,21 +41,55 @@ namespace ION.Core.Sensors {
           return DEFAULT_MASS_UNITS[0];
         }
 */
-        case ESensorType.Pressure: {
-            return SensorUtils.DEFAULT_PRESSURE_UNITS[0];
-          }
-        case ESensorType.Temperature:{
-            return SensorUtils.DEFAULT_TEMPERATURE_UNITS[0];
-          }
-        case ESensorType.Vacuum: {
-            return SensorUtils.DEFAULT_VACUUM_UNITS[0];
-          }
-        default: {
-            throw new ArgumentException("Cannot get default unit for " + sensorType);
-          }
+        case ESensorType.Pressure:
+          return SensorUtils.DEFAULT_PRESSURE_UNITS[0];
+        case ESensorType.Temperature:
+          return SensorUtils.DEFAULT_TEMPERATURE_UNITS[0];
+        case ESensorType.Vacuum:
+          return SensorUtils.DEFAULT_VACUUM_UNITS[0];
+        default:
+          throw new ArgumentException("Cannot get default unit for " + sensorType);
       }
     }
-  }
+
+    /// <summary>
+    /// Builds a formatted string of this sensor's measurement.
+    /// </summary>
+    /// <remarks>
+    /// The string will NOT include the sensor's unit.
+    /// </remarks>
+    /// <returns>The formatted string.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public static string ToFormattedString(this Sensor sensor) {
+      var unit = sensor.unit;
+      var amount = sensor.measurement.amount;
+       
+      // PRESSURE UNITS
+      if (Units.Pressure.PASCAL.Equals(unit)) {
+        return amount.ToString("0");
+      } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
+        if (ESensorType.Vacuum == sensor.type) {
+          return amount.ToString("0");
+        } else {
+          return amount.ToString("0.0000");
+        }
+      } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
+        return amount.ToString("0.000");
+      } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
+        return amount.ToString("0.000");
+      } else if (Units.Pressure.PSIG.Equals(unit)) {
+        return amount.ToString("0.0");
+      } else if (Units.Pressure.PSIA.Equals(unit)) {
+        return amount.ToString("0.0000");
+      } else if (Units.Pressure.IN_HG.Equals(unit)) {
+        return amount.ToString("0.000");
+      }
+      // DEFAULT
+      else {
+        return amount.ToString("0.00");
+      }
+    }
+  } // End SensorExtensions
 
   /// <summary>
   /// A simple utility class that will provide functions that aid in the use of the
@@ -128,7 +163,7 @@ namespace ION.Core.Sensors {
         }
       }
     }
-  }
+  } // End SensorUtils
 
   /// <summary>
   /// A Sensor is a device that is used to measure physical phenomena and/or their effect
@@ -161,6 +196,11 @@ namespace ION.Core.Sensors {
     /// </summary>
     public bool isRelative { get; private set; }
     /// <summary>
+    /// Whether or not te sensor's reading is editable.
+    /// </summary>
+    /// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
+    public virtual bool isEditable { get; protected set; }
+    /// <summary>
     /// The custom name for the specific sensor. 
     /// </summary>
     public string name {
@@ -180,8 +220,10 @@ namespace ION.Core.Sensors {
         return measurement.unit;
       }
       set {
-        measurement = measurement.ConvertTo(value);
-        NotifySensorStateChanged();
+        if (!isEditable) {
+          throw new UnauthorizedAccessException("Cannot set sensor unit: sensor is not editable.");
+        }
+        ForceSetUnit(value);
       }
     }
     /// <summary>
@@ -192,11 +234,10 @@ namespace ION.Core.Sensors {
         return __measurement;
       }
       set {
-        if (!value.unit.IsCompatible(unit)) {
-          throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
+        if (!isEditable) {
+          throw new UnauthorizedAccessException("Cannot set sensor measurement: sensor is not editable.");
         }
-        __measurement = value;
-        NotifySensorStateChanged();
+        ForceSetMeasurement(value);
       }
     } Scalar __measurement;
     /// <summary>
@@ -222,8 +263,8 @@ namespace ION.Core.Sensors {
     /// </summary>
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Sensor(ESensorType sensorType, bool isRelative=true)
-      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative) { 
+    public Sensor(ESensorType sensorType, bool isRelative=true, bool isEditable=true)
+      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative, isEditable) { 
     }
     /// <summary>
     /// Creates a new sensor.
@@ -231,10 +272,11 @@ namespace ION.Core.Sensors {
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="initialMeasurement">Initial measurement.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true) {
+    public Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true, bool isEditable=true) {
       this.type = sensorType;
       this.__measurement = initialMeasurement;
       this.isRelative = isRelative;
+      this.isEditable = isEditable;
     }
 
     /// <summary>
@@ -244,6 +286,39 @@ namespace ION.Core.Sensors {
       if (onSensorStateChangedEvent != null) {
         onSensorStateChangedEvent(this);
       }
+    }
+
+    /// <summary>
+    /// Forces the measurement of the sensor to be set to the given value.
+    /// </summary>
+    /// <remarks>
+    /// This operation will throw an exception if the scalar is not
+    /// compatible with the sensor's unit.
+    /// </remarks>
+    /// <param name="value">Value.</param>
+    protected void ForceSetMeasurement(Scalar value) {
+      if (!value.unit.IsCompatible(unit)) {
+        throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
+      }
+      __measurement = value;
+      NotifySensorStateChanged();
+    }
+
+    /// <summary>
+    /// Forces the unit of the sensor to be set.
+    /// </summary>
+    /// <remarks>
+    /// This operation will throw an exception if the unit is not compatible
+    /// with the sensor's previous unit.
+    /// </remarks>
+    /// <param name="unit">Unit.</param>
+    protected void ForceSetUnit(Unit unit) {
+      if (!this.unit.IsCompatible(unit)) {
+        throw new ArgumentException("Cannot set unit: " + unit + " is not compatible with " + this.unit);
+      }
+
+      __measurement = __measurement.ConvertTo(unit);
+      NotifySensorStateChanged();
     }
   }
 }

@@ -8,6 +8,7 @@ using UIKit;
 using ION.Core.App;
 using ION.Core.Connections;
 using ION.Core.Devices;
+using ION.Core.Sensors;
 using ION.Core.Util;
 
 using ION.IOS.UI;
@@ -41,6 +42,22 @@ namespace ION.IOS.ViewController.Main {
     /// </summary>
     /// <value>The on sensor add clicked.</value>
     public OnSensorAddClicked onSensorAddClicked { get; set; }
+
+    /// <summary>
+    /// The filter that will only display matching sensors.
+    /// </summary>
+    public IFilter<Sensor> sensorFilter {
+      get {
+        return __sensorFilter;
+      }
+      set {
+        if (value == null) {
+          value = new YesFilter<Sensor>();
+        }
+
+        __sensorFilter = value;
+      }
+    } IFilter<Sensor> __sensorFilter = new YesFilter<Sensor>();
 
     /// <summary>
     /// The maximum number of devices that can be expanded.
@@ -104,11 +121,23 @@ namespace ION.IOS.ViewController.Main {
         case SectionType.Device:
           var deviceItem = item as DeviceItem;
           if (IsDeviceExpanded(deviceItem.device)) {
+            var count = deviceItem.sensors.Count;
+            if (count > 0) {
+              return count + 1;
+            } else {
+              return 0;
+            }
+          } else {
+            return 0;
+          }
+          /*
+          if (IsDeviceExpanded(deviceItem.device)) {
             var gaugeDevice = deviceItem.device as GaugeDevice;
             return gaugeDevice.sensorCount + 1;
           } else {
             return 0;
           }
+          */
         default:
           return 0;
       }
@@ -202,6 +231,8 @@ namespace ION.IOS.ViewController.Main {
         }
         */
 
+        cell.Update(sensor);
+
         cell.buttonWorkbench.Hidden = true;
         cell.buttonAnalyzer.Hidden = true;
 
@@ -227,7 +258,16 @@ namespace ION.IOS.ViewController.Main {
       foreach (DeviceGroup group in groups) {
         __items.Add(new HeaderItem(group));
         foreach (IDevice device in group.devices) {
-          __items.Add(new DeviceItem(device));
+          var item = new DeviceItem(device);
+          if (item.device is GaugeDevice) {
+            var gauge = (GaugeDevice)item.device;
+            foreach (var sensor in gauge.sensors) {
+              if (sensorFilter.Matches(sensor)) {
+                item.sensors.Add(sensor);
+              }
+            }
+          }
+          __items.Add(item);
         }
       }
 
@@ -408,6 +448,7 @@ namespace ION.IOS.ViewController.Main {
   internal class DeviceItem : Item {
     public SectionType type { get { return SectionType.Device; } }
     public IDevice device { get; private set; }
+    public List<GaugeDeviceSensor> sensors = new List<GaugeDeviceSensor>();
 
     public DeviceItem(IDevice device) {
       this.device = device;

@@ -1,5 +1,6 @@
 ﻿using System;
 
+using ION.Core.Measure;
 using ION.Core.Sensors;
 
 namespace ION.Core.Devices {
@@ -19,9 +20,17 @@ namespace ION.Core.Devices {
     public int index { get; internal set; }
 
     public GaugeDeviceSensor(GaugeDevice device, int index, ESensorType sensorType, bool relative = true)
-      : base(sensorType, relative) {
+      : base(sensorType, relative, false) {
       this.device = device;
       this.index = index;
+    }
+
+    /// <summary>
+    /// A hook that is to be called when a device receives a measurement packet.
+    /// </summary>
+    /// <param name="measurement">Measurement.</param>
+    internal void SetMeasurement(Scalar measurement) {
+      ForceSetMeasurement(measurement);
     }
   }
 }

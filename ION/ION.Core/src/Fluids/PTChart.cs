@@ -1,0 +1,151 @@
+﻿using System;
+
+using ION.Core.Fluids;
+using ION.Core.Math;
+using ION.Core.Measure;
+using ION.Core.Util;
+
+namespace ION.Core.Fluids {
+  public class PTChart {
+
+    /// <summary>
+    /// The state that the fluid is in.
+    /// </summary>
+    /// <value>The state.</value>
+    public Fluid.State state { get; private set; }
+    /// <summary>
+    /// The fluid that the ptchart is using for calculations.
+    /// </summary>
+    /// <value>The fluid.</value>
+    public Fluid fluid { get; private set; }
+    /// <summary>
+    /// The elevation above sea level. This will affect end calculations by a
+    /// small, but significant amount.
+    /// </summary>
+    /// <value>The elevation.</value>
+    public Scalar elevation {
+      get {
+        return __elevation;
+      }
+      set {
+        if (value == null) {
+          value = Units.Length.METER.OfScalar(0);
+        }
+        __elevation = value;
+      }
+    } Scalar __elevation;
+
+
+    public PTChart(Fluid.State state, Fluid fluid) : this(state, fluid, Units.Length.METER.OfScalar(0)) {
+      // Nope
+    }
+
+    public PTChart(Fluid.State state, Fluid fluid, Scalar elevation) {
+      this.state = state;
+      this.fluid = fluid;
+      this.elevation = elevation;
+    }
+
+    /// <summary>
+    /// Queries the temperature of the fluid at the given state provided a pressure.
+    /// </summary>
+    /// <remarks>
+    /// IsRelative is used to indicate that the pressure measurement is a relative
+    /// measurement. If you don't know whether or not the measurement is relative, then
+    /// it most likely is.
+    /// </remarks>
+    /// <returns>The temperature.</returns>
+    /// <param name="state">State.</param>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="isRelative">Is relative.</param>
+    public Scalar GetTemperature(Scalar pressure, bool isRelative = true) {
+      if (isRelative) {
+        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      }
+
+      Log.D(this, "PT Pressure is: " + pressure);
+
+      switch (state) {
+        case Fluid.State.Bubble:
+          return fluid.GetTemperatureFromBubblePressure(pressure);
+        case Fluid.State.Dew:
+          return fluid.GetTemperatureFromDewPressure(pressure);
+        default:
+          throw new ArgumentException("Cannot get temperature: invalid fluid state " + state);
+      }
+    }
+
+    /// <summary>
+    /// Queries the pressure of the fluid at the given temperature.
+    /// </summary>
+    /// <remarks>
+    /// IsRelative is used to indicate whether or not the returned pressure should
+    /// be relative.
+    /// </remarks>
+    /// <returns>The pressure.</returns>
+    /// <param name="state">State.</param>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Scalar GetPressure(Scalar temperature, bool isRelative = true) {
+      Scalar ret = null;
+
+      switch (state) {
+        case Fluid.State.Bubble:
+          ret = fluid.GetBubblePressureFromTemperature(temperature);
+          break;
+        case Fluid.State.Dew:
+          ret = fluid.GetDewPressureFromTemperature(temperature);
+          break;
+        default:
+          throw new ArgumentException("Cannot get pressure: invalid fluid state " + state);
+      }
+
+      if (isRelative) {
+        ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
+      }
+
+      return ret;
+    }
+
+    /// <summary>
+    /// Calculates the superheat of the fluid.
+    /// </summary>
+    /// <remarks>
+    /// Superheat is the difference between the measured temperature and
+    /// the dew point of a fluid at a given temperature.
+    /// </remarks>
+    /// <returns>The superheat.</returns>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Scalar CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
+      if (isRelative) {
+        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      }
+
+      Scalar superheat = fluid.GetTemperatureFromDewPressure(pressure);
+      return temperature - superheat;
+    }
+
+    /// <summary>
+    /// Calculates the subcool of the fluid.
+    /// </summary>
+    /// <remarks>
+    /// Subcool is the difference between the measured temperature and
+    /// the bubble point of a fluid at a given temperature.
+    /// </remarks>
+    /// <returns>The subcool.</returns>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Scalar CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
+      if (isRelative) {
+        pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      }
+
+      Scalar subcool = fluid.GetTemperatureFromBubblePressure(pressure);
+      return temperature - subcool;
+    }
+  }
+}
+

@@ -8,6 +8,8 @@ file.
 
 /* APP */
 "cancel" = "Cancel";
+"help" = "Help";
+"ok" = "OK";
 "rename" = "Rename";
 "unknown" = "Unknown";
 
@@ -40,7 +42,9 @@ file.
 "device_model_unknown" = "Unknown Device";
 
 /* FLUIDS */
+"fluid_pt_calculator" = "P/T Calculator";
 "fluid_pt_chart" = "P/T Chart";
+"fluid_state_help" = "Dew Point is used to calculate Superheat (low side, in vapor).\n\nBubble Point is used to calculate Subcool (high side, in liquid).\n\nThis affects measurement of blended refrigerants, since these points are usually not the same.";
 "fluid_superheat_subcool" = "Superheat/Subcool";
 
 /* FLUID MANAGER */

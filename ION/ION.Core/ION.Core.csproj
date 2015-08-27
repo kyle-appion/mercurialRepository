@@ -87,6 +87,10 @@
     <Compile Include="src\Sensors\Properties\ISensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MaxSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
+    <Compile Include="src\Fluids\PTChart.cs" />
+    <Compile Include="src\Math\Physics.cs" />
+    <Compile Include="src\Util\Filter.cs" />
+    <Compile Include="src\Sensors\Filters\SensorTypeFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -100,6 +104,7 @@
     <Folder Include="src\Content\" />
     <Folder Include="src\Database\" />
     <Folder Include="src\Content\Parsers\" />
+    <Folder Include="src\Math\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

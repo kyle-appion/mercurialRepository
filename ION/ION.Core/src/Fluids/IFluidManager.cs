@@ -20,6 +20,12 @@ namespace ION.Core.Fluids {
     event OnFluidPreferenceChanged onFluidPreferenceChanged;
 
     /// <summary>
+    /// The last used fluid. Used for quick fluid defaults.
+    /// </summary>
+    /// <value>The last used fluid.</value>
+    Fluid lastUsedFluid { get; }
+
+    /// <summary>
     /// Queries the list of preferred fluids.
     /// </summary>
     /// <value>The preferred fluids.</value>

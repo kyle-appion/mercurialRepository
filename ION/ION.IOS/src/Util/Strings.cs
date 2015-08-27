@@ -17,6 +17,8 @@ namespace ION.IOS.Util {
   public static class Strings {
     public static readonly String
     CANCEL = "cancel".FromResources(),
+    HELP = "help".FromResources(),
+    OK = "ok".FromResources(),
     RENAME = "rename".FromResources(),
     UNKNOWN = "unknown"
     ;
@@ -59,7 +61,9 @@ namespace ION.IOS.Util {
 
     public static class Fluid {
       public static readonly string
+      PT_CALCULATOR = "fluid_pt_calculator".FromResources(),
       PT_CHART = "fluid_pt_chart".FromResources(),
+      STATE_HELP = "fluid_state_help".FromResources(),
       SUPERHEAT_SUBCOOL = "fluid_superheat_subcool".FromResources()
       ;
       public static class Manager {
@@ -71,7 +75,7 @@ namespace ION.IOS.Util {
 
     public static class Navigation {
       public static readonly string
-      CALCULATORS = "naviation_calculators".FromResources(),
+      CALCULATORS = "navigation_calculators".FromResources(),
       EXIT = "navigation_exit".FromResources(),
       MAIN = "navigation_main".FromResources()
       ;

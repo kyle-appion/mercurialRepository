@@ -64,11 +64,11 @@ namespace ION.Core.Measure {
       double thisValue = unit.GetConverterTo(baseUnit).Convert(amount);
       double otherValue = other.unit.GetConverterTo(baseUnit).Convert(other.amount);
 
-      return Math.Abs(thisValue - otherValue) < epsilon;
+      return System.Math.Abs(thisValue - otherValue) < epsilon;
     }
 
     public bool AssertEquals(double otherAmount, double epislon) {
-      return Math.Abs(otherAmount - amount) < epislon;
+      return System.Math.Abs(otherAmount - amount) < epislon;
     }
 
     public bool CompatibleWith(Quantity quantity) {
@@ -78,9 +78,9 @@ namespace ION.Core.Measure {
     public int CompareTo(Scalar other) {
       other = other.ConvertTo(unit);
       if (amount > other.amount) {
-        return (int)Math.Ceiling(amount - other.amount);
+        return (int)System.Math.Ceiling(amount - other.amount);
       } else {
-        return (int)Math.Floor(amount - other.amount);
+        return (int)System.Math.Floor(amount - other.amount);
       }
     }
 
@@ -106,7 +106,7 @@ namespace ION.Core.Measure {
     }
 
     public Scalar Abs() {
-      return new Scalar(unit, Math.Abs(amount));
+      return new Scalar(unit, System.Math.Abs(amount));
     }
 
     public static Scalar operator +(Scalar o1, Scalar o2) {

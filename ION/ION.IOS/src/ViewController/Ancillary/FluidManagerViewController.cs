@@ -13,9 +13,15 @@ using ION.IOS.ViewController;
 
 namespace ION.IOS.ViewController.Ancillary {
 	public partial class FluidManagerViewController : BaseIONViewController {
+    /// <summary>
+    /// The delegate that is called when a fluid is selected by the view controller
+    /// </summary>
+    public delegate void OnFluidSelected(Fluid fluid);
 
     private const int SECTION_FAVORITE = 0;
     private const int SECTION_LIBRARY = 1;
+
+    public OnFluidSelected onFluidSelectedDelegate;
 
     /// <summary>
     /// The current fluid that the view controller has selected.
@@ -33,6 +39,11 @@ namespace ION.IOS.ViewController.Ancillary {
     /// </summary>
     /// <value>The fluid manager.</value>
     private IFluidManager fluidManager { get; set; }
+    /// <summary>
+    /// The source of fluid cells for our table.
+    /// </summary>
+    /// <value>The source.</value>
+    private FluidSource source { get; set; }
 
 
 
@@ -43,6 +54,15 @@ namespace ION.IOS.ViewController.Ancillary {
     // Overridden from UIViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
+
+      NavigationItem.Title = Strings.Fluid.PT_CHART;
+      NavigationItem.SetRightBarButtonItem(
+        new UIBarButtonItem("Done", UIBarButtonItemStyle.Done, async (obj, args) => {
+          if (onFluidSelectedDelegate != null) {
+            onFluidSelectedDelegate(await fluidManager.GetFluidAsync(source.selectedFluid));
+            NavigationController.PopViewController(true);
+          } 
+        }), false);
 
       ion = AppState.context;
       fluidManager = ion.fluidManager;
@@ -55,14 +75,13 @@ namespace ION.IOS.ViewController.Ancillary {
         UpdateTableContent();
       };
       switchContent.SelectedSegment = SECTION_FAVORITE;
+      UpdateTableContent();
     }
 
     /// <summary>
     /// Updates the content of the view's table.
     /// </summary>
     private void UpdateTableContent() {
-      FluidSource source = null;
-
       switch ((int)switchContent.SelectedSegment) {
         case SECTION_FAVORITE:
           source = new FluidSource(table, fluidManager, fluidManager.preferredFluids);

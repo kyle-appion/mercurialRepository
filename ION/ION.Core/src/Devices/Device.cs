@@ -204,7 +204,7 @@ namespace ION.Core.Devices {
                 this[i].type + " is not valid with received type " + reading.sensorType);
             }
             if (this[i].measurement != gp.gaugeReadings[i].reading) {
-              this[i].measurement = gp.gaugeReadings[i].reading;
+              this[i].SetMeasurement(gp.gaugeReadings[i].reading);
               changed = true;
             }
           }
@@ -219,6 +219,21 @@ namespace ION.Core.Devices {
         // TODO ahodder@appioninc.com: Consider exposing?
         //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the device has a sensor of the given type.
+    /// </summary>
+    /// <returns><c>true</c> if this instance hash sensor of type the specified sensorType; otherwise, <c>false</c>.</returns>
+    /// <param name="sensorType">Sensor type.</param>
+    public bool HashSensorOfType(ESensorType sensorType) {
+      foreach (var sensor in sensors) {
+        if (sensorType == sensor.type) {
+          return true;
+        }
+      }
+
+      return false;
     }
 
     /// <summary>

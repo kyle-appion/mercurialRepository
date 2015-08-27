@@ -149,6 +149,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
