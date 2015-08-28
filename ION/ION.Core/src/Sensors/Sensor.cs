@@ -23,6 +23,25 @@ namespace ION.Core.Sensors {
   /// Some utility extensions around the sensor type enum.
   /// </summary>
   public static class SensorExtensions {
+
+    /// <summary>
+    /// Queries the units that sensor supports.
+    /// </summary>
+    /// <returns>The supported unit.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public static Unit[] GetSupportedUnits(this Sensor sensor) {
+      switch (sensor.type) {
+        case ESensorType.Pressure:
+          return SensorUtils.DEFAULT_PRESSURE_UNITS;
+        case ESensorType.Temperature:
+          return SensorUtils.DEFAULT_TEMPERATURE_UNITS;
+        case ESensorType.Vacuum:
+          return SensorUtils.DEFAULT_VACUUM_UNITS;
+        default:
+          throw new MissingMemberException("Units not defined for " + sensor.type);  
+      }
+    }
+
     /// <summary>
     /// Queries the default unit for the given sensor type.
     /// </summary>

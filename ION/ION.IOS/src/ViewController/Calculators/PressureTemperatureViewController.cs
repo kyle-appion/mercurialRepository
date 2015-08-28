@@ -86,19 +86,18 @@ namespace ION.IOS.ViewController.Calculators {
     /// <value>The pressure unit.</value>
     public Unit pressureUnit {
       get {
-        return __pressureUnit;
+        return pressureSensor.unit;
       }
       set {
         if (value == null) {
           value = Units.Pressure.PSIG;
         }
         if (pressureSensor.isEditable) {
-          pressureSensor.unit = value;
-          __pressureUnit = value;
+          pressureSensor.measurement = value.OfScalar(pressureSensor.measurement.amount);
           buttonPressureUnit.SetTitle(value.ToString(), UIControlState.Normal);
         }
       }
-    } Unit __pressureUnit = Units.Pressure.PSIG;
+    }
 
     /// <summary>
     /// The temperature sensor that will update the temperature input view.
@@ -139,21 +138,21 @@ namespace ION.IOS.ViewController.Calculators {
     /// <value>The temperature unit.</value>
     public Unit temperatureUnit {
       get { 
-        return __temperatureUnit;
+        return temperatureSensor.unit;
       }
       set {
         if (value == null) {
           value = Units.Temperature.FAHRENHEIT;
         }
         if (temperatureSensor.isEditable) {
-          temperatureSensor.unit = value;
-          __temperatureUnit = value;
+          temperatureSensor.measurement = value.OfScalar(temperatureSensor.measurement.amount);
           buttonTemperatureUnit.SetTitle(value.ToString(), UIControlState.Normal);
         }
       }
-    } Unit __temperatureUnit;
+    }
 
-    private bool isEditing { get; set; }
+    private bool isEditingPressure { get; set; }
+    private bool isEditingTemperature { get; set; }
 
 		public PressureTemperatureViewController (IntPtr handle) : base (handle) {
 		}
@@ -163,7 +162,25 @@ namespace ION.IOS.ViewController.Calculators {
       base.ViewDidLoad();
 
       buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
+        if (pressureSensor.isEditable) {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.GetSupportedUnits(), (obj, unit) => {
+            pressureUnit = unit;
+          });
+          PresentViewController(dialog, true, null);
+        }
+      };
+
       buttonTemperatureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonTemperatureUnit.TouchUpInside += (object sender, EventArgs e) => {
+        if (temperatureSensor.isEditable) {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.GetSupportedUnits(), (obj, unit) => {
+            temperatureUnit = unit;
+          });
+          PresentViewController(dialog, true, null);
+        }
+      };
+
       switchDewBubble.ValueChanged += (object sender, EventArgs e) => {
         switch ((int)switchDewBubble.SelectedSegment) {
           case SECTION_DEW:
@@ -216,10 +233,6 @@ namespace ION.IOS.ViewController.Calculators {
         UpdateTemperature();
       }, UIControlEvent.EditingChanged);
 
-      buttonPressureUnit.TouchUpInside += (object obj, EventArgs e) => {
-        Toast.New(this.View, "PressureUnit clicked");
-      };
-
       viewAssignTemperatureSensor.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         var dm = InflateViewController<DeviceManagerViewController>("deviceManagerViewController");
         dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
@@ -237,10 +250,6 @@ namespace ION.IOS.ViewController.Calculators {
       editTemperature.AddTarget((object obj, EventArgs args) => {
         UpdatePressure();
       }, UIControlEvent.EditingChanged);
-
-      buttonTemperatureUnit.TouchUpInside += (object obj, EventArgs e) => {
-        Toast.New(this.View, "temperatureUnit clicked");
-      };
     }
 
     /// <summary>
@@ -252,39 +261,31 @@ namespace ION.IOS.ViewController.Calculators {
     }
 
     private void OnPressureSensorChanged(Sensor sensor) {
-      editPressure.Text = sensor.ToFormattedString();
-      buttonPressureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
-      if (!isEditing) {
-        UpdateTemperature();
+      if (!isEditingTemperature) {
+        editPressure.Text = sensor.ToFormattedString();
+        buttonPressureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
       }
-    }
-
-    private void OnTemperatureSensorChanged(Sensor sensor) {
-      editTemperature.Text = sensor.ToFormattedString();
-      buttonTemperatureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
-      if (!isEditing) {
-        UpdatePressure();
-      }
-    }
-
-    private void OnPressureEdited(object obj, EventArgs args) {
       UpdateTemperature();
     }
 
-    private void OnTemperatureEdited(object obj, EventArgs args) {
+    private void OnTemperatureSensorChanged(Sensor sensor) {
+      if (!isEditingPressure) {
+        editTemperature.Text = sensor.ToFormattedString();
+        buttonTemperatureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
+      }
       UpdatePressure();
     }
 
     private void UpdatePressure() {
-      if (isEditing) {
+      if (isEditingPressure || isEditingTemperature) {
         return;
       }
-      isEditing = true;
+      isEditingPressure = true;
 
       try {
         if (pressureSensor.isEditable) {
           var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
-//          temperatureSensor.measurement = temperatureUnit.OfScalar(measurement);
+          temperatureSensor.measurement = measurement;
 
           pressureSensor.measurement = ptChart.GetPressure(measurement).ConvertTo(pressureUnit);
         }
@@ -293,28 +294,28 @@ namespace ION.IOS.ViewController.Calculators {
         ClearPressureInput();
       }
 
-      isEditing = false;
+      isEditingPressure = false;
     }
 
     private void UpdateTemperature() {
-      if (isEditing) {
+      if (isEditingPressure || isEditingTemperature) {
         return;
       }
-      isEditing = true;
+      isEditingTemperature = true;
 
       try {
         if (temperatureSensor.isEditable) {
           var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
-//          pressureSensor.measurement = pressureUnit.OfScalar(measurement);
+          pressureSensor.measurement = measurement;
 
           temperatureSensor.measurement = ptChart.GetTemperature(measurement).ConvertTo(temperatureUnit);
         }
       } catch (Exception e) {
-        Log.E(this, "Failed to UpdateTemperature: invalid string " + editPressure.Text, e);
+        Log.E(this, "Failed to UpdateTemperature: invalid string " + editPressure.Text + ".", e);
         ClearTemperatureInput();
       }
 
-      isEditing = false;
+      isEditingTemperature = false;
     }
 
     /// <summary>

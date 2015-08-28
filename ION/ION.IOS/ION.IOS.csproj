@@ -267,6 +267,7 @@
       <DependentUpon>DefaultSubviewCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\Main\ViewerSource.cs" />
+    <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -282,6 +283,7 @@
     <Folder Include="src\ViewController\Ancillary\" />
     <Folder Include="Resources\output\" />
     <Folder Include="Resources\assets\" />
+    <Folder Include="src\ViewController\Dialog\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

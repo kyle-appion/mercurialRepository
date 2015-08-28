@@ -73,6 +73,12 @@ namespace ION.IOS.Util {
       } // End Strings.Fluid.Manager
     } // End Strings.Fluid
 
+    public static class Measure {
+      public static readonly string
+      PICK_UNIT = "measure_pick_unit".FromResources()
+      ;
+    } // End Strings.Measure
+
     public static class Navigation {
       public static readonly string
       CALCULATORS = "navigation_calculators".FromResources(),

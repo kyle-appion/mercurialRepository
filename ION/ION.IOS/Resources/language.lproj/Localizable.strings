@@ -50,6 +50,9 @@ file.
 /* FLUID MANAGER */
 "fluid_manager" = "Refrigerant Manager";
 
+/* MEASURE */
+"measure_pick_unit" = "Pick Unit";
+
 /* NAVIGATION DRAWER */
 "navigation_calculators" = "CALCULATORS";
 "navigation_main" = "MAIN";
