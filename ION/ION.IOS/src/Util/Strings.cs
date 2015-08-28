@@ -16,6 +16,7 @@ namespace ION.IOS.Util {
   /// </summary>
   public static class Strings {
     public static readonly String
+    ACTIONS = "actions".FromResources(),
     CANCEL = "cancel".FromResources(),
     HELP = "help".FromResources(),
     OK = "ok".FromResources(),
@@ -43,7 +44,7 @@ namespace ION.IOS.Util {
         SCAN = "device_manager_scan".FromResources(),
         SCANNING = "device_manager_scanning".FromResources()
         ;
-      }
+      } // End Strings.Device.Manager
 
       public static class Model {
         public static readonly string
@@ -58,6 +59,12 @@ namespace ION.IOS.Util {
         ;
       } // End Strings.Device.Model
     } // End Strings.Device
+
+    public static class Errors {
+      public static readonly string
+      SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources()
+      ;
+    }
 
     public static class Fluid {
       public static readonly string
@@ -107,6 +114,20 @@ namespace ION.IOS.Util {
       REMOVE = "workbench_remove".FromResources(),
       SELECT_VIEWER_ACTION = "workbench_select_viewer_action".FromResources()
       ;
+
+      public static class Viewer {
+        public static readonly string
+        ADD = "workbench_viewer_add".FromResources(),
+        ALT = "workbench_viewer_alt".FromResources(),
+        ALT_DESC = "workbench_viewer_alt_desc".FromResources(),
+        HOLD = "workbench_viewer_hold".FromResources(),
+        HOLD_DESC = "workbench_viewer_hold_desc".FromResources(),
+        MAX = "workbench_viewer_max".FromResources(),
+        MAX_DESC = "workbench_viewer_max_desc".FromResources(),
+        MIN = "workbench_viewer_min".FromResources(),
+        MIN_DESC = "workbench_viewer_min_desc".FromResources()
+        ;
+      }
     } // End Strings.Workbench
   } // End Strings
 

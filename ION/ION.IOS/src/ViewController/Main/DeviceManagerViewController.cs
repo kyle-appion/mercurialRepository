@@ -73,7 +73,6 @@ namespace ION.IOS.ViewController.Main {
       // with the intent to return a sensor.
       InitNavigationBar("ic_nav_device_manager", true);
 
-
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
         if (EDeviceManagerState.ActiveScanning == ion.deviceManager.state) {
@@ -81,7 +80,7 @@ namespace ION.IOS.ViewController.Main {
         } else if (EDeviceManagerState.Idle == ion.deviceManager.state) {
           ion.deviceManager.DoActiveScanAsync();
         } else {
-          Toast.New(View, "BAD STRING Failed to initiate scan: invalid state");
+          Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
         }
       });
 

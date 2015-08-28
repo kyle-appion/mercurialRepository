@@ -192,10 +192,6 @@
     <Compile Include="src\ViewController\Calculators\PressureTemperatureViewController.designer.cs">
       <DependentUpon>PressureTemperatureViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.cs" />
-    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.designer.cs">
-      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\App\AppDelegate.cs" />
     <Compile Include="src\ViewController\Main\DeviceManagerViewController.designer.cs">
       <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
@@ -268,6 +264,10 @@
     </Compile>
     <Compile Include="src\ViewController\Main\ViewerSource.cs" />
     <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
+    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.cs" />
+    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.designer.cs">
+      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

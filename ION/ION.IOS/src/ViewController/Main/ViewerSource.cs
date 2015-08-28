@@ -135,28 +135,26 @@ namespace ION.IOS.ViewController.Main {
             }
           }
 
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Add Subview", UIAlertActionStyle.Default, (action) => {
+          dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
             ShowAddSubviewDialog(tableView, manifold);
           }));
 
+/*
           dialog.AddAction(UIAlertAction.Create("BAD STRING Alarms", UIAlertActionStyle.Default, (action) => {
             Toast.New(__table, "Alarms coming soon!");
           }));
 
-          dialog.AddAction(UIAlertAction.Create("BAD STRING Add Subview", UIAlertActionStyle.Default, (action) => {
-            Toast.New(__table, "Subviews coming soon!");
-          }));
-
-          dialog.AddAction(UIAlertAction.Create(Strings.RENAME.FromResources(), UIAlertActionStyle.Default, (action) => {
+          dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
             Toast.New(__table, "Rename coming soon!");
           }));
+*/
 
-          dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE.FromResources(), UIAlertActionStyle.Default, (action) => {
+          dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE, UIAlertActionStyle.Default, (action) => {
             __workbench.Remove(manifold);
             __table.ReloadData();
           }));
 
-          dialog.AddAction(UIAlertAction.Create(Strings.CANCEL.FromResources(), UIAlertActionStyle.Cancel, null));
+          dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 
           // Requires for iPad- we must specify a source for the action sheet
           // since it is displayed as a popover
@@ -196,7 +194,7 @@ namespace ION.IOS.ViewController.Main {
     private delegate void AddAction(string title, Action<UIAlertAction> action);
     // Overridden from UITableViewSource
     private void ShowAddSubviewDialog(UITableView tableView, Manifold manifold) {
-      var dialog = UIAlertController.Create("BAD STRING Actions", "BAD STRING Add Subviewer", UIAlertControllerStyle.ActionSheet);
+      var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.ActionSheet);
 
       AddAction addAction = (string title, Action<UIAlertAction> action) => {
         dialog.AddAction(UIAlertAction.Create(title, UIAlertActionStyle.Default, (UIAlertAction uia) => {
@@ -208,22 +206,22 @@ namespace ION.IOS.ViewController.Main {
       var sensor = manifold.primarySensor;
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-        addAction("BAD STRING Min", (UIAlertAction action) => {
+        addAction(Strings.Workbench.Viewer.MIN_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new MinSensorProperty(sensor));
         });
       }
       if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        addAction("BAD STRING Max", (UIAlertAction action) => {
+        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new MaxSensorProperty(sensor));
         });
       }
       if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) { 
-        addAction("BAD STRING Hold", (UIAlertAction action) => {
+        addAction(Strings.Workbench.Viewer.HOLD_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new HoldSensorProperty(sensor));
         });
       }
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        addAction("BAD STRING Alternate Unit", (UIAlertAction action) => {
+        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
 //          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.));
         });
       }
@@ -238,13 +236,13 @@ namespace ION.IOS.ViewController.Main {
 
     private string GetLocalizedTitleString(ISensorProperty sensorProperty) {
       if (sensorProperty is MinSensorProperty) {
-        return "BS MIN";
+        return Strings.Workbench.Viewer.MIN;
       } else if (sensorProperty is MaxSensorProperty) {
-        return "BS MAX";
+        return Strings.Workbench.Viewer.MAX;
       } else if (sensorProperty is HoldSensorProperty) {
-        return "BS HOLD";
+        return Strings.Workbench.Viewer.HOLD;
       } else if (sensorProperty is AlternateUnitSensorProperty) {
-        return "BS ALT";
+        return Strings.Workbench.Viewer.ALT;
       } else {
         throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
       }

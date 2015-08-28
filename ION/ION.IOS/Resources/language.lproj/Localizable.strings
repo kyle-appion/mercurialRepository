@@ -7,6 +7,7 @@ file.
 */
 
 /* APP */
+"actions" = "Actions";
 "cancel" = "Cancel";
 "help" = "Help";
 "ok" = "OK";
@@ -41,6 +42,9 @@ file.
 "device_model_pt800" = "PT800";
 "device_model_unknown" = "Unknown Device";
 
+/* ERRORS */
+"errors_scan_init_fail" = "Failed to initiate scan: invalid state";
+
 /* FLUIDS */
 "fluid_pt_calculator" = "P/T Calculator";
 "fluid_pt_chart" = "P/T Chart";
@@ -71,3 +75,14 @@ file.
 "workbench" = "Workbench";
 "workbench_remove" = "Remove From Workbench";
 "workbench_select_viewer_action" = "Select a viewer action";
+
+/* WORKBENCH SUBVIEW */
+"workbench_subview_add" = "Add Subview";
+"workbench_subview_alt" = "ALT";
+"workbench_subview_alt_desc" = "Alternate Unit (ALT)";
+"workbench_subview_hold" = "HOLD";
+"workbench_subview_hold_desc" = "Hold Reading (HOLD)";
+"workbench_subview_max" = "MAX";
+"workbench_subview_max" = "Maximum Reading (MAX)";
+"workbench_subview_min" = "MIN";
+"workbench_subview_min_desc" = "Minimum Reading (MIN)";

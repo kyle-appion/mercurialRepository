@@ -5,11 +5,295 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.Core.App;
+using ION.Core.Devices;
+using ION.Core.Fluids;
+using ION.Core.Measure;
+using ION.Core.Sensors;
+using ION.Core.Util;
+
+using ION.IOS.Devices;
+using ION.IOS.UI;
+using ION.IOS.Util;
 using ION.IOS.ViewController;
+using ION.IOS.ViewController.Dialog;
+using ION.IOS.ViewController.Main;
+using ION.IOS.ViewController.Ancillary;
 
 namespace ION.IOS.ViewController.Calculators {
 	public partial class SuperheatSubcoolViewController : BaseIONViewController {
+
+    private const int SECTION_DEW = 0;
+    private const int SECTION_BUBBLE = 1;
+
+    public IION ion { get; set; }
+    public PTChart ptChart { 
+      get {
+        return __ptChart;
+      }
+      set {
+        __ptChart = value;
+        var name = ptChart.fluid.name;
+        labelFluidName.Text = name;
+        viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
+      }
+    } PTChart __ptChart;
+
+    public Sensor pressureSensor {
+      get {
+        return __pressureSensor;
+      }
+      set {
+        if (__pressureSensor != null) {
+          __pressureSensor.onSensorStateChangedEvent -= OnPressureSensorChanged;
+        }
+
+        if (value == null) {
+          value = new Sensor(ESensorType.Pressure);
+        }
+
+        __pressureSensor = value;
+
+        if (__pressureSensor is GaugeDeviceSensor) {
+          GaugeDeviceSensor sensor = (GaugeDeviceSensor)__pressureSensor;
+          imagePressureIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
+          imagePressureLock.Image = UIImage.FromBundle("ic_lock");
+        } else {
+          imagePressureIcon.Image = UIImage.FromBundle("ic_edit");
+          imagePressureLock.Image = null;
+        }
+
+        editPressure.Enabled = editMeasTemp.Enabled = __pressureSensor.isEditable;
+        pressureUnit = value.unit;
+        __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
+      }
+    } Sensor __pressureSensor;
+
+    public Unit pressureUnit {
+      get {
+        return pressureSensor.unit;
+      }
+      set {
+        if (value == null) {
+          value = Units.Pressure.PSIG;
+        }
+
+        if (pressureSensor.isEditable) {
+          pressureSensor.measurement = value.OfScalar(pressureSensor.measurement.amount);
+          buttonPressureUnit.SetTitle(value.ToString(), UIControlState.Normal);
+        }
+      }
+    }
+
+    public Sensor temperatureSensor {
+      get {
+        return __temperatureSensor;
+      }
+      set {
+        if (__temperatureSensor != null) {
+          __temperatureSensor.onSensorStateChangedEvent -= OnTemperatureSensorChanged;
+        }
+
+        if (value == null) {
+          value = new Sensor(ESensorType.Temperature);
+        }
+
+        __temperatureSensor = value;
+
+        if (__temperatureSensor is GaugeDeviceSensor) {
+          GaugeDeviceSensor sensor = (GaugeDeviceSensor)__temperatureSensor;
+          imageMeasTempIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
+          imageMeasTempLock.Image = UIImage.FromBundle("ic_lock");
+        } else {
+          imageMeasTempIcon.Image = UIImage.FromBundle("ic_edit");
+          imageMeasTempLock.Image = null;
+        }
+
+        editPressure.Enabled = editMeasTemp.Enabled = __temperatureSensor.isEditable;
+        temperatureUnit = value.unit;
+        __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
+      }
+    } Sensor __temperatureSensor;
+
+    public Unit temperatureUnit {
+      get {
+        return temperatureSensor.unit;
+      }
+      set {
+        if (value == null) {
+          value = Units.Temperature.FAHRENHEIT;
+        }
+
+        if (temperatureSensor.isEditable) {
+          temperatureSensor.measurement = value.OfScalar(temperatureSensor.measurement.amount);
+          buttonMeasTempUnit.SetTitle(value.ToString(), UIControlState.Normal);
+        }
+      }
+    }
+
 		public SuperheatSubcoolViewController (IntPtr handle) : base (handle) {
+      // Nope
 		}
+
+    public override void ViewDidLoad() {
+      base.ViewDidLoad();
+      buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
+        if (pressureSensor.isEditable) {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.GetSupportedUnits(), (obj, unit) => {
+            pressureUnit = unit;
+          });
+          PresentViewController(dialog, true, null);
+        }
+      };
+
+      buttonMeasTempUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonMeasTempUnit.TouchUpInside += (object sender, EventArgs e) => {
+        if (temperatureSensor.isEditable) {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.GetSupportedUnits(), (obj, unit) => {
+            temperatureUnit = unit;
+          });
+          PresentViewController(dialog, true, null);
+        }
+      };
+
+      switchDewBubble.ValueChanged += (object sender, EventArgs e) => {
+        switch ((int)switchDewBubble.SelectedSegment) {
+          case SECTION_DEW:
+            ptChart = new PTChart(Fluid.State.Dew, ptChart.fluid, ptChart.elevation);
+            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+            break;
+          case SECTION_BUBBLE:
+            ptChart = new PTChart(Fluid.State.Bubble, ptChart.fluid, ptChart.elevation);
+            labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+            break;
+        }
+      };
+      switchDewBubble.SelectedSegment = SECTION_DEW;
+
+      ion = AppState.context;
+
+      ptChart = new PTChart(Fluid.State.Dew, ion.fluidManager.lastUsedFluid);
+      pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
+      temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+
+      NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
+        var dialog = new UIAlertView(Strings.HELP, Strings.Fluid.STATE_HELP, null, Strings.OK);
+        dialog.Show();
+      });
+
+      View.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        editPressure.ResignFirstResponder();
+        editMeasTemp.ResignFirstResponder();
+      }));
+
+      viewFluidPicker.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        var sb = InflateViewController<FluidManagerViewController>("fluidManagerViewController");
+        sb.onFluidSelectedDelegate = OnFluidSelected;
+        NavigationController.PushViewController(sb, true);
+      }));
+
+      viewPressureSensorPicker.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        var dm = InflateViewController<DeviceManagerViewController>("deviceManagerViewController");
+        dm.displayFilter = new SensorTypeFilter(ESensorType.Pressure);
+        dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+          pressureSensor = sensor;
+        };
+        NavigationController.PushViewController(dm, true);
+      }));
+
+      viewPressureSensorPicker.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
+        pressureSensor = null;
+        ClearPressureInput();
+      }));
+
+      editPressure.AddTarget((object obj, EventArgs args) => {
+        try {
+          if (pressureSensor.isEditable) {
+            var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
+            pressureSensor.measurement = measurement;
+          }
+        } catch (Exception e) {
+          Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
+          ClearPressureInput();
+        }
+      }, UIControlEvent.EditingChanged);
+
+      viewMeasTempSensorPicker.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        var dm = InflateViewController<DeviceManagerViewController>("deviceManagerViewController");
+        dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
+        dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+          temperatureSensor = sensor;
+        };
+        NavigationController.PushViewController(dm, true);
+      }));
+
+      viewMeasTempSensorPicker.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
+        temperatureSensor = null;
+        ClearTemperatureInput();
+      }));
+
+      editMeasTemp.AddTarget((object obj, EventArgs args) => {
+        try {
+          if (temperatureSensor.isEditable) {
+            var measurement = temperatureUnit.OfScalar(double.Parse(editMeasTemp.Text));
+            temperatureSensor.measurement = measurement;
+          }
+        } catch (Exception e) {
+          Log.E(this, "Failed to UpdateTemperature: invalid string " + editMeasTemp.Text + ".", e);
+          ClearTemperatureInput();
+        }
+      }, UIControlEvent.EditingChanged);
+    }
+
+    /// <summary>
+    /// Called when a fluid is selected for the view controller.
+    /// </summary>
+    /// <param name="fluid">Fluid.</param>
+    private void OnFluidSelected(Fluid fluid) {
+      ptChart = new PTChart(ptChart.state, fluid, this.ptChart.elevation);
+    }
+
+    private void OnPressureSensorChanged(Sensor sensor) {
+      if (!sensor.isEditable) {
+        editPressure.Text = sensor.ToFormattedString();
+      }
+      buttonPressureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
+
+      labelSatTempDisplay.Text = ptChart.GetTemperature(pressureSensor.measurement, pressureSensor.isRelative).ConvertTo(temperatureUnit).amount.ToString("0.00");
+      labelSatTempUnit.Text = temperatureUnit.ToString();
+
+      UpdateDelta();
+    }
+
+    private void OnTemperatureSensorChanged(Sensor sensor) {
+      if (!sensor.isEditable) {
+        editMeasTemp.Text = sensor.ToFormattedString();
+      }
+      buttonMeasTempUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
+
+      UpdateDelta();
+    }
+
+    private void UpdateDelta() {
+      var sat = ptChart.GetTemperature(pressureSensor.measurement, pressureSensor.isRelative).ConvertTo(temperatureUnit);
+      var delta = temperatureSensor.measurement - sat;
+      labelFluidStateDelta.Text = delta.amount.ToString("0.00") + delta.unit.ToString();
+    }
+
+    /// <summary>
+    /// Clears the pressure input without updating the pressure sensor's reading.
+    /// </summary>
+    private void ClearPressureInput() {
+      editPressure.Text = "";
+    }
+
+    /// <summary>
+    /// Clears the temperature input without updating the temperature sensor's reading.
+    /// </summary>
+    private void ClearTemperatureInput() {
+      editMeasTemp.Text = "";
+    }
 	}
 }

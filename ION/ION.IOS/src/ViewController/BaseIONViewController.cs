@@ -6,6 +6,8 @@ using UIKit;
 
 using ION.Core.Util;
 
+using ION.IOS.Util;
+
 namespace ION.IOS.ViewController {
   public class BaseIONViewController : UIViewController {
 
@@ -51,7 +53,16 @@ namespace ION.IOS.ViewController {
         Log.D(this, "Failed to initialize navigation bar: null");
         return;
       }
+
       /*
+//      var bar = NavigationController.NavigationBar;
+      var bar = UINavigationBar.Appearance;
+      bar.BackIndicatorImage = UIImage.FromBundle(iconName);
+      bar.BackIndicatorTransitionMaskImage = bar.BackIndicatorImage;
+      bar.TintColor = new UIColor(Colors.BLACK);
+      */
+
+
       isPopOver = popViewController;
 
       var leftContainer = new UIView();
@@ -75,9 +86,9 @@ namespace ION.IOS.ViewController {
       left.Style = UIBarButtonItemStyle.Bordered;
 
       NavigationItem.LeftBarButtonItem = left;
-
+      /*
       if (popViewController) {
-        NavigationController.InteractivePopGestureRecognizer.Delegate = new UIGestureRecognizerDelegate();
+        NavigationController.InteractivePopGestureRecognizer.Delegate = this;// new UIGestureRecognizerDelegate();
       }
       */
     }

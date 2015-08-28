@@ -5,7 +5,9 @@ using UIKit;
 
 using ION.Core.Measure;
 
-namespace ION.IOS {
+using ION.IOS.Util;
+
+namespace ION.IOS.ViewController.Dialog {
   /// <summary>
   /// A static factory class that creates useful UI elements.
   /// </summary>
@@ -25,6 +27,8 @@ namespace ION.IOS {
           unitSelected(ret, unit);
         }));
       }
+
+      ret.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 
       return ret;
     }

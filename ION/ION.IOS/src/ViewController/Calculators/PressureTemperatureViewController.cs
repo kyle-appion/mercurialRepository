@@ -16,6 +16,7 @@ using ION.IOS.Devices;
 using ION.IOS.UI;
 using ION.IOS.Util;
 using ION.IOS.ViewController;
+using ION.IOS.ViewController.Dialog;
 using ION.IOS.ViewController.Main;
 using ION.IOS.ViewController.Ancillary;
 
