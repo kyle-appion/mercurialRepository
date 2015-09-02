@@ -83,6 +83,6 @@ file.
 "workbench_subview_hold" = "HOLD";
 "workbench_subview_hold_desc" = "Hold Reading (HOLD)";
 "workbench_subview_max" = "MAX";
-"workbench_subview_max" = "Maximum Reading (MAX)";
+"workbench_subview_max_desc" = "Maximum Reading (MAX)";
 "workbench_subview_min" = "MIN";
 "workbench_subview_min_desc" = "Minimum Reading (MIN)";

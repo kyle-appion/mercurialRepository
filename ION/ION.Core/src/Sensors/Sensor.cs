@@ -79,34 +79,8 @@ namespace ION.Core.Sensors {
     /// </remarks>
     /// <returns>The formatted string.</returns>
     /// <param name="sensor">Sensor.</param>
-    public static string ToFormattedString(this Sensor sensor) {
-      var unit = sensor.unit;
-      var amount = sensor.measurement.amount;
-       
-      // PRESSURE UNITS
-      if (Units.Pressure.PASCAL.Equals(unit)) {
-        return amount.ToString("0");
-      } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
-        if (ESensorType.Vacuum == sensor.type) {
-          return amount.ToString("0");
-        } else {
-          return amount.ToString("0.0000");
-        }
-      } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
-        return amount.ToString("0.000");
-      } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
-        return amount.ToString("0.000");
-      } else if (Units.Pressure.PSIG.Equals(unit)) {
-        return amount.ToString("0.0");
-      } else if (Units.Pressure.PSIA.Equals(unit)) {
-        return amount.ToString("0.0000");
-      } else if (Units.Pressure.IN_HG.Equals(unit)) {
-        return amount.ToString("0.000");
-      }
-      // DEFAULT
-      else {
-        return amount.ToString("0.00");
-      }
+    public static string ToFormattedString(this Sensor sensor, bool includeUnit = false) {
+      return SensorUtils.ToFormattedString(sensor.type, sensor.measurement, includeUnit);
     }
   } // End SensorExtensions
 
@@ -150,6 +124,44 @@ namespace ION.Core.Sensors {
       Units.Pressure.PSIA,
       Units.Pressure.KILOPASCAL,
     };
+
+    public static string ToFormattedString(ESensorType sensorType, Scalar measurement, bool includeUnit = false) {
+      var unit = measurement.unit;
+      var amount = measurement.amount;
+
+      string ret = "";
+
+      // PRESSURE UNITS
+      if (Units.Pressure.PASCAL.Equals(unit)) {
+        ret = amount.ToString("0");
+      } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
+        if (ESensorType.Vacuum == sensorType) {
+          ret = amount.ToString("0.0000");
+        } else {
+          ret = amount.ToString("0");
+        }
+      } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
+        ret = amount.ToString("0.000");
+      } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
+        ret = amount.ToString("0.000");
+      } else if (Units.Pressure.PSIG.Equals(unit)) {
+        ret = amount.ToString("0.0");
+      } else if (Units.Pressure.PSIA.Equals(unit)) {
+        ret = amount.ToString("0.0000");
+      } else if (Units.Pressure.IN_HG.Equals(unit)) {
+        ret = amount.ToString("0.000");
+      }
+      // DEFAULT
+      else {
+        ret = amount.ToString("0.00");
+      }
+
+      if (includeUnit) {
+        ret += " " + unit.ToString();
+      }
+
+      return ret;
+    }
 
     /// <summary>
     /// Determines whether or not the given unit is valid with the provided sensor type.

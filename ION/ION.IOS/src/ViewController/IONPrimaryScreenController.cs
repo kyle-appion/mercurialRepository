@@ -12,8 +12,9 @@ using ION.Core.Util;
 
 using ION.IOS.App;
 using ION.IOS.Util;
-using ION.IOS.ViewController.Main;
-using ION.IOS.ViewController.Calculators;
+using ION.IOS.ViewController.PTChart;
+using ION.IOS.ViewController.SuperheatSubcool;
+using ION.IOS.ViewController.Workbench;
 
 namespace ION.IOS.ViewController {
 	public partial class IONPrimaryScreenController : UIViewController {
@@ -59,9 +60,9 @@ namespace ION.IOS.ViewController {
     /// <returns>The view controllers.</returns>
     private UIViewController[] BuildViewControllers() {
       var ret = new UINavigationController[] {
-        new UINavigationController(InflateViewController<WorkbenchViewController>("workbenchViewController")),
-        new UINavigationController(InflateViewController<PressureTemperatureViewController>("pressureTemperatureViewController")),
-        new UINavigationController(InflateViewController<SuperheatSubcoolViewController>("superheatSubcoolViewController")),
+        new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
+        new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
+        new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
       };
 
       return ret;

@@ -69,7 +69,7 @@
     <Reference Include="System.Core" />
     <Reference Include="Xamarin.iOS" />
     <Reference Include="FlyoutNavigation">
-      <HintPath>..\Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
+      <HintPath>Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
     </Reference>
     <Reference Include="MonoTouch.Dialog-1" />
     <Reference Include="SQLite.Net">
@@ -153,6 +153,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\ic_alarm.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -161,7 +163,10 @@
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
     <InterfaceDefinition Include="Resources\View.xib" />
-    <InterfaceDefinition Include="src\Storyboard\ApplicationStoryboard.storyboard" />
+    <InterfaceDefinition Include="ApplicationStoryboard~ipad.storyboard">
+      <DependentUpon>Info.plist</DependentUpon>
+    </InterfaceDefinition>
+    <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -188,32 +193,12 @@
     <Compile Include="src\ViewController\Navigation\NavigationSection.designer.cs">
       <DependentUpon>NavigationSection.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Calculators\PressureTemperatureViewController.cs" />
-    <Compile Include="src\ViewController\Calculators\PressureTemperatureViewController.designer.cs">
-      <DependentUpon>PressureTemperatureViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\App\AppDelegate.cs" />
-    <Compile Include="src\ViewController\Main\DeviceManagerViewController.designer.cs">
-      <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\DeviceManagerViewController.cs" />
-    <Compile Include="src\ViewController\Main\AnalyzerViewController.cs" />
-    <Compile Include="src\ViewController\Main\AnalyzerViewController.designer.cs">
-      <DependentUpon>AnalyzerViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\WorkbenchViewController.cs" />
-    <Compile Include="src\ViewController\Main\WorkbenchViewController.designer.cs">
-      <DependentUpon>WorkbenchViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
     <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
       <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\UI\Toast.cs" />
-    <Compile Include="src\ViewController\Main\WorkbenchAddCell.cs" />
-    <Compile Include="src\ViewController\Main\WorkbenchAddCell.designer.cs">
-      <DependentUpon>WorkbenchAddCell.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Connections\IosLeConnection.cs" />
     <Compile Include="src\Util\NSExtensions.cs" />
     <Compile Include="src\UI\NinePatchImageFactory.cs" />
@@ -221,52 +206,68 @@
     <Compile Include="src\UI\NinePatchButtonView.designer.cs">
       <DependentUpon>NinePatchButtonView.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Main\DeviceSource.cs" />
-    <Compile Include="src\ViewController\Main\SensorCell.cs" />
-    <Compile Include="src\ViewController\Main\SensorCell.designer.cs">
-      <DependentUpon>SensorCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\DeviceCell.cs" />
-    <Compile Include="src\ViewController\Main\DeviceCell.designer.cs">
-      <DependentUpon>DeviceCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\HeaderCell.cs" />
-    <Compile Include="src\ViewController\Main\HeaderCell.designer.cs">
-      <DependentUpon>HeaderCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\SerialNumberCell.cs" />
-    <Compile Include="src\ViewController\Main\SerialNumberCell.designer.cs">
-      <DependentUpon>SerialNumberCell.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\Sensors\SensorExtensions.cs" />
-    <Compile Include="src\ViewController\Main\Viewer.cs" />
-    <Compile Include="src\ViewController\Main\Viewer.designer.cs">
-      <DependentUpon>Viewer.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\UI\UIImageExtensions.cs" />
     <Compile Include="src\ViewController\BaseIONViewController.cs" />
     <Compile Include="src\Devices\DeviceUtil.cs" />
     <Compile Include="src\Devices\LeScanMode.cs" />
     <Compile Include="src\App\IosION.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidCell.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidCell.designer.cs">
-      <DependentUpon>FluidCell.cs</DependentUpon>
+    <Compile Include="src\Util\CGExtensions.cs" />
+    <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceSectionHeaderTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceSectionHeaderTableCell.designer.cs">
+      <DependentUpon>DeviceSectionHeaderTableCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Ancillary\FluidSource.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.cs" />
-    <Compile Include="src\ViewController\Ancillary\FluidManagerViewController.designer.cs">
+    <Compile Include="src\ViewController\DeviceManager\DeviceTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceTableCell.designer.cs">
+      <DependentUpon>DeviceTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\SerialNumberTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SerialNumberTableCell.designer.cs">
+      <DependentUpon>SerialNumberTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\AddViewerTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\AddViewerTableCell.designer.cs">
+      <DependentUpon>AddViewerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\MeasurementSensorPropertyTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\MeasurementSensorPropertyTableCell.designer.cs">
+      <DependentUpon>MeasurementSensorPropertyTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\ViewerTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\ViewerTableCell.designer.cs">
+      <DependentUpon>ViewerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.designer.cs">
+      <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\DeviceSource.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SensorTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SensorTableCell.designer.cs">
+      <DependentUpon>SensorTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\WorkbenchViewController.cs" />
+    <Compile Include="src\ViewController\Workbench\WorkbenchViewController.designer.cs">
+      <DependentUpon>WorkbenchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\WorkbenchSource.cs" />
+    <Compile Include="src\ViewController\PTChart\PTChartViewController.cs" />
+    <Compile Include="src\ViewController\PTChart\PTChartViewController.designer.cs">
+      <DependentUpon>PTChartViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.cs" />
+    <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.designer.cs">
+      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FluidManager\FluidSource.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidManagerViewController.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidManagerViewController.designer.cs">
       <DependentUpon>FluidManagerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Util\CGExtensions.cs" />
-    <Compile Include="src\ViewController\Main\DefaultSubviewCell.cs" />
-    <Compile Include="src\ViewController\Main\DefaultSubviewCell.designer.cs">
-      <DependentUpon>DefaultSubviewCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Main\ViewerSource.cs" />
-    <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
-    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.cs" />
-    <Compile Include="src\ViewController\Calculators\SuperheatSubcoolViewController.designer.cs">
-      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
+    <Compile Include="src\ViewController\FluidManager\FluidTableCell.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidTableCell.designer.cs">
+      <DependentUpon>FluidTableCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
@@ -277,26 +278,18 @@
     <Folder Include="Resources\fluids\" />
     <Folder Include="..\ION.CoreExtensions\" />
     <Folder Include="src\ViewController\Navigation\" />
-    <Folder Include="src\ViewController\Calculators\" />
-    <Folder Include="src\ViewController\Main\" />
     <Folder Include="src\UI\" />
-    <Folder Include="src\ViewController\Ancillary\" />
-    <Folder Include="Resources\output\" />
     <Folder Include="Resources\assets\" />
     <Folder Include="src\ViewController\Dialog\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
-      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
-      <Name>ION.Core</Name>
-    </ProjectReference>
+    <Folder Include="src\ViewController\DeviceManager\" />
+    <Folder Include="src\ViewController\Workbench\" />
+    <Folder Include="src\ViewController\PTChart\" />
+    <Folder Include="src\ViewController\SuperheatSubcool\" />
+    <Folder Include="src\ViewController\FluidManager\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <BundleResource Include="Resources\language.lproj\Localizable.strings" />
-    <BundleResource Include="Resources\.DS_Store" />
-    <BundleResource Include="Resources\src\.DS_Store" />
-    <BundleResource Include="Resources\src\Storyboard\DeviceManagerSectionCell" />
     <BundleResource Include="Resources\fluids\R11.dat" />
     <BundleResource Include="Resources\fluids\R113.dat" />
     <BundleResource Include="Resources\fluids\R114.dat" />
@@ -400,87 +393,21 @@
     <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
     <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_action_accept.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_action_edit.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_alarm_active.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_alarm_add.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleleft_gold.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleleft_white.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleright_gold.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_doubleright_white.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downblack.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downfloor.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_downwhite.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_trenddown.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_trendup.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upblack.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upcieling.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_arrow_upwhite.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_association.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_association_linked.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_broadcast.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_disconnected.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_c3_paired.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_connected.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_connected_gray.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_disconnected.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bluetooth_disconnected_gray.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_bookmark.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_compressor.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add-return.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_add-to-analyzer.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_on-analyzer.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_devices_on-wbench.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_document.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_drawer.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_expansionchamber.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_folder.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_list.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_analyzer.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_certificate.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_certificates.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_devmanager.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_power.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_ptconversion.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_screenshot.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_supersub.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_nav_workbench.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_power.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_refresh.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugeav760.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep300.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep500.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_render_gaugep800.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_search.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_settings.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_subview_dropdown.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_swap.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\ic_trash.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_background_connected.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_background_disconnected.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_dialog.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_gaugeface.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_blue.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_gray.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_list_white.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_bgd_subviewdisplay.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_button_blackclosex.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_button_down_gold.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_button_up_gold.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_button_whiteclosex.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_gradient_scan.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_handle_left.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_handle_right.pdf" />
-    <BundleResource Include="Resources\output\TRASH\pdf\img_selection.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
+    <BundleResource Include="Resources\Default-568h%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">
       <Version>1.5.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
+      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
+      <Name>ION.Core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

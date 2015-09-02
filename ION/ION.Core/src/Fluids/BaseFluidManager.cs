@@ -45,6 +45,14 @@ namespace ION.Core.Fluids {
     /// </summary>
     private const string EXT_FLUID = ".dat";
     /// <summary>
+    /// The absolute default fluid for the fluid manager.
+    /// </summary>
+    private const string DEFAULT_FLUID = "R22";
+    /// <summary>
+    /// The default preferred fluids.
+    /// </summary>
+    private const string DEFAULT_FLUIDS = "R22,R134a,R407C,R410A";
+    /// <summary>
     /// The default fluid color.
     /// </summary>
     private const int DEFAULT_FLUID_COLOR = unchecked((int)0xffd6d6d4);
@@ -97,7 +105,7 @@ namespace ION.Core.Fluids {
         fluidColors = await Properties.FromFileAsync(propsFile);
 
         preferredFluids = new List<string>();
-        var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, null);
+        var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
         if (preferred != null) {
           Log.D(this, "Preferred fluids: " + preferred + ".");
           var parts = preferred.Split(',');
@@ -106,7 +114,7 @@ namespace ION.Core.Fluids {
           }
         }
 
-        var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, null);
+        var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, DEFAULT_FLUID);
         if (fluidName == null) {
           var fluidNames = GetAvailableFluidNames();
           if (fluidNames.Count > 0) {

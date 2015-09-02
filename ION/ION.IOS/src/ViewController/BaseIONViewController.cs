@@ -11,6 +11,12 @@ using ION.IOS.Util;
 namespace ION.IOS.ViewController {
   public class BaseIONViewController : UIViewController {
 
+    public const string VC_DEVICE_MANAGER = "viewControllerDeviceManager";
+    public const string VC_FLUID_MANAGER = "viewControllerFluidManager";
+    public const string VC_PT_CHART = "viewControllerPTChart";
+    public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";
+    public const string VC_WORKBENCH = "viewControllerWorkbench";
+
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation
     /// bar.

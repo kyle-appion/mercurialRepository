@@ -17,16 +17,14 @@ using ION.IOS.Devices;
 using ION.IOS.IO;
 using ION.IOS.Util;
 using ION.IOS.ViewController;
-using ION.IOS.ViewController.Calculators;
 using ION.IOS.ViewController.Navigation;
-using ION.IOS.ViewController.Main;
 
 namespace ION.IOS.App {
   // The UIApplicationDelegate for the application. This class is responsible for launching the
   // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
   [Register("AppDelegate")]
   public class AppDelegate : UIApplicationDelegate {
-    private static UIStoryboard STORYBOARD = UIStoryboard.FromName("ApplicationStoryboard", null);
+    private static UIStoryboard STORYBOARD = UIStoryboard.FromName("Storyboard", null);
 
     public override UIWindow Window { get; set; }
 
@@ -35,32 +33,6 @@ namespace ION.IOS.App {
     /// </summary>
     /// <value>The ion.</value>
     public IosION ion { get; private set; }
-
-    /// <summary>
-    /// The instance of the device manager view controller that will allow the user to select
-    /// device for other controller's.
-    /// </summary>
-    public DeviceManagerViewController deviceManagerViewController { get; private set; }
-    /// <summary>
-    /// The instance of the workbench view controller that will display a workbench to the
-    /// user.
-    /// </summary>
-    public WorkbenchViewController workbenchViewController { get; private set; }
-    /// <summary>
-    /// The instance of an analyzer view controller that will display an analyzer to the user.
-    /// </summary>
-    public AnalyzerViewController analyzerViewController { get; private set; }
-    /// <summary>
-    /// The instance of a pressure temperature view controller that will display the pressure
-    /// temperature calculator to the user.
-    /// </summary>
-    public PressureTemperatureViewController pressureTemperatureViewController { get; private set; }
-    /// <summary>
-    /// The instance of a superheat subcool view controller that will display the superheat/
-    /// subcool calcultor to the user.
-    /// </summary>
-    public SuperheatSubcoolViewController superheatSubCoolViewController { get; private set; }
-
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // TODO ahodder@appioninc.com:

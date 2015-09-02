@@ -117,15 +117,15 @@ namespace ION.IOS.Util {
 
       public static class Viewer {
         public static readonly string
-        ADD = "workbench_viewer_add".FromResources(),
-        ALT = "workbench_viewer_alt".FromResources(),
-        ALT_DESC = "workbench_viewer_alt_desc".FromResources(),
-        HOLD = "workbench_viewer_hold".FromResources(),
-        HOLD_DESC = "workbench_viewer_hold_desc".FromResources(),
-        MAX = "workbench_viewer_max".FromResources(),
-        MAX_DESC = "workbench_viewer_max_desc".FromResources(),
-        MIN = "workbench_viewer_min".FromResources(),
-        MIN_DESC = "workbench_viewer_min_desc".FromResources()
+        ADD = "workbench_subview_add".FromResources(),
+        ALT = "workbench_subview_alt".FromResources(),
+        ALT_DESC = "workbench_subview_alt_desc".FromResources(),
+        HOLD = "workbench_subview_hold".FromResources(),
+        HOLD_DESC = "workbench_subview_hold_desc".FromResources(),
+        MAX = "workbench_subview_max".FromResources(),
+        MAX_DESC = "workbench_subview_max_desc".FromResources(),
+        MIN = "workbench_subview_min".FromResources(),
+        MIN_DESC = "workbench_subview_min_desc".FromResources()
         ;
       }
     } // End Strings.Workbench

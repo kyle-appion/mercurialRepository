@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 using ION.Core.IO;
 using ION.Core.Measure;
@@ -8,7 +7,6 @@ namespace ION.Core.Sensors.Properties {
   /// <summary>
   /// A property that will display the senor's measurement in a different unit.
   /// </summary>
-  [DataContract(Name="AlternateUnitSensorProperty")]
   public class AlternateUnitSensorProperty : AbstractSensorProperty {
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
@@ -38,7 +36,7 @@ namespace ION.Core.Sensors.Properties {
         modifiedMeasurement = sensor.measurement;
         NotifyChanged();
       }
-    } [DataMember(Name="Unit")] Unit __unit;
+    } Unit __unit;
 
     /// <summary>
     /// Used by the serialization system.
