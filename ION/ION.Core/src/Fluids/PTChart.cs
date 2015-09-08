@@ -12,7 +12,7 @@ namespace ION.Core.Fluids {
     /// The state that the fluid is in.
     /// </summary>
     /// <value>The state.</value>
-    public Fluid.State state { get; private set; }
+    public Fluid.EState state { get; private set; }
     /// <summary>
     /// The fluid that the ptchart is using for calculations.
     /// </summary>
@@ -36,11 +36,18 @@ namespace ION.Core.Fluids {
     } Scalar __elevation;
 
 
-    public PTChart(Fluid.State state, Fluid fluid) : this(state, fluid, Units.Length.METER.OfScalar(0)) {
+    public PTChart(Fluid.EState state, Fluid fluid) : this(state, fluid, Units.Length.METER.OfScalar(0)) {
       // Nope
     }
 
-    public PTChart(Fluid.State state, Fluid fluid, Scalar elevation) {
+    public PTChart(Fluid.EState state, Fluid fluid, Scalar elevation) {
+      if (state == null) {
+        throw new Exception("Cannot create a PTChart with a null state");
+      }
+
+      if (fluid == null) {
+        throw new Exception("Cannot create a PTChart with a null fluid");
+      }
       this.state = state;
       this.fluid = fluid;
       this.elevation = elevation;
@@ -66,9 +73,9 @@ namespace ION.Core.Fluids {
       Log.D(this, "PT Pressure is: " + pressure);
 
       switch (state) {
-        case Fluid.State.Bubble:
+        case Fluid.EState.Bubble:
           return fluid.GetTemperatureFromBubblePressure(pressure);
-        case Fluid.State.Dew:
+        case Fluid.EState.Dew:
           return fluid.GetTemperatureFromDewPressure(pressure);
         default:
           throw new ArgumentException("Cannot get temperature: invalid fluid state " + state);
@@ -90,10 +97,10 @@ namespace ION.Core.Fluids {
       Scalar ret = null;
 
       switch (state) {
-        case Fluid.State.Bubble:
+        case Fluid.EState.Bubble:
           ret = fluid.GetBubblePressureFromTemperature(temperature);
           break;
-        case Fluid.State.Dew:
+        case Fluid.EState.Dew:
           ret = fluid.GetDewPressureFromTemperature(temperature);
           break;
         default:

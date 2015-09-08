@@ -12,7 +12,7 @@ using ION.Core.Util;
 
 using ION.IOS.App;
 using ION.IOS.Util;
-using ION.IOS.ViewController.PTChart;
+using ION.IOS.ViewController.PressureTemperatureChart;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.Workbench;
 

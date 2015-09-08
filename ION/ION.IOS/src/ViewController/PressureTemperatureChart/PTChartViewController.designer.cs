@@ -7,7 +7,7 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace ION.IOS.ViewController.PTChart
+namespace ION.IOS.ViewController.PressureTemperatureChart
 {
 	[Register ("PTChartViewController")]
 	partial class PTChartViewController

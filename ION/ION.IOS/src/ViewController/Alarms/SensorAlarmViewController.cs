@@ -106,8 +106,8 @@ namespace ION.IOS.ViewController.Alarms {
         ion.alarmManager.RegisterAlarmToHost(sensor, highAlarm);
       }
 
-      switchLowAlarmEnabler = lowAlarm.enabled;
-      switchHighAlarmEnabler = highAlarm.enabled;
+      switchLowAlarmEnabler.On = lowAlarm.enabled;
+      switchHighAlarmEnabler.On = highAlarm.enabled;
     }
 
     // Overridden from BaseIONViewController

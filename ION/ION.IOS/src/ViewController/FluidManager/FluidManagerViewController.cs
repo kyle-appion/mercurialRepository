@@ -56,6 +56,7 @@ namespace ION.IOS.ViewController.FluidManager {
       base.ViewDidLoad();
 
       NavigationItem.Title = Strings.Fluid.Manager.SELF;
+      /*
       NavigationItem.SetRightBarButtonItem(
         new UIBarButtonItem("Done", UIBarButtonItemStyle.Done, async (obj, args) => {
           if (onFluidSelectedDelegate != null) {
@@ -63,6 +64,7 @@ namespace ION.IOS.ViewController.FluidManager {
             NavigationController.PopViewController(true);
           } 
         }), false);
+      */
 
       ion = AppState.context;
       fluidManager = ion.fluidManager;
@@ -77,6 +79,15 @@ namespace ION.IOS.ViewController.FluidManager {
       };
       switchFluidSource.SelectedSegment = SECTION_FAVORITE;
       UpdateTableContent();
+    }
+
+    // Overridden from UIViewController
+    public async override void ViewWillDisappear(bool animated) {
+      base.ViewWillDisappear(animated);
+
+      if (onFluidSelectedDelegate != null) {
+        onFluidSelectedDelegate(await fluidManager.GetFluidAsync(source.selectedFluid));
+      }
     }
 
     /// <summary>

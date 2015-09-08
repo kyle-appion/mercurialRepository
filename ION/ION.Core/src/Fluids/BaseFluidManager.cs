@@ -51,7 +51,7 @@ namespace ION.Core.Fluids {
     /// <summary>
     /// The default preferred fluids.
     /// </summary>
-    private const string DEFAULT_FLUIDS = "R22,R134a,R407C,R410A";
+    private const string DEFAULT_FLUIDS = "R22,R134A,R407C,R410A";
     /// <summary>
     /// The default fluid color.
     /// </summary>
@@ -107,7 +107,6 @@ namespace ION.Core.Fluids {
         preferredFluids = new List<string>();
         var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
         if (preferred != null) {
-          Log.D(this, "Preferred fluids: " + preferred + ".");
           var parts = preferred.Split(',');
           if (parts.Length > 0) {
             preferredFluids = parts.ToList();
@@ -147,7 +146,6 @@ namespace ION.Core.Fluids {
 
     // Overridden from IFluidManager
     public async Task<Fluid> GetFluidAsync(string fluidName) {
-      Log.D(this, "Getting fluid of name " + fluidName + ".");
       Fluid ret = null;
 
       if (__cache.ContainsKey(fluidName)) {
@@ -266,7 +264,6 @@ namespace ION.Core.Fluids {
         }
         sb.Append(preferredFluids[len - 1]);
 
-        Log.D(this, "Saving preferred fluids as: " + sb);
         preferences.SetString(KEY_PREFERRED_FLUIDS, sb.ToString());
         preferences.Commit();
       }

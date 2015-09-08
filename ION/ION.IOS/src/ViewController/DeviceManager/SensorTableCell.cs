@@ -79,8 +79,15 @@ namespace ION.IOS.ViewController.DeviceManager {
     }
 
     private void OnSensorUpdated(Sensor sensor) {
-      this.labelType.Text = sensor.type.GetTypeString();
-      this.labelMeasurement.Text = sensor.ToFormattedString(true);
+      labelType.Text = sensor.type.GetTypeString();
+      labelMeasurement.Text = sensor.ToFormattedString(true);
+
+      if (sensor is GaugeDeviceSensor) {
+        var ds = sensor as GaugeDeviceSensor;
+        if (!ds.device.isConnected) {
+          labelMeasurement.Text = "---";
+        }
+      }
     }
 	}
 }

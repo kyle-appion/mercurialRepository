@@ -20,7 +20,7 @@ using ION.IOS.ViewController.Dialog;
 using ION.IOS.ViewController.DeviceManager;
 using ION.IOS.ViewController.FluidManager;
 
-namespace ION.IOS.ViewController.PTChart {
+namespace ION.IOS.ViewController.PressureTemperatureChart {
 	public partial class PTChartViewController : BaseIONViewController {
 
     private const int SECTION_DEW = 0;
@@ -162,6 +162,9 @@ namespace ION.IOS.ViewController.PTChart {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      __pressureSensor = new Sensor(ESensorType.Pressure);
+      __temperatureSensor = new Sensor(ESensorType.Temperature);
+
       buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (pressureSensor.isEditable) {
@@ -185,17 +188,19 @@ namespace ION.IOS.ViewController.PTChart {
       switchFluidState.ValueChanged += (object sender, EventArgs e) => {
         switch ((int)switchFluidState.SelectedSegment) {
           case SECTION_DEW:
-            ptChart = new ION.Core.Fluids.PTChart(Fluid.State.Dew, ptChart.fluid, ptChart.elevation);
+            ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ptChart.fluid, ptChart.elevation);
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
             break;
           case SECTION_BUBBLE:
-            ptChart = new ION.Core.Fluids.PTChart(Fluid.State.Bubble, ptChart.fluid, ptChart.elevation);
+            ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Bubble, ptChart.fluid, ptChart.elevation);
+            switchFluidState.TintColor = new UIColor(Colors.RED);
             break;
         }
       };
 
       ion = AppState.context;
 
-      ptChart = new ION.Core.Fluids.PTChart(Fluid.State.Dew, ion.fluidManager.lastUsedFluid);
+      ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
       pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
       temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
 
@@ -229,6 +234,16 @@ namespace ION.IOS.ViewController.PTChart {
         pressureSensor = null;
         ClearPressureInput();
       }));
+
+      editPressure.ShouldReturn += (textField) => {
+        textField.ResignFirstResponder();
+        return true;
+      };
+
+      editTemperature.ShouldReturn += (textField) => {
+        textField.ResignFirstResponder();
+        return true;
+      };
 
       editPressure.AddTarget((object obj, EventArgs args) => {
         UpdateTemperature();

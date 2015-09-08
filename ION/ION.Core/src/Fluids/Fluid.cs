@@ -286,7 +286,7 @@ namespace ION.Core.Fluids {
     /// <summary>
     /// Enumerates the state that a fluid can be on.
     /// </summary>
-    public enum State {
+    public enum EState {
       Bubble,
       Dew,
     } // End State

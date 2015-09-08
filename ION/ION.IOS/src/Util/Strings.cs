@@ -78,6 +78,8 @@ namespace ION.IOS.Util {
       PT_CALCULATOR = "fluid_pt_calculator".FromResources(),
       PT_CHART = "fluid_pt_chart".FromResources(),
       STATE_HELP = "fluid_state_help".FromResources(),
+      SUBCOOL = "fluid_subcool".FromResources(),
+      SUPERHEAT = "fluid_superheat".FromResources(),
       SUPERHEAT_SUBCOOL = "fluid_superheat_subcool".FromResources()
       ;
       public static class Manager {
