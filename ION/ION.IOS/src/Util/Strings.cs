@@ -24,6 +24,13 @@ namespace ION.IOS.Util {
     UNKNOWN = "unknown"
     ;
 
+    public static class Alarms {
+      public static readonly string
+      SELF = "alarms".FromResources(),
+      REENABLE = "alarms_reenable".FromResources()
+      ;
+    } // End Strings.Alarms
+
     public static class Device {
       public static readonly string
       AVAILABLE = "device_available".FromResources(),

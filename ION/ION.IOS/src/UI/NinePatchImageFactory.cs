@@ -10,22 +10,6 @@ using ION.Core.Util;
 using ION.IOS.Util;
 
 namespace ION.IOS.UI {
-  internal static class UIViewExtensions {
-    /// <summary>
-    /// Crops the UI image.
-    /// </summary>
-    /// <param name="image">Image.</param>
-    public static UIImage Crop(this UIImage image, CGRect rect) {
-      var scale = image.CurrentScale;
-      rect = new CGRect(rect.X * scale, rect.Y * scale, rect.Right * scale, rect.Bottom * scale);
-
-      var reference = image.CGImage.WithImageInRect(rect);
-      UIImage ret = new UIImage(reference, scale, image.Orientation);
-      reference.Dispose();
-      return ret;
-    }
-  }
-
   /// <summary>
   /// A Factory used to inflate ninepatch images.
   /// </summary>

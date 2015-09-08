@@ -40,7 +40,7 @@ namespace ION.IOS.App {
       // See the following link: http://forums.xamarin.com/discussion/39470/installed-5-9-build-431-event-registration-is-overwriting-existing-delegate-error
       // This line exposes a bug that will allow delegates (presumably app wide) to be set,
       // however, registering to events will nuke the delegate.
-      UIApplication.CheckForEventAndDelegateMismatches = false;
+//      UIApplication.CheckForEventAndDelegateMismatches = false;
       // Initialize the application state.
       // Set Navigation Bar preferences
       var nb = UINavigationBar.Appearance;
@@ -94,6 +94,11 @@ namespace ION.IOS.App {
     }
 
     public override void WillTerminate(UIApplication application) {
+      try {
+        ion.Dispose();
+      } catch (Exception e) {
+        Log.E(this, "Failed to terminate ion instance", e);
+      }
       // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
     }
   }

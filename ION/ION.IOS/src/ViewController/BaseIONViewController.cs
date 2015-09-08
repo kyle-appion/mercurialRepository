@@ -14,6 +14,7 @@ namespace ION.IOS.ViewController {
     public const string VC_DEVICE_MANAGER = "viewControllerDeviceManager";
     public const string VC_FLUID_MANAGER = "viewControllerFluidManager";
     public const string VC_PT_CHART = "viewControllerPTChart";
+    public const string VC_SENSOR_ALARMS = "viewControllerSensorAlarms";
     public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";
     public const string VC_WORKBENCH = "viewControllerWorkbench";
 
@@ -105,7 +106,7 @@ namespace ION.IOS.ViewController {
     /// <returns>The view controller.</returns>
     /// <param name="key">Key.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
-    protected T InflateViewController<T>(string key) where T : BaseIONViewController {
+    public T InflateViewController<T>(string key) where T : BaseIONViewController {
       var ret = (T)Storyboard.InstantiateViewController(key);
       ret.root = root;
       return ret;

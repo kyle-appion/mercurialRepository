@@ -151,6 +151,12 @@ namespace ION.Core.Sensors {
       } else if (Units.Pressure.IN_HG.Equals(unit)) {
         ret = amount.ToString("0.000");
       }
+      // VACUUM PRESSURE
+      else if (Units.Pressure.MICRON.Equals(unit)) {
+        ret = amount.ToString("0");
+      } else if (Units.Pressure.MILLITORR.Equals(unit)) {
+        ret = amount.ToString("0");
+      }
       // DEFAULT
       else {
         ret = amount.ToString("0.00");

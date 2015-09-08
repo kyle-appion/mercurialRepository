@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
+using ION.Core.Alarms;
 using ION.Core.Content;
 using ION.Core.Database;
 using ION.Core.Devices;
@@ -43,6 +44,7 @@ namespace ION.Core.App {
     /// </summary>
     /// <value>The database.</value>
     IONDatabase database { get;}
+
     /// <summary>
     /// The FileSystem that will allow the ion context to access the native
     /// platforms files.
@@ -53,6 +55,11 @@ namespace ION.Core.App {
     /// </summary>
     /// <value>The device manager.</value>
     IDeviceManager deviceManager { get; }
+    /// <summary>
+    /// Queries the alarm manager.
+    /// </summary>
+    /// <value>The alarm manager.</value>
+    IAlarmManager alarmManager { get; }
     /// <summary>
     /// Queries the fluid manager that is responsible for acquiring and
     /// maintaining the applications fluids.

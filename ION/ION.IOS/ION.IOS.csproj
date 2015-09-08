@@ -269,6 +269,13 @@
     <Compile Include="src\ViewController\FluidManager\FluidTableCell.designer.cs">
       <DependentUpon>FluidTableCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Alarms\Alerts\PopupWindowAlarmAlert.cs" />
+    <Compile Include="src\ViewController\Alarms\SensorAlarmViewController.cs" />
+    <Compile Include="src\ViewController\Alarms\SensorAlarmViewController.designer.cs">
+      <DependentUpon>SensorAlarmViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\UI\UIAlertControllerExtensions.cs" />
+    <Compile Include="src\UI\UIViewExtensions.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -286,6 +293,9 @@
     <Folder Include="src\ViewController\PTChart\" />
     <Folder Include="src\ViewController\SuperheatSubcool\" />
     <Folder Include="src\ViewController\FluidManager\" />
+    <Folder Include="src\Alarms\" />
+    <Folder Include="src\Alarms\Alerts\" />
+    <Folder Include="src\ViewController\Alarms\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

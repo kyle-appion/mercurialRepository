@@ -91,6 +91,17 @@
     <Compile Include="src\Math\Physics.cs" />
     <Compile Include="src\Util\Filter.cs" />
     <Compile Include="src\Sensors\Filters\SensorTypeFilter.cs" />
+    <Compile Include="src\Alarms\IAlarm.cs" />
+    <Compile Include="src\Alarms\AbstractAlarm.cs" />
+    <Compile Include="src\Alarms\IAlarmManager.cs" />
+    <Compile Include="src\Alarms\BaseAlarmManager.cs" />
+    <Compile Include="src\Alarms\Alerts\IAlarmAlert.cs" />
+    <Compile Include="src\Alarms\Alerts\IAlarmAlertFactory.cs" />
+    <Compile Include="src\Alarms\Alerts\CompoundAlarmAlert.cs" />
+    <Compile Include="src\Sensors\Alarms\BoundedSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\HighSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\LowSensorAlarm.cs" />
+    <Compile Include="src\Sensors\Alarms\SensorAlarm.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -105,6 +116,9 @@
     <Folder Include="src\Database\" />
     <Folder Include="src\Content\Parsers\" />
     <Folder Include="src\Math\" />
+    <Folder Include="src\Alarms\" />
+    <Folder Include="src\Alarms\Alerts\" />
+    <Folder Include="src\Sensors\Alarms\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

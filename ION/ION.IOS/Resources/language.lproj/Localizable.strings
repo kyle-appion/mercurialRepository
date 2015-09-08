@@ -14,6 +14,10 @@ file.
 "rename" = "Rename";
 "unknown" = "Unknown";
 
+/* ALARMS */
+"alarms" = "Alarms";
+"alarms_reenable" = "Re-enable";
+
 /* DEVICE */
 "device_available" = "Available";
 "device_connected" = "Connected";

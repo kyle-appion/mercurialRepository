@@ -20,6 +20,8 @@ obj/**
 #######################################
 # We don't care about user preferences.
 **.tmp
+# Hard package and library files
+packages/**
 
 #######################################
 ## Generated resources

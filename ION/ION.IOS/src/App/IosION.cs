@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 
 using Foundation;
 
+using ION.Core.Alarms;
+using ION.Core.Alarms.Alerts;
 using ION.Core.App;
 using ION.Core.Content;
 using ION.Core.Content.Parsers;
@@ -14,6 +16,7 @@ using ION.Core.Fluids;
 using ION.Core.IO;
 using ION.Core.Util;
 
+using ION.IOS.Alarms.Alerts;
 using ION.IOS.IO;
 using ION.IOS.Devices;
 
@@ -34,6 +37,8 @@ namespace ION.IOS.App {
     // Overridden from IION
     public IDeviceManager deviceManager { get; set; }
     // Overridden from IION
+    public IAlarmManager alarmManager { get; set; }
+    // Overridden from IION
     public IFluidManager fluidManager { get; set; }
     // Overridden from IION
     public Workbench currentWorkbench { get; set; }
@@ -49,13 +54,21 @@ namespace ION.IOS.App {
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(deviceManager = new IOSDeviceManager(this));
+      managers.Add(alarmManager = new BaseAlarmManager(this));
+      alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
+        return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));
+      };
       managers.Add(fluidManager = new BaseFluidManager(this));
     }
 
     // Overridden from IION
     public void Dispose() {
-      if (deviceManager != null) {
-        deviceManager.Dispose();
+      foreach (var m in managers) {
+        try {
+          m.Dispose();
+        } catch (Exception e) {
+          Log.E(this, "Failed to dispose of IIONManager: " + m.GetType().Name, e);
+        }
       }
     }
 
