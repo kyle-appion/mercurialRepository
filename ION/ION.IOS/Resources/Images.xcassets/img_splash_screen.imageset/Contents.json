@@ -4,6 +4,7 @@
       "idiom": "universal"
     },
     {
+      "filename": "Default@2x.png",
       "scale": "1x",
       "idiom": "universal"
     },
@@ -45,6 +46,23 @@
     {
       "scale": "2x",
       "idiom": "ipad"
+    },
+    {
+      "idiom": "watch"
+    },
+    {
+      "scale": "2x",
+      "idiom": "watch"
+    },
+    {
+      "screenWidth": "{130,145}",
+      "scale": "2x",
+      "idiom": "watch"
+    },
+    {
+      "screenWidth": "{146,165}",
+      "scale": "2x",
+      "idiom": "watch"
     }
   ],
   "info": {

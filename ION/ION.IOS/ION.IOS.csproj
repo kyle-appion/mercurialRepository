@@ -83,9 +83,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
-      <InProject>false</InProject>
-    </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
@@ -155,6 +152,15 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\ic_alarm.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default-568h%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -296,6 +302,7 @@
     <Folder Include="src\Alarms\Alerts\" />
     <Folder Include="src\ViewController\Alarms\" />
     <Folder Include="src\ViewController\PressureTemperatureChart\" />
+    <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
