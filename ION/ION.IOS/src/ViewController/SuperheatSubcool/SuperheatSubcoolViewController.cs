@@ -62,6 +62,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           imagePressureLock.Image = null;
         }
 
+        OnPressureSensorChanged(pressureSensor);
+
         editPressure.Enabled = editTemperature.Enabled = __pressureSensor.isEditable;
         pressureUnit = value.unit;
         __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
@@ -107,6 +109,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
           imageTemperatureLock.Image = null;
         }
+
+        OnTemperatureSensorChanged(temperatureSensor);
 
         editPressure.Enabled = editTemperature.Enabled = __temperatureSensor.isEditable;
         temperatureUnit = value.unit;
@@ -172,12 +176,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             labelFluidState.Text = Strings.Fluid.SUPERHEAT;
             labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
             switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            UpdateDelta();
             break;
           case SECTION_BUBBLE:
             ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Bubble, ptChart.fluid, ptChart.elevation);
             labelFluidState.Text = Strings.Fluid.SUBCOOL;
             labelFluidState.BackgroundColor = new UIColor(Colors.RED);
             switchFluidState.TintColor = new UIColor(Colors.RED);
+            UpdateDelta();
             break;
         }
       };
@@ -314,9 +320,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if (editPressure.Text == "" && editTemperature.Text == "") {
         labelFluidDelta.Text = "";
       } else {
-        var sat = ptChart.GetTemperature(pressureSensor.measurement, pressureSensor.isRelative).ConvertTo(temperatureUnit);
-        var delta = temperatureSensor.measurement - sat;
-        labelFluidDelta.Text = delta.amount.ToString("0.00") + delta.unit.ToString();
+        Scalar calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
+        Log.D(this, "Calculation: " + calculation);
+        labelFluidDelta.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
       }
     }
 

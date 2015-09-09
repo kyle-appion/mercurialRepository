@@ -111,6 +111,25 @@ namespace ION.Core.Fluids {
     }
 
     /// <summary>
+    /// Calculates the systems superheat or subcool based on the given inputs
+    /// and the state of the pt chart.
+    /// </summary>
+    /// <returns>The system temperature delta.</returns>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="isRelative">If set to <c>true</c> is relative.</param>
+    public Scalar CalculateSystemTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative = true) {
+      switch (state) {
+        case Fluid.EState.Bubble: // Subcool
+          return CalculateSubcool(pressure, temperature, isRelative);
+        case Fluid.EState.Dew: // Superheat
+          return CalculateSuperheat(pressure, temperature, isRelative);
+        default:
+          throw new Exception("Unknown ptchart state: " + state);
+      }
+    }
+
+    /// <summary>
     /// Calculates the superheat of the fluid.
     /// </summary>
     /// <remarks>
@@ -126,7 +145,7 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar superheat = fluid.GetTemperatureFromDewPressure(pressure);
+      Scalar superheat = fluid.GetTemperatureFromDewPressure(pressure).ConvertTo(temperature.unit);
       return temperature - superheat;
     }
 
@@ -146,8 +165,8 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar subcool = fluid.GetTemperatureFromBubblePressure(pressure);
-      return temperature - subcool;
+      Scalar subcool = fluid.GetTemperatureFromBubblePressure(pressure).ConvertTo(temperature.unit);
+      return subcool - temperature;
     }
   }
 }

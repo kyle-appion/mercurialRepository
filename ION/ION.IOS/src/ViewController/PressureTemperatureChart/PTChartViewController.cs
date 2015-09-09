@@ -74,6 +74,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           imagePressureLock.Image = null;
         }
 
+        editPressure.Text = pressureSensor.ToFormattedString();
+        buttonPressureUnit.SetTitle(pressureSensor.unit.ToString(), UIControlState.Normal);
+
         editPressure.Enabled = editTemperature.Enabled = __pressureSensor.isEditable;
 
         pressureUnit = value.unit;
@@ -126,6 +129,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
           imageTemperatureLock.Image = null;
         }
+
+        editTemperature.Text = temperatureSensor.ToFormattedString();
+        buttonTemperatureUnit.SetTitle(temperatureSensor.unit.ToString(), UIControlState.Normal);
 
         editPressure.Enabled = editTemperature.Enabled = __temperatureSensor.isEditable;
         temperatureUnit = value.unit;
