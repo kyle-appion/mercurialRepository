@@ -162,6 +162,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      InitNavigationBar("ic_nav_pt_chart", false);
+      backAction = () => {
+        root.navigation.ToggleMenu();
+      };
+
       __pressureSensor = new Sensor(ESensorType.Pressure);
       __temperatureSensor = new Sensor(ESensorType.Temperature);
 

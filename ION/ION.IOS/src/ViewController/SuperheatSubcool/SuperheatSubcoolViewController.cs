@@ -137,6 +137,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      InitNavigationBar("ic_nav_superheat_subcool", false);
+      backAction = () => {
+        root.navigation.ToggleMenu();
+      };
+
       __pressureSensor = new Sensor(ESensorType.Pressure);
       __temperatureSensor = new Sensor(ESensorType.Temperature);
 
