@@ -91,7 +91,7 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      return 48;
+      return 50;
     }
 
     // Overridden from UITableViewSource
@@ -217,11 +217,13 @@ namespace ION.IOS.ViewController.Workbench {
           manifold.AddSensorProperty(new HoldSensorProperty(sensor));
         });
       }
+      /*
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
-//          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.));
+          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.));
         });
       }
+      */
 
       dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 

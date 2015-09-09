@@ -13,7 +13,7 @@ namespace ION.IOS.ViewController.Workbench
 	partial class MeasurementSensorPropertyTableCell
 	{
 		[Outlet]
-		UIKit.UIImageView imageIcon { get; set; }
+		UIKit.UIButton buttonIcon { get; set; }
 
 		[Outlet]
 		UIKit.UILabel labelMeasurement { get; set; }
@@ -29,9 +29,9 @@ namespace ION.IOS.ViewController.Workbench
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (imageIcon != null) {
-				imageIcon.Dispose ();
-				imageIcon = null;
+			if (buttonIcon != null) {
+				buttonIcon.Dispose ();
+				buttonIcon = null;
 			}
 
 			if (labelMeasurement != null) {
@@ -44,14 +44,14 @@ namespace ION.IOS.ViewController.Workbench
 				labelTitle = null;
 			}
 
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
-			}
-
 			if (viewBackground != null) {
 				viewBackground.Dispose ();
 				viewBackground = null;
+			}
+
+			if (viewDivider != null) {
+				viewDivider.Dispose ();
+				viewDivider = null;
 			}
 		}
 	}

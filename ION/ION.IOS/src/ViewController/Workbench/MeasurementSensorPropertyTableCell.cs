@@ -39,11 +39,12 @@ namespace ION.IOS.ViewController.Workbench {
     public override void AwakeFromNib() {
       base.AwakeFromNib();
 
-      imageIcon.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+      buttonIcon.TouchUpInside += (object sender, EventArgs e) => {
+        Log.D(this, "subview, clicky clicky");
         if (onIconClicked != null) {
           onIconClicked(this, sensorProperty);
         }
-      }));
+      };
     }
 
     // Overridden from UITableViewCell
@@ -69,7 +70,7 @@ namespace ION.IOS.ViewController.Workbench {
       this.sensorProperty = sensorProperty;
       onIconClicked = iconClicked;
       labelTitle.Text = title;
-      imageIcon.Image = UIImage.FromBundle(icon);
+      buttonIcon.SetImage(UIImage.FromBundle(icon), UIControlState.Normal);
     }
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
