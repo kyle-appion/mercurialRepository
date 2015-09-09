@@ -18,6 +18,14 @@ namespace ION.Core.Devices {
     Unknown,
   } // End EDeviceType
 
+  public partial class DeviceTypeUtils {
+    public static EDeviceType FromString(string name) {
+      var ret = EDeviceType.Unknown;
+      Enum.TryParse(name, out ret);
+      return ret;
+    }
+  }
+
   /// <summary>
   /// The delegate that is notified when the device's state changes.
   /// </summary>

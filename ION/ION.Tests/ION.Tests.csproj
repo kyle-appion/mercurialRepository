@@ -35,6 +35,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Serialization" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Sensors\TestSensor.cs" />
@@ -48,6 +51,7 @@
     <Compile Include="src\Content\TestManifoldSerialization.cs" />
     <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\IO\TestSerialization.cs" />
+    <Compile Include="src\Sensors\Serialization\TestSensorSerialization.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
@@ -68,5 +72,6 @@
     <Folder Include="src\Content\" />
     <Folder Include="src\Connections\" />
     <Folder Include="src\IO\" />
+    <Folder Include="src\Sensors\Serialization\" />
   </ItemGroup>
 </Project>

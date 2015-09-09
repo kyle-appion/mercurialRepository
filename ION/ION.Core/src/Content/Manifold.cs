@@ -105,9 +105,9 @@ namespace ION.Core.Content {
     /// <summary>
     /// Used when inflated from serialization.
     /// </summary>
-    public Manifold() {
+//    public Manifold() {
       // Nope
-    }
+//    }
 
     public Manifold(Sensor primarySensor) {
       this.primarySensor = primarySensor;

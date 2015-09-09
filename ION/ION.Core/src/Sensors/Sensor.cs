@@ -1,7 +1,10 @@
 ﻿using System;
 
+using Newtonsoft.Json;
+
 using ION.Core.Devices;
 using ION.Core.Measure;
+using ION.Core.Sensors.Serialization;
 using ION.Core.Util;
 
 namespace ION.Core.Sensors {
@@ -125,6 +128,12 @@ namespace ION.Core.Sensors {
       Units.Pressure.KILOPASCAL,
     };
 
+    public static ESensorType FromString(string sensorType) {
+      var ret = ESensorType.Unknown;
+      Enum.TryParse(sensorType, out ret);
+      return ret;
+    }
+
     public static string ToFormattedString(ESensorType sensorType, Scalar measurement, bool includeUnit = false) {
       var unit = measurement.unit;
       var amount = measurement.amount;
@@ -149,7 +158,11 @@ namespace ION.Core.Sensors {
       } else if (Units.Pressure.PSIA.Equals(unit)) {
         ret = amount.ToString("0.0000");
       } else if (Units.Pressure.IN_HG.Equals(unit)) {
-        ret = amount.ToString("0.000");
+        if (ESensorType.Vacuum == sensorType) {
+          ret = amount.ToString("0.000");
+        } else {
+          ret = amount.ToString("0.00");
+        }
       }
       // VACUUM PRESSURE
       else if (Units.Pressure.MICRON.Equals(unit)) {
@@ -210,6 +223,7 @@ namespace ION.Core.Sensors {
   /// measurement of this phenomena.
   /// </para>
   /// </summary>
+  [JsonConverter(typeof(DefaultSensorJsonConverter))]
   public class Sensor {
     /// <summary>
     /// The delegate that will be notified when the sensor's state

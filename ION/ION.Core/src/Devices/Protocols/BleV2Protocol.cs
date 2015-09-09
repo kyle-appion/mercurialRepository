@@ -2,8 +2,9 @@
 using System.IO;
 using System.Text;
 
-using ION.Core.Measure;
 using ION.Core.IO;
+using ION.Core.Measure;
+using ION.Core.Sensors;
 using ION.Core.Util;
 
 namespace ION.Core.Devices.Protocols {

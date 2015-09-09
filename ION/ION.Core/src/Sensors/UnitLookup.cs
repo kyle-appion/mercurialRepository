@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 
-namespace ION.Core.Devices.Protocols {
+namespace ION.Core.Sensors {
   public class UnitLookup {
     /// <summary>
     /// The dictionary used to lookup units given a unit code.

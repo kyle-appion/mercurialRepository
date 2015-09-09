@@ -7,12 +7,6 @@ using ION.Core.Util;
 
 using ION.IOS.Util;
 
-/// <summary>
-/// NOTE:
-/// 
-/// THIS CLASS IS DEDICATED TO PROVIDED IOS EXLCUSIVE EXTENSIONS TO THE DEVICE UTIL
-/// CLASS IN THE CORE LIBRARY. AS SUCH, LEAVE THE FUCKING NAMESPACE ALONE!
-/// </summary>
 namespace ION.IOS.Devices {
   /// <summary>
   /// The iOS native device model extensions.

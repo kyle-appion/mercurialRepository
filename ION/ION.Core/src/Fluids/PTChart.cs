@@ -41,10 +41,6 @@ namespace ION.Core.Fluids {
     }
 
     public PTChart(Fluid.EState state, Fluid fluid, Scalar elevation) {
-      if (state == null) {
-        throw new Exception("Cannot create a PTChart with a null state");
-      }
-
       if (fluid == null) {
         throw new Exception("Cannot create a PTChart with a null fluid");
       }
