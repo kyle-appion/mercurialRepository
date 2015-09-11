@@ -1,11 +1,14 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.Core/src/Fluids/BaseFluidManager.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs">
     <Files>
       <File FileName="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" Line="89" Column="55" />
-      <File FileName="ION.IOS/Main.cs" Line="14" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="29" Column="32" />
-      <File FileName="ION.Core/src/Fluids/PTChart.cs" Line="49" Column="1" />
+      <File FileName="ION.IOS/Main.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Fluids/PTChart.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/Entitlements.plist" />
+      <File FileName="ION.IOS/packages.config" Line="1" Column="1" />
+      <File FileName="ION.IOS/app.config" Line="1" Column="1" />
       <File FileName="ION.Core/src/Fluids/BaseFluidManager.cs" Line="110" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
