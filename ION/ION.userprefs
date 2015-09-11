@@ -1,12 +1,16 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.Core/src/Fluids/BaseFluidManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.Core/src/Devices/DeviceFactory.cs">
     <Files>
-      <File FileName="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" Line="89" Column="55" />
-      <File FileName="ION.IOS/Main.cs" Line="14" Column="1" />
-      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="29" Column="32" />
-      <File FileName="ION.Core/src/Fluids/PTChart.cs" Line="49" Column="1" />
-      <File FileName="ION.Core/src/Fluids/BaseFluidManager.cs" Line="110" Column="1" NotebookId="1" />
+      <File FileName="ION.IOS/src/App/IosION.cs" Line="59" Column="63" />
+      <File FileName="ION.IOS/src/Devices/LeConnectionHelper.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Sensors/Sensor.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/DeviceManager/DeviceManagerViewController.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Devices/DeviceManager.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Devices/DeviceFactory.cs" Line="64" Column="52" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Connections/BaseConnectionHelper.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/Connections/ConnectionHelper.cs" Line="1" Column="1" NotebookId="1" />
+      <File FileName="ION.Core/src/Devices/BaseDeviceManager.cs" Line="1" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
@@ -14,6 +18,8 @@
       <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.IOS/src/App/IosION.cs" line="117" column="1" />
       <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.Core/src/Fluids/BaseFluidManager.cs" line="116" column="55" />
       <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" line="89" column="55" />
+      <Breakpoint file="/Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/DeviceFactory.cs" line="141" column="1" />
+      <Breakpoint file="/Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/DeviceFactory.cs" line="64" column="52" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

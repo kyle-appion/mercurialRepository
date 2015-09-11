@@ -55,7 +55,6 @@
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Util\Log.cs" />
-    <Compile Include="src\Devices\DeviceFactory.cs" />
     <Compile Include="src\Util\ByteUtils.cs" />
     <Compile Include="src\App\ION.cs" />
     <Compile Include="src\App\Viewer.cs" />
@@ -73,7 +72,6 @@
     <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
     <Compile Include="src\Devices\Protocols\BleV2Protocol.cs" />
-    <Compile Include="src\Devices\ScanMode.cs" />
     <Compile Include="src\IO\Properties.cs" />
     <Compile Include="src\Util\IReleasable.cs" />
     <Compile Include="src\IO\IParser.cs" />
@@ -105,6 +103,12 @@
     <Compile Include="src\Sensors\Serialization\DefaultSensorJsonConverter.cs" />
     <Compile Include="src\IO\ISerializer.cs" />
     <Compile Include="src\Content\Serialization\ManifoldJsonConverter.cs" />
+    <Compile Include="src\Devices\GaugeDevice.cs" />
+    <Compile Include="src\Devices\BaseDeviceManager.cs" />
+    <Compile Include="src\Devices\DeviceFactory.cs" />
+    <Compile Include="src\IO\EmbeddedResource.cs" />
+    <Compile Include="src\Devices\Connections\ConnectionHelper.cs" />
+    <Compile Include="src\Devices\Connections\BaseConnectionHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -124,6 +128,7 @@
     <Folder Include="src\Sensors\Alarms\" />
     <Folder Include="src\Sensors\Serialization\" />
     <Folder Include="src\Content\Serialization\" />
+    <Folder Include="src\Devices\Connections\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">
@@ -132,5 +137,8 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\Devices\Devices.xml" />
   </ItemGroup>
 </Project>

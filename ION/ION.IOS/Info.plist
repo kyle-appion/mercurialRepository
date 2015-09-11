@@ -33,15 +33,15 @@
 	<string>Resources/Images.xcassets/AppIcons.appiconset</string>
 	<key>UIMainNibFile</key>
 	<string>LaunchScreen</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>bluetooth-central</string>
-	</array>
 	<key>UIMainNibFile~ipad</key>
 	<string>LaunchScreen</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>bluetooth-central</string>
 	</array>
 </dict>
 </plist>

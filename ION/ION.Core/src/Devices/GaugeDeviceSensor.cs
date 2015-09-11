@@ -14,7 +14,7 @@ namespace ION.Core.Devices {
     /// <value>The device.</value>
     public GaugeDevice device { get; internal set; }
     /// <summary>
-    /// The index that the sesnor is within the device.
+    /// The 0-based index that the sensor is within the device.
     /// </summary>
     /// <value>The index.</value>
     public int index { get; internal set; }

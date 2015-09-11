@@ -27,6 +27,7 @@ file.
 "device_name" = "Device Name";
 "device_new_devices" = "New Devices Found";
 "device_reconnect" = "Reconnect";
+"device_serial" = "Serial";
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
 

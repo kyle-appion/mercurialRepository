@@ -50,7 +50,8 @@ namespace ION.Core.Alarms {
     }
 
     // Overridden from IAlarmManager
-    public async Task InitAsync() {
+    public async Task<InitializationResult> InitAsync() {
+      return new InitializationResult() { success = true };
     }
 
     // Overridden from IAlarmManager

@@ -62,6 +62,7 @@
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
+    <MtouchLink>None</MtouchLink>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -169,9 +170,6 @@
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
     <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
     <InterfaceDefinition Include="Resources\View.xib" />
-    <InterfaceDefinition Include="ApplicationStoryboard~ipad.storyboard">
-      <DependentUpon>Info.plist</DependentUpon>
-    </InterfaceDefinition>
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
   </ItemGroup>
   <ItemGroup>
@@ -183,7 +181,6 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="src\Util\LogPrinter.cs" />
-    <Compile Include="src\Devices\IOSDeviceManager.cs" />
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
@@ -216,7 +213,6 @@
     <Compile Include="src\UI\UIImageExtensions.cs" />
     <Compile Include="src\ViewController\BaseIONViewController.cs" />
     <Compile Include="src\Devices\DeviceUtil.cs" />
-    <Compile Include="src\Devices\LeScanMode.cs" />
     <Compile Include="src\App\IosION.cs" />
     <Compile Include="src\Util\CGExtensions.cs" />
     <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
@@ -282,6 +278,27 @@
     <Compile Include="src\ViewController\PressureTemperatureChart\PTChartViewController.designer.cs">
       <DependentUpon>PTChartViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsGroupCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsGroupCell.designer.cs">
+      <DependentUpon>SettingsGroupCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsLabelCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsLabelCell.designer.cs">
+      <DependentUpon>SettingsLabelCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsNavigationItemCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsNavigationItemCell.designer.cs">
+      <DependentUpon>SettingsNavigationItemCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsSwitchCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsSwitchCell.designer.cs">
+      <DependentUpon>SettingsSwitchCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsViewController.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsViewController.designer.cs">
+      <DependentUpon>SettingsViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Devices\LeConnectionHelper.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -303,6 +320,8 @@
     <Folder Include="src\ViewController\Alarms\" />
     <Folder Include="src\ViewController\PressureTemperatureChart\" />
     <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
+    <Folder Include="Settings.bundle\" />
+    <Folder Include="src\ViewController\Settings\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -414,6 +433,10 @@
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
+    <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Settings.bundle\app_settings.plist" />
+    <BundleResource Include="Settings.bundle\location_settings.plist" />
+    <BundleResource Include="Settings.bundle\alarm_settings.plist" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

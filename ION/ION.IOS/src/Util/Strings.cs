@@ -41,6 +41,7 @@ namespace ION.IOS.Util {
       NAME = "device_name".FromResources(),
       NEW_DEVICES = "device_new_devices".FromResources(),
       RECONNECT = "device_reconnect".FromResources(),
+      SERIAL = "device_serial".FromResources(),
       SERIAL_NUMBER = "device_serial_number".FromResources(),
       TYPE = "device_type".FromResources()
       ;

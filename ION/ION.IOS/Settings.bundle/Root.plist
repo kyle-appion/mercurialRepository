@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>PreferenceSpecifiers</key>
+	<array>
+		<dict>
+			<key>File</key>
+			<string>alarm_settings</string>
+			<key>Title</key>
+			<string>settings_alarm</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>app_settings</string>
+			<key>Title</key>
+			<string>settings_app</string>
+		</dict>
+		<dict>
+			<key>File</key>
+			<string>locations_settings</string>
+			<key>Title</key>
+			<string>settings_location</string>
+		</dict>
+	</array>
+</dict>
+</plist>

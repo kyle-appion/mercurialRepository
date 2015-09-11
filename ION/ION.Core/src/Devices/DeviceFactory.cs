@@ -1,164 +1,151 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Linq;
 
 using ION.Core.Connections;
+using ION.Core.Devices;
 using ION.Core.Devices.Protocols;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Util;
 
 namespace ION.Core.Devices {
-  /// <summary>
-  /// A factory for creating devices from serial numbers.
-  /// </summary>
-  public abstract class DeviceFactory {
-    /// <summary>
-    /// All of the factories that the application is aware of.
-    /// </summary>
-    private static readonly DeviceFactory[] FACTORIES = new DeviceFactory[] {
-      new P300DeviceFactory(),
-      new P500DeviceFactory(),
-      new P800DeviceFactory(),
-      new PT800DeviceFactory(),
-      new AV760DeviceFactory(),
-    };
+  public class DeviceFactory {
+    private const string DEVICE_CODE = "deviceCode";
+    private const string GAUGE_DEVICE = "GaugeDevice";
+    private const string GAUGE_DEVICE_SENSOR = "GaugeDeviceSensor";
+    private const string MIN = "min";
+    private const string MIN_UNIT = "minUnit";
+    private const string MAX = "max";
+    private const string MAX_UNIT = "maxUnit";
+    private const string RELATIVE = "relative";
+    private const string TYPE = "type";
+
+    private List<IDeviceDefinition> __definitions = new List<IDeviceDefinition>();
 
     /// <summary>
-    /// Finds a factory for the given serial number.
+    /// Attempts to instantiate a device from a definition.
     /// </summary>
-    /// <param name="serialNumber"></param>
-    /// <returns></returns>
-    public static DeviceFactory FindFactoryFor(ISerialNumber serialNumber) {
-      foreach (DeviceFactory factory in FACTORIES) {
-        if (factory.IsSerialNumberValid(serialNumber)) {
-          return factory;
+    /// <returns>The device from serial number.</returns>
+    /// <param name="serialNumber">Serial number.</param>
+    /// <param name="connection">Connection.</param>
+    public IDevice CreateDeviceFromSerialNumber(ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
+      foreach (var definition in __definitions) {
+        if (definition.Matches(serialNumber)) {
+          return definition.ToDevice(serialNumber, connection, protocol);
         }
       }
 
-      throw new ArgumentException("Cannot find factory: a factory does not exist for " + serialNumber);
+      return null;
     }
 
     /// <summary>
-    /// Queries whether or not the given serial number is valid for this factory.
+    /// Creates a new DeviceParser from the given stream. This method will not close
+    /// the stream when the device parser is loaded.
     /// </summary>
-    /// <returns><c>true</c> if this instance is serial number valid the specified serialNumber; otherwise, <c>false</c>.</returns>
-    /// <param name="serialNumber">Serial number.</param>
-    public abstract bool IsSerialNumberValid(ISerialNumber serialNumber);
+    /// <returns>The from stream.</returns>
+    /// <param name="deviceDefinitionStream">Device definition stream.</param>
+    public static DeviceFactory CreateFromStream(Stream deviceDefinitionStream) {
+      try {
+        var root = XElement.Load(XmlReader.Create(deviceDefinitionStream));
 
-    /// <summary>
-    /// Creates a new device from the given serial number.
-    /// </summary>
-    /// <param name="serialNumber">Serial number.</param>
-    public abstract IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol);
-  } // End DeviceFactory
+        var devices = root.Elements();
 
-  /// <summary>
-  /// Creates a new P300 device.
-  /// </summary>
-  internal class P300DeviceFactory : DeviceFactory {
-    // Overridden from IDeviceFactory
-    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EDeviceModel.P300 == ((GaugeSerialNumber)serialNumber).deviceModel;
+        var ret = new DeviceFactory();
+
+        foreach (var element in devices) {
+          if (GAUGE_DEVICE.Equals(element.Name.LocalName)) {
+            var deviceDefinitions = ParseGaugeDeviceDefinition(element);
+            ret.__definitions.Add(deviceDefinitions);
+          }
+        }
+
+        return ret;
+      } catch (Exception e) {
+        Log.C("DeviceFactory", "Failed to parse shit", e);
+        throw e;
+      }
     }
 
-    // Overridden from IDeviceFactory
-    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
-
-      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
-      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(300);
-      device.sensors = new GaugeDeviceSensor[] { sensor };
-
-      return device;
-    }
-  } // End P300DeviceFactory
-
-  /// <summary>
-  /// Creates a new P300 device.
-  /// </summary>
-  internal class P500DeviceFactory : DeviceFactory {
-    // Overridden from IDeviceFactory
-    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EDeviceModel.P500 == ((GaugeSerialNumber)serialNumber).deviceModel;
+    private static GaugeDeviceDefinition ParseGaugeDeviceDefinition(XElement element) {
+      return new GaugeDeviceDefinition() {
+        deviceCode = element.Attribute(DEVICE_CODE).Value,
+        sensors = ParseGaugeDeviceSensors(element.Elements().ToArray())
+      };
     }
 
-    // Overridden from IDeviceFactory
-    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
+    private static GaugeDeviceSensorDefinition[] ParseGaugeDeviceSensors(XElement[] elements) {
+      var ret = new List<GaugeDeviceSensorDefinition>();
 
-      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
-      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(500);
-      device.sensors = new GaugeDeviceSensor[] { sensor };
+      foreach (var element in elements) {
+        var sensor = new GaugeDeviceSensorDefinition();
 
-      return device;
+        sensor.type = (ESensorType)Enum.Parse(typeof(ESensorType), element.Attribute(TYPE).Value, true);
+        var minUnit = UnitLookup.GetUnit(element.Attribute(MIN_UNIT).Value);
+        var maxUnit = UnitLookup.GetUnit(element.Attribute(MAX_UNIT).Value);
+
+        var min = element.Attribute(MIN).Value;
+        var max = element.Attribute(MAX).Value;
+
+        sensor.min = minUnit.OfScalar(double.Parse(min));
+        sensor.max = maxUnit.OfScalar(double.Parse(max));
+
+        sensor.relative = bool.Parse(element.Attribute(RELATIVE).Value);
+
+        ret.Add(sensor);
+      }
+
+      return ret.ToArray();
     }
-  } // End P500DeviceFactory
+  }
 
-  /// <summary>
-  /// Creates a new P800 device.
-  /// </summary>
-  internal class P800DeviceFactory : DeviceFactory {
-    // Overridden from IDeviceFactory
-    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EDeviceModel.P800 == ((GaugeSerialNumber)serialNumber).deviceModel;
-    }
+  internal interface IDeviceDefinition {
+    bool Matches(ISerialNumber serialNumber);
+    IDevice ToDevice(ISerialNumber serialNumber, IConnection connection, IProtocol protocol);
+  } // End IDeviceDefinition
 
-    // Overridden from IDeviceFactory
-    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
+  internal class GaugeDeviceDefinition : IDeviceDefinition {
+    public string deviceCode { get; set; }
+    public GaugeDeviceSensorDefinition[] sensors { get; set; }
 
-      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
-      sensor.maxMeasurement = Units.Pressure.PSIG.OfScalar(800);
-      device.sensors = new GaugeDeviceSensor[] { sensor };
-
-      return device;
-    }
-  } // End P800DeviceFactory
-
-  /// <summary>
-  /// Creates a new PT800 device.
-  /// </summary>
-  internal class PT800DeviceFactory : DeviceFactory {
-    // Overridden from IDeviceFactory
-    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EDeviceModel.PT800 == ((GaugeSerialNumber)serialNumber).deviceModel;
-    }
-
-    // Overridden from IDeviceFactory
-    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
-
-      var ps = new GaugeDeviceSensor(device, 0, ESensorType.Pressure, true);
-      ps.maxMeasurement = Units.Pressure.PSIG.OfScalar(800);
-
-      var ts = new GaugeDeviceSensor(device, 0, ESensorType.Temperature, false);
-      ps.maxMeasurement = Units.Temperature.CELSIUS.OfScalar(150);
-      ps.minMeasurement = Units.Temperature.CELSIUS.OfScalar(-40);
-
-      device.sensors = new GaugeDeviceSensor[] { ps, ts };
-
-      return device;
-    }
-  } // End PT800DeviceFactory
-
-  /// <summary>
-  /// Creates a new AV760 device.
-  /// </summary>
-  internal class AV760DeviceFactory : DeviceFactory {
-    // Overridden from IDeviceFactory
-    public override bool IsSerialNumberValid(ISerialNumber serialNumber) {
-      return serialNumber is GaugeSerialNumber && EDeviceModel.AV760 == ((GaugeSerialNumber)serialNumber).deviceModel;
+    // Overridden from IDeviceDefinition
+    public bool Matches(ISerialNumber serialNumber) {
+      var gsn = serialNumber as GaugeSerialNumber;
+      if (gsn != null && gsn.deviceModel.GetModelCode().Equals(deviceCode)) {
+        return true;
+      } else {
+        return false;
+      }
     }
 
-    // Overridden from IDeviceFactory
-    public override IDevice Create(IDeviceManager deviceManager, ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      var device = new GaugeDevice(deviceManager, (GaugeSerialNumber)serialNumber, connection, (IGaugeProtocol)protocol);
+    // Overridden from IDeviceDefinition
+    public IDevice ToDevice(ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
+      var ret = new GaugeDevice(serialNumber as GaugeSerialNumber, connection, protocol as IGaugeProtocol);
+      var s = new List<GaugeDeviceSensor>();
 
-      var sensor = new GaugeDeviceSensor(device, 0, ESensorType.Vacuum, true);
-      sensor.maxMeasurement = Units.Pressure.MICRON.OfScalar(760000);
-      device.sensors = new GaugeDeviceSensor[] { sensor };
+      int i = 0;
+      foreach (var definition in sensors) {
+        var sensor = new GaugeDeviceSensor(ret, i++, definition.type, definition.relative);
+        sensor.minMeasurement = definition.min;
+        sensor.maxMeasurement = definition.max;
+        s.Add(sensor);
+      }
 
-      return device;
+      ret.sensors = s.ToArray();
+
+      return ret;
     }
-  } // End AV760DeviceFactory
+  } // End GaugeDeviceDefinition
+
+  internal class GaugeDeviceSensorDefinition { 
+    public ESensorType type { get; set; }
+    public Scalar min { get; set; }
+    public Scalar max { get; set; }
+    public bool relative { get; set; }
+  } // End GaugeDeviceSensorDefinition
 }
 
