@@ -1,0 +1,94 @@
+﻿/*
+This file contains all of the key/content string lookups for the ION
+iOS application.
+
+All entries within this file should be reflected in the Util.Strings.cs
+file.
+*/
+
+/* APP */
+"actions" = "Actions";
+"cancel" = "Cancel";
+"help" = "Help";
+"ok" = "OK";
+"rename" = "Rename";
+"unknown" = "Unknown";
+
+/* ALARMS */
+"alarms" = "Alarms";
+"alarms_reenable" = "Re-enable";
+
+/* DEVICE */
+"device_available" = "Available";
+"device_connected" = "Connected";
+"device_disconnect" = "Disconnect";
+"device_disconnected" = "Disconnected";
+"device_long_range" = "Long Range";
+"device_name" = "Device Name";
+"device_new_devices" = "New Devices Found";
+"device_reconnect" = "Reconnect";
+"device_serial_number" = "Serial Number";
+"device_type" = "Device Type";
+
+
+/* DEVICE MANAGER */
+"device_manager" = "Device Manager";
+"device_manager_scan" = "Scan";
+"device_manager_scanning" = "Scanning";
+
+/* DEVICE MODEL */
+"device_model_3xtm" = "3XTM";
+"device_model_av760" = "AV760";
+"device_model_ht" = "HT";
+"device_model_p300" = "P300";
+"device_model_p500" = "P500";
+"device_model_p800" = "P800";
+"device_model_pt800" = "PT800";
+"device_model_unknown" = "Unknown Device";
+
+/* ERRORS */
+"errors_scan_init_fail" = "Failed to initiate scan: invalid state";
+
+/* FLUIDS */
+"fluid_pt_calculator" = "P/T Calculator";
+"fluid_pt_chart" = "P/T Chart";
+"fluid_state_help" = "Dew Point is used to calculate Superheat (low side, in vapor).\n\nBubble Point is used to calculate Subcool (high side, in liquid).\n\nThis affects measurement of blended refrigerants, since these points are usually not the same.";
+"fluid_subcool" = "Subcool";
+"fluid_superheat" = "Superheat";
+"fluid_superheat_subcool" = "Superheat/Subcool";
+
+/* FLUID MANAGER */
+"fluid_manager" = "Refrigerant Manager";
+
+/* MEASURE */
+"measure_pick_unit" = "Pick Unit";
+
+/* NAVIGATION DRAWER */
+"navigation_calculators" = "CALCULATORS";
+"navigation_main" = "MAIN";
+
+/* SENSOR */
+
+/* SENSOR TYPE */
+"sensor_type_length" = "Length";
+"sensor_type_mass" = "Mass";
+"sensor_type_pressure" = "Pressure";
+"sensor_type_temperature" = "Temperature";
+"sensor_type_vacuum" = "Vacuum";
+"sensor_type_unknown" = "Unknown";
+
+/* WORKBENCH */
+"workbench" = "Workbench";
+"workbench_remove" = "Remove From Workbench";
+"workbench_select_viewer_action" = "Select a viewer action";
+
+/* WORKBENCH SUBVIEW */
+"workbench_subview_add" = "Add Subview";
+"workbench_subview_alt" = "ALT";
+"workbench_subview_alt_desc" = "Alternate Unit (ALT)";
+"workbench_subview_hold" = "HOLD";
+"workbench_subview_hold_desc" = "Hold Reading (HOLD)";
+"workbench_subview_max" = "MAX";
+"workbench_subview_max_desc" = "Maximum Reading (MAX)";
+"workbench_subview_min" = "MIN";
+"workbench_subview_min_desc" = "Minimum Reading (MIN)";

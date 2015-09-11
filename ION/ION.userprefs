@@ -1,0 +1,24 @@
+﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs">
+    <Files>
+      <File FileName="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" Line="89" Column="55" />
+      <File FileName="ION.IOS/Main.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Fluids/PTChart.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/Entitlements.plist" />
+      <File FileName="ION.IOS/packages.config" Line="1" Column="1" />
+      <File FileName="ION.IOS/app.config" Line="1" Column="1" />
+      <File FileName="ION.Core/src/Fluids/BaseFluidManager.cs" Line="110" Column="1" NotebookId="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.IOS/src/App/IosION.cs" line="117" column="1" />
+      <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.Core/src/Fluids/BaseFluidManager.cs" line="116" column="55" />
+      <Breakpoint enabled="false" file="/Users/ahodder/Documents/code_space/ion_hvacr/ION/ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" line="89" column="55" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.ION.Droid AndroidDesignerPreferredDevice="Nexus 4" />
+</Properties>
