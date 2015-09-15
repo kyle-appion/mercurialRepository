@@ -28,7 +28,8 @@ namespace ION.Core.Database {
     }
 
     // Overridden from IIONManager
-    public async Task InitAsync() {
+    public async Task<InitializationResult> InitAsync() {
+      return new InitializationResult() { success = true };
     }
   }
 }

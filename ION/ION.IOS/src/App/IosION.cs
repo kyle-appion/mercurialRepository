@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+using CoreBluetooth;
+using CoreFoundation;
 using Foundation;
 
 using ION.Core.Alarms;
@@ -53,7 +55,7 @@ namespace ION.IOS.App {
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
-      managers.Add(deviceManager = new IOSDeviceManager(this));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(new CBCentralManager(DispatchQueue.CurrentQueue))));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));

@@ -96,7 +96,7 @@ namespace ION.Core.Fluids {
     }
 
     // Overridden from IFluidManager
-    public async Task InitAsync() {
+    public async Task<InitializationResult> InitAsync() {
       try {
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
@@ -121,8 +121,12 @@ namespace ION.Core.Fluids {
           }
         }
         await GetFluidAsync(fluidName);
-      } catch (Exception e) { 
-        Log.E(this, "Failed to initialize fluid manager", e);
+        return new InitializationResult() { success = true };
+      } catch (Exception e) {
+        return new InitializationResult() {
+          success = false,
+          errorMessage = "Failed to initialize fluid manager: " + e.Message
+        };
       }
     }
 
