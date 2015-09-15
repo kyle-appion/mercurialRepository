@@ -5,12 +5,17 @@ using System;
 using Foundation;
 using UIKit;
 
-namespace ION.IOS
-{
-	public partial class FluidSubviewCell : UITableViewCell
-	{
-		public FluidSubviewCell (IntPtr handle) : base (handle)
-		{
+using ION.Core.Fluids;
+
+namespace ION.IOS.ViewController.Workbench {
+	public partial class FluidSubviewCell : UITableViewCell {
+		public FluidSubviewCell (IntPtr handle) : base (handle) {
 		}
+
+    public void UpdateAsPTChart(PTChart ptChart) {
+    }
+
+    public void UpdateAsSuperheatSubcool(PTChart ptChart) {
+    }
 	}
 }
