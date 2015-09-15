@@ -4,8 +4,17 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using ION.Core.App;
+using ION.Core.Devices.Connections;
 
 namespace ION.Core.Devices {
+
+  /// <summary>
+  /// The delegate that is used to create devices. Note: this is an agnostic creation.
+  /// The factory does not know anything about previously create devices. Because of
+  /// this, the factory can create duplicate devices. It is up to the hosting type to
+  /// manage collisions.
+  /// </summary>
+  public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
   /// <summary>
   /// The delegate that is notified when a device is found by an active or
   /// passive scan.
@@ -17,8 +26,7 @@ namespace ION.Core.Devices {
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
   /// <param name="deviceManager"></param>
-  /// <param name="state"></param>
-  public delegate void OnDeviceManagerStateChanged(IDeviceManager deviceManager, EDeviceManagerState state);
+  public delegate void OnDeviceManagerStatesChanged(IDeviceManager deviceManager);
 
   /// <summary>
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
@@ -43,13 +51,13 @@ namespace ION.Core.Devices {
     /// An event handler that will be notified when the device manager's
     /// state changes.
     /// </summary>
-    event OnDeviceManagerStateChanged onDeviceManagerStateChanged;
+    event OnDeviceManagerStatesChanged onDeviceManagerStatesChanged;
 
     /// <summary>
     /// Used to query a specific device from the device manager.
     /// <para>
     /// Note: When using this query, you may get a device that is either
-    /// known or unknown.
+    /// known or simply found.
     /// </para>
     /// </summary>
     /// <param name="serialNumber"></param>
@@ -76,62 +84,30 @@ namespace ION.Core.Devices {
     List<IDevice> foundDevices { get; }
 
     /// <summary>
-    /// Queries the current state of the device manager.
+    /// Queries the current states of the device manager.
     /// </summary>
-    EDeviceManagerState state{ get; }
+    EDeviceManagerStates states { get; }
+
+    /// <summary>
+    /// The delegate that is used to create devices.
+    /// </summary>
+    /// <remarks>
+    /// Note: the device manager will NOT register devices that are created by this factory.
+    /// </remarks>
+    /// <value>The device factory delegate.</value>
+    DeviceFactoryDelegate deviceFactoryDelegate { get; }
+    /// <summary>
+    /// The scan mode that delegates out the platform specific scan procedures.
+    /// </summary>
+    /// <value>The scanner.</value>
+    IConnectionHelper connectionHelper { get; }
 
     /// <summary>
     /// Requests that the device manager enable its communication backend.
     /// </summary>
     /// <returns>A task that will return true if the backend was enabled,
     /// false otherwise</returns>
-    Task<bool> EnableAsync();
-
-    /// <summary>
-    /// Informs the DeviceManager that an active scan has been requested. It is
-    /// up to the implementation to determine what qualifies as an active scan. 
-    /// <para>
-    /// If the DeviceManager is currently performing another task (ie. connecting
-    /// an IConnection or enabling), then the task will wait until the preceding
-    /// task has completed.
-    /// </para>
-    /// <para>
-    /// This method should really only be called when the user explicitly
-    /// requests a scan to be started.
-    /// </para>
-    /// </summary>
-    /// <returns></returns>
-    Task<bool> DoActiveScanAsync();
-
-    /// <summary>
-    /// Terminates a currently running active scan. If the scan has not started
-    /// yet, it will be prevented from running. If a scan is not currently running,
-    /// we will return quietly.
-    /// </summary>
-    void StopActiveScan();
-
-    /// <summary>
-    /// Informs the DeviceManager that a passive scan has been requested. A
-    /// passive scan is a scan that is intended to be executed in the background
-    /// without explicit user awareness.
-    /// <para>
-    /// Note: a passive scan is a scan that will cede precedence to an active
-    /// scan. If an active scan is requested and the DeviceManager is currently
-    /// passive scanning, then the passive scan will be terminated and the active
-    /// scan will begin.
-    /// </para>
-    /// </summary>
-    /// <returns>A task that will return true when the passive scan completes its
-    /// procedure or false if the scan failed. Note: true will be returned even if
-    /// the scan is interrupted by an active scan.</returns>
-    Task<bool> DoPassiveScanAsync();
-
-    /// <summary>
-    /// Terminates a currently running passive scan. If the scan has not started
-    /// yet, it will be prevented from running. If a scan is not currently running,
-    /// we will return quietly.
-    /// </summary>
-    void StopPassiveScan();
+//    Task<bool> EnableAsync();
 
     /// <summary>
     /// Forgets all devices that the device manager has found, but are not known.
@@ -143,13 +119,22 @@ namespace ION.Core.Devices {
     /// <summary>
     /// Creates a new device using the provided serial number, connection identifier
     /// and protocol. If the device cannot be created because of an invalid connection
-    /// identifier, then an AgumentException will be raised.
+    /// identifier, then an AgumentException will be raised. If a device already exists
+    /// with the given serial number, that will be returned instead, unless the
+    /// connection identifier is different. Then we will throw a massive WTF exception.
     /// </summary>
     /// <returns>The device.</returns>
     /// <param name="serialNumber">Serial number.</param>
-    /// <param name="connectionIdentifier">Connection identifier.</param>
+    /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
-    IDevice CreateDevice(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
+    IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocol);
+
+    /// <summary>
+    /// Determines whether this instance is device known the specified device.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is device known the specified device; otherwise, <c>false</c>.</returns>
+    /// <param name="device">Device.</param>
+    bool IsDeviceKnown(IDevice device);
 
     /// <summary>
     /// Attempts to connect to the given device. 
@@ -157,48 +142,39 @@ namespace ION.Core.Devices {
     /// <param name="device"></param>
     /// <returns>A Task that will return true when the device has connected, or
     /// false if the connection attempt failed.</returns>
-    Task<bool> ConnectDeviceAsync(IDevice device);
+//    Task<bool> ConnectDeviceAsync(IDevice device);
 
     /// <summary>
     /// Disconnects the given device from the application.
     /// </summary>
     /// <param name="device"></param>
-    void DisconnectDevice(IDevice device);
+//    void DisconnectDevice(IDevice device);
   } // End IDeviceManager
+
+  /// <summary>
+  /// A factory type who is responsible for instantiating devices from 
+  /// </summary>
+  public interface IDeviceFactory {
+  } // End IDeviceFactory
 
 
   /// <summary>
   /// Enumerates the possible states that a DeviceManager can be in.
   /// </summary>
-  public enum EDeviceManagerState {
+  [Flags]
+  public enum EDeviceManagerStates {
     /// <summary>
-    /// The DeviceManager's communication backend is currently disabled.
+    /// This is a state where the device manager is uninitialized.
     /// </summary>
-    Disabled,
+    None = 0,
     /// <summary>
-    /// The DeviceManager's communication backend is currently activating. At
-    /// this point any calls to the device manager will be delayed until the 
-    /// backend is fully enabled.
+    /// Whether or not the device manager is enabled. Enabled means that the device
+    /// manager as a hot connection to the platforms communication stack.
     /// </summary>
-    Enabling,
+    Enabled = 1,
     /// <summary>
-    /// The DeviceManager's communication backend is enabled, and nothing is
-    /// happening. Ideally, this is where the adapter spends most of its time.
+    /// Whether or not the device manager is performing a scan.
     /// </summary>
-    Idle,
-    /// <summary>
-    /// The DeviceManager is currently attempting to connect to a terminus. At
-    /// this point any calls to the device manager will be delayed until the
-    /// connection attempt has resolved.
-    /// </summary>
-    Connecting,
-    /// <summary>
-    /// The DeviceManager is currently performing an active scan.
-    /// </summary>
-    ActiveScanning,
-    /// <summary>
-    /// The DeviceManager is currently performing a passive scan.
-    /// </summary>
-    PassiveScanning,
+    Scanning = 2,
   } // End EDeviceManagerState
 }

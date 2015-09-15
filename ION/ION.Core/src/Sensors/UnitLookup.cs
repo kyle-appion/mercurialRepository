@@ -14,6 +14,11 @@ namespace ION.Core.Sensors {
     /// The dictionary used to lookup unit given a unit code.
     /// </summary>
     private static readonly Dictionary<UnitEntry, int> UNIT_TO_CODE = new Dictionary<UnitEntry, int>();
+    /// <summary>
+    /// The dictionary used to lookup units from human readable strings.
+    /// </summary>
+    private static readonly Dictionary<string, Unit> STRING_TO_UNIT = new Dictionary<string, Unit>();
+
 
     /// <summary>
     /// Queries the unit entry that is paied to the given code.
@@ -31,6 +36,19 @@ namespace ION.Core.Sensors {
     /// <returns></returns>
     public static Unit GetUnit(int code) {
       return CODE_TO_UNIT[code].unit;
+    }
+
+    /// <summary>
+    /// Queries the unit for the given raw string.
+    /// </summary>
+    /// <returns>The unit.</returns>
+    /// <param name="rawString">Raw string.</param>
+    public static Unit GetUnit(string rawString) {
+      if (STRING_TO_UNIT.ContainsKey(rawString)) {
+        return STRING_TO_UNIT[rawString];
+      } else {
+        return null;
+      }
     }
 
     /// <summary>
@@ -54,6 +72,15 @@ namespace ION.Core.Sensors {
 
       CODE_TO_UNIT[code] = entry;
       UNIT_TO_CODE[entry] = code;
+    }
+
+    /// <summary>
+    /// Adds a new unit lookup.
+    /// </summary>
+    /// <param name="rawUnit">Raw unit.</param>
+    /// <param name="unit">Unit.</param>
+    private static void Add(string rawUnit, Unit unit) {
+      STRING_TO_UNIT[rawUnit] = unit;
     }
 
     static UnitLookup() {
@@ -90,6 +117,45 @@ namespace ION.Core.Sensors {
       Add(0x27, ESensorType.Vacuum, Units.Pressure.MICRON);
       Add(0x28, ESensorType.Vacuum, Units.Pressure.TORR);
       Add(0x29, ESensorType.Vacuum, Units.Pressure.MILLITORR);
+
+      //////////////////////////////////////////////////////
+      /// String lookups
+      //////////////////////////////////////////////////////
+
+      // Length
+      Add("m", Units.Length.METER);
+      Add("ft", Units.Length.FOOT);
+      Add("in", Units.Length.INCH);
+      Add("mi", Units.Length.MILE);
+
+      // Mass
+      Add("kg", Units.Mass.KILOGRAM);
+
+      // Pressure
+      Add("pa", Units.Pressure.PASCAL);
+      Add("kpa", Units.Pressure.KILOPASCAL);
+      Add("mpa", Units.Pressure.MEGAPASCAL);
+      Add("bar", Units.Pressure.BAR);
+      Add("millibar", Units.Pressure.MILLIBAR);
+      Add("atmo", Units.Pressure.ATMOSPHERE);
+      Add("inhg", Units.Pressure.IN_HG);
+      Add("cmhg", Units.Pressure.CM_HG);
+      Add("kgcm", Units.Pressure.KG_CM);
+      Add("psia", Units.Pressure.PSIA);
+      Add("psig", Units.Pressure.PSIG);
+      Add("torr", Units.Pressure.TORR);
+      Add("millitorr", Units.Pressure.MILLITORR);
+      Add("micron", Units.Pressure.MICRON);
+
+      // Temperature
+      Add("kelvin", Units.Temperature.KELVIN);
+      Add("celsius", Units.Temperature.CELSIUS);
+      Add("fahrenheit", Units.Temperature.FAHRENHEIT);
+
+      // Time
+      Add("second", Units.Time.SECOND);
+      Add("minute", Units.Time.HOUR);
+      Add("hour", Units.Time.HOUR);
     }
   }
 

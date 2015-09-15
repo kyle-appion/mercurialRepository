@@ -7,6 +7,8 @@ using UIKit;
 
 using ION.Core.Devices;
 
+using ION.IOS.Util;
+
 namespace ION.IOS.ViewController.DeviceManager {
 	public partial class SerialNumberTableCell : UITableViewCell {
 		public SerialNumberTableCell (IntPtr handle) : base (handle) {
@@ -17,7 +19,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="device">Device.</param>
     public void UpdateTo(IDevice device) {
-      labelSerialNumber.Text = device.serialNumber.ToString();
+      labelSerialNumber.Text = Strings.Device.SERIAL + " - " + device.serialNumber.ToString();
     }
 	}
 }

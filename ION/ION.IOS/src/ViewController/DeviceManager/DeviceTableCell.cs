@@ -68,11 +68,12 @@ namespace ION.IOS.ViewController.DeviceManager {
       buttonConnect.TouchUpInside += (object sender, EventArgs e) => {
         if (device != null) {
           if (EConnectionState.Disconnected == device.connection.connectionState) {
-            ion.deviceManager.ConnectDeviceAsync(device);
+//            ion.deviceManager.ConnectDeviceAsync(device);
+            device.connection.Connect();
           } else {
-            ion.deviceManager.DisconnectDevice(device);
+//            ion.deviceManager.DisconnectDevice(device);
+            device.connection.Disconnect();
           }
-
         }
       };
     }

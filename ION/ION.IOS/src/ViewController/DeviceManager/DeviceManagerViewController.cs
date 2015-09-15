@@ -20,6 +20,10 @@ using ION.IOS.Util;
 namespace ION.IOS.ViewController.DeviceManager {
 	public partial class DeviceManagerViewController : BaseIONViewController {
     /// <summary>
+    /// The time in milliseconds that the view controller will perform a scan for.
+    /// </summary>
+    private const int DEFAULT_SCAN_TIME = 3500;
+    /// <summary>
     /// The delegate that is used to pass a sensor back from the device manager.
     /// </summary>
     public delegate void OnSensorReturn(GaugeDeviceSensor sensor);
@@ -75,20 +79,20 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
-        if (EDeviceManagerState.ActiveScanning == ion.deviceManager.state) {
-          ion.deviceManager.StopActiveScan();
-        } else if (EDeviceManagerState.Idle == ion.deviceManager.state) {
-          ion.deviceManager.DoActiveScanAsync();
+        if (ion.deviceManager.connectionHelper.isScanning) {
+          ion.deviceManager.connectionHelper.Stop();
         } else {
-          Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+          if (!ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+            Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+          }
         }
       });
 
       ion.deviceManager.onDeviceFound += HandleDeviceFound;
-      ion.deviceManager.onDeviceManagerStateChanged += HandleDeviceManagerStateChanged;
+      ion.deviceManager.onDeviceManagerStatesChanged += HandleDeviceManagerStatesChanged;
       ion.deviceManager.onDeviceStateChanged += HandleDeviceStateChanged;
 
-      HandleDeviceManagerStateChanged(ion.deviceManager, ion.deviceManager.state);
+      HandleDeviceManagerStatesChanged(ion.deviceManager);
 
       tableContent.Source = deviceSource = new DeviceSource(ion, tableContent);
       deviceSource.sensorFilter = displayFilter;
@@ -108,7 +112,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       base.ViewDidUnload();
 
       ion.deviceManager.onDeviceFound -= HandleDeviceFound;
-      ion.deviceManager.onDeviceManagerStateChanged -= HandleDeviceManagerStateChanged;
+      ion.deviceManager.onDeviceManagerStatesChanged -= HandleDeviceManagerStatesChanged;
       ion.deviceManager.onDeviceStateChanged -= HandleDeviceStateChanged;
 
       tableContent.Source = null;
@@ -146,9 +150,9 @@ namespace ION.IOS.ViewController.DeviceManager {
           connected.devices.Add(device);
         } else if (EConnectionState.Broadcasting == device.connection.connectionState) {
           longRange.devices.Add(device);
-        } else if (!device.isKnown && device.isNearby) {
+        } else if (!ion.deviceManager.IsDeviceKnown(device) && device.isNearby) {
           newDevices.devices.Add(device);
-        } else if (device.isKnown && device.isNearby) {
+        } else if (ion.deviceManager.IsDeviceKnown(device) && device.isNearby) {
           available.devices.Add(device);
         } else {
           disconnected.devices.Add(device);
@@ -186,16 +190,11 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The callback used by the device manager when its state changes.
     /// </summary>
     /// <param name="dm">Dm.</param>
-    private void HandleDeviceManagerStateChanged(IDeviceManager dm, EDeviceManagerState state) {
-      switch (state) {
-        case EDeviceManagerState.ActiveScanning: {
-          NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
-          break;
-        }
-        default: {
-          NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
-          break;
-        }
+    private void HandleDeviceManagerStatesChanged(IDeviceManager dm) {
+      if (dm.connectionHelper.isScanning) {
+        NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
+      } else {
+        NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
       }
     }
 
@@ -209,9 +208,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
 
       Task.Factory.StartNew(() => {
-        Log.D(this, "Device connection state: " + device.connection.connectionState);
         if (device.isConnected) {
-          Log.D(this, "Expanding");
           deviceSource.ExpandDevice(device);
         }
       }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());

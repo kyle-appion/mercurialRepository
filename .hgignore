@@ -22,6 +22,8 @@ obj/**
 **.tmp
 # Hard package and library files
 packages/**
+# Preference file
+ION.userprefs
 
 #######################################
 ## Generated resources

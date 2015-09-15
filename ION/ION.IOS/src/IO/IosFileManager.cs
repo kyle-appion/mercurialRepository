@@ -9,7 +9,8 @@ namespace ION.IOS.IO {
   public class IosFileManager : IFileManager {
 
     // Overridden from IFileManager
-    public async Task InitAsync() {
+    public async Task<InitializationResult> InitAsync() {
+      return new InitializationResult() { success = true };
     }
 
     // Overridden from IFileManager

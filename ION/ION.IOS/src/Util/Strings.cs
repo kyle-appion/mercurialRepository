@@ -21,6 +21,7 @@ namespace ION.IOS.Util {
     HELP = "help".FromResources(),
     OK = "ok".FromResources(),
     RENAME = "rename".FromResources(),
+    SETTINGS = "settings".FromResources(),
     UNKNOWN = "unknown"
     ;
 
@@ -41,6 +42,7 @@ namespace ION.IOS.Util {
       NAME = "device_name".FromResources(),
       NEW_DEVICES = "device_new_devices".FromResources(),
       RECONNECT = "device_reconnect".FromResources(),
+      SERIAL = "device_serial".FromResources(),
       SERIAL_NUMBER = "device_serial_number".FromResources(),
       TYPE = "device_type".FromResources()
       ;
@@ -99,7 +101,8 @@ namespace ION.IOS.Util {
       public static readonly string
       CALCULATORS = "navigation_calculators".FromResources(),
       EXIT = "navigation_exit".FromResources(),
-      MAIN = "navigation_main".FromResources()
+      MAIN = "navigation_main".FromResources(),
+      CONFIGURATION = "navigation_configuration".FromResources()
       ;
     } // End Strings.Navigation
 

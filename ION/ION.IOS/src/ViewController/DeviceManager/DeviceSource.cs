@@ -203,8 +203,9 @@ namespace ION.IOS.ViewController.DeviceManager {
 
         cell.UpdateTo(sensor, () => {
           if (onSensorAddClicked != null) {
-            if (!gaugeDevice.isKnown) {
-              ion.deviceManager.ConnectDeviceAsync(gaugeDevice);
+            if (!ion.deviceManager.IsDeviceKnown(gaugeDevice)) {
+//              ion.deviceManager.ConnectDeviceAsync(gaugeDevice);
+              gaugeDevice.connection.Connect();
             }
             onSensorAddClicked(sensor, indexPath);
           }
