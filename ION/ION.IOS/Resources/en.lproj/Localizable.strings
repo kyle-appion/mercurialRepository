@@ -12,6 +12,7 @@ file.
 "help" = "Help";
 "ok" = "OK";
 "rename" = "Rename";
+"settings" = "Settings";
 "unknown" = "Unknown";
 
 /* ALARMS */
@@ -67,6 +68,7 @@ file.
 /* NAVIGATION DRAWER */
 "navigation_calculators" = "CALCULATORS";
 "navigation_main" = "MAIN";
+"navigation_configuration" = "Configuration";
 
 /* SENSOR */
 

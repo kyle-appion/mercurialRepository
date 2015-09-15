@@ -109,6 +109,8 @@
     <Compile Include="src\IO\EmbeddedResource.cs" />
     <Compile Include="src\Devices\Connections\ConnectionHelper.cs" />
     <Compile Include="src\Devices\Connections\BaseConnectionHelper.cs" />
+    <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

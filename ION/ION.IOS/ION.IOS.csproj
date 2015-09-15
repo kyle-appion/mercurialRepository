@@ -299,6 +299,10 @@
       <DependentUpon>SettingsViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Devices\LeConnectionHelper.cs" />
+    <Compile Include="src\ViewController\Workbench\FluidSubviewCell.cs" />
+    <Compile Include="src\ViewController\Workbench\FluidSubviewCell.designer.cs">
+      <DependentUpon>FluidSubviewCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -320,12 +324,10 @@
     <Folder Include="src\ViewController\Alarms\" />
     <Folder Include="src\ViewController\PressureTemperatureChart\" />
     <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
-    <Folder Include="Settings.bundle\" />
     <Folder Include="src\ViewController\Settings\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <BundleResource Include="Resources\language.lproj\Localizable.strings" />
     <BundleResource Include="Resources\fluids\R11.dat" />
     <BundleResource Include="Resources\fluids\R113.dat" />
     <BundleResource Include="Resources\fluids\R114.dat" />
@@ -433,10 +435,7 @@
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
-    <BundleResource Include="Settings.bundle\Root.plist" />
-    <BundleResource Include="Settings.bundle\app_settings.plist" />
-    <BundleResource Include="Settings.bundle\location_settings.plist" />
-    <BundleResource Include="Settings.bundle\alarm_settings.plist" />
+    <BundleResource Include="Resources\en.lproj\Localizable.strings" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

@@ -13,6 +13,7 @@ using ION.Core.Util;
 using ION.IOS.App;
 using ION.IOS.Util;
 using ION.IOS.ViewController.PressureTemperatureChart;
+using ION.IOS.ViewController.Settings;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.Workbench;
 
@@ -49,6 +50,12 @@ namespace ION.IOS.ViewController {
           new StringElement(Strings.Fluid.PT_CHART),
           new StringElement(Strings.Fluid.SUPERHEAT_SUBCOOL),
         },
+/*
+        new Section (Strings.Navigation.CONFIGURATION) {
+          new StringElement(Strings.SETTINGS),
+          new StringElement(Strings.HELP),
+        }
+*/
       };
       navigation.ViewControllers = BuildViewControllers();
       // Create the menu
@@ -63,6 +70,7 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
+//        new UINavigationController(InflateViewController<SettingsViewController>(BaseIONViewController.VC_SETTINGS)),
       };
 
       return ret;

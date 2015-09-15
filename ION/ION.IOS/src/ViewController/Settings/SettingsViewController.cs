@@ -6,7 +6,7 @@ using Foundation;
 using UIKit;
 
 namespace ION.IOS.ViewController.Settings {
-	public partial class SettingsViewController : UIViewController {
+	public partial class SettingsViewController : BaseIONViewController {
 		public SettingsViewController (IntPtr handle) : base (handle) {
 		}
 	}
