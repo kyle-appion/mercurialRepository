@@ -7,7 +7,7 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace ION.IOS
+namespace ION.IOS.ViewController.Workbench
 {
 	[Register ("FluidSubviewCell")]
 	partial class FluidSubviewCell
