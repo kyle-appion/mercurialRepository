@@ -1,0 +1,242 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{71313512-D5C3-4E37-BCFB-88A36B5C080B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ION.Droid</RootNamespace>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidApplication>True</AndroidApplication>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>ION.Droid</AssemblyName>
+    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Activity\DeviceManagerActivity.cs" />
+    <Compile Include="src\Activity\MainActivity.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Animation\AnimationHelper.cs" />
+    <Compile Include="src\Connections\BLEConnection.cs" />
+    <Compile Include="src\Devices\AndroidDeviceManager.cs" />
+    <Compile Include="src\Devices\DeviceUtils.cs" />
+    <Compile Include="src\Dialog\IONAlertDialog.cs" />
+    <Compile Include="src\Dialog\ListDialogBuilder.cs" />
+    <Compile Include="src\Util\BitmapCache.cs" />
+    <Compile Include="src\Widgets\ExpandableContentELVAdapter.cs" />
+    <Compile Include="src\Widgets\IONExpandableListViewAdapter.cs" />
+    <Compile Include="src\Widgets\RootView.cs" />
+    <Compile Include="src\Util\LogPrinter.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Assets\AboutAssets.txt" />
+    <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
+    <AndroidResource Include="Resources\values\Colors.xml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_group.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable\ic_menu_moreoverflow.png" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_device.axml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_sensor.axml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_sensor_content.axml" />
+    <AndroidResource Include="Resources\drawable\hidden_button_selector.xml" />
+    <AndroidResource Include="Resources\drawable\ic_action_accept.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_edit.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_pause.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_play.png" />
+    <AndroidResource Include="Resources\drawable\ic_alarm_active.png" />
+    <AndroidResource Include="Resources\drawable\ic_alarm_add.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downblack.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downfloor.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downwhite.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_trenddown.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_trendup.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upblack.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upcieling.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upwhite.png" />
+    <AndroidResource Include="Resources\drawable\ic_association.9.png" />
+    <AndroidResource Include="Resources\drawable\ic_association_linked.9.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_100.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_25.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_50.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_75.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_empty.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_broadcast.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_disconnected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_paired.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_connected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_disconnected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_nearby.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_unknown.png" />
+    <AndroidResource Include="Resources\drawable\ic_bookmark.png" />
+    <AndroidResource Include="Resources\drawable\ic_compressor.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add_to_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add_to_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_on_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_on_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_document.png" />
+    <AndroidResource Include="Resources\drawable\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable\ic_expansionchamber.png" />
+    <AndroidResource Include="Resources\drawable\ic_folder.png" />
+    <AndroidResource Include="Resources\drawable\ic_gears.png" />
+    <AndroidResource Include="Resources\drawable\ic_link.png" />
+    <AndroidResource Include="Resources\drawable\ic_logo_appiondefault.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_certificate.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_devmanager.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_power.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_ptconversion.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_screenshot.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_supersub.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_pdf.png" />
+    <AndroidResource Include="Resources\drawable\ic_refresh.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gauge_tss.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugeav760.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep300.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep500.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep800.png" />
+    <AndroidResource Include="Resources\drawable\ic_search.png" />
+    <AndroidResource Include="Resources\drawable\ic_settings.png" />
+    <AndroidResource Include="Resources\drawable\ic_subview_dropdown.png" />
+    <AndroidResource Include="Resources\drawable\ic_trash.png" />
+    <AndroidResource Include="Resources\drawable\icon_warning.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_dialog.9.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_list_white.9.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_subviewdisplay.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_blackclosex.png" />
+    <AndroidResource Include="Resources\drawable\img_button_down_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_up_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_whiteclosex.png" />
+    <AndroidResource Include="Resources\drawable\img_handle_left.9.png" />
+    <AndroidResource Include="Resources\drawable\img_handle_right.9.png" />
+    <AndroidResource Include="Resources\drawable\np_analyzer_slot.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_left_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_right_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_tab.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_gray_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_green_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_light_blue_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_light_gray_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_padding_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_red_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_transparent_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_yellow_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_empty_viewer_curve_left.9.png" />
+    <AndroidResource Include="Resources\drawable\np_empty_viewer_curve_right.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_lower_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_red.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_left_side_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rect_white_black_border.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_left_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_right_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_tab.9.png" />
+    <AndroidResource Include="Resources\drawable\np_right_side_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_green.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_light_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_red.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_square_middle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_selection_bottom_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\np_square_black_border_white_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_curve_left_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_curve_right_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_bot.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_mid.9.png" />
+    <AndroidResource Include="Resources\drawable\selector_button_close_x.xml" />
+    <AndroidResource Include="Resources\drawable\selector_button_gold_black.xml" />
+    <AndroidResource Include="Resources\drawable\selector_group_indicator_black.xml" />
+    <AndroidResource Include="Resources\drawable\selector_group_indicator_white.xml" />
+    <AndroidResource Include="Resources\drawable\selector_ic_arrow_down.xml" />
+    <AndroidResource Include="Resources\drawable\selector_ic_arrow_up.xml" />
+    <AndroidResource Include="Resources\drawable\selector_shsc.xml" />
+    <AndroidResource Include="Resources\drawable\selector_text_blackgold.xml" />
+    <AndroidResource Include="Resources\drawable\shape_circle_gold.xml" />
+    <AndroidResource Include="Resources\drawable\np_bordered_white_square.9.png" />
+    <AndroidResource Include="Resources\drawable\Dimens.xml" />
+    <AndroidResource Include="Resources\values-sw320dp\dimens.xml" />
+    <AndroidResource Include="Resources\values-sw600dp\dimens.xml" />
+    <AndroidResource Include="Resources\values-sw700dp\dimens.xml" />
+    <AndroidResource Include="Resources\values\Dimens.xml" />
+    <AndroidResource Include="Resources\values\Dimens_Static.xml" />
+    <AndroidResource Include="Resources\layout\button_scan.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\dialog_title.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Main.axml" />
+    <AndroidResource Include="Resources\values\Strings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\drawable-hdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\Icon.png" />
+  </ItemGroup>
+  <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
+      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
+      <Name>ION.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\Ids.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\scan.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\App\" />
+  </ItemGroup>
+</Project>
