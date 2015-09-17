@@ -27,7 +27,18 @@ namespace ION.IOS.ViewController.FluidManager {
     /// The current fluid that the view controller has selected.
     /// </summary>
     /// <value>The selected fluid.</value>
-    public string selectedFluid { get; set; }
+    public string selectedFluid {
+      get {
+        return __selectedFluid;
+      }
+      set {
+        __selectedFluid = value;
+        if (IsViewLoaded) {
+          viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(fluidManager.GetFluidColor(__selectedFluid));
+          labelFluidName.Text = __selectedFluid;
+        }
+      }
+    } string __selectedFluid;
 
     /// <summary>
     /// The ion instance for the view controller.
@@ -44,8 +55,6 @@ namespace ION.IOS.ViewController.FluidManager {
     /// </summary>
     /// <value>The source.</value>
     private FluidSource source { get; set; }
-
-
 
     public FluidManagerViewController (IntPtr handle) : base (handle) {
       // Nope
@@ -85,8 +94,12 @@ namespace ION.IOS.ViewController.FluidManager {
     public async override void ViewWillDisappear(bool animated) {
       base.ViewWillDisappear(animated);
 
-      if (onFluidSelectedDelegate != null) {
-        onFluidSelectedDelegate(await fluidManager.GetFluidAsync(source.selectedFluid));
+      if (IsMovingFromParentViewController) {
+        ION.Core.Util.Log.D(this, "Called fluid selected delegate");
+        if (onFluidSelectedDelegate != null) {
+          ION.Core.Util.Log.D(this, "Returning fluid " + selectedFluid);
+          onFluidSelectedDelegate(await fluidManager.GetFluidAsync(selectedFluid));
+        }
       }
     }
 
@@ -104,16 +117,12 @@ namespace ION.IOS.ViewController.FluidManager {
       }
 
       source.selectedFluid = selectedFluid;
-      source.onFluidSelected += DoOnFluidSelected;
+      source.onFluidSelected += (string fluidName) => {
+        selectedFluid = fluidName;
+      };
 
       tableContent.Source = source;
       tableContent.ReloadData();
-    }
-
-    private void DoOnFluidSelected(string fluidName) {
-      selectedFluid = fluidName;
-      viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(fluidManager.GetFluidColor(fluidName));
-      labelFluidName.Text = fluidName;  
     }
 	}
 }

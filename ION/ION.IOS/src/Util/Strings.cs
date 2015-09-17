@@ -79,9 +79,13 @@ namespace ION.IOS.Util {
       public static readonly string
       PT_CALCULATOR = "fluid_pt_calculator".FromResources(),
       PT_CHART = "fluid_pt_chart".FromResources(),
+      PT_CHART_BUB = "fluid_pt_chart_bub".FromResources(),
+      PT_CHART_DEW = "fluid_pt_chart_dew".FromResources(),
       STATE_HELP = "fluid_state_help".FromResources(),
       SUBCOOL = "fluid_subcool".FromResources(),
+      SUBCOOL_ABRV = "fluid_subcool_abrv".FromResources(),
       SUPERHEAT = "fluid_superheat".FromResources(),
+      SUPERHEAT_ABRV = "fluid_superheat_abrv".FromResources(),
       SUPERHEAT_SUBCOOL = "fluid_superheat_subcool".FromResources()
       ;
       public static class Manager {
@@ -137,7 +141,9 @@ namespace ION.IOS.Util {
         MAX = "workbench_subview_max".FromResources(),
         MAX_DESC = "workbench_subview_max_desc".FromResources(),
         MIN = "workbench_subview_min".FromResources(),
-        MIN_DESC = "workbench_subview_min_desc".FromResources()
+        MIN_DESC = "workbench_subview_min_desc".FromResources(),
+        PT_CHART_DESC = "workbench_subview_pt_chart_desc".FromResources(),
+        SHSC_DESC = "workbench_subview_shsc_desc".FromResources()
         ;
       }
     } // End Strings.Workbench

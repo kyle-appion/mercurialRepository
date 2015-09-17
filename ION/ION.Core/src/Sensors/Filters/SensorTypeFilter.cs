@@ -2,7 +2,7 @@
 
 using ION.Core.Util;
 
-namespace ION.Core.Sensors {
+namespace ION.Core.Sensors.Filters {
   public class SensorTypeFilter : IFilter<Sensor> {
     /// <summary>
     /// The sensor type to match to.

@@ -113,8 +113,6 @@
     <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\np_red_background_bordered.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_c3_disconnected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_c3_paired.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gauge_av760.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json" />
@@ -162,6 +160,8 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -325,6 +325,8 @@
     <Folder Include="src\ViewController\PressureTemperatureChart\" />
     <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
     <Folder Include="src\ViewController\Settings\" />
+    <Folder Include="Settings.bundle\" />
+    <Folder Include="Settings.bundle\en.lproj\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -436,6 +438,9 @@
     <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
     <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
+    <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Settings.bundle\ApplicationSettings.plist" />
+    <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="flyoutnavigation">

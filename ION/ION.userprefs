@@ -1,8 +1,9 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/IONPrimaryScreenController.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/Settings.bundle/en.lproj/Root.strings">
     <Files>
-      <File FileName="ION.IOS/src/ViewController/IONPrimaryScreenController.cs" Line="1" Column="1" />
+      <File FileName="ION.IOS/Settings.bundle/Root.plist" />
+      <File FileName="ION.IOS/Settings.bundle/en.lproj/Root.strings" Line="3" Column="54" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

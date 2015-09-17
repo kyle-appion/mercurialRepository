@@ -23,14 +23,22 @@ namespace ION.Core.Sensors.Properties {
     /// The ptchart used for calculations.
     /// </summary>
     /// <value>The point chart.</value>
-    private PTChart ptChart { get; set; }
+    public PTChart ptChart {
+      get {
+        return __ptChart;
+      }
+      set {
+        __ptChart = value;
+        NotifyChanged();
+      }
+    } PTChart __ptChart;
 
     public PTChartSensorProperty(Sensor sensor, PTChart ptChart) : base(sensor) {
       if (sensor.type != ESensorType.Pressure && sensor.type == ESensorType.Temperature) {
         throw new Exception("Cannot create PTChartSensorProperty: expected a pressure o temperature sensor");
       }
 
-      this.ptChart = ptChart;
+      __ptChart = ptChart;
     }
 
     // Overridden from AbstractSensorProperty

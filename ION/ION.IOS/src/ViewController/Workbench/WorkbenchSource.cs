@@ -6,13 +6,16 @@ using UIKit;
 
 using ION.Core.Content;
 using ION.Core.Devices;
+using ION.Core.Fluids;
 using ION.Core.Sensors;
+using ION.Core.Sensors.Filters;
 using ION.Core.Sensors.Properties;
 using ION.Core.Util;
 
 using ION.IOS.UI;
 using ION.IOS.Util;
 using ION.IOS.ViewController.Alarms;
+using ION.IOS.ViewController.FluidManager;
 
 namespace ION.IOS.ViewController.Workbench {
   /// <summary>
@@ -28,6 +31,7 @@ namespace ION.IOS.ViewController.Workbench {
     private const string CELL_VIEWER = "cellViewer";
     private const string CELL_ADD = "cellAdd";
     private const string CELL_MEASUREMENT_SUBVIEW = "cellMeasurementSubview";
+    private const string CELL_FLUID_SUBVIEW = "cellFluidSubview";
 
 
     public OnRequestViewer onRequestViewerDelegate { get; set; }
@@ -133,6 +137,34 @@ namespace ION.IOS.ViewController.Workbench {
         });
 
         return cell;
+      } else if (prop is PTChartSensorProperty) {
+        var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
+
+        if (prop is PTChartSensorProperty) {
+          var ptProp = prop as PTChartSensorProperty;
+          cell.UpdateTo(prop as PTChartSensorProperty, (object obj, Fluid fluid) => {
+            var fm = __workbenchController.InflateViewController<FluidManagerViewController>(BaseIONViewController.VC_FLUID_MANAGER);
+            fm.selectedFluid = fluid.name;
+            fm.onFluidSelectedDelegate = (Fluid f) => {
+              ptProp.ptChart = new PTChart(ptProp.ptChart.state, f, ptProp.ptChart.elevation);
+            };
+
+            __workbenchController.NavigationController.PushViewController(fm, true);
+          });
+        } else if (prop is SuperheatSubcoolSensorProperty) {
+          var shscProp = prop as SuperheatSubcoolSensorProperty;
+          cell.UpdateTo(prop as SuperheatSubcoolSensorProperty, (object obj, Fluid fluid) => {
+            var fm = __workbenchController.InflateViewController<FluidManagerViewController>(BaseIONViewController.VC_FLUID_MANAGER);
+            fm.selectedFluid = fluid.name;
+            fm.onFluidSelectedDelegate = (Fluid f) => {
+              shscProp.ptChart = new PTChart(shscProp.ptChart.state, f, shscProp.ptChart.elevation);
+            };
+
+            __workbenchController.NavigationController.PushViewController(fm, true);
+          });
+        }
+
+        return cell;
       } else {
         return null;
       }
@@ -224,6 +256,29 @@ namespace ION.IOS.ViewController.Workbench {
         });
       }
       */
+
+      var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
+      var fluid = manifold.fluid;
+      if (fluid == null) {
+        fluid = __workbenchController.ion.fluidManager.lastUsedFluid;
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty)) && ptChartFilter.Matches(sensor)) {
+        addAction(Strings.Workbench.Viewer.PT_CHART_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new PTChartSensorProperty(sensor, new PTChart(Fluid.EState.Bubble, fluid)));
+        });
+      }
+
+      // TODO Bug in checking sensor types
+      // While the sensors are verified that they are pressure or temperature, they are not verified that they are exactly one
+      // temperature and one pressure sensor. I let this be for the time being, in lieu correctness. This will bite you later,
+      // mister maintainer. I am sorry. 
+      if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty)) &&
+        ptChartFilter.Matches(sensor) && (manifold.secondarySensor == null || ptChartFilter.Matches(manifold.secondarySensor))) {
+        addAction(Strings.Workbench.Viewer.SHSC_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(sensor, manifold.secondarySensor, new PTChart(Fluid.EState.Bubble, fluid)));
+        });
+      }
 
       dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 

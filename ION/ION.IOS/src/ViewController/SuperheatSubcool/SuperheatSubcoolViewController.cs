@@ -10,6 +10,7 @@ using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.Measure;
 using ION.Core.Sensors;
+using ION.Core.Sensors.Filters;
 using ION.Core.Util;
 
 using ION.IOS.Devices;

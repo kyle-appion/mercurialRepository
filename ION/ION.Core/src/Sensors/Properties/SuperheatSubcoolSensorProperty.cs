@@ -27,7 +27,15 @@ namespace ION.Core.Sensors.Properties {
     /// The ptchart used for calculations.
     /// </summary>
     /// <value>The point chart.</value>
-    public PTChart ptChart { get; private set; }
+    public PTChart ptChart {
+      get {
+        return __ptChart;
+      }
+      set {
+        __ptChart = value;
+        NotifyChanged();
+      }
+    } PTChart __ptChart;
 
     public SuperheatSubcoolSensorProperty(Sensor sensor, Sensor other, PTChart ptChart) : base(sensor) {
       if (sensor.type == ESensorType.Pressure && other.type == ESensorType.Temperature) {

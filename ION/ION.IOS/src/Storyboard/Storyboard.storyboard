@@ -68,12 +68,13 @@
                                                                 <constraint firstAttribute="width" constant="64" id="9LC-Vl-8Tf"/>
                                                             </constraints>
                                                         </imageView>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Im7-OY-Wf8" userLabel="buttonConnection">
+                                                        <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Im7-OY-Wf8" userLabel="buttonConnection">
                                                             <rect key="frame" x="528" y="8" width="32" height="32"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="32" id="Ggr-Qk-vhj"/>
                                                                 <constraint firstAttribute="height" constant="32" id="hQV-rH-xNY"/>
                                                             </constraints>
+                                                            <inset key="contentEdgeInsets" minX="2" minY="2" maxX="2" maxY="2"/>
                                                             <state key="normal" image="ic_bluetooth_disconnected" backgroundImage="np_red_background_bordered">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
@@ -291,7 +292,7 @@
                                             <outlet property="viewDivider" destination="GF2-8A-fsx" id="3rr-yz-nSj"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="48" id="TBb-uI-cML" userLabel="cellFluidSubview" customClass="FluidSubviewCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellFluidSubview" rowHeight="48" id="TBb-uI-cML" userLabel="cellFluidSubview" customClass="FluidSubviewCell">
                                         <rect key="frame" x="0.0" y="0.0" width="568" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TBb-uI-cML" id="8v2-LR-fHA">
@@ -311,16 +312,6 @@
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="R1234zxy" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T2i-dX-dRF" userLabel="labelFluid">
-                                                            <rect key="frame" x="64" y="0.0" width="80" height="48"/>
-                                                            <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="48" id="ZNe-20-uIS"/>
-                                                                <constraint firstAttribute="width" constant="80" id="bd2-Za-KpM"/>
-                                                            </constraints>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="d0U-1j-nx3" userLabel="viewDivider">
                                                             <rect key="frame" x="144" y="0.0" width="1" height="48"/>
                                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -337,22 +328,42 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oil-Mf-Amb" userLabel="buttonFluid">
+                                                            <rect key="frame" x="64" y="0.0" width="80" height="48"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="80" id="Dap-uv-0Fu"/>
+                                                                <constraint firstAttribute="height" constant="48" id="VGx-0i-hAp"/>
+                                                            </constraints>
+                                                            <state key="normal" title="Button">
+                                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                            </state>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstItem="d0U-1j-nx3" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="49q-Cc-wWb"/>
                                                         <constraint firstAttribute="bottom" secondItem="d0U-1j-nx3" secondAttribute="bottom" id="4Ir-Ii-AgV"/>
-                                                        <constraint firstItem="T2i-dX-dRF" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="5PN-pH-Hf1"/>
                                                         <constraint firstItem="qfJ-Zq-HgJ" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="RJ7-bQ-2bC"/>
-                                                        <constraint firstItem="T2i-dX-dRF" firstAttribute="leading" secondItem="D98-Sg-9fl" secondAttribute="trailing" id="S2f-D8-wea"/>
                                                         <constraint firstAttribute="trailing" secondItem="qfJ-Zq-HgJ" secondAttribute="trailing" constant="8" id="VRO-vd-4Za"/>
+                                                        <constraint firstItem="oil-Mf-Amb" firstAttribute="leading" secondItem="D98-Sg-9fl" secondAttribute="trailing" id="czm-mx-02T"/>
+                                                        <constraint firstAttribute="bottom" secondItem="d0U-1j-nx3" secondAttribute="bottom" id="f8T-s9-x94"/>
                                                         <constraint firstItem="D98-Sg-9fl" firstAttribute="leading" secondItem="ExU-R1-p6a" secondAttribute="leading" id="rVI-4X-KtL"/>
-                                                        <constraint firstItem="d0U-1j-nx3" firstAttribute="leading" secondItem="T2i-dX-dRF" secondAttribute="trailing" id="s7V-gB-0wZ"/>
+                                                        <constraint firstItem="d0U-1j-nx3" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="s21-pr-EbO"/>
                                                         <constraint firstItem="qfJ-Zq-HgJ" firstAttribute="leading" secondItem="d0U-1j-nx3" secondAttribute="trailing" id="std-t0-PfD"/>
+                                                        <constraint firstItem="d0U-1j-nx3" firstAttribute="leading" secondItem="oil-Mf-Amb" secondAttribute="trailing" id="syo-bT-Z0Q"/>
+                                                        <constraint firstItem="oil-Mf-Amb" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="wBT-8w-LRc"/>
                                                         <constraint firstItem="D98-Sg-9fl" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="xwe-DG-2he"/>
                                                     </constraints>
+                                                    <variation key="default">
+                                                        <mask key="constraints">
+                                                            <exclude reference="49q-Cc-wWb"/>
+                                                            <exclude reference="4Ir-Ii-AgV"/>
+                                                        </mask>
+                                                    </variation>
                                                 </view>
                                             </subviews>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                             <constraints>
                                                 <constraint firstItem="ExU-R1-p6a" firstAttribute="top" secondItem="8v2-LR-fHA" secondAttribute="topMargin" constant="-8" id="Bfj-M0-PKp"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="ExU-R1-p6a" secondAttribute="trailing" constant="-8" id="RVP-yA-xrE"/>
@@ -362,10 +373,10 @@
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
+                                            <outlet property="buttonFluid" destination="oil-Mf-Amb" id="D02-YT-lR0"/>
                                             <outlet property="labelMeasurement" destination="qfJ-Zq-HgJ" id="7GT-8F-Vhh"/>
                                             <outlet property="viewBackground" destination="ExU-R1-p6a" id="Fbh-Q6-TZf"/>
                                             <outlet property="viewDivider" destination="d0U-1j-nx3" id="Oeo-7p-dL6"/>
-                                            <outlet property="viewFluid" destination="T2i-dX-dRF" id="Il7-6X-945"/>
                                             <outlet property="viewTitle" destination="D98-Sg-9fl" id="hcV-CL-6bU"/>
                                         </connections>
                                     </tableViewCell>
@@ -1249,11 +1260,12 @@
                                                                 <constraint firstAttribute="width" constant="48" id="ol7-j1-QGh"/>
                                                                 <constraint firstAttribute="height" constant="48" id="rFC-Kh-fMX"/>
                                                             </constraints>
+                                                            <inset key="contentEdgeInsets" minX="2" minY="2" maxX="2" maxY="2"/>
                                                             <state key="normal" image="ic_bluetooth_connected" backgroundImage="ButtonGold">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
                                                         </button>
-                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="nyT-Lz-eKm" userLabel="activityConnectStatus">
+                                                        <activityIndicatorView opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="nyT-Lz-eKm" userLabel="activityConnectStatus">
                                                             <rect key="frame" x="520" y="0.0" width="48" height="48"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="48" id="IJl-vS-56W"/>
@@ -1399,6 +1411,7 @@
                                                                 <constraint firstAttribute="width" constant="48" id="S9B-al-IF3"/>
                                                                 <constraint firstAttribute="height" constant="48" id="dti-2u-FA2"/>
                                                             </constraints>
+                                                            <inset key="contentEdgeInsets" minX="2" minY="2" maxX="2" maxY="2"/>
                                                             <state key="normal" image="ic_device_add" backgroundImage="ButtonGold">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
@@ -2161,7 +2174,7 @@
         <image name="ic_alarm" width="44" height="44"/>
         <image name="ic_bluetooth_connected" width="61" height="61"/>
         <image name="ic_bluetooth_disconnected" width="61" height="61"/>
-        <image name="ic_device_add" width="54" height="46"/>
+        <image name="ic_device_add" width="61" height="61"/>
         <image name="ic_menu_overflow" width="800" height="1280"/>
         <image name="ic_render_gauge_pt800" width="168" height="168"/>
         <image name="np_red_background_bordered" width="16" height="16"/>
