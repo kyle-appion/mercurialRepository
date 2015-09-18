@@ -162,6 +162,8 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -184,23 +186,7 @@
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
-    <Compile Include="src\ViewController\Navigation\NavigationViewController.cs" />
-    <Compile Include="src\ViewController\Navigation\NavigationViewController.designer.cs">
-      <DependentUpon>NavigationViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Navigation\NavigationItem.cs" />
-    <Compile Include="src\ViewController\Navigation\NavigationItem.designer.cs">
-      <DependentUpon>NavigationItem.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Navigation\NavigationSection.cs" />
-    <Compile Include="src\ViewController\Navigation\NavigationSection.designer.cs">
-      <DependentUpon>NavigationSection.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\App\AppDelegate.cs" />
-    <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
-    <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
-      <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\UI\Toast.cs" />
     <Compile Include="src\Connections\IosLeConnection.cs" />
     <Compile Include="src\Util\NSExtensions.cs" />
@@ -304,6 +290,10 @@
       <DependentUpon>FluidSubviewCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\App\AppSettings.cs" />
+    <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
+    <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
+      <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -312,7 +302,6 @@
     <Folder Include="src\IO\" />
     <Folder Include="Resources\fluids\" />
     <Folder Include="..\ION.CoreExtensions\" />
-    <Folder Include="src\ViewController\Navigation\" />
     <Folder Include="src\UI\" />
     <Folder Include="Resources\assets\" />
     <Folder Include="src\ViewController\Dialog\" />

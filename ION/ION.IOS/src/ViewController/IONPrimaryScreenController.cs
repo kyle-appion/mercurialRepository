@@ -8,9 +8,11 @@ using MonoTouch.Dialog;
 
 using FlyoutNavigation;
 
+using ION.Core.App;
 using ION.Core.Util;
 
 using ION.IOS.App;
+using ION.IOS.UI;
 using ION.IOS.Util;
 using ION.IOS.ViewController.PressureTemperatureChart;
 using ION.IOS.ViewController.Settings;
@@ -41,24 +43,33 @@ namespace ION.IOS.ViewController {
       View.AddSubview(navigation.View);
 
       navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
-        new Section (Strings.Navigation.MAIN) {
+        new Section (Strings.Navigation.MAIN.ToUpper()) {
 //          new StringElement ("Analyzer"),
 //          new StringElement ("Device Manager"),
-          new StringElement (Strings.Workbench.SELF),
+          new ImageStringElement (Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
         },
-        new Section (Strings.Navigation.CALCULATORS) {
-          new StringElement(Strings.Fluid.PT_CHART),
-          new StringElement(Strings.Fluid.SUPERHEAT_SUBCOOL),
+        new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
+          new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
+          new ImageStringElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-/*
-        new Section (Strings.Navigation.CONFIGURATION) {
-          new StringElement(Strings.SETTINGS),
-          new StringElement(Strings.HELP),
-        }
-*/
+        new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
+          new ImageStringElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
+//          new ImageStringElement(Strings.HELP, null),
+        },
       };
       navigation.ViewControllers = BuildViewControllers();
       // Create the menu
+    }
+
+    /// <summary>
+    /// Opens the application's settings.
+    /// </summary>
+    private void OnNavSettingsClicked() {
+      UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+    }
+
+    private void OnNavHelpClicked() {
+      // TODO Do Helpful things
     }
 
     /// <summary>
@@ -70,7 +81,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-//        new UINavigationController(InflateViewController<SettingsViewController>(BaseIONViewController.VC_SETTINGS)),
+        null, // Settings navigation
+//        null, // Help Navigation
       };
 
       return ret;
