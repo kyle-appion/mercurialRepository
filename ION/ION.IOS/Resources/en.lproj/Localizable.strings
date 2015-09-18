@@ -70,9 +70,9 @@ file.
 "measure_pick_unit" = "Pick Unit";
 
 /* NAVIGATION DRAWER */
-"navigation_calculators" = "CALCULATORS";
-"navigation_main" = "MAIN";
+"navigation_calculators" = "Calculators";
 "navigation_configuration" = "Configuration";
+"navigation_main" = "Main";
 
 /* SENSOR */
 

@@ -17,7 +17,6 @@ using ION.IOS.Devices;
 using ION.IOS.IO;
 using ION.IOS.Util;
 using ION.IOS.ViewController;
-using ION.IOS.ViewController.Navigation;
 
 namespace ION.IOS.App {
   // The UIApplicationDelegate for the application. This class is responsible for launching the

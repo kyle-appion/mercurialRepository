@@ -104,9 +104,8 @@ namespace ION.IOS.Util {
     public static class Navigation {
       public static readonly string
       CALCULATORS = "navigation_calculators".FromResources(),
-      EXIT = "navigation_exit".FromResources(),
-      MAIN = "navigation_main".FromResources(),
-      CONFIGURATION = "navigation_configuration".FromResources()
+      CONFIGURATION = "navigation_configuration".FromResources(),
+      MAIN = "navigation_main".FromResources()
       ;
     } // End Strings.Navigation
 
