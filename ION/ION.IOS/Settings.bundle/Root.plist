@@ -149,16 +149,14 @@
       <key>Type</key>
       <string>PSGroupSpecifier</string>
       <key>Title</key>
-      <string>settings_app_alarm</string>
+      <string>settings_alarm</string>
     </dict>
     <dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
       <key>Key</key>
-      <string>settings_alarm</string>
+      <string>settings_alarm_sound</string>
 			<key>Title</key>
-			<string>settings_alarm_sound</string>
-			<key>FooterText</key>
 			<string>settings_alarm_sound</string>
       <key>DefaultValue</key>
       <false/>
@@ -171,10 +169,8 @@
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
       <key>Key</key>
-      <string>settings_alarm</string>
+      <string>settings_alarm_haptic</string>
 			<key>Title</key>
-			<string>settings_alarm_haptic</string>
-			<key>FooterText</key>
 			<string>settings_alarm_haptic</string>
       <key>DefaultValue</key>
       <false/>
