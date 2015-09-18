@@ -7,6 +7,7 @@ using ION.Core.Database;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.IO;
+using ION.Core.Measure;
 using ION.Core.Util;
 
 namespace ION.Core.App {
@@ -70,6 +71,11 @@ namespace ION.Core.App {
     /// </summary>
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; }
+    /// <summary>
+    /// The default units for the ION instance.
+    /// </summary>
+    /// <value>The default units.</value>
+    IUnits defaultUnits { get; }
 
     /// <summary>
     /// Posts the action to the main message pump for execution on the main thread.
@@ -79,5 +85,15 @@ namespace ION.Core.App {
 
     Task SaveWorkbenchAsync();
   } // End IION
+
+  /// <summary>
+  /// The interface that describes the default units for the application.
+  /// </summary>
+  public interface IUnits { 
+    Unit length { get; set; }
+    Unit pressure { get; set; }
+    Unit temperature { get; set; }
+    Unit vacuum { get; set; }
+  } // End IUnits
 }
 

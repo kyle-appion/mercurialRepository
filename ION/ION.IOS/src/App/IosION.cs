@@ -16,6 +16,8 @@ using ION.Core.Database;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.IO;
+using ION.Core.Measure;
+using ION.Core.Sensors;
 using ION.Core.Util;
 
 using ION.IOS.Alarms.Alerts;
@@ -45,12 +47,21 @@ namespace ION.IOS.App {
     // Overridden from IION
     public Workbench currentWorkbench { get; set; }
 
+    // Overridden from IION
+    public IUnits defaultUnits { get; private set; }
+
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>
     private readonly List<IIONManager> managers = new List<IIONManager>();
+    /// <summary>
+    /// The native ios application settings dictionary.
+    /// </summary>
+    private NSDictionary settings { get; set; }
 
     public IosION() {
+      // Load up the application settings
+//      defaultUnits = new IosUnits();
       // Order matters
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
@@ -109,6 +120,10 @@ namespace ION.IOS.App {
     /// Initializes the ION instance.
     /// </summary>
     public async Task Init() {
+      var settings = new AppSettings();
+      defaultUnits = new IosUnits(settings);
+
+
       try {
         Log.D(this, "Starting ION init");
         foreach (var im in managers) {
@@ -135,7 +150,7 @@ namespace ION.IOS.App {
         var wp = new WorkbenchParser();
         try {
           using (var stream = file.OpenForReading()) {
-            return wp.ReadFromStream(this, stream); 
+            return wp.ReadFromStream(this, stream);
           }
         } catch (Exception e) {
           Log.E(this, "Failed to load workbench. Creating a new one.", e);
@@ -144,5 +159,45 @@ namespace ION.IOS.App {
       }
     }
   } // End IosION
-}
 
+  internal class IosUnits : IUnits {
+    // Overridden from IUnits
+    public Unit length {
+      get {
+        return UnitLookup.GetUnitEntry(settings.units.length).unit;
+      }
+      set {
+      }
+    }
+    // Overridden from IUnits
+    public Unit pressure {
+      get {
+        return UnitLookup.GetUnitEntry(settings.units.pressure).unit;
+      }
+      set {
+      }
+    }
+    // Overridden from IUnits
+    public Unit temperature {
+      get {
+        return UnitLookup.GetUnitEntry(settings.units.temperature).unit;
+      }
+      set {
+      }
+    }
+    // Overridden from IUnits
+    public Unit vacuum {
+      get {
+        return UnitLookup.GetUnitEntry(settings.units.vacuum).unit;
+      }
+      set {
+      }
+    }
+
+    private AppSettings settings { get; set; }
+
+    public IosUnits(AppSettings settings) {
+      this.settings = settings;
+    }
+  }
+}
