@@ -1,0 +1,19 @@
+BETA TODOS
+
+Ptchart
+* connecting to p500 from device manager locked up app
+
+Workbench
+** Add remove subview from workbench
+* alt not adding
+* PTChart & ShSc subivews
+* italic linked when linked with gauge device
+* SHSC should show N/A one non linked add
+* Toast when result of SHSC is
+
+Alarms
+* alarm icon doesn't show for workbench viewer
+
+DESIGN STUFF
+
+PTChart SHSC show connected

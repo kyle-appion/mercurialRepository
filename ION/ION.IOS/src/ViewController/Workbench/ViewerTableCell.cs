@@ -74,11 +74,12 @@ namespace ION.IOS.ViewController.Workbench {
 
       viewBackground.Layer.CornerRadius = 10f;
 
-      AddGestureRecognizer(new UITapGestureRecognizer(() => {
+      var tapper = new UITapGestureRecognizer(() => {
         if (onBackgroundClicked != null) {
           onBackgroundClicked(this, manifold);
         }
-      }));
+      });
+      AddGestureRecognizer(tapper);
     }
 
     // Overridden from UITableViewCell
@@ -106,6 +107,7 @@ namespace ION.IOS.ViewController.Workbench {
       this.ion = ion;
       this.manifold = manifold;
       this.onBackgroundClicked = backgroundClicked;
+      this.labelLinked.Hidden = !(manifold.secondarySensor is GaugeDeviceSensor);
     }
 
     public void UpdateFromGaugeSensor(GaugeDeviceSensor sensor) {

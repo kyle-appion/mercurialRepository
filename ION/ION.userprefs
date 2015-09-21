@@ -1,9 +1,11 @@
 ﻿<Properties StartupItem="ION.IOS/ION.IOS.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhone" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/Settings.bundle/en.lproj/Root.strings">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="MonoDevelop.IPhone.IPhoneDeviceTarget.Christian's iPod touch" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs">
     <Files>
-      <File FileName="ION.IOS/Settings.bundle/Root.plist" />
-      <File FileName="ION.IOS/Settings.bundle/en.lproj/Root.strings" Line="3" Column="54" />
+      <File FileName="ION.IOS/src/ViewController/SuperheatSubcool/SuperheatSubcoolViewController.cs" Line="151" Column="10" />
+      <File FileName="ION.IOS/src/ViewController/PressureTemperatureChart/PTChartViewController.cs" Line="188" Column="59" />
+      <File FileName="ION.IOS/src/ViewController/Workbench/WorkbenchSource.cs" Line="100" Column="136" NotebookId="1" />
+      <File FileName="ION.IOS/src/ViewController/FluidManager/FluidManagerViewController.cs" Line="75" Column="13" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

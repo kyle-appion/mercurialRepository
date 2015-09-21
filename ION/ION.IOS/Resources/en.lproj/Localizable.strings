@@ -9,6 +9,7 @@ file.
 /* APP */
 "actions" = "Actions";
 "cancel" = "Cancel";
+"delete_question" = "Delete?";
 "help" = "Help";
 "ok" = "OK";
 "rename" = "Rename";
@@ -101,9 +102,8 @@ file.
 "workbench_subview_min_desc" = "Minimum Reading (MIN)";
 "workbench_subview_pt_chart_desc" = "Pressure Temperature Chart (P/T)";
 "workbench_subview_shsc_desc" = "Superheat/Subcool Calculation (S/H S/C)";
-/*
 "workbench_subview_pt_chart_bub" = "P/Tbub";
 "workbench_subview_pt_chart_dew" = "P/Tdew";
-"workbench_subiew_sc" = "S/C";
+"workbench_subview_sc" = "S/C";
 "workbench_subview_sh" = "S/H";
-*/
+"workbench_subview_shsc_setup" = "Setup";

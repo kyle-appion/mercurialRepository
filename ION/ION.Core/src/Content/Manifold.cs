@@ -90,17 +90,27 @@ namespace ION.Core.Content {
     } List<ISensorProperty> __sensorProperties = new List<ISensorProperty>();
 
     /// <summary>
-    /// The fluid that the manifold is expected to work with.
+    /// An indexer that will retrieve the sensor properties from the manifold.
     /// </summary>
-    public Fluid fluid {
+    /// <param name="index">Index.</param>
+    public ISensorProperty this[int index] {
       get {
-        return __fluid;
+        return __sensorProperties[index];
+      }
+    }
+
+    /// <summary>
+    /// The pt chart that the manifold is expected to work with.
+    /// </summary>
+    public PTChart ptChart {
+      get {
+        return __ptChart;
       }
       set {
-        __fluid = fluid;
+        __ptChart = value;
         NotifyChanged();
       }
-    } Fluid __fluid;
+    } PTChart __ptChart;
 
     /// <summary>
     /// Used when inflated from serialization.
@@ -189,11 +199,30 @@ namespace ION.Core.Content {
     }
 
     /// <summary>
+    /// Queries the index of the given sensor property.
+    /// </summary>
+    /// <returns>The of sensor property.</returns>
+    /// <param name="sensorProperty">Sensor property.</param>
+    public int IndexOfSensorProperty(ISensorProperty sensorProperty) {
+      return __sensorProperties.IndexOf(sensorProperty);
+    }
+
+    /// <summary>
     /// Removes the given sensor property from the manifold.
     /// </summary>
     /// <param name="sensorProperty">Sensor property.</param>
     public void RemoveSensorProperty(ISensorProperty sensorProperty) {
       __sensorProperties.Remove(sensorProperty);
+      NotifyChanged();
+    }
+
+    /// <summary>
+    /// Removes the sensor property at the given index.
+    /// </summary>
+    /// <param name="index">Index.</param>
+    public void RemoveSensorPropertyAt(int index) {
+      __sensorProperties.RemoveAt(index);
+      NotifyChanged();
     }
 
     /// <summary>

@@ -6,6 +6,7 @@ using Foundation;
 using UIKit;
 
 using ION.Core.App;
+using ION.Core.Content;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.Measure;
@@ -57,7 +58,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (__pressureSensor is GaugeDeviceSensor) {
           GaugeDeviceSensor sensor = (GaugeDeviceSensor)__pressureSensor;
           imagePressureIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
-          imagePressureLock.Image = UIImage.FromBundle("ic_lock");
+          if (pressureSensorLocked) {
+            imagePressureLock.Image = UIImage.FromBundle("ic_lock");
+          }
         } else {
           imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
           imagePressureLock.Image = null;
@@ -70,6 +73,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
       }
     } Sensor __pressureSensor;
+
+    public bool pressureSensorLocked {
+      get {
+        return initialManifold != null && ESensorType.Pressure == initialManifold.primarySensor.type;
+      }
+    }
 
     public Unit pressureUnit {
       get {
@@ -105,7 +114,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (__temperatureSensor is GaugeDeviceSensor) {
           GaugeDeviceSensor sensor = (GaugeDeviceSensor)__temperatureSensor;
           imageTemperatureIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
-          imageTemperatureLock.Image = UIImage.FromBundle("ic_lock");
+          if (temperatureSensorLocked) {
+            imageTemperatureLock.Image = UIImage.FromBundle("ic_lock");
+          }
         } else {
           imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
           imageTemperatureLock.Image = null;
@@ -118,6 +129,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
       }
     } Sensor __temperatureSensor;
+
+    public bool temperatureSensorLocked {
+      get {
+        return initialManifold != null && ESensorType.Temperature == initialManifold.primarySensor.type;
+      }
+    }
 
     public Unit temperatureUnit {
       get {
@@ -135,17 +152,31 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }
     }
 
+    /// <summary>
+    /// The manifold that is used to initialize the view controller. If this is null
+    /// the view controller will initialize to its default settings. When the view
+    /// controller is finishes (removed from parent), if the manifold is not null, the
+    /// manifold will be updated to the state of the view controller.
+    /// </summary>
+    /// <value>The initial manifold.</value>
+    public Manifold initialManifold { get; set; }
+
     public SuperheatSubcoolViewController (IntPtr handle) : base (handle) {
       // Nope
     }
 
+    // Overridden from BaseIONViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      InitNavigationBar("ic_nav_superheat_subcool", false);
-      backAction = () => {
-        root.navigation.ToggleMenu();
-      };
+      if (initialManifold == null) {
+        InitNavigationBar("ic_nav_superheat_subcool", false);
+        backAction = () => {
+          root.navigation.ToggleMenu();
+        };
+      } else {
+        NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
+      }
 
       __pressureSensor = new Sensor(ESensorType.Pressure);
       __temperatureSensor = new Sensor(ESensorType.Temperature);
@@ -192,9 +223,28 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       ion = AppState.context;
 
-      ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-      pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
-      temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      if (initialManifold == null) {
+        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
+        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      } else {
+        var im = initialManifold;
+        if (im.ptChart == null) {
+          ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        } else {
+          ptChart = im.ptChart;
+        }
+        if (im.primarySensor.type == ESensorType.Pressure) {
+          pressureSensor = im.primarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else if (im.primarySensor.type == ESensorType.Temperature) {
+          pressureSensor = im.secondarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else {
+          // TODO ahodder@appioninc.com: Display a user friendly error message
+          throw new Exception("Cannot display view controller: invalid manifold");
+        }
+      }
 
       NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
@@ -214,17 +264,21 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }));
 
       viewPressureTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-        dm.displayFilter = new SensorTypeFilter(ESensorType.Pressure);
-        dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-          pressureSensor = sensor;
-        };
-        NavigationController.PushViewController(dm, true);
+        if (!pressureSensorLocked) {
+          var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+          dm.displayFilter = new SensorTypeFilter(ESensorType.Pressure);
+          dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+            pressureSensor = sensor;
+          };
+          NavigationController.PushViewController(dm, true);
+        }
       }));
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
-        pressureSensor = null;
-        ClearPressureInput();
+        if (!pressureSensorLocked) {
+          pressureSensor = null;
+          ClearPressureInput();
+        }
       }));
 
       editPressure.ShouldReturn += (textField) => {
@@ -250,17 +304,21 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }, UIControlEvent.EditingChanged);
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-        dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
-        dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-          temperatureSensor = sensor;
-        };
-        NavigationController.PushViewController(dm, true);
+        if (!temperatureSensorLocked) {
+          var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+          dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
+          dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+            temperatureSensor = sensor;
+          };
+          NavigationController.PushViewController(dm, true);
+        }
       }));
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
-        temperatureSensor = null;
-        ClearTemperatureInput();
+        if (!temperatureSensorLocked) {
+          temperatureSensor = null;
+          ClearTemperatureInput();
+        }
       }));
 
       editTemperature.AddTarget((object obj, EventArgs args) => {
@@ -280,6 +338,25 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       OnPressureSensorChanged(pressureSensor);
       OnTemperatureSensorChanged(temperatureSensor);
+    }
+
+    // Overridden from BaseIONViewController
+    public override void ViewWillDisappear(bool animated) {
+      base.ViewWillDisappear(animated);
+
+      if (IsMovingFromParentViewController) {
+        if (initialManifold != null) {
+          initialManifold.ptChart = ptChart;
+          var type = initialManifold.primarySensor.type;
+          if (ESensorType.Pressure == type) {
+            initialManifold.secondarySensor = temperatureSensor;
+          } else if (ESensorType.Temperature == type) {
+            initialManifold.secondarySensor = pressureSensor;
+          } else {
+            ION.Core.Util.Log.E(this, "Failed to update manifold: invalid primary sensor type " + type);
+          }
+        }
+      }
     }
 
     /// <summary>

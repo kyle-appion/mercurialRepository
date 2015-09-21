@@ -43,13 +43,13 @@ namespace ION.Core.Content.Serialization {
       public ManifoldModel(Manifold manifold) {
         primarySensor = manifold.primarySensor;
         secondarySensor = manifold.secondarySensor;
-        fluidName = manifold.fluid.name;
+        fluidName = manifold.ptChart.fluid.name;
       }
 
       public Manifold ToManifold(IION ion) {
         var ret = new Manifold(primarySensor);
         ret.secondarySensor = secondarySensor;
-        ret.fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
+//        ret.ptChart.fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
         return ret;
       }
     } // End ManifoldModel

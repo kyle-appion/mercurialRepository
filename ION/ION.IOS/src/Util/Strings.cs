@@ -18,6 +18,7 @@ namespace ION.IOS.Util {
     public static readonly String
     ACTIONS = "actions".FromResources(),
     CANCEL = "cancel".FromResources(),
+    DELETE_QUESTION = "delete_question".FromResources(),
     HELP = "help".FromResources(),
     OK = "ok".FromResources(),
     RENAME = "rename".FromResources(),
@@ -142,7 +143,10 @@ namespace ION.IOS.Util {
         MIN = "workbench_subview_min".FromResources(),
         MIN_DESC = "workbench_subview_min_desc".FromResources(),
         PT_CHART_DESC = "workbench_subview_pt_chart_desc".FromResources(),
-        SHSC_DESC = "workbench_subview_shsc_desc".FromResources()
+        SC = "workbench_subview_sc".FromResources(),
+        SH = "workbench_subview_sh_setup".FromResources(),
+        SHSC_DESC = "workbench_subview_shsc_desc".FromResources(),
+        SHSC_SETUP = "workbench_subview_shsc_setup".FromResources()
         ;
       }
     } // End Strings.Workbench

@@ -57,6 +57,6 @@ convertPdf() {
 }
 
 convertPdf 64
-convertPng 32
-convertPng 64
-convertPng 96
+#convertPng 32
+#convertPng 64
+#convertPng 96

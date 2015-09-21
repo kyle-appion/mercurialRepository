@@ -5,6 +5,7 @@ using System;
 using Foundation;
 using UIKit;
 
+using ION.Core.App;
 using ION.Core.Fluids;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
@@ -32,31 +33,15 @@ namespace ION.IOS.ViewController.Workbench {
       }
     } ISensorProperty __sensorProperty;
 
-    private Fluid fluid { get; set; }
-
-    private EventHandler<Fluid> onFluidClicked { get; set; }
-
 		public FluidSubviewCell (IntPtr handle) : base (handle) {
 		}
 
-    public override void AwakeFromNib() {
-      base.AwakeFromNib();
-
-      buttonFluid.TouchUpInside += (sender, e) => {
-        if (onFluidClicked != null) {
-          onFluidClicked(this, fluid);
-        }
-      };
+    public void UpdateTo(PTChartSensorProperty property) {
+      sensorProperty = property;
     }
 
-    public void UpdateTo(PTChartSensorProperty property, EventHandler<Fluid> onFluidClicked) {
+    public void UpdateTo(SuperheatSubcoolSensorProperty property) {
       sensorProperty = property;
-      this.onFluidClicked = onFluidClicked;
-    }
-
-    public void UpdateTo(SuperheatSubcoolSensorProperty property, EventHandler<Fluid> onFluidClicked) {
-      sensorProperty = property;
-      this.onFluidClicked = onFluidClicked;
     }
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
@@ -68,27 +53,34 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void HandlePTChartSensorPropertyChanged(PTChartSensorProperty sensorProperty) {
+      var ion = AppState.context;
+
       UpdateToFluid(sensorProperty.ptChart.fluid);
 
       switch (sensorProperty.ptChart.state) {
         case Fluid.EState.Bubble:
-          this.viewTitle.Text = Strings.Fluid.PT_CHART_BUB;
+          this.labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
           break;
         case Fluid.EState.Dew:
-          viewTitle.Text = Strings.Fluid.PT_CHART_DEW;
+          labelTitle.Text = Strings.Fluid.PT_CHART_DEW;
           break;
         default:
-          viewTitle.Text = Strings.UNKNOWN;
+          labelTitle.Text = Strings.UNKNOWN;
           break;
       }
 
+      var meas = sensorProperty.sensor.measurement;
       var chart = sensorProperty.ptChart;
       switch (sensorProperty.sensor.type) {
         case ESensorType.Pressure:
-          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, chart.GetTemperature(sensorProperty.sensor.measurement), true);
+          var temp = chart.GetTemperature(meas);
+          temp = temp.ConvertTo(ion.defaultUnits.temperature);
+          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, true);
           break;
         case ESensorType.Temperature:
-          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, chart.GetPressure(sensorProperty.sensor.measurement), true);
+          var press = chart.GetPressure(meas);
+          press = press.ConvertTo(ion.defaultUnits.pressure); 
+          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, press, true);
           break;
       }
     }
@@ -98,24 +90,27 @@ namespace ION.IOS.ViewController.Workbench {
 
       switch (sensorProperty.ptChart.state) {
         case Fluid.EState.Bubble:
-          buttonFluid.SetTitle(Strings.Fluid.SUPERHEAT_ABRV, UIControlState.Normal);
+          labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
           break;
         case Fluid.EState.Dew:
-          buttonFluid.SetTitle(Strings.Fluid.SUBCOOL_ABRV, UIControlState.Normal);
+          labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
           break;
         default:
-          buttonFluid.SetTitle(Strings.UNKNOWN, UIControlState.Normal);
+          labelTitle.Text = Strings.UNKNOWN;
           break;
       }
 
-      var meas = sensorProperty.modifiedMeasurement;
-      labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+      if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
+        labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
+      } else {
+        var meas = sensorProperty.modifiedMeasurement;
+        labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+      }
     }
 
     private void UpdateToFluid(Fluid fluid) {
-      this.fluid = fluid;
-      buttonFluid.SetTitle(fluid.name, UIControlState.Normal);
-      buttonFluid.BackgroundColor = new UIColor(Colors.FromInt((uint)fluid.color));
+      labelFluid.Text = fluid.name;
+      labelFluid.BackgroundColor = new UIColor(Colors.FromInt((uint)fluid.color));
     }
 	}
 }
