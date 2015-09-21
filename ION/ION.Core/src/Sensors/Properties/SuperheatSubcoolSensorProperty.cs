@@ -13,6 +13,36 @@ namespace ION.Core.Sensors.Properties {
       }
     }
 
+    public Sensor otherSensor {
+      get {
+        if (ESensorType.Pressure == sensor.type) {
+          return temperatureSensor;
+        } else if (ESensorType.Temperature == sensor.type) {
+          return pressureSensor;
+        } else {
+          // TODO ahodder@appioninc.com: I don't really like how this looks. It ain't safe, either. Fix it.
+          return null;
+        }
+      }
+      set {
+        if (ESensorType.Pressure == sensor.type) {
+          temperatureSensor = value;          
+        } else {
+          pressureSensor = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the property has both sensors.
+    /// </summary>
+    /// <value><c>true</c> if is complete; otherwise, <c>false</c>.</value>
+    public bool isComplete {
+      get {
+        return pressureSensor != null && temperatureSensor != null;
+      }
+    }
+
     /// <summary>
     /// The pressure sensor.
     /// </summary>
@@ -38,6 +68,8 @@ namespace ION.Core.Sensors.Properties {
     } PTChart __ptChart;
 
     public SuperheatSubcoolSensorProperty(Sensor sensor, Sensor other, PTChart ptChart) : base(sensor) {
+      otherSensor = other;
+      /*
       if (sensor.type == ESensorType.Pressure && other.type == ESensorType.Temperature) {
         pressureSensor = sensor;
         temperatureSensor = other;
@@ -47,6 +79,7 @@ namespace ION.Core.Sensors.Properties {
       } else {
         throw new Exception("Cannot create SuperheatSubcoolSensorProperty: expected a pressure and temperature sensor");
       }
+      */
 
       this.ptChart = ptChart;
     }

@@ -6,6 +6,7 @@ using Foundation;
 using UIKit;
 
 using ION.Core.App;
+using ION.Core.Content;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.Measure;
@@ -162,6 +163,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     private bool isEditingPressure { get; set; }
     private bool isEditingTemperature { get; set; }
 
+    /// <summary>
+    /// The manifold that is used to initialize the view controller. If this is null
+    /// the view controller will initialize to its default settings. When the view
+    /// controller is finishes (removed from parent), if the manifold is not null, the
+    /// manifold will be updated to the state of the view controller.
+    /// </summary>
+    /// <value>The initial manifold.</value>
+    public Manifold initialManifold { get; set; }
+
     public PTChartViewController (IntPtr handle) : base (handle) {
     }
 
@@ -169,10 +179,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      InitNavigationBar("ic_nav_pt_chart", false);
-      backAction = () => {
-        root.navigation.ToggleMenu();
-      };
+      if (initialManifold == null) {
+        InitNavigationBar("ic_nav_pt_chart", false);
+        backAction = () => {
+          root.navigation.ToggleMenu();
+        };
+      } else {
+        NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
+      }
 
       __pressureSensor = new Sensor(ESensorType.Pressure);
       __temperatureSensor = new Sensor(ESensorType.Temperature);
@@ -212,9 +226,28 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       ion = AppState.context;
 
-      ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-      pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
-      temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      if (initialManifold == null) {
+        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
+        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      } else {
+        var im = initialManifold;
+        if (im.ptChart == null) {
+          ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        } else {
+          ptChart = im.ptChart;
+        }
+        if (im.primarySensor.type == ESensorType.Pressure) {
+          pressureSensor = im.primarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else if (im.primarySensor.type == ESensorType.Temperature) {
+          pressureSensor = im.secondarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else {
+          // TODO ahodder@appioninc.com: Display a user friendly error message
+          throw new Exception("Cannot display view controller: invalid manifold");
+        }
+      }
 
       NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
@@ -280,6 +313,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }, UIControlEvent.EditingChanged);
 
       OnFluidSelected(ion.fluidManager.lastUsedFluid);
+    }
+
+    // Overridden from BaseIONViewController
+    public override void ViewWillDisappear(bool animated) {
+      base.ViewWillDisappear(animated);
+
+      if (IsMovingFromParentViewController) {
+        if (initialManifold != null) {
+          initialManifold.ptChart = ptChart;
+        }
+      }
     }
 
     /// <summary>

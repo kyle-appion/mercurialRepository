@@ -37,6 +37,9 @@ namespace ION.IOS.ViewController.Workbench
 		UIKit.UILabel labelHeader { get; set; }
 
 		[Outlet]
+		UIKit.UILabel labelLinked { get; set; }
+
+		[Outlet]
 		UIKit.UILabel labelMeasurement { get; set; }
 
 		[Outlet]
@@ -53,14 +56,19 @@ namespace ION.IOS.ViewController.Workbench
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (buttonConnection != null) {
-				buttonConnection.Dispose ();
-				buttonConnection = null;
+			if (labelLinked != null) {
+				labelLinked.Dispose ();
+				labelLinked = null;
 			}
 
 			if (activityConnectStatus != null) {
 				activityConnectStatus.Dispose ();
 				activityConnectStatus = null;
+			}
+
+			if (buttonConnection != null) {
+				buttonConnection.Dispose ();
+				buttonConnection = null;
 			}
 
 			if (imageAlarmIcon != null) {
@@ -108,14 +116,14 @@ namespace ION.IOS.ViewController.Workbench
 				labelUnit = null;
 			}
 
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
-			}
-
 			if (viewBackground != null) {
 				viewBackground.Dispose ();
 				viewBackground = null;
+			}
+
+			if (viewDivider != null) {
+				viewDivider.Dispose ();
+				viewDivider = null;
 			}
 		}
 	}

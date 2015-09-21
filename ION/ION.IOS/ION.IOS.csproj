@@ -62,7 +62,9 @@
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchLink>None</MtouchLink>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchFastDev>true</MtouchFastDev>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -140,7 +142,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
@@ -164,13 +165,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
-    <InterfaceDefinition Include="src\Storyboard\NavigationItem~iphone.xib" />
-    <InterfaceDefinition Include="src\Storyboard\NavigationItem~ipad.xib" />
-    <InterfaceDefinition Include="src\Storyboard\NavigationSection~iphone.xib" />
-    <InterfaceDefinition Include="src\Storyboard\NavigationSection~ipad.xib" />
     <InterfaceDefinition Include="Resources\View.xib" />
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
   </ItemGroup>
@@ -317,6 +315,7 @@
     <Folder Include="src\ViewController\Settings\" />
     <Folder Include="Settings.bundle\" />
     <Folder Include="Settings.bundle\en.lproj\" />
+    <Folder Include="src\Storyboard\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -431,12 +430,6 @@
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\ApplicationSettings.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="flyoutnavigation">
-      <Version>1.5.1</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

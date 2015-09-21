@@ -54,6 +54,8 @@ namespace ION.IOS.ViewController.Workbench {
       ion = AppState.context;
       workbench = ion.currentWorkbench;
 
+      tableContent.AllowsSelection = true;
+
       source = new WorkbenchSource(this, workbench);
       source.onRequestViewerDelegate = OnRequestViewer;
 

@@ -35,10 +35,16 @@ namespace ION.Core.Content.Parsers {
         WriteSensor(manifold.secondarySensor, writer);
 
         // Write fluid name
-        if (manifold.fluid == null) {
-          writer.Write("");
+        if (manifold.ptChart == null) {
+          writer.Write(false); // Doens't have a pt chart.
         } else {
-          writer.Write(manifold.fluid.name);
+          writer.Write(true); // Does have a pt chart
+          writer.Write(Enum.GetName(typeof(Fluid.EState), manifold.ptChart.state));
+          if (manifold.ptChart.fluid == null) {
+            writer.Write("");
+          } else {
+            writer.Write(manifold.ptChart.fluid.name);
+          }
         }
 
         writer.Write(manifold.manifoldProperties.Count);
@@ -77,14 +83,22 @@ namespace ION.Core.Content.Parsers {
         // Read the secondary sensor
         Sensor secondary = ReadSensor(ion, reader);
 
-        // Read the fluid name for the manifold
-        var fluidName = reader.ReadString();
-
-        // Create the inflated manifold and prepare for returning
+        // Create the inflated manifold
         var ret = new Manifold(primary);
         ret.secondarySensor = secondary;
-        if (fluidName != null && !fluidName.Equals("")) {
-          ret.fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
+
+        if (reader.ReadBoolean()) {
+          var state = (Fluid.EState)Enum.Parse(typeof(Fluid.EState), reader.ReadString());
+          // Read the fluid name for the manifold
+          var fluidName = reader.ReadString();
+          Fluid fluid = null;
+
+          if (fluidName != null && !fluidName.Equals("")) {
+            fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
+          }
+
+          // TODO ahodder@appioninc.com: elevation?
+          ret.ptChart = new PTChart(state, fluid);
         }
 
         // Read sensor properties

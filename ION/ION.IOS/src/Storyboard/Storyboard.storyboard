@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="120">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="120">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -122,16 +122,6 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Serial Number" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-Vb-nfP" userLabel="labelSerialNumber">
-                                                            <rect key="frame" x="0.0" y="136" width="568" height="22"/>
-                                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="22" id="6Ab-oR-VR2"/>
-                                                            </constraints>
-                                                            <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="ic_render_gauge_pt800" translatesAutoresizingMaskIntoConstraints="NO" id="KXz-0z-Zzh" userLabel="imageSensorIcon">
                                                             <rect key="frame" x="8" y="58" width="48" height="48"/>
                                                             <constraints>
@@ -146,18 +136,51 @@
                                                                 <constraint firstAttribute="height" constant="22" id="yAu-zm-vWO"/>
                                                             </constraints>
                                                         </imageView>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vKD-KO-kfL">
+                                                            <rect key="frame" x="0.0" y="136" width="568" height="22"/>
+                                                            <subviews>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Serial Number" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-Vb-nfP" userLabel="labelSerialNumber">
+                                                                    <rect key="frame" x="8" y="0.0" width="276" height="22"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="Jft-vZ-GoN"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Linked" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xU4-rd-CCZ" userLabel="labelLinked">
+                                                                    <rect key="frame" x="284" y="0.0" width="276" height="22"/>
+                                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <constraints>
+                                                                        <constraint firstAttribute="height" constant="22" id="VNb-VV-alh"/>
+                                                                    </constraints>
+                                                                    <fontDescription key="fontDescription" type="italicSystem" pointSize="20"/>
+                                                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                                                    <nil key="highlightedColor"/>
+                                                                </label>
+                                                            </subviews>
+                                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="22" id="9ty-Xw-GVz"/>
+                                                                <constraint firstAttribute="trailing" secondItem="xU4-rd-CCZ" secondAttribute="trailing" constant="8" id="EJe-Sk-qOG"/>
+                                                                <constraint firstItem="xU4-rd-CCZ" firstAttribute="top" secondItem="vKD-KO-kfL" secondAttribute="top" id="OZh-kS-53g"/>
+                                                                <constraint firstItem="0KD-Vb-nfP" firstAttribute="leading" secondItem="vKD-KO-kfL" secondAttribute="leading" constant="8" id="Qdj-z2-d6z"/>
+                                                                <constraint firstItem="xU4-rd-CCZ" firstAttribute="leading" secondItem="0KD-Vb-nfP" secondAttribute="trailing" id="fZi-uR-Emy"/>
+                                                                <constraint firstItem="xU4-rd-CCZ" firstAttribute="leading" secondItem="0KD-Vb-nfP" secondAttribute="trailing" id="jfm-5c-7Do"/>
+                                                                <constraint firstItem="0KD-Vb-nfP" firstAttribute="top" secondItem="vKD-KO-kfL" secondAttribute="top" id="lNv-DT-3xa"/>
+                                                            </constraints>
+                                                        </view>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstItem="Gbi-Fw-mXR" firstAttribute="top" secondItem="UdB-bn-BU0" secondAttribute="top" constant="8" id="0vs-WY-5hF"/>
                                                         <constraint firstItem="p7P-5Q-Q6G" firstAttribute="leading" secondItem="UdB-bn-BU0" secondAttribute="leading" constant="8" id="1a5-ei-jfN"/>
-                                                        <constraint firstItem="0KD-Vb-nfP" firstAttribute="top" secondItem="MyT-Pb-HhZ" secondAttribute="bottom" id="2x9-6L-w5t"/>
                                                         <constraint firstAttribute="trailing" secondItem="ZYV-N7-LzZ" secondAttribute="trailing" constant="8" id="6IB-wb-4jD"/>
                                                         <constraint firstItem="dPM-by-eT9" firstAttribute="top" secondItem="Im7-OY-Wf8" secondAttribute="bottom" constant="8" id="7t8-bX-VTe"/>
                                                         <constraint firstItem="e8f-eR-TPx" firstAttribute="top" secondItem="UdB-bn-BU0" secondAttribute="top" constant="8" id="AVn-5a-KJV"/>
                                                         <constraint firstAttribute="trailing" secondItem="dPM-by-eT9" secondAttribute="trailing" constant="8" id="Dkj-gf-arv"/>
                                                         <constraint firstItem="ZYV-N7-LzZ" firstAttribute="leading" secondItem="UdB-bn-BU0" secondAttribute="leading" constant="8" id="EkS-JM-TUy"/>
-                                                        <constraint firstAttribute="trailing" secondItem="0KD-Vb-nfP" secondAttribute="trailing" id="GVV-1f-Sqo"/>
                                                         <constraint firstItem="dPM-by-eT9" firstAttribute="leading" secondItem="KXz-0z-Zzh" secondAttribute="trailing" constant="8" id="HNb-2Z-vOH"/>
                                                         <constraint firstItem="KXz-0z-Zzh" firstAttribute="top" secondItem="ZYV-N7-LzZ" secondAttribute="bottom" constant="8" id="IPN-lr-BtF"/>
                                                         <constraint firstItem="MyT-Pb-HhZ" firstAttribute="top" secondItem="dPM-by-eT9" secondAttribute="bottom" constant="2" id="OJ4-ZP-ld4"/>
@@ -167,13 +190,15 @@
                                                         <constraint firstAttribute="trailing" secondItem="rsZ-Bf-DJ5" secondAttribute="trailing" constant="14" id="Uj1-O5-7Hh"/>
                                                         <constraint firstItem="ZYV-N7-LzZ" firstAttribute="top" secondItem="Im7-OY-Wf8" secondAttribute="bottom" constant="8" id="Upg-iB-PLT"/>
                                                         <constraint firstItem="p7P-5Q-Q6G" firstAttribute="top" secondItem="KXz-0z-Zzh" secondAttribute="bottom" constant="8" id="VsB-Ix-F4k"/>
+                                                        <constraint firstItem="vKD-KO-kfL" firstAttribute="top" secondItem="p7P-5Q-Q6G" secondAttribute="bottom" id="XMT-Ld-GqW"/>
                                                         <constraint firstItem="KXz-0z-Zzh" firstAttribute="leading" secondItem="UdB-bn-BU0" secondAttribute="leading" constant="8" id="XNV-BO-jJQ"/>
                                                         <constraint firstItem="Im7-OY-Wf8" firstAttribute="top" secondItem="UdB-bn-BU0" secondAttribute="top" constant="8" id="Xco-lp-paJ"/>
-                                                        <constraint firstItem="0KD-Vb-nfP" firstAttribute="leading" secondItem="UdB-bn-BU0" secondAttribute="leading" id="Zjy-Qd-ugk"/>
                                                         <constraint firstItem="Gbi-Fw-mXR" firstAttribute="leading" secondItem="e8f-eR-TPx" secondAttribute="trailing" constant="8" id="dzC-BJ-Qvt"/>
                                                         <constraint firstItem="p7P-5Q-Q6G" firstAttribute="top" secondItem="dPM-by-eT9" secondAttribute="bottom" constant="2" id="epp-Ne-bya"/>
                                                         <constraint firstAttribute="centerX" secondItem="lvX-w0-OQG" secondAttribute="centerX" id="fkp-iM-9Lu"/>
                                                         <constraint firstAttribute="trailing" secondItem="MyT-Pb-HhZ" secondAttribute="trailing" constant="8" id="hi6-k5-l1K"/>
+                                                        <constraint firstItem="vKD-KO-kfL" firstAttribute="leading" secondItem="UdB-bn-BU0" secondAttribute="leading" id="nFS-A9-zUg"/>
+                                                        <constraint firstAttribute="trailing" secondItem="vKD-KO-kfL" secondAttribute="trailing" id="oFj-DQ-nMv"/>
                                                         <constraint firstItem="rsZ-Bf-DJ5" firstAttribute="top" secondItem="UdB-bn-BU0" secondAttribute="top" constant="14" id="oc5-fo-5RU"/>
                                                         <constraint firstItem="Im7-OY-Wf8" firstAttribute="leading" secondItem="Gbi-Fw-mXR" secondAttribute="trailing" constant="8" id="zko-uB-16b"/>
                                                     </constraints>
@@ -196,6 +221,7 @@
                                             <outlet property="imageSensorIcon" destination="KXz-0z-Zzh" id="P9f-Do-cvA"/>
                                             <outlet property="labelConnectionStatus" destination="lvX-w0-OQG" id="r4R-xU-6x2"/>
                                             <outlet property="labelHeader" destination="e8f-eR-TPx" id="BBt-Og-3vO"/>
+                                            <outlet property="labelLinked" destination="xU4-rd-CCZ" id="HqN-Ma-hWk"/>
                                             <outlet property="labelMeasurement" destination="dPM-by-eT9" id="gMK-sl-eKO"/>
                                             <outlet property="labelSerialNumber" destination="0KD-Vb-nfP" id="upa-4t-tgm"/>
                                             <outlet property="labelUnit" destination="MyT-Pb-HhZ" id="nqJ-GT-P9d"/>
@@ -685,7 +711,7 @@
                                             <constraint firstAttribute="height" constant="30" id="dQp-6R-QZZ"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pressure" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="j8r-JH-L3V" userLabel="labelPressure">
                                         <rect key="frame" x="104" y="43" width="408" height="21"/>
@@ -788,7 +814,7 @@
                                             <constraint firstAttribute="height" constant="30" id="qku-hr-QDY"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temperature" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zw-ax-B8r" userLabel="labelTemperature">
                                         <rect key="frame" x="104" y="43" width="408" height="21"/>
@@ -1611,7 +1637,7 @@
                                             <constraint firstAttribute="height" constant="30" id="9YE-6K-KPT"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pressure" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5WI-Vm-Hdn" userLabel="labelPressure">
                                         <rect key="frame" x="104" y="43" width="408" height="21"/>
@@ -1752,7 +1778,7 @@
                                             <constraint firstAttribute="height" constant="30" id="PdA-rD-B45"/>
                                         </constraints>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation" returnKeyType="done"/>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Temperature" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uAs-Ea-Eoy" userLabel="labelTemperature">
                                         <rect key="frame" x="104" y="43" width="408" height="21"/>

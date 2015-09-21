@@ -13,7 +13,7 @@ namespace ION.IOS.ViewController.Workbench
 	partial class FluidSubviewCell
 	{
 		[Outlet]
-		UIKit.UIButton buttonFluid { get; set; }
+		UIKit.UILabel labelFluid { get; set; }
 
 		[Outlet]
 		UIKit.UILabel labelMeasurement { get; set; }
@@ -25,7 +25,7 @@ namespace ION.IOS.ViewController.Workbench
 		UIKit.UIView viewDivider { get; set; }
 
 		[Outlet]
-		UIKit.UILabel viewTitle { get; set; }
+		UIKit.UILabel labelTitle { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -44,14 +44,14 @@ namespace ION.IOS.ViewController.Workbench
 				viewDivider = null;
 			}
 
-			if (buttonFluid != null) {
-				buttonFluid.Dispose ();
-				buttonFluid = null;
+			if (labelFluid != null) {
+				labelFluid.Dispose ();
+				labelFluid = null;
 			}
 
-			if (viewTitle != null) {
-				viewTitle.Dispose ();
-				viewTitle = null;
+			if (labelTitle != null) {
+				labelTitle.Dispose ();
+				labelTitle = null;
 			}
 		}
 	}
