@@ -72,7 +72,9 @@ namespace ION.IOS.Util {
 
     public static class Errors {
       public static readonly string
-      SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources()
+      SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources(),
+      PRESSURE_INPUT_PARSE_ERROR = "errors_pressure_input_parse_error".FromResources(),
+      TEMPERATURE_INPUT_PARSE_ERROR = "errors_temperature_input_parse_error".FromResources()
       ;
     }
 

@@ -51,6 +51,8 @@ file.
 
 /* ERRORS */
 "errors_scan_init_fail" = "Failed to initiate scan: invalid state";
+"errors_pressure_input_parse_error" = "Failed set pressure values: invalid number";
+"errors_temperature_input_parse_error" = "Failed set temperature values: invalid number";
 
 /* FLUIDS */
 "fluid_pt_calculator" = "P/T Calculator";
