@@ -274,6 +274,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
       */
 
+      // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
       var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
       var ptChart = manifold.ptChart;
       if (ptChart == null) {
@@ -281,8 +282,9 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty)) && ptChartFilter.Matches(sensor)) {
+        manifold.ptChart = ptChart;
         addAction(Strings.Workbench.Viewer.PT_CHART_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new PTChartSensorProperty(sensor, ptChart));
+          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
         });
       }
 
@@ -292,8 +294,9 @@ namespace ION.IOS.ViewController.Workbench {
       // mister maintainer. I am sorry. 
       if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty)) &&
         ptChartFilter.Matches(sensor) && (manifold.secondarySensor == null || ptChartFilter.Matches(manifold.secondarySensor))) {
+        manifold.ptChart = ptChart;
         addAction(Strings.Workbench.Viewer.SHSC_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(sensor, manifold.secondarySensor, ptChart));
+          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         });
       }
 

@@ -369,7 +369,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     }
 
     private void OnPressureSensorChanged(Sensor sensor) {
-      if (!sensor.isEditable) {
+      if (!editPressure.IsEditing) {
         editPressure.Text = sensor.ToFormattedString();
       }
       buttonPressureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);
@@ -385,7 +385,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     }
 
     private void OnTemperatureSensorChanged(Sensor sensor) {
-      if (!sensor.isEditable) {
+      if (!editTemperature.IsEditing) {
         editTemperature.Text = sensor.ToFormattedString();
       }
       buttonTemperatureUnit.SetTitle(sensor.unit.ToString(), UIControlState.Normal);

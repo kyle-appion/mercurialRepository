@@ -6,6 +6,7 @@ using Foundation;
 using UIKit;
 
 using ION.Core.App;
+using ION.Core.Content.Properties;
 using ION.Core.Fluids;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
@@ -15,7 +16,7 @@ using ION.IOS.Util;
 namespace ION.IOS.ViewController.Workbench {
 	public partial class FluidSubviewCell : UITableViewCell {
 
-    private ISensorProperty sensorProperty {
+    private AbstractManifoldSensorProperty sensorProperty {
       get {
         return __sensorProperty;
       }
@@ -31,7 +32,7 @@ namespace ION.IOS.ViewController.Workbench {
           OnSensorPropertyChanged(value);
         }
       }
-    } ISensorProperty __sensorProperty;
+    } AbstractManifoldSensorProperty __sensorProperty;
 
 		public FluidSubviewCell (IntPtr handle) : base (handle) {
 		}
@@ -55,9 +56,9 @@ namespace ION.IOS.ViewController.Workbench {
     private void HandlePTChartSensorPropertyChanged(PTChartSensorProperty sensorProperty) {
       var ion = AppState.context;
 
-      UpdateToFluid(sensorProperty.ptChart.fluid);
+      UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
 
-      switch (sensorProperty.ptChart.state) {
+      switch (sensorProperty.manifold.ptChart.state) {
         case Fluid.EState.Bubble:
           this.labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
           break;
@@ -70,7 +71,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       var meas = sensorProperty.sensor.measurement;
-      var chart = sensorProperty.ptChart;
+      var chart = sensorProperty.manifold.ptChart;
       switch (sensorProperty.sensor.type) {
         case ESensorType.Pressure:
           var temp = chart.GetTemperature(meas);
@@ -86,9 +87,9 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void HandleSuperheatSubcoolSensorPropertyChanged(SuperheatSubcoolSensorProperty sensorProperty) {
-      UpdateToFluid(sensorProperty.ptChart.fluid);
+      UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
 
-      switch (sensorProperty.ptChart.state) {
+      switch (sensorProperty.manifold.ptChart.state) {
         case Fluid.EState.Bubble:
           labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
           break;

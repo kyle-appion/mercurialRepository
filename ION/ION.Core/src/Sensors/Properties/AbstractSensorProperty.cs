@@ -76,16 +76,6 @@ namespace ION.Core.Sensors.Properties {
     }
 
     /// <summary>
-    /// The callback that will set the sensor's modified measurement to the
-    /// sensor's new reading.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    private void OnSensorChangedDelegate(Sensor sensor) {
-      modifiedMeasurement = sensor.measurement;
-      NotifyChanged();
-    }
-
-    /// <summary>
     /// Notifies the properties onSensorPropertyChanged event that the property
     /// has changed.
     /// </summary>
@@ -93,6 +83,16 @@ namespace ION.Core.Sensors.Properties {
       if (onSensorPropertyChanged != null) {
         onSensorPropertyChanged(this);
       }
+    }
+
+    /// <summary>
+    /// The callback that will set the sensor's modified measurement to the
+    /// sensor's new reading.
+    /// </summary>
+    /// <param name="sensor">Sensor.</param>
+    private void OnSensorChangedDelegate(Sensor sensor) {
+      modifiedMeasurement = sensor.measurement;
+      NotifyChanged();
     }
 /*
 
