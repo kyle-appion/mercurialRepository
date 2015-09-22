@@ -354,17 +354,14 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oil-Mf-Amb" userLabel="buttonFluid">
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-420.69 cm/kg2" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="17" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="oil-Mf-Amb" userLabel="buttonFluid">
                                                             <rect key="frame" x="64" y="0.0" width="80" height="48"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="80" id="Dap-uv-0Fu"/>
                                                                 <constraint firstAttribute="height" constant="48" id="VGx-0i-hAp"/>
                                                             </constraints>
-                                                            <state key="normal" title="Button">
-                                                                <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                            </state>
-                                                        </button>
+                                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                        </label>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
@@ -378,6 +375,7 @@
                                                         <constraint firstItem="d0U-1j-nx3" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="s21-pr-EbO"/>
                                                         <constraint firstItem="qfJ-Zq-HgJ" firstAttribute="leading" secondItem="d0U-1j-nx3" secondAttribute="trailing" id="std-t0-PfD"/>
                                                         <constraint firstItem="d0U-1j-nx3" firstAttribute="leading" secondItem="oil-Mf-Amb" secondAttribute="trailing" id="syo-bT-Z0Q"/>
+                                                        <constraint firstAttribute="height" constant="48" id="uXZ-PF-w9y"/>
                                                         <constraint firstItem="oil-Mf-Amb" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="wBT-8w-LRc"/>
                                                         <constraint firstItem="D98-Sg-9fl" firstAttribute="top" secondItem="ExU-R1-p6a" secondAttribute="top" id="xwe-DG-2he"/>
                                                     </constraints>
@@ -396,14 +394,19 @@
                                                 <constraint firstAttribute="bottomMargin" secondItem="ExU-R1-p6a" secondAttribute="bottom" constant="-8" id="aCX-RV-OLE"/>
                                                 <constraint firstItem="ExU-R1-p6a" firstAttribute="leading" secondItem="8v2-LR-fHA" secondAttribute="leadingMargin" constant="-8" id="jeO-cf-rtc"/>
                                             </constraints>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="aCX-RV-OLE"/>
+                                                </mask>
+                                            </variation>
                                         </tableViewCellContentView>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         <connections>
-                                            <outlet property="buttonFluid" destination="oil-Mf-Amb" id="D02-YT-lR0"/>
+                                            <outlet property="labelFluid" destination="oil-Mf-Amb" id="D02-YT-lR0"/>
                                             <outlet property="labelMeasurement" destination="qfJ-Zq-HgJ" id="7GT-8F-Vhh"/>
+                                            <outlet property="labelTitle" destination="D98-Sg-9fl" id="hcV-CL-6bU"/>
                                             <outlet property="viewBackground" destination="ExU-R1-p6a" id="Fbh-Q6-TZf"/>
                                             <outlet property="viewDivider" destination="d0U-1j-nx3" id="Oeo-7p-dL6"/>
-                                            <outlet property="viewTitle" destination="D98-Sg-9fl" id="hcV-CL-6bU"/>
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellAdd" rowHeight="48" id="Qza-Y3-bO7" userLabel="cellAdd" customClass="AddViewerTableCell">
@@ -1592,6 +1595,12 @@
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="2" id="ZkE-EL-j6r"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="2" id="k2J-0I-qGz"/>
                                 </constraints>
+                                <variation key="default">
+                                    <mask key="constraints">
+                                        <exclude reference="ZkE-EL-j6r"/>
+                                        <exclude reference="k2J-0I-qGz"/>
+                                    </mask>
+                                </variation>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DUW-74-XdY" userLabel="viewPressureSection">
                                 <rect key="frame" x="16" y="94" width="568" height="64"/>
@@ -1670,21 +1679,14 @@
                                     <constraint firstItem="8dQ-UJ-Ahy" firstAttribute="leading" secondItem="IP4-Ez-XmT" secondAttribute="trailing" constant="8" id="wrf-Fa-aT0"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wmS-S8-0GO" userLabel="viewDivider2">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wmS-S8-0GO" userLabel="viewDivider2">
                                 <rect key="frame" x="16" y="166" width="568" height="1"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="5j8-Sy-3At"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="Og6-Nw-S7a"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="2" id="aIP-ZV-KbC"/>
+                                    <constraint firstAttribute="height" constant="1" id="5j8-Sy-3At"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="aIP-ZV-KbC"/>
-                                    </mask>
-                                </variation>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IEW-7F-UXk" userLabel="viewSatTempSection">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IEW-7F-UXk" userLabel="viewSatTempSection">
                                 <rect key="frame" x="16" y="175" width="568" height="64"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sat. Temp." lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oiT-mv-pmV" userLabel="labelSatTemp">
@@ -1729,22 +1731,14 @@
                                     <constraint firstAttribute="trailing" secondItem="qe5-NV-NlL" secondAttribute="trailing" id="cH0-P4-ai5"/>
                                 </constraints>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e81-eF-kzm" userLabel="viewDivider3">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e81-eF-kzm" userLabel="viewDivider3">
                                 <rect key="frame" x="16" y="247" width="568" height="1"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="2" id="73S-LN-9Gm"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="M3a-qc-DYY"/>
-                                    <constraint firstAttribute="height" relation="lessThanOrEqual" constant="1" id="ewB-MF-rlB"/>
-                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="2" id="icJ-34-iKH"/>
+                                    <constraint firstAttribute="height" constant="1" id="Zo0-Hb-svH"/>
                                 </constraints>
-                                <variation key="default">
-                                    <mask key="constraints">
-                                        <exclude reference="icJ-34-iKH"/>
-                                    </mask>
-                                </variation>
                             </view>
-                            <view contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LQ5-81-LiM" userLabel="viewTemperatureSection">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LQ5-81-LiM" userLabel="viewTemperatureSection">
                                 <rect key="frame" x="16" y="256" width="568" height="64"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Exb-mc-8rL" userLabel="imageTemperatureLock">
