@@ -86,6 +86,17 @@ namespace ION.Core.Alarms {
     }
 
     // Overridden from IAlarmManager
+    public bool HostHasEnabledAlarms(object host) {
+      foreach (IAlarm alarm in GetAlarmsFromHost(host)) {
+        if (alarm.enabled) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
+    // Overridden from IAlarmManager
     public void SetAlertModeForAlarm(IAlarm alarm, IAlarmAlert alertMode) {
       __alertMapping[alarm] = alertMode;
     }

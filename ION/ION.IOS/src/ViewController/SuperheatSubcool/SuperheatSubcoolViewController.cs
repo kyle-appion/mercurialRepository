@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     private const int SECTION_BUBBLE = 1;
 
     public IION ion { get; set; }
-    public ION.Core.Fluids.PTChart ptChart { 
+    public ION.Core.Fluids.PTChart ptChart {
       get {
         return __ptChart;
       }
@@ -376,7 +376,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       if (editPressure.Text == "") {
         labelSatTempMeasurement.Text = "";
-      } else { 
+      } else {
         labelSatTempMeasurement.Text = ptChart.GetTemperature(pressureSensor.measurement, pressureSensor.isRelative).ConvertTo(temperatureUnit).amount.ToString("0.00");
       }
       labelSatTempUnit.Text = temperatureUnit.ToString();

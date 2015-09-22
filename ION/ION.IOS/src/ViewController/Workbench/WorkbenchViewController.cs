@@ -65,6 +65,13 @@ namespace ION.IOS.ViewController.Workbench {
       ion.currentWorkbench.onManifoldRemoved += OnManifoldRemoved;
     }
 
+    // Overridden from BaseIONViewController
+    public override void ViewDidAppear(bool animated) {
+      base.ViewDidAppear(animated);
+
+      tableContent.ReloadData();
+    }
+
     // Overridden from UIViewController
     public override void ViewDidUnload() {
       ion.currentWorkbench.onManifoldAdded -= OnManifoldAdded;

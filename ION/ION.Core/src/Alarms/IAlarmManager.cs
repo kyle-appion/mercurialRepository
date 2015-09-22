@@ -34,6 +34,12 @@ namespace ION.Core.Alarms {
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     T GetAlarmOfTypeFromHost<T>(object host) where T : IAlarm;
     /// <summary>
+    /// Queries whether or not the host has one or more active alarms.
+    /// </summary>
+    /// <returns><c>true</c>, if has active alarms was hosted, <c>false</c> otherwise.</returns>
+    /// <param name="host">Host.</param>
+    bool HostHasEnabledAlarms(object host);
+    /// <summary>
     /// Applies a custom alarm alert for the given alarm.
     /// </summary>
     /// <param name="alarm">Alarm.</param>
