@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-using ION.Core.Content;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 

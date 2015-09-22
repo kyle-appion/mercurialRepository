@@ -1,35 +1,17 @@
 ﻿using System;
 
+using ION.Core.Content;
+using ION.Core.Content.Properties;
 using ION.Core.Fluids;
 using ION.Core.Measure;
 
 namespace ION.Core.Sensors.Properties {
-  public class SuperheatSubcoolSensorProperty : AbstractSensorProperty {
+  public class SuperheatSubcoolSensorProperty : AbstractManifoldSensorProperty {
 
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
       get {
-        return ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
-      }
-    }
-
-    public Sensor otherSensor {
-      get {
-        if (ESensorType.Pressure == sensor.type) {
-          return temperatureSensor;
-        } else if (ESensorType.Temperature == sensor.type) {
-          return pressureSensor;
-        } else {
-          // TODO ahodder@appioninc.com: I don't really like how this looks. It ain't safe, either. Fix it.
-          return null;
-        }
-      }
-      set {
-        if (ESensorType.Pressure == sensor.type) {
-          temperatureSensor = value;          
-        } else {
-          pressureSensor = value;
-        }
+        return manifold.ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
       }
     }
 
@@ -47,41 +29,43 @@ namespace ION.Core.Sensors.Properties {
     /// The pressure sensor.
     /// </summary>
     /// <value>The other sensor.</value>
-    public Sensor pressureSensor { get; private set; }
+    public Sensor pressureSensor {
+      get {
+        // The else is asserted to be valid by the check in the constructor.
+        if (ESensorType.Pressure == manifold.primarySensor.type) {
+          return manifold.primarySensor;
+        } else {
+          return manifold.secondarySensor;
+        }
+      }
+    }
     /// <summary>
     /// The temperature sensor.
     /// </summary>
     /// <value>The temperature sensor.</value>
-    public Sensor temperatureSensor { get; private set; }
-    /// <summary>
-    /// The ptchart used for calculations.
-    /// </summary>
-    /// <value>The point chart.</value>
-    public PTChart ptChart {
+    public Sensor temperatureSensor {
       get {
-        return __ptChart;
+        // The else is asserted to be valid by the check in the constructor.
+        if (ESensorType.Temperature == manifold.primarySensor.type) {
+          return manifold.primarySensor;
+        } else {
+          return manifold.secondarySensor;
+        }
       }
-      set {
-        __ptChart = value;
-        NotifyChanged();
-      }
-    } PTChart __ptChart;
+    }
 
-    public SuperheatSubcoolSensorProperty(Sensor sensor, Sensor other, PTChart ptChart) : base(sensor) {
-      otherSensor = other;
-      /*
-      if (sensor.type == ESensorType.Pressure && other.type == ESensorType.Temperature) {
-        pressureSensor = sensor;
-        temperatureSensor = other;
-      } else if (sensor.type == ESensorType.Temperature && other.type == ESensorType.Pressure) {
-        pressureSensor = other;
-        temperatureSensor = sensor;
-      } else {
+    public SuperheatSubcoolSensorProperty(Manifold manifold) : base(manifold) {
+      bool isValid = IsSensorValid(manifold.primarySensor) &&
+        (manifold.secondarySensor == null || IsSensorValid(manifold.secondarySensor) ||
+          manifold.primarySensor.type != manifold.secondarySensor.type);
+      if (!isValid) {
         throw new Exception("Cannot create SuperheatSubcoolSensorProperty: expected a pressure and temperature sensor");
       }
-      */
+    }
 
-      this.ptChart = ptChart;
+
+    private static bool IsSensorValid(Sensor sensor) {
+      return ESensorType.Pressure == sensor.type || ESensorType.Temperature == sensor.type;
     }
   }
 }
