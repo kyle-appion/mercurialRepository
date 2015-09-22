@@ -210,7 +210,7 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void UpdateAlarm(Sensor sensor) {
-      if (/*TODO ahodder@appioninc.com: has alarm*/false) {
+      if (ion.alarmManager.HostHasEnabledAlarms(sensor)) {
         imageAlarmIcon.Hidden = false;
       } else {
         imageAlarmIcon.Hidden = true;

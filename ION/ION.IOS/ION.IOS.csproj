@@ -34,6 +34,9 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -161,7 +164,7 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
-	<ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
