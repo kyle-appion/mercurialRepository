@@ -118,7 +118,7 @@ namespace ION.Core.Database {
       }
 
       ret.name = device.name;
-      ret.lastConnected = device.connection.timeLastPacketReceived;
+      ret.lastConnected = device.connection.lastSeen;
 
       Log.D(this, "Deconstructed: " + ret);
 

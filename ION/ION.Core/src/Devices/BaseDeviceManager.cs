@@ -197,6 +197,11 @@ namespace ION.Core.Devices {
 
     // Overridden from IDeviceManager
     public bool IsDeviceKnown(IDevice device) {
+      var sb = new System.Text.StringBuilder();
+      foreach (IDevice d in knownDevices) {
+        sb.Append(d.serialNumber).Append(",");
+      }
+      Log.D(this, "Looking for: " + device.serialNumber + " in known devices: " + sb);
       return knownDevices.Contains(device);
     }
 
@@ -264,6 +269,7 @@ namespace ION.Core.Devices {
       if (device.protocol.supportsBroadcasting) {
         device.HandlePacket(packet);
       }
+      device.connection.lastSeen = DateTime.Now;
 
       if (onDeviceFound != null) {
         onDeviceFound(this, device);
@@ -275,6 +281,9 @@ namespace ION.Core.Devices {
     /// </summary>
     /// <param name="device">Device.</param>
     private async void OnDeviceStateChanged(IDevice device) {
+      if (!IsDeviceKnown(device)) {
+        Register(device);
+      }
       await ion.database.deviceDao.SaveAsync(device);
       ion.PostToMain(() => {
         if (onDeviceStateChanged != null) {

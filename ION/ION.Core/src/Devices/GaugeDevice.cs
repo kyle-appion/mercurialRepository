@@ -45,7 +45,7 @@ namespace ION.Core.Devices {
     // Overridden from IDevice
     public bool isNearby {
       get {
-        return DateTime.Now - connection.timeLastPacketReceived <= TIMEOUT_NEARBY;
+        return DateTime.Now - connection.lastSeen <= TIMEOUT_NEARBY;
       }
     }
     // Overridden from IDevice

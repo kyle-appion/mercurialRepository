@@ -74,14 +74,14 @@ namespace ION.IOS.Connections {
       }
       set {
         __lastPacket = value;
-        timeLastPacketReceived = DateTime.Now;
+        lastSeen = DateTime.Now;
         if (onDataReceived != null) {
           onDataReceived(this, __lastPacket);
         }
       }
     } byte[] __lastPacket;
     // Overridden from IConnection
-    public DateTime timeLastPacketReceived { get; private set; }
+    public DateTime lastSeen { get; set; }
     // Overridden from IConnection
     public object nativeDevice {
       get {

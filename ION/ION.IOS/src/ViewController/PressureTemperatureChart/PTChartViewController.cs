@@ -46,6 +46,19 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         var name = ptChart.fluid.name;
         labelFluidName.Text = name;
         viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
+        switch (ptChart.state) {
+          case Fluid.EState.Dew:
+            switchFluidState.SelectedSegment = SECTION_DEW;
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            break;
+          case Fluid.EState.Bubble:
+            switchFluidState.SelectedSegment = SECTION_BUBBLE;
+            switchFluidState.TintColor = new UIColor(Colors.RED);
+            break;
+        }
+        if (initialManifold != null) {
+          initialManifold.ptChart = __ptChart;
+        }
       }
     } ION.Core.Fluids.PTChart __ptChart;
 
@@ -215,39 +228,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         switch ((int)switchFluidState.SelectedSegment) {
           case SECTION_DEW:
             ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ptChart.fluid, ptChart.elevation);
-            switchFluidState.TintColor = new UIColor(Colors.BLUE);
             break;
           case SECTION_BUBBLE:
             ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Bubble, ptChart.fluid, ptChart.elevation);
-            switchFluidState.TintColor = new UIColor(Colors.RED);
             break;
         }
       };
 
       ion = AppState.context;
-
-      if (initialManifold == null) {
-        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
-        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
-      } else {
-        var im = initialManifold;
-        if (im.ptChart == null) {
-          ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-        } else {
-          ptChart = im.ptChart;
-        }
-        if (im.primarySensor.type == ESensorType.Pressure) {
-          pressureSensor = im.primarySensor;
-          temperatureSensor = im.secondarySensor;
-        } else if (im.primarySensor.type == ESensorType.Temperature) {
-          pressureSensor = im.secondarySensor;
-          temperatureSensor = im.secondarySensor;
-        } else {
-          // TODO ahodder@appioninc.com: Display a user friendly error message
-          throw new Exception("Cannot display view controller: invalid manifold");
-        }
-      }
 
       NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
@@ -311,6 +299,30 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       editTemperature.AddTarget((object obj, EventArgs args) => {
         UpdatePressure();
       }, UIControlEvent.EditingChanged);
+
+      if (initialManifold == null) {
+        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
+        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      } else {
+        var im = initialManifold;
+        if (im.ptChart == null) {
+          ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        } else {
+          ptChart = im.ptChart;
+        }
+        switchFluidState.SelectedSegment = (int)initialManifold.ptChart.state;
+        if (im.primarySensor.type == ESensorType.Pressure) {
+          pressureSensor = im.primarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else if (im.primarySensor.type == ESensorType.Temperature) {
+          pressureSensor = im.secondarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else {
+          // TODO ahodder@appioninc.com: Display a user friendly error message
+          throw new Exception("Cannot display view controller: invalid manifold");
+        }
+      }
 
       OnFluidSelected(ion.fluidManager.lastUsedFluid);
     }

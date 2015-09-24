@@ -108,6 +108,7 @@ namespace ION.Core.Content {
       }
       set {
         __ptChart = value;
+        ION.Core.Util.Log.D(this, "pt chart state is " + __ptChart.state);
         NotifyChanged();
       }
     } PTChart __ptChart;

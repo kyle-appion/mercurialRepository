@@ -60,9 +60,9 @@ namespace ION.Core.Connections {
     /// </summary>
     byte[] lastPacket { get; }
     /// <summary>
-    /// The time that the last packet was received by the connection.
+    /// The last time that connection was seen- either through packet resolution or a scan.
     /// </summary>
-    DateTime timeLastPacketReceived { get; }
+    DateTime lastSeen { get; set; }
     /// <summary>
     /// Queries the native connection object that this connection is wrapping.
     /// </summary>

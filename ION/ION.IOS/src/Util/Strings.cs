@@ -33,6 +33,12 @@ namespace ION.IOS.Util {
       ;
     } // End Strings.Alarms
 
+    public static class Analyzer {
+      public static readonly string
+      SELF = "analyzer".FromResources()
+      ;
+    } // End Strings.Analyzer
+
     public static class Device {
       public static readonly string
       AVAILABLE = "device_available".FromResources(),

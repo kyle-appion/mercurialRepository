@@ -97,6 +97,11 @@ namespace ION.IOS.App {
     }
 
     // Overridden from IION
+    public void PostToMainDelayed(Action action, TimeSpan delay) {
+      DispatchQueue.MainQueue.DispatchAfter(new DispatchTime(DispatchTime.Now, delay), action);
+    }
+
+    // Overridden from IION
     public Task SaveWorkbenchAsync() {
       return Task.Factory.StartNew(() => {
         lock (this) {
