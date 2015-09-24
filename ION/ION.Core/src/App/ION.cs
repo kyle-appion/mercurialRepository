@@ -82,6 +82,13 @@ namespace ION.Core.App {
     /// </summary>
     /// <param name="action">Action.</param>
     void PostToMain(Action action);
+    /// <summary>
+    /// Posts an action to the main message pump for execution on the main thread after
+    /// a given delay.
+    /// </summary>
+    /// <param name="action">Action.</param>
+    /// <param name="delay">Delay.</param>
+    void PostToMainDelayed(Action action, TimeSpan delay);
 
     Task SaveWorkbenchAsync();
   } // End IION

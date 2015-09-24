@@ -37,6 +37,25 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         var name = ptChart.fluid.name;
         labelFluidName.Text = name;
         viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
+        switch (ptChart.state) {
+          case Fluid.EState.Dew:
+            switchFluidState.SelectedSegment = SECTION_DEW;
+            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            UpdateDelta();
+            break;
+          case Fluid.EState.Bubble:
+            switchFluidState.SelectedSegment = SECTION_BUBBLE;
+            labelFluidState.Text = Strings.Fluid.SUBCOOL;
+            labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+            switchFluidState.TintColor = new UIColor(Colors.RED);
+            UpdateDelta();
+            break;
+        }
+        if (initialManifold != null) {
+          initialManifold.ptChart = __ptChart;
+        }
       }
     } ION.Core.Fluids.PTChart __ptChart;
 
@@ -205,46 +224,15 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         switch ((int)switchFluidState.SelectedSegment) {
           case SECTION_DEW:
             ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ptChart.fluid, ptChart.elevation);
-            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
-            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
-            switchFluidState.TintColor = new UIColor(Colors.BLUE);
-            UpdateDelta();
             break;
           case SECTION_BUBBLE:
             ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Bubble, ptChart.fluid, ptChart.elevation);
-            labelFluidState.Text = Strings.Fluid.SUBCOOL;
-            labelFluidState.BackgroundColor = new UIColor(Colors.RED);
-            switchFluidState.TintColor = new UIColor(Colors.RED);
-            UpdateDelta();
             break;
         }
       };
       switchFluidState.SelectedSegment = SECTION_DEW;
 
       ion = AppState.context;
-
-      if (initialManifold == null) {
-        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
-        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
-      } else {
-        var im = initialManifold;
-        if (im.ptChart == null) {
-          ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
-        } else {
-          ptChart = im.ptChart;
-        }
-        if (im.primarySensor.type == ESensorType.Pressure) {
-          pressureSensor = im.primarySensor;
-          temperatureSensor = im.secondarySensor;
-        } else if (im.primarySensor.type == ESensorType.Temperature) {
-          pressureSensor = im.secondarySensor;
-          temperatureSensor = im.secondarySensor;
-        } else {
-          // TODO ahodder@appioninc.com: Display a user friendly error message
-          throw new Exception("Cannot display view controller: invalid manifold");
-        }
-      }
 
       NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
@@ -332,6 +320,29 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           ClearTemperatureInput();
         }
       }, UIControlEvent.EditingChanged);
+
+      if (initialManifold == null) {
+        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
+        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+      } else {
+        var im = initialManifold;
+        if (im.ptChart == null) {
+          ptChart = im.ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        } else {
+          ptChart = im.ptChart;
+        }
+        if (im.primarySensor.type == ESensorType.Pressure) {
+          pressureSensor = im.primarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else if (im.primarySensor.type == ESensorType.Temperature) {
+          pressureSensor = im.secondarySensor;
+          temperatureSensor = im.secondarySensor;
+        } else {
+          // TODO ahodder@appioninc.com: Display a user friendly error message
+          throw new Exception("Cannot display view controller: invalid manifold");
+        }
+      }
 
       labelFluidDelta.Text = "";
       OnFluidSelected(ion.fluidManager.lastUsedFluid);

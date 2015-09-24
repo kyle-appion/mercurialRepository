@@ -14,6 +14,7 @@ using ION.Core.Util;
 using ION.IOS.App;
 using ION.IOS.UI;
 using ION.IOS.Util;
+using ION.IOS.ViewController.Analyzer;
 using ION.IOS.ViewController.PressureTemperatureChart;
 using ION.IOS.ViewController.Settings;
 using ION.IOS.ViewController.SuperheatSubcool;
@@ -44,9 +45,8 @@ namespace ION.IOS.ViewController {
 
       navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
-//          new StringElement ("Analyzer"),
-//          new StringElement ("Device Manager"),
-          new ImageStringElement (Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
+//          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
+          new ImageStringElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
           new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
@@ -78,6 +78,7 @@ namespace ION.IOS.ViewController {
     /// <returns>The view controllers.</returns>
     private UIViewController[] BuildViewControllers() {
       var ret = new UINavigationController[] {
+//        new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),

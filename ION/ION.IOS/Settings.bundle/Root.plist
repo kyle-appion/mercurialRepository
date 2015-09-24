@@ -4,185 +4,178 @@
 <dict>
 	<key>PreferenceSpecifiers</key>
 	<array>
-    <dict>
-      <key>Type</key>
-      <string>PSGroupSpecifier</string>
-      <key>Title</key>
-      <string>settings_location</string>
-    </dict>
-    <dict>
-      <key>Type</key>
-      <string>PSToggleSwitchSpecifier</string>
-      <key>Key</key>
-      <string>settings_location_use_geolocation</string>
-      <key>Title</key>
-      <string>settings_location_use_geolocation</string>
-      <key>DefaultValue</key>
-      <false/>
-      <key>TrueValue</key>
-      <true/>
-      <key>FalseValue</key>
-      <false/>
-    </dict>
-
-
-
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>settings_location</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Key</key>
+			<string>settings_location_use_geolocation</string>
+			<key>Title</key>
+			<string>settings_location_use_geolocation</string>
+			<key>DefaultValue</key>
+			<false/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
+		</dict>
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>settings_units_default</string>
 		</dict>
-    <dict>
-      <key>Type</key>
-      <string>PSMultiValueSpecifier</string>
-      <key>Key</key>
-      <string>settings_units_default_length</string>
-      <key>Title</key>
-      <string>settings_units_default_length</string>
-      <key>DefaultValue</key>
-      <integer>21</integer>
-      <key>Titles</key>
-      <array>
-        <string>m</string>
-        <string>ft</string>
-      </array>
-      <key>Values</key>
-      <array>
-        <integer>20</integer>
-        <integer>21</integer>
-      </array>
-    </dict>
-    <dict>
-      <key>Type</key>
-      <string>PSMultiValueSpecifier</string>
-      <key>Key</key>
-      <string>settings_units_default_pressure</string>
-      <key>Title</key>
-      <string>settings_units_default_pressure</string>
-      <key>DefaultValue</key>
-      <integer>7</integer>
-      <key>Titles</key>
-      <array>
-        <string>kPa</string>
-        <string>MPa</string>
-        <string>bar</string>
-        <string>cmHg</string>
-        <string>inHg</string>
-        <string>PSIa</string>
-        <string>PSIg</string>
-        <string>kg/cm²</string>
-      </array>
-      <key>Values</key>
-      <array>
-        <integer>1</integer>
-        <integer>2</integer>
-        <integer>3</integer>
-        <integer>4</integer>
-        <integer>5</integer>
-        <integer>6</integer>
-        <integer>7</integer>
-        <integer>8</integer>
-      </array>
-    </dict>
-    <dict>
-      <key>Type</key>
-      <string>PSMultiValueSpecifier</string>
-      <key>Key</key>
-      <string>settings_units_default_temperature</string>
-      <key>Title</key>
-      <string>settings_units_default_temperature</string>
-      <key>DefaultValue</key>
-      <integer>18</integer>
-      <key>Titles</key>
-      <array>
-        <string>°K</string>
-        <string>°C</string>
-        <string>°F</string>
-      </array>
-      <key>Values</key>
-      <array>
-        <integer>16</integer>
-        <integer>17</integer>
-        <integer>18</integer>
-      </array>
-    </dict>
-    <dict>
-      <key>Type</key>
-      <string>PSMultiValueSpecifier</string>
-      <key>Key</key>
-      <string>settings_units_default_vacuum</string>
-      <key>Title</key>
-      <string>settings_units_default_vacuum</string>
-      <key>DefaultValue</key>
-      <integer>39</integer>
-      <key>Titles</key>
-      <array>
-        <string>Pa</string>
-        <string>kPa</string>
-        <string>MPa</string>
-        <string>mbar</string>
-        <string>cmHg</string>
-        <string>inHg</string>
-        <string>PSIa</string>
-        <string>micron</string>
-        <string>torr</string>
-        <string>mtorr</string>
-      </array>
-      <key>Values</key>
-      <array>
-        <integer>32</integer>
-        <integer>33</integer>
-        <integer>34</integer>
-        <integer>35</integer>
-        <integer>36</integer>
-        <integer>37</integer>
-        <integer>38</integer>
-        <integer>39</integer>
-        <integer>40</integer>
-        <integer>41</integer>
-      </array>
-    </dict>
-
-
-    <dict>
-      <key>Type</key>
-      <string>PSGroupSpecifier</string>
-      <key>Title</key>
-      <string>settings_alarm</string>
-    </dict>
-    <dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Key</key>
+			<string>settings_units_default_length</string>
+			<key>Title</key>
+			<string>settings_units_default_length</string>
+			<key>DefaultValue</key>
+			<integer>21</integer>
+			<key>Titles</key>
+			<array>
+				<string>m</string>
+				<string>ft</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>20</integer>
+				<integer>21</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Key</key>
+			<string>settings_units_default_pressure</string>
+			<key>Title</key>
+			<string>settings_units_default_pressure</string>
+			<key>DefaultValue</key>
+			<integer>7</integer>
+			<key>Titles</key>
+			<array>
+				<string>kPa</string>
+				<string>MPa</string>
+				<string>bar</string>
+				<string>cmHg</string>
+				<string>inHg</string>
+				<string>PSIa</string>
+				<string>PSIg</string>
+				<string>kg/cm²</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>1</integer>
+				<integer>2</integer>
+				<integer>3</integer>
+				<integer>4</integer>
+				<integer>5</integer>
+				<integer>6</integer>
+				<integer>7</integer>
+				<integer>8</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Key</key>
+			<string>settings_units_default_temperature</string>
+			<key>Title</key>
+			<string>settings_units_default_temperature</string>
+			<key>DefaultValue</key>
+			<integer>18</integer>
+			<key>Titles</key>
+			<array>
+				<string>°K</string>
+				<string>°C</string>
+				<string>°F</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>16</integer>
+				<integer>17</integer>
+				<integer>18</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Key</key>
+			<string>settings_units_default_vacuum</string>
+			<key>Title</key>
+			<string>settings_units_default_vacuum</string>
+			<key>DefaultValue</key>
+			<integer>39</integer>
+			<key>Titles</key>
+			<array>
+				<string>Pa</string>
+				<string>kPa</string>
+				<string>MPa</string>
+				<string>mbar</string>
+				<string>cmHg</string>
+				<string>inHg</string>
+				<string>PSIa</string>
+				<string>micron</string>
+				<string>torr</string>
+				<string>mtorr</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>32</integer>
+				<integer>33</integer>
+				<integer>34</integer>
+				<integer>35</integer>
+				<integer>36</integer>
+				<integer>37</integer>
+				<integer>38</integer>
+				<integer>39</integer>
+				<integer>40</integer>
+				<integer>41</integer>
+			</array>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>settings_alarm</string>
+		</dict>
+		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
-      <key>Key</key>
-      <string>settings_alarm_sound</string>
+			<key>Key</key>
+			<string>settings_alarm_sound</string>
 			<key>Title</key>
 			<string>settings_alarm_sound</string>
-      <key>DefaultValue</key>
-      <false/>
-      <key>TrueValue</key>
-      <true/>
-      <key>FalseValue</key>
-      <false/>
+			<key>DefaultValue</key>
+			<false/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
 		</dict>
-    <dict>
+		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
-      <key>Key</key>
-      <string>settings_alarm_haptic</string>
+			<key>Key</key>
+			<string>settings_alarm_haptic</string>
 			<key>Title</key>
 			<string>settings_alarm_haptic</string>
-      <key>DefaultValue</key>
-      <false/>
-      <key>TrueValue</key>
-      <true/>
-      <key>FalseValue</key>
-      <false/>
+			<key>DefaultValue</key>
+			<false/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
 		</dict>
-
-
-    <dict>
-      <key>Type</key>
+		<dict>
+			<key>Type</key>
 			<string>PSGroupSpecifier</string>
 			<key>Title</key>
 			<string>settings_screen</string>
@@ -190,16 +183,16 @@
 		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
-      <key>Key</key>
-      <string>settings_screen_leave_on</string>
+			<key>Key</key>
+			<string>settings_screen_leave_on</string>
 			<key>Title</key>
 			<string>settings_screen_leave_on</string>
-      <key>DefaultValue</key>
-      <false/>
-      <key>TrueValue</key>
-      <true/>
-      <key>FalseValue</key>
-      <false/>
+			<key>DefaultValue</key>
+			<false/>
+			<key>TrueValue</key>
+			<true/>
+			<key>FalseValue</key>
+			<false/>
 		</dict>
 	</array>
 </dict>

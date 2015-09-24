@@ -20,6 +20,9 @@ file.
 "alarms" = "Alarms";
 "alarms_reenable" = "Re-enable";
 
+/* Analyzer */
+"analyzer" = "Analyzer";
+
 /* DEVICE */
 "device_available" = "Available";
 "device_connected" = "Connected";

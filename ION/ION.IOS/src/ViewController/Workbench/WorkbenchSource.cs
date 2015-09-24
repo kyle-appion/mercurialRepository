@@ -190,14 +190,11 @@ namespace ION.IOS.ViewController.Workbench {
     private void ShowManifoldContextMenu(object obj, Manifold manifold) {
       var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.ActionSheet);
 
+
       if (manifold.primarySensor is GaugeDeviceSensor) {
         var sensor = manifold.primarySensor as GaugeDeviceSensor;
         // Append gauge device sensor context items
-        if (sensor.device.isConnected) {
-          dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-            sensor.device.connection.Disconnect();
-          }));
-        } else {
+        if (!sensor.device.isConnected) {
           dialog.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
             sensor.device.connection.Connect();
           }));
@@ -219,6 +216,16 @@ namespace ION.IOS.ViewController.Workbench {
             Toast.New(__table, "Rename coming soon!");
           }));
 */
+
+      if (manifold.primarySensor is GaugeDeviceSensor) {
+        var sensor = manifold.primarySensor as GaugeDeviceSensor;
+        // Append gauge device sensor context items
+        if (sensor.device.isConnected) {
+          dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
+            sensor.device.connection.Disconnect();
+          }));
+        }
+      }
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE, UIAlertActionStyle.Default, (action) => {
         __workbench.Remove(manifold);

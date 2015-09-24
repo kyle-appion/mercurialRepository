@@ -104,7 +104,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
         return false;
       };
-      UpdateSourceContent();
+      this.PostUpdate();
     }
 
     // Overridden from UIViewController
@@ -145,6 +145,8 @@ namespace ION.IOS.ViewController.DeviceManager {
             continue;
           }
         }
+
+        Log.D(this, "Connected: " + device.isConnected + " Nearby: " + device.isNearby + " Known: " + ion.deviceManager.IsDeviceKnown(device));
         
         if (EConnectionState.Connected == device.connection.connectionState) {
           connected.devices.Add(device);
@@ -174,6 +176,17 @@ namespace ION.IOS.ViewController.DeviceManager {
       } else {
         tableContent.Hidden = true;
         labelEmpty.Hidden = false;
+      }
+    }
+
+    /// <summary>
+    /// A bouncing call that will keep posting itself to the message pump to update the view controller.
+    /// </summary>
+    private void PostUpdate() {
+      Log.D(this, "Updating...");
+      if (IsViewLoaded) {
+        UpdateSourceContent();
+        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
       }
     }
 

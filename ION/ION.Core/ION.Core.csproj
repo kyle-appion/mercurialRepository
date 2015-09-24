@@ -112,6 +112,8 @@
     <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
     <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
+    <Compile Include="src\Security\Obfuscation.cs" />
+    <Compile Include="src\Util\StringExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -133,6 +135,7 @@
     <Folder Include="src\Content\Serialization\" />
     <Folder Include="src\Devices\Connections\" />
     <Folder Include="src\Content\Properties\" />
+    <Folder Include="src\Security\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

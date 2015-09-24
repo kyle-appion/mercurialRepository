@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       switch (sensorProperty.manifold.ptChart.state) {
         case Fluid.EState.Bubble:
-          this.labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
+          labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
           break;
         case Fluid.EState.Dew:
           labelTitle.Text = Strings.Fluid.PT_CHART_DEW;

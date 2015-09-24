@@ -23,6 +23,7 @@
     <MtouchLink>None</MtouchLink>
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
+    <CodesignKey>iPhone Developer</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -37,6 +38,7 @@
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
+    <MtouchSdkVersion>8.4</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -68,6 +70,7 @@
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
+    <MtouchSdkVersion>8.4</MtouchSdkVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -172,6 +175,8 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%401x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%401x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -298,6 +303,11 @@
     <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
       <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\Analyzer\AnalyzerDisplayView.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerViewController.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerViewController.designer.cs">
+      <DependentUpon>AnalyzerViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -320,8 +330,9 @@
     <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
     <Folder Include="src\ViewController\Settings\" />
     <Folder Include="Settings.bundle\" />
-    <Folder Include="Settings.bundle\en.lproj\" />
     <Folder Include="src\Storyboard\" />
+    <Folder Include="src\ViewController\Analyzer\" />
+    <Folder Include="Settings.bundle\en.lproj\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -431,10 +442,8 @@
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
     <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
-    <BundleResource Include="Resources\Default-568h%402x.png" />
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
     <BundleResource Include="Settings.bundle\Root.plist" />
-    <BundleResource Include="Settings.bundle\ApplicationSettings.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
   </ItemGroup>
   <ItemGroup>
