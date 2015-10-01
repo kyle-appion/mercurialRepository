@@ -7,6 +7,7 @@ using ION.Core.Database;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.IO;
+using ION.Core.Location;
 using ION.Core.Measure;
 using ION.Core.Util;
 
@@ -41,6 +42,17 @@ namespace ION.Core.App {
   /// </summary>
   public interface IION : IDisposable {
     /// <summary>
+    /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
+    /// </summary>
+    /// <value>The name.</value>
+    string name { get; }
+    /// <summary>
+    /// Queries the full version of the ion instance.
+    /// </summary>
+    /// <value>The version.</value>
+    string version { get; }
+
+    /// <summary>
     /// The database that will store all of the application data.
     /// </summary>
     /// <value>The database.</value>
@@ -71,6 +83,11 @@ namespace ION.Core.App {
     /// </summary>
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; }
+    /// <summary>
+    /// Queries the location manager that is responsbile for ascertaining the user's altitude.
+    /// </summary>
+    /// <value>The location manager.</value>
+    ILocationManager locationManager { get; }
     /// <summary>
     /// The default units for the ION instance.
     /// </summary>

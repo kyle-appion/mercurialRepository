@@ -15,9 +15,6 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Net\AppionServer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Net\ContentTypes.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Requests\GaugeDeviceCalibrationCertificateRequest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

@@ -13,3 +13,6 @@ namespace ION.Core.Util {
   }
 }
 
+
+
+// Security bytes: [52, 50, 53, 49, 53, 57, 50, 56, 49, 54, 54, 52, 51, 48, 48, 56]

@@ -15,12 +15,13 @@ file.
 "rename" = "Rename";
 "settings" = "Settings";
 "unknown" = "Unknown";
+"use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?"
 
 /* ALARMS */
 "alarms" = "Alarms";
 "alarms_reenable" = "Re-enable";
 
-/* Analyzer */
+/* ANALYZER */
 "analyzer" = "Analyzer";
 
 /* DEVICE */

@@ -59,6 +59,12 @@ namespace ION.IOS.App {
         Environment.Exit(1);
       }
 
+      var list = new System.Collections.Generic.List<ION.Core.Devices.ISerialNumber>();
+      foreach (var device in ion.deviceManager.devices) {
+        list.Add(device.serialNumber);
+      }
+      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
+
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
