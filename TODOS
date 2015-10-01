@@ -19,12 +19,4 @@ PTChart SHSC show connected
 
 **Oderered**
 
-Nist Certificates
-
 Screenshot Reporting
-
-
-Device Manager:
-- New devices show up under Disconnected section when located on a scan. INCORRECT Should be in New Devices.
-- Disconnecting a device sends it to New Devices section. INCORRECT Should be in Available.
-- Following up to above, hitting "Scan" again puts the available devices in Disconnected.

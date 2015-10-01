@@ -41,7 +41,11 @@
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>location</string>
 		<string>bluetooth-central</string>
 	</array>
+
+  <key>NSLocationAlwaysUsageDescription</key>
+  <string>use_geolocation</string>
 </dict>
 </plist>

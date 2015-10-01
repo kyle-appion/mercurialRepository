@@ -114,6 +114,10 @@
     <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
     <Compile Include="src\Security\Obfuscation.cs" />
     <Compile Include="src\Util\StringExtensions.cs" />
+    <Compile Include="src\Devices\Certificates\ICalibrationCertificate.cs" />
+    <Compile Include="src\Devices\Certificates\AV760CalibrationCertificate.cs" />
+    <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
+    <Compile Include="src\Location\ILocationManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -136,6 +140,9 @@
     <Folder Include="src\Devices\Connections\" />
     <Folder Include="src\Content\Properties\" />
     <Folder Include="src\Security\" />
+    <Folder Include="src\Devices\Certificates\" />
+    <Folder Include="src\Sensors\Alarms\Serialization\" />
+    <Folder Include="src\Location\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

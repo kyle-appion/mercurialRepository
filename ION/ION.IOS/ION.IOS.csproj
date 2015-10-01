@@ -70,7 +70,7 @@
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
-    <MtouchSdkVersion>8.4</MtouchSdkVersion>
+    <MtouchSdkVersion>9.0</MtouchSdkVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -308,6 +308,8 @@
     <Compile Include="src\ViewController\Analyzer\AnalyzerViewController.designer.cs">
       <DependentUpon>AnalyzerViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Net\RequestCalibrationCertificatesTask.cs" />
+    <Compile Include="src\Location\IosLocationManager.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -333,6 +335,8 @@
     <Folder Include="src\Storyboard\" />
     <Folder Include="src\ViewController\Analyzer\" />
     <Folder Include="Settings.bundle\en.lproj\" />
+    <Folder Include="src\Net\" />
+    <Folder Include="src\Location\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

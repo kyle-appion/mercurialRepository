@@ -78,7 +78,13 @@ namespace ION.Core.Measure {
       public static readonly Unit KELVIN = Temperature.KELVIN;
       public static readonly Unit KILOGRAM = Mass.KILOGRAM;
       public static readonly Unit METER = Length.METER;
+      public static readonly Unit RADIAN = Angle.RADIAN;
       public static readonly Unit SECOND = Time.SECOND;
+    }
+
+    public static class Angle {
+      public static readonly Unit RADIAN = Base(Quantity.Angle, "rad");
+      public static readonly Unit DEGREE = Named(RADIAN.Mul(System.Math.PI).Div(180), "°");
     }
 
     public static class ElectricCurrent {

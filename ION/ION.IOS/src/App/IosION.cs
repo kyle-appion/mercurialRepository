@@ -16,12 +16,14 @@ using ION.Core.Database;
 using ION.Core.Devices;
 using ION.Core.Fluids;
 using ION.Core.IO;
+using ION.Core.Location;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Util;
 
 using ION.IOS.Alarms.Alerts;
 using ION.IOS.IO;
+using ION.IOS.Location;
 using ION.IOS.Devices;
 
 namespace ION.IOS.App {
@@ -33,6 +35,23 @@ namespace ION.IOS.App {
     /// The file name for the primary workbench.
     /// </summary>
     public const string FILE_WORKBENCH = "primaryWorkbench.workbench";
+
+    private static string GetDisplayName() {
+      var info = NSBundle.MainBundle.InfoDictionary;
+      var appDisplayName = info.ObjectForKey(new NSString("CFBundleDisplayName"));
+      return ((NSString)appDisplayName).ToString();
+    }
+
+    private static string GetVersion() {
+      var info = NSBundle.MainBundle.InfoDictionary;
+      var version = info.ObjectForKey(new NSString("CFBundleVersion"));
+      return ((NSString)version).ToString();
+    }
+
+    // Overridden from IION
+    public string name { get { return GetDisplayName(); } }
+    // Overridden from IION
+    public string version { get { return GetVersion(); } }
 
     // Overridden from IION
     public IONDatabase database { get; set; }
@@ -46,9 +65,17 @@ namespace ION.IOS.App {
     public IFluidManager fluidManager { get; set; }
     // Overridden from IION
     public Workbench currentWorkbench { get; set; }
+    // Overridden from IION
+    public ILocationManager locationManager { get; set; }
 
     // Overridden from IION
     public IUnits defaultUnits { get; private set; }
+
+    /// <summary>
+    /// The ios application settings.
+    /// </summary>
+    /// <value>The settings.</value>
+    public AppSettings settings { get; private set; }
 
     /// <summary>
     /// The list of managers that are present in the ion context.
@@ -57,15 +84,18 @@ namespace ION.IOS.App {
     /// <summary>
     /// The native ios application settings dictionary.
     /// </summary>
-    private NSDictionary settings { get; set; }
+//    private NSDictionary settings { get; set; }
 
     public IosION() {
+      settings = new AppSettings();
       // Load up the application settings
 //      defaultUnits = new IosUnits();
-      // Order matters
+      // Order matters - Manager's with no dependencies should come first such
+      // that later manager's may depend on them.
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
+      managers.Add(locationManager = new IosLocationManager(this));
       managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(new CBCentralManager(DispatchQueue.CurrentQueue))));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
