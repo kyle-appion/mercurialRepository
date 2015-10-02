@@ -55,7 +55,9 @@ namespace ION.IOS.Connections {
         Log.D(this, __nativeDevice.Name + "'s ConnectionState: " + value);
         __connectionState = value;
         if (onStateChanged != null) {
-          onStateChanged(this, __connectionState);
+          ION.Core.App.AppState.context.PostToMain(() => {
+            onStateChanged(this, __connectionState);
+          });
         }
       }
     } EConnectionState __connectionState;

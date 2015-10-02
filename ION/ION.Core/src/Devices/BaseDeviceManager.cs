@@ -282,7 +282,9 @@ namespace ION.Core.Devices {
       device.connection.lastSeen = DateTime.Now;
 
       if (onDeviceFound != null) {
-        onDeviceFound(this, device);
+        ion.PostToMain(() => {
+          onDeviceFound(this, device);
+        });
       }
     }
 

@@ -203,7 +203,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (pressureSensor.isEditable) {
-          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.GetSupportedUnits(), (obj, unit) => {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
             pressureUnit = unit;
           });
           PresentViewController(dialog, true, null);
@@ -213,7 +213,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonTemperatureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonTemperatureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (temperatureSensor.isEditable) {
-          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.GetSupportedUnits(), (obj, unit) => {
+          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
             temperatureUnit = unit;
           });
           PresentViewController(dialog, true, null);
