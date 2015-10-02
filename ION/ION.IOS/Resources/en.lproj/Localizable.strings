@@ -29,6 +29,9 @@ file.
 "device_connected" = "Connected";
 "device_disconnect" = "Disconnect";
 "device_disconnected" = "Disconnected";
+"device_forget" = "Forget Device";
+"device_really_forget" = "Really forget device?";
+"device_forget_desc" = "Forgetting a device will remove it from the application database. All data based on this device will also be deleted. This operation is irreversible (although you can reconnect the device at a later time). Are you sure you wish to continue?";
 "device_long_range" = "Long Range";
 "device_name" = "Device Name";
 "device_new_devices" = "New Devices Found";

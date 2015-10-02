@@ -71,6 +71,16 @@ namespace ION.Core.Database {
       return affected > 0;
     }
 
+    // Overridden from IDao
+    public async Task<bool> DeleteAsync(IDevice item) {
+      var device = await DeconstructAsync(item);
+      database.BeginTransaction();
+      var affected = database.Delete(device.id);
+      database.Commit();
+      Log.D(this, "Deleted " + affected + " device when deleteing " + item.serialNumber);
+      return affected > 0;
+    }
+
     /// <summary>
     /// Queries the device in the database with the given serial number.
     /// </summary>

@@ -24,6 +24,8 @@ obj/**
 packages/**
 # Preference file
 ION.userprefs
+# Consulo (for diff because FUCK macHg)
+.consulo/**
 
 #######################################
 ## Generated resources
