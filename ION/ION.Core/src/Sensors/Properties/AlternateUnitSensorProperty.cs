@@ -46,7 +46,7 @@ namespace ION.Core.Sensors.Properties {
     }
 
     public AlternateUnitSensorProperty(Sensor sensor) : base(sensor) {
-      this.unit = sensor.measurement.unit;
+      this.__unit = sensor.measurement.unit;
       this.modifiedMeasurement = sensor.measurement;
     }
 
@@ -57,7 +57,7 @@ namespace ION.Core.Sensors.Properties {
     /// <param name="sensor">Sensor.</param>
     /// <param name="unit">Unit.</param>
     public AlternateUnitSensorProperty(Sensor sensor, Unit unit) : base(sensor) {
-      this.unit = unit;
+      this.__unit = unit;
     }
   }
 }

@@ -24,6 +24,7 @@ namespace ION.Core.Devices {
     private const string MAX_UNIT = "maxUnit";
     private const string RELATIVE = "relative";
     private const string TYPE = "type";
+    private const string SUPPORTED_UNIT = "SupportedUnit";
 
     private List<IDeviceDefinition> __definitions = new List<IDeviceDefinition>();
 
@@ -96,6 +97,15 @@ namespace ION.Core.Devices {
 
         sensor.relative = bool.Parse(element.Attribute(RELATIVE).Value);
 
+        var supportedUnits = new List<Unit>();
+        foreach (var e in element.Elements()) {
+          Log.D("DeviceFactory", "Working with unit: " + e.Value);
+          if (SUPPORTED_UNIT.Equals(e.Name.LocalName)) {
+            supportedUnits.Add(UnitLookup.GetUnit(e.Value));
+          }
+        }
+        sensor.supportedUnits = supportedUnits.ToArray();
+
         ret.Add(sensor);
       }
 
@@ -132,6 +142,7 @@ namespace ION.Core.Devices {
         var sensor = new GaugeDeviceSensor(ret, i++, definition.type, definition.relative);
         sensor.minMeasurement = definition.min;
         sensor.maxMeasurement = definition.max;
+        sensor.supportedUnits = definition.supportedUnits;
         s.Add(sensor);
       }
 
@@ -146,6 +157,7 @@ namespace ION.Core.Devices {
     public Scalar min { get; set; }
     public Scalar max { get; set; }
     public bool relative { get; set; }
+    public Unit[] supportedUnits { get; set; }
   } // End GaugeDeviceSensorDefinition
 }
 

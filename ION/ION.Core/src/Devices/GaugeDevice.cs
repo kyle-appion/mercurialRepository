@@ -77,8 +77,7 @@ namespace ION.Core.Devices {
       }
     }
 
-    public GaugeDevice(/*IDeviceManager deviceManager, */GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
-//      this.deviceManager = deviceManager;
+    public GaugeDevice(GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
       __serialNumber = serialNumber;
       this.connection = connection;
       __protocol = protocol;
@@ -129,7 +128,7 @@ namespace ION.Core.Devices {
         } else {
           throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
         }
-      } catch (Exception) {
+      } catch (Exception e) {
         // TODO ahodder@appioninc.com: Consider exposing?
         //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
       }
@@ -154,18 +153,22 @@ namespace ION.Core.Devices {
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
     private void NotifyOfStateChange() {
-      if (onStateChanged != null) {
-        onStateChanged(this);
-      }
+      ION.Core.App.AppState.context.PostToMain(() => {
+        if (onStateChanged != null) {
+          onStateChanged(this);
+        }
+      });
     }
 
     /// <summary>
     /// Notifies the device's onContentChange delegates that it has changed.
     /// </summary>
     private void NotifyOfContentChange() {
-      if (onContentChanged != null) {
-        onContentChanged(this);
-      }
+      ION.Core.App.AppState.context.PostToMain(() => {
+        if (onContentChanged != null) {
+          onContentChanged(this);
+        }
+      });
     }
   }
 }

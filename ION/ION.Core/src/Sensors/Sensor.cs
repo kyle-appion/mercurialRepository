@@ -26,25 +26,6 @@ namespace ION.Core.Sensors {
   /// Some utility extensions around the sensor type enum.
   /// </summary>
   public static class SensorExtensions {
-
-    /// <summary>
-    /// Queries the units that sensor supports.
-    /// </summary>
-    /// <returns>The supported unit.</returns>
-    /// <param name="sensor">Sensor.</param>
-    public static Unit[] GetSupportedUnits(this Sensor sensor) {
-      switch (sensor.type) {
-        case ESensorType.Pressure:
-          return SensorUtils.DEFAULT_PRESSURE_UNITS;
-        case ESensorType.Temperature:
-          return SensorUtils.DEFAULT_TEMPERATURE_UNITS;
-        case ESensorType.Vacuum:
-          return SensorUtils.DEFAULT_VACUUM_UNITS;
-        default:
-          throw new MissingMemberException("Units not defined for " + sensor.type);  
-      }
-    }
-
     /// <summary>
     /// Queries the default unit for the given sensor type.
     /// </summary>
@@ -252,7 +233,7 @@ namespace ION.Core.Sensors {
     /// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
     public virtual bool isEditable { get; protected set; }
     /// <summary>
-    /// The custom name for the specific sensor. 
+    /// The custom name for the specific sensor.
     /// </summary>
     public string name {
       get {
@@ -309,13 +290,41 @@ namespace ION.Core.Sensors {
       }
     }
 
+    public virtual Unit[] supportedUnits {
+      get {
+        if (__supportedUnits == null) {
+          switch (type) {
+            case ESensorType.Pressure:
+              return SensorUtils.DEFAULT_PRESSURE_UNITS;
+            case ESensorType.Temperature:
+              return SensorUtils.DEFAULT_TEMPERATURE_UNITS;
+            case ESensorType.Vacuum:
+              return SensorUtils.DEFAULT_VACUUM_UNITS;
+            default:
+              return new Unit[] { };
+          }
+        } else {
+          return __supportedUnits;
+        }
+      }
+      set {
+        foreach (var u in value) {
+          if (!unit.IsCompatible(u)) {
+            throw new Exception("Cannot set units: quantity mismatch. Expected: " + unit.quantity + " received: " + u.quantity);
+          }
+        }
+
+        __supportedUnits = value;
+      }
+    } Unit[] __supportedUnits;
+
     /// <summary>
     /// Creates a new sensor.
     /// </summary>
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Sensor(ESensorType sensorType, bool isRelative=true, bool isEditable=true)
-      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative, isEditable) { 
+      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative, isEditable) {
     }
     /// <summary>
     /// Creates a new sensor.
@@ -334,9 +343,11 @@ namespace ION.Core.Sensors {
     /// Notifies the sensors event that the sensor state changed.
     /// </summary>
     public void NotifySensorStateChanged() {
-      if (onSensorStateChangedEvent != null) {
-        onSensorStateChangedEvent(this);
-      }
+      ION.Core.App.AppState.context.PostToMain(() => {
+        if (onSensorStateChangedEvent != null) {
+          onSensorStateChangedEvent(this);
+        }
+      });
     }
 
     /// <summary>
@@ -373,4 +384,3 @@ namespace ION.Core.Sensors {
     }
   }
 }
-

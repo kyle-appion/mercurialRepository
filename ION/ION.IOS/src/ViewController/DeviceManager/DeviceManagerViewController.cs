@@ -186,7 +186,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       Log.D(this, "Updating...");
       if (IsViewLoaded) {
         UpdateSourceContent();
-        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
+//        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
       }
     }
 
