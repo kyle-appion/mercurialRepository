@@ -196,7 +196,8 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <param name="dm">Dm.</param>
     /// <param name="device">Device.</param>
     private void HandleDeviceFound(IDeviceManager dm, IDevice device) {
-      UpdateSourceContent();
+      ion.PostToMain(UpdateSourceContent);
+//      UpdateSourceContent();
     }
 
     /// <summary>
