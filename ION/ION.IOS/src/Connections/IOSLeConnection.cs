@@ -66,7 +66,7 @@ namespace ION.IOS.Connections {
     // Overridden from IConnection
     public int rssi { get { return (int)__nativeDevice.RSSI; } }
     // Overridden from IConnection
-    public bool isRssiReliable { get { return __nativeDevice.IsConnected; } }
+    public bool isRssiReliable { get { return CBPeripheralState.Connected == __nativeDevice.State; } }
     // Overridden from IConnection
     public byte[] lastPacket {
       get {
@@ -185,7 +185,7 @@ namespace ION.IOS.Connections {
       centralManager.ConnectPeripheral(__nativeDevice, options);
 
       Log.D(this, "Awaiting physical connection....");
-      while (!__nativeDevice.IsConnected) {
+      while (CBPeripheralState.Connected != __nativeDevice.State) {
         if (DateTime.Now - start > connectionTimeout) {
           Log.D(this, "timeout: failed to connect");
           Disconnect();

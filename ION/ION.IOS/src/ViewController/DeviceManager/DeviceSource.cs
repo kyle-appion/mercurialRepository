@@ -37,6 +37,8 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The delegate that is called when a sensor's add button is clicked.
     /// </summary>
     public delegate bool OnSensorAddClicked(GaugeDeviceSensor sensor, NSIndexPath indexPath);
+
+    public delegate bool OnDeviceLongClicked(IDevice device, NSIndexPath indexPath);
     /// <summary>
     /// The action that will be called on a sensor's add button click.
     /// </summary>
