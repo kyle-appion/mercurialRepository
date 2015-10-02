@@ -63,10 +63,6 @@ namespace ION.IOS.ViewController.Workbench {
 
       ion.currentWorkbench.onManifoldAdded += OnManifoldAdded;
       ion.currentWorkbench.onManifoldRemoved += OnManifoldRemoved;
-
-      ion.locationManager.onLocationChanged += (ION.Core.Location.ILocationManager locationManager, ION.Core.Location.ILocation oldLocation, ION.Core.Location.ILocation newLocation) => {
-        Toast.New(View, "New " + newLocation);
-      };
     }
 
     // Overridden from BaseIONViewController

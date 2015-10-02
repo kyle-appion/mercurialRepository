@@ -154,7 +154,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
+//      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
@@ -165,7 +165,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
-      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
+//      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
     }
 
     // Overridden from IConnection

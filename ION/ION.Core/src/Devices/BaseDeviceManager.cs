@@ -195,6 +195,16 @@ namespace ION.Core.Devices {
       return ret;
     }
 
+    public void DeleteDevice(ISerialNumber serialNumber) {
+      var device = this[serialNumber];
+      if (device != null) {
+        Unregister(device);
+        // TODO ahodder@appioninc.com: We need to throw out and event that a device was deleted such that the
+        // rest of the application can react to the device being deleted.
+        ion.database.deviceDao.DeleteAsync(device);
+      }
+    }
+
     // Overridden from IDeviceManager
     public bool IsDeviceKnown(IDevice device) {
       var sb = new System.Text.StringBuilder();

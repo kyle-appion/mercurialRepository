@@ -130,6 +130,13 @@ namespace ION.Core.Devices {
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocol);
 
     /// <summary>
+    /// Permanentely deletes the device from the device manager and any persistent backend
+    /// it is using. The device will be moved to the "Found Devices" collection.
+    /// </summary>
+    /// <param name="serialNumber">Serial number.</param>
+    void DeleteDevice(ISerialNumber serialNumber);
+
+    /// <summary>
     /// Determines whether this instance is device known the specified device.
     /// </summary>
     /// <returns><c>true</c> if this instance is device known the specified device; otherwise, <c>false</c>.</returns>

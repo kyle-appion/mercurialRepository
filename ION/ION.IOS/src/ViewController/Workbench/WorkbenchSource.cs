@@ -161,7 +161,6 @@ namespace ION.IOS.ViewController.Workbench {
     // Overridden from UITableViewSource
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
       var manifold = __workbench[(int)indexPath.Section];
-      Log.D(this, "PS: " + manifold.primarySensor + " SS: " + manifold.secondarySensor);
       var prop = manifold.manifoldProperties[(int)indexPath.Row];
 
       if (prop is MinSensorProperty || prop is MaxSensorProperty || prop is HoldSensorProperty || prop is AlternateUnitSensorProperty) {

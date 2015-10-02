@@ -28,6 +28,12 @@ namespace ION.Core.Database {
     /// </summary>
     /// <param name="item">Item.</param>
     Task<bool> SaveAsync(T item);
+    /// <summary>
+    /// Deletes the item from the database.
+    /// </summary>
+    /// <returns>The async.</returns>
+    /// <param name="item">Item.</param>
+    Task<bool> DeleteAsync(T item);
   }
 }
 
