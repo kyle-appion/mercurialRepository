@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 using ION.Core.Connections;
 
+/*
 namespace ION.TestsFixtures.Connections {
   public class MockConnection : IConnection {
     private static int INSTANCE_COUNT = 0;
@@ -22,7 +23,7 @@ namespace ION.TestsFixtures.Connections {
       set {
         __connectionState = value;
         if (onStateChanged != null) {
-          onStateChanged();
+          onStateChanged(this, connectionState);
         }
       }
     } EConnectionState __connectionState;
@@ -39,15 +40,15 @@ namespace ION.TestsFixtures.Connections {
       get {
         return __lastPacket;
       }
-      public set {
+      set {
         __lastPacket = value;
         if (onDataReceived != null) {
-          onDataReceived();
+          onDataReceived(this, __lastPacket);
         }
       }
     } byte[] __lastPacket;
     // Overridden from IConnection
-    public DateTime timeLastPacketreceived { get; public set; }
+    public DateTime lastSeen { get; set; }
     // Overridden from IConnection
     public object nativeDevice { get { return null; } }
     // Overridden from IConnection
@@ -55,7 +56,7 @@ namespace ION.TestsFixtures.Connections {
 
     // Overridden from IConnection
     public Task<bool> Connect() {
-      Task.Factory.StartNew(() => {
+      return Task.Factory.StartNew(() => {
         connectionState = EConnectionState.Connected;
         return true;
       });
@@ -68,7 +69,7 @@ namespace ION.TestsFixtures.Connections {
 
     // Overridden from IConnection
     public Task<bool> Write(byte[] packet) {
-      Task.Factory.StartNew(() => {
+      return Task.Factory.StartNew(() => {
         lastPacket = packet;
         return true;
       });
@@ -76,3 +77,4 @@ namespace ION.TestsFixtures.Connections {
   }
 }
 
+*/

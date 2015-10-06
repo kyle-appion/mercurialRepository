@@ -287,11 +287,13 @@ namespace ION.IOS.ViewController.Workbench {
           manifold.AddSensorProperty(new HoldSensorProperty(sensor));
         });
       }
+      /*
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
         });
       }
+      */
 
       // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
       var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
