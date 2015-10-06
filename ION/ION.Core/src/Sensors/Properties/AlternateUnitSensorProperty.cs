@@ -14,9 +14,20 @@ namespace ION.Core.Sensors.Properties {
         return __modifiedMeasurement; 
       }
       protected set {
-        __modifiedMeasurement = value.ConvertTo(unit);
+        if (unit == null) {
+          __modifiedMeasurement = value;
+        } else {
+          __modifiedMeasurement = value.ConvertTo(unit);
+        }
       }
     } Scalar __modifiedMeasurement;
+
+    // Overridden from AbstractSensorProperty
+    public override bool supportedReset {
+      get {
+        return false;
+      }
+    }
 
     /// <summary>
     /// The alternate unit for the property. Setting this unit will throw an 

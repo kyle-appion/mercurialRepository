@@ -27,6 +27,13 @@ namespace ION.Core.Content.Properties {
       }
     }
 
+    // Overridden from ISensorProperty
+    public virtual bool supportedReset {
+      get {
+        return false;
+      }
+    }
+
     /// <summary>
     /// The manifold that this property applies to.
     /// </summary>

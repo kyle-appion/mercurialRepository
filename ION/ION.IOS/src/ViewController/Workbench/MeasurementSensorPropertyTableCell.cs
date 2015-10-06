@@ -12,6 +12,8 @@ using ION.Core.Util;
 namespace ION.IOS.ViewController.Workbench {
 	public partial class MeasurementSensorPropertyTableCell : UITableViewCell, IReleasable {
 
+    public Action onClick { get; set; }
+
     private ISensorProperty sensorProperty {
       get {
         return __sensorProperty;
@@ -40,9 +42,14 @@ namespace ION.IOS.ViewController.Workbench {
       base.AwakeFromNib();
 
       buttonIcon.TouchUpInside += (object sender, EventArgs e) => {
-        Log.D(this, "subview, clicky clicky");
         if (onIconClicked != null) {
           onIconClicked(this, sensorProperty);
+        }
+      };
+
+      button.TouchUpInside += (object sender, EventArgs e) => {
+        if (onClick != null) {
+          onClick();
         }
       };
     }
@@ -71,6 +78,7 @@ namespace ION.IOS.ViewController.Workbench {
       onIconClicked = iconClicked;
       labelTitle.Text = title;
       buttonIcon.SetImage(UIImage.FromBundle(icon), UIControlState.Normal);
+      buttonIcon.Hidden = viewDivider.Hidden = !sensorProperty.supportedReset;
     }
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {

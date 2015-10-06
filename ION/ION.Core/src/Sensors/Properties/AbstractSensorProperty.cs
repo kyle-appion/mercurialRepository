@@ -44,6 +44,13 @@ namespace ION.Core.Sensors.Properties {
       }
     }
 
+    // Overridden from ISensorProperty
+    public virtual bool supportedReset {
+      get {
+        return true;
+      }
+    }
+
     /// <summary>
     /// This is EXCLUSSIVELY used for serialization. I hate it too, but it c# would
     /// have offered a custom fucking [de]serialization method for a property, then
