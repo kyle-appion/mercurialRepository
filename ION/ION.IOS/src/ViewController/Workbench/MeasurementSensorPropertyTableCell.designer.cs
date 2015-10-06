@@ -13,6 +13,9 @@ namespace ION.IOS.ViewController.Workbench
 	partial class MeasurementSensorPropertyTableCell
 	{
 		[Outlet]
+		UIKit.UIButton button { get; set; }
+
+		[Outlet]
 		UIKit.UIButton buttonIcon { get; set; }
 
 		[Outlet]
@@ -52,6 +55,11 @@ namespace ION.IOS.ViewController.Workbench
 			if (viewDivider != null) {
 				viewDivider.Dispose ();
 				viewDivider = null;
+			}
+
+			if (button != null) {
+				button.Dispose ();
+				button = null;
 			}
 		}
 	}

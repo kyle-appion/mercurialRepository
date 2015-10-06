@@ -15,6 +15,7 @@ using ION.Core.Util;
 using ION.IOS.UI;
 using ION.IOS.Util;
 using ION.IOS.ViewController.Alarms;
+using ION.IOS.ViewController.Dialog;
 using ION.IOS.ViewController.FluidManager;
 using ION.IOS.ViewController.PressureTemperatureChart;
 using ION.IOS.ViewController.SuperheatSubcool;
@@ -163,8 +164,22 @@ namespace ION.IOS.ViewController.Workbench {
       var manifold = __workbench[(int)indexPath.Section];
       var prop = manifold.manifoldProperties[(int)indexPath.Row];
 
-      if (prop is MinSensorProperty || prop is MaxSensorProperty || prop is HoldSensorProperty || prop is AlternateUnitSensorProperty) {
+      if (prop is MinSensorProperty || prop is MaxSensorProperty || prop is HoldSensorProperty) {
         var cell = tableView.DequeueReusableCell(CELL_MEASUREMENT_SUBVIEW) as MeasurementSensorPropertyTableCell;
+
+        cell.UpdateTo(prop, GetLocalizedTitleString(prop), "ic_refresh", (object obj, ISensorProperty sensorProperty) => {
+          sensorProperty.Reset();
+        });
+
+        return cell;
+      } else if (prop is AlternateUnitSensorProperty) {
+        var alt = (AlternateUnitSensorProperty)prop;
+        var cell = tableView.DequeueReusableCell(CELL_MEASUREMENT_SUBVIEW) as MeasurementSensorPropertyTableCell;
+        cell.onClick = () => {
+          CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, manifold.primarySensor.supportedUnits, (obj, unit) => {
+            alt.unit = unit;
+          }).Show();
+        };
 
         cell.UpdateTo(prop, GetLocalizedTitleString(prop), "ic_refresh", (object obj, ISensorProperty sensorProperty) => {
           sensorProperty.Reset();

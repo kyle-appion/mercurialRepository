@@ -34,6 +34,12 @@ namespace ION.Core.Sensors.Properties {
     Scalar modifiedMeasurement { get; }
 
     /// <summary>
+    /// Queries whether or not calling reset will actually do anything on the sensor property.
+    /// </summary>
+    /// <value><c>true</c> if supported reset; otherwise, <c>false</c>.</value>
+    bool supportedReset { get; }
+
+    /// <summary>
     /// Resets the sensor property. Any retained state will be discarded and
     /// zeroed until the sensor updates.
     /// </summary>
