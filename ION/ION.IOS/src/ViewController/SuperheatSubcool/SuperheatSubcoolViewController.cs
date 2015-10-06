@@ -193,9 +193,15 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         backAction = () => {
           root.navigation.ToggleMenu();
         };
-      } else {
-        NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
       }
+
+      NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
+        var dialog = new UIAlertView(Strings.HELP, Strings.Fluid.STATE_HELP, null, Strings.OK);
+        dialog.Show();
+      });
+
+      InitializeFluidControlWidgets();
 
       __pressureSensor = new Sensor(ESensorType.Pressure);
       __temperatureSensor = new Sensor(ESensorType.Temperature);
@@ -220,35 +226,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         }
       };
 
-      switchFluidState.ValueChanged += (object sender, EventArgs e) => {
-        switch ((int)switchFluidState.SelectedSegment) {
-          case SECTION_DEW:
-            ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ptChart.fluid, ptChart.elevation);
-            break;
-          case SECTION_BUBBLE:
-            ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Bubble, ptChart.fluid, ptChart.elevation);
-            break;
-        }
-      };
-      switchFluidState.SelectedSegment = SECTION_DEW;
-
       ion = AppState.context;
-
-      NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
-        var dialog = new UIAlertView(Strings.HELP, Strings.Fluid.STATE_HELP, null, Strings.OK);
-        dialog.Show();
-      });
 
       View.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         editPressure.ResignFirstResponder();
         editTemperature.ResignFirstResponder();
-      }));
-
-      viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
-        sb.onFluidSelectedDelegate = OnFluidSelected;
-        NavigationController.PushViewController(sb, true);
       }));
 
       viewPressureTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
@@ -371,11 +353,38 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     }
 
     /// <summary>
+    /// Initializes all of view controller's fluid control widgets.
+    /// </summary>
+    private void InitializeFluidControlWidgets() {
+      viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
+        sb.onFluidSelectedDelegate = (Fluid fluid) => {
+          ptChart = new PTChart(ptChart.state, fluid, ion.locationManager.lastKnownLocation.altitude);
+          OnPressureSensorChanged(pressureSensor);
+        };
+        NavigationController.PushViewController(sb, true);
+      }));
+
+      switchFluidState.ValueChanged += (object sender, EventArgs e) => {
+        Log.D(this, "Altitude: " + ion.locationManager.lastKnownLocation.altitude);
+        switch ((int)switchFluidState.SelectedSegment) {
+          case SECTION_DEW:
+            ptChart = new PTChart(Fluid.EState.Dew, ptChart.fluid, ion.locationManager.lastKnownLocation.altitude);
+            break;
+          case SECTION_BUBBLE:
+            ptChart = new PTChart(Fluid.EState.Bubble, ptChart.fluid, ion.locationManager.lastKnownLocation.altitude);
+            break;
+        }
+        OnPressureSensorChanged(pressureSensor);
+      };
+    }
+
+    /// <summary>
     /// Called when a fluid is selected for the view controller.
     /// </summary>
     /// <param name="fluid">Fluid.</param>
     private void OnFluidSelected(Fluid fluid) {
-      ptChart = new ION.Core.Fluids.PTChart(ptChart.state, fluid, this.ptChart.elevation);
+      ptChart = new ION.Core.Fluids.PTChart(ptChart.state, fluid, this.ion.locationManager.lastKnownLocation.altitude);
       UpdateDelta();
     }
 
