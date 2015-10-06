@@ -89,6 +89,7 @@ namespace ION.IOS.Util {
 
     public static class Fluid {
       public static readonly string
+      OUT_OF_RANGE = "fluid_out_of_range".FromResources(),
       PT_CALCULATOR = "fluid_pt_calculator".FromResources(),
       PT_CHART = "fluid_pt_chart".FromResources(),
       PT_CHART_BUB = "fluid_pt_chart_bub".FromResources(),

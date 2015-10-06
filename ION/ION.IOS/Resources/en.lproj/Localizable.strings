@@ -62,6 +62,7 @@ file.
 "errors_temperature_input_parse_error" = "Failed set temperature values: invalid number";
 
 /* FLUIDS */
+"fluid_out_of_range" = "OUT OF RANGE";
 "fluid_pt_calculator" = "P/T Calculator";
 "fluid_pt_chart" = "P/T Chart";
 "fluid_pt_chart_bub" = "P/Tbub";

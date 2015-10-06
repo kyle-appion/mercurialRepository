@@ -99,7 +99,6 @@ namespace ION.Core.Devices {
 
         var supportedUnits = new List<Unit>();
         foreach (var e in element.Elements()) {
-          Log.D("DeviceFactory", "Working with unit: " + e.Value);
           if (SUPPORTED_UNIT.Equals(e.Name.LocalName)) {
             supportedUnits.Add(UnitLookup.GetUnit(e.Value));
           }

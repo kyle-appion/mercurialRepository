@@ -66,8 +66,6 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Log.D(this, "PT Pressure is: " + pressure);
-
       switch (state) {
         case Fluid.EState.Bubble:
           return fluid.GetTemperatureFromBubblePressure(pressure);
@@ -167,6 +165,70 @@ namespace ION.Core.Fluids {
 
       Scalar subcool = fluid.GetTemperatureFromBubblePressure(pressure).ConvertTo(temperature.unit);
       return subcool - temperature;
+    }
+
+    /// <summary>
+    /// Queries whether or not the given pressure is within the ptchart's fluid bounds.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is pressure within bounds the specified pressure; otherwise, <c>false</c>.</returns>
+    /// <param name="pressure">Pressure.</param>
+    public bool IsPressureWithinBounds(Scalar pressure) {
+      return !IsPressureAboveBounds(pressure) && !IsPressureBelowBounds(pressure);
+    }
+
+    /// <summary>
+    /// Queries whether or not the given temperature is within the ptchart's fluid bounds.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is temperature within bounds the specified temperature; otherwise, <c>false</c>.</returns>
+    /// <param name="temperature">Temperature.</param>
+    public bool IsTemperatureWithinBounds(Scalar temperature) {
+      return !IsTemperatureAboveBounds(temperature) && !IsTemperatureBelowBounds(temperature);
+    }
+
+    /// <summary>
+    /// Queries whether or not the given pressure measurement is above the bounds
+    /// of the ptchart's fluid bounds.
+    /// </summary>
+    public bool IsPressureAboveBounds(Scalar pressure) {
+      switch (state) {
+        case Fluid.EState.Bubble:
+          return pressure > fluid.GetMaximumBubblePressure();
+        case Fluid.EState.Dew:
+          return pressure > fluid.GetMaximumDewPressure();
+        default:
+          return false;
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the given pressure measurement is below the bounds
+    /// of the ptchart's fluid bounds.
+    /// </summary>
+    public bool IsPressureBelowBounds(Scalar pressure) {
+      switch (state) {
+        case Fluid.EState.Bubble:
+          return pressure < fluid.GetMinimumBubblePressure();
+        case Fluid.EState.Dew:
+          return pressure < fluid.GetMinimumDewPressure();
+        default:
+          return false;
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the given temperature measurement is above the bounds
+    /// of the ptchart's fluid bounds.
+    /// </summary>
+    public bool IsTemperatureAboveBounds(Scalar temperature) {
+      return temperature > fluid.GetMaximumTemperature();
+    }
+
+    /// <summary>
+    /// Queries whether or not the given temperature measurement is below the bounds
+    /// of the ptchart's fluid bounds.
+    /// </summary>
+    public bool IsTemperatureBelowBounds(Scalar temperature) {
+      return temperature < fluid.GetMinimumTemperature();
     }
   }
 }
