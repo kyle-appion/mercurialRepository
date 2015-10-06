@@ -21,19 +21,19 @@ namespace ION.Core.Fluids {
     /// </summary>
     public string name { get; private set; }
     /// <summary>
-    /// The minimum temperature for the fluid. This is necessary for all lookups.
-    /// </summary>
-    public double tmin { get; private set; }
-    /// <summary>
-    /// The maximum temperature for the fluid. This is necessary for all lookups.
-    /// </summary>
-    public double tmax { get; private set; }
-    /// <summary>
     /// The ARGB8888 color of the fluid.
     /// </summary>
     /// <value>The color.</value>
     public int color { get; set; }
 
+    /// <summary>
+    /// The minimum temperature for the fluid. This is necessary for all lookups.
+    /// </summary>
+    private double tmin { get; set; }
+    /// <summary>
+    /// The maximum temperature for the fluid. This is necessary for all lookups.
+    /// </summary>
+    private double tmax { get; set; }
     /// <summary>
     /// The interval between temperatures within the table.
     /// </summary>
@@ -75,6 +75,22 @@ namespace ION.Core.Fluids {
       this.temperatures = temperatures;
       this.bubblePressures = bubblePressures;
       this.dewPressures = dewPressures;
+    }
+
+    /// <summary>
+    /// Queries the minimum temperature of the fluid.
+    /// </summary>
+    /// <returns>The minimum temperature.</returns>
+    public Scalar GetMinimumTemperature() {
+      return TEMPERATURE.OfScalar(tmin);
+    }
+
+    /// <summary>
+    /// Queries the maximum temperature of the fluid.
+    /// </summary>
+    /// <returns>The maximum temperature.</returns>
+    public Scalar GetMaximumTemperature() {
+      return TEMPERATURE.OfScalar(tmax);
     }
 
     /// <summary>

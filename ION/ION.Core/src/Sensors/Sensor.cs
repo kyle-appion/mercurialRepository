@@ -343,11 +343,9 @@ namespace ION.Core.Sensors {
     /// Notifies the sensors event that the sensor state changed.
     /// </summary>
     public void NotifySensorStateChanged() {
-      ION.Core.App.AppState.context.PostToMain(() => {
-        if (onSensorStateChangedEvent != null) {
-          onSensorStateChangedEvent(this);
-        }
-      });
+      if (onSensorStateChangedEvent != null) {
+        onSensorStateChangedEvent(this);
+      }
     }
 
     /// <summary>

@@ -102,36 +102,38 @@ namespace ION.Core.Devices {
 
     // Overridden from IDevice
     public void HandlePacket(byte[] packet) {
-      try {
-        GaugePacket gp = __protocol.ParsePacket(packet);
+      ION.Core.App.AppState.context.PostToMain(() => {
+        try {
+          GaugePacket gp = __protocol.ParsePacket(packet);
 
-        if (sensorCount == gp.gaugeReadings.Length) {
-          battery = gp.battery;
+          if (sensorCount == gp.gaugeReadings.Length) {
+            battery = gp.battery;
 
-          var changed = false;
+            var changed = false;
 
-          for (int i = 0; i < sensorCount; i++) {
-            GaugeReading reading = gp.gaugeReadings[i];
-            if (reading.sensorType != this[i].type) {
-              throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-                this[i].type + " is not valid with received type " + reading.sensorType);
+            for (int i = 0; i < sensorCount; i++) {
+              GaugeReading reading = gp.gaugeReadings[i];
+              if (reading.sensorType != this[i].type) {
+                throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
+                  this[i].type + " is not valid with received type " + reading.sensorType);
+              }
+              if (this[i].measurement != gp.gaugeReadings[i].reading) {
+                this[i].SetMeasurement(gp.gaugeReadings[i].reading);
+                changed = true;
+              }
             }
-            if (this[i].measurement != gp.gaugeReadings[i].reading) {
-              this[i].SetMeasurement(gp.gaugeReadings[i].reading);
-              changed = true;
-            }
-          }
 
-          if (changed) {
-            NotifyOfContentChange();
+            if (changed) {
+              NotifyOfContentChange();
+            }
+          } else {
+            throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
           }
-        } else {
-          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
+        } catch (Exception e) {
+          // TODO ahodder@appioninc.com: Consider exposing?
+          //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
-      } catch (Exception e) {
-        // TODO ahodder@appioninc.com: Consider exposing?
-        //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
-      }
+      });
     }
 
     /// <summary>
@@ -164,11 +166,9 @@ namespace ION.Core.Devices {
     /// Notifies the device's onContentChange delegates that it has changed.
     /// </summary>
     private void NotifyOfContentChange() {
-      ION.Core.App.AppState.context.PostToMain(() => {
-        if (onContentChanged != null) {
-          onContentChanged(this);
-        }
-      });
+      if (onContentChanged != null) {
+        onContentChanged(this);
+      }
     }
   }
 }
