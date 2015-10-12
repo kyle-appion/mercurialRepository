@@ -247,7 +247,6 @@ namespace ION.Core.Content {
     /// <param name="sensor"></param>
     /// <param name="reading"></param>
     private void OnManifoldSensorChanged(Sensor sensor) {
-      ION.Core.Util.Log.D(this, "Manifold sensor changed");
       NotifyChanged();
     }
 

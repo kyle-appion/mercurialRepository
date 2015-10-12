@@ -22,7 +22,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <summary>
     /// The time in milliseconds that the view controller will perform a scan for.
     /// </summary>
-    private const int DEFAULT_SCAN_TIME = 3500;
+    private const int DEFAULT_SCAN_TIME = 5000;
     /// <summary>
     /// The delegate that is used to pass a sensor back from the device manager.
     /// </summary>
@@ -146,8 +146,6 @@ namespace ION.IOS.ViewController.DeviceManager {
           }
         }
 
-        Log.D(this, "Connected: " + device.isConnected + " Nearby: " + device.isNearby + " Known: " + ion.deviceManager.IsDeviceKnown(device));
-        
         if (EConnectionState.Connected == device.connection.connectionState) {
           connected.devices.Add(device);
         } else if (EConnectionState.Broadcasting == device.connection.connectionState) {
@@ -183,7 +181,6 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// A bouncing call that will keep posting itself to the message pump to update the view controller.
     /// </summary>
     private void PostUpdate() {
-      Log.D(this, "Updating...");
       if (IsViewLoaded) {
         UpdateSourceContent();
 //        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));

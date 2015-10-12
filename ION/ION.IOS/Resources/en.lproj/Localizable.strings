@@ -111,6 +111,9 @@ file.
 "workbench_subview_min" = "MIN";
 "workbench_subview_min_desc" = "Minimum Reading (MIN)";
 "workbench_subview_pt_chart_desc" = "Pressure Temperature Chart (P/T)";
+"workbench_subview_roc" = "RoC";
+"workbench_subview_roc_desc" = "Rate of Change (RoC)";
+"workbench_subview_roc_stable" = "STABLE";
 "workbench_subview_shsc_desc" = "Superheat/Subcool Calculation (S/H S/C)";
 "workbench_subview_pt_chart_bub" = "P/Tbub";
 "workbench_subview_pt_chart_dew" = "P/Tdew";

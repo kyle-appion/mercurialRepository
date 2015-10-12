@@ -211,7 +211,6 @@ namespace ION.Core.Devices {
       foreach (IDevice d in knownDevices) {
         sb.Append(d.serialNumber).Append(",");
       }
-      Log.D(this, "Looking for: " + device.serialNumber + " in known devices: " + sb);
       return knownDevices.Contains(device);
     }
 

@@ -118,11 +118,13 @@
     <Compile Include="src\Devices\Certificates\AV760CalibrationCertificate.cs" />
     <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
     <Compile Include="src\Location\ILocationManager.cs" />
+    <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="src\App\digital_gauge_cert.pdf" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

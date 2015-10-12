@@ -97,54 +97,76 @@ namespace ION.IOS.Devices {
       HandleDiscoveredPeripheral(args.Peripheral, args.AdvertisementData);
     }
 
-    private void HandleDiscoveredPeripheral(CBPeripheral peripheral, NSDictionary adData) {
-      Log.D(this, "OnDiscoveredPeripheral: " + peripheral?.Name);
-      if (isScanning) {
-        string name = peripheral.Name;
-        if (name == null) {
-          if (adData != null) {
-            var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
-            if (data != null) {
-              name = data.ToString();
+    private async void HandleDiscoveredPeripheral(CBPeripheral peripheral, NSDictionary adData) {
+      Log.D(this, peripheral + " OnDiscoveredPeripheral: " + peripheral.Name);
+      string name = peripheral.Name;
+      if (name == null) {
+        if (adData != null) {
+          var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
+          if (data != null) {
+            name = data.ToString();
+          }
+        }
+
+        if (name == null && peripheral.Services != null) {
+          foreach (var service in peripheral.Services) {
+            Log.D(this, "Found service: " + service);
+            foreach (var characteristic in service.Characteristics) {
+              Log.D(this, "Found characteristic: " + characteristic.UUID);
+              if (characteristic.UUID.Equals(CBUUID.FromString("FF91"))) {
+                name = System.Text.Encoding.UTF8.GetString(characteristic.Value.ToArray());
+                Log.D(this, "Set name to: " + name);
+              }
             }
           }
         }
 
-        Log.D(this, "Found device: " + name);
+        if (name == null) {
+          Log.D(this, "Trying super hard to determine the name of the peripheral");
+          // The ultimate last resort
+          var connection = new IosLeConnection(centralManager, peripheral);
+          Log.D(this, "Trying to connect and get name thata way");
+          var connected = await connection.Connect();
+          Log.D(this, "Connected: " + connected);
+          name = connection.name;
+          connection.Disconnect();
+        }
+      }
 
-        try {
-          if (!IsAppionDevice(peripheral)) {
-            return;
-          }
-
-          // TODO Make this serial number parser more abstract.
-          ISerialNumber serialNumber;
-          try {
-            serialNumber = GaugeSerialNumber.Parse(name);
-          } catch (ArgumentException) {
-            Log.E(this, "Invalid GaugeSerialNumber: " + name);
-            return;
-          }
-
-          var v = adData[CBAdvertisement.DataManufacturerDataKey];
-          byte[] scanRecord = new byte[20];
-          int protocol = 1; // Default to oldest BLE protocol
-          if (v != null) {
-            scanRecord = ((NSData)v).ToArray();
-            var bytes = new byte[20];
-            Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
-            scanRecord = bytes;
-            protocol = scanRecord[0];
-          }
-          Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
-
-          NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), scanRecord, protocol);
-        } catch (Exception e) {
-          Log.E(this, "Failed to resolve newly found device", e);
+      try {
+        if (!IsAppionDevice(name)) {
+          return;
         }
 
-        Log.D(this, "Device discovered");
+        Log.D(this, "Found device: " + name);
+
+        // TODO Make this serial number parser more abstract.
+        ISerialNumber serialNumber;
+        try {
+          serialNumber = GaugeSerialNumber.Parse(name);
+        } catch (ArgumentException) {
+          Log.E(this, "Invalid GaugeSerialNumber: " + name);
+          return;
+        }
+
+        var v = adData[CBAdvertisement.DataManufacturerDataKey];
+        byte[] scanRecord = new byte[20];
+        int protocol = 1; // Default to oldest BLE protocol
+        if (v != null) {
+          scanRecord = ((NSData)v).ToArray();
+          var bytes = new byte[20];
+          Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
+          scanRecord = bytes;
+          protocol = scanRecord[0];
+        }
+        Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
+
+        NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), scanRecord, protocol);
+      } catch (Exception e) {
+        Log.E(this, "Failed to resolve newly found device", e);
       }
+
+      Log.D(this, "Device discovered");
     }
 
 /*
@@ -162,8 +184,8 @@ namespace ION.IOS.Devices {
     /// </summary>
     /// <param name="peripheral"></param>
     /// <returns></returns>
-    private bool IsAppionDevice(CBPeripheral peripheral) {
-      return GaugeSerialNumber.IsValid(peripheral.Name);
+    private bool IsAppionDevice(string name) {
+      return GaugeSerialNumber.IsValid(name);
     }
 
     public class ConnectionDelegate : CBCentralManagerDelegate {
@@ -174,9 +196,11 @@ namespace ION.IOS.Devices {
       }
 
       public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
-        var connection = helper.__connections[peripheral];
-        if (connection != null) {
-          connection.Disconnect();
+        if (helper.__connections.ContainsKey(peripheral)) {
+          var connection = helper.__connections[peripheral];
+          if (connection != null) {
+            connection.Disconnect();
+          }
         }
       }
 

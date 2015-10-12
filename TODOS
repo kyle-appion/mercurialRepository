@@ -3,18 +3,48 @@ Ptchart
 
 DeviceManager
 * options menu (forget device)
+swipe left to delete
+swipe right for menu / config
 
 Workbench
-* alt not adding (next)
 * Toast when result of SHSC is
 
 PTChart SHSC show connected
 
 Disconnect device crashes
 
-
 pthchart is not marissa approved
 connecting sometimes crashes app (non responsive)
 
 ptchart / superheatsubcool when a manifold is in the viewcontroller will still
 allow the user to add a new sensor (BUG!)
+
+
+**New features**
+rate of change subiew
+AlternateUnit subview (pending units bug fix)
+Timer subview
+
+
+
+
+
+Big Ps
+
+1) ptchart and superheat and subcool WORKING AS DESIGNED!!
+  * altitude works
+  * dew/bubble works
+
+2) subviews
+  * rate of change subiew
+  * AlternateUnit subview (pending units bug fix)
+  * Timer subview
+
+3) Screenshot reporting (export as png)
+
+4) device manager
+  * swipe device left to forget
+
+5) help menu (that links to youtube videos)
+
+6) Discuss public release

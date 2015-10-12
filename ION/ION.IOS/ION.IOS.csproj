@@ -177,6 +177,10 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png" />
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\ic_arrow_trend_up.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\ic_arrow_trend_down.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -310,6 +314,10 @@
     </Compile>
     <Compile Include="src\Net\RequestCalibrationCertificatesTask.cs" />
     <Compile Include="src\Location\IosLocationManager.cs" />
+    <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.cs" />
+    <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.designer.cs">
+      <DependentUpon>RateOfChangeSensorPropertyCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

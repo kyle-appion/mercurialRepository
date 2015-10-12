@@ -16,21 +16,21 @@ namespace ION.IOS.Connections {
     /// </summary>
     private const string BASE_UUID = "0000****-0000-1000-8000-00805f9b34fb";
     /// <summary>
-    /// The Rx service that will contain the characteristic needed for reading.
-    /// </summary>
-//    private static readonly CBUUID READ_SERVICE = Inflate("ffe0");
-    /// <summary>
     /// The Rx characteristic.
     /// </summary>
-    private static readonly CBUUID READ_CHARACTERISTIC = Inflate("ffe4");
-    /// <summary>
-    /// The Tx service that will contain the characteristic needed for writing.
-    /// </summary>
-//    private static readonly CBUUID WRITE_SERVICE = Inflate("ffe5");
+    private static readonly ServiceCharacteristicPair READ_CHARACTERISTIC = new ServiceCharacteristicPair("ffe0", "ffe4");
     /// <summary>
     /// The Tx characteristic.
     /// </summary>
-    private static readonly CBUUID WRITE_CHARACTERISITIC = Inflate("ffe9");
+    private static readonly ServiceCharacteristicPair WRITE_CHARACTERISTIC = new ServiceCharacteristicPair("ffe5", "ffe9");
+    /// <summary>
+    /// The characteristic for the name.
+    /// </summary>
+    private static readonly ServiceCharacteristicPair NAME_CHARACTERISTIC = new ServiceCharacteristicPair("ff90", "ff91");
+    /// <summary>
+    /// The services to fetch on scan.
+    /// </summary>
+    private static readonly CBUUID[] DESIRED_SERVICES = new CBUUID[] { READ_CHARACTERISTIC.service, WRITE_CHARACTERISTIC.service, NAME_CHARACTERISTIC.service };
 
     /// <summary>
     /// A utility method used to create the UUIDs necessary for use of the
@@ -62,7 +62,8 @@ namespace ION.IOS.Connections {
       }
     } EConnectionState __connectionState;
     // Overridden from IConnection
-    public string name { get { return __nativeDevice.Name; } }
+    // public string name { get { return __nativeDevice.Name; } }
+    public string name { get; set; }
     // Overridden from IConnection
     public string address { get { return __nativeDevice.Identifier.AsString(); } }
     // Overridden from IConnection
@@ -118,6 +119,11 @@ namespace ION.IOS.Connections {
     /// The characteristic that we will write output packets to.
     /// </summary>
     private CBCharacteristic write { get; set; }
+    /// <summary>
+    /// The characteristic that we will need to get the name of the device.
+    /// </summary>
+    /// <value>The name.</value>
+    private CBCharacteristic nameCharacteristic { get; set; }
 
 
     /// <summary>
@@ -128,6 +134,7 @@ namespace ION.IOS.Connections {
     public IosLeConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
       this.centralManager = centralManager;
       __nativeDevice = peripheral;
+      name = __nativeDevice.Name;
 
       onServiceDiscoveredDelegate = ((object obj, NSErrorEventArgs args) => {
         foreach (CBService service in __nativeDevice.Services) {
@@ -138,6 +145,7 @@ namespace ION.IOS.Connections {
       onCharacteristicDiscoveredDelegate = (object obj, CBServiceEventArgs args) => {
         if (EConnectionState.Connecting == connectionState) {
           if (ValidateServices()) {
+            Log.D(this, name + " validated services");
             connectionState = EConnectionState.Connected;
           } else {
             Log.E(this, "Failed to resolve characteristics");
@@ -175,6 +183,7 @@ namespace ION.IOS.Connections {
       if (EConnectionState.Disconnected != connectionState) {
         return false;
       }
+
       connectionState = EConnectionState.Connecting;
 
       DateTime start = DateTime.Now;
@@ -199,7 +208,7 @@ namespace ION.IOS.Connections {
 
       await Task.Delay(100);
 
-      __nativeDevice.DiscoverServices((CBUUID[])null);
+      __nativeDevice.DiscoverServices(DESIRED_SERVICES);
 
       Log.D(this, "Awaiting service discovery");
       while (EConnectionState.Connected != connectionState) {
@@ -219,7 +228,7 @@ namespace ION.IOS.Connections {
 
     // Overridden from IConnection
     public void Disconnect() {
-      Log.D(this, __nativeDevice.Name + " disconnected");
+      Log.D(this, name + " disconnected");
       centralManager.CancelPeripheralConnection(__nativeDevice);
       connectionState = EConnectionState.Disconnected;
     }
@@ -252,16 +261,19 @@ namespace ION.IOS.Connections {
         if (service != null && service.Characteristics != null) {
           // Apparently services can be null after discovery?
           foreach (CBCharacteristic characteristic in service.Characteristics) {
-            if (READ_CHARACTERISTIC.Equals(characteristic.UUID)) {
+            if (READ_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               read = characteristic;
-            } else if (WRITE_CHARACTERISITIC.Equals(characteristic.UUID)) {
+            } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               write = characteristic;
+            } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
+              name = System.Text.Encoding.UTF8.GetString(characteristic.Value.ToArray());
+              Log.D(this, "Name is: " + name);
             }
           }
         }
       }
 
-      return read != null && write != null;
+      return read != null && write != null && name != null;
     }
 
     /// <summary>
@@ -273,6 +285,16 @@ namespace ION.IOS.Connections {
     private void OnPeripheralDisconnected(object sensor, CBPeripheralErrorEventArgs args) {
       if (args.Peripheral.Equals(__nativeDevice)) {
         Disconnect();
+      }
+    }
+
+    internal class ServiceCharacteristicPair {
+      public CBUUID service { get; set; }
+      public CBUUID characteristic { get; set; }
+
+      public ServiceCharacteristicPair(string service, string characteristic) {
+        this.service = CBUUID.FromString(service);
+        this.characteristic = CBUUID.FromString(characteristic);
       }
     }
   } // End IOSLeConnection
