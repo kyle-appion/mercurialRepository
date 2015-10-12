@@ -126,6 +126,8 @@ namespace ION.Core.Devices {
   /// </code>
   /// </summary>
   public class GaugeSerialNumber : ISerialNumber {
+
+
     // Overridden from ISerialNumber
     public EDeviceModel deviceModel { get; private set; }
     // Overridden from ISerialNumber
@@ -196,6 +198,8 @@ namespace ION.Core.Devices {
       if (serial == null) {
         throw new ArgumentException("Cannot parse serial: serial is null");
       }
+
+      ION.Core.Util.Log.D("GaugeSerialNumber", "Attempting to parse serial from " + serial);
 
       // TODO ahodder@appioninc.com: This check was done to get it done. I am, indeed, ashamed.= of le copy pasta
       if (serial.Length == 9) {

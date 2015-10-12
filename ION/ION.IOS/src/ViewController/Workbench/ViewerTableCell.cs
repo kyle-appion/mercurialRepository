@@ -156,7 +156,6 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void OnManifoldUpdated(Manifold manifold) {
-      Log.D(this, "Manifold Updated in UI");
       if (manifold.primarySensor is GaugeDeviceSensor) {
         UpdateFromGaugeSensor(manifold.primarySensor as GaugeDeviceSensor);
       } else {

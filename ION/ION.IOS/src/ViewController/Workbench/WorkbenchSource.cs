@@ -35,6 +35,7 @@ namespace ION.IOS.ViewController.Workbench {
     private const string CELL_ADD = "cellAdd";
     private const string CELL_MEASUREMENT_SUBVIEW = "cellMeasurementSubview";
     private const string CELL_FLUID_SUBVIEW = "cellFluidSubview";
+    private const string CELL_ROC_SUBVIEW = "cellRateOfChangeSubview";
 
     public OnRequestViewer onRequestViewerDelegate { get; set; }
 
@@ -186,6 +187,13 @@ namespace ION.IOS.ViewController.Workbench {
         });
 
         return cell;
+      } else if (prop is RateOfChangeSensorProperty) {
+        var roc = (RateOfChangeSensorProperty)prop;
+        var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
+
+        cell.UpdateTo(roc);
+
+        return cell;
       } else if (prop is PTChartSensorProperty || prop is SuperheatSubcoolSensorProperty) {
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
@@ -272,6 +280,11 @@ namespace ION.IOS.ViewController.Workbench {
 
       var sensor = manifold.primarySensor;
 
+      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
+        });
+      }
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         addAction(Strings.Workbench.Viewer.MIN_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new MinSensorProperty(sensor));
