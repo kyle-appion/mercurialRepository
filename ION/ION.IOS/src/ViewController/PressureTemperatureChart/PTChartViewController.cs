@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           editTemperature.Enabled = enabled;
         }
 
-        UpdatePressureDisplay();
+        InvalidateViewController();
       }
     } Sensor __pressureSensor;
 
@@ -133,7 +133,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           editTemperature.Enabled = enabled;
         }
 
-        UpdateTemperatureDisplay();
+        InvalidateViewController();
       }
     } Sensor __temperatureSensor;
 
@@ -483,8 +483,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// </summary>
     private void InvalidateViewController() {
       if (pressureSensor is GaugeDeviceSensor) {
+        editPressure.Text = pressureSensor.ToFormattedString();
         UpdateTemperatureWithCurrentPressure();
       } else if (temperatureSensor is GaugeDeviceSensor) {
+        editTemperature.Text = temperatureSensor.ToFormattedString();
         UpdatePressureWithCurrentTemperature();
       } else {
         ClearPressureInput();
