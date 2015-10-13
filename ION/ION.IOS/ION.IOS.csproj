@@ -181,6 +181,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\ic_arrow_trend_up.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\ic_arrow_trend_down.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_play.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\ic_pause.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -317,6 +321,10 @@
     <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.cs" />
     <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.designer.cs">
       <DependentUpon>RateOfChangeSensorPropertyCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\TimerSensorPropertyCell.cs" />
+    <Compile Include="src\ViewController\Workbench\TimerSensorPropertyCell.designer.cs">
+      <DependentUpon>TimerSensorPropertyCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />

@@ -40,7 +40,6 @@ file.
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
 
-
 /* DEVICE MANAGER */
 "device_manager" = "Device Manager";
 "device_manager_scan" = "Scan";
@@ -110,13 +109,15 @@ file.
 "workbench_subview_max_desc" = "Maximum Reading (MAX)";
 "workbench_subview_min" = "MIN";
 "workbench_subview_min_desc" = "Minimum Reading (MIN)";
-"workbench_subview_pt_chart_desc" = "Pressure Temperature Chart (P/T)";
 "workbench_subview_roc" = "RoC";
 "workbench_subview_roc_desc" = "Rate of Change (RoC)";
 "workbench_subview_roc_stable" = "STABLE";
-"workbench_subview_shsc_desc" = "Superheat/Subcool Calculation (S/H S/C)";
+"workbench_subview_pt_chart_desc" = "Pressure Temperature Chart (P/T)";
 "workbench_subview_pt_chart_bub" = "P/Tbub";
 "workbench_subview_pt_chart_dew" = "P/Tdew";
+"workbench_subview_shsc_desc" = "Superheat/Subcool Calculation (S/H S/C)";
 "workbench_subview_sc" = "S/C";
 "workbench_subview_sh" = "S/H";
 "workbench_subview_shsc_setup" = "Setup";
+"workbench_subview_timer" = "TIME";
+"workbench_subview_timer_desc" = "Time Tracker (TIME)";

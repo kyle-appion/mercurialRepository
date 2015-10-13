@@ -36,6 +36,7 @@ namespace ION.IOS.ViewController.Workbench {
     private const string CELL_MEASUREMENT_SUBVIEW = "cellMeasurementSubview";
     private const string CELL_FLUID_SUBVIEW = "cellFluidSubview";
     private const string CELL_ROC_SUBVIEW = "cellRateOfChangeSubview";
+    private const string CELL_TIMER_SUBVIEW = "cellTimerSubview";
 
     public OnRequestViewer onRequestViewerDelegate { get; set; }
 
@@ -194,6 +195,13 @@ namespace ION.IOS.ViewController.Workbench {
         cell.UpdateTo(roc);
 
         return cell;
+      } else if (prop is TimerSensorProperty) {
+        var timer = (TimerSensorProperty)prop;
+        var cell = tableView.DequeueReusableCell(CELL_TIMER_SUBVIEW) as TimerSensorPropertyCell;
+
+        cell.UpdateTo(timer);
+
+        return cell;
       } else if (prop is PTChartSensorProperty || prop is SuperheatSubcoolSensorProperty) {
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
@@ -307,6 +315,12 @@ namespace ION.IOS.ViewController.Workbench {
         });
       }
       */
+
+      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new TimerSensorProperty(sensor));
+        });
+      }
 
       // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
       var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
