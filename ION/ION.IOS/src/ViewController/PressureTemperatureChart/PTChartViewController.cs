@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
     public Manifold initialManifold { get; set; }
 
-    public PTChart ptChart { 
+    public PTChart ptChart {
       get {
         return __ptChart;
       }
@@ -73,13 +73,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           ClearPressureInput();
           GaugeDeviceSensor sensor = (GaugeDeviceSensor)__pressureSensor;
           imagePressureIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
-          imagePressureLock.Image = UIImage.FromBundle("ic_lock");
           imageTemperatureIcon.Hidden = true;
         } else {
           imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
-          imagePressureLock.Image = null;
           imageTemperatureIcon.Hidden = false;
         }
+        UpdateUILocks();
 
         __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
 
@@ -93,7 +92,13 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }
     } Sensor __pressureSensor;
 
-    public Sensor temperatureSensor { 
+    public bool isPressureSensorChangable {
+      get {
+        return initialManifold?.primarySensor != pressureSensor;
+      }
+    }
+
+    public Sensor temperatureSensor {
       get {
         return __temperatureSensor;
       }
@@ -113,13 +118,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           ClearTemperatureInput();
           GaugeDeviceSensor sensor = (GaugeDeviceSensor)__temperatureSensor;
           imageTemperatureIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(sensor.device.serialNumber.deviceModel);
-          imageTemperatureLock.Image = UIImage.FromBundle("ic_lock");
           imagePressureIcon.Hidden = true;
         } else {
           imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
-          imageTemperatureLock.Image = null;
           imagePressureIcon.Hidden = false;
         }
+        UpdateUILocks();
 
         __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
 
@@ -132,6 +136,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         UpdateTemperatureDisplay();
       }
     } Sensor __temperatureSensor;
+
+    public bool isTemperatureSensorChangable {
+      get {
+        return initialManifold?.primarySensor != temperatureSensor;
+      }
+    }
 
     /// <summary>
     /// The ion instance for the view controller.
@@ -280,7 +290,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
 
     /// <summary>
-    /// Initializes all of the initial settings and properties for the view controller's 
+    /// Initializes all of the initial settings and properties for the view controller's
     /// temperature widgets.
     /// </summary>
     private void InitializeTemperatureWidgets() {
@@ -481,7 +491,40 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         ClearTemperatureInput();
       }
     }
+
+    /// <summary>
+    /// Updates the visual locks on the view controller.
+    /// A lock should appear next to a gauge iff
+    ///   1) The sensor is wholly dependent on another sensor's measurement
+    ///   2) The sensor is the primary sensor for a provided manifold
+    /// </summary>
+    private void UpdateUILocks() {
+      bool plocked = false;
+      bool tlocked = false;
+
+      if (temperatureSensor != null && pressureSensor != null) {
+        if (!temperatureSensor.isEditable || !isPressureSensorChangable) {
+          // This means that the pressure sensor is dependent on the temperature sensor
+          plocked = true;
+        }
+
+        if (!pressureSensor.isEditable || !isTemperatureSensorChangable) {
+          // This means that the temperature sensor is dependent on the pressure sensor
+          tlocked = true;
+        }
+      }
+
+      if (plocked) {
+        imagePressureLock.Image = UIImage.FromBundle("ic_lock");
+      } else {
+        imagePressureLock.Image = null;
+      }
+
+      if (tlocked) {
+        imageTemperatureLock.Image = UIImage.FromBundle("ic_lock");
+      } else {
+        imageTemperatureLock.Image = null;
+      }
+    }
   }
 }
-
-
