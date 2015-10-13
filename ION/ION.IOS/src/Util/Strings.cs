@@ -154,14 +154,16 @@ namespace ION.IOS.Util {
         MAX_DESC = "workbench_subview_max_desc".FromResources(),
         MIN = "workbench_subview_min".FromResources(),
         MIN_DESC = "workbench_subview_min_desc".FromResources(),
-        PT_CHART_DESC = "workbench_subview_pt_chart_desc".FromResources(),
         ROC = "workbench_subview_roc".FromResources(),
         ROC_DESC = "workbench_subview_roc_desc".FromResources(),
         ROC_STABLE = "workbench_subview_roc_stable".FromResources(),
+        PT_CHART_DESC = "workbench_subview_pt_chart_desc".FromResources(),
         SC = "workbench_subview_sc".FromResources(),
         SH = "workbench_subview_sh_setup".FromResources(),
         SHSC_DESC = "workbench_subview_shsc_desc".FromResources(),
-        SHSC_SETUP = "workbench_subview_shsc_setup".FromResources()
+        SHSC_SETUP = "workbench_subview_shsc_setup".FromResources(),
+        TIMER = "workbench_subview_timer".FromResources(),
+        TIMER_DESC = "workbench_subview_timer_desc".FromResources()
         ;
       }
     } // End Strings.Workbench

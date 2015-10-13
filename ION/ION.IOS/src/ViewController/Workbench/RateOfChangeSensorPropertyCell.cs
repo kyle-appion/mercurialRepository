@@ -77,7 +77,5 @@ namespace ION.IOS.ViewController.Workbench {
         DoUpdateCell();
       }
     }
-
-
 	}
 }

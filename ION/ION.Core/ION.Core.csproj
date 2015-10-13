@@ -119,6 +119,7 @@
     <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
     <Compile Include="src\Location\ILocationManager.cs" />
     <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
+    <Compile Include="src\Sensors\Properties\TimerSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
