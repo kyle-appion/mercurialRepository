@@ -79,7 +79,6 @@ namespace ION.IOS.ViewController.Workbench {
 
     private void Update() {
       var time = timer.ellapsedTime;
-      ION.Core.Util.Log.D(this, "Update: " + time);
       labelMeasurement.Text = String.Format("{0}:{1}", time.Minutes.ToString("00"), time.Seconds.ToString("00"));
     }
 	}
