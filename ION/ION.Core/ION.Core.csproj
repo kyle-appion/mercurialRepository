@@ -120,6 +120,9 @@
     <Compile Include="src\Location\ILocationManager.cs" />
     <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\TimerSensorProperty.cs" />
+    <Compile Include="src\Pdf\PDFTest.cs" />
+    <Compile Include="src\Report\ScreenshotReport.cs" />
+    <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -146,6 +149,8 @@
     <Folder Include="src\Devices\Certificates\" />
     <Folder Include="src\Sensors\Alarms\Serialization\" />
     <Folder Include="src\Location\" />
+    <Folder Include="src\Pdf\" />
+    <Folder Include="src\Report\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">
@@ -154,8 +159,12 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Xfinium.Pdf.Pcl">
+      <HintPath>..\Xfinium\Xfinium.Pdf.Pcl.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\Devices\Devices.xml" />
+    <EmbeddedResource Include="src\Pdf\digital_gauge_cert.pdf" />
   </ItemGroup>
 </Project>

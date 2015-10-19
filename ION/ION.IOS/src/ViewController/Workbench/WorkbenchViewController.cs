@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using CoreGraphics;
 using Foundation;
 using UIKit;
 
@@ -8,7 +9,10 @@ using ION.Core.App;
 using ION.Core.Content;
 using ION.Core.Content.Parsers;
 using ION.Core.Devices;
+using ION.Core.IO;
 using ION.Core.Measure;
+using ION.Core.Pdf;
+using ION.Core.Report;
 using ION.Core.Sensors;
 using ION.Core.Util;
 
@@ -48,6 +52,10 @@ namespace ION.IOS.ViewController.Workbench {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
+
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem("NULL", UIBarButtonItemStyle.Plain, delegate {
+        ShowOptions();
+      });
 
       Title = Strings.Workbench.SELF.FromResources();
 
@@ -109,6 +117,59 @@ namespace ION.IOS.ViewController.Workbench {
     private async void OnManifoldRemoved(ION.Core.Content.Workbench workbench, Manifold manifold) {
       tableContent.ReloadData();
       await ion.SaveWorkbenchAsync();
+    }
+
+    private void ShowOptions() {
+      try {
+
+        var report = new ScreenshotReport();
+
+        report.title = Strings.Report.SCREENSHOT;
+        report.subtitle = "Test Report 2";
+
+        report.tableData = new string[,] {
+          { Strings.Report.CITY, "Englewood" },
+          { Strings.Report.STATE, "Colorado" },
+          { Strings.Report.ZIP, "80110" },
+        };
+
+        report.notes = "A lovely bunch of coconuts are banged together to make a significant amount of noice to indicate the approach of the king.";
+
+        var image = View.Capture();
+        var data = image.AsPNG();
+        report.screenshot = data.ToArray();
+
+
+        var folder = ion.fileManager.GetApplicationInternalDirectory();
+        var file = folder.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
+
+        using (var stream = file.OpenForWriting()) {
+          ScreenshotReportPdfExporter.Export(report, stream);
+        }
+
+        var d = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
+        d.PresentOpenInMenu(View.Frame, View, true);
+      } catch (Exception e) {
+        Log.E(this, "Failed to create pdf", e);
+      }
+      /*
+      try {
+        var folder = ion.fileManager.GetApplicationExternalDirectory();
+        var file = folder.GetFile("Testo2.pdf", EFileAccessResponse.FailIfMissing);
+        string path = file.fullPath;
+        Log.D(this, path);
+
+        var vc = this.InflateViewController<ION.IOS.Storyboard.PdfDisplayViewController>(VC_PDF_VIEWER);
+        vc.fileName = path;
+
+        NavigationController.PresentViewController(vc, true, null);
+
+//        var d = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
+//        d.PresentOpenInMenu(View.Frame, View, true);
+      } catch (Exception e) {
+        Log.E(this, "Failed to show pdf", e);
+      }
+      */
     }
 	}
 }

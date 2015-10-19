@@ -28,6 +28,10 @@ namespace ION.Core.IO {
       var resourceNames = assembly.GetManifestResourceNames();
       var resourcePaths = resourceNames.Where(x => x.EndsWith(filename)).ToArray();
 
+      foreach (var v in resourcePaths) {
+        ION.Core.Util.Log.D("EmbeddedResource", v);
+      }
+
       if (!resourcePaths.Any()) {
         throw new IOException("Could not load resource of name " + filename + ": doesn't exist");
       }

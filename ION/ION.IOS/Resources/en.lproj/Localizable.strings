@@ -84,6 +84,13 @@ file.
 "navigation_configuration" = "Configuration";
 "navigation_main" = "Main";
 
+/* REPORT */
+"report_city" = "City";
+"report_name" = "Name";
+"report_screenshot" = "ION HVAC/R Screenshot Report";
+"report_state" = "State";
+"report_zip" = "Zip Code";
+
 /* SENSOR */
 
 /* SENSOR TYPE */

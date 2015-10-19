@@ -21,6 +21,22 @@ namespace ION.IOS.UI {
         Log.D("Animate", "height = " + view.Frame.Height);
       });
     }
+
+    /// <summary>
+    /// Captures this view into an ancillary image. This is primarily used for screen shots.
+    /// </summary>
+    public static UIImage Capture(this UIView view) {
+      var rect = view.Bounds.Size;
+
+      UIGraphics.BeginImageContext(rect); 
+
+      view.Layer.RenderInContext(UIGraphics.GetCurrentContext());
+
+      var image = UIGraphics.GetImageFromCurrentImageContext();
+      UIGraphics.EndImageContext();
+
+      return image;
+    }
   }
 }
 

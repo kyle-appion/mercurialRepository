@@ -122,6 +122,17 @@ namespace ION.IOS.Util {
       ;
     } // End Strings.Navigation
 
+    public static class Report {
+      public static readonly string
+      CITY = "report_city".FromResources(),
+      NAME = "report_name".FromResources(),
+      NOTES = "report_notes".FromResources(),
+      SCREENSHOT = "report_screenshot".FromResources(),
+      STATE = "report_state".FromResources(),
+      ZIP = "report_zip".FromResources()
+      ;
+    }
+
     public static class Sensor {
       public static class Type {
         public static readonly string

@@ -1,13 +1,35 @@
-Ptchart
-* connecting to p500 from device manager locked up app
+Big Ps
+
+1) ptchart and superheat and subcool WORKING AS DESIGNED!!
+  * altitude works
+  * dew/bubble works
+  * entries should show unit along with measurement?
+  * Null pointer when initing ptchart from workbench
+
+//  3) Screenshot reporting (export as png)
+
+4) device manager
+  * swipe device left to forget
+
+5) help menu (about, send feedback)
+
+
+
+**BUGS OR OUTSTANDING ISSUES**
+
+ptchart and superheat
+  * entries should show unit along with measurement?
+
+subviews
+  * AlternateUnit subview (pending units bug fix) [incorrect unit conversion]
 
 DeviceManager
 * options menu (forget device)
-swipe left to delete
-swipe right for menu / config
+* swipe left to delete
+* swipe right for menu / config
 
 Workbench
-* Toast when result of SHSC is
+* Toast when result of SHSC is added as subview
 
 PTChart SHSC show connected
 
@@ -20,31 +42,4 @@ ptchart / superheatsubcool when a manifold is in the viewcontroller will still
 allow the user to add a new sensor (BUG!)
 
 
-**New features**
-rate of change subiew
-AlternateUnit subview (pending units bug fix)
-Timer subview
-
-
-
-
-
-Big Ps
-
-1) ptchart and superheat and subcool WORKING AS DESIGNED!!
-  * altitude works
-  * dew/bubble works
-
-2) subviews
-  * rate of change subiew
-  * AlternateUnit subview (pending units bug fix)
-  * Timer subview
-
-3) Screenshot reporting (export as png)
-
-4) device manager
-  * swipe device left to forget
-
-5) help menu (that links to youtube videos)
-
-6) Discuss public release
+Implement commands

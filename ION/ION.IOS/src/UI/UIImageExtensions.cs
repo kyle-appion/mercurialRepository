@@ -28,6 +28,31 @@ namespace ION.IOS.UI {
       reference.Dispose();
       return ret;
     }
+
+    /// <summary>
+    /// Exports the image as a PDF with the given file name.
+    /// </summary>
+    /// <param name="filename">Filename.</param>
+    public static void ExportAsPDF(this UIImage image, string filename, CGPDFInfo info, double horizRes = 96, double vertRes = 96) {
+      var width = (double)image.Size.Width * (double)image.CurrentScale * 72 * horizRes;
+      var height = (double)image.Size.Height * (double)image.CurrentScale * 72 * vertRes;
+
+      var pdfFile = new NSMutableData();
+      pdfFile.Init();
+
+      var pdfConsumer = new CGDataConsumer(pdfFile);
+      var mediaBox = new CGRect(0, 0, width, height);
+
+      using (var context = new CGContextPDF(pdfConsumer, mediaBox, info)) {
+        context.BeginPage(new CGPDFPageInfo());
+        context.DrawImage(mediaBox, image.CGImage);
+        context.EndPage();
+      }
+
+      var attrs = new NSFileAttributes();
+      NSFileManager.DefaultManager.CreateFile(filename, pdfFile, attrs);
+      ION.Core.Util.Log.D("UIImageExtensions", "Dern");
+    }
   }
 }
 

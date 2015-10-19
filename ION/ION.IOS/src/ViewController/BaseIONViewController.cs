@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using CoreGraphics;
 using Foundation;
@@ -6,10 +7,13 @@ using UIKit;
 
 using ION.Core.Util;
 
+using ION.IOS.UI;
 using ION.IOS.Util;
 
 namespace ION.IOS.ViewController {
   public class BaseIONViewController : UIViewController {
+
+    public delegate void OnScreenshotCompleted(bool success);
 
     public const string VC_ANALYZER = "viewControllerAnalyzer";
     public const string VC_DEVICE_MANAGER = "viewControllerDeviceManager";
@@ -19,6 +23,7 @@ namespace ION.IOS.ViewController {
     public const string VC_SETTINGS = "viewControllerSettings";
     public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";
     public const string VC_WORKBENCH = "viewControllerWorkbench";
+    public const string VC_PDF_VIEWER = "viewControllerPdfViewer";
 
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation
@@ -49,6 +54,18 @@ namespace ION.IOS.ViewController {
     // Overridden from ViewController
     public override void ViewWillDisappear(bool animated) {
       base.ViewDidDisappear(animated);
+    }
+
+    /// <summary>
+    /// Starts an ayncronous task that will export the current view controller screen as a
+    /// pdf to the application's internal storage.
+    /// </summary>
+    /// <param name="completed">Completed.</param>
+    public void TakeScreenshot(OnScreenshotCompleted completed) {
+      Task.Factory.StartNew(() => {
+        var image = View.Capture();
+
+      });
     }
 
     /// <summary>

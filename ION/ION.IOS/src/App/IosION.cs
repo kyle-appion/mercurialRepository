@@ -21,6 +21,8 @@ using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Util;
 
+using ION.Core.Pdf;
+
 using ION.IOS.Alarms.Alerts;
 using ION.IOS.IO;
 using ION.IOS.Location;
