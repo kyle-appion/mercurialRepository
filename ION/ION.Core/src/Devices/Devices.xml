@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+This document provides a human readable way to store the devices that ION supports.
+
+
+::SCEHEMA::
+GaugeDevice:
+  The element that defines a gauge device. A gauge device is a defines with on or more sensors.
+
+  -> ELEMENTS:
+    GaugeDeviceSensor (1 or more)
+
+  -> ATTRIBUTES:
+    deviceCode:
+      {required}
+      The two or three character device code that is used to identify the device.
+
+GaugeDeviceSensor:
+  The element that defines a sensor.
+
+  -> ATTRIBUTES:
+    type:
+      {required}
+      The type of sensor. Valid entries: length, mass, pressure, temperature, vacuum
+    min:
+      The minumum measurement of the sensor.
+    minUnit:
+      The unit that the minum measurement was in. See the unit strings section for a list of valid units.
+
+
+::APPENDIX::
+Unit Strings
+  pressure:
+    pa
+    kpa
+    mpa
+    bar
+    millibar
+    atmo
+    inhg
+    cmhg
+    kgcm
+    psia
+    psig [default]
+
+  temperature:
+    celsius [default]
+    fahrenheit
+    kelvin
+
+  vacuum:
+    pa
+    kpa
+    mpa
+    bar
+    millibar
+    atmo
+    inhg
+    cmhg
+    kgcm
+    psia
+    torr
+    millitorr
+    micron [default]
+-->
+
+
+<Devices>
+  <GaugeDevice deviceCode="P3">
+    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="300" maxUnit="psig" relative="true">
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
+  <GaugeDevice deviceCode="P5">
+    <GaugeDeviceSensor type="pressure" min="-29" minUnit="inhg" max="500" maxUnit="psig" relative="true">
+      <SupportedUnit>inhg</SupportedUnit>
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>cmhg</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
+  <GaugeDevice deviceCode="P8">
+    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
+  <GaugeDevice deviceCode="V7">
+    <GaugeDeviceSensor type="vacuum" min="0" minUnit="micron" max="760000" maxUnit="micron" relative="false">
+      <SupportedUnit>inhg</SupportedUnit>
+      <SupportedUnit>millitorr</SupportedUnit>
+      <SupportedUnit>psia</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>millibar</SupportedUnit>
+      <SupportedUnit>micron</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
+  <GaugeDevice deviceCode="S5">
+    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="500" maxUnit="psig" relative="true">
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
+  <GaugeDevice deviceCode="S8">
+    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+</Devices>
