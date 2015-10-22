@@ -29,6 +29,16 @@
       return items.Count;
     }
 
+    // Overriden from UITableViewSource
+    public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
+      var item = items[(int)indexPath.Row];
+      if (item is NotesItem) {
+        return (nfloat)100;
+      } else {
+        return (nfloat)44;
+      }
+    }
+
     // Overridden from UITableViewSource
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
       var item = items[(int)indexPath.Row];

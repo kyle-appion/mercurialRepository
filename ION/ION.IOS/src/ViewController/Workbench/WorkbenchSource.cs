@@ -131,6 +131,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
 
+    // Overriden from UITableViewSource
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
       return 50;
     }

@@ -30,7 +30,9 @@
     public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
-          files.RemoveAt(indexPath.Row);
+          var index = (int)indexPath.Row;
+          files[index].Delete();
+          files.RemoveAt(index);
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
           tableView.ReloadData();
           break;

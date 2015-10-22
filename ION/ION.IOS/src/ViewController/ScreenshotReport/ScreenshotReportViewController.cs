@@ -2,6 +2,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
   
   using System;
   using System.Collections.Generic;
+  using System.Threading.Tasks;
 
   using Foundation;
   using UIKit;
@@ -17,6 +18,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 
 	public partial class ScreenshotReportViewController : BaseIONViewController {
 
+    public Action closer { get; set; }
     public UIImage image { get; set; }
 
     private IItem reportTitle { get; set; }
@@ -33,11 +35,26 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.SAVE, UIBarButtonItemStyle.Plain, delegate {
-        CommitScreenshotReport();
+      NavigationItem.Title = Strings.Report.SCREENSHOT;
+
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.SAVE, UIBarButtonItemStyle.Plain, async delegate {
+        var savingDialog = UIAlertController.Create(Strings.PLEASE_WAIT, Strings.SAVING, UIAlertControllerStyle.Alert);
+        PresentViewController(savingDialog, true, null);
+
+        var result = await CommitScreenshotReport();
+        savingDialog.RemoveFromParentViewController();
+        if (result.success) {
+          Log.D(this, "Dismissed view controller");
+          ION.Core.App.AppState.context.PostToMain(() => NavigationController.DismissViewControllerAsync(true) );
+          closer();
+        } else {
+          var dialog = UIAlertController.Create(Strings.Errors.SCREENSHOT, Strings.Errors.SCREENSHOT_MISSING_TITLE, UIAlertControllerStyle.Alert);
+          dialog.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Cancel, null)); 
+          PresentViewController(dialog, true, null);
+        }
       });
 
-      reportTitle = new EntryItem(Strings.Report.NAME);
+      reportTitle = new EntryItem(Strings.Report.TITLE);
       date = DateTime.Now;
       notes = new NotesItem(Strings.Report.NOTES);
 
@@ -50,9 +67,9 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       var sourceList = new List<IItem>();
 
       sourceList.Add(reportTitle);
-      sourceList.Add(new DisplayItem(Strings.DATE, date.ToLocalTime().ToString()));
+      sourceList.Add(new DisplayItem(Strings.DATE, date.ToLocalTime().ToShortDateString()));
       sourceList.AddRange(items);
-      sourceList.Add(notes);
+//      sourceList.Add(notes);
 
       source = new ScreenshotReportSource(sourceList);
       table.Source = source;
@@ -63,32 +80,60 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     /// <summary>
     /// Commits the current state of the screenshot report to a file.
     /// </summary>
-    private void CommitScreenshotReport() {
-      var report = new ScreenshotReport();
-      report.created = date;
-      report.title = reportTitle.value;
-      report.notes = notes.value;
-      report.screenshot = image.AsPNG().ToArray();
+    private Task<Result> CommitScreenshotReport() {
+      return Task.Factory.StartNew(() => {
+        var report = new ScreenshotReport();
+        report.created = date;
+        report.title = Strings.Report.SCREENSHOT_TITLE;
+        report.subtitle = reportTitle.value;
+        report.notes = notes.value;
+        report.screenshot = image.AsPNG().ToArray();
 
-      var data = new string[items.Count, 2];
-      for (int i = 0; i < items.Count; i++) {
-        var item = items[i];
-        data[i, 0] = item.header;
-        data[i, 1] = item.value;
-      }
-
-      try {
-        var dir = AppState.context.screenshotReportFolder;
-        var file = dir.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
-        using (var stream = file.OpenForWriting()) {
-          ScreenshotReportPdfExporter.Export(report, stream);
+        if (report.subtitle == null || report.subtitle.Equals("")) {
+          return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
         }
-      } catch (Exception e) {
-        // TODO ahodder@appioninc.com: this needs a user-friendly dialog that will post on catch
-        Log.E(this, "Failed to export pdf", e);
-      }
 
-      RemoveFromParentViewController();
+        var data = new string[items.Count, 2];
+        for (int i = 0; i < items.Count; i++) {
+          var item = items[i];
+          data[i, 0] = item.header;
+          data[i, 1] = item.value;
+        }
+
+        try {
+          var dir = AppState.context.screenshotReportFolder;
+          var file = dir.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
+          using (var stream = file.OpenForWriting()) {
+            ScreenshotReportPdfExporter.Export(report, stream);
+          }
+        } catch (Exception e) {
+          // TODO ahodder@appioninc.com: this needs a user-friendly dialog that will post on catch
+          Log.E(this, "Failed to export pdf", e);
+        }
+
+        return new Result();
+      });
     }
 	}
+
+  internal class Result {
+    public bool success { get; private set; }
+    public string errorReason { get; private set; }
+
+    /// <summary>
+    /// Creates a new success result.
+    /// </summary>
+    public Result() {
+      success = true;
+    }
+
+    /// <summary>
+    /// Creates a new error result.
+    /// </summary>
+    /// <param name="errorReason">Error reason.</param>
+    public Result(string errorReason) {
+      success = false;
+      this.errorReason = errorReason;
+    }
+  }
 }

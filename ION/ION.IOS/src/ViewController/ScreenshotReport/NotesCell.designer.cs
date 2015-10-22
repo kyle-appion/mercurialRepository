@@ -16,7 +16,7 @@ namespace ION.IOS.ViewController.ScreenshotReport
 		UIKit.UILabel labelHeader { get; set; }
 
 		[Outlet]
-		UIKit.UITextView text { get; set; }
+		UIKit.UITextField text { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{

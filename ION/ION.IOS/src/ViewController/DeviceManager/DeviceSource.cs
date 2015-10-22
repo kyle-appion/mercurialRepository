@@ -103,6 +103,31 @@ namespace ION.IOS.ViewController.DeviceManager {
       this.table = table;
     }
 
+    // Overriddenfrom UITableViewsource
+    public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
+      switch (editingStyle) {
+        case UITableViewCellEditingStyle.Delete:
+          // Remove the device from the device manager
+          var index = (int)indexPath.Section;
+          var item = __items[index];
+          if (item is DeviceItem) {
+            var di = (DeviceItem)item;
+            ion.deviceManager.DeleteDevice(di.device.serialNumber);
+          }
+
+          // Remove the device from the source
+          __items.RemoveAt(index);
+          tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
+//          tableView.ReloadData();
+          break;
+      }
+    }
+
+    // Overridden from UITableViewSource
+    public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
+      return true;
+    }
+
     // Overridden from UITableViewSource
     public override void CellDisplayingEnded(UITableView tableView, UITableViewCell cell, NSIndexPath indexPath) {
       var releasable = cell as IReleasable;

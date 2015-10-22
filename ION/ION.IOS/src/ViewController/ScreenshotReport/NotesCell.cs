@@ -22,10 +22,12 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       labelHeader.Text = item.header;
       text.Text = item.value;
       text.Delegate = new TextDelegate(item);
+      text.AddTarget((object obj, EventArgs args) => {
+      }, UIControlEvent.AllEvents);
     }
 	}
 
-  internal class TextDelegate : UITextViewDelegate {
+  internal class TextDelegate : UITextFieldDelegate {
     private IItem item { get; set; }
 
     public TextDelegate(IItem item) {
@@ -33,7 +35,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     }
 
     // Overridden from UITextViewDelegate
-    public override void EditingEnded(UITextView textView) {
+    public override void EditingEnded(UITextField textView) {
       item.value = textView.Text;
       textView.ResignFirstResponder();
     }

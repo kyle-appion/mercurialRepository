@@ -59,11 +59,11 @@ namespace ION.IOS.ViewController {
           new ImageStringElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
-          new ImageStringElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camara")),
+          new ImageStringElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new ImageStringElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
-          new ImageStringElement(Strings.HELP, OnHelpClicked, null),
+          new ImageStringElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         },
       };
       navigation.ViewControllers = BuildViewControllers();
