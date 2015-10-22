@@ -125,7 +125,7 @@ namespace ION.IOS.ViewController.DeviceManager {
 
     // Overridden from UITableViewSource
     public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
-      return true;
+      return false;
     }
 
     // Overridden from UITableViewSource
