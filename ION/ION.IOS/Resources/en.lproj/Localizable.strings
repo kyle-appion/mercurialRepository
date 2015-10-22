@@ -9,10 +9,12 @@ file.
 /* APP */
 "actions" = "Actions";
 "cancel" = "Cancel";
+"date" = "Date";
 "delete_question" = "Delete?";
 "help" = "Help";
 "ok" = "OK";
 "rename" = "Rename";
+"save" = "Save";
 "settings" = "Settings";
 "unknown" = "Unknown";
 "use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";
@@ -56,6 +58,8 @@ file.
 "device_model_unknown" = "Unknown Device";
 
 /* ERRORS */
+"errors_cannot_send_feedback" = "Cannot send feedback at this time.";
+"errors_failed_to_send_feedback" = "Failed to send feedback to Appion";
 "errors_scan_init_fail" = "Failed to initiate scan: invalid state";
 "errors_pressure_input_parse_error" = "Failed set pressure values: invalid number";
 "errors_temperature_input_parse_error" = "Failed set temperature values: invalid number";
@@ -76,6 +80,12 @@ file.
 /* FLUID MANAGER */
 "fluid_manager" = "Refrigerant Manager";
 
+/* HELP */
+"help_about" = "About ION";
+"help_send_feedback" = "Send Feedback";
+"help_sent_feedback" = "Feedback sent, thank you!";
+"help_version" = "App Version";
+
 /* MEASURE */
 "measure_pick_unit" = "Pick Unit";
 
@@ -85,9 +95,11 @@ file.
 "navigation_main" = "Main";
 
 /* REPORT */
+"reports" = "Reports";
 "report_city" = "City";
 "report_name" = "Name";
 "report_screenshot" = "ION HVAC/R Screenshot Report";
+"report_screenshot_archive" = "Screenshot Archives";
 "report_state" = "State";
 "report_zip" = "Zip Code";
 

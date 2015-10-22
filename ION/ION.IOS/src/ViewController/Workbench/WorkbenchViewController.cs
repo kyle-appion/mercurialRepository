@@ -1,28 +1,30 @@
-using System;
-using System.Collections.Generic;
-
-using CoreGraphics;
-using Foundation;
-using UIKit;
-
-using ION.Core.App;
-using ION.Core.Content;
-using ION.Core.Content.Parsers;
-using ION.Core.Devices;
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Pdf;
-using ION.Core.Report;
-using ION.Core.Sensors;
-using ION.Core.Util;
-
-using ION.IOS.Devices;
-using ION.IOS.Sensors;
-using ION.IOS.UI;
-using ION.IOS.Util;
-using ION.IOS.ViewController.DeviceManager;
-
 namespace ION.IOS.ViewController.Workbench {
+
+  using System;
+  using System.Collections.Generic;
+
+  using CoreGraphics;
+  using Foundation;
+  using UIKit;
+
+  using ION.Core.App;
+  using ION.Core.Content;
+  using ION.Core.Content.Parsers;
+  using ION.Core.Devices;
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Pdf;
+  using ION.Core.Report;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
+  using ION.IOS.Devices;
+  using ION.IOS.Sensors;
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+  using ION.IOS.ViewController.DeviceManager;
+  using ION.IOS.ViewController.ScreenshotReport;
+
 	public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
@@ -121,7 +123,10 @@ namespace ION.IOS.ViewController.Workbench {
 
     private void ShowOptions() {
       try {
-
+        var vc = InflateViewController<ScreenshotReportViewController>(VC_SCREENSHOT_REPORT);
+        vc.image = View.Capture();
+        NavigationController.PushViewController(vc, true);
+/*
         var report = new ScreenshotReport();
 
         report.title = Strings.Report.SCREENSHOT;
@@ -140,36 +145,18 @@ namespace ION.IOS.ViewController.Workbench {
         report.screenshot = data.ToArray();
 
 
-        var folder = ion.fileManager.GetApplicationInternalDirectory();
+        var folder = ion.screenshotReportFolder;
         var file = folder.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
 
         using (var stream = file.OpenForWriting()) {
           ScreenshotReportPdfExporter.Export(report, stream);
         }
-
-        var d = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
-        d.PresentOpenInMenu(View.Frame, View, true);
-      } catch (Exception e) {
-        Log.E(this, "Failed to create pdf", e);
-      }
-      /*
-      try {
-        var folder = ion.fileManager.GetApplicationExternalDirectory();
-        var file = folder.GetFile("Testo2.pdf", EFileAccessResponse.FailIfMissing);
-        string path = file.fullPath;
-        Log.D(this, path);
-
-        var vc = this.InflateViewController<ION.IOS.Storyboard.PdfDisplayViewController>(VC_PDF_VIEWER);
-        vc.fileName = path;
-
-        NavigationController.PresentViewController(vc, true, null);
-
+*/
 //        var d = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
 //        d.PresentOpenInMenu(View.Frame, View, true);
       } catch (Exception e) {
-        Log.E(this, "Failed to show pdf", e);
+        Log.E(this, "Failed to create pdf", e);
       }
-      */
     }
 	}
 }

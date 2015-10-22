@@ -29,6 +29,13 @@ namespace ION.Core.IO {
     /// </summary>
     /// <returns>The external directory.</returns>
     IFolder GetApplicationExternalDirectory();
+    /// <summary>
+    /// Creates a temporary file.
+    /// </summary>
+    /// <returns>The temporary file.</returns>
+    /// <param name="name">Name.</param>
+    /// <param name="accessReponse">Access reponse.</param>
+    IFile CreateTemporaryFile(string name, EFileAccessResponse accessReponse = EFileAccessResponse.ReplaceIfExists);
   }
 }
 

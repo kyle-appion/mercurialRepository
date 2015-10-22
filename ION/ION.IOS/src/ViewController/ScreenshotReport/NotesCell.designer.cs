@@ -7,19 +7,27 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace ION.IOS.Storyboard
+namespace ION.IOS.ViewController.ScreenshotReport
 {
-	[Register ("PdfDisplayViewController")]
-	partial class PdfDisplayViewController
+	[Register ("NotesCell")]
+	partial class NotesCell
 	{
 		[Outlet]
-		UIKit.UIImageView imageView { get; set; }
+		UIKit.UILabel labelHeader { get; set; }
+
+		[Outlet]
+		UIKit.UITextView text { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (imageView != null) {
-				imageView.Dispose ();
-				imageView = null;
+			if (labelHeader != null) {
+				labelHeader.Dispose ();
+				labelHeader = null;
+			}
+
+			if (text != null) {
+				text.Dispose ();
+				text = null;
 			}
 		}
 	}

@@ -18,10 +18,12 @@ namespace ION.IOS.Util {
     public static readonly String
     ACTIONS = "actions".FromResources(),
     CANCEL = "cancel".FromResources(),
+    DATE = "date".FromResources(),
     DELETE_QUESTION = "delete_question".FromResources(),
     HELP = "help".FromResources(),
     OK = "ok".FromResources(),
     RENAME = "rename".FromResources(),
+    SAVE = "save".FromResources(),
     SETTINGS = "settings".FromResources(),
     UNKNOWN = "unknown"
     ;
@@ -81,6 +83,8 @@ namespace ION.IOS.Util {
 
     public static class Errors {
       public static readonly string
+      CANNOT_SEND_FEEBACK = "errors_cannot_send_feedback".FromResources(),
+      FAILED_TO_SEND_FEEDBACK = "errors_failed_to_send_feedback".FromResources(),
       SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources(),
       PRESSURE_INPUT_PARSE_ERROR = "errors_pressure_input_parse_error".FromResources(),
       TEMPERATURE_INPUT_PARSE_ERROR = "errors_temperature_input_parse_error".FromResources()
@@ -108,6 +112,15 @@ namespace ION.IOS.Util {
       } // End Strings.Fluid.Manager
     } // End Strings.Fluid
 
+    public static class Help {
+      public static readonly string
+      ABOUT = "help_about".FromResources(),
+      SEND_FEEDBACK = "help_send_feedback".FromResources(),
+      SENT_FEEDBACK = "help_sent_feedback".FromResources(),
+      VERSION = "help_version".FromResources()
+      ;
+    } // End Strings.Help
+
     public static class Measure {
       public static readonly string
       PICK_UNIT = "measure_pick_unit".FromResources()
@@ -127,7 +140,9 @@ namespace ION.IOS.Util {
       CITY = "report_city".FromResources(),
       NAME = "report_name".FromResources(),
       NOTES = "report_notes".FromResources(),
+      REPORTS = "reports".FromResources(),
       SCREENSHOT = "report_screenshot".FromResources(),
+      SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
       STATE = "report_state".FromResources(),
       ZIP = "report_zip".FromResources()
       ;

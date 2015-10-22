@@ -155,14 +155,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+      __pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+      __temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+
       if (initialManifold == null) {
         InitNavigationBar("ic_nav_pt_chart", false);
         backAction = () => {
           root.navigation.ToggleMenu();
         };
-      } else {
-        NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
       }
+      NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
 
 //      NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {

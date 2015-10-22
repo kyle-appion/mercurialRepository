@@ -4,16 +4,9 @@ Big Ps
   * altitude works
   * dew/bubble works
   * entries should show unit along with measurement?
-  * Null pointer when initing ptchart from workbench
-
-//  3) Screenshot reporting (export as png)
 
 4) device manager
   * swipe device left to forget
-
-5) help menu (about, send feedback)
-
-
 
 **BUGS OR OUTSTANDING ISSUES**
 
