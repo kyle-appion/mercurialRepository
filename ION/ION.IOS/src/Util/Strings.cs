@@ -23,7 +23,9 @@ namespace ION.IOS.Util {
     HELP = "help".FromResources(),
     OK = "ok".FromResources(),
     RENAME = "rename".FromResources(),
+    PLEASE_WAIT = "please_wait".FromResources(),
     SAVE = "save".FromResources(),
+    SAVING = "saving".FromResources(),
     SETTINGS = "settings".FromResources(),
     UNKNOWN = "unknown"
     ;
@@ -85,8 +87,10 @@ namespace ION.IOS.Util {
       public static readonly string
       CANNOT_SEND_FEEBACK = "errors_cannot_send_feedback".FromResources(),
       FAILED_TO_SEND_FEEDBACK = "errors_failed_to_send_feedback".FromResources(),
-      SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources(),
       PRESSURE_INPUT_PARSE_ERROR = "errors_pressure_input_parse_error".FromResources(),
+      SCAN_INIT_FAIL = "errors_scan_init_fail".FromResources(),
+      SCREENSHOT = "errors_screenshot".FromResources(),
+      SCREENSHOT_MISSING_TITLE = "errors_screenshot_missing_title".FromResources(),
       TEMPERATURE_INPUT_PARSE_ERROR = "errors_temperature_input_parse_error".FromResources()
       ;
     }
@@ -138,11 +142,12 @@ namespace ION.IOS.Util {
     public static class Report {
       public static readonly string
       CITY = "report_city".FromResources(),
-      NAME = "report_name".FromResources(),
+      TITLE = "report_title".FromResources(),
       NOTES = "report_notes".FromResources(),
       REPORTS = "reports".FromResources(),
       SCREENSHOT = "report_screenshot".FromResources(),
       SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
+      SCREENSHOT_TITLE = "report_screenshot_title".FromResources(),
       STATE = "report_state".FromResources(),
       ZIP = "report_zip".FromResources()
       ;

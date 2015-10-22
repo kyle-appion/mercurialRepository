@@ -55,9 +55,18 @@ namespace ION.IOS.ViewController.Workbench {
         root.navigation.ToggleMenu();
       };
 
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem("NULL", UIBarButtonItemStyle.Plain, delegate {
+      var button = new UIButton(new CGRect(0, 0, 31, 30));
+      button.TouchUpInside += (obj, args) => {
+        TakeScreenshot();
+      };
+      button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
+      var barButton = new UIBarButtonItem(button);
+      NavigationItem.RightBarButtonItem = barButton;
+      /*
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIImage.FromBundle("ic_camera"), UIBarButtonItemStyle.Plain, delegate {
         ShowOptions();
       });
+      */
 
       Title = Strings.Workbench.SELF.FromResources();
 
@@ -121,39 +130,15 @@ namespace ION.IOS.ViewController.Workbench {
       await ion.SaveWorkbenchAsync();
     }
 
-    private void ShowOptions() {
+    private void TakeScreenshot() {
       try {
         var vc = InflateViewController<ScreenshotReportViewController>(VC_SCREENSHOT_REPORT);
         vc.image = View.Capture();
-        NavigationController.PushViewController(vc, true);
-/*
-        var report = new ScreenshotReport();
-
-        report.title = Strings.Report.SCREENSHOT;
-        report.subtitle = "Test Report 2";
-
-        report.tableData = new string[,] {
-          { Strings.Report.CITY, "Englewood" },
-          { Strings.Report.STATE, "Colorado" },
-          { Strings.Report.ZIP, "80110" },
+        // TODO: ahodder@appioninc.com: I have to be ignorant; this is a fucking stupid way to have to dismiss a fucking view controller
+        vc.closer = () => {
+          NavigationController.PopViewController(true);
         };
-
-        report.notes = "A lovely bunch of coconuts are banged together to make a significant amount of noice to indicate the approach of the king.";
-
-        var image = View.Capture();
-        var data = image.AsPNG();
-        report.screenshot = data.ToArray();
-
-
-        var folder = ion.screenshotReportFolder;
-        var file = folder.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
-
-        using (var stream = file.OpenForWriting()) {
-          ScreenshotReportPdfExporter.Export(report, stream);
-        }
-*/
-//        var d = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
-//        d.PresentOpenInMenu(View.Frame, View, true);
+        NavigationController.PushViewController(vc, true);
       } catch (Exception e) {
         Log.E(this, "Failed to create pdf", e);
       }
