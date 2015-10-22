@@ -18,7 +18,10 @@ namespace ION.IOS.ViewController {
     public const string VC_ANALYZER = "viewControllerAnalyzer";
     public const string VC_DEVICE_MANAGER = "viewControllerDeviceManager";
     public const string VC_FLUID_MANAGER = "viewControllerFluidManager";
+    public const string VC_HELP = "viewControllerHelp";
     public const string VC_PT_CHART = "viewControllerPTChart";
+    public const string VC_FILE_MANAGER = "viewControllerFileBrowser";
+    public const string VC_SCREENSHOT_REPORT = "viewControllerScreenshotReport";
     public const string VC_SENSOR_ALARMS = "viewControllerSensorAlarms";
     public const string VC_SETTINGS = "viewControllerSettings";
     public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";

@@ -1,7 +1,7 @@
+namespace ION.Core.Net {
 
-using System;
+  using System;
 
-namspace ION.Core.Net {
   public class JSONCalibrationCertificateParser {
     private const string KEY_CONTROL = "CalibrationCStandarddevice";
     private const string KEY_CONTROL_SERIAL = "serialNumber";

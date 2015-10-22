@@ -95,6 +95,13 @@ namespace ION.Core.App {
     IUnits defaultUnits { get; }
 
     /// <summary>
+    /// Queries the screenshot report folder.
+    /// </summary>
+    /// <returns>The screenshot report folder.</returns>
+    /// <exception cref="IOException">If the folder could not be retrieved.</exception>
+    IFolder screenshotReportFolder { get; }
+
+    /// <summary>
     /// Posts the action to the main message pump for execution on the main thread.
     /// </summary>
     /// <param name="action">Action.</param>

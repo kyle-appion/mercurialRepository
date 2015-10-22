@@ -2,6 +2,8 @@
   
   using System;
 
+  using ION.Core.IO;
+
 
   /// <summary>
   /// A Screenshot report is the simplest report that ION offers. Simply, it is

@@ -123,6 +123,7 @@
     <Compile Include="src\Pdf\PDFTest.cs" />
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
+    <Compile Include="src\Net\JSONCalibrationCertificateParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -151,6 +152,7 @@
     <Folder Include="src\Location\" />
     <Folder Include="src\Pdf\" />
     <Folder Include="src\Report\" />
+    <Folder Include="src\Net\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">

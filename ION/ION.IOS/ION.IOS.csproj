@@ -191,6 +191,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_play.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\ic_pause.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_camara.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_camara.imageset\ic_camera.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\ic_pdf.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -332,9 +336,50 @@
     <Compile Include="src\ViewController\Workbench\TimerSensorPropertyCell.designer.cs">
       <DependentUpon>TimerSensorPropertyCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\Storyboard\PdfDisplayViewController.cs" />
-    <Compile Include="src\Storyboard\PdfDisplayViewController.designer.cs">
-      <DependentUpon>PdfDisplayViewController.cs</DependentUpon>
+    <Compile Include="src\ViewController\FileManager\FileBrowserViewController.cs" />
+    <Compile Include="src\ViewController\FileManager\FileBrowserViewController.designer.cs">
+      <DependentUpon>FileBrowserViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FileManager\FileCell.cs" />
+    <Compile Include="src\ViewController\FileManager\FileCell.designer.cs">
+      <DependentUpon>FileCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FileManager\FileManagerSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\EntryCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\EntryCell.designer.cs">
+      <DependentUpon>EntryCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportViewController.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportViewController.designer.cs">
+      <DependentUpon>ScreenshotReportViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\SelectionCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\SelectionCell.designer.cs">
+      <DependentUpon>SelectionCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\DisplayCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\DisplayCell.designer.cs">
+      <DependentUpon>DisplayCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\HelpViewController.cs" />
+    <Compile Include="src\ViewController\Help\HelpViewController.designer.cs">
+      <DependentUpon>HelpViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\InfoCell.cs" />
+    <Compile Include="src\ViewController\Help\InfoCell.designer.cs">
+      <DependentUpon>InfoCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\LinkCell.cs" />
+    <Compile Include="src\ViewController\Help\LinkCell.designer.cs">
+      <DependentUpon>LinkCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\HelpPage.cs" />
+    <Compile Include="src\Net\AppionServerHelper.cs" />
+    <Compile Include="src\ViewController\Help\HelpSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\NotesCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\NotesCell.designer.cs">
+      <DependentUpon>NotesCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
@@ -364,6 +409,9 @@
     <Folder Include="src\Net\" />
     <Folder Include="src\Location\" />
     <Folder Include="src\Report\" />
+    <Folder Include="src\ViewController\FileManager\" />
+    <Folder Include="src\ViewController\ScreenshotReport\" />
+    <Folder Include="src\ViewController\Help\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

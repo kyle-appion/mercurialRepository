@@ -1,11 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.IO {
+  
+  using System;
+  using System.IO;
+  using System.Threading.Tasks;
 
-using ION.Core.App;
-using ION.Core.IO;
+  using ION.Core.App;
+  using ION.Core.IO;
 
-namespace ION.IOS.IO {
   public class IosFileManager : IFileManager {
 
     // Overridden from IFileManager
@@ -32,6 +33,12 @@ namespace ION.IOS.IO {
     // Overridden from IFileManager
     public IFolder GetApplicationExternalDirectory() {
       return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
+    }
+
+    // Overridden from IFileManager
+    public IFile CreateTemporaryFile(string name, EFileAccessResponse accessResponse = EFileAccessResponse.ReplaceIfExists) {
+      var tempFileName = System.IO.Path.GetTempPath() + name;
+      return new IONFile(new FileInfo(tempFileName));
     }
   }
 }

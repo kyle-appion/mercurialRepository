@@ -1,26 +1,32 @@
-using System;
-using System.Linq;
-using System.Collections.Generic;
-
-using Foundation;
-using UIKit;
-using MonoTouch.Dialog;
-
-using FlyoutNavigation;
-
-using ION.Core.App;
-using ION.Core.Util;
-
-using ION.IOS.App;
-using ION.IOS.UI;
-using ION.IOS.Util;
-using ION.IOS.ViewController.Analyzer;
-using ION.IOS.ViewController.PressureTemperatureChart;
-using ION.IOS.ViewController.Settings;
-using ION.IOS.ViewController.SuperheatSubcool;
-using ION.IOS.ViewController.Workbench;
-
 namespace ION.IOS.ViewController {
+  
+  using System;
+  using System.Linq;
+  using System.Collections.Generic;
+
+  using Foundation;
+  using MessageUI;
+  using MonoTouch.Dialog;
+  using UIKit;
+
+  using FlyoutNavigation;
+
+  using ION.Core.App;
+  using ION.Core.IO;
+  using ION.Core.Util;
+
+  using ION.IOS.App;
+  using ION.IOS.Net;
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+  using ION.IOS.ViewController.Analyzer;
+  using ION.IOS.ViewController.FileManager;
+  using ION.IOS.ViewController.Help;
+  using ION.IOS.ViewController.PressureTemperatureChart;
+  using ION.IOS.ViewController.Settings;
+  using ION.IOS.ViewController.SuperheatSubcool;
+  using ION.IOS.ViewController.Workbench;
+
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
     /// The view controller that will manage the navigation items for the screen.
@@ -52,9 +58,12 @@ namespace ION.IOS.ViewController {
           new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new ImageStringElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
+        new Section(Strings.Report.REPORTS) {
+          new ImageStringElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camara")),
+        },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new ImageStringElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
-//          new ImageStringElement(Strings.HELP, null),
+          new ImageStringElement(Strings.HELP, OnHelpClicked, null),
         },
       };
       navigation.ViewControllers = BuildViewControllers();
@@ -73,6 +82,43 @@ namespace ION.IOS.ViewController {
     }
 
     /// <summary>
+    /// Opens up the application's screenshot report archive.
+    /// </summary>
+    private void OnScreenshotArchiveClicked() {
+      try {
+        var vc = InflateViewController<FileBrowserViewController>(BaseIONViewController.VC_FILE_MANAGER);
+        vc.title = Strings.Report.SCREENSHOT_ARCHIVE;
+        vc.rootFolder = AppState.context.screenshotReportFolder;
+        PresentViewControllerFromSelected(vc);
+      } catch (Exception e) {
+        Log.E(this, "Failed to get le folder", e);
+      }
+    }
+
+    /// <summary>
+    /// Shows the help menu.
+    /// </summary>
+    private void OnHelpClicked() {
+      var vc = InflateViewController<HelpViewController>(BaseIONViewController.VC_HELP);
+
+      var landing = new HelpPageBuilder(Strings.HELP)
+        .Link(new HelpPageBuilder(Strings.Help.ABOUT)
+          .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
+          .Build())
+        .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
+          if (!MFMailComposeViewController.CanSendMail) {
+            Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
+          } else {
+            DoSendAppionFeedback();
+          }
+        }).Build();
+
+      vc.page = landing;
+
+      PresentViewControllerFromSelected(vc);
+    }
+
+    /// <summary>
     /// Constructs and initialized the view controllers that are used in the application.
     /// </summary>
     /// <returns>The view controllers.</returns>
@@ -82,11 +128,47 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
+        null, // Screenshot Navigation
         null, // Settings navigation
-//        null, // Help Navigation
+        null, // Help Navigation
       };
 
       return ret;
+    }
+
+    /// <summary>
+    /// Prepares and displays an email resolver such that the user can fire
+    /// off an email to complain to appion.
+    /// </summary>
+    private void DoSendAppionFeedback() {
+      // TODO ahodder@appioninc.com: Build the host device attachment
+      var vc = new MFMailComposeViewController();
+      vc.MailComposeDelegate = new MailDelegate();
+      vc.SetSubject("ION App Feedback");
+      vc.SetMessageBody("Hello,\n\n", false);
+      vc.SetToRecipients(new String[] { AppionServerHelper.Email.APPION_SUPPORT });
+
+      var file = AppionServerHelper.Email.CreatePlatformDescriptionFile(AppState.context.fileManager);
+
+      vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/json", file.name);
+
+      navigation.PresentViewController(vc, true, null);
+    }
+
+    /// <summary>
+    /// Presents a new view controller using the current navigation view
+    /// controller as the host.
+    /// </summary>
+    /// <param name="vc">Vc.</param>
+    private void PresentViewControllerFromSelected(UIViewController vc) {
+      var nvc = ((UINavigationController)navigation.CurrentViewController).VisibleViewController;
+
+      Log.D(this, "nvc: " + nvc);
+      Log.D(this, "nvc: " + nvc.NavigationController);
+      Log.D(this, "vc: " + vc);
+
+      nvc.NavigationController.PushViewController(vc, true);
+      navigation.HideMenu();
     }
 
     /// <summary>
@@ -101,4 +183,23 @@ namespace ION.IOS.ViewController {
       return ret;
     }
 	}
+
+  internal class MailDelegate : MFMailComposeViewControllerDelegate {
+    // Overridden from MFMailComposeViewControllerDelegate
+    public override void Finished(MFMailComposeViewController controller, MFMailComposeResult result, NSError error) {
+      // TODO ahodder@appioninc.com: These toasts don't work 
+      // the view controller is gone by the time they post. we will need to figure out
+      // a better way to notify the user.
+      switch (result) {
+        case MFMailComposeResult.Sent:
+          Toast.New(controller.View, Strings.Help.SENT_FEEDBACK);
+          break;
+        case MFMailComposeResult.Failed:
+          Toast.New(controller.View, Strings.Errors.FAILED_TO_SEND_FEEDBACK);
+          break;
+      }
+
+      controller.DismissModalViewController(true);
+    }
+  }
 }

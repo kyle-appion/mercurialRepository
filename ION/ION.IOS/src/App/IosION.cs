@@ -73,6 +73,16 @@ namespace ION.IOS.App {
     // Overridden from IION
     public IUnits defaultUnits { get; private set; }
 
+    // Overridden from IION
+    public IFolder screenshotReportFolder {
+      get {
+        var d = fileManager.GetApplicationExternalDirectory();
+        d = d.GetFolder("reports", EFileAccessResponse.CreateIfMissing);
+        d = d.GetFolder("screenshots", EFileAccessResponse.CreateIfMissing);
+        return d;
+      }
+    }
+
     /// <summary>
     /// The ios application settings.
     /// </summary>
