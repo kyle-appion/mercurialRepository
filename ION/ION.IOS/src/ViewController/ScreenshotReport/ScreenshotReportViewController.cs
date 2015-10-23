@@ -100,6 +100,8 @@ namespace ION.IOS.ViewController.ScreenshotReport {
           data[i, 1] = item.value;
         }
 
+        report.tableData = data;
+
         try {
           var dir = AppState.context.screenshotReportFolder;
           var file = dir.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
