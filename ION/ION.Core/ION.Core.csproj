@@ -99,7 +99,6 @@
     <Compile Include="src\Sensors\Alarms\HighSensorAlarm.cs" />
     <Compile Include="src\Sensors\Alarms\LowSensorAlarm.cs" />
     <Compile Include="src\Sensors\Alarms\SensorAlarm.cs" />
-    <Compile Include="src\Sensors\UnitLookup.cs" />
     <Compile Include="src\Sensors\Serialization\DefaultSensorJsonConverter.cs" />
     <Compile Include="src\IO\ISerializer.cs" />
     <Compile Include="src\Content\Serialization\ManifoldJsonConverter.cs" />
@@ -124,6 +123,7 @@
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Net\JSONCalibrationCertificateParser.cs" />
+    <Compile Include="src\Sensors\UnitLookup.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -162,7 +162,7 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Xfinium.Pdf.Pcl">
-      <HintPath>..\Xfinium\Xfinium.Pdf.Pcl.dll</HintPath>
+      <HintPath>..\packages\Nfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

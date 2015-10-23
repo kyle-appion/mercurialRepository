@@ -56,20 +56,20 @@ namespace ION.Core.Devices.Protocols {
 
     // Overridden from IGaugeProtocol
     public override byte[] CreateSetUnitCommand(int sensorIndex, Sensors.ESensorType sensorType, Unit unit) {
-      Log.E(this, "Failed to CreateSetUnitCommand: not implemented");
-      return new byte[] { 0x00 };
+      return new byte[] { 0x02, (byte)UnitLookup.GetCode(sensorType, unit), (byte)sensorIndex };
     }
 
     // Overridden from IGaugeProtocol
     public override byte[] CreateZeroSensorCommand(int sensorIndex) {
-      Log.E(this, "Failed to CreateZeroSensorCommand: not implemented");
-      return new byte[] { 0x00 };
+      return new byte[] { 0x03, (byte)sensorIndex };
     }
 
     // Overriden from IGaugeProtocol
     public override byte[] CreateSetAltitudeCommand(Scalar altitude) {
-      Log.E(this, "Failed to CreateSetAltitudeCommand: not implemented");
-      return new byte[] { 0x00 };
+      var v = (int)altitude.amount;
+      var ub = (byte)((v >> 8) & 0xff);
+      var lb = (byte)(v & 0xff);
+      return new byte[] { 0x04, ub, lb, (byte)UnitLookup.GetCode(ESensorType.Length, altitude.unit) };
     }
   }
 }
