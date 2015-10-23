@@ -91,10 +91,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Xfinium.Pdf.Xamarin.iOS">
-      <HintPath>..\Xfinium\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
     </Reference>
     <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
-      <HintPath>..\Xfinium\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -526,6 +526,9 @@
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
+    <BundleResource Include="Resources\.DS_Store" />
+    <BundleResource Include="Resources\Images.xcassets\.DS_Store" />
+    <BundleResource Include="Resources\src\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
