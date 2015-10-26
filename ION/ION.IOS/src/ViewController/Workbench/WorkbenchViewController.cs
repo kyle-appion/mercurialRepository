@@ -62,11 +62,6 @@ namespace ION.IOS.ViewController.Workbench {
       button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
       var barButton = new UIBarButtonItem(button);
       NavigationItem.RightBarButtonItem = barButton;
-      /*
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(UIImage.FromBundle("ic_camera"), UIBarButtonItemStyle.Plain, delegate {
-        ShowOptions();
-      });
-      */
 
       Title = Strings.Workbench.SELF.FromResources();
 
@@ -80,8 +75,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.Source = source;
 
-      ion.currentWorkbench.onManifoldAdded += OnManifoldAdded;
-      ion.currentWorkbench.onManifoldRemoved += OnManifoldRemoved;
+      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
     }
 
     // Overridden from BaseIONViewController
@@ -93,8 +87,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     // Overridden from UIViewController
     public override void ViewDidUnload() {
-      ion.currentWorkbench.onManifoldAdded -= OnManifoldAdded;
-      ion.currentWorkbench.onManifoldRemoved -= OnManifoldRemoved;
+      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
     }
 
     /// <summary>
@@ -107,27 +100,28 @@ namespace ION.IOS.ViewController.Workbench {
       };
       // TODO ahodder@appioninc.com: Set initialial arguments.
       NavigationController.PushViewController(sb, true);
-      //          Toast.New(tableView, "Clicked 'Add New Viewer'");
     }
 
     /// <summary>
-    /// Called when the workbench adds a new manifold.
+    /// Called when the backing workbench throws a new event.
     /// </summary>
-    /// <param name="workbench">Workbench.</param>
-    /// <param name="manifold">Manifold.</param>
-    private async void OnManifoldAdded(ION.Core.Content.Workbench workbench, Manifold manifold) {
-      tableContent.ReloadData();
-      await ion.SaveWorkbenchAsync();
-    }
-
-    /// <summary>
-    /// Called when the workbench removes a manifold.
-    /// </summary>
-    /// <param name="workbench">Workbench.</param>
-    /// <param name="manifold">Manifold.</param>
-    private async void OnManifoldRemoved(ION.Core.Content.Workbench workbench, Manifold manifold) {
-      tableContent.ReloadData();
-      await ion.SaveWorkbenchAsync();
+    /// <param name="workbenchEvent">Workbench event.</param>
+    private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+      // TODO ahodder@appioninc.com: These events really should just update a single row
+      switch (workbenchEvent.type) {
+        case WorkbenchEvent.EType.Added:
+          tableContent.ReloadData();
+          await ion.SaveWorkbenchAsync();
+          break;
+        case WorkbenchEvent.EType.Removed:
+          tableContent.ReloadData();
+          await ion.SaveWorkbenchAsync();
+          break;
+        case WorkbenchEvent.EType.Invalidated:
+          tableContent.ReloadData();
+          await ion.SaveWorkbenchAsync();
+          break;
+      }
     }
 
     private void TakeScreenshot() {

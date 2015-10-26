@@ -422,12 +422,20 @@
       return ret.ToArray();
     }
 
+    private string GetForgetHeader(IDevice device) {
+      if (ion.currentWorkbench.ContainsDevice(device)) {
+        return String.Format(Strings.Device.FORGET_NAME_WHERE, device.name, Strings.Device.IN_WORKBENCH);
+      } else {
+        return String.Format(Strings.Device.FORGET, device.name);
+      }
+    }
+
     /// <summary>
     /// Requests whether or not the user is really sure they want to delete the device.
     /// </summary>
     /// <param name="device">Device.</param>
     private void RequestDeleteDeviceVerification(IDevice device) {
-      var dialog = UIAlertController.Create(Strings.Device.FORGET + " " + device.name, Strings.Device.FORGET_DESC, UIAlertControllerStyle.Alert);
+      var dialog = UIAlertController.Create(GetForgetHeader(device), Strings.Device.FORGET_DESC, UIAlertControllerStyle.Alert);
 
       dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
       dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET, UIAlertActionStyle.Default, (action) => {

@@ -135,6 +135,25 @@ namespace ION.Core.Devices {
     }
 
     /// <summary>
+    /// Queries whether or not the device contians the given sensor.
+    /// </summary>
+    /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool ContainsSensor(Sensor sensor) {
+      var gs = sensor as GaugeDeviceSensor;
+
+      if (gs != null) {
+        foreach (var s in sensors) {
+          if (gs.Equals(s)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    /// <summary>
     /// Queries whether or not the device has a sensor of the given type.
     /// </summary>
     /// <returns><c>true</c> if this instance hash sensor of type the specified sensorType; otherwise, <c>false</c>.</returns>
