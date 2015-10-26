@@ -28,13 +28,16 @@ namespace ION.IOS.ViewController.DeviceManager
 		UIKit.UILabel labelDeviceType { get; set; }
 
 		[Outlet]
+		UIKit.UIView viewBackground { get; set; }
+
+		[Outlet]
 		UIKit.UIView viewDivider { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (imageDeviceIcon != null) {
-				imageDeviceIcon.Dispose ();
-				imageDeviceIcon = null;
+			if (activityConnectStatus != null) {
+				activityConnectStatus.Dispose ();
+				activityConnectStatus = null;
 			}
 
 			if (buttonConnect != null) {
@@ -42,14 +45,14 @@ namespace ION.IOS.ViewController.DeviceManager
 				buttonConnect = null;
 			}
 
-			if (activityConnectStatus != null) {
-				activityConnectStatus.Dispose ();
-				activityConnectStatus = null;
+			if (imageDeviceIcon != null) {
+				imageDeviceIcon.Dispose ();
+				imageDeviceIcon = null;
 			}
 
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
+			if (labelDeviceName != null) {
+				labelDeviceName.Dispose ();
+				labelDeviceName = null;
 			}
 
 			if (labelDeviceType != null) {
@@ -57,9 +60,14 @@ namespace ION.IOS.ViewController.DeviceManager
 				labelDeviceType = null;
 			}
 
-			if (labelDeviceName != null) {
-				labelDeviceName.Dispose ();
-				labelDeviceName = null;
+			if (viewDivider != null) {
+				viewDivider.Dispose ();
+				viewDivider = null;
+			}
+
+			if (viewBackground != null) {
+				viewBackground.Dispose ();
+				viewBackground = null;
 			}
 		}
 	}
