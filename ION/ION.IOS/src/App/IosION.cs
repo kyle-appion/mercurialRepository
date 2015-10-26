@@ -183,7 +183,7 @@ namespace ION.IOS.App {
           var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);
           currentWorkbench = await LoadWorkbenchAsync(workbenchFile);
         } else {
-          currentWorkbench = new Workbench();
+          currentWorkbench = new Workbench(this);
         }
 
         Log.D(this, "Ending ION init");
@@ -201,7 +201,7 @@ namespace ION.IOS.App {
           }
         } catch (Exception e) {
           Log.E(this, "Failed to load workbench. Creating a new one.", e);
-          return new Workbench();
+          return new Workbench(this);
         }
       }
     }

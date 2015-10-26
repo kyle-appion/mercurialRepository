@@ -48,7 +48,7 @@ namespace ION.Core.Content.Parsers {
           // Read the number of manifold that were stored
           var len = reader.ReadInt32();
 
-          var ret = new Workbench();
+          var ret = new Workbench(ion);
 
           for (int i = 0; i < len; i++) {
             try {
