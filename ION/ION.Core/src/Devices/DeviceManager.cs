@@ -16,13 +16,6 @@ namespace ION.Core.Devices {
   /// </summary>
   public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
   /// <summary>
-  /// The delegate that is notified when a device is found by an active or
-  /// passive scan.
-  /// </summary>
-  /// <param name="deviceManager"></param>
-  /// <param name="device"></param>
-  public delegate void OnDeviceFound(IDeviceManager deviceManager, IDevice device);
-  /// <summary>
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
   /// <param name="deviceManager"></param>
@@ -34,19 +27,9 @@ namespace ION.Core.Devices {
   /// </summary>
   public interface IDeviceManager : IIONManager {
     /// <summary>
-    /// An event handler that will be notified when a device is found by a scan.
+    /// An event handler that will be notified when a device event is thrown.
     /// </summary>
-    event OnDeviceFound onDeviceFound;
-    /// <summary>
-    /// An event handler that will be notified when a device's state has
-    /// changed.
-    /// <para>
-    /// Note: This is different from registering directly to a particular device
-    /// in that this event will be fired when any device's state changes, not
-    /// just the registered device's.
-    /// </para>
-    /// </summary>
-    event OnDeviceStateChanged onDeviceStateChanged;
+    event OnDeviceEvent onDeviceEvent;
     /// <summary>
     /// An event handler that will be notified when the device manager's
     /// state changes.

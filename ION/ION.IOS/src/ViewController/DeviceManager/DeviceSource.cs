@@ -1,19 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.IOS.ViewController.DeviceManager {
 
-using CoreGraphics;
-using Foundation;
-using UIKit;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
 
-using ION.Core.App;
-using ION.Core.Connections;
-using ION.Core.Devices;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using CoreGraphics;
+  using Foundation;
+  using UIKit;
 
-using ION.IOS.UI;
+  using SWTableViewCell;
 
-namespace ION.IOS.ViewController.DeviceManager {
+  using ION.Core.App;
+  using ION.Core.Connections;
+  using ION.Core.Devices;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+
   /// <description>
   /// This source is used to provide device cells to the device manager view controller's
   /// UI table. However, because the table view really only work well with a section/row
@@ -39,11 +44,15 @@ namespace ION.IOS.ViewController.DeviceManager {
     public delegate bool OnSensorAddClicked(GaugeDeviceSensor sensor, NSIndexPath indexPath);
 
     public delegate bool OnDeviceLongClicked(IDevice device, NSIndexPath indexPath);
+
+    public delegate bool OnDeleteDevice(IDevice device);
     /// <summary>
     /// The action that will be called on a sensor's add button click.
     /// </summary>
     /// <value>The on sensor add clicked.</value>
     public OnSensorAddClicked onSensorAddClicked { get; set; }
+
+    public OnDeleteDevice onDeleteDevice { get; set; }
 
     /// <summary>
     /// The filter that will only display matching sensors.
@@ -101,31 +110,6 @@ namespace ION.IOS.ViewController.DeviceManager {
     public DeviceSource(IION ion, UITableView table) {
       this.ion = ion;
       this.table = table;
-    }
-
-    // Overriddenfrom UITableViewsource
-    public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
-      switch (editingStyle) {
-        case UITableViewCellEditingStyle.Delete:
-          // Remove the device from the device manager
-          var index = (int)indexPath.Section;
-          var item = __items[index];
-          if (item is DeviceItem) {
-            var di = (DeviceItem)item;
-            ion.deviceManager.DeleteDevice(di.device.serialNumber);
-          }
-
-          // Remove the device from the source
-          __items.RemoveAt(index);
-          tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
-//          tableView.ReloadData();
-          break;
-      }
-    }
-
-    // Overridden from UITableViewSource
-    public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
-      return false;
     }
 
     // Overridden from UITableViewSource
@@ -240,6 +224,26 @@ namespace ION.IOS.ViewController.DeviceManager {
 
         return cell;
       }
+    }
+
+    /// <summary>
+    /// Queries the index of the device within the source. If the device is not present
+    /// in the source we will return -1.
+    /// </summary>
+    /// <returns>The of.</returns>
+    /// <param name="device">Device.</param>
+    public int IndexOf(IDevice device) {
+      for (int i = 0; i < __items.Count; i++) {
+        var item = __items[i];
+        if (item is DeviceItem) {
+          var di = (DeviceItem)item;
+          if (di.device.Equals(device)) {
+            return i;
+          }
+        }
+      }
+
+      return -1;
     }
 
     /// <summary>
@@ -375,6 +379,9 @@ namespace ION.IOS.ViewController.DeviceManager {
     private UITableViewCell GetDeviceCell(UITableView tableView, nint section, DeviceItem item) {
       var cell = tableView.DequeueReusableCell(CELL_DEVICE) as DeviceTableCell;
 
+      var buttons = GetDeviceSwipeRightButtons();
+      cell.SetRightUtilityButtons(buttons, buttons.Length * 64);
+      cell.Delegate = new DeviceHeaderDelegate(this, item.device);
       cell.UpdateTo(ion, item.device, () => {
         ToggleDevice(NSIndexPath.FromRowSection(0, section));
       });
@@ -399,6 +406,53 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       return cell;
     }
+
+    /// <summary>
+    /// Gets the device header swipe left buttons.
+    /// </summary>
+    /// <returns>The device header swipe left buttons.</returns>
+    private UIButton[] GetDeviceSwipeRightButtons() {
+      var ret = new List<UIButton>();
+
+      var b = new UIButton(UIButtonType.Custom);
+      b.BackgroundColor = UIColor.Red;
+      b.SetTitle(Strings.Device.FORGET, UIControlState.Normal);
+      ret.Add(b);
+
+      return ret.ToArray();
+    }
+
+    /// <summary>
+    /// Requests whether or not the user is really sure they want to delete the device.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    private void RequestDeleteDeviceVerification(IDevice device) {
+      var dialog = UIAlertController.Create(Strings.Device.FORGET + " " + device.name, Strings.Device.FORGET_DESC, UIAlertControllerStyle.Alert);
+
+      dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+      dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET, UIAlertActionStyle.Default, (action) => {
+        if (onDeleteDevice != null) {
+          onDeleteDevice(device);
+        }
+      }));
+
+      dialog.Show();
+    }
+
+    internal class DeviceHeaderDelegate : SWTableViewCellDelegate {
+      internal DeviceSource source { get; set; }
+      private IDevice device { get; set; }
+
+      public DeviceHeaderDelegate(DeviceSource source, IDevice device) {
+        this.source = source;
+        this.device = device;
+      }
+
+      // Overridden from SWTableViewCellDelegate
+      public override void DidTriggerRightUtilityButton(SWTableViewCell cell, nint index) {
+        source.RequestDeleteDeviceVerification(device);
+      }
+    } // End DeviceSource.DeviceHeaderDelegate
   } // End DeviceSource
 
   /// <summary>

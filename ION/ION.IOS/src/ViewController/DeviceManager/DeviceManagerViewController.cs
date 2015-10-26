@@ -88,9 +88,8 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
       });
 
-      ion.deviceManager.onDeviceFound += HandleDeviceFound;
+      ion.deviceManager.onDeviceEvent += OnDeviceEvent;
       ion.deviceManager.onDeviceManagerStatesChanged += HandleDeviceManagerStatesChanged;
-      ion.deviceManager.onDeviceStateChanged += HandleDeviceStateChanged;
 
       HandleDeviceManagerStatesChanged(ion.deviceManager);
 
@@ -104,6 +103,10 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
         return false;
       };
+      deviceSource.onDeleteDevice = (IDevice device) => {
+        ion.deviceManager.DeleteDevice(device.serialNumber);
+        return true;
+      };
       this.PostUpdate();
     }
 
@@ -111,9 +114,8 @@ namespace ION.IOS.ViewController.DeviceManager {
     public override void ViewDidUnload() {
       base.ViewDidUnload();
 
-      ion.deviceManager.onDeviceFound -= HandleDeviceFound;
+      ion.deviceManager.onDeviceEvent -= OnDeviceEvent;
       ion.deviceManager.onDeviceManagerStatesChanged -= HandleDeviceManagerStatesChanged;
-      ion.deviceManager.onDeviceStateChanged -= HandleDeviceStateChanged;
 
       tableContent.Source = null;
     }
@@ -188,13 +190,29 @@ namespace ION.IOS.ViewController.DeviceManager {
     }
 
     /// <summary>
-    /// The callback used by the device manager when a new device is found.
+    /// Called when a device event propagates from the backend device manager.
     /// </summary>
-    /// <param name="dm">Dm.</param>
-    /// <param name="device">Device.</param>
-    private void HandleDeviceFound(IDeviceManager dm, IDevice device) {
-      ion.PostToMain(UpdateSourceContent);
-//      UpdateSourceContent();
+    /// <param name="deviceEvent">Device event.</param>
+    private async void OnDeviceEvent(DeviceEvent deviceEvent) {
+      var device = deviceEvent.device;
+
+      // TODO ahodder@appioninc.com: Ideally this would only update the affected rows.
+      // But, as of now, I can't get ios to update a single row without breaking the view.
+      switch (deviceEvent.type) {
+        case DeviceEvent.EType.Found:
+          UpdateSourceContent();
+          break;
+        case DeviceEvent.EType.ConnectionChange:
+          UpdateSourceContent();
+          await Task.Delay(250); // TODO ahodder@appioninc.com: Needed?
+          if (device.isConnected) {
+            deviceSource.ExpandDevice(device);
+          }
+          break;
+        case DeviceEvent.EType.Deleted:
+          UpdateSourceContent();
+          break;
+      }
     }
 
     /// <summary>
@@ -207,22 +225,6 @@ namespace ION.IOS.ViewController.DeviceManager {
       } else {
         NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
       }
-    }
-
-    /// <summary>
-    /// The callbacks used by the device manager when a device's state changes.
-    /// </summary>
-    /// <param name="device">Device.</param>
-    private void HandleDeviceStateChanged(IDevice device) {
-      Task.Factory.StartNew(() => {
-        UpdateSourceContent();
-      }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
-
-      Task.Factory.StartNew(() => {
-        if (device.isConnected) {
-          deviceSource.ExpandDevice(device);
-        }
-      }, Task.Factory.CancellationToken, TaskCreationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
     }
 	} // End DeviceManagerViewController
 }

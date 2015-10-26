@@ -57,7 +57,6 @@ namespace ION.Core.Database {
 
     // Overridden from IDao
     public async Task<bool> SaveAsync(IDevice item) {
-      Log.D(this, "Saving...");
       var device = await DeconstructAsync(item);
       database.BeginTransaction();
       int affected = 0;
@@ -67,18 +66,22 @@ namespace ION.Core.Database {
         affected = database.Update(device);
       }
       database.Commit();
-      Log.D(this, "affected " + affected + " rows");
       return affected > 0;
     }
 
     // Overridden from IDao
     public async Task<bool> DeleteAsync(IDevice item) {
-      var device = await DeconstructAsync(item);
       database.BeginTransaction();
-      var affected = database.Delete(device.id);
-      database.Commit();
-      Log.D(this, "Deleted " + affected + " device when deleteing " + item.serialNumber);
-      return affected > 0;
+      try {
+        var device = await DeconstructAsync(item);
+        var affected = database.Delete(device);
+        database.Commit();
+        return affected > 0;
+      } catch (Exception e) {
+        Log.E(this, "Failed to delete item", e);
+        database.Rollback();
+        return false;
+      }
     }
 
     /// <summary>
@@ -103,7 +106,6 @@ namespace ION.Core.Database {
     /// <returns>The I device.</returns>
     /// <param name="device">Device.</param>
     private async Task<IDevice> InflateAsync(Device device) {
-      Log.D(this, "Inflated: " + device.ToString());
       try {
         var serialNumber = GaugeSerialNumber.Parse(device.serialNumber);
         return database.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, device.protocol);
@@ -129,8 +131,6 @@ namespace ION.Core.Database {
 
       ret.name = device.name;
       ret.lastConnected = device.connection.lastSeen;
-
-      Log.D(this, "Deconstructed: " + ret);
 
       return ret;
     }
