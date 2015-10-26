@@ -15,9 +15,7 @@ namespace ION.Core.Devices {
   /// </summary>
   public class BaseDeviceManager : IDeviceManager {
     // Overridden from IDeviceManager
-    public event OnDeviceFound onDeviceFound;
-    // Overridden from IDeviceManager
-    public event OnDeviceStateChanged onDeviceStateChanged;
+    public event OnDeviceEvent onDeviceEvent;
     // Overridden from IDeviceManager
     public event OnDeviceManagerStatesChanged onDeviceManagerStatesChanged;
 
@@ -195,13 +193,15 @@ namespace ION.Core.Devices {
       return ret;
     }
 
-    public void DeleteDevice(ISerialNumber serialNumber) {
+    // Overridden from IDeviceManager
+    public async void DeleteDevice(ISerialNumber serialNumber) {
       var device = this[serialNumber];
       if (device != null) {
         Unregister(device);
         // TODO ahodder@appioninc.com: We need to throw out and event that a device was deleted such that the
         // rest of the application can react to the device being deleted.
-        ion.database.deviceDao.DeleteAsync(device);
+        await ion.database.deviceDao.DeleteAsync(device);
+        NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
       }
     }
 
@@ -224,7 +224,7 @@ namespace ION.Core.Devices {
           protocol = Protocol.PROTOCOLS[0];
         }
         ret = __deviceFactory.CreateDeviceFromSerialNumber(serialNumber, connection, protocol);
-        ret.onStateChanged += OnDeviceStateChanged;
+        ret.onDeviceEvent += OnDeviceEvent;
       } else {
         if (!ret.connection.address.Equals(connectionAddress)) {
           var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
@@ -260,7 +260,26 @@ namespace ION.Core.Devices {
     private void Unregister(IDevice device) {
       __foundDevices.Remove(device.serialNumber);
       __knownDevices.Remove(device.serialNumber);
-      device.onStateChanged -= OnDeviceStateChanged;
+      device.onDeviceEvent -= OnDeviceEvent;
+    }
+
+    /// <summary>
+    /// Notifies the OnNewDeviceEvent event handler that a new device event has occurred.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="serial">Serial.</param>
+    private void NotifyOfDeviceEvent(DeviceEvent.EType type, IDevice device) {
+      NotifyOfDeviceEvent(new DeviceEvent(type, device));
+    }
+
+    /// <summary>
+    /// Notifies the OnNewDeviceEvent event handler that a new device event has occurred.
+    /// </summary>
+    /// <param name="deviceEvent">Device event.</param>
+    private void NotifyOfDeviceEvent(DeviceEvent deviceEvent) {
+      if (onDeviceEvent != null) {
+        onDeviceEvent(deviceEvent);
+      }
     }
 
     /// <summary>
@@ -280,26 +299,33 @@ namespace ION.Core.Devices {
       }
       device.connection.lastSeen = DateTime.Now;
 
-      if (onDeviceFound != null) {
-        ion.PostToMain(() => {
-          onDeviceFound(this, device);
-        });
-      }
+      ion.PostToMain(() => {
+        NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);
+      });
     }
 
     /// <summary>
-    /// Called when a device created by this device manager's state changes.
+    /// Called when a device known by the device manager posts a device event.
     /// </summary>
-    /// <param name="device">Device.</param>
-    private async void OnDeviceStateChanged(IDevice device) {
-      if (!IsDeviceKnown(device)) {
-        Register(device);
+    /// <param name="deviceEvent">Device event.</param>
+    private async void OnDeviceEvent(DeviceEvent deviceEvent) {
+      var device = deviceEvent.device;
+
+      switch (deviceEvent.type) {
+        case DeviceEvent.EType.ConnectionChange:
+          if (!IsDeviceKnown(device)) {
+            Register(device);
+          }
+
+          if (device.isConnected) {
+            Log.D(this, "Attempting to save device");
+            await ion.database.deviceDao.SaveAsync(device);
+          }
+          break;
       }
-      await ion.database.deviceDao.SaveAsync(device);
+
       ion.PostToMain(() => {
-        if (onDeviceStateChanged != null) {
-          onDeviceStateChanged(device);
-        }
+        NotifyOfDeviceEvent(deviceEvent);
       });
     }
 

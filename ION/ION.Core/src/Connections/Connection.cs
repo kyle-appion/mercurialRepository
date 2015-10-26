@@ -7,9 +7,9 @@ namespace ION.Core.Connections {
   /// The delegate that is notified when a connection's state is changed.
   /// </summary>
   /// <param name="connection"></param>
-  /// <param name="state"></param>
+  /// <param name="state">The old state of the connection.</param>
   /// <returns></returns>
-  public delegate void OnConnectionStateChanged(IConnection connection, EConnectionState state);
+  public delegate void OnConnectionStateChanged(IConnection connection, EConnectionState oldState);
   /// <summary>
   /// The delegate that is notified when a connection received a new packet.
   /// </summary>

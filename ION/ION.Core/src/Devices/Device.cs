@@ -27,17 +27,47 @@ namespace ION.Core.Devices {
   }
 
   /// <summary>
-  /// The delegate that is notified when the device's state changes.
+  /// The delegate that is used when a device fires off an event.
   /// </summary>
+  /// <param name="deviceManager"></param>
   /// <param name="device"></param>
-  /// <param name="state"></param>
-  public delegate void OnDeviceStateChanged(IDevice device);
+  public delegate void OnDeviceEvent(DeviceEvent deviceEvent);
+
 
   /// <summary>
-  /// The delegate that is notified when the device's content changes
-  /// (ie. readings, name etc...).
+  /// The event describing what the action device the did or had done to it..
   /// </summary>
-  public delegate void OnDeviceContentChanged(IDevice device);
+  public class DeviceEvent {
+    /// <summary>
+    /// The type of event.
+    /// </summary>
+    /// <value>The type.</value>
+    public EType type { get; set; }
+    /// <summary>
+    /// The device who caused the event.
+    /// </summary>
+    /// <value>The device.</value>
+    public IDevice device { get; set; }
+
+    public DeviceEvent(EType type, IDevice device) {
+      this.type = type;
+      this.device = device;
+    }
+
+    /// <summary>
+    /// The enumeration describing the event type.
+    /// </summary>
+    public enum EType {
+      Found,
+      ConnectionChange,
+      /// <summary>
+      /// Note: The device is deleted by the time this event comes around.
+      /// </summary>
+      Deleted,
+      NameChanged,
+      NewData,
+    }
+  }
 
   /// <summary>
   /// The contract for an ION device.
@@ -47,12 +77,7 @@ namespace ION.Core.Devices {
     /// The event registery that will be notified when the device's
     /// connection state changes
     /// </summary>
-    event OnDeviceStateChanged onStateChanged;
-    /// <summary>
-    /// The event registery that will be notified when the device's
-    /// content changes.
-    /// </summary>
-    event OnDeviceContentChanged onContentChanged;
+    event OnDeviceEvent onDeviceEvent;
 
     /// <summary>
     /// Queries the serial number of the device.

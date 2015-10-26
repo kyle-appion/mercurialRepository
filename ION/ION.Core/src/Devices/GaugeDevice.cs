@@ -17,9 +17,7 @@ namespace ION.Core.Devices {
     private static readonly TimeSpan TIMEOUT_NEARBY = TimeSpan.FromMilliseconds(5000);
 
     // Overridden from IDevice
-    public event OnDeviceStateChanged onStateChanged;
-    // Overridden from IDevice
-    public event OnDeviceContentChanged onContentChanged;
+    public event OnDeviceEvent onDeviceEvent;
     // Overridden from IDevice
     public ISerialNumber serialNumber { get { return __serialNumber; } } GaugeSerialNumber __serialNumber;
     // Overridden from IDevice
@@ -31,7 +29,7 @@ namespace ION.Core.Devices {
       }
       set {
         __name = value;
-        NotifyOfContentChange();
+        NotifyOfDeviceEvent(DeviceEvent.EType.NameChanged);
       }
     } string __name;
     // Overridden from IDevice
@@ -84,7 +82,7 @@ namespace ION.Core.Devices {
       name = serialNumber.ToString();
 
       connection.onStateChanged += ((IConnection conn, EConnectionState state) => {
-        NotifyOfStateChange();
+        NotifyOfDeviceEvent(DeviceEvent.EType.ConnectionChange);
         foreach (GaugeDeviceSensor sensor in sensors) {
           sensor.NotifySensorStateChanged();
         }
@@ -124,7 +122,7 @@ namespace ION.Core.Devices {
             }
 
             if (changed) {
-              NotifyOfContentChange();
+              NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
             }
           } else {
             throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
@@ -154,21 +152,13 @@ namespace ION.Core.Devices {
     /// <summary>
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
-    private void NotifyOfStateChange() {
+    private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
+      // TODO ahodder@appioninc.com:  eeehhhhhhh. This no gud, make gudder
       ION.Core.App.AppState.context.PostToMain(() => {
-        if (onStateChanged != null) {
-          onStateChanged(this);
+        if (onDeviceEvent != null) {
+          onDeviceEvent(new DeviceEvent(type, this));
         }
       });
-    }
-
-    /// <summary>
-    /// Notifies the device's onContentChange delegates that it has changed.
-    /// </summary>
-    private void NotifyOfContentChange() {
-      if (onContentChanged != null) {
-        onContentChanged(this);
-      }
     }
   }
 }
