@@ -386,10 +386,6 @@
         ToggleDevice(NSIndexPath.FromRowSection(0, section));
       });
 
-      cell.onBackgroundLongClicked = () => {
-        Log.D(this, "Long clicky");
-      };
-
       return cell;
     }
 

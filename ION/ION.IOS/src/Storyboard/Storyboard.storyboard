@@ -1368,6 +1368,7 @@
                                             <outlet property="imageDeviceIcon" destination="o9E-hB-0MZ" id="TQY-7d-vTr"/>
                                             <outlet property="labelDeviceName" destination="ROk-2V-KcT" id="qZ3-00-pw6"/>
                                             <outlet property="labelDeviceType" destination="g9Q-cE-gmH" id="eo4-bq-Yka"/>
+                                            <outlet property="viewBackground" destination="TQH-ef-F8K" id="7fc-SK-AZi"/>
                                             <outlet property="viewDivider" destination="Omd-md-B2F" id="SxX-Ew-kmU"/>
                                         </connections>
                                     </tableViewCell>

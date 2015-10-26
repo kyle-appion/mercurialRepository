@@ -22,11 +22,6 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <value>The background clicked.</value>
     public Action onBackgroundClicked { get; set; }
-    /// <summary>
-    /// The action that is called when the cell's background is long clicked.
-    /// </summary>
-    /// <value>The on backgroun long clicked.</value>
-    public Action onBackgroundLongClicked { get; set; }
 
     /// <summary>
     /// The ion context. Necessary to properly connect a device.
@@ -63,19 +58,12 @@ namespace ION.IOS.ViewController.DeviceManager {
     public override void AwakeFromNib() {
       base.AwakeFromNib();
 
-      AddGestureRecognizer(new UITapGestureRecognizer(() => {
+      viewBackground.AddGestureRecognizer(new UITapGestureRecognizer(() => {
+        Log.D(this, "Click, click");
         if (onBackgroundClicked != null) {
           onBackgroundClicked();
         }
       }));
-
-      var rec = new UILongPressGestureRecognizer(() => {
-        if (onBackgroundLongClicked != null) {
-          onBackgroundLongClicked();
-        }
-      });
-      rec.MinimumPressDuration = 1/3.0;
-      AddGestureRecognizer(rec);
 
       buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
