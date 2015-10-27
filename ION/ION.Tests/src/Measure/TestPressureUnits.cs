@@ -167,9 +167,6 @@ namespace ION.TestFixtures.Measure {
     public void TestPSIAToKPA() {
       AssertEquals(27.579, Units.Pressure.PSIA.OfScalar(4).ConvertTo(Units.Pressure.KILOPASCAL).amount);
     }
-
-    public static void Main() {
-    }
   }
 }
 
