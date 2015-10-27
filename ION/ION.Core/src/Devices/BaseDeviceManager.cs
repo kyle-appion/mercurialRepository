@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Devices {
 
-using ION.Core.App;
-using ION.Core.Devices.Connections;
-using ION.Core.Devices.Protocols;
-using ION.Core.IO;
-using ION.Core.Util;
+  using System;
+  using System.Collections.Generic;
+  using System.Threading.Tasks;
 
-namespace ION.Core.Devices {
+  using ION.Core.App;
+  using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.IO;
+  using ION.Core.Util;
+
   /// <summary>
   /// Provides a standard implementation for the device manager. This device manager
   /// is meant to be as useful to as many platforms as possible.
@@ -198,8 +199,6 @@ namespace ION.Core.Devices {
       var device = this[serialNumber];
       if (device != null) {
         Unregister(device);
-        // TODO ahodder@appioninc.com: We need to throw out and event that a device was deleted such that the
-        // rest of the application can react to the device being deleted.
         await ion.database.deviceDao.DeleteAsync(device);
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
       }

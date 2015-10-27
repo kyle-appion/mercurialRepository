@@ -1,6 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Devices {
+  
+  using System;
 
-namespace ION.Core.Devices {
   /// <summary>
   /// Enumerates the ION device models that Appion has manufactured.
   /// </summary>
@@ -201,7 +202,8 @@ namespace ION.Core.Devices {
 
       ION.Core.Util.Log.D("GaugeSerialNumber", "Attempting to parse serial from " + serial);
 
-      // TODO ahodder@appioninc.com: This check was done to get it done. I am, indeed, ashamed.= of le copy pasta
+      // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate
+      // this project.
       if (serial.Length == 9) {
         string rawDeviceModel = serial.Substring(0, 2);
         string rawYearCode = serial.Substring(2, 2);

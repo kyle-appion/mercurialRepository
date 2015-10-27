@@ -1,18 +1,19 @@
-﻿using System;
-using System.IO;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Content.Parsers {
 
-using ION.Core.App;
-using ION.Core.Content;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Sensors.Properties;
-using ION.Core.Util;
+  using System;
+  using System.IO;
+  using System.Runtime.Serialization;
 
-namespace ION.Core.Content.Parsers {
+  using ION.Core.App;
+  using ION.Core.Content;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Properties;
+  using ION.Core.Util;
+
   /// <summary>
   /// The first version of the manifold parser.
   /// </summary>
@@ -97,8 +98,7 @@ namespace ION.Core.Content.Parsers {
             fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
           }
 
-          // TODO ahodder@appioninc.com: elevation?
-          ret.ptChart = new PTChart(state, fluid);
+          ret.ptChart = new PTChart(state, fluid, ion.locationManager.lastKnownLocation.altitude);
         }
 
         // Read sensor properties

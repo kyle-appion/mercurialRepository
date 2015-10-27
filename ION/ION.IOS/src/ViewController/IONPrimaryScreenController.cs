@@ -77,6 +77,9 @@ namespace ION.IOS.ViewController {
       UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
     }
 
+    /// <summary>
+    /// Links the user to a repository of help and knowledge.
+    /// </summary>
     private void OnNavHelpClicked() {
       // TODO Do Helpful things
     }
@@ -141,7 +144,6 @@ namespace ION.IOS.ViewController {
     /// off an email to complain to appion.
     /// </summary>
     private void DoSendAppionFeedback() {
-      // TODO ahodder@appioninc.com: Build the host device attachment
       var vc = new MFMailComposeViewController();
       vc.MailComposeDelegate = new MailDelegate();
       vc.SetSubject("ION App Feedback");
@@ -162,11 +164,6 @@ namespace ION.IOS.ViewController {
     /// <param name="vc">Vc.</param>
     private void PresentViewControllerFromSelected(UIViewController vc) {
       var nvc = ((UINavigationController)navigation.CurrentViewController).VisibleViewController;
-
-      Log.D(this, "nvc: " + nvc);
-      Log.D(this, "nvc: " + nvc.NavigationController);
-      Log.D(this, "vc: " + vc);
-
       nvc.NavigationController.PushViewController(vc, true);
       navigation.HideMenu();
     }

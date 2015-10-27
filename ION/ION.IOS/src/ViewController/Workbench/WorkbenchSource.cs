@@ -1,26 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.IOS.ViewController.Workbench {
 
-using Foundation;
-using UIKit;
+  using System;
+  using System.Collections.Generic;
 
-using ION.Core.Content;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.Sensors;
-using ION.Core.Sensors.Filters;
-using ION.Core.Sensors.Properties;
-using ION.Core.Util;
+  using Foundation;
+  using UIKit;
 
-using ION.IOS.UI;
-using ION.IOS.Util;
-using ION.IOS.ViewController.Alarms;
-using ION.IOS.ViewController.Dialog;
-using ION.IOS.ViewController.FluidManager;
-using ION.IOS.ViewController.PressureTemperatureChart;
-using ION.IOS.ViewController.SuperheatSubcool;
+  using ION.Core.Content;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Filters;
+  using ION.Core.Sensors.Properties;
+  using ION.Core.Util;
 
-namespace ION.IOS.ViewController.Workbench {
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+  using ION.IOS.ViewController.Alarms;
+  using ION.IOS.ViewController.Dialog;
+  using ION.IOS.ViewController.FluidManager;
+  using ION.IOS.ViewController.PressureTemperatureChart;
+  using ION.IOS.ViewController.SuperheatSubcool;
+
   /// <summary>
   /// The table source that will provide viewers to the table for display.
   /// </summary>
@@ -339,7 +340,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       // TODO Bug in checking sensor types
       // While the sensors are verified that they are pressure or temperature, they are not verified that they are exactly one
-      // temperature and one pressure sensor. I let this be for the time being, in lieu correctness. This will bite you later,
+      // temperature and one pressure sensor. I let this be for the time being, in lieu expedience. This will bite you later,
       // mister maintainer. I am sorry. 
       if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty)) &&
         ptChartFilter.Matches(sensor) && (manifold.secondarySensor == null || ptChartFilter.Matches(manifold.secondarySensor))) {
