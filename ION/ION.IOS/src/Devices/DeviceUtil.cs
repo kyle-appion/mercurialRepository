@@ -1,13 +1,14 @@
-﻿using System;
+﻿namespace ION.IOS.Devices {
 
-using UIKit;
+  using System;
 
-using ION.Core.Devices;
-using ION.Core.Util;
+  using UIKit;
 
-using ION.IOS.Util;
+  using ION.Core.Devices;
+  using ION.Core.Util;
 
-namespace ION.IOS.Devices {
+  using ION.IOS.Util;
+
   /// <summary>
   /// The iOS native device model extensions.
   /// </summary>
@@ -53,7 +54,6 @@ namespace ION.IOS.Devices {
     /// <returns>The user interface image from device model.</returns>
     /// <param name="deviceModel">Device model.</param>
     public static UIImage GetUIImageFromDeviceModel(EDeviceModel deviceModel, bool enforeCaching = true) {
-      // TODO ahodder@appioninc.com: Implement caching
       switch (deviceModel) {
         case EDeviceModel.P300: {
           return UIImage.FromBundle("ic_render_gauge_p300");

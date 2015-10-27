@@ -1,24 +1,25 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.App {
 
-using Foundation;
-using UIKit;
+  using System;
+  using System.IO;
+  using System.Threading.Tasks;
 
-using SQLite.Net;
-using SQLite.Net.Interop;
+  using Foundation;
+  using UIKit;
 
-using ION.Core.App;
-using ION.Core.Database;
-using ION.Core.Fluids;
-using ION.Core.Util;
+  using SQLite.Net;
+  using SQLite.Net.Interop;
 
-using ION.IOS.Devices;
-using ION.IOS.IO;
-using ION.IOS.Util;
-using ION.IOS.ViewController;
+  using ION.Core.App;
+  using ION.Core.Database;
+  using ION.Core.Fluids;
+  using ION.Core.Util;
 
-namespace ION.IOS.App {
+  using ION.IOS.Devices;
+  using ION.IOS.IO;
+  using ION.IOS.Util;
+  using ION.IOS.ViewController;
+
   // The UIApplicationDelegate for the application. This class is responsible for launching the
   // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
   [Register("AppDelegate")]
@@ -34,12 +35,6 @@ namespace ION.IOS.App {
     public IosION ion { get; private set; }
 
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
-      // TODO ahodder@appioninc.com:
-      // Prevents an exception from being thrown when the navigation controller's delegate is changed.
-      // See the following link: http://forums.xamarin.com/discussion/39470/installed-5-9-build-431-event-registration-is-overwriting-existing-delegate-error
-      // This line exposes a bug that will allow delegates (presumably app wide) to be set,
-      // however, registering to events will nuke the delegate.
-//      UIApplication.CheckForEventAndDelegateMismatches = false;
       // Initialize the application state.
       // Set Navigation Bar preferences
       var nb = UINavigationBar.Appearance;
@@ -48,8 +43,6 @@ namespace ION.IOS.App {
       nb.SetTitleTextAttributes(new UITextAttributes() {
         TextColor = new UIColor(Colors.BLACK),
       });
-
-//      application.SetStatusBarHidden(true, UIStatusBarAnimation.None);
 
       AppState.context = ion = new IosION();
       try {

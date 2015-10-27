@@ -1,26 +1,27 @@
-using System;
-
-using Foundation;
-using UIKit;
-
-using ION.Core.App;
-using ION.Core.Content;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Sensors.Filters;
-using ION.Core.Util;
-
-using ION.IOS.Devices;
-using ION.IOS.UI;
-using ION.IOS.Util;
-using ION.IOS.ViewController;
-using ION.IOS.ViewController.Dialog;
-using ION.IOS.ViewController.DeviceManager;
-using ION.IOS.ViewController.FluidManager;
-
 namespace ION.IOS.ViewController.PressureTemperatureChart {
+
+  using System;
+
+  using Foundation;
+  using UIKit;
+
+  using ION.Core.App;
+  using ION.Core.Content;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Filters;
+  using ION.Core.Util;
+
+  using ION.IOS.Devices;
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+  using ION.IOS.ViewController;
+  using ION.IOS.ViewController.Dialog;
+  using ION.IOS.ViewController.DeviceManager;
+  using ION.IOS.ViewController.FluidManager;
+
   public partial class PTChartViewController : BaseIONViewController {
 
     private const int SECTION_DEW = 0;

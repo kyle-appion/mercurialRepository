@@ -98,7 +98,6 @@ namespace ION.IOS.ViewController.Workbench {
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
         workbench.AddSensor(sensor);
       };
-      // TODO ahodder@appioninc.com: Set initialial arguments.
       NavigationController.PushViewController(sb, true);
     }
 

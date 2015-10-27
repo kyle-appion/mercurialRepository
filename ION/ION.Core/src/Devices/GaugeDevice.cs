@@ -1,11 +1,12 @@
-﻿using System;
+﻿namespace ION.Core.Devices {
 
-using ION.Core.Connections;
-using ION.Core.Devices.Protocols;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using System;
 
-namespace ION.Core.Devices {
+  using ION.Core.Connections;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
   /// <summary>
   /// A GaugeDevice is a device that contains 1 or more sensors.
   /// </summary>
@@ -46,13 +47,6 @@ namespace ION.Core.Devices {
         return DateTime.Now - connection.lastSeen <= TIMEOUT_NEARBY;
       }
     }
-    // Overridden from IDevice
-//    public bool isKnown { get { return deviceManager.knownDevices.Contains(this); } }
-
-    /// <summary>
-    /// The device manager who is managing this device.
-    /// </summary>
-//    private IDeviceManager deviceManager { get; set; }
     /// <summary>
     /// The sensors that are contained within the gauge.
     /// </summary>
@@ -95,7 +89,7 @@ namespace ION.Core.Devices {
 
     // Overridden from IDevice
     public void Dispose() {
-      // TODO ahodder@appioninc.com: Implement this and release all callbacks
+      connection.Disconnect();
     }
 
     // Overridden from IDevice
@@ -128,7 +122,6 @@ namespace ION.Core.Devices {
             throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
           }
         } catch (Exception e) {
-          // TODO ahodder@appioninc.com: Consider exposing?
           //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
       });
@@ -172,7 +165,6 @@ namespace ION.Core.Devices {
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
     private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
-      // TODO ahodder@appioninc.com:  eeehhhhhhh. This no gud, make gudder
       ION.Core.App.AppState.context.PostToMain(() => {
         if (onDeviceEvent != null) {
           onDeviceEvent(new DeviceEvent(type, this));

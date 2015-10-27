@@ -1,19 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Fluids {
 
-using ION.Core.App;
-using ION.Core.Fluids.Parser;
-using ION.Core.IO;
-using ION.Core.IO.Preferences;
-using ION.Core.Util;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.IO;
+  using System.Text;
+  using System.Text.RegularExpressions;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-namespace ION.Core.Fluids {
+  using ION.Core.App;
+  using ION.Core.Fluids.Parser;
+  using ION.Core.IO;
+  using ION.Core.IO.Preferences;
+  using ION.Core.Util;
+
   /// <summary>
   /// A simple cross-platform implementation of a fluid manager.
   /// </summary>
@@ -25,8 +26,6 @@ namespace ION.Core.Fluids {
     /// <summary>
     /// The asset file path for the refrigerant colors.
     /// </summary>
-    // TODO ahodder@appioninc.com: This was written just to get iOS working, and needs to be removed!
-    // This is stupid and unsafe as it is not friendly for other platforms.
     private const string FLUID_COLORS_FILE = "assets/refrigerantcolors.properties";
     /// <summary>
     /// The preference key that is used to retrieve the last used fluid for the fluid manager.

@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Content {
 
-using ION.Core.App;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Sensors.Properties;
+  using System;
+  using System.Collections.Generic;
+  using System.Runtime.Serialization;
 
-namespace ION.Core.Content {
+  using ION.Core.App;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Properties;
+
   /// <summary>
   /// A Manifold is an abstract representation of a collection of sensors that
   /// come together to create and "explain" a certain context. For example: a
@@ -18,7 +19,6 @@ namespace ION.Core.Content {
   /// that allows for a Pressure/Temperature lookup chart and a Superheat/subcool
   /// reference measurement.
   /// </summary>
-  // TODO ahodder@appioninc.com: This is pretty much fucking stupid. Way to go me
   public class Manifold : IDisposable {
     private const int VERSION = 1;
 
@@ -113,68 +113,10 @@ namespace ION.Core.Content {
       }
     } PTChart __ptChart;
 
-    /// <summary>
-    /// Used when inflated from serialization.
-    /// </summary>
-//    public Manifold() {
-      // Nope
-//    }
 
     public Manifold(Sensor primarySensor) {
       this.primarySensor = primarySensor;
     }
-    /*
-    // Overridden from ISerializable
-    public void Serialize(SerializationContext context, BinaryWriter writer) {
-      // Persist the manifold version
-      writer.Write(VERSION);
-
-      // Write primary sensor
-      WriteSensor(primarySensor, writer);
-
-      // Write secondary sensor
-      WriteSensor(secondarySensor, writer);
-
-      // Write fluid name
-      if (fluid == null) {
-        writer.Write("");
-      } else {
-        writer.Write(fluid.name);
-      }
-
-      // Write manifold properties
-      writer.Write(manifoldProperties.Count);
-      foreach (var mp in manifoldProperties) {
-        writer.Write(mp);
-      }
-    }
-
-    // Overridden from ISerializable
-    public void Deserialize(SerializationContext context, BinaryReader reader) {
-      // Ensure version
-      var version = reader.ReadInt32();
-      if (VERSION != version) {
-        throw new IndexOutOfRangeException("Cannot read manifold from stream: expected version: " + VERSION + " received " + version);
-      }
-
-      var ion = (IION)context.context;
-
-      // Read primary sensor
-      primarySensor = ReadSensor(ion, reader);
-
-      // Read secondary sensor
-      secondarySensor = ReadSensor(ion, reader);
-
-      // Read fluid
-      fluid = ion.fluidManager.GetFluidAsync(reader.ReadString()).Result;
-
-      // Read manifold propertied
-      var count = reader.ReadInt32();
-      for (int i = 0; i < count; i++) {
-        AddSensorProperty((ISensorProperty)reader.ReadObject());
-      }
-    }
-    */
 
     // Overridden from IDispose
     public void Dispose() {
@@ -259,84 +201,6 @@ namespace ION.Core.Content {
         onManifoldChanged(this);
       }
     }
-    /*
-    /// <summary>
-    /// Writes the sensor to stream.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    /// <param name="stream">Stream.</param>
-    private void WriteSensor(Sensor sensor, BinaryWriter writer) {
-      if (sensor is GaugeDeviceSensor) {
-        var ds = (GaugeDeviceSensor)sensor;
-        writer.Write((int)EPersistSensorType.GaugeDeviceSensor);
-        writer.Write(ds.device.serialNumber.rawSerial);
-        writer.Write(ds.index);
-      } else if (sensor is Sensor) {
-        var stream = writer.baseStream;
-        var serializer = new DataContractSerializer(typeof(Scalar));
-
-        writer.Write((int)EPersistSensorType.ManualSensor);
-        writer.Write((int)sensor.type);
-        writer.Write(sensor.isRelative);
-        serializer.WriteObject(stream, sensor.measurement);
-        serializer.WriteObject(stream, sensor.minMeasurement);
-        serializer.WriteObject(stream, sensor.maxMeasurement);
-        writer.Write(sensor.name);
-      } else {
-        writer.Write((int)EPersistSensorType.NullSensor);
-      }
-    }
-
-    /// <summary>
-    /// Reads out a Sensor from the given binary reader.
-    /// </summary>
-    /// <param name="ion">Ion.</param>
-    /// <param name="reader">Reader.</param>
-    private Sensor ReadSensor(IION ion, BinaryReader reader) {
-      var type = (EPersistSensorType)reader.ReadInt32();
-
-      if (EPersistSensorType.GaugeDeviceSensor == type) {
-        var rawSerialNumber = reader.ReadString();
-        var serialNumber = GaugeSerialNumber.Parse(rawSerialNumber);
-        var index = reader.ReadInt32();
-        var device = (GaugeDevice)ion.deviceManager[serialNumber];
-
-        return device[index];
-      } else if (EPersistSensorType.ManualSensor == type) {
-        var serializer = new DataContractSerializer(typeof(Scalar));
-
-        var sensorType = (ESensorType)reader.ReadInt32();
-        var isRelative = reader.ReadBool();
-        var measurement = (Scalar)serializer.ReadObject(reader.baseStream);
-        var minMeasurement = (Scalar)serializer.ReadObject(reader.baseStream);
-        var maxMeasurement = (Scalar)serializer.ReadObject(reader.baseStream);
-        var name = reader.ReadString();
-
-        var ret = new Sensor(sensorType, isRelative);
-        ret.measurement = measurement;
-        ret.minMeasurement = minMeasurement;
-        ret.maxMeasurement = maxMeasurement;
-        ret.name = name;
-
-        return ret;
-      } else {
-        return null;
-      }
-    }
-
-    /// <summary>
-    /// An enumeration of the sensor types that the parser supports.
-    /// </summary>
-    private enum EPersistSensorType {
-      /// <summary>
-      /// Enumerates a null reference to a sensor. This is only allowed for a
-      /// manifold's second sensor.
-      /// </summary>
-      NullSensor,
-      ManualSensor,
-      GaugeDeviceSensor,
-    }
-    */
   }
 }
 

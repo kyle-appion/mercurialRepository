@@ -1,23 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-using CoreGraphics;
-using Foundation;
-using UIKit;
-
-using ION.Core.App;
-using ION.Core.Connections;
-using ION.Core.Devices;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
-
-using ION.IOS.UI;
-using ION.IOS.Util;
-
 namespace ION.IOS.ViewController.DeviceManager {
+
+  using System;
+  using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
+
+  using CoreGraphics;
+  using Foundation;
+  using UIKit;
+
+  using ION.Core.App;
+  using ION.Core.Connections;
+  using ION.Core.Devices;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
+  using ION.IOS.UI;
+  using ION.IOS.Util;
+
 	public partial class DeviceManagerViewController : BaseIONViewController {
     /// <summary>
     /// The time in milliseconds that the view controller will perform a scan for.
@@ -73,8 +74,6 @@ namespace ION.IOS.ViewController.DeviceManager {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
-      // TODO ahodder@appioninc.com: This asserts that the view controller is be opened
-      // with the intent to return a sensor.
       InitNavigationBar("ic_nav_device_manager", true);
 
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
@@ -204,7 +203,6 @@ namespace ION.IOS.ViewController.DeviceManager {
           break;
         case DeviceEvent.EType.ConnectionChange:
           UpdateSourceContent();
-          await Task.Delay(250); // TODO ahodder@appioninc.com: Needed?
           if (device.isConnected) {
             deviceSource.ExpandDevice(device);
           }

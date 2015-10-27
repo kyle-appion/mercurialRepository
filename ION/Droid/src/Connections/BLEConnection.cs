@@ -112,7 +112,6 @@ namespace ION.Droid.Connections {
 
     // Overridden from IConnection
     public void Dispose() {
-      // TODO ahodder@appioninc.com: Properly dispose of this connection (NUKE ALL CALLBACKS!)
     }
 
     // Overridden from IConnection

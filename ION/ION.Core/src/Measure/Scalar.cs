@@ -1,13 +1,8 @@
-﻿// Runtime
-using System;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Measure {
+  
+  using System;
+  using System.Runtime.Serialization;
 
-// Xamarin
-
-
-// ION
-
-namespace ION.Core.Measure {
 
   /// <summary>
   /// A Scalar is a numerical representation of a physical quantity.
@@ -51,7 +46,7 @@ namespace ION.Core.Measure {
       if (other == null) {
         return false;
       } else {
-        return unit == other.unit && amount == other.amount;
+        return unit == other?.unit && amount == other?.amount;
       }
     }
 

@@ -5,9 +5,6 @@ Big Ps
   * dew/bubble works
   * entries should show unit along with measurement?
 
-4) device manager
-  * swipe device left to forget
-
 **BUGS OR OUTSTANDING ISSUES**
 
 ptchart and superheat
@@ -16,23 +13,11 @@ ptchart and superheat
 subviews
   * AlternateUnit subview (pending units bug fix) [incorrect unit conversion]
 
-DeviceManager
-* options menu (forget device)
-* swipe left to delete
-* swipe right for menu / config
-
-Workbench
-* Toast when result of SHSC is added as subview
-
 PTChart SHSC show connected
 
 Disconnect device crashes
 
-pthchart is not marissa approved
 connecting sometimes crashes app (non responsive)
 
 ptchart / superheatsubcool when a manifold is in the viewcontroller will still
 allow the user to add a new sensor (BUG!)
-
-
-Implement commands
