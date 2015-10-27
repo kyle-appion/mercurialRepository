@@ -1,13 +1,13 @@
-﻿using System;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Xml;
+﻿namespace ION.TestFixtures.Measure {
 
-using NUnit.Framework;
+  using System;
+  using System.IO;
+  using System.Runtime.Serialization;
+  using System.Xml;
 
-using ION.Core.Measure;
+  using NUnit.Framework;
 
-namespace ION.TestFixtures.Measure {
+  using ION.Core.Measure;
 
   // TODO ahodder@appioninc.com: Finish implementing the tests
   [TestFixture]

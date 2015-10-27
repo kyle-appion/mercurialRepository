@@ -200,8 +200,6 @@
         throw new ArgumentException("Cannot parse serial: serial is null");
       }
 
-      ION.Core.Util.Log.D("GaugeSerialNumber", "Attempting to parse serial from " + serial);
-
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate
       // this project.
       if (serial.Length == 9) {
