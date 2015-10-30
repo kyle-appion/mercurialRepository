@@ -39,7 +39,7 @@ namespace ION.IOS.Alarms.Alerts {
 
       isStarted = true;
 
-      alertView = UIAlertController.Create("Alarm Title", "Alarm Message", UIAlertControllerStyle.Alert);
+      alertView = UIAlertController.Create(alarm.name, alarm.description, UIAlertControllerStyle.Alert);
 
       alertView.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {
         alarm.enabled = false;

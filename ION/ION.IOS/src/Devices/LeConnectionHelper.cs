@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.Devices {
 
-using CoreBluetooth;
-using CoreFoundation;
-using Foundation;
+  using System;
+  using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-using ION.Core.Connections;
-using ION.Core.Devices;
-using ION.Core.Devices.Connections;
-using ION.Core.Devices.Protocols;
-using ION.Core.Util;
+  using CoreBluetooth;
+  using CoreFoundation;
+  using Foundation;
 
-using ION.IOS.Connections;
+  using ION.Core.Connections;
+  using ION.Core.Devices;
+  using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.Util;
 
-namespace ION.IOS.Devices {
+  using ION.IOS.Connections;
+
   /// <summary>
   /// The default scan mode for iOS.
   /// </summary>
@@ -98,9 +99,10 @@ namespace ION.IOS.Devices {
     }
 
     private async void HandleDiscoveredPeripheral(CBPeripheral peripheral, NSDictionary adData) {
-      Log.D(this, peripheral + " OnDiscoveredPeripheral: " + peripheral.Name);
       string name = peripheral.Name;
+      Log.D(this, "Handling discovered peripheral: " + name);
       if (name == null) {
+        Log.D(this, "No name given, attempting to pull from scan record.");
         if (adData != null) {
           var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
           if (data != null) {
@@ -108,46 +110,26 @@ namespace ION.IOS.Devices {
           }
         }
 
-        if (name == null && peripheral.Services != null) {
-          foreach (var service in peripheral.Services) {
-            Log.D(this, "Found service: " + service);
-            foreach (var characteristic in service.Characteristics) {
-              Log.D(this, "Found characteristic: " + characteristic.UUID);
-              if (characteristic.UUID.Equals(CBUUID.FromString("FF91"))) {
-                name = System.Text.Encoding.UTF8.GetString(characteristic.Value.ToArray());
-                Log.D(this, "Set name to: " + name);
-              }
-            }
-          }
-        }
-
         if (name == null) {
-          Log.D(this, "Trying super hard to determine the name of the peripheral");
           // The ultimate last resort
+          Log.D(this, "Trying really, really hard to resolve device name");
           var connection = new IosLeConnection(centralManager, peripheral);
-          Log.D(this, "Trying to connect and get name thata way");
-          var connected = await connection.Connect();
-          Log.D(this, "Connected: " + connected);
-          name = connection.name;
-          connection.Disconnect();
+          name = await connection.PullDeviceName();
+          if (name == null) {
+            Log.E(this, "Failed to resolve device name");
+            return;
+          }
         }
       }
 
       try {
         if (!IsAppionDevice(name)) {
+          Log.D(this, name + " is not an appion device");
           return;
         }
-
-        Log.D(this, "Found device: " + name);
 
         // TODO Make this serial number parser more abstract.
-        ISerialNumber serialNumber;
-        try {
-          serialNumber = GaugeSerialNumber.Parse(name);
-        } catch (ArgumentException) {
-          Log.E(this, "Invalid GaugeSerialNumber: " + name);
-          return;
-        }
+        var serialNumber = GaugeSerialNumber.Parse(name);
 
         var v = adData[CBAdvertisement.DataManufacturerDataKey];
         byte[] scanRecord = new byte[20];
@@ -159,24 +141,12 @@ namespace ION.IOS.Devices {
           scanRecord = bytes;
           protocol = scanRecord[0];
         }
-        Log.D(this, name + " scanRecord after: " + String.Join(", ", scanRecord));
 
         NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), scanRecord, protocol);
       } catch (Exception e) {
-        Log.E(this, "Failed to resolve newly found device", e);
+        Log.E(this, "Failed to resolve newly found device: " + name, e);
       }
-
-      Log.D(this, "Device discovered");
     }
-
-/*
-    private void HandleDeviceDisconnect(CBPeripheral peripheral) {
-      // TODO ahodder@appioninc.com: Do serial number validation
-      var sn = GaugeSerialNumber.Parse(peripheral.Name);
-      var device = this[sn];
-
-    }
-*/
 
     /// <summary>
     /// Attempts to deduce whether or not the given bluetooth device is a valid

@@ -23,6 +23,10 @@ file.
 
 /* ALARMS */
 "alarms" = "Alarms";
+"alarms_low" = "Low Alarm";
+"alarms_low_fired" = "{0}'s reading has fallen below {1}";
+"alarms_high" = "High Alarm";
+"alarms_high_fired" = "{0}'s reading has risen above {1}";
 "alarms_reenable" = "Re-enable";
 
 /* ANALYZER */

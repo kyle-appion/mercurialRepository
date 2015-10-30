@@ -33,6 +33,11 @@ namespace ION.IOS.Util {
     public static class Alarms {
       public static readonly string
       SELF = "alarms".FromResources(),
+      LOW_ALARM = "alarms_low".FromResources(),
+      LOW_ALARM_FIRED = "alarms_low_fired".FromResources(),
+      HIGH_ALARM = "alarms_high".FromResources(),
+      HIGH_ALARM_FIRED = "alarms_high_fired".FromResources(),
+
       REENABLE = "alarms_reenable".FromResources()
       ;
     } // End Strings.Alarms
