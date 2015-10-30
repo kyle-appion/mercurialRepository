@@ -1,14 +1,15 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-
-using CoreBluetooth;
-using Foundation;
-
-using ION.Core.Connections;
-using ION.Core.Util;
-
 namespace ION.IOS.Connections {
+  
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
+
+  using CoreBluetooth;
+  using Foundation;
+
+  using ION.Core.Connections;
+  using ION.Core.Util;
+
   public class IosLeConnection : IConnection {
     /// <summary>
     /// The base UUID that identifies services, charactertistics and descriptors
@@ -52,7 +53,6 @@ namespace ION.IOS.Connections {
         return __connectionState;
       }
       set {
-        Log.D(this, __nativeDevice.Name + "'s ConnectionState: " + value);
         __connectionState = value;
         if (onStateChanged != null) {
           ION.Core.App.AppState.context.PostToMain(() => {
@@ -67,9 +67,21 @@ namespace ION.IOS.Connections {
     // Overridden from IConnection
     public string address { get { return __nativeDevice.Identifier.AsString(); } }
     // Overridden from IConnection
-    public int rssi { get { return (int)__nativeDevice.RSSI; } }
-    // Overridden from IConnection
-    public bool isRssiReliable { get { return CBPeripheralState.Connected == __nativeDevice.State; } }
+    public ESignalStrength signalStrength {
+      get {
+        var r = (int)__nativeDevice.RSSI;
+        // These values are largely made up.
+        if (r > -35) {
+          return ESignalStrength.Good;
+        } else if (r > -50) {
+          return ESignalStrength.Fair;
+        } else if (EConnectionState.Disconnected == connectionState) {
+          return ESignalStrength.None;
+        } else {
+          return ESignalStrength.Bad;
+        }
+      }
+    }
     // Overridden from IConnection
     public byte[] lastPacket {
       get {
@@ -114,11 +126,11 @@ namespace ION.IOS.Connections {
     /// <summary>
     /// The characteristic that we will read the device data from.
     /// </summary>
-    private CBCharacteristic read { get; set; }
+    private CBCharacteristic readCharacteristic { get; set; }
     /// <summary>
     /// The characteristic that we will write output packets to.
     /// </summary>
-    private CBCharacteristic write { get; set; }
+    private CBCharacteristic writeCharacteristic { get; set; }
     /// <summary>
     /// The characteristic that we will need to get the name of the device.
     /// </summary>
@@ -154,8 +166,12 @@ namespace ION.IOS.Connections {
       };
 
       onCharacteristicChangedDelegate = (object obj, CBCharacteristicEventArgs args) => {
-        if (args.Characteristic.Equals(read)) {
-          lastPacket = read.Value.ToArray();
+        if (args.Characteristic.Equals(nameCharacteristic)) {
+          var bytes = nameCharacteristic?.Value?.ToArray();
+          name = System.Text.Encoding.UTF8.GetString(bytes);
+          Log.D(this, "Name characteristic read: " + name);
+        } else if (args.Characteristic.Equals(readCharacteristic)) {
+          lastPacket = readCharacteristic.Value.ToArray();
         } else {
           Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
         }
@@ -221,7 +237,25 @@ namespace ION.IOS.Connections {
         }
       }
 
-      __nativeDevice.SetNotifyValue(true, read);
+//      __nativeDevice.ReadValue(nameCharacteristic);
+      /*
+      while (nameCharacteristic.Value == null) {
+        if (DateTime.Now - start > connectionTimeout) {
+          Log.D(this, "timeout: failed to get device name");
+          Disconnect();
+          return false;
+        } else {
+          await Task.Delay(10);
+        }
+      }
+      var bytes = nameCharacteristic?.Value?.ToArray();
+      if (bytes != null) {
+        name = System.Text.Encoding.UTF8.GetString(bytes);
+      }
+      Log.D(this, "name is: " + name);
+      */
+
+      __nativeDevice.SetNotifyValue(true, readCharacteristic);
 
       return EConnectionState.Connected == connectionState;
     }
@@ -241,10 +275,43 @@ namespace ION.IOS.Connections {
         }
 
         NSData data = NSData.FromArray(packet);
-        __nativeDevice.WriteValue(data, write, CBCharacteristicWriteType.WithoutResponse);
+        __nativeDevice.WriteValue(data, writeCharacteristic, CBCharacteristicWriteType.WithoutResponse);
 
         return true;
       });
+    }
+
+
+    public async Task<string> PullDeviceName() {
+      Log.D(this, "Pulling device name");
+      bool needsDisconnect = false;
+      if (EConnectionState.Connected != connectionState) {
+        needsDisconnect = true;
+        await Connect();
+      }
+
+      try {
+        __nativeDevice.ReadValue(nameCharacteristic);
+
+        var start = DateTime.Now;
+        var timeout = TimeSpan.FromSeconds(3);
+
+        // TODO ahodder@appioninc.com: This can be improved. For not it works as a quick and dirty solution
+        while (name == null && DateTime.Now - start < timeout) {
+          await Task.Delay(10);
+        }
+
+        Log.D(this, "Name is: " + name);
+
+        return name;
+      } catch (Exception e) {
+        Log.E(this, "wtf?", e);
+        return null;
+      } finally {
+        if (needsDisconnect) {
+          Disconnect();
+        }
+      }
     }
 
     /// <summary>
@@ -254,26 +321,25 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <returns></returns>
     private bool ValidateServices() {
-      read = null;
-      write = null;
+      readCharacteristic = null;
+      writeCharacteristic = null;
 
       foreach (CBService service in __nativeDevice.Services) {
         if (service != null && service.Characteristics != null) {
           // Apparently services can be null after discovery?
           foreach (CBCharacteristic characteristic in service.Characteristics) {
             if (READ_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
-              read = characteristic;
+              readCharacteristic = characteristic;
             } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
-              write = characteristic;
+              writeCharacteristic = characteristic;
             } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
-              name = System.Text.Encoding.UTF8.GetString(characteristic.Value.ToArray());
-              Log.D(this, "Name is: " + name);
+              nameCharacteristic = characteristic;
             }
           }
         }
       }
 
-      return read != null && write != null && name != null;
+      return readCharacteristic != null && writeCharacteristic != null && nameCharacteristic != null;
     }
 
     /// <summary>

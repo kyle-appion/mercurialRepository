@@ -107,6 +107,7 @@ namespace ION.IOS.Location {
   }
 
   internal class IosLocation : ILocation {
+    public bool isValid { get; }
     // Overridden from ILocation
     public Scalar altitude { get; }
     // Overridden from ILocation
@@ -115,12 +116,14 @@ namespace ION.IOS.Location {
     public Scalar latitude { get; }
 
     public IosLocation() {
+      isValid = false;
       altitude = Units.Length.METER.OfScalar(0);
       latitude = Units.Angle.DEGREE.OfScalar(0);
       longitude = Units.Angle.DEGREE.OfScalar(0);
     }
 
     public IosLocation(CLLocation location) {
+      isValid = true;
       altitude = Units.Length.METER.OfScalar(location.Altitude);
       latitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Latitude);
       longitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Longitude);

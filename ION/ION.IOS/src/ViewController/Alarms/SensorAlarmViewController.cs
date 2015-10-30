@@ -6,11 +6,13 @@ using Foundation;
 using UIKit;
 
 using ION.Core.App;
+using ION.Core.Devices;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Alarms;
 using ION.Core.Util;
 
 using ION.IOS.UI;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Alarms {
 	public partial class SensorAlarmViewController : BaseIONViewController {
@@ -83,14 +85,6 @@ namespace ION.IOS.ViewController.Alarms {
         return true;
       };
 
-/*
-      switchLowAlarmEnabler.ValueChanged += (object sender, EventArgs e) => {
-        if (switchLowAlarmEnabler.On) {
-          this.viewLowAlarmSection.AnimageResize(0);
-        }
-      };
-*/
-
       ion = AppState.context;
 
       lowAlarm = ion.alarmManager.GetAlarmOfTypeFromHost<LowSensorAlarm>(sensor);
@@ -105,6 +99,10 @@ namespace ION.IOS.ViewController.Alarms {
         highAlarm = new HighSensorAlarm("", "", sensor);
         ion.alarmManager.RegisterAlarmToHost(sensor, highAlarm);
       }
+
+      lowAlarm.name = Strings.Alarms.LOW_ALARM;
+      highAlarm.name = Strings.Alarms.HIGH_ALARM;
+      UpdateAlarmDescriptions();
 
       switchLowAlarmEnabler.On = lowAlarm.enabled;
       switchHighAlarmEnabler.On = highAlarm.enabled;
@@ -129,6 +127,7 @@ namespace ION.IOS.ViewController.Alarms {
       var unit = lowAlarm.bounds.unit;
       try {
         lowAlarm.bounds = unit.OfScalar(double.Parse(input));
+        UpdateAlarmDescriptions();
       } catch (Exception e) {
         Log.E(this, "Failed to update low alarm: invalid double", e);
       }
@@ -139,8 +138,19 @@ namespace ION.IOS.ViewController.Alarms {
       var unit = highAlarm.bounds.unit;
       try {
         highAlarm.bounds = unit.OfScalar(double.Parse(input));
+        UpdateAlarmDescriptions();
       } catch (Exception e) {
         Log.E(this, "Failed to update high alarm: invalid double", e);
+      }
+    }
+
+    private void UpdateAlarmDescriptions() {
+      if (sensor is GaugeDeviceSensor) {
+        var gsd = sensor as GaugeDeviceSensor;
+        lowAlarm.description = String.Format(Strings.Alarms.LOW_ALARM_FIRED, gsd.device.name, lowAlarm.bounds.ToString());
+        highAlarm.description = String.Format(Strings.Alarms.HIGH_ALARM_FIRED, gsd.device.name, highAlarm.bounds.ToString());
+      } else {
+        // TODO ahodder@appioninc.com: This needs to be thought through
       }
     }
 	}

@@ -1,34 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.App {
 
-using CoreBluetooth;
-using CoreFoundation;
-using Foundation;
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Threading.Tasks;
 
-using ION.Core.Alarms;
-using ION.Core.Alarms.Alerts;
-using ION.Core.App;
-using ION.Core.Content;
-using ION.Core.Content.Parsers;
-using ION.Core.Database;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.IO;
-using ION.Core.Location;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using CoreBluetooth;
+  using CoreFoundation;
+  using Foundation;
 
-using ION.Core.Pdf;
+  using ION.Core.Alarms;
+  using ION.Core.Alarms.Alerts;
+  using ION.Core.App;
+  using ION.Core.Content;
+  using ION.Core.Content.Parsers;
+  using ION.Core.Database;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.IO;
+  using ION.Core.Location;
+  using ION.Core.Measure;
+  using ION.Core.Pdf;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
 
-using ION.IOS.Alarms.Alerts;
-using ION.IOS.IO;
-using ION.IOS.Location;
-using ION.IOS.Devices;
+  using ION.IOS.Alarms.Alerts;
+  using ION.IOS.IO;
+  using ION.IOS.Location;
+  using ION.IOS.Devices;
 
-namespace ION.IOS.App {
   /// <summary>
   /// The iOS ION implementation.
   /// </summary>
