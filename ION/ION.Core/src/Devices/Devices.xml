@@ -123,6 +123,20 @@ Unit Strings
     </GaugeDeviceSensor>
   </GaugeDevice>
 
+   <GaugeDevice deviceCode="PT8">
+    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
+
   <GaugeDevice deviceCode="S8">
     <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
       <SupportedUnit>psig</SupportedUnit>

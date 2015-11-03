@@ -186,6 +186,7 @@
         Parse(serial);
         return true;
       } catch (ArgumentException) {
+        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid serial");
         return false;
       }
     }

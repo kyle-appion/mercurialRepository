@@ -26,7 +26,7 @@
     /// <summary>
     /// The asset file path for the refrigerant colors.
     /// </summary>
-    private const string FLUID_COLORS_FILE = "assets/refrigerantcolors.properties";
+    private const string FLUID_COLORS_FILE = "refrigerantcolors.properties";
     /// <summary>
     /// The preference key that is used to retrieve the last used fluid for the fluid manager.
     /// </summary>
@@ -75,7 +75,11 @@
     /// The backing ION context for the fluid manager.
     /// </summary>
     public IION ion { get; private set; }
-
+    /// <summary>
+    /// The directory that the fluid manager will get its fluids from.
+    /// </summary>
+    /// <value>The fluid dir.</value>
+    private IFolder fluidDir { get; set; }
     /// <summary>
     /// The preference for the fluid manager.
     /// </summary>
@@ -89,8 +93,9 @@
     /// </summary>
     private readonly Dictionary<string, WeakReference> __cache = new Dictionary<string, WeakReference>();
 
-    public BaseFluidManager(IION ion) {
+    public BaseFluidManager(IION ion, IFolder fluidDir) {
       this.ion = ion;
+      this.fluidDir = fluidDir;
       preferredFluids = new List<string>();
     }
 
@@ -99,8 +104,7 @@
       try {
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
-        var assetsDir = ion.fileManager.GetAssetDirectory();
-        var propsFile = assetsDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
+        var propsFile = fluidDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
         fluidColors = await Properties.FromFileAsync(propsFile);
 
         preferredFluids = new List<string>();
@@ -122,6 +126,7 @@
         await GetFluidAsync(fluidName);
         return new InitializationResult() { success = true };
       } catch (Exception e) {
+        Log.E(this, "Failed to init " + this, e);
         return new InitializationResult() {
           success = false,
           errorMessage = "Failed to initialize fluid manager: " + e.Message
