@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.Droid", "Droid\ION.Droid.csproj", "{71313512-D5C3-4E37-BCFB-88A36B5C080B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.Droid", "ION.Droid\ION.Droid.csproj", "{71313512-D5C3-4E37-BCFB-88A36B5C080B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.UITests", "UITests\ION.UITests.csproj", "{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}"
 EndProject

@@ -46,15 +46,9 @@ namespace ION.Core.Connections {
     /// <value>The address.</value>
     string address { get; }
     /// <summary>
-    /// Queries the current received signal strength of the connection. Some connections
-    /// will have more reliable RSSI updates than others.
+    /// Queries the current received signal strength of the connection.
     /// </summary>
-    int rssi { get; }
-    /// <summary>
-    /// Queries whether or not the RSSI readings of the connection are reliable. If they
-    /// are, then one can use the RSSI as a pseudo range test.
-    /// </summary>
-    bool isRssiReliable { get; }
+    ESignalStrength signalStrength { get; }
     /// <summary>
     /// Queries the last packet that the connection received.
     /// </summary>
@@ -115,5 +109,34 @@ namespace ION.Core.Connections {
     /// The connection is stable and communication may occur.
     /// </summary>
     Connected,
+  }
+
+  /// <summary>
+  /// Enumerates the type of signal strength that a connection would have.
+  /// </summary>
+  public enum ESignalStrength {
+    /// <summary>
+    /// The signal strength from the connection is such that sponteneous disconnect is
+    /// unlikely.
+    /// </summary>
+    Reliable,
+    /// <summary>
+    /// The recieved signal strength from the connection is good.
+    /// </summary>
+    Good,
+    /// <summary>
+    /// The received signal strength from the connection is moderate. Too much noise could
+    /// cause the connection to terminate.
+    /// </summary>
+    Fair,
+    /// <summary>
+    /// The received signal strenth from the connection is such that it is expected that 
+    /// the connection will terminate at any moment.
+    /// </summary>
+    Bad,
+    /// <summary>
+    /// The connection does not have a signal strength.
+    /// </summary>
+    None,
   }
 }

@@ -37,7 +37,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Droid\ION.Droid.csproj">
+    <ProjectReference Include="..\ION.Droid\ION.Droid.csproj">
       <Project>{71313512-D5C3-4E37-BCFB-88A36B5C080B}</Project>
       <Name>ION.Droid</Name>
       <ReferenceOutputAssembly>False</ReferenceOutputAssembly>

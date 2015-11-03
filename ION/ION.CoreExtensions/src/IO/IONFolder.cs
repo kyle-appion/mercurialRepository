@@ -1,35 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿namespace ION.Core.IO {
 
-namespace ION.Core.IO {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Threading.Tasks;
+
+
   public class IONFolder  : IFolder {
-    // Overridden from IFile
+    // Overridden from IFolder
     public string fullPath { 
       get {
-        return __nativeFolder.FullName;
+        return nativeFolder.FullName;
       }
     }
-    // Overridden from IFile
+    // Overridden from IFolder
     public string name {
       get {
-        return __nativeFolder.Name;
+        return nativeFolder.Name;
       }
     }
 
     /// <summary>
     /// The native folder.
     /// </summary>
-    private DirectoryInfo __nativeFolder;
+    private DirectoryInfo nativeFolder { get; set; }
 
     public IONFolder(DirectoryInfo folder) {
-      __nativeFolder = folder;
+      nativeFolder = folder;
     }
 
     // Overridden from IFolder
     public bool ContainsFolder(string name) {
-      foreach (DirectoryInfo dir in __nativeFolder.GetDirectories()) {
+      foreach (DirectoryInfo dir in nativeFolder.GetDirectories()) {
         if (dir.Name.Equals(name)) {
           return true;
         }
@@ -40,7 +42,7 @@ namespace ION.Core.IO {
 
     // Overridden from IFolder
     public bool ContainsFile(string name) {
-      foreach (FileInfo file in __nativeFolder.GetFiles()) {
+      foreach (FileInfo file in nativeFolder.GetFiles()) {
         if (file.Name.Equals(name)) {
           return true;
         }
@@ -51,7 +53,7 @@ namespace ION.Core.IO {
 
     // Overridden from IFolder
     public IFolder GetFolder(string name, EFileAccessResponse accessResponse = EFileAccessResponse.FailIfMissing) {
-      var dir = System.IO.Path.Combine(__nativeFolder.FullName, name);
+      var dir = System.IO.Path.Combine(nativeFolder.FullName, name);
 
       if (Directory.Exists(dir)) {
         if (EFileAccessResponse.FailIfExists == accessResponse) {
@@ -70,7 +72,7 @@ namespace ION.Core.IO {
 
     // Overridden from IFolder
     public IFile GetFile(string name, EFileAccessResponse accessReponse = EFileAccessResponse.FailIfMissing) {
-      var file = System.IO.Path.Combine(__nativeFolder.FullName, name);
+      var file = System.IO.Path.Combine(nativeFolder.FullName, name);
 
       if (File.Exists(file)) {
         if (EFileAccessResponse.FailIfExists == accessReponse) {
@@ -97,7 +99,7 @@ namespace ION.Core.IO {
     public List<IFolder> GetFolderList() {
       var ret = new List<IFolder>();
 
-      foreach (DirectoryInfo dir in __nativeFolder.GetDirectories()) {
+      foreach (DirectoryInfo dir in nativeFolder.GetDirectories()) {
         ret.Add(new IONFolder(dir));
       }
 
@@ -108,7 +110,7 @@ namespace ION.Core.IO {
     public List<IFile> GetFileList() {
       var ret = new List<IFile>();
 
-      foreach (FileInfo file in __nativeFolder.GetFiles()) {
+      foreach (FileInfo file in nativeFolder.GetFiles()) {
         ret.Add(new IONFile(file));
       }
 
@@ -117,18 +119,18 @@ namespace ION.Core.IO {
 
     // Overridden from IFolder
     public bool Exists() {
-      return __nativeFolder.Exists;
+      return nativeFolder.Exists;
     }
 
     // Overridden from IFolder
     public bool Create() {
-      __nativeFolder.Create();
-      return __nativeFolder.Exists;
+      nativeFolder.Create();
+      return nativeFolder.Exists;
     }
 
     // Overridden from IFolder
     public void Delete() {
-      __nativeFolder.Delete();
+      nativeFolder.Delete();
     }
   }
 }

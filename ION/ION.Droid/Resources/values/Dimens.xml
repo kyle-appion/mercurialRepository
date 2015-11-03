@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <!--
+    This file will contain the list of common identifies that are used by the
+    application. This file is the default that should apply to all phones.
+  -->
+
+  <!--
+  MD: IMAGE SIZE
+  NOTE: The following section is used EXPLICITLY for general image sizing.
+  -->
+  <!-- The image width for a primary image view. More specifically, an image
+  that is the primary focus of the layout. -->
+  <dimen name="image_width">150dp</dimen>
+  <!-- The image height for a primary image view. More specifically, an image
+  that is the primary focus of the layout. -->
+  <dimen name="image_height">225dp</dimen>
+  <!-- The image height for a list item's icon. -->
+  <dimen name="list_item_icon_size">48dp</dimen>
+
+  <dimen name="table_layout_padding">10dp</dimen>
+
+  <!-- The padding that is used to pad the contents of an activity-->
+  <dimen name="activity_padding">16dp</dimen>
+
+  <!-- The margin that is applied to list item contents. -->
+  <dimen name="list_item_horizontal_margin">5dp</dimen>
+  <dimen name="list_item_vertical_margin">5dp</dimen>
+
+
+  <!-- This dimension is used to separate items in a list view -->
+  <dimen name="list_divider_height">5dp</dimen>
+  <!-- This dimension is used to define the default size of device icons in a list item. -->
+  <dimen name="list_item_device_icon">45dp</dimen>
+  <!-- This dimension is used to define the default size of a connection icon in a list item. -->
+  <dimen name="list_item_connection_icon">35dp</dimen>
+
+  <!--
+  Viewer dimensions
+  -->
+  <dimen name="viewer_margin_regression">-15dp</dimen>
+
+  <dimen name="viewer_sub_height">50dp</dimen>
+
+  <!-- The width and hieght of the connection icon in the viewer's header. -->
+  <dimen name="viewer_connection_icon_size">48dp</dimen>
+  <!-- The width and height of the device icon in the viewer's content. -->
+  <dimen name="viewer_device_icon_size">64dp</dimen>
+  <!-- The text size for the measurement view in the viewer's content. -->
+  <dimen name="viewer_measurement_text_size">64sp</dimen>
+  <!-- The width and height of the alarm icon in the viewer's footer. -->
+  <dimen name="viewer_alarm_icon_size">32dp</dimen>
+  <!-- The text size for the unit view in the viewer's footer. -->
+  <dimen name="viewer_unit_text_size">18sp</dimen>
+
+  <dimen name="viewer_sub_text_title">14sp</dimen>
+  <dimen name="viewer_sub_text_icon">13sp</dimen>
+  <dimen name="viewer_sub_text_primary">12sp</dimen>
+  <dimen name="viewer_sub_text_secondary">10sp</dimen>
+
+  <dimen name="viewer_compact_margin_regression">-10dp</dimen>
+  <dimen name="viewer_compact_text">10sp</dimen>
+  <dimen name="viewer_compact_measurement">27sp</dimen>
+  <dimen name="viewer_compact_sub_height">30dp</dimen>
+
+  <dimen name="pt_entry_size">40sp</dimen>
+  <dimen name="pt_text_size">18sp</dimen>
+
+</resources>
+
