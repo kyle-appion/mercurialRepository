@@ -181,9 +181,8 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the battery icon. -1 will hide the image.
     /// </summary>
     /// <param name="percent">Percent.</param>
-    private void UpdateBatteryIcon(int percent) {
+    private async void UpdateBatteryIcon(int percent) {
       if (lastBatteryLevel == percent) {
-        // Prevent the images from constently being reloaded.
         return;
       }
 
@@ -193,20 +192,20 @@ namespace ION.IOS.ViewController.Workbench {
       if (percent >= 100) {
         imageBattery.Image = UIImage.FromBundle("img_battery_100");
       } else if (percent >= 75) {
-        imageBattery.Image = UIImage.FromBundle("image_battery_75");
+        imageBattery.Image = UIImage.FromBundle("img_battery_75");
       } else if (percent >= 50) {
-        imageBattery.Image = UIImage.FromBundle("image_battery_50");
+        imageBattery.Image = UIImage.FromBundle("img_battery_50");
       } else if (percent >= 25) {
-        imageBattery.Image = UIImage.FromBundle("image_battery_25");
+        imageBattery.Image = UIImage.FromBundle("img_battery_25");
         imageBattery.TintColor = new UIColor(Colors.RED);
       } else if (percent >= 0) {
-        imageBattery.Image = UIImage.FromBundle("image_battery_0");
+        imageBattery.Image = UIImage.FromBundle("img_battery_0");
         imageBattery.TintColor = new UIColor(Colors.RED);
       } else {
         imageBattery.Hidden = true;
       }
 
-//      lastBatteryLevel = percent;
+      lastBatteryLevel = percent;
     }
 
     private void UpdateAlarm(Sensor sensor) {
