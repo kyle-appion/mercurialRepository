@@ -525,13 +525,13 @@
     <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
     <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
     <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
-    <BundleResource Include="Resources\assets\refrigerantcolors.properties" />
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
     <BundleResource Include="Resources\.DS_Store" />
     <BundleResource Include="Resources\Images.xcassets\.DS_Store" />
     <BundleResource Include="Resources\src\.DS_Store" />
+    <BundleResource Include="Resources\fluids\refrigerantcolors.properties" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
