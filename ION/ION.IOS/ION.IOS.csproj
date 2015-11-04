@@ -417,6 +417,7 @@
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
+    <Folder Include="Resources\src\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -528,9 +529,6 @@
     <BundleResource Include="Resources\en.lproj\Localizable.strings" />
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
-    <BundleResource Include="Resources\.DS_Store" />
-    <BundleResource Include="Resources\Images.xcassets\.DS_Store" />
-    <BundleResource Include="Resources\src\.DS_Store" />
     <BundleResource Include="Resources\fluids\refrigerantcolors.properties" />
   </ItemGroup>
   <ItemGroup>

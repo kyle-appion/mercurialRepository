@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">ION.Droid</string>
+	<string name="app_name">ION HVAC/R</string>
 
   <!--
   GENERAL APPLICATION STRINGS
@@ -26,7 +26,6 @@
   <string name="device_manager_new_devices_found">New Devices Found</string>
   <string name="device_manager_no_devices_found">No devices available. Press scan to discover available nearby devices.</string>
 
-
   <!--
   DEVICES
   -->
@@ -44,6 +43,8 @@
   -->
   <string name="measurement">Measurement</string>
   <string name="measurement_humidity">Humidity</string>
+  <string name="measurement_length">Length</string>
+  <string name="measurement_mass">Mass</string>
   <string name="measurement_pressure">Pressure</string>
   <string name="measurement_temperature">Temperature</string>
   <string name="measurement_vacuum">Vacuum</string>

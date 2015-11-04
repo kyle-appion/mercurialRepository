@@ -40,14 +40,14 @@
             android:layout_weight="1" />
     </LinearLayout>
     <ImageButton
-        android:id="@id/add_to_analyzer"
+        android:id="@id/analyzer_add_to"
         android:layout_width="@dimen/device_manager_sensor_icon_size"
         android:layout_height="@dimen/device_manager_sensor_icon_size"
         android:background="@drawable/img_button_up_gold"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_logo_appiondefault" />
     <ImageButton
-        android:id="@id/add_to_workbench"
+        android:id="@id/workbench_add_to"
         android:layout_width="@dimen/device_manager_sensor_icon_size"
         android:layout_height="@dimen/device_manager_sensor_icon_size"
         android:background="@drawable/img_button_up_gold"
