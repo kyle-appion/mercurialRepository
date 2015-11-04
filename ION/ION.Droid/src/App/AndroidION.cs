@@ -77,8 +77,6 @@
 
 
     public AndroidION(Context context) {
-      Log.printer = new LogPrinter();
-
       this.context = context;
       this.handler = new Android.OS.Handler(OnHandleMessage);
 

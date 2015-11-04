@@ -1,16 +1,17 @@
-﻿using System;
-
-using ION.Core.Sensors;
-
-using ION.IOS.Util;
-
-/// <summary>
+﻿/// <summary>
 /// NOTE:
 /// 
 /// THIS CLASS IS DEDICATED TO PROVIDED IOS EXLCUSIVE EXTENSIONS TO THE SENSOR UTIL
 /// CLASS IN THE CORE LIBRARY. AS SUCH, LEAVE THE FUCKING NAMESPACE ALONE!
 /// </summary>
 namespace ION.IOS.Sensors {
+  
+  using System;
+
+  using ION.Core.Sensors;
+
+  using ION.IOS.Util;
+
   public static class SensorExtensions {
     /// <summary>
     /// Queries the localized user friendly string representing a sensor type.

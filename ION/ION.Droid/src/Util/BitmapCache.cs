@@ -13,29 +13,9 @@ namespace ION.Droid.Util {
   /// the disk constantly looking for resources.
   /// </summary>
   public class BitmapCache : Android.Util.LruCache {
-
-    /// <summary>
-    /// The singleton representation of the cache. This may not necessarily be
-    /// used.
-    /// </summary>
-    private static BitmapCache SINGLETON;
-
-    /// <summary>
-    /// Queries the current bitmap cache instance.
-    /// </summary>
-    /// <param name="res"></param>
-    /// <returns></returns>
-    public static BitmapCache Get(Resources res) {
-      if (SINGLETON == null) {
-        SINGLETON = new BitmapCache(res);
-      }
-
-      return SINGLETON;
-    }
-
     private Resources res { get; set; }
 
-    public BitmapCache(Resources res) : base(64) {
+    public BitmapCache(Resources res, int size=32) : base(32) {
       this.res = res;
     }
 

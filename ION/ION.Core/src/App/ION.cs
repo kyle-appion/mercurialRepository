@@ -22,7 +22,8 @@ namespace ION.Core.App {
     /// then we will throw an exception when the property is fetched.
     /// </summary>
     /// <value>The App.</value>
-    public static IION context {
+    public static IION context { get; set; }
+      /*
       get {
         if (__context == null) {
           string msg = "Critical failure: Application attempted to retrieve ION context, yet the application was not running.";
@@ -35,6 +36,7 @@ namespace ION.Core.App {
         __context = value;
       }
     } private static IION __context;
+    */
   } // End ION
 
   /// <summary>

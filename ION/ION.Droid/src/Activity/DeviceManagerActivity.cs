@@ -533,7 +533,7 @@ namespace ION.Droid.Activity {
 
       vh.group = group;
       vh.counter.Text = "" + GetChildrenCount(groupPosition);
-      vh.counter.SetBackgroundColor(res.GetColor(group.colorRes));
+      vh.counter.SetBackgroundColor(new Android.Graphics.Color(context.GetColor(group.colorRes)));
       vh.title.Text = res.GetString(group.stringRes);
       vh.options.SetOnClickListener(vh);
 
@@ -560,8 +560,8 @@ namespace ION.Droid.Activity {
 
       vh.group = group;
       vh.device = device;
-      vh.deviceIcon.SetImageBitmap(cache.GetBitmap(DeviceUtils.GetDeviceIcon(device)));
-      vh.deviceType.SetText(DeviceUtils.GetDeviceProductName(device));
+      vh.deviceIcon.SetImageBitmap(cache.GetBitmap(DeviceExtensions.GetDeviceIcon(device)));
+      vh.deviceType.Text = device.GetDeviceProductName();
       vh.name.Text = device.name;
 
       if (IsExpanded(groupPosition, childPosition)) {
@@ -665,8 +665,8 @@ namespace ION.Droid.Activity {
         vh.sensorIcon = convert.FindViewById<ImageView>(Resource.Id.icon);
         vh.sensorType = convert.FindViewById<TextView>(Resource.Id.type);
         vh.sensorReading = convert.FindViewById<TextView>(Resource.Id.measurement);
-        vh.addToWorkbench = convert.FindViewById<ImageButton>(Resource.Id.add_to_workbench);
-        vh.addToAnalyzer = convert.FindViewById<ImageButton>(Resource.Id.add_to_analyzer);
+        vh.addToWorkbench = convert.FindViewById<ImageButton>(Resource.Id.workbench_add_to);
+        vh.addToAnalyzer = convert.FindViewById<ImageButton>(Resource.Id.analyzer_add_to);
         vh.add = convert.FindViewById<ImageButton>(Resource.Id.add);
       } else {
         vh = (SensorViewHolder)convert.Tag;
@@ -676,7 +676,7 @@ namespace ION.Droid.Activity {
       vh.childPosition = childPosition;
       vh.sensor = sensor;
 
-      vh.sensorType.SetText(DeviceUtils.GetSensorTypeName(sensor.type));
+      vh.sensorType.Text = sensor.type.GetSensorTypeName();
       // TODO ahodder@appioninc.com: Format the scalar
       vh.sensorReading.Text = sensor.measurement.ToString();
 
