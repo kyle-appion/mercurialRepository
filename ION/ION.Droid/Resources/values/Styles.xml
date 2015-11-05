@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<resources>
+  <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:windowBackground">@drawable/img_bgd_carbon</item>
+    <item name="android:textColor">@color/white</item>
+    <item name="android:textColorPrimary">@color/white</item>
+    <item name="android:textColorSecondary">@color/light_gray</item>
+    <item name="android:textColorTertiary">@color/white</item>
+  </style>
+</resources>

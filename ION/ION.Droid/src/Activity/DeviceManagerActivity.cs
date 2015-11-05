@@ -508,7 +508,7 @@ namespace ION.Droid.Activity {
 
     public DeviceAdapter(ExpandableListView list) :
       base(list, Resource.Layout.list_item_device_manager_device, Resource.Layout.list_item_device_manager_sensor_content) {
-      cache = BitmapCache.Get(context.Resources);
+      cache = new BitmapCache(context.Resources);
     }
 
     // Overridden from ExpandableContentELVAdapter

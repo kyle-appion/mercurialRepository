@@ -14,18 +14,20 @@
   <!--
   Activity Dimensions
   -->
+  <!-- The width and Height that and activity will use to pad it's content. -->
+  <dimen name="activity_padding">16dp</dimen>
   <!-- The width of the navigation drawer for the home activity. -->
-  <dimen name="drawer_width">300dp</dimen>
+  <dimen name="drawer_width">240dp</dimen>
   <!-- The width and height of the icon in a drawer's navigation item. -->
-  <dimen name="drawer_navigation_icon_size">64dp</dimen>
+  <dimen name="drawer_navigation_icon_size">48dp</dimen>
   <!-- The text size for the title of a navigation drawer's category title. -->
   <dimen name="drawer_navigation_category_text_size">18sp</dimen>
   <!-- The text size for the title of a navigation drawer's item title. -->
   <dimen name="drawer_navigation_item_text_size">24sp</dimen>
+  <!-- The height for the "divider" view for the navigation drawer's large separator view. -->
+  <dimen name="drawer_navigation_separator_large_height">2dp</dimen>
   <!-- The height for the "divider" view for the navigation drawer's small separator view. -->
   <dimen name="drawer_navigation_separator_small_height">1dp</dimen>
-  <!-- The height for the "divider" view for the navigation drawer's large separator view. -->
-  <dimen name="drawer_navigation_separator_large_height">1dp</dimen>
 
   <!--
   Viewer dimensions

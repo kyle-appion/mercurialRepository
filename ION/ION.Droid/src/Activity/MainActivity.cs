@@ -41,7 +41,9 @@
       base.OnResume();
 
       if (!(await InitApplication())) {
-        Toast.MakeText(this, "Failed to initialize ION. Please contact Appion for assistance.", ToastLength.Short);
+        string msg = "Failed to initialize ION. Please contact Appion for assistance.";
+        Log.E(this, msg);
+        Toast.MakeText(this, msg, ToastLength.Short);
         Finish();
       } else {
         StartActivity(typeof(HomeActivity));
@@ -85,58 +87,6 @@
       }
     }
 	}
-
-  /// <summary>
-  /// The adapter that will provide navigation item views to the navigation list.
-  /// </summary>
-  internal class NavigationAdapter : BaseAdapter {
-    // Overridden from BaseAdapter
-    public override int Count { get { return content.Count; } }
-
-    public List<NavigationItem> content { get; set; }
-
-    private BitmapCache cache { get; set; }
-
-    public NavigationAdapter(Context context, List<NavigationItem> content) {
-      this.content = content;
-      this.cache = new BitmapCache(context.Resources);
-    }
-
-    // Overridden from BaseAdapter
-    public override Java.Lang.Object GetItem(int position) {
-      throw new NotImplementedException();
-    }
-
-    // Overridden from BaseAdapter
-    public override View GetView(int position, View convert, ViewGroup parent) {
-      var c = parent.Context;
-      var res = c.Resources;
-      var item = content[position];
-
-      ViewHolder vh;
-
-      if (convert == null) {
-        convert = LayoutInflater.From(c).Inflate(Resource.Layout.navigation_item, parent, false);
-        convert.Tag = vh = new ViewHolder();
-
-        vh.icon = convert.FindViewById<ImageView>(Resource.Id.icon);
-        vh.title = convert.FindViewById<ImageView>(Resource.Id.title);
-      } else {
-        vh = (ViewHolder)convert.Tag;
-      }
-
-      vh.icon.SetImageBitmap(cache.GetBitmap(item.icon));
-      vh.icon.SetColorFilter(new Color(res.GetColor(Resource.Color.gray)), PorterDuff.Mode.SrcAtop);
-      vh.title.Text = item.title;
-
-      return convert;
-    }
-
-    private static class ViewHolder : Java.Lang.Object {
-      public ImageView icon;
-      public TextView title;
-    }
-  }
 }
 
 

@@ -12,8 +12,10 @@
   <item name="connection" type="id"/>
   <item name="content" type="id"/>
   <item name="counter" type="id"/>
+  <item name="exit" type="id"/>
   <item name="icon" type="id"/>
   <item name="loading" type="id"/>
+  <item name="main" type="id"/>
   <item name="name" type="id"/>
   <item name="measurement" type="id"/>
   <item name="scan" type="id"/>
@@ -30,8 +32,15 @@
   <item name="analyzer_add_to" type="id"/>
 
   <!--
-  DEVICE
+  CALCULATORS
   -->
+  <item name="calculators" type="id"/>
+  <item name="ptchart" type="id"/>
+
+  <!--
+  DEVICE MANAGER
+  -->
+  <item name="device_manager" type="id"/>
   <item name="device_serial_number" type="id"/>
 
   <!--
