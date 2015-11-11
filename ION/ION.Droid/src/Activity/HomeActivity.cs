@@ -22,7 +22,7 @@
   using ION.Droid.Widgets.Adapters.Navigation;
 
   [Activity(Label = "ActivityHome", Theme = "@style/AppTheme")]      
-  public class HomeActivity : Activity, AbsListView.IOnItemClickListener {
+  public class HomeActivity : IONActivity, AbsListView.IOnItemClickListener {
 
     /// <summary>
     /// The extra that indicates which fragment the home activity should launch when
@@ -72,12 +72,6 @@
     /// </summary>
     /// <value>The navigation adapter.</value>
     private NavigationAdapter navigationAdapter { get; set; }
-
-    /// <summary>
-    /// The cache that will store bitmaps.
-    /// </summary>
-    /// <value>The cache.</value>
-    private BitmapCache cache { get; set; }
 
     // Overridden from Activity
     protected override void OnCreate(Bundle bundle) {
@@ -160,7 +154,7 @@
     /// </summary>
     public void DisplayAnalyzer() {
       var ab = ActionBar;
-      ab.SetIcon(GetGrayDrawable(Resource.Drawable.ic_nav_analyzer));
+      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resources.GetColor(Resource.Color.gray)));
       drawerToggle.lastTitle = ab.Title = GetString(Resource.String.analyzer);
 
     }
@@ -170,7 +164,7 @@
     /// </summary>
     public void DisplayWorkbench() {
       var ab = ActionBar;
-      ab.SetIcon(GetGrayDrawable(Resource.Drawable.ic_nav_workbench));
+      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
       drawerToggle.lastTitle = ab.Title = GetString(Resource.String.workbench);
     }
 
@@ -185,6 +179,7 @@
         id = Resource.Id.main,
         title = GetString(Resource.String.main),
         items = new NavigationItem[] {
+/*
           new NavigationIconItem() {
             id = Resource.Id.analyzer,
             title = GetString(Resource.String.analyzer),
@@ -194,6 +189,7 @@
               HideDrawer();
             },
           },
+*/
           new NavigationIconItem() {
             id = Resource.Id.workbench,
             title = GetString(Resource.String.workbench),
@@ -215,9 +211,23 @@
             title = GetString(Resource.String.ptchart),
             icon = Resource.Drawable.ic_nav_ptconversion,
             action = () => {
-//              StartActivity(typeof(PTChartActivity));
+              StartActivity(typeof(PTChartActivity));
             }
           },
+        },
+      };
+
+      var settings = new NavigationCategory() {
+        title = GetString(Resource.String.settings),
+        items = new NavigationItem[] {
+          new NavigationIconItem() {
+            id = Resource.Id.settings,
+            title = GetString(Resource.String.settings),
+            icon = Resource.Drawable.ic_settings,
+            action = () => {
+              StartActivity(typeof(IONPreferenceActivity));
+            }
+          }
         },
       };
 
@@ -237,6 +247,7 @@
 
       ret.Add(main);
       ret.Add(calculators);
+      ret.Add(settings);
       ret.Add(exit);
 
       return ret;
@@ -251,17 +262,6 @@
       if (action != null) {
         action();
       }
-    }
-
-    /// <summary>
-    /// Builds and returned a gray colored drawable.
-    /// </summary>
-    /// <returns>The gray drawable.</returns>
-    /// <param name="drawableRes">Drawable res.</param>
-    private Drawable GetGrayDrawable(int drawableRes) {
-      var ret = new BitmapDrawable(cache.GetBitmap(drawableRes));
-      ret.SetColorFilter(new Color(Resources.GetColor(Resource.Color.gray)), PorterDuff.Mode.SrcAtop);
-      return ret;
     }
 
     /// <summary>

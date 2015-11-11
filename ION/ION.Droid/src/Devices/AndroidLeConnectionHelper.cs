@@ -85,12 +85,13 @@
       if (device == null) {
         throw new ArgumentException("Create connection for " + address + " failed: no device");
       } else if (BluetoothDeviceType.Le == device.Type) {
-        throw new ArgumentException("Create connection for " + address + " failed: device not le");
+        var ret = new LeConnection(ion.context, device);
+        __leConnections[address] = ret;
+        return ret;
+//        throw new ArgumentException("Create connection for " + address + " failed: device not le");
+      } else {
+        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
       }
-
-      var ret = new LeConnection(ion.context, device);
-      __leConnections[address] = ret;
-      return ret;
     }
 
     /// <summary>

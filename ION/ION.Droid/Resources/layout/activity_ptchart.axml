@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_padding">
+<!-- Fluid and state  header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@id/fluid"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <FrameLayout
+                android:background="@color/black"
+                android:layout_width="@dimen/ptchart_fluid_color_width"
+                android:layout_height="@dimen/ptchart_fluid_color_height"
+                android:padding="2dp">
+                <View
+                    android:id="@id/color"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+            <TextView
+                android:id="@id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <Switch
+            android:id="@id/state"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textOn="@string/fluid_bubble"
+            android:textOff="@string/fluid_dew" />
+    </LinearLayout>
+<!-- Section Divider -->
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
+    <View
+        android:background="@color/black"
+        android:layout_height="@dimen/ptchart_section_divider_height"
+        android:layout_width="match_parent" />
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
+<!-- Pressure Entry -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:id="@id/ptchart_pressure_add"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <ImageView
+                android:id="@id/add"
+                android:src="@drawable/ic_devices_add"
+                android:layout_width="@dimen/ptchart_icon_size"
+                android:layout_height="@dimen/ptchart_icon_size" />
+            <ImageView
+                android:id="@id/icon"
+                android:src="@drawable/ic_action_edit"
+                android:layout_width="@dimen/ptchart_icon_size"
+                android:layout_height="@dimen/ptchart_icon_size" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <EditText
+                android:id="@id/ptchart_pressure_edit"
+                android:inputType="numberDecimal|numberSigned"
+                android:hint="@string/measurement_pressure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="@string/measurement_pressure"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <Button
+            android:id="@id/ptchart_pressure_unit"
+            android:layout_width="@dimen/ptchart_unit_width"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+<!-- Section Divider -->
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
+    <View
+        android:background="@color/black"
+        android:layout_height="@dimen/ptchart_section_divider_height"
+        android:layout_width="match_parent" />
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
+<!-- Temperature Entry -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical">
+        <LinearLayout
+            android:id="@id/ptchart_temperature_add"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+            <ImageView
+                android:id="@id/add"
+                android:src="@drawable/ic_devices_add"
+                android:layout_width="@dimen/ptchart_icon_size"
+                android:layout_height="@dimen/ptchart_icon_size" />
+            <ImageView
+                android:id="@id/icon"
+                android:src="@drawable/ic_action_edit"
+                android:layout_width="@dimen/ptchart_icon_size"
+                android:layout_height="@dimen/ptchart_icon_size" />
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <EditText
+                android:id="@id/ptchart_temperature_edit"
+                android:hint="@string/measurement_temperature"
+                android:inputType="numberDecimal|numberSigned"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="@string/measurement_temperature"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <Button
+            android:id="@id/ptchart_temperature_unit"
+            android:layout_width="@dimen/ptchart_unit_width"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</LinearLayout>

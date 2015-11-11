@@ -169,4 +169,7 @@
     <EmbeddedResource Include="src\Devices\Devices.xml" />
     <EmbeddedResource Include="src\Pdf\digital_gauge_cert.pdf" />
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Dimens.xml" />
+  </ItemGroup>
 </Project>

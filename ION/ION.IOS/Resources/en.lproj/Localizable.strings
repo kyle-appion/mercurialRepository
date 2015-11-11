@@ -19,7 +19,6 @@ file.
 "saving" = "Saving...";
 "settings" = "Settings";
 "unknown" = "Unknown";
-"use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";
 
 /* ALARMS */
 "alarms" = "Alarms";

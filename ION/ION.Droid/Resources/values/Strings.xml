@@ -18,6 +18,7 @@
   <string name="open">Open</string>
   <string name="scan">Scan</string>
   <string name="scanning">Scanning</string>
+  <string name="settings">Settings</string>
 
   <!--
   ANALYZER
@@ -57,6 +58,12 @@
   <string name="long_range_mode">Long-Range Mode</string>
 
   <!--
+  FLUIDS
+  -->
+  <string name="fluid_bubble">Bubble</string>
+  <string name="fluid_dew">Dew</string>
+
+  <!--
   MEASUREMENT
   -->
   <string name="measurement">Measurement</string>
@@ -72,4 +79,5 @@
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>
+  <string name="workbench_add_viewer">Add New Viewer</string>
 </resources>

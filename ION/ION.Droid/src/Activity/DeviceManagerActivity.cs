@@ -8,6 +8,7 @@ namespace ION.Droid.Activity {
   using Android.App;
   using Android.Content;
   using Android.Content.Res;
+  using Android.Graphics;
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
@@ -30,9 +31,9 @@ namespace ION.Droid.Activity {
   /// used to add/modify ION devices and allow them to be returned to various
   /// other primary and ansiliary activities.
   /// </summary>
-  [Activity(Label = "DeviceManagerActivity")]
-  public class DeviceManagerActivity : Activity, View.IOnClickListener, Handler.ICallback {
-    private const long DEFAULT_SCAN_TIME = 5;
+  [Activity(Label = "DeviceManagerActivity", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
+  public class DeviceManagerActivity : IONActivity, View.IOnClickListener {
+    private const long DEFAULT_SCAN_TIME = 5000;
 
     private static readonly DeviceGroup CONNECTED = new DeviceGroup(Resource.String.connected, Resource.Color.green);
     private static readonly DeviceGroup LONG_RANGE = new DeviceGroup(Resource.String.long_range_mode, Resource.Color.light_blue);
@@ -53,15 +54,6 @@ namespace ION.Droid.Activity {
     };
 
     /// <summary>
-    /// The refresh adapter message.
-    /// </summary>
-    private const int MSG_REFRESH = 1;
-    /// <summary>
-    /// The update scan state message.
-    /// </summary>
-    private const int MSG_INVALIDATE_MENU = 2;
-
-    /// <summary>
     /// Queries the index of the group.
     /// </summary>
     /// <param name="group"></param>
@@ -78,6 +70,11 @@ namespace ION.Droid.Activity {
     }
 
     /// <summary>
+    /// The ion instance.
+    /// </summary>
+    /// <value>The ion.</value>
+    private IION ion { get; set; }
+    /// <summary>
     /// The device manager that we are "displaying".
     /// </summary>
     private IDeviceManager deviceManager { get; set; }
@@ -89,10 +86,6 @@ namespace ION.Droid.Activity {
     /// The adapter that is providing device views to the list view.
     /// </summary>
     private DeviceAdapter adapter { get; set; }
-    /// <summary>
-    /// The handler that will update the adapter.
-    /// </summary>
-    private Handler handler { get; set; }
     /// <summary>
     /// The most recent historic content of the adapter.
     /// </summary>
@@ -106,8 +99,12 @@ namespace ION.Droid.Activity {
 
       SetContentView(Resource.Layout.activity_device_manager);
 
-      deviceManager = AppState.context.deviceManager;
-      handler = new Handler(this);
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.Title = GetString(Resource.String.device_manager);
+
+      ion = AppState.context;
+      deviceManager = ion.deviceManager;
 
       list = FindViewById<ExpandableListView>(Android.Resource.Id.List);
       list.SetGroupIndicator(null);
@@ -121,6 +118,7 @@ namespace ION.Droid.Activity {
       base.OnResume();
 
       deviceManager.onDeviceEvent += OnDeviceEvent;
+      deviceManager.onDeviceManagerStatesChanged += OnDeviceManagerStateChanged;
 
       deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
 
@@ -166,6 +164,7 @@ namespace ION.Droid.Activity {
       base.OnPause();
 
       deviceManager.onDeviceEvent -= OnDeviceEvent;
+      deviceManager.onDeviceManagerStatesChanged -= OnDeviceManagerStateChanged;
 
       deviceManager.connectionHelper.Stop();
     }
@@ -202,17 +201,18 @@ namespace ION.Droid.Activity {
     // Overridden from Activity
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
-        case Resource.Id.scan: {
+        case Android.Resource.Id.Home:
+          Finish();
+          return true;
+        case Resource.Id.scan: 
           if (deviceManager.connectionHelper.isScanning) {
             deviceManager.connectionHelper.Stop();
           } else {
             deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
           return true;
-        }
-        default: {
+        default:
           return base.OnMenuItemSelected(featureId, item);
-        }
       }
     }
 
@@ -224,23 +224,6 @@ namespace ION.Droid.Activity {
         deviceManager.connectionHelper.Stop();
       } else {
         deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-      }
-    }
-
-    // Overridden from Handler.ICallback
-    public bool HandleMessage(Message msg) {
-      switch (msg.What) {
-        case MSG_REFRESH: {
-          RefreshAdapter();
-          return true;
-        }
-        case MSG_INVALIDATE_MENU: {
-          InvalidateOptionsMenu();
-          return true;
-        }
-        default: {
-          return false;
-        }
       }
     }
 
@@ -271,6 +254,14 @@ namespace ION.Droid.Activity {
           // Nope
           break;
       }
+    }
+
+    /// <summary>
+    /// Called when the device manager's state changes
+    /// </summary>
+    /// <param name="deviceManager">Device manager.</param>
+    private async void OnDeviceManagerStateChanged(IDeviceManager deviceManager) {
+      InvalidateOptionsMenu();
     }
 
     /// <summary>
@@ -533,7 +524,7 @@ namespace ION.Droid.Activity {
 
       vh.group = group;
       vh.counter.Text = "" + GetChildrenCount(groupPosition);
-      vh.counter.SetBackgroundColor(new Android.Graphics.Color(context.GetColor(group.colorRes)));
+      vh.counter.SetBackgroundColor(new Color(context.Resources.GetColor(group.colorRes)));
       vh.title.Text = res.GetString(group.stringRes);
       vh.options.SetOnClickListener(vh);
 

@@ -39,6 +39,16 @@
     }
 
     /// <summary>
+    /// The indexer that will return the manifold at the given position.
+    /// </summary>
+    /// <param name="index">Index.</param>
+    public Manifold this[int index] {
+      get { 
+        return content[index];
+      }
+    }
+
+    /// <summary>
     /// The dictionary that will maintain a cache of sensor property views for the adapter.
     /// </summary>
     private Dictionary<Type, View> sensorPropertyViewCache = new Dictionary<Type, View>();
