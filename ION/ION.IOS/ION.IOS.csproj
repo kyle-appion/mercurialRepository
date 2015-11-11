@@ -421,6 +421,19 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <BundleResource Include="Resources\Images.xcassets\img_battery_100.imageset\img_battery_100.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_25.imageset\img_battery_25.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
+    <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
+    <BundleResource Include="Resources\en.lproj\Localizable.strings" />
+    <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
+    <BundleResource Include="Resources\fluids\refrigerantcolors.properties" />
+    <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
     <BundleResource Include="Resources\fluids\R11.dat" />
     <BundleResource Include="Resources\fluids\R113.dat" />
     <BundleResource Include="Resources\fluids\R114.dat" />
@@ -459,25 +472,18 @@
     <BundleResource Include="Resources\fluids\R401C.dat" />
     <BundleResource Include="Resources\fluids\R402A.dat" />
     <BundleResource Include="Resources\fluids\R402B.dat" />
-    <BundleResource Include="Resources\fluids\R404A.PPF.dat" />
     <BundleResource Include="Resources\fluids\R404A.dat" />
     <BundleResource Include="Resources\fluids\R407A.dat" />
     <BundleResource Include="Resources\fluids\R407B.dat" />
-    <BundleResource Include="Resources\fluids\R407C.PPF.dat" />
     <BundleResource Include="Resources\fluids\R407C.dat" />
     <BundleResource Include="Resources\fluids\R407D.dat" />
     <BundleResource Include="Resources\fluids\R407E.dat" />
-    <BundleResource Include="Resources\fluids\R407F.dat" />
     <BundleResource Include="Resources\fluids\R408A.dat" />
     <BundleResource Include="Resources\fluids\R409A.dat" />
     <BundleResource Include="Resources\fluids\R41.dat" />
-    <BundleResource Include="Resources\fluids\R410A.PPF.dat" />
     <BundleResource Include="Resources\fluids\R410A.dat" />
     <BundleResource Include="Resources\fluids\R410B.dat" />
-    <BundleResource Include="Resources\fluids\R411A.dat" />
-    <BundleResource Include="Resources\fluids\R411B.dat" />
     <BundleResource Include="Resources\fluids\R413A.dat" />
-    <BundleResource Include="Resources\fluids\R415A.dat" />
     <BundleResource Include="Resources\fluids\R415B.dat" />
     <BundleResource Include="Resources\fluids\R419A.dat" />
     <BundleResource Include="Resources\fluids\R420A.dat" />
@@ -488,25 +494,13 @@
     <BundleResource Include="Resources\fluids\R422C.dat" />
     <BundleResource Include="Resources\fluids\R422D.dat" />
     <BundleResource Include="Resources\fluids\R423A.dat" />
-    <BundleResource Include="Resources\fluids\R424A.dat" />
     <BundleResource Include="Resources\fluids\R425A.dat" />
     <BundleResource Include="Resources\fluids\R427A.dat" />
     <BundleResource Include="Resources\fluids\R428A.dat" />
-    <BundleResource Include="Resources\fluids\R430A.dat" />
-    <BundleResource Include="Resources\fluids\R432A.dat" />
-    <BundleResource Include="Resources\fluids\R433A.dat" />
-    <BundleResource Include="Resources\fluids\R434A.dat" />
     <BundleResource Include="Resources\fluids\R436A.dat" />
-    <BundleResource Include="Resources\fluids\R436B.dat" />
-    <BundleResource Include="Resources\fluids\R438A.dat" />
-    <BundleResource Include="Resources\fluids\R441A.dat" />
     <BundleResource Include="Resources\fluids\R443A.dat" />
     <BundleResource Include="Resources\fluids\R500.dat" />
-    <BundleResource Include="Resources\fluids\R501.dat" />
-    <BundleResource Include="Resources\fluids\R502.dat" />
-    <BundleResource Include="Resources\fluids\R503.dat" />
     <BundleResource Include="Resources\fluids\R504.dat" />
-    <BundleResource Include="Resources\fluids\R507A.PPF.dat" />
     <BundleResource Include="Resources\fluids\R507A.dat" />
     <BundleResource Include="Resources\fluids\R508A.dat" />
     <BundleResource Include="Resources\fluids\R508B.dat" />
@@ -518,18 +512,6 @@
     <BundleResource Include="Resources\fluids\RE245CB2.dat" />
     <BundleResource Include="Resources\fluids\RE245FA2.dat" />
     <BundleResource Include="Resources\fluids\RE347MCC.dat" />
-    <BundleResource Include="Resources\Images.xcassets\img_battery_100.imageset\img_battery_100.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\img_battery_25.imageset\img_battery_25.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
-    <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
-    <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
-    <BundleResource Include="Resources\en.lproj\Localizable.strings" />
-    <BundleResource Include="Settings.bundle\Root.plist" />
-    <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
-    <BundleResource Include="Resources\fluids\refrigerantcolors.properties" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

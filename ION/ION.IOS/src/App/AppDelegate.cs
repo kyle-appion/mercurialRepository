@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.App {
+﻿ namespace ION.IOS.App {
 
   using System;
   using System.IO;

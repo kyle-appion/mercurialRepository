@@ -22,10 +22,13 @@ namespace ION.Core.Fluids.Parser {
         var tmax = reader.ReadInt32BE();
 
         // Read interpolation step
-        var step = reader.ReadFloat64BE();
+        var step = reader.ReadFloat32BE();
 
         // Read the magnitude of the table
         var rowCount = reader.ReadInt32BE();
+
+        // Reads whether or not the fluid is a "similar" fluid (does not use both dew and bubble measurements)
+        var similer = reader.ReadBoolean();
 
         // Prepare for table construction
         var temps = new double[rowCount];
@@ -35,8 +38,8 @@ namespace ION.Core.Fluids.Parser {
         // Read the table, and assign pressures to temperatures
         for (int i = 0; i < rowCount; i++) {
           temps[i] = tmin + (i * step);
-          bubbles[i] = reader.ReadFloat64BE();
-          dew[i] = reader.ReadFloat64BE();
+          bubbles[i] = reader.ReadFloat32BE();
+          dew[i] = reader.ReadFloat32BE();
         }
 
         // All done, return this bitch

@@ -47,6 +47,6 @@
 		<string>bluetooth-central</string>
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>use_geolocation</string>
+	<string>NSLocationAlwaysUsageDescription</string>
 </dict>
 </plist>
