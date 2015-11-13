@@ -49,16 +49,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		UIKit.UISegmentedControl switchFluidState { get; set; }
 
 		[Outlet]
-		UIKit.UIView viewDivider1 { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewDivider2 { get; set; }
-
-		[Outlet]
 		UIKit.UIView viewFluidColor { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewFluidColorBorder { get; set; }
 
 		[Outlet]
 		UIKit.UIView viewFluidHeader { get; set; }
@@ -68,9 +59,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 
 		[Outlet]
 		UIKit.UIView viewPressureTouchArea { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewTempeartureTouchArea { get; set; }
 
 		[Outlet]
 		UIKit.UIView viewTemperatureSection { get; set; }
@@ -83,11 +71,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 			if (viewFluidHeader != null) {
 				viewFluidHeader.Dispose ();
 				viewFluidHeader = null;
-			}
-
-			if (viewFluidColorBorder != null) {
-				viewFluidColorBorder.Dispose ();
-				viewFluidColorBorder = null;
 			}
 
 			if (viewFluidColor != null) {
@@ -103,11 +86,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 			if (switchFluidState != null) {
 				switchFluidState.Dispose ();
 				switchFluidState = null;
-			}
-
-			if (viewDivider1 != null) {
-				viewDivider1.Dispose ();
-				viewDivider1 = null;
 			}
 
 			if (viewPressureSection != null) {
@@ -140,14 +118,19 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 				labelPressure = null;
 			}
 
-			if (viewDivider2 != null) {
-				viewDivider2.Dispose ();
-				viewDivider2 = null;
+			if (viewPressureTouchArea != null) {
+				viewPressureTouchArea.Dispose ();
+				viewPressureTouchArea = null;
 			}
 
 			if (viewTemperatureSection != null) {
 				viewTemperatureSection.Dispose ();
 				viewTemperatureSection = null;
+			}
+
+			if (viewTemperatureTouchArea != null) {
+				viewTemperatureTouchArea.Dispose ();
+				viewTemperatureTouchArea = null;
 			}
 
 			if (imageTemperatureLock != null) {
@@ -173,21 +156,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 			if (labelTemperature != null) {
 				labelTemperature.Dispose ();
 				labelTemperature = null;
-			}
-
-			if (viewTempeartureTouchArea != null) {
-				viewTempeartureTouchArea.Dispose ();
-				viewTempeartureTouchArea = null;
-			}
-
-			if (viewPressureTouchArea != null) {
-				viewPressureTouchArea.Dispose ();
-				viewPressureTouchArea = null;
-			}
-
-			if (viewTemperatureTouchArea != null) {
-				viewTemperatureTouchArea.Dispose ();
-				viewTemperatureTouchArea = null;
 			}
 		}
 	}

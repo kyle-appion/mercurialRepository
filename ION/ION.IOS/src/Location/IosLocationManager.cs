@@ -1,17 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.Location {
 
-using CoreLocation;
-using UIKit;
+  using System;
+  using System.Threading.Tasks;
 
-using ION.Core.App;
-using ION.Core.Measure;
-using ION.Core.Location;
-using ION.Core.Util;
+  using CoreLocation;
+  using UIKit;
 
-using ION.IOS.App;
+  using ION.Core.App;
+  using ION.Core.Measure;
+  using ION.Core.Location;
+  using ION.Core.Util;
 
-namespace ION.IOS.Location {
+  using ION.IOS.App;
+
+
   /// <summary>
   /// The entity that will manage the user's location such that we can determine his
   /// elevation for use in PT calculations.
@@ -19,6 +21,16 @@ namespace ION.IOS.Location {
   public class IosLocationManager : ILocationManager {
     // Overridden from ILocationManager
     public event OnLocationChanged onLocationChanged;
+
+    // Overridden from ILocationManager
+    public bool allowLocationTracking { 
+      get {
+        return ion.settings.location.useGeoLocation;
+      }
+      set {
+        ion.settings.location.useGeoLocation = value;
+      }
+    }
 
     // Overridden from ILocationManager
     public ILocation lastKnownLocation {
@@ -55,15 +67,17 @@ namespace ION.IOS.Location {
     // Overridden from ILocationManager
     public async Task<InitializationResult> InitAsync() {
       native = new CLLocationManager();
-      // We should assert that the application will always be compiled to 8.0
+      if (ion.settings.location.useGeoLocation) {
+        // We should assert that the application will always be compiled to 8.0
 //      if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
         // But just in case, be safe.
 //        native.RequestWhenInUseAuthorization();
-      native.RequestAlwaysAuthorization();
+        native.RequestAlwaysAuthorization();
 //      }
 
 //      if (ion.settings.location.useGeoLocation) {
         StartAutomaticLocationPolling();
+      }
 //      }
       return new InitializationResult() { success = true };
     }

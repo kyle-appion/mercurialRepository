@@ -1,11 +1,14 @@
-﻿
-using ION.Core.Measure;
+﻿namespace ION.Core.Fluids {
 
-namespace ION.Core.Fluids {
+  using System;
+
+  using ION.Core.Measure;
+
   /// <summary>
   /// The fluid class is a lookup table that is used to calculate pressures and
   /// temperatures for refrigerant fluids.
   /// </summary>
+  // TODO ahodder@appioninc.com: Calculate temperatures as needed in place of the temperature array
   public class Fluid {
     /// <summary>
     /// The unit that all the temperatures are in.
@@ -25,6 +28,11 @@ namespace ION.Core.Fluids {
     /// </summary>
     /// <value>The color.</value>
     public int color { get; set; }
+    /// <summary>
+    /// Queries whether or not the fluid is a mixture.
+    /// </summary>
+    /// <value><c>true</c> if mixute; otherwise, <c>false</c>.</value>
+    public bool mixture { get; private set; }
 
     /// <summary>
     /// The minimum temperature for the fluid. This is necessary for all lookups.
@@ -49,11 +57,7 @@ namespace ION.Core.Fluids {
     /// <summary>
     /// The the pressures for the bubble points matched to the temperature column.
     /// </summary>
-    private double[] bubblePressures { get; set; }
-    /// <summary>
-    /// The pressures for the dew points matched to the temperature column.
-    /// </summary>
-    private double[] dewPressures { get; set; }
+    private double[] pressureValues { get; set; }
 
     /// <summary>
     /// Creates a new fluid.
@@ -66,15 +70,17 @@ namespace ION.Core.Fluids {
     /// <param name="temperatures"></param>
     /// <param name="bubblePressures"></param>
     /// <param name="dewPressures"></param>
-    public Fluid(string name, double tmin, double tmax, double step, int rows, double[] temperatures, double[] bubblePressures, double[] dewPressures) {
+    public Fluid(string name, double tmin, double tmax, double step, int rows, bool mixture, double[] temperatures, double[] pressureValues) {
       this.name = name;
       this.tmin = tmin;
       this.tmax = tmax;
       this.step = step;
       this.rows = rows;
+      this.mixture = mixture;
       this.temperatures = temperatures;
-      this.bubblePressures = bubblePressures;
-      this.dewPressures = dewPressures;
+      this.pressureValues = pressureValues;
+      ;
+
     }
 
     /// <summary>
@@ -94,65 +100,73 @@ namespace ION.Core.Fluids {
     }
 
     /// <summary>
-    /// Queries the minumum bubble point of the fluid.
+    /// Queries the minimum pressure of the fluid in the given state.
     /// </summary>
-    /// <returns></returns>
-    public Scalar GetMinimumBubblePressure() {
-      return PRESSURE.OfScalar(bubblePressures[0]);
+    /// <returns>The pressure.</returns>
+    /// <param name="state">State.</param>
+    public Scalar GetMinimumPressure(EState state) {
+      if (!mixture) {
+        return PRESSURE.OfScalar(pressureValues[0]);
+      }
+
+      switch (state) {
+        case EState.Bubble:
+          return PRESSURE.OfScalar(pressureValues[0]);
+        case EState.Dew:
+          return PRESSURE.OfScalar(pressureValues[rows]);
+        default:
+          throw new ArgumentException("Cannot get minimum pressure for state: " + state);
+      }
     }
 
     /// <summary>
-    /// Queries the maximum bubble point of the fluid.
+    /// Queries the maximim pressure of the fluid in the given state.
     /// </summary>
-    /// <returns></returns>
-    public Scalar GetMaximumBubblePressure() {
-      return PRESSURE.OfScalar(bubblePressures[rows - 1]);
-    }
+    /// <returns>The maximum pressure.</returns>
+    /// <param name="state">State.</param>
+    public Scalar GetMaximumPressure(EState state) {
+      if (!mixture) {
+        return PRESSURE.OfScalar(pressureValues[rows - 1]);
+      }
 
-    /// <summary>
-    /// Queries the maximum dew point of the fluid.
-    /// </summary>
-    /// <returns></returns>
-    public Scalar GetMinimumDewPressure() {
-      return PRESSURE.OfScalar(dewPressures[0]);
-    }
-
-    /// <summary>
-    /// Queries the maximum dew point of the fluid.
-    /// </summary>
-    /// <returns></returns>
-    public Scalar GetMaximumDewPressure() {
-      return PRESSURE.OfScalar(dewPressures[rows - 1]);
+      switch (state) {
+        case EState.Bubble:
+          return PRESSURE.OfScalar(pressureValues[rows - 1]);
+        case EState.Dew:
+          return PRESSURE.OfScalar(pressureValues[2 * rows - 1]);
+        default:
+          throw new ArgumentException("Cannot get minimum pressure for state: " + state);
+      }
     }
 
     /// <summary>
     /// Queries the expected temperature of the fluid at the given bubble point 
     /// pressure.
     /// </summary>
-    /// <param name="bubblePressure">The absolute pressure to match to an expected
-    /// temperature.</param>
+    /// <param name="pressure">The absolute pressure to match to an expected temperature.</param>
     /// <returns></returns>
-    public Scalar GetTemperatureFromBubblePressure(Scalar bubblePressure) {
-      bubblePressure = bubblePressure.ConvertTo(PRESSURE);
+    public Scalar GetTemperatureFromPressure(EState state, Scalar pressure) {
+      pressure = pressure.ConvertTo(PRESSURE);
 
-      Scalar pmin = GetMinimumBubblePressure(), pmax = GetMaximumBubblePressure();
+      Scalar pmin = GetMinimumPressure(state), pmax = GetMaximumPressure(state);
 
-      if (bubblePressure < pmin || bubblePressure > pmax) {
+      if (pressure < pmin || pressure > pmax) {
         return TEMPERATURE.OfScalar(double.NaN);
-      } else if (bubblePressure == pmin) {
+      } else if (pressure == pmin) {
         return TEMPERATURE.OfScalar(temperatures[0]);
-      } else if (bubblePressure == pmax) {
+      } else if (pressure == pmax) {
         return TEMPERATURE.OfScalar(temperatures[rows - 1]); 
       }
 
-      int i = BinSearch(bubblePressures, bubblePressure.amount, 0, rows);
+      var offset = (mixture && EState.Dew == state) ? rows : 0;
+      int i = BinSearch(pressureValues, pressure.amount, 0 + offset, rows + offset);
 
       if (i >= 0) {
         return TEMPERATURE.OfScalar(temperatures[i]);
       } else {
         i = ~i;
-        double magnitude = FindMagnitudeOf(bubblePressure.amount, bubblePressures[i], bubblePressures[i + 1]);
-        return TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i], temperatures[i + 1]));
+        double magnitude = FindMagnitudeOf(pressure.amount, pressureValues[i], pressureValues[i + 1]);
+        return TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i % rows], temperatures[(i + 1) % rows]));
       }
     }
 
@@ -161,88 +175,32 @@ namespace ION.Core.Fluids {
     /// </summary>
     /// <param name="temperature"></param>
     /// <returns></returns>
-    public Scalar GetBubblePressureFromTemperature(Scalar temperature) {
+    public Scalar GetPressureFromTemperature(EState state, Scalar temperature) {
       temperature = temperature.ConvertTo(TEMPERATURE);
+      // The offset to the start of the proper pressure slice
+      var offset = (mixture && EState.Dew == state) ? rows : 0;
 
       if (temperature < tmin || temperature > tmax) {
         return PRESSURE.OfScalar(double.NaN);
       } else if (temperature.amount == tmin) {
-        return PRESSURE.OfScalar(bubblePressures[0]);
+        return PRESSURE.OfScalar(pressureValues[0 + offset]);
       } else if (temperature.amount == tmax) {
-        return PRESSURE.OfScalar(bubblePressures[rows - 1]);
+        return PRESSURE.OfScalar(pressureValues[rows - 1 + offset]);
       }
 
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
 
       if (i >= 0) {
-        return PRESSURE.OfScalar(bubblePressures[i]);
+        return PRESSURE.OfScalar(pressureValues[i + offset]); 
       } else {
         i = ~i;
         double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
-        return PRESSURE.OfScalar(Interpolate(magnitude, bubblePressures[i], bubblePressures[i + 1]));
-      }
-    }
-
-    /// <summary>
-    /// Queries the expected temperature of the fluid at the given dew point 
-    /// pressure.
-    /// </summary>
-    /// <param name="dewPressure">The absolute pressure to match to an expected
-    /// temperature.</param>
-    /// <returns></returns>
-    public Scalar GetTemperatureFromDewPressure(Scalar dewPressure) {
-      dewPressure = dewPressure.ConvertTo(PRESSURE);
-
-      Scalar pmin = GetMinimumDewPressure(), pmax = GetMaximumDewPressure();
-
-      if (dewPressure < pmin || dewPressure > pmax) {
-        return TEMPERATURE.OfScalar(double.NaN);
-      } else if (dewPressure == pmin) {
-        return TEMPERATURE.OfScalar(temperatures[0]);
-      } else if (dewPressure == pmax) {
-        return TEMPERATURE.OfScalar(temperatures[rows - 1]);
-      }
-
-      int i = BinSearch(dewPressures, dewPressure.amount, 0, rows);
-
-      if (i >= 0) {
-        return TEMPERATURE.OfScalar(temperatures[i]);
-      } else {
-        i = ~i;
-        double magnitude = FindMagnitudeOf(dewPressure.amount, dewPressures[i], dewPressures[i + 1]);
-        var ret = TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i], temperatures[i + 1]));
+        var ret = PRESSURE.OfScalar(Interpolate(magnitude, pressureValues[i + offset], pressureValues[i + 1 + offset]));
+        ION.Core.Util.Log.D(this, "Ret: " + ret);
         return ret;
       }
     }
-
-    /// <summary>
-    /// Queries the expected dew pressure of the fluid at the given temperature.
-    /// </summary>
-    /// <param name="temperature"></param>
-    /// <returns></returns>
-    public Scalar GetDewPressureFromTemperature(Scalar temperature) {
-      temperature = temperature.ConvertTo(TEMPERATURE);
-
-      if (temperature < tmin || temperature > tmax) {
-        return PRESSURE.OfScalar(double.NaN);
-      } else if (temperature.amount == tmin) {
-        return PRESSURE.OfScalar(dewPressures[0]);
-      } else if (temperature.amount == tmax) {
-        return PRESSURE.OfScalar(dewPressures[rows - 1]);
-      }
-
-      int i = BinSearch(temperatures, temperature.amount, 0, rows);
-
-      if (i >= 0) {
-        return PRESSURE.OfScalar(dewPressures[i]);
-      } else {
-        i = ~i;
-        double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
-        return PRESSURE.OfScalar(Interpolate(magnitude, dewPressures[i], dewPressures[i + 1]));
-      }
-    }
-
-
+      
     /// <summary>
     /// Searches the given array for the given target. If the target is not
     /// found, we will return the bit flipped index of where the target should
@@ -257,7 +215,7 @@ namespace ION.Core.Fluids {
     /// <param name="a"></param>
     /// <param name="target"></param>
     /// <param name="first"></param>
-    /// <param name="last"></param>
+    /// <param name="last">Exclusive last index</param>
     /// <returns></returns>
     private static int BinSearch(double[] a, double target, int first, int last) {
       if (first >= last) {

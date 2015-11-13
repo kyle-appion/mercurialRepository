@@ -9,18 +9,15 @@ PL| Identifier | Bytes
 0   Version     1 (u8)
 1   Name Len    1 (u8)
 2   Name        len(1) as ASCII chars
-3   tmax        4 (i32)
-4   tmin        4 (i32)
+3   tmin        4 (i32)
+4   tmax        4 (i32)
 5   step        4 (f32)
 6   row count   4 (u32)
 7   state fluid 1 (boolean: true = uses dew/bubble two data columns, false = one data column)
-8   temps       len(6) * 4 as f32 array
-IF NOT FLUID IS STATE FLUID THEN ONLY PAYLOAD 6 IS PROVIDED
-9   pressures   len(6) * 4 as f32 array
-ELSE IF THE FLUID IS A STATE FLUID THEN PAYLOAD 6 AND 7 ARE PROVIDED
-9   bubble      len(6) * 4 as f32 array
-10   dew        len(6) * 4 as f32 array
-
+IF NOT FLUID IS STATE FLUID
+8   pressures   len(6) * 4 as f32 array
+ELSE IF THE FLUID IS A STATE FLUID
+8   pressures   len(6) * 4 * 2 as f32 array
 Units
 ----------------------------------------------------------------------------
 temperature                         K
@@ -71,6 +68,7 @@ def run():
     '''
     Initializes Refprop
     '''
+    print 'Working in directory ', CWD + "/"
     r.setpath(CWD + "/")
 
     if not r.test():
@@ -154,9 +152,9 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         vals = bubble
 
         if similar:
-            fmt = 'BBsiifI?{0}f'.format(str(rowsOut))
+            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut))
         else:
-            fmt = 'BBsiifI?{0}f'.format(str(rowsOut * 2))
+            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
             vals = vals + dew
 
         data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), tmin, tmax, step, rowsOut, similar, *vals)

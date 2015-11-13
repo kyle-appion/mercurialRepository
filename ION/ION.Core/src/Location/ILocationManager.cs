@@ -13,6 +13,12 @@ namespace ION.Core.Location {
     event OnLocationChanged onLocationChanged;
 
     /// <summary>
+    /// Whether or not the location manager should track locations.
+    /// </summary>
+    /// <value><c>true</c> if allow location tracking; otherwise, <c>false</c>.</value>
+    bool allowLocationTracking { get; set; }
+
+    /// <summary>
     /// The last location known by the location manager.
     /// </summary>
     /// <value>The last know location.</value>

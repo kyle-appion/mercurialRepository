@@ -120,8 +120,9 @@ namespace ION.Core.Measure {
       public static readonly Unit IN_HG = Named(PASCAL.Mul(3386.388333), "inHg");
       public static readonly Unit CM_HG = Named(PASCAL.Mul(1333.224), "cmHg");
       public static readonly Unit KG_CM = Named(PASCAL.Mul(98066.5), "kg/cm²");
+//      public static readonly Unit PSIA = Named(PASCAL.Mul(6894.757293).Add(14.6959488), "psia");
       public static readonly Unit PSIA = Named(PASCAL.Mul(6894.757293), "psia");
-      public static readonly Unit PSIG = Named(PSIA.Add(14.6959488), "psig");
+      public static readonly Unit PSIG = Named(PASCAL.Mul(6894.757293), "psig");
       public static readonly Unit TORR = Named(PASCAL.Mul(133.3223684), "Torr");
       public static readonly Unit MILLITORR = Named(TORR.Transform(SI.MILLI), "mTorr");
       public static readonly Unit MICRON = Named(MILLITORR, "micron");
