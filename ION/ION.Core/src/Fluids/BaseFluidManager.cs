@@ -102,6 +102,7 @@
     // Overridden from IFluidManager
     public async Task<InitializationResult> InitAsync() {
       try {
+        var names = this.GetAvailableFluidNames();
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
         var propsFile = fluidDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
@@ -145,8 +146,10 @@
 
       var ret = new List<string>();
       foreach (IFile file in dir.GetFileList()) {
-        var fluidName = Regex.Replace(file.name, "\\" + EXT_FLUID, "");
-        ret.Add(fluidName);
+        if (!FLUID_COLORS_FILE.Equals(file.name)) {
+          var fluidName = Regex.Replace(file.name, "\\" + EXT_FLUID, "");
+          ret.Add(fluidName);
+        }
       }
 
       return ret;

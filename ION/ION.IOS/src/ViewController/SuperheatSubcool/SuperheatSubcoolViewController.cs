@@ -304,13 +304,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }, UIControlEvent.EditingChanged);
 
       if (initialManifold == null) {
-        ptChart = new ION.Core.Fluids.PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+        ptChart = PTChart.New(ion, Fluid.EState.Dew);
         pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
         temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
       } else {
         var im = initialManifold;
         if (im.ptChart == null) {
-          ptChart = im.ptChart = new PTChart(Fluid.EState.Dew, ion.fluidManager.lastUsedFluid);
+          ptChart = im.ptChart = PTChart.New(ion, Fluid.EState.Dew);
         } else {
           ptChart = im.ptChart;
         }
@@ -359,7 +359,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       viewFluidHeader.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
-          ptChart = new PTChart(ptChart.state, fluid, ion.locationManager.lastKnownLocation.altitude);
+          ptChart = PTChart.New(ion, ptChart.state, fluid);
           OnPressureSensorChanged(pressureSensor);
         };
         NavigationController.PushViewController(sb, true);
@@ -369,10 +369,10 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         Log.D(this, "Altitude: " + ion.locationManager.lastKnownLocation.altitude);
         switch ((int)switchFluidState.SelectedSegment) {
           case SECTION_DEW:
-            ptChart = new PTChart(Fluid.EState.Dew, ptChart.fluid, ion.locationManager.lastKnownLocation.altitude);
+            ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
             break;
           case SECTION_BUBBLE:
-            ptChart = new PTChart(Fluid.EState.Bubble, ptChart.fluid, ion.locationManager.lastKnownLocation.altitude);
+            ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
             break;
         }
         OnPressureSensorChanged(pressureSensor);
@@ -384,7 +384,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// </summary>
     /// <param name="fluid">Fluid.</param>
     private void OnFluidSelected(Fluid fluid) {
-      ptChart = new ION.Core.Fluids.PTChart(ptChart.state, fluid, this.ion.locationManager.lastKnownLocation.altitude);
+      ptChart = PTChart.New(ion, ptChart.state, fluid);
+      switchFluidState.Hidden = !fluid.mixture;
       UpdateDelta();
     }
 

@@ -167,6 +167,16 @@ namespace ION.TestFixtures.Measure {
     public void TestPSIAToKPA() {
       AssertEquals(27.579, Units.Pressure.PSIA.OfScalar(4).ConvertTo(Units.Pressure.KILOPASCAL).amount);
     }
+
+    [Test]
+    public void TestKPAToPSIg() {
+      AssertEquals(24, Units.Pressure.KILOPASCAL.OfScalar(265).ConvertTo(Units.Pressure.PSIG).amount);
+    }
+
+    [Test]
+    public void TestKPAToPSIg2() {
+      AssertEquals(24, Units.Pressure.KILOPASCAL.OfScalar(164).ConvertTo(Units.Pressure.PSIG).amount);
+    }
   }
 }
 

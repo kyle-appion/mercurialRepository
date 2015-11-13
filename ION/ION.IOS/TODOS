@@ -31,3 +31,8 @@ IOS Glitches
 IOS
 Acquiring location takes too long on start up, move location acquiring to thread
   so that it doesn't lock up start up
+
+
+Ensure that fluid manager always has a last used fluid
+
+ios location manager takes too long and stalls boot up. Also crashes occasionally

@@ -74,7 +74,7 @@
         case UITableViewCellEditingStyle.Delete:
           // remove the item form the data source
           __workbench[(int)indexPath.Section].RemoveSensorPropertyAt((int)indexPath.Row);
-          // Delet the row form the table
+          // Delete the row form the table
           tableView.DeleteRows(new NSIndexPath[] { NSIndexPath.FromRowSection(indexPath.Section, indexPath.Row) }, UITableViewRowAnimation.Left);
           tableView.ReloadData();
           break;
@@ -219,6 +219,11 @@
       }
     }
 
+    /// <summary>
+    /// Shows the action sheet for the viewer (manifold) when clicked in the workbench
+    /// </summary>
+    /// <param name="obj">Object.</param>
+    /// <param name="manifold">Manifold.</param>
     private void ShowManifoldContextMenu(object obj, Manifold manifold) {
       var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.ActionSheet);
 
@@ -276,8 +281,15 @@
       __workbenchController.PresentViewController(dialog, true, null);
     }
 
+    /// <summary>
+    /// Throw-away 
+    /// </summary>
     private delegate void AddAction(string title, Action<UIAlertAction> action);
-    // Overridden from UITableViewSource
+    /// <summary>
+    /// Show the action sheet for picking subviews
+    /// </summary>
+    /// <param name="tableView">Table view.</param>
+    /// <param name="manifold">Manifold.</param>
     private void ShowAddSubviewDialog(UITableView tableView, Manifold manifold) {
       var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.ActionSheet);
 
@@ -328,7 +340,7 @@
       var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
       var ptChart = manifold.ptChart;
       if (ptChart == null) {
-        ptChart = new PTChart(Fluid.EState.Dew, __workbenchController.ion.fluidManager.lastUsedFluid);
+        ptChart = PTChart.New(__workbench.ion, Fluid.EState.Dew);
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty)) && ptChartFilter.Matches(sensor)) {

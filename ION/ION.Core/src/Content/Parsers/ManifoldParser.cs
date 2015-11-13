@@ -98,7 +98,7 @@
             fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
           }
 
-          ret.ptChart = new PTChart(state, fluid, ion.locationManager.lastKnownLocation.altitude);
+          ret.ptChart = PTChart.New(ion, state, fluid);
         }
 
         // Read sensor properties

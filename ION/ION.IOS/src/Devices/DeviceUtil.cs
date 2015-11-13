@@ -53,7 +53,7 @@
     /// </summary>
     /// <returns>The user interface image from device model.</returns>
     /// <param name="deviceModel">Device model.</param>
-    public static UIImage GetUIImageFromDeviceModel(EDeviceModel deviceModel, bool enforeCaching = true) {
+    public static UIImage GetUIImageFromDeviceModel(this EDeviceModel deviceModel, bool enforeCaching = true) {
       switch (deviceModel) {
         case EDeviceModel.P300: {
           return UIImage.FromBundle("ic_render_gauge_p300");

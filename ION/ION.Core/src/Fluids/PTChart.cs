@@ -1,18 +1,47 @@
-﻿using System;
+﻿namespace ION.Core.Fluids {
 
-using ION.Core.Fluids;
-using ION.Core.Math;
-using ION.Core.Measure;
-using ION.Core.Util;
+  using System;
 
-namespace ION.Core.Fluids {
+  using ION.Core.App;
+  using ION.Core.Fluids;
+  using ION.Core.Math;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
   public class PTChart {
+
+    /// <summary>
+    /// Creates a new PTChart.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
+    /// <param name="state">State.</param>
+    /// <param name="fluid">Fluid.</param>
+    public static PTChart New(IION ion, Fluid.EState state) {
+      return New(ion, state, ion.fluidManager.lastUsedFluid);
+    }
+
+    /// <summary>
+    /// Creates a new PTChart.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
+    /// <param name="state">State.</param>
+    /// <param name="fluid">Fluid.</param>
+    public static PTChart New(IION ion, Fluid.EState state, Fluid fluid) {
+      var elevation = Units.Length.METER.OfScalar(0);
+
+      if (ion.locationManager.allowLocationTracking) {
+        elevation = ion.locationManager.lastKnownLocation.altitude;
+      }
+
+      return new PTChart(state, fluid, elevation);
+    }
 
     /// <summary>
     /// The state that the fluid is in.
     /// </summary>
     /// <value>The state.</value>
-    public Fluid.EState state { get; private set; }
+    public Fluid.EState state { get; set; }
     /// <summary>
     /// The fluid that the ptchart is using for calculations.
     /// </summary>
@@ -36,17 +65,22 @@ namespace ION.Core.Fluids {
     } Scalar __elevation;
 
 
-    public PTChart(Fluid.EState state, Fluid fluid) : this(state, fluid, Units.Length.METER.OfScalar(0)) {
-      // Nope
-    }
-
-    public PTChart(Fluid.EState state, Fluid fluid, Scalar elevation) {
+    private PTChart(Fluid.EState state, Fluid fluid, Scalar elevation) {
       if (fluid == null) {
         throw new Exception("Cannot create a PTChart with a null fluid");
       }
       this.state = state;
       this.fluid = fluid;
       this.elevation = elevation;
+    }
+
+    /// <summary>
+    /// Queries the temperature for the given sensor.
+    /// </summary>
+    /// <returns>The temperature.</returns>
+    /// <param name="temperatureSensor">Temperature sensor.</param>
+    public Scalar GetTemperature(Sensor pressureSensor) {
+      return GetTemperature(pressureSensor.measurement, pressureSensor.isRelative || Units.Pressure.PSIA.Equals(pressureSensor.unit));
     }
 
     /// <summary>
@@ -66,14 +100,16 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      switch (state) {
-        case Fluid.EState.Bubble:
-          return fluid.GetTemperatureFromBubblePressure(pressure);
-        case Fluid.EState.Dew:
-          return fluid.GetTemperatureFromDewPressure(pressure);
-        default:
-          throw new ArgumentException("Cannot get temperature: invalid fluid state " + state);
-      }
+      return fluid.GetTemperatureFromPressure(state, pressure);
+    }
+
+    /// <summary>
+    /// Queries the pressure of the fluid at the given temperature
+    /// </summary>
+    /// <returns>The pressure.</returns>
+    /// <param name="pressureSensor">Pressure sensor.</param>
+    public Scalar GetPressure(Sensor temperatureSensor) {
+      return GetPressure(temperatureSensor.measurement, temperatureSensor.isRelative);
     }
 
     /// <summary>
@@ -88,18 +124,7 @@ namespace ION.Core.Fluids {
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Scalar GetPressure(Scalar temperature, bool isRelative = true) {
-      Scalar ret = null;
-
-      switch (state) {
-        case Fluid.EState.Bubble:
-          ret = fluid.GetBubblePressureFromTemperature(temperature);
-          break;
-        case Fluid.EState.Dew:
-          ret = fluid.GetDewPressureFromTemperature(temperature);
-          break;
-        default:
-          throw new ArgumentException("Cannot get pressure: invalid fluid state " + state);
-      }
+      Scalar ret = fluid.GetPressureFromTemperature(state, temperature);
 
       if (isRelative) {
         ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
@@ -143,7 +168,7 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar superheat = fluid.GetTemperatureFromDewPressure(pressure).ConvertTo(temperature.unit);
+      Scalar superheat = fluid.GetTemperatureFromPressure(state, pressure).ConvertTo(temperature.unit);
       return temperature - superheat;
     }
 
@@ -163,7 +188,7 @@ namespace ION.Core.Fluids {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar subcool = fluid.GetTemperatureFromBubblePressure(pressure).ConvertTo(temperature.unit);
+      Scalar subcool = fluid.GetTemperatureFromPressure(state, pressure).ConvertTo(temperature.unit);
       return subcool - temperature;
     }
 
@@ -190,14 +215,7 @@ namespace ION.Core.Fluids {
     /// of the ptchart's fluid bounds.
     /// </summary>
     public bool IsPressureAboveBounds(Scalar pressure) {
-      switch (state) {
-        case Fluid.EState.Bubble:
-          return pressure > fluid.GetMaximumBubblePressure();
-        case Fluid.EState.Dew:
-          return pressure > fluid.GetMaximumDewPressure();
-        default:
-          return false;
-      }
+      return pressure > fluid.GetMaximumPressure(state);
     }
 
     /// <summary>
@@ -205,14 +223,7 @@ namespace ION.Core.Fluids {
     /// of the ptchart's fluid bounds.
     /// </summary>
     public bool IsPressureBelowBounds(Scalar pressure) {
-      switch (state) {
-        case Fluid.EState.Bubble:
-          return pressure < fluid.GetMinimumBubblePressure();
-        case Fluid.EState.Dew:
-          return pressure < fluid.GetMinimumDewPressure();
-        default:
-          return false;
-      }
+      return pressure < fluid.GetMaximumPressure(state);
     }
 
     /// <summary>
