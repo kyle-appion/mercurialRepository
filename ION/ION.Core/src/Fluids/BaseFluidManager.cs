@@ -42,7 +42,7 @@
     /// <summary>
     /// The extension that is used to identify a fluid.
     /// </summary>
-    private const string EXT_FLUID = ".dat";
+    private const string EXT_FLUID = ".fluid";
     /// <summary>
     /// The absolute default fluid for the fluid manager.
     /// </summary>
@@ -105,8 +105,8 @@
         var names = this.GetAvailableFluidNames();
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
-        var propsFile = fluidDir.GetFile(FLUID_COLORS_FILE, EFileAccessResponse.FailIfMissing);
-        fluidColors = await Properties.FromFileAsync(propsFile);
+        var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
+        fluidColors = await Properties.FromStreamAsync(propStream);
 
         preferredFluids = new List<string>();
         var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
@@ -124,6 +124,8 @@
             fluidName = fluidNames[0];
           }
         }
+
+        Log.D(this, "Getting fluid: " + fluidName);
         await GetFluidAsync(fluidName);
         return new InitializationResult() { success = true };
       } catch (Exception e) {
@@ -142,12 +144,10 @@
 
     // Overridden from IFluidManager
     public List<string> GetAvailableFluidNames() {
-      var dir = GetRootDir();
-
       var ret = new List<string>();
-      foreach (IFile file in dir.GetFileList()) {
-        if (!FLUID_COLORS_FILE.Equals(file.name)) {
-          var fluidName = Regex.Replace(file.name, "\\" + EXT_FLUID, "");
+      foreach (var filename in EmbeddedResource.GetResourcesOfExtension(EXT_FLUID)) {
+        if (!FLUID_COLORS_FILE.Equals(filename)) {
+          var fluidName = Regex.Replace(filename, "\\" + EXT_FLUID, "");
           ret.Add(fluidName);
         }
       }
@@ -164,9 +164,12 @@
         ret = reference.Target as Fluid;
       }
 
+        Log.D(this, "Looking for " + fluidName);
       if (ret == null && HasFluid(fluidName)) {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));
+      } else {
+          Log.D(this, "or not...");
       }
 
       lastUsedFluid = ret;
@@ -225,7 +228,7 @@
     /// <param name="fluidName">Fluid name.</param>
     private bool HasFluid(string fluidName) {
       foreach (var fn in GetAvailableFluidNames()) {
-        if (Regex.Replace(fn, "\\" + EXT_FLUID, "").Equals(fluidName)) {
+        if (fn.Equals(fluidName)) { 
           return true;
         }
       }
@@ -239,16 +242,8 @@
     /// <param name="fluidName"></param>
     /// <returns></returns>
     private async Task<Fluid> LoadFluidAsync(string fluidName) {
-      fluidName = fluidName + EXT_FLUID;
-      var dir = GetRootDir();
-
-      if (!dir.ContainsFile(fluidName)) {
-        throw new FileNotFoundException(dir.fullPath + fluidName);
-      }
-
-      var file = dir.GetFile(fluidName);
-
-      var ret = new BinaryFluidParser().ParseFluid(file.OpenForReading());
+      var ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
+        Log.D(this, "RET: " + ret);
       ret.color = GetFluidColor(ret.name);
       return ret;
     }

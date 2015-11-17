@@ -19,7 +19,7 @@ namespace ION.Droid.Devices {
     /// </summary>
     /// <param name="device"></param>
     /// <returns></returns>
-    public static int GetDeviceIcon(IDevice device) {
+    public static int GetDeviceIcon(this IDevice device) {
       switch (device.type) {
         case EDeviceType.Gauge: {
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;

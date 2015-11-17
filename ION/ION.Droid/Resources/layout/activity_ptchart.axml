@@ -26,17 +26,24 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>
+            <Space
+                android:layout_height="wrap_content"
+                android:layout_width="@dimen/padding" />
             <TextView
-                android:id="@id/title"
+                android:id="@id/name"
+                android:gravity="center_vertical"
+                android:textSize="@dimen/text_size_large"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent" />
         </LinearLayout>
         <Switch
             android:id="@id/state"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:textOn="@string/fluid_bubble"
-            android:textOff="@string/fluid_dew" />
+            android:textOff="@string/fluid_dew"
+            android:thumb="@drawable/selector_fluid_phase" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space
@@ -51,6 +58,7 @@
         android:layout_width="wrap_content" />
 <!-- Pressure Entry -->
     <LinearLayout
+        android:id="@id/pressure"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,13 +70,13 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
             <ImageView
-                android:id="@id/add"
-                android:src="@drawable/ic_devices_add"
+                android:id="@id/padlock"
+                android:src="@drawable/ic_lock"
                 android:layout_width="@dimen/ptchart_icon_size"
                 android:layout_height="@dimen/ptchart_icon_size" />
             <ImageView
                 android:id="@id/icon"
-                android:src="@drawable/ic_action_edit"
+                android:src="@drawable/ic_devices_add"
                 android:layout_width="@dimen/ptchart_icon_size"
                 android:layout_height="@dimen/ptchart_icon_size" />
         </LinearLayout>
@@ -77,19 +85,30 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-            <EditText
-                android:id="@id/ptchart_pressure_edit"
-                android:inputType="numberDecimal|numberSigned"
-                android:hint="@string/measurement_pressure"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@id/edit"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:hint="@string/measurement_pressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@id/clear"
+                    android:background="@drawable/img_button_whiteclosex"
+                    android:layout_width="@dimen/ptchart_clear_size"
+                    android:layout_height="@dimen/ptchart_clear_size"
+                    android:layout_marginRight="@dimen/padding"
+                    android:layout_gravity="right|center_vertical" />
+            </FrameLayout>
             <TextView
                 android:text="@string/measurement_pressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <Button
-            android:id="@id/ptchart_pressure_unit"
+            android:id="@id/unit"
             android:layout_width="@dimen/ptchart_unit_width"
             android:layout_height="match_parent" />
     </LinearLayout>
@@ -106,6 +125,7 @@
         android:layout_width="wrap_content" />
 <!-- Temperature Entry -->
     <LinearLayout
+        android:id="@id/temperature"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -117,13 +137,13 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
             <ImageView
-                android:id="@id/add"
-                android:src="@drawable/ic_devices_add"
+                android:id="@id/padlock"
+                android:src="@drawable/ic_lock"
                 android:layout_width="@dimen/ptchart_icon_size"
                 android:layout_height="@dimen/ptchart_icon_size" />
             <ImageView
                 android:id="@id/icon"
-                android:src="@drawable/ic_action_edit"
+                android:src="@drawable/ic_devices_add"
                 android:layout_width="@dimen/ptchart_icon_size"
                 android:layout_height="@dimen/ptchart_icon_size" />
         </LinearLayout>
@@ -132,19 +152,30 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-            <EditText
-                android:id="@id/ptchart_temperature_edit"
-                android:hint="@string/measurement_temperature"
-                android:inputType="numberDecimal|numberSigned"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+                <EditText
+                    android:id="@id/edit"
+                    android:inputType="numberDecimal|numberSigned"
+                    android:hint="@string/measurement_temperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <Button
+                    android:id="@id/clear"
+                    android:background="@drawable/img_button_whiteclosex"
+                    android:layout_width="@dimen/ptchart_clear_size"
+                    android:layout_height="@dimen/ptchart_clear_size"
+                    android:layout_marginRight="@dimen/padding"
+                    android:layout_gravity="right|center_vertical" />
+            </FrameLayout>
             <TextView
                 android:text="@string/measurement_temperature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <Button
-            android:id="@id/ptchart_temperature_unit"
+            android:id="@id/unit"
             android:layout_width="@dimen/ptchart_unit_width"
             android:layout_height="match_parent" />
     </LinearLayout>

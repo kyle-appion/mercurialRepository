@@ -62,7 +62,7 @@ VERSION = 1
 CWD = os.getcwd()
 EPSILON = 0.0005 # the allowance of float precision error
 OUT_PATH = './output/' # the out directory for the data files
-OUT_EXT = '.dat' # the file extension for the converted files
+OUT_EXT = '.fluid' # the file extension for the converted files
 
 def run():
     '''

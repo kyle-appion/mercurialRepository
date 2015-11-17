@@ -26,6 +26,10 @@
   using ION.Droid.Location;
 
   public class AndroidION : IION {
+    /// <summary>
+    /// The name of the general ion preferences.
+    /// </summary>
+    public const string PREFERENCES_GENERAL = "ion.preferences";
 
     // Overridden from IION
     public string name { get { return context.PackageName; } }
@@ -64,6 +68,16 @@
     /// </summary>
     /// <value>The context.</value>
     public Context context { get; private set; }
+
+    /// <summary>
+    /// The general preferences for the app.
+    /// </summary>
+    /// <value>The preferences.</value>
+    public ISharedPreferences preferences { 
+      get {
+        return context.GetSharedPreferences(PREFERENCES_GENERAL, FileCreationMode.Private);
+      }
+    }
 
     /// <summary>
     /// The android specfic message pump.

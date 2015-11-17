@@ -12,10 +12,13 @@
   <string name="disconnect_all">Disconnect All</string>
   <string name="disconnected">Disconnected</string>
   <string name="exit">Exit</string>
+  <string name="favorites">Favorites</string>
+  <string name="library">Library</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
   <string name="main">Main</string>
   <string name="open">Open</string>
+  <string name="save">Save</string>
   <string name="scan">Scan</string>
   <string name="scanning">Scanning</string>
   <string name="settings">Settings</string>
@@ -62,6 +65,10 @@
   -->
   <string name="fluid_bubble">Bubble</string>
   <string name="fluid_dew">Dew</string>
+  <string name="fluid_failed_to_load">Failed to load fluid</string>
+  <string name="fluid_empty_library">The ION application failed to load any refrigerants. Please contact Appion for more details.</string>
+  <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
+  <string name="fluid_nothing_selected">Nothing Selected</string>
 
   <!--
   MEASUREMENT

@@ -1,9 +1,11 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Reflection;
+﻿namespace ION.Core.IO {
 
-namespace ION.Core.IO {
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Linq;
+  using System.Reflection;
+
   /// <summary>
   /// A utitlity class that will load embedded resources.
   /// </summary>
@@ -41,6 +43,32 @@ namespace ION.Core.IO {
       }
 
       return assembly.GetManifestResourceStream(resourcePaths[0]);
+    }
+
+    /// <summary>
+    /// Loads a list of the embedded resources that are in the project at the given path.
+    /// </summary>
+    /// <returns>The <see cref="System.Collections.Generic.List`1[[System.String]]"/>.</returns>
+    /// <param name="ext">Path.</param>
+    public static List<string> GetResourcesOfExtension(string ext) {
+      return GetResourcesOfExtension(typeof(EmbeddedResource).GetTypeInfo().Assembly, ext);
+    }
+
+    /// <summary>
+    /// Loads a list of the embedded resources that are in the project at the given path.
+    /// </summary>
+    /// <returns>The <see cref="System.Collections.Generic.List`1[[System.String]]"/>.</returns>
+    /// <param name="assembly">Assembly.</param>
+    /// <param name="ext">ext.</param>
+    public static List<string> GetResourcesOfExtension(Assembly assembly, string ext) {
+      var ret = new List<string>();
+
+      var resourceNames = assembly.GetManifestResourceNames();
+      var resourcePaths = resourceNames.Where(x => x.EndsWith(ext)).ToArray();
+
+      ret.AddRange(resourcePaths);
+
+      return ret;
     }
   }
 }

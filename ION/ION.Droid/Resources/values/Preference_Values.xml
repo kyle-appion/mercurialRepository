@@ -4,9 +4,14 @@
   STRINGS
   -->
   <string name="preferences">ION Preferences</string>
+
   <string name="preferences_display_wakelock">Allow Device To Sleep</string>
   <string name="preferences_display_wakelock_on">Will not sleep while ION is open</string>
   <string name="preferences_display_wakelock_off">Sleep as normal</string>
+
+  <string name="preferences_location_use"></string>
+  <string name="preferences_location_use_title">Allow GPS Location</string>
+
   <string name="preferences_units_default">Default Units</string>
   <string name="preferences_units_length">Default Length Unit</string>
   <string name="preferences_units_length_title">Select a new default length</string>
