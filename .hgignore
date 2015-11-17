@@ -22,6 +22,7 @@ obj/**
 **.tmp
 # Hard package and library files
 packages/**
+Components/**
 # Preference file
 ION.userprefs
 # Consulo (for diff because FUCK macHg)

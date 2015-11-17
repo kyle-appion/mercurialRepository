@@ -85,4 +85,20 @@ namespace ION.Droid.Dialog {
       }
     } // End IONAlertDialog.CloseDialogAction
   } // End IONAlertDialog
+
+  /// <summary>
+  /// A simple class that will wrap an action in a C# action in a java object.
+  /// </summary>
+  public class ActionDialogClickListener : Java.Lang.Object, IDialogInterfaceOnClickListener {
+    internal Action action { get; set; }
+
+    public ActionDialogClickListener(Action action) {
+      this.action = action;
+    }
+
+    // Overridden from IDialogInterfaceOnClickListener
+    public void OnClick(IDialogInterface dialog, int i) {
+      action();
+    }
+  }
 }

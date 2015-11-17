@@ -33,6 +33,12 @@ namespace ION.Droid.Activity {
   /// </summary>
   [Activity(Label = "DeviceManagerActivity", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
   public class DeviceManagerActivity : IONActivity, View.IOnClickListener {
+    /// <summary>
+    /// The extra key that is used to pull ESensorTypes (as an array of ints)
+    /// from the starting intent.
+    /// </summary>
+    public const string EXTRA_SENSOR_TYPES = "ion.droid.activity.extra.device_manager.TYPES";
+
     private const long DEFAULT_SCAN_TIME = 5000;
 
     private static readonly DeviceGroup CONNECTED = new DeviceGroup(Resource.String.connected, Resource.Color.green);
@@ -202,6 +208,7 @@ namespace ION.Droid.Activity {
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
         case Android.Resource.Id.Home:
+          SetResult(Result.Canceled);
           Finish();
           return true;
         case Resource.Id.scan: 

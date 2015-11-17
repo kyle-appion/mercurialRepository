@@ -16,6 +16,7 @@
     <ListPreference
       android:title="@string/preferences_units_length"
       android:key="@string/preferences_units_length"
+      android:summary="%s"
       android:dialogTitle="@string/preferences_units_length_title"
       android:entries="@array/preferences_units_length_entries"
       android:entryValues="@array/preferences_units_length_values"
@@ -24,6 +25,7 @@
     <ListPreference
       android:title="@string/preferences_units_pressure"
       android:key="@string/preferences_units_pressure"
+      android:summary="%s"
       android:dialogTitle="@string/preferences_units_pressure_title"
       android:entries="@array/preferences_units_pressure_entries"
       android:entryValues="@array/preferences_units_pressure_values"
@@ -32,6 +34,7 @@
     <ListPreference
       android:title="@string/preferences_units_temperature"
       android:key="@string/preferences_units_temperature"
+      android:summary="%s"
       android:dialogTitle="@string/preferences_units_temperature_title"
       android:entries="@array/preferences_units_temperature_entries"
       android:entryValues="@array/preferences_units_temperature_values"
@@ -40,6 +43,7 @@
     <ListPreference
       android:title="@string/preferences_units_vacuum"
       android:key="@string/preferences_units_vacuum"
+      android:summary="%s"
       android:dialogTitle="@string/preferences_units_vacuum_title"
       android:entries="@array/preferences_units_vacuum_entries"
       android:entryValues="@array/preferences_units_vacuum_values"

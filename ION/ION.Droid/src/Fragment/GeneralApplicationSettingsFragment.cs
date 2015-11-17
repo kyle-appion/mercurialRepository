@@ -13,17 +13,14 @@
   using Android.Views;
   using Android.Widget;
 
-  public class GeneralApplicationSettingsFragment : PreferenceFragment {
-    /// <summary>
-    /// The name of the general ion preferences.
-    /// </summary>
-    public const string PREFERENCES_NAME = "ion.preferences";
+  using ION.Droid.App;
 
+  public class GeneralApplicationSettingsFragment : PreferenceFragment {
     // Overridden from PreferenceFragment
     public override void OnCreate(Bundle savedInstanceState) {
       base.OnCreate(savedInstanceState);
 
-      this.PreferenceManager.SharedPreferencesName = PREFERENCES_NAME;
+      this.PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
       AddPreferencesFromResource(Resource.Xml.preferences_application);
     }
   }

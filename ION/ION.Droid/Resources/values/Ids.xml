@@ -7,23 +7,32 @@
   <item name="alarm" type="id"/>
   <item name="arrow" type="id"/>
   <item name="battery" type="id"/>
+  <item name="clear" type="id"/>
   <item name="close" type="id"/>
   <item name="connect" type="id"/>
   <item name="connection" type="id"/>
   <item name="content" type="id"/>
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
+  <item name="edit" type="id"/>
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>
   <item name="icon" type="id"/>
+  <item name="library" type="id"/>
   <item name="loading" type="id"/>
+  <!-- lock is a keyword for c# -->
+  <item name="padlock" type="id"/>
   <item name="main" type="id"/>
-  <item name="name" type="id"/>
   <item name="measurement" type="id"/>
+  <item name="name" type="id"/>
+  <item name="preferred" type="id"/>
+  <item name="pressure" type="id"/>
+  <item name="save" type="id"/>
   <item name="scan" type="id"/>
   <item name="settings" type="id"/>
   <item name="state" type="id"/>
   <item name="status" type="id"/>
+  <item name="temperature" type="id"/>
   <item name="title" type="id"/>
   <item name="type" type="id"/>
   <item name="unit" type="id"/>

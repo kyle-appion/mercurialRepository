@@ -13,6 +13,17 @@
     // Overridden from ILocationManager
     public event OnLocationChanged onLocationChanged;
 
+    // Overridden from ILocationManager
+    public bool allowLocationTracking {
+      get {
+        var c = ion.context;
+        ion.preferences.GetBoolean(c.GetString(Resource.String.preferences_location_use), false);
+        return false;
+      }
+      set {
+      }
+    }
+
     // Overridden from ILocationManager;
     public ILocation lastKnownLocation {
       get {

@@ -8,7 +8,11 @@
   using Android.Graphics.Drawables;
   using Android.OS;
   using Android.Views;
+  using Android.Widget;
 
+  using ION.Core.Util;
+
+  using ION.Droid.App;
   using ION.Droid.Fragment;
   using ION.Droid.Util;
 
@@ -24,9 +28,10 @@
       base.OnCreate(state);
 
       cache = new BitmapCache(Resources);
-      GetSharedPreferences(GeneralApplicationSettingsFragment.PREFERENCES_NAME, FileCreationMode.Append)
+      GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Append)
         .RegisterOnSharedPreferenceChangeListener(this);
     }
+
     /// <summary>
     /// Builds and returned a gray colored drawable.
     /// </summary>
@@ -56,6 +61,15 @@
       } else {
         Window.ClearFlags(WindowManagerFlags.KeepScreenOn);
       }
+    }
+
+    /// <summary>
+    /// Displays and error toast to the user.
+    /// </summary>
+    /// <param name="message">Message.</param>
+    public void Error(string message) {
+      Log.E(this, message);
+      Toast.MakeText(this, message, ToastLength.Long).Show();
     }
   }
 }
