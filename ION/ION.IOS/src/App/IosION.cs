@@ -113,7 +113,7 @@
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));
       };
-      managers.Add(fluidManager = new BaseFluidManager(this, fileManager.GetAssetDirectory().GetFolder("fluids")));
+      managers.Add(fluidManager = new BaseFluidManager(this));
     }
 
     // Overridden from IION
