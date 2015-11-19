@@ -76,11 +76,6 @@
     /// </summary>
     public IION ion { get; private set; }
     /// <summary>
-    /// The directory that the fluid manager will get its fluids from.
-    /// </summary>
-    /// <value>The fluid dir.</value>
-    private IFolder fluidDir { get; set; }
-    /// <summary>
     /// The preference for the fluid manager.
     /// </summary>
     private IPreferences preferences;
@@ -93,16 +88,15 @@
     /// </summary>
     private readonly Dictionary<string, WeakReference> __cache = new Dictionary<string, WeakReference>();
 
-    public BaseFluidManager(IION ion, IFolder fluidDir) {
+    public BaseFluidManager(IION ion) {
       this.ion = ion;
-      this.fluidDir = fluidDir;
       preferredFluids = new List<string>();
     }
 
     // Overridden from IFluidManager
     public async Task<InitializationResult> InitAsync() {
       try {
-        var names = this.GetAvailableFluidNames();
+        var names = GetAvailableFluidNames();
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
         var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
