@@ -58,6 +58,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         SynchronizePressureIcons();
 
         if (__pressureSensor != null) {
+          __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
           SynchronizePressureMeasurement(pressureSensor.measurement);
         }
       }
@@ -80,6 +81,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         SynchronizeTemperatureIcons();
 
         if (__temperatureSensor != null) {
+          __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
           SynchronizeTemperatureMeasurement(temperatureSensor.measurement);
         }
       }
