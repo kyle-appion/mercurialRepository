@@ -72,11 +72,16 @@
     public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
+          try {
           // remove the item form the data source
           __workbench[(int)indexPath.Section].RemoveSensorPropertyAt((int)indexPath.Row);
+          
           // Delete the row form the table
-          tableView.DeleteRows(new NSIndexPath[] { NSIndexPath.FromRowSection(indexPath.Section, indexPath.Row) }, UITableViewRowAnimation.Left);
+          tableView.DeleteRows(new NSIndexPath[] { NSIndexPath.FromRowSection(indexPath.Row, indexPath.Section) }, UITableViewRowAnimation.Left);
           tableView.ReloadData();
+          } catch (Exception e) {
+            Log.E(this, "wtf", e);
+          }
           break;
       }
     }

@@ -225,7 +225,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (pressureSensor.isEditable) {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
-            pressureSensor.unit = unit;
+            if (editPressure.Text == null || "".Equals(editPressure.Text)) {
+              pressureSensor.onSensorStateChangedEvent -= OnPressureSensorChanged;
+
+              pressureSensor.unit = unit;
+              buttonPressureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
+
+              pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
+            } else {
+              pressureSensor.unit = unit;
+            }
           });
           PresentViewController(dialog, true, null);
         }
@@ -289,7 +298,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       buttonTemperatureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (temperatureSensor.isEditable) {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
-            temperatureSensor.unit = unit;
+            if (editTemperature.Text == null || "".Equals(editTemperature.Text)) {
+              temperatureSensor.onSensorStateChangedEvent -= OnTemperatureSensorChanged;
+
+              temperatureSensor.unit = unit;
+              buttonTemperatureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
+
+              temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
+            } else {
+              temperatureSensor.unit = unit;
+            }
           });
           PresentViewController(dialog, true, null);
         }
