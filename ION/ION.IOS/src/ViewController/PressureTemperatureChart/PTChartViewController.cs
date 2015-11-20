@@ -141,6 +141,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }
     }
 
+    // Overridden from ViewController
+    public override void ViewWillDisappear(bool animated) {
+      base.ViewWillDisappear(animated);
+
+      if (initialManifold != null) {
+        initialManifold.ptChart = this.ptChart;
+      }
+    }
+
     /// <summary>
     /// Initializes the states and event handlers the for ptchart widgets
     /// </summary>
