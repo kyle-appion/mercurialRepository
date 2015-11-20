@@ -120,6 +120,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       InitPTChartWidgets();
       InitPressureWidgets();
       InitTemperatureWidgets();
+    }
+
+    // Overridden from ViewController
+    public override void ViewWillAppear(bool animated) {
+      base.ViewWillAppear(animated);
 
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
@@ -135,7 +140,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         }
       } else {
         pressureSensor = new Sensor(ESensorType.Pressure);
-        temperatureSensor = new Sensor(ESensorType.Temperature);
+        temperatureSensor = new Sensor(ESensorType.Temperature, false);
         ClearPressureInput();
         ClearTemperatureInput();
       }

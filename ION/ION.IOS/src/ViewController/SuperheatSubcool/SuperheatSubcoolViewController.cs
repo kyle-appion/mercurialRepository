@@ -203,9 +203,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       InitializeFluidControlWidgets();
 
-      __pressureSensor = new Sensor(ESensorType.Pressure);
-      __temperatureSensor = new Sensor(ESensorType.Temperature);
-
       buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonPressureUnit.TouchUpInside += (object sender, EventArgs e) => {
         if (pressureSensor.isEditable) {
@@ -303,11 +300,19 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           ClearTemperatureInput();
         }
       }, UIControlEvent.EditingChanged);
+    }
+
+    // Overriden from BaseIONViewController
+    public override void ViewWillAppear(bool animated) {
+      base.ViewWillAppear(animated);
+
+      __pressureSensor = new Sensor(ESensorType.Pressure);
+      __temperatureSensor = new Sensor(ESensorType.Temperature);
 
       if (initialManifold == null) {
         ptChart = PTChart.New(ion, Fluid.EState.Dew);
-        pressureSensor = new Sensor(ESensorType.Pressure, Units.Pressure.PSIG.OfScalar(0), true);
-        temperatureSensor = new Sensor(ESensorType.Temperature, Units.Temperature.FAHRENHEIT.OfScalar(0), false);
+        pressureSensor = new Sensor(ESensorType.Pressure);
+        temperatureSensor = new Sensor(ESensorType.Temperature, false);
       } else {
         var im = initialManifold;
         if (im.ptChart == null) {
