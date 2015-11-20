@@ -15,7 +15,7 @@
 
   public partial class AppionServerHelper {
     public partial class Email { 
-      public const string APPION_SUPPORT = "ahodder@appioninc.com";//"appsupport@appiontools.com";
+      public const string APPION_SUPPORT = "appsupport@appiontools.com";
 
       /// <summary>
       /// Creates a json file describing the current platform.

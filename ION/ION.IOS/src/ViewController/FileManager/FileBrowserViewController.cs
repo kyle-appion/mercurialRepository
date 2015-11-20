@@ -4,6 +4,7 @@ namespace ION.IOS.ViewController.FileManager {
   using System;
 
   using Foundation;
+  using QuickLook;
   using UIKit;
 
   using ION.Core.App;
@@ -61,6 +62,7 @@ namespace ION.IOS.ViewController.FileManager {
       table.Source = source;
     }
 
+    // TODO ahodder@appioninc.com: MAKE MORE GENERIC CAUSE WE ASSUME PDF
     /// <summary>
     /// Called when a file row is clicked within the source.
     /// </summary>
@@ -68,8 +70,61 @@ namespace ION.IOS.ViewController.FileManager {
     /// <param name="indexPath">Index path.</param>
     private void OnFileRowClicked(IFile file, NSIndexPath indexPath) {
       // Opens the file in the user's perferred (as in user clicked) app
+      var url = new NSUrl(file.fullPath, false);
+      /*
       var externalViewer = UIDocumentInteractionController.FromUrl(new NSUrl(file.fullPath, false));
+      externalViewer.PresentOptionsMenu(View.Frame, View, true);
+      */
+      /*
+      var externalViewer = UIDocumentInteractionController.FromUrl (new NSUrl(file.fullPath, false));
+      externalViewer.ViewControllerForPreview = c => this;
+      externalViewer.ViewForPreview = c => this.View;
+      externalViewer.RectangleForPreview = c => this.View.Bounds;
       externalViewer.PresentOpenInMenu(View.Frame, View, true);
+      */
+
+      QLPreviewController previewController = new QLPreviewController();
+      previewController.DataSource = new DataSource(url);
+      PresentViewController(previewController, true, null);
     }
 	}
+
+  internal class DataSource : QLPreviewControllerDataSource {
+    public NSUrl url { get; set; }
+
+    public DataSource(NSUrl url) {
+      this.url = url;
+    }
+
+    public override nint PreviewItemCount(QLPreviewController conteoller) {
+      return 1;
+    }
+
+    // Overridden form QLPreviewControllerDataSource
+    public override IQLPreviewItem GetPreviewItem(QLPreviewController controller, nint index) {
+      return new QLItem("", url);
+    }
+  }
+
+  internal class QLItem : QLPreviewItem {
+    public string title { get; set; }
+    public NSUrl url { get; set; }
+
+    public override string ItemTitle {
+      get {
+        return title;
+      }
+    }
+
+    public override NSUrl ItemUrl {
+      get {
+        return url;
+      }
+    }
+
+    public QLItem(string title, NSUrl url) {
+      this.title = title;
+      this.url = url;
+    }
+  }
 }

@@ -230,7 +230,7 @@
     /// <param name="obj">Object.</param>
     /// <param name="manifold">Manifold.</param>
     private void ShowManifoldContextMenu(object obj, Manifold manifold) {
-      var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.ActionSheet);
+      var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.Alert);
 
 
       if (manifold.primarySensor is GaugeDeviceSensor) {
@@ -296,7 +296,7 @@
     /// <param name="tableView">Table view.</param>
     /// <param name="manifold">Manifold.</param>
     private void ShowAddSubviewDialog(UITableView tableView, Manifold manifold) {
-      var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.ActionSheet);
+      var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.Alert);
 
       AddAction addAction = (string title, Action<UIAlertAction> action) => {
         dialog.AddAction(UIAlertAction.Create(title, UIAlertActionStyle.Default, (UIAlertAction uia) => {

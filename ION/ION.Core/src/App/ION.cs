@@ -1,17 +1,19 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.Core.App {
 
-using ION.Core.Alarms;
-using ION.Core.Content;
-using ION.Core.Database;
-using ION.Core.Devices;
-using ION.Core.Fluids;
-using ION.Core.IO;
-using ION.Core.Location;
-using ION.Core.Measure;
-using ION.Core.Util;
+  using System;
+  using System.Threading.Tasks;
 
-namespace ION.Core.App {
+  using ION.Core.Alarms;
+  using ION.Core.Content;
+  using ION.Core.Database;
+  using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.IO;
+  using ION.Core.Location;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
   /// <summary>
   /// A utility class that will retain the ION context. We do this because
   /// interfaces can't have static properties. 
@@ -127,6 +129,8 @@ namespace ION.Core.App {
     Unit pressure { get; set; }
     Unit temperature { get; set; }
     Unit vacuum { get; set; }
+
+    Unit DefaultUnitFor(ESensorType sensorType);
   } // End IUnits
 }
 

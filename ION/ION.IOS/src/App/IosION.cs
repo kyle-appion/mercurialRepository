@@ -246,5 +246,25 @@
     public IosUnits(AppSettings settings) {
       this.settings = settings;
     }
+
+    // Overridden from IUnits
+    public Unit DefaultUnitFor(ESensorType sensorType) {
+      switch (sensorType) {
+        case ESensorType.Length:
+          Log.D(this, "Returning: " + length);
+          return length;
+        case ESensorType.Pressure:
+          Log.D(this, "Returning: " + pressure);
+          return pressure;
+        case ESensorType.Temperature:
+          Log.D(this, "Returning: " + temperature);
+          return temperature;
+        case ESensorType.Vacuum:
+          Log.D(this, "Returning: " + vacuum);
+          return vacuum;
+        default:
+          return sensorType.GetDefaultUnit();
+      }
+    }
   }
 }

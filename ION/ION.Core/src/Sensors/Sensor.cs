@@ -324,7 +324,7 @@ namespace ION.Core.Sensors {
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Sensor(ESensorType sensorType, bool isRelative=true, bool isEditable=true)
-      : this(sensorType, sensorType.GetDefaultUnit().OfScalar(0), isRelative, isEditable) {
+      : this(sensorType, ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(sensorType).OfScalar(0), isRelative, isEditable) {
     }
     /// <summary>
     /// Creates a new sensor.
