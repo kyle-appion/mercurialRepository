@@ -124,6 +124,7 @@
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Net\JSONCalibrationCertificateParser.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
+    <Compile Include="src\Measure\Json\UnitJsonConverter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -154,6 +155,7 @@
     <Folder Include="src\Report\" />
     <Folder Include="src\Net\" />
     <Folder Include="src\Fluids\Embedded\" />
+    <Folder Include="src\Measure\Json\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">

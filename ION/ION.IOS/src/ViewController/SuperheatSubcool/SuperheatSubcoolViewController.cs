@@ -212,6 +212,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
             pressureUnit = unit;
           });
+
           PresentViewController(dialog, true, null);
         }
       };
