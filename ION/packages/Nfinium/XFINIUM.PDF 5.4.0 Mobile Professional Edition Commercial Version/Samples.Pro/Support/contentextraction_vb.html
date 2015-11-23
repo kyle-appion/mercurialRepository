@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\ContentExtraction.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Content
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' ContentExtraction sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class ContentExtraction
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>input <span class="hl kwa">As</span> Stream<span class="hl opt">)</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl slc">' Load the input file.</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">(</span>input<span class="hl opt">)</span>
+
+			<span class="hl kwd">ExtractTextAndHighlight</span><span class="hl opt">(</span>document<span class="hl opt">)</span>
+
+			<span class="hl kwd">ExtractTextAndHighlightGlyphs</span><span class="hl opt">(</span>document<span class="hl opt">)</span>
+
+			<span class="hl kwd">ExtractImagesAndHighlight</span><span class="hl opt">(</span>document<span class="hl opt">)</span>
+
+			<span class="hl slc">' Compress the page graphic content.</span>
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+				document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span>i<span class="hl opt">).</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">()</span>
+			<span class="hl kwa">Next</span>
+
+			<span class="hl kwa">Dim</span> output <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() {</span><span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.contentextraction.pdf&quot;</span><span class="hl opt">)}</span>
+			<span class="hl kwa">Return</span> output
+		<span class="hl kwa">End Function</span>
+
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Extracts text fragments from the first page and highlights the fragment boundaries.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl slc">''' &lt;param name=&quot;document&quot;&gt;&lt;/param&gt;</span>
+		<span class="hl kwa">Private</span> Shared <span class="hl kwa">Sub</span> <span class="hl kwd">ExtractTextAndHighlight</span><span class="hl opt">(</span>document <span class="hl kwa">As</span> PdfFixedDocument<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> penColor <span class="hl kwa">As New</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> pen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>penColor<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> rnd <span class="hl kwa">As New</span> <span class="hl kwd">Random</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> rgb <span class="hl kwa">As</span> <span class="hl kwb">Byte</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwb">Byte</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) {}</span>
+
+			<span class="hl kwa">Dim</span> ce <span class="hl kwa">As New</span> <span class="hl kwd">PdfContentExtractor</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+			<span class="hl kwa">Dim</span> tfc <span class="hl kwa">As</span> PdfTextFragmentCollection <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">ExtractTextFragments</span><span class="hl opt">()</span>
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> tfc<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+				rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>R <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>G <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>B <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+
+				<span class="hl kwa">Dim</span> boundingPath <span class="hl kwa">As New</span> <span class="hl kwd">PdfPath</span><span class="hl opt">()</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">StartSubpath</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">CloseSubpath</span><span class="hl opt">()</span>
+
+				document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawPath</span><span class="hl opt">(</span>pen<span class="hl opt">,</span> boundingPath<span class="hl opt">)</span>
+			<span class="hl kwa">Next</span>
+		<span class="hl kwa">End Sub</span>
+
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Extracts text fragments from the 2nd page and highlights the glyphs in the fragment.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl slc">''' &lt;param name=&quot;document&quot;&gt;&lt;/param&gt;</span>
+		<span class="hl kwa">Private</span> Shared <span class="hl kwa">Sub</span> <span class="hl kwd">ExtractTextAndHighlightGlyphs</span><span class="hl opt">(</span>document <span class="hl kwa">As</span> PdfFixedDocument<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> penColor <span class="hl kwa">As New</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> pen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>penColor<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> rnd <span class="hl kwa">As New</span> <span class="hl kwd">Random</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> rgb <span class="hl kwa">As</span> <span class="hl kwb">Byte</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwb">Byte</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">) {}</span>
+
+			<span class="hl kwa">Dim</span> ce <span class="hl kwa">As New</span> <span class="hl kwd">PdfContentExtractor</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">))</span>
+			<span class="hl kwa">Dim</span> tfc <span class="hl kwa">As</span> PdfTextFragmentCollection <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">ExtractTextFragments</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> tf <span class="hl kwa">As</span> PdfTextFragment <span class="hl opt">=</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> tf<span class="hl opt">.</span>Glyphs<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+				rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>R <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>G <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">)</span>
+				penColor<span class="hl opt">.</span>B <span class="hl opt">=</span> <span class="hl kwd">rgb</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">)</span>
+
+				<span class="hl kwa">Dim</span> boundingPath <span class="hl kwa">As New</span> <span class="hl kwd">PdfPath</span><span class="hl opt">()</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">StartSubpath</span><span class="hl opt">(</span>tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>X<span class="hl opt">,</span> tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span>tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>X<span class="hl opt">,</span> tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span>tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>X<span class="hl opt">,</span> tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span>tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>X<span class="hl opt">,</span> tf<span class="hl opt">.</span><span class="hl kwd">Glyphs</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">GlyphCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">CloseSubpath</span><span class="hl opt">()</span>
+
+				document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawPath</span><span class="hl opt">(</span>pen<span class="hl opt">,</span> boundingPath<span class="hl opt">)</span>
+			<span class="hl kwa">Next</span>
+		<span class="hl kwa">End Sub</span>
+
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Extracts text fragments from the 3rd page and highlights the glyphs in the fragment.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl slc">''' &lt;param name=&quot;document&quot;&gt;&lt;/param&gt;</span>
+		<span class="hl kwa">Private</span> Shared <span class="hl kwa">Sub</span> <span class="hl kwd">ExtractImagesAndHighlight</span><span class="hl opt">(</span>document <span class="hl kwa">As</span> PdfFixedDocument<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> pen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">New</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">),</span> <span class="hl num">0.5</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> brush <span class="hl kwa">As New</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span><span class="hl kwa">New</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">))</span>
+			<span class="hl kwa">Dim</span> helvetica <span class="hl kwa">As New</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">8</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> sao <span class="hl kwa">As New</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">()</span>
+			sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush
+			sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> helvetica
+			<span class="hl kwa">Dim</span> slo <span class="hl kwa">As New</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">()</span>
+			slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">1000</span>
+
+			<span class="hl kwa">Dim</span> ce <span class="hl kwa">As New</span> <span class="hl kwd">PdfContentExtractor</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">))</span>
+			<span class="hl kwa">Dim</span> eic <span class="hl kwa">As</span> PdfEmbeddedImageCollection <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">ExtractImages</span><span class="hl opt">(</span><span class="hl kwa">False</span><span class="hl opt">)</span>
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> eic<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+				<span class="hl kwa">Dim</span> imageProperties <span class="hl kwa">As</span> <span class="hl kwb">String</span> <span class="hl opt">=</span> <span class="hl kwb">String</span><span class="hl opt">.</span><span class="hl kwd">Format</span><span class="hl opt">(</span><span class="hl str">&quot;Image ID: {0}&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Pixel width: {1} pixels&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Pixel height: {2} pixels&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Display width: {3} points&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Display height: {4} points&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Horizonal Resolution: {5} dpi&quot;</span> <span class="hl opt">&amp;</span> vbLf <span class="hl opt">&amp;</span> <span class="hl str">&quot;Vertical Resolution: {6} dpi&quot;</span><span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>ImageID<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>Width<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>Height<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>DisplayWidth<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>DisplayHeight<span class="hl opt">,</span> _
+					<span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>DpiX<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span>DpiY<span class="hl opt">)</span>
+
+				<span class="hl kwa">Dim</span> boundingPath <span class="hl kwa">As New</span> <span class="hl kwd">PdfPath</span><span class="hl opt">()</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">StartSubpath</span><span class="hl opt">(</span><span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">1</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">AddLineTo</span><span class="hl opt">(</span><span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+				boundingPath<span class="hl opt">.</span><span class="hl kwd">CloseSubpath</span><span class="hl opt">()</span>
+
+				document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawPath</span><span class="hl opt">(</span>pen<span class="hl opt">,</span> boundingPath<span class="hl opt">)</span>
+				slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>X <span class="hl opt">+</span> <span class="hl num">1</span>
+				slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl kwd">eic</span><span class="hl opt">(</span>i<span class="hl opt">).</span><span class="hl kwd">ImageCorners</span><span class="hl opt">(</span><span class="hl num">3</span><span class="hl opt">).</span>Y <span class="hl opt">+</span> <span class="hl num">1</span>
+				document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">).</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>imageProperties<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">)</span>
+			<span class="hl kwa">Next</span>
+		<span class="hl kwa">End Sub</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->

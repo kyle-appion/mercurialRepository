@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <!--
+  GENERAL APPLICATION ACTIONS
+  -->
+  <item name="add" type="id"/>
+  <item name="alarm" type="id"/>
+  <item name="arrow" type="id"/>
+  <item name="battery" type="id"/>
+  <item name="clear" type="id"/>
+  <item name="close" type="id"/>
+  <item name="connect" type="id"/>
+  <item name="connection" type="id"/>
+  <item name="content" type="id"/>
+  <item name="color" type="id"/>
+  <item name="counter" type="id"/>
+  <item name="edit" type="id"/>
+  <item name="exit" type="id"/>
+  <item name="fluid" type="id"/>
+  <item name="icon" type="id"/>
+  <item name="library" type="id"/>
+  <item name="loading" type="id"/>
+  <!-- lock is a keyword for c# -->
+  <item name="padlock" type="id"/>
+  <item name="main" type="id"/>
+  <item name="measurement" type="id"/>
+  <item name="name" type="id"/>
+  <item name="preferred" type="id"/>
+  <item name="pressure" type="id"/>
+  <item name="save" type="id"/>
+  <item name="scan" type="id"/>
+  <item name="settings" type="id"/>
+  <item name="state" type="id"/>
+  <item name="status" type="id"/>
+  <item name="temperature" type="id"/>
+  <item name="title" type="id"/>
+  <item name="type" type="id"/>
+  <item name="unit" type="id"/>
+  <item name="view" type="id"/>
+
+  <!--
+  ANALYZER
+  -->
+  <item name="analyzer" type="id"/>
+  <item name="analyzer_add_to" type="id"/>
+
+  <!--
+  CALCULATORS
+  -->
+  <item name="calculators" type="id"/>
+
+  <item name="ptchart" type="id"/>
+  <item name="ptchart_pressure_add" type="id"/>
+  <item name="ptchart_pressure_edit" type="id"/>
+  <item name="ptchart_pressure_unit" type="id"/>
+  <item name="ptchart_temperature_add" type="id"/>
+  <item name="ptchart_temperature_edit" type="id"/>
+  <item name="ptchart_temperature_unit" type="id"/>
+
+  <!--
+  DEVICE MANAGER
+  -->
+  <item name="device_manager" type="id"/>
+  <item name="device_serial_number" type="id"/>
+
+  <!--
+  DRAWER
+  -->
+  <item name="drawer" type="id"/>
+  <item name="drawer_list" type="id"/>
+
+  <!--
+  WORKBENCH
+  -->
+  <item name="workbench" type="id"/>
+  <item name="workbench_add_to" type="id"/>
+</resources>
