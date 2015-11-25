@@ -211,7 +211,7 @@
     // Overridden from IUnits
     public Unit length {
       get {
-        return UnitLookup.GetUnitEntry(settings.units.length).unit;
+        return UnitLookup.GetUnit(settings.units.length);
       }
       set {
       }
@@ -219,7 +219,7 @@
     // Overridden from IUnits
     public Unit pressure {
       get {
-        return UnitLookup.GetUnitEntry(settings.units.pressure).unit;
+        return UnitLookup.GetUnit(settings.units.pressure);
       }
       set {
       }
@@ -227,7 +227,7 @@
     // Overridden from IUnits
     public Unit temperature {
       get {
-        return UnitLookup.GetUnitEntry(settings.units.temperature).unit;
+        return UnitLookup.GetUnit(settings.units.temperature);
       }
       set {
       }
@@ -235,7 +235,7 @@
     // Overridden from IUnits
     public Unit vacuum {
       get {
-        return UnitLookup.GetUnitEntry(settings.units.vacuum).unit;
+        return UnitLookup.GetUnit(settings.units.vacuum);
       }
       set {
       }
@@ -251,16 +251,12 @@
     public Unit DefaultUnitFor(ESensorType sensorType) {
       switch (sensorType) {
         case ESensorType.Length:
-          Log.D(this, "Returning: " + length);
           return length;
         case ESensorType.Pressure:
-          Log.D(this, "Returning: " + pressure);
           return pressure;
         case ESensorType.Temperature:
-          Log.D(this, "Returning: " + temperature);
           return temperature;
         case ESensorType.Vacuum:
-          Log.D(this, "Returning: " + vacuum);
           return vacuum;
         default:
           return sensorType.GetDefaultUnit();

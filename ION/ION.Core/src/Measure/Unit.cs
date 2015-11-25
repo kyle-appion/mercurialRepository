@@ -6,6 +6,13 @@ using System.Runtime.Serialization;
 namespace ION.Core.Measure {
 
   [DataContract(Name="Unit")]
+  [KnownType(typeof(BaseUnit))]
+  [KnownType(typeof(DerivedUnit))]
+  [KnownType(typeof(CompoundUnit))]
+  [KnownType(typeof(AlternateUnit))]
+  [KnownType(typeof(NamedUnit))]
+  [KnownType(typeof(ProductUnit))]
+  [KnownType(typeof(TransformedUnit))]
   public abstract class Unit {
     /// <summary>
     /// The units that is indicative of a unit of magnitude one.
@@ -111,7 +118,7 @@ namespace ION.Core.Measure {
     }
 
     /// <summary>
-    /// Queries the dimension of this unit. The returned dimension depends on the current 
+    /// Queries the dimension of this unit. The returned dimension depends on the current
     /// dimension model.
     /// </summary>
     /// <returns>The dimension.</returns>
@@ -207,7 +214,7 @@ namespace ION.Core.Measure {
 
     /// <summary>
     /// Returns the result of adding an offset to this unit. The returned unit is
-    /// convertible with all units that are convertible with this unit. 
+    /// convertible with all units that are convertible with this unit.
     /// </summary>
     /// <param name="offset"> The offset added. </param>
     /// <returns> The transformed unit. </returns>
@@ -225,7 +232,7 @@ namespace ION.Core.Measure {
     }
 
     /// <summary>
-    /// Returns the result of multiplying this unit by an approximate factor. 
+    /// Returns the result of multiplying this unit by an approximate factor.
     /// </summary>
     /// <param name="factor"> The approximate factor. </param>
     /// <returns> The transformed unit. </returns>
@@ -411,7 +418,7 @@ namespace ION.Core.Measure {
       if (this == other) {
         return true;
       } else if (other is BaseUnit) {
-        return __symbol.Equals(((BaseUnit)other).__symbol);        
+        return __symbol.Equals(((BaseUnit)other).__symbol);
       } else {
         return false;
       }
@@ -504,7 +511,7 @@ namespace ION.Core.Measure {
       } else if (other is AlternateUnit) {
         return ((AlternateUnit)other).__symbol.Equals(__symbol);
       } else {
-        return false;        
+        return false;
       }
     }
   }
@@ -539,7 +546,7 @@ namespace ION.Core.Measure {
         return true;
       } else if (other is NamedUnit) {
         NamedUnit n = (NamedUnit)other;
-        return parent.Equals(n.parent) && symbol.Equals(n.symbol); 
+        return parent.Equals(n.parent) && symbol.Equals(n.symbol);
       } else {
         return false;
       }
@@ -701,7 +708,7 @@ namespace ION.Core.Measure {
       } else {
         return false;
       }
-    } 
+    }
 
     /// <summary>
     /// Returns the unit defiend from the product of the specified elements.
@@ -781,7 +788,7 @@ namespace ION.Core.Measure {
     public static Unit GetProductInstance(Unit left, Unit right) {
       Element[] leftElements;
       if (left is ProductUnit) {
-        leftElements = ((ProductUnit)left).__elements;        
+        leftElements = ((ProductUnit)left).__elements;
       } else {
         leftElements = new Element[] { new Element(left, 1, 1) };
       }
@@ -810,7 +817,7 @@ namespace ION.Core.Measure {
     public static Unit GetQuotientInstance(Unit left, Unit right) {
       Element[] leftElements;
       if (left is ProductUnit) {
-        leftElements = ((ProductUnit)left).__elements;        
+        leftElements = ((ProductUnit)left).__elements;
       } else {
         leftElements = new Element[] { new Element(left, 1, 1) };
       }
@@ -920,7 +927,7 @@ namespace ION.Core.Measure {
           Element e = (Element)other;
           return unit.Equals(e.unit) && pow == e.pow && root == e.root;
         } else {
-          return false;          
+          return false;
         }
       }
 
@@ -929,7 +936,7 @@ namespace ION.Core.Measure {
       }
     }
   }
-  
+
   [DataContract(Name="TransformedUnit")]
   public class TransformedUnit : DerivedUnit {
     public override Unit standardUnit { get { return __parent.standardUnit; } }
@@ -967,4 +974,3 @@ namespace ION.Core.Measure {
     }
   }
 }
-

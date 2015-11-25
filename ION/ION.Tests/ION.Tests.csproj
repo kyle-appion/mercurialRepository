@@ -51,6 +51,7 @@
     <Compile Include="src\Content\TestManifoldSerialization.cs" />
     <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Sensors\Serialization\TestSensorSerialization.cs" />
+    <Compile Include="src\Measure\TestUnitSerialization.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

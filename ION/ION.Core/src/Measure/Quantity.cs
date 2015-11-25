@@ -146,6 +146,7 @@ namespace ION.Core.Measure {
     /// </p>
     /// </summary>
     Torque,
+    Vacuum,
     /// <summary>
     /// The measurement of the amount of distance traveled divided by the time of
     /// travel. The primitive unit for this quantity is "m/s" meter per second.
