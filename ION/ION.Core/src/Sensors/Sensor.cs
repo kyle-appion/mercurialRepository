@@ -102,11 +102,11 @@ namespace ION.Core.Sensors {
     /// unit list.
     /// </summary>
     public static Unit[] DEFAULT_VACUUM_UNITS = new Unit[] {
-      Units.Pressure.MICRON,
-      Units.Pressure.IN_HG,
-      Units.Pressure.MILLITORR,
-      Units.Pressure.PSIA,
-      Units.Pressure.KILOPASCAL,
+      Units.Vacuum.MICRON,
+      Units.Vacuum.IN_HG,
+      Units.Vacuum.MILLITORR,
+      Units.Vacuum.PSIA,
+      Units.Vacuum.KILOPASCAL,
     };
 
     public static ESensorType FromString(string sensorType) {
@@ -146,9 +146,9 @@ namespace ION.Core.Sensors {
         }
       }
       // VACUUM PRESSURE
-      else if (Units.Pressure.MICRON.Equals(unit)) {
+      else if (Units.Vacuum.MICRON.Equals(unit)) {
         ret = amount.ToString("0");
-      } else if (Units.Pressure.MILLITORR.Equals(unit)) {
+      } else if (Units.Vacuum.MILLITORR.Equals(unit)) {
         ret = amount.ToString("0");
       }
       // DEFAULT
@@ -187,7 +187,7 @@ namespace ION.Core.Sensors {
           return unit.IsCompatible(Units.Temperature.KELVIN);
         }
         case ESensorType.Vacuum: {
-          return unit.IsCompatible(Units.Pressure.MICRON);
+          return unit.IsCompatible(Units.Vacuum.MICRON);
         }
         default: {
           return false;

@@ -44,7 +44,6 @@
     public AndroidLeConnectionHelper(AndroidION ion, BluetoothAdapter adapter) {
       this.ion = ion;
       this.adapter = adapter;
-
       if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
         scanDelegate = new Api21ScanDelegate(adapter);
       } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
@@ -150,18 +149,21 @@
 
     // Overridden from ScanDelegate
     public void Start(OnDeviceFound onDeviceFound) {
+      Log.D(this, "Starting scan");
       this.onDeviceFound = onDeviceFound;
       adapter.StartLeScan(this);
     }
 
     // Overridden from ScanDelegate
     public void Stop() {
+      Log.D(this, "Stopping scan");
       onDeviceFound = null;
       adapter.StopLeScan(this);
     }
 
     // Overridden from BluetoothAdapter.ILeScanCallback
     public void OnLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+      Log.D(this, "Found device");
       var payload = new byte[20];
       Array.Copy(scanRecord, 13, payload, 0, payload.Length);
 
@@ -186,12 +188,14 @@
 
     // Overridden from ScanDelegate
     public void Start(OnDeviceFound onDeviceFound) {
+      Log.D(this, "Starting scan");
       this.onDeviceFound = onDeviceFound;
       scanner.StartScan(this);
     }
 
     // Overridden from ScanDelegate
     public void Stop() {
+      Log.D(this, "Stopping scan");
       scanner.StopScan(this);
     }
 
@@ -208,6 +212,8 @@
 
     // Overridden from ScanCallback
     public override void OnScanResult(ScanCallbackType callbackType, ScanResult result) {
+      Log.D(this, "Found device");
+
       if (onDeviceFound != null) {
         onDeviceFound(result.Device, result.ScanRecord.GetBytes());
       }

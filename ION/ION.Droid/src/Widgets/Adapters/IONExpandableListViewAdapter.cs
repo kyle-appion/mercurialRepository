@@ -144,7 +144,7 @@ namespace ION.Droid.Widgets.Adapters {
 
     // Overridden from BaseExpandableListAdapter
     public override Java.Lang.Object GetGroup(int groupPosition) {
-      throw new NotImplementedException("Xamarin is a shit company with shit engineers who are too lazy to properly bind shit. Use the indexer [int groupPosition] instead.");
+      throw new NotImplementedException("Not implemented");
     }
 
     // Overridden from BaseExpandableListAdapter
@@ -468,7 +468,7 @@ namespace ION.Droid.Widgets.Adapters {
       List<Child> clist = __children[group];
 
       for (int i = clist.Count - 1; i >= 0; i--) {
-        Child child = children.First();
+        Child child = clist[0];
 
         if (!children.Contains(child)) {
           clist.RemoveAt(i);

@@ -86,8 +86,8 @@ namespace ION.Core.Devices {
         var sensor = new GaugeDeviceSensorDefinition();
 
         sensor.type = (ESensorType)Enum.Parse(typeof(ESensorType), element.Attribute(TYPE).Value, true);
-        var minUnit = UnitLookup.GetUnit(element.Attribute(MIN_UNIT).Value);
-        var maxUnit = UnitLookup.GetUnit(element.Attribute(MAX_UNIT).Value);
+        var minUnit = UnitLookup.GetUnit(sensor.type, element.Attribute(MIN_UNIT).Value);
+        var maxUnit = UnitLookup.GetUnit(sensor.type, element.Attribute(MAX_UNIT).Value);
 
         var min = element.Attribute(MIN).Value;
         var max = element.Attribute(MAX).Value;
@@ -100,7 +100,7 @@ namespace ION.Core.Devices {
         var supportedUnits = new List<Unit>();
         foreach (var e in element.Elements()) {
           if (SUPPORTED_UNIT.Equals(e.Name.LocalName)) {
-            supportedUnits.Add(UnitLookup.GetUnit(e.Value));
+            supportedUnits.Add(UnitLookup.GetUnit(sensor.type, e.Value));
           }
         }
         sensor.supportedUnits = supportedUnits.ToArray();
@@ -139,6 +139,7 @@ namespace ION.Core.Devices {
       int i = 0;
       foreach (var definition in sensors) {
         var sensor = new GaugeDeviceSensor(ret, i++, definition.type, definition.relative);
+        Log.D(this, "sensor type: " + sensor.type);
         sensor.minMeasurement = definition.min;
         sensor.maxMeasurement = definition.max;
         sensor.supportedUnits = definition.supportedUnits;

@@ -38,6 +38,11 @@ namespace ION.Droid.Activity {
     /// from the starting intent.
     /// </summary>
     public const string EXTRA_SENSOR_TYPES = "ion.droid.activity.extra.device_manager.TYPES";
+    /// <summary>
+    /// The extra key that is used to pull sensors from the result intent returned
+    /// by the activity upon finish.
+    /// </summary>
+    public const string EXTRA_SENSOR = "ion.droid.activity.extra.device_manager_SENSOR";
 
     private const long DEFAULT_SCAN_TIME = 5000;
 
@@ -45,7 +50,7 @@ namespace ION.Droid.Activity {
     private static readonly DeviceGroup LONG_RANGE = new DeviceGroup(Resource.String.long_range_mode, Resource.Color.light_blue);
     private static readonly DeviceGroup NEW_DEVICES_FOUND = new DeviceGroup(Resource.String.device_manager_new_devices_found, Resource.Color.light_gray);
     private static readonly DeviceGroup AVAILABLE = new DeviceGroup(Resource.String.available, Resource.Color.yellow);
-    private static readonly DeviceGroup DISCONNECTED = new DeviceGroup(Resource.String.disconnected, Resource.Color.yellow);
+    private static readonly DeviceGroup DISCONNECTED = new DeviceGroup(Resource.String.disconnected, Resource.Color.red);
 
     /// <summary>
     /// The collection of all the groups of devices that the device manager will
@@ -117,6 +122,10 @@ namespace ION.Droid.Activity {
       list.EmptyView = FindViewById(Android.Resource.Id.Empty);
 
       adapter = new DeviceAdapter(list);
+      adapter.onAdd = (sensor) => {
+        var res = new Intent();
+//        res. PutExtra();
+      };
     }
 
     // Overridden from Activity
@@ -531,7 +540,7 @@ namespace ION.Droid.Activity {
 
       vh.group = group;
       vh.counter.Text = "" + GetChildrenCount(groupPosition);
-      vh.counter.SetBackgroundColor(new Color(context.Resources.GetColor(group.colorRes)));
+      convert.SetBackgroundColor(new Color(context.Resources.GetColor(group.colorRes)));
       vh.title.Text = res.GetString(group.stringRes);
       vh.options.SetOnClickListener(vh);
 
@@ -663,8 +672,6 @@ namespace ION.Droid.Activity {
         vh.sensorIcon = convert.FindViewById<ImageView>(Resource.Id.icon);
         vh.sensorType = convert.FindViewById<TextView>(Resource.Id.type);
         vh.sensorReading = convert.FindViewById<TextView>(Resource.Id.measurement);
-        vh.addToWorkbench = convert.FindViewById<ImageButton>(Resource.Id.workbench_add_to);
-        vh.addToAnalyzer = convert.FindViewById<ImageButton>(Resource.Id.analyzer_add_to);
         vh.add = convert.FindViewById<ImageButton>(Resource.Id.add);
       } else {
         vh = (SensorViewHolder)convert.Tag;
@@ -678,32 +685,6 @@ namespace ION.Droid.Activity {
       // TODO ahodder@appioninc.com: Format the scalar
       vh.sensorReading.Text = sensor.measurement.ToString();
 
-      // TODO: ahodder@appioninc.com: Bind to the ion context.
-      if (onAdd != null) { // activity is in request mode
-        vh.add.Visibility = ViewStates.Visible;
-      } else {
-        vh.add.Visibility = ViewStates.Gone;
-      }
-
-      if (onAddWorkbench != null) {
-        if (false) { // sensor is in workbench
-          vh.addToWorkbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_workbench));
-          vh.addToWorkbench.SetBackgroundResource(Resource.Drawable.np_bordered_transparent_square);
-        } else {
-          vh.addToWorkbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_workbench));
-          vh.addToWorkbench.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
-        }
-      }
-
-      if (onAddAnalyzer != null) {
-        if (false) { // sensor is in analyzer
-          vh.addToAnalyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_analyzer));
-          vh.addToAnalyzer.SetBackgroundResource(Resource.Drawable.np_bordered_transparent_square);
-        } else {
-          vh.addToAnalyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_analyzer));
-          vh.addToAnalyzer.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
-        }
-      }
 
       return convert;
     }
@@ -758,8 +739,6 @@ namespace ION.Droid.Activity {
       public ImageView sensorIcon { get; set; }
       public TextView sensorType { get; set; }
       public TextView sensorReading { get; set; }
-      public ImageButton addToWorkbench { get; set; }
-      public ImageButton addToAnalyzer { get; set; }
       public ImageButton add { get; set; }
     } // End DeviceAdapter.SensorViewHolder
   } // End DeviceAdapter
