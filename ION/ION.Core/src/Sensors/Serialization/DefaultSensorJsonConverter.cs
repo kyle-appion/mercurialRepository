@@ -68,20 +68,20 @@ namespace ION.Core.Sensors.Serialization {
         isRelative = sensor.isRelative;
         isEditable = sensor.isEditable;
         name = sensor.name;
-        unit = UnitLookup.GetCode(sensor.type, sensor.unit);
+        unit = UnitLookup.GetCode(sensor.unit);
         measurement = sensor.measurement.amount;
 
         if (sensor.minMeasurement != null) {
           var min = sensor.minMeasurement;
           hasMinMeasurement = true;
-          minUnit = UnitLookup.GetCode(sensor.type, min.unit);
+          minUnit = UnitLookup.GetCode(min.unit);
           minMeasurement = min.amount;
         }
 
         if (sensor.maxMeasurement != null) {
           var max = sensor.maxMeasurement;
           hasMaxMeasurement = true;
-          maxUnit = UnitLookup.GetCode(sensor.type, max.unit);
+          maxUnit = UnitLookup.GetCode(max.unit);
           maxMeasurement = max.amount;
         }
       }

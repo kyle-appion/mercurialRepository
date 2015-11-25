@@ -51,7 +51,6 @@ Unit Strings
   vacuum:
     pa
     kpa
-    mpa
     bar
     millibar
     atmo

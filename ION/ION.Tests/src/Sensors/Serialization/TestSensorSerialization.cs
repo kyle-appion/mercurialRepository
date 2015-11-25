@@ -8,7 +8,7 @@ using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Serialization;
 
-namespace ION.TestFictures.Sensors.Serialization {
+namespace ION.TestFixwtures.Sensors.Serialization {
   [TestFixture]
   public class TestSensorSerialization {
 

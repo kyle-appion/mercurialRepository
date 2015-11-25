@@ -45,8 +45,8 @@ namespace ION.Core.Devices.Protocols {
 
           double reading = encodedReading / System.Math.Pow(10, exponent);
 
-          UnitEntry ue = UnitLookup.GetUnitEntry(unitCode);
-          readings[i] = new GaugeReading(ue.sensorType, ue.unit.OfScalar(reading));
+          Unit unit = UnitLookup.GetUnit(unitCode);
+          readings[i] = new GaugeReading(UnitLookup.GetSensorTypeFromCode(unitCode), unit.OfScalar(reading));
         }
 
         return new GaugePacket(version, battery, readings);
@@ -55,7 +55,7 @@ namespace ION.Core.Devices.Protocols {
 
     // Overridden from IGaugeProtocol
     public override byte[] CreateSetUnitCommand(int sensorIndex, Sensors.ESensorType sensorType, Unit unit) {
-      return new byte[] { 0x02, (byte)UnitLookup.GetCode(sensorType, unit), (byte)sensorIndex };
+      return new byte[] { 0x02, (byte)UnitLookup.GetCode(unit), (byte)sensorIndex };
     }
 
     // Overridden from IGaugeProtocol
@@ -68,7 +68,7 @@ namespace ION.Core.Devices.Protocols {
       var v = (int)altitude.amount;
       var ub = (byte)((v >> 8) & 0xff);
       var lb = (byte)(v & 0xff);
-      return new byte[] { 0x04, ub, lb, (byte)UnitLookup.GetCode(ESensorType.Length, altitude.unit) };
+      return new byte[] { 0x04, ub, lb, (byte)UnitLookup.GetCode(altitude.unit) };
     }
   }
 }
