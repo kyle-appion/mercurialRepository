@@ -67,6 +67,7 @@
     // Overridden from ILocationManager
     public async Task<InitializationResult> InitAsync() {
       native = new CLLocationManager();
+
       if (ion.settings.location.useGeoLocation) {
         // We should assert that the application will always be compiled to 8.0
 //      if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
