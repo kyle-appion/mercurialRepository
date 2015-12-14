@@ -133,6 +133,7 @@ namespace ION.IOS.App {
       units.pressure = Int(KEY_PRESSURE);
       units.temperature = Int(KEY_TEMPERATURE);
       units.vacuum = Int(KEY_VACUUM);
+      location.useGeoLocation = Bool(KEY_USE_GEO_LOCATION);
     }
 
     private static int Int(string key) {
