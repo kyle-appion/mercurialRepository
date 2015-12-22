@@ -83,6 +83,16 @@
       }
     }
 
+    // Overridden from IION
+    public IFolder calibrationCertificateFolder {
+      get {
+        var d = fileManager.GetApplicationExternalDirectory();
+        d = d.GetFolder("reports", EFileAccessResponse.CreateIfMissing);
+        d = d.GetFolder("calibrationCertificates", EFileAccessResponse.CreateIfMissing);
+        return d;
+      }
+    }
+
     /// <summary>
     /// The ios application settings.
     /// </summary>

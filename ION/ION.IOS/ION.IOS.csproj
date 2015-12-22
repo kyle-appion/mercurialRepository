@@ -202,6 +202,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\ic_camera.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\ic_help.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

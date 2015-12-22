@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity {
+namespace ION.Droid.Activity {
 
   using System;
   using System.Collections.Generic;

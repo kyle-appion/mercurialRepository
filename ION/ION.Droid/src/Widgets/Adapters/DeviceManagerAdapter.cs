@@ -104,6 +104,22 @@
     }
 
     /// <summary>
+    /// Queries the index of the given device.
+    /// </summary>
+    /// <returns>The index of the device or -1 if the device is not in the adapter.</returns>
+    /// <param name="device">Device.</param>
+    public int IndexOf(IDevice device) {
+      for (int i = 0; i < items.Count; i++) {
+        var item = items[i] as DeviceItem;
+        if (item != null && item.device.Equals(device)) {
+          return i;
+        }
+      }
+
+      return -1;
+    }
+
+    /// <summary>
     /// Builds a group list view.
     /// </summary>
     /// <returns>The group view.</returns>
@@ -167,7 +183,7 @@
 
       vh.name.Text = device.name;
       vh.type.Text = device.GetDeviceProductName();
-      vh.icon.SetImageResource(cache.GetBitmap(device.GetDeviceIcon()));
+      vh.icon.SetImageBitmap(cache.GetBitmap(device.GetDeviceIcon()));
       // TODO ahodder@appioninc.com: Switch arrow
       switch (device.connection.connectionState) {
         case EConnectionState.Resolving:

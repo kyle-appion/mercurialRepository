@@ -1,8 +1,10 @@
 namespace ION.IOS.ViewController {
   
   using System;
-  using System.Linq;
   using System.Collections.Generic;
+  using System.Linq;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   using Foundation;
   using MessageUI;
@@ -12,6 +14,8 @@ namespace ION.IOS.ViewController {
   using FlyoutNavigation;
 
   using ION.Core.App;
+  using ION.Core.Devices;
+  using ION.Core.Devices.Certificates;
   using ION.Core.IO;
   using ION.Core.Util;
 
@@ -59,6 +63,7 @@ namespace ION.IOS.ViewController {
           new ImageStringElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
+          new ImageStringElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_download")),
           new ImageStringElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
@@ -96,6 +101,98 @@ namespace ION.IOS.ViewController {
       } catch (Exception e) {
         Log.E(this, "Failed to get le folder", e);
       }
+    }
+
+    /// <summary>
+    /// Opens up a file manager that will allow the perusal of downloaded calibration certificates.
+    /// </summary>
+    private void OnCalibrationCertificateClicked() {
+      var failures = new List<ISerialNumber>();
+
+      try {
+        var vc = InflateViewController<FileBrowserViewController>(BaseIONViewController.VC_FILE_MANAGER);
+        vc.title = Strings.Report.CALIBRATION_CERTIFICATES;
+        vc.rootFolder = AppState.context.calibrationCertificateFolder;
+        var image = UIImage.FromBundle("ic_download");
+        var button = new UIButton(new CoreGraphics.CGRect(0, 0, 31, 30));
+        button.SetImage(image, UIControlState.Normal);
+        button.TouchUpInside += (object sender, EventArgs e) => {
+          var source = new CancellationTokenSource();
+          var task = DoTheThings(source, failures, () => {
+            vc.Refresh();
+          });
+            
+          var alert = UIAlertController.Create(Strings.PLEASE_WAIT, Strings.Report.DOWNLOADING_CERTIFICATES, UIAlertControllerStyle.Alert);
+          alert.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {
+            source.Cancel();
+          }));
+
+          alert.Show();
+
+          task.ContinueWith((t) => {
+            AppState.context.PostToMainDelayed(() => {
+              alert.DismissModalViewController(true);
+              vc.Refresh();
+
+              if (failures.Count > 0) {
+                Log.D(this, failures.Count + " failures");
+                var a = UIAlertController.Create(Strings.Report.DOWNLOADING_CERTIFICATES_FAILURES,
+                  string.Format(Strings.Report.FAILED_TO_DOWNLOAD, string.Join(", ", failures)),
+                  UIAlertControllerStyle.Alert);
+                a.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Cancel, null));
+                a.Show();
+              }
+            }, TimeSpan.FromMilliseconds(500));
+          });
+        };
+        vc.NavigationItem.RightBarButtonItem = new UIBarButtonItem(button);
+        PresentViewControllerFromSelected(vc);
+      } catch (Exception e) {
+        Log.E(this, "Failed to load calibration certificate cache.", e);
+      }
+    }
+
+    /// <summary>
+    /// Starts the task that will download the calibration certificates.
+    /// </summary>
+    /// <returns>The the things.</returns>
+    private Task DoTheThings(CancellationTokenSource source, List<ISerialNumber> failures, Action onLoad) {
+      return Task.Factory.StartNew(() => {
+        var ion = AppState.context;
+        var serials = new List<ISerialNumber>();
+
+        foreach (var device in ion.deviceManager.devices) {
+          serials.Add(device.serialNumber);
+        }
+
+        var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
+        task.tokenSource = source;
+
+        foreach (var result in task.Request().Result) {
+          if (!result.success) {
+            failures.Add(result.serialNumber);
+            continue;
+          }
+
+          var file = ion.calibrationCertificateFolder.GetFile(result.serialNumber + " Certification.pdf", EFileAccessResponse.ReplaceIfExists);
+          var stream = file.OpenForWriting();
+
+          try {
+            AV760CertificatePdfExporter.Export(ion, result.certificate, stream);
+          } catch (Exception e) {
+            Log.E(this, "Failed to export certificate.", e);
+            file.Delete();
+            failures.Add(result.serialNumber);
+          } finally {
+            stream?.Close();
+          } 
+
+          ion.PostToMain(() => {
+            Log.D(this, "Resolved a certification for: " + result.serialNumber);
+            onLoad();
+          });
+        }
+      });
     }
 
     /// <summary>

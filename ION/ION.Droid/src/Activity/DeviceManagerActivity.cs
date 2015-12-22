@@ -527,6 +527,7 @@ namespace ION.Droid.Activity {
         convert = LayoutInflater.From(context).Inflate(Resource.Layout.list_item_device_manager_group, mommy, false);
         convert.Tag = vh = new GroupViewHolder();
 
+        vh.adapter = this;
         vh.counter = convert.FindViewById<TextView>(Resource.Id.counter);
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
         vh.options = convert.FindViewById(Resource.Id.icon);

@@ -87,6 +87,14 @@ namespace ION.IOS.ViewController.FileManager {
       previewController.DataSource = new DataSource(url);
       PresentViewController(previewController, true, null);
     }
+
+    public void Refresh() {
+      source = new FileManagerSource(__rootFolder.GetFileList());
+      source.onFileRowClicked = OnFileRowClicked;
+      table.Source = source;
+
+      table.ReloadData();
+    }
 	}
 
   internal class DataSource : QLPreviewControllerDataSource {

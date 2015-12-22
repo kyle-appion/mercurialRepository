@@ -15,7 +15,7 @@
   /// <summary>
   /// Useful extensions for list view.
   /// </summary>
-  public class ListViewExtensions {
+  public static class ListViewExtensions {
 
     /// <summary>
     /// Refreshes a single row in the list view.
@@ -23,7 +23,7 @@
     /// <param name="listView">List view.</param>
     /// <param name="row">Row.</param>
     public static void RefreshRow(this ListView listView, int row) {
-      listView.Adapter.GetView(row, listView.GetChildAt(row - listView.FirstVisiblePosition), listView);
+      ((IListAdapter)listView.Adapter).GetView(row, listView.GetChildAt(row - listView.FirstVisiblePosition), listView);
     }
   }
 }
