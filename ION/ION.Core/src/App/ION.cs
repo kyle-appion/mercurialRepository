@@ -106,6 +106,12 @@
     IFolder screenshotReportFolder { get; }
 
     /// <summary>
+    /// Queries the folder where calibration certificates are placed.
+    /// </summary>
+    /// <value>The calibraaction certificate folder.</value>
+    IFolder calibrationCertificateFolder { get; }
+
+    /// <summary>
     /// Posts the action to the main message pump for execution on the main thread.
     /// </summary>
     /// <param name="action">Action.</param>

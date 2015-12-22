@@ -122,15 +122,15 @@
     <Compile Include="src\Pdf\PDFTest.cs" />
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
-    <Compile Include="src\Net\JSONCalibrationCertificateParser.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
     <Compile Include="src\Measure\Json\UnitJsonConverter.cs" />
+    <Compile Include="src\Devices\Certificates\ICalibrationCertificateExporter.cs" />
+    <Compile Include="src\Devices\Certificates\Av760CertificatePdfExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
-    <None Include="src\App\digital_gauge_cert.pdf" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -170,7 +170,6 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\Devices\Devices.xml" />
-    <EmbeddedResource Include="src\Pdf\digital_gauge_cert.pdf" />
     <EmbeddedResource Include="src\Fluids\Embedded\refrigerantcolors.properties">
       <LogicalName>refrigerantcolors.properties</LogicalName>
     </EmbeddedResource>
@@ -407,6 +406,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\RE347MCC.fluid">
       <LogicalName>RE347MCC.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Devices\Certificates\digital_gauge_cert.pdf">
+      <LogicalName>digital_gauge_cert.pdf</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

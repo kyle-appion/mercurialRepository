@@ -13,7 +13,6 @@ namespace ION.Droid.Devices {
   /// A util class that will provide some localized data for devices.
   /// </summary>
   public static class DeviceExtensions {
-
     /// <summary>
     /// Queries the Android drawable resource id for the given device.
     /// </summary>
