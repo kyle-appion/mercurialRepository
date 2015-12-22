@@ -69,7 +69,6 @@
     <Reference Include="Xamarin.Android.Support.v13">
       <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Android.Export" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Activity\DeviceManagerActivity.cs" />
