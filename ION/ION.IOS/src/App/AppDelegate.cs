@@ -56,7 +56,7 @@
       foreach (var device in ion.deviceManager.devices) {
         list.Add(device.serialNumber);
       }
-      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
+//      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
 
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);

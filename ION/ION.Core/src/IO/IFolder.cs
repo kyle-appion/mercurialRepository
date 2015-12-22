@@ -4,10 +4,59 @@ using System.IO;
 using System.Threading.Tasks;
 
 namespace ION.Core.IO {
+/*
+  /// <summary>
+  /// The delegate that is called when a folder event is triggered.
+  /// </summary>
+  public delegate void OnFolderEvent(IFolder folder, FolderEvent folderEvent);
+
+  /// <summary>
+  /// The event that is passed on a triggered folder event.
+  /// </summary>
+  public class FolderEvent {
+    /// <summary>
+    /// The type of event.
+    /// </summary>
+    /// <value>The type.</value>
+    public EFolderEventType type { get; protected set; }
+    /// <summary>
+    /// Whether or not the "file" that triggered the event is a file or folder.
+    /// </summary>
+    /// <value><c>true</c> if is file event; otherwise, <c>false</c>.</value>
+    public bool isFileEvent { get; protected set; }
+    /// <summary>
+    /// The file affected. This will be null if the event is a folder event.
+    /// </summary>
+    /// <value>The file.</value>
+    public IFile file { get; protected set; }
+    /// <summary>
+    /// The folder affected. This will be null if the event is a file event.
+    /// </summary>
+    /// <value>The folder.</value>
+    public IFolder folder { get; protected set; }
+  }
+
+  /// <summary>
+  /// The enumeration of the types of events that may occur.
+  /// </summary>
+  public enum EFolderEventType {
+    Added,
+    Changed,
+    Moved,
+    Renamed,
+  }
+*/
+
+
   /// <summary>
   /// The contract for folder/directory storage interaction.
   /// </summary>
   public interface IFolder {
+    /// <summary>
+    /// The event that notifies attached delegate of a folder event.
+    /// </summary>
+//    event OnFolderEvent onFolderEvent;
+
     /// <summary>
     /// The path to the folder.
     /// </summary>

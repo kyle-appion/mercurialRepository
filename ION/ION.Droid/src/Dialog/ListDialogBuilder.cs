@@ -34,7 +34,7 @@ namespace ION.Droid.Dialog {
     private List<Row> content { get; set; }
 
     public ListDialogBuilder(Context context) : base(context) {
-      // Nope
+      content = new List<Row>();
     }
 
     // Overridden from IONAlertDialog

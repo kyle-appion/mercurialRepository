@@ -43,6 +43,15 @@
       return ret;
     }
 
+    /// <summary>
+    /// Queries the color for the given resource.
+    /// </summary>
+    /// <returns>The color.</returns>
+    /// <param name="colorRes">Color res.</param>
+    public Color GetColor(int colorRes) {
+      return new Color(Resources.GetColor(colorRes));
+    }
+
     // Overridden from ISharedPreferencesOnSharedPreferenceChangeListener
     public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
       if (GetString(Resource.String.preferences_display_wakelock).Equals(key)) {
@@ -61,6 +70,7 @@
       } else {
         Window.ClearFlags(WindowManagerFlags.KeepScreenOn);
       }
+
     }
 
     /// <summary>
