@@ -149,7 +149,11 @@ namespace ION.IOS.Util {
 
     public static class Report {
       public static readonly string
+      CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),
       CITY = "report_city".FromResources(),
+      DOWNLOADING_CERTIFICATES = "report_downloading_certificates".FromResources(),
+      DOWNLOADING_CERTIFICATES_FAILURES = "report_downloading_certificates_failures".FromResources(),
+      FAILED_TO_DOWNLOAD = "report_failed_to_download".FromResources(),
       TITLE = "report_title".FromResources(),
       NOTES = "report_notes".FromResources(),
       REPORTS = "reports".FromResources(),
