@@ -93,9 +93,9 @@ def convert_fluid(fluid_name, out_path, step=0.25):
     '''
     Converts the fluid to the the binary format
     '''
-    if 'R' != fluid_name[0]:
-        print 'Ingnoring irrelevant refrigerant', fluid_name
-        return
+#    if 'R' != fluid_name[0]:
+#        print 'Ingnoring irrelevant refrigerant', fluid_name
+#        return
     try:
         # Prepare the fluid in Refprop
         fluid = r.setup(u'def', fluid_name)
