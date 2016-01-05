@@ -946,9 +946,9 @@
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OWs-7r-oyf" userLabel="buttonPressureUnit">
-                                        <rect key="frame" x="520" y="8" width="48" height="48"/>
+                                        <rect key="frame" x="504" y="8" width="64" height="48"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="48" id="RQl-cU-hCS"/>
+                                            <constraint firstAttribute="width" constant="64" id="RQl-cU-hCS"/>
                                             <constraint firstAttribute="height" constant="48" id="h8w-mM-7ay"/>
                                         </constraints>
                                         <state key="normal" title="psig" backgroundImage="ButtonGold">
@@ -957,7 +957,7 @@
                                         </state>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pressure" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="5y8-Se-nv0" userLabel="editPressure">
-                                        <rect key="frame" x="104" y="8" width="408" height="30"/>
+                                        <rect key="frame" x="104" y="8" width="392" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="dQp-6R-QZZ"/>
                                         </constraints>
@@ -1045,9 +1045,9 @@
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TxF-k7-Yxm" userLabel="buttonTemperatureUnit">
-                                        <rect key="frame" x="520" y="8" width="48" height="48"/>
+                                        <rect key="frame" x="504" y="8" width="64" height="48"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="48" id="MAG-Lf-bzF"/>
+                                            <constraint firstAttribute="width" constant="64" id="MAG-Lf-bzF"/>
                                             <constraint firstAttribute="height" constant="48" id="zwt-sz-3Zh"/>
                                         </constraints>
                                         <state key="normal" title="ok" backgroundImage="ButtonGold">
@@ -1055,14 +1055,6 @@
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                     </button>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Temperature" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="LnK-4W-eoa" userLabel="editTemperature">
-                                        <rect key="frame" x="104" y="8" width="408" height="30"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="30" id="qku-hr-QDY"/>
-                                        </constraints>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
-                                    </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Temperature" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Zw-ax-B8r" userLabel="labelTemperature">
                                         <rect key="frame" x="104" y="43" width="408" height="21"/>
                                         <constraints>
@@ -1072,6 +1064,14 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Temperature" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="LnK-4W-eoa" userLabel="editTemperature">
+                                        <rect key="frame" x="104" y="8" width="392" height="30"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="30" id="qku-hr-QDY"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                    </textField>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -2246,9 +2246,9 @@
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8dQ-UJ-Ahy" userLabel="buttonPressureUnit">
-                                        <rect key="frame" x="520" y="8" width="48" height="48"/>
+                                        <rect key="frame" x="504" y="8" width="64" height="48"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="48" id="9dM-8J-XSR"/>
+                                            <constraint firstAttribute="width" constant="64" id="9dM-8J-XSR"/>
                                             <constraint firstAttribute="height" constant="48" id="yhO-aM-nDS"/>
                                         </constraints>
                                         <state key="normal" title="psig" backgroundImage="ButtonGold">
@@ -2257,7 +2257,7 @@
                                         </state>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Pressure" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="IP4-Ez-XmT" userLabel="editPressure">
-                                        <rect key="frame" x="104" y="8" width="408" height="30"/>
+                                        <rect key="frame" x="104" y="8" width="392" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="9YE-6K-KPT"/>
                                         </constraints>
@@ -2372,10 +2372,10 @@
                                         </constraints>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aeD-13-erV" userLabel="buttonTemperatureUnit">
-                                        <rect key="frame" x="520" y="8" width="48" height="48"/>
+                                        <rect key="frame" x="504" y="8" width="64" height="48"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="48" id="5i7-aG-tcy"/>
-                                            <constraint firstAttribute="width" constant="48" id="XZP-ym-2ye"/>
+                                            <constraint firstAttribute="width" constant="64" id="XZP-ym-2ye"/>
                                         </constraints>
                                         <state key="normal" title="ok" backgroundImage="ButtonGold">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
@@ -2383,7 +2383,7 @@
                                         </state>
                                     </button>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Temperature" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="Uwc-zS-IQS" userLabel="editTemperature">
-                                        <rect key="frame" x="104" y="8" width="408" height="30"/>
+                                        <rect key="frame" x="104" y="8" width="392" height="30"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="30" id="PdA-rD-B45"/>
                                         </constraints>

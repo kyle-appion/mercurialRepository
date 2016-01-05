@@ -99,8 +99,9 @@ def convert_fluid(fluid_name, out_path, step=0.25):
     try:
         # Prepare the fluid in Refprop
         fluid = r.setup(u'def', fluid_name)
+
         # remove any unnecessary file extensions
-        fluid_name = fluid_name.split('.')[0]
+        fluid_name = r.name()['hname']
 
         # Get some of the meta data for the fluid
         x = [] # the fluid composition (mole fractions of mixtures). Empty for single fluid

@@ -23,6 +23,7 @@ namespace ION.Core.Devices {
       : base(sensorType, relative, false) {
       this.device = device;
       this.index = index;
+      name = device.serialNumber + "";
     }
 
     /// <summary>
