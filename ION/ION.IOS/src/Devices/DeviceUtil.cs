@@ -68,7 +68,7 @@
           return UIImage.FromBundle("ic_render_gauge_av760");
         }
         default: {
-          return UIImage.FromBundle("Icons/ic_logo_appiondefault.png");
+          return UIImage.FromBundle("ic_logo_appiondefault.png");
         }
       }
     }
