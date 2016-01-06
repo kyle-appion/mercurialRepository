@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Devices {
+﻿namespace ION.Droid.Connections {
 
   using System;
   using System.Collections.Generic;
@@ -15,7 +15,7 @@
   using ION.Droid.App;
   using ION.Droid.Connections;
 
-  public class AndroidLeConnectionHelper : BaseConnectionHelper {
+  public class LeConnectionHelper : BaseConnectionHelper {
     // Overridden from BaseConnectionHelper
     public override bool isEnabled {
       get {
@@ -24,6 +24,12 @@
     }
 
     private AndroidION ion { get; set; }
+
+    /// <summary>
+    /// The bluetooth manager that holds the adapter.
+    /// </summary>
+    /// <value>The manager.</value>
+    private BluetoothManager manager { get; set; }
     /// <summary>
     /// The native bluetooth adapter.
     /// </summary>
@@ -41,9 +47,10 @@
     /// </summary>
     private Dictionary<string, LeConnection> __leConnections = new Dictionary<string, LeConnection>();
 
-    public AndroidLeConnectionHelper(AndroidION ion, BluetoothAdapter adapter) {
+    public LeConnectionHelper(AndroidION ion, BluetoothManager manager) {
       this.ion = ion;
-      this.adapter = adapter;
+      this.manager = manager;
+      this.adapter = manager.Adapter;
       if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
         scanDelegate = new Api21ScanDelegate(adapter);
       } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
@@ -84,7 +91,7 @@
       if (device == null) {
         throw new ArgumentException("Create connection for " + address + " failed: no device");
       } else if (BluetoothDeviceType.Le == device.Type) {
-        var ret = new LeConnection(ion.context, device);
+        var ret = new LeConnection(ion.context, manager, device);
         __leConnections[address] = ret;
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: device not le");

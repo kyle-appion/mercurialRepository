@@ -15,7 +15,7 @@
     <AndroidApplication>True</AndroidApplication>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -69,9 +69,11 @@
     <Reference Include="Xamarin.Android.Support.v13">
       <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="src\Activity\DeviceManagerActivity.cs" />
     <Compile Include="src\Activity\MainActivity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Animation\AnimationHelper.cs" />
@@ -79,13 +81,10 @@
     <Compile Include="src\Dialog\ListDialogBuilder.cs" />
     <Compile Include="src\Util\BitmapCache.cs" />
     <Compile Include="src\Util\LogPrinter.cs" />
-    <Compile Include="src\Devices\AndroidLeConnectionHelper.cs" />
     <Compile Include="src\Connections\LeConnection.cs" />
     <Compile Include="src\App\AndroidION.cs" />
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />
-    <Compile Include="src\Widgets\Adapters\ExpandableContentELVAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\IONExpandableListViewAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\RootView.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="src\Fragment\IONFragment.cs" />
@@ -109,16 +108,16 @@
     <Compile Include="src\Devices\DeviceParcelable.cs" />
     <Compile Include="src\Util\GenericParcelableCreator.cs" />
     <Compile Include="src\Sensors\SensorParcelable.cs" />
-    <Compile Include="src\Activity\DeviceManagerActivity2.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceManagerAdapter.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
+    <Compile Include="src\Connections\LeConnectionHelper.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
+    <Compile Include="src\Activity\DeviceManagerActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Properties\AndroidManifest.xml" />
     <None Include="Assets\AboutAssets.txt" />
-    <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
     <AndroidResource Include="Resources\values\Colors.xml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_group.axml">
       <SubType>AndroidResource</SubType>
@@ -282,7 +281,7 @@
     <AndroidResource Include="Resources\layout\device_manager_device.axml" />
     <AndroidResource Include="Resources\layout\device_manager_serial.axml" />
     <AndroidResource Include="Resources\layout\device_manager_sensor.axml" />
-    <AndroidResource Include="Resources\layout\activity_device_manager_2.axml" />
+    <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

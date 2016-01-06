@@ -74,7 +74,7 @@
 
     // Overridden from SensorParcelable
     public override void WriteToParcel(Parcel dest, ParcelableWriteFlags flags) {
-      dest.WriteInt((ESensorType)sensorType);
+      dest.WriteInt((int)sensorType);
       dest.WriteInt(isRelative ? 1 : 0);
       dest.WriteInt(isEditable ? 1 : 0);
       dest.WriteInt(unitCode);
@@ -82,7 +82,7 @@
     }
 
     // Overridden from SensorParcelable
-    public override Sensor Get() {
+    public override Sensor Get(IION ion) {
       var ret = new Sensor(sensorType, isRelative, isEditable);
       return null;
     }

@@ -135,7 +135,7 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
-
+<!--
   <GaugeDevice deviceCode="S8">
     <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
       <SupportedUnit>psig</SupportedUnit>
@@ -149,6 +149,7 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
+-->
 
   <GaugeDevice deviceCode="T3">
     <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">

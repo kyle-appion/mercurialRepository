@@ -77,12 +77,13 @@ namespace ION.Core.Devices.Connections {
         scanTask = Task.Factory.StartNew(async () => {
           try {
             token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-            Log.D(this, "Start scan");
+            Log.D(this, "Start scan for " + scanTime.TotalMilliseconds + "ms");
 
             StartScan();
             await Task.Delay(scanTime);
             token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
             StopScan();
+            Log.D(this, "Stopping scan");
 
             if (options != null) {
               while (options.repeatCount == ScanRepeatOptions.REPEAT_FOREVER || --options.repeatCount > 0) {
@@ -109,12 +110,12 @@ namespace ION.Core.Devices.Connections {
 
     // Overridden from IScanMode
     public void Stop() {
+      Log.D(this, "stop");
       lock (this) {
-        Log.D(this, "Stopping scan");
-        if (cancellationToken != null) {
+        if (this.isScanning) {
           cancellationToken.Cancel();
+          StopScan();
         }
-        isScanning = false;
         scanTask = null;
       }
     }
@@ -153,7 +154,7 @@ namespace ION.Core.Devices.Connections {
     }
 
     private void StopScan() {
-      cancellationToken.Cancel();
+      Log.D(this, "Stopping scan");
       DoStopScan();
       isScanning = false;
     }
