@@ -14,7 +14,7 @@
 
     [Test]
     public void TestAllUnits() {
-      var unit = Units.Pressure.MICRON;
+      var unit = Units.Vacuum.MICRON;
       var json = JsonConvert.SerializeObject(unit, Formatting.Indented, new JsonSerializerSettings() {
         ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
         TypeNameHandling = TypeNameHandling.All,

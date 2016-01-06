@@ -149,4 +149,19 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
+
+  <GaugeDevice deviceCode="T3">
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+  </GaugeDevice>
 </Devices>

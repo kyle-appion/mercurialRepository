@@ -101,6 +101,12 @@
     <Reference Include="SQLite.Net.Platform.XamarinIOS.Unified">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
     </Reference>
+    <Reference Include="AllianceCustomPicker">
+      <HintPath>..\..\..\..\..\..\Downloads\alliancePicker-2.1.1\lib\ios-unified\AllianceCustomPicker.dll</HintPath>
+    </Reference>
+    <Reference Include="Alliance.Carousel">
+      <HintPath>..\..\..\..\..\..\Downloads\Alliance.Carousel-3.0\lib\ios-unified\Alliance.Carousel.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -178,8 +184,6 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
@@ -202,6 +206,14 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\ic_camera.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\ic_help.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -389,6 +401,24 @@
       <DependentUpon>NotesCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\PressureTemperatureChart\tmp.cs" />
+    <Compile Include="src\ViewController\Analyzer\DrawAnalyserView.cs" />
+    <Compile Include="src\ViewController\Analyzer\actionPopup.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyserUtilities.cs" />
+    <Compile Include="src\ViewController\Analyzer\LowHighArea.cs" />
+    <Compile Include="src\ViewController\Analyzer\lowHighSensor.cs" />
+    <Compile Include="src\ViewController\Analyzer\manualEntry.cs" />
+    <Compile Include="src\ViewController\Analyzer\sensor.cs" />
+    <Compile Include="src\ViewController\Analyzer\sensorGroup.cs" />
+    <Compile Include="src\ViewController\Analyzer\ManualView.cs" />
+    <Compile Include="src\ViewController\Analyzer\ActionView.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerTableSource.cs" />
+    <Compile Include="src\ViewController\Analyzer\minimumTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\maximumTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\holdTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\altTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\RoCTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

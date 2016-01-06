@@ -19,9 +19,9 @@ namespace ION.TestFixtures.Measure {
     private static readonly Unit KGCM = Units.Pressure.KG_CM;
     private static readonly Unit PSIG = Units.Pressure.PSIG;
     private static readonly Unit PSIA = Units.Pressure.PSIA;
-    private static readonly Unit TORR = Units.Pressure.TORR;
-    private static readonly Unit MILLITORR = Units.Pressure.MILLITORR;
-    private static readonly Unit MICRON = Units.Pressure.MICRON;
+    private static readonly Unit TORR = Units.Vacuum.TORR;
+    private static readonly Unit MILLITORR = Units.Vacuum.MILLITORR;
+    private static readonly Unit MICRON = Units.Vacuum.MICRON;
 
     private static readonly double EPSILON = 0.01;
     private void AssertEquals(double expected, double received) {

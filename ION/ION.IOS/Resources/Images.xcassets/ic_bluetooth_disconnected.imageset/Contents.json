@@ -1,10 +1,11 @@
 {
   "images": [
     {
-      "filename": "ic_bluetooth_disconnected.pdf",
+      "filename": "ic_bluetooth_connected.pdf",
       "idiom": "universal"
     },
     {
+      "filename": "ic_bluetooth_disconnected.png",
       "scale": "1x",
       "idiom": "universal"
     },

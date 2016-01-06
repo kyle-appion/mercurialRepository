@@ -114,7 +114,7 @@ namespace ION.IOS.ViewController.Workbench {
       var device = sensor.device;
       var state = device.connection.connectionState;
 
-      labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + device.name;
+      labelHeader.Text = device.serialNumber.deviceModel.GetTypeString() + ": " + sensor.name;
       imageSensorIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       labelMeasurement.Text = sensor.ToFormattedString();
       labelUnit.Text = sensor.unit.ToString();

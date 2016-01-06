@@ -230,6 +230,11 @@
     /// <param name="obj">Object.</param>
     /// <param name="manifold">Manifold.</param>
     private void ShowManifoldContextMenu(object obj, Manifold manifold) {
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+      while (vc.PresentedViewController != null) {
+        vc = vc.PresentedViewController;
+      }
       var dialog = UIAlertController.Create(manifold.primarySensor.name, Strings.Workbench.SELECT_VIEWER_ACTION.FromResources(), UIAlertControllerStyle.Alert);
 
 
@@ -242,6 +247,20 @@
           }));
         }
       }
+
+      dialog.AddAction(UIAlertAction.Create("Rename", UIAlertActionStyle.Default, (action) => {
+        UIAlertController textAlert = UIAlertController.Create ("Enter Name", manifold.primarySensor.name, UIAlertControllerStyle.Alert);
+        textAlert.AddTextField(textField => {});
+        textAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, UIAlertAction => {}));
+        textAlert.AddAction (UIAlertAction.Create ("OK - Save", UIAlertActionStyle.Default, UIAlertAction => {
+          Console.WriteLine("Old Name: " + manifold.primarySensor.name);
+          Console.WriteLine("New Name: " + textAlert.TextFields[0].Text);
+          manifold.primarySensor.name = textAlert.TextFields[0].Text;
+        }));
+
+        vc.PresentViewController(textAlert, true, null);
+
+      }));
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
         ShowAddSubviewDialog(__table, manifold);
@@ -283,7 +302,7 @@
         popover.SourceView = __table;
         popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
       }
-      __workbenchController.PresentViewController(dialog, true, null);
+      vc.PresentViewController(dialog, true, null);
     }
 
     /// <summary>

@@ -49,7 +49,8 @@ namespace ION.IOS.ViewController.Workbench {
     // Overridden from UIViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-
+      View.BringSubviewToFront(tableContent);
+      View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       InitNavigationBar("ic_nav_workbench", false);
       backAction = () => {
         root.navigation.ToggleMenu();
