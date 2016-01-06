@@ -21,7 +21,12 @@ namespace ION.Core.Sensors {
     /// <param name="code"></param>
     /// <returns></returns>
     public static Unit GetUnit(int code) {
+      try {
       return CODE_TO_UNIT[code];
+      } catch (Exception e) {
+        ION.Core.Util.Log.D("UnitLookup", "invalid unit code: " + code);
+        throw e;
+      }
     }
 
 

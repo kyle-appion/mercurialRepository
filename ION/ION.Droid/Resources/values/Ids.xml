@@ -19,6 +19,7 @@
   <item name="fluid" type="id"/>
   <item name="icon" type="id"/>
   <item name="library" type="id"/>
+  <item name="list" type="id"/>
   <item name="loading" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
@@ -37,6 +38,7 @@
   <item name="type" type="id"/>
   <item name="unit" type="id"/>
   <item name="view" type="id"/>
+  <item name="viewpager" type="id"/>
 
   <!--
   ANALYZER

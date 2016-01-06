@@ -5,6 +5,7 @@
 
   using Android.Bluetooth;
   using Android.Content;
+  using Android.Media;
 
   using Java.Util;
 
@@ -57,6 +58,10 @@
       set {
         var oldState = __connectionState;
         __connectionState = value;
+        if (EConnectionState.Connected == oldState) {
+          PlayBeep();
+        }
+        Log.D(this, "Changing EConnectionState from " + oldState + " to " + __connectionState);
         if (onStateChanged != null) {
           onStateChanged(this, oldState);
         }
@@ -107,6 +112,12 @@
     /// <value>The context.</value>
     private Context context { get; set; }
     /// <summary>
+    /// The bluetooth manager that is NECESSARY FOR USE TO CHECK THE FUCKING CONNECTION STATE
+    /// OF THE BLUETOOTH DEVICE?! Way to go Android, way to go.
+    /// </summary>
+    /// <value>The manager.</value>
+    private BluetoothManager manager { get; set; }
+    /// <summary>
     /// The android native device.
     /// </summary>
     /// <value>The native device.</value>
@@ -127,11 +138,35 @@
     /// <value>The write.</value>
     private BluetoothGattCharacteristic write { get; set; }
 
-    public LeConnection(Context context, BluetoothDevice device) {
+    // TODO ahodder@appioninc.com: DELETE ME
+    private async void PlayBeep() {
+      for (var i = 2; i >= 0; i--) {
+        try {
+          var player = new MediaPlayer();
+          var soundUri = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+          player.SetVolume(1.0f, 1.0f);
+          player.Reset();
+          player.SetDataSource(context, soundUri);
+          player.Prepare();
+          player.Start();
+
+          await Task.Delay(500);
+
+          player.Stop();
+        } catch (Exception e) {
+          // Nope
+        }
+
+        await Task.Delay(500);
+      }
+    }
+
+    public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
       this.context = context;
+      this.manager = manager;
       this.device = device;
       this.name = device.Name;
-      connectionTimeout = TimeSpan.FromSeconds(45);
+      connectionTimeout = TimeSpan.FromSeconds(15);
     }
 
     // Overridden from BluetoothGattCallback
@@ -163,23 +198,36 @@
           Log.D(this, device.Name + " connecting");
           break;
         case ProfileState.Disconnected:
+          Log.D(this, device.Name + " disconnected");
           if (EConnectionState.Disconnected != connectionState) {
             Disconnect();
           }
           break;
         case ProfileState.Disconnecting:
+          Log.D(this, device.Name + " disconnecting");
           if (EConnectionState.Disconnected != connectionState) {
             Disconnect();
           }
           break;
         default:
+          Log.D(this, device.Name + " unknown action");
           break;
       }
     }
 
     // Overridden from BluetoothGattCallback
     public override void OnServicesDiscovered(BluetoothGatt bg, GattStatus status) {
-      // Nope
+      Log.D(this, "Services discovered");
+/*
+      if (EConnectionState.Resolving == connectionState) {
+        if (ValidateServices()) {
+          connectionState = EConnectionState.Connected;
+        } else {
+          Log.D(this, "Failed to validate services");
+          Disconnect();
+        }
+      }
+*/
     }
 
     // Overridden from IConnection
@@ -191,7 +239,10 @@
 
     // Overridden from IConnection
     public async Task<bool> Connect() {
+      Log.D(this, "Beginning connection attempt");
+
       if (EConnectionState.Disconnected != connectionState) {
+        Log.D(this, "Connection not in a disconnected state: returning attempt as failed.");
         return false;
       }
 
@@ -199,7 +250,7 @@
 
       DateTime start = DateTime.Now;
       gatt = device.ConnectGatt(context, false, this);
-
+/*
       await Task.Delay(50); // Wait for the adapter to catch up
 
       if (!gatt.Connect()) {
@@ -207,52 +258,51 @@
         Disconnect();
         return false;
       }
+*/
+      await Task.Delay(100);
 
+      Log.D(this, "Starting connect spool");
       // Wait for the connection to be established
-      while (ProfileState.Connected != gatt.GetConnectionState(device) && DateTime.Now - start < connectionTimeout) {
+      while (ProfileState.Connected != manager.GetConnectionState(device, ProfileType.Gatt) && DateTime.Now - start < connectionTimeout) {
+        Log.D(this, "Connection not established yet");
         await Task.Delay(25);
       }
+      Log.D(this, "Done waiting for connect spool");
 
-      // We aren't connected after the timeout, bail
-      if (ProfileState.Connected != gatt.GetConnectionState(device)) {
-        Log.E(this, "Cannot connect: Failed to connect");
-        Disconnect();
-        return false;
-      }
-
-      // Attempt to start service discovery
-      if (!gatt.DiscoverServices()) {
-        Log.E(this, "Cannot connect: Failed to discover services");
-        Disconnect();
-        return false;
-      }
 
       connectionState = EConnectionState.Resolving;
-
-      // Wait for valid services
-      while (!ValidateServices() && DateTime.Now - start < connectionTimeout) {
-        await Task.Delay(25);
-      }
-
-      // We don't have valid services, bail
-      if (!ValidateServices()) {
-        Log.E(this, "Cannot connect: Failed to discover services");
+      // Attempt to discover the device's services
+      if (!gatt.DiscoverServices()) {
+        Log.E(this, "Failed to discover services");
         Disconnect();
         return false;
       }
 
-      Log.D(this, "Connected to " + device.Name + " {" + device.Address + "} in " + (DateTime.Now - start).TotalSeconds);
-      gatt.SetCharacteristicNotification(read, true);
-      connectionState = EConnectionState.Connected;
+      while (!ValidateServices() && DateTime.Now - start < connectionTimeout) {
+        await Task.Delay(50);
+      }
 
-      return true;
+      if (ValidateServices()) {
+        Log.D(this, "Connection successful");
+        connectionState = EConnectionState.Connected;
+        gatt.SetCharacteristicNotification(read, true);
+        return true;
+      } else {
+        Log.D(this, "Failed to discover services");
+        Disconnect();
+        return false;
+      }
     }
 
     // Overridden from IConnection
     public void Disconnect() {
-      if (gatt != null) {
-        gatt.Disconnect();
-        gatt.Close();
+      lock (this) {
+        if (gatt != null) {
+          gatt.Disconnect();
+          gatt.Close();
+          gatt = null;
+        }
+        connectionState = EConnectionState.Disconnected;
       }
     }
 
