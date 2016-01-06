@@ -27,6 +27,7 @@ Components/**
 ION.userprefs
 # Consulo (for diff because FUCK macHg)
 .consulo/**
+.idea/**
 
 #######################################
 ## Generated resources
