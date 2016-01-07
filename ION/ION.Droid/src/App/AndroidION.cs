@@ -5,6 +5,7 @@
   using System.IO;
   using System.Threading.Tasks;
 
+  using Android.Bluetooth;
   using Android.Content;
   using Android.Content.PM;
   using Android.Preferences;
@@ -23,6 +24,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.Droid.Connections;
   using ION.Droid.Devices;
   using ION.Droid.Location;
 
@@ -64,6 +66,13 @@
       }
     }
 
+    // Overridden from IION
+    public IFolder calibrationCertificateFolder {
+      get {
+        throw new Exception("Not implemented");
+      }
+    }
+
     /// <summary>
     /// The android context that binds the ion context to the android platform.
     /// </summary>
@@ -98,7 +107,7 @@
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
       managers.Add(fileManager = new AndroidFileManager(context));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new AndroidLeConnectionHelper(this, Android.Bluetooth.BluetoothAdapter.DefaultAdapter)));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)context.GetSystemService(Context.BluetoothService))));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
 

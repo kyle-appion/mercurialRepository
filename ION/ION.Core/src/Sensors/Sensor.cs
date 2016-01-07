@@ -343,6 +343,7 @@ namespace ION.Core.Sensors {
     /// Notifies the sensors event that the sensor state changed.
     /// </summary>
     public void NotifySensorStateChanged() {
+      Log.D(this, "Sensor: {" + type + ": " + name + "} notified of change to " + measurement);
       if (onSensorStateChangedEvent != null) {
         onSensorStateChangedEvent(this);
       }

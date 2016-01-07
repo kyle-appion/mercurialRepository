@@ -106,7 +106,11 @@ file.
 
 /* REPORT */
 "reports" = "Reports";
+"report_calibration_certificates" = "Calibration Certificates";
 "report_city" = "City";
+"report_downloading_certificates" = "Downloading Certificates...";
+"report_downloading_certificates_failures" = "Download Error";
+"report_failed_to_download" = "Some certificates failed to download. If this problem persists, please contact Appion.\n\n Affected Serial Numbers:\n {0}";
 "report_title" = "Report Title";
 "report_notes" = "Notes";
 "report_screenshot" = "Screenshot Report";

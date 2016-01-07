@@ -294,6 +294,7 @@
       }
 
       if (device.protocol.supportsBroadcasting) {
+        Log.D(this, device.serialNumber + " " + packet.ToByteString());
         device.HandlePacket(packet);
       }
       device.connection.lastSeen = DateTime.Now;

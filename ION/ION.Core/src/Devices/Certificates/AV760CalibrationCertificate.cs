@@ -6,6 +6,32 @@ namespace ION.Core.Devices.Certificates {
   /// A certificate that provides validation of an AV760's calibration.
   /// </summary>
   public class AV760CalibrationCertificate : ICalibrationCertificate {
+
+
+    private const string KEY_CONTROL = "CalibrationCStandarddevice";
+    private const string KEY_CONTROL_SERIAL = "serialNumber";
+    private const string KEY_CONTROL_INSTRUMENT = "intrumentModel";
+    private const string KEY_CONTROL_TRANSDUCER  = "transducerModel";
+    private const string KEY_CONTROL_CALIBRATION_DATE = "lastCalibrationDate";
+    private const string KEY_CONTROL_ACCURACY = "accuracyOfStandard";
+
+    private const string KEY_TEST_SERIAL = "serialNumber";
+    private const string KEY_TEST_PART = "partNumber";
+    private const string KEY_TEST_TRANSDUCER = "transducerModel";
+    private const string KEY_TEST_TEMPERATURE = "ambientTemperature";
+    private const string KEY_TEST_HUMIDITY = "abientRelativeHumidity";
+    private const string KEY_TEST_ACCURACY = "accuracyLimit";
+
+    private const string KEY_TEST_PERFORMANCE_DATA = "performanceData";
+    private const string KEY_TEST_CALIBRATION_DATE = "lastCalibrationDate";
+    private const string KEY_TEST_CERTIFIED_BY = "certifiedBy";
+
+    public const string KEY_TABLE_STANDARD = "calibrationStandard";
+    public const string KEY_TABLE_ACTUAL = "appionGauge";
+    public const string KEY_TABLE_MIN = "minReading";
+    public const string KEY_TABLE_MAX = "maxReading";
+    public const string KEY_TABLE_UNIT = "calibrationUnit";
+
     /// <summary>
     /// The control device's serial number. 
     /// </summary>

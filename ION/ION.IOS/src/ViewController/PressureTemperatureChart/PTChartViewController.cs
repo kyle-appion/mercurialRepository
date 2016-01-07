@@ -1,6 +1,7 @@
 namespace ION.IOS.ViewController.PressureTemperatureChart {
 
   using System;
+  using System.Threading.Tasks;
 
   using CoreGraphics;
   using Foundation;
@@ -13,6 +14,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
+  using ION.Core.Util;
 
   using ION.IOS.Devices;
   using ION.IOS.UI;
@@ -55,11 +57,27 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         }
 
         __pressureSensor = value;
-        SynchronizePressureIcons();
 
         if (__pressureSensor != null) {
           __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
           SynchronizePressureMeasurement(pressureSensor.measurement);
+        } else {
+          ClearPressureInput();
+        }
+
+        SynchronizePressureIcons();
+        SynchronizeTemperatureIcons();
+
+        if (__pressureSensor is GaugeDeviceSensor) {
+          editPressure.Enabled = false;
+          editTemperature.Enabled = false;
+        } else {
+          editPressure.Enabled = true;
+          if (temperatureSensor is GaugeDeviceSensor) {
+            editTemperature.Enabled = false;
+          } else {
+            editTemperature.Enabled = true;
+          }
         }
       }
     } Sensor __pressureSensor;
@@ -78,14 +96,53 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         }
 
         __temperatureSensor = value;
-        SynchronizeTemperatureIcons();
 
         if (__temperatureSensor != null) {
           __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
           SynchronizeTemperatureMeasurement(temperatureSensor.measurement);
+        } else {
+          ClearTemperatureInput();
+        }
+
+        SynchronizePressureIcons();
+        SynchronizeTemperatureIcons();
+
+        if (__temperatureSensor is GaugeDeviceSensor) {
+          editTemperature.Enabled = false;
+          editPressure.Enabled = false;
+        } else {
+          editTemperature.Enabled = true;
+          if (pressureSensor is GaugeDeviceSensor) {
+            editPressure.Enabled = false;
+          } else {
+            editPressure.Enabled = true;
+          }
         }
       }
     } Sensor __temperatureSensor;
+
+    private Unit pressureUnit { get; set; }
+    private Unit temperatureUnit { get; set; }
+
+    /// <summary>
+    /// Whether or not the pressure sensor can be set by the user.
+    /// </summary>
+    /// <value><c>true</c> if pressure sensor locked; otherwise, <c>false</c>.</value>
+    public bool pressureSensorLocked {
+      get {
+        return initialManifold != null && ESensorType.Pressure == initialManifold.primarySensor.type;
+      }
+    }
+
+    /// <summary>
+    /// Whether or not the temperature sensor can be set by the user.
+    /// </summary>
+    /// <value><c>true</c> if temperature sensor locked; otherwise, <c>false</c>.</value>
+    public bool temperatureSensorLocked {
+      get {
+        return initialManifold != null && ESensorType.Temperature == initialManifold.primarySensor.type;
+      }
+    }
 
     /// <summary>
     /// The ion applicaiton context.
@@ -114,36 +171,43 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         };
       }
 
+      pressureUnit = Units.Pressure.PSIG;
+      temperatureUnit = Units.Temperature.FAHRENHEIT;
+
       ion = AppState.context;
       ptChart = PTChart.New(ion, Fluid.EState.Bubble);
 
       InitPTChartWidgets();
       InitPressureWidgets();
       InitTemperatureWidgets();
-    }
-
-    // Overridden from ViewController
-    public override void ViewWillAppear(bool animated) {
-      base.ViewWillAppear(animated);
 
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
         var sensor = initialManifold.primarySensor;
         if (ESensorType.Pressure == sensor.type) {
           pressureSensor = sensor;
-          temperatureSensor = new Sensor(ESensorType.Temperature);
         } else if (ESensorType.Temperature == sensor.type) {
-          pressureSensor = new Sensor(ESensorType.Pressure);
-          temperatureSensor = initialManifold.primarySensor;
+          temperatureSensor = sensor;
         } else {
           throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
         }
-      } else {
-        pressureSensor = new Sensor(ESensorType.Pressure);
-        temperatureSensor = new Sensor(ESensorType.Temperature, false);
+      }
+    }
+
+    // Overridden from ViewController
+    public override void ViewWillAppear(bool animated) {
+      base.ViewWillAppear(animated);
+
+      if (pressureSensor == null) {
         ClearPressureInput();
+      }
+
+      if (temperatureSensor == null) {
         ClearTemperatureInput();
       }
+
+      SynchronizePressureIcons();
+      SynchronizeTemperatureIcons();
     }
 
     // Overridden from ViewController
@@ -193,8 +257,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           dm.displayFilter = new SensorTypeFilter(ESensorType.Pressure);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             pressureSensor = sensor;
-            editPressure.Enabled = false;
-            editTemperature.Enabled = false;
             InvalidateViewController();
           };
           NavigationController.PushViewController(dm, true);
@@ -202,10 +264,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }));
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
-        if (!(temperatureSensor is GaugeDeviceSensor)) {
+        if (!pressureSensorLocked) {
           pressureSensor = new Sensor(ESensorType.Pressure, true, true);
-          editPressure.Enabled = true;
-          editTemperature.Enabled = true;
           InvalidateViewController();
         }
       }));
@@ -266,8 +326,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             temperatureSensor = sensor;
-            editPressure.Enabled = false;
-            editTemperature.Enabled = false;
             InvalidateViewController();
           };
           NavigationController.PushViewController(dm, true);
@@ -275,10 +333,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }));
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
-        if (!(pressureSensor is GaugeDeviceSensor)) {
+        if (!temperatureSensorLocked) {
           temperatureSensor = new Sensor(ESensorType.Temperature, true, true);
-          editPressure.Enabled = true;
-          editTemperature.Enabled = true;
           InvalidateViewController();
         }
       }));
@@ -351,10 +407,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// Updates the pressure's displated measurement based on the temperatureSensor's measurement.
     /// </summary>
     private void UpdatePressureMeasurement() {
-      var expectedPressure = ptChart.GetPressure(temperatureSensor.measurement);
-      var convertedPressure = expectedPressure.ConvertTo(pressureSensor.unit);
-
-      SynchronizePressureMeasurement(ptChart.GetPressure(temperatureSensor.measurement).ConvertTo(pressureSensor.unit));
+      SynchronizePressureMeasurement(ptChart.GetPressure(temperatureSensor.measurement).ConvertTo(pressureUnit));
     }
 
     /// <summary>
@@ -362,27 +415,25 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// </summary>
     /// <param name="measurement">Measurement.</param>
     private void SynchronizePressureMeasurement(Scalar measurement) {
+      pressureUnit = measurement.unit;
       editPressure.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, measurement);
       buttonPressureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
     }
 
     /// <summary>
-    /// Synchronizes the icons for the pressure sensor. Note: this will affect the temperature lock
-    /// icon if the pressure sensor is a gauge device sensor.
+    /// Synchronizes the state of the pressure icons to the pressure sensor.
     /// </summary>
     private void SynchronizePressureIcons() {
+      var locked = pressureSensorLocked || temperatureSensorLocked;
+
       if (pressureSensor is GaugeDeviceSensor) {
         var gds = pressureSensor as GaugeDeviceSensor;
-        imageTemperatureLock.Hidden = false;
-        imageTemperatureIcon.Hidden = true;
-        imagePressureLock.Hidden = true;
+        imagePressureLock.Hidden = !locked;
+        imagePressureIcon.Hidden = false;
         imagePressureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        // Prevents the lock from persisting when the gds is removed
-        if (!(temperatureSensor is GaugeDeviceSensor)) {
-          imagePressureLock.Hidden = true;
-        }
-        imagePressureIcon.Hidden = false;
+        imagePressureLock.Hidden = !locked;
+        imagePressureIcon.Hidden = temperatureSensor != null;
         imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
     }
@@ -401,7 +452,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// at the pressureSensor's measurement.
     /// </summary>
     private void UpdateTemperatureMeasurement() {
-      SynchronizeTemperatureMeasurement(ptChart.GetTemperature(pressureSensor.measurement).ConvertTo(temperatureSensor.unit));
+      SynchronizeTemperatureMeasurement(ptChart.GetTemperature(pressureSensor.measurement).ConvertTo(temperatureUnit));
     }
 
     /// <summary>
@@ -409,6 +460,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// </summary>
     /// <param name="measurement">Measurement.</param>
     private void SynchronizeTemperatureMeasurement(Scalar measurement) {
+      temperatureUnit = measurement.unit;
       editTemperature.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, measurement);  
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
     }
@@ -418,18 +470,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// icon if the temperature sensor is a gauge device sensor.
     /// </summary>
     private void SynchronizeTemperatureIcons() {
+      var locked = pressureSensorLocked || temperatureSensorLocked;
+
       if (temperatureSensor is GaugeDeviceSensor) {
         var gds = temperatureSensor as GaugeDeviceSensor;
-        imagePressureLock.Hidden = false;
-        imagePressureIcon.Hidden = true;
-        imageTemperatureLock.Hidden = true;
+        imageTemperatureLock.Hidden = !locked;
+        imageTemperatureIcon.Hidden = false;
         imageTemperatureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        // Prevents the lock from persisting when the gds is removed
-        if (!(pressureSensor is GaugeDeviceSensor)) {
-          imageTemperatureLock.Hidden = true;
-        }
-        imageTemperatureIcon.Hidden = false;
+        imageTemperatureLock.Hidden = !locked;
+        imageTemperatureIcon.Hidden = pressureSensor != null;
         imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
     }
@@ -437,7 +487,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// <summary>
     /// Invalidates the view controller in a current sensor sensitive way.
     /// </summary>
-    private void InvalidateViewController() {
+    private async void InvalidateViewController() {
       switch (ptChart.state) {
         case Fluid.EState.Bubble:
           switchFluidState.SelectedSegment = SECTION_BUBBLE;
@@ -451,16 +501,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       if (pressureSensor is GaugeDeviceSensor) {
         UpdateTemperatureMeasurement();
-        SynchronizePressureIcons();
       } else if (temperatureSensor is GaugeDeviceSensor) {
         UpdatePressureMeasurement();
-        SynchronizeTemperatureIcons();
       } else {
-        SynchronizePressureIcons();
-        SynchronizeTemperatureIcons();
         ClearPressureInput();
         ClearTemperatureInput();
       }
+
+      SynchronizePressureIcons();
+      SynchronizeTemperatureIcons();
     }
 
     /// <summary>
