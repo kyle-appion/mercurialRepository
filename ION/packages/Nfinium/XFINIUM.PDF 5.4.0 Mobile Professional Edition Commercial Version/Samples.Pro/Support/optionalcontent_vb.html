@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\OptionalContent.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">.</span>OptionalContent
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' OptionalContent sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class OptionalContent
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">()</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> helveticaBold <span class="hl kwa">As New</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>HelveticaBold<span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> blackBrush <span class="hl kwa">As New</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> greenBrush <span class="hl kwa">As New</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>DarkGreen<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> yellowBrush <span class="hl kwa">As New</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>Yellow<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> bluePen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>DarkBlue<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> redPen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>DarkRed<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> page <span class="hl kwa">As</span> PdfPage <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Simple optional content: the green rectangle&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> ocgPage1 <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentGroup</span><span class="hl opt">()</span>
+			ocgPage1<span class="hl opt">.</span>Name <span class="hl opt">=</span> <span class="hl str">&quot;Page 1 - Green Rectangle&quot;</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage1<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Multipart optional content: the green rectangles&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> ocgPage2 <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentGroup</span><span class="hl opt">()</span>
+			ocgPage2<span class="hl opt">.</span>Name <span class="hl opt">=</span> <span class="hl str">&quot;Page 2 - Green Rectangles&quot;</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage2<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> yellowBrush<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">,</span> <span class="hl num">680</span><span class="hl opt">)</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage2<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Imbricated optional content: the green and yellow rectangles&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> ocgPage31 <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentGroup</span><span class="hl opt">()</span>
+			ocgPage31<span class="hl opt">.</span>Name <span class="hl opt">=</span> <span class="hl str">&quot;Page 3 - Green Rectangle&quot;</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage31<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">600</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> ocgPage32 <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentGroup</span><span class="hl opt">()</span>
+			ocgPage32<span class="hl opt">.</span>Name <span class="hl opt">=</span> <span class="hl str">&quot;Page 3 - Yellow Rectangle&quot;</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage32<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> yellowBrush<span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+			<span class="hl slc">' ocgPage32</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+			<span class="hl slc">' ocgPage31</span>
+			page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Multipage optional content: the green rectangles on page 4 &amp; 5&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> ocgPage45 <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentGroup</span><span class="hl opt">()</span>
+			ocgPage45<span class="hl opt">.</span>Name <span class="hl opt">=</span> <span class="hl str">&quot;Page 4 &amp; 5 - Green Rectangles&quot;</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage45<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> yellowBrush<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">,</span> <span class="hl num">680</span><span class="hl opt">)</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage45<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Multipage optional content: continued&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">)</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage45<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> yellowBrush<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">,</span> <span class="hl num">680</span><span class="hl opt">)</span>
+
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">BeginOptionalContentGroup</span><span class="hl opt">(</span>ocgPage45<span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> greenBrush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">570</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">)</span>
+			page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">EndOptionalContentGroup</span><span class="hl opt">()</span>
+
+			<span class="hl slc">' Build the display tree for the optional content, </span>
+			<span class="hl slc">' how its structure and relationships between optional content groups are presented to the user.</span>
+			<span class="hl kwa">Dim</span> ocgPage1Node <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentDisplayTreeNode</span><span class="hl opt">(</span>ocgPage1<span class="hl opt">)</span>
+			document<span class="hl opt">.</span>OptionalContentProperties<span class="hl opt">.</span>DisplayTree<span class="hl opt">.</span>Nodes<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ocgPage1Node<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> ocgPage2Node <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentDisplayTreeNode</span><span class="hl opt">(</span>ocgPage2<span class="hl opt">)</span>
+			document<span class="hl opt">.</span>OptionalContentProperties<span class="hl opt">.</span>DisplayTree<span class="hl opt">.</span>Nodes<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ocgPage2Node<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> ocgPage31Node <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentDisplayTreeNode</span><span class="hl opt">(</span>ocgPage31<span class="hl opt">)</span>
+			document<span class="hl opt">.</span>OptionalContentProperties<span class="hl opt">.</span>DisplayTree<span class="hl opt">.</span>Nodes<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ocgPage31Node<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> ocgPage32Node <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentDisplayTreeNode</span><span class="hl opt">(</span>ocgPage32<span class="hl opt">)</span>
+			ocgPage31Node<span class="hl opt">.</span>Nodes<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ocgPage32Node<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> ocgPage45Node <span class="hl kwa">As New</span> <span class="hl kwd">PdfOptionalContentDisplayTreeNode</span><span class="hl opt">(</span>ocgPage45<span class="hl opt">)</span>
+			document<span class="hl opt">.</span>OptionalContentProperties<span class="hl opt">.</span>DisplayTree<span class="hl opt">.</span>Nodes<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ocgPage45Node<span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> output <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() {</span><span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.optionalcontent.pdf&quot;</span><span class="hl opt">)}</span>
+			<span class="hl kwa">Return</span> output
+		<span class="hl kwa">End Function</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->
