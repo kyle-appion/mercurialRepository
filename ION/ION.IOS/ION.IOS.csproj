@@ -102,10 +102,7 @@
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
     </Reference>
     <Reference Include="AllianceCustomPicker">
-      <HintPath>..\..\..\..\..\..\Downloads\alliancePicker-2.1.1\lib\ios-unified\AllianceCustomPicker.dll</HintPath>
-    </Reference>
-    <Reference Include="Alliance.Carousel">
-      <HintPath>..\..\..\..\..\..\Downloads\Alliance.Carousel-3.0\lib\ios-unified\Alliance.Carousel.dll</HintPath>
+      <HintPath>..\Components\alliancePicker-2.1.1\lib\ios-unified\AllianceCustomPicker.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -215,7 +212,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
   </ItemGroup>
@@ -475,5 +471,11 @@
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="alliancePicker">
+      <Version>2.1.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>
