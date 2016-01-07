@@ -184,6 +184,8 @@
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
@@ -214,6 +216,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

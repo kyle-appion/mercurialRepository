@@ -9,8 +9,7 @@ using ION.Core.Util;
 
 namespace ION.Core.Devices.Protocols {
   /// <summary>
-  /// This protocol was the first bluetooth LE protocol used by most gauges.
-  /// This protocol is primarily used during active communications.
+  /// This protocol was the first broadcasting protocol.
   /// </summary>
   public class BleV2Protocol : BaseBinaryProtocol {
     // Overriden from IGaugeProtocol

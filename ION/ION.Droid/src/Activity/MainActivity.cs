@@ -59,7 +59,7 @@
 
       if (ion == null) {
         try {
-          ion = new AndroidION(ApplicationContext);
+          AppState.context = ion = new AndroidION(ApplicationContext);
 
           var start = DateTime.Now;
 

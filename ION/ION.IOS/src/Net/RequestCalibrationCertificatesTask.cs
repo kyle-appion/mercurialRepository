@@ -1,18 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.Net {
 
-using Newtonsoft.Json;
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Net;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-using ION.Core.App;
-using ION.Core.Devices;
-using ION.Core.Devices.Certificates;
-using ION.Core.Security;
-using ION.Core.Util;
+  using Newtonsoft.Json;
+  using Newtonsoft.Json.Linq;
 
-namespace ION.IOS.Net {
+  using ION.Core.App;
+  using ION.Core.Devices;
+  using ION.Core.Devices.Certificates;
+  using ION.Core.Security;
+  using ION.Core.Util;
+
   public class RequestCalibrationCertificatesTask {
     private const int FLAGS_NONE = 0;
     private const int FLAGS_DEBUG = 1;
@@ -22,6 +25,30 @@ namespace ION.IOS.Net {
     private const string CONTENT_TYPE = "content-type";
     private const string TYPE_JSON = "text/json";
     private const string METHOD_POST = "POST";
+
+    private const string KEY_CONTROL = "CalibrationCStandarddevice";
+    private const string KEY_CONTROL_SERIAL = "serialNumber";
+    private const string KEY_CONTROL_INSTRUMENT = "intrumentModel";
+    private const string KEY_CONTROL_TRANSDUCER  = "transducerModel";
+    private const string KEY_CONTROL_CALIBRATION_DATE = "lastCalibrationDate";
+    private const string KEY_CONTROL_ACCURACY = "accuracyOfStandard";
+
+    private const string KEY_TEST_SERIAL = "serialNumber";
+    private const string KEY_TEST_PART = "partNumber";
+    private const string KEY_TEST_TRANSDUCER = "transducerModel";
+    private const string KEY_TEST_TEMPERATURE = "ambientTemperature";
+    private const string KEY_TEST_HUMIDITY = "abientRelativeHumidity";
+    private const string KEY_TEST_ACCURACY = "accuracyLimit";
+
+    private const string KEY_TEST_PERFORMANCE_DATA = "performanceData";
+    private const string KEY_TEST_CALIBRATION_DATE = "lastCalibrationDate";
+    private const string KEY_TEST_CERTIFIED_BY = "certifiedBy";
+
+    public const string KEY_TABLE_STANDARD = "calibrationStandard";
+    public const string KEY_TABLE_ACTUAL = "appionGauge";
+    public const string KEY_TABLE_MIN = "minReading";
+    public const string KEY_TABLE_MAX = "maxReading";
+    public const string KEY_TABLE_UNIT = "calibrationUnit";
 
     private static readonly IObfuscator OBFUSCATOR = new XORObfuscator();
 
@@ -46,18 +73,52 @@ namespace ION.IOS.Net {
     /// </summary>
     /// <value>The serial numbers.</value>
     private ISerialNumber[] serialNumbers { get; set; }
+    /// <summary>
+    /// Whether or not the task has been started.
+    /// </summary>
+    /// <value><c>true</c> if started; otherwise, <c>false</c>.</value>
+    private bool started { get; set; }
+    /// <summary>
+    /// The cancellation token source that is used to cancel the task. This is automatically
+    /// created for the task when initially created, however, you may assign a custom source
+    /// if you wish.
+    /// </summary>
+    /// <value>The token source.</value>
+    public CancellationTokenSource tokenSource { get; set; }
 
     public RequestCalibrationCertificatesTask(IION ion, params ISerialNumber[] serialNumbers) {
       Log.D(this, GENERAL_OBFUSCATION_KEY.ToByteString());
       this.ion = ion;
       this.serialNumbers = serialNumbers;
+      tokenSource = new CancellationTokenSource();
     }
 
-    public async Task<List<AV760CalibrationCertificate>> Request() {
-      var ret = new List<AV760CalibrationCertificate>();
+    /// <summary>
+    /// Attempts to cancel the task.
+    /// </summary>
+    /// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
+    public void Cancel() {
+      if (!started) {
+        throw new InvalidOperationException("Cannot cancel task: task not started");
+      }
+      tokenSource.Cancel();
+    }
+
+    /// <summary>
+    /// Requests the calibration certificates for all of the task's serial numbers.
+    /// </summary>
+    /// <param name="tokenSource">Token source.</param>
+    public async Task<List<CalibrationCertificateRequestResult>> Request() {
+      started = true;
 
       try {
+        var ct = tokenSource.Token;
+        var ret = new List<CalibrationCertificateRequestResult>();
+
         var data = BuildPostData();
+
+        // Bail if cancelled.
+        ct.ThrowIfCancellationRequested();
 
         // Build Request
         var req = (HttpWebRequest)WebRequest.Create(SERVER);
@@ -69,19 +130,42 @@ namespace ION.IOS.Net {
           stream.Close();
         }
 
+        // Bail if cancelled.
+        ct.ThrowIfCancellationRequested();
+
         // Await Response
         var res = (HttpWebResponse)req.GetResponse();
+
+        // Bail if cancelled.
+        ct.ThrowIfCancellationRequested();
+
         using (var stream = new StreamReader(res.GetResponseStream())) {
           var result = stream.ReadToEnd();
           Log.D(this, "Raw result: " + result);
-          var response = JsonConvert.DeserializeObject<CalibrationCertificateResponse>(result);
+          var obj = JObject.Parse(result);
+
+          foreach (var s in obj.Properties()) {
+            try {
+              var settings = new JsonSerializerSettings();
+              settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+              var response = JsonConvert.DeserializeObject<CalibrationCertificateResponse>(s.Value.ToString());//, settings);
+              if (response.errorCode != null) {
+                Log.E(this, "Failed to get calibration certificate for: " + response.serialNumber + "{" + response.errorCode + "}");
+                ret.Add(new CalibrationCertificateRequestResult(GaugeSerialNumber.Parse(s.Name)));
+              } else {
+                ret.Add(new CalibrationCertificateRequestResult(response.ToCalibrationCertificate()));
+              }
+            } catch (Exception e) {
+              Log.E(this, "Failed to parse certificate: " + s.Value, e);
+              ret.Add(new CalibrationCertificateRequestResult(GaugeSerialNumber.Parse(s.Name)));
+            }
+          }
         }
 
-      } catch (Exception e) {
-        Log.E(this, "Failed to resolve network request", e);
+        return ret;
+      } finally {
+        started = false;
       }
-
-      return ret;
     }
 
     /// <summary>
@@ -104,6 +188,34 @@ namespace ION.IOS.Net {
       var ret = asString.ToBytes();
       ret = OBFUSCATOR.Obfuscate(ret, GENERAL_OBFUSCATION_KEY);
       return ret;
+    }
+
+    private AV760CalibrationCertificate Parse(JObject obj) {
+      var ret = new AV760CalibrationCertificate();
+
+      ret.controlSerial = obj.Value<string>(KEY_CONTROL_SERIAL);
+      ret.controlInstrument = obj.Value<string>(KEY_CONTROL_INSTRUMENT);
+      ret.controlTransducer = obj.Value<string>(KEY_CONTROL_TRANSDUCER);
+
+
+      return ret;
+    }
+  }
+
+  public class CalibrationCertificateRequestResult {
+    public ISerialNumber serialNumber { get; set; }
+    public AV760CalibrationCertificate certificate { get; set; }
+    public bool success { get; set; }
+
+    public CalibrationCertificateRequestResult(ISerialNumber serialNumber) {
+      this.serialNumber = serialNumber;
+      this.success = false;
+    }
+
+    public CalibrationCertificateRequestResult(AV760CalibrationCertificate certificate) {
+      this.serialNumber = certificate.testSerialNumber;
+      this.certificate = certificate;
+      this.success = true;
     }
   }
 
@@ -128,8 +240,84 @@ namespace ION.IOS.Net {
   internal class CalibrationCertificateResponse {
     [JsonProperty("errorCode")]
     public string errorCode { get; set; }
-    [JsonProperty("Request")]
-    public string request { get; set; }
+    [JsonProperty("certifiedBy")]
+    public string certifiedBy { get; set; }
+    [JsonProperty("ambientTemperature")]
+    public double temperature { get; set; }
+    [JsonProperty("serialNumber")]
+    public string serialNumber { get; set; }
+    [JsonProperty("ambientRelativeHumidity")]
+    public double humidity { get; set; }
+    [JsonProperty("accurancyLimit")]
+    public double accuracyLimit { get; set; }
+    [JsonProperty("partNumber")]
+    public string partNumber { get; set; }
+    [JsonProperty("lastCalibrationDate")]
+    public string calDate { get; set; }
+    [JsonProperty("id")]
+    public long id { get; set; }
+
+    [JsonProperty("calibrationStandardDevice")]
+    public CalibrationStandardDevice controlDevice { get; set; }
+    [JsonProperty("performanceData")]
+    public PerformanceData performanceData { get; set; }
+   
+    public AV760CalibrationCertificate ToCalibrationCertificate() {
+      var ret = new AV760CalibrationCertificate();
+
+      ret.controlSerial = controlDevice.serial;
+      ret.controlInstrument = controlDevice.instrumentModel;
+      ret.controlTransducer = controlDevice.transducerModel;
+      ret.controlAccuracy = controlDevice.accuracy;
+
+      ret.testSerialNumber = GaugeSerialNumber.Parse(serialNumber);
+      ret.testPartNumber = partNumber;
+      ret.testAccuracy = accuracyLimit;
+      ret.environmentTemperature = temperature;
+      ret.environmentHumidity = humidity;
+      ret.certifiedBy = certifiedBy;
+
+      var parts = controlDevice.calDate.Split('-');
+      ret.lastControlCalibrationDate = new DateTime(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]));
+
+      parts = calDate.Split('-');
+      ret.lastTestCalibrationDate = new DateTime(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]));
+      ret.calibrationDataPoints.Add("calibrationStandard", performanceData.standardValues.ToArray());
+      ret.calibrationDataPoints.Add("appionGauge", performanceData.gaugeValues.ToArray());
+      ret.calibrationDataPoints.Add("minReading", performanceData.minValues.ToArray());
+      ret.calibrationDataPoints.Add("maxReading", performanceData.maxValues.ToArray());
+      ret.calibrationDataPoints.Add("calibrationUnit", performanceData.gaugeUnits.ToArray());
+
+      return ret;
+    }
+  }
+
+  internal class PerformanceData {
+    [JsonProperty("calibrationStandard")]
+    public List<string> standardValues { get; set; }
+    [JsonProperty("appionGauge")]
+    public List<string> gaugeValues { get; set; }
+    [JsonProperty("minReading")]
+    public List<string> minValues { get; set; }
+    [JsonProperty("maxReading")]
+    public List<string> maxValues { get; set; }
+    [JsonProperty("calibrationUnit")]
+    public List<string> gaugeUnits { get; set; }
+  }
+
+  internal class CalibrationStandardDevice {
+    [JsonProperty("transducerModel")]
+    public string transducerModel { get; set; }
+    [JsonProperty("serialNumber")]
+    public string serial { get; set; }
+    [JsonProperty("instrumentModel")]
+    public string instrumentModel { get; set; }
+    [JsonProperty("accuracyOfStandard")]
+    public double accuracy { get; set; }
+    [JsonProperty("lastCalibrationDate")]
+    public string calDate { get; set; }
+    [JsonProperty("id")]
+    public long id { get; set; }
   }
 }
 

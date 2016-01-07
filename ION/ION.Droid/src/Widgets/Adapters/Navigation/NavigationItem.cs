@@ -15,7 +15,7 @@
     /// <summary>
     /// The value that is used to identify this navigation item. Note: while uniqueness
     /// of this id is not enforced, it is recommended that the id be as close to unique
-    /// for a given category tree as possible. 
+    /// for a given category tree as possible.
     /// </summary>
     /// <value>The identifier.</value>
     int id { get; }
@@ -132,4 +132,3 @@
     }
   }
 }
-

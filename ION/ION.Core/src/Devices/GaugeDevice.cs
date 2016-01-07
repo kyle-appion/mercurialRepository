@@ -122,7 +122,7 @@
             throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
           }
         } catch (Exception e) {
-          //          Log.E(this, "Cannot resolve packet: unresolved exception {packet=> " + packet.ToByteString() + "}", e);
+          Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
       });
     }

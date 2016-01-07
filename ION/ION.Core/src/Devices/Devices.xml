@@ -5,7 +5,7 @@ This document provides a human readable way to store the devices that ION suppor
 
 ::SCEHEMA::
 GaugeDevice:
-  The element that defines a gauge device. A gauge device is a defines with on or more sensors.
+  The element that defines a gauge device. A GaugeDevices is a device with one or more GaugeDeviceSensors.
 
   -> ELEMENTS:
     GaugeDeviceSensor (1 or more)
@@ -23,7 +23,7 @@ GaugeDeviceSensor:
       {required}
       The type of sensor. Valid entries: length, mass, pressure, temperature, vacuum
     min:
-      The minumum measurement of the sensor.
+      The minumum measurement of the sensor as a signed double.
     minUnit:
       The unit that the minum measurement was in. See the unit strings section for a list of valid units.
 
@@ -135,7 +135,7 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
-
+<!--
   <GaugeDevice deviceCode="S8">
     <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
       <SupportedUnit>psig</SupportedUnit>
@@ -149,6 +149,7 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
+-->
 
   <GaugeDevice deviceCode="T3">
     <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
