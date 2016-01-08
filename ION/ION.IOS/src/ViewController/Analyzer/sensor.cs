@@ -7,7 +7,7 @@ using ION.Core.Sensors;
 
 namespace ION.IOS.ViewController.Analyzer
 {
-	public delegate void sensorEvent (UILabel topLabel, UILabel middleLabel, UILabel bottomLabel, string identifier);
+	//public delegate void sensorEvent (UILabel topLabel, UILabel middleLabel, UILabel bottomLabel, string identifier);
 	
   public class sensor
 	{
@@ -19,11 +19,12 @@ namespace ION.IOS.ViewController.Analyzer
 		public UIView snapArea;
 
     public UIView availableView;
-    public UIImageView addIcon = new UIImageView(new CGRect(7,7,50,50));
+    public UIImageView addIcon;// = new UIImageView(new CGRect(7,7,50,50));
     public UIImageView connectionImage = new UIImageView();
     public UIImageView deviceImage = new UIImageView ();
 
 		public UILabel topLabel = new UILabel();
+    public UILabel tLabelBottom = new UILabel();
 		public UILabel middleLabel = new UILabel();
 		public UILabel bottomLabel = new UILabel();
 		public UITapGestureRecognizer shortPressGesture;

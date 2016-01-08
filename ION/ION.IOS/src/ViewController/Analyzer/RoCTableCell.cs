@@ -12,16 +12,22 @@ namespace ION.IOS.ViewController.Analyzer {
   
   public partial class RoCTableCell : UITableViewCell {
     
-    private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
-    private UILabel cellReading = new UILabel(new CGRect(30,30,119,30));
-    private UIImageView cellImage = new UIImageView(new CGRect(0,30,30,30));
+    //private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
+    private UILabel cellHeader;
+    //private UILabel cellReading = new UILabel(new CGRect(30,30,119,30));
+    private UILabel cellReading;
+    //private UIImageView cellImage = new UIImageView(new CGRect(0,30,30,30));
+    private UIImageView cellImage;
 
     public RoCTableCell(IntPtr handle) {
      
     }
 
-    public void makeEvents(lowHighSensor lhSensor){
-      
+    public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
+      cellHeader = new UILabel(new CGRect(0, 0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
+      //cellReading = new UILabel(new CGRect(.2 * tableRect.Width, .5 * lhSensor.cellHeight, .8 * tableRect.Width, .5 * lhSensor.cellHeight));
+      cellImage = new UIImageView(new CGRect(0, .5 * lhSensor.cellHeight, .2 * tableRect.Width, .5 * lhSensor.cellHeight));
+
       cellHeader.Text = "RoC";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
