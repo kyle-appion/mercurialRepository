@@ -59,7 +59,7 @@ namespace ION.Core.Fluids.Parser {
         }
 
         // All done, return this bitch
-        return new Fluid(System.Text.Encoding.UTF8.GetString(rawName, 0, nameLen), tmin, tmax, step, rowCount, mixture, temps, values);
+        return new Fluid(System.Text.Encoding.UTF8.GetString(rawName, 0, nameLen), mixture, tmin, tmax, step, rowCount, temps, values);
       }
     }
   }

@@ -12,6 +12,7 @@ namespace ION.IOS.ViewController.DeviceManager {
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
+  using ION.Core.Devices.Connections;
   using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Util;
@@ -81,6 +82,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         if (ion.deviceManager.connectionHelper.isScanning) {
           ion.deviceManager.connectionHelper.Stop();
         } else {
+//          var opts = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
           if (!ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
             Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
           }

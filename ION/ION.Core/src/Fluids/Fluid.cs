@@ -70,13 +70,13 @@
     /// <param name="temperatures"></param>
     /// <param name="bubblePressures"></param>
     /// <param name="dewPressures"></param>
-    public Fluid(string name, double tmin, double tmax, double step, int rows, bool mixture, double[] temperatures, double[] pressureValues) {
+    public Fluid(string name, bool mixture, double tmin, double tmax, double step, int rows, double[] temperatures, double[] pressureValues) {
       this.name = name;
+      this.mixture = mixture;
       this.tmin = tmin;
       this.tmax = tmax;
       this.step = step;
       this.rows = rows;
-      this.mixture = mixture;
       this.temperatures = temperatures;
       this.pressureValues = pressureValues;
       ;

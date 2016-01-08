@@ -142,13 +142,17 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Scalar CalculateSystemTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative = true) {
-      switch (state) {
-        case Fluid.EState.Bubble: // Subcool
-          return CalculateSubcool(pressure, temperature, isRelative);
-        case Fluid.EState.Dew: // Superheat
-          return CalculateSuperheat(pressure, temperature, isRelative);
-        default:
-          throw new Exception("Unknown ptchart state: " + state);
+      if (fluid.mixture) {
+        switch (state) {
+          case Fluid.EState.Bubble: // Subcool
+            return CalculateSubcool(pressure, temperature, isRelative);
+          case Fluid.EState.Dew: // Superheat
+            return CalculateSuperheat(pressure, temperature, isRelative);
+          default:
+            throw new Exception("Unknown ptchart state: " + state);
+        }
+      } else {
+        return GetTemperature(pressure).ConvertTo(temperature.unit) - temperature;
       }
     }
 
@@ -168,7 +172,7 @@
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar superheat = fluid.GetTemperatureFromPressure(state, pressure).ConvertTo(temperature.unit);
+      Scalar superheat = GetTemperature(pressure).ConvertTo(temperature.unit);
       return temperature - superheat;
     }
 
@@ -188,7 +192,7 @@
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar subcool = fluid.GetTemperatureFromPressure(state, pressure).ConvertTo(temperature.unit);
+      Scalar subcool = GetTemperature(pressure).ConvertTo(temperature.unit);
       return subcool - temperature;
     }
 
