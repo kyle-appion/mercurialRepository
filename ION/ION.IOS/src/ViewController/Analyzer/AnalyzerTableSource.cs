@@ -9,13 +9,13 @@ namespace ION.IOS.ViewController.Analyzer
 {
 	public class AnalyzerTableSource : UITableViewSource
 	{
-		string cellIdentifier;
+		//string cellIdentifier;
 		List<string> tableItems;
     lowHighSensor tableSensors;
 
     public AnalyzerTableSource (List<string> items, string identifier, lowHighSensor lhSensor){
 			tableItems = items;
-			cellIdentifier = identifier;
+			//cellIdentifier = identifier;
       tableSensors = lhSensor;
 		}
 			
@@ -45,7 +45,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null) {
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Maximum") as maximumTableCell; 
         }
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Minimum")) {
@@ -53,7 +53,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Minimum") as minimumTableCell;
         
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Hold")) {
@@ -61,7 +61,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Hold") as holdTableCell;
         
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Rate")) {
@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Rate") as RoCTableCell;
 
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.Layer.BorderColor = UIColor.Black.CGColor;
         cell.Layer.BorderWidth = 1f;
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
@@ -79,7 +79,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Superheat") as SHSCTableCell;
 
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Pressure")) {
@@ -87,7 +87,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Pressure") as PTTableCell;
 
-        cell.makeEvents();
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else {
@@ -95,7 +95,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Alternate") as altTableCell;        
         
-        cell.makeEvents(tableSensors);
+        cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       }
