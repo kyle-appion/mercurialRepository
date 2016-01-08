@@ -5,14 +5,21 @@ using CoreGraphics;
 
 namespace ION.IOS.ViewController.Analyzer {
   public partial class minimumTableCell : UITableViewCell {
-    UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
-    UILabel cellReading = new UILabel(new CGRect(30,30,119,30));
-    UIButton cellButton = new UIButton(new CGRect(0,30,30,30));
+    UILabel cellHeader;
+    UILabel cellReading;
+    UIButton cellButton;
 
     public minimumTableCell (IntPtr handle) {
     }
 
-    public void makeEvents(lowHighSensor lhSensor){
+    public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
+      //UILabel cellHeader = new UILabel(new CGRect(0,0,150, 30));
+      cellHeader = new UILabel(new CGRect(0,0, 1.006 * lhSensor.snapArea.Bounds.Width, .5 * lhSensor.cellHeight));
+      //UILabel cellReading = new UILabel(new CGRect(30,30,121,30));
+      //cellReading = new UILabel(new CGRect(.201 * tableRect.Width, .5 * lhSensor.cellHeight , .812 * tableRect.Width, .5 * lhSensor.cellHeight ));
+      //UIButton cellButton = new UIButton(new CGRect(0,30,30,30));
+      cellButton = new UIButton(new CGRect(0, .5 * lhSensor.cellHeight, .201 * tableRect.Width, .5 * lhSensor.cellHeight));
+
       cellHeader.Text = "MIN";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
@@ -21,7 +28,12 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.minReading;
-      cellReading.Text = 0.00 + " " + lhSensor.currentSensor.unit.ToString();
+      if (lhSensor.isManual) {
+        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.minType;
+      } else {
+        lhSensor.minType = lhSensor.currentSensor.unit.ToString();
+        cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType;
+      }
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
       cellReading.AdjustsFontSizeToFitWidth = true;
@@ -34,9 +46,15 @@ namespace ION.IOS.ViewController.Analyzer {
 
 
       cellButton.TouchUpInside += delegate {
-        cellReading.Text = 0.00 + " " + lhSensor.currentSensor.unit.ToString();
         lhSensor.min = 0.00;
-        lhSensor.minType = lhSensor.currentSensor.unit.ToString();
+        if(lhSensor.isManual){
+          lhSensor.minType = lhSensor.LabelBottom.Text;
+          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType;
+        } else{
+          lhSensor.minType = lhSensor.currentSensor.unit.ToString();
+          cellReading.Text =  lhSensor.min+ " " + lhSensor.minType;
+        }
+
       };
 
 

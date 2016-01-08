@@ -79,7 +79,6 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
       };
     }
-
     // Overridden from UITableViewCell
     public override void PrepareForReuse() {
       base.PrepareForReuse();

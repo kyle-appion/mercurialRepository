@@ -20,23 +20,28 @@ namespace ION.IOS.ViewController.Analyzer
 		{
       //new CGRect(9, 325, 149,115)
 			snapArea = new UIView (areaRect);
+      cellHeight = .521f * snapArea.Bounds.Height;
       //Low: new CGRect(9,438,149,122)
       //High: new CGRect(165,438,149,122)
       subviewTable = new UITableView (tblRect);
-      //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,149,25)
+      Console.WriteLine("The table has bounds " + tblRect.Width + " " + tblRect.Height);
+      //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,150,25)
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
       LabelMiddle = new UILabel (new CGRect(0, .217 * areaRect.Height, areaRect.Width, .347 * areaRect.Height));
-      LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
-      LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
+      LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, 1.006 * areaRect.Width, .217 * areaRect.Height));
+      LabelSubview = new UILabel (new CGRect(-1, .8 * areaRect.Height, 1.006 * snapArea.Bounds.Width, .204 * areaRect.Height));
       //public UIView subviewDivider = new UIView(new CGRect(0,93,149,2));
       subviewDivider = new UIView(new CGRect(0,.8 * areaRect.Height,areaRect.Width,2));
       //public UIView headingDivider = new UIView(new CGRect(5,27,139,1));
       headingDivider = new UIView(new CGRect(.033 * areaRect.Width,.234 * areaRect.Height,.932 * areaRect.Width,1));
       //public UIView connectionColor = new UIView(new CGRect(125, 2, 21,25));
       connectionColor = new UIView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
+      connectionColor.BackgroundColor = UIColor.Red;
       //public UIImageView Connection = new UIImageView(new CGRect(125, 2, 21,25));
       Connection = new UIImageView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height,  .14 * areaRect.Width,.217 * areaRect.Height));
       //public UIImageView DeviceImage = new UIImageView(new CGRect(0, 27, 32,40));
+      conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
+      conDisButton.BackgroundColor = UIColor.Clear;
       DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.321 * areaRect.Height));
       subviewTable.RegisterClassForCellReuse(typeof(maximumTableCell),"Maximum");
       subviewTable.RegisterClassForCellReuse(typeof(minimumTableCell),"Minimum");
@@ -45,38 +50,68 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(RoCTableCell), "Rate");
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");
+      //maxReading = new UILabel(new CGRect(30,30,119,30));
+      maxReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
+      //minReading = new UILabel(new CGRect(30,30,119,30));
+      minReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
+      //holdReading = new UILabel(new CGRect(30,30,119,30));
+      holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
+      //shReading = new UILabel(new CGRect(100,30,75,30));
+      shReading = new UILabel(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      //shFluidType = new UILabel(new CGRect(0,30,75,30));
+      shFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       //public UIButton changeFluid = new UIButton(new CGRect(100, 30, 49, 30));
-      changeFluid = new UIButton(new CGRect(.671 * tblRect.Width, .260 * areaRect.Height, .328 * tblRect.Width, .260 * areaRect.Height));
+      changeFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       changeFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changeFluid.Layer.BorderWidth = 1f;
       changeFluid.BackgroundColor = UIColor.Clear;
-      //maxReading = new UILabel(new CGRect(30,30,119,30));
-      maxReading = new UILabel(new CGRect(.201 * tblRect.Width,.260 * areaRect.Height,.798 * tblRect.Width,.260 * areaRect.Height));
-      //minReading = new UILabel(new CGRect(30,30,119,30));
-      minReading = new UILabel(new CGRect(.201 * tblRect.Width,.260 * areaRect.Height,.798 * tblRect.Width,.260 * areaRect.Height));
-      //holdReading = new UILabel(new CGRect(30,30,119,30));
-      holdReading = new UILabel(new CGRect(.201 * tblRect.Width,.260 * areaRect.Height,.798 * tblRect.Width,.260 * areaRect.Height));
-      //shReading = new UILabel(new CGRect(100,30,49,30));
-      shReading = new UILabel(new CGRect(.671 * tblRect.Width,.260 * areaRect.Height,.328 * tblRect.Width,.260 * areaRect.Height));
-      //shFluidType = new UILabel(new CGRect(0,30,100,30));
-      shFluidType = new UILabel(new CGRect(0,.260 * areaRect.Height,.672 * tblRect.Width,.260 * areaRect.Height));
       //ptReading = new UILabel(new CGRect(100,30,49,30));
-      ptReading = new UILabel(new CGRect(.671 * tblRect.Width,.260 * areaRect.Height,.328 * tblRect.Width,.260 * areaRect.Height));
+      ptReading = new UILabel(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      //ptFluidtype = new UILabel(new CGRect(0,30,75,30));
+      ptFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      //public UIButton changeFluid = new UIButton(new CGRect(100, 30, 49, 30));
+      changePTFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      changePTFluid.Layer.BorderColor = UIColor.Black.CGColor;
+      changePTFluid.Layer.BorderWidth = 1f;
+      changePTFluid.BackgroundColor = UIColor.Clear;
       //altReading = new UILabel(new CGRect(0,30,149,30));
-      altReading = new UILabel(new CGRect(0,.260 * areaRect.Height,tblRect.Width,.260 * areaRect.Height));
+      altReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
       //rocReading = new UILabel(new CGRect(30,30,119,30));
-      rocReading = new UILabel(new CGRect(.201 * tblRect.Width,.260 * areaRect.Height,.798 * tblRect.Width,.260 * areaRect.Height));
+      rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       //rocImage = new UIImageView(new CGRect(0,30,30,30));
-      rocImage = new UIImageView(new CGRect(0,.260 * areaRect.Height,.201 * tblRect.Width,.260 * areaRect.Height));
+      rocImage = new UIImageView(new CGRect(0, .5 * cellHeight, .2 * tblRect.Width, .5 * cellHeight));
       ion = AppState.context;
-      max = 0;
+      max = 0.00;
       maxType = "psig";
-      min = 0;
+      min = 0.00;
       minType = "psig";
+
       isManual = false;
+
+      conDisButton.TouchUpInside += delegate {
+        if(currentSensor != null){
+          if(currentSensor.device.isConnected){
+            currentSensor.device.connection.Disconnect();
+          } else {
+            currentSensor.device.connection.Connect();
+          }
+        }
+      };
 		}
-    public Manifold manifold;
+    public Manifold manifold{
+
+      get { return __manifold;}
+      set { if (__manifold != null) {
+          __manifold.onManifoldChanged -= manifoldUpdating;
+        }
+        __manifold = value;
+        if (__manifold != null) {
+          __manifold.onManifoldChanged += manifoldUpdating;
+        }
+      }
+    } Manifold __manifold;
     public IION ion { get; set; }
+    public nfloat cellHeight;
     public UILabel maxReading;
     public double max;
     public string maxType;
@@ -89,6 +124,8 @@ namespace ION.IOS.ViewController.Analyzer
     public UILabel shFluidType;
     public UIButton changeFluid;
     public UILabel ptReading;
+    public UILabel ptFluidType;
+    public UIButton changePTFluid;
     public UILabel altReading;
     public UILabel rocReading;
     public UIImageView rocImage;
@@ -105,6 +142,7 @@ namespace ION.IOS.ViewController.Analyzer
 		public UITableView subviewTable;
     public UIImageView Connection;
     public UIImageView DeviceImage;
+    public UIButton conDisButton;
 		public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
     private bool isUpdating { get; set; }
@@ -118,7 +156,7 @@ namespace ION.IOS.ViewController.Analyzer
         maxType = currentSensor.unit.ToString();
       }
 
-      return Convert.ToString(max) + " " + maxType;
+      return max.ToString("0.00") + " " + maxType;
     }
 
     public string UpdateMin(double currentReading, string type){
@@ -127,7 +165,7 @@ namespace ION.IOS.ViewController.Analyzer
         minType = currentSensor.unit.ToString();
       }
       
-      return Convert.ToString(min) + " " + minType;
+      return min.ToString("0.00") + " " + minType;
     }
 
     public void UpdateRoc(Sensor sensorProperty){
@@ -193,22 +231,32 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="sensor">THE SENSOR THE LOW/HIGH AREA IS MONITORING</param>
     public void gaugeUpdating(Sensor sensor){
+      if (currentSensor.device.isConnected) {
+        connectionColor.BackgroundColor = UIColor.Green;
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+      } else {        
+        connectionColor.BackgroundColor = UIColor.Red;
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+      }
+
+
       LabelMiddle.Text = sensor.measurement.amount.ToString();
       LabelBottom.Text = sensor.measurement.unit.ToString();
       LabelSubview.Text = LabelTop.Text + "'s Subviews";
-      Console.WriteLine("there are " + tableSubviews.Count + " subview");
+
       foreach (string subview in tableSubviews) {
-        Console.WriteLine("subview: " + subview);
-        if (subview == "Maximum") {
+        
+        if (subview.Equals("Maximum")) {
+          Console.WriteLine("inside maximum");
           maxReading.Text = UpdateMax(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text);
         } 
-        if (subview == "Minimum") {          
+        if (subview.Equals("Minimum")) {          
           minReading.Text = UpdateMin(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text);
         } 
-        if (subview == "Hold") {          
+        if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text;
         }
-        if (subview == "Alternate") {
+        if (subview.Equals("Alternate")) {
           
           var tempUnit = alt.unit;
 
@@ -218,21 +266,41 @@ namespace ION.IOS.ViewController.Analyzer
 
           alt.unit = tempUnit;
 
-          altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);
+          altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
-        if (subview == "Rate") {
+        if (subview.Equals("Rate")) {
           UpdateRoc(sensor);
         }
-        if (subview == "Superheat") {
-          Console.WriteLine("Inside superheat");
+        if (subview.Equals("Superheat")) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var name = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
-          Console.WriteLine("Temperature Unit: " + senso
-          //shReading.Text = manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(sensor.unit).amount.ToString("0.00");
+
+          if(manifold.primarySensor.type == ESensorType.Pressure){
+            var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
+            shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          } else {
+            var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
+            shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          }
         }
-        if (subview == "Pressure") {
+        if (subview.Equals("Pressure")) {
           
+        }
+      }
+    }
+
+    public void manifoldUpdating(Manifold manifold){
+      shFluidType.Text = manifold.ptChart.fluid.name;
+      var name = manifold.ptChart.fluid.name;
+      shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
+      if (manifold.secondarySensor != null) {
+        if (manifold.primarySensor.type == ESensorType.Pressure) {
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
+          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+        } else {
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
+          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
         }
       }
     }

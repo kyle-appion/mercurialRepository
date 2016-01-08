@@ -214,8 +214,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
   </ItemGroup>
