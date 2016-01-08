@@ -58,10 +58,6 @@
       set {
         var oldState = __connectionState;
         __connectionState = value;
-        if (EConnectionState.Connected == oldState) {
-          PlayBeep();
-        }
-        Log.D(this, "Changing EConnectionState from " + oldState + " to " + __connectionState);
         if (onStateChanged != null) {
           onStateChanged(this, oldState);
         }
@@ -137,29 +133,6 @@
     /// </summary>
     /// <value>The write.</value>
     private BluetoothGattCharacteristic write { get; set; }
-
-    // TODO ahodder@appioninc.com: DELETE ME
-    private async void PlayBeep() {
-      for (var i = 2; i >= 0; i--) {
-        try {
-          var player = new MediaPlayer();
-          var soundUri = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
-          player.SetVolume(1.0f, 1.0f);
-          player.Reset();
-          player.SetDataSource(context, soundUri);
-          player.Prepare();
-          player.Start();
-
-          await Task.Delay(500);
-
-          player.Stop();
-        } catch (Exception e) {
-          // Nope
-        }
-
-        await Task.Delay(500);
-      }
-    }
 
     public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
       this.context = context;

@@ -228,7 +228,7 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.Text = manifold.ptChart.fluid.name;
           var name = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
-          //shReading.Text = manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(sensor.unit).amount.ToString("0.00");
+          shReading.Text = manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(sensor.unit).amount.ToString("0.00");
         }
         if (subview == "Pressure") {
           

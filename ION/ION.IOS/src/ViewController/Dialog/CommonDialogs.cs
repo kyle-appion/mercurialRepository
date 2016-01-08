@@ -1,13 +1,14 @@
-﻿using System;
+﻿namespace ION.IOS.ViewController.Dialog {
 
-using Foundation;
-using UIKit;
+  using System;
 
-using ION.Core.Measure;
+  using Foundation;
+  using UIKit;
 
-using ION.IOS.Util;
+  using ION.Core.Measure;
 
-namespace ION.IOS.ViewController.Dialog {
+  using ION.IOS.Util;
+
   /// <summary>
   /// A static factory class that creates useful UI elements.
   /// </summary>
@@ -20,7 +21,7 @@ namespace ION.IOS.ViewController.Dialog {
     /// <param name="units">Units.</param>
     /// <param name="unitSelected">Unit selected.</param>
     public static UIAlertController CreateUnitPicker(string name, Unit[] units, EventHandler<Unit> unitSelected) {
-      var ret = UIAlertController.Create(name, "", UIAlertControllerStyle.ActionSheet);
+      var ret = UIAlertController.Create(name, "", UIAlertControllerStyle.Alert);
 
       foreach (var unit in units) {
         ret.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {

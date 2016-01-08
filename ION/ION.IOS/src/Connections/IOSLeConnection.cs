@@ -4,6 +4,7 @@ namespace ION.IOS.Connections {
   using System.Threading;
   using System.Threading.Tasks;
 
+  using AudioToolbox;
   using CoreBluetooth;
   using Foundation;
 
@@ -53,10 +54,11 @@ namespace ION.IOS.Connections {
         return __connectionState;
       }
       set {
+        var oldState = __connectionState;
         __connectionState = value;
         if (onStateChanged != null) {
           ION.Core.App.AppState.context.PostToMain(() => {
-            onStateChanged(this, __connectionState);
+            onStateChanged(this, oldState);
           });
         }
       }

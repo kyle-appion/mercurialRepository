@@ -37,6 +37,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         var name = ptChart.fluid.name;
         labelFluidName.Text = name;
         viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(name));
+
+        switchFluidState.Hidden = !__ptChart.fluid.mixture;
+
         switch (ptChart.state) {
           case Fluid.EState.Dew:
             switchFluidState.SelectedSegment = SECTION_DEW;
@@ -190,19 +193,27 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       InitializeFluidControlWidgets();
 
+      ion = AppState.context;
+
+      ptChart = PTChart.New(ion, Fluid.EState.Dew);
+
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
+      pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+      temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+
+      pressureSensor.unit = pressureUnit;
+      temperatureSensor.unit = temperatureUnit;
+
       buttonPressureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
-      buttonPressureUnit.TouchUpInside += OnSensorUnitChanged;
+      buttonPressureUnit.TouchUpInside += OnPressureUnitChanged;
 
       buttonTemperatureUnit.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
-      buttonTemperatureUnit.TouchUpInside += OnSensorUnitChanged;
+      buttonTemperatureUnit.TouchUpInside += OnTemperatureUnitChanged;
 
       imagePressureLock.Image = UIImage.FromBundle("ic_lock");
       imageTemperatureLock.Image = UIImage.FromBundle("ic_lock");
-
-      ion = AppState.context;
 
       View.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         editPressure.ResignFirstResponder();
@@ -222,7 +233,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          pressureSensor = null;
+          pressureSensor = new Sensor(ESensorType.Pressure, true, true);
           ClearPressureInput();
         }
       }));
@@ -263,7 +274,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
-          temperatureSensor = null;
+          temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
           ClearTemperatureInput();
         }
       }));
@@ -289,10 +300,18 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         var sensor = initialManifold.primarySensor;
         if (ESensorType.Pressure == sensor.type) {
           pressureSensor = sensor;
-          temperatureSensor = initialManifold.secondarySensor;
+          if (initialManifold.secondarySensor != null) {
+            temperatureSensor = initialManifold.secondarySensor;
+          } else {
+            temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+          }
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
-          pressureSensor = initialManifold.secondarySensor;
+          if (initialManifold.secondarySensor != null) {
+            pressureSensor = initialManifold.secondarySensor;
+          } else {
+            pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+          }
         } else {
           throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
         }
@@ -303,16 +322,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
 
-      if (pressureSensor != null) {
-        ClearPressureInput();
-      }
-
-      if (temperatureSensor != null) {
-        ClearTemperatureInput();
-      }
-
-      SynchronizePressureIcons();
-      SynchronizeTemperatureIcons();
+      OnPressureSensorChanged(pressureSensor);
+      OnTemperatureSensorChanged(temperatureSensor);
     }
 
     // Overridden from BaseIONViewController
@@ -342,7 +353,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
           ptChart = PTChart.New(ion, ptChart.state, fluid);
-          OnPressureSensorChanged(pressureSensor);
+          if (pressureSensor != null) {
+            OnPressureSensorChanged(pressureSensor);
+          }
         };
         NavigationController.PushViewController(sb, true);
       }));
@@ -357,7 +370,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
             break;
         }
-        OnPressureSensorChanged(pressureSensor);
+        if (pressureSensor != null) {
+          OnPressureSensorChanged(pressureSensor);
+        }
       };
     }
 
@@ -375,59 +390,63 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// Updates the calculated temperature delta value for the superheat/subcool calculations.
     /// </summary>
     private void UpdateDelta() {
-      if (editPressure.Text == "" && editTemperature.Text == "") {
+      if (editPressure.Text.Equals("") || editTemperature.Text.Equals("") || pressureSensor == null || temperatureSensor == null) {
         labelFluidDelta.Text = "";
         return;
       }
       
-      var pressureScalar = Units.Pressure.PSIG.OfScalar(0);
-      var temperatureScalar = Units.Temperature.FAHRENHEIT.OfScalar(0);
+      var pressureScalar = pressureSensor.measurement;
+      var temperatureScalar = temperatureSensor.measurement;
 
-      if (pressureSensor != null) {
-        pressureScalar = pressureSensor.measurement;
-      }
-
-      if (temperatureSensor != null) {
-        temperatureScalar = temperatureSensor.measurement;
-      }
-
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, false);
+      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, false).ConvertTo(temperatureUnit);
 
       labelFluidDelta.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
     }
 
     /// <summary>
-    /// Called when the pressure or temperature sensors unit is changed.
+    /// Called when the pressure sensor's unit is changed.
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="args">Arguments.</param>
-    private void OnSensorUnitChanged(object sender, EventArgs args) {
-      if (pressureSensor == sender) {
-        if (pressureSensor.isEditable) {
-          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
-            pressureUnit = unit;
-            if (pressureSensor != null && pressureSensor.isEditable) {
-              pressureSensor.unit = pressureUnit;
-            }
-          });
+    private void OnPressureUnitChanged(object sender, EventArgs args) {
+      if (pressureSensor.isEditable) {
+        var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
+          pressureUnit = unit;
+          if (pressureSensor != null && pressureSensor.isEditable) {
+            pressureSensor.unit = pressureUnit;
+          }
+          buttonPressureUnit.SetTitle(unit + "", UIControlState.Normal);
+        });
 
-          PresentViewController(dialog, true, null);
+        var popover = dialog.PopoverPresentationController;
+        if (popover != null) {
+          popover.SourceView = View;
         }
-      } else if (temperatureSensor == sender) {
-        if (temperatureSensor.isEditable) {
-          var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
-            temperatureUnit = unit;
-            if (temperatureSensor != null && temperatureSensor.isEditable) {
-              temperatureSensor.unit = temperatureUnit;
-            }
-            temperatureSensor.unit = unit;
-          });
-
-          PresentViewController(dialog, true, null);
-        }
-      } else {
-        // TODO ahodder@appioninc.com: Display an error.
+        this.PresentViewController(dialog, true, null);
       }
+    }
+
+    /// <summary>
+    /// Called when the temperature sensor's unit is changed.
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="args">Arguments.</param>
+    private void OnTemperatureUnitChanged(object sensor, EventArgs args) {
+      if (temperatureSensor.isEditable) {
+        var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
+          temperatureUnit = unit;
+          if (temperatureSensor != null && temperatureSensor.isEditable) {
+            temperatureSensor.unit = temperatureUnit;
+          }
+          buttonTemperatureUnit.SetTitle(unit + "", UIControlState.Normal);
+        });
+
+        var popover = dialog.PopoverPresentationController;
+        if (popover != null) {
+          popover.SourceView = View;
+        }
+        this.PresentViewController(dialog, true, null);
+      }      
     }
 
     /// <summary>
@@ -437,7 +456,10 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     private void OnPressureSensorChanged(Sensor sensor) {
       var measurement = sensor.measurement;
 
-      editPressure.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, measurement);
+      if (!editPressure.IsEditing) {
+        editPressure.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, measurement);
+      }
+
       pressureUnit = measurement.unit;
       buttonPressureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
@@ -456,9 +478,17 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     private void OnTemperatureSensorChanged(Sensor sensor) {
       var measurement = sensor.measurement;
 
-      editTemperature.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, measurement);  
+      if (!editTemperature.IsEditing) {
+        editTemperature.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, measurement);  
+      }
+
       temperatureUnit = measurement.unit;
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
+
+      var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
+
+      labelSatTempMeasurement.Text = temp.amount.ToString("0.00");
+      labelSatTempUnit.Text = temp.unit.ToString();
 
       UpdateDelta();
     }
@@ -492,7 +522,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         imagePressureLock.Hidden = !pressureSensorLocked;
         imagePressureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imagePressureLock.Hidden = temperatureSensor is GaugeDeviceSensor;
+        imagePressureLock.Hidden = !pressureSensorLocked;
         imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
 
@@ -508,7 +538,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         imageTemperatureLock.Hidden = !temperatureSensorLocked;
         imageTemperatureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imageTemperatureLock.Hidden = pressureSensor is GaugeDeviceSensor;
+        imageTemperatureLock.Hidden = !temperatureSensorLocked;
         imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
 
