@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+<!-- Viewer Header -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@id/title"
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold" />
+        <ImageView
+            android:id="@id/battery"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/viewer_connection_icon_size" />
+        <ImageView
+            android:id="@id/connection"
+            android:layout_width="@dimen/viewer_connection_icon_size"
+            android:layout_height="@dimen/viewer_connection_icon_size" />
+    </LinearLayout>
+<!-- Viewer Content -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/icon"
+            android:layout_width="@dimen/viewer_device_icon_size"
+            android:layout_height="@dimen/viewer_device_icon_size" />
+        <TextView
+            android:id="@id/measurement"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="@dimen/viewer_measurement_text_size" />
+    </LinearLayout>
+<!-- Viewer Footer -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@id/alarm"
+            android:layout_width="@dimen/viewer_alarm_icon_size"
+            android:layout_height="@dimen/viewer_alarm_icon_size" />
+        <TextView
+            android:id="@id/status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:id="@id/unit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/viewer_unit_text_size" />
+    </LinearLayout>
+</LinearLayout>
