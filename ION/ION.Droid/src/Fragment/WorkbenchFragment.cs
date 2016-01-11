@@ -15,6 +15,7 @@
   using ION.Core.Content;
 
   using ION.Droid.Activity;
+  using ION.Droid.Sensors;
   using ION.Droid.Widgets.Adapters;
 
   public class WorkbenchFragment : IONFragment, View.IOnClickListener {
@@ -66,9 +67,12 @@
       listView.Adapter = adapter;
     }
 
+    // Overridden from Fragment
     public override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
       switch (requestCode) {
         case REQUEST_SENSOR:
+          var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
+          var sensor = sp.Get(ion);
           break;
         default:
           base.OnActivityResult(requestCode, resultCode, data);

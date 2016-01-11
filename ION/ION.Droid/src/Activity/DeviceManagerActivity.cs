@@ -3,6 +3,7 @@
   using System;
 
   using Android.App;
+  using Android.Content;
   using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Views;
@@ -12,13 +13,24 @@
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
 
+  using ION.Droid.Sensors;
   using ION.Droid.Views;
   using ION.Droid.Widgets.Adapters;
 
   [Activity(Label="!!!", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
   public class DeviceManagerActivity : IONActivity {
 
-    public const string EXTRA_SENSOR_TYPES = "?????????";
+
+    /// <summary>
+    /// The extra key that is used to pull ESensorTypes (as an array of ints)
+    /// from the starting intent.
+    /// </summary>
+    public const string EXTRA_SENSOR_TYPES = "ion.droid.activity.extra.device_manager.TYPES";
+    /// <summary>
+    /// The extra key that is used to pull sensors from the result intent returned
+    /// by the activity upon finish.
+    /// </summary>
+    public const string EXTRA_SENSOR = "ion.droid.activity.extra.device_manager.SENSOR";
 
     /// <summary>
     /// The default time that the activity will be scanning for.
@@ -56,6 +68,7 @@
 
       adapter = new DeviceRecycleAdapter(Resources);
       adapter.SetDevices(ion.deviceManager.devices);
+      adapter.onSensorReturnClicked += OnSensorReturnClicked;
 
       list.SetAdapter(adapter);
     }
@@ -151,6 +164,20 @@
           ION.Core.Util.Log.D(this, "asdfasdf", e);
         }
       });
+    }
+
+    /// <summary>
+    /// Called when the user clicks the return sensor in the adapter.
+    /// </summary>
+    /// <param name="sensor">Sensor.</param>
+    /// <param name="position">Position.</param>
+    private void OnSensorReturnClicked(GaugeDeviceSensor sensor, int position) {
+      var ret = new Intent();
+
+      ret.PutExtra(EXTRA_SENSOR, new GaugeDeviceSensorParcelable(sensor));
+
+      SetResult(Result.Ok, ret);
+      Finish();
     }
 
     /// <summary>
