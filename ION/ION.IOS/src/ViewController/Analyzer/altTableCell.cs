@@ -12,14 +12,23 @@ using ION.IOS.Util;
 namespace ION.IOS.ViewController.Analyzer {
   
   public partial class altTableCell : UITableViewCell  {
-   private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
-   private UILabel cellReading = new UILabel(new CGRect(0,30,149,30));
-   private UIButton cellButton = new UIButton(new CGRect(0,30,149,30));
+    //private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
+   private UILabel cellHeader;
+    //private UILabel cellReading = new UILabel(new CGRect(0,30,149,30));
+   private UILabel cellReading;
+    //private UIButton cellButton = new UIButton(new CGRect(0,30,149,30));
+   private UIButton cellButton;
+    private Sensor manSensor;
 
     public altTableCell(IntPtr handle) {
     }
 
-    public void makeEvents(lowHighSensor lhSensor){
+    public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
+      cellHeader = new UILabel(new CGRect(0, 0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
+      //cellReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
+      cellButton = new UIButton(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
+
+
       cellHeader.Text = "ALT";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
@@ -35,17 +44,21 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderWidth = 1f;
 
       if (lhSensor.isManual) {
-        lhSensor.alt = new AlternateUnitSensorProperty();
+        
         if (lhSensor.manualGType == "Pressure") {
-          Console.WriteLine("Pressure Manual");
-          lhSensor.alt.unit = Units.Pressure.PSIG;
+          manSensor = new Sensor(ESensorType.Pressure);
+          manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
+          lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         } else if (lhSensor.manualGType == "Temperature") {
-          Console.WriteLine("Temp Manual");
-          lhSensor.alt.unit = Units.Temperature.FAHRENHEIT;
-        } else {
-          Console.WriteLine("Vacuum Manual");
-          lhSensor.alt.unit = Units.Vacuum.PASCAL;
+          manSensor = new Sensor(ESensorType.Temperature, lhSensor.alt.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text)));
+
+          lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
+        } else if (lhSensor.manualGType == "Vacuum"){
+          manSensor = new Sensor(ESensorType.Vacuum, lhSensor.alt.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text)));
+          lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         }
+        lhSensor.alt.unit = UnitLookup.GetUnit(manSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
+        cellReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
       } else {
         lhSensor.alt = new AlternateUnitSensorProperty(lhSensor.currentSensor as Sensor);
         lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
@@ -61,8 +74,13 @@ namespace ION.IOS.ViewController.Analyzer {
 
         foreach(String unit in lhSensor.altUnits){
           altUnit.AddAction (UIAlertAction.Create(unit ,UIAlertActionStyle.Default, (action) => {
-            lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
-            lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
+            if(lhSensor.isManual){
+              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.alt.sensor.type ,unit.Replace("/","").ToLower());
+              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
+            } else {
+              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
+            }
           }));
         }
 
