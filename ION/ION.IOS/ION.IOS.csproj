@@ -211,7 +211,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
   </ItemGroup>
@@ -471,11 +470,5 @@
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="alliancePicker">
-      <Version>2.1.1</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
   </ItemGroup>
 </Project>
