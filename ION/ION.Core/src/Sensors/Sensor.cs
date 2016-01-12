@@ -350,6 +350,15 @@ namespace ION.Core.Sensors {
     }
 
     /// <summary>
+    /// Formats this sensor's measurement into a user friendly string.
+    /// </summary>
+    /// <returns>The formatted string.</returns>
+    /// <param name="includeUnit">If set to <c>true</c> include unit.</param>
+    public string ToFormattedString(bool includeUnit) {
+      return SensorUtils.ToFormattedString(type, measurement, includeUnit);
+    }
+
+    /// <summary>
     /// Forces the measurement of the sensor to be set to the given value.
     /// </summary>
     /// <remarks>

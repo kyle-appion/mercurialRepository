@@ -214,6 +214,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -419,6 +421,7 @@
     <Compile Include="src\ViewController\Analyzer\RoCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

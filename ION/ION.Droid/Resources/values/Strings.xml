@@ -5,6 +5,8 @@
   <!--
   GENERAL APPLICATION STRINGS
   -->
+  <string name="add">Add</string>
+  <string name="alarm">Alarm</string>
   <string name="available">Available</string>
   <string name="close">Close</string>
   <string name="connect">Connect</string>

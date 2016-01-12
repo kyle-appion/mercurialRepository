@@ -23,6 +23,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.FluidManager;
 
+  /// <summary>
+  /// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION.
+  /// </summary>
   public partial class PTChartViewController : BaseIONViewController {
 
     private const int SECTION_DEW = 0;
