@@ -77,7 +77,7 @@ namespace ION.IOS.ViewController.Analyzer {
       lowHighSensors.lowArea.changeFluid.TouchUpInside += delegate {
         loadSCSH(lowHighSensors.lowArea);
       };
-
+/*
       lowHighSensors.lowArea.changePTFluid.TouchUpInside += delegate {
         loadPT(lowHighSensors.lowArea);
       };
@@ -89,6 +89,7 @@ namespace ION.IOS.ViewController.Analyzer {
       lowHighSensors.highArea.changePTFluid.TouchUpInside += delegate {
         loadPT(lowHighSensors.highArea);
       };
+*/
     }
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
