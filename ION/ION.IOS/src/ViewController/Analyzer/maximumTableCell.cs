@@ -28,13 +28,14 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.TextAlignment = UITextAlignment.Center;
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
-      cellReading = lhSensor.maxReading;
-      if (lhSensor.isManual) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.maxType;
+      cellReading = lhSensor.maxReading ;
+      if (lhSensor.isManual.Equals(true)) {
+        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text;
       } else {
-        lhSensor.maxType = lhSensor.currentSensor.unit.ToString();
-        cellReading.Text = lhSensor.max.ToString("0.00") + " " + lhSensor.maxType;
+        lhSensor.maxType = lhSensor.currentSensor.unit.ToString() + " ";
+        cellReading.Text = lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
       }
+
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
       cellReading.AdjustsFontSizeToFitWidth = true;
@@ -49,12 +50,11 @@ namespace ION.IOS.ViewController.Analyzer {
         lhSensor.max = 0.00;
         if(lhSensor.isManual){
           lhSensor.maxType = lhSensor.LabelBottom.Text;
-          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.maxType;
+          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.maxType + " ";
         } else{
           lhSensor.maxType = lhSensor.currentSensor.unit.ToString();
-          cellReading.Text =  lhSensor.max.ToString("0.00") + " " + lhSensor.maxType;
+          cellReading.Text =  lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
         }
-
       };
 
       this.AddSubview(cellHeader);

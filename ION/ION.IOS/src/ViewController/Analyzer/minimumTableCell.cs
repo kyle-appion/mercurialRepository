@@ -29,10 +29,10 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellReading = lhSensor.minReading;
       if (lhSensor.isManual) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.minType;
+        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelMiddle.Text + " ";
       } else {
         lhSensor.minType = lhSensor.currentSensor.unit.ToString();
-        cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType;
+        cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
@@ -44,19 +44,16 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;
       cellButton.Layer.BorderWidth = 1f;
 
-
       cellButton.TouchUpInside += delegate {
         lhSensor.min = 0.00;
         if(lhSensor.isManual){
           lhSensor.minType = lhSensor.LabelBottom.Text;
-          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType;
+          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType + " ";
         } else{
           lhSensor.minType = lhSensor.currentSensor.unit.ToString();
-          cellReading.Text =  lhSensor.min+ " " + lhSensor.minType;
+          cellReading.Text =  lhSensor.min+ " " + lhSensor.minType + " ";
         }
-
       };
-
 
       this.AddSubview(cellHeader);
       this.AddSubview(cellReading);

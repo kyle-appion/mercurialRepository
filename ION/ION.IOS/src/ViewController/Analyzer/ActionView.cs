@@ -11,6 +11,9 @@ namespace ION.IOS.ViewController.Analyzer {
     public ActionView(UIView mainView) {
       aView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
       connectionColor = new UIView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
+      connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
+      connectionColor.Layer.BorderWidth = 1f;
+      connectionColor.Layer.CornerRadius = 8;
       pcloseButton = new UIButton(new CGRect(0, .8 * aView.Bounds.Height, .503 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pactionButton = new UIButton(new CGRect(.5 * aView.Bounds.Width,.8 * aView.Bounds.Height,.5 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pconnection = new UIImageView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
@@ -92,6 +95,16 @@ namespace ION.IOS.ViewController.Analyzer {
     UIView abuttonBorder3;
 
     public void gaugeUpdating(Sensor sensor){
+      if (currentSensor.device.isConnected) {
+        pconnection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+        pconnection.BackgroundColor = UIColor.Green;
+        pconnectionStatus.Hidden = true;
+      } else {
+        pconnection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+        pconnection.BackgroundColor = UIColor.Red;
+        pconnectionStatus.Hidden = false;
+      }
+
       pgaugeValue.Text = sensor.measurement.amount.ToString();
       pvalueType.Text = sensor.measurement.unit.ToString();
     }
