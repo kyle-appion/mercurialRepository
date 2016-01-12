@@ -34,6 +34,10 @@ namespace ION.IOS.ViewController.Analyzer
 			return null;
 		}
 
+    public override UIView GetViewForHeader(UITableView tableView, nint section) {
+      return null;
+    }
+
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
       return .521f * tableSensors.snapArea.Bounds.Height;
     }

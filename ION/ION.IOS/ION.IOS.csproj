@@ -211,11 +211,14 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_connected.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -474,5 +477,11 @@
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="alliancePicker">
+      <Version>2.1.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>
