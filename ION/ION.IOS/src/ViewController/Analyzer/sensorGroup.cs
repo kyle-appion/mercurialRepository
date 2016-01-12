@@ -6,18 +6,26 @@ namespace ION.IOS.ViewController.Analyzer
 {
 	public class sensorGroup
 	{
-		public sensorGroup ()
+    public sensorGroup (UIView mainView)
 		{
+      snapArea1 = new sensor(mainView);
+      snapArea2 = new sensor(mainView);
+      snapArea3 = new sensor(mainView);
+      snapArea4 = new sensor(mainView);
+      snapArea5 = new sensor(mainView);
+      snapArea6 = new sensor(mainView);
+      snapArea7 = new sensor(mainView);
+      snapArea8 = new sensor(mainView);
 		}
 
-		public sensor snapArea1 = new sensor();
-		public sensor snapArea2 = new sensor();
-		public sensor snapArea3 = new sensor();
-		public sensor snapArea4 = new sensor();
-		public sensor snapArea5 = new sensor();
-		public sensor snapArea6 = new sensor();
-		public sensor snapArea7 = new sensor();
-		public sensor snapArea8 = new sensor();
+		public sensor snapArea1;
+		public sensor snapArea2;
+		public sensor snapArea3;
+		public sensor snapArea4;
+		public sensor snapArea5;
+		public sensor snapArea6;
+		public sensor snapArea7;
+		public sensor snapArea8;
 		public CGRect snapRect1;
 		public CGRect snapRect2;
 		public CGRect snapRect3;
@@ -40,7 +48,5 @@ namespace ION.IOS.ViewController.Analyzer
 		public List<int> areaList = new List<int> (){1,2,3,4,5,6,7,8};
 		public List<sensor> viewList = new List<sensor>();
 	}
-
-
 }
 

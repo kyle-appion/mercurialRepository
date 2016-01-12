@@ -4,6 +4,8 @@ using UIKit;
 using CoreGraphics;
 using ION.Core.Devices;
 using ION.Core.Sensors;
+using ION.IOS.ViewController.SuperheatSubcool;
+using ION.IOS.ViewController.PressureTemperatureChart;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -12,13 +14,18 @@ namespace ION.IOS.ViewController.Analyzer
   public class sensor
 	{
     //public event sensorEvent sensorChanged;
-		public sensor ()
+    public sensor (UIView mainView)
 		{
-
-		}
+      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height));
+      highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height));
+    }
 		public UIView snapArea;
-
     public UIView availableView;
+    public ActionView sactionView;
+    public lowHighSensor lowArea;
+    public lowHighSensor highArea;
+
+
     public UIImageView addIcon;// = new UIImageView(new CGRect(7,7,50,50));
     public UIImageView connectionImage = new UIImageView();
     public UIImageView deviceImage = new UIImageView ();
@@ -46,10 +53,9 @@ namespace ION.IOS.ViewController.Analyzer
     public bool isManual = false;
 
     public void gaugeUpdating(Sensor sensor){
-      middleLabel.Text = sensor.measurement.amount.ToString();
+      middleLabel.Text = sensor.measurement.amount.ToString() + " ";
       bottomLabel.Text = sensor.measurement.unit.ToString();
     }
-
   }
 	
 }

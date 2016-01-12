@@ -12,6 +12,7 @@ namespace ION.IOS.ViewController.Analyzer
 		public manualEntry ()
 		{
 		}
+    public sensor pressedSensor;
 		public UIView pressedView;
     public UIView availableView;
 		public UILongPressGestureRecognizer addLong;
