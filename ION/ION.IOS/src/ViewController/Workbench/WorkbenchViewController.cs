@@ -40,7 +40,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// The source that will provide Viewer views to the table view.
     /// </summary>
     /// <value>The source.</value>
-    private WorkbenchSource source { get; set; }
+    private WorkbenchTableSource source { get; set; }
 
 		public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
@@ -71,8 +71,8 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.AllowsSelection = true;
 
-      source = new WorkbenchSource(this, workbench);
-      source.onRequestViewerDelegate = OnRequestViewer;
+      source = new WorkbenchTableSource(ion, workbench);
+      source.onAddClicked = OnRequestViewer;
 
       tableContent.Source = source;
 
