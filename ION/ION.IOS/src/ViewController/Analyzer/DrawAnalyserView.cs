@@ -19,7 +19,6 @@ namespace ION.IOS.ViewController.Analyzer
 		public override void Draw (CGRect rect)
 		{
 			base.Draw (rect);
-      Console.WriteLine("drawing system X="+rect.X+" Y="+rect.Y+ " Width=" + rect.Width + " Height=" + rect.Height);
 
 			//get graphics context
 			CGContext gctx = UIGraphics.GetCurrentContext();
@@ -31,6 +30,7 @@ namespace ION.IOS.ViewController.Analyzer
 			gctx.SetLineCap (CGLineCap.Round);
 
 			//create geometry
+      //based on 320 x 568 iphone
 			leftPath = new CGPath ();
 			rightPath = new CGPath ();
 			///MIDDLE -> LEFT
@@ -38,19 +38,19 @@ namespace ION.IOS.ViewController.Analyzer
         //new CGPoint (160,105),
         new CGPoint (.5 * rect.Width, .184 * rect.Height),
         //new CGPoint (20,105)
-        new CGPoint (.055 * rect.Width, .184 * rect.Height)
+        new CGPoint (.062 * rect.Width, .184 * rect.Height)
 			});
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint[] {
         //new CGPoint (20, 108),
-        new CGPoint (.055 * rect.Width, .190 * rect.Height),
+        new CGPoint (.062 * rect.Width, .190 * rect.Height),
        //new CGPoint (20, 162)
-        new CGPoint (.055 * rect.Width, .285 * rect.Height)
+        new CGPoint (.062 * rect.Width, .285 * rect.Height)
 			});
 			///LEFT -> RIGHT
 			leftPath.AddLines (new CGPoint [] {
         //new CGPoint (20, 162),
-        new CGPoint (.055 * rect.Width, .285 * rect.Height),
+        new CGPoint (.062 * rect.Width, .285 * rect.Height),
         //new CGPoint (90, 162)
         new CGPoint (.281 * rect.Width, .285 * rect.Height)
 			});
@@ -66,19 +66,19 @@ namespace ION.IOS.ViewController.Analyzer
         //new CGPoint (90, 189),
         new CGPoint (.281 * rect.Width, .332 * rect.Height),
         //new CGPoint (20, 189)
-        new CGPoint (.055 * rect.Width, .332 * rect.Height)
+        new CGPoint (.062 * rect.Width, .332 * rect.Height)
 			});
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint [] {
         //new CGPoint (20, 189),
-        new CGPoint (.055 * rect.Width, .332 * rect.Height),
+        new CGPoint (.062 * rect.Width, .332 * rect.Height),
         //new CGPoint (20, 213)
-        new CGPoint (.055 * rect.Width, .375 * rect.Height)
+        new CGPoint (.062 * rect.Width, .375 * rect.Height)
 			});
 			///LEFT -> RIGHT
 			leftPath.AddLines (new CGPoint [] {
         //new CGPoint (20, 213),
-        new CGPoint (.055 * rect.Width, .375 * rect.Height),
+        new CGPoint (.062 * rect.Width, .375 * rect.Height),
         //new CGPoint (90, 213)
         new CGPoint (.281 * rect.Width, .375 * rect.Height)
 			});
@@ -94,19 +94,19 @@ namespace ION.IOS.ViewController.Analyzer
         //new CGPoint (90, 240),
         new CGPoint (.281 * rect.Width, .422 * rect.Height),
         //new CGPoint (20, 240)
-        new CGPoint (.055 * rect.Width, .422 * rect.Height)
+        new CGPoint (.062 * rect.Width, .422 * rect.Height)
 			});
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint [] {
         //new CGPoint (20, 240),
-        new CGPoint (.055 * rect.Width, .422 * rect.Height),
+        new CGPoint (.062 * rect.Width, .422 * rect.Height),
         //new CGPoint (20, 298)
-        new CGPoint (.055 * rect.Width, .524 * rect.Height)
+        new CGPoint (.062 * rect.Width, .524 * rect.Height)
 			});
 			///LEFT -> MIDDLE
 			leftPath.AddLines (new CGPoint [] {
         //new CGPoint (20, 298),
-        new CGPoint (.055 * rect.Width, .524 * rect.Height),
+        new CGPoint (.062 * rect.Width, .524 * rect.Height),
         //new CGPoint (160, 298)
         new CGPoint (.5 * rect.Width, .524 * rect.Height)
 			});
