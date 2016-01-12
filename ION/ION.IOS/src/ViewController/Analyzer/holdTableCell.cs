@@ -29,8 +29,8 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.TextAlignment = UITextAlignment.Center;
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
-      if (cellReading.Text == "") {
-        cellReading.Text = "";
+      if (lhSensor.holdValue != 0) {
+        cellReading.Text = lhSensor.holdValue.ToString("0.00") + lhSensor.LabelBottom.Text  + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
@@ -46,9 +46,10 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellButton.TouchUpInside += delegate {
         if(lhSensor.isManual){
-          cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text;
+          cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
         } else {
-          cellReading.Text = holdLabel.Text;
+          lhSensor.holdValue = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+          cellReading.Text = holdLabel.Text + " ";
         }
       };
 

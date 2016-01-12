@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		UIKit.UIImageView imageTemperatureLock { get; set; }
 
 		[Outlet]
-		UIKit.UILabel labelFluidName { get; set; }
+    UIKit.UILabel labelFluidName { get; set ; }
 
 		[Outlet]
 		UIKit.UILabel labelPressure { get; set; }
@@ -49,7 +49,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		UIKit.UISegmentedControl switchFluidState { get; set; }
 
 		[Outlet]
-		UIKit.UIView viewFluidColor { get; set; }
+    UIKit.UIView viewFluidColor {
+      get {
+        return p;
+      }
+      set {
+        ION.Core.Util.Log.D(this, "setting label to " + p?.Description);
+        p = value;
+      }
+    } UIKit.UIView p;
 
 		[Outlet]
 		UIKit.UIView viewFluidHeader { get; set; }
