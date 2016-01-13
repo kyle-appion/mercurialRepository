@@ -11,8 +11,10 @@ file.
 "cancel" = "Cancel";
 "date" = "Date";
 "delete_question" = "Delete?";
+"enter_name" = "Enter Name";
 "help" = "Help";
 "ok" = "OK";
+"ok_save" = "OK - Save";
 "rename" = "Rename";
 "please_wait" = "Please Wait";
 "save" = "Save";
