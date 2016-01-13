@@ -21,6 +21,21 @@ namespace ION.Core.Util {
 
       return list.ToArray();
     }
+
+    /// <summary>
+    /// Creates a new array ranging from start to end inclusively.
+    /// </summary>
+    /// <param name="start">Start.</param>
+    /// <param name="end">End.</param>
+    public static int[] Range(int start, int end) {
+      var ret = new int[end - start + 1];
+
+      for (int i = 0; i < ret.Length; i++) {
+        ret[i] = start + i;
+      }
+
+      return ret;
+    }
   }
 }
 

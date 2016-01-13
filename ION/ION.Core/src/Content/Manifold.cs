@@ -90,6 +90,16 @@
     } List<ISensorProperty> __sensorProperties = new List<ISensorProperty>();
 
     /// <summary>
+    /// The number of sensor properties are held in the manifold.
+    /// </summary>
+    /// <value>The sensor property count.</value>
+    public int sensorPropertyCount {
+      get {
+        return manifoldProperties.Count;
+      }
+    }
+
+    /// <summary>
     /// An indexer that will retrieve the sensor properties from the manifold.
     /// </summary>
     /// <param name="index">Index.</param>

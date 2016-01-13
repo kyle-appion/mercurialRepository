@@ -215,10 +215,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -425,6 +421,7 @@
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
     <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
+    <Compile Include="src\ViewController\Workbench\WorkbenchViewController2.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
