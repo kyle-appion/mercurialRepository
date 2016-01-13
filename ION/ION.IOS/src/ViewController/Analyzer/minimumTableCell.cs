@@ -29,7 +29,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellReading = lhSensor.minReading;
       if (lhSensor.isManual) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelMiddle.Text + " ";
+        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
       } else {
         lhSensor.minType = lhSensor.currentSensor.unit.ToString();
         cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType + " ";
@@ -49,8 +49,7 @@ namespace ION.IOS.ViewController.Analyzer {
         if(lhSensor.isManual){
           lhSensor.minType = lhSensor.LabelBottom.Text;
           cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType + " ";
-        } else{
-          lhSensor.minType = lhSensor.currentSensor.unit.ToString();
+        } else{          
           cellReading.Text =  lhSensor.min+ " " + lhSensor.minType + " ";
         }
       };

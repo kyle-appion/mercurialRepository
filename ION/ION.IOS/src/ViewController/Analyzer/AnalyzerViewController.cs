@@ -263,10 +263,10 @@ namespace ION.IOS.ViewController.Analyzer {
       start.topLabel.Hidden = false;
       start.middleLabel.Hidden = false;
       start.bottomLabel.Hidden = false;
-      start.topLabel.Text = mentryView.dtypeButton.AccessibilityIdentifier;
+      start.topLabel.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier;
       start.middleLabel.Text = mentryView.mtextValue.Text + ".00";
       start.bottomLabel.Text = mentryView.mbuttonText.Text;
-      start.isManual = true;
+      start.pressedSensor.isManual = true;
       start.addIcon.Hidden = true;
 
       start.pressedSensor.lowArea.isManual = true;
@@ -291,12 +291,18 @@ namespace ION.IOS.ViewController.Analyzer {
       if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
         start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
         start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
+        start.pressedSensor.lowArea.manualGType = "Pressure";
+        start.pressedSensor.highArea.manualGType = "Pressure";
       } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
         start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
         start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
+        start.pressedSensor.lowArea.manualGType = "Temperature";
+        start.pressedSensor.highArea.manualGType = "Temperature";
       } else {
         start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
         start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
+        start.pressedSensor.lowArea.manualGType = "Vacuum";
+        start.pressedSensor.highArea.manualGType = "Vacuum";
       }
 
       mentryView.mdoneButton.TouchUpInside -= handleManualPopup;
@@ -445,7 +451,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].availableView.Hidden = true;
             analyzerSensors.viewList[i].snapArea.BackgroundColor = UIColor.White;
             analyzerSensors.viewList[i].snapArea.AddGestureRecognizer (analyzerSensors.viewList [i].panGesture);
-            analyzerSensors.viewList[i].topLabel.Text = mentryView.dtypeButton.AccessibilityIdentifier + ": " + mentryView.dtypeButton.AccessibilityIdentifier [0] + mentryView.dtypeButton.AccessibilityIdentifier [1] + mentryView.dtypeButton.AccessibilityIdentifier [2] + mentryView.dtypeButton.AccessibilityIdentifier [3];
+            analyzerSensors.viewList[i].topLabel.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier + ": " + mentryView.dtypeButton.AccessibilityIdentifier [0] + mentryView.dtypeButton.AccessibilityIdentifier [1] + mentryView.dtypeButton.AccessibilityIdentifier [2] + mentryView.dtypeButton.AccessibilityIdentifier [3];
             analyzerSensors.viewList[i].topLabel.Hidden = false;
             analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;
             analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
@@ -456,6 +462,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].bottomLabel.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].bottomLabel.Hidden = false;
             analyzerSensors.viewList[i].sactionView.connectionColor.Hidden = true;
+            analyzerSensors.viewList[i].isManual = true;
 
             analyzerSensors.viewList[i].lowArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
             analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = mentryView.mtextValue.Text + ".00";
@@ -509,7 +516,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].availableView.Hidden = true;
             analyzerSensors.viewList[i].snapArea.BackgroundColor = UIColor.White;
             analyzerSensors.viewList[i].snapArea.AddGestureRecognizer (analyzerSensors.viewList [i].panGesture);
-            analyzerSensors.viewList[i].topLabel.Text = mentryView.dtypeButton.AccessibilityIdentifier + ": " + mentryView.dtypeButton.AccessibilityIdentifier [0] + mentryView.dtypeButton.AccessibilityIdentifier [1] + mentryView.dtypeButton.AccessibilityIdentifier [2] + mentryView.dtypeButton.AccessibilityIdentifier [3];
+            analyzerSensors.viewList[i].topLabel.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier + ": " + mentryView.dtypeButton.AccessibilityIdentifier [0] + mentryView.dtypeButton.AccessibilityIdentifier [1] + mentryView.dtypeButton.AccessibilityIdentifier [2] + mentryView.dtypeButton.AccessibilityIdentifier [3];
             analyzerSensors.viewList[i].topLabel.Hidden = false;
             analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
             analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
@@ -520,6 +527,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].bottomLabel.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].bottomLabel.Hidden = false;
             analyzerSensors.viewList[i].sactionView.connectionColor.Hidden = true;
+            analyzerSensors.viewList[i].isManual = true;
 
             analyzerSensors.viewList[i].lowArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
             analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = mentryView.mtextValue.Text + ".00";
@@ -719,6 +727,7 @@ namespace ION.IOS.ViewController.Analyzer {
         foreach(sensor item in analyzerSensors.viewList){
           if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
             existingConnection = true;
+            Console.WriteLine("Totes found an existing sensor associated");
             break;
           } 
         }

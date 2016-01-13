@@ -31,8 +31,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellReading = lhSensor.maxReading ;
       if (lhSensor.isManual.Equals(true)) {
         cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text;
-      } else {
-        lhSensor.maxType = lhSensor.currentSensor.unit.ToString() + " ";
+      } else {        
         cellReading.Text = lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
       }
 
