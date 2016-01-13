@@ -25,7 +25,7 @@ namespace ION.IOS.ViewController.Workbench {
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.ScreenshotReport;
 
-	public partial class WorkbenchViewController : BaseIONViewController {
+  public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -42,9 +42,9 @@ namespace ION.IOS.ViewController.Workbench {
     /// <value>The source.</value>
     private WorkbenchTableSource source { get; set; }
 
-		public WorkbenchViewController (IntPtr handle) : base (handle) {
+    public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
-		}
+    }
 
     // Overridden from UIViewController
     public override void ViewDidLoad() {
@@ -71,12 +71,12 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.AllowsSelection = true;
 
-      source = new WorkbenchTableSource(ion, workbench);
+      source = new WorkbenchTableSource(this, ion, workbench, tableContent);
       source.onAddClicked = OnRequestViewer;
 
       tableContent.Source = source;
 
-      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+      //      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
     }
 
     // Overridden from BaseIONViewController
@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     // Overridden from UIViewController
     public override void ViewDidUnload() {
-      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
+      //      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
     }
 
     /// <summary>
@@ -137,5 +137,5 @@ namespace ION.IOS.ViewController.Workbench {
         Log.E(this, "Failed to create pdf", e);
       }
     }
-	}
+  }
 }

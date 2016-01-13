@@ -401,7 +401,6 @@
     <Compile Include="src\ViewController\ScreenshotReport\NotesCell.designer.cs">
       <DependentUpon>NotesCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\PressureTemperatureChart\tmp.cs" />
     <Compile Include="src\ViewController\Analyzer\DrawAnalyserView.cs" />
     <Compile Include="src\ViewController\Analyzer\actionPopup.cs" />
     <Compile Include="src\ViewController\Analyzer\AnalyserUtilities.cs" />
@@ -421,7 +420,6 @@
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
     <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
-    <Compile Include="src\ViewController\Workbench\WorkbenchViewController2.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
