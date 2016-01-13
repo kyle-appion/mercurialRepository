@@ -42,6 +42,27 @@ namespace ION.IOS.ViewController.Analyzer
       return .521f * tableSensors.snapArea.Bounds.Height;
     }
 
+    public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
+      return true;
+    }
+
+    public override void CommitEditingStyle (UITableView tableView, UITableViewCellEditingStyle editingStyle, Foundation.NSIndexPath indexPath)
+    {
+      switch (editingStyle) {
+        case UITableViewCellEditingStyle.Delete:
+          // remove the item from the underlying data source
+          tableItems.RemoveAt(indexPath.Row);
+          // delete the row from the table
+          tableView.DeleteRows (new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
+          // remove entry from source
+          //tableSensors.tableSubviews.Remove(tableItems[indexPath.Row]);
+          break;
+        case UITableViewCellEditingStyle.None:
+          Console.WriteLine ("CommitEditingStyle:None called");
+          break;
+      }
+    }
+
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
       if (tableItems[indexPath.Row].Contains("Maximum")) {

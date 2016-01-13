@@ -44,14 +44,13 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderWidth = 1f;
 
       if (lhSensor.isManual) {
-        
+        Console.WriteLine("the manual gt: " + lhSensor.manualGType);
         if (lhSensor.manualGType == "Pressure") {
           manSensor = new Sensor(ESensorType.Pressure);
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         } else if (lhSensor.manualGType == "Temperature") {
           manSensor = new Sensor(ESensorType.Temperature, lhSensor.alt.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text)));
-
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         } else if (lhSensor.manualGType == "Vacuum"){
           manSensor = new Sensor(ESensorType.Vacuum, lhSensor.alt.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text)));
@@ -61,7 +60,11 @@ namespace ION.IOS.ViewController.Analyzer {
         cellReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
       } else {
         lhSensor.alt = new AlternateUnitSensorProperty(lhSensor.currentSensor as Sensor);
-        lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
+        if (lhSensor.altUnit != null) {
+          lhSensor.alt.unit = lhSensor.altUnit;
+        } else {
+          lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
+        }
       }
       cellButton.TouchUpInside += delegate {
         var window = UIApplication.SharedApplication.KeyWindow;
@@ -74,19 +77,17 @@ namespace ION.IOS.ViewController.Analyzer {
 
         foreach(String unit in lhSensor.altUnits){
           altUnit.AddAction (UIAlertAction.Create(unit ,UIAlertActionStyle.Default, (action) => {
-            if(lhSensor.isManual){
+//            if(lhSensor.isManual){
+              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
               lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.alt.sensor.type ,unit.Replace("/","").ToLower());
               lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
-            } else {
-              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
-              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
-            }
+//            } else {
+//              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+//              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+//              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
+//            }
           }));
         }
-
-        altUnit.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {
-          
-        }));
 
         altUnit.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
 
