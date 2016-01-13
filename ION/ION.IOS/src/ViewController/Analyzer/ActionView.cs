@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.Analyzer {
       pactionButton = new UIButton(new CGRect(.5 * aView.Bounds.Width,.8 * aView.Bounds.Height,.5 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pconnection = new UIImageView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .214 * aView.Bounds.Width, .307 * aView.Bounds.Height));
-      pbatteryImage = new UIImageView(new CGRect(.614 * aView.Bounds.Width, .071 * aView.Bounds.Height, .225 * aView.Bounds.Width, .107 * aView.Bounds.Height));
+      pbatteryImage = new UIImageView(new CGRect(.614 * aView.Bounds.Width, .071 * aView.Bounds.Height, .203 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pdeviceName = new UILabel(new CGRect(.028 * aView.Bounds.Width, .035 * aView.Bounds.Height, .435 * aView.Bounds.Width, .107 *aView.Bounds.Height));
       pgaugeValue = new UILabel(new CGRect(.292 * aView.Bounds.Width, .184 * aView.Bounds.Height, .678 * aView.Bounds.Width, .348 * aView.Bounds.Height));
       pvalueType = new UILabel(new CGRect(.682 * aView.Bounds.Width, .574 * aView.Bounds.Height, .289 * aView.Bounds.Width, .107 * aView.Bounds.Height));

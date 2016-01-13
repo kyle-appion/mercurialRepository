@@ -57,7 +57,7 @@ namespace ION.IOS.ViewController {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
 //          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
           new ImageStringElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
-          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
+          //new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
           new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
@@ -226,7 +226,7 @@ namespace ION.IOS.ViewController {
     private UIViewController[] BuildViewControllers() {
       var ret = new UINavigationController[] {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
-        new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
+        //new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
         null, // Screenshot Navigation
