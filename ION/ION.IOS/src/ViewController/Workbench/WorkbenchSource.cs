@@ -1,4 +1,6 @@
-﻿namespace ION.IOS.ViewController.Workbench {
+﻿/*
+
+namespace ION.IOS.ViewController.Workbench {
 
   using System;
   using System.Collections.Generic;
@@ -121,7 +123,7 @@
       if (section >= __workbench.count) {
         return 0;
       } else {
-        return __workbench[(int)section].manifoldProperties.Count;
+        return __workbench[(int)section].sensorProperties.Count;
       }
     }
 
@@ -171,7 +173,7 @@
     // Overridden from UITableViewSource
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
       var manifold = __workbench[(int)indexPath.Section];
-      var prop = manifold.manifoldProperties[(int)indexPath.Row];
+      var prop = manifold.sensorProperties[(int)indexPath.Row];
 
       if (prop is MinSensorProperty || prop is MaxSensorProperty || prop is HoldSensorProperty) {
         var cell = tableView.DequeueReusableCell(CELL_MEASUREMENT_SUBVIEW) as MeasurementSensorPropertyTableCell;
@@ -271,12 +273,11 @@
         ac.sensor = manifold.primarySensor;
         __workbenchController.NavigationController.PushViewController(ac, true);
       }));
-/*
-
-          dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
-            Toast.New(__table, "Rename coming soon!");
-          }));
-*/
+//
+//
+//          dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
+//            Toast.New(__table, "Rename coming soon!");
+//          }));
 
       if (manifold.primarySensor is GaugeDeviceSensor) {
         var sensor = manifold.primarySensor as GaugeDeviceSensor;
@@ -346,13 +347,12 @@
           manifold.AddSensorProperty(new HoldSensorProperty(sensor));
         });
       }
-      /*
-      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
-        });
-      }
-      */
+      
+//      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
+//        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
+//          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
+//        });
+//      }
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
@@ -412,3 +412,4 @@
   }
 }
 
+*/

@@ -48,9 +48,9 @@
           }
         }
 
-        writer.Write(manifold.manifoldProperties.Count);
+        writer.Write(manifold.sensorProperties.Count);
         // Write sensor properties
-        foreach (var sp in manifold.manifoldProperties) {
+        foreach (var sp in manifold.sensorProperties) {
           WriteSensorProperty(sp, writer);
         }
       } catch (Exception e) {

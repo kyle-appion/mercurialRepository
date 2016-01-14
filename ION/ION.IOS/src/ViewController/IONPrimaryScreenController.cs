@@ -55,8 +55,8 @@ namespace ION.IOS.ViewController {
 
       navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
-          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
           new ImageStringElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
+          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
           new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
