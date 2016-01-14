@@ -11,15 +11,21 @@
   using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Devices;
+  using ION.Core.Fluids;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Filters;
+  using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
   using ION.IOS.Util;
   using ION.IOS.ViewController.Alarms;
+  using ION.IOS.ViewController.PressureTemperatureChart;
+  using ION.IOS.ViewController.SuperheatSubcool;
 
   /// <summary>
   /// The class that will provide the cells for the workbench view controller.
   /// </summary>
-  public class WorkbenchTableSource : UITableViewSource, IDisposable {
+  public class WorkbenchTableSource : UITableViewSource, IReleasable {
 
 
     private const string CELL_VIEWER = "cellViewer";
@@ -58,13 +64,13 @@
     /// <summary>
     /// The collection that of records that the source is displaying.
     /// </summary>
-    private ObservableCollection<WorkbenchSourceRecord> records = new ObservableCollection<WorkbenchSourceRecord>();
+    private ObservableCollection<IWorkbenchSourceRecord> records = new ObservableCollection<IWorkbenchSourceRecord>();
 
     public WorkbenchTableSource(WorkbenchViewController vc, IION ion, Workbench workbench, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
       this.workbench = workbench;
-      this.workbench.onWorkbenchEvent += OnManifoldChanged;
+      this.workbench.onWorkbenchEvent += OnManifoldEvent;
       this.tableView = tableView;
 
       foreach (var manifold in workbench.manifolds) {
@@ -73,7 +79,7 @@
           expanded = true,
         });
 
-        foreach (var sp in manifold.manifoldProperties) {
+        foreach (var sp in manifold.sensorProperties) {
         }
       }
 
@@ -106,8 +112,10 @@
         case UITableViewCellEditingStyle.Delete:
           if (record is ViewerRecord) {
             var vr = record as ViewerRecord;
-
             workbench.Remove(vr.manifold);
+          } else if (record is SensorPropertyRecord) {
+            var spr = record as SensorPropertyRecord;
+            spr.manifold.RemoveSensorProperty(spr.sensorProperty);
           }
           break;
       }
@@ -126,6 +134,21 @@
 
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {
+      var record = records[indexPath.Row];
+
+      if (record is FluidRecord) {
+        var fr = record as FluidRecord;
+
+        if (fr.sensorProperty is PTChartSensorProperty) {
+          var ptvc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
+          ptvc.initialManifold = fr.manifold;
+          vc.NavigationController.PushViewController(ptvc, true);
+        } else if (fr.sensorProperty is SuperheatSubcoolSensorProperty) {
+          var shvc = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
+          shvc.initialManifold = fr.manifold;
+          vc.NavigationController.PushViewController(shvc, true);
+        }
+      }
     }
 
     // Overridden from UITableViewSource
@@ -166,7 +189,39 @@
       } else if (record is ViewerRecord) {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
+
         cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
+
+        return cell;
+      } else if (record is MeasurementRecord) {
+        var meas = record as MeasurementRecord;
+        var cell = tableView.DequeueReusableCell(CELL_MEASUREMENT_SUBVIEW) as MeasurementSensorPropertyTableCell;
+
+        cell.UpdateTo(meas, GetLocalizedTitleString(meas.sensorProperty), "ic_refresh", (obj, sp) => {
+          sp.Reset();
+        });
+
+        return cell;
+      } else if (record is TimerRecord) {
+        var timer = record as TimerRecord;
+        var cell = tableView.DequeueReusableCell(CELL_TIMER_SUBVIEW) as TimerSensorPropertyCell;
+
+        cell.UpdateTo(timer);
+
+        return cell;
+      } else if (record is RateOfChangeRecord) {
+        var rr = record as RateOfChangeRecord;
+        var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
+
+        cell.UpdateTo(rr);
+
+        return cell;
+      } else if (record is FluidRecord) {
+        var fr = record as FluidRecord;
+        var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
+
+        cell.UpdateTo(fr);
+
         return cell;
       } else {
         throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
@@ -174,8 +229,8 @@
     }
 
     // Overridden from IDisposable
-    public void Dispose() {
-      workbench.onWorkbenchEvent -= OnManifoldChanged;
+    public void Release() {
+      workbench.onWorkbenchEvent -= OnManifoldEvent;
     }
 
     /// <summary>
@@ -186,7 +241,7 @@
     public int IndexOfManifold(Manifold manifold) {
       for (var i = 0; i < records.Count; i++) {
         var record = records[i] as ViewerRecord;
-        if (record != null && record.manifold == manifold) {
+        if (record?.manifold == manifold) {
           return i;
         }
       }
@@ -266,37 +321,134 @@
       vc.PresentViewController(dialog, true, null);
     }
 
+
+    /// <summary>
+    /// Throw-away 
+    /// </summary>
+    private delegate void AddAction(string title, Action<UIAlertAction> action);
     /// <summary>
     /// Shows an action sheet that will allow subviews to be added to the table source.
     /// </summary>
     /// <param name="tableView">Table view.</param>
     /// <param name="manifold">Manifold.</param>
     private void ShowAddSubviewDialog(UITableView tableView, Manifold manifold) {
-      Log.D(this, "Showy, showy");
+      var dialog = UIAlertController.Create(Strings.ACTIONS, Strings.Workbench.Viewer.ADD, UIAlertControllerStyle.Alert);
+
+      AddAction addAction = (string title, Action<UIAlertAction> action) => {
+        dialog.AddAction(UIAlertAction.Create(title, UIAlertActionStyle.Default, (UIAlertAction uia) => {
+          action(uia);
+          tableView.ReloadData();
+        }));
+      };
+
+      var sensor = manifold.primarySensor;
+
+      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
+        });
+      }
+      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.MIN_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new MinSensorProperty(sensor));
+        });
+      }
+      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new MaxSensorProperty(sensor));
+        });
+      }
+      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) { 
+        addAction(Strings.Workbench.Viewer.HOLD_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new HoldSensorProperty(sensor));
+        });
+      }
+      /*
+      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
+        });
+      }
+      */
+
+      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new TimerSensorProperty(sensor));
+        });
+      }
+
+      // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
+      var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
+      var ptChart = manifold.ptChart;
+      if (ptChart == null) {
+        ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty)) && ptChartFilter.Matches(sensor)) {
+        manifold.ptChart = ptChart;
+        addAction(Strings.Workbench.Viewer.PT_CHART_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
+        });
+      }
+
+      // TODO Bug in checking sensor types
+      // While the sensors are verified that they are pressure or temperature, they are not verified that they are exactly one
+      // temperature and one pressure sensor. I let this be for the time being, in lieu expedience. This will bite you later,
+      // mister maintainer. I am sorry. 
+      if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty)) &&
+        ptChartFilter.Matches(sensor) && (manifold.secondarySensor == null || ptChartFilter.Matches(manifold.secondarySensor))) {
+        manifold.ptChart = ptChart;
+        addAction(Strings.Workbench.Viewer.SHSC_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+        });
+      }
+
+      dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+
+      var popover = dialog.PopoverPresentationController;
+      if (popover != null) {
+        popover.SourceView = tableView;
+        popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
+      }
+
+      vc.PresentViewController(dialog, true, null);
+    }
+
+    private string GetLocalizedTitleString(ISensorProperty sensorProperty) {
+      if (sensorProperty is MinSensorProperty) {
+        return Strings.Workbench.Viewer.MIN;
+      } else if (sensorProperty is MaxSensorProperty) {
+        return Strings.Workbench.Viewer.MAX;
+      } else if (sensorProperty is HoldSensorProperty) {
+        return Strings.Workbench.Viewer.HOLD;
+      } else if (sensorProperty is AlternateUnitSensorProperty) {
+        return Strings.Workbench.Viewer.ALT;
+      } else {
+        throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
+      }
     }
 
     /// <summary>
     /// Called when the workbench changes.
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
-    private void OnManifoldChanged(WorkbenchEvent workbenchEvent) {
-      Log.D(this, "event: " + workbenchEvent.type);
+    private void OnManifoldEvent(WorkbenchEvent workbenchEvent) {
       var manifold = workbenchEvent.manifold;
-      var index = IndexOfManifold(manifold);
+      var recordIndex = IndexOfManifold(manifold);
       var indices = new List<int>();
       ViewerRecord vr;
 
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
-          index = records.Count - 1;
-          indices.Add(index);
+          recordIndex = records.Count - 1;
+          indices.Add(recordIndex);
 
           vr = new ViewerRecord() {
             manifold = manifold,
             expanded = true,
           };
 
-          records.Insert(index, vr);
+          records.Insert(recordIndex, vr);
 
 /*
           for (int i = 0; i < manifold.sensorPropertyCount; i++) {
@@ -304,23 +456,15 @@
           }
 */
 
-          tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
-
+          tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Fade);
           break;    
-        case WorkbenchEvent.EType.Invalidated:
-          if (index > 0) {
-            vr = records[index] as ViewerRecord;
-            if (vr.expanded) {
-              for (int i = manifold.sensorPropertyCount; i > 0; i--) {
-                indices.Add(i + index);
-              }
-            }
 
-            tableView.ReloadRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.None);
-          }
+        case WorkbenchEvent.EType.ManifoldEvent:
+          OnManifoldEvent(workbenchEvent.manifoldEvent);
           break;
+
         case WorkbenchEvent.EType.Removed:
-          var start = index;
+          var start = recordIndex;
           var end = start;
 
           vr = records[start] as ViewerRecord;
@@ -333,8 +477,79 @@
             records.RemoveAt(i);
           }
 
-          tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Top);
+          tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Fade);
           break;
+
+        case WorkbenchEvent.EType.Swapped:
+          tableView.BeginUpdates();
+
+          // TODO ahodder@appioninc.com: I think  this is a singular move and not a swap.
+//          tableView.MoveRow(NSIndexPath.FromRowSection((nint)workbenchEvent.index, (nint)workbenchEvent.otherIndex));
+
+          tableView.EndUpdates();
+          break;
+      }
+    }
+
+    /// <summary>
+    /// Called when the table source received a new manifold event.
+    /// </summary>
+    /// <param name="e">E.</param>
+    /// <param name="manifold">Manifold.</param>
+    private void OnManifoldEvent(ManifoldEvent e) {
+      var manifold = e.manifold;
+      var recordIndex = IndexOfManifold(manifold);
+      var indices = new List<int>();
+      ViewerRecord vr;
+      int index;
+
+      switch (e.type) {
+        case ManifoldEvent.EType.Invalidated:
+          if (recordIndex > 0) {
+            vr = records[recordIndex] as ViewerRecord;
+            if (vr.expanded) {
+              for (int i = manifold.sensorPropertyCount; i > 0; i--) {
+                indices.Add(i + recordIndex);
+              }
+            }
+
+            tableView.ReloadRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.None);
+          }
+          break;
+
+        case ManifoldEvent.EType.SensorPropertyAdded:
+          index = recordIndex + e.index + 1;
+          records.Insert(index, CreateRecordForSensorProperty(manifold, manifold[e.index]));
+          tableView.InsertRows(ToNSIndexPath(new int[] { index }), UITableViewRowAnimation.Top);
+          break;
+
+        case ManifoldEvent.EType.SensorPropertyRemoved:
+          index = recordIndex + e.index + 1;
+          records.RemoveAt(index);
+          tableView.DeleteRows(ToNSIndexPath(new int[] { index }), UITableViewRowAnimation.Top);
+          break;
+
+        case ManifoldEvent.EType.SensorPropertySwapped:
+          break;
+      }
+    }
+
+    /// <summary>
+    /// Creates a new WorkbenchSourceRecord from the given sensor property.
+    /// </summary>
+    /// <returns>The record for sensor property.</returns>
+    /// <param name="sensorProperty">Sensor property.</param>
+    private IWorkbenchSourceRecord CreateRecordForSensorProperty(Manifold manifold, ISensorProperty sensorProperty) {
+      if (sensorProperty is MinSensorProperty || sensorProperty is MaxSensorProperty || sensorProperty is HoldSensorProperty) {
+        return new MeasurementRecord(manifold, sensorProperty);
+      } else if (sensorProperty is TimerSensorProperty) {
+        return new TimerRecord(manifold, sensorProperty as TimerSensorProperty);
+      } else if (sensorProperty is RateOfChangeSensorProperty) {
+        return new RateOfChangeRecord(manifold, sensorProperty);
+      } else if (sensorProperty is PTChartSensorProperty || sensorProperty is SuperheatSubcoolSensorProperty) {
+        return new FluidRecord(manifold, sensorProperty);
+      } else {
+        throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
       }
     }
 
@@ -347,7 +562,7 @@
       var ret = new NSIndexPath[ints.Length];
 
       for (int i = 0; i < ret.Length; i++) {
-        ret[i] = NSIndexPath.FromRowSection((nint)i, (nint)0);
+        ret[i] = NSIndexPath.FromRowSection((nint)ints[i], (nint)0);
       }
 
       return ret;
@@ -356,39 +571,47 @@
     public enum ViewType {
       Add,
       Viewer,
-      Min,
-      Max,
-      Hold,
-      Alt,
-      Roc,
-      PtChart,
-      SuperSub,
+      Measurement,
+      Timer,
+      Fluid,
+      RateOfChange,
     }
+  }
 
-    public interface WorkbenchSourceRecord {
-      ViewType viewType { get; } 
+  public interface IWorkbenchSourceRecord {
+    WorkbenchTableSource.ViewType viewType { get; } 
+  }
+
+  public abstract class SensorPropertyRecord : IWorkbenchSourceRecord {
+    public abstract WorkbenchTableSource.ViewType viewType { get; }
+    public Manifold manifold { get; set; }
+    public ISensorProperty sensorProperty { get; set; }
+
+    public SensorPropertyRecord(Manifold manifold, ISensorProperty sensorProperty) {
+      this.manifold = manifold;
+      this.sensorProperty = sensorProperty;
     }
+  }
 
-    public class AddRecord : WorkbenchSourceRecord {
-      // Overridden from WorkbenchSourceRecord
-      public ViewType viewType {
-        get {
-          return ViewType.Add;
-        }
+  public class AddRecord : IWorkbenchSourceRecord {
+    // Overridden from WorkbenchSourceRecord
+    public WorkbenchTableSource.ViewType viewType {
+      get {
+        return WorkbenchTableSource.ViewType.Add;
+      }
+    }
+  }
+
+  public class ViewerRecord : IWorkbenchSourceRecord {
+    // Overridden from WorkbenchSourceRecord
+    public WorkbenchTableSource.ViewType viewType {
+      get {
+        return WorkbenchTableSource.ViewType.Viewer;
       }
     }
 
-    public class ViewerRecord : WorkbenchSourceRecord {
-      // Overridden from WorkbenchSourceRecord
-      public ViewType viewType {
-        get {
-          return ViewType.Viewer;
-        }
-      }
-
-      public Manifold manifold { get; set; }
-      public bool expanded { get; set; }
-    }
+    public Manifold manifold { get; set; }
+    public bool expanded { get; set; }
   }
 }
 

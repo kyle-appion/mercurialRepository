@@ -76,7 +76,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.Source = source;
 
-      //      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
     }
 
     // Overridden from BaseIONViewController
@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     // Overridden from UIViewController
     public override void ViewDidUnload() {
-      //      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
+      ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
     }
 
     /// <summary>
@@ -107,21 +107,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-      // TODO ahodder@appioninc.com: These events really should just update a single row
-      switch (workbenchEvent.type) {
-        case WorkbenchEvent.EType.Added:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-        case WorkbenchEvent.EType.Removed:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-        case WorkbenchEvent.EType.Invalidated:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-      }
+      await ion.SaveWorkbenchAsync();
     }
 
     private void TakeScreenshot() {
