@@ -456,7 +456,7 @@
           }
 */
 
-          tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Fade);
+          tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
           break;    
 
         case WorkbenchEvent.EType.ManifoldEvent:
@@ -477,7 +477,7 @@
             records.RemoveAt(i);
           }
 
-          tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Fade);
+          tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Top);
           break;
 
         case WorkbenchEvent.EType.Swapped:

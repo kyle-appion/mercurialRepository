@@ -100,14 +100,15 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       tableContent.Source = deviceSource = new DeviceTableSource(ion, this, tableContent);
       deviceSource.SetSensorFilter(displayFilter);
-//      deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
-//        if (onSensorReturnDelegate != null) {
-//          onSensorReturnDelegate(sensor);
-//          NavigationController.PopViewController(true);
-//          return true;
-//        }
-//        return false;
-//      };
+      deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
+        if (onSensorReturnDelegate != null) {
+          onSensorReturnDelegate(sensor);
+          NavigationController.PopViewController(true);
+          return true;
+        }
+        return false;
+      };
+
 //      deviceSource.onDeleteDevice = (IDevice device) => {
 //        ion.deviceManager.DeleteDevice(device.serialNumber);
 //        return true;
