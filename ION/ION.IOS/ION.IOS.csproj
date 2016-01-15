@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>ION.IOS</RootNamespace>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+    <AssemblyName>IONIOS</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>i386</MtouchArch>
+    <MtouchLink>None</MtouchLink>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchProfiling>true</MtouchProfiling>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchSdkVersion>8.4</MtouchSdkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <MtouchArch>i386</MtouchArch>
+    <ConsolePause>false</ConsolePause>
+    <MtouchLink>None</MtouchLink>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchProfiling>true</MtouchProfiling>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
+    <IpaPackageName>
+    </IpaPackageName>
+    <MtouchFastDev>true</MtouchFastDev>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="FlyoutNavigation">
+      <HintPath>Components\flyoutnavigation-1.5.1\lib\ios-unified\FlyoutNavigation.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoTouch.Dialog-1" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Render.Xamarin.iOS">
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Render.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="SWTableViewCell">
+      <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net">
+      <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net.Platform.XamarinIOS.Unified">
+      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\Xamarin.iOS10\SQLite.Net.Platform.XamarinIOS.Unified.dll</HintPath>
+    </Reference>
+    <Reference Include="AllianceCustomPicker">
+      <HintPath>..\Components\alliancePicker-2.1.1\lib\ios-unified\AllianceCustomPicker.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\img_bgd_carbon.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\buttonBlack.9.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\buttonGold.9.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\ic_devices_on_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_100.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_75.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_50.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_25.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_0.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\np_white_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\np_green_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\np_light_blue_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\np_red_background_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_menu_overflow.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\ic_nav_devmanager.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\ic_nav_workbench.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\ic_nav_supersub.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\ic_nav_ptconversion.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\np_gold_background_horiz_bordered.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\ic_alarm.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default-568h%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%401x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%401x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\ic_arrow_trend_up.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\ic_arrow_trend_down.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_play.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\ic_pause.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\ic_pdf.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\ic_camera.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\ic_help.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gaugeav760.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gaugep300.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
+    <InterfaceDefinition Include="Resources\View.xib" />
+    <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="src\Util\LogPrinter.cs" />
+    <Compile Include="src\Util\Strings.cs" />
+    <Compile Include="src\Util\Colors.cs" />
+    <Compile Include="src\IO\IosFileManager.cs" />
+    <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\UI\Toast.cs" />
+    <Compile Include="src\Connections\IosLeConnection.cs" />
+    <Compile Include="src\Util\NSExtensions.cs" />
+    <Compile Include="src\UI\NinePatchImageFactory.cs" />
+    <Compile Include="src\UI\NinePatchButtonView.cs" />
+    <Compile Include="src\UI\NinePatchButtonView.designer.cs">
+      <DependentUpon>NinePatchButtonView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Sensors\SensorExtensions.cs" />
+    <Compile Include="src\UI\UIImageExtensions.cs" />
+    <Compile Include="src\ViewController\BaseIONViewController.cs" />
+    <Compile Include="src\Devices\DeviceUtil.cs" />
+    <Compile Include="src\App\IosION.cs" />
+    <Compile Include="src\Util\CGExtensions.cs" />
+    <Compile Include="src\ViewController\Dialog\CommonDialogs.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceSectionHeaderTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceSectionHeaderTableCell.designer.cs">
+      <DependentUpon>DeviceSectionHeaderTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\DeviceTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceTableCell.designer.cs">
+      <DependentUpon>DeviceTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\SerialNumberTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SerialNumberTableCell.designer.cs">
+      <DependentUpon>SerialNumberTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\AddViewerTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\AddViewerTableCell.designer.cs">
+      <DependentUpon>AddViewerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\MeasurementSensorPropertyTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\MeasurementSensorPropertyTableCell.designer.cs">
+      <DependentUpon>MeasurementSensorPropertyTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\ViewerTableCell.cs" />
+    <Compile Include="src\ViewController\Workbench\ViewerTableCell.designer.cs">
+      <DependentUpon>ViewerTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.designer.cs">
+      <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\DeviceManager\DeviceSource.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SensorTableCell.cs" />
+    <Compile Include="src\ViewController\DeviceManager\SensorTableCell.designer.cs">
+      <DependentUpon>SensorTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\WorkbenchViewController.cs" />
+    <Compile Include="src\ViewController\Workbench\WorkbenchViewController.designer.cs">
+      <DependentUpon>WorkbenchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\WorkbenchSource.cs" />
+    <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.cs" />
+    <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.designer.cs">
+      <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FluidManager\FluidSource.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidManagerViewController.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidManagerViewController.designer.cs">
+      <DependentUpon>FluidManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FluidManager\FluidTableCell.cs" />
+    <Compile Include="src\ViewController\FluidManager\FluidTableCell.designer.cs">
+      <DependentUpon>FluidTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Alarms\Alerts\PopupWindowAlarmAlert.cs" />
+    <Compile Include="src\ViewController\Alarms\SensorAlarmViewController.cs" />
+    <Compile Include="src\ViewController\Alarms\SensorAlarmViewController.designer.cs">
+      <DependentUpon>SensorAlarmViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\UI\UIAlertControllerExtensions.cs" />
+    <Compile Include="src\UI\UIViewExtensions.cs" />
+    <Compile Include="src\ViewController\PressureTemperatureChart\PTChartViewController.cs" />
+    <Compile Include="src\ViewController\PressureTemperatureChart\PTChartViewController.designer.cs">
+      <DependentUpon>PTChartViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsGroupCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsGroupCell.designer.cs">
+      <DependentUpon>SettingsGroupCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsLabelCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsLabelCell.designer.cs">
+      <DependentUpon>SettingsLabelCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsNavigationItemCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsNavigationItemCell.designer.cs">
+      <DependentUpon>SettingsNavigationItemCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsSwitchCell.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsSwitchCell.designer.cs">
+      <DependentUpon>SettingsSwitchCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Settings\SettingsViewController.cs" />
+    <Compile Include="src\ViewController\Settings\SettingsViewController.designer.cs">
+      <DependentUpon>SettingsViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Devices\LeConnectionHelper.cs" />
+    <Compile Include="src\ViewController\Workbench\FluidSubviewCell.cs" />
+    <Compile Include="src\ViewController\Workbench\FluidSubviewCell.designer.cs">
+      <DependentUpon>FluidSubviewCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\App\AppSettings.cs" />
+    <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
+    <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
+      <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Analyzer\AnalyzerDisplayView.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerViewController.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerViewController.designer.cs">
+      <DependentUpon>AnalyzerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Net\RequestCalibrationCertificatesTask.cs" />
+    <Compile Include="src\Location\IosLocationManager.cs" />
+    <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.cs" />
+    <Compile Include="src\ViewController\Workbench\RateOfChangeSensorPropertyCell.designer.cs">
+      <DependentUpon>RateOfChangeSensorPropertyCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Workbench\TimerSensorPropertyCell.cs" />
+    <Compile Include="src\ViewController\Workbench\TimerSensorPropertyCell.designer.cs">
+      <DependentUpon>TimerSensorPropertyCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FileManager\FileBrowserViewController.cs" />
+    <Compile Include="src\ViewController\FileManager\FileBrowserViewController.designer.cs">
+      <DependentUpon>FileBrowserViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FileManager\FileCell.cs" />
+    <Compile Include="src\ViewController\FileManager\FileCell.designer.cs">
+      <DependentUpon>FileCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\FileManager\FileManagerSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\EntryCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\EntryCell.designer.cs">
+      <DependentUpon>EntryCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportViewController.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportViewController.designer.cs">
+      <DependentUpon>ScreenshotReportViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\SelectionCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\SelectionCell.designer.cs">
+      <DependentUpon>SelectionCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\ScreenshotReport\DisplayCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\DisplayCell.designer.cs">
+      <DependentUpon>DisplayCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\HelpViewController.cs" />
+    <Compile Include="src\ViewController\Help\HelpViewController.designer.cs">
+      <DependentUpon>HelpViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\InfoCell.cs" />
+    <Compile Include="src\ViewController\Help\InfoCell.designer.cs">
+      <DependentUpon>InfoCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\LinkCell.cs" />
+    <Compile Include="src\ViewController\Help\LinkCell.designer.cs">
+      <DependentUpon>LinkCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Help\HelpPage.cs" />
+    <Compile Include="src\Net\AppionServerHelper.cs" />
+    <Compile Include="src\ViewController\Help\HelpSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\ScreenshotReportSource.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\NotesCell.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\NotesCell.designer.cs">
+      <DependentUpon>NotesCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\PressureTemperatureChart\tmp.cs" />
+    <Compile Include="src\ViewController\Analyzer\DrawAnalyserView.cs" />
+    <Compile Include="src\ViewController\Analyzer\actionPopup.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyserUtilities.cs" />
+    <Compile Include="src\ViewController\Analyzer\LowHighArea.cs" />
+    <Compile Include="src\ViewController\Analyzer\lowHighSensor.cs" />
+    <Compile Include="src\ViewController\Analyzer\manualEntry.cs" />
+    <Compile Include="src\ViewController\Analyzer\sensor.cs" />
+    <Compile Include="src\ViewController\Analyzer\sensorGroup.cs" />
+    <Compile Include="src\ViewController\Analyzer\ManualView.cs" />
+    <Compile Include="src\ViewController\Analyzer\ActionView.cs" />
+    <Compile Include="src\ViewController\Analyzer\AnalyzerTableSource.cs" />
+    <Compile Include="src\ViewController\Analyzer\minimumTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\maximumTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\holdTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\altTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\RoCTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\ManualDeviceSensor.cs" />
+  </ItemGroup>
+  <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <ItemGroup>
+    <Folder Include="src\App\" />
+    <Folder Include="src\IO\" />
+    <Folder Include="..\ION.CoreExtensions\" />
+    <Folder Include="src\UI\" />
+    <Folder Include="Resources\assets\" />
+    <Folder Include="src\ViewController\Dialog\" />
+    <Folder Include="src\ViewController\DeviceManager\" />
+    <Folder Include="src\ViewController\Workbench\" />
+    <Folder Include="src\ViewController\SuperheatSubcool\" />
+    <Folder Include="src\ViewController\FluidManager\" />
+    <Folder Include="src\Alarms\" />
+    <Folder Include="src\Alarms\Alerts\" />
+    <Folder Include="src\ViewController\Alarms\" />
+    <Folder Include="src\ViewController\PressureTemperatureChart\" />
+    <Folder Include="Resources\Images.xcassets\AppIcons.appiconset\" />
+    <Folder Include="src\ViewController\Settings\" />
+    <Folder Include="Settings.bundle\" />
+    <Folder Include="src\Storyboard\" />
+    <Folder Include="src\ViewController\Analyzer\" />
+    <Folder Include="Settings.bundle\en.lproj\" />
+    <Folder Include="src\Net\" />
+    <Folder Include="src\Location\" />
+    <Folder Include="src\Report\" />
+    <Folder Include="src\ViewController\FileManager\" />
+    <Folder Include="src\ViewController\ScreenshotReport\" />
+    <Folder Include="src\ViewController\Help\" />
+    <Folder Include="Resources\src\" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BundleResource Include="Resources\Images.xcassets\img_battery_100.imageset\img_battery_100.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_25.imageset\img_battery_25.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_50.imageset\img_battery_50.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_75.imageset\img_battery_75.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\img_battery_0.imageset\img_battery_0.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\ic_device_add_to_workbench.pdf" />
+    <BundleResource Include="Resources\Images.xcassets\ic_menu_overflow.imageset\ic_menu_moreoverflow.png" />
+    <BundleResource Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\ic_logo_appiondefault.png" />
+    <BundleResource Include="Resources\en.lproj\Localizable.strings" />
+    <BundleResource Include="Settings.bundle\Root.plist" />
+    <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
+    <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
+      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
+      <Name>ION.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="alliancePicker">
+      <Version>2.1.1</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
+</Project>
