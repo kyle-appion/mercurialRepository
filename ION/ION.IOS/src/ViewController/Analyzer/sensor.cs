@@ -14,10 +14,10 @@ namespace ION.IOS.ViewController.Analyzer
   public class sensor
 	{
     //public event sensorEvent sensorChanged;
-    public sensor (UIView mainView)
+    public sensor (UIView mainView, AnalyzerViewController ViewController)
 		{
-      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height));
-      highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height));
+      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
+      highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
     }
 		public UIView snapArea;
     public UIView availableView;
@@ -49,6 +49,13 @@ namespace ION.IOS.ViewController.Analyzer
         }
       }
     } GaugeDeviceSensor __currentSensor;
+
+    public ManualDeviceSensor manualSensor{
+      get { return __manualSensor; }
+      set {
+        __manualSensor = value;  
+      }
+    } ManualDeviceSensor __manualSensor;
        
     public bool isManual = false;
 

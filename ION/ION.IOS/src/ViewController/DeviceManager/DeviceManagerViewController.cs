@@ -85,6 +85,8 @@ namespace ION.IOS.ViewController.DeviceManager {
 //          var opts = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
           if (!ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
             Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+          } else {
+            ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         }
       });

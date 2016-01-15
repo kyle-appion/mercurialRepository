@@ -30,8 +30,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellReading = lhSensor.minReading;
       if (lhSensor.isManual) {
         cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
-      } else {
-        lhSensor.minType = lhSensor.currentSensor.unit.ToString();
+      } else {        
         cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;

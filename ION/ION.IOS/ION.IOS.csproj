@@ -136,13 +136,9 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gauge_av760.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gauge_p300.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gauge_p500.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gauge_p800.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_menu_overflow.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\Contents.json" />
@@ -156,7 +152,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gauge_pt800.png" />
     <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\np_gold_background_horiz_bordered.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json" />
@@ -167,7 +162,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
@@ -217,6 +211,12 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gaugeav760.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gaugep300.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -422,6 +422,7 @@
     <Compile Include="src\ViewController\Analyzer\RoCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
+    <Compile Include="src\ViewController\Analyzer\ManualDeviceSensor.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

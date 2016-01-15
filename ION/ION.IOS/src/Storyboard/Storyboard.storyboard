@@ -2717,7 +2717,7 @@
         <image name="ic_bluetooth_disconnected" width="61" height="61"/>
         <image name="ic_device_add" width="61" height="61"/>
         <image name="ic_menu_overflow" width="800" height="1280"/>
-        <image name="ic_render_gauge_pt800" width="168" height="168"/>
+        <image name="ic_render_gauge_pt800" width="256" height="256"/>
         <image name="np_red_background_bordered" width="16" height="16"/>
     </resources>
 </document>

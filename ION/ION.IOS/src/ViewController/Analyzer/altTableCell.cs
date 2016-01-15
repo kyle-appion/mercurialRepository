@@ -77,15 +77,15 @@ namespace ION.IOS.ViewController.Analyzer {
 
         foreach(String unit in lhSensor.altUnits){
           altUnit.AddAction (UIAlertAction.Create(unit ,UIAlertActionStyle.Default, (action) => {
-//            if(lhSensor.isManual){
-              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+            if(lhSensor.isManual){
+              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.alt.sensor.type ,unit.Replace("/","").ToLower());
               lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.alt.sensor.type ,unit.Replace("/","").ToLower());
               lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
-//            } else {
-//              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
-//              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
-//              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
-//            }
+            } else {
+              lhSensor.altUnit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+              lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type ,unit.Replace("/","").ToLower());
+              lhSensor.altReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
+            }
           }));
         }
 
