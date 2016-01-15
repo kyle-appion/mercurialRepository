@@ -13,7 +13,7 @@ namespace ION.IOS.ViewController.DeviceManager
 	partial class DeviceManagerViewController
 	{
 		[Outlet]
-		UIKit.UILabel labelEmpty { get; set; }
+		public UIKit.UILabel labelEmpty { get; set; }
 
 		[Outlet]
 		UIKit.UITableView tableContent { get; set; }

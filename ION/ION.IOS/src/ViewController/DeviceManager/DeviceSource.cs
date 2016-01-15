@@ -1,4 +1,6 @@
-﻿namespace ION.IOS.ViewController.DeviceManager {
+﻿/*
+
+namespace ION.IOS.ViewController.DeviceManager {
 
   using System;
   using System.Collections.Generic;
@@ -141,14 +143,13 @@
           } else {
             return 0;
           }
-          /*
-          if (IsDeviceExpanded(deviceItem.device)) {
-            var gaugeDevice = deviceItem.device as GaugeDevice;
-            return gaugeDevice.sensorCount + 1;
-          } else {
-            return 0;
-          }
-          */
+          
+//          if (IsDeviceExpanded(deviceItem.device)) {
+//            var gaugeDevice = deviceItem.device as GaugeDevice;
+//            return gaugeDevice.sensorCount + 1;
+//          } else {
+//            return 0;
+//          }
         default:
           return 0;
       }
@@ -510,3 +511,4 @@
   } // End HeaderItem
 }
 
+*/
