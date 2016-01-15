@@ -20,11 +20,22 @@
   using ION.IOS.Util;
 
   public class DeviceTableSource : UITableViewSource, IReleasable {
+    /// <summary>
+    /// The delegate that is called when a sensor's add button is clicked.
+    /// </summary>
+    public delegate bool OnSensorAddClicked(GaugeDeviceSensor sensor, NSIndexPath indexPath);
+
     private const string CELL_HEADER = "cellHeader";
     private const string CELL_DEVICE = "cellDevice";
     private const string CELL_SENSOR = "cellSensor";
     private const string CELL_SERIAL_NUMBER = "cellSerialNumber";
     private const string CELL_SPACE = "cellSpace";
+
+    /// <summary>
+    /// The action that will be called on a sensor's add button click.
+    /// </summary>
+    /// <value>The on sensor add clicked.</value>
+    public OnSensorAddClicked onSensorAddClicked { get; set; }
 
     /// <summary>
     /// The ION context.
@@ -76,6 +87,29 @@
       if (r != null) {
         r.Release();
       }
+    }
+
+    // Overridden from UITableViewSource
+    public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
+      var record = sections[(int)indexPath.Section].records[(int)indexPath.Row];
+
+      switch (editingStyle) {
+        case UITableViewCellEditingStyle.Delete:
+          if (record is DeviceRecord) {
+            RequestDeleteDeviceVerification(((DeviceRecord)record).device);
+          }
+          break;
+      }
+    }
+
+    // Overridden from UITableViewSource
+    public override bool CanEditRow(UITableView tableView, NSIndexPath path) {
+      return sections[(int)path.Section].records[(int)path.Row] is DeviceRecord;
+    }
+
+    // Overridden from UITableViewSource
+    public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
+      return Strings.DELETE_QUESTION;
     }
 
     // Overridden from UITableViewSource
@@ -172,7 +206,14 @@
         var r = record as SensorRecord;
 
         var cell = tableView.DequeueReusableCell(CELL_SENSOR) as SensorTableCell;
-        cell.UpdateTo(r);
+        cell.UpdateTo(r, () => {
+          if (onSensorAddClicked != null) {
+            if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {
+              r.sensor.device.connection.Connect();
+            }
+            onSensorAddClicked(r.sensor, indexPath);
+          }
+        });
 
         return cell;
       } else if (record is SpaceRecord) {
@@ -363,6 +404,29 @@
       } else {
         return EDeviceState.Disconnected;
       }
+    }
+
+    private string GetForgetHeader(IDevice device) {
+      if (ion.currentWorkbench.ContainsDevice(device)) {
+        return String.Format(Strings.Device.FORGET_NAME_WHERE, device.name, Strings.Device.IN_WORKBENCH);
+      } else {
+        return String.Format(Strings.Device.FORGET, device.name);
+      }
+    }
+
+    /// <summary>
+    /// Requests whether or not the user is really sure they want to delete the device.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    private void RequestDeleteDeviceVerification(IDevice device) {
+      var dialog = UIAlertController.Create(GetForgetHeader(device), Strings.Device.FORGET_DESC, UIAlertControllerStyle.Alert);
+
+      dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+      dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET, UIAlertActionStyle.Default, (action) => {
+        ion.deviceManager.DeleteDevice(device.serialNumber);
+      }));
+
+      dialog.Show();
     }
 
     /// <summary>

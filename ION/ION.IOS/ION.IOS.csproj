@@ -277,7 +277,6 @@
     <Compile Include="src\ViewController\DeviceManager\DeviceManagerViewController.designer.cs">
       <DependentUpon>DeviceManagerViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\DeviceManager\DeviceSource.cs" />
     <Compile Include="src\ViewController\DeviceManager\SensorTableCell.cs" />
     <Compile Include="src\ViewController\DeviceManager\SensorTableCell.designer.cs">
       <DependentUpon>SensorTableCell.cs</DependentUpon>
