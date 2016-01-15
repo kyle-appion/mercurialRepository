@@ -128,12 +128,12 @@
 
     public Workbench(IION ion) {
       this.ion = ion;
-      ion.deviceManager.onDeviceEvent += OnDeviceEvent;
+      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
     }
 
     // Overridden from IDisposable
     public void Dispose() {
-      ion.deviceManager.onDeviceEvent -= OnDeviceEvent;
+      ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
     }
 
     /// <summary>
@@ -289,6 +289,16 @@
     /// <param name="manifoldEvent">Manifold event.</param>
     private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
       NotifyOfEvent(WorkbenchEvent.EType.ManifoldEvent, manifoldEvent);
+    }
+
+    /// <summary>
+    /// Called on a device manager event.
+    /// </summary>
+    /// <param name="e">E.</param>
+    private void OnDeviceManagerEvent(DeviceManagerEvent e) {
+      if (DeviceManagerEvent.EType.DeviceEvent == e.type) {
+        OnDeviceEvent(e.deviceEvent);
+      }
     }
 
     /// <summary>

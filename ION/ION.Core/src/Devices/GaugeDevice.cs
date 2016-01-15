@@ -125,7 +125,7 @@
           Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
         }
 
-        Log.D(this, "Device packet is: " + packet.ToByteString());
+//        Log.D(this, "Device packet is: " + packet.ToByteString());
       });
     }
 

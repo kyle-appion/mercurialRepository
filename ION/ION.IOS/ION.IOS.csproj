@@ -286,7 +286,6 @@
     <Compile Include="src\ViewController\Workbench\WorkbenchViewController.designer.cs">
       <DependentUpon>WorkbenchViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Workbench\WorkbenchSource.cs" />
     <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.cs" />
     <Compile Include="src\ViewController\SuperheatSubcool\SuperheatSubcoolViewController.designer.cs">
       <DependentUpon>SuperheatSubcoolViewController.cs</DependentUpon>
