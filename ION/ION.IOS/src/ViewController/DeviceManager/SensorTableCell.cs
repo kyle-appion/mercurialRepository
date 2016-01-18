@@ -96,7 +96,7 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       if (sensor is GaugeDeviceSensor) {
         var ds = sensor as GaugeDeviceSensor;
-        if (!ds.device.isConnected) {
+        if (!ds.device.isConnected || ds.removed) {
           labelMeasurement.Text = "---";
         }
       }

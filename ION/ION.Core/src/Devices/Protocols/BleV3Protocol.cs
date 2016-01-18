@@ -1,13 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿namespace ION.Core.Devices.Protocols {
 
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
 
-namespace ION.Core.Devices.Protocols {
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+  
   /// <summary>
   /// The protocol is a subset of the first bluetooth LE protocol that is used
   /// to encode three sensors into a smaller packet that is broadcast capable.
@@ -15,6 +17,8 @@ namespace ION.Core.Devices.Protocols {
   public class BleV3Protocol : BaseBinaryProtocol {
     // Overridden from IGaugeProtocol
     public override int version { get { return 3; } }
+    // Overridden from IGaugeProtocol
+    public override int removedGaugeValue { get { return short.MaxValue; } }
     // Overridden from IGagueProtocol
     public override bool supportsBroadcasting { get { return true; } }
 
@@ -36,20 +40,33 @@ namespace ION.Core.Devices.Protocols {
         int battery = r.ReadByte();
 
         int gaugeCount = (len - 2) / 4;
-        GaugeReading[] readings = new GaugeReading[gaugeCount];
+        var readings = new List<GaugeReading>();
 
         for(int i = 0; i < gaugeCount; i++) {
           int exponent = r.ReadByte();
           int encodedReading = r.ReadInt16BE();
           int unitCode = r.ReadByte();
 
-          double reading = encodedReading / System.Math.Pow(10, exponent);
+          if (unitCode == 0) {
+            break;
+          }
 
           Unit unit = UnitLookup.GetUnit(unitCode);
-          readings[i] = new GaugeReading(UnitLookup.GetSensorTypeFromCode(unitCode), unit.OfScalar(reading));
+
+          var gr = new GaugeReading() {
+            removed = removedGaugeValue == encodedReading,
+            sensorType = UnitLookup.GetSensorTypeFromCode(unitCode),
+            reading = unit.OfScalar(encodedReading / System.Math.Pow(10, exponent)),
+          };
+
+          if (gr.removed) {
+            gr.reading = unit.OfScalar(0);
+          }
+
+          readings.Add(gr);
         }
 
-        return new GaugePacket(version, battery, readings);
+        return new GaugePacket(version, battery, readings.ToArray());
       }
     }
 

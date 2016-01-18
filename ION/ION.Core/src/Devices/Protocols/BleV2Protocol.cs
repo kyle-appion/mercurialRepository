@@ -1,21 +1,27 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿namespace ION.Core.Devices.Protocols {
 
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using System;
+  using System.IO;
+  using System.Text;
 
-namespace ION.Core.Devices.Protocols {
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
   /// <summary>
   /// This protocol was the first broadcasting protocol.
   /// </summary>
-  public class BleV2Protocol : BaseBinaryProtocol {
-    // Overriden from IGaugeProtocol
+  public class BleV2Protocol : BleV1Protocol {
+    // Overridden from IGaugeProtocol
     public override int version { get { return 2; } }
     // Overridden from IGagueProtocol
     public override bool supportsBroadcasting { get { return true; } }
+
+  }
+}
+
+/*
 
     // Overridden from IGaugeProtocol
     public override GaugePacket ParsePacket(byte[] packetIn) {
@@ -43,10 +49,13 @@ namespace ION.Core.Devices.Protocols {
           int encodedReading = r.ReadInt32BE();
           int unitCode = r.ReadByte();
 
-          double reading = encodedReading / System.Math.Pow(10, exponent);
-
           Unit unit = UnitLookup.GetUnit(unitCode);
-          readings[i] = new GaugeReading(UnitLookup.GetSensorTypeFromCode(unitCode), unit.OfScalar(reading));
+
+          readings[i] = new GaugeReading() {
+            removed = removedGaugeValue == encodedReading,
+            sensorType = UnitLookup.GetSensorTypeFromCode(unitCode),
+            reading = unit.OfScalar(encodedReading / System.Math.Pow(10, exponent)),
+          };
         }
 
         return new GaugePacket(version, battery, readings);
@@ -72,3 +81,4 @@ namespace ION.Core.Devices.Protocols {
     }
   }
 }
+*/
