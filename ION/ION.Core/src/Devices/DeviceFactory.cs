@@ -23,6 +23,7 @@ namespace ION.Core.Devices {
     private const string MAX = "max";
     private const string MAX_UNIT = "maxUnit";
     private const string RELATIVE = "relative";
+    private const string REMOVABLE = "removeable";
     private const string TYPE = "type";
     private const string SUPPORTED_UNIT = "SupportedUnit";
 
@@ -92,6 +93,15 @@ namespace ION.Core.Devices {
         var min = element.Attribute(MIN).Value;
         var max = element.Attribute(MAX).Value;
 
+        try {
+          var att = element.Attribute(REMOVABLE);
+          if (att != null) {
+            sensor.removable = bool.Parse(att?.Value);
+          }
+        } catch (Exception e) {
+          Log.D("DeviceFactory", "Failed to parse removable", e);
+        }
+
         sensor.min = minUnit.OfScalar(double.Parse(min));
         sensor.max = maxUnit.OfScalar(double.Parse(max));
 
@@ -139,7 +149,7 @@ namespace ION.Core.Devices {
       int i = 0;
       foreach (var definition in sensors) {
         var sensor = new GaugeDeviceSensor(ret, i++, definition.type, definition.relative);
-        Log.D(this, "sensor type: " + sensor.type);
+        sensor.removable = definition.removable;
         sensor.minMeasurement = definition.min;
         sensor.maxMeasurement = definition.max;
         sensor.supportedUnits = definition.supportedUnits;
@@ -157,6 +167,7 @@ namespace ION.Core.Devices {
     public Scalar min { get; set; }
     public Scalar max { get; set; }
     public bool relative { get; set; }
+    public bool removable { get; set; }
     public Unit[] supportedUnits { get; set; }
   } // End GaugeDeviceSensorDefinition
 }

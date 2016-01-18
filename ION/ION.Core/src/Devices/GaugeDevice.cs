@@ -50,7 +50,15 @@
     /// <summary>
     /// The sensors that are contained within the gauge.
     /// </summary>
-    public GaugeDeviceSensor[] sensors { get; internal set; }
+    public GaugeDeviceSensor[] sensors {
+      get {
+        return __sensors;
+      }
+      internal set {
+        __sensors = value;
+        removedStates = new bool[__sensors.Length];
+      }
+    } GaugeDeviceSensor[] __sensors;
     /// <summary>
     /// Queries the number of sensors that are present in the gauge.
     /// </summary>
@@ -68,6 +76,11 @@
         sensors[index] = value;
       }
     }
+    /// <summary>
+    /// Maintains a history of whether or not a sensor was removed during the last packet.
+    /// </summary>
+    /// <value>The removed states.</value>
+    private bool[] removedStates { get ; set; }
 
     public GaugeDevice(GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
       __serialNumber = serialNumber;
@@ -104,15 +117,28 @@
             var changed = false;
 
             for (int i = 0; i < sensorCount; i++) {
-              GaugeReading reading = gp.gaugeReadings[i];
-              if (reading.sensorType != this[i].type) {
+              var reading = gp.gaugeReadings[i];
+              var sensor = this[i];
+
+              if (reading.sensorType != sensor.type) {
                 throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
                   this[i].type + " is not valid with received type " + reading.sensorType);
               }
-              if (this[i].measurement != gp.gaugeReadings[i].reading) {
-                this[i].SetMeasurement(gp.gaugeReadings[i].reading);
+
+              if (sensor.measurement != gp.gaugeReadings[i].reading) {
+                sensor.SetMeasurement(gp.gaugeReadings[i].reading);
                 changed = true;
               }
+
+              sensor.removed = reading.removed;
+              var removedChanged = sensor.removed != removedStates[i];
+              removedStates[i] = sensor.removed;
+
+              if (removedChanged) {
+                sensor.NotifySensorStateChanged();
+              }
+
+
             }
 
             if (changed) {

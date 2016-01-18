@@ -11,6 +11,8 @@ namespace ION.Core.Devices.Protocols {
   public abstract class BaseBinaryProtocol : IGaugeProtocol {
     // Overridden from IGaugeProtocol
     public virtual int version { get { return int.MinValue; } }
+    // Overridden from IGaugeProtocol
+    public virtual int removedGaugeValue { get { return int.MaxValue; } }
     // Overridden from IGagueProtocol
     public virtual bool supportsBroadcasting { get { return false; } }
 
