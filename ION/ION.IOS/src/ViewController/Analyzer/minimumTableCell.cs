@@ -28,6 +28,11 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.minReading;
+      if (lhSensor.minType.Equals("hold")) {
+        Console.WriteLine("Min not set yet so starting with gauge reading");
+        lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+        lhSensor.minType = lhSensor.LabelBottom.Text;
+      }
       if (lhSensor.isManual) {
         cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
       } else {        
@@ -44,7 +49,8 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderWidth = 1f;
 
       cellButton.TouchUpInside += delegate {
-        lhSensor.min = 0.00;
+        lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+        lhSensor.minType = lhSensor.LabelBottom.Text;
         if(lhSensor.isManual){
           lhSensor.minType = lhSensor.LabelBottom.Text;
           cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType + " ";

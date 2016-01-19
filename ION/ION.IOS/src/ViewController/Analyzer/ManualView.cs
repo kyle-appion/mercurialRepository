@@ -18,9 +18,13 @@ namespace ION.IOS.ViewController.Analyzer {
       mtextValue.ShouldChangeCharacters = (textField, range, replacementString) => {
         if(replacementString.Contains("0") || replacementString.Contains("1") || replacementString.Contains("2") || replacementString.Contains("3") ||
            replacementString.Contains("4") || replacementString.Contains("5") || replacementString.Contains("6") || replacementString.Contains("7") ||
-           replacementString.Contains("8") || replacementString.Contains(".") || replacementString.Length.Equals(0)){
+           replacementString.Contains("8") || replacementString.Contains("9") || replacementString.Contains(".") || replacementString.Contains("-") || 
+           replacementString.Length.Equals(0)){
 
           if((replacementString.Contains(".") && textField.Text.Contains(".")) || replacementString.Contains(".") && textField.Text.Length.Equals(0)){
+            return false;
+          }
+          if((replacementString.Contains("-") && textField.Text.Contains("-")) || replacementString.Contains("-") && textField.Text.Length > 0){
             return false;
           }
           return true;
@@ -41,6 +45,7 @@ namespace ION.IOS.ViewController.Analyzer {
       textValidation.Hidden = true;
       textValidation.Lines = 2;
       textValidation.LineBreakMode = UILineBreakMode.WordWrap;
+      textValidation.AdjustsFontSizeToFitWidth = true;
       mView.AddSubview(mcloseButton);
       mView.AddSubview(mdoneButton);
       mView.AddSubview(mmeasurementType);
