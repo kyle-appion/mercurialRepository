@@ -29,7 +29,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.TextAlignment = UITextAlignment.Center;
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
-      if (lhSensor.holdValue != 0) {
+      if (!holdLabel.Equals("")) {
         cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType  + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;
@@ -50,6 +50,7 @@ namespace ION.IOS.ViewController.Analyzer {
         } else {
           lhSensor.holdValue = Convert.ToDouble(lhSensor.LabelMiddle.Text);
           lhSensor.holdType = lhSensor.LabelBottom.Text;
+          holdLabel.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType;
           cellReading.Text = holdLabel.Text + " ";
         }
       };

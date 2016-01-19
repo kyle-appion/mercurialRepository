@@ -12,7 +12,7 @@ using ION.Core.Measure;
 
 namespace ION.IOS.ViewController.Analyzer {
   public partial class SHSCTableCell : UITableViewCell {
-    private UILabel cellHeader;
+    public UILabel cellHeader;
     private UILabel fluidType;
     private UILabel tempReading;
 
@@ -26,7 +26,8 @@ namespace ION.IOS.ViewController.Analyzer {
       //fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
       //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
-      cellHeader.Text = "S/H";
+      cellHeader = lhSensor.shFluidState;
+      cellHeader.Text = "S/C";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);

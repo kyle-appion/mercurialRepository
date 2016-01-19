@@ -56,6 +56,10 @@ namespace ION.IOS.ViewController.Analyzer
       shFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       shFluidType.Layer.BorderColor = UIColor.Black.CGColor;
       shFluidType.Layer.BorderWidth = 1f;
+      shFluidState = new UILabel(new CGRect(0,0, 1.006 * tblRect.Width, .5 * cellHeight));
+      shFluidState.TextAlignment = UITextAlignment.Center;
+      shFluidState.TextColor = UIColor.White;
+      shFluidState.BackgroundColor = UIColor.Black;
       changeFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       changeFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changeFluid.Layer.BorderWidth = 1f;
@@ -73,10 +77,8 @@ namespace ION.IOS.ViewController.Analyzer
       __analyzerviewcontroller = ViewController;
       tUnit = Units.Temperature.FAHRENHEIT;
       pUnit = Units.Pressure.PSIG;
-      max = 0.00;
-      maxType = "psig";
-      min = 0.00;
-      minType = "psig";
+      maxType = "hold";
+      minType = "hold";
       isManual = false;
 
       conDisButton.TouchUpInside += delegate {
@@ -100,12 +102,12 @@ namespace ION.IOS.ViewController.Analyzer
           }
         }
       };
-      changeFluid.TouchUpInside += delegate {
-        Console.WriteLine("clicked the scsh button for sensor " + snapArea.AccessibilityIdentifier);
-      };
-      changePTFluid.TouchUpInside += delegate {
-        Console.WriteLine("clicked the pt button for sensor " + snapArea.AccessibilityIdentifier);
-      };
+//      changeFluid.TouchUpInside += delegate {
+//        Console.WriteLine("clicked the scsh button for sensor " + snapArea.AccessibilityIdentifier);
+//      };
+//      changePTFluid.TouchUpInside += delegate {
+//        Console.WriteLine("clicked the pt button for sensor " + snapArea.AccessibilityIdentifier);
+//      };
       changeFluid.TouchUpInside += openSHSC;
       changePTFluid.TouchUpInside += openPTC;
 		}
@@ -124,6 +126,7 @@ namespace ION.IOS.ViewController.Analyzer
     public string holdType;
     public UILabel shReading;
     public UILabel shFluidType;
+    public UILabel shFluidState;
     public UIButton changeFluid;
     public UILabel ptReading;
     public UILabel ptFluidType;
@@ -152,6 +155,8 @@ namespace ION.IOS.ViewController.Analyzer
     public Unit pUnit;
 		public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
+    public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
+    public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
       "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)"
     };
@@ -235,8 +240,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       foreach (string subview in tableSubviews) {
         
-        if (subview.Equals("Maximum")) {
-          //maxReading.Text = UpdateMax(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text) + " ";
+        if (subview.Equals("Maximum")) {       
 
           if (Convert.ToDouble(LabelMiddle.Text) > max) {
             max = Convert.ToDouble(LabelMiddle.Text);
@@ -252,7 +256,6 @@ namespace ION.IOS.ViewController.Analyzer
           }
           
           minReading.Text = min.ToString("0.00") + " " + minType;
-          //minReading.Text = UpdateMin(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text) + " ";
         } 
         if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text + " ";
@@ -277,14 +280,12 @@ namespace ION.IOS.ViewController.Analyzer
           DoUpdateRocCell();
         }
       }
-      Console.WriteLine("Gauge " + currentSensor.device.name + " has changeFluid hidden: " + changeFluid.Hidden + " and has changePTFluid hidden: " + changePTFluid.Hidden);
     }
     /// <summary>
     /// Manifold Event to update Superheat/Subcool and PT 
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(Manifold manifold){
-
       if (manifold.secondarySensor != null) {
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
@@ -305,31 +306,58 @@ namespace ION.IOS.ViewController.Analyzer
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
-        ptReading.Text = manifold.ptChart.GetTemperature(manifold.primarySensor).ToString();
+        var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
+        ptReading.Text = ptcalc.amount.ToString("0.00") + " " + ptcalc.unit;
       } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
-        ptReading.Text = manifold.ptChart.GetPressure(manifold.primarySensor).ToString();
+        var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
+        ptReading.Text = ptcalc.amount.ToString("0.00") + " " + ptcalc.unit;
+      }
+
+      if (manifold.ptChart != null) {
+        if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          shFluidState.Text = "S/C";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          shFluidState.Text = "S/H";
+        }
       }
     }
-
+    /// <summary>
+    /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
     public void openSHSC(object sender, EventArgs e){
-      Console.WriteLine("opening sub controller");
       var vc = __analyzerviewcontroller;
       var scsh = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
       scsh.initialManifold = manifold;
       vc.NavigationController.PushViewController(scsh, true);
     }
-
+    /// <summary>
+    /// EVENT TO OPEN THE PT CHART VIEW CONTROLLER
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
     public void openPTC(object sender, EventArgs e){
-      Console.WriteLine("opening pt controller");
-
       var vc = __analyzerviewcontroller;
       var ptc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
       manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
       ptc.initialManifold = manifold;
+      ptc.pUnitChanged += pUnitUpdating;
+      ptc.tUnitChanged += tUnitUpdating;
       vc.NavigationController.PushViewController(ptc, true);
+    }
+
+    public void pUnitUpdating(Unit unit){
+      pUnit = unit;
+      Console.WriteLine("Changed pressure unit to " + pUnit.ToString());
+    }
+
+    public void tUnitUpdating(Unit unit){
+      tUnit = unit;
+      Console.WriteLine("Changed temperature unit to " + tUnit.ToString());
     }
 	}
 }

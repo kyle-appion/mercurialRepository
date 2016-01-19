@@ -22,9 +22,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.IOS.ViewController.Dialog;
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.FluidManager;
-
+  public delegate void onUnitChanged (Unit changedUnit);
   public partial class PTChartViewController : BaseIONViewController {
-
+    public event onUnitChanged pUnitChanged;
+    public event onUnitChanged tUnitChanged;
     private const int SECTION_DEW = 0;
     private const int SECTION_BUBBLE = 1;
 
@@ -314,8 +315,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
             var old = pressureSensor.measurement;
             Log.D(this, "Converting " + old + " to " + unit + " equals: " + old.ConvertTo(unit));
-
             pressureUnit = unit;
+            pUnitChanged(unit);
             SynchronizePressureMeasurement(pressureSensor.measurement.ConvertTo(pressureUnit));
             buttonPressureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
           });
@@ -379,6 +380,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         if (temperatureSensor.isEditable) {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
             temperatureUnit = unit;
+            tUnitChanged(unit);
             SynchronizeTemperatureMeasurement(temperatureSensor.measurement.ConvertTo(temperatureUnit));
             buttonTemperatureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
           });
@@ -439,7 +441,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         imagePressureIcon.Hidden = false;
         imagePressureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imagePressureLock.Hidden = !pressureSensorLocked;
+        imagePressureLock.Hidden = pressureSensorLocked;
         imagePressureIcon.Hidden = temperatureSensor is GaugeDeviceSensor;
         imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
@@ -488,7 +490,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         imageTemperatureIcon.Hidden = false;
         imageTemperatureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imageTemperatureLock.Hidden = !temperatureSensorLocked;
+        imageTemperatureLock.Hidden = temperatureSensorLocked;
         imageTemperatureIcon.Hidden = pressureSensor is GaugeDeviceSensor;
         imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
       }

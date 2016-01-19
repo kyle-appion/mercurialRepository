@@ -122,7 +122,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView.mView.Layer.CornerRadius = 10;
       ///weird padding added to first snaparea's low side table
       /// this sets the table cells to start directly under the low side area
-      analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-60, 0, 0, 0);
+      analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.058f * View.Bounds.Height, 0, 0, 0);
     }
 
     /// <summary>
@@ -163,6 +163,7 @@ namespace ION.IOS.ViewController.Analyzer {
           pressedArea.sactionView.pdeviceImage.Image = pressedArea.deviceImage.Image;
           pressedArea.sactionView.connectionColor.BackgroundColor = UIColor.Red;
           pressedArea.sactionView.connectionColor.Hidden = false;
+          pressedArea.sactionView.conDisButton.Hidden = false;
         } else {
           pressedArea.sactionView.pdeviceImage.Image = UIImage.FromBundle("ic_edit");
           pressedArea.sactionView.pconnectionStatus.Text = "";
@@ -170,6 +171,7 @@ namespace ION.IOS.ViewController.Analyzer {
           pressedArea.sactionView.pconnection.Hidden = true;
           pressedArea.sactionView.pbatteryImage.Image = null;
           pressedArea.sactionView.connectionColor.Hidden = true;
+          pressedArea.sactionView.conDisButton.Hidden = true;
         }
 
 
@@ -261,12 +263,10 @@ namespace ION.IOS.ViewController.Analyzer {
         }
       }
       if (mentryView.mtextValue.Text.Length <= 0) {
-        Console.WriteLine("User didn't enter anything");
         mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
         mentryView.textValidation.Hidden = false;
         return;
       }
-      Console.WriteLine("mentry has identifier " + mentryView.dtypeButton.AccessibilityIdentifier);
       start.pressedView.AddGestureRecognizer (start.addPan);
       start.availableView.Hidden = true;
       start.pressedView.BackgroundColor = UIColor.White;
@@ -369,10 +369,11 @@ namespace ION.IOS.ViewController.Analyzer {
         presentationPopover.SourceView = this.View;
         presentationPopover.PermittedArrowDirections = UIPopoverArrowDirection.Right;
       }
-
-      addDeviceSheet.AddAction (UIAlertAction.Create ("Alarms", UIAlertActionStyle.Default, (action) => {
-        alarmRequestViewer(sensorActions);
-      }));
+      if (sensorActions.pressedSensor.isManual.Equals(false)) {
+        addDeviceSheet.AddAction(UIAlertAction.Create("Alarms", UIAlertActionStyle.Default, (action) => {
+          alarmRequestViewer(sensorActions);
+        }));
+      }
       addDeviceSheet.AddAction (UIAlertAction.Create ("Rename", UIAlertActionStyle.Default, (action) => {
         renamePopup();
       }));
@@ -433,7 +434,7 @@ namespace ION.IOS.ViewController.Analyzer {
         addDeviceSheet = UIAlertController.Create ("Add From...", "", UIAlertControllerStyle.Alert);
 
         addDeviceSheet.AddAction (UIAlertAction.Create ("Device Manager", UIAlertActionStyle.Default, (action) => {
-          if(!AnalyserUtilities.freeSpot(analyzerSensors,lowHighArea.snapArea.AccessibilityIdentifier)){
+          if(!AnalyserUtilities.freeSpot(analyzerSensors,removeSensor,lowHighArea.snapArea.AccessibilityIdentifier)){
             showFullAlert();
           } else {
             lhOnRequestViewer(lowHighArea);
@@ -442,7 +443,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         addDeviceSheet.AddAction (UIAlertAction.Create ("Create Manual Entry", UIAlertActionStyle.Default, (action) => {
 
-          if(!AnalyserUtilities.freeSpot(analyzerSensors,lowHighArea.snapArea.AccessibilityIdentifier)){
+          if(!AnalyserUtilities.freeSpot(analyzerSensors,removeSensor, lowHighArea.snapArea.AccessibilityIdentifier)){
             showFullAlert();
           } else {
             start = new manualEntry();
@@ -761,7 +762,7 @@ namespace ION.IOS.ViewController.Analyzer {
         else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "6"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea6,"Low Viewer Not Defined");}
         else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "7"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea7,"Low Viewer Not Defined");}
         else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "8"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea8,"Low Viewer Not Defined");}
-        else {ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea, analyzerSensors.snapArea1,"Low Viewer Not Defined");}
+        else {ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea, analyzerSensors.snapArea8,"Low Viewer Not Defined");}
       });
 
       lowHighSensors.highArea.shortPress = new UITapGestureRecognizer (() => {
@@ -813,7 +814,6 @@ namespace ION.IOS.ViewController.Analyzer {
       bool existingConnection = false;
       var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-       // string returnedSerial = sensor.device.serialNumber.ToString();
         foreach(sensor item in analyzerSensors.viewList){
           if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
             existingConnection = true;
@@ -990,6 +990,7 @@ namespace ION.IOS.ViewController.Analyzer {
               if(sensor != null && sensor.device.isConnected.Equals(true)){
                 analyzerSensors.viewList[i].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
                 analyzerSensors.viewList[i].lowArea.connectionColor.BackgroundColor = UIColor.Green;
+                analyzerSensors.viewList[i].sactionView.connectionColor.BackgroundColor = UIColor.Green;
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = false;
                 analyzerSensors.viewList[i].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
                 analyzerSensors.viewList[i].highArea.connectionColor.BackgroundColor = UIColor.Green;
@@ -997,11 +998,13 @@ namespace ION.IOS.ViewController.Analyzer {
               } else if (sensor != null && !sensor.device.isConnected){
                 analyzerSensors.viewList[i].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
                 analyzerSensors.viewList[i].lowArea.connectionColor.BackgroundColor = UIColor.Red;
+                analyzerSensors.viewList[i].sactionView.connectionColor.BackgroundColor = UIColor.Red;
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = false;
                 analyzerSensors.viewList[i].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
                 analyzerSensors.viewList[i].highArea.connectionColor.BackgroundColor = UIColor.Red;
                 analyzerSensors.viewList[i].highArea.connectionColor.Hidden = false;
               } else {
+                analyzerSensors.viewList[i].sactionView.connectionColor.BackgroundColor = UIColor.Clear;
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;
                 analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;
               }
@@ -1042,7 +1045,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
     private void alarmRequestViewer(actionPopup area) {
       var alarm = InflateViewController<SensorAlarmViewController>(VC_SENSOR_ALARMS);
-      alarm.sensor = area.pressedSensor.currentSensor;
+      alarm.sensor = area.pressedSensor.currentSensor as Sensor;
       NavigationController.PushViewController(alarm, true);
     }
 
