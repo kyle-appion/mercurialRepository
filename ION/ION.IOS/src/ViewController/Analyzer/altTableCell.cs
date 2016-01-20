@@ -63,11 +63,19 @@ namespace ION.IOS.ViewController.Analyzer {
         lhSensor.alt.unit = manSensor.unit;
         cellReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
       } else {
+        
+
         lhSensor.alt = new AlternateUnitSensorProperty(lhSensor.currentSensor as Sensor);
         if (lhSensor.altUnit != null) {
           lhSensor.alt.unit = lhSensor.altUnit;
         } else {
-          lhSensor.alt.unit = UnitLookup.GetUnit(lhSensor.currentSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
+          if (lhSensor.currentSensor.type == ESensorType.Pressure) {
+            lhSensor.alt.unit = AnalyserUtilities.getManualUnit(lhSensor.currentSensor.type, lhSensor.altUnits[0].Replace("/", "").ToLower());
+          } else if (lhSensor.currentSensor.type == ESensorType.Temperature) {
+            lhSensor.alt.unit = AnalyserUtilities.getManualUnit(lhSensor.currentSensor.type, lhSensor.tempUnits[0].Replace("/", "").ToLower());
+          } else if (lhSensor.currentSensor.type == ESensorType.Vacuum) {
+            lhSensor.alt.unit = AnalyserUtilities.getManualUnit(lhSensor.currentSensor.type, lhSensor.vacUnits[0].Replace("/", "").ToLower());
+          }
         }
       }
       cellButton.TouchUpInside += delegate {
