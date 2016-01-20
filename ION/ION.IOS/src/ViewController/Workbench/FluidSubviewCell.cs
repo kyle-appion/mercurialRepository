@@ -9,6 +9,7 @@ namespace ION.IOS.ViewController.Workbench {
   using ION.Core.Content;
   using ION.Core.Content.Properties;
   using ION.Core.Fluids;
+  using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
@@ -71,19 +72,27 @@ namespace ION.IOS.ViewController.Workbench {
 
       UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
 
-      switch (sensorProperty.manifold.ptChart.state) {
-        case Fluid.EState.Bubble:
-          labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
-          break;
-        case Fluid.EState.Dew:
-          labelTitle.Text = Strings.Fluid.PT_CHART_DEW;
-          break;
-        default:
-          labelTitle.Text = Strings.UNKNOWN;
-          break;
+      var fluid = sensorProperty.manifold.ptChart.fluid;
+
+      if (fluid.mixture) {
+        switch (sensorProperty.manifold.ptChart.state) {
+          case Fluid.EState.Bubble:
+            labelTitle.Text = Strings.Fluid.PT_CHART_BUB;
+            break;
+          case Fluid.EState.Dew:
+            labelTitle.Text = Strings.Fluid.PT_CHART_DEW;
+            break;
+          default:
+            labelTitle.Text = Strings.UNKNOWN;
+            break;
+        }
+      } else {
+        labelTitle.Text = Strings.Fluid.PT;
       }
 
       var meas = sensorProperty.sensor.measurement;
+      labelMeasurement.Text = meas.amount.ToString("0.00") + meas.unit;
+/*
       var chart = sensorProperty.manifold.ptChart;
       switch (sensorProperty.sensor.type) {
         case ESensorType.Pressure:
@@ -97,28 +106,47 @@ namespace ION.IOS.ViewController.Workbench {
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, press, true);
           break;
       }
+*/
     }
 
     private void HandleSuperheatSubcoolSensorPropertyChanged(SuperheatSubcoolSensorProperty sensorProperty) {
       UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
 
-      switch (sensorProperty.manifold.ptChart.state) {
-        case Fluid.EState.Bubble:
-          labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
-          break;
-        case Fluid.EState.Dew:
-          labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
-          break;
-        default:
-          labelTitle.Text = Strings.UNKNOWN;
-          break;
+      var fluid = sensorProperty.manifold.ptChart.fluid;
+
+      Scalar meas = null;
+      if (sensorProperty.pressureSensor != null && sensorProperty.temperatureSensor != null) {
+        meas = sensorProperty.modifiedMeasurement;
       }
 
-      if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
-        labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
+      if (meas == null || meas.AssertEquals(0, 0.001)) {
+        labelTitle.Text = Strings.Fluid.SHSC;
+      } else if (meas > 0) {
+        labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
       } else {
-        var meas = sensorProperty.modifiedMeasurement;
-        labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+        labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
+      }
+
+      labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas.Abs(), true);
+
+      if (fluid.mixture) {
+        switch (sensorProperty.manifold.ptChart.state) {
+          case Fluid.EState.Bubble:
+            labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
+            break;
+          case Fluid.EState.Dew:
+            labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
+            break;
+          default:
+            labelTitle.Text = Strings.UNKNOWN;
+            break;
+        }
+
+        if (meas == null) {
+          labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
+        } else {
+          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+        }
       }
     }
 

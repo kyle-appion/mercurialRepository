@@ -78,10 +78,15 @@ file.
 
 /* FLUIDS */
 "fluid_out_of_range" = "OUT OF RANGE";
+"fluid_pt" = "PT";
 "fluid_pt_calculator" = "P/T Calculator";
 "fluid_pt_chart" = "P/T Chart";
 "fluid_pt_chart_bub" = "P/Tbub";
 "fluid_pt_chart_dew" = "P/Tdew";
+"fluid_saturated" = "Saturated";
+"fluid_sc" = "SC";
+"fluid_sh" = "SH";
+"fluid_shsc" = "SH/SC";
 "fluid_state_help" = "Dew Point is used to calculate Superheat (low side, in vapor).\n\nBubble Point is used to calculate Subcool (high side, in liquid).\n\nThis affects measurement of blended refrigerants, since these points are usually not the same.";
 "fluid_subcool" = "Subcool";
 "fluid_subcool_abrv" = "S/C";
