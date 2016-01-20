@@ -102,9 +102,7 @@
         return true;
       }
 
-      Log.D(this, "Not in " + view);
       foreach (var v in view.Subviews) {
-        Log.D(this, "Checking " + v);
         if (FindActiveView(v)) {
           return true;
         }

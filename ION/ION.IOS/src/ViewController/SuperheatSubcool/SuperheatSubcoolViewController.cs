@@ -44,18 +44,23 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           case Fluid.EState.Dew:
             switchFluidState.SelectedSegment = SECTION_DEW;
             labelFluidState.Text = Strings.Fluid.SUPERHEAT;
-            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
-            switchFluidState.TintColor = new UIColor(Colors.BLUE);
             UpdateDelta();
             break;
           case Fluid.EState.Bubble:
             switchFluidState.SelectedSegment = SECTION_BUBBLE;
             labelFluidState.Text = Strings.Fluid.SUBCOOL;
-            labelFluidState.BackgroundColor = new UIColor(Colors.RED);
-            switchFluidState.TintColor = new UIColor(Colors.RED);
             UpdateDelta();
             break;
         }
+
+        if (pressureSensor != null) {
+          OnPressureSensorChanged(pressureSensor);
+        }
+
+        if (temperatureSensor != null) {
+          OnTemperatureSensorChanged(temperatureSensor);
+        }
+
         if (initialManifold != null) {
           initialManifold.ptChart = __ptChart;
         }
@@ -256,7 +261,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
         } catch (Exception e) {
           Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
-          ClearPressureInput();
+//          ClearPressureInput();
         }
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
@@ -287,7 +292,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
         } catch (Exception e) {
           Log.E(this, "Failed to UpdateTemperature: invalid string " + editTemperature.Text + ".", e);
-          ClearTemperatureInput();
+//          ClearTemperatureInput();
         }
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
@@ -390,6 +395,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     /// Updates the calculated temperature delta value for the superheat/subcool calculations.
     /// </summary>
     private void UpdateDelta() {
+      labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+      switchFluidState.TintColor = new UIColor(Colors.RED);
+
       if (editPressure.Text.Equals("") || editTemperature.Text.Equals("") || pressureSensor == null || temperatureSensor == null) {
         labelFluidDelta.Text = "";
         return;
@@ -399,6 +407,34 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       var temperatureScalar = temperatureSensor.measurement;
 
       var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, false).ConvertTo(temperatureUnit);
+
+      if (ptChart.fluid.mixture) {
+        switch (ptChart.state) {
+          case Fluid.EState.Bubble:
+            labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+            switchFluidState.TintColor = new UIColor(Colors.RED);
+            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+            break;
+          case Fluid.EState.Dew:
+            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            labelFluidState.Text = Strings.Fluid.SUBCOOL;
+            break;
+          default:
+            throw new Exception("Cannot update delta for state: " + ptChart.state);
+        }
+      } else {
+        if (calculation.AssertEquals(0, 0.01)) {
+          labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);
+          labelFluidState.Text = Strings.Fluid.SATURATED;
+        } else if (calculation > 0) {
+          labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+          labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+        } else {
+          labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+          labelFluidState.Text = Strings.Fluid.SUBCOOL;
+        }
+      }
 
       labelFluidDelta.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
     }

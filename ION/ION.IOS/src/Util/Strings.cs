@@ -108,10 +108,15 @@ namespace ION.IOS.Util {
     public static class Fluid {
       public static readonly string
       OUT_OF_RANGE = "fluid_out_of_range".FromResources(),
+      PT = "fluid_pt".FromResources(),
       PT_CALCULATOR = "fluid_pt_calculator".FromResources(),
       PT_CHART = "fluid_pt_chart".FromResources(),
       PT_CHART_BUB = "fluid_pt_chart_bub".FromResources(),
       PT_CHART_DEW = "fluid_pt_chart_dew".FromResources(),
+      SATURATED = "fluid_saturated".FromResources(),
+      SC = "fluid_sc".FromResources(),
+      SH = "fluid_sh".FromResources(),
+      SHSC = "fluid_shsc".FromResources(),
       STATE_HELP = "fluid_state_help".FromResources(),
       SUBCOOL = "fluid_subcool".FromResources(),
       SUBCOOL_ABRV = "fluid_subcool_abrv".FromResources(),
