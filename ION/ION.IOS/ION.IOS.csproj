@@ -450,7 +450,6 @@
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
-    <Folder Include="Resources\src\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
