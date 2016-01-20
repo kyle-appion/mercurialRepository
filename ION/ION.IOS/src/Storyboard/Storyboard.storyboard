@@ -41,7 +41,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellViewer" rowHeight="158" id="WkE-yp-mwt" userLabel="cellViewer" customClass="ViewerTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellViewer" rowHeight="158" id="WkE-yp-mwt" userLabel="cellViewer" customClass="ViewerTableCell">
                                         <rect key="frame" x="0.0" y="49.5" width="568" height="158"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="WkE-yp-mwt" id="4dd-0F-a4g">
@@ -231,7 +231,7 @@
                                             <outlet property="viewDivider" destination="ZYV-N7-LzZ" id="Hka-Bo-15P"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellMeasurementSubview" rowHeight="48" id="DVC-y1-aHZ" customClass="MeasurementSensorPropertyTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellMeasurementSubview" rowHeight="48" id="DVC-y1-aHZ" customClass="MeasurementSensorPropertyTableCell">
                                         <rect key="frame" x="0.0" y="207.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="DVC-y1-aHZ" id="Kke-9r-Pkt">
@@ -325,7 +325,7 @@
                                             <outlet property="viewDivider" destination="GF2-8A-fsx" id="3rr-yz-nSj"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellRateOfChangeSubview" rowHeight="48" id="8KR-VV-qNO" customClass="RateOfChangeSensorPropertyCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellRateOfChangeSubview" rowHeight="48" id="8KR-VV-qNO" customClass="RateOfChangeSensorPropertyCell">
                                         <rect key="frame" x="0.0" y="255.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8KR-VV-qNO" id="zzV-ET-To2">
@@ -419,7 +419,7 @@
                                             <outlet property="viewDivider" destination="vFI-D9-Ib8" id="baH-Vi-EnE"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellTimerSubview" rowHeight="48" id="zGi-fS-Ill" customClass="TimerSensorPropertyCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellTimerSubview" rowHeight="48" id="zGi-fS-Ill" customClass="TimerSensorPropertyCell">
                                         <rect key="frame" x="0.0" y="303.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="zGi-fS-Ill" id="rO9-FN-8NG">
@@ -512,7 +512,7 @@
                                             <outlet property="viewDivider" destination="N6i-o3-BCs" id="MTx-eG-DXK"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellFluidSubview" rowHeight="48" id="TBb-uI-cML" userLabel="cellFluidSubview" customClass="FluidSubviewCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellFluidSubview" rowHeight="48" id="TBb-uI-cML" userLabel="cellFluidSubview" customClass="FluidSubviewCell">
                                         <rect key="frame" x="0.0" y="351.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="TBb-uI-cML" id="8v2-LR-fHA">
@@ -604,7 +604,7 @@
                                             <outlet property="viewDivider" destination="d0U-1j-nx3" id="Oeo-7p-dL6"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellAdd" rowHeight="48" id="Qza-Y3-bO7" userLabel="cellAdd" customClass="AddViewerTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellAdd" rowHeight="48" id="Qza-Y3-bO7" userLabel="cellAdd" customClass="AddViewerTableCell">
                                         <rect key="frame" x="0.0" y="399.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Qza-Y3-bO7" id="aF4-Pf-xmI">
@@ -695,7 +695,7 @@
                                 <rect key="frame" x="16" y="104" width="568" height="496"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellFluid" rowHeight="64" id="mFL-Qb-zDf" userLabel="cellFluid" customClass="FluidTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellFluid" rowHeight="64" id="mFL-Qb-zDf" userLabel="cellFluid" customClass="FluidTableCell">
                                         <rect key="frame" x="0.0" y="22" width="568" height="64"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mFL-Qb-zDf" id="437-iH-hm1">
@@ -1131,7 +1131,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <color key="separatorColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellHeader" rowHeight="48" id="x1N-fK-DzL" userLabel="cellHeader" customClass="DeviceSectionHeaderTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellHeader" rowHeight="48" id="x1N-fK-DzL" userLabel="cellHeader" customClass="DeviceSectionHeaderTableCell">
                                         <rect key="frame" x="0.0" y="49.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="x1N-fK-DzL" id="cIn-7p-c8B">
@@ -1213,7 +1213,7 @@
                                             <outlet property="viewDivider" destination="AJO-2e-nn8" id="heo-RG-xeS"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellDevice" rowHeight="53" id="3OZ-bk-QDE" userLabel="cellDevice" customClass="DeviceTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellDevice" rowHeight="53" id="3OZ-bk-QDE" userLabel="cellDevice" customClass="DeviceTableCell">
                                         <rect key="frame" x="0.0" y="97.5" width="568" height="53"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3OZ-bk-QDE" id="9Iv-nr-Lb4">
@@ -1343,7 +1343,7 @@
                                             <outlet property="viewDivider" destination="Omd-md-B2F" id="SxX-Ew-kmU"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellSerialNumber" rowHeight="21" id="BiD-3e-r1N" userLabel="cellSerialNumber" customClass="SerialNumberTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSerialNumber" rowHeight="21" id="BiD-3e-r1N" userLabel="cellSerialNumber" customClass="SerialNumberTableCell">
                                         <rect key="frame" x="0.0" y="150.5" width="568" height="21"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="BiD-3e-r1N" id="MtO-ss-vcp">
@@ -1371,7 +1371,7 @@
                                             <outlet property="labelSerialNumber" destination="fcF-lD-BUp" id="q8m-NQ-1Q6"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellSensor" rowHeight="48" id="fx9-lE-Rgx" userLabel="cellSensor" customClass="SensorTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSensor" rowHeight="48" id="fx9-lE-Rgx" userLabel="cellSensor" customClass="SensorTableCell">
                                         <rect key="frame" x="0.0" y="171.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="fx9-lE-Rgx" id="mho-CH-a6S">
@@ -1446,7 +1446,7 @@
                                             <outlet property="labelType" destination="Ku1-1X-29X" id="IMm-Qq-iW6"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cellSpace" rowHeight="5" id="rzn-qz-Ftf" userLabel="cellSpace">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSpace" rowHeight="5" id="rzn-qz-Ftf" userLabel="cellSpace">
                                         <rect key="frame" x="0.0" y="219.5" width="568" height="5"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rzn-qz-Ftf" id="usV-IA-pYk">

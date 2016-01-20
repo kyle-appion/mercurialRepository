@@ -107,8 +107,6 @@ namespace ION.IOS.ViewController {
     /// Opens up a file manager that will allow the perusal of downloaded calibration certificates.
     /// </summary>
     private void OnCalibrationCertificateClicked() {
-      var failures = new List<ISerialNumber>();
-
       try {
         var vc = InflateViewController<FileBrowserViewController>(BaseIONViewController.VC_FILE_MANAGER);
         vc.title = Strings.Report.CALIBRATION_CERTIFICATES;
@@ -117,6 +115,8 @@ namespace ION.IOS.ViewController {
         var button = new UIButton(new CoreGraphics.CGRect(0, 0, 31, 30));
         button.SetImage(image, UIControlState.Normal);
         button.TouchUpInside += (object sender, EventArgs e) => {
+          var failures = new List<ISerialNumber>();
+
           var source = new CancellationTokenSource();
           var task = DoTheThings(source, failures, () => {
             vc.Refresh();
