@@ -45,18 +45,44 @@ namespace ION.IOS.ViewController {
     /// <value><c>true</c> if is pop over; otherwise, <c>false</c>.</value>
     private bool isPopOver { get; set; }
 
+    private KeyboardScrollHelper helper { get; set; }
+
     public BaseIONViewController(IntPtr handle) : base(handle) {
       // Nope
     }
 
-    // Overridden from ViewController
+    /// <summary>
+    /// Called when the viewcontroller is loading its views.
+    /// </summary>
+    public override void ViewDidLoad() {
+      base.ViewDidLoad();
+
+      helper = new KeyboardScrollHelper(this);
+    }
+
+    /// <summary>
+    /// Called when the view controller's view appeared on the screen.
+    /// </summary>
+    /// <param name="animated">If set to <c>true</c> animated.</param>
     public override void ViewDidAppear(bool animated) {
       base.ViewDidAppear(animated);
     }
 
-    // Overridden from ViewController
+    /// <summary>
+    /// Called when the view controller's view are removed from the screen.
+    /// </summary>
+    /// <param name="animated">If set to <c>true</c> animated.</param>
     public override void ViewWillDisappear(bool animated) {
       base.ViewDidDisappear(animated);
+    }
+
+    /// <summary>
+    /// Called when the loaded views are removed from the view controller.
+    /// </summary>
+    public override void ViewDidUnload() {
+      base.ViewDidUnload();
+
+      helper.Dispose();
     }
 
     /// <summary>
