@@ -419,6 +419,7 @@
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
     <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
     <Compile Include="src\ViewController\DeviceManager\DeviceTableSource.cs" />
+    <Compile Include="src\ViewController\KeyboardScrollHelper.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
