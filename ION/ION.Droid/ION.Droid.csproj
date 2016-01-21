@@ -85,13 +85,11 @@
     <Compile Include="src\App\AndroidION.cs" />
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />
-    <Compile Include="src\Widgets\Adapters\RootView.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="src\Fragment\IONFragment.cs" />
     <Compile Include="src\Fragment\WorkbenchFragment.cs" />
     <Compile Include="src\Sensors\SensorExtensions.cs" />
     <Compile Include="src\Devices\DeviceExtensions.cs" />
-    <Compile Include="src\Widgets\Adapters\WorkbenchAdapter.cs" />
     <Compile Include="src\Activity\HomeActivity.cs" />
     <Compile Include="src\Widgets\Adapters\Navigation\NavigationItem.cs" />
     <Compile Include="src\Widgets\Adapters\Navigation\NavigationAdapter.cs" />
@@ -112,6 +110,13 @@
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
     <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
     <Compile Include="src\Activity\DeviceManagerActivity.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\ViewerViewHolder.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperViewHolder.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IOnStartDragListener.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SimpleItemTouchHelperCallback.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\TouchListenerHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -259,7 +264,6 @@
     <AndroidResource Include="Resources\drawable\shape_circle_gold.xml" />
     <AndroidResource Include="Resources\layout\activity_main.axml" />
     <AndroidResource Include="Resources\layout\fragment_workbench.axml" />
-    <AndroidResource Include="Resources\layout\manifold.axml" />
     <AndroidResource Include="Resources\anim\blink_slow.xml" />
     <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\layout\activity_home.axml" />
@@ -282,6 +286,10 @@
     <AndroidResource Include="Resources\layout\device_manager_serial.axml" />
     <AndroidResource Include="Resources\layout\device_manager_sensor.axml" />
     <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
+    <AndroidResource Include="Resources\layout\list_item_large_viewer.axml" />
+    <AndroidResource Include="Resources\layout\list_item_add.axml" />
+    <AndroidResource Include="Resources\drawable\viewer_background.axml" />
+    <None Include="src\Widgets\RecyclerViews\ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -315,6 +323,8 @@
     <Folder Include="Resources\values-sw600dp\" />
     <Folder Include="Resources\values-sw700dp\" />
     <Folder Include="src\Views\" />
+    <Folder Include="src\Widgets\Adapters\Workbench\" />
+    <Folder Include="src\Widgets\RecyclerViews\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">

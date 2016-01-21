@@ -14,27 +14,74 @@
   /// The object that encapsulates the event data for a workbench changed event.
   /// </summary>
   public class WorkbenchEvent {
+    /// <summary>
+    /// The type of the event.
+    /// </summary>
+    /// <value>The type.</value>
     public EType type { get; private set; }
+    /// <summary>
+    /// The workbench that threw the event.
+    /// </summary>
+    /// <value>The workbench.</value>
     public Workbench workbench { get; private set; }
     /// <summary>
     /// The manifold that triggered the event. This is null on EType.Invalidated.
     /// </summary>
     /// <value>The manifold.</value>
     public Manifold manifold { get; private set; }
+    /// <summary>
+    /// The index of the manifold. Note: if the type is Swapped, then this index represents
+    /// the manifold AFTER the swap occured.
+    /// </summary>
+    /// <value>The index.</value>
+    public int index { get; private set; }
+    /// <summary>
+    /// The index of swapped manifold.
+    /// </summary>
+    /// <value>The index of the other.</value>
+    public int otherIndex { get; private set; }
+    /// <summary>
+    /// The manifold event that was given for the WorkbenchEvent type.
+    /// </summary>
+    /// <value>The workbench event.</value>
+    public ManifoldEvent manifoldEvent { get; private set; }
 
-    public  WorkbenchEvent(EType type, Workbench workbench, Manifold manifold = null) {
+    public  WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, ManifoldEvent manifoldEvent = null) {
       this.type = type;
       this.workbench = workbench;
       this.manifold = manifold;
+      this.index = index;
+      this.manifoldEvent = manifoldEvent;
     }
 
+    public WorkbenchEvent(EType type, Workbench workbench, Manifold manifold, int index, int otherIndex) {
+      this.type = type;
+      this.workbench = workbench;
+      this.manifold = manifold;
+      this.index = index;
+      this.otherIndex = otherIndex;
+    }
+
+    /// <summary>
+    /// The enumeration of the type of events that a workbench will throw.
+    /// </summary>
     public enum EType {
+      /// <summary>
+      /// The event type used when a manifold is added to the workbench.
+      /// </summary>
       Added,
+      /// <summary>
+      /// The event type used when two manifolds are swapped in the workbench.
+      /// </summary>
+      Swapped,
+      /// <summary>
+      /// The event type used when a manifold is removed from the workbench.
+      /// </summary>
       Removed,
       /// <summary>
-      /// An event of this type will not contain a manifold.
+      /// The event type that is used when a manifold in the workbench throws an event.
       /// </summary>
-      Invalidated,
+      ManifoldEvent,
     }
   }
   /// <summary>
@@ -64,6 +111,10 @@
       get {
         return __manifolds[index];
       }
+
+      private set {
+        __manifolds[index] = value;
+      }
     }
 
     /// <summary>
@@ -77,12 +128,12 @@
 
     public Workbench(IION ion) {
       this.ion = ion;
-      ion.deviceManager.onDeviceEvent += OnDeviceEvent;
+      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
     }
 
     // Overridden from IDisposable
     public void Dispose() {
-      ion.deviceManager.onDeviceEvent -= OnDeviceEvent;
+      ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
     }
 
     /// <summary>
@@ -96,7 +147,8 @@
         return false;
       } else {
         __manifolds.Add(manifold);
-        NotifyWorkbenchEvent(WorkbenchEvent.EType.Added, manifold);
+        manifold.onManifoldEvent += OnManifoldEvent;
+        NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, __manifolds.Count - 1);
         return true;
       } 
     }
@@ -111,12 +163,20 @@
       if (ContainsSensor(sensor)) {
         return false;
       } else {
-        var add = new Manifold(sensor);
-        __manifolds.Add(add);
-        NotifyWorkbenchEvent(WorkbenchEvent.EType.Added, add);
-
-        return true;
+        return Add(new Manifold(sensor));
       }
+    }
+
+    /// <summary>
+    /// Swaps two manifold at the given indices.
+    /// </summary>
+    /// <param name="first">First.</param>
+    /// <param name="second">Second.</param>
+    public void Swap(int first, int second) { 
+      var m = this[first];
+      this[first] = this[second];
+      this[second] = m;
+      NotifyOfEvent(WorkbenchEvent.EType.Swapped, m, second, first);
     }
 
     /// <summary>
@@ -124,8 +184,10 @@
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void Remove(Manifold manifold) {
+      var index = manifolds.IndexOf(manifold);
       __manifolds.Remove(manifold);
-      NotifyWorkbenchEvent(WorkbenchEvent.EType.Removed, manifold);
+      manifold.onManifoldEvent -= OnManifoldEvent;
+      NotifyOfEvent(WorkbenchEvent.EType.Removed, manifold, index);
     }
 
     /// <summary>
@@ -204,20 +266,38 @@
     }
 
     /// <summary>
-    /// Notifies the manifold event handler of a new manifold event.
+    /// Notifies the onWorkbenchEvent handler of a new workbench event.
     /// </summary>
     /// <param name="type">Type.</param>
-    private void NotifyWorkbenchEvent(WorkbenchEvent.EType type, Manifold manifold=null) {
-      NotifyWorkbenchEvent(new WorkbenchEvent(type, this, manifold));
+    /// <param name="manifold">Manifold.</param>
+    private void NotifyOfEvent(WorkbenchEvent.EType type, Manifold manifold, int index, int otherIndex = -1) {
+      if (onWorkbenchEvent != null) {
+        onWorkbenchEvent(new WorkbenchEvent(type, this, manifold, index, otherIndex));
+      }
+    }
+
+    private void NotifyOfEvent(WorkbenchEvent.EType type, ManifoldEvent manifoldEvent) {
+      if (onWorkbenchEvent != null) {
+        var m = manifoldEvent.manifold;
+        onWorkbenchEvent(new WorkbenchEvent(type, this, m, manifolds.IndexOf(m), manifoldEvent));
+      }
     }
 
     /// <summary>
-    /// Notifies the manifold event handler of a new manifold event.
+    /// Called when a manifold event occurs.
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
-    private void NotifyWorkbenchEvent(WorkbenchEvent manifoldEvent) {
-      if (onWorkbenchEvent != null) {
-        onWorkbenchEvent(manifoldEvent);
+    private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
+      NotifyOfEvent(WorkbenchEvent.EType.ManifoldEvent, manifoldEvent);
+    }
+
+    /// <summary>
+    /// Called on a device manager event.
+    /// </summary>
+    /// <param name="e">E.</param>
+    private void OnDeviceManagerEvent(DeviceManagerEvent e) {
+      if (DeviceManagerEvent.EType.DeviceEvent == e.type) {
+        OnDeviceEvent(e.deviceEvent);
       }
     }
 
@@ -226,11 +306,14 @@
     /// </summary>
     /// <param name="deviceEvent">Device event.</param>
     private void OnDeviceEvent(DeviceEvent deviceEvent) {
+      // TODO ahodder@appioninc.com: Right now when a device is deleted from the application and the workbench
+      // goes to reflect the change, the workbench will do a cascade delete that may leave the application in
+      // a weird position. It may be worth it to pop-up a dialog that will inform the user that the app is about
+      // to experiece a huge change as the device is removed from all sources.
       switch (deviceEvent.type) {
         case DeviceEvent.EType.Deleted:
           if (ContainsDevice(deviceEvent.device)) {
             RemoveUsesOfDevice(deviceEvent.device);
-            NotifyWorkbenchEvent(WorkbenchEvent.EType.Invalidated);
           }
           break;
       }

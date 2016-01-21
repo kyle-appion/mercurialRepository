@@ -34,12 +34,27 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// Updates the table cell to the given device group.
     /// </summary>
     /// <param name="deviceGroup">Device group.</param>
-    public void UpdateTo(DeviceGroup deviceGroup, Action optionsClicked = null) {
-      viewBackground.BackgroundColor = new UIColor(deviceGroup.color);
-
-      labelCounter.Text = deviceGroup.devices.Count + "";
-      labelTitle.Text = deviceGroup.title;
+    public void UpdateTo(Section section, Action optionsClicked = null) {
+      viewBackground.BackgroundColor = new UIColor(section.color);
+      labelCounter.Text = CountDeviceRecord(section) + "";
+      labelTitle.Text = section.name;
       this.optionsClicked = optionsClicked;
+    }
+
+    /// <summary>
+    /// Counts the number of devices in the section.
+    /// </summary>
+    /// <returns>The device record.</returns>
+    private int CountDeviceRecord(Section section) {
+      int ret = 0;
+
+      foreach (var r in section.records) {
+        if (r is DeviceRecord) {
+          ret++;
+        }
+      }
+
+      return ret;
     }
 	}
 }

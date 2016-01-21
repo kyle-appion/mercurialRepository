@@ -1,13 +1,16 @@
-﻿using System;
-using System.IO;
-using System.Text;
+﻿namespace ION.Core.Devices.Protocols {
 
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
+  using System;
+  using System.Collections.Generic;
+  using System.IO;
+  using System.Text;
 
-namespace ION.Core.Devices.Protocols {
+  using ION.Core.IO;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+  using ION.Core.Util;
+
+
   /// <summary>
   /// This protocol was the first bluetooth LE protocol used by most gauges.
   /// This protocol is primarily used during active communications.
@@ -36,21 +39,34 @@ namespace ION.Core.Devices.Protocols {
 
         int battery = r.ReadByte();
 
-        int gaugeCount = (len - 2) / 6;
-        GaugeReading[] readings = new GaugeReading[gaugeCount];
+        int maxGaugeCount = (len - 2) / 6;
+        var readings = new List<GaugeReading>();
 
-        for (int i = 0; i < gaugeCount; i++) {
+        for (int i = 0; i < maxGaugeCount; i++) {
           int exponent = r.ReadByte();
           int encodedReading = r.ReadInt32BE();
           int unitCode = r.ReadByte();
 
-          double reading = encodedReading / System.Math.Pow(10, exponent);
+          if (unitCode == 0) {
+            break;
+          }
 
           Unit unit = UnitLookup.GetUnit(unitCode);
-          readings[i] = new GaugeReading(UnitLookup.GetSensorTypeFromCode(unitCode), unit.OfScalar(reading));
+
+          var gr = new GaugeReading() {
+            removed = removedGaugeValue == encodedReading,
+            sensorType = UnitLookup.GetSensorTypeFromCode(unitCode),
+            reading = unit.OfScalar(encodedReading / System.Math.Pow(10, exponent)),
+          };
+
+          if (gr.removed) {
+            gr.reading = unit.OfScalar(0);
+          }
+
+          readings.Add(gr);
         }
 
-        return new GaugePacket(version, battery, readings);
+        return new GaugePacket(version, battery, readings.ToArray());
       }
     }
 

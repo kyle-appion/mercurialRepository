@@ -4,6 +4,8 @@
 
   using Android.OS;
 
+  using Java.Interop;
+
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Sensors;
@@ -16,7 +18,18 @@
   public abstract class SensorParcelable : GenericParcelable {
     public SensorParcelable() {
     }
-    
+
+    /// <summary>
+    /// Creates a new SensorParcelable from the given source.
+    /// </summary>
+    /// <param name="source">Source.</param>
+    public SensorParcelable(Parcel source) {
+    }
+
+    /// <summary>
+    /// Queries the sensor form the parcelable.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
     public abstract Sensor Get(IION ion);
   }
 
@@ -25,6 +38,14 @@
   /// intent data object.
   /// </summary>
   public class DefaultSensorParcelable : SensorParcelable {
+    /// <summary>
+    /// The creator that will create the parcelable from a parcel source.
+    /// </summary>
+    [ExportField("CREATOR")]
+    public static IParcelableCreator GetCreator() {
+      return new GenericParcelableCreator<DefaultSensorParcelable>();
+    }
+
     /// <summary>
     /// The sensor type of the sensor that was passed.
     /// </summary>
@@ -51,10 +72,7 @@
     /// <value>The amount.</value>
     public double amount { get; set; }
 
-    public DefaultSensorParcelable() {
-    }
-
-    protected DefaultSensorParcelable(Parcel source) {
+    public DefaultSensorParcelable(Parcel source) {
       sensorType = (ESensorType)source.ReadInt();
       isRelative = source.ReadInt() == 1;
       isEditable = source.ReadInt() == 1;
@@ -62,7 +80,7 @@
       amount = source.ReadDouble();
     }
 
-    protected DefaultSensorParcelable(Sensor sensor) {
+    public DefaultSensorParcelable(Sensor sensor) {
       if (sensor is GaugeDeviceSensor) {
         throw new InvalidOperationException("Do not use a DefaultSensorParcelable to pass a GaugeDeviceSensor. Please use a GaugeDeviceSensorParcelable instead.");
       }
@@ -93,6 +111,14 @@
   /// </summary>
   public class GaugeDeviceSensorParcelable : SensorParcelable {
     /// <summary>
+    /// The creator that will create the parcelable from a parcel source.
+    /// </summary>
+    [ExportField("CREATOR")]
+    public static IParcelableCreator GetCreator() {
+      return new GenericParcelableCreator<GaugeDeviceSensorParcelable>();
+    }
+
+    /// <summary>
     /// The serial number of the device that the sensor belongs to.
     /// </summary>
     /// <value>The serial number.</value>
@@ -111,7 +137,7 @@
       index = sensor.index;
     }
 
-    protected GaugeDeviceSensorParcelable(Parcel source) {
+    public GaugeDeviceSensorParcelable(Parcel source) {
       serialNumber = GaugeSerialNumber.Parse(source.ReadString());
       index = source.ReadInt();
     }

@@ -1,12 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Devices {
 
-using ION.Core.App;
-using ION.Core.Devices.Connections;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Threading.Tasks;
 
-namespace ION.Core.Devices {
+  using ION.Core.App;
+  using ION.Core.Devices.Connections;
+
+  public class DeviceManagerEvent {
+    public EType type { get; private set; }
+    /// <summary>
+    /// The device manager that caused the event.
+    /// </summary>
+    /// <value>The device manager.</value>
+    public IDeviceManager deviceManager { get; private set; }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <value>The device event.</value>
+    public DeviceEvent deviceEvent { get; set; }
+
+    public DeviceManagerEvent(EType type, IDeviceManager deviceManager) {
+      this.type = type;
+      this.deviceManager = deviceManager;
+      this.deviceEvent = deviceEvent;
+    }
+
+    public DeviceManagerEvent(IDeviceManager deviceManager, DeviceEvent deviceEvent) {
+      this.type = EType.DeviceEvent;
+      this.deviceManager = deviceManager;
+      this.deviceEvent = deviceEvent;
+    }
+
+    /// <summary>
+    /// The enumeration of the types of events that are thrown.
+    /// </summary>
+    public enum EType {
+      /// <summary>
+      /// The type of event indicating that the device manager started a scan.
+      /// </summary>
+      ScanStarted,
+      /// <summary>
+      /// The type of event indicating that the device manager stopped a scan.
+      /// </summary>
+      ScanStopped,
+      /// <summary>
+      /// The type of event indicating that the device manager recieved a device event.
+      /// </summary>
+      DeviceEvent,
+    }
+  }
 
   /// <summary>
   /// The delegate that is used to create devices. Note: this is an agnostic creation.
@@ -19,7 +63,7 @@ namespace ION.Core.Devices {
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
   /// <param name="deviceManager"></param>
-  public delegate void OnDeviceManagerStatesChanged(IDeviceManager deviceManager);
+  public delegate void OnDeviceManagerEvent(DeviceManagerEvent deviceManagerEvent);
 
   /// <summary>
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
@@ -27,14 +71,9 @@ namespace ION.Core.Devices {
   /// </summary>
   public interface IDeviceManager : IIONManager {
     /// <summary>
-    /// An event handler that will be notified when a device event is thrown.
+    /// An event handler that will be notified when a device manager or device event is thrown.
     /// </summary>
-    event OnDeviceEvent onDeviceEvent;
-    /// <summary>
-    /// An event handler that will be notified when the device manager's
-    /// state changes.
-    /// </summary>
-    event OnDeviceManagerStatesChanged onDeviceManagerStatesChanged;
+    event OnDeviceManagerEvent onDeviceManagerEvent;
 
     /// <summary>
     /// Used to query a specific device from the device manager.

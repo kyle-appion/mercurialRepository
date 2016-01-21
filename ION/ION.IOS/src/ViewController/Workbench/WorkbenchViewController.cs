@@ -25,7 +25,7 @@ namespace ION.IOS.ViewController.Workbench {
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.ScreenshotReport;
 
-	public partial class WorkbenchViewController : BaseIONViewController {
+  public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -40,11 +40,11 @@ namespace ION.IOS.ViewController.Workbench {
     /// The source that will provide Viewer views to the table view.
     /// </summary>
     /// <value>The source.</value>
-    private WorkbenchSource source { get; set; }
+    private WorkbenchTableSource source { get; set; }
 
-		public WorkbenchViewController (IntPtr handle) : base (handle) {
+    public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
-		}
+    }
 
     // Overridden from UIViewController
     public override void ViewDidLoad() {
@@ -71,8 +71,8 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.AllowsSelection = true;
 
-      source = new WorkbenchSource(this, workbench);
-      source.onRequestViewerDelegate = OnRequestViewer;
+      source = new WorkbenchTableSource(this, ion, workbench, tableContent);
+      source.onAddClicked = OnRequestViewer;
 
       tableContent.Source = source;
 
@@ -107,21 +107,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-      // TODO ahodder@appioninc.com: These events really should just update a single row
-      switch (workbenchEvent.type) {
-        case WorkbenchEvent.EType.Added:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-        case WorkbenchEvent.EType.Removed:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-        case WorkbenchEvent.EType.Invalidated:
-          tableContent.ReloadData();
-          await ion.SaveWorkbenchAsync();
-          break;
-      }
+      await ion.SaveWorkbenchAsync();
     }
 
     private void TakeScreenshot() {
@@ -137,5 +123,5 @@ namespace ION.IOS.ViewController.Workbench {
         Log.E(this, "Failed to create pdf", e);
       }
     }
-	}
+  }
 }

@@ -70,15 +70,21 @@
   <!--
   Viewer dimensions
   -->
+  <!-- The height of the battery icon. -->
+  <dimen name="viewer_battery_icon_height">24dp</dimen>
+  <!-- The width of the battery icon. -->
+  <dimen name="viewer_battery_icon_width">48dp</dimen>
   <!-- The width and hieght of the connection icon in the viewer's header. -->
   <dimen name="viewer_connection_icon_size">48dp</dimen>
   <!-- The width and height of the device icon in the viewer's content. -->
   <dimen name="viewer_device_icon_size">64dp</dimen>
-  <!-- The text size for the measurement view in the viewer's content. -->
-  <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The width and height of the alarm icon in the viewer's footer. -->
   <dimen name="viewer_alarm_icon_size">32dp</dimen>
+  <!-- The text size for the name view in the viewer' content. -->
+  <dimen name="viewer_name_text_size">30dp</dimen>
+  <!-- The text size for the measurement view in the viewer's content. -->
+  <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
-  <dimen name="viewer_unit_text_size">18sp</dimen>
+  <dimen name="viewer_text_size">24sp</dimen>
 </resources>
 

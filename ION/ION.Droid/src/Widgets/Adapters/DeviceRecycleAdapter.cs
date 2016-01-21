@@ -51,7 +51,7 @@
     private BitmapCache cache { get; set; }
 
     /// <summary>
-    /// The records that are contained within the adapter.s
+    /// The records that are contained within the adapter.
     /// </summary>
     private List<IRecord> records = new List<IRecord>();
 
@@ -296,289 +296,289 @@
       Available,
       Disconnected,
     }
-  }
 
-  interface IRecord {
-    DeviceRecycleAdapter.ViewType viewType { get; }
-  }
+    interface IRecord {
+      ViewType viewType { get; }
+    }
 
-  class CategoryRecord : IRecord {
-    // Overridden from IRecord
-    public DeviceRecycleAdapter.ViewType viewType {
-      get {
-        return DeviceRecycleAdapter.ViewType.Category;
+    class CategoryRecord : IRecord {
+      // Overridden from IRecord
+      public ViewType viewType {
+        get {
+          return ViewType.Category;
+        }
+      }        
+
+      public int counter { get; set; }
+      public string title { get; set; }
+      public Android.Graphics.Color color { get; set; }
+    }
+
+    class GaugeDeviceRecord : IRecord {
+      // Overridden from IRecord
+      public ViewType viewType {
+        get {
+          return ViewType.Device;
+        }
       }
-    }        
-    
-    public int counter { get; set; }
-    public string title { get; set; }
-    public Android.Graphics.Color color { get; set; }
-  }
 
-  class GaugeDeviceRecord : IRecord {
-    // Overridden from IRecord
-    public DeviceRecycleAdapter.ViewType viewType {
-      get {
-        return DeviceRecycleAdapter.ViewType.Device;
+      public GaugeDevice device { get; set; }
+      public bool expanded { get; set; }
+    }
+
+    class SensorRecord : IRecord {
+      // Overridden from IRecord
+      public ViewType viewType {
+        get {
+          return ViewType.Sensor;
+        }
+      }
+
+      public GaugeDeviceSensor sensor { get; set; }
+    }
+
+    abstract class DeviceViewHolder : RecyclerView.ViewHolder {
+
+      public DeviceViewHolder(View view) : base(view) {
+      }
+
+      public abstract void OnUnbind();
+    }
+
+    class CategoryViewHolder : DeviceViewHolder {
+
+      private CategoryRecord record { get; set; }
+
+      private DeviceRecycleAdapter adapter { get; set; }
+      private TextView counter { get; set; }
+      private TextView title { get; set; }
+
+      public CategoryViewHolder(DeviceRecycleAdapter adapter, View view) : base(view) {
+        this.adapter = adapter;
+        counter = view.FindViewById<TextView>(Resource.Id.counter);
+        title = view.FindViewById<TextView>(Resource.Id.title);
+      }
+
+      public void BindTo(CategoryRecord record) {
+        this.record = record;
+        Invalidate();
+      }
+
+      public void Invalidate() {
+        var res = ItemView.Context.Resources;
+
+        ItemView.SetBackgroundColor(record.color);
+
+        counter.Text = record.counter + "";
+        title.Text = record.title;
+      }
+
+      // Overridden from DeviceViewHolder
+      public override void OnUnbind() {
       }
     }
 
-    public GaugeDevice device { get; set; }
-    public bool expanded { get; set; }
-  }
-
-  class SensorRecord : IRecord {
-    // Overridden from IRecord
-    public DeviceRecycleAdapter.ViewType viewType {
-      get {
-        return DeviceRecycleAdapter.ViewType.Sensor;
-      }
-    }
-
-    public GaugeDeviceSensor sensor { get; set; }
-  }
-
-  abstract class DeviceViewHolder : RecyclerView.ViewHolder {
-
-    public DeviceViewHolder(View view) : base(view) {
-    }
-
-    public abstract void OnUnbind();
-  }
-
-  class CategoryViewHolder : DeviceViewHolder {
-    
-    private CategoryRecord record { get; set; }
-
-    private DeviceRecycleAdapter adapter { get; set; }
-    private TextView counter { get; set; }
-    private TextView title { get; set; }
-
-    public CategoryViewHolder(DeviceRecycleAdapter adapter, View view) : base(view) {
-      this.adapter = adapter;
-      counter = view.FindViewById<TextView>(Resource.Id.counter);
-      title = view.FindViewById<TextView>(Resource.Id.title);
-    }
-
-    public void BindTo(CategoryRecord record) {
-      this.record = record;
-      Invalidate();
-    }
-
-    public void Invalidate() {
-      var res = ItemView.Context.Resources;
-
-      ItemView.SetBackgroundColor(record.color);
-
-      counter.Text = record.counter + "";
-      title.Text = record.title;
-    }
-
-    // Overridden from DeviceViewHolder
-    public override void OnUnbind() {
-    }
-  }
-
-
-  /// <summary>
-  /// The view holder that will provide the view for a gauge device.
-  /// </summary>
-  class GaugeDeviceViewHolder : DeviceViewHolder {
-
-    public delegate void OnDeviceViewBackgoundClicked(int pos, GaugeDeviceRecord gr);
 
     /// <summary>
-    /// The cache that will hold bitmaps for resuse.
+    /// The view holder that will provide the view for a gauge device.
     /// </summary>
-    /// <value>The cache.</value>
-    private BitmapCache cache { get; set; }
-    /// <summary>
-    /// The device that the view holder will present
-    /// </summary>
-    /// <value>The device.</value>
-    private GaugeDeviceRecord record { get; set; }
+    class GaugeDeviceViewHolder : DeviceViewHolder {
 
-    private OnDeviceViewBackgoundClicked onBackgroundClicked { get; set; }
+      public delegate void OnDeviceViewBackgoundClicked(int pos, GaugeDeviceRecord gr);
 
-    private DeviceRecycleAdapter adapter { get; set; }
-    private ImageView icon { get; set; }
-    private TextView type { get; set; }
-    private TextView name { get; set; }
-    private ImageView arrow { get; set; }
-    private View connect { get; set; }
-    private ImageView status { get; set; }
-    private ProgressBar progress { get; set; }
+      /// <summary>
+      /// The cache that will hold bitmaps for resuse.
+      /// </summary>
+      /// <value>The cache.</value>
+      private BitmapCache cache { get; set; }
+      /// <summary>
+      /// The device that the view holder will present
+      /// </summary>
+      /// <value>The device.</value>
+      private GaugeDeviceRecord record { get; set; }
+
+      private OnDeviceViewBackgoundClicked onBackgroundClicked { get; set; }
+
+      private DeviceRecycleAdapter adapter { get; set; }
+      private ImageView icon { get; set; }
+      private TextView type { get; set; }
+      private TextView name { get; set; }
+      private ImageView arrow { get; set; }
+      private View connect { get; set; }
+      private ImageView status { get; set; }
+      private ProgressBar progress { get; set; }
 
 
-    public GaugeDeviceViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
-      this.adapter = adapter;
-      this.cache = cache;
+      public GaugeDeviceViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
+        this.adapter = adapter;
+        this.cache = cache;
 
-      view.SetOnClickListener(new ViewClickAction((v) => {
-        onBackgroundClicked(AdapterPosition, record);
-      }));
+        view.SetOnClickListener(new ViewClickAction((v) => {
+          onBackgroundClicked(AdapterPosition, record);
+        }));
 
-      icon = view.FindViewById<ImageView>(Resource.Id.icon);
-      type = view.FindViewById<TextView>(Resource.Id.type);
-      name = view.FindViewById<TextView>(Resource.Id.name);
-      arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
-      connect = view.FindViewById(Resource.Id.connect);
-      status = view.FindViewById<ImageView>(Resource.Id.status);
-      progress = view.FindViewById<ProgressBar>(Resource.Id.loading);
+        icon = view.FindViewById<ImageView>(Resource.Id.icon);
+        type = view.FindViewById<TextView>(Resource.Id.type);
+        name = view.FindViewById<TextView>(Resource.Id.name);
+        arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
+        connect = view.FindViewById(Resource.Id.connect);
+        status = view.FindViewById<ImageView>(Resource.Id.status);
+        progress = view.FindViewById<ProgressBar>(Resource.Id.loading);
 
-      connect.SetOnClickListener(new ViewClickAction((v) => {
+        connect.SetOnClickListener(new ViewClickAction((v) => {
+          var device = record.device;
+          switch (device.connection.connectionState) {
+            case EConnectionState.Disconnected:
+              device.connection.Connect();
+              break;
+            default:
+              device.connection.Disconnect();
+              break;
+          }
+        }));
+      }
+
+      /// <summary>
+      /// Binds the view holder to the given device.
+      /// </summary>
+      public void BindTo(GaugeDeviceRecord record, OnDeviceViewBackgoundClicked onBackgroundClicked) {
+        OnUnbind();
+        this.record = record;
+        this.record.device.onDeviceEvent += OnDeviceEvent;
+        this.onBackgroundClicked = onBackgroundClicked;
+        Invalidate();
+      }
+
+      /// <summary>
+      /// Updates the views that are in the view holder.
+      /// </summary>
+      public void Invalidate() {
         var device = record.device;
-        switch (device.connection.connectionState) {
-          case EConnectionState.Disconnected:
-            device.connection.Connect();
+
+        icon.SetImageBitmap(cache.GetBitmap(device.GetDeviceIcon()));
+        type.Text = device.GetDeviceProductName();
+        name.Text = device.name + "{Pv: " + device.protocol.version + "}";
+        if (record.expanded) {
+          arrow.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_downblack));
+        } else {
+          arrow.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_upblack));
+        }
+
+        var state = device.connection.connectionState;
+        status.Visibility = ViewStates.Visible;
+        switch (state) {
+          case EConnectionState.Connected:
+            progress.Visibility = ViewStates.Gone;
+            status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_paired));
             break;
-          default:
-            device.connection.Disconnect();
+          case EConnectionState.Broadcasting:
+            progress.Visibility = ViewStates.Gone;
+            status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
+            break;
+          case EConnectionState.Connecting:
+            goto case EConnectionState.Resolving;
+          case EConnectionState.Resolving:
+            progress.Visibility = ViewStates.Visible;
+            status.Visibility = ViewStates.Gone;
+            break;
+          case EConnectionState.Disconnected:
+            progress.Visibility = ViewStates.Gone;
+            status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_disconnected));
             break;
         }
-      }));
-    }
-
-    /// <summary>
-    /// Binds the view holder to the given device.
-    /// </summary>
-    public void BindTo(GaugeDeviceRecord record, OnDeviceViewBackgoundClicked onBackgroundClicked) {
-      OnUnbind();
-      this.record = record;
-      this.record.device.onDeviceEvent += OnDeviceEvent;
-      this.onBackgroundClicked = onBackgroundClicked;
-      Invalidate();
-    }
-
-    /// <summary>
-    /// Updates the views that are in the view holder.
-    /// </summary>
-    public void Invalidate() {
-      var device = record.device;
-
-      icon.SetImageBitmap(cache.GetBitmap(device.GetDeviceIcon()));
-      type.Text = device.GetDeviceProductName();
-      name.Text = device.name + "{Pv: " + device.protocol.version + "}";
-      if (record.expanded) {
-        arrow.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_downblack));
-      } else {
-        arrow.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_upblack));
       }
 
-      var state = device.connection.connectionState;
-      status.Visibility = ViewStates.Visible;
-      switch (state) {
-        case EConnectionState.Connected:
-          progress.Visibility = ViewStates.Gone;
-          status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_paired));
-          break;
-        case EConnectionState.Broadcasting:
-          progress.Visibility = ViewStates.Gone;
-          status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
-          break;
-        case EConnectionState.Connecting:
-          goto case EConnectionState.Resolving;
-        case EConnectionState.Resolving:
-          progress.Visibility = ViewStates.Visible;
-          status.Visibility = ViewStates.Gone;
-          break;
-        case EConnectionState.Disconnected:
-          progress.Visibility = ViewStates.Gone;
-          status.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_disconnected));
-          break;
+      // Overridden from DeviceViewHolder
+      public override void OnUnbind() {
+        if (record != null) {
+          record.device.onDeviceEvent -= OnDeviceEvent;
+        }
       }
-    }
 
-    // Overridden from DeviceViewHolder
-    public override void OnUnbind() {
-      if (record != null) {
-        record.device.onDeviceEvent -= OnDeviceEvent;
+      /// <summary>
+      /// Called when the view holder receives a new device event.
+      /// </summary>
+      /// <param name="deviceEvent">Device event.</param>
+      private void OnDeviceEvent(DeviceEvent deviceEvent) {
+        Invalidate();
       }
     }
 
     /// <summary>
-    /// Called when the view holder receives a new device event.
+    /// The view holder that will provide the view for a gauge sensor.
     /// </summary>
-    /// <param name="deviceEvent">Device event.</param>
-    private void OnDeviceEvent(DeviceEvent deviceEvent) {
-      Invalidate();
-    }
-  }
+    class SensorViewHolder : DeviceViewHolder {
 
-  /// <summary>
-  /// The view holder that will provide the view for a gauge sensor.
-  /// </summary>
-  class SensorViewHolder : DeviceViewHolder {
+      public delegate void OnSensorAddButtonClicked(int pos, SensorRecord sr);
 
-    public delegate void OnSensorAddButtonClicked(int pos, SensorRecord sr);
+      /// <summary>
+      /// The cache that will hold bitmaps for resuse.
+      /// </summary>
+      /// <value>The cache.</value>
+      private BitmapCache cache { get; set; }
+      /// <summary>
+      /// The sensor that will be displayed by the view holder.
+      /// </summary>
+      private SensorRecord record { get; set; }
 
-    /// <summary>
-    /// The cache that will hold bitmaps for resuse.
-    /// </summary>
-    /// <value>The cache.</value>
-    private BitmapCache cache { get; set; }
-    /// <summary>
-    /// The sensor that will be displayed by the view holder.
-    /// </summary>
-    private SensorRecord record { get; set; }
+      private OnSensorAddButtonClicked onClicked { get; set; }
 
-    private OnSensorAddButtonClicked onClicked { get; set; }
+      private DeviceRecycleAdapter adapter { get; set; }
+      private ImageView icon { get; set; }
+      private TextView type { get; set; }
+      private TextView measurement { get; set; }
+      private ImageButton add { get; set; }
 
-    private DeviceRecycleAdapter adapter { get; set; }
-    private ImageView icon { get; set; }
-    private TextView type { get; set; }
-    private TextView measurement { get; set; }
-    private ImageButton add { get; set; }
+      public SensorViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
+        this.adapter = adapter;
+        this.cache = cache;
 
-    public SensorViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
-      this.adapter = adapter;
-      this.cache = cache;
-
-      icon = view.FindViewById<ImageView>(Resource.Id.icon);
-      type = view.FindViewById<TextView>(Resource.Id.type);
-      measurement = view.FindViewById<TextView>(Resource.Id.measurement);
-      add = view.FindViewById<ImageButton>(Resource.Id.add);
-      add.SetOnClickListener(new ViewClickAction((v) => {
-        onClicked(AdapterPosition, record);
-      }));
-    }
-
-    /// <summary>
-    /// Binds the view holder to the given sensor.
-    /// </summary>
-    public void BindTo(SensorRecord record, OnSensorAddButtonClicked onClicked) {
-      OnUnbind();
-      this.record = record;
-      this.record.sensor.onSensorStateChangedEvent += OnSensorEvent;
-      this.onClicked = onClicked;
-      Invalidate();
-    }
-
-    /// <summary>
-    /// Updates the views that are in the view holder.
-    /// </summary>
-    public void Invalidate() {
-      var sensor = record.sensor;
-      type.Text = sensor.type.GetTypeString();
-      measurement.Text = sensor.ToFormattedString(true);
-    }
-
-    // Overridden from DeviceViewHolder
-    public override void OnUnbind() {
-      if (this.record != null) {
-        this.record.sensor.onSensorStateChangedEvent -= OnSensorEvent;
+        icon = view.FindViewById<ImageView>(Resource.Id.icon);
+        type = view.FindViewById<TextView>(Resource.Id.type);
+        measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+        add = view.FindViewById<ImageButton>(Resource.Id.add);
+        add.SetOnClickListener(new ViewClickAction((v) => {
+          onClicked(AdapterPosition, record);
+        }));
       }
-    }
 
-    /// <summary>
-    /// Called when the the sensor changes.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    private void OnSensorEvent(Sensor sensor) {
-      Log.D(this, "Sensor changed");
-//      adapter.NotifyItemChanged(AdapterPosition);
-      
-      Invalidate();
+      /// <summary>
+      /// Binds the view holder to the given sensor.
+      /// </summary>
+      public void BindTo(SensorRecord record, OnSensorAddButtonClicked onClicked) {
+        OnUnbind();
+        this.record = record;
+        this.record.sensor.onSensorStateChangedEvent += OnSensorEvent;
+        this.onClicked = onClicked;
+        Invalidate();
+      }
+
+      /// <summary>
+      /// Updates the views that are in the view holder.
+      /// </summary>
+      public void Invalidate() {
+        var sensor = record.sensor;
+        type.Text = sensor.type.GetTypeString();
+        measurement.Text = sensor.ToFormattedString(true);
+      }
+
+      // Overridden from DeviceViewHolder
+      public override void OnUnbind() {
+        if (this.record != null) {
+          this.record.sensor.onSensorStateChangedEvent -= OnSensorEvent;
+        }
+      }
+
+      /// <summary>
+      /// Called when the the sensor changes.
+      /// </summary>
+      /// <param name="sensor">Sensor.</param>
+      private void OnSensorEvent(Sensor sensor) {
+        Log.D(this, "Sensor changed");
+        //      adapter.NotifyItemChanged(AdapterPosition);
+
+        Invalidate();
+      }
     }
   }
 }
