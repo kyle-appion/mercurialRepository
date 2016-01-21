@@ -122,8 +122,8 @@ namespace ION.IOS.ViewController.Analyzer {
       ///weird padding added to first snaparea's low side table
       /// this sets the table cells to start directly under the low side area
       if (!UserInterfaceIdiomIsPhone) {
-        analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.55f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
-      }
+        analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.43f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
+      }         
     }
 
     /// <summary>
@@ -133,8 +133,9 @@ namespace ION.IOS.ViewController.Analyzer {
     void ShowPopup(sensor pressedArea, int popupType){
       if (pressedArea.availableView.Hidden) {        
         ///IF SENSOR IS ACTIVE SET THAT SENSOR'S INFO IN THE POPUP
-        pressedArea.sactionView.pdeviceName.Text = pressedArea.topLabel.Text;       
-        pressedArea.sactionView.pgaugeValue.Text = pressedArea.middleLabel.Text;
+        pressedArea.sactionView.pdeviceName.Text = pressedArea.topLabel.Text;
+        var amount = Convert.ToDecimal(pressedArea.middleLabel.Text);
+        pressedArea.sactionView.pgaugeValue.Text = amount.ToString("N");
         pressedArea.sactionView.pvalueType.Text = pressedArea.bottomLabel.Text;
 
         if (pressedArea.currentSensor != null && pressedArea.currentSensor.device.isConnected) {
@@ -275,7 +276,8 @@ namespace ION.IOS.ViewController.Analyzer {
       start.middleLabel.Hidden = false;
       start.bottomLabel.Hidden = false;
       start.topLabel.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier;
-      start.middleLabel.Text = mentryView.mtextValue.Text;
+      var amount = Convert.ToDecimal(mentryView.mtextValue.Text);
+      start.middleLabel.Text = amount.ToString("N");
       start.bottomLabel.Text = mentryView.mbuttonText.Text;
       start.pressedSensor.isManual = true;
       start.addIcon.Hidden = true;
@@ -283,7 +285,7 @@ namespace ION.IOS.ViewController.Analyzer {
       start.pressedSensor.lowArea.isManual = true;
 
       start.pressedSensor.lowArea.LabelTop.Text = mentryView.dtypeButton.AccessibilityIdentifier;
-      start.pressedSensor.lowArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+      start.pressedSensor.lowArea.LabelMiddle.Text = amount.ToString("N");
       start.pressedSensor.lowArea.LabelBottom.Text = mentryView.mbuttonText.Text;
       start.pressedSensor.lowArea.LabelSubview.Text = mentryView.dtypeButton.AccessibilityIdentifier + "'s Subviews";
       start.pressedSensor.lowArea.Connection.Hidden = true;
@@ -292,7 +294,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       start.pressedSensor.highArea.isManual = true;
       start.pressedSensor.highArea.LabelTop.Text = mentryView.dtypeButton.AccessibilityIdentifier;
-      start.pressedSensor.highArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+      start.pressedSensor.highArea.LabelMiddle.Text = amount.ToString("N");
       start.pressedSensor.highArea.LabelBottom.Text = mentryView.mbuttonText.Text;
       start.pressedSensor.highArea.LabelSubview.Text = mentryView.dtypeButton.AccessibilityIdentifier + "'s Subviews";
       start.pressedSensor.highArea.Connection.Hidden = true;
@@ -485,7 +487,8 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
         mentryView.textValidation.Hidden = false;
         return;
-      } 
+      }
+      var amount = Convert.ToDecimal(mentryView.mtextValue.Text);
       if (start.pressedView.AccessibilityIdentifier == "low") {
         for (int i = 0; i < 4; i++) {
           if (!analyzerSensors.viewList[i].availableView.Hidden) {
@@ -500,7 +503,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
             analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Blue;
             analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
-            analyzerSensors.viewList[i].middleLabel.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].middleLabel.Text = amount.ToString("N");
             analyzerSensors.viewList[i].middleLabel.Hidden = false;
             analyzerSensors.viewList[i].bottomLabel.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].bottomLabel.Hidden = false;
@@ -508,7 +511,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].isManual = true;
 
             analyzerSensors.viewList[i].lowArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
-            analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].lowArea.LabelMiddle.Text =  amount.ToString("N");
             analyzerSensors.viewList[i].lowArea.LabelBottom.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].lowArea.LabelSubview.Text = analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
             analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;          
@@ -516,7 +519,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
 
             analyzerSensors.viewList[i].highArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
-            analyzerSensors.viewList[i].highArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].highArea.LabelMiddle.Text =  amount.ToString("N");
             analyzerSensors.viewList[i].highArea.LabelBottom.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].highArea.LabelSubview.Text = analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
             analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;          
@@ -588,7 +591,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
             analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
             analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
-            analyzerSensors.viewList[i].middleLabel.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].middleLabel.Text =  amount.ToString("N");
             analyzerSensors.viewList[i].middleLabel.Hidden = false;
             analyzerSensors.viewList[i].bottomLabel.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].bottomLabel.Hidden = false;
@@ -596,7 +599,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].isManual = true;
 
             analyzerSensors.viewList[i].lowArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
-            analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].lowArea.LabelMiddle.Text =  amount.ToString("N");
             analyzerSensors.viewList[i].lowArea.LabelBottom.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].lowArea.LabelSubview.Text = analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
             analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;          
@@ -604,7 +607,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
 
             analyzerSensors.viewList[i].highArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
-            analyzerSensors.viewList[i].highArea.LabelMiddle.Text = mentryView.mtextValue.Text;
+            analyzerSensors.viewList[i].highArea.LabelMiddle.Text =  amount.ToString("N");
             analyzerSensors.viewList[i].highArea.LabelBottom.Text = mentryView.mbuttonText.Text;
             analyzerSensors.viewList[i].highArea.LabelSubview.Text = analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
             analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;          
@@ -804,6 +807,8 @@ namespace ION.IOS.ViewController.Analyzer {
         sensorActions.pressedSensor.sactionView.pdeviceName.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.lowArea.LabelTop.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.highArea.LabelTop.Text = textAlert.TextFields[0].Text;
+        sensorActions.pressedSensor.lowArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + "'s Subviews";
+        sensorActions.pressedSensor.highArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + "'s Subviews";
       }));
       this.View.Window.RootViewController.PresentViewController(textAlert, true, null);
     }
@@ -835,7 +840,7 @@ namespace ION.IOS.ViewController.Analyzer {
           area.snapArea.AddGestureRecognizer(area.panGesture);
           area.topLabel.Text = " " + sensor.device.name;
           area.topLabel.Hidden = false;
-          area.middleLabel.Text = sensor.measurement.amount.ToString() + " ";
+          area.middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
           area.middleLabel.Hidden = false;
           area.bottomLabel.Text = sensor.measurement.unit.ToString();
           area.bottomLabel.Hidden = false;
@@ -858,13 +863,13 @@ namespace ION.IOS.ViewController.Analyzer {
 
           area.highArea.LabelTop.Text = " " + sensor.device.name;
           area.lowArea.LabelTop.Text = " " + sensor.device.name;
-          area.lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString();
+          area.lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
           area.lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
           area.lowArea.LabelSubview.Text = " " + sensor.device.name + "'s Subviews";
           area.lowArea.DeviceImage.Image = area.deviceImage.Image;
 
           area.highArea.LabelTop.Text = " " + sensor.device.name;
-          area.highArea.LabelMiddle.Text = sensor.measurement.amount.ToString();
+          area.highArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
           area.highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
           area.highArea.LabelSubview.Text = " " + sensor.device.name + "'s Subviews";
           area.highArea.DeviceImage.Image = area.deviceImage.Image;
@@ -946,7 +951,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
               analyzerSensors.viewList[i].topLabel.Hidden = false;
               analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
-              analyzerSensors.viewList[i].middleLabel.Text = sensor.measurement.amount.ToString();
+              analyzerSensors.viewList[i].middleLabel.Text = sensor.measurement.amount.ToString("N");
               analyzerSensors.viewList[i].middleLabel.Hidden = false;
               analyzerSensors.viewList[i].bottomLabel.Text = sensor.measurement.unit.ToString();
               analyzerSensors.viewList[i].bottomLabel.Hidden = false;
@@ -957,7 +962,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzerSensors.viewList[i].lowArea.LabelTop.Text = " " + analyzerSensors.viewList[i].topLabel.Text;
               analyzerSensors.viewList[i].lowArea.LabelMiddle.Font = UIFont.FromName("Helvetica-Bold", 42f);
-              analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString();
+              analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
               analyzerSensors.viewList[i].lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
               analyzerSensors.viewList[i].lowArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";
@@ -965,7 +970,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzerSensors.viewList[i].highArea.LabelTop.Text = " " + analyzerSensors.viewList[i].topLabel.Text;
               analyzerSensors.viewList[i].highArea.LabelMiddle.Font = UIFont.FromName("Helvetica-Bold", 42f);
-              analyzerSensors.viewList[i].highArea.LabelMiddle.Text = sensor.measurement.amount.ToString();
+              analyzerSensors.viewList[i].highArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
               analyzerSensors.viewList[i].highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
               analyzerSensors.viewList[i].highArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";

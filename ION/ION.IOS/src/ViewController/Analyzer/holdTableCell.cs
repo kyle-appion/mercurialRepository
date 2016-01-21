@@ -30,10 +30,10 @@ namespace ION.IOS.ViewController.Analyzer {
 
       if (lhSensor.holdType != "hold") {
         Console.WriteLine("hold label wasn't empty");
-        cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType + " ";
+        cellReading.Text = lhSensor.holdValue.ToString("N") + " " + lhSensor.holdType + " ";
       } else {
         Console.WriteLine("hold label was empty");
-        cellReading.Text = lhSensor.holdValue.ToString("0.00");
+        cellReading.Text = lhSensor.holdValue.ToString("N");
       }
       Console.WriteLine("The hold type is " +lhSensor.holdType +" currently");
       cellReading.TextAlignment = UITextAlignment.Right;
@@ -54,7 +54,7 @@ namespace ION.IOS.ViewController.Analyzer {
         } else {
           lhSensor.holdValue = Convert.ToDouble(lhSensor.LabelMiddle.Text);
           lhSensor.holdType = lhSensor.LabelBottom.Text;
-          cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType + " ";
+          cellReading.Text = lhSensor.holdValue.ToString("N") + " " + lhSensor.holdType + " ";
         }
       };
 
