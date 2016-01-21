@@ -34,7 +34,7 @@
         elevation = ion.locationManager.lastKnownLocation.altitude;
       }
 
-      return new PTChart(state, fluid, elevation);
+      return new PTChart(ion, state, fluid);//, elevation);
     }
 
     /// <summary>
@@ -54,8 +54,12 @@
     /// <value>The elevation.</value>
     public Scalar elevation {
       get {
-        return __elevation;
+        return ion.locationManager.lastKnownLocation.altitude;
       }
+    }
+
+    private IION ion { get; set; }
+/*
       set {
         if (value == null) {
           value = Units.Length.METER.OfScalar(0);
@@ -63,15 +67,17 @@
         __elevation = value;
       }
     } Scalar __elevation;
+*/
 
 
-    private PTChart(Fluid.EState state, Fluid fluid, Scalar elevation) {
+    private PTChart(IION ion, Fluid.EState state, Fluid fluid) {//, Scalar elevation) {
       if (fluid == null) {
         throw new Exception("Cannot create a PTChart with a null fluid");
       }
+      this.ion = ion;
       this.state = state;
       this.fluid = fluid;
-      this.elevation = elevation;
+//      this.elevation = elevation;
     }
 
     /// <summary>
