@@ -5,13 +5,15 @@ This document provides a human readable way to store the devices that ION suppor
 
 ::SCEHEMA::
 GaugeDevice:
-  The element that defines a gauge device. A GaugeDevices is a device with one or more GaugeDeviceSensors.
+  The element that defines a gauge device. A GaugeDevices is a device with one or more
+  GaugeDeviceSensors.
 
   -> ELEMENTS:
     GaugeDeviceSensor (1 or more)
 
   -> ATTRIBUTES:
     deviceCode:
+      {string}
       {required}
       The two or three character device code that is used to identify the device.
 
@@ -22,10 +24,15 @@ GaugeDeviceSensor:
     type:
       {required}
       The type of sensor. Valid entries: length, mass, pressure, temperature, vacuum
+    removable:
+      {required}
+      Whether or not the sensor is removable from the device proper as a boolean string
+      {False, True}.  Defaults to false
     min:
       The minumum measurement of the sensor as a signed double.
     minUnit:
-      The unit that the minum measurement was in. See the unit strings section for a list of valid units.
+      The unit that the minum measurement was in. See the unit strings section for a
+      list of valid units.
 
 
 ::APPENDIX::
@@ -130,37 +137,22 @@ Unit Strings
       <SupportedUnit>kpa</SupportedUnit>
       <SupportedUnit>mpa</SupportedUnit>
     </GaugeDeviceSensor>
-    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+    <GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
       <SupportedUnit>fahrenheit</SupportedUnit>
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
-<!--
-  <GaugeDevice deviceCode="S8">
-    <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
-      <SupportedUnit>psig</SupportedUnit>
-      <SupportedUnit>kgcm</SupportedUnit>
-      <SupportedUnit>bar</SupportedUnit>
-      <SupportedUnit>kpa</SupportedUnit>
-      <SupportedUnit>mpa</SupportedUnit>
-    </GaugeDeviceSensor>
-    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
-      <SupportedUnit>fahrenheit</SupportedUnit>
-      <SupportedUnit>celsius</SupportedUnit>
-    </GaugeDeviceSensor>
-  </GaugeDevice>
--->
 
   <GaugeDevice deviceCode="T3">
-    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+    <GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
       <SupportedUnit>fahrenheit</SupportedUnit>
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
-    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+    <GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
       <SupportedUnit>fahrenheit</SupportedUnit>
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
-    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+    <GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
       <SupportedUnit>fahrenheit</SupportedUnit>
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>

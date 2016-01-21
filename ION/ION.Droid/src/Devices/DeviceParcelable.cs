@@ -4,6 +4,8 @@
 
   using Android.OS;
 
+  using Java.Interop;
+
   using ION.Core.App;
   using ION.Core.Devices;
 
@@ -13,6 +15,13 @@
   /// An android specific construct that will allow a device to traverse the Activity boundary.
   /// </summary>
   public class DeviceParcelable : GenericParcelable {
+    /// <summary>
+    /// The creator that will create the parcelable from a parcel source.
+    /// </summary>
+    [ExportField("CREATOR")]
+    public static IParcelableCreator GetCreator() {
+      return new GenericParcelableCreator<DeviceParcelable>();
+    }
 
     public ISerialNumber serialNumber { get; set; }
 

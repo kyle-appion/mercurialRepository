@@ -18,6 +18,17 @@ namespace ION.Core.Devices {
     /// </summary>
     /// <value>The index.</value>
     public int index { get; internal set; }
+    /// <summary>
+    /// Whether or not the gauge device sensor is removable from its host device.
+    /// </summary>
+    /// <value><c>true</c> if removable; otherwise, <c>false</c>.</value>
+    public bool removable { get; internal set; }
+    /// <summary>
+    /// Whether or not the gauge device sensor is removed. A removed GaugeDeviceSensor
+    /// will not have its measurement updated.
+    /// </summary>
+    /// <value><c>true</c> if removed; otherwise, <c>false</c>.</value>
+    public bool removed { get; internal set; }
 
     public GaugeDeviceSensor(GaugeDevice device, int index, ESensorType sensorType, bool relative = true)
       : base(sensorType, relative, false) {

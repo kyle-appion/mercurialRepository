@@ -16,9 +16,7 @@
   /// </summary>
   public class BaseDeviceManager : IDeviceManager {
     // Overridden from IDeviceManager
-    public event OnDeviceEvent onDeviceEvent;
-    // Overridden from IDeviceManager
-    public event OnDeviceManagerStatesChanged onDeviceManagerStatesChanged;
+    public event OnDeviceManagerEvent onDeviceManagerEvent;
 
     /// <summary>
     /// The embedded resource name that holds appion's list of devices.
@@ -263,21 +261,41 @@
     }
 
     /// <summary>
-    /// Notifies the OnNewDeviceEvent event handler that a new device event has occurred.
+    /// Posts a new DeviceManagerEvent to the onDeviceManagerEvent handler. This is posted to the main
+    /// thread.
     /// </summary>
     /// <param name="type">Type.</param>
-    /// <param name="serial">Serial.</param>
+    /// <param name="dtype">Dtype.</param>
+    /// <param name="device">Device.</param>
+    private void NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType type) {
+      if (onDeviceManagerEvent != null) {
+        ion.PostToMain(() => {
+          onDeviceManagerEvent(new DeviceManagerEvent(type, this));
+        });
+      }
+    }
+
+    /// <summary>
+    /// Posts a new DeviceManagerEvent of type DeviceEvent to the onDeviceManager handler. This is posted
+    /// to the main thread.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="device">Device.</param>
     private void NotifyOfDeviceEvent(DeviceEvent.EType type, IDevice device) {
       NotifyOfDeviceEvent(new DeviceEvent(type, device));
     }
 
     /// <summary>
-    /// Notifies the OnNewDeviceEvent event handler that a new device event has occurred.
+    /// Posts a new DeviceManagerEvent of type DeviceEvent to the onDeviceManager handler. This is posted
+    /// to the main thread.
     /// </summary>
-    /// <param name="deviceEvent">Device event.</param>
+    /// <param name="type">Type.</param>
+    /// <param name="device">Device.</param>
     private void NotifyOfDeviceEvent(DeviceEvent deviceEvent) {
-      if (onDeviceEvent != null) {
-        onDeviceEvent(deviceEvent);
+      if (onDeviceManagerEvent != null) {
+        ion.PostToMain(() => {
+          onDeviceManagerEvent(new DeviceManagerEvent(this, deviceEvent));
+        });
       }
     }
 
@@ -299,9 +317,7 @@
       }
       device.connection.lastSeen = DateTime.Now;
 
-      ion.PostToMain(() => {
-        NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);
-      });
+      NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);
     }
 
     /// <summary>
@@ -324,9 +340,7 @@
           break;
       }
 
-      ion.PostToMain(() => {
-        NotifyOfDeviceEvent(deviceEvent);
-      });
+      NotifyOfDeviceEvent(deviceEvent);
     }
 
     /// <summary>
@@ -334,11 +348,11 @@
     /// </summary>
     /// <param name="connectionHelper">Connection helper.</param>
     private void OnScanStateChanged(IConnectionHelper connectionHelper) {
-      ion.PostToMain(() => {
-        if (onDeviceManagerStatesChanged != null) {
-          onDeviceManagerStatesChanged(this);
-        }
-      });
+      if (connectionHelper.isScanning) {
+        NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStarted);
+      } else {
+        NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStopped);
+      }
     }
 
     /// <summary>

@@ -51,7 +51,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         __displayFilter = value;
 
         if (deviceSource != null) {
-          deviceSource.sensorFilter = __displayFilter;
+          deviceSource.SetSensorFilter(__displayFilter);
         }
       }
     } IFilter<Sensor> __displayFilter = new YesFilter<Sensor>();
@@ -65,7 +65,12 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The device source for our device table.
     /// </summary>
     /// <value>The device source.</value>
-    private DeviceSource deviceSource { get; set; }
+    private DeviceTableSource deviceSource { get; set; }
+    /// <summary>
+    /// Whether or not the view controller is allowing a refresh to be preformed.
+    /// </summary>
+    /// <value><c>true</c> if allow refresh; otherwise, <c>false</c>.</value>
+    private bool allowRefresh { get; set; }
 
 		public DeviceManagerViewController (IntPtr handle) : base (handle) {
       ion = AppState.context;
@@ -91,13 +96,12 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
       });
 
-      ion.deviceManager.onDeviceEvent += OnDeviceEvent;
-      ion.deviceManager.onDeviceManagerStatesChanged += HandleDeviceManagerStatesChanged;
+      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
-      HandleDeviceManagerStatesChanged(ion.deviceManager);
+      UpdateScanState();
 
-      tableContent.Source = deviceSource = new DeviceSource(ion, tableContent);
-      deviceSource.sensorFilter = displayFilter;
+      tableContent.Source = deviceSource = new DeviceTableSource(ion, this, tableContent);
+      deviceSource.SetSensorFilter(displayFilter);
       deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
         if (onSensorReturnDelegate != null) {
           onSensorReturnDelegate(sensor);
@@ -106,123 +110,59 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
         return false;
       };
-      deviceSource.onDeleteDevice = (IDevice device) => {
-        ion.deviceManager.DeleteDevice(device.serialNumber);
-        return true;
-      };
-      this.PostUpdate();
+
+//      deviceSource.onDeleteDevice = (IDevice device) => {
+//        ion.deviceManager.DeleteDevice(device.serialNumber);
+//        return true;
+//      };
+//      this.PostUpdate();
+    }
+
+    public override void ViewWillAppear(bool animated) {
+      base.ViewWillAppear(animated);
+      allowRefresh = true;
+      ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+//      PostUpdate();
+    }
+
+    public override void ViewWillDisappear(bool animated) {
+      base.ViewWillDisappear(animated);
+      allowRefresh = false;
+      ion.deviceManager.connectionHelper.Stop();
     }
 
     // Overridden from UIViewController
     public override void ViewDidUnload() {
       base.ViewDidUnload();
 
-      ion.deviceManager.onDeviceEvent -= OnDeviceEvent;
-      ion.deviceManager.onDeviceManagerStatesChanged -= HandleDeviceManagerStatesChanged;
+      ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
 
-      tableContent.Source = null;
+      deviceSource?.Release();
+      deviceSource = null;
     }
 
-    /// <summary>
-    /// Updates the source with new device content.
-    /// </summary>
-    private void UpdateSourceContent() {
-      var connected = new DeviceGroup(Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
-      var longRange = new DeviceGroup(Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE);
-      var newDevices = new DeviceGroup(Strings.Device.NEW_DEVICES.FromResources(), Colors.LIGHT_GRAY);
-      var available = new DeviceGroup(Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
-      var disconnected = new DeviceGroup(Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
-
-      var groups = new List<DeviceGroup>();
-      groups.AddRange(new DeviceGroup[] { connected, longRange, newDevices, available, disconnected });
-
-      foreach (IDevice device in ion.deviceManager.devices) {
-        if (device is GaugeDevice) {
-          var gauge = (GaugeDevice)device;
-          bool hasSensor = false;
-          foreach (var sensor in gauge.sensors) {
-            if (displayFilter.Matches(sensor)) {
-              hasSensor = true;
-              break;
-            }
-          }
-          if (!hasSensor) {
-            continue;
-          }
-        }
-
-        if (EConnectionState.Connected == device.connection.connectionState) {
-          connected.devices.Add(device);
-        } else if (EConnectionState.Broadcasting == device.connection.connectionState) {
-          longRange.devices.Add(device);
-        } else if (!ion.deviceManager.IsDeviceKnown(device) && device.isNearby) {
-          newDevices.devices.Add(device);
-        } else if (ion.deviceManager.IsDeviceKnown(device) && device.isNearby) {
-          available.devices.Add(device);
-        } else {
-          disconnected.devices.Add(device);
-        }
-      }
-
-      var content = new List<DeviceGroup>();
-
-      foreach (DeviceGroup group in groups) {
-        if (group.devices.Count > 0) {
-          content.Add(group);
-        }
-      }
-
-      if (content.Count > 0) {
-        deviceSource.SetContent(content);
-        tableContent.Hidden = false;
-        labelEmpty.Hidden = true;
-      } else {
-        tableContent.Hidden = true;
-        labelEmpty.Hidden = false;
-      }
-    }
 
     /// <summary>
     /// A bouncing call that will keep posting itself to the message pump to update the view controller.
     /// </summary>
     private void PostUpdate() {
       if (IsViewLoaded) {
-        UpdateSourceContent();
-//        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
+        deviceSource.RefreshContent();
+        ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
       }
     }
 
-    /// <summary>
-    /// Called when a device event propagates from the backend device manager.
-    /// </summary>
-    /// <param name="deviceEvent">Device event.</param>
-    private async void OnDeviceEvent(DeviceEvent deviceEvent) {
-      var device = deviceEvent.device;
-
-      // TODO ahodder@appioninc.com: Ideally this would only update the affected rows.
-      // But, as of now, I can't get ios to update a single row without breaking the view.
-      switch (deviceEvent.type) {
-        case DeviceEvent.EType.Found:
-          UpdateSourceContent();
-          break;
-        case DeviceEvent.EType.ConnectionChange:
-          UpdateSourceContent();
-          if (device.isConnected) {
-            deviceSource.ExpandDevice(device);
-          }
-          break;
-        case DeviceEvent.EType.Deleted:
-          UpdateSourceContent();
-          break;
-      }
-    }
 
     /// <summary>
     /// The callback used by the device manager when its state changes.
     /// </summary>
     /// <param name="dm">Dm.</param>
-    private void HandleDeviceManagerStatesChanged(IDeviceManager dm) {
-      if (dm.connectionHelper.isScanning) {
+    private void OnDeviceManagerEvent(DeviceManagerEvent e) {
+      UpdateScanState();
+    }
+
+    private void UpdateScanState() {
+      if (ion.deviceManager.connectionHelper.isScanning) {
         NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
       } else {
         NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();

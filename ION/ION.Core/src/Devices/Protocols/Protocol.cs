@@ -40,6 +40,12 @@ namespace ION.Core.Devices.Protocols {
     int version { get; }
 
     /// <summary>
+    /// The value that indicates that a sensor is not attached to a device.
+    /// </summary>
+    /// <value>The removed gauge value.</value>
+    int removedGaugeValue { get; }
+
+    /// <summary>
     /// Queries whether or not the protocol supports broadcasting.
     /// </summary>
     /// <value><c>true</c> if supports broadcasting; otherwise, <c>false</c>.</value>
@@ -125,17 +131,17 @@ namespace ION.Core.Devices.Protocols {
   /// </summary>
   public struct GaugeReading {
     /// <summary>
+    /// Whether or not the gauge is removed.
+    /// </summary>
+    /// <value><c>true</c> if removed; otherwise, <c>false</c>.</value>
+    public bool removed { get; set; }
+    /// <summary>
     /// Queries the sensor type of the sensor whose reading is represented.
     /// </summary>
-    public ESensorType sensorType { get; private set; }
+    public ESensorType sensorType { get; set; }
     /// <summary>
     /// Queries the reading of the represented sensor.
     /// </summary>
-    public Scalar reading { get; private set; }
-
-    public GaugeReading(ESensorType sensorType, Scalar reading) : this() {
-      this.sensorType = sensorType;
-      this.reading = reading;
-    }
+    public Scalar reading { get; set; }
   }
 }

@@ -70,42 +70,55 @@ namespace ION.Core.Devices.Connections {
         if (isScanning) {
           return false;
         }
-
-        cancellationToken = new CancellationTokenSource();
-        var token = cancellationToken.Token;
-
-        scanTask = Task.Factory.StartNew(async () => {
-          try {
-            token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-            Log.D(this, "Start scan for " + scanTime.TotalMilliseconds + "ms");
-
-            StartScan();
-            await Task.Delay(scanTime);
-            token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-            StopScan();
-            Log.D(this, "Stopping scan");
-
-            if (options != null) {
-              while (options.repeatCount == ScanRepeatOptions.REPEAT_FOREVER || --options.repeatCount > 0) {
-                token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-                Log.D(this, "Continuing scan");
-                await Task.Delay(options.restInterval);
-                token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-                StartScan();
-                await Task.Delay(scanTime);
-                token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-                StopScan();
-              }
-            }
-          } catch (Exception e) {
-            Log.E(this, "Something broke during scanning", e);
-          } finally {
-            Log.D(this, "Stopping scan");
-            Stop();
-          }
-        }, cancellationToken.Token);
-        return true;
       }
+
+      cancellationToken = new CancellationTokenSource();
+      var token = cancellationToken.Token;
+
+      scanTask = Task.Factory.StartNew(async () => {
+        try {
+          token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
+          Log.D(this, "Start scan for " + scanTime.TotalMilliseconds + "ms");
+
+          StartScan();
+
+          var timer = DateTime.Now;
+          while (DateTime.Now - timer < scanTime) {
+            token.ThrowIfCancellationRequested();
+            await Task.Delay(100);
+          }
+          token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
+          StopScan();
+          Log.D(this, "Stopping scan");
+
+          if (options != null) {
+            while (options.repeatCount == ScanRepeatOptions.REPEAT_FOREVER || --options.repeatCount > 0) {
+              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
+              Log.D(this, "Continuing scan");
+              timer = DateTime.Now;
+              while (DateTime.Now - timer < options.restInterval) {
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(100);
+              }
+              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
+              StartScan();
+              timer = DateTime.Now;
+              while (DateTime.Now - timer < scanTime) {
+                token.ThrowIfCancellationRequested();
+                await Task.Delay(100);
+              }
+              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
+              StopScan();
+            }
+          }
+        } catch (Exception e) {
+          Log.E(this, "Something broke during scanning", e);
+        } finally {
+          Log.D(this, "Stopping scan");
+          Stop();
+        }
+      }, cancellationToken.Token);
+      return true;
     }
 
     // Overridden from IScanMode

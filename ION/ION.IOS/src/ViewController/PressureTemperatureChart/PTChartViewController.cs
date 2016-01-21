@@ -23,6 +23,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.FluidManager;
   public delegate void onUnitChanged (Unit changedUnit);
+
+  /// <summary>
+  /// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION.
+  /// </summary>
   public partial class PTChartViewController : BaseIONViewController {
     public event onUnitChanged pUnitChanged;
     public event onUnitChanged tUnitChanged;
@@ -441,7 +445,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         imagePressureIcon.Hidden = false;
         imagePressureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imagePressureLock.Hidden = pressureSensorLocked;
+        imagePressureLock.Hidden = !pressureSensorLocked;
         imagePressureIcon.Hidden = temperatureSensor is GaugeDeviceSensor;
         imagePressureIcon.Image = UIImage.FromBundle("ic_device_add");
       }
@@ -490,7 +494,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         imageTemperatureIcon.Hidden = false;
         imageTemperatureIcon.Image = gds.device.serialNumber.deviceModel.GetUIImageFromDeviceModel();
       } else {
-        imageTemperatureLock.Hidden = temperatureSensorLocked;
+        imageTemperatureLock.Hidden = !temperatureSensorLocked;
         imageTemperatureIcon.Hidden = pressureSensor is GaugeDeviceSensor;
         imageTemperatureIcon.Image = UIImage.FromBundle("ic_device_add");
       }

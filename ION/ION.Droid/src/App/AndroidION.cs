@@ -155,6 +155,8 @@
         }
       }
 
+      currentWorkbench = new Workbench(this);
+
       return true;
     }
 

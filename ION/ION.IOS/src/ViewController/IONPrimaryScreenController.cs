@@ -49,27 +49,28 @@ namespace ION.IOS.ViewController {
 
       // Create the navigation drawer
       navigation = new FlyoutNavigationController();
-      navigation.View.Frame = UIScreen.MainScreen.Bounds;
-//      navigation.NavigationController.View.BackgroundColor = new UIColor(Colors.BLACK);
+      var r = UIScreen.MainScreen.Bounds;
+      r.Y += 20;
+      navigation.View.Frame = r;
       View.AddSubview(navigation.View);
+      navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.BLACK);
 
       navigation.NavigationRoot = new RootElement("BS Navigation Menu") {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
-//          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
-          new ImageStringElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
-          new ImageStringElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
+          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
+          new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
-          new ImageStringElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
-          new ImageStringElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
+          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
+          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
-          new ImageStringElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_download")),
-          new ImageStringElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
+          new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_download")),
+          new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
-          new ImageStringElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
-          new ImageStringElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
+          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
+          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         },
       };
       navigation.ViewControllers = BuildViewControllers();
@@ -108,8 +109,6 @@ namespace ION.IOS.ViewController {
     /// Opens up a file manager that will allow the perusal of downloaded calibration certificates.
     /// </summary>
     private void OnCalibrationCertificateClicked() {
-      var failures = new List<ISerialNumber>();
-
       try {
         var vc = InflateViewController<FileBrowserViewController>(BaseIONViewController.VC_FILE_MANAGER);
         vc.title = Strings.Report.CALIBRATION_CERTIFICATES;
@@ -118,6 +117,8 @@ namespace ION.IOS.ViewController {
         var button = new UIButton(new CoreGraphics.CGRect(0, 0, 31, 30));
         button.SetImage(image, UIControlState.Normal);
         button.TouchUpInside += (object sender, EventArgs e) => {
+          var failures = new List<ISerialNumber>();
+
           var source = new CancellationTokenSource();
           var task = DoTheThings(source, failures, () => {
             vc.Refresh();
@@ -295,6 +296,64 @@ namespace ION.IOS.ViewController {
       }
 
       controller.DismissModalViewController(true);
+    }
+  }
+
+  internal class IONElement : ImageStringElement {
+    /// <summary>
+    /// Gets the cell key.
+    /// </summary>
+    /// <value>The cell key.</value>
+    protected override NSString CellKey {
+      get {
+        return new NSString("IONElement");
+      }
+    }
+
+    private string title { get; set; }
+    private UIImage image { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ION.IOS.ViewController.IONElement"/> class.
+    /// </summary>
+    /// <param name="title">Title.</param>
+    /// <param name="image">Image.</param>
+    public IONElement(string title, UIImage image) : base(title, image) {
+      this.title = title;
+      this.image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ION.IOS.ViewController.IONElement"/> class.
+    /// </summary>
+    /// <param name="title">Title.</param>
+    /// <param name="action">Action.</param>
+    /// <param name="image">Image.</param>
+    public IONElement(string title, Action action, UIImage image) : base(title, action, image) {
+      this.title = title;
+      this.image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+    }
+
+
+    /// <Docs>The containing table view.</Docs>
+    /// <returns></returns>
+    /// <summary>
+    /// Gets the cell.
+    /// </summary>
+    /// <param name="tv">Tv.</param>
+    public override UITableViewCell GetCell(UITableView tv) {
+      var ret = IONNavigationCell.Create();
+
+      ret.UpdateTo(title, image);
+
+      return ret;
+    }
+
+    private void PrintViewHeirarchy(UIView view, int depth = 0) {
+      Log.D(this, new string(' ', depth * 2) + view);
+      foreach (var v in view.Subviews) {
+        PrintViewHeirarchy(v, depth + 1);
+      }
     }
   }
 }

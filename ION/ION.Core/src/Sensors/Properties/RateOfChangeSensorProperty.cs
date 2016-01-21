@@ -21,9 +21,7 @@ namespace ION.Core.Sensors.Properties {
         tracker.Add(sensor.measurement);
         var roc = tracker.rateOfChange;
 
-        ION.Core.Util.Log.D(this, "(" + roc.change + " / " + roc.rate.TotalMilliseconds + ") * " + (TimeSpan.FromMinutes(1) - roc.rate).Milliseconds);
-//        var ret = (roc.change / roc.rate.Milliseconds) * (TimeSpan.FromMinutes(1) - roc.rate).Milliseconds;
-        var ret = (roc.change / roc.rate.TotalMilliseconds) * (TimeSpan.FromMinutes(1) - roc.rate).TotalMilliseconds;
+        var ret = sensor.unit.OfScalar(roc.change.amount * 60000 / roc.rate.TotalMilliseconds);
 
         if (ret.Abs().amount <= 0.001) {
           ret = tracker.baseUnit.OfScalar(0);
