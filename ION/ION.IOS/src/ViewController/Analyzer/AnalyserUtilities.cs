@@ -228,6 +228,8 @@ namespace ION.IOS.ViewController.Analyzer
       lowArea.LabelSubview.Text = "";
       lowArea.LabelSubview.TextColor = UIColor.White;
       lowArea.LabelSubview.ClipsToBounds = true;
+      //lowArea.LabelSubview.Layer.BorderColor = UIColor.Black.CGColor;
+      //lowArea.LabelSubview.Layer.BorderWidth = 1f;
 
       lowArea.subviewTable.BackgroundColor = UIColor.Clear;
       lowArea.subviewTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -291,6 +293,8 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.LabelSubview.Text = "";
       highArea.LabelSubview.TextColor = UIColor.White;
       highArea.LabelSubview.ClipsToBounds = true;
+      //highArea.LabelSubview.Layer.BorderColor = UIColor.Black.CGColor;
+     // highArea.LabelSubview.Layer.BorderWidth = 1f;
 
       highArea.subviewTable.BackgroundColor = UIColor.Clear;
       highArea.subviewTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -352,7 +356,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 			lowHighSensors.lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.lowArea.LabelMiddle.Text = "Low Viewer Not Defined";
-			lowHighSensors.lowArea.LabelMiddle.TextAlignment = UITextAlignment.Center;
+			lowHighSensors.lowArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
 
 			lowHighSensors.lowArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.lowArea.LabelBottom.Text = "";
@@ -416,7 +420,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 			lowHighSensors.highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.highArea.LabelMiddle.Text = "High Viewer Not Defined";
-			lowHighSensors.highArea.LabelMiddle.TextAlignment = UITextAlignment.Center;
+			lowHighSensors.highArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
 
 			lowHighSensors.highArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.highArea.LabelBottom.Text = "";
@@ -708,53 +712,75 @@ namespace ION.IOS.ViewController.Analyzer
 		/// </summary>
 		/// <param name="touchPoint">LOCATION OF SUBVIEW WHEN FINGER WAS REMOVED</param>
 		/// <param name="position">WHICH SUBVIEW WAS MOVING</param>
-		public static void sensorSwap(sensorGroup analyzerSensors, int position, CGPoint touchPoint, UIView View){
+		public static void sensorSwap(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View){
 			int start = analyzerSensors.areaList.IndexOf(position);
-			int swap;
-
+			int swap = 0;
+      bool removeLH = false;
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[0];
 				analyzerSensors.areaList [0] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start > 3) {
+          removeLH = true;
+          swap = 0;
+        }
 			} else if (analyzerSensors.snapRect2.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[1];
 				analyzerSensors.areaList [1] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start > 3) {
+          removeLH = true;
+          swap = 1;
+        }
 			} else if (analyzerSensors.snapRect3.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[2];
 				analyzerSensors.areaList [2] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start > 3) {
+          removeLH = true;
+          swap = 2;
+        }
 			} else if (analyzerSensors.snapRect4.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[3];
 				analyzerSensors.areaList [3] = position;
 				analyzerSensors.areaList [start] = swap;
-
-
+        if (start > 3) {
+          removeLH = true;
+          swap = 3;
+        }
 			} else if (analyzerSensors.snapRect5.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[4];
 				analyzerSensors.areaList [4] = position;
 				analyzerSensors.areaList [start] = swap;
-
-
+        if (start < 4) {
+          removeLH = true;
+          swap = 4;
+        }
 			} else if (analyzerSensors.snapRect6.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[5];
 				analyzerSensors.areaList [5] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start < 4) {
+          removeLH = true;
+          swap = 5;
+        }
 			} else if (analyzerSensors.snapRect7.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[6];
 				analyzerSensors.areaList [6] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start < 4) {
+          removeLH = true;
+          swap = 6;
+        }
 			} else if (analyzerSensors.snapRect8.Contains (touchPoint)) {
 				swap = analyzerSensors.areaList[7];
 				analyzerSensors.areaList [7] = position;
 				analyzerSensors.areaList [start] = swap;
-
+        if (start < 4) {
+          removeLH = true;
+          swap = 7;
+        }
 			}
 
 			////MOVE SENSORS BASED ON THEIR LOCATION
@@ -856,6 +882,228 @@ namespace ION.IOS.ViewController.Analyzer
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
 				}
 			}
+      if (removeLH) {
+        if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
+            lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+          Console.WriteLine("Low area had swapping sensor and High area had moving sensor");
+          Console.WriteLine("Low area was in position " + start.ToString());
+          Console.WriteLine("High area was in position " + swap.ToString());
+          analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
+          analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
+          lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
+          View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.snapArea);
+          if (!analyzerSensors.viewList[start].isManual) {
+            if(analyzerSensors.viewList[start].currentSensor.device.isConnected){
+              analyzerSensors.viewList[start].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[start].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[start].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].highArea.connectionColor.BackgroundColor = UIColor.Green;
+              analyzerSensors.viewList[start].lowArea.connectionColor.BackgroundColor = UIColor.Green;
+              View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.Connection);
+            } else {
+              analyzerSensors.viewList[start].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[start].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[start].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].highArea.connectionColor.BackgroundColor = UIColor.Red;
+              analyzerSensors.viewList[start].lowArea.connectionColor.BackgroundColor = UIColor.Red;
+              View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.Connection);
+            }
+          }
+          analyzerSensors.viewList[start].lowArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[start].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[start].highArea.snapArea.Hidden = false;
+          analyzerSensors.viewList[start].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Blue;
+          analyzerSensors.viewList[swap].tLabelBottom.BackgroundColor = UIColor.Blue;
+
+          if (!analyzerSensors.viewList[swap].isManual) {
+            if(analyzerSensors.viewList[swap].currentSensor.device.isConnected){
+              analyzerSensors.viewList[swap].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[swap].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[swap].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].highArea.connectionColor.BackgroundColor = UIColor.Green;
+              analyzerSensors.viewList[swap].lowArea.connectionColor.BackgroundColor = UIColor.Green;
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.Connection);
+            } else {
+              analyzerSensors.viewList[swap].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[swap].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[swap].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].highArea.connectionColor.BackgroundColor = UIColor.Red;
+              analyzerSensors.viewList[swap].lowArea.connectionColor.BackgroundColor = UIColor.Red;
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.Connection);
+            }
+          }
+          lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
+          View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.snapArea);
+          analyzerSensors.viewList[swap].lowArea.snapArea.Hidden = false;
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].highArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[swap].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+        } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
+                   lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+          Console.WriteLine("High area had swap sensor and Low area had moving sensor");
+          Console.WriteLine("High area was in position " + start.ToString());
+          Console.WriteLine("Low area was in position " + swap.ToString());
+          analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
+          analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
+
+          if (!analyzerSensors.viewList[start].isManual) {
+            if(analyzerSensors.viewList[start].currentSensor.device.isConnected){
+              analyzerSensors.viewList[start].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[start].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[start].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].highArea.connectionColor.BackgroundColor = UIColor.Green;
+              analyzerSensors.viewList[start].lowArea.connectionColor.BackgroundColor = UIColor.Green;
+              View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.Connection);
+            } else {
+              analyzerSensors.viewList[start].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[start].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[start].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[start].highArea.connectionColor.BackgroundColor = UIColor.Red;
+              analyzerSensors.viewList[start].lowArea.connectionColor.BackgroundColor = UIColor.Red;
+              View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.Connection);
+            }
+          }
+          lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
+          View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.snapArea);
+          analyzerSensors.viewList[start].lowArea.snapArea.Hidden = false;
+          analyzerSensors.viewList[start].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[start].highArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[start].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Red;
+          analyzerSensors.viewList[swap].tLabelBottom.BackgroundColor = UIColor.Red;
+
+          if (!analyzerSensors.viewList[swap].isManual) {
+            if(analyzerSensors.viewList[swap].currentSensor.device.isConnected){
+              analyzerSensors.viewList[swap].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[swap].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+              analyzerSensors.viewList[swap].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].highArea.connectionColor.BackgroundColor = UIColor.Green;
+              analyzerSensors.viewList[swap].lowArea.connectionColor.BackgroundColor = UIColor.Green;
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.Connection);
+            } else {
+              analyzerSensors.viewList[swap].highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[swap].highArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+              analyzerSensors.viewList[swap].lowArea.Connection.Hidden = false;
+              analyzerSensors.viewList[swap].highArea.connectionColor.BackgroundColor = UIColor.Red;
+              analyzerSensors.viewList[swap].lowArea.connectionColor.BackgroundColor = UIColor.Red;
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.Connection);
+              View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.Connection);
+            }
+          }
+          lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
+          View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.snapArea);
+          analyzerSensors.viewList[swap].lowArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].highArea.snapArea.Hidden = false;
+          analyzerSensors.viewList[swap].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+        } else {
+          analyzerSensors.viewList[start].lowArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[start].highArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Clear;
+          analyzerSensors.viewList[start].topLabel.TextColor = UIColor.Black;
+          analyzerSensors.viewList[start].tLabelBottom.Hidden = true;
+
+          if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
+            lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+          }
+          if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
+            lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+          }
+
+          analyzerSensors.viewList[start].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[start].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[start].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[start].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[start].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[start].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].lowArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[swap].highArea.snapArea.Hidden = true;
+          analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Clear;
+          analyzerSensors.viewList[swap].topLabel.TextColor = UIColor.Black;
+          analyzerSensors.viewList[swap].tLabelBottom.Hidden = true;
+
+          if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+            lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+          }
+          if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+            lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+          }
+
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].lowArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].lowArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+
+          analyzerSensors.viewList[swap].highArea.subviewTable.Source = null;
+          analyzerSensors.viewList[swap].highArea.tableSubviews = new List<string>();
+          analyzerSensors.viewList[swap].highArea.subviewTable.ReloadData();
+          analyzerSensors.viewList[swap].highArea.subviewTable.Hidden = true;
+          analyzerSensors.viewList[swap].highArea.subviewHide.SetImage(null, UIControlState.Normal);
+        }
+      }
 		}
 		/// <summary>
 		/// TRIGGERS AN ALERT TO ASK IF THE USER WANTS TO REPLACE THE CURRENT LOW OR HIGH AREA INFORMATION WITH ANOTHER SENSOR'S DATA
@@ -875,7 +1123,6 @@ namespace ION.IOS.ViewController.Analyzer
       while (vc.PresentedViewController != null) {
         vc = vc.PresentedViewController;
       }
-      bool goOn;
 
       if (Sensor.isManual.Equals(true) || removeSensor.isManual.Equals(true)) {
         if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(true)) {         
@@ -976,9 +1223,7 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
         }));
-        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {
-
-        }));
+        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
 
         vc.PresentViewController(addDeviceSheet, true, null);
       } else {
@@ -1000,13 +1245,11 @@ namespace ION.IOS.ViewController.Analyzer
               Sensor.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
               Sensor.highArea.connectionColor.BackgroundColor = UIColor.Green;
               Sensor.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
-
             } else {
               Sensor.lowArea.connectionColor.BackgroundColor = UIColor.Red;
               Sensor.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
               Sensor.highArea.connectionColor.BackgroundColor = UIColor.Red;
               Sensor.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
-
             }
           }
           if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature) {
@@ -1022,224 +1265,21 @@ namespace ION.IOS.ViewController.Analyzer
             removeSensor.highArea.manifold = new Manifold(Sensor.currentSensor);
             removeSensor.highArea.manifold.secondarySensor = removeSensor.currentSensor as Sensor;
             removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
+
           } else {
-          if (type == 1) {         
-              replaceLowUnattached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);
-
-//              goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "low", View);
-//              if (goOn) {
-//                removeSensor.topLabel.BackgroundColor = UIColor.Clear;
-//                removeSensor.topLabel.TextColor = UIColor.Black;
-//                removeSensor.tLabelBottom.Hidden = true;
-//
-//                removeSensor.lowArea.snapArea.Hidden = true;
-//                removeSensor.lowArea.tableSubviews = new List<string>();
-//                removeSensor.lowArea.subviewTable.Source = null;
-//                removeSensor.lowArea.subviewTable.ReloadData();
-//                removeSensor.lowArea.subviewTable.Hidden = true;
-//                removeSensor.lowArea.max = 0;
-//                removeSensor.lowArea.min = 0;
-//                removeSensor.lowArea.isManual = false;
-//                removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                removeSensor.highArea.snapArea.Hidden = true;
-//                removeSensor.highArea.tableSubviews = new List<string>();
-//                removeSensor.highArea.subviewTable.Source = null;
-//                removeSensor.highArea.subviewTable.ReloadData();
-//                removeSensor.highArea.subviewTable.Hidden = true;
-//                removeSensor.highArea.max = 0;
-//                removeSensor.highArea.min = 0;
-//                removeSensor.highArea.isManual = false;
-//                removeSensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                Sensor.topLabel.BackgroundColor = UIColor.Blue;
-//                Sensor.topLabel.TextColor = UIColor.White;
-//                Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
-//                Sensor.tLabelBottom.Hidden = false;
-//                Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.lowArea.tableSubviews = new List<string>();
-//                Sensor.lowArea.subviewTable.Source = null;
-//                Sensor.lowArea.subviewTable.ReloadData();
-//                Sensor.lowArea.max = 0;
-//                Sensor.lowArea.min = 0;
-//                Sensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.highArea.tableSubviews = new List<string>();
-//                Sensor.highArea.subviewTable.Source = null;
-//                Sensor.highArea.subviewTable.ReloadData();
-//                Sensor.highArea.max = 0;
-//                Sensor.highArea.min = 0;
-//                View.BringSubviewToFront(Sensor.lowArea.snapArea);
-//                Sensor.lowArea.snapArea.Hidden = false;
-//                Sensor.highArea.snapArea.Hidden = true;
-//                lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
-//                Console.WriteLine("Occupied Low side given unattached sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-//                Console.WriteLine("The high side is currently identified with sensor " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
-//              }             
-            }
-           else if (type == 2) {
-              replaceHighUnattached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);
-
-//              goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "high", View);
-//              if (goOn) {
-//                removeSensor.topLabel.BackgroundColor = UIColor.Clear;
-//                removeSensor.topLabel.TextColor = UIColor.Black;
-//                removeSensor.tLabelBottom.Hidden = true;
-//
-//                removeSensor.lowArea.snapArea.Hidden = true;
-//                removeSensor.lowArea.tableSubviews = new List<string>();
-//                removeSensor.lowArea.subviewTable.Source = null;
-//                removeSensor.lowArea.subviewTable.ReloadData();
-//                removeSensor.lowArea.subviewTable.Hidden = true;
-//                removeSensor.lowArea.max = 0;
-//                removeSensor.lowArea.min = 0;
-//                removeSensor.lowArea.isManual = false;
-//                removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                removeSensor.highArea.snapArea.Hidden = true;
-//                removeSensor.highArea.tableSubviews = new List<string>();
-//                removeSensor.highArea.subviewTable.Source = null;
-//                removeSensor.highArea.subviewTable.ReloadData();
-//                removeSensor.highArea.subviewTable.Hidden = true;
-//                removeSensor.highArea.max = 0;
-//                removeSensor.highArea.min = 0;
-//                removeSensor.highArea.isManual = false;
-//                removeSensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                Sensor.topLabel.BackgroundColor = UIColor.Red;
-//                Sensor.topLabel.TextColor = UIColor.White;
-//                Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
-//                Sensor.tLabelBottom.Hidden = false;
-//                Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.lowArea.tableSubviews = new List<string>();
-//                Sensor.lowArea.subviewTable.Source = null;
-//                Sensor.lowArea.subviewTable.ReloadData();
-//                Sensor.lowArea.max = 0;
-//                Sensor.lowArea.min = 0;
-//                Sensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.highArea.tableSubviews = new List<string>();
-//                Sensor.highArea.subviewTable.Source = null;
-//                Sensor.highArea.subviewTable.ReloadData();
-//                Sensor.highArea.max = 0;
-//                Sensor.highArea.min = 0;
-//                View.BringSubviewToFront(Sensor.highArea.snapArea);
-//                Sensor.highArea.snapArea.Hidden = false;
-//                Sensor.lowArea.snapArea.Hidden = true;
-//                lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
-//                Console.WriteLine("Occupied High side given unattached sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
-//                Console.WriteLine("The low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-//              }            
-          } else if (type == 3) {
-              replaceLowAttached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);
-//              goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "low", View);
-//              if (goOn) {
-//                removeSensor.topLabel.BackgroundColor = UIColor.Clear;
-//                removeSensor.topLabel.TextColor = UIColor.Black;
-//                removeSensor.tLabelBottom.Hidden = true;
-//
-//                removeSensor.lowArea.snapArea.Hidden = true;
-//                removeSensor.lowArea.tableSubviews = new List<string>();
-//                removeSensor.lowArea.subviewTable.Source = null;
-//                removeSensor.lowArea.subviewTable.ReloadData();
-//                removeSensor.lowArea.subviewTable.Hidden = true;
-//                removeSensor.lowArea.max = 0;
-//                removeSensor.lowArea.min = 0;
-//                removeSensor.lowArea.isManual = false;
-//                removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                removeSensor.highArea.snapArea.Hidden = true;
-//                removeSensor.highArea.tableSubviews = new List<string>();
-//                removeSensor.highArea.subviewTable.Source = null;
-//                removeSensor.highArea.subviewTable.ReloadData();
-//                removeSensor.highArea.subviewTable.Hidden = true;
-//                removeSensor.highArea.max = 0;
-//                removeSensor.highArea.min = 0;
-//                removeSensor.highArea.isManual = false;
-//                removeSensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                Sensor.topLabel.BackgroundColor = UIColor.Blue;
-//                Sensor.topLabel.TextColor = UIColor.White;
-//                Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
-//                Sensor.tLabelBottom.Hidden = false;
-//                Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.lowArea.tableSubviews = new List<string>();
-//                Sensor.lowArea.subviewTable.Source = null;
-//                Sensor.lowArea.subviewTable.ReloadData();
-//                Sensor.lowArea.max = 0;
-//                Sensor.lowArea.min = 0;
-//                Sensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.highArea.tableSubviews = new List<string>();
-//                Sensor.highArea.subviewTable.Source = null;
-//                Sensor.highArea.subviewTable.ReloadData();
-//                Sensor.highArea.max = 0;
-//                Sensor.highArea.min = 0;
-//                View.BringSubviewToFront(Sensor.lowArea.snapArea);
-//                Sensor.lowArea.snapArea.Hidden = false;
-//                Sensor.highArea.snapArea.Hidden = true;
-//                lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
-//                lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-//                Console.WriteLine("Occupied Low side given High side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-//                Console.WriteLine("The high side is currently identified with sensor " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
-//              }            
-          } else if (type == 4) {
-              replaceHighAttached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);
-
-//              goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "high", View);
-//              if (goOn) {
-//                removeSensor.topLabel.BackgroundColor = UIColor.Clear;
-//                removeSensor.topLabel.TextColor = UIColor.Black;
-//                removeSensor.tLabelBottom.Hidden = true;
-//
-//                removeSensor.lowArea.snapArea.Hidden = true;
-//                removeSensor.lowArea.tableSubviews = new List<string>();
-//                removeSensor.lowArea.subviewTable.Source = null;
-//                removeSensor.lowArea.subviewTable.ReloadData();
-//                removeSensor.lowArea.subviewTable.Hidden = true;
-//                removeSensor.lowArea.max = 0;
-//                removeSensor.lowArea.min = 0;
-//                removeSensor.lowArea.isManual = false;
-//                removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                removeSensor.highArea.snapArea.Hidden = true;
-//                removeSensor.highArea.tableSubviews = new List<string>();
-//                removeSensor.highArea.subviewTable.Source = null;
-//                removeSensor.highArea.subviewTable.ReloadData();
-//                removeSensor.highArea.subviewTable.Hidden = true;
-//                removeSensor.highArea.max = 0;
-//                removeSensor.highArea.min = 0;
-//                removeSensor.highArea.isManual = false;
-//                removeSensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//
-//                Sensor.topLabel.BackgroundColor = UIColor.Red;
-//                Sensor.topLabel.TextColor = UIColor.White;
-//                Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
-//                Sensor.tLabelBottom.Hidden = false;
-//                Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.lowArea.tableSubviews = new List<string>();
-//                Sensor.lowArea.subviewTable.Source = null;
-//                Sensor.lowArea.subviewTable.ReloadData();
-//                Sensor.lowArea.max = 0;
-//                Sensor.lowArea.min = 0;
-//                Sensor.highArea.subviewHide.SetImage(null, UIControlState.Normal);
-//                Sensor.highArea.tableSubviews = new List<string>();
-//                Sensor.highArea.subviewTable.Source = null;
-//                Sensor.highArea.subviewTable.ReloadData();
-//                Sensor.highArea.max = 0;
-//                Sensor.highArea.min = 0;
-//                View.BringSubviewToFront(Sensor.highArea.snapArea);
-//                Sensor.highArea.snapArea.Hidden = false;
-//                Sensor.lowArea.snapArea.Hidden = true;
-//                lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
-//                lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
-//                Console.WriteLine("Occupied High side given Low side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
-//                Console.WriteLine("The Low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-//              }
+            if (type == 1) {         
+                replaceLowUnattached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);            
+            } else if (type == 2) {
+                replaceHighUnattached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);           
+            } else if (type == 3) {
+                replaceLowAttached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);           
+            } else if (type == 4) {
+                replaceHighAttached(Sensor,removeSensor,lowHighSensors,analyzerSensors,View);
             }
           }
         }));
 
-        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {
-
-        }));
+        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
 
         vc.PresentViewController(addDeviceSheet, true, null);
       }
@@ -1253,7 +1293,6 @@ namespace ION.IOS.ViewController.Analyzer
   /// <param name="analyzerSensors">Collection of single sensor information</param>
   /// <param name="View">View.</param>
   /// HOW THE ALERT IS BEING REPLACED 1 = OCCUPIED LOW SIDE GIVEN UNATTACHED SENSOR 2 = OCCUPIED HIGH SIDE GIVEN UNATTACHED SENSOR 3 = MOVING HIGH SENSOR TO LOW SIDE 4 = MOVING LOW SENSOR TO HIGH SIDE</param>
-
     public static void updateLowHighArea(CGPoint touchPoint, sensor Sensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors,UIView View){
       var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController;
@@ -1425,7 +1464,6 @@ namespace ION.IOS.ViewController.Analyzer
               replaceAlert(message, 4, Sensor, analyzerSensors.snapArea8, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "high") {
               Console.WriteLine("High side wasn't empty but wasn't attached to a 1 - 8 sensor");
-              //replaceAlert(message, 4, Sensor, analyzerSensors.snapArea1, lowHighSensors, analyzerSensors, View);
               var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"high",View);
               if (goOn) {
                 lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;

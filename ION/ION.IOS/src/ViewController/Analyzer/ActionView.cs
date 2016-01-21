@@ -20,7 +20,7 @@ namespace ION.IOS.ViewController.Analyzer {
       conDisButton = new UIButton(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       conDisButton.Layer.CornerRadius = 8;
-      pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .196 * aView.Bounds.Width, .282 * aView.Bounds.Height));
+      pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .214 * aView.Bounds.Width, .214 * aView.Bounds.Width));
       pbatteryImage = new UIImageView(new CGRect(.614 * aView.Bounds.Width, .071 * aView.Bounds.Height, .203 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pdeviceName = new UILabel(new CGRect(.028 * aView.Bounds.Width, .035 * aView.Bounds.Height, .435 * aView.Bounds.Width, .107 *aView.Bounds.Height));
       pgaugeValue = new UILabel(new CGRect(.292 * aView.Bounds.Width, .184 * aView.Bounds.Height, .678 * aView.Bounds.Width, .348 * aView.Bounds.Height));

@@ -37,6 +37,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.altReading;
+      cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.TextAlignment = UITextAlignment.Right;
 
       cellButton.BackgroundColor = UIColor.Clear;
@@ -44,23 +45,28 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderWidth = 1f;
 
       if (lhSensor.isManual) {
-        if (lhSensor.manualGType == "Pressure") {
+
+        if (lhSensor.manifold.primarySensor.type == ESensorType.Pressure) {
           manSensor = new Sensor(ESensorType.Pressure);
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Pressure, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
-        } else if (lhSensor.manualGType == "Temperature") {
+        } else if (lhSensor.manifold.primarySensor.type == ESensorType.Temperature) {
           manSensor = new Sensor(ESensorType.Temperature);
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Temperature, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
-        } else if (lhSensor.manualGType == "Vacuum"){
+        } else if (lhSensor.manifold.primarySensor.type == ESensorType.Vacuum){
           manSensor = new Sensor(ESensorType.Vacuum);
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Vacuum, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         }
-        lhSensor.alt.unit = manSensor.unit;
+        if (lhSensor.altUnit != null) {
+          lhSensor.alt.unit = lhSensor.altUnit;
+        } else {
+          lhSensor.alt.unit = manSensor.unit;
+        }
         cellReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
       } else {
         

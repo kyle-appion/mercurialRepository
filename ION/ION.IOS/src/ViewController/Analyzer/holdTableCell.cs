@@ -7,7 +7,6 @@ namespace ION.IOS.ViewController.Analyzer {
   public partial class holdTableCell : UITableViewCell {
     UILabel cellHeader;
     UILabel cellReading;
-    UILabel holdLabel = new UILabel();
     UIButton cellButton;
   
     public holdTableCell(IntPtr handle) {
@@ -29,9 +28,14 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.TextAlignment = UITextAlignment.Center;
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
-      if (!holdLabel.Equals("")) {
-        cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType  + " ";
+      if (lhSensor.holdType != "hold") {
+        Console.WriteLine("hold label wasn't empty");
+        cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType + " ";
+      } else {
+        Console.WriteLine("hold label was empty");
+        cellReading.Text = lhSensor.holdValue.ToString("0.00");
       }
+      Console.WriteLine("The hold type is " +lhSensor.holdType +" currently");
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
       cellReading.AdjustsFontSizeToFitWidth = true;
@@ -42,16 +46,15 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;
       cellButton.Layer.BorderWidth = 1f;
 
-      holdLabel = lhSensor.holdReading;
-
       cellButton.TouchUpInside += delegate {
         if(lhSensor.isManual){
+          lhSensor.holdValue = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+          lhSensor.holdType = lhSensor.LabelBottom.Text;
           cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
         } else {
           lhSensor.holdValue = Convert.ToDouble(lhSensor.LabelMiddle.Text);
           lhSensor.holdType = lhSensor.LabelBottom.Text;
-          holdLabel.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType;
-          cellReading.Text = holdLabel.Text + " ";
+          cellReading.Text = lhSensor.holdValue.ToString("0.00") + " " + lhSensor.holdType + " ";
         }
       };
 

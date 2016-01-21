@@ -30,7 +30,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable = new UITableView (tblRect);
       //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,150,25)
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
-      LabelMiddle = new UILabel (new CGRect(0, .217 * areaRect.Height, areaRect.Width, .347 * areaRect.Height));
+      LabelMiddle = new UILabel (new CGRect(.2 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
       LabelSubview = new UILabel (new CGRect(-1, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .213 * snapArea.Bounds.Width, .204 * areaRect.Height));
@@ -39,6 +39,7 @@ namespace ION.IOS.ViewController.Analyzer
       connectionColor = new UIView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       connectionColor.BackgroundColor = UIColor.Red;
       Connection = new UIImageView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height,  .14 * areaRect.Width,.217 * areaRect.Height));
+      Connection.BackgroundColor = UIColor.Clear;
       conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.321 * areaRect.Height));
@@ -79,6 +80,7 @@ namespace ION.IOS.ViewController.Analyzer
       pUnit = Units.Pressure.PSIG;
       maxType = "hold";
       minType = "hold";
+      holdType = "hold";
       isManual = false;
 
       conDisButton.TouchUpInside += delegate {
@@ -102,12 +104,7 @@ namespace ION.IOS.ViewController.Analyzer
           }
         }
       };
-//      changeFluid.TouchUpInside += delegate {
-//        Console.WriteLine("clicked the scsh button for sensor " + snapArea.AccessibilityIdentifier);
-//      };
-//      changePTFluid.TouchUpInside += delegate {
-//        Console.WriteLine("clicked the pt button for sensor " + snapArea.AccessibilityIdentifier);
-//      };
+
       changeFluid.TouchUpInside += openSHSC;
       changePTFluid.TouchUpInside += openPTC;
 		}
