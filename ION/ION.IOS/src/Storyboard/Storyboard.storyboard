@@ -1379,10 +1379,10 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jb6-KP-2Ne" userLabel="viewBackground">
-                                                    <rect key="frame" x="0.0" y="0.0" width="568" height="48"/>
+                                                    <rect key="frame" x="48" y="0.0" width="520" height="48"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sensor Type" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ku1-1X-29X" userLabel="labelType">
-                                                            <rect key="frame" x="0.0" y="0.0" width="512" height="24"/>
+                                                            <rect key="frame" x="8" y="0.0" width="456" height="24"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="24" id="vIi-03-Yrg"/>
                                                                 <constraint firstAttribute="height" constant="24" id="zNi-jo-33W"/>
@@ -1397,7 +1397,7 @@
                                                             </variation>
                                                         </label>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UrR-MI-cjD" userLabel="buttonAdd">
-                                                            <rect key="frame" x="520" y="0.0" width="48" height="48"/>
+                                                            <rect key="frame" x="472" y="0.0" width="48" height="48"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="48" id="S9B-al-IF3"/>
                                                                 <constraint firstAttribute="height" constant="48" id="dti-2u-FA2"/>
@@ -1408,7 +1408,7 @@
                                                             </state>
                                                         </button>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-760,000 micron" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pos-hz-Eaf" userLabel="labelMeasurement">
-                                                            <rect key="frame" x="0.0" y="24" width="512" height="24"/>
+                                                            <rect key="frame" x="8" y="24" width="456" height="24"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="24" id="Z3F-rd-aa5"/>
                                                                 <constraint firstAttribute="height" constant="24" id="quh-dj-dw0"/>
@@ -1421,11 +1421,11 @@
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
                                                         <constraint firstItem="UrR-MI-cjD" firstAttribute="top" secondItem="Jb6-KP-2Ne" secondAttribute="top" id="4Vd-dd-Dg8"/>
-                                                        <constraint firstItem="Ku1-1X-29X" firstAttribute="leading" secondItem="Jb6-KP-2Ne" secondAttribute="leading" id="79O-tL-38f"/>
+                                                        <constraint firstItem="Ku1-1X-29X" firstAttribute="leading" secondItem="Jb6-KP-2Ne" secondAttribute="leading" constant="8" id="79O-tL-38f"/>
                                                         <constraint firstItem="Ku1-1X-29X" firstAttribute="top" secondItem="Jb6-KP-2Ne" secondAttribute="top" id="8p0-vP-weZ"/>
                                                         <constraint firstAttribute="trailing" secondItem="UrR-MI-cjD" secondAttribute="trailing" id="MS9-Zi-46H"/>
                                                         <constraint firstItem="UrR-MI-cjD" firstAttribute="leading" secondItem="Ku1-1X-29X" secondAttribute="trailing" constant="8" id="ZrI-7q-2qM"/>
-                                                        <constraint firstItem="Pos-hz-Eaf" firstAttribute="leading" secondItem="Jb6-KP-2Ne" secondAttribute="leading" id="maq-gk-kQa"/>
+                                                        <constraint firstItem="Pos-hz-Eaf" firstAttribute="leading" secondItem="Jb6-KP-2Ne" secondAttribute="leading" constant="8" id="maq-gk-kQa"/>
                                                         <constraint firstItem="UrR-MI-cjD" firstAttribute="leading" secondItem="Pos-hz-Eaf" secondAttribute="trailing" constant="8" id="rdG-cc-lcm"/>
                                                         <constraint firstItem="Pos-hz-Eaf" firstAttribute="top" secondItem="Ku1-1X-29X" secondAttribute="bottom" id="uWa-6F-5pg"/>
                                                     </constraints>
@@ -1435,7 +1435,7 @@
                                             <constraints>
                                                 <constraint firstAttribute="bottomMargin" secondItem="Jb6-KP-2Ne" secondAttribute="bottom" constant="-8" id="bG8-CM-YRg"/>
                                                 <constraint firstItem="Jb6-KP-2Ne" firstAttribute="top" secondItem="mho-CH-a6S" secondAttribute="topMargin" constant="-8" id="lvf-zl-eeL"/>
-                                                <constraint firstItem="Jb6-KP-2Ne" firstAttribute="leading" secondItem="mho-CH-a6S" secondAttribute="leadingMargin" constant="-8" id="qR4-qL-AIG"/>
+                                                <constraint firstItem="Jb6-KP-2Ne" firstAttribute="leading" secondItem="mho-CH-a6S" secondAttribute="leadingMargin" constant="40" id="qR4-qL-AIG"/>
                                                 <constraint firstAttribute="trailingMargin" secondItem="Jb6-KP-2Ne" secondAttribute="trailing" constant="-8" id="yo3-PU-Jh5"/>
                                             </constraints>
                                         </tableViewCellContentView>

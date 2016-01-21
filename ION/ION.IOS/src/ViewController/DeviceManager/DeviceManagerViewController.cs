@@ -119,12 +119,14 @@ namespace ION.IOS.ViewController.DeviceManager {
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
       allowRefresh = true;
+      ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
 //      PostUpdate();
     }
 
     public override void ViewWillDisappear(bool animated) {
       base.ViewWillDisappear(animated);
       allowRefresh = false;
+      ion.deviceManager.connectionHelper.Stop();
     }
 
     // Overridden from UIViewController
