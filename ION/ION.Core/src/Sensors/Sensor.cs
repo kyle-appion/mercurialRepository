@@ -147,9 +147,9 @@ namespace ION.Core.Sensors {
       }
       // VACUUM PRESSURE
       else if (Units.Vacuum.MICRON.Equals(unit)) {
-        ret = amount.ToString("0");
+        ret = amount.ToString("###,##0");
       } else if (Units.Vacuum.MILLITORR.Equals(unit)) {
-        ret = amount.ToString("0");
+        ret = amount.ToString("###,##0");
       }
       // DEFAULT
       else {

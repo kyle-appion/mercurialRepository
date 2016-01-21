@@ -348,12 +348,5 @@ namespace ION.IOS.ViewController {
 
       return ret;
     }
-
-    private void PrintViewHeirarchy(UIView view, int depth = 0) {
-      Log.D(this, new string(' ', depth * 2) + view);
-      foreach (var v in view.Subviews) {
-        PrintViewHeirarchy(v, depth + 1);
-      }
-    }
   }
 }

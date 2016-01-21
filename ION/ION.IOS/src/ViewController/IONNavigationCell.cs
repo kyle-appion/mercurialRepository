@@ -29,6 +29,7 @@
     }
 
     public void UpdateTo(string title, UIImage icon) {
+      this.BackgroundColor = UIColor.Clear;
       labelTitle.Text = title;
       imageIcon.Image = icon;
       imageIcon.TintColor = new UIColor(Colors.LIGHT_GRAY);

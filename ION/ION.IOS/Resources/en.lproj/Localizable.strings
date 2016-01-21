@@ -104,6 +104,7 @@ file.
 "help_version" = "App Version";
 
 /* MEASURE */
+"measure_per_minute" = "/min";
 "measure_pick_unit" = "Pick Unit";
 
 /* NAVIGATION DRAWER */

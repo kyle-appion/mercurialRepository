@@ -65,14 +65,13 @@ namespace ION.IOS.ViewController.Workbench {
     private async void DoUpdateCell() {
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
       var meas = sp.modifiedMeasurement;
-      ION.Core.Util.Log.D(this, "Meas: " + meas);
       var abs = meas.Abs();
       var range = (sp.sensor.maxMeasurement - sp.sensor.minMeasurement) / 10;
 
       if (abs > range) {
-        labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range, true);
+        labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + Strings.Measure.PER_MINUTE;
       } else {
-        labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, abs, true);
+        labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, abs) + Strings.Measure.PER_MINUTE;
       }
 
       if (sp.isStable) {

@@ -142,6 +142,7 @@ namespace ION.IOS.Util {
 
     public static class Measure {
       public static readonly string
+      PER_MINUTE = "measure_per_minute".FromResources(),
       PICK_UNIT = "measure_pick_unit".FromResources()
       ;
     } // End Strings.Measure
