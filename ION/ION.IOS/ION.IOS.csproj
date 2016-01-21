@@ -217,6 +217,7 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

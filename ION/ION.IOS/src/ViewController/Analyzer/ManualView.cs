@@ -21,11 +21,15 @@ namespace ION.IOS.ViewController.Analyzer {
            replacementString.Contains("8") || replacementString.Contains("9") || replacementString.Contains(".") || replacementString.Contains("-") || 
            replacementString.Length.Equals(0)){
 
-          if((replacementString.Contains(".") && textField.Text.Contains(".")) || replacementString.Contains(".") && textField.Text.Length.Equals(0)){
+          if(replacementString.Contains(".") && textField.Text.Contains(".")){
             return false;
           }
           if((replacementString.Contains("-") && textField.Text.Contains("-")) || replacementString.Contains("-") && textField.Text.Length > 0){
             return false;
+          }
+          if(replacementString.Contains(".") && textField.Text.Length.Equals(0)){
+            textField.Text = "0";
+            return true;
           }
           return true;
         }
