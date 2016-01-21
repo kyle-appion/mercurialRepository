@@ -179,11 +179,11 @@ namespace ION.IOS.ViewController.Analyzer
 
       get { return __manifold;}
       set { if (__manifold != null) {
-          __manifold.onManifoldChanged -= manifoldUpdating;
+          __manifold.onManifoldEvent -= manifoldUpdating;
         }
         __manifold = value;
         if (__manifold != null) {
-          __manifold.onManifoldChanged += manifoldUpdating;
+          __manifold.onManifoldEvent += manifoldUpdating;
         }
       }
     } Manifold __manifold;
@@ -195,9 +195,9 @@ namespace ION.IOS.ViewController.Analyzer
       var range = (roc.sensor.maxMeasurement - roc.sensor.minMeasurement) / 10;
 
       if (abs > range) {
-        rocReading.Text = ">" + SensorUtils.ToFormattedString(roc.sensor.type, range, true);
+        rocReading.Text = ">" + SensorUtils.ToFormattedString(roc.sensor.type, range, false) + "/min";
       } else {
-        rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, abs, true);
+        rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, abs, false) + "/min";
       }
 
       if (roc.isStable) {
@@ -231,9 +231,9 @@ namespace ION.IOS.ViewController.Analyzer
         Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       }
 
-      LabelMiddle.Text = " " + sensor.measurement.amount.ToString();
+      LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
       LabelBottom.Text = sensor.measurement.unit.ToString() + "  ";
-      LabelSubview.Text = LabelTop.Text + "'s Subviews";
+      LabelSubview.Text = " " + LabelTop.Text + "'s Subviews";
 
       foreach (string subview in tableSubviews) {
         
@@ -244,7 +244,7 @@ namespace ION.IOS.ViewController.Analyzer
             maxType = currentSensor.unit.ToString();
           }
 
-          maxReading.Text = max.ToString("0.00") + " " + maxType;
+          maxReading.Text = max.ToString("N") + " " + maxType;
         } 
         if (subview.Equals("Minimum")) {
           if (Convert.ToDouble(LabelMiddle.Text) < min) {
@@ -252,7 +252,7 @@ namespace ION.IOS.ViewController.Analyzer
             minType = currentSensor.unit.ToString();
           }
           
-          minReading.Text = min.ToString("0.00") + " " + minType;
+          minReading.Text = min.ToString("N") + " " + minType;
         } 
         if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text + " ";
@@ -266,7 +266,7 @@ namespace ION.IOS.ViewController.Analyzer
           alt = new AlternateUnitSensorProperty(sensor);
 
           alt.unit = tempUnit;
-
+          var amount = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);
           altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
         if (subview.Equals("Rate")) {
@@ -282,20 +282,21 @@ namespace ION.IOS.ViewController.Analyzer
     /// Manifold Event to update Superheat/Subcool and PT 
     /// </summary>
     /// <param name="manifold">Manifold.</param>
-    public void manifoldUpdating(Manifold manifold){
+    public void manifoldUpdating(ManifoldEvent Event){
+      var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
-          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null){
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
-          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         }
       }
 
@@ -304,20 +305,20 @@ namespace ION.IOS.ViewController.Analyzer
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
         var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
-        ptReading.Text = ptcalc.amount.ToString("0.00") + " " + ptcalc.unit;
+        ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
         var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
-        ptReading.Text = ptcalc.amount.ToString("0.00") + " " + ptcalc.unit;
+        ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
 
       if (manifold.ptChart != null) {
         if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
-          shFluidState.Text = "S/C";
-        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
           shFluidState.Text = "S/H";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          shFluidState.Text = "S/C";
         }
       }
     }
@@ -349,12 +350,10 @@ namespace ION.IOS.ViewController.Analyzer
 
     public void pUnitUpdating(Unit unit){
       pUnit = unit;
-      Console.WriteLine("Changed pressure unit to " + pUnit.ToString());
     }
 
     public void tUnitUpdating(Unit unit){
       tUnit = unit;
-      Console.WriteLine("Changed temperature unit to " + tUnit.ToString());
     }
 	}
 }

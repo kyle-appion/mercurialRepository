@@ -330,7 +330,10 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.snapArea.BringSubviewToFront(highArea.subviewDivider);
 
       mainView.AddSubview (highArea.snapArea);
-      mainView.AddSubview (highArea.subviewTable);   
+      mainView.AddSubview (highArea.subviewTable);
+
+      lowArea.subviewTable.ContentInset = new UIEdgeInsets(0, 0, 20, 0);
+      highArea.subviewTable.ContentInset = new UIEdgeInsets(0, 0, 20, 0);
     }
 		/// <summary>
 		/// Sets up the Low and High Side sensor ui elements
@@ -885,9 +888,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeLH) {
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("Low area had swapping sensor and High area had moving sensor");
-          Console.WriteLine("Low area was in position " + start.ToString());
-          Console.WriteLine("High area was in position " + swap.ToString());
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
@@ -969,9 +969,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("High area had swap sensor and Low area had moving sensor");
-          Console.WriteLine("High area was in position " + start.ToString());
-          Console.WriteLine("Low area was in position " + swap.ToString());
+
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
 

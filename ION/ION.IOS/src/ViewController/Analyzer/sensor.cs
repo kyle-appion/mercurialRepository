@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Analyzer
     public bool isManual = false;
 
     public void gaugeUpdating(Sensor sensor){
-      middleLabel.Text = sensor.measurement.amount.ToString() + " ";
+      middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
       bottomLabel.Text = sensor.measurement.unit.ToString();
     }
   }

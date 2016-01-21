@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.Analyzer {
       //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
-      cellHeader.Text = "S/C";
+      cellHeader.Text = "S/H";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
@@ -53,10 +53,10 @@ namespace ION.IOS.ViewController.Analyzer {
       if (lhSensor.manifold.secondarySensor != null) {
         if(lhSensor.manifold.primarySensor.type == ESensorType.Pressure){
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.measurement, false);
-          tempReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          tempReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         } else {
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, false);
-          tempReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          tempReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         }
       } else {
         tempReading.Text = "Setup";

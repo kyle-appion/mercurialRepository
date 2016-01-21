@@ -122,7 +122,7 @@ namespace ION.IOS.ViewController.Analyzer {
         pconnectionStatus.Hidden = false;
       }
 
-      pgaugeValue.Text = sensor.measurement.amount.ToString();
+      pgaugeValue.Text = sensor.measurement.amount.ToString("N");
       pvalueType.Text = sensor.measurement.unit.ToString();
     }
   }

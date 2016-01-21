@@ -29,14 +29,15 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellReading = lhSensor.minReading;
       if (lhSensor.minType.Equals("hold")) {
-        Console.WriteLine("Min not set yet so starting with gauge reading");
         lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.minType = lhSensor.LabelBottom.Text;
       }
+
       if (lhSensor.isManual) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text + " ";
+        var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
+        cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text + " ";
       } else {        
-        cellReading.Text = lhSensor.min.ToString("0.00")+ " " + lhSensor.minType + " ";
+        cellReading.Text = lhSensor.min.ToString("N")+ " " + lhSensor.minType + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
@@ -50,13 +51,8 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellButton.TouchUpInside += delegate {
         lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
-        lhSensor.minType = lhSensor.LabelBottom.Text;
-        if(lhSensor.isManual){
-          lhSensor.minType = lhSensor.LabelBottom.Text;
-          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.minType + " ";
-        } else{          
-          cellReading.Text =  lhSensor.min+ " " + lhSensor.minType + " ";
-        }
+        lhSensor.minType = lhSensor.LabelBottom.Text;         
+        cellReading.Text =  lhSensor.min.ToString("N")+ " " + lhSensor.minType + " ";     
       };
 
       this.AddSubview(cellHeader);

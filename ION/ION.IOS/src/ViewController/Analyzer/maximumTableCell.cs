@@ -37,9 +37,10 @@ namespace ION.IOS.ViewController.Analyzer {
         Console.WriteLine("maxType isn't empty and is of " + lhSensor.maxType + " unit ");
       }
       if (lhSensor.isManual.Equals(true)) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text;
+        var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
+        cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text;
       } else {        
-        cellReading.Text = lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
+        cellReading.Text = lhSensor.max.ToString("N") + " " + lhSensor.maxType + " ";
       }
 
       cellReading.TextAlignment = UITextAlignment.Right;
@@ -55,13 +56,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.TouchUpInside += delegate {
         lhSensor.max = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.maxType = lhSensor.LabelBottom.Text;
-        if(lhSensor.isManual){
-          lhSensor.maxType = lhSensor.LabelBottom.Text;
-          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.maxType + " ";
-        } else{
-          lhSensor.maxType = lhSensor.currentSensor.unit.ToString();
-          cellReading.Text =  lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
-        }
+        cellReading.Text =  lhSensor.max.ToString("N") + " " + lhSensor.maxType + " ";
       };
 
       this.AddSubview(cellHeader);
