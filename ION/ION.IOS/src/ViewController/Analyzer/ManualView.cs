@@ -1,6 +1,7 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
+using Foundation;
 
 namespace ION.IOS.ViewController.Analyzer {
   public class ManualView {
@@ -13,7 +14,29 @@ namespace ION.IOS.ViewController.Analyzer {
       mmeasurementType = new UIButton (new CGRect(.535 * mView.Bounds.Width, .533 * mView.Bounds.Height, .435 * mView.Bounds.Width, .225 * mView.Bounds.Height));
       dtypeButton = new UIButton (new CGRect(.535 * mView.Bounds.Width, .179 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
       mtextValue = new UITextField (new CGRect(.028 * mView.Bounds.Width, .384 * mView.Bounds.Height, .942 * mView.Bounds.Width, .153 * mView.Bounds.Height));
-      mtextValue.KeyboardType = UIKeyboardType.NumberPad; 
+      mtextValue.KeyboardType = UIKeyboardType.DecimalPad;
+      mtextValue.ShouldChangeCharacters = (textField, range, replacementString) => {
+        if(replacementString.Contains("0") || replacementString.Contains("1") || replacementString.Contains("2") || replacementString.Contains("3") ||
+           replacementString.Contains("4") || replacementString.Contains("5") || replacementString.Contains("6") || replacementString.Contains("7") ||
+           replacementString.Contains("8") || replacementString.Contains("9") || replacementString.Contains(".") || replacementString.Contains("-") || 
+           replacementString.Length.Equals(0)){
+
+          if(replacementString.Contains(".") && textField.Text.Contains(".")){
+            return false;
+          }
+          if((replacementString.Contains("-") && textField.Text.Contains("-")) || replacementString.Contains("-") && textField.Text.Length > 0){
+            return false;
+          }
+          if(replacementString.Contains(".") && textField.Text.Length.Equals(0)){
+            textField.Text = "0";
+            return true;
+          }
+          return true;
+        }
+        else {
+          return false;
+        }
+      };
       mbuttonText = new UITextField (new CGRect(.582 * mView.Bounds.Width, .548 * mView.Bounds.Height, .389 * mView.Bounds.Width, .205 * mView.Bounds.Height));
       mdeviceType = new UILabel (new CGRect(.028 * mView.Bounds.Width, .169 * mView.Bounds.Height, .682 * mView.Bounds.Width, .174 * mView.Bounds.Height));
       popupText = new UILabel (new CGRect(0,0,mView.Bounds.Width,.158 * mView.Bounds.Height));
@@ -21,6 +44,12 @@ namespace ION.IOS.ViewController.Analyzer {
       mbuttonBorder.BackgroundColor = UIColor.LightGray;
       mbuttonBorder2 = new UIView(new CGRect(.5 * mView.Bounds.Width,.753 * mView.Bounds.Height,1,.246 * mView.Bounds.Height));
       mbuttonBorder2.BackgroundColor = UIColor.LightGray;
+      textValidation = new UILabel(new CGRect(.028 * mView.Bounds.Width,.553 * mView.Bounds.Height,.5 *mView.Bounds.Width,.153 * mView.Bounds.Height));
+      textValidation.TextColor = UIColor.Red;
+      textValidation.Hidden = true;
+      textValidation.Lines = 2;
+      textValidation.LineBreakMode = UILineBreakMode.WordWrap;
+      textValidation.AdjustsFontSizeToFitWidth = true;
       mView.AddSubview(mcloseButton);
       mView.AddSubview(mdoneButton);
       mView.AddSubview(mmeasurementType);
@@ -31,6 +60,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mView.AddSubview(popupText);
       mView.AddSubview(mbuttonBorder);
       mView.AddSubview(mbuttonBorder2);
+      mView.AddSubview(textValidation);
     }
 
     //public UIView mView = new UIView(new CGRect(20, 100, 280, 195));
@@ -51,6 +81,8 @@ namespace ION.IOS.ViewController.Analyzer {
     public UILabel mdeviceType;
     //public UILabel popupText = new UILabel (new CGRect(0,0,280,31));
     public UILabel popupText;
+    //public UILabel textValidation = new UILabel (new CGRect(0, 108, 140, 30));
+    public UILabel textValidation;
     //UIView mbuttonBorder = new UIView (new CGRect(0,147,281,1));
     public UIView mbuttonBorder;
     //UIView mbuttonBorder2 = new UIView(new CGRect(141,147,1,48));

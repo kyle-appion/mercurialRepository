@@ -1,10 +1,11 @@
 {
   "images": [
     {
+      "filename": "ic_render_gaugeav760.pdf",
       "idiom": "universal"
     },
     {
-      "filename": "ic_render_gauge_av760.png",
+      "filename": "ic_render_gaugeav760.png",
       "scale": "1x",
       "idiom": "universal"
     },

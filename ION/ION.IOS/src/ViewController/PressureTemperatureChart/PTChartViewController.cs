@@ -22,12 +22,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.IOS.ViewController.Dialog;
   using ION.IOS.ViewController.DeviceManager;
   using ION.IOS.ViewController.FluidManager;
+  public delegate void onUnitChanged (Unit changedUnit);
 
   /// <summary>
   /// ONLY SET THE MANFOLD FOR THIS CLASS AFTER INSTANTIATION.
   /// </summary>
   public partial class PTChartViewController : BaseIONViewController {
-
+    public event onUnitChanged pUnitChanged;
+    public event onUnitChanged tUnitChanged;
     private const int SECTION_DEW = 0;
     private const int SECTION_BUBBLE = 1;
 
@@ -317,8 +319,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, pressureSensor.supportedUnits, (obj, unit) => {
             var old = pressureSensor.measurement;
             Log.D(this, "Converting " + old + " to " + unit + " equals: " + old.ConvertTo(unit));
-
             pressureUnit = unit;
+            pUnitChanged(unit);
             SynchronizePressureMeasurement(pressureSensor.measurement.ConvertTo(pressureUnit));
             buttonPressureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
           });
@@ -382,6 +384,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         if (temperatureSensor.isEditable) {
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, temperatureSensor.supportedUnits, (obj, unit) => {
             temperatureUnit = unit;
+            tUnitChanged(unit);
             SynchronizeTemperatureMeasurement(temperatureSensor.measurement.ConvertTo(temperatureUnit));
             buttonTemperatureUnit.SetTitle(unit.ToString(), UIControlState.Normal);
           });

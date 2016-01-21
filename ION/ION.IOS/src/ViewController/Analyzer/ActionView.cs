@@ -17,7 +17,10 @@ namespace ION.IOS.ViewController.Analyzer {
       pcloseButton = new UIButton(new CGRect(0, .8 * aView.Bounds.Height, .503 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pactionButton = new UIButton(new CGRect(.5 * aView.Bounds.Width,.8 * aView.Bounds.Height,.5 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pconnection = new UIImageView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
-      pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .214 * aView.Bounds.Width, .307 * aView.Bounds.Height));
+      conDisButton = new UIButton(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
+      conDisButton.BackgroundColor = UIColor.Clear;
+      conDisButton.Layer.CornerRadius = 8;
+      pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .214 * aView.Bounds.Width, .214 * aView.Bounds.Width));
       pbatteryImage = new UIImageView(new CGRect(.614 * aView.Bounds.Width, .071 * aView.Bounds.Height, .203 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pdeviceName = new UILabel(new CGRect(.028 * aView.Bounds.Width, .035 * aView.Bounds.Height, .435 * aView.Bounds.Width, .107 *aView.Bounds.Height));
       pgaugeValue = new UILabel(new CGRect(.292 * aView.Bounds.Width, .184 * aView.Bounds.Height, .678 * aView.Bounds.Width, .348 * aView.Bounds.Height));
@@ -35,6 +38,7 @@ namespace ION.IOS.ViewController.Analyzer {
       aView.AddSubview(pcloseButton);
       aView.AddSubview(pactionButton);
       aView.AddSubview(pconnection);
+      aView.AddSubview(conDisButton);
       aView.AddSubview(connectionColor);
       aView.AddSubview(pdeviceImage);
       aView.AddSubview(pbatteryImage);
@@ -47,6 +51,17 @@ namespace ION.IOS.ViewController.Analyzer {
       aView.AddSubview(abuttonBorder);
       aView.AddSubview(abuttonBorder2);
       aView.AddSubview(abuttonBorder3);
+      aView.BringSubviewToFront(conDisButton);
+
+      conDisButton.TouchUpInside += delegate {
+        if(currentSensor != null){
+          if(currentSensor.device.isConnected){
+            currentSensor.device.connection.Disconnect();
+          } else {
+            currentSensor.device.connection.Connect();
+          }
+        }
+      };
     }
 
     public GaugeDeviceSensor currentSensor {
@@ -71,7 +86,9 @@ namespace ION.IOS.ViewController.Analyzer {
     public UIButton pactionButton;
     //public UIImageView pconnection = new UIImageView(new CGRect(243, 7, 29, 35));
     public UIImageView pconnection;
-    //public UIImageView pdeviceImage = new UIImageView(new CGRect(0,42,60,60));
+    //public UIImageView pconnection = new UIImageView(new CGRect(243, 7, 29, 35));
+    public UIButton conDisButton;
+    //public UIImageView pdeviceImage = new UIImageView(new CGRect(0,60,60,60));
     public UIImageView pdeviceImage;
     //public UIImageView pbatteryImage = new UIImageView(new CGRect(172,14,63,21));
     public UIImageView pbatteryImage;
@@ -105,7 +122,7 @@ namespace ION.IOS.ViewController.Analyzer {
         pconnectionStatus.Hidden = false;
       }
 
-      pgaugeValue.Text = sensor.measurement.amount.ToString();
+      pgaugeValue.Text = sensor.measurement.amount.ToString("N");
       pvalueType.Text = sensor.measurement.unit.ToString();
     }
   }
