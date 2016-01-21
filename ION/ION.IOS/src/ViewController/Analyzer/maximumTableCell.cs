@@ -29,10 +29,18 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.maxReading ;
+      if (lhSensor.maxType.Equals("hold")) {
+        Console.WriteLine("Max not set yet so starting with gauge reading");
+        lhSensor.max = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+        lhSensor.maxType = lhSensor.LabelBottom.Text;
+      } else {
+        Console.WriteLine("maxType isn't empty and is of " + lhSensor.maxType + " unit ");
+      }
       if (lhSensor.isManual.Equals(true)) {
-        cellReading.Text = lhSensor.LabelMiddle.Text + " " + lhSensor.LabelBottom.Text;
+        var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
+        cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text;
       } else {        
-        cellReading.Text = lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
+        cellReading.Text = lhSensor.max.ToString("N") + " " + lhSensor.maxType + " ";
       }
 
       cellReading.TextAlignment = UITextAlignment.Right;
@@ -46,14 +54,9 @@ namespace ION.IOS.ViewController.Analyzer {
       cellButton.Layer.BorderWidth = 1f;
 
       cellButton.TouchUpInside += delegate {
-        lhSensor.max = 0.00;
-        if(lhSensor.isManual){
-          lhSensor.maxType = lhSensor.LabelBottom.Text;
-          cellReading.Text =  lhSensor.LabelMiddle.Text + " " + lhSensor.maxType + " ";
-        } else{
-          lhSensor.maxType = lhSensor.currentSensor.unit.ToString();
-          cellReading.Text =  lhSensor.max.ToString("0.00") + " " + lhSensor.maxType + " ";
-        }
+        lhSensor.max = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+        lhSensor.maxType = lhSensor.LabelBottom.Text;
+        cellReading.Text =  lhSensor.max.ToString("N") + " " + lhSensor.maxType + " ";
       };
 
       this.AddSubview(cellHeader);

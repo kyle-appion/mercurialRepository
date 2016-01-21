@@ -15,7 +15,6 @@ namespace ION.IOS.ViewController.Analyzer
 
     public AnalyzerTableSource (List<string> items, string identifier, lowHighSensor lhSensor){
 			tableItems = items;
-			//cellIdentifier = identifier;
       tableSensors = lhSensor;
 		}
 			
@@ -37,7 +36,7 @@ namespace ION.IOS.ViewController.Analyzer
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
       return null;
     }
-
+      
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
       return .521f * tableSensors.snapArea.Bounds.Height;
     }
@@ -52,10 +51,11 @@ namespace ION.IOS.ViewController.Analyzer
         case UITableViewCellEditingStyle.Delete:
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
+
+          if (tableItems.Count == 0)
+            tableSensors.subviewHide.SetImage(null, UIControlState.Normal);
           // delete the row from the table
-          tableView.DeleteRows (new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
-          // remove entry from source
-          //tableSensors.tableSubviews.Remove(tableItems[indexPath.Row]);
+          tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
           break;
         case UITableViewCellEditingStyle.None:
           Console.WriteLine ("CommitEditingStyle:None called");

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foundation;
+using UIKit;
+using CoreGraphics;
 using ION.Core.App;
 using ION.Core.Measure;
 using ION.Core.Content;
@@ -9,15 +11,16 @@ using ION.Core.Devices;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
 using ION.IOS.Util;
-using UIKit;
-using CoreGraphics;
+using ION.Core.Fluids;
 using ION.IOS.ViewController.FluidManager;
+using ION.IOS.ViewController.SuperheatSubcool;
+using ION.IOS.ViewController.PressureTemperatureChart;
 
 namespace ION.IOS.ViewController.Analyzer
 {
 	public class lowHighSensor
 	{
-		public lowHighSensor (CGRect areaRect, CGRect tblRect)
+		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController)
 		{
       //new CGRect(9, 325, 149,115)
 			snapArea = new UIView (areaRect);
@@ -27,7 +30,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable = new UITableView (tblRect);
       //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,150,25)
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
-      LabelMiddle = new UILabel (new CGRect(0, .217 * areaRect.Height, areaRect.Width, .347 * areaRect.Height));
+      LabelMiddle = new UILabel (new CGRect(.2 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
       LabelSubview = new UILabel (new CGRect(-1, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .213 * snapArea.Bounds.Width, .204 * areaRect.Height));
@@ -36,6 +39,7 @@ namespace ION.IOS.ViewController.Analyzer
       connectionColor = new UIView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       connectionColor.BackgroundColor = UIColor.Red;
       Connection = new UIImageView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height,  .14 * areaRect.Width,.217 * areaRect.Height));
+      Connection.BackgroundColor = UIColor.Clear;
       conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.321 * areaRect.Height));
@@ -51,6 +55,12 @@ namespace ION.IOS.ViewController.Analyzer
       holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       shReading = new UILabel(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       shFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      shFluidType.Layer.BorderColor = UIColor.Black.CGColor;
+      shFluidType.Layer.BorderWidth = 1f;
+      shFluidState = new UILabel(new CGRect(0,0, 1.006 * tblRect.Width, .5 * cellHeight));
+      shFluidState.TextAlignment = UITextAlignment.Center;
+      shFluidState.TextColor = UIColor.White;
+      shFluidState.BackgroundColor = UIColor.Black;
       changeFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       changeFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changeFluid.Layer.BorderWidth = 1f;
@@ -65,10 +75,12 @@ namespace ION.IOS.ViewController.Analyzer
       rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       rocImage = new UIImageView(new CGRect(0, .5 * cellHeight, .2 * tblRect.Width, .5 * cellHeight));
       ion = AppState.context;
-      max = 0.00;
-      maxType = "psig";
-      min = 0.00;
-      minType = "psig";
+      __analyzerviewcontroller = ViewController;
+      tUnit = Units.Temperature.FAHRENHEIT;
+      pUnit = Units.Pressure.PSIG;
+      maxType = "hold";
+      minType = "hold";
+      holdType = "hold";
       isManual = false;
 
       conDisButton.TouchUpInside += delegate {
@@ -93,19 +105,10 @@ namespace ION.IOS.ViewController.Analyzer
         }
       };
 
+      changeFluid.TouchUpInside += openSHSC;
+      changePTFluid.TouchUpInside += openPTC;
 		}
-    public Manifold manifold{
 
-      get { return __manifold;}
-      set { if (__manifold != null) {
-          __manifold.onManifoldChanged -= manifoldUpdating;
-        }
-        __manifold = value;
-        if (__manifold != null) {
-          __manifold.onManifoldChanged += manifoldUpdating;
-        }
-      }
-    } Manifold __manifold;
     public IION ion { get; set; }
     public nfloat cellHeight;
     public UILabel maxReading;
@@ -120,6 +123,7 @@ namespace ION.IOS.ViewController.Analyzer
     public string holdType;
     public UILabel shReading;
     public UILabel shFluidType;
+    public UILabel shFluidState;
     public UIButton changeFluid;
     public UILabel ptReading;
     public UILabel ptFluidType;
@@ -143,8 +147,13 @@ namespace ION.IOS.ViewController.Analyzer
     public UIImageView Connection;
     public UIImageView DeviceImage;
     public UIButton conDisButton;
+    private AnalyzerViewController __analyzerviewcontroller;
+    public Unit tUnit;
+    public Unit pUnit;
 		public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
+    public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
+    public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
       "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)"
     };
@@ -153,43 +162,42 @@ namespace ION.IOS.ViewController.Analyzer
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
 
-    public string UpdateMax(double currentReading, string type){
-      if (currentReading > max) {
-        max = currentReading;
-        maxType = currentSensor.unit.ToString();
+    public GaugeDeviceSensor currentSensor{
+
+      get { return __currentSensor;}
+      set { if (__currentSensor != null) {
+          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
+        }
+        __currentSensor = value;
+        if (__currentSensor != null) {
+          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
+        }
       }
+    } GaugeDeviceSensor __currentSensor;
 
-      return max.ToString("0.00") + " " + maxType;
-    }
+    public Manifold manifold{
 
-    public string UpdateMin(double currentReading, string type){
-      if (currentReading < min) {
-        min = currentReading;
-        minType = currentSensor.unit.ToString();
+      get { return __manifold;}
+      set { if (__manifold != null) {
+          __manifold.onManifoldEvent -= manifoldUpdating;
+        }
+        __manifold = value;
+        if (__manifold != null) {
+          __manifold.onManifoldEvent += manifoldUpdating;
+        }
       }
-      
-      return min.ToString("0.00") + " " + minType;
-    }
-
-//    public void UpdateRoc(Sensor sensorProperty){
-//      if (roc == null) {
-//        roc = new RateOfChangeSensorProperty(sensorProperty);
-//      }
-//
-//      DoUpdateRocCell();
-//    }
+    } Manifold __manifold;
 
     private async void DoUpdateRocCell() {
 
       var meas = roc.modifiedMeasurement;
-      //ION.Core.Util.Log.D(this, "Meas: " + meas);
       var abs = meas.Abs();
       var range = (roc.sensor.maxMeasurement - roc.sensor.minMeasurement) / 10;
 
       if (abs > range) {
-        rocReading.Text = ">" + SensorUtils.ToFormattedString(roc.sensor.type, range, true);
+        rocReading.Text = ">" + SensorUtils.ToFormattedString(roc.sensor.type, range, false) + "/min";
       } else {
-        rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, abs, true);
+        rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, abs, false) + "/min";
       }
 
       if (roc.isStable) {
@@ -209,25 +217,6 @@ namespace ION.IOS.ViewController.Analyzer
       }
     }
 
-
-    public void updateSHSC(){
-    }
-
-    public void updatePT(){
-    }
-
-    public GaugeDeviceSensor currentSensor{
-
-      get { return __currentSensor;}
-      set { if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
-        }
-        __currentSensor = value;
-        if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-        }
-      }
-    } GaugeDeviceSensor __currentSensor;
     /// <summary>
     /// EVENT THAT UPDATES THE LOW/HIGH AREA SUBVIEWS IF THEY HAVE BEEN ADDED
     /// MAX MIN HOLD ALT RoC SH/SC P/T VALUES DETERMINED FROM SENSOR VALUES
@@ -242,27 +231,30 @@ namespace ION.IOS.ViewController.Analyzer
         Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       }
 
-      LabelMiddle.Text = " " + sensor.measurement.amount.ToString();
+      LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
       LabelBottom.Text = sensor.measurement.unit.ToString() + "  ";
-      LabelSubview.Text = LabelTop.Text + "'s Subviews";
+      LabelSubview.Text = " " + LabelTop.Text + "'s Subviews";
 
       foreach (string subview in tableSubviews) {
         
-        if (subview.Equals("Maximum")) {
-          //maxReading.Text = UpdateMax(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text) + " ";
+        if (subview.Equals("Maximum")) {       
 
           if (Convert.ToDouble(LabelMiddle.Text) > max) {
             max = Convert.ToDouble(LabelMiddle.Text);
             maxType = currentSensor.unit.ToString();
           }
 
-          maxReading.Text = max.ToString("0.00") + " " + maxType;
+          maxReading.Text = max.ToString("N") + " " + maxType;
         } 
-        if (subview.Equals("Minimum")) {          
-          minReading.Text = UpdateMin(Convert.ToDouble(LabelMiddle.Text), LabelBottom.Text) + " ";
-        } 
-        if (subview.Equals("Hold")) {
+        if (subview.Equals("Minimum")) {
+          if (Convert.ToDouble(LabelMiddle.Text) < min) {
+            min = Convert.ToDouble(LabelMiddle.Text);
+            minType = currentSensor.unit.ToString();
+          }
           
+          minReading.Text = min.ToString("N") + " " + minType;
+        } 
+        if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text + " ";
         }
         if (subview.Equals("Alternate")) {
@@ -274,7 +266,7 @@ namespace ION.IOS.ViewController.Analyzer
           alt = new AlternateUnitSensorProperty(sensor);
 
           alt.unit = tempUnit;
-
+          var amount = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);
           altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
         if (subview.Equals("Rate")) {
@@ -283,42 +275,86 @@ namespace ION.IOS.ViewController.Analyzer
             roc = new RateOfChangeSensorProperty(sensor);
           }
           DoUpdateRocCell();
-
-          //UpdateRoc(sensor);
         }
       }
     }
-
-    public void manifoldUpdating(Manifold manifold){
-      
-      shFluidType.Text = manifold.ptChart.fluid.name;
-      var shname = manifold.ptChart.fluid.name;
-      shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
-
+    /// <summary>
+    /// Manifold Event to update Superheat/Subcool and PT 
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    public void manifoldUpdating(ManifoldEvent Event){
+      var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
-        if (manifold.primarySensor.type == ESensorType.Pressure) {
+        if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
+          shFluidType.Text = manifold.ptChart.fluid.name;
+          var shname = manifold.ptChart.fluid.name;
+          shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
-          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
-        } else {
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+        } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null){
+          shFluidType.Text = manifold.ptChart.fluid.name;
+          var shname = manifold.ptChart.fluid.name;
+          shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
-          shReading.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         }
       }
 
-      ptFluidType.Text = manifold.ptChart.fluid.name;
-      var ptname = manifold.ptChart.fluid.name;
-      ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
-      Console.WriteLine("returning value for pt chart: " + SensorUtils.ToFormattedString(ESensorType.Temperature,  manifold.ptChart.GetTemperature(manifold.primarySensor.measurement).ConvertTo(manifold.secondarySensor.unit)));
-      ptReading.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, manifold.ptChart.GetTemperature(manifold.primarySensor.measurement).ConvertTo(manifold.secondarySensor.unit));
+      if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
+        ptFluidType.Text = manifold.ptChart.fluid.name;
+        var ptname = manifold.ptChart.fluid.name;
+        ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
+        var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
+        ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
+      } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
+        ptFluidType.Text = manifold.ptChart.fluid.name;
+        var ptname = manifold.ptChart.fluid.name;
+        ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
+        var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
+        ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
+      }
 
-      if (manifold.secondarySensor != null) {
-        Console.WriteLine("returning value for pt chart: " + SensorUtils.ToFormattedString(ESensorType.Temperature,  manifold.ptChart.GetTemperature(manifold.primarySensor.measurement).ConvertTo(manifold.secondarySensor.unit)));
-        ptReading.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, manifold.ptChart.GetTemperature(manifold.primarySensor.measurement).ConvertTo(manifold.secondarySensor.unit));
+      if (manifold.ptChart != null) {
+        if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          shFluidState.Text = "S/H";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          shFluidState.Text = "S/C";
+        }
       }
     }
+    /// <summary>
+    /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+    public void openSHSC(object sender, EventArgs e){
+      var vc = __analyzerviewcontroller;
+      var scsh = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
+      scsh.initialManifold = manifold;
+      vc.NavigationController.PushViewController(scsh, true);
+    }
+    /// <summary>
+    /// EVENT TO OPEN THE PT CHART VIEW CONTROLLER
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+    public void openPTC(object sender, EventArgs e){
+      var vc = __analyzerviewcontroller;
+      var ptc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
+      manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      ptc.initialManifold = manifold;
+      ptc.pUnitChanged += pUnitUpdating;
+      ptc.tUnitChanged += tUnitUpdating;
+      vc.NavigationController.PushViewController(ptc, true);
+    }
 
+    public void pUnitUpdating(Unit unit){
+      pUnit = unit;
+    }
 
-
+    public void tUnitUpdating(Unit unit){
+      tUnit = unit;
+    }
 	}
 }
 
