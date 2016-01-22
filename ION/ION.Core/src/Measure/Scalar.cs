@@ -176,13 +176,16 @@
       return o1.amount <= o2;
     }
 
+/*
     public static bool operator !=(Scalar o1, Scalar o2) {
-      return !(o1 == o2);
+      return o1 != o2 || o1 !/!(o1 == o2);
     }
 
     public static bool operator ==(Scalar o1, Scalar o2) {
       return (!object.ReferenceEquals(o1, null) && !object.ReferenceEquals(o2, null)) && (o1.amount == o2.amount && o1.unit.Equals(o2.unit));
     }
+*/
+
 
     /// <summary>
     /// Asserts that the two units are compatible with eachother.
