@@ -588,6 +588,7 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.pressedSensor.lowArea.currentSensor = null;
         Sensor.pressedSensor.highArea.currentSensor = null;
       }
+      Sensor.pressedSensor.isManual = false;
       Sensor.pressedSensor.lowArea.snapArea.Hidden = true;
       Sensor.pressedSensor.lowArea.isManual = false;
       Sensor.pressedSensor.lowArea.max = 0;

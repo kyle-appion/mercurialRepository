@@ -845,7 +845,7 @@ namespace ION.IOS.ViewController.Analyzer {
           area.bottomLabel.Text = sensor.measurement.unit.ToString();
           area.bottomLabel.Hidden = false;
           area.addIcon.Hidden = true;
-
+          area.isManual = false;
           area.lowArea.manifold = new Manifold(sensor);
           area.highArea.manifold = new Manifold(sensor);
 
@@ -867,12 +867,14 @@ namespace ION.IOS.ViewController.Analyzer {
           area.lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
           area.lowArea.LabelSubview.Text = " " + sensor.device.name + "'s Subviews";
           area.lowArea.DeviceImage.Image = area.deviceImage.Image;
+          area.lowArea.isManual = false;
 
           area.highArea.LabelTop.Text = " " + sensor.device.name;
           area.highArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
           area.highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
           area.highArea.LabelSubview.Text = " " + sensor.device.name + "'s Subviews";
           area.highArea.DeviceImage.Image = area.deviceImage.Image;
+          area.highArea.isManual = false;
         }
       };
       NavigationController.PushViewController(sb, true);
@@ -927,7 +929,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].sactionView.currentSensor = sensor;
               analyzerSensors.viewList[i].lowArea.currentSensor = sensor;
               analyzerSensors.viewList[i].highArea.currentSensor = sensor;
-
+              analyzerSensors.viewList[i].isManual = false;
               analyzerSensors.viewList[i].lowArea.manifold = new Manifold(sensor as Sensor);
               analyzerSensors.viewList[i].highArea.manifold = new Manifold(sensor as Sensor);
 
@@ -967,6 +969,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
               analyzerSensors.viewList[i].lowArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";
               analyzerSensors.viewList[i].lowArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
+              analyzerSensors.viewList[i].lowArea.isManual = false;
               analyzerSensors.viewList[i].highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzerSensors.viewList[i].highArea.LabelTop.Text = " " + analyzerSensors.viewList[i].topLabel.Text;
               analyzerSensors.viewList[i].highArea.LabelMiddle.Font = UIFont.FromName("Helvetica-Bold", 42f);
@@ -975,6 +978,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
               analyzerSensors.viewList[i].highArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";
               analyzerSensors.viewList[i].highArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
+              analyzerSensors.viewList[i].highArea.isManual = false;
               area.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               if(start == 0){
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;

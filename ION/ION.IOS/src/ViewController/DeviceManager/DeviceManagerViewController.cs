@@ -81,7 +81,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       base.ViewDidLoad();
 
       InitNavigationBar("ic_nav_device_manager", true);
-
+      View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
         if (ion.deviceManager.connectionHelper.isScanning) {
