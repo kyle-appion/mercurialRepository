@@ -39,6 +39,11 @@ namespace ION.IOS.ViewController.Analyzer {
         var name = lhSensor.manifold.ptChart.fluid.name;
         fluidType.Text = name;
         fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(name));
+        if(lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)){
+          cellHeader.Text = "S/C";
+        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)){
+          cellHeader.Text = "S/H";
+        }
       } else {
         fluidType.Text = "----";
         fluidType.BackgroundColor = UIColor.White;

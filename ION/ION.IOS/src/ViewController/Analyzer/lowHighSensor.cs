@@ -42,7 +42,7 @@ namespace ION.IOS.ViewController.Analyzer
       Connection.BackgroundColor = UIColor.Clear;
       conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
-      DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.321 * areaRect.Height));
+      DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.214 * areaRect.Width));
       subviewTable.RegisterClassForCellReuse(typeof(maximumTableCell),"Maximum");
       subviewTable.RegisterClassForCellReuse(typeof(minimumTableCell),"Minimum");
       subviewTable.RegisterClassForCellReuse(typeof(holdTableCell), "Hold");
@@ -315,11 +315,14 @@ namespace ION.IOS.ViewController.Analyzer
       }
 
       if (manifold.ptChart != null) {
-        if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+
+        if (!manifold.ptChart.fluid.mixture){
+          shFluidState.Text = "S/C";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
           shFluidState.Text = "S/H";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
           shFluidState.Text = "S/C";
-        }
+        }  
       }
     }
     /// <summary>
