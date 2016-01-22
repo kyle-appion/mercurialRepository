@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Devices {
 
   using System;
+  using System.Collections.Generic;
 
   using ION.Core.Connections;
   using ION.Core.Devices.Protocols;
@@ -181,7 +182,7 @@
     /// </summary>
     /// <returns><c>true</c> if this instance hash sensor matching filter the specified filter; otherwise, <c>false</c>.</returns>
     /// <param name="filter">Filter.</param>
-    public bool HashSensorMatchingFilter(IFilter<Sensor> filter) {
+    public bool HasSensorMatchingFilter(IFilter<Sensor> filter) {
       foreach (var sensor in sensors) {
         if (filter.Matches(sensor)) {
           return true;
@@ -189,6 +190,24 @@
       }
 
       return false;
+    }
+
+    /// <summary>
+    /// Queries all of the sensors in the device that match the filter. Note: this may
+    /// return an emtpy list.
+    /// </summary>
+    /// <returns>The sensors matching filter.</returns>
+    /// <param name="filter">Filter.</param>
+    public List<Sensor> GetSensorsMatchingFilter(IFilter<Sensor> filter) {
+      var ret = new List<Sensor>();
+
+      foreach (var sensor in sensors) {
+        if (filter == null || filter.Matches(sensor)) {
+          ret.Add(sensor);
+        }
+      }
+
+      return ret;
     }
 
     /// <summary>

@@ -235,22 +235,26 @@
       dict.Add(EDeviceState.Disconnected, new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED));
 
       foreach (var device in ion.deviceManager.devices) {
-        var state = GetStateFor(device);
-        var section = dict[state];
-        Log.D(this, "Device " + device.serialNumber + " is in state: " + state);
-        var dr = new DeviceRecord(device, expandedDevice == device);
-        section.records.Add(dr);
+        var gd = device as GaugeDevice;
+        if (gd != null) {
+          if (sensorFilter == null || gd.HasSensorMatchingFilter(sensorFilter)) {
+            var r = new DeviceRecord(gd, expandedDevice == device);
+            var state = GetStateFor(device);
+            var section = dict[state];
+            section.records.Add(r);
 
-        if (dr.expanded) {
-          section.records.Add(new SerialNumberRecord(device.serialNumber));
-          foreach (var sensor in ((GaugeDevice)device).sensors) {
-            if (sensorFilter.Matches(sensor)) {
-              section.records.Add(new SensorRecord(sensor));
+            if (r.expanded) {
+              section.records.Add(new SerialNumberRecord(gd.serialNumber));
+              foreach (var sensor in ((GaugeDevice)device).sensors) {
+                if (sensorFilter.Matches(sensor)) {
+                  section.records.Add(new SensorRecord(sensor));
+                }
+              }
             }
+
+            section.records.Add(new SpaceRecord());
           }
         }
-
-        section.records.Add(new SpaceRecord());
       }
 
       sections.Clear();
@@ -312,7 +316,9 @@
 
       section.records.Insert(++index, new SerialNumberRecord(gd.serialNumber));
       foreach (var sensor in gd.sensors) {
-        section.records.Insert(++index, new SensorRecord(sensor));
+        if (sensorFilter.Matches(sensor)) {
+          section.records.Insert(++index, new SensorRecord(sensor));
+        }
       }
 
       if (animate) {
@@ -333,7 +339,7 @@
 
       var start = (int)indexPath.Row;
 
-      var count = gd.sensorCount + 1;
+      var count = gd.GetSensorsMatchingFilter(sensorFilter).Count + 1;
       section.records.RemoveRange(start + 1, count);
 
       if (animate) {
