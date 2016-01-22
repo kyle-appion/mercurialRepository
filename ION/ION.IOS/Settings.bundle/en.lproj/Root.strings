@@ -1,0 +1,20 @@
+﻿
+/* Application Strings */
+"settings_screen" = "Screen Settings";
+"settings_screen_leave_on" = "Leave Display On";
+
+"settings_units_default" = "Default Units";
+"settings_units_default_length" = "Length";
+"settings_units_default_pressure" = "Pressure";
+"settings_units_default_temperature" = "Temperature";
+"settings_units_default_vacuum" = "Vacuum";
+
+"settings_alarm" = "Alarm Settings";
+"settings_alarm_sound" = "Make Noise";
+"settings_alarm_haptic" = "Vibrate";
+
+"settings_location" = "Location Settings";
+"settings_location_use_geolocation" = "Use Current Location";
+
+
+"use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";

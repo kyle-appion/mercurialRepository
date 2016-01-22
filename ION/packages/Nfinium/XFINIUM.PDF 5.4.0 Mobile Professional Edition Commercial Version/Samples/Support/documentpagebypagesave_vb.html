@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\DocumentPageByPageSave.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Redaction
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' DocumentPageByPageSave sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class DocumentPageByPageSave
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>output <span class="hl kwa">As</span> Stream<span class="hl opt">)</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">()</span>
+
+			<span class="hl slc">' Init the save operation</span>
+			document<span class="hl opt">.</span><span class="hl kwd">BeginSave</span><span class="hl opt">(</span>output<span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> color <span class="hl kwa">As New</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> brush <span class="hl kwa">As New</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>color<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> rnd <span class="hl kwa">As New</span> <span class="hl kwd">Random</span><span class="hl opt">()</span>
+
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> <span class="hl num">2</span>
+				<span class="hl kwa">Dim</span> page <span class="hl kwa">As</span> PdfPage <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">()</span>
+				page<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">1000</span>
+				page<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">1000</span>
+
+				<span class="hl kwa">For</span> y <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">1</span> <span class="hl kwa">To</span> page<span class="hl opt">.</span>Height
+					<span class="hl kwa">For</span> x <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> page<span class="hl opt">.</span>Width <span class="hl opt">-</span> <span class="hl num">1</span>
+						color<span class="hl opt">.</span>R <span class="hl opt">=</span> <span class="hl kwd">CByte</span><span class="hl opt">(</span>rnd<span class="hl opt">.[</span><span class="hl kwa">Next</span><span class="hl opt">](</span><span class="hl num">256</span><span class="hl opt">))</span>
+						color<span class="hl opt">.</span>G <span class="hl opt">=</span> <span class="hl kwd">CByte</span><span class="hl opt">(</span>rnd<span class="hl opt">.[</span><span class="hl kwa">Next</span><span class="hl opt">](</span><span class="hl num">256</span><span class="hl opt">))</span>
+						color<span class="hl opt">.</span>B <span class="hl opt">=</span> <span class="hl kwd">CByte</span><span class="hl opt">(</span>rnd<span class="hl opt">.[</span><span class="hl kwa">Next</span><span class="hl opt">](</span><span class="hl num">256</span><span class="hl opt">))</span>
+
+						page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>brush<span class="hl opt">,</span> x<span class="hl opt">,</span> y <span class="hl opt">-</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">)</span>
+					<span class="hl kwa">Next</span>
+
+					<span class="hl kwa">If</span> <span class="hl opt">(</span>y Mod <span class="hl num">100</span><span class="hl opt">) =</span> <span class="hl num">0</span> <span class="hl kwa">Then</span>
+						<span class="hl slc">' Compress the graphics that have been drawn so far and save them.</span>
+						page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">Compress</span><span class="hl opt">()</span>
+						page<span class="hl opt">.</span><span class="hl kwd">SaveGraphics</span><span class="hl opt">()</span>
+					<span class="hl kwa">End If</span>
+				<span class="hl kwa">Next</span>
+
+				<span class="hl slc">' Close the page graphics and save the page.</span>
+				page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">()</span>
+				page<span class="hl opt">.</span><span class="hl kwd">Save</span><span class="hl opt">()</span>
+			<span class="hl kwa">Next</span>
+
+			<span class="hl slc">' Finish the document.</span>
+			document<span class="hl opt">.</span><span class="hl kwd">EndSave</span><span class="hl opt">()</span>
+
+			<span class="hl kwa">Return Nothing</span>
+		<span class="hl kwa">End Function</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.12, http://www.andre-simon.de/-->
