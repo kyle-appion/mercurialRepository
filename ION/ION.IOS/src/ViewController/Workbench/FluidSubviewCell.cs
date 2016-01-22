@@ -91,8 +91,6 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       var meas = sensorProperty.sensor.measurement;
-      labelMeasurement.Text = meas.amount.ToString("0.00") + meas.unit;
-/*
       var chart = sensorProperty.manifold.ptChart;
       switch (sensorProperty.sensor.type) {
         case ESensorType.Pressure:
@@ -106,30 +104,14 @@ namespace ION.IOS.ViewController.Workbench {
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, press, true);
           break;
       }
-*/
     }
 
     private void HandleSuperheatSubcoolSensorPropertyChanged(SuperheatSubcoolSensorProperty sensorProperty) {
       UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
 
-      var fluid = sensorProperty.manifold.ptChart.fluid;
+      var ptchart = sensorProperty.manifold.ptChart;
 
-      Scalar meas = null;
-      if (sensorProperty.pressureSensor != null && sensorProperty.temperatureSensor != null) {
-        meas = sensorProperty.modifiedMeasurement;
-      }
-
-      if (meas == null || meas.AssertEquals(0, 0.001)) {
-        labelTitle.Text = Strings.Fluid.SHSC;
-      } else if (meas > 0) {
-        labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
-      } else {
-        labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
-      }
-
-      labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas.Abs(), true);
-
-      if (fluid.mixture) {
+      if (ptchart.fluid.mixture) {
         switch (sensorProperty.manifold.ptChart.state) {
           case Fluid.EState.Bubble:
             labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
@@ -141,12 +123,27 @@ namespace ION.IOS.ViewController.Workbench {
             labelTitle.Text = Strings.UNKNOWN;
             break;
         }
-
-        if (meas == null) {
-          labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
+      } else {
+        if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
+          labelTitle.Text = Strings.Fluid.SHSC;
         } else {
-          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+          var meas = sensorProperty.modifiedMeasurement;
+
+          if (meas > 0) {
+            labelTitle.Text = Strings.Fluid.SH;
+          } else if (meas < 0) {
+            labelTitle.Text = Strings.Fluid.SC;
+          } else {
+            labelTitle.Text = Strings.Fluid.SATURATED;
+          }
         }
+      }
+
+      if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
+        labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
+      } else {
+        var meas = sensorProperty.modifiedMeasurement;
+        labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
       }
     }
 

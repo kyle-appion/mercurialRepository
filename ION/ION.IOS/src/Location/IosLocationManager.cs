@@ -96,7 +96,7 @@
       }
 
       native.LocationsUpdated += ResolveLocationChange;
-      native.StartUpdatingLocation();
+      native.StartMonitoringSignificantLocationChanges();
       isPolling = true;
       return true;
     }
