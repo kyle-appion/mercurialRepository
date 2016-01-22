@@ -129,6 +129,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       base.ViewWillDisappear(animated);
       allowRefresh = false;
       ion.deviceManager.connectionHelper.Stop();
+      deviceSource.Release();
     }
 
     // Overridden from UIViewController
