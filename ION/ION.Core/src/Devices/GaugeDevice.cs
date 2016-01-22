@@ -108,51 +108,53 @@
     // Overridden from IDevice
     public void HandlePacket(byte[] packet) {
       ION.Core.App.AppState.context.PostToMain(() => {
-        try {
-          GaugePacket gp = __protocol.ParsePacket(packet);
-
-          if (sensorCount == gp.gaugeReadings.Length) {
-            battery = gp.battery;
-
-            var changed = false;
-
-            for (int i = 0; i < sensorCount; i++) {
-              var reading = gp.gaugeReadings[i];
-              var sensor = this[i];
-
-              if (reading.sensorType != sensor.type) {
-                throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-                  this[i].type + " is not valid with received type " + reading.sensorType);
-              }
-
-              if (sensor.measurement != gp.gaugeReadings[i].reading) {
-                sensor.SetMeasurement(gp.gaugeReadings[i].reading);
-                changed = true;
-              }
-
-              sensor.removed = reading.removed;
-              var removedChanged = sensor.removed != removedStates[i];
-              removedStates[i] = sensor.removed;
-
-              if (removedChanged) {
-                sensor.NotifySensorStateChanged();
-              }
-
-
-            }
-
-            if (changed) {
-              NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
-            }
-          } else {
-            throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
-          }
-        } catch (Exception e) {
-          Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
-        }
-
-//        Log.D(this, "Device packet is: " + packet.ToByteString());
+        HandlePacketInternal(packet);
       });
+    }
+
+    private void HandlePacketInternal(byte[] packet) {
+      try {
+        GaugePacket gp = __protocol.ParsePacket(packet);
+
+        if (sensorCount == gp.gaugeReadings.Length) {
+          battery = gp.battery;
+
+          var changed = false;
+
+          for (int i = 0; i < sensorCount; i++) {
+            var reading = gp.gaugeReadings[i];
+            var sensor = this[i];
+
+            if (reading.sensorType != sensor.type) {
+              throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
+                this[i].type + " is not valid with received type " + reading.sensorType);
+            }
+
+            if (sensor.measurement != gp.gaugeReadings[i].reading) {
+              sensor.SetMeasurement(gp.gaugeReadings[i].reading);
+              changed = true;
+            }
+
+            sensor.removed = reading.removed;
+            var removedChanged = sensor.removed != removedStates[i];
+            removedStates[i] = sensor.removed;
+
+            if (removedChanged) {
+              sensor.NotifySensorStateChanged();
+            }
+          }
+
+          if (changed) {
+            NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
+          }
+        } else {
+          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
+        }
+      } catch (Exception e) {
+//        Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
+      }
+
+      //        Log.D(this, "Device packet is: " + packet.ToByteString());
     }
 
     /// <summary>
@@ -168,6 +170,21 @@
           if (gs.Equals(s)) {
             return true;
           }
+        }
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// Queries whether or not the gauge device has a sensor matching the given filter.
+    /// </summary>
+    /// <returns><c>true</c> if this instance hash sensor matching filter the specified filter; otherwise, <c>false</c>.</returns>
+    /// <param name="filter">Filter.</param>
+    public bool HashSensorMatchingFilter(IFilter<Sensor> filter) {
+      foreach (var sensor in sensors) {
+        if (filter.Matches(sensor)) {
+          return true;
         }
       }
 
