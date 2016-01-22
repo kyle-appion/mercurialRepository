@@ -70,6 +70,7 @@ namespace ION.IOS.ViewController.Workbench {
       workbench = ion.currentWorkbench;
 
       tableContent.AllowsSelection = true;
+      tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
 
       source = new WorkbenchTableSource(this, ion, workbench, tableContent);
       source.onAddClicked = OnRequestViewer;

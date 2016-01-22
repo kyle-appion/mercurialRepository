@@ -79,8 +79,10 @@
           expanded = true,
         });
 
+/*
         foreach (var sp in manifold.sensorProperties) {
         }
+*/
       }
 
       records.Add(new AddRecord());

@@ -51,10 +51,13 @@ namespace ION.Core.Content.Parsers {
           var ret = new Workbench(ion);
 
           for (int i = 0; i < len; i++) {
-            try {
-              ret.Add(mp.ReadFromStream(ion, stream));
-            } catch (Exception e) {
-              Log.E(this, "Failed to read manifold", e);
+            var manifold = mp.ReadFromStream(ion, stream);
+            if (manifold != null) {
+              try {
+                ret.Add(manifold);
+              } catch (Exception e) {
+                Log.E(this, "Failed to read manifold", e);
+              }
             }
           }
 
