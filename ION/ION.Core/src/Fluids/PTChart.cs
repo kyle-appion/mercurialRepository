@@ -178,8 +178,8 @@
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar superheat = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return temperature - superheat;
+      Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
+      return saturatedTemperature - temperature;
     }
 
     /// <summary>
@@ -198,8 +198,8 @@
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      Scalar subcool = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return subcool - temperature;
+      Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
+      return temperature - saturatedTemperature;
     }
 
     /// <summary>
