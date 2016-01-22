@@ -107,7 +107,15 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-      await ion.SaveWorkbenchAsync();
+      switch (workbenchEvent.type) {
+        case WorkbenchEvent.EType.Added:
+          goto case WorkbenchEvent.EType.Swapped;
+        case WorkbenchEvent.EType.Removed:
+          goto case WorkbenchEvent.EType.Swapped;
+        case WorkbenchEvent.EType.Swapped:
+          ion.SaveWorkbenchAsync();
+          break;
+      }
     }
 
     private void TakeScreenshot() {

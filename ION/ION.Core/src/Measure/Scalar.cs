@@ -8,7 +8,7 @@
   /// A Scalar is a numerical representation of a physical quantity.
   /// </summary>
   [DataContract(Name="Scalar")]
-  public class Scalar : IComparable<Scalar> {
+  public struct Scalar : IComparable<Scalar> {
 
     /// <summary>
     /// Queries the physical quntity that the scalar is represented as.
@@ -40,6 +40,7 @@
       return h ^ unit.GetHashCode();
     }
 
+/*
     // Overridden from Object
     public override bool Equals(object obj) {
       var other = obj as Scalar;
@@ -49,6 +50,7 @@
         return unit == other?.unit && amount == other?.amount;
       }
     }
+*/
 
     public bool AssertEquals(Scalar other, double epsilon) {
       if (unit.GetDimension() != other.unit.GetDimension()) {
@@ -176,6 +178,7 @@
       return o1.amount <= o2;
     }
 
+
     public static bool operator !=(Scalar o1, Scalar o2) {
       return !(o1 == o2);
     }
@@ -183,6 +186,8 @@
     public static bool operator ==(Scalar o1, Scalar o2) {
       return (!object.ReferenceEquals(o1, null) && !object.ReferenceEquals(o2, null)) && (o1.amount == o2.amount && o1.unit.Equals(o2.unit));
     }
+
+
 
     /// <summary>
     /// Asserts that the two units are compatible with eachother.

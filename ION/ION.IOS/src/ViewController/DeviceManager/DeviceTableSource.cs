@@ -244,7 +244,9 @@
         if (dr.expanded) {
           section.records.Add(new SerialNumberRecord(device.serialNumber));
           foreach (var sensor in ((GaugeDevice)device).sensors) {
-            section.records.Add(new SensorRecord(sensor));
+            if (sensorFilter.Matches(sensor)) {
+              section.records.Add(new SensorRecord(sensor));
+            }
           }
         }
 
