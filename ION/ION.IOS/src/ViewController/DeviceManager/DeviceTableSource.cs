@@ -174,6 +174,10 @@
       var section = sections[(int)sectionIndex];
 
       var cell = tableView.DequeueReusableCell(CELL_HEADER) as DeviceSectionHeaderTableCell;
+      var w = tableView.Frame.Size.Width;
+      var f = cell.Frame;
+      f.Width = w;
+      cell.Frame = f;
       cell.UpdateTo(section);
 
       var ret = new UIView();
@@ -217,7 +221,11 @@
 
         return cell;
       } else if (record is SpaceRecord) {
-        return tableView.DequeueReusableCell(CELL_SPACE);
+        var cell = tableView.DequeueReusableCell(CELL_SPACE);
+
+        cell.BackgroundColor = UIColor.Clear;
+
+        return cell;
       } else {
         throw new Exception("Cannot get cell for record: " + record);
       }

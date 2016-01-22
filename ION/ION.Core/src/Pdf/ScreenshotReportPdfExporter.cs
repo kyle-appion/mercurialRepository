@@ -110,6 +110,38 @@
 
       var table = BuildReportContentTable(report.tableData, header, content);
 
+      var xoffset = 0.0;
+      var yoffset = 0.0;
+
+      for (int c = 0; c < table.length; c++) {
+        var col = table[c];
+        yoffset = 0.0;
+
+        for (int r = 0; r < col.length; r++) {
+          var l = NewLayout();
+          l.X = bounds.LLX + xoffset + (5 * c);
+          l.Y = bounds.LLY + yoffset;
+          l.Width = col.columnWidth;
+          l.Height = col.rowHeight;
+
+          g.DrawString(table[c][r], col.appearance, l);
+
+          yoffset += col.rowHeight;
+        }
+
+        xoffset += col.columnWidth;
+      }
+
+      {
+        var l = NewLayout();
+        l.X = bounds.LLX;
+        l.Y = bounds.LLY + yoffset;
+        l.Width = bounds.Width;
+        l.Height = bounds.URY - l.Y;
+        g.DrawString(report.notes, NewAppearance(content), l);
+      }
+
+/*
       var yoffset = 0.0;
       var xoffset = 0.0;
 
@@ -142,6 +174,7 @@
       l.Height = bounds.Height - (bounds.LLY - yoffset);
 
       g.DrawString(report.notes, looks, l);
+*/
     }
 
     /// <summary>
