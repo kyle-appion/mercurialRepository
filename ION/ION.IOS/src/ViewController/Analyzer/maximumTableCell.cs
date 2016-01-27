@@ -30,12 +30,9 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellReading = lhSensor.maxReading ;
       if (lhSensor.maxType.Equals("hold")) {
-        Console.WriteLine("Max not set yet so starting with gauge reading");
         lhSensor.max = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.maxType = lhSensor.LabelBottom.Text;
-      } else {
-        Console.WriteLine("maxType isn't empty and is of " + lhSensor.maxType + " unit ");
-      }
+      } 
       if (lhSensor.isManual.Equals(true)) {
         var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
         cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text;

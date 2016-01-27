@@ -57,7 +57,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         }
       } else {
-        tempReading.Text = "Setup";
+        tempReading.Text = Util.Strings.Analyzer.SETUP;
       }
       tempReading.AdjustsFontSizeToFitWidth = true;
       tempReading.TextAlignment = UITextAlignment.Center;

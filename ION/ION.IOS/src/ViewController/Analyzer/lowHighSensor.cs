@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Analyzer
 			snapArea = new UIView (areaRect);
       cellHeight = .521f * snapArea.Bounds.Height;
       //Low: new CGRect(9,438,149,122)
-      //High: new CGRect(165,438,149,122)
+      //High: new CGRect(165,438,149,122)y
       subviewTable = new UITableView (tblRect);
       //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,150,25)
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
@@ -234,7 +234,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
       LabelBottom.Text = sensor.measurement.unit.ToString() + "  ";
-      LabelSubview.Text = " " + LabelTop.Text + "'s Subviews";
+      LabelSubview.Text = " " + LabelTop.Text + Util.Strings.Analyzer.LHTABLE;
 
       foreach (string subview in tableSubviews) {
         
@@ -267,7 +267,7 @@ namespace ION.IOS.ViewController.Analyzer
           alt = new AlternateUnitSensorProperty(sensor);
 
           alt.unit = tempUnit;
-          var amount = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);
+
           altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
         if (subview.Equals("Rate")) {
@@ -302,19 +302,19 @@ namespace ION.IOS.ViewController.Analyzer
           ptAmount = calculation.amount;
         }
       }
-      Console.WriteLine("ptAmount is " + ptAmount);
+
       if (manifold.ptChart != null) {
 
         if (!manifold.ptChart.fluid.mixture){
           if (ptAmount < 0) {
-            shFluidState.Text = "S/C";
+            shFluidState.Text = Util.Strings.Analyzer.SC;
           } else {
-            shFluidState.Text = "S/H";
+            shFluidState.Text = Util.Strings.Analyzer.SH;
           }
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
-          shFluidState.Text = "S/H";
+          shFluidState.Text = Util.Strings.Analyzer.SH;
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
-          shFluidState.Text = "S/C";
+          shFluidState.Text = Util.Strings.Analyzer.SC;
         }  
       }
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {

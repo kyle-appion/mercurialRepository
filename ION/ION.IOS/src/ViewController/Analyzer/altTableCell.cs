@@ -91,7 +91,7 @@ namespace ION.IOS.ViewController.Analyzer {
           vc = vc.PresentedViewController;
         }
 
-        UIAlertController altUnit = UIAlertController.Create ("Choose Unit", "", UIAlertControllerStyle.Alert);
+        UIAlertController altUnit = UIAlertController.Create (Util.Strings.Analyzer.CHOOSEUNIT, "", UIAlertControllerStyle.Alert);
 
         if(lhSensor.alt.sensor.type== ESensorType.Pressure){
           foreach(String unit in lhSensor.altUnits) {
@@ -137,7 +137,7 @@ namespace ION.IOS.ViewController.Analyzer {
           }
         }
 
-        altUnit.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+        altUnit.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
         vc.PresentViewController (altUnit, true, null);
       };
