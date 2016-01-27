@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\Redaction.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Redaction<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// Redaction sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> Redaction
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>Stream input<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">(</span>input<span class="hl opt">);</span>
+            PdfContentRedactor crText <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfContentRedactor</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Pages<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]);</span>
+            <span class="hl slc">// Redact a rectangular area of 200*100 points and leave the redacted area uncovered.</span>
+            crText<span class="hl opt">.</span><span class="hl kwd">RedactArea</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">));</span>
+            <span class="hl slc">// Redact a rectangular area of 200*100 points and mark the redacted area with red.</span>
+            crText<span class="hl opt">.</span><span class="hl kwd">RedactArea</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">),</span> PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">);</span>
+
+            PdfContentRedactor crImages <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfContentRedactor</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Pages<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+            <span class="hl slc">// Initialize the bulk redaction.</span>
+            crImages<span class="hl opt">.</span><span class="hl kwd">BeginRedaction</span><span class="hl opt">();</span>
+            <span class="hl slc">// Prepare for redaction a rectangular area of 500*100 points and leave the redacted area uncovered.</span>
+            crImages<span class="hl opt">.</span><span class="hl kwd">RedactArea</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">));</span>
+            <span class="hl slc">// Prepare for redaction a rectangular area of 200*100 points and mark the redacted area with red.</span>
+            crImages<span class="hl opt">.</span><span class="hl kwd">RedactArea</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">),</span> PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">);</span>
+            <span class="hl slc">// When images are redacted, the cleared pixels are set to 0. Depending on image colorspace the redacted area can appear black or colored.</span>
+            <span class="hl slc">// Finish the redaction</span>
+            crImages<span class="hl opt">.</span><span class="hl kwd">ApplyRedaction</span><span class="hl opt">();</span>
+
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.redaction.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.12, http://www.andre-simon.de/-->

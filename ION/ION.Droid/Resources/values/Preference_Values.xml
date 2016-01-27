@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- 
+  STRINGS
+  -->
+  <string name="preferences">ION Preferences</string>
+
+  <string name="preferences_display_wakelock">Allow Device To Sleep</string>
+  <string name="preferences_display_wakelock_on">Will not sleep while ION is open</string>
+  <string name="preferences_display_wakelock_off">Sleep as normal</string>
+
+  <string name="preferences_location_use"></string>
+  <string name="preferences_location_use_title">Allow GPS Location</string>
+
+  <string name="preferences_units_default">Default Units</string>
+  <string name="preferences_units_length">Default Length Unit</string>
+  <string name="preferences_units_length_title">Select a new default length</string>
+  <string name="preferences_units_pressure">Default Pressure Unit</string>
+  <string name="preferences_units_pressure_title">Select a new default pressure</string>
+  <string name="preferences_units_temperature">Default Temperature Unit</string>
+  <string name="preferences_units_temperature_title">Select a new default temperature</string>
+  <string name="preferences_units_vacuum">Default Vacuum Unit</string>
+  <string name="preferences_units_vacuum_title">Select a new default vacuum</string>
+
+  <!--
+  INTEGERS
+  -->
+  <integer name="preferences_units_length_default">21</integer>
+  <integer name="preferences_units_pressure_default">7</integer>
+  <integer name="preferences_units_temperature_default">18</integer>
+  <integer name="preferences_units_vacuum_default">39</integer>
+
+  <!--
+  DEFAULT UNITS
+  -->
+  <!-- Length Entries -->
+  <string-array name="preferences_units_length_entries">
+    <item>m</item>
+    <item>ft</item>
+  </string-array>
+
+  <!-- Length Values -->
+  <string-array name="preferences_units_length_values">
+    <item>20</item>
+    <item>21</item>
+  </string-array>
+
+  <!-- Pressure Entries -->
+  <string-array name="preferences_units_pressure_entries">
+    <item>kPa</item>
+    <item>MPa</item>
+    <item>bar</item>
+    <item>cmHg</item>
+    <item>inHg</item>
+    <item>PSIa</item>
+    <item>PSIg</item>
+    <item>kg/cm²</item>
+  </string-array>
+
+  <!-- Pressure Values -->
+  <string-array name="preferences_units_pressure_values">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+  </string-array>
+
+  <!-- Temperature Entries -->
+  <string-array name="preferences_units_temperature_entries">
+    <item>°K</item>
+    <item>°C</item>
+    <item>°F</item>
+  </string-array>
+
+  <!-- Temperature Values -->
+  <string-array name="preferences_units_temperature_values">
+    <item>16</item>
+    <item>17</item>
+    <item>18</item>
+  </string-array>
+
+  <!-- Vacuum Entries -->
+  <string-array name="preferences_units_vacuum_entries">
+    <item>Pa</item>
+    <item>kPa</item>
+    <item>MPa</item>
+    <item>mbar</item>
+    <item>cmHg</item>
+    <item>inHg</item>
+    <item>PSIa</item>
+    <item>micron</item>
+    <item>torr</item>
+    <item>mtorr</item>
+  </string-array>
+
+  <!-- Vacuum Values -->
+  <string-array name="preferences_units_vacuum_values">
+    <item>32</item>
+    <item>33</item>
+    <item>34</item>
+    <item>35</item>
+    <item>36</item>
+    <item>37</item>
+    <item>38</item>
+    <item>39</item>
+    <item>40</item>
+    <item>41</item>
+  </string-array>
+</resources>
