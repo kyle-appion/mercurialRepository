@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.Analyzer {
       //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
-      cellHeader.Text = "S/H";
+      cellHeader.Text = Util.Strings.Analyzer.SH;
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
@@ -40,9 +40,9 @@ namespace ION.IOS.ViewController.Analyzer {
         fluidType.Text = name;
         fluidType.BackgroundColor = CGExtensions.FromARGB8888(lhSensor.ion.fluidManager.GetFluidColor(name));
         if(lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)){
-          cellHeader.Text = "S/C";
+          cellHeader.Text = Util.Strings.Analyzer.SC;
         } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)){
-          cellHeader.Text = "S/H";
+          cellHeader.Text = Util.Strings.Analyzer.SH;
         }
       } else {
         fluidType.Text = "----";
@@ -64,7 +64,7 @@ namespace ION.IOS.ViewController.Analyzer {
           tempReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         }
       } else {
-        tempReading.Text = "Setup";
+        tempReading.Text = Util.Strings.Analyzer.SETUP;
       }
 
       tempReading.AdjustsFontSizeToFitWidth = true;

@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using UIKit;
 using CoreGraphics;
 using Foundation;
@@ -81,16 +82,16 @@ namespace ION.IOS.ViewController.Analyzer
       mentryView.mView.Layer.CornerRadius = 10f;
       mentryView.mView.Layer.BorderWidth = 1f;
       mentryView.mView.Layer.BorderColor = UIColor.LightGray.CGColor;
-      mentryView.popupText.Text = "Create Manual Entry";
+      mentryView.popupText.Text = Util.Strings.Analyzer.CREATEMANUAL;
       mentryView.popupText.TextAlignment = UITextAlignment.Center;
       mentryView.popupText.AdjustsFontSizeToFitWidth = true;
       mentryView.popupText.BackgroundColor = UIColor.FromRGB(9,221,255);
       mentryView.popupText.Layer.CornerRadius = 5f;
       mentryView.popupText.ClipsToBounds = false;
       mentryView.popupText.Font = UIFont.FromName("Helvetica-Bold", 27f);
-      mentryView.mdeviceType.Text = "Device Type";
+      mentryView.mdeviceType.Text = Util.Strings.Analyzer.DEVICETYPE;
       mentryView.mdeviceType.AdjustsFontSizeToFitWidth = true;
-      mentryView.dtypeButton.SetTitle("Pressure", UIControlState.Normal);
+      mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
       mentryView.dtypeButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       mentryView.dtypeButton.Font = UIFont.FromName("Helvetica-Bold", 20f);
@@ -103,10 +104,10 @@ namespace ION.IOS.ViewController.Analyzer
       mentryView.mbuttonText.BackgroundColor = UIColor.FromRGB(243, 251, 0);
       mentryView.mbuttonText.TextAlignment = UITextAlignment.Center;
       mentryView.mcloseButton.SetTitleColor(UIColor.Gray, UIControlState.Normal);
-      mentryView.mcloseButton.SetTitle("Close", UIControlState.Normal);
+      mentryView.mcloseButton.SetTitle(Util.Strings.Analyzer.CLOSE, UIControlState.Normal);
       mentryView.mcloseButton.ClipsToBounds = true;
       mentryView.mdoneButton.SetTitleColor(UIColor.Gray, UIControlState.Normal);
-      mentryView.mdoneButton.SetTitle("OK-Done", UIControlState.Normal);
+      mentryView.mdoneButton.SetTitle(Util.Strings.Analyzer.OKDONE, UIControlState.Normal);
       mentryView.mdoneButton.ClipsToBounds = true;
 
       View.AddSubview(mentryView.mView);
@@ -120,9 +121,9 @@ namespace ION.IOS.ViewController.Analyzer
       sactionView.aView.Hidden = true;
       sactionView.aView.Layer.BorderWidth = 1f;
       sactionView.aView.Layer.BorderColor = UIColor.LightGray.CGColor;
-      sactionView.pactionButton.SetTitle("Actions", UIControlState.Normal);
+      sactionView.pactionButton.SetTitle(Util.Strings.Analyzer.ACTIONS, UIControlState.Normal);
       sactionView.pactionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      sactionView.pcloseButton.SetTitle("Close", UIControlState.Normal);
+      sactionView.pcloseButton.SetTitle(Util.Strings.Analyzer.CLOSE, UIControlState.Normal);
       sactionView.pcloseButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       sactionView.pvalueType.TextAlignment = UITextAlignment.Right;
       sactionView.pLowHigh.AdjustsFontSizeToFitWidth = true;
@@ -133,7 +134,7 @@ namespace ION.IOS.ViewController.Analyzer
       sactionView.pgaugeValue.AdjustsFontSizeToFitWidth = true;
       sactionView.pgaugeValue.Font = UIFont.FromName("Helvetica-Bold", 54f);
       sactionView.pgaugeValue.TextAlignment = UITextAlignment.Right;
-      sactionView.pdisplayLink.Text = "Display Link:";
+      sactionView.pdisplayLink.Text = Util.Strings.Analyzer.DISPLAYLINK;
       sactionView.pdisplayLink.TextAlignment = UITextAlignment.Right;
       sactionView.pdisplayLink.Font = UIFont.FromName("Helvetica", 12f);
       sactionView.pconnectionStatus.AdjustsFontSizeToFitWidth = true;
@@ -215,7 +216,7 @@ namespace ION.IOS.ViewController.Analyzer
       lowArea.LabelTop.ClipsToBounds = true;
 
       lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
-      lowArea.LabelMiddle.Text = "Low Viewer Not Defined";
+      lowArea.LabelMiddle.Text = Util.Strings.Analyzer.LOWUNDEFINED;
       lowArea.LabelMiddle.Font = UIFont.FromName("Helvetica-Bold", 42f);
       lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
 
@@ -280,7 +281,7 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.LabelTop.ClipsToBounds = true;
 
       highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
-      highArea.LabelMiddle.Text = "High Viewer Not Defined";
+      highArea.LabelMiddle.Text = Util.Strings.Analyzer.HIGHUNDEFINED;
       highArea.LabelMiddle.Font = UIFont.FromName("Helvetica-Bold", 42f);
       highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
 
@@ -358,7 +359,7 @@ namespace ION.IOS.ViewController.Analyzer
 			lowHighSensors.lowArea.LabelTop.ClipsToBounds = true;
 
 			lowHighSensors.lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
-			lowHighSensors.lowArea.LabelMiddle.Text = "Low Viewer Not Defined";
+      lowHighSensors.lowArea.LabelMiddle.Text = Util.Strings.Analyzer.LOWUNDEFINED;
 			lowHighSensors.lowArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
 
 			lowHighSensors.lowArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
@@ -422,7 +423,7 @@ namespace ION.IOS.ViewController.Analyzer
 			lowHighSensors.highArea.LabelTop.ClipsToBounds = true;
 
 			lowHighSensors.highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
-			lowHighSensors.highArea.LabelMiddle.Text = "High Viewer Not Defined";
+      lowHighSensors.highArea.LabelMiddle.Text = Util.Strings.Analyzer.HIGHUNDEFINED;
 			lowHighSensors.highArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
 
 			lowHighSensors.highArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
@@ -666,17 +667,17 @@ namespace ION.IOS.ViewController.Analyzer
 
       UIAlertController addDeviceSheet;
 
-      addDeviceSheet = UIAlertController.Create (lhSensor.LabelTop.Text + " Actions", "", UIAlertControllerStyle.Alert);
+      addDeviceSheet = UIAlertController.Create (lhSensor.LabelTop.Text + " " + Util.Strings.ACTIONS, "", UIAlertControllerStyle.Alert);
 
-      addDeviceSheet.AddAction (UIAlertAction.Create ("Add Subview", UIAlertActionStyle.Default, (action) => {
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.ADDSUBVIEW, UIAlertActionStyle.Default, (action) => {
         subviewOptionChosen(lhSensor);
       }));
 
-      addDeviceSheet.AddAction (UIAlertAction.Create ("Remove Sensor", UIAlertActionStyle.Default, (action) => {
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.REMOVESENSOR, UIAlertActionStyle.Default, (action) => {
         RemoveDevice (Sensor, lowHighSensors);
       }));
 
-      addDeviceSheet.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
       vc.PresentViewController (addDeviceSheet, true, null);
     }
@@ -691,7 +692,7 @@ namespace ION.IOS.ViewController.Analyzer
         vc = vc.PresentedViewController;
       }
 
-      UIAlertController subviewAlert = UIAlertController.Create ("Choose a subview", "", UIAlertControllerStyle.Alert);
+      UIAlertController subviewAlert = UIAlertController.Create (Util.Strings.Analyzer.SUBVIEW, "", UIAlertControllerStyle.Alert);
       foreach (string subview in pressedArea.availableSubviews) {
         var splits = subview.Split(' ');
 
@@ -708,7 +709,7 @@ namespace ION.IOS.ViewController.Analyzer
         }
       }
 
-      subviewAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      subviewAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
       vc.PresentViewController (subviewAlert, true, null);
     }
 		/// <summary>
@@ -1152,8 +1153,8 @@ namespace ION.IOS.ViewController.Analyzer
 
         UIAlertController addDeviceSheet;
 
-        addDeviceSheet = UIAlertController.Create("Complete Action?", message, UIAlertControllerStyle.Alert);
-        addDeviceSheet.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, message, UIAlertControllerStyle.Alert);
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
           if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(true)) {
             if (removeSensor.manualSensor.type == ESensorType.Pressure && Sensor.manualSensor.type == ESensorType.Temperature) {
               removeSensor.lowArea.manifold.secondarySensor = Sensor.manualSensor;
@@ -1222,22 +1223,22 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
         }));
-        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
         vc.PresentViewController(addDeviceSheet, true, null);
       } else {
 
         if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature) {
-          message = "Do you want to add this temperature sensor to the current pressure sensor?";
+          message = Util.Strings.Analyzer.ADDTEMP;
         } else if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure) {
-          message = "Do you want to add this pressure sensor to the current temperature sensor?";
+          message = Util.Strings.Analyzer.ADDPRESS;
         }
 
         UIAlertController addDeviceSheet;
 
-        addDeviceSheet = UIAlertController.Create("Complete Action?", message, UIAlertControllerStyle.Alert);
+        addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, message, UIAlertControllerStyle.Alert);
 
-        addDeviceSheet.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
           if (Sensor.isManual.Equals(false)) {
             if (Sensor.currentSensor.device.isConnected) {
               Sensor.lowArea.connectionColor.BackgroundColor = UIColor.Green;
@@ -1252,12 +1253,12 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
           if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature) {
-            Console.WriteLine("Adding temp device " + Sensor.currentSensor.device.name + "'s sensor as device " + removeSensor.currentSensor.device.name + "'s secondary sensor");
+            //Console.WriteLine("Adding temp device " + Sensor.currentSensor.device.name + "'s sensor as device " + removeSensor.currentSensor.device.name + "'s secondary sensor");
             removeSensor.lowArea.manifold.secondarySensor = Sensor.currentSensor as Sensor;
             removeSensor.highArea.manifold.secondarySensor = Sensor.currentSensor as Sensor;
 
           } else if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure) {
-            Console.WriteLine("Swapping the current  " + removeSensor.currentSensor.device.name + "'s manifold's primary sensor with device " + Sensor.currentSensor.device.name + "'s sensor");
+            //Console.WriteLine("Swapping the current  " + removeSensor.currentSensor.device.name + "'s manifold's primary sensor with device " + Sensor.currentSensor.device.name + "'s sensor");
             removeSensor.lowArea.manifold = new Manifold(Sensor.currentSensor);
             removeSensor.lowArea.manifold.secondarySensor = removeSensor.currentSensor as Sensor;
             removeSensor.lowArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
@@ -1278,7 +1279,7 @@ namespace ION.IOS.ViewController.Analyzer
           }
         }));
 
-        addDeviceSheet.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
         vc.PresentViewController(addDeviceSheet, true, null);
       }
@@ -1301,40 +1302,31 @@ namespace ION.IOS.ViewController.Analyzer
       if( lowHighSensors.lowArea.areaRect.Contains(touchPoint)){
         if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == Sensor.snapArea.AccessibilityIdentifier) {
           if(!freeSpot(analyzerSensors,Sensor,"low")){
-            UIAlertController fullPopup = UIAlertController.Create ("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+            UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
-            fullPopup.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {}));            
+            fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
 
             vc.PresentViewController (fullPopup, true, null);
           } else {
-  					string message = "Completing this action will cause the High side subview arrangement to be lost.";
+            string message = Util.Strings.Analyzer.HIGHLOST;
 
   					if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "1") {
-              Console.WriteLine("Sending sensor 1 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea1, lowHighSensors, analyzerSensors, View);					
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "2") {
-              Console.WriteLine("Sending sensor 2 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea2, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "3") {
-              Console.WriteLine("Sending sensor 3 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea3, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "4") {
-              Console.WriteLine("Sending sensor 4 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea4, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "5") {
-              Console.WriteLine("Sending sensor 5 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea5, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "6") {
-              Console.WriteLine("Sending sensor 6 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea6, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "7") {
-              Console.WriteLine("Sending sensor 7 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea7, lowHighSensors, analyzerSensors, View);
   					} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "8") {
-              Console.WriteLine("Sending sensor 8 to remove. Sensor from high area");
               replaceAlert (message, 3, Sensor, analyzerSensors.snapArea8, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "low") {
-              Console.WriteLine("High side associated sensor dropped on empty low side");
 
               var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"low",View);
               if (goOn) {
@@ -1363,36 +1355,28 @@ namespace ION.IOS.ViewController.Analyzer
           }
 				} else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low") {
           if(!freeSpot(analyzerSensors,Sensor,"low")){
-            UIAlertController fullPopup = UIAlertController.Create ("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+            UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
-            fullPopup.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {}));            
+            fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
 
             vc.PresentViewController (fullPopup, true, null);
           } else {
-  					string message = "Completing this action will cause the Low side subview arrangement to be lost.";
+            string message = Util.Strings.Analyzer.LOWLOST;
             if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "1" && Sensor.snapArea.AccessibilityIdentifier != "1") {
-              Console.WriteLine("Sending sensor 1 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea1, lowHighSensors, analyzerSensors, View);					
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "2" && Sensor.snapArea.AccessibilityIdentifier != "2") {
-              Console.WriteLine("Sending sensor 2 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea2, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "3" && Sensor.snapArea.AccessibilityIdentifier != "3") {
-              Console.WriteLine("Sending sensor 3 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea3, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "4" && Sensor.snapArea.AccessibilityIdentifier != "4") {
-              Console.WriteLine("Sending sensor 4 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea4, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "5" && Sensor.snapArea.AccessibilityIdentifier != "5") {
-              Console.WriteLine("Sending sensor 5 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea5, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "6" && Sensor.snapArea.AccessibilityIdentifier != "6") {
-              Console.WriteLine("Sending sensor 6 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea6, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "7" && Sensor.snapArea.AccessibilityIdentifier != "7") {
-              Console.WriteLine("Sending sensor 7 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea7, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "8" && Sensor.snapArea.AccessibilityIdentifier != "8") {
-              Console.WriteLine("Sending sensor 8 to remove. Sensor was unattached");
               replaceAlert (message, 1, Sensor, analyzerSensors.snapArea8, lowHighSensors, analyzerSensors, View);
             }
           }
@@ -1428,9 +1412,9 @@ namespace ION.IOS.ViewController.Analyzer
             return;
 					}
 
-          UIAlertController fullPopup = UIAlertController.Create ("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+          UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
-          fullPopup.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {}));            
+          fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
 
           vc.PresentViewController (fullPopup, true, null);
 				}
@@ -1438,13 +1422,13 @@ namespace ION.IOS.ViewController.Analyzer
 			} else if (lowHighSensors.highArea.areaRect.Contains (touchPoint)){
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == Sensor.snapArea.AccessibilityIdentifier) {
           if(!freeSpot(analyzerSensors,Sensor,"high")){
-            UIAlertController fullPopup = UIAlertController.Create ("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+            UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
-            fullPopup.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {}));            
+            fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
 
             vc.PresentViewController (fullPopup, true, null);
           } else {
-            string message = "Completing this action will cause the Low side subview arrangement to be lost.";
+            string message = Util.Strings.Analyzer.LOWLOST;
             if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "1") {
               replaceAlert(message, 4, Sensor, analyzerSensors.snapArea1, lowHighSensors, analyzerSensors, View);					
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "2") {
@@ -1461,8 +1445,7 @@ namespace ION.IOS.ViewController.Analyzer
               replaceAlert(message, 4, Sensor, analyzerSensors.snapArea7, lowHighSensors, analyzerSensors, View);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "8") {
               replaceAlert(message, 4, Sensor, analyzerSensors.snapArea8, lowHighSensors, analyzerSensors, View);
-            } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "high") {
-              Console.WriteLine("High side wasn't empty but wasn't attached to a 1 - 8 sensor");
+            } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "high") {              
               var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"high",View);
               if (goOn) {
                 lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
@@ -1490,14 +1473,14 @@ namespace ION.IOS.ViewController.Analyzer
           }
 				} else if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
           if (!freeSpot(analyzerSensors,Sensor, "high")) {
-            UIAlertController fullPopup = UIAlertController.Create("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+            UIAlertController fullPopup = UIAlertController.Create(Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
             fullPopup.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Default, (action) => {
             }));
 
             vc.PresentViewController(fullPopup, true, null);
           } else {
-            string message = "Completing this action will cause the High side subview arrangement to be lost.";
+            string message = Util.Strings.Analyzer.HIGHLOST;
             if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "1" && Sensor.snapArea.AccessibilityIdentifier != "1") {
               replaceAlert(message, 2, Sensor, analyzerSensors.snapArea1, lowHighSensors, analyzerSensors, View);					
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "2" && Sensor.snapArea.AccessibilityIdentifier != "2") {
@@ -1547,9 +1530,9 @@ namespace ION.IOS.ViewController.Analyzer
             return;
 					}
 
-          UIAlertController fullPopup = UIAlertController.Create ("Cannot Move Sensor", "Not enough space", UIAlertControllerStyle.Alert);
+          UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
-          fullPopup.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {}));            
+          fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
 
           vc.PresentViewController (fullPopup, true, null);
 				}
