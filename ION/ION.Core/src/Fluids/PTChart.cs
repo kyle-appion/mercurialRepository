@@ -105,7 +105,6 @@
       if (isRelative) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
-
       return fluid.GetTemperatureFromPressure(state, pressure);
     }
 
@@ -158,7 +157,7 @@
             throw new Exception("Unknown ptchart state: " + state);
         }
       } else {
-        return GetTemperature(pressure).ConvertTo(temperature.unit) - temperature;
+        return temperature - GetTemperature(pressure).ConvertTo(temperature.unit);
       }
     }
 

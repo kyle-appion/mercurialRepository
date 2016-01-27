@@ -126,6 +126,7 @@ namespace ION.IOS.ViewController.Analyzer
     public UILabel shFluidState;
     public UIButton changeFluid;
     public UILabel ptReading;
+    public double ptAmount = 0;
     public UILabel ptFluidType;
     public UIButton changePTFluid;
     public UILabel altReading;
@@ -291,15 +292,31 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
           shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+          ptAmount = calculation.amount;
         } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null){
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
           shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+          ptAmount = calculation.amount;
         }
       }
+      Console.WriteLine("ptAmount is " + ptAmount);
+      if (manifold.ptChart != null) {
 
+        if (!manifold.ptChart.fluid.mixture){
+          if (ptAmount < 0) {
+            shFluidState.Text = "S/C";
+          } else {
+            shFluidState.Text = "S/H";
+          }
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          shFluidState.Text = "S/H";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          shFluidState.Text = "S/C";
+        }  
+      }
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
@@ -314,16 +331,6 @@ namespace ION.IOS.ViewController.Analyzer
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
 
-      if (manifold.ptChart != null) {
-
-        if (!manifold.ptChart.fluid.mixture){
-          shFluidState.Text = "S/C";
-        } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
-          shFluidState.Text = "S/H";
-        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
-          shFluidState.Text = "S/C";
-        }  
-      }
     }
     /// <summary>
     /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER
