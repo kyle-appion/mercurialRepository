@@ -11,10 +11,20 @@ namespace ION.IOS.ViewController.Analyzer {
       mView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
       mcloseButton = new UIButton(new CGRect(0,.753 * mView.Bounds.Height, .503 * mView.Bounds.Width, .246 * mView.Bounds.Height));
       mdoneButton = new UIButton(new CGRect(.5 * mView.Bounds.Width, .753 * mView.Bounds.Height, .5 * mView.Bounds.Width, .246 * mView.Bounds.Height));
-      mmeasurementType = new UIButton (new CGRect(.535 * mView.Bounds.Width, .533 * mView.Bounds.Height, .435 * mView.Bounds.Width, .225 * mView.Bounds.Height));
+      mmeasurementType = new UIButton (new CGRect(.535 * mView.Bounds.Width, .384 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+      mmeasurementType.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      mmeasurementType.Layer.BorderColor = UIColor.Black.CGColor;
+      mmeasurementType.Layer.BorderWidth = 2f;      
       dtypeButton = new UIButton (new CGRect(.535 * mView.Bounds.Width, .179 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
-      mtextValue = new UITextField (new CGRect(.028 * mView.Bounds.Width, .384 * mView.Bounds.Height, .942 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+      dtypeButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      dtypeButton.Layer.BorderColor = UIColor.Black.CGColor;
+      dtypeButton.Layer.BorderWidth = 2f;
+      mtextValue = new UITextField (new CGRect(.028 * mView.Bounds.Width, .384 * mView.Bounds.Height, .5 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+      mtextValue.AttributedPlaceholder = new NSAttributedString (
+        "Enter Measurement"
+      );
       mtextValue.KeyboardType = UIKeyboardType.DecimalPad;
+      mtextValue.AdjustsFontSizeToFitWidth = true;
       mtextValue.ShouldChangeCharacters = (textField, range, replacementString) => {
         if(replacementString.Contains("0") || replacementString.Contains("1") || replacementString.Contains("2") || replacementString.Contains("3") ||
            replacementString.Contains("4") || replacementString.Contains("5") || replacementString.Contains("6") || replacementString.Contains("7") ||
@@ -37,17 +47,19 @@ namespace ION.IOS.ViewController.Analyzer {
           return false;
         }
       };
-      mbuttonText = new UITextField (new CGRect(.582 * mView.Bounds.Width, .548 * mView.Bounds.Height, .389 * mView.Bounds.Width, .205 * mView.Bounds.Height));
-      mdeviceType = new UILabel (new CGRect(.028 * mView.Bounds.Width, .169 * mView.Bounds.Height, .682 * mView.Bounds.Width, .174 * mView.Bounds.Height));
+      mbuttonText = new UITextField (new CGRect(.555 * mView.Bounds.Width, .364 * mView.Bounds.Height, .389 * mView.Bounds.Width, .205 * mView.Bounds.Height));
+      mdeviceType = new UILabel (new CGRect(.028 * mView.Bounds.Width, .169 * mView.Bounds.Height, .5 * mView.Bounds.Width, .174 * mView.Bounds.Height));
+      mdeviceType.TextAlignment = UITextAlignment.Right;
+      mdeviceType.Font = UIFont.FromName("Helvetica-Bold", 20f);
       popupText = new UILabel (new CGRect(0,0,mView.Bounds.Width,.158 * mView.Bounds.Height));
       mbuttonBorder = new UIView (new CGRect(0,.753 * mView.Bounds.Height,mView.Bounds.Width,1));
       mbuttonBorder.BackgroundColor = UIColor.LightGray;
       mbuttonBorder2 = new UIView(new CGRect(.5 * mView.Bounds.Width,.753 * mView.Bounds.Height,1,.246 * mView.Bounds.Height));
       mbuttonBorder2.BackgroundColor = UIColor.LightGray;
-      textValidation = new UILabel(new CGRect(.028 * mView.Bounds.Width,.553 * mView.Bounds.Height,.5 *mView.Bounds.Width,.153 * mView.Bounds.Height));
+      textValidation = new UILabel(new CGRect(.028 * mView.Bounds.Width,.553 * mView.Bounds.Height,.942 *mView.Bounds.Width,.153 * mView.Bounds.Height));
+      textValidation.TextAlignment = UITextAlignment.Center;
       textValidation.TextColor = UIColor.Red;
       textValidation.Hidden = true;
-      textValidation.Lines = 2;
       textValidation.LineBreakMode = UILineBreakMode.WordWrap;
       textValidation.AdjustsFontSizeToFitWidth = true;
       mView.AddSubview(mcloseButton);

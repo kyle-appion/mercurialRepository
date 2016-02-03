@@ -68,8 +68,7 @@ namespace ION.IOS.ViewController.Analyzer {
           lhSensor.alt.unit = manSensor.unit;
         }
         cellReading.Text = SensorUtils.ToFormattedString(lhSensor.alt.sensor.type, lhSensor.alt.modifiedMeasurement, true);
-      } else {
-        
+      } else {       
 
         lhSensor.alt = new AlternateUnitSensorProperty(lhSensor.currentSensor as Sensor);
         if (lhSensor.altUnit != null) {

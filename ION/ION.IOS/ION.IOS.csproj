@@ -466,6 +466,7 @@
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
+    <Folder Include="Resources\es.lproj\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -481,6 +482,7 @@
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
     <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
+    <BundleResource Include="Resources\es.lproj\Localizable.strings" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

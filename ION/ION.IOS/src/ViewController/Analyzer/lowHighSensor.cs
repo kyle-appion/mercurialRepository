@@ -10,6 +10,7 @@ using ION.Core.Content;
 using ION.Core.Devices;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
+using ION.Core.Connections;
 using ION.IOS.Util;
 using ION.Core.Fluids;
 using ION.IOS.ViewController.FluidManager;
@@ -40,6 +41,8 @@ namespace ION.IOS.ViewController.Analyzer
       connectionColor.BackgroundColor = UIColor.Red;
       Connection = new UIImageView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height,  .14 * areaRect.Width,.217 * areaRect.Height));
       Connection.BackgroundColor = UIColor.Clear;
+      activityConnectStatus = new UIActivityIndicatorView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height,  .14 * areaRect.Width,.217 * areaRect.Height));
+      activityConnectStatus.Hidden = true;
       conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.214 * areaRect.Width));
@@ -61,6 +64,11 @@ namespace ION.IOS.ViewController.Analyzer
       shFluidState.TextAlignment = UITextAlignment.Center;
       shFluidState.TextColor = UIColor.White;
       shFluidState.BackgroundColor = UIColor.Black;
+      ptFluidState = new UILabel(new CGRect(0, 0, 1.006 * tblRect.Width, .5 * cellHeight));
+      ptFluidState.TextAlignment = UITextAlignment.Center;
+      ptFluidState.TextColor = UIColor.White;
+      ptFluidState.BackgroundColor = UIColor.Black;
+      ptFluidState.Text = "PTDew";
       changeFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       changeFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changeFluid.Layer.BorderWidth = 1f;
@@ -85,10 +93,16 @@ namespace ION.IOS.ViewController.Analyzer
 
       conDisButton.TouchUpInside += delegate {
         if(currentSensor != null){
+          if (activityConnectStatus != null)
+            activityConnectStatus = null;
+
+          activityConnectStatus = new UIActivityIndicatorView(new CGRect(.867 * snapArea.Bounds.Width, .035 * snapArea.Bounds.Height, .103 * snapArea.Bounds.Width, .179 * snapArea.Bounds.Height));
+          snapArea.AddSubview(activityConnectStatus);
+
           if(currentSensor.device.isConnected){
-            currentSensor.device.connection.Disconnect();
+            connectionSpinner(1);
           } else {
-            currentSensor.device.connection.Connect();
+            connectionSpinner(2);
           }
         }
       };
@@ -126,6 +140,7 @@ namespace ION.IOS.ViewController.Analyzer
     public UILabel shFluidState;
     public UIButton changeFluid;
     public UILabel ptReading;
+    public UILabel ptFluidState;
     public double ptAmount = 0;
     public UILabel ptFluidType;
     public UIButton changePTFluid;
@@ -151,6 +166,8 @@ namespace ION.IOS.ViewController.Analyzer
     private AnalyzerViewController __analyzerviewcontroller;
     public Unit tUnit;
     public Unit pUnit;
+    public sensor attachedSensor;
+    public UIActivityIndicatorView activityConnectStatus;
 		public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
     public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
@@ -175,6 +192,13 @@ namespace ION.IOS.ViewController.Analyzer
         }
       }
     } GaugeDeviceSensor __currentSensor;
+
+    public ManualDeviceSensor manualSensor{
+      get { return __manualSensor; }
+      set {
+        __manualSensor = value;  
+      }
+    } ManualDeviceSensor __manualSensor;
 
     public Manifold manifold{
 
@@ -284,6 +308,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
+      
       var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
@@ -293,7 +318,7 @@ namespace ION.IOS.ViewController.Analyzer
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
           shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
           ptAmount = calculation.amount;
-        } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null){
+        } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
@@ -301,6 +326,8 @@ namespace ION.IOS.ViewController.Analyzer
           shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
           ptAmount = calculation.amount;
         }
+      } else {
+        shReading.Text = Util.Strings.Analyzer.SETUP;
       }
 
       if (manifold.ptChart != null) {
@@ -312,25 +339,47 @@ namespace ION.IOS.ViewController.Analyzer
             shFluidState.Text = Util.Strings.Analyzer.SH;
           }
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
-          shFluidState.Text = Util.Strings.Analyzer.SH;
-        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
           shFluidState.Text = Util.Strings.Analyzer.SC;
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          shFluidState.Text = Util.Strings.Analyzer.SH;
         }  
       }
+
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
         var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
+        if (!manifold.ptChart.fluid.mixture) {
+          if (ptcalc < 0)
+            ptFluidState.Text = "PTBub";
+          else
+            ptFluidState.Text = "PTDew";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          ptFluidState.Text = "PTBub";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          ptFluidState.Text = "PTDew";
+        } 
+
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
         var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
+
+        if (!manifold.ptChart.fluid.mixture) {
+          if (ptcalc < 0)
+            ptFluidState.Text = "PTBub";
+          else
+            ptFluidState.Text = "PTDew";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          ptFluidState.Text = "PTBub";
+        } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          ptFluidState.Text = "PTDew";
+        } 
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
-
     }
     /// <summary>
     /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER
@@ -351,7 +400,8 @@ namespace ION.IOS.ViewController.Analyzer
     public void openPTC(object sender, EventArgs e){
       var vc = __analyzerviewcontroller;
       var ptc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
-      manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      if(manifold.ptChart == null)
+        manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
       ptc.initialManifold = manifold;
       ptc.pUnitChanged += pUnitUpdating;
       ptc.tUnitChanged += tUnitUpdating;
@@ -364,6 +414,27 @@ namespace ION.IOS.ViewController.Analyzer
 
     public void tUnitUpdating(Unit unit){
       tUnit = unit;
+    }
+
+    public async void connectionSpinner(int conn){
+      if (conn == 1) {
+        Connection.Image = UIImage.FromBundle("");
+        activityConnectStatus.StartAnimating();
+        currentSensor.device.connection.Disconnect();
+      } else if (conn == 2) {
+        Connection.Image = UIImage.FromBundle("");
+        activityConnectStatus.StartAnimating();
+        currentSensor.device.connection.Connect();
+      }
+
+      await Task.Delay(TimeSpan.FromSeconds(2));
+      activityConnectStatus.StopAnimating();
+
+      if (currentSensor.device.isConnected) {
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+      } else {
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+      }
     }
 	}
 }
