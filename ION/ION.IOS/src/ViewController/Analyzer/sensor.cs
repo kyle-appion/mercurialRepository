@@ -25,7 +25,6 @@ namespace ION.IOS.ViewController.Analyzer
     public lowHighSensor lowArea;
     public lowHighSensor highArea;
 
-
     public UIImageView addIcon;// = new UIImageView(new CGRect(7,7,50,50));
     public UIImageView connectionImage = new UIImageView();
     public UIImageView deviceImage = new UIImageView ();

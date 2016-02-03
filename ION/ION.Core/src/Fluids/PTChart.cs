@@ -178,7 +178,7 @@
       }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return saturatedTemperature - temperature;
+      return temperature - saturatedTemperature;
     }
 
     /// <summary>
@@ -198,7 +198,7 @@
       }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
-      return temperature - saturatedTemperature;
+      return saturatedTemperature - temperature;
     }
 
     /// <summary>
