@@ -10,12 +10,16 @@ namespace ION.IOS.ViewController.Analyzer {
       
       mView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
       mcloseButton = new UIButton(new CGRect(0,.753 * mView.Bounds.Height, .503 * mView.Bounds.Width, .246 * mView.Bounds.Height));
+      mcloseButton.ReverseTitleShadowWhenHighlighted = true;
       mdoneButton = new UIButton(new CGRect(.5 * mView.Bounds.Width, .753 * mView.Bounds.Height, .5 * mView.Bounds.Width, .246 * mView.Bounds.Height));
+      mdoneButton.ReverseTitleShadowWhenHighlighted = true;
       mmeasurementType = new UIButton (new CGRect(.535 * mView.Bounds.Width, .384 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+
       mmeasurementType.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       mmeasurementType.Layer.BorderColor = UIColor.Black.CGColor;
       mmeasurementType.Layer.BorderWidth = 2f;      
       dtypeButton = new UIButton (new CGRect(.535 * mView.Bounds.Width, .179 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+      dtypeButton.AdjustsImageWhenHighlighted = true;
       dtypeButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       dtypeButton.Layer.BorderColor = UIColor.Black.CGColor;
       dtypeButton.Layer.BorderWidth = 2f;
@@ -47,7 +51,9 @@ namespace ION.IOS.ViewController.Analyzer {
           return false;
         }
       };
-      mbuttonText = new UITextField (new CGRect(.555 * mView.Bounds.Width, .364 * mView.Bounds.Height, .389 * mView.Bounds.Width, .205 * mView.Bounds.Height));
+      mbuttonText = new UITextField (new CGRect(.535 * mView.Bounds.Width, .384 * mView.Bounds.Height, .435 * mView.Bounds.Width, .153 * mView.Bounds.Height));
+      mbuttonText.Layer.BorderColor = UIColor.Black.CGColor;
+      mbuttonText.Layer.BorderWidth = 2f;
       mdeviceType = new UILabel (new CGRect(.028 * mView.Bounds.Width, .169 * mView.Bounds.Height, .5 * mView.Bounds.Width, .174 * mView.Bounds.Height));
       mdeviceType.TextAlignment = UITextAlignment.Right;
       mdeviceType.Font = UIFont.FromName("Helvetica-Bold", 20f);
@@ -73,6 +79,53 @@ namespace ION.IOS.ViewController.Analyzer {
       mView.AddSubview(mbuttonBorder);
       mView.AddSubview(mbuttonBorder2);
       mView.AddSubview(textValidation);
+
+      mmeasurementType.TouchDown += delegate {
+        mbuttonText.BackgroundColor = UIColor.Blue;
+      };
+
+      mmeasurementType.TouchUpInside += delegate {
+        mbuttonText.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      };
+
+      mmeasurementType.TouchUpOutside += delegate {
+        mbuttonText.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      };
+
+      dtypeButton.TouchDown += delegate {
+        dtypeButton.BackgroundColor = UIColor.Blue;
+      };
+
+      dtypeButton.TouchUpInside += delegate {
+        dtypeButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      };
+
+      dtypeButton.TouchUpOutside += delegate {
+        dtypeButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      };
+
+      mcloseButton.TouchDown += delegate {
+        mcloseButton.BackgroundColor = UIColor.Blue;
+      };
+
+      mcloseButton.TouchUpInside += delegate {
+        mcloseButton.BackgroundColor = UIColor.Clear;
+      };
+      mcloseButton.TouchUpOutside += delegate {
+        mcloseButton.BackgroundColor = UIColor.Clear;
+      };
+
+      mdoneButton.TouchDown += delegate {
+        mdoneButton.BackgroundColor = UIColor.Blue;
+      };
+
+      mdoneButton.TouchUpInside += delegate {
+        mdoneButton.BackgroundColor = UIColor.Clear;
+      };
+
+      mdoneButton.TouchUpOutside += delegate {
+        mdoneButton.BackgroundColor = UIColor.Clear;
+      };
     }
 
     //public UIView mView = new UIView(new CGRect(20, 100, 280, 195));
