@@ -874,7 +874,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeLH) {
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("Moving high side sensor to low side");
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
@@ -1017,8 +1016,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("Moved low side sensor to high side");
-
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
 
@@ -1053,7 +1050,6 @@ namespace ION.IOS.ViewController.Analyzer
 
           analyzerSensors.viewList[start].lowArea.subviewTable.ReloadData();
           analyzerSensors.viewList[start].lowArea.subviewTable.Hidden = false;
-          //analyzerSensors.viewList[start].lowArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
 
           View.BringSubviewToFront(analyzerSensors.viewList[start].lowArea.snapArea);
 
@@ -1125,7 +1121,6 @@ namespace ION.IOS.ViewController.Analyzer
 
           analyzerSensors.viewList[swap].highArea.subviewTable.ReloadData();
           analyzerSensors.viewList[swap].highArea.subviewTable.Hidden = false;
-          //analyzerSensors.viewList[swap].highArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
 
           analyzerSensors.viewList[swap].lowArea.snapArea.Hidden = true;
           analyzerSensors.viewList[swap].lowArea.subviewTable.Source = null;
