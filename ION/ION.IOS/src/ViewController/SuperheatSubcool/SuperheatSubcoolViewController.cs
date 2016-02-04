@@ -93,7 +93,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
         SynchronizePressureIcons();
 
-        if (__pressureSensor is GaugeDeviceSensor) {
+        if (__pressureSensor is GaugeDeviceSensor || __pressureSensor is ManualDeviceSensor) {
           editPressure.Enabled = false;
         } else {
           editPressure.Enabled = true;
@@ -127,7 +127,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
         SynchronizeTemperatureIcons();
 
-        if (__temperatureSensor is GaugeDeviceSensor) {
+        if (__temperatureSensor is GaugeDeviceSensor || __temperatureSensor is ManualDeviceSensor) {
           editTemperature.Enabled = false;
         } else {
           editTemperature.Enabled = true;

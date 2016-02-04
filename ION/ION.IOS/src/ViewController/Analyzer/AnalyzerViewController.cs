@@ -257,7 +257,7 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a number after the decimal for this sensor's measurement**";
+          mentryView.textValidation.Text = "**Please enter a  valid measurement for this sensor**";
           mentryView.textValidation.Hidden = false;
           return;
         }
