@@ -356,7 +356,7 @@ namespace ION.IOS.ViewController.Analyzer
         if (!manifold.ptChart.fluid.mixture) {
           if (ptcalc < 0) {
             ptFluidState.Text = "PTBub";
-           //ptcalc = ptcalc * -1;
+            ptcalc = ptcalc * -1;
           } else {
             ptFluidState.Text = "PTDew";
           }
