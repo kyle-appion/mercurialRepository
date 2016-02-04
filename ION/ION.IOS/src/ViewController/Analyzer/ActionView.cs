@@ -73,6 +73,29 @@ namespace ION.IOS.ViewController.Analyzer {
           }
         }
       };
+
+      pcloseButton.TouchDown += delegate {
+        pcloseButton.BackgroundColor = UIColor.Blue;
+      };
+
+      pcloseButton.TouchUpInside += delegate {
+        pcloseButton.BackgroundColor = UIColor.Clear;
+      };
+      pcloseButton.TouchUpOutside += delegate {
+        pcloseButton.BackgroundColor = UIColor.Clear;
+      };
+
+      pactionButton.TouchDown += delegate {
+        pactionButton.BackgroundColor = UIColor.Blue;
+      };
+
+      pactionButton.TouchUpInside += delegate {
+        pactionButton.BackgroundColor = UIColor.Clear;
+      };
+
+      pactionButton.TouchUpOutside += delegate {
+        pactionButton.BackgroundColor = UIColor.Clear;
+      };
     }
 
     public GaugeDeviceSensor currentSensor {
@@ -139,15 +162,13 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public async void connectionSpinner(int conn){
+      pconnection.Image = UIImage.FromBundle("");
+      pconnection.BackgroundColor = UIColor.Clear;
+      activityConnectStatus.StartAnimating();
+
       if (conn == 1) {
-        pconnection.Image = UIImage.FromBundle("");
-        pconnection.BackgroundColor = UIColor.Clear;
-        activityConnectStatus.StartAnimating();
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
-        pconnection.Image = UIImage.FromBundle("");
-        pconnection.BackgroundColor = UIColor.Clear;
-        activityConnectStatus.StartAnimating();
         currentSensor.device.connection.Connect();
       }
 
