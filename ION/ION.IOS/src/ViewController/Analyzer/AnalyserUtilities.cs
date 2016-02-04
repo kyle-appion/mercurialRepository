@@ -1188,11 +1188,11 @@ namespace ION.IOS.ViewController.Analyzer
                   analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
                 } else if (analyzerSensors.viewList[i].manualSensor != null) {
                   analyzerSensors.viewList[i].lowArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
-                  analyzerSensors.viewList[i].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
+                  analyzerSensors.viewList[i].lowArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[i].manualSensor.type,analyzerSensors.viewList[i].bottomLabel.Text);
                   analyzerSensors.viewList[i].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
 
                   analyzerSensors.viewList[i].highArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
-                  analyzerSensors.viewList[i].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
+                  analyzerSensors.viewList[i].highArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[i].manualSensor.type,analyzerSensors.viewList[i].bottomLabel.Text);
                   analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
                 }
               }
@@ -1205,11 +1205,11 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           } else if (analyzerSensors.viewList[swap].manualSensor != null) {
             analyzerSensors.viewList[swap].lowArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[swap].manualSensor.type,analyzerSensors.viewList[swap].bottomLabel.Text);
             analyzerSensors.viewList[swap].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
 
             analyzerSensors.viewList[swap].highArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[swap].manualSensor.type,analyzerSensors.viewList[swap].bottomLabel.Text);
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           }
 
@@ -1333,7 +1333,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       UIAlertController addDeviceSheet;
 
-      addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, "Do you want to remove the low high setup?", UIAlertControllerStyle.Alert);
+      addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, "Do you want to remove the current sensor's setup?", UIAlertControllerStyle.Alert);
       addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
         sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
       }));
@@ -1471,7 +1471,14 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
         }
-
+        var spotOpen = secondarySlotSpot(Sensor, removeSensor,analyzerSensors, type);
+        if (spotOpen.Equals(false)) {
+          UIAlertController noneAvailable;
+          noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
+          noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
+          vc.PresentViewController(noneAvailable, true, null);
+          return;
+        }
         UIAlertController addDeviceSheet;
 
         addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, message, UIAlertControllerStyle.Alert);
