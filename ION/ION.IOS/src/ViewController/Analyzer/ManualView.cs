@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mtextValue.AttributedPlaceholder = new NSAttributedString (
         "Enter Measurement"
       );
-      mtextValue.KeyboardType = UIKeyboardType.DecimalPad;
+      mtextValue.KeyboardType = UIKeyboardType.NumbersAndPunctuation;
       mtextValue.AdjustsFontSizeToFitWidth = true;
       mtextValue.ShouldChangeCharacters = (textField, range, replacementString) => {
         if(replacementString.Contains("0") || replacementString.Contains("1") || replacementString.Contains("2") || replacementString.Contains("3") ||
