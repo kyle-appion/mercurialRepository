@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
-using AllianceCustomPicker;
 
 namespace ION.IOS.ViewController.Analyzer
 {
