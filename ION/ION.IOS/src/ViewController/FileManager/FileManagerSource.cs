@@ -2,7 +2,7 @@
 
   using System;
   using System.Collections.Generic;
-
+  using CoreGraphics;
   using Foundation;
   using UIKit;
 
@@ -25,7 +25,15 @@
     public FileManagerSource(List<IFile> files) {
       this.files = files;
     }
-
+    // Overriden from UITableViewSource
+    public override UIView GetViewForHeader(UITableView tableView, nint section) {
+      return new UIView(new CGRect(0,0,0,0));
+    }
+    // Overriden from UITableViewSource
+    public override UIView GetViewForFooter (UITableView tableView, nint section)
+    {     
+        return new UIView (new CGRect(0,0,0,0));
+    }
     // Override from UITableViewSource
     public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {
       switch (editingStyle) {
