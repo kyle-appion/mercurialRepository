@@ -1,7 +1,7 @@
 ﻿namespace ION.Core.Fluids {
 
   using System;
-
+  using ION.Core.Util;
   using ION.Core.Measure;
 
   /// <summary>
@@ -147,7 +147,6 @@
     /// <returns></returns>
     public Scalar GetTemperatureFromPressure(EState state, Scalar pressure) {
       pressure = pressure.ConvertTo(PRESSURE);
-
       Scalar pmin = GetMinimumPressure(state), pmax = GetMaximumPressure(state);
 
       if (pressure < pmin || pressure > pmax) {

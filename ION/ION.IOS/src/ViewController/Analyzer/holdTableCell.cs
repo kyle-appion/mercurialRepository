@@ -21,7 +21,7 @@ namespace ION.IOS.ViewController.Analyzer {
       //UIButton cellButton = new UIButton(new CGRect(0,30,30,30));
       cellButton = new UIButton(new CGRect(0, .5 * lhSensor.cellHeight, .2 * tableRect.Width, .5 * lhSensor.cellHeight));
 
-      cellHeader.Text = "HOLD";
+      cellHeader.Text = Util.Strings.Analyzer.HOLD.ToUpper();
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
@@ -29,13 +29,10 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       if (lhSensor.holdType != "hold") {
-        Console.WriteLine("hold label wasn't empty");
         cellReading.Text = lhSensor.holdValue.ToString("N") + " " + lhSensor.holdType + " ";
       } else {
-        Console.WriteLine("hold label was empty");
         cellReading.Text = lhSensor.holdValue.ToString("N");
       }
-      Console.WriteLine("The hold type is " +lhSensor.holdType +" currently");
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 14f);
       cellReading.AdjustsFontSizeToFitWidth = true;

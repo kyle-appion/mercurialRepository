@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ION.Core.Devices;
 using ION.Core.Sensors;
 using UIKit;
-using AllianceCustomPicker;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -13,6 +12,7 @@ namespace ION.IOS.ViewController.Analyzer
 		{
 		}
     public sensor pressedSensor;
+    public lowHighSensor lhSensor;
 		public UIView pressedView;
     public UIView availableView;
 		public UILongPressGestureRecognizer addLong;

@@ -93,7 +93,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
         SynchronizePressureIcons();
 
-        if (__pressureSensor is GaugeDeviceSensor) {
+        if (__pressureSensor is GaugeDeviceSensor || __pressureSensor is ManualDeviceSensor) {
           editPressure.Enabled = false;
         } else {
           editPressure.Enabled = true;
@@ -127,7 +127,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
         SynchronizeTemperatureIcons();
 
-        if (__temperatureSensor is GaugeDeviceSensor) {
+        if (__temperatureSensor is GaugeDeviceSensor || __temperatureSensor is ManualDeviceSensor) {
           editTemperature.Enabled = false;
         } else {
           editTemperature.Enabled = true;
@@ -413,12 +413,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           case Fluid.EState.Bubble:
             labelFluidState.BackgroundColor = new UIColor(Colors.RED);
             switchFluidState.TintColor = new UIColor(Colors.RED);
-            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+            labelFluidState.Text = Strings.Fluid.SUBCOOL;
             break;
           case Fluid.EState.Dew:
             labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
             switchFluidState.TintColor = new UIColor(Colors.BLUE);
-            labelFluidState.Text = Strings.Fluid.SUBCOOL;
+            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
             break;
           default:
             throw new Exception("Cannot update delta for state: " + ptChart.state);
@@ -428,15 +428,17 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);
           labelFluidState.Text = Strings.Fluid.SATURATED;
         } else if (calculation > 0) {
-          labelFluidState.BackgroundColor = new UIColor(Colors.RED);
+          labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
           labelFluidState.Text = Strings.Fluid.SUPERHEAT;
         } else {
-          labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+          labelFluidState.BackgroundColor = new UIColor(Colors.RED);
           labelFluidState.Text = Strings.Fluid.SUBCOOL;
+          //should never show a negative temperature so multiply by -1
+          calculation = calculation * -1;
         }
       }
 
-      labelFluidDelta.Text = calculation.amount.ToString("0.00") + calculation.unit.ToString();
+      labelFluidDelta.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
     }
 
     /// <summary>

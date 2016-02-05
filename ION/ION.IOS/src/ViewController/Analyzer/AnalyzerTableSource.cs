@@ -13,7 +13,7 @@ namespace ION.IOS.ViewController.Analyzer
 		List<string> tableItems;
     lowHighSensor tableSensors;
 
-    public AnalyzerTableSource (List<string> items, string identifier, lowHighSensor lhSensor){
+    public AnalyzerTableSource (List<string> items, lowHighSensor lhSensor){
 			tableItems = items;
       tableSensors = lhSensor;
 		}
@@ -51,9 +51,11 @@ namespace ION.IOS.ViewController.Analyzer
         case UITableViewCellEditingStyle.Delete:
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
-
-          if (tableItems.Count == 0)
+          Console.WriteLine("There are " + tableItems.Count.ToString() + " subviews left");
+          if (tableItems.Count.Equals(0)) {
+            Console.WriteLine("All done with subviews");
             tableSensors.subviewHide.SetImage(null, UIControlState.Normal);
+          }
           // delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
           break;

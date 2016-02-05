@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.Analyzer {
       fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
       //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
-      cellHeader.Text = "PTdew";
+      cellHeader = lhSensor.ptFluidState;
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
@@ -50,15 +50,9 @@ namespace ION.IOS.ViewController.Analyzer {
       fluidType.Layer.BorderWidth = 1f;
 
       tempReading = lhSensor.ptReading;
-      if (lhSensor.manifold.secondarySensor != null) {
-        if(lhSensor.manifold.primarySensor.type == ESensorType.Pressure){
-
-        } else {
-
-        }
-      } else {
-        tempReading.Text = "Setup";
-      }
+//      if (lhSensor.manifold.ptChart != null) {
+//        lhSensor.ptReading.Text = 
+//      } 
       tempReading.AdjustsFontSizeToFitWidth = true;
       tempReading.TextAlignment = UITextAlignment.Center;
       tempReading.Layer.BorderColor = UIColor.Black.CGColor;
