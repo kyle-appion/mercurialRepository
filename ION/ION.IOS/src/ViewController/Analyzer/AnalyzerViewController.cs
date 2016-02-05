@@ -10,7 +10,6 @@ using ION.Core.Sensors.Properties;
 using CoreGraphics;
 using Foundation;
 using UIKit;
-using AllianceCustomPicker;
 using ION.IOS.ViewController.DeviceManager;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.PressureTemperatureChart;

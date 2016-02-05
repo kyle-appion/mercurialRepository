@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ION.Core.Devices;
 using ION.Core.Sensors;
 using UIKit;
-using AllianceCustomPicker;
 
 namespace ION.IOS.ViewController.Analyzer
 {
