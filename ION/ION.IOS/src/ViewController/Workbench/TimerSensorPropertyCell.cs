@@ -54,6 +54,9 @@ namespace ION.IOS.ViewController.Workbench {
       }
     } TimerRecord __timer;
 
+
+    private bool isPlay { get; set; }
+
 		public TimerSensorPropertyCell (IntPtr handle) : base (handle) {
 		}
 
@@ -72,20 +75,34 @@ namespace ION.IOS.ViewController.Workbench {
       buttonPlayPause.TouchUpInside += (object sender, EventArgs e) => {
         if (timer != null) {
           if (timer.timer.isStarted) {
-            buttonPlayPause.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
             timer.timer.Stop();
           } else {
-            buttonPlayPause.SetImage(UIImage.FromBundle("ic_pause"), UIControlState.Normal);
             timer.timer.Start();
           }
         }
+        SetButton(timer.timer.isStarted);
       };
 
+      buttonPlayPause.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
       labelTitle.Text = Strings.Workbench.Viewer.TIMER;
     }
 
     public void UpdateTo(TimerRecord timer) {
       this.timer = timer;
+      SetButton(timer.timer.isStarted);
+    }
+
+    private void SetButton(bool play) {
+      if (isPlay == play) {
+        return;
+      }
+      isPlay = play;
+
+      if (!play) {
+        buttonPlayPause.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+      } else {
+        buttonPlayPause.SetImage(UIImage.FromBundle("ic_pause"), UIControlState.Normal);
+      }
     }
 
     private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {

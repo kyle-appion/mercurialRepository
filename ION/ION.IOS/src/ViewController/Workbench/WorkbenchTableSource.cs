@@ -34,6 +34,7 @@
     private const string CELL_FLUID_SUBVIEW = "cellFluidSubview";
     private const string CELL_ROC_SUBVIEW = "cellRateOfChangeSubview";
     private const string CELL_TIMER_SUBVIEW = "cellTimerSubview";
+    private const string CELL_SPACE = "cellSpace";
 
     /// <summary>
     /// The action that is called when the add row is clicked.
@@ -79,8 +80,10 @@
           expanded = true,
         });
 
+/*
         foreach (var sp in manifold.sensorProperties) {
         }
+*/
       }
 
       records.Add(new AddRecord());
@@ -162,8 +165,10 @@
 
       if (record is ViewerRecord) {
         return 158;
+      } else if (record is SpaceRecord) {
+        return 10;
       } else {
-        return 50;
+        return 48;
       }
     }
 
@@ -221,6 +226,12 @@
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
         cell.UpdateTo(fr);
+
+        return cell;
+      } else if (record is SpaceRecord) {
+        var cell = tableView.DequeueReusableCell(CELL_SPACE);
+
+        cell.BackgroundColor = UIColor.Clear;
 
         return cell;
       } else {
@@ -450,6 +461,9 @@
 
           records.Insert(recordIndex, vr);
 
+          indices.Add(recordIndex + 1);
+          records.Insert(recordIndex + 1, new SpaceRecord());
+
 /*
           for (int i = 0; i < manifold.sensorPropertyCount; i++) {
             indices.Add(index + i + 1);
@@ -570,6 +584,7 @@
 
     public enum ViewType {
       Add,
+      Space,
       Viewer,
       Measurement,
       Timer,
@@ -598,6 +613,14 @@
     public WorkbenchTableSource.ViewType viewType {
       get {
         return WorkbenchTableSource.ViewType.Add;
+      }
+    }
+  }
+
+  public class SpaceRecord : IWorkbenchSourceRecord {
+    public WorkbenchTableSource.ViewType viewType {
+      get {
+        return WorkbenchTableSource.ViewType.Space;
       }
     }
   }
