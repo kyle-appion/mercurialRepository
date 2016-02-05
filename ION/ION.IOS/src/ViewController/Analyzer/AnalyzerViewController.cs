@@ -256,7 +256,7 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a  valid measurement for this sensor**";
+          mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
           mentryView.textValidation.Hidden = false;
           return;
         }
@@ -266,6 +266,13 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.textValidation.Hidden = false;
         return;
       }
+      if (mentryView.mtextValue.Text.Contains("-") && mentryView.mtextValue.Text.Length.Equals(1)) {
+        mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
+        mentryView.textValidation.Hidden = false;
+        return;
+      }
+
+
       start.pressedView.AddGestureRecognizer (start.addPan);
       start.availableView.Hidden = true;
       start.pressedView.BackgroundColor = UIColor.White;
