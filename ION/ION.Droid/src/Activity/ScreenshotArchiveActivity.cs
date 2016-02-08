@@ -34,10 +34,30 @@
 
       SetContentView(Resource.Layout.activity_screenshot_archive);
 
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.SetHomeButtonEnabled(true);
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
+
       fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
       fragment.folder = ion.screenshotReportFolder;
       fragment.onFileClicked += OnFileClicked;
       fragment.onFolderClicked += OnFolderClicked;
+    }
+
+    /// <Docs>The panel that the menu is in.</Docs>
+    /// <summary>
+    /// Raises the menu item selected event.
+    /// </summary>
+    /// <param name="featureId">Feature identifier.</param>
+    /// <param name="item">Item.</param>
+    public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
+      switch (item.ItemId) {
+        case Android.Resource.Id.Home:
+          Finish();
+          return true;
+        default:
+          return base.OnMenuItemSelected(featureId, item);
+      }
     }
 
     /// <summary>

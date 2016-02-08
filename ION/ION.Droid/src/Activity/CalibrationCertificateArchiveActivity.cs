@@ -38,6 +38,10 @@
 
       SetContentView(Resource.Layout.activity_calibration_certificate_archive);
 
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.SetHomeButtonEnabled(true);
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_certificate, Resource.Color.gray));
+
       fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
       fragment.folder = ion.calibrationCertificateFolder;
       fragment.onFileClicked += OnFileClicked;
@@ -66,6 +70,9 @@
     /// <param name="item">Item.</param>
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
+        case Android.Resource.Id.Home:
+          Finish();
+          return true;
         case Resource.Id.download:
           RequestDownloadCalibrationCertificates();
           return true;
