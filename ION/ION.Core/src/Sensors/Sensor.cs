@@ -205,7 +205,7 @@ namespace ION.Core.Sensors {
   /// </para>
   /// </summary>
   [JsonConverter(typeof(DefaultSensorJsonConverter))]
-  public class Sensor {
+  public abstract class Sensor {
     /// <summary>
     /// The delegate that will be notified when the sensor's state
     /// is changed. Note: the measurement change can be cause by either/or
@@ -231,7 +231,7 @@ namespace ION.Core.Sensors {
     /// Whether or not te sensor's reading is editable.
     /// </summary>
     /// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
-    public virtual bool isEditable { get; protected set; }
+    public abstract bool isEditable { get; }
     /// <summary>
     /// The custom name for the specific sensor.
     /// </summary>
@@ -289,7 +289,10 @@ namespace ION.Core.Sensors {
         return maxMeasurement != null && measurement >= maxMeasurement;
       }
     }
-
+    /// <summary>
+    /// The array of units that the sensor will support for unit changes.
+    /// </summary>
+    /// <value>The supported units.</value>
     public virtual Unit[] supportedUnits {
       get {
         if (__supportedUnits == null) {
@@ -323,8 +326,8 @@ namespace ION.Core.Sensors {
     /// </summary>
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Sensor(ESensorType sensorType, bool isRelative=true, bool isEditable=true)
-      : this(sensorType, ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(sensorType).OfScalar(0), isRelative, isEditable) {
+    protected Sensor(ESensorType sensorType, bool isRelative=true)
+      : this(sensorType, ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(sensorType).OfScalar(0), isRelative) {
     }
     /// <summary>
     /// Creates a new sensor.
@@ -332,21 +335,22 @@ namespace ION.Core.Sensors {
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="initialMeasurement">Initial measurement.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true, bool isEditable=true) {
+    protected Sensor(ESensorType sensorType, Scalar initialMeasurement, bool isRelative=true) {
       this.type = sensorType;
       this.__measurement = initialMeasurement;
       this.isRelative = isRelative;
-      this.isEditable = isEditable;
     }
 
     /// <summary>
     /// Notifies the sensors event that the sensor state changed.
     /// </summary>
     public void NotifySensorStateChanged() {
-      Log.D(this, "Sensor: {" + type + ": " + name + "} notified of change to " + measurement);
-      if (onSensorStateChangedEvent != null) {
-        onSensorStateChangedEvent(this);
-      }
+      // TODO ahodder@appioninc.com: This post and posts like it need to disappear.
+      ION.Core.App.AppState.context.PostToMain(() => {
+        if (onSensorStateChangedEvent != null) {
+          onSensorStateChangedEvent(this);
+        }
+      });
     }
 
     /// <summary>

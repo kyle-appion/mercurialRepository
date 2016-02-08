@@ -72,6 +72,18 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Location">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Activity\MainActivity.cs" />
@@ -86,8 +98,6 @@
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
-    <Compile Include="src\Fragment\IONFragment.cs" />
-    <Compile Include="src\Fragment\WorkbenchFragment.cs" />
     <Compile Include="src\Sensors\SensorExtensions.cs" />
     <Compile Include="src\Devices\DeviceExtensions.cs" />
     <Compile Include="src\Activity\HomeActivity.cs" />
@@ -95,10 +105,8 @@
     <Compile Include="src\Widgets\Adapters\Navigation\NavigationAdapter.cs" />
     <Compile Include="src\Activity\IONActivity.cs" />
     <Compile Include="src\Activity\IONPreferenceActivity.cs" />
-    <Compile Include="src\Fragment\GeneralApplicationSettingsFragment.cs" />
     <Compile Include="src\Preferences\IntListPreference.cs" />
     <Compile Include="src\Activity\PTChartActivity.cs" />
-    <Compile Include="src\Fragment\FluidFragment.cs" />
     <Compile Include="src\Views\ViewClickAction.cs" />
     <Compile Include="src\Activity\FluidManagerActivity.cs" />
     <Compile Include="src\Views\AdapterViewItemClickedAction.cs" />
@@ -117,6 +125,27 @@
     <Compile Include="src\Widgets\RecyclerViews\IOnStartDragListener.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SimpleItemTouchHelperCallback.cs" />
     <Compile Include="src\Widgets\RecyclerViews\TouchListenerHelper.cs" />
+    <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
+    <Compile Include="src\Dialog\UnitDialog.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IOnStartSwipeListener.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\MeasurementViewHolder.cs" />
+    <Compile Include="src\Sensors\Properties\SensorPropertyExtensions.cs" />
+    <Compile Include="src\Widgets\Adapters\IONRecyclerViewAdapter.cs" />
+    <Compile Include="src\Widgets\Analyzer\AnalyzerView.cs" />
+    <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
+    <Compile Include="src\Widgets\Templates\ManifoldViewTemplate.cs" />
+    <Compile Include="src\Widgets\Analyzer\SensorMount.cs" />
+    <Compile Include="src\Fragments\IONFragment.cs" />
+    <Compile Include="src\Fragments\WorkbenchFragment.cs" />
+    <Compile Include="src\Fragments\GeneralApplicationSettingsFragment.cs" />
+    <Compile Include="src\Fragments\FluidFragment.cs" />
+    <Compile Include="src\Fragments\AnalyzerFragment.cs" />
+    <Compile Include="src\Activity\ScreenshotActivity.cs" />
+    <Compile Include="src\Fragments\FileManagerFragment.cs" />
+    <Compile Include="src\Widgets\Adapters\FileManager\FileManagerAdapter.cs" />
+    <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
+    <Compile Include="src\IO\FileExtensions.cs" />
+    <Compile Include="src\Activity\PdfViewerActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -139,7 +168,6 @@
     </AndroidResource>
     <None Include="packages.config" />
     <AndroidResource Include="Resources\drawable\img_splash_screen.png" />
-    <AndroidResource Include="Resources\drawable\Dimens.xml" />
     <AndroidResource Include="Resources\drawable\hidden_button_selector.xml" />
     <AndroidResource Include="Resources\drawable\ic_action_accept.png" />
     <AndroidResource Include="Resources\drawable\ic_action_edit.png" />
@@ -290,6 +318,27 @@
     <AndroidResource Include="Resources\layout\list_item_add.axml" />
     <AndroidResource Include="Resources\drawable\viewer_background.axml" />
     <None Include="src\Widgets\RecyclerViews\ReadMe.md" />
+    <AndroidResource Include="Resources\layout\activity_superheat_subcool.axml" />
+    <AndroidResource Include="Resources\layout\list_item_space.axml" />
+    <AndroidResource Include="Resources\layout\list_item_large_measurement_subview.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_inactive.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_top.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_top.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_active.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_bottom_active.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_bottom_inactive.axml" />
+    <AndroidResource Include="Resources\layout\analyzer_manifold_viewer.axml" />
+    <AndroidResource Include="Resources\anim\enter.xml" />
+    <AndroidResource Include="Resources\anim\exit.xml" />
+    <AndroidResource Include="Resources\menu\screenshot.xml" />
+    <AndroidResource Include="Resources\menu\ok_done.xml" />
+    <AndroidResource Include="Resources\layout\ok_done.axml" />
+    <AndroidResource Include="Resources\values\arrays.xml" />
+    <AndroidResource Include="Resources\layout\activity_screenshot.axml" />
+    <AndroidResource Include="Resources\layout\fragment_file_manager.axml" />
+    <AndroidResource Include="Resources\layout\activity_screenshot_archive.axml" />
+    <AndroidResource Include="Resources\layout\list_item_file.axml" />
+    <AndroidResource Include="Resources\drawable\ic_logo_appion_a.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -313,7 +362,6 @@
     <Folder Include="src\Location\" />
     <Folder Include="src\Widgets\Adapters\" />
     <Folder Include="Resources\drawable\" />
-    <Folder Include="src\Fragment\" />
     <Folder Include="src\Sensors\" />
     <Folder Include="Resources\anim\" />
     <Folder Include="src\Widgets\Adapters\Navigation\" />
@@ -325,6 +373,14 @@
     <Folder Include="src\Views\" />
     <Folder Include="src\Widgets\Adapters\Workbench\" />
     <Folder Include="src\Widgets\RecyclerViews\" />
+    <Folder Include="src\Sensors\Properties\" />
+    <Folder Include="Assets\fonts\" />
+    <Folder Include="Assets\fonts\Droid_Sans\" />
+    <Folder Include="Assets\fonts\Roboto_Condensed\" />
+    <Folder Include="src\Widgets\Analyzer\" />
+    <Folder Include="src\Widgets\Templates\" />
+    <Folder Include="src\Fragments\" />
+    <Folder Include="src\Widgets\Adapters\FileManager\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">
@@ -339,5 +395,19 @@
       <Version>22.2.0.0</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+    <XamarinComponentReference Include="googleplayservices-location">
+      <Version>27.0.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans.ttf" />
+    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans-Bold.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Bold.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-BoldItalic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Italic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Light.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-LightItalic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Regular.ttf" />
   </ItemGroup>
 </Project>

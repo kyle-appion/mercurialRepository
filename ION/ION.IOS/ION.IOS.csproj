@@ -428,7 +428,6 @@
     <Compile Include="src\ViewController\Analyzer\RoCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
-    <Compile Include="src\ViewController\Analyzer\ManualDeviceSensor.cs" />
     <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
     <Compile Include="src\ViewController\DeviceManager\DeviceTableSource.cs" />
     <Compile Include="src\ViewController\KeyboardScrollHelper.cs" />

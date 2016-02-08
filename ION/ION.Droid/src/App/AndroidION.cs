@@ -150,7 +150,7 @@
         var res = await m.InitAsync();
         if (!res.success) {
           Log.E(this, "Failed to init manager: " + m);
-          Log.E(this, res.errorMessage);
+          Log.E(this, "" + res.errorMessage);
           return false;
         }
       }
@@ -257,7 +257,7 @@
       try {
         return UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
       } catch (Exception e) {
-        Log.E(this, "Failed to retrieve unit for key: " + key, e);
+        Log.E(this, "Failed to retrieve unit for key: " + key);
         AssertUnitSet(preferenceKey, backup.quantity, backup);
         return backup;
       }

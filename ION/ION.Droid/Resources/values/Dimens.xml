@@ -17,7 +17,7 @@
   <!-- The width and Height that and activity will use to pad it's content. -->
   <dimen name="activity_padding">16dp</dimen>
   <!-- The width of the navigation drawer for the home activity. -->
-  <dimen name="drawer_width">240dp</dimen>
+  <dimen name="drawer_width">300dp</dimen>
   <!-- The width and height of the icon in a drawer's navigation item. -->
   <dimen name="drawer_navigation_icon_size">48dp</dimen>
   <!-- The text size for the title of a navigation drawer's category title. -->
@@ -84,6 +84,8 @@
   <dimen name="viewer_name_text_size">30dp</dimen>
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_large_icon_size">48dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
   <dimen name="viewer_text_size">24sp</dimen>
 </resources>
