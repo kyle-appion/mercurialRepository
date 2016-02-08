@@ -84,6 +84,8 @@
         foreach (var sp in manifold.sensorProperties) {
         }
 */
+
+        records.Add(new SpaceRecord());
       }
 
       records.Add(new AddRecord());

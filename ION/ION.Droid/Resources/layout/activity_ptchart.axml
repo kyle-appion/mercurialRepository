@@ -64,7 +64,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
         <LinearLayout
-            android:id="@id/ptchart_pressure_add"
+            android:id="@id/add"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -131,7 +131,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical">
         <LinearLayout
-            android:id="@id/ptchart_temperature_add"
+            android:id="@id/add"
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

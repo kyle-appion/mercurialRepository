@@ -13,7 +13,7 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Droid.Fragment;
+  using ION.Droid.Fragments;
 
   [Activity(Label = "IONPreferenceActivity")]      
   public class IONPreferenceActivity : IONActivity {

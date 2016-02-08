@@ -17,6 +17,12 @@ namespace ION.Core.IO {
     /// </summary>
     /// <value>The name.</value>
     string name { get; }
+    /// <summary>
+    /// Queries the file extension for the file. This is done by taking the last string section separated by a period.
+    /// If the file does not have an extension, then we will return "".
+    /// </summary>
+    /// <value>The extension.</value>
+    string extension { get; }
 
     /// <summary>
     /// Queries the size of the file. If the size could not be determined, then
