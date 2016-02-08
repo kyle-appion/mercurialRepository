@@ -17,6 +17,7 @@
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
   <item name="date" type="id"/>
+  <item name="download" type="id"/>
   <item name="edit" type="id"/>
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>

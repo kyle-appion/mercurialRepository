@@ -18,6 +18,8 @@
   <string name="disconnect">Disconnect</string>
   <string name="disconnect_all">Disconnect All</string>
   <string name="disconnected">Disconnected</string>
+  <string name="download">Download</string>
+  <string name="downloading">Downloading</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
@@ -27,7 +29,8 @@
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
   <string name="notes">Notes</string>
-  <string name="ok_done">Ok - Done</string>
+  <string name="ok">OK</string>
+  <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
   <string name="pick_unit">Pick Unit</string>
@@ -85,6 +88,7 @@
   ERRORS, GENERAL
   -->
   <string name="error_failed_to_open_file">Open File Failed</string>
+  <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
   <string name="error_pdf_viewer_missing">It appears that your device does not have a PDF viewer. Please install a PDF viewer to the file.</string>
 
   <!--
@@ -114,6 +118,8 @@
   REPORT
   -->
   <string name="reports">Reports</string>
+  <string name="report_certificates_download">Download Certificates?</string>
+  <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_name">Report Name</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>
