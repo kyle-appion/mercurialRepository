@@ -307,21 +307,21 @@ namespace ION.IOS.ViewController.Analyzer {
 
       ///CREATE MANUAL MANIFOLDS
       if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-        start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
-        start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
-        start.pressedSensor.manualSensor = new ManualDeviceSensor(ESensorType.Pressure);
+        start.pressedSensor.lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Pressure));
+        start.pressedSensor.highArea.manifold = new Manifold(new ManualSensor(ESensorType.Pressure));
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Pressure);
         start.pressedSensor.lowArea.manualGType = "Pressure";
         start.pressedSensor.highArea.manualGType = "Pressure";       
       } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-        start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
-        start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
-        start.pressedSensor.manualSensor = new ManualDeviceSensor(ESensorType.Temperature);
+        start.pressedSensor.lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Temperature));
+        start.pressedSensor.highArea.manifold = new Manifold(new ManualSensor(ESensorType.Temperature));
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Temperature);
         start.pressedSensor.lowArea.manualGType = "Temperature";
         start.pressedSensor.highArea.manualGType = "Temperature";
       } else {
-        start.pressedSensor.lowArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
-        start.pressedSensor.highArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
-        start.pressedSensor.manualSensor = new ManualDeviceSensor(ESensorType.Vacuum);
+        start.pressedSensor.lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Vacuum));
+        start.pressedSensor.highArea.manifold = new Manifold(new ManualSensor(ESensorType.Vacuum));
+        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Vacuum);
         start.pressedSensor.lowArea.manualGType = "Vacuum";
         start.pressedSensor.highArea.manualGType = "Vacuum";
       }
@@ -574,21 +574,21 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].highArea.isManual = true;
 
           if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
-            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new Sensor(ESensorType.Pressure));
-            analyzerSensors.viewList[i].manualSensor = new ManualDeviceSensor(ESensorType.Pressure);
+            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Pressure));
+            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new ManualSensor(ESensorType.Pressure));
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Pressure);
             analyzerSensors.viewList[i].lowArea.manualGType = "Pressure";
             analyzerSensors.viewList[i].highArea.manualGType = "Pressure";
           } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
-            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new Sensor(ESensorType.Temperature));
-            analyzerSensors.viewList[i].manualSensor = new ManualDeviceSensor(ESensorType.Temperature);
+            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Temperature));
+            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new ManualSensor(ESensorType.Temperature));
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Temperature);
             analyzerSensors.viewList[i].lowArea.manualGType = "Temperature";
             analyzerSensors.viewList[i].highArea.manualGType = "Temperature";
           } else {
-            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
-            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new Sensor(ESensorType.Vacuum));
-            analyzerSensors.viewList[i].manualSensor = new ManualDeviceSensor(ESensorType.Vacuum);
+            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(new ManualSensor(ESensorType.Vacuum));
+            analyzerSensors.viewList[i].highArea.manifold = new Manifold(new ManualSensor(ESensorType.Vacuum));
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Vacuum);
             analyzerSensors.viewList[i].lowArea.manualGType = "Vacuum";
             analyzerSensors.viewList[i].highArea.manualGType = "Vacuum";
           }

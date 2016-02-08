@@ -84,6 +84,7 @@
   REPORTS
   -->
   <item name="reports" type="id"/>
+  <item name="report_certificates" type="id"/>
   <item name="report_screenshot_archive" type="id"/>
 
   <!--

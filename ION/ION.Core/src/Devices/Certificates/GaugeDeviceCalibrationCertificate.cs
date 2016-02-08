@@ -5,7 +5,7 @@ namespace ION.Core.Devices.Certificates {
   /// <summary>
   /// A certificate that provides validation of an AV760's calibration.
   /// </summary>
-  public class AV760CalibrationCertificate : ICalibrationCertificate {
+  public class GaugeDeviceCalibrationCertificate : ICalibrationCertificate {
 
 
     private const string KEY_CONTROL = "CalibrationCStandarddevice";
@@ -60,17 +60,17 @@ namespace ION.Core.Devices.Certificates {
     /// <value>The test serial number.</value>
     public GaugeSerialNumber testSerialNumber { get; set; }
     /// <summary>
-    /// The part number for the AV760. Coincidentially, this is AV760.
+    /// The part number for the GaugeDevice.
     /// </summary>
     /// <value>The test part number.</value>
     public string testPartNumber { get; set; }
     /// <summary>
-    /// The transducer for the AV760.
+    /// The transducer for the GaugeDevice.
     /// </summary>
     /// <value>The test transducer.</value>
     public string testTransducer { get; set; }
     /// <summary>
-    /// The accuracy of the AV760 as a per cent.
+    /// The accuracy of the GaugeDevice as a per cent.
     /// </summary>
     /// <value>The test accuracy.</value>
     public double testAccuracy { get; set; }

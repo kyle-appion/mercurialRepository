@@ -69,7 +69,10 @@
     // Overridden from IION
     public IFolder calibrationCertificateFolder {
       get {
-        throw new Exception("Not implemented");
+        var d = fileManager.GetApplicationExternalDirectory();
+        d = d.GetFolder("reports", EFileAccessResponse.CreateIfMissing);
+        d = d.GetFolder("certificates", EFileAccessResponse.CreateIfMissing);
+        return d;
       }
     }
 

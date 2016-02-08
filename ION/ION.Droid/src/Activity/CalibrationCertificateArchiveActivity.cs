@@ -19,9 +19,10 @@
 
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
+  using ION.Droid.Tasks;
 
   [Activity(Label = "CalibrationCertificateArchiveActvity", Theme="@style/TerminalActivityTheme")]      
-  public class CalibrationCertificateArchiveActvity : IONActivity {
+  public class CalibrationCertificateArchiveActivity : IONActivity {
 
     /// <summary>
     /// The fragment that will allow the user to navigate the calibration certificate directory.
@@ -78,6 +79,7 @@
     /// </summary>
     private void RequestDownloadCalibrationCertificates() {
       var adb = new IONAlertDialog(this);
+
       adb.SetTitle(Resource.String.report_certificates_download);
       adb.SetMessage(Resource.String.report_certificates_download_request);
       adb.SetNegativeButton(Resource.String.cancel, (obj, args) => {
@@ -100,21 +102,17 @@
             serials.Add(d.serialNumber);
           }
 
-          DownloadCalibrationCertificates(serials);
+          var task = new DownloadCalibrationCertificateTask(this, ion);
+          task.onCompleted = () => {
+            fragment.folder = ion.calibrationCertificateFolder;
+          };
+          task.Execute(serials);
         } else {
           Alert(Resource.String.error_no_internet_connection);
         }
       });
-    }
 
-    /// <summary>
-    /// Attempts to download all of the application's calibration certificates.
-    /// </summary>
-    private void DownloadCalibrationCertificates(List<ISerialNumber> serials) {
-      var pd = new ProgressDialog(this);
-      pd.SetTitle(Resource.String.downloading);
-      pd.SetMessage(GetString(Resource.String.please_wait));
-      
+      adb.Show();
     }
 
     /// <summary>

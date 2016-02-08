@@ -14,7 +14,7 @@
   /// <summary>
   /// Exports an AV760Certificate to a pdf.
   /// </summary>
-  public class AV760CertificatePdfExporter {
+  public class GaugeDeviceCertificatePdfExporter {
     private const string
     /** The field name for the person who certified the test unit. */
     FIELD_CERT_BY = "certifiedby",
@@ -65,14 +65,14 @@
     */
     /** The performance data keys that we require. */
     private static readonly Pair[] TABLE_KEYS = new Pair[] {
-      new Pair(FIELD_CAL_PT_I, AV760CalibrationCertificate.KEY_TABLE_STANDARD),
-      new Pair(FIELD_CAL_APPION_DEVICE, AV760CalibrationCertificate.KEY_TABLE_ACTUAL),
-      new Pair(FIELD_CAL_LOW, AV760CalibrationCertificate.KEY_TABLE_MIN),
-      new Pair(FIELD_CAL_HIGH, AV760CalibrationCertificate.KEY_TABLE_MAX),
-      new Pair(FIELD_CAL_PT_UNIT_I, AV760CalibrationCertificate.KEY_TABLE_UNIT),
+      new Pair(FIELD_CAL_PT_I, GaugeDeviceCalibrationCertificate.KEY_TABLE_STANDARD),
+      new Pair(FIELD_CAL_APPION_DEVICE, GaugeDeviceCalibrationCertificate.KEY_TABLE_ACTUAL),
+      new Pair(FIELD_CAL_LOW, GaugeDeviceCalibrationCertificate.KEY_TABLE_MIN),
+      new Pair(FIELD_CAL_HIGH, GaugeDeviceCalibrationCertificate.KEY_TABLE_MAX),
+      new Pair(FIELD_CAL_PT_UNIT_I, GaugeDeviceCalibrationCertificate.KEY_TABLE_UNIT),
     };
 
-    public static void Export(IION ion, AV760CalibrationCertificate certificate, Stream outStream) {
+    public static void Export(IION ion, GaugeDeviceCalibrationCertificate certificate, Stream outStream) {
       var pdf = new PdfFixedDocument(EmbeddedResource.Load("digital_gauge_cert.pdf"));
       // Header
       (pdf.Form.Fields[FIELD_CERT_BY] as PdfTextBoxField).Value = certificate.certifiedBy;

@@ -259,6 +259,14 @@
         title = GetString(Resource.String.reports),
         items = new NavigationItem[] {
           new NavigationIconItem() {
+            id = Resource.Id.report_certificates,
+            title = GetString(Resource.String.report_certificates),
+            icon = Resource.Drawable.ic_nav_certificates,
+            action = () => {
+              StartActivity(typeof(CalibrationCertificateArchiveActivity));
+            }
+          },
+          new NavigationIconItem() {
             id = Resource.Id.report_screenshot_archive,
             title = GetString(Resource.String.report_screenshot_archive),
             icon = Android.Resource.Drawable.IcMenuCamera,

@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.Net {
+﻿namespace ION.Core.Net {
 
   using System;
   using System.Collections.Generic;
@@ -16,7 +16,10 @@
   using ION.Core.Security;
   using ION.Core.Util;
 
-  public class RequestCalibrationCertificatesTask {
+  /// <summary>
+  /// A task that will download the calibration certificates from the appion server.
+  /// </summary>
+  public class RequestCalibrationCertificates {
     private const int FLAGS_NONE = 0;
     private const int FLAGS_DEBUG = 1;
 
@@ -86,7 +89,7 @@
     /// <value>The token source.</value>
     public CancellationTokenSource tokenSource { get; set; }
 
-    public RequestCalibrationCertificatesTask(IION ion, params ISerialNumber[] serialNumbers) {
+    public RequestCalibrationCertificates(IION ion, params ISerialNumber[] serialNumbers) {
       Log.D(this, GENERAL_OBFUSCATION_KEY.ToByteString());
       this.ion = ion;
       this.serialNumbers = serialNumbers;
@@ -261,7 +264,7 @@
     public CalibrationStandardDevice controlDevice { get; set; }
     [JsonProperty("performanceData")]
     public PerformanceData performanceData { get; set; }
-   
+
     public GaugeDeviceCalibrationCertificate ToCalibrationCertificate() {
       var ret = new GaugeDeviceCalibrationCertificate();
 

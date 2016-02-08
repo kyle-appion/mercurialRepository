@@ -114,7 +114,6 @@
     <Compile Include="src\Security\Obfuscation.cs" />
     <Compile Include="src\Util\StringExtensions.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificate.cs" />
-    <Compile Include="src\Devices\Certificates\AV760CalibrationCertificate.cs" />
     <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
     <Compile Include="src\Location\ILocationManager.cs" />
     <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
@@ -125,11 +124,12 @@
     <Compile Include="src\Sensors\UnitLookup.cs" />
     <Compile Include="src\Measure\Json\UnitJsonConverter.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificateExporter.cs" />
-    <Compile Include="src\Devices\Certificates\Av760CertificatePdfExporter.cs" />
     <Compile Include="src\Location\PlaceholderLocationManager.cs" />
     <Compile Include="src\Location\SimpleLocation.cs" />
     <Compile Include="src\Sensors\ManualSensor.cs" />
     <Compile Include="src\Content\Analyzer.cs" />
+    <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
+    <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

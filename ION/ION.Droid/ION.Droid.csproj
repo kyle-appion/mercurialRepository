@@ -146,8 +146,9 @@
     <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
     <Compile Include="src\IO\FileExtensions.cs" />
     <Compile Include="src\Activity\PdfViewerActivity.cs" />
-    <Compile Include="src\Activity\CalibrationCertificateArchiveActvity.cs" />
     <Compile Include="src\Tasks\DownloadCalibrationCertificateTask.cs" />
+    <Compile Include="src\Tasks\IONTask.cs" />
+    <Compile Include="src\Activity\CalibrationCertificateArchiveActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

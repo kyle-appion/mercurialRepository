@@ -193,12 +193,12 @@ namespace ION.IOS.ViewController.Analyzer
       }
     } GaugeDeviceSensor __currentSensor;
 
-    public ManualDeviceSensor manualSensor{
+    public ManualSensor manualSensor{
       get { return __manualSensor; }
       set {
         __manualSensor = value;  
       }
-    } ManualDeviceSensor __manualSensor;
+    } ManualSensor __manualSensor;
 
     public Manifold manifold{
 

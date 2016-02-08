@@ -11,10 +11,12 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)src\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\IO\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Net\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\RequestCalibrationCertificates.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

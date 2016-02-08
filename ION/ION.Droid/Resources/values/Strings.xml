@@ -20,6 +20,7 @@
   <string name="disconnected">Disconnected</string>
   <string name="download">Download</string>
   <string name="downloading">Downloading</string>
+  <string name="download_error">Download Error</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
@@ -118,8 +119,11 @@
   REPORT
   -->
   <string name="reports">Reports</string>
+  <string name="report_certificates">Calibration Certificates</string>
   <string name="report_certificates_download">Download Certificates?</string>
+  <string name="report_certificates_downloading">Downloading Certificates</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
+  <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
   <string name="report_name">Report Name</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>

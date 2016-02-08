@@ -180,7 +180,7 @@ namespace ION.IOS.ViewController {
           var stream = file.OpenForWriting();
 
           try {
-            AV760CertificatePdfExporter.Export(ion, result.certificate, stream);
+            GaugeDeviceCertificatePdfExporter.Export(ion, result.certificate, stream);
           } catch (Exception e) {
             Log.E(this, "Failed to export certificate.", e);
             file.Delete();
