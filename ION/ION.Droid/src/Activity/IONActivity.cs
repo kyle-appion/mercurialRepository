@@ -218,6 +218,14 @@
     /// <summary>
     /// Toasts the given message.
     /// </summary>
+    /// <param name="stringResource">String resource.</param>
+    public void Alert(int stringResource) {
+      Alert(GetString(stringResource));
+    }
+
+    /// <summary>
+    /// Toasts the given message.
+    /// </summary>
     /// <param name="message">Message.</param>
     public void Alert(string message) {
       Toast.MakeText(this, message, ToastLength.Short).Show();

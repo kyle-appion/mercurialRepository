@@ -8,8 +8,10 @@
   public enum EDeviceModel {
     P300,
     P500,
-    PT800,
     P800,
+    PT300,
+    PT500,
+    PT800,
     AV760,
     _3XTM, // I kind of hate how greg names products some times
     HT,
@@ -27,13 +29,15 @@
     /// <param name="deviceModel">Device model.</param>
     public static string GetModelCode(this EDeviceModel deviceModel) {
       switch (deviceModel) {
-      case EDeviceModel.P300: { return "P3"; }
-      case EDeviceModel.P500: { return "P5"; }
-      case EDeviceModel.P800: { return "P8"; }
-      case EDeviceModel.PT800: { return "PT8"; }
-      case EDeviceModel.AV760: { return "V7"; }
-      case EDeviceModel._3XTM: { return "T3"; }
-      case EDeviceModel.HT: { return "HT"; }
+        case EDeviceModel.P300: return "P3";
+        case EDeviceModel.P500: return "P5";
+        case EDeviceModel.P800: return "P8";
+        case EDeviceModel.PT300: return "PT3";
+        case EDeviceModel.PT500: return "PT5";
+        case EDeviceModel.PT800: return "PT8";
+        case EDeviceModel.AV760: return "V7";
+        case EDeviceModel._3XTM: return "T3";
+        case EDeviceModel.HT: return "HT";
       default: {
           throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
         }
