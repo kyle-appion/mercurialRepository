@@ -30,6 +30,10 @@
           return Strings.Device.Model.P500.FromResources();
         case EDeviceModel.P800:
           return Strings.Device.Model.P800.FromResources();
+        case EDeviceModel.PT300:
+          return Strings.Device.Model.PT300.FromResources();
+        case EDeviceModel.PT500:
+          return Strings.Device.Model.PT500.FromResources();
         case EDeviceModel.PT800:
           return Strings.Device.Model.PT800.FromResources();
         case EDeviceModel._3XTM:
@@ -56,6 +60,14 @@
           return UIImage.FromBundle("ic_render_gauge_p500");
         case EDeviceModel.P800:
           return UIImage.FromBundle("ic_render_gauge_p800");
+
+        case EDeviceModel.PT300:
+          return UIImage.FromBundle("ic_render_gauge_p300");
+        case EDeviceModel.PT500:
+          return UIImage.FromBundle("ic_render_gauge_p500");
+        case EDeviceModel.PT800:
+          return UIImage.FromBundle("ic_render_gauge_p800");
+
         case EDeviceModel.AV760:
           return UIImage.FromBundle("ic_render_gauge_av760");
         default:

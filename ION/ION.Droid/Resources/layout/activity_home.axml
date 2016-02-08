@@ -6,13 +6,19 @@
     <FrameLayout
         android:id="@id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/activity_padding">
+        android:layout_height="match_parent">
+    <!--
         <fragment
-            android:name="ION.Droid.Fragment.WorkbenchFragment"
-            android:id="@id/workbench"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+          android:name="ION.Droid.Fragments.AnalyzerFragment"
+          android:id="@id/analyzer"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+        <fragment
+          android:name="ION.Droid.Fragments.WorkbenchFragment"
+          android:id="@id/workbench"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />
+-->
     </FrameLayout>
     <FrameLayout
         android:id="@id/drawer"

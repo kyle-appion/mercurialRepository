@@ -116,6 +116,13 @@
       defaultUnits = new AndroidDefaultUnits(context, preferences);
     }
 
+    /// <summary>
+    /// Releases all resource used by the <see cref="ION.Droid.App.AndroidION"/> object.
+    /// </summary>
+    /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="ION.Droid.App.AndroidION"/>. The
+    /// <see cref="Dispose"/> method leaves the <see cref="ION.Droid.App.AndroidION"/> in an unusable state. After
+    /// calling <see cref="Dispose"/>, you must release all references to the <see cref="ION.Droid.App.AndroidION"/> so
+    /// the garbage collector can reclaim the memory that the <see cref="ION.Droid.App.AndroidION"/> was occupying.</remarks>
     public void Dispose() {
       foreach (var m in managers) {
         try {
@@ -150,7 +157,7 @@
         var res = await m.InitAsync();
         if (!res.success) {
           Log.E(this, "Failed to init manager: " + m);
-          Log.E(this, res.errorMessage);
+          Log.E(this, "" + res.errorMessage);
           return false;
         }
       }
@@ -257,7 +264,7 @@
       try {
         return UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
       } catch (Exception e) {
-        Log.E(this, "Failed to retrieve unit for key: " + key, e);
+        Log.E(this, "Failed to retrieve unit for key: " + key);
         AssertUnitSet(preferenceKey, backup.quantity, backup);
         return backup;
       }

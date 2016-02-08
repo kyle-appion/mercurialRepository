@@ -183,8 +183,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
-      pressureSensor = new Sensor(ESensorType.Pressure, true, true);
-      temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+      pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+      temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
 
       pressureSensor.unit = pressureUnit;
       temperatureSensor.unit = temperatureUnit;
@@ -282,7 +282,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           InvalidateViewController();
         }
       }));
@@ -348,7 +348,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
-          temperatureSensor = new Sensor(ESensorType.Temperature, true, true);
+          temperatureSensor = new ManualSensor(ESensorType.Temperature, true);
           InvalidateViewController();
         }
       }));

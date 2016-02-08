@@ -22,7 +22,7 @@
   using ION.Core.Fluids;
   using ION.Core.Util;
 
-  using ION.Droid.Fragment;
+  using ION.Droid.Fragments;
 
   [Activity(Label = "FluidManagerActivity", Theme = "@style/TerminalActivityTheme")]      
   public class FluidManagerActivity : Activity {

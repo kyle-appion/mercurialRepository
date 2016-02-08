@@ -29,29 +29,44 @@
       __amount = amount;
     }
 
-    // Overridden from Object
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents the current <see cref="ION.Core.Measure.Scalar"/>.
+    /// </summary>
+    /// <returns>A <see cref="System.String"/> that represents the current <see cref="ION.Core.Measure.Scalar"/>.</returns>
     public override string ToString() {
       return amount + " " + unit;
     }
 
-    // Overridden from Object
+    /// <summary>
+    /// Serves as a hash function for a <see cref="ION.Core.Measure.Scalar"/> object.
+    /// </summary>
+    /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such
+    /// as a hash table.</returns>
     public override int GetHashCode() {
       int h = ((Double)amount).GetHashCode();
       return h ^ unit.GetHashCode();
     }
 
-/*
-    // Overridden from Object
-    public override bool Equals(object obj) {
-      var other = obj as Scalar;
-      if (other == null) {
-        return false;
+    /// <summary>
+    /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="ION.Core.Measure.Scalar"/>.
+    /// </summary>
+    /// <param name="other">The <see cref="System.Object"/> to compare with the current <see cref="ION.Core.Measure.Scalar"/>.</param>
+    /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+    /// <see cref="ION.Core.Measure.Scalar"/>; otherwise, <c>false</c>.</returns>
+    public override bool Equals(object other) {
+      if (other is Scalar) {
+        return AssertEquals(((Scalar)other), amount);
       } else {
-        return unit == other?.unit && amount == other?.amount;
+        return false;
       }
     }
-*/
 
+    /// <summary>
+    /// Asserts that this scalar and the other scalar are equal within an error margin of epslion.
+    /// </summary>
+    /// <returns><c>true</c>, if equals was asserted, <c>false</c> otherwise.</returns>
+    /// <param name="other">Other.</param>
+    /// <param name="epsilon">Epsilon.</param>
     public bool AssertEquals(Scalar other, double epsilon) {
       if (unit.GetDimension() != other.unit.GetDimension()) {
         return false;
@@ -64,14 +79,32 @@
       return System.Math.Abs(thisValue - otherValue) < epsilon;
     }
 
+    /// <summary>
+    /// Asserts that this scalar's amount is equal to the given amount within an error margin of epslion.
+    /// </summary>
+    /// <returns><c>true</c>, if equals was asserted, <c>false</c> otherwise.</returns>
+    /// <param name="otherAmount">Other amount.</param>
+    /// <param name="epislon">Epislon.</param>
     public bool AssertEquals(double otherAmount, double epislon) {
       return System.Math.Abs(otherAmount - amount) < epislon;
     }
 
+    /// <summary>
+    /// Queries whether or not the scalar is compatible with the given dimension.
+    /// </summary>
+    /// <returns><c>true</c>, if with was compatibled, <c>false</c> otherwise.</returns>
+    /// <param name="quantity">Quantity.</param>
     public bool CompatibleWith(Quantity quantity) {
       return unit.quantity == quantity;
     }
 
+    /// <Docs>To be added.</Docs>
+    /// <para>Returns the sort order of the current instance compared to the specified object.</para>
+    /// <summary>
+    /// Compares this scalar to the other scalar. This should be used for sorting ONLY.
+    /// </summary>
+    /// <returns>The to.</returns>
+    /// <param name="other">Other.</param>
     public int CompareTo(Scalar other) {
       other = other.ConvertTo(unit);
       if (amount > other.amount) {
@@ -102,6 +135,9 @@
       return new Scalar(other, converter.Convert(amount));
     }
 
+    /// <summary>
+    /// Returns a scalar of the absolute value of this scalar's measurement.
+    /// </summary>
     public Scalar Abs() {
       return new Scalar(unit, System.Math.Abs(amount));
     }
@@ -199,26 +235,6 @@
       if (!o1.IsCompatible(o2)) {
         throw new ArithmeticException("Cannot perform operation: " + o1 + " is incompatible with " + o2);
       }
-    }
-  }
-
-  /// <summary>
-  /// An event that is used to retrieve a scalar that has been changed.
-  /// </summary>
-  public sealed class ScalarChangedEvent {
-    /// <summary>
-    /// The scalar that the catalyst was before the event fired.
-    /// </summary>
-    /// <value>The old scalar.</value>
-    public Scalar oldScalar { get; private set; }
-    /// <summary>
-    /// The new scalar of the catalyst.
-    /// </summary>
-    public Scalar newScalar { get; private set; }
-
-    public ScalarChangedEvent(Scalar oldScalar, Scalar newScalar) {
-      this.oldScalar = oldScalar;
-      this.newScalar = newScalar;
     }
   }
 }

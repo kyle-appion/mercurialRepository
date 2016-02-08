@@ -25,8 +25,8 @@
     }
 
     // Overridden from IFileManager
-    public async Task<InitializationResult> InitAsync() {
-      return new InitializationResult() { success = true };
+    public Task<InitializationResult> InitAsync() {
+      return Task.FromResult(new InitializationResult() { success = true });
     }
 
     // Overridden from IFileManager
@@ -40,12 +40,12 @@
 
     // Overridden from IFileManager
     public IFolder GetApplicationInternalDirectory() {
-      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.Personal)));
+      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(context.GetFileStreamPath("").AbsolutePath));
     }
 
     // Overridden from IFileManager
     public IFolder GetApplicationExternalDirectory() {
-      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)));
+      return (IFolder)new IONFolder(new System.IO.DirectoryInfo(context.GetExternalFilesDir("").AbsolutePath));
     }
 
     // Overridden from IFileManager
@@ -212,6 +212,18 @@
     }
     // Overridden from IFile
     public string name { get; set; }
+
+    public string extension {
+      get {
+        var parts = name.Split(new char[] { '.' });
+
+        if (parts.Length > 0) {
+          return "." + parts[parts.Length - 1];
+        } else {
+          return "";
+        }
+      }
+    }
 
     /// <summary>
     /// The context to pull assets from.

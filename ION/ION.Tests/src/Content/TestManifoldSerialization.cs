@@ -16,7 +16,7 @@ namespace ION.TestFixtures.Content {
 
     [Test]
     public void TestSerializeAndDeserializeManual() {
-      Sensor sensor = new Sensor(ESensorType.Pressure, true);
+      Sensor sensor = new ManualSensor(ESensorType.Pressure, true);
       sensor.name = SENSOR_NAME;
       sensor.measurement = Units.Pressure.PSIG.OfScalar(100);
       sensor.minMeasurement = Units.Pressure.PSIG.OfScalar(10);

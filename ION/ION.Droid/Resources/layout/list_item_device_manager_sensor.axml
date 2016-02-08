@@ -4,6 +4,9 @@
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal">
+    <Space
+        android:layout_width="@dimen/device_manager_device_icon_size"
+        android:layout_height="@dimen/device_manager_device_icon_size" />
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
@@ -41,9 +44,12 @@
     </LinearLayout>
     <ImageButton
         android:id="@id/add"
-        android:layout_width="@dimen/device_manager_sensor_icon_size"
-        android:layout_height="@dimen/device_manager_sensor_icon_size"
+        android:layout_width="@dimen/device_manager_device_icon_size"
+        android:layout_height="@dimen/device_manager_device_icon_size"
         android:background="@drawable/img_button_up_gold"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_devices_add" />
+    <Space
+        android:layout_width="@dimen/device_manager_connect_icon_size"
+        android:layout_height="@dimen/device_manager_connect_icon_size" />
 </LinearLayout>

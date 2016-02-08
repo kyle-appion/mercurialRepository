@@ -130,6 +130,8 @@ namespace ION.IOS.Util {
         P300 = "device_model_p300".FromResources(),
         P500 = "device_model_p500".FromResources(),
         P800 = "device_model_p800".FromResources(),
+        PT300 = "device_model_pt300".FromResources(),
+        PT500 = "device_model_pt500".FromResources(),
         PT800 = "device_model_pt800".FromResources(),
         UNKNOWN = "device_model_unknown".FromResources()
         ;

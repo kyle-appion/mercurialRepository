@@ -168,7 +168,7 @@
         var maxMeasurement = (Scalar)serializer.ReadObject(reader.BaseStream);
         var name = reader.ReadString();
 
-        var ret = new Sensor(sensorType, isRelative);
+        var ret = new ManualSensor(sensorType, isRelative);
         ret.measurement = measurement;
         ret.minMeasurement = minMeasurement;
         ret.maxMeasurement = maxMeasurement;

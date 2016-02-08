@@ -9,6 +9,16 @@ namespace ION.Core.Devices {
   /// </summary>
   public class GaugeDeviceSensor : Sensor {
     /// <summary>
+    /// Whether or not te sensor's reading is editable.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public override bool isEditable {
+      get {
+        return false;
+      }
+    }
+    /// <summary>
     /// The device that this sensor belongs to.
     /// </summary>
     /// <value>The device.</value>
@@ -31,7 +41,7 @@ namespace ION.Core.Devices {
     public bool removed { get; internal set; }
 
     public GaugeDeviceSensor(GaugeDevice device, int index, ESensorType sensorType, bool relative = true)
-      : base(sensorType, relative, false) {
+      : base(sensorType, relative) {
       this.device = device;
       this.index = index;
       this.name = device.serialNumber.ToString();
