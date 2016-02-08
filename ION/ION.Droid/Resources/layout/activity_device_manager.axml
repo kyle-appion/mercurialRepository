@@ -7,4 +7,12 @@
         android:id="@id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <TextView
+        android:id="@id/view"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_large"
+        android:gravity="center"
+        android:text="@string/device_manager_no_devices_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

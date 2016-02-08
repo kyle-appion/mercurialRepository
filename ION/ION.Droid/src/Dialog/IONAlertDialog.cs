@@ -28,6 +28,8 @@ namespace ION.Droid.Dialog {
     /// </summary>
     public bool truncate { get; set; }
 
+    private string title { get; set; }
+
     public IONAlertDialog(Context context) : this(context, "") {
       // Nope
     }
@@ -37,7 +39,27 @@ namespace ION.Droid.Dialog {
     }
 
     public IONAlertDialog(Context context, string title) : base(context) {
-      this.SetTitle(title);
+      this.title = title;
+    }
+
+    /// <summary>
+    /// Sets the title.
+    /// </summary>
+    /// <returns>The title.</returns>
+    /// <param name="title">Title.</param>
+    public override AlertDialog.Builder SetTitle(Java.Lang.ICharSequence title) {
+      this.title = title.ToString();
+      return this;
+    }
+
+    /// <summary>
+    /// Sets the title.
+    /// </summary>
+    /// <returns>The title.</returns>
+    /// <param name="titleId">Title identifier.</param>
+    public override AlertDialog.Builder SetTitle(int titleId) {
+      title = Context.GetString(titleId);
+      return this;
     }
 
     // Overridden from IAlertDialog.Builder
@@ -53,6 +75,7 @@ namespace ION.Droid.Dialog {
       }
 
       SetCustomTitle(v);
+      titleView.Text = title;
 
       AlertDialog ret = base.Create();
 

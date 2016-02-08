@@ -22,12 +22,13 @@
   using ION.Droid.Util;
   using ION.Droid.Views;
 
-  public class DeviceRecycleAdapter : RecyclerView.Adapter {
+  public class DeviceRecycleAdapter : IONRecyclerViewAdapter {
 
     /// <summary>
     /// The delegate that will be notified when a sensor is clicked.
     /// </summary>
     public delegate void OnSensorReturnClicked(GaugeDeviceSensor sensor, int position);
+
 
     /// <summary>
     /// The event that will be notified of sensor return clicks.

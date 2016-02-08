@@ -78,8 +78,9 @@
 
   <!-- Temperature Values -->
   <string-array name="preferences_units_temperature_values">
-    <item>16</item>
+  <!-- Yes, this backwards order is correct. Don't fucking touch it! -->
     <item>17</item>
+    <item>16</item>
     <item>18</item>
   </string-array>
 

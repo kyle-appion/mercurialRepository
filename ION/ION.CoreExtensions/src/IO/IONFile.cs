@@ -4,16 +4,41 @@ using System.Threading.Tasks;
 
 namespace ION.Core.IO {
   public class IONFile : IFile {
-    // Overridden from IFile
+    /// <summary>
+    /// Queries the path of the file. The local name of the path is, coincidently,
+    /// the name of the file.
+    /// </summary>
+    /// <value>The full path.</value>
     public string fullPath { 
       get {
         return __nativeFile.FullName;
       }
     }
-    // Overridden from IFile
+
+    /// <summary>
+    /// The name of the file.
+    /// </summary>
+    /// <value>The name.</value>
     public string name {
       get {
         return __nativeFile.Name;
+      }
+    }
+
+    /// <summary>
+    /// Queries the file extension for the file. This is done by taking the last string section separated by a period.
+    /// If the file does not have an extension, then we will return "".
+    /// </summary>
+    /// <value>The extension.</value>
+    public string extension {
+      get {
+        var ret = __nativeFile.Extension;
+
+        if (ret == null) {
+          ret = "";
+        }
+
+        return ret;
       }
     }
 

@@ -10,7 +10,7 @@ namespace ION.TestFixtures.Sensors {
   class TestSensor {
     [Test]
     public void TestReadingEvent_UpdatesOnChange() {
-      Sensor sensor = new Sensor(ESensorType.Temperature, false, true);
+      Sensor sensor = new ManualSensor(ESensorType.Temperature, false);
       sensor.measurement = Units.Temperature.FAHRENHEIT.OfScalar(10);
     }
   }
