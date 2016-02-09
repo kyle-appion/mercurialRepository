@@ -1,0 +1,7 @@
+﻿<Application
+    x:Class="Xfinium.Pdf.Samples.Pro.WP81.PageThumbnails.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Xfinium.Pdf.Samples.Pro.WP81.PageThumbnails">
+
+</Application>

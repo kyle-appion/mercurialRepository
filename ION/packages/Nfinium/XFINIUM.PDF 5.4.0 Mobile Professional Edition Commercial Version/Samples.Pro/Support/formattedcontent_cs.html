@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\FormattedContent.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">﻿<span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Actions<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">.</span>FormattedContent<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// FormattedContent sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> FormattedContent
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">()</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwb">string</span> xfiniumPdfText <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM.PDF&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph1Block2Text <span class="hl opt">=</span> <span class="hl str">&quot; library is a .NET/Xamarin library for cross-platform PDF development. Code written for &quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph1Block4Text <span class="hl opt">=</span> <span class="hl str">&quot; can be compiled on all supported platforms without changes. The library features a &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;wide range of capabilities, for both beginers and advanced PDF developers.&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph2Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;The development style is based on fixed document model, where each page is created as needed &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;and content is placed at fixed position using a grid based layout.</span><span class="hl esc">\r\n</span><span class="hl str">&quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;This gives you access to all PDF features, whether you want to create a simple file &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;or you want to create a transparency knockout group at COS level, and lets you build more complex models on top of the library.&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph3Block2Text <span class="hl opt">=</span> <span class="hl str">&quot; has been developed entirely in C# and it is 100% managed code.&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph4Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;With &quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph4Block3Text <span class="hl opt">=</span> <span class="hl str">&quot; you can port your PDF application logic to other platforms with zero effort which means faster time to market.&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph5Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Simple licensing per developer with royalty free distribution helps you keep your costs under control.&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph6Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;SUPPORTED PLATFORMS&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph7Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;.NET 2.0 to .NET 4.5&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph8Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Windows Forms&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph9Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;ASP.NET Webforms and MVC&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph10Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Console applications&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph11Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Windows services&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph12Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Mono&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph13Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;WPF 4.0 &amp; 4.5&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph14Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Silverlight 4 &amp; 5&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph15Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;WinRT (Windows Store applications)&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph16Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Windows Phone 7 &amp; 8&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph17Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Xamarin.iOS&quot;</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> paragraph18Block1Text <span class="hl opt">=</span> <span class="hl str">&quot;Xamarin.Android&quot;</span><span class="hl opt">;</span>
+
+            PdfStandardFont textFont <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            PdfFormattedTextBlock xfiniumPdfLinkBlock <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>xfiniumPdfText<span class="hl opt">);</span>
+            xfiniumPdfLinkBlock<span class="hl opt">.</span>Font <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>HelveticaBold<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            xfiniumPdfLinkBlock<span class="hl opt">.</span>Font<span class="hl opt">.</span>Underline <span class="hl opt">=</span> <span class="hl kwa">true</span><span class="hl opt">;</span>
+            xfiniumPdfLinkBlock<span class="hl opt">.</span>TextColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>Blue<span class="hl opt">);</span>
+            xfiniumPdfLinkBlock<span class="hl opt">.</span>Action <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfUriAction</span><span class="hl opt">(</span><span class="hl str">&quot;http://xfiniumpdf.com/&quot;</span><span class="hl opt">);</span>
+
+            PdfFormattedParagraph paragraph1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph1<span class="hl opt">.</span>LineSpacingMode <span class="hl opt">=</span> PdfFormattedParagraphLineSpacing<span class="hl opt">.</span>Multiple<span class="hl opt">;</span>
+            paragraph1<span class="hl opt">.</span>LineSpacing <span class="hl opt">=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+            paragraph1<span class="hl opt">.</span>SpacingAfter <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph1<span class="hl opt">.</span>FirstLineIndent <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph1<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            paragraph1<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>xfiniumPdfLinkBlock<span class="hl opt">);</span>
+            paragraph1<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph1Block2Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+            paragraph1<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>xfiniumPdfLinkBlock<span class="hl opt">);</span>
+            paragraph1<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph1Block4Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph2<span class="hl opt">.</span>SpacingAfter <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph2<span class="hl opt">.</span>FirstLineIndent <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph2<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            paragraph2<span class="hl opt">.</span>LineSpacingMode <span class="hl opt">=</span> PdfFormattedParagraphLineSpacing<span class="hl opt">.</span>Multiple<span class="hl opt">;</span>
+            paragraph2<span class="hl opt">.</span>LineSpacing <span class="hl opt">=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+            paragraph2<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph2Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph3 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph3<span class="hl opt">.</span>LineSpacingMode <span class="hl opt">=</span> PdfFormattedParagraphLineSpacing<span class="hl opt">.</span>Multiple<span class="hl opt">;</span>
+            paragraph3<span class="hl opt">.</span>LineSpacing <span class="hl opt">=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+            paragraph3<span class="hl opt">.</span>SpacingAfter <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph3<span class="hl opt">.</span>FirstLineIndent <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph3<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            paragraph3<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>xfiniumPdfLinkBlock<span class="hl opt">);</span>
+            paragraph3<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph3Block2Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph4 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph4<span class="hl opt">.</span>LineSpacingMode <span class="hl opt">=</span> PdfFormattedParagraphLineSpacing<span class="hl opt">.</span>Multiple<span class="hl opt">;</span>
+            paragraph4<span class="hl opt">.</span>LineSpacing <span class="hl opt">=</span> <span class="hl num">1.2</span><span class="hl opt">;</span>
+            paragraph4<span class="hl opt">.</span>SpacingAfter <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph4<span class="hl opt">.</span>FirstLineIndent <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph4<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            paragraph4<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph4Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+            paragraph4<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>xfiniumPdfLinkBlock<span class="hl opt">);</span>
+            paragraph4<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph4Block3Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph5 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph5<span class="hl opt">.</span>FirstLineIndent <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph5<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            paragraph5<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph5Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph6 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph6<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph6<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph6Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedTextBlock bulletBlock <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span><span class="hl str">&quot;</span><span class="hl esc">\x76</span> <span class="hl str">&quot;</span><span class="hl opt">,</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>ZapfDingbats<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph7 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph7<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph7<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph7<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph7<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph7Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph8 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph8<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph8<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph8<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph8<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph8Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph9 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph9<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph9<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph9<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph9<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph9Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph10 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph10<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph10<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph10<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph10<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph10Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph11 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph11<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph11<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph11<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph11<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph11Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph12 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph12<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph12<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph12<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph12<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph12Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph13 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph13<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph13<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph13<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph13<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph13Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph14 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph14<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph14<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph14<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph14<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph14Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph15 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph15<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph15<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph15<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph15<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph15Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph16 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph16<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph16<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph16<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph16<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph16Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph17 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph17<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph17<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph17<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph17<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph17Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedParagraph paragraph18 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedParagraph</span><span class="hl opt">();</span>
+            paragraph18<span class="hl opt">.</span>SpacingBefore <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            paragraph18<span class="hl opt">.</span>Bullet <span class="hl opt">=</span> bulletBlock<span class="hl opt">;</span>
+            paragraph18<span class="hl opt">.</span>LeftIndentation <span class="hl opt">=</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            paragraph18<span class="hl opt">.</span>Blocks<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedTextBlock</span><span class="hl opt">(</span>paragraph18Block1Text<span class="hl opt">,</span> textFont<span class="hl opt">));</span>
+
+            PdfFormattedContent formattedContent <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormattedContent</span><span class="hl opt">();</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph1<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph2<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph3<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph4<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph5<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph6<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph7<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph8<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph9<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph10<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph11<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph12<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph13<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph14<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph15<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph16<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph17<span class="hl opt">);</span>
+            formattedContent<span class="hl opt">.</span>Paragraphs<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>paragraph18<span class="hl opt">);</span>
+
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">();</span>
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawFormattedContent</span><span class="hl opt">(</span>formattedContent<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">,</span> <span class="hl num">700</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+			
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.formattedcontent.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->
