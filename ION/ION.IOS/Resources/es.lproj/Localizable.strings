@@ -1,0 +1,44 @@
+﻿/*Analyzer Strings
+"Complete Action?" = "Acción completa ?";
+"Cannot Move Sensor" = "No se puede mover el sensor";
+"Do you want to add this Temperature sensor to the current Pressure sensor?" = "¿Quieres añadir este sensor de Temperatura para el sensor de Presión actual?";
+"Do you want to add this Pressure sensor to the current Temperature sensor?" = "¿Quieres añadir este sensor de Presión para el sensor de Temperatura actual?";
+"Not enough space" = "Sin espacio suficiente";
+"Completing this action will cause the High side subview arrangement to be lost." = "Completar esta acción hará que la disposición subvista alta cara que se perdió .";
+"Completing this action will cause the Low side subview arrangement to be lost." = "Completar esta acción hará que la disposición bajo subvista cara que se perdió .";
+"Choose a subview" = "Elija una subvista";
+"Add Subview" =  "añadir subvista";
+"Remove Sensor" =  "Retire sensor";
+"High Viewer Not Defined" =  "";
+"Low Viewer Not Defined" =  "";
+"Actions" =  "";
+"Close" =  "";
+"Display Link:" =  "";
+"OK-Done" =  "";
+"OK - Save" =  "";
+"Device Type" =  "";
+"Create Manual Entry" =  "";
+"Pressure" =  "";
+"Temperature" =  "";
+"Vacuum" =  "";
+"Enter Name" =  "";
+"Unit Picker" =  "";
+"Choose Unit" =  "";
+"Device Manager" =  "";
+"Device Actions" =  "";
+"Add From..." =  "";
+"Choose Device Type" =  "";
+"Rename" =  "";
+"Alarms" =  "";
+"Unspecified" =  "";
+"Low Side" =  "";
+"High Side" =  "";
+"Disconnected" =  "";
+"'s Subviews" =  "";
+"hold" =  "";
+"Setup" =  "";
+"Stable" =  "";
+*/
+
+
+
