@@ -229,8 +229,6 @@ namespace ION.IOS.ViewController.Analyzer
       lowArea.LabelSubview.Text = "";
       lowArea.LabelSubview.TextColor = UIColor.White;
       lowArea.LabelSubview.ClipsToBounds = true;
-      //lowArea.LabelSubview.Layer.BorderColor = UIColor.Black.CGColor;
-      //lowArea.LabelSubview.Layer.BorderWidth = 1f;
 
       lowArea.subviewTable.BackgroundColor = UIColor.Clear;
       lowArea.subviewTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -295,8 +293,6 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.LabelSubview.Text = "";
       highArea.LabelSubview.TextColor = UIColor.White;
       highArea.LabelSubview.ClipsToBounds = true;
-      //highArea.LabelSubview.Layer.BorderColor = UIColor.Black.CGColor;
-     // highArea.LabelSubview.Layer.BorderWidth = 1f;
 
       highArea.subviewTable.BackgroundColor = UIColor.Clear;
       highArea.subviewTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -907,7 +903,6 @@ namespace ION.IOS.ViewController.Analyzer
 
           analyzerSensors.viewList[start].highArea.subviewTable.ReloadData();
           analyzerSensors.viewList[start].highArea.subviewTable.Hidden = false;
-          //analyzerSensors.viewList[start].highArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
 
           analyzerSensors.viewList[start].lowArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].lowArea.subviewTable.Source = null;
@@ -977,8 +972,6 @@ namespace ION.IOS.ViewController.Analyzer
 
           analyzerSensors.viewList[swap].lowArea.subviewTable.ReloadData();
           analyzerSensors.viewList[swap].lowArea.subviewTable.Hidden = false;
-          //analyzerSensors.viewList[swap].lowArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
-
 
           analyzerSensors.viewList[swap].highArea.snapArea.Hidden = true;
           analyzerSensors.viewList[swap].highArea.subviewTable.Source = null;
@@ -1315,7 +1308,6 @@ namespace ION.IOS.ViewController.Analyzer
         }
       }
       if (removeLH) {
-        Console.WriteLine("crossing sides");
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
@@ -1324,7 +1316,7 @@ namespace ION.IOS.ViewController.Analyzer
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
-          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);       
+          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
@@ -1377,7 +1369,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList [i] == 2) {
 
@@ -1386,7 +1378,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList [i] == 3) {
 
@@ -1395,7 +1387,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 4) {
 
@@ -1404,7 +1396,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+         // analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 5) {
 
@@ -1413,7 +1405,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 6) {
 
@@ -1422,7 +1414,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 7) {
 
@@ -1431,7 +1423,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 8) {
 
@@ -1440,9 +1432,8 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
         }
+        analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
       }
     }
 		/// <summary>

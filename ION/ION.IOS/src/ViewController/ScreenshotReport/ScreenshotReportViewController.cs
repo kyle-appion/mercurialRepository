@@ -4,6 +4,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
+  using CoreGraphics;
   using Foundation;
   using UIKit;
 
@@ -24,6 +25,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     private IItem reportTitle { get; set; }
     private DateTime date { get; set; }
     private IItem notes { get; set; }
+    private UITapGestureRecognizer noKeyboard{get; set;}
     private List<IItem> items { get; set; }
 
     private ScreenshotReportSource source { get; set; }
@@ -34,7 +36,11 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     // Overridden from BaseIONViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
+      noKeyboard = new UITapGestureRecognizer(() => {
+        View.EndEditing(true);
+      });
 
+      View.AddGestureRecognizer(noKeyboard);
       NavigationItem.Title = Strings.Report.SCREENSHOT;
 
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.SAVE, UIBarButtonItemStyle.Plain, async delegate {
@@ -57,8 +63,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       reportTitle = new EntryItem(Strings.Report.TITLE);
       date = DateTime.Now;
       notes = new NotesItem(Strings.Report.NOTES);
-
-
+      //notes = new UITextField(new CGRect(0,0,100, 60));
       items = new List<IItem>();
       items.Add(new EntryItem(Strings.Report.CITY));
       items.Add(new EntryItem(Strings.Report.STATE));
@@ -69,7 +74,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       sourceList.Add(reportTitle);
       sourceList.Add(new DisplayItem(Strings.DATE, date.ToLocalTime().ToShortDateString()));
       sourceList.AddRange(items);
-//      sourceList.Add(notes);
+      //sourceList.Add(notes);
 
       source = new ScreenshotReportSource(sourceList);
       table.Source = source;
