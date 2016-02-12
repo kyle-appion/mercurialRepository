@@ -17,18 +17,6 @@ namespace ION.Droid.Dialog {
   /// </summary>
   public class ListDialogBuilder : IONAlertDialog, IDialogInterfaceOnClickListener {
     /// <summary>
-    /// A delegate that is called when a list option is selected.s
-    /// </summary>
-    /// <param name="optionId"></param>
-    public delegate void OnOptionSelected(int optionId);
-    
-
-    /// <summary>
-    /// The callback that is notified when a list item is selected.
-    /// </summary>
-    public OnOptionSelected onOptionSelected { get; set; }
-
-    /// <summary>
     /// The list of rows that are present in the dialog.
     /// </summary>
     private List<Row> content { get; set; }
@@ -53,7 +41,11 @@ namespace ION.Droid.Dialog {
 
     // Overridden from IDialogInterfaceOnClickListener
     public void OnClick(IDialogInterface dialog, int position) {
-      onOptionSelected(content[position].id);
+      var action = content[position].action;
+      if (action != null) {
+        action();
+      }
+      dialog.Dismiss();
     }
 
     /// <summary>
@@ -62,8 +54,8 @@ namespace ION.Droid.Dialog {
     /// <param name="title"></param>
     /// <param name="id"></param>
     /// <returns></returns>
-    public ListDialogBuilder AddItem(string title, int id) {
-      content.Add(new Row(title, id));
+    public ListDialogBuilder AddItem(string title, Action action) {
+      content.Add(new Row(title, action));
       return this;
     }
 
@@ -72,19 +64,8 @@ namespace ION.Droid.Dialog {
     /// </summary>
     /// <param name="stringRes"></param>
     /// <returns></returns>
-    public ListDialogBuilder AddItem(int stringRes) {
-      content.Add(new Row(Context.GetString(stringRes), stringRes));
-      return this;
-    }
-
-    /// <summary>
-    /// Adds a new row to the dialog.
-    /// </summary>
-    /// <param name="stringRes"></param>
-    /// <param name="id"></param>
-    /// <returns></returns>
-    public ListDialogBuilder AddItem(int stringRes, int id) {
-      content.Add(new Row(Context.GetString(stringRes), id));
+    public ListDialogBuilder AddItem(int stringRes, Action action) {
+      content.Add(new Row(Context.GetString(stringRes), action));
       return this;
     }
 
@@ -93,11 +74,11 @@ namespace ION.Droid.Dialog {
     /// </summary>
     internal struct Row {
       public string title { get; set; }
-      public int id { get; set; }
+      public Action action { get; set; }
 
-      public Row(string title, int id) : this() {
+      public Row(string title, Action action) : this() {
         this.title = title;
-        this.id = id;
+        this.action = action;
       }
     }
   }

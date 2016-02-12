@@ -82,7 +82,6 @@ namespace ION.Core.IO {
     /// <summary>
     /// Gets a subfolder within this directory. The access response describes 
     /// the action taken for acquiring the folder.
-    /// +
     /// </summary>
     /// <param name="name">Name.</param>
     /// <param name="accessResponse"></param>
@@ -119,11 +118,25 @@ namespace ION.Core.IO {
     void Delete();
   }
 
+  /// <summary>
+  /// The response that will resolve how a file is handled under a given situation.
+  /// </summary>
   public enum EFileAccessResponse {
+    /// <summary>
+    /// Creates the file if it is missing.
+    /// </summary>
     CreateIfMissing,
+    /// <summary>
+    /// Throws an exception if the file is missing.
+    /// </summary>
     FailIfMissing,
-
+    /// <summary>
+    /// Replaces the file if it already exists. Only works on files.
+    /// </summary>
     ReplaceIfExists,
+    /// <summary>
+    /// Throws an exception if the file already exists. On works on files.
+    /// </summary>
     FailIfExists,
   }
 }

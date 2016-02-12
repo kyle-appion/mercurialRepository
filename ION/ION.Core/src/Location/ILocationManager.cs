@@ -45,9 +45,25 @@ namespace ION.Core.Location {
   /// A simple entity encapsulating a location.
   /// </summary>
   public interface ILocation {
+    /// <summary>
+    /// Wether or not the location is valid.
+    /// </summary>
+    /// <value><c>true</c> if is valid; otherwise, <c>false</c>.</value>
     bool isValid { get; }
+    /// <summary>
+    /// The altitude of the location.
+    /// </summary>
+    /// <value>The altitude.</value>
     Scalar altitude { get; }
+    /// <summary>
+    /// The longitude of the location.
+    /// </summary>
+    /// <value>The longitude.</value>
     Scalar longitude { get; }
+    /// <summary>
+    /// The latitude of the location.
+    /// </summary>
+    /// <value>The latitude.</value>
     Scalar latitude { get; }
   }
 }

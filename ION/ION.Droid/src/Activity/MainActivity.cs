@@ -41,10 +41,17 @@
       base.OnResume();
 
       if (!(await InitApplication())) {
-        string msg = "Failed to initialize ION. Please contact Appion for assistance.";
+        string msg = "Failed to start ION. Please contact Appion for assistance.";
         Log.E(this, msg);
-        Toast.MakeText(this, msg, ToastLength.Short);
-        Finish();
+        var adb = new AlertDialog.Builder(this);
+        adb.SetTitle("Failed to start ION");
+        adb.SetMessage(msg);
+
+        adb.SetNegativeButton(Android.Resource.String.Cancel, (obj, args) => {
+          Finish();
+        });
+
+        adb.Show();
       } else {
         StartActivity(typeof(HomeActivity));
         Finish();

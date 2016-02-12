@@ -168,6 +168,7 @@
       __connectionHelper.onDeviceFound -= OnDeviceFound;
 
       foreach (var device in devices) {
+        device.connection.Disconnect();
         Unregister(device);
       }
 

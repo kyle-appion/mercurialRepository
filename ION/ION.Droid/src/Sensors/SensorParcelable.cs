@@ -37,13 +37,13 @@
   /// An android specific construc that will allow a sensor to cross between activies as a result or
   /// intent data object.
   /// </summary>
-  public class DefaultSensorParcelable : SensorParcelable {
+  public class ManualSensorParcelable : SensorParcelable {
     /// <summary>
     /// The creator that will create the parcelable from a parcel source.
     /// </summary>
     [ExportField("CREATOR")]
     public static IParcelableCreator GetCreator() {
-      return new GenericParcelableCreator<DefaultSensorParcelable>();
+      return new GenericParcelableCreator<ManualSensorParcelable>();
     }
 
     /// <summary>
@@ -71,16 +71,21 @@
     /// </summary>
     /// <value>The amount.</value>
     public double amount { get; set; }
+    /// <summary>
+    /// The user given name for the sensor.
+    /// </summary>
+    /// <value>The name.</value>
+    public string name { get; set; }
 
-    public DefaultSensorParcelable(Parcel source) {
+    public ManualSensorParcelable(Parcel source) {
       sensorType = (ESensorType)source.ReadInt();
       isRelative = source.ReadInt() == 1;
-      isEditable = source.ReadInt() == 1;
       unitCode = source.ReadInt();
       amount = source.ReadDouble();
+      name = source.ReadString();
     }
 
-    public DefaultSensorParcelable(Sensor sensor) {
+    public ManualSensorParcelable(ManualSensor sensor) {
       if (sensor is GaugeDeviceSensor) {
         throw new InvalidOperationException("Do not use a DefaultSensorParcelable to pass a GaugeDeviceSensor. Please use a GaugeDeviceSensorParcelable instead.");
       }
@@ -88,21 +93,25 @@
       sensorType = sensor.type;
       unitCode = UnitLookup.GetCode(sensor.unit);
       amount = sensor.measurement.amount;
+      name = sensor.name;
     }
 
     // Overridden from SensorParcelable
     public override void WriteToParcel(Parcel dest, ParcelableWriteFlags flags) {
       dest.WriteInt((int)sensorType);
       dest.WriteInt(isRelative ? 1 : 0);
-      dest.WriteInt(isEditable ? 1 : 0);
       dest.WriteInt(unitCode);
       dest.WriteDouble(amount);
+      dest.WriteString(name);
     }
 
     // Overridden from SensorParcelable
     public override Sensor Get(IION ion) {
-      var ret = new Sensor(sensorType, isRelative, isEditable);
-      return null;
+      var ret = new ManualSensor(sensorType, isRelative);
+
+      ret.name = name;
+
+      return ret;
     }
   }
 

@@ -18,6 +18,7 @@
   using ION.Core.App;
   using ION.Core.Util;
 
+  using ION.Droid.Fragments;
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
 
@@ -72,6 +73,10 @@
     /// </summary>
     /// <value>The navigation adapter.</value>
     private NavigationAdapter navigationAdapter { get; set; }
+    /// <summary>
+    /// The current active fragment.
+    /// </summary>
+    private Fragment activeFragment;
 
     // Overridden from Activity
     protected override void OnCreate(Bundle bundle) {
@@ -82,8 +87,6 @@
         Finish();
         return;
       }
-
-      this.cache = new BitmapCache(Resources);
 
       SetContentView(Resource.Layout.activity_home);
 
@@ -154,9 +157,10 @@
     /// </summary>
     public void DisplayAnalyzer() {
       var ab = ActionBar;
-      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resources.GetColor(Resource.Color.gray)));
+      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resource.Color.gray));
       drawerToggle.lastTitle = ab.Title = GetString(Resource.String.analyzer);
 
+      GotoFragment(new AnalyzerFragment());
     }
 
     /// <summary>
@@ -166,6 +170,28 @@
       var ab = ActionBar;
       ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
       drawerToggle.lastTitle = ab.Title = GetString(Resource.String.workbench);
+
+      GotoFragment(new WorkbenchFragment());
+    }
+
+    /// <summary>
+    /// Navigates the to the given fragment.
+    /// </summary>
+    /// <param name="fragment">Fragment.</param>
+    private void GotoFragment(Fragment fragment) {
+      var ft = FragmentManager.BeginTransaction();
+
+      ft.SetCustomAnimations(Resource.Animation.enter, Resource.Animation.exit);
+
+      if (activeFragment != null) {
+        ft.Remove(activeFragment);
+      }
+
+      ft.Add(Resource.Id.content, activeFragment = fragment, null);
+
+      ft.Commit();
+
+      drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
     }
 
     /// <summary>
@@ -179,21 +205,23 @@
         id = Resource.Id.main,
         title = GetString(Resource.String.main),
         items = new NavigationItem[] {
-/*
+
           new NavigationIconItem() {
             id = Resource.Id.analyzer,
             title = GetString(Resource.String.analyzer),
             icon = Resource.Drawable.ic_nav_analyzer,
+            hidden = activeFragment is AnalyzerFragment,
             action = () => {
               DisplayAnalyzer();
               HideDrawer();
             },
           },
-*/
+
           new NavigationIconItem() {
             id = Resource.Id.workbench,
             title = GetString(Resource.String.workbench),
             icon = Resource.Drawable.ic_nav_workbench,
+            hidden = activeFragment is WorkbenchFragment,
             action = () => {
               DisplayWorkbench();
               HideDrawer();
@@ -212,6 +240,30 @@
             icon = Resource.Drawable.ic_nav_ptconversion,
             action = () => {
               StartActivity(typeof(PTChartActivity));
+            }
+          },
+
+          new NavigationIconItem() {
+            id = Resource.Id.shsc,
+            title = GetString(Resource.String.shsc),
+            icon = Resource.Drawable.ic_nav_supersub,
+            action = () => {
+              StartActivity(typeof(SuperheatSubcoolActivity));
+            }
+          },
+        },
+      };
+
+      var reports = new NavigationCategory() {
+        id = Resource.Id.reports,
+        title = GetString(Resource.String.reports),
+        items = new NavigationItem[] {
+          new NavigationIconItem() {
+            id = Resource.Id.report_screenshot_archive,
+            title = GetString(Resource.String.report_screenshot_archive),
+            icon = Android.Resource.Drawable.IcMenuCamera,
+            action = () => {
+              StartActivity(typeof(ScreenshotArchiveActivity));
             }
           },
         },
@@ -247,6 +299,7 @@
 
       ret.Add(main);
       ret.Add(calculators);
+      ret.Add(reports);
       ret.Add(settings);
       ret.Add(exit);
 

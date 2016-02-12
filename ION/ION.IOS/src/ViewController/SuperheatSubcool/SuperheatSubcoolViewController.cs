@@ -205,8 +205,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
-      pressureSensor = new Sensor(ESensorType.Pressure, true, true);
-      temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+      pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+      temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
 
       pressureSensor.unit = pressureUnit;
       temperatureSensor.unit = temperatureUnit;
@@ -238,7 +238,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           ClearPressureInput();
         }
       }));
@@ -279,7 +279,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
-          temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+          temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           ClearTemperatureInput();
         }
       }));
@@ -308,14 +308,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           if (initialManifold.secondarySensor != null) {
             temperatureSensor = initialManifold.secondarySensor;
           } else {
-            temperatureSensor = new Sensor(ESensorType.Temperature, false, true);
+            temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           }
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
           if (initialManifold.secondarySensor != null) {
             pressureSensor = initialManifold.secondarySensor;
           } else {
-            pressureSensor = new Sensor(ESensorType.Pressure, true, true);
+            pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           }
         } else {
           throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
