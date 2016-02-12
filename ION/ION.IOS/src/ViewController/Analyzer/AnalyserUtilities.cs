@@ -380,7 +380,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       lowHighSensors.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
       lowHighSensors.lowArea.Connection.BackgroundColor = UIColor.Clear;
-      lowHighSensors.lowArea.connectionColor.BackgroundColor = UIColor.Clear;
+      //lowHighSensors.lowArea.connectionColor.BackgroundColor = UIColor.Clear;
       lowHighSensors.lowArea.Connection.Hidden = true;
       lowHighSensors.lowArea.connectionColor.Layer.CornerRadius = 6;
       lowHighSensors.lowArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
@@ -445,7 +445,7 @@ namespace ION.IOS.ViewController.Analyzer
       lowHighSensors.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
       lowHighSensors.highArea.Connection.Hidden = true;
       lowHighSensors.highArea.Connection.BackgroundColor = UIColor.Clear;
-      lowHighSensors.highArea.connectionColor.BackgroundColor = UIColor.Clear;
+      //lowHighSensors.highArea.connectionColor.BackgroundColor = UIColor.Clear;
       lowHighSensors.highArea.connectionColor.Layer.CornerRadius = 6;
       lowHighSensors.highArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       lowHighSensors.highArea.connectionColor.Layer.BorderWidth = 1f;
@@ -929,11 +929,11 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[start].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
           } else if (analyzerSensors.viewList[start].manualSensor != null) {
             analyzerSensors.viewList[start].lowArea.manifold = new Manifold(analyzerSensors.viewList[start].manualSensor);
-            analyzerSensors.viewList[start].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[start].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].manualSensor.unit;
             analyzerSensors.viewList[start].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
 
             analyzerSensors.viewList[start].highArea.manifold = new Manifold(analyzerSensors.viewList[start].manualSensor);
-            analyzerSensors.viewList[start].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[start].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].manualSensor.unit;
             analyzerSensors.viewList[start].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
           }
 
@@ -999,11 +999,11 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           } else if (analyzerSensors.viewList[swap].manualSensor != null) {
             analyzerSensors.viewList[swap].lowArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].manualSensor.unit;
             analyzerSensors.viewList[swap].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
 
             analyzerSensors.viewList[swap].highArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].manualSensor.unit;
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           }
 
@@ -1072,11 +1072,11 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[start].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
           } else if (analyzerSensors.viewList[start].manualSensor != null) {
             analyzerSensors.viewList[start].lowArea.manifold = new Manifold(analyzerSensors.viewList[start].manualSensor);
-            analyzerSensors.viewList[start].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[start].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].manualSensor.unit;
             analyzerSensors.viewList[start].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
 
             analyzerSensors.viewList[start].highArea.manifold = new Manifold(analyzerSensors.viewList[start].manualSensor);
-            analyzerSensors.viewList[start].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[start].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[start].manualSensor.unit;
             analyzerSensors.viewList[start].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
           }
           analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Red;
@@ -1142,11 +1142,11 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           } else if (analyzerSensors.viewList[swap].manualSensor != null) {
             analyzerSensors.viewList[swap].lowArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].manualSensor.unit;
             analyzerSensors.viewList[swap].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
 
             analyzerSensors.viewList[swap].highArea.manifold = new Manifold(analyzerSensors.viewList[swap].manualSensor);
-            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].lowArea.manualSensor.unit;
+            analyzerSensors.viewList[swap].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[swap].manualSensor.unit;
             analyzerSensors.viewList[swap].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[swap].lowArea.ion, Fluid.EState.Dew);
           }
 
@@ -1369,7 +1369,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList [i] == 2) {
 
@@ -1378,7 +1378,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList [i] == 3) {
 
@@ -1387,7 +1387,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 4) {
 
@@ -1396,7 +1396,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-         // analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 5) {
 
@@ -1405,7 +1405,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 6) {
 
@@ -1414,7 +1414,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 7) {
 
@@ -1423,7 +1423,7 @@ namespace ION.IOS.ViewController.Analyzer
           noRotate.AllowsRotation = false;
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          //analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
 
         } else if (analyzerSensors.areaList[i] == 8) {
 
@@ -1433,7 +1433,6 @@ namespace ION.IOS.ViewController.Analyzer
           analyzerSensors.animator.AddBehavior(noRotate);
           analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
         }
-        analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
       }
     }
 		/// <summary>
@@ -1456,8 +1455,11 @@ namespace ION.IOS.ViewController.Analyzer
       }
 
       if (Sensor.isManual.Equals(true) || removeSensor.isManual.Equals(true)) {
+        bool spotOpen = secondarySlotSpot(Sensor, removeSensor,analyzerSensors, type);
+
         if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(true)) {         
           if (Sensor.manualSensor.type == removeSensor.manualSensor.type) {
+            spotOpen = true;
           } else {
             if (Sensor.manualSensor.type == ESensorType.Vacuum || removeSensor.manualSensor.type == ESensorType.Vacuum) {              
             } else {
@@ -1466,6 +1468,7 @@ namespace ION.IOS.ViewController.Analyzer
           }
         } else if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(false)) {
           if(Sensor.manualSensor.type == removeSensor.currentSensor.type){
+            spotOpen = true;
           }else{
             if(Sensor.manualSensor.type == ESensorType.Vacuum || removeSensor.currentSensor.type == ESensorType.Vacuum){
             } else {
@@ -1474,6 +1477,7 @@ namespace ION.IOS.ViewController.Analyzer
           }
         } else if (Sensor.isManual.Equals(false) && removeSensor.isManual.Equals(true)) {         
           if (Sensor.currentSensor.type == removeSensor.manualSensor.type) {
+            spotOpen = true;
           } else {
             if(Sensor.currentSensor.type == ESensorType.Vacuum || removeSensor.manualSensor.type == ESensorType.Vacuum){
             } else {
@@ -1481,7 +1485,7 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
         }
-        var spotOpen = secondarySlotSpot(Sensor, removeSensor,analyzerSensors, type);
+
         if (spotOpen.Equals(false)) {
           UIAlertController noneAvailable;
           noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
