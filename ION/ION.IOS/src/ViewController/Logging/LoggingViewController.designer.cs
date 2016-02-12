@@ -9,7 +9,7 @@ using System;
 using System.CodeDom.Compiler;
 using UIKit;
 
-namespace ION.IOS {
+namespace ION.IOS.ViewController.Logging {
   [Register("LoggingViewController")]
   partial class LoggingViewController {
     void ReleaseDesignerOutlets() {

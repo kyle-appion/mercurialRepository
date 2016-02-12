@@ -229,6 +229,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\img_button_blackclosex.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -444,10 +446,18 @@
     <Compile Include="src\ViewController\Logging\LoggingViewController.designer.cs">
       <DependentUpon>LoggingViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Logging\LoggingTableSource.cs" />
     <Compile Include="src\ViewController\Logging\Session.cs" />
     <Compile Include="src\ViewController\Logging\Job.cs" />
     <Compile Include="src\ViewController\Logging\SessionMeasurement.cs" />
+    <Compile Include="src\ViewController\Logging\SessionView.cs" />
+    <Compile Include="src\ViewController\Logging\JobView.cs" />
+    <Compile Include="src\ViewController\Logging\SessionCell.cs" />
+    <Compile Include="src\ViewController\Logging\JobCell.cs" />
+    <Compile Include="src\ViewController\Logging\SessionData.cs" />
+    <Compile Include="src\ViewController\Logging\LoggingSessionSource.cs" />
+    <Compile Include="src\ViewController\Logging\JobData.cs" />
+    <Compile Include="src\ViewController\Logging\LoggingJobSource.cs" />
+    <Compile Include="src\ViewController\Logging\AssociateJob.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -478,7 +488,6 @@
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
-    <Folder Include="Resources\es.lproj\" />
     <Folder Include="src\ViewController\Logging\" />
   </ItemGroup>
   <ItemGroup />
@@ -495,7 +504,7 @@
     <BundleResource Include="Settings.bundle\Root.plist" />
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
     <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
-    <BundleResource Include="Resources\es.lproj\Localizable.strings" />
+    <BundleResource Include="Resources\Images.xcassets\Contents.json" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

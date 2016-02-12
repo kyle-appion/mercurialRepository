@@ -1,9 +1,11 @@
 {
   "images": [
     {
+      "filename": "ic_record.pdf",
       "idiom": "universal"
     },
     {
+      "filename": "ic_record.png",
       "scale": "1x",
       "idiom": "universal"
     },
