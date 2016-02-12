@@ -27,6 +27,7 @@ namespace ION.IOS.ViewController {
     public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";
     public const string VC_WORKBENCH = "viewControllerWorkbench";
     public const string VC_PDF_VIEWER = "viewControllerPdfViewer";
+    public const string VC_LOGGING = "viewControllerLogging";
 
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation

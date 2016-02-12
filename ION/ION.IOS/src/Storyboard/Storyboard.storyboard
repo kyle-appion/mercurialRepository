@@ -2119,6 +2119,24 @@
             </objects>
             <point key="canvasLocation" x="2407" y="2395"/>
         </scene>
+        <!--viewControllerLogging-->
+        <scene sceneID="kif-TK-cAn">
+            <objects>
+                <viewController storyboardIdentifier="viewControllerLogging" id="8cZ-kE-zOc" userLabel="viewControllerLogging" customClass="LoggingViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="BNb-SN-y1U"/>
+                        <viewControllerLayoutGuide type="bottom" id="yEN-hx-27N"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ElL-rF-6TW">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="f3s-lo-cqU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2408" y="3035"/>
+        </scene>
         <!--viewControllerSuperheatSubcool-->
         <scene sceneID="Xuw-JB-I4e">
             <objects>
