@@ -233,6 +233,14 @@
         if (onDeviceEvent != null) {
           onDeviceEvent(new DeviceEvent(type, this));
         }
+
+/*
+        if (sensors != null) {
+          foreach (var sensor in sensors) {
+            sensor.NotifySensorStateChanged();
+          }
+        }
+*/
       });
     }
   }

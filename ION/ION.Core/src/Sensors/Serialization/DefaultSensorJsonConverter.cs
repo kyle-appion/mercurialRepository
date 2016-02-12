@@ -89,7 +89,7 @@ namespace ION.Core.Sensors.Serialization {
       // Overridden from ISensorModel
       public Sensor ToSensor(IION ion) {
         var sensorType = (ESensorType)Enum.Parse(typeof(ESensorType), type);
-        var ret = new Sensor(sensorType, isRelative, isEditable);
+        var ret = new ManualSensor(sensorType, isRelative);
         ret.name = name;
         ret.measurement = UnitLookup.GetUnit(unit).OfScalar(measurement);
 

@@ -17,7 +17,7 @@
   using ION.Droid.Views;
   using ION.Droid.Widgets.Adapters;
 
-  [Activity(Label="!!!", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
+  [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
   public class DeviceManagerActivity : IONActivity {
 
 
@@ -48,6 +48,11 @@
     /// <value>The list.</value>
     private RecyclerView list { get; set; }
     /// <summary>
+    /// The view that we will show when the device manager has no device content.
+    /// </summary>
+    /// <value>The empty.</value>
+    private View empty { get; set; }
+    /// <summary>
     /// The adapter that will organize the devices into a friendly and easy to understand
     /// list layout. (HA! Friendly. Right.)
     /// </summary>
@@ -61,33 +66,46 @@
 
       SetContentView(Resource.Layout.activity_device_manager);
 
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.SetHomeButtonEnabled(true);
+
       ion = AppState.context;
 
       list = FindViewById<RecyclerView>(Resource.Id.list);
+      empty = FindViewById<TextView>(Resource.Id.view);
+      empty.Visibility = ViewStates.Gone;
+
       list.SetLayoutManager(new LinearLayoutManager(this));
 
       adapter = new DeviceRecycleAdapter(Resources);
       adapter.SetDevices(ion.deviceManager.devices);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;
+      adapter.onDatasetChanged += (adapter) => {
+//        OnAdapterRefreshed();
+      };
 
       list.SetAdapter(adapter);
     }
 
+    /// <summary>
+    /// Raises the resume event.
+    /// </summary>
     protected override void OnResume() {
       base.OnResume();
 
-      ion.deviceManager.onDeviceEvent += OnDeviceEvent;
-      ion.deviceManager.onDeviceManagerStatesChanged += OnDeviceManagerStateChanged;
+      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
       InvalidateOptionsMenu();
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
+
+//      OnAdapterRefreshed();
     }
 
     // Overridden from Activity
     protected override void OnPause() {
       base.OnPause();
 
-      ion.deviceManager.onDeviceEvent -= OnDeviceEvent;
-      ion.deviceManager.onDeviceManagerStatesChanged -= OnDeviceManagerStateChanged;
+      ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.Stop();
     }
 
@@ -112,9 +130,9 @@
         if (dm.connectionHelper.isScanning) {
           dm.connectionHelper.Stop();
         } else {
-          var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(10000));
-          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
-//          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+//          var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(10000));
+//          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
+          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
         }
       }));
 
@@ -153,6 +171,19 @@
     }
 
     /// <summary>
+    /// Called when the adapter's content is refreshed.
+    /// </summary>
+    private void OnAdapterRefreshed() {
+      if (adapter.ItemCount <= 0) {
+        empty.Visibility = ViewStates.Visible;
+        list.Visibility = ViewStates.Gone;
+      } else {
+        empty.Visibility = ViewStates.Gone;
+        list.Visibility = ViewStates.Visible;
+      }
+    }
+
+    /// <summary>
     /// Repopulates the device manager adapter.
     /// </summary>
     private void RefreshAdapter() {
@@ -181,6 +212,21 @@
     }
 
     /// <summary>
+    /// The event handler method that wil resolve the device manager events that come in.
+    /// </summary>
+    /// <param name="e">E.</param>
+    private void OnDeviceManagerEvent(DeviceManagerEvent e) {
+      switch (e.type) {
+        case DeviceManagerEvent.EType.DeviceEvent:
+          OnDeviceEvent(e.deviceEvent);
+          break;
+        default:
+          InvalidateOptionsMenu();
+          break;
+      }
+    }
+
+    /// <summary>
     /// Called when the device manager posts a new device event.
     /// </summary>
     /// <param name="deviceEvent">Device event.</param>
@@ -197,19 +243,9 @@
         case DeviceEvent.EType.ConnectionChange:
           RefreshAdapter();
           break;
-//        case DeviceEvent.EType.NameChanged:
-//        case DeviceEvent.EType.NewData
         default:
           break;
       }
-    }
-
-    /// <summary>
-    /// Called when the device manager's state changes.
-    /// </summary>
-    /// <param name="deviceManager">Device manager.</param>
-    private void OnDeviceManagerStateChanged(IDeviceManager deviceManager) {
-      InvalidateOptionsMenu();
     }
   }
 }

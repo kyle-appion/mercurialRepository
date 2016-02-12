@@ -44,10 +44,11 @@
       using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(stream))
         ds.WriteObject(w, scalar);
     
-
+/*
       Scalar inflated = null;
       using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
         inflated = (Scalar)ds.ReadObject(r);
+*/
     }
   }
 }

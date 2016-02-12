@@ -14,7 +14,7 @@ namespace ION.TestFixwtures.Sensors.Serialization {
 
     [Test]
     public void TestSensorFullSerialization() {
-      var sensor = new Sensor(ESensorType.Pressure, false, true);
+      var sensor = new ManualSensor(ESensorType.Pressure, false);
       sensor.name = "Duh, sensor";
       sensor.measurement = Units.Pressure.PSIA.OfScalar(100);
       sensor.minMeasurement = Units.Pressure.PSIA.OfScalar(10);
@@ -36,7 +36,7 @@ namespace ION.TestFixwtures.Sensors.Serialization {
 
     [Test]
     public void TestSensorPartialSerialization() {
-      var sensor = new Sensor(ESensorType.Pressure, false, true);
+      var sensor = new ManualSensor(ESensorType.Pressure, false);
       sensor.name = "Duh, sensor";
       sensor.measurement = Units.Pressure.PSIA.OfScalar(100);
 
