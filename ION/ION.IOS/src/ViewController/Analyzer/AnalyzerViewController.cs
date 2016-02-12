@@ -65,34 +65,34 @@ namespace ION.IOS.ViewController.Analyzer {
 
       createSensors ();
 
-      var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-      _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
-      createLocalJobandSessionDatabase();
+//      var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+//      _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
+//      createLocalJobandSessionDatabase();
+//
+//      Console.WriteLine("created tables");
+//
+//      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
+//      dataRecord.BackgroundColor = UIColor.LightGray;
+//      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
+//      dataRecord.Enabled = true;
+//      dataRecord.Layer.CornerRadius = 6;
+//
+//      dataStop = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height + 30, 30, 30));
+//      dataStop.BackgroundColor = UIColor.LightGray;
+//      dataStop.SetImage(UIImage.FromBundle("ic_stop"),UIControlState.Normal);
+//      dataStop.Enabled = false;
+//      dataStop.Alpha = .4f;
+//      dataStop.Layer.CornerRadius = 6;
+//
+//      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
+//      showRecords.BackgroundColor = UIColor.Green;
+//      showRecords.Layer.CornerRadius = 6;
 
-      Console.WriteLine("created tables");
-
-      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
-      dataRecord.BackgroundColor = UIColor.LightGray;
-      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
-      dataRecord.Enabled = true;
-      dataRecord.Layer.CornerRadius = 6;
-
-      dataStop = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height + 30, 30, 30));
-      dataStop.BackgroundColor = UIColor.LightGray;
-      dataStop.SetImage(UIImage.FromBundle("ic_stop"),UIControlState.Normal);
-      dataStop.Enabled = false;
-      dataStop.Alpha = .4f;
-      dataStop.Layer.CornerRadius = 6;
-
-      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
-      showRecords.BackgroundColor = UIColor.Green;
-      showRecords.Layer.CornerRadius = 6;
-
-      dataRecord.TouchUpInside += recordDevices;
-
-      dataStop.TouchUpInside += stopRecording;
-
-      showRecords.TouchUpInside += listOutSessions;
+//      dataRecord.TouchUpInside += recordDevices;
+//
+//      dataStop.TouchUpInside += stopRecording;
+//
+//      showRecords.TouchUpInside += listOutSessions;
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
       mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;
@@ -113,11 +113,11 @@ namespace ION.IOS.ViewController.Analyzer {
         this.View.SendSubviewToBack (mentryView.mView);
       };
 
-      View.AddSubview(dataRecord);
-      View.BringSubviewToFront(dataRecord);
-      View.AddSubview(dataStop);
-      View.BringSubviewToFront(dataStop);
-      View.AddSubview(showRecords);
+//      View.AddSubview(dataRecord);
+//      View.BringSubviewToFront(dataRecord);
+//      View.AddSubview(dataStop);
+//      View.BringSubviewToFront(dataStop);
+//      View.AddSubview(showRecords);
     }
 
     /// <summary>
