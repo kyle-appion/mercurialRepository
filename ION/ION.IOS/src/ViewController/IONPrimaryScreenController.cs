@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
           new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
           new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
-          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_nav_workbench")),
+          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_nav_workbench")),
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
