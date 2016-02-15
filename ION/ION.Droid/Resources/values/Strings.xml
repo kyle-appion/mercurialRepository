@@ -141,6 +141,11 @@
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
 
   <!--
+  SUPERHEAT / SUBCOOL
+  -->
+  <string name="shsc">Superheat / Subcool</string>
+
+  <!--
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>

@@ -27,7 +27,7 @@
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
-  [Activity(Label = "PTChartActivity", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme")]      
   public class PTChartActivity : IONActivity {
 
     /// <summary>
@@ -140,12 +140,6 @@
 
 
     /// <summary>
-    /// The ion context for the app.
-    /// </summary>
-    /// <value>The ion.</value>
-    private IION ion { get; set; }
-
-    /// <summary>
     /// The text watcher that will watch the pressure entry's text.
     /// </summary>
     /// <value>The pressure text watcher.</value>
@@ -212,7 +206,6 @@
 
       SetContentView(Resource.Layout.activity_ptchart);
 
-      ion = AppState.context;
       __pressureSensor = new ManualSensor(ESensorType.Pressure);
       __temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
 
