@@ -271,7 +271,9 @@
     private void OnManifoldClicked(AnalyzerView view, Analyzer analyzer, Analyzer.ESide side) {
       var manifold = analyzer.GetManifoldFromSide(side);
 
-      ShowManifoldContextDialog(manifold);
+      if (manifold != null) {
+        ShowManifoldContextDialog(manifold);
+      }
     }
   }
 }

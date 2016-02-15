@@ -229,4 +229,5 @@
             android:layout_width="@dimen/ptchart_unit_width"
             android:layout_height="match_parent" />
     </LinearLayout>
+<!-- Calculated Result Display -->
 </LinearLayout>

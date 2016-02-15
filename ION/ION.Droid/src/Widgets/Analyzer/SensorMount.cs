@@ -111,7 +111,7 @@
       title.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_upper_white);
       title.SetPadding(10, 10, 10, 10);
       title.SetTextColor(gray);
-      title.SetSingleLine(true);
+        title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
       title.SetIncludeFontPadding(false);
       title.Text = "Boogers";
