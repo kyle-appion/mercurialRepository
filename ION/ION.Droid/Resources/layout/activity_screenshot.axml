@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        android:id="@id/content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content" />
+    <TableLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content">
+    <!-- Report Name -->
+        <TableRow>
+            <TextView
+                android:text="@string/report_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@id/name"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/report_name" />
+        </TableRow>
+    <!-- Date -->
+        <TableRow>
+            <TextView
+                android:text="@string/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+        <!-- The long ass retarded hint is used to set a mimum width since android won't size the table correctly. -->
+            <TextView
+                android:id="@id/date"
+                android:singleLine="true"
+                android:hint="XXXXXXXXXXXXXXXXXXXXXX"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    <!-- Address -->
+        <TableRow>
+            <TextView
+                android:text="@string/address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@id/address"
+                android:singleLine="true"
+                android:inputType="textPostalAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/address" />
+        </TableRow>
+    <!-- City -->
+        <TableRow>
+            <TextView
+                android:text="@string/city"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@id/city"
+                android:singleLine="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/city" />
+        </TableRow>
+    <!-- State -->
+        <TableRow>
+            <TextView
+                android:text="@string/state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <Spinner
+                android:id="@id/state"
+                android:entries="@array/us_states"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    <!-- Zip Code -->
+        <TableRow>
+            <TextView
+                android:text="@string/zip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:id="@id/zip"
+                android:singleLine="true"
+                android:inputType="number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/zip" />
+        </TableRow>
+    </TableLayout>
+    <EditText
+        android:id="@id/notes"
+        android:lines="3"
+        android:hint="@string/notes"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>
