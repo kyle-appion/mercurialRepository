@@ -86,7 +86,7 @@
 
         // Create the inflated manifold
         var ret = new Manifold(primary);
-        ret.secondarySensor = secondary;
+        ret.SetSecondarySensor(secondary);
 
         if (reader.ReadBoolean()) {
           var state = (Fluid.EState)Enum.Parse(typeof(Fluid.EState), reader.ReadString());

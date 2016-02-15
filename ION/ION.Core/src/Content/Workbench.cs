@@ -255,7 +255,7 @@
           if (gd.ContainsSensor(p)) {
             toRemove.Add(m);  
           } else if (gd.ContainsSensor(s)) {
-            m.secondarySensor = null;
+            m.SetSecondarySensor(null);
           }
         }
 

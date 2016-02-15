@@ -1499,8 +1499,8 @@ namespace ION.IOS.ViewController.Analyzer
         addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
           if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(true)) {
             if (removeSensor.manualSensor.type == ESensorType.Pressure && Sensor.manualSensor.type == ESensorType.Temperature) {
-              removeSensor.lowArea.manifold.secondarySensor = Sensor.manualSensor;
-              removeSensor.highArea.manifold.secondarySensor = Sensor.manualSensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.manualSensor);
+              removeSensor.highArea.manifold.SetSecondarySensor(Sensor.manualSensor);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
               Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
@@ -1509,10 +1509,10 @@ namespace ION.IOS.ViewController.Analyzer
               removeSensor.highArea.attachedSensor = Sensor;
             } else if (removeSensor.manualSensor.type == ESensorType.Temperature && Sensor.manualSensor.type == ESensorType.Pressure) {
               removeSensor.lowArea.manifold = new Manifold(Sensor.manualSensor);
-              removeSensor.lowArea.manifold.secondarySensor = removeSensor.manualSensor as Sensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(removeSensor.manualSensor);
               removeSensor.lowArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
               removeSensor.highArea.manifold = new Manifold(Sensor.manualSensor);
-              removeSensor.highArea.manifold.secondarySensor = removeSensor.manualSensor as Sensor;
+              removeSensor.highArea.manifold.SetSecondarySensor(removeSensor.manualSensor);
               removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.highArea.ion, Fluid.EState.Dew);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
@@ -1533,8 +1533,8 @@ namespace ION.IOS.ViewController.Analyzer
             }
           } else if (Sensor.isManual.Equals(true) && removeSensor.isManual.Equals(false)) {
             if (removeSensor.currentSensor.type == ESensorType.Pressure && Sensor.manualSensor.type == ESensorType.Temperature) {
-              removeSensor.lowArea.manifold.secondarySensor = Sensor.manualSensor;
-              removeSensor.highArea.manifold.secondarySensor = Sensor.manualSensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.manualSensor);
+              removeSensor.highArea.manifold.SetSecondarySensor(Sensor.manualSensor);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
               Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
@@ -1543,10 +1543,10 @@ namespace ION.IOS.ViewController.Analyzer
               removeSensor.highArea.attachedSensor = Sensor;
             } else if (removeSensor.currentSensor.type == ESensorType.Temperature && Sensor.manualSensor.type == ESensorType.Pressure) {
               removeSensor.lowArea.manifold = new Manifold(Sensor.manualSensor);
-              removeSensor.lowArea.manifold.secondarySensor = removeSensor.currentSensor as Sensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(removeSensor.currentSensor);
               removeSensor.lowArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
               removeSensor.highArea.manifold = new Manifold(Sensor.manualSensor);
-              removeSensor.highArea.manifold.secondarySensor = removeSensor.currentSensor as Sensor;
+              removeSensor.highArea.manifold.SetSecondarySensor(removeSensor.currentSensor);
               removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.highArea.ion, Fluid.EState.Dew);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
@@ -1567,8 +1567,8 @@ namespace ION.IOS.ViewController.Analyzer
             }
           } else if (Sensor.isManual.Equals(false) && removeSensor.isManual.Equals(true)) {
             if (removeSensor.manualSensor.type == ESensorType.Pressure && Sensor.currentSensor.type == ESensorType.Temperature) {
-              removeSensor.lowArea.manifold.secondarySensor = Sensor.currentSensor;
-              removeSensor.highArea.manifold.secondarySensor = Sensor.currentSensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.currentSensor);
+              removeSensor.highArea.manifold.SetSecondarySensor(Sensor.currentSensor);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
               Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
@@ -1577,10 +1577,10 @@ namespace ION.IOS.ViewController.Analyzer
               removeSensor.highArea.attachedSensor = Sensor;
             } else if (removeSensor.manualSensor.type == ESensorType.Temperature && Sensor.currentSensor.type == ESensorType.Pressure) {          
               removeSensor.lowArea.manifold = new Manifold(Sensor.currentSensor);
-              removeSensor.lowArea.manifold.secondarySensor = removeSensor.manualSensor;
+              removeSensor.lowArea.manifold.SetSecondarySensor(removeSensor.manualSensor);
               removeSensor.lowArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
               removeSensor.highArea.manifold = new Manifold(Sensor.currentSensor);
-              removeSensor.highArea.manifold.secondarySensor = removeSensor.manualSensor;
+              removeSensor.highArea.manifold.SetSecondarySensor(removeSensor.manualSensor);
               removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.highArea.ion, Fluid.EState.Dew);
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
@@ -1648,8 +1648,8 @@ namespace ION.IOS.ViewController.Analyzer
           }
           if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature) {
             //Console.WriteLine("Adding temp device " + Sensor.currentSensor.device.name + "'s sensor as device " + removeSensor.currentSensor.device.name + "'s secondary sensor");
-            removeSensor.lowArea.manifold.secondarySensor = Sensor.currentSensor;
-            removeSensor.highArea.manifold.secondarySensor = Sensor.currentSensor;
+            removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.currentSensor);
+            removeSensor.highArea.manifold.SetSecondarySensor(Sensor.currentSensor);
             Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
             Sensor.topLabel.TextColor = UIColor.White;
             Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
@@ -1659,10 +1659,10 @@ namespace ION.IOS.ViewController.Analyzer
           } else if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure) {
             //Console.WriteLine("Swapping the current  " + removeSensor.currentSensor.device.name + "'s manifold's primary sensor with device " + Sensor.currentSensor.device.name + "'s sensor");
             removeSensor.lowArea.manifold = new Manifold(Sensor.currentSensor);
-            removeSensor.lowArea.manifold.secondarySensor = removeSensor.currentSensor;
+            removeSensor.lowArea.manifold.SetSecondarySensor(removeSensor.currentSensor);
             removeSensor.lowArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
             removeSensor.highArea.manifold = new Manifold(Sensor.currentSensor);
-            removeSensor.highArea.manifold.secondarySensor = removeSensor.currentSensor;
+            removeSensor.highArea.manifold.SetSecondarySensor(removeSensor.currentSensor);
             removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.lowArea.ion, Fluid.EState.Dew);
             Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
             Sensor.topLabel.TextColor = UIColor.White;

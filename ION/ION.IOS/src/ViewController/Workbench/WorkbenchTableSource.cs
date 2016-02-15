@@ -146,6 +146,22 @@
 
         if (fr.sensorProperty is PTChartSensorProperty) {
           var ptvc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
+          switch (fr.pt.sensor.type) {
+            case ESensorType.Pressure:
+              ptvc.tUnitChanged += (changedUnit) => {
+                Log.D(this, "Changing unit to " + changedUnit);
+                fr.pt.unit = changedUnit;
+                tableView.ReloadData();
+              };
+              break;
+            case ESensorType.Temperature:
+              ptvc.pUnitChanged += (changedUnit) => {
+                Log.D(this, "Changing unit to " + changedUnit);
+                fr.pt.unit = changedUnit;
+                tableView.ReloadData();
+              };
+              break;
+          }
           ptvc.initialManifold = fr.manifold;
           vc.NavigationController.PushViewController(ptvc, true);
         } else if (fr.sensorProperty is SuperheatSubcoolSensorProperty) {
@@ -391,7 +407,7 @@
       }
 
       // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
-      var ptChartFilter = new OrFilterCollection<Sensor>(new SensorTypeFilter(ESensorType.Pressure), new SensorTypeFilter(ESensorType.Temperature));
+      var ptChartFilter = new OrFilterCollection<Sensor>(new SensorOfTypeFilter(ESensorType.Pressure), new SensorOfTypeFilter(ESensorType.Temperature));
       var ptChart = manifold.ptChart;
       if (ptChart == null) {
         ptChart = PTChart.New(ion, Fluid.EState.Dew);

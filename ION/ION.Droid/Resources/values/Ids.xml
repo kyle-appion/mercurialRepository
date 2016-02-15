@@ -19,8 +19,10 @@
   <item name="date" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
+  <item name="empty" type="id"/>
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>
+  <item name="footer" type="id"/>
   <item name="icon" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
@@ -84,6 +86,7 @@
   REPORTS
   -->
   <item name="reports" type="id"/>
+  <item name="report_certificates" type="id"/>
   <item name="report_screenshot_archive" type="id"/>
 
   <!--

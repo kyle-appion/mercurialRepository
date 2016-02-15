@@ -1,4 +1,6 @@
-﻿using System;
+﻿/*
+
+using System;
 using System.Collections.Generic;
 using CoreGraphics;
 using Foundation;
@@ -117,3 +119,4 @@ namespace ION.IOS.ViewController.Logging {
   }
 }
 
+*/

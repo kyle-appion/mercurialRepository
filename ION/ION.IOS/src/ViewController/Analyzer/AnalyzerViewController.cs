@@ -126,6 +126,7 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
+/*
     public async void recordDevices(object sender, EventArgs e){
       isRecording = true;
       dataStop.Enabled = true;
@@ -153,6 +154,7 @@ namespace ION.IOS.ViewController.Analyzer {
         await Task.Delay(TimeSpan.FromSeconds(10));
       }
     }
+    
     /// <summary>
     /// clicking this button stops the recording process and closes out the session with the end time
     /// </summary>
@@ -209,6 +211,7 @@ namespace ION.IOS.ViewController.Analyzer {
         conn.CreateTable<SessionMeasurement>();
       }
     }
+*/
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
     /// </summary>
