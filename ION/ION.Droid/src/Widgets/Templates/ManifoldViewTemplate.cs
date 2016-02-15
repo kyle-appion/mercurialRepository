@@ -30,19 +30,19 @@
   /// </code>
   public class ManifoldViewTemplate : ViewTemplate<Manifold> {
 
-    public BitmapCache cache;
+    public BitmapCache cache { get; private set; }
 
-    public TextView title;
-    public TextView measurement;
-    public TextView alarm;
-    public TextView status;
-    public TextView unit;
+    public TextView title { get; private set; }
+    public TextView measurement { get; private set; }
+    public TextView alarm { get; private set; }
+    public TextView status { get; private set; }
+    public TextView unit { get; private set; }
 
-    public ImageView battery;
-    public ImageView connection;
-    public ImageView icon;
+    public ImageView battery { get; private set; }
+    public ImageView connection { get; private set; }
+    public ImageView icon { get; private set; }
 
-    private Manifold manifold;
+    public Manifold manifold { get; private set; }
 
     private int lastBattery;
     
@@ -66,7 +66,7 @@
     /// Binds the view template to the given data.
     /// </summary>
     /// <param name="t">T.</param>
-    public override void Bind(Manifold t) {
+    protected override void OnBind(Manifold t) {
       manifold = t;
 
       manifold.onManifoldEvent += OnManifoldEvent;
@@ -77,14 +77,20 @@
     /// <summary>
     /// Informs the view template that it should unbind itself from its data source.
     /// </summary>
-    public override void Unbind() {
-      manifold.onManifoldEvent -= OnManifoldEvent;
+    protected override void OnUnbind() {
+      if (manifold != null) {
+        manifold.onManifoldEvent -= OnManifoldEvent;
+      }
     }
 
     /// <summary>
     /// Invalidates the view within the template.
     /// </summary>
     public override void Invalidate() {
+      if (manifold == null) {
+        // TODO ahodder@appioninc.com: Implement a real invalidate for a null manifold.
+        return;
+      }
       var c = parentView.Context;
       var s = manifold.primarySensor;
 

@@ -18,7 +18,7 @@
     /// The root view for the sensor mount. Will display the add ImageView when inactive and the sensor linear layout
     /// when active.
     /// </summary>
-    public View root;
+    public LinearLayout root;
 
     /// <summary>
     /// The view that is displayed when the sensor mount is inactive.
@@ -79,15 +79,17 @@
     public SensorMount(Context context) {
       var gray = context.Resources.GetColor(Resource.Color.gray);
 
-      var ll = new LinearLayout(context);
+      root = new LinearLayout(context);
 
       add = new ImageButton(context);
       add.SetBackgroundResource(Resource.Drawable.np_rounded_rect_gold);
       add.SetImageResource(Resource.Drawable.ic_devices_add);
       add.Background.Alpha = (int)(0.55f * 255);
+      add.Clickable = false;
 
       content = new LinearLayout(context);
       content.Orientation = Orientation.Vertical;
+      content.Clickable = false;
 
       title = new TextView(context);
       title.Id = Resource.Id.title;
@@ -124,11 +126,8 @@
       content.AddView(unit);
       content.SetBackgroundResource(Resource.Drawable.np_rounded_rect_white);
 
-
-     ll.AddView(add, new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MatchParent, FrameLayout.LayoutParams.MatchParent));
-     ll.AddView(content, new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MatchParent, FrameLayout.LayoutParams.MatchParent));
-
-      root = ll;
+      root.AddView(add, new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MatchParent, FrameLayout.LayoutParams.MatchParent));
+      root.AddView(content, new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MatchParent, FrameLayout.LayoutParams.MatchParent));
 
       sensor = null;
     }

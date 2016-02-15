@@ -1,6 +1,8 @@
-﻿using System;
+﻿namespace ION.Core.Util {
 
-namespace ION.Core.Util {
+  using System;
+
+
   /// <summary>
   /// A simple contract defining a fil
   /// </summary>
@@ -26,7 +28,10 @@ namespace ION.Core.Util {
       this.filters = filters;
     }
 
-    // Overridden from IFilter
+    /// <summary>
+    /// Queries whether or not the given item matches the filter.
+    /// </summary>
+    /// <param name="t">T.</param>
     public bool Matches(T t) {
       foreach (var f in filters) {
         if (!f.Matches(t)) {
@@ -37,6 +42,9 @@ namespace ION.Core.Util {
     }
   }
 
+  /// <summary>
+  /// A filter that is true if any of the filters within the collection are true.
+  /// </summary>
   public class OrFilterCollection<T> : IFilter<T> { 
     private IFilter<T>[] filters { get; set; }
 
@@ -44,7 +52,10 @@ namespace ION.Core.Util {
       this.filters = filters;
     }
 
-    // Overridden from IFilter
+    /// <summary>
+    /// Queries whether or not the given item matches the filter.
+    /// </summary>
+    /// <param name="t">T.</param>
     public bool Matches(T t) {
       foreach (var f in filters) {
         if (f.Matches(t)) { 
@@ -59,9 +70,22 @@ namespace ION.Core.Util {
   /// A Filter that always matches an item.
   /// </summary>
   public class YesFilter<T> : IFilter<T> {
-    // Overridden from IFilter
+    /// <summary>
+    /// Queries whether or not the given item matches the filter.
+    /// </summary>
+    /// <param name="t">T.</param>
     public bool Matches(T t) {
       return true;
+    }
+  }
+
+  public class NoFilter<T> : IFilter<T> {
+    /// <summary>
+    /// Queries whether or not the given item matches the filter.
+    /// </summary>
+    /// <param name="t">T.</param>
+    public bool Matches(T t) {
+      return false;
     }
   }
 }

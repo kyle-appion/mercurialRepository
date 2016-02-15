@@ -9,6 +9,7 @@
   using ION.Core.Fluids;
   using ION.Core.IO;
   using ION.Core.Measure;
+  using ION.Core.Util;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
@@ -118,6 +119,15 @@
   /// interact with other sensors whose content needs to be retained, ie. Viewers.
   /// </description>
   public class Manifold : IDisposable {
+
+    private static readonly IFilter<ESensorType[]> ALLOWED_SECONDARY_SENSORS =
+      new OrFilterCollection<ESensorType[]>(
+        new ExactSensorTypeFilter(ESensorType.Pressure),
+        new ExactSensorTypeFilter(ESensorType.Pressure, ESensorType.Temperature),
+        new ExactSensorTypeFilter(ESensorType.Temperature),
+        new ExactSensorTypeFilter(ESensorType.Vacuum)
+      );
+
     private const int VERSION = 1;
 
     /// <summary>
@@ -147,7 +157,7 @@
     /// <summary>
     /// The primary sensor for the manifold.
     /// </summary>
-    public Sensor primarySensor { get; set; }
+    public Sensor primarySensor { get; private set; }
 
     /// <summary>
     /// The secondary sensor for the manifold.
@@ -157,7 +167,7 @@
         return __secondarySensor;
       }
 
-      set {
+      private set {
         if (__secondarySensor != null) {
           __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
         }
@@ -232,6 +242,39 @@
       if (__secondarySensor != null) {
         __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the manifold's primary or secondary sensor is the given sensor.
+    /// </summary>
+    /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool ContainsSensor(Sensor sensor) {
+      return primarySensor == sensor || secondarySensor == sensor;
+    }
+
+    /// <summary>
+    /// Attempst to set the secondary sensor for the manifold.
+    /// </summary>
+    /// <returns><c>true</c>, if secondary sensor was set, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool SetSecondarySensor(Sensor sensor) {
+      if (!WillAcceptSecondarySensor(sensor)) {
+        return false;
+      }
+
+      secondarySensor = sensor;
+
+      return true;
+    }
+
+    /// <summary>
+    /// Queries whether or not the manifold will accept the given sensor as a secondary sensor.
+    /// </summary>
+    /// <returns><c>true</c>, if accept secondary sensor was willed, <c>false</c> otherwise.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool WillAcceptSecondarySensor(Sensor sensor) {
+      return ALLOWED_SECONDARY_SENSORS.Matches(new ESensorType[] { primarySensor.type, sensor.type });
     }
 
     /// <summary>

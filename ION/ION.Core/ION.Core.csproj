@@ -87,7 +87,6 @@
     <Compile Include="src\Fluids\PTChart.cs" />
     <Compile Include="src\Math\Physics.cs" />
     <Compile Include="src\Util\Filter.cs" />
-    <Compile Include="src\Sensors\Filters\SensorTypeFilter.cs" />
     <Compile Include="src\Alarms\IAlarm.cs" />
     <Compile Include="src\Alarms\AbstractAlarm.cs" />
     <Compile Include="src\Alarms\IAlarmManager.cs" />
@@ -130,6 +129,8 @@
     <Compile Include="src\Content\Analyzer.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
+    <Compile Include="src\Sensors\SensorTypeFilter.cs" />
+    <Compile Include="src\Sensors\Filters\SensorOfTypeFilter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -157,7 +158,6 @@
     <Folder Include="src\Location\" />
     <Folder Include="src\Pdf\" />
     <Folder Include="src\Report\" />
-    <Folder Include="src\Net\" />
     <Folder Include="src\Fluids\Embedded\" />
     <Folder Include="src\Measure\Json\" />
   </ItemGroup>

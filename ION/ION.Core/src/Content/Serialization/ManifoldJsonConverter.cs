@@ -48,7 +48,7 @@ namespace ION.Core.Content.Serialization {
 
       public Manifold ToManifold(IION ion) {
         var ret = new Manifold(primarySensor);
-        ret.secondarySensor = secondarySensor;
+        ret.SetSecondarySensor(secondarySensor);
 //        ret.ptChart.fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
         return ret;
       }

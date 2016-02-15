@@ -1,25 +1,56 @@
-﻿namespace ION.Droid {
+﻿﻿namespace ION.Droid.Widgets.Analyzer {
 
   using System;
 
+  using Android.App;
   using Android.Content;
   using Android.Graphics;
+  using Android.Support.V7.Widget;
   using Android.Text;
   using Android.Util;
   using Android.Views;
+  using Android.Views.Animations;
   using Android.Widget;
 
   using ION.Core.Content;
+  using ION.Core.Devices;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.Droid.Dialog;
   using ION.Droid.Util;
+  using ION.Droid.Views;
   using ION.Droid.Widgets.Templates;
 
   /// <summary>
   /// This view is the primary display widget for an analyzer data structure.
   /// </summary>
   public class AnalyzerView : ViewGroup {
+    /// <summary>
+    /// The delegate that is called when a sensor mount within the analyzer view is clicked.
+    /// </summary>
+    public delegate void OnSensorMountClicked(AnalyzerView view, Analyzer analyzer, int index);
+    /// <summary>
+    /// The delegate that is called when a sensor mount within the analyzer view is long clicked.
+    /// </summary>
+    public delegate void OnSensorMountLongClicked(AnalyzerView view, Analyzer analyzer, int index);
+    /// <summary>
+    /// The delegate that is called when a manifold is clicked.
+    /// </summary>
+    public delegate void OnManifoldClicked(AnalyzerView view, Analyzer analyzer, Analyzer.ESide side);
+
+    /// <summary>
+    /// The event that is called when a sensor mount is clicked.
+    /// </summary>
+    public event OnSensorMountClicked onSensorMountClicked;
+    /// <summary>
+    /// The event that is called when a sensor mount is long clicked.
+    /// </summary>
+    public event OnSensorMountLongClicked onSensorMountLongClicked;
+    /// <summary>
+    /// The event that is called when a manifold is clicked.
+    /// </summary>
+    public event OnManifoldClicked onManifoldClicked;
 
     /// <summary>
     /// The font that will be used for immdiate text views within the view group.
@@ -85,6 +116,14 @@
     /// The rectangle that will maintain the bounds of the system.
     /// </summary>
     private RectF systemBounds = new RectF();
+    /// <summary>
+    /// The rectangle that will maintain the bounds for the low side manifold.
+    /// </summary>
+    private RectF lowSideRect = new RectF();
+    /// <summary>
+    /// The rectangle that will maintian the bounds for the high side manifold.
+    /// </summary>
+    private RectF highSideRect = new RectF();
     /// <summary>
     /// The measured size of the icons within the analyzer view.
     /// </summary>
@@ -187,28 +226,17 @@
           }
         }
 
-        RemoveAllViews();
-
-        sensorMounts = new SensorMount[analyzer.analyzerSize];
-
-        for (int i = 0; i < sensorMounts.Length; i++) {
-          sensorMounts[i] = new SensorMount(Context);
-          sensorMounts[i].root.LayoutParameters = new LayoutParams(i);
-          AddView(sensorMounts[i].root);
-        }
-
-        AddView(lowSideManifoldView, new LayoutParams(LayoutParams.LOW_SIDE_VIEWER));
-        AddView(highSideManifoldView, new LayoutParams(LayoutParams.HIGH_SIDE_VIEWER));
+        RefreshContent();
       }
     } Analyzer __analyzer;
     /// <summary>
     /// The manifold template that will maintain the low side manifold view.
     /// </summary>
-    private ManifoldViewTemplate lowSideManifoldTemplate;
+    private AnalyzerManifoldViewTemplate lowSideManifoldTemplate;
     /// <summary>
     /// The manifold template that will maintain the high side manifold view.
     /// </summary>
-    private ManifoldViewTemplate highSideManifoldTemplate;
+    private AnalyzerManifoldViewTemplate highSideManifoldTemplate;
 
     public AnalyzerView(Context context) : this(context, null, 0) {
     }
@@ -223,14 +251,32 @@
       lowSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
       highSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
 
-      lowSideManifoldTemplate = new ManifoldViewTemplate(lowSideManifoldView, cache);
-      highSideManifoldTemplate = new ManifoldViewTemplate(highSideManifoldView, cache);
+      lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache, Resource.Drawable.xml_low_side_background);
+      lowSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, lowSideManifoldTemplate, Analyzer.ESide.Low));
+      lowSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
+        if (lowSideManifoldTemplate.manifold != null) {
+          NotifyManifoldClicked(Analyzer.ESide.Low);
+        }
+      }));
+
+      highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache, Resource.Drawable.xml_high_side_background);
+      highSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, highSideManifoldTemplate, Analyzer.ESide.High));
+      highSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
+        if (highSideManifoldTemplate.manifold != null) {
+          NotifyManifoldClicked(Analyzer.ESide.High);
+        }
+      }));
 
       analyzer = new Analyzer();
 
       SetWillNotDraw(false);
+      Focusable = false;
       HapticFeedbackEnabled = true;
       SoundEffectsEnabled = true;
+
+      this.SetOnClickListener(new ViewClickAction((v) => {
+        ION.Core.Util.Log.D(this, "Clicky, clicky");
+      }));
     }
 
     /// <summary>
@@ -249,14 +295,17 @@
       float sh = SB_HEIGHT * height; // The System trace height.
       float hinset = INSET * height; // The inset from the top and bottom of the system bounds.
       float winset = INSET * width; // The inset from the left and right of the system bounds.
-
-      systemBounds.Set(winset, hinset, width - winset, sh - hinset); // Set the measurements of the system bounds.
+      float hw = width / 2; // Half the measured width
+      float hh = height / 2; // Half the measured height
 
       iconSize = ICON_SIZE * height; // The desired size (width and height) of the icon.
       padding = iconSize / 5; // the padding betwen views.
 
+      systemBounds.Set(winset, hinset, width - winset, sh - hinset); // Set the measurements of the system bounds.
+      lowSideRect.Set(padding, hh + padding, hw - padding, height - padding); // Set the bounding area for the low side manifold.
+      highSideRect.Set(hw + padding, hh + padding, width - padding, height - padding); // Set the bounds area for the high side manifold.
+
       float his = iconSize / 2; // Half the icon size.
-      float hw = (systemBounds.Left + systemBounds.Right) / 2; // Half system width, and center of system bounds.
       int depth = analyzer.sensorsPerSide / 2; // The number of sensors that are to be place on either side of the icons.
 
       float usedSpace = his + ((depth + 1) * padding); // The amount of space that has been used for sensor mounting.
@@ -338,6 +387,9 @@
     /// </summary>
     protected override void OnAttachedToWindow() {
       base.OnAttachedToWindow();
+
+      lowSideManifoldTemplate.Bind(analyzer.lowSideManifold);
+      highSideManifoldTemplate.Bind(analyzer.highSideManifold);
     }
 
     /// <Docs>This is called when the view is detached from a window.</Docs>
@@ -350,6 +402,9 @@
     /// </summary>
     protected override void OnDetachedFromWindow() {
       base.OnDetachedFromWindow();
+
+      lowSideManifoldTemplate.Unbind();
+      highSideManifoldTemplate.Unbind();
 
       if (expansionIcon != null) {
         expansionIcon.Recycle();
@@ -408,6 +463,295 @@
 
         v.Layout(x, y, x + lp.Width, y + lp.Height);
       }
+
+      LayoutViewToRect(lowSideManifoldView, lowSideRect);
+      LayoutViewToRect(highSideManifoldView, highSideRect);
+    }
+
+    /// <summary>
+    /// Starts dragging the sensor mount at the given index. If the analyzer does not have a sensor at the given index,
+    /// then the drag attempt will return false.
+    /// </summary>
+    /// <returns><c>true</c>, if dragging sensor mount was started, <c>false</c> otherwise.</returns>
+    /// <param name="index">Index.</param>
+    public bool StartDraggingSensorMount(int index) {
+      if (!analyzer.HasSensorAt(index)) {
+        return false;
+      }
+
+      var sensor = analyzer[index];
+
+      var clipDataItem = new ClipData.Item("");
+      var clipData = new ClipData("", new string[] { "" }, clipDataItem);
+      var dragState = new DragState(index, sensor);
+
+      draggedView = sensorMounts[index].root;
+      //draggedView.SetOnDragListener(new SensorMountDragListener(this));
+      draggedView.StartDrag(clipData, new DragShadowBuilder(draggedView), new DragState(index, sensor), 0);
+
+      return true;
+    }
+
+    /// <summary>
+    /// Animates (and sets) the swapping of two sensor mounts.
+    /// </summary>
+    /// <description>
+    /// If a sensor mount is dragged to an empty sensor mount location on the same analyzer side or two sensor mounts
+    /// are not attached to either analyzer viewer, then the swap will perform noramlly with not hiccup. However, if
+    /// both or either are attached to a manifold, then we will have to ask the user for permission.
+    /// </description>
+    /// <param name="first">First.</param>
+    /// <param name="second">Second.</param>
+    public void SwapSensorMounts(int first, int second) {
+      ION.Core.Util.Log.D(this, "Swapping sensor mounts");
+      if (analyzer.CanSensorsSwapSafely(first, second)) {
+        AnimateSensorMountSwap(first, second);
+      } else {
+        var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold));
+        adb.SetMessage(Context.GetString(Resource.String.analyzer_replace_primary_sensor));
+        adb.SetNegativeButton(Resource.String.cancel, (obj, args) => {
+          var dialog = obj as Dialog;
+          dialog.Dismiss();
+        });
+
+        adb.SetPositiveButton(Resource.String.ok, (obj, args) => {
+          AnimateSensorMountSwap(first, second);
+        });
+
+        adb.Show();
+      }
+    }
+
+    /// <summary>
+    /// Performs uncheck animation of two sensor mounts.
+    /// </summary>
+    /// <param name="first">First.</param>
+    /// <param name="second">Second.</param>
+    private void AnimateSensorMountSwap(int first, int second) {
+      var v1 = sensorMounts[first].root;
+      var v2 = sensorMounts[second].root;
+
+      int v1x, v1y;
+      CalculateSensorMountXYCoordinates(first, out v1x, out v1y);
+
+      int v2x, v2y;
+      CalculateSensorMountXYCoordinates(second, out v2x, out v2y);
+
+      v1.StartAnimation(NewTranslationAnimation(v1x, v1y, v2x, v2y));
+      v2.StartAnimation(NewTranslationAnimation(v2x, v2y, v1x, v1y));
+
+      PostDelayed(() => {
+        analyzer.SwapSensors(first, second, true);
+      }, 350);
+    }
+
+    /// <summary>
+    /// Creates a new animation.
+    /// </summary>
+    /// <returns>The translation animation.</returns>
+    /// <param name="sx">Sx.</param>
+    /// <param name="sy">Sy.</param>
+    /// <param name="dx">Dx.</param>
+    private Animation NewTranslationAnimation(int sx, int sy, int dx, int dy) {
+      var ret = new TranslateAnimation(0, dx - sx, 0, dy - sy);
+      ret.Duration = 300;
+      ret.FillAfter = true;
+      return ret;
+    }
+
+    /// <summary>
+    /// Sets the manifold sensor.
+    /// </summary>
+    /// <param name="side">Side of the analyzer to add the sensor.</param>
+    /// <param name="sensor">The sensor to set the manifold's primary sensor to.</param>
+    /*
+     *    if the sensor is not on the analyzer
+     *      if the analyzer accepts the sensor as an add
+     *        set the manifold sensor to the given sensor
+     *    
+     *    else if the sensor is on the same side as the manifold in the analyzer
+     *      if the manifold is empty
+     *        set the manifold's sensor to the given sensor
+     *      else
+     *        if the manifold accepts the sensor as a secondary sensor
+     *          set the manifold's secondary sensor to the given sensor
+     *        else
+     *          display a dialog to the user requesting permission to clobber the manifold
+     *          if the user accepts the intent
+     *            set the manifold's primary sensor to the given sensor
+     *          else
+     *            do nothing
+     * 
+     *    else if the sensor is not on the same side as the manifold in the analyzer
+     *      if the destination manifold is empty
+     *        if the analyzer accepts a sensor add to the given side
+     *          remove the sensor from the old side
+     *          add the sensor to the new side
+     *          set the manifold to the given sensor
+     *        else 
+     *          display side full error message
+     *      else
+     *        if the manifold accepts the given sensor as a secondary
+     *          set the manifold's secondary sensor to the given sensor
+     *        else if the user accepts clobbering a manifold
+     *          set the manifold's sensor to the given sensor
+     *        else
+     *          do nothing
+     *    else
+     *      do nothing
+     */
+    private void SetManifoldSensor(Analyzer.ESide destSide, Sensor sensor) {
+      var manifold = analyzer.GetManifoldFromSide(destSide);
+
+      Analyzer.ESide sensorSide;
+      analyzer.GetSideOfSensor(sensor, out sensorSide);
+
+      if (!analyzer.HasSensor(sensor)) {
+        // If the analyzer does not have the given sensor, walk through the steps to ensure a proper add.
+        if (analyzer.CanAddSensorToSide(destSide)) {
+          if (analyzer.GetManifoldFromSide(destSide) == null) {
+            analyzer.AddSensorToSide(destSide);
+            analyzer.SetManifold(destSide, sensor);
+          } else {
+            RequestClobberManifold(destSide, sensor);
+          }
+        } else {
+          var rawStr = Context.GetString(Resource.String.analyzer_side_full_1sarg);
+          Toast.MakeText(Context, string.Format(rawStr, destSide.ToString()), ToastLength.Long).Show();
+        }
+        // End !analyzer.HasSensor(sensor)
+      } else {
+        if (sensorSide != destSide) {
+          // The sensor is not on the correct side. We will need to request the user's permission to move stuff around
+          RequestClobberManifold(destSide, sensor);
+        } else {
+        }
+      }
+
+      if (!analyzer.HasSensor(sensor) && analyzer.CanAddSensorToSide(destSide)) {
+        analyzer.AddSensorToSide(sensorSide, sensor);
+        analyzer.SetManifold(destSide, sensor);
+      } else if (sensorSide == destSide) {
+        if (manifold == null) {
+          analyzer.SetManifold(destSide, sensor);
+        } else {
+          if (manifold.WillAcceptSecondarySensor(sensor)) {
+            analyzer.SetManifold(destSide, sensor);
+          } else {
+            RequestClobberManifold(destSide, sensor);
+          }
+        }
+      } else if (sensorSide != destSide) { // The sensor is not on the same side as the given side.
+        if (manifold == null) {
+          if (analyzer.CanAddSensorToSide(destSide)) {
+            analyzer.RemoveSensor(sensor);
+            analyzer.PutSensor(analyzer.NextEmptySensorIndex(destSide), sensor);
+            analyzer.SetManifold(destSide, sensor);
+          } else {
+            Toast.MakeText(Context, "TOO FULL! CAN'T ADD", ToastLength.Short).Show();
+          }
+        } else {
+          if (manifold.WillAcceptSecondarySensor(sensor)) {
+            if (analyzer.CanAddSensorToSide(destSide)) {
+              analyzer.RemoveSensor(sensor);
+              analyzer.PutSensor(analyzer.NextEmptySensorIndex(destSide), sensor);
+              manifold.SetSecondarySensor(sensor);
+            } else {
+              Toast.MakeText(Context, "TOO FULLER! CAN'T ADD", ToastLength.Short).Show();
+            }
+          } else {
+            RequestClobberManifold(destSide, sensor);
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// Request user permission to complete the maniflold sensor set. This is done when one or both of the analyzer's
+    /// manifold will lose state due to the set.
+    /// </summary>
+    /// <param name="side">Side.</param>
+    /// <param name="sensor">Sensor.</param>
+    private void RequestClobberManifold(Analyzer.ESide side, Sensor sensor) {
+      var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold);
+      adb.SetMessage("It's clobberin' time");
+
+      adb.SetNegativeButton(Context.GetString(Resource.String.cancel), (obj, args) => {
+        var dialog = obj as Dialog;
+        if (dialog != null) {
+          dialog.Dismiss();
+        }
+      });
+
+      adb.SetPositiveButton(Context.GetString(Resource.String.ok), (obj, args) => {
+        var dialog = obj as Dialog;
+        if (dialog != null) {
+          dialog.Dismiss();
+        }
+
+        Analyzer.ESide sensorSide;
+        analyzer.GetSideOfSensor(sensor, out sensorSide);
+
+        if (analyzer.HasSensor(sensor)) {
+          if (side == sensorSide) {
+            analyzer.SetManifold(sensorSide, sensor);
+          } else {
+            analyzer.SetManifold(side, sensor);
+          }
+        } else {
+          if (analyzer.CanAddSensorToSide(sensorSide)) {
+            analyzer.RemoveSensor(sensor);
+            analyzer.PutSensor(analyzer.NextEmptySensorIndex(sensorSide), sensor);
+            analyzer.SetManifold(side, sensor);
+          } else {
+            Toast.MakeText(Context, "TOO FULLER! CAN'T ADD", ToastLength.Short).Show();
+          }
+        }
+      });
+
+      adb.Show();
+    }
+
+    /// <summary>
+    /// Refreshes the content views of the analyzer view.
+    /// </summary>
+    private void RefreshContent() {
+      RemoveAllViews();
+
+      sensorMounts = new SensorMount[analyzer.analyzerSize];
+
+      for (int i = 0; i < sensorMounts.Length; i++) {
+        var sm = new SensorMount(Context);
+        sm.sensor = analyzer[i];
+        sensorMounts[i] = sm;
+        var root = sm.root;
+
+        AddView(root, new LayoutParams(i));
+        root.SetOnDragListener(new SensorMountDragListener(this, sm));
+
+        root.SetOnClickListener(new ViewClickAction((v) => {
+          var lp = root.LayoutParameters as AnalyzerView.LayoutParams;
+          NotifySensorMountClicked(lp.index);
+        }));
+
+        root.SetOnLongClickListener(new ViewLongClickAction((v) => {
+          var lp = root.LayoutParameters as AnalyzerView.LayoutParams;
+          NotifySensorMountLongClicked(lp.index);
+          v.PlaySoundEffect(SoundEffects.Click);
+        }));
+      }
+
+      AddView(lowSideManifoldView, new LayoutParams(LayoutParams.LOW_SIDE_VIEWER));
+      AddView(highSideManifoldView, new LayoutParams(LayoutParams.HIGH_SIDE_VIEWER));
+    }
+
+    /// <summary>
+    /// Lays out the view to the given rectangle dimensions.
+    /// </summary>
+    /// <param name="view">View.</param>
+    /// <param name="rect">Rect.</param>
+    private void LayoutViewToRect(View view, RectF rect) {
+      view.Layout((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom);          
     }
 
     /// <summary>
@@ -527,6 +871,62 @@
     /// </summary>
     /// <param name="analyzerEvent">Analyzer event.</param>
     private void OnAnalyzerEvent(AnalyzerEvent analyzerEvent) {
+      switch (analyzerEvent.type) {
+        case AnalyzerEvent.EType.Added:
+          RefreshContent();
+          break;
+        case AnalyzerEvent.EType.Swapped:
+          // TODO ahodder@appioninc.com: We can be smarter about this.
+          RefreshContent();
+          break;
+        case AnalyzerEvent.EType.Removed:
+          RefreshContent();
+          break;
+        case AnalyzerEvent.EType.ManifoldAdded:
+          goto case AnalyzerEvent.EType.ManifoldRemoved;          
+        case AnalyzerEvent.EType.ManifoldRemoved:
+          switch (analyzerEvent.side) {
+            case Analyzer.ESide.Low:
+              lowSideManifoldTemplate.Bind(analyzer.lowSideManifold);
+              RefreshContent();
+              break;
+            case Analyzer.ESide.High:
+              highSideManifoldTemplate.Bind(analyzer.highSideManifold);
+              RefreshContent();
+              break;
+          }
+          break;
+      }
+    }
+
+    /// <summary>
+    /// Notifies the on sensor mount clicked event handler that a sensor mount was clicked.
+    /// </summary>
+    /// <param name="index">Index.</param>
+    private void NotifySensorMountClicked(int index) {
+      if (onSensorMountClicked != null) {
+        onSensorMountClicked(this, analyzer, index);
+      }
+    }
+
+    /// <summary>
+    /// Notifies the on sensor mount clicked event handler that a sensor mount was long clicked.
+    /// </summary>
+    /// <param name="index">Index.</param>
+    private void NotifySensorMountLongClicked(int index) {
+      if (onSensorMountLongClicked != null) {
+        onSensorMountLongClicked(this, analyzer, index);
+      }
+    }
+
+    /// <summary>
+    /// Notifies the on manifold clicked event handler that a manifold as clicked.
+    /// </summary>
+    /// <param name="side">Side.</param>
+    private void NotifyManifoldClicked(Analyzer.ESide side) {
+      if (onManifoldClicked != null) {
+        onManifoldClicked(this, analyzer, side);
+      }
     }
 
     /// <summary>
@@ -542,14 +942,207 @@
       /// </summary>
       public int index;
 
-/*
-      public LayoutParams() : base(0, 0) {
-        this.index = NOT_SET;
-      }
-*/
-
       public LayoutParams(int index) : base(0, 0){
         this.index = index;
+      }
+    }
+
+    /// <summary>
+    /// The listener that will respond to the sensor mount being dragged.
+    /// </summary>
+    private class SensorMountDragListener : Java.Lang.Object, IOnDragListener {
+      private AnalyzerView analyzer;
+      private SensorMount sensorMount;
+      private bool dropped;
+
+      public SensorMountDragListener(AnalyzerView view, SensorMount sensorMount) {
+        this.analyzer = view;
+        this.sensorMount = sensorMount;
+        this.dropped = false;
+      }
+      /// <summary>
+      /// Raises the drag event.
+      /// </summary>
+      /// <param name="v">The triggering view NOT the dragged view.</param>
+      /// <param name="e">E.</param>
+      public bool OnDrag(View v, DragEvent e) {
+        var dragState = e.LocalState as DragState;
+
+        switch (e.Action) {
+          case DragAction.Started:
+            if (sensorMount.root == v) {
+              analyzer.draggedView.Visibility = ViewStates.Invisible;
+              ION.Core.Util.Log.D(this, "Drag Started");
+              dropped = false;
+              return true;
+            } else {
+              ION.Core.Util.Log.D(this, "Drag NOT Started");
+              return false;
+            }
+
+          case DragAction.Entered:
+            ION.Core.Util.Log.D(this, "Drag Entered");
+            return true;
+
+          case DragAction.Exited:
+            ION.Core.Util.Log.D(this, "Drag Exited");
+            return true;
+            
+          case DragAction.Location:
+            return true;
+
+          case DragAction.Drop:
+            ION.Core.Util.Log.D(this, "Drag Dropped");
+            analyzer.draggedView.Visibility = ViewStates.Visible;
+            var lp = v.LayoutParameters as LayoutParams;
+
+            if (lp != null) {
+              ION.Core.Util.Log.D(this, "SensorMounts Swapping");
+              analyzer.SwapSensorMounts(dragState.index, lp.index);
+              dropped = true;
+              return true;
+            } else {
+              ION.Core.Util.Log.D(this, "SensorMounts NOT Swapping");
+              return true;
+            }
+
+          case DragAction.Ended:
+            ION.Core.Util.Log.D(this, "Drag Ended");
+            if (!dropped) {
+              analyzer.RefreshContent();
+            }
+            return true;
+
+          default:
+            ION.Core.Util.Log.D(this, "Drag Defaulted");
+            return true;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The listener that will respond to the sensor mount being dragged.
+    /// </summary>
+    private class ManifoldDragListener : Java.Lang.Object, IOnDragListener {
+      private AnalyzerView analyzer;
+      private AnalyzerManifoldViewTemplate template;
+      private Analyzer.ESide side;
+
+      public ManifoldDragListener(AnalyzerView analyzer, AnalyzerManifoldViewTemplate template, Analyzer.ESide side) {
+        this.analyzer = analyzer;
+        this.template = template;
+        this.side = side;
+      }
+
+      /// <summary>
+      /// Raises the drag event.
+      /// </summary>
+      /// <param name="v">V.</param>
+      /// <param name="e">E.</param>
+      public bool OnDrag(View v, DragEvent e) {
+        var dragState = e.LocalState as DragState;
+
+        switch (e.Action) {
+          case DragAction.Started:
+            ION.Core.Util.Log.D(this, "Drag Started");
+            return true;
+
+          case DragAction.Entered:
+            ION.Core.Util.Log.D(this, "Drag Entered");
+            return true;
+
+          case DragAction.Exited:
+            ION.Core.Util.Log.D(this, "Drag Exited");
+            return true;
+
+          case DragAction.Location:
+            return true;
+
+          case DragAction.Drop:
+            ION.Core.Util.Log.D(this, "Drag Dropped");
+            analyzer.SetManifoldSensor(side, dragState.sensor);
+            return true;
+
+          case DragAction.Ended:
+            ION.Core.Util.Log.D(this, "Drag Ended");
+            return true;
+
+          default:
+            ION.Core.Util.Log.D(this, "Drag Defaulted");
+            return true;
+        }
+      }
+    }
+
+    /// <summary>
+    /// The state of the view at the start of a drag event.
+    /// </summary>
+    private class DragState : Java.Lang.Object {
+      public int index;
+      public Sensor sensor;
+
+      public DragState(int index, Sensor sensor) {
+        this.index = index;
+        this.sensor = sensor;
+      }
+    }
+
+    private class AnalyzerManifoldViewTemplate : ManifoldViewTemplate {
+      public RecyclerView list { get; private set; }
+      public TextView empty { get; private set; }
+      public View content { get; private set; }
+
+      public TextView serialNumber { get; private set; }
+      public RecyclerView subviews { get; private set; }
+
+      private int background;
+      private SubviewAdapter adapter;
+
+      public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int background) : base(view, cache) {
+        this.list = list;
+        this.background = background;
+
+        list = view.FindViewById<RecyclerView>(Resource.Id.list);
+        empty = view.FindViewById<TextView>(Resource.Id.empty);
+        content = view.FindViewById(Resource.Id.content);
+
+
+        serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
+        subviews = view.FindViewById<RecyclerView>(Resource.Id.list);
+
+        adapter = new SubviewAdapter(cache);
+        list.SetLayoutManager(new LinearLayoutManager(view.Context));
+        list.SetAdapter(adapter);
+
+        Bind(null);
+      }
+
+      /// <summary>
+      /// Binds the view template to the given data.
+      /// </summary>
+      /// <param name="manifold">Manifold.</param>
+      protected override void OnBind(Manifold manifold) {
+        if (manifold == null) {
+          empty.Visibility = ViewStates.Visible;
+          content.Visibility = ViewStates.Invisible;
+          serialNumber.SetBackgroundResource(Resource.Drawable.xml_white_bordered_background);
+          adapter.manifold = null;
+        } else {
+          base.OnBind(manifold);
+
+          adapter.manifold = manifold;
+
+          empty.Visibility = ViewStates.Invisible;
+          content.Visibility = ViewStates.Visible;
+          serialNumber.SetBackgroundResource(background);
+
+          var s = manifold.primarySensor as GaugeDeviceSensor;
+          if (s != null) {
+            serialNumber.Text = s.device.serialNumber + "'s Subviews";
+          } else {
+            serialNumber.Text = manifold.primarySensor.name + "'s Subviews";
+          }
+        }
       }
     }
   }

@@ -13,16 +13,34 @@ namespace ION.Core.Sensors.Properties {
       get {
         // The else is asserted to be valid by the check in the constructor.
         if (sensor.type == ESensorType.Pressure) {
-          return manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative);
+          return manifold.ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(unit);
         } else {
-          return manifold.ptChart.GetPressure(sensor.measurement);
+          return manifold.ptChart.GetPressure(sensor.measurement).ConvertTo(unit);
         }
       }
     }
 
+    /// <summary>
+    /// The opposing unit that the ptsensor property will use for calculated measurements.
+    /// </summary>
+    public Unit unit;
+
     public PTChartSensorProperty(Manifold manifold) : base(manifold) {
       if (!IsSensorValid(manifold.primarySensor)) {
         throw new Exception("Cannot create PTChartSensorProperty: expected a pressure or temperature sensor");
+      }
+
+      if (manifold.secondarySensor != null) {
+        unit = manifold.secondarySensor.unit;
+      } else {
+        switch (manifold.primarySensor.type) {
+          case ESensorType.Pressure:
+            unit = ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(ESensorType.Temperature);
+            break;
+          case ESensorType.Temperature:
+            unit = ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(ESensorType.Pressure);
+            break;
+        }
       }
     }
 

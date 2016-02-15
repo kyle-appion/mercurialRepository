@@ -228,7 +228,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       viewPressureTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         if (!pressureSensorLocked) {
           var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-          dm.displayFilter = new SensorTypeFilter(ESensorType.Pressure);
+          dm.displayFilter = new SensorOfTypeFilter(ESensorType.Pressure);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             pressureSensor = sensor;
           };
@@ -269,7 +269,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       viewTemperatureTouchArea.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
           var dm = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-          dm.displayFilter = new SensorTypeFilter(ESensorType.Temperature);
+          dm.displayFilter = new SensorOfTypeFilter(ESensorType.Temperature);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             temperatureSensor = sensor;
           };
@@ -340,9 +340,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           initialManifold.ptChart = ptChart;
           var type = initialManifold.primarySensor.type;
           if (ESensorType.Pressure == type) {
-            initialManifold.secondarySensor = temperatureSensor;
+            initialManifold.SetSecondarySensor(temperatureSensor);
           } else if (ESensorType.Temperature == type) {
-            initialManifold.secondarySensor = pressureSensor;
+            initialManifold.SetSecondarySensor(pressureSensor);
           } else {
             ION.Core.Util.Log.E(this, "Failed to update manifold: invalid primary sensor type " + type);
           }
