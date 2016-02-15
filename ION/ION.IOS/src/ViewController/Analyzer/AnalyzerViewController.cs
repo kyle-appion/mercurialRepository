@@ -10,9 +10,12 @@ using ION.Core.Sensors.Properties;
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using System.IO;
+using SQLite;
 using ION.IOS.ViewController.DeviceManager;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.PressureTemperatureChart;
+using ION.IOS.ViewController.Logging;
 using ION.Core.Content;
 using ION.Core.Devices;
 using ION.Core.Util;
@@ -29,6 +32,12 @@ namespace ION.IOS.ViewController.Analyzer {
     public static sensorGroup analyzerSensors;
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
+    public static bool isRecording = false;
+    public static UIButton dataRecord;
+    public static UIButton dataStop;
+    public static UIButton showRecords;
+    private string _pathToDatabase;
+    private int lastSession;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -43,6 +52,7 @@ namespace ION.IOS.ViewController.Analyzer {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       Console.WriteLine("Bounds for device " + View.Bounds);
+      Console.WriteLine("Current datetime " + DateTime.Now.Date);
 
       lowHighSensors = new LowHighArea (View, this);
       mentryView = new ManualView(View);
@@ -55,8 +65,37 @@ namespace ION.IOS.ViewController.Analyzer {
 
       createSensors ();
 
+//      var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+//      _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
+//      createLocalJobandSessionDatabase();
+//
+//      Console.WriteLine("created tables");
+//
+//      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
+//      dataRecord.BackgroundColor = UIColor.LightGray;
+//      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
+//      dataRecord.Enabled = true;
+//      dataRecord.Layer.CornerRadius = 6;
+//
+//      dataStop = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height + 30, 30, 30));
+//      dataStop.BackgroundColor = UIColor.LightGray;
+//      dataStop.SetImage(UIImage.FromBundle("ic_stop"),UIControlState.Normal);
+//      dataStop.Enabled = false;
+//      dataStop.Alpha = .4f;
+//      dataStop.Layer.CornerRadius = 6;
+//
+//      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
+//      showRecords.BackgroundColor = UIColor.Green;
+//      showRecords.Layer.CornerRadius = 6;
+
+//      dataRecord.TouchUpInside += recordDevices;
+//
+//      dataStop.TouchUpInside += stopRecording;
+//
+//      showRecords.TouchUpInside += listOutSessions;
+
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
-      mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;  
+      mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;
 
       mentryView.mtextValue.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
@@ -74,7 +113,105 @@ namespace ION.IOS.ViewController.Analyzer {
         this.View.SendSubviewToBack (mentryView.mView);
       };
 
+//      View.AddSubview(dataRecord);
+//      View.BringSubviewToFront(dataRecord);
+//      View.AddSubview(dataStop);
+//      View.BringSubviewToFront(dataStop);
+//      View.AddSubview(showRecords);
     }
+
+    /// <summary>
+    /// Clicking this button begins the recording process for the currently connected analyzer devcies
+    /// Stores the serial #, measurement, current date, session start time, session end time
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+/*
+    public async void recordDevices(object sender, EventArgs e){
+      isRecording = true;
+      dataStop.Enabled = true;
+      dataStop.Alpha = 1f;
+      dataRecord.Enabled = false;
+      dataRecord.Alpha = .4f;
+      var db = new SQLite.SQLiteConnection (_pathToDatabase);
+      var session = new Session { sessionStart = DateTime.Now};
+      db.Insert(session);
+      lastSession = session.SID;
+
+      Console.WriteLine("Working with session: " + lastSession.ToString());
+      Console.WriteLine("Checking all active sensors");
+
+      while (isRecording) {
+        foreach (sensor liveItem in analyzerSensors.viewList) {
+          
+          if (liveItem.currentSensor != null) {
+            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
+            var measurement = new SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.ToString()};
+            db.Insert(measurement);
+          }
+
+        }
+        await Task.Delay(TimeSpan.FromSeconds(10));
+      }
+    }
+    
+    /// <summary>
+    /// clicking this button stops the recording process and closes out the session with the end time
+    /// </summary>
+    /// <param name="sender">Sender.</param>
+    /// <param name="e">E.</param>
+    public void stopRecording(object sender, EventArgs e){
+      Console.WriteLine("Stop Recording");
+      var db = new SQLite.SQLiteConnection (_pathToDatabase);
+
+      db.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
+
+      isRecording = false;
+      dataStop.Enabled = false;
+      dataStop.Alpha = .4f;
+      dataRecord.Enabled = true;
+      dataRecord.Alpha = 1f;
+    }
+
+    public void listOutSessions(object sender, EventArgs e){
+      
+      var db = new SQLite.SQLiteConnection(_pathToDatabase);
+      var result = db.Query<SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
+      Console.WriteLine("Measurements:");
+      foreach (var item in result) {
+        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
+      }
+      Console.WriteLine("");
+      var result2 = db.Query<Session>("SELECT * FROM Session ORDER BY SID");
+      Console.WriteLine("Sessions Recorded:");
+      foreach (var item in result2) {
+        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+        Console.WriteLine("Session:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+      }
+      Console.WriteLine("");
+      var result3 = db.Query<Job>("SELECT * FROM Job ORDER BY JID");
+      foreach (var item in result3) {
+        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
+      }
+//      db.Query<Session> ("DELETE FROM Session");
+//      db.Query<Session> ("VACUUM");
+//      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
+//      db.Query<SessionMeasurement>("VACUUM");
+    }
+    /// <summary>
+    /// Creates the tables necessary to store and organize a user's sessions and jobs
+    /// </summary>
+    public void createLocalJobandSessionDatabase(){
+      using (var conn= new SQLite.SQLiteConnection(_pathToDatabase))
+      {
+        conn.CreateTable<Session>();
+        conn.CreateTable<Job>();
+        conn.CreateTable<SessionMeasurement>();
+      }
+    }
+*/
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
     /// </summary>

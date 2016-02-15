@@ -214,7 +214,8 @@ namespace ION.IOS.Util {
       SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
       SCREENSHOT_TITLE = "report_screenshot_title".FromResources(),
       STATE = "report_state".FromResources(),
-      ZIP = "report_zip".FromResources()
+      ZIP = "report_zip".FromResources(),
+      LOGGING = "Logging".FromResources()
       ;
     }
 
