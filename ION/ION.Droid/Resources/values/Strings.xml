@@ -53,7 +53,7 @@
   -->
   <string name="analyzer">Analyzer</string>
   <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
-  <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more views. Would you like to continue?</string>
+  <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to %1$s side: the side is full.</string>
 
   <!--
@@ -105,6 +105,12 @@
   <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
+
+  <!--
+  MANIFOLD
+  -->
+  <string name="manifold_select_action">Select a viewer action</string>
+  <string name="manifold_select_subview">Add Subview</string>
 
   <!--
   MEASUREMENT

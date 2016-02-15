@@ -1,4 +1,4 @@
-﻿﻿namespace ION.Core.Content {
+﻿namespace ION.Core.Content {
 
   using System;
 
@@ -262,6 +262,15 @@
 
       // We don't need to check manifolds as they can only exist if their sensors are present in the sensor array.
       return -1;
+    }
+
+    /// <summary>
+    /// Queries whether or not the given sensor is attached to the manifold.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is sensor attached to manifold the specified sensor; otherwise, <c>false</c>.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public bool IsSensorAttachedToManifold(Sensor sensor) {
+      return IsSensorIndexAttachedToManifold(IndexOfSensor(sensor));
     }
 
     /// <summary>

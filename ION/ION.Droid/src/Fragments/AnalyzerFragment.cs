@@ -131,6 +131,7 @@
     /// </summary>
     private void ShowManifoldContextDialog(Manifold manifold) {
       var ldb = new ListDialogBuilder(Activity);
+      ldb.SetTitle(Resource.String.manifold_select_action);
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
@@ -176,6 +177,7 @@
       };
 
       var ldb = new ListDialogBuilder(Activity);
+      ldb.SetTitle(Resource.String.manifold_select_subview);
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {

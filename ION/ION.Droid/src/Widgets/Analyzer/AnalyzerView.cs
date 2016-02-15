@@ -1,4 +1,4 @@
-﻿﻿namespace ION.Droid.Widgets.Analyzer {
+﻿namespace ION.Droid.Widgets.Analyzer {
 
   using System;
 
@@ -609,10 +609,11 @@
       if (!analyzer.HasSensor(sensor)) {
         // If the analyzer does not have the given sensor, walk through the steps to ensure a proper add.
         if (analyzer.CanAddSensorToSide(destSide)) {
-          if (analyzer.GetManifoldFromSide(destSide) == null) {
-            analyzer.AddSensorToSide(destSide);
+          if (manifold == null) {
+            analyzer.AddSensorToSide(destSide, sensor);
             analyzer.SetManifold(destSide, sensor);
           } else {
+            // The sensor does not exist in the analyzer, but is wishing to replace an existing manifold.
             RequestClobberManifold(destSide, sensor);
           }
         } else {
@@ -622,45 +623,26 @@
         // End !analyzer.HasSensor(sensor)
       } else {
         if (sensorSide != destSide) {
-          // The sensor is not on the correct side. We will need to request the user's permission to move stuff around
-          RequestClobberManifold(destSide, sensor);
-        } else {
-        }
-      }
-
-      if (!analyzer.HasSensor(sensor) && analyzer.CanAddSensorToSide(destSide)) {
-        analyzer.AddSensorToSide(sensorSide, sensor);
-        analyzer.SetManifold(destSide, sensor);
-      } else if (sensorSide == destSide) {
-        if (manifold == null) {
-          analyzer.SetManifold(destSide, sensor);
-        } else {
-          if (manifold.WillAcceptSecondarySensor(sensor)) {
-            analyzer.SetManifold(destSide, sensor);
-          } else {
-            RequestClobberManifold(destSide, sensor);
-          }
-        }
-      } else if (sensorSide != destSide) { // The sensor is not on the same side as the given side.
-        if (manifold == null) {
-          if (analyzer.CanAddSensorToSide(destSide)) {
+          if (manifold == null && analyzer.CanAddSensorToSide(destSide)) {
             analyzer.RemoveSensor(sensor);
-            analyzer.PutSensor(analyzer.NextEmptySensorIndex(destSide), sensor);
+            analyzer.AddSensorToSide(destSide, sensor);
             analyzer.SetManifold(destSide, sensor);
           } else {
-            Toast.MakeText(Context, "TOO FULL! CAN'T ADD", ToastLength.Short).Show();
+            // The sensor is not on the correct side. We will need to request the user's permission to move stuff around.
+            RequestClobberManifold(destSide, sensor);
           }
         } else {
-          if (manifold.WillAcceptSecondarySensor(sensor)) {
-            if (analyzer.CanAddSensorToSide(destSide)) {
-              analyzer.RemoveSensor(sensor);
-              analyzer.PutSensor(analyzer.NextEmptySensorIndex(destSide), sensor);
-              manifold.SetSecondarySensor(sensor);
-            } else {
-              Toast.MakeText(Context, "TOO FULLER! CAN'T ADD", ToastLength.Short).Show();
-            }
+          // The sensor is on the same saide as the manifold.
+          if (manifold == null) {
+            analyzer.SetManifold(destSide, sensor);
           } else {
-            RequestClobberManifold(destSide, sensor);
+            if (manifold.primarySensor != sensor) {
+              if (manifold.WillAcceptSecondarySensor(sensor)) {
+                manifold.SetSecondarySensor(sensor);
+              } else {
+                RequestClobberManifold(destSide, sensor);
+              }
+            }
           }
         }
       }
@@ -673,8 +655,8 @@
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
     private void RequestClobberManifold(Analyzer.ESide side, Sensor sensor) {
-      var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold);
-      adb.SetMessage("It's clobberin' time");
+      var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold));
+      adb.SetMessage(Resource.String.analyzer_replace_primary_sensor);
 
       adb.SetNegativeButton(Context.GetString(Resource.String.cancel), (obj, args) => {
         var dialog = obj as Dialog;
@@ -692,21 +674,9 @@
         Analyzer.ESide sensorSide;
         analyzer.GetSideOfSensor(sensor, out sensorSide);
 
-        if (analyzer.HasSensor(sensor)) {
-          if (side == sensorSide) {
-            analyzer.SetManifold(sensorSide, sensor);
-          } else {
-            analyzer.SetManifold(side, sensor);
-          }
-        } else {
-          if (analyzer.CanAddSensorToSide(sensorSide)) {
-            analyzer.RemoveSensor(sensor);
-            analyzer.PutSensor(analyzer.NextEmptySensorIndex(sensorSide), sensor);
-            analyzer.SetManifold(side, sensor);
-          } else {
-            Toast.MakeText(Context, "TOO FULLER! CAN'T ADD", ToastLength.Short).Show();
-          }
-        }
+        analyzer.RemoveSensor(sensor);
+        analyzer.AddSensorToSide(side, sensor);
+        analyzer.SetManifold(side, sensor);
       });
 
       adb.Show();
@@ -721,7 +691,7 @@
       sensorMounts = new SensorMount[analyzer.analyzerSize];
 
       for (int i = 0; i < sensorMounts.Length; i++) {
-        var sm = new SensorMount(Context);
+        var sm = new SensorMount(Context, analyzer);
         sm.sensor = analyzer[i];
         sensorMounts[i] = sm;
         var root = sm.root;
