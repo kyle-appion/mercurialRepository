@@ -30,6 +30,23 @@
   <dimen name="drawer_navigation_separator_small_height">1dp</dimen>
 
   <!--
+  Analyzer Dimensions
+  -->
+  <!-- The icon width for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_width">14dp</dimen>
+  <!-- The icon height for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_height">24dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_icon_size">14dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_device_icon_size">32dp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+
+
+  <!--
   Device Manager dimensions
   -->
   <!-- The width and height of the a connect icon in the device manager. -->

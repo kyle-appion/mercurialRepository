@@ -17,6 +17,7 @@
 
   using ION.Droid.Sensors.Properties;
   using ION.Droid.Util;
+  using ION.Droid.Widgets.Templates;
 
   class MeasurementRecord : IRecord {
     public EViewType viewType {
@@ -33,20 +34,11 @@
   }
 
   class MeasurementViewHolder : WorkbenchViewHolder<MeasurementRecord> {
-    private MeasurementRecord record { get; set; }
+    private MeasurementRecord record;
+    private MeasurementSubviewTemplate template;
 
-    private BitmapCache cache { get; set; }
-    private TextView title { get; set; }
-    private ImageView icon { get; set; }
-    private View divider { get; set; }
-    private TextView measurement { get; set; }
-
-    public MeasurementViewHolder(BitmapCache cache, View view) : base(view) {
-      this.cache = cache;
-      title = view.FindViewById<TextView>(Resource.Id.title);
-      icon = view.FindViewById<ImageView>(Resource.Id.icon);
-      divider = view.FindViewById(Resource.Id.view);
-      measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+    public MeasurementViewHolder(View view, BitmapCache cache) : base(view) {
+      template = new MeasurementSubviewTemplate(view, cache);
     }
 
     /// <summary>
@@ -56,35 +48,11 @@
     public override void BindTo(MeasurementRecord t) {
       Unbind();
 
-      record = t;
-      record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
-
-      Invalidate();
+      template.Bind(t.sensorProperty);
     }
 
     public override void Unbind() {
-      if (record != null) {
-        record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
-      }
-    }
-
-    private void Invalidate() {
-      var sp = record.sensorProperty;
-      title.Text = sp.GetLocalizedStringAbreviation(ItemView.Context);
-
-      if (sp.supportedReset) {
-        icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_refresh));
-        divider.Visibility = ViewStates.Visible;
-      } else {
-        icon.Visibility = ViewStates.Gone;
-        divider.Visibility = ViewStates.Gone;
-      }
-
-      measurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, sp.modifiedMeasurement, true);
-    }
-
-    private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
-      Invalidate();
+      template.Unbind();
     }
   }
 }

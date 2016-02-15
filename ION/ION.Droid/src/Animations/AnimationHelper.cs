@@ -1,17 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+namespace ION.Droid.Animations {
 
-using Android.Animation;
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Text;
 
-namespace ION.Droid.Animation {
+  using Android.Animation;
+  using Android.App;
+  using Android.Content;
+  using Android.OS;
+  using Android.Runtime;
+  using Android.Views;
+  using Android.Widget;
+
   /// <summary>
   /// This class is a utility class that will provide common animations in a
   /// quick factory fashion.

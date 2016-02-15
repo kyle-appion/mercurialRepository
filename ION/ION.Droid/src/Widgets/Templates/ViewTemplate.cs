@@ -14,17 +14,41 @@
     /// <summary>
     /// The parent view that this view template is populating.
     /// </summary>
-    public View parentView;
+    public View parentView { get; private set; } 
+    /// <summary>
+    /// The item that the view template is bound to.
+    /// </summary>
+    /// <value>The item.</value>
+    public T item { get; private set; }
 
     public ViewTemplate(View view) {
       parentView = view;
     }
 
     /// <summary>
-    /// Binds the view template to the given data.
+    /// Binds the template to its item. Calls invalidate after the bind is complete.
     /// </summary>
     /// <param name="t">T.</param>
-    public abstract void Bind(T t);
+    public void Bind(T t) {
+      if (item != null) {
+        Unbind();
+      }
+
+      item = t;
+      OnBind(t);
+
+      Invalidate();
+    }
+
+    /// <summary>
+    /// Unbinds the template form its item.
+    /// </summary>
+    public void Unbind() {
+      if (item != null) {
+        OnUnbind();
+        item = default(T);
+      }
+    }
 
     /// <summary>
     /// Invalidates the view within the template.
@@ -33,9 +57,15 @@
     }
 
     /// <summary>
+    /// Binds the view template to the given data.
+    /// </summary>
+    /// <param name="t">T.</param>
+    protected abstract void OnBind(T t);
+
+    /// <summary>
     /// Informs the view template that it should unbind itself from its data source.
     /// </summary>
-    public abstract void Unbind();
+    protected abstract void OnUnbind();
   }
 }
 

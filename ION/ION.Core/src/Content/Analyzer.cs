@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Content {
+﻿﻿namespace ION.Core.Content {
 
   using System;
 
@@ -28,7 +28,17 @@
     /// </summary>
     /// <value>The index of the other.</value>
     public int otherIndex { get; private set; }
+    /// <summary>
+    /// The manifold event.
+    /// </summary>
+    /// <value>The manifold event.</value>
+    public ManifoldEvent manifoldEvent { get; private set; }
 
+    /// <summary>
+    /// Creates a new analyzer event indicating that the event only affected a single sensor.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="index">Index.</param>
     public AnalyzerEvent(EType type, int index) {
       this.type = type;
       this.index = index;
@@ -47,6 +57,24 @@
     }
 
     /// <summary>
+    /// Creates a new analyzer event indicating that the event affect one of the manifolds.
+    /// </summary>
+    /// <param name="type">Type.</param>
+    /// <param name="side">Side.</param>
+    public AnalyzerEvent(EType type, Analyzer.ESide side) {
+      this.type = type;
+      this.side = side;
+    }
+
+    /// <summary>
+    /// Creates a new manifold event indicating that the analyzer received a new manifold event.
+    /// </summary>
+    /// <param name="manifoldEvent">Manifold event.</param>
+    public AnalyzerEvent(ManifoldEvent manifoldEvent) {
+      this.manifoldEvent = manifoldEvent;
+    }
+
+    /// <summary>
     /// The enumerations of the possible event notifications that the analyzer will throw.
     /// </summary>
     public enum EType {
@@ -62,6 +90,24 @@
       /// The type that is used to indicate that the analzer remove a sensor at index.
       /// </summary>
       Removed,
+      /// <summary>
+      /// The type that is used when a sensor event is thrown by a sensor within the analyzer. Provides the index of
+      /// the triggering sensor.
+      /// </summary>
+      SensorChanged,
+      /// <summary>
+      /// Called when a manifold is added to the analyzer. This is paired with a side that the manifold was added to.
+      /// </summary>
+      ManifoldAdded,
+      /// <summary>
+      /// Called when a manifold is removed to the analyzer. This is paired with a side that the manifold was removed from.
+      /// </summary>
+      ManifoldRemoved,
+      /// <summary>
+      /// Called when a manifold event is thrown by a manifold within the analyzer. Provides the triggering manifold 
+      /// event.
+      /// </summary>
+      ManifoldEvent,
     }
   }
 
@@ -70,6 +116,14 @@
   /// location around this absraction. The analyzer is heavily used in various reports, as a correctly lain out
   /// analyzer will describe an entire systems state.
   /// </summary>
+  /// <description>
+  /// Sensors that are held within the analyzer are organized in an awkward fashion. There are techincally four sections
+  /// to the analyzer. The high and low sides are most evident and first thought of. Additionally, there are the
+  /// compressor and evaporator side. You can think of high low as right and left respectively, and compressor and
+  /// evaporator as bottom and top respectively. With this in mind, the sensors are organized within the analyzer
+  /// starting at the compressor side and extening into its respective side for half of the sensors per side value. The
+  /// rest of the sensors are then placed into the evaporator side, again extending into their respective sides.
+  /// </description>
   public class Analyzer {
 
     /// <summary>
@@ -122,12 +176,14 @@
       private set {
         if (__lowSideManifold != null) {
           __lowSideManifold.onManifoldEvent -= OnManifoldEvent;
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.Low));
         }
 
         __lowSideManifold = value;
 
         if (__lowSideManifold != null) {
           __lowSideManifold.onManifoldEvent += OnManifoldEvent;
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
         }
       }
     } Manifold __lowSideManifold;
@@ -204,7 +260,7 @@
         }
       }
 
-      // We don't need to check manifolds as they can only exist if their sensors are presnt in the sensor array.
+      // We don't need to check manifolds as they can only exist if their sensors are present in the sensor array.
       return -1;
     }
 
@@ -214,12 +270,10 @@
     /// <returns><c>true</c> if this instance is sensor index attached to manifold the specified index; otherwise, <c>false</c>.</returns>
     /// <param name="index">Index.</param>
     public bool IsSensorIndexAttachedToManifold(int index) {
-      if (index >= 0 && index < sensorsPerSide) {
-        return lowSideManifold != null && 
-          (lowSideManifold.primarySensor.Equals(sensors[index]) || lowSideManifold.secondarySensor.Equals(sensors[index]));
-      } else if (index >= sensorsPerSide && index < sensors.Length) {
-        return highSideManifold != null && 
-          (highSideManifold.primarySensor.Equals(sensors[index]) || highSideManifold.secondarySensor.Equals(sensors[index]));
+      if (index >= 0 && index < sensorsPerSide && lowSideManifold != null) {
+        return lowSideManifold.ContainsSensor(sensors[index]);
+      } else if (index >= sensorsPerSide && index < sensors.Length && highSideManifold != null) {
+        return highSideManifold.ContainsSensor(sensors[index]);
       } else {
         return false;
       }
@@ -241,6 +295,24 @@
       }
 
       return -1;
+    }
+
+    /// <summary>
+    /// Queries the number of sensors that are in the given side of the analyzer
+    /// </summary>
+    /// <returns>The sensors in side count.</returns>
+    /// <param name="side">Side.</param>
+    public int GetSensorsInSideCount(ESide side) {
+      var i = (ESide.Low == side) ? 0 : sensorsPerSide;
+
+      var ret = 0;
+      for (; i < sensorsPerSide; i++) {
+        if (this[i] != null) {
+          ret++;
+        }
+      }
+
+      return ret;
     }
 
     /// <summary>
@@ -309,6 +381,7 @@
     /// <param name="sensor">Sensor.</param>
     public bool PutSensor(int index, Sensor sensor, bool force=false) {
       if (HasSensor(sensor) && !force) {
+        ION.Core.Util.Log.D(this, "Ignoring putting the sensor.");
         return false;
       }
 
@@ -341,8 +414,17 @@
         return false;
       }
 
+      var sensor = sensors[index];
       sensors[index].onSensorStateChangedEvent -= OnSensorChangedEvent;
       sensors[index] = null;
+
+      if (lowSideManifold != null && lowSideManifold.ContainsSensor(sensor)) {
+        RemoveManifold(ESide.Low);
+      }
+
+      if (highSideManifold != null && highSideManifold.ContainsSensor(sensor)) {
+        RemoveManifold(ESide.High);
+      }
 
       var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, index);
       NotifyOfAnalyzerEvent(ae);
@@ -357,7 +439,7 @@
     /// <returns><c>true</c>, if primary manifold was set, <c>false</c> otherwise.</returns>
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
-    public bool SetPrimaryManifold(ESide side, Sensor sensor) {
+    public bool SetManifold(ESide side, Sensor sensor) {
       var index = IndexOfSensor(sensor);
 
       if (index < 0) {
@@ -367,13 +449,97 @@
 
       switch (side) {
         case ESide.Low:
+          RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
+          RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
           throw new Exception("Cannot set primary manifold: unknown side: " + side);
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the analyzer has a manifold on the given side.
+    /// </summary>
+    /// <returns><c>true</c> if this instance has manifold on side the specified ; otherwise, <c>false</c>.</returns>
+    /// <param name="">.</param>
+    public bool HasManifoldOnSide(ESide side) {
+      switch (side) {
+        case ESide.Low:
+          return lowSideManifold != null;
+        case ESide.High:
+          return highSideManifold != null;
+        default:
+          return false;
+      }
+    }
+
+    /// <summary>
+    /// Attempts to remove the given manifold from the analyzer. Obviously, if the manifold is not in the analyzer, we
+    /// will do nothing.
+    /// </summary>
+    /// <returns><c>true</c>, if manifold was removed, <c>false</c> otherwise.</returns>
+    /// <param name="manifold">Manifold.</param>
+    public void RemoveManifold(Manifold manifold) {
+      if (lowSideManifold == manifold) {
+        RemoveManifold(ESide.Low);
+      } else if (highSideManifold == manifold) {
+        RemoveManifold(ESide.High);
+      }
+    }
+
+    /// <summary>
+    /// Remove manifold at the given side form the analyzer.
+    /// </summary>
+    /// <returns><c>true</c>, if manifold was removed, <c>false</c> otherwise.</returns>
+    /// <param name="side">Side.</param>
+    public void RemoveManifold(ESide side) {
+      switch (side) {
+        case ESide.Low:
+          lowSideManifold = null;
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.Low));
+          break;
+        case ESide.High:
+          highSideManifold = null;
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldRemoved, ESide.High));
+          break;
+      } 
+    }
+
+    /// <summary>
+    /// Queries the manifold from the given side of the analyzer.
+    /// </summary>
+    /// <returns>The manifold from side.</returns>
+    /// <param name="side">Side.</param>
+    public Manifold GetManifoldFromSide(ESide side) {
+      switch (side) {
+        case ESide.Low:
+          return lowSideManifold;
+        case ESide.High:
+          return highSideManifold;
+        default:
+          throw new Exception("Failed to get manifold from side: " + side);
+      }
+    }
+
+    /// <summary>
+    /// Queries the opposite side of the given side.
+    /// </summary>
+    /// <returns>The opposite side of.</returns>
+    /// <param name="side">Side.</param>
+    public ESide GetOppositeSideOf(ESide side) {
+      switch (side) {
+        case ESide.Low:
+          return ESide.High;
+        case ESide.High:
+          return ESide.Low;
+        default:
+          throw new Exception("Cannot get opposite side for side: " + side);
       }
     }
 
@@ -394,13 +560,16 @@
     public bool CanSensorsSwapSafely(int first, int second) {
       ESide firstSide, secondSide;
 
-      return GetSideOfSensor(sensors[first], out firstSide) && GetSideOfSensor(sensors[second], out secondSide) && firstSide == secondSide;
+      var sidesEqual = GetSideOfIndex(first, out firstSide) && GetSideOfIndex(second, out secondSide) && firstSide == secondSide;
+
+      return sidesEqual || !(IsSensorIndexAttachedToManifold(first) || IsSensorIndexAttachedToManifold(second));
     }
 
     /// <summary>
     /// Attempts to swap the sensors that the given first index and the given second index. If either of the two sensors
     /// are attached to the low of high manifold, then the operation will fail unless force is true. If force is true,
-    /// the the swap will happen destuctively, meaning the viewer state may be clobbered to make the swap happen.
+    /// the the swap will happen destuctively, meaning the viewer state of the manifolds may be clobbered to make the
+    /// swap happen.
     /// </summary>
     /// <returns><c>true</c>, if sensors was swaped, <c>false</c> otherwise.</returns>
     /// <param name="first">First.</param>
@@ -412,8 +581,8 @@
         var f = sensors[first];
         var s = sensors[second];
 
-        sensors[first] = f;
-        sensors[second] = s;
+        sensors[first] = s;
+        sensors[second] = f;
 
         NotifyOfAnalyzerEvent(new AnalyzerEvent(first, second));
       };
@@ -447,14 +616,14 @@
         if (firstIsInManifold) {
           ESide side;
           if (GetSideOfIndex(first, out side)) {
-            SetPrimaryManifold(side, null);
+            RemoveManifold(side);
           }
         }
 
         if (secondIsInManifold) {
           ESide side;
           if (GetSideOfIndex(second, out side)) {
-            SetPrimaryManifold(side, null);
+            RemoveManifold(side);
           }
         }
       }
@@ -494,6 +663,7 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorChangedEvent(Sensor sensor) {
+      NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.SensorChanged, IndexOfSensor(sensor)));
     }
 
     /// <summary>
@@ -501,7 +671,7 @@
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
     private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
-
+      NotifyOfAnalyzerEvent(new AnalyzerEvent(manifoldEvent));
     } 
 
     /// <summary>

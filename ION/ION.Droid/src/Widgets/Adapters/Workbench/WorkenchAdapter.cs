@@ -94,7 +94,7 @@
         case EViewType.Space:
           return new SpaceViewHolder(li.Inflate(Resource.Layout.list_item_space, parent, false));
         case EViewType.MeasurementSubview:
-          return new MeasurementViewHolder(cache, li.Inflate(Resource.Layout.list_item_large_measurement_subview, parent, false));
+          return new MeasurementViewHolder(li.Inflate(Resource.Layout.list_item_large_measurement_subview, parent, false), cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
