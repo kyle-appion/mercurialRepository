@@ -306,8 +306,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           pressureSensor = null;
           ClearPressureInput();
           ClearTemperatureInput();
-          InvalidateViewController();
         }
+        InvalidateViewController();
       }));
 
       editPressure.ShouldReturn += (textField) => {
@@ -359,8 +359,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           temperatureSensor = null;
           ClearPressureInput();
           ClearTemperatureInput();
-          InvalidateViewController();
         }
+        InvalidateViewController();
       }));
 
       editTemperature.ShouldReturn += (textField) => {
@@ -484,29 +484,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         entryMode.Invalidate();
       }
 
-      if (__pressureSensor is GaugeDeviceSensor) {
-        editPressure.Enabled = false;
-        editTemperature.Enabled = false;
-      } else {
-        editPressure.Enabled = true;
-        if (temperatureSensor is GaugeDeviceSensor) {
-          editTemperature.Enabled = false;
-        } else {
-          editTemperature.Enabled = true;
-        }
-      }
-
-      if (__temperatureSensor is GaugeDeviceSensor) {
-        editTemperature.Enabled = false;
-        editPressure.Enabled = false;
-      } else {
-        editTemperature.Enabled = true;
-        if (pressureSensor is GaugeDeviceSensor) {
-          editPressure.Enabled = false;
-        } else {
-          editPressure.Enabled = true;
-        }
-      }
+      var hasSensor = __pressureSensor is GaugeDeviceSensor || __temperatureSensor is GaugeDeviceSensor;
+      editPressure.Enabled = !hasSensor;
+      editTemperature.Enabled = !hasSensor;
     }
 
     /// <summary>
@@ -566,8 +546,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           primaryTextView.Text = sensor.ToFormattedString(false);
         }
 
-        Log.D(this, "Measurement: " + sensor.measurement + " to psi: " + sensor.measurement.ConvertTo(Units.Pressure.PSIG));
-
         Scalar measurement;
         switch (sensor.type) {
           case ESensorType.Pressure:
@@ -577,7 +555,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             break;
           case ESensorType.Temperature:
             measurement = ptChart.GetPressure(sensor).ConvertTo(otherUnit);
-            Log.D(this, "Measurement: " + measurement + " to psi: " + measurement.ConvertTo(Units.Pressure.PSIG));
             derivedTextView.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, measurement); 
             vc.temperatureUnit = sensor.unit;
             break;
