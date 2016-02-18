@@ -27,7 +27,7 @@ namespace ION.Core.Util {
           __printer = value;
         }
       }
-    } static IPrinter __printer;
+    } static IPrinter __printer = new DeadPrinter();
 
     static Log() {
       #if DEBUG

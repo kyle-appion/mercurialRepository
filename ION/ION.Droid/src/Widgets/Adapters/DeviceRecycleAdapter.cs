@@ -14,9 +14,12 @@
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
+  using ION.Core.Devices.Filters;
   using ION.Core.Sensors;
+  using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
+  using ION.Droid.Activity;
   using ION.Droid.Devices;
   using ION.Droid.Sensors;
   using ION.Droid.Util;
@@ -34,6 +37,15 @@
     /// The event that will be notified of sensor return clicks.
     /// </summary>
     public event OnSensorReturnClicked onSensorReturnClicked;
+
+    /// <summary>
+    /// The filter that will filter the devices that are shown by the adapter.
+    /// </summary>
+    public IFilter<IDevice> deviceFilter;
+    /// <summary>
+    /// The filter that will filter the sensors that are shown by the adapter.
+    /// </summary>
+    public IFilter<Sensor> sensorFilter;
 
     /// <summary>
     /// The current ION instance.
@@ -140,6 +152,10 @@
       var disconnected = new List<IDevice>();
 
       foreach (var device in devices) {
+        if (!deviceFilter.Matches(device)) {
+          continue;
+        }
+
         var con = device.connection;
         switch (con.connectionState) {
           case EConnectionState.Connected:
@@ -231,17 +247,29 @@
     /// </summary>
     /// <returns>The gauge device sensor records.</returns>
     /// <param name="device">Device.</param>
-    private void AddGaugeDeviceSensorRecords(List<IRecord> records, GaugeDevice device, int offset=-1) {
+    private void AddGaugeDeviceSensorRecords(List<IRecord> records, GaugeDeviceRecord deviceRecord, int offset=-1) {
+      var device = deviceRecord.device;
+      var sensors = new List<GaugeDeviceSensor>();
+
+      foreach (var sensor in device.sensors) {
+        if (sensorFilter.Matches(sensor)) {
+          sensors.Add(sensor);
+        }
+      }
+
+      deviceRecord.sensorsAttachedCount = sensors.Count;
+
+
       if (offset == -1) {
-        foreach (var sensor in device.sensors) {
+        foreach (var s in sensors) {
           records.Add(new SensorRecord() {
-            sensor = sensor,
+            sensor = s,
           });
         }
       } else {
-        foreach (var sensor in device.sensors) {
+        foreach (var s in sensors) {
           records.Insert(offset, new SensorRecord() {
-            sensor = sensor,
+            sensor = s,
           });
         }
       }
@@ -254,14 +282,13 @@
     /// <param name="gr">Gr.</param>
     private void OnGaugeDeviceClicked(int pos, GaugeDeviceRecord gr) {
       var start = pos + 1;
-      var tot = gr.device.sensorCount;
 
       if (gr.expanded) {
-        records.RemoveRange(start, tot);
-        NotifyItemRangeRemoved(start, tot);        
+        records.RemoveRange(start, gr.sensorsAttachedCount);
+        NotifyItemRangeRemoved(start, gr.sensorsAttachedCount);        
       } else {
-        AddGaugeDeviceSensorRecords(records, gr.device, start);
-        NotifyItemRangeInserted(start, tot);
+        AddGaugeDeviceSensorRecords(records, gr, start);
+        NotifyItemRangeInserted(start, gr.sensorsAttachedCount);
       }
 
       gr.expanded = !gr.expanded;
@@ -323,8 +350,9 @@
         }
       }
 
-      public GaugeDevice device { get; set; }
-      public bool expanded { get; set; }
+      public GaugeDevice device;
+      public int sensorsAttachedCount;
+      public bool expanded;
     }
 
     class SensorRecord : IRecord {

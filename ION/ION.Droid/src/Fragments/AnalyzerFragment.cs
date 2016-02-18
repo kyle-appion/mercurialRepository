@@ -217,7 +217,7 @@
 
       if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
         if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
-          ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.workbench_ptchart_abrv), () => {
+          ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.fluid_pt_abrv), () => {
             manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
           });
         }

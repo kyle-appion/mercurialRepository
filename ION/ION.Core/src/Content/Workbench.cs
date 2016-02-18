@@ -6,6 +6,7 @@
 
   using ION.Core.App;
   using ION.Core.Devices;
+  using ION.Core.Fluids;
   using ION.Core.Sensors;
 
   public delegate void OnWorkbenchEvent(WorkbenchEvent workbenchEvent);
@@ -163,7 +164,9 @@
       if (ContainsSensor(sensor)) {
         return false;
       } else {
-        return Add(new Manifold(sensor));
+        var m = new Manifold(sensor);
+        m.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+        return Add(m);
       }
     }
 

@@ -15,7 +15,7 @@
     <AndroidApplication>True</AndroidApplication>
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -149,8 +149,12 @@
     <Compile Include="src\Animations\AnimationHelper.cs" />
     <Compile Include="src\Widgets\Analyzer\SubviewAdapter.cs" />
     <Compile Include="src\Widgets\Templates\MeasurementSubviewTemplate.cs" />
+    <Compile Include="src\Views\ViewCheckChangedAction.cs" />
+    <Compile Include="src\Widgets\Templates\PTChartSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Templates\SuperheatSubcoolSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\ManifoldViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\PTChartSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\MeasurementViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\ViewerViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -319,13 +323,11 @@
     <AndroidResource Include="Resources\layout\device_manager_serial.axml" />
     <AndroidResource Include="Resources\layout\device_manager_sensor.axml" />
     <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
-    <AndroidResource Include="Resources\layout\list_item_large_viewer.axml" />
     <AndroidResource Include="Resources\layout\list_item_add.axml" />
     <AndroidResource Include="Resources\drawable\viewer_background.axml" />
     <None Include="src\Widgets\RecyclerViews\ReadMe.md" />
     <AndroidResource Include="Resources\layout\activity_superheat_subcool.axml" />
     <AndroidResource Include="Resources\layout\list_item_space.axml" />
-    <AndroidResource Include="Resources\layout\list_item_large_measurement_subview.axml" />
     <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_inactive.axml" />
     <AndroidResource Include="Resources\drawable\analyzer_manifold_high_top.axml" />
     <AndroidResource Include="Resources\drawable\analyzer_manifold_low_top.axml" />
@@ -351,6 +353,10 @@
     <AndroidResource Include="Resources\drawable\xml_high_side_background.xml" />
     <AndroidResource Include="Resources\drawable\xml_white_bordered_background.xml" />
     <AndroidResource Include="Resources\layout\subview_measurement_small.axml" />
+    <AndroidResource Include="Resources\layout\subview_fluid_small.axml" />
+    <AndroidResource Include="Resources\layout\subview_fluid_large.axml" />
+    <AndroidResource Include="Resources\layout\subview_measurement_large.axml" />
+    <AndroidResource Include="Resources\layout\viewer_large.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

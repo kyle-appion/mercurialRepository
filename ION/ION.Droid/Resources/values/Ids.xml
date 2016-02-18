@@ -62,6 +62,7 @@
   <item name="calculators" type="id"/>
 
   <item name="ptchart" type="id"/>
+  <item name="ptchart_calculations" type="id"/>
   <item name="ptchart_pressure_edit" type="id"/>
   <item name="ptchart_pressure_unit" type="id"/>
   <item name="ptchart_temperature_edit" type="id"/>

@@ -1,6 +1,7 @@
 ﻿namespace ION.Droid.Activity {
 
   using System;
+  using System.Collections.Generic;
 
   using Android.App;
   using Android.Content;
@@ -12,20 +13,31 @@
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Filters;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Filters;
+  using ION.Core.Util;
 
   using ION.Droid.Sensors;
   using ION.Droid.Views;
   using ION.Droid.Widgets.Adapters;
 
+  /// <summary>
+  /// The enum that will provide the filters the will only show the toggled devices.
+  /// </summary>
+  [Flags]
+  public enum EDeviceFilter {
+    All = 0,
+    Pressure = 1 << 0,
+    Temperature = 1 << 1,
+  }
+
   [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
   public class DeviceManagerActivity : IONActivity {
-
-
     /// <summary>
-    /// The extra key that is used to pull ESensorTypes (as an array of ints)
-    /// from the starting intent.
+    /// The extra key that is used to pull a masked Filter enum which is used to filter only the given devices.
     /// </summary>
-    public const string EXTRA_SENSOR_TYPES = "ion.droid.activity.extra.device_manager.TYPES";
+    public const string EXTRA_DEVICE_FILTER = "ION.Droid.extra.DEVICE_FILTER";
     /// <summary>
     /// The extra key that is used to pull sensors from the result intent returned
     /// by the activity upon finish.
@@ -58,6 +70,10 @@
     /// </summary>
     /// <value>The adapter.</value>
     private DeviceRecycleAdapter adapter { get; set; }
+    /// <summary>
+    /// The filter for the activity.
+    /// </summary>
+    private EDeviceFilter filter;
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
@@ -77,8 +93,15 @@
 
       list.SetLayoutManager(new LinearLayoutManager(this));
 
+      if (Intent.HasExtra(EXTRA_DEVICE_FILTER)) {
+        filter = (EDeviceFilter)Intent.GetIntExtra(EXTRA_DEVICE_FILTER, 0);
+      } else {
+        filter = EDeviceFilter.All;
+      }
+
       adapter = new DeviceRecycleAdapter(Resources);
-      adapter.SetDevices(ion.deviceManager.devices);
+      adapter.deviceFilter = BuildDeviceFilter(filter);
+      adapter.sensorFilter = BuildSensorFilter(filter);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;
       adapter.onDatasetChanged += (adapter) => {
 //        OnAdapterRefreshed();
@@ -98,7 +121,7 @@
       InvalidateOptionsMenu();
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
-//      OnAdapterRefreshed();
+      RefreshAdapter();
     }
 
     // Overridden from Activity
@@ -246,6 +269,71 @@
         default:
           break;
       }
+    }
+
+    /// <summary>
+    /// Builds a filter that will restrict the devices that are shown by the adapter.
+    /// </summary>
+    /// <returns>The device filter.</returns>
+    private IFilter<IDevice> BuildDeviceFilter(EDeviceFilter filter) {
+      if (EDeviceFilter.All == filter) {
+        return new YesFilter<IDevice>();
+      }
+
+      var filters = new List<IFilter<IDevice>>();
+
+      for (int i = 0; i < 32; i++) {
+        var flag = (EDeviceFilter)(1 << i);
+
+        if ((filter & flag) != flag) {
+          continue;
+        }
+
+        switch (flag) {
+          case EDeviceFilter.Pressure:
+            filters.Add(new HasSensorOfTypeFilter(ESensorType.Pressure));
+            break;
+
+          case EDeviceFilter.Temperature:
+            filters.Add(new HasSensorOfTypeFilter(ESensorType.Temperature));
+            break;
+        }
+      }
+
+      return new AndFilterCollection<IDevice>(filters.ToArray());
+    }
+
+    /// <summary>
+    /// Builds a filter that will restrict the sensors that are shown by the adapter.
+    /// </summary>
+    /// <returns>The sensor filter.</returns>
+    /// <param name="filter">Filter.</param>
+    private IFilter<Sensor> BuildSensorFilter(EDeviceFilter filter) {
+      if (EDeviceFilter.All == filter) {
+        return new YesFilter<Sensor>();
+      }
+
+      var filters = new List<IFilter<Sensor>>();
+
+      for (int i = 0; i < 32; i++) {
+        var flag = (EDeviceFilter)(1 << i);
+
+        if ((filter & flag) != flag) {
+          continue;
+        }
+
+        switch (flag) {
+          case EDeviceFilter.Pressure:
+            filters.Add(new SensorOfTypeFilter(ESensorType.Pressure));
+            break;
+
+          case EDeviceFilter.Temperature:
+            filters.Add(new SensorOfTypeFilter(ESensorType.Temperature));
+            break;
+        }
+      }
+
+      return new AndFilterCollection<Sensor>(filters.ToArray());
     }
   }
 }

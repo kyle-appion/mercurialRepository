@@ -1,7 +1,6 @@
 ﻿namespace ION.Droid.Widgets.Adapters.Workbench {
 
   using System;
-//  using System.Collections.Generic;
   using System.Collections.ObjectModel;
 
   using Android.App;
@@ -22,6 +21,7 @@
   using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
+  using ION.Droid.Widgets.Templates;
 
   /// <summary>
   /// The adapter that will provide the views for use in the workbench fragment. After creating the adapter, if you want
@@ -31,9 +31,11 @@
   /// </summary>
   public class WorkbenchAdapter : RecyclerView.Adapter, IItemTouchHelperAdapter {
 
-    public delegate void OnItemClicked(RecyclerView.ViewHolder viewHolder, int position);
+    public delegate void OnManifoldClicked(Manifold manifold);
+    public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
 
-    public event OnItemClicked onItemClicked;
+    public event OnManifoldClicked onManifoldClicked;
+    public event OnSensorPropertyClicked onSensorPropertyClicked;
 
     // Overridden from RecyclerView.Adapter
     public override int ItemCount {
@@ -89,12 +91,14 @@
       switch ((EViewType)viewType) {
         case EViewType.Footer:
           return new FooterViewHolder(li.Inflate(Resource.Layout.list_item_add, parent, false));
-        case EViewType.Viewer:
-          return new ViewerViewHolder(this, cache, li.Inflate(Resource.Layout.list_item_large_viewer, parent, false));
+        case EViewType.Manifold:
+          return new ManifoldViewHolder(li.Inflate(Resource.Layout.viewer_large, parent, false), cache);
         case EViewType.Space:
           return new SpaceViewHolder(li.Inflate(Resource.Layout.list_item_space, parent, false));
         case EViewType.MeasurementSubview:
-          return new MeasurementViewHolder(li.Inflate(Resource.Layout.list_item_large_measurement_subview, parent, false), cache);
+          return new MeasurementViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
+        case EViewType.PTChartSubview:
+          return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -103,22 +107,25 @@
     // Overridden from RecyclerView.Adapter
     public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       var viewType = GetItemViewType(position);
+      var record = records[position];
 
       switch ((EViewType)viewType) {
         case EViewType.Footer:
-          var fr = records[position] as FooterRecord;
-
-          if (fr != null) {
-            (holder as FooterViewHolder)?.BindTo(fr);
-          }
-
+          (holder as FooterViewHolder)?.BindTo(record as FooterRecord);
           break;
-        case EViewType.Viewer:
-          var vr = records[position] as ViewerRecord;
+
+        case EViewType.Manifold:
+          var vr = records[position] as ManifoldRecord;
 
           if (vr != null) {
-            (holder as ViewerViewHolder)?.BindTo(vr);
+            (holder as ManifoldViewHolder)?.BindTo(vr);
           }
+
+          holder.ItemView.Click += (object sender, EventArgs e) => {
+            if (onManifoldClicked != null) {
+              onManifoldClicked(vr.item);
+            }
+          };
 
           break;
 
@@ -130,14 +137,35 @@
           }
 
           break;
+
         case EViewType.MeasurementSubview:
           var mr = records[position] as MeasurementRecord;
 
           if (mr != null) {
             (holder as MeasurementViewHolder)?.BindTo(mr);
           }
+/*
+          holder.ItemView.Click += (object sender, EventArgs e) => {
+            if (onManifoldClicked != null) {
+              onSensorPropertyClicked(mr.item);
+            }
+          };
+*/
 
           break;
+
+        case EViewType.PTChartSubview:
+          var pr = record as PTChartSubviewRecord;
+          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
+/*
+          holder.ItemView.Click += (object sender, EventArgs e) => {
+            if (onManifoldClicked != null) {
+              onSensorPropertyClicked(mr.item);
+            }
+          };
+*/
+          break;
+
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -146,12 +174,15 @@
       touchHelper.dragStartListener = dragListener;
       touchHelper.swipeStartListener = swipeListener;
       holder.ItemView.SetOnTouchListener(touchHelper);
-
+/*
       holder.ItemView.Click += (object sender, EventArgs e) => {
-        if (onItemClicked != null) {
-          onItemClicked(holder, position);
+        if (record is ManifoldRecord) {
+          if (onManifoldClicked != null) {
+            onManifoldClicked(((ManifoldRecord)record).item);
+          }
         }
       };
+*/
     }
 
     // Overridden from RecyclerView.Adapter
@@ -192,11 +223,11 @@
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           if (startIndex < 0) {
-            records.Insert(records.Count - 1, new ViewerRecord(manifold));
+            records.Insert(records.Count - 1, new ManifoldRecord(manifold));
             records.Insert(records.Count - 1, new SpaceRecord());
             NotifyItemRangeInserted(records.Count - 1, 2);
           } else {
-            records.Insert(startIndex, new ViewerRecord(manifold));
+            records.Insert(startIndex, new ManifoldRecord(manifold));
             records.Insert(startIndex, new SpaceRecord());
             NotifyItemRangeInserted(startIndex, 2);
           }
@@ -294,8 +325,8 @@
     /// <param name="manifold">Manifold.</param>
     private int IndexOfManifold(Manifold manifold) {
       for (int i = 0; i < records.Count; i++) {
-        var viewerRecord = records[i] as ViewerRecord;
-        if (viewerRecord != null && viewerRecord.manifold.Equals(manifold)) {
+        var viewerRecord = records[i] as ManifoldRecord;
+        if (viewerRecord != null && viewerRecord.item.Equals(manifold)) {
           return i;
         }
       }
@@ -303,9 +334,14 @@
       return -1;
     }
 
+    /// <summary>
+    /// Creates the record for the given sensor property.
+    /// </summary>
+    /// <returns>The sensor property record.</returns>
+    /// <param name="sp">Sp.</param>
     private IRecord CreateSensorPropertyRecord(ISensorProperty sp) {
-      if (false) {
-        return null;
+      if (sp is PTChartSensorProperty) {
+        return new PTChartSubviewRecord(sp as PTChartSensorProperty);
       } else {
         return new MeasurementRecord(sp);
       }
@@ -317,10 +353,10 @@
   /// </summary>
   enum EViewType {
     Footer,
-    Viewer,
+    Manifold,
     Space,
     MeasurementSubview,
-    FluidSubview,
+    PTChartSubview,
   }
 
   /// <summary>
@@ -329,6 +365,16 @@
   /// </summary>
   interface IRecord {
     EViewType viewType { get; }
+  }
+
+  class WorkbenchRecord<T> : IRecord {
+    public EViewType viewType { get; private set; }
+    public T item;
+
+    public WorkbenchRecord(EViewType viewType, T item) {
+      this.viewType = viewType;
+      this.item = item;
+    }
   }
 
   class SpaceRecord : IRecord {

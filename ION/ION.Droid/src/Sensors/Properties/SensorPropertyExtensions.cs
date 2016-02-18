@@ -50,7 +50,7 @@
       } else if (sensorProperty is MaxSensorProperty) {
         return context.GetString(Resource.String.workbench_max_abrv);
       } else if (sensorProperty is PTChartSensorProperty) {
-        return context.GetString(Resource.String.workbench_ptchart_abrv);
+        return context.GetString(Resource.String.fluid_pt_abrv);
       } else if (sensorProperty is RateOfChangeSensorProperty) {
         return context.GetString(Resource.String.workbench_roc_abrv);
       } else if (sensorProperty is SuperheatSubcoolSensorProperty) {

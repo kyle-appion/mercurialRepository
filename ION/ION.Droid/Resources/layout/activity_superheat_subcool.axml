@@ -230,4 +230,27 @@
             android:layout_height="match_parent" />
     </LinearLayout>
 <!-- Calculated Result Display -->
+    <LinearLayout
+        android:id="@id/ptchart_calculations"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/black"
+            android:textColor="@color/white"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/text_size_large" />
+        <TextView
+            android:id="@id/measurement"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_title"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
+    </LinearLayout>
 </LinearLayout>
