@@ -34,6 +34,7 @@
     /// manager activity.
     /// </summary>
     private const int REQUEST_SENSOR = 1;
+    private const int REQUEST_SHOW_PTCHART = 2;
 
     /// <summary>
     /// The workbench that the fragment is currently working with.
@@ -108,8 +109,18 @@
       adapter.swipeListener = this;
       adapter.SetWorkbench(ion.currentWorkbench, OnAddViewer);
       list.SetAdapter(adapter);
-      adapter.onItemClicked += (viewHolder, position) => {
-        ShowManifoldContextDialog(workbench[position]);
+      adapter.onManifoldClicked += (manifold) => {
+        ShowManifoldContextDialog(manifold);
+      };
+
+      adapter.onSensorPropertyClicked += (manifold, sensorProperty) => {
+        if (sensorProperty is PTChartSensorProperty) {
+          var pt = ((PTChartSensorProperty)sensorProperty);
+          var i = new Intent(Activity, typeof(PTChartActivity));
+          i.SetAction(Intent.ActionPick);
+          i.PutExtra(PTChartActivity.EXTRA_SENSOR, pt.sensor.ToParcelable());
+          StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+        }
       };
 
       itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
@@ -133,6 +144,15 @@
             var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
             var sensor = sp.Get(ion);
             workbench.AddSensor(sensor);
+          }
+          break;
+        case REQUEST_SHOW_PTCHART:
+          if (data != null && data.HasExtra(PTChartActivity.EXTRA_SENSOR)) {
+            var u = data.GetIntExtra(PTChartActivity.EXTRA_RETURN_UNIT, -1);
+            if (u != -1) {
+              // TODO ahodder@appioninc.com: Assign the unit.
+//              Alert("Please change the unit for the pt chart");
+            }
           }
           break;
         default:
@@ -244,26 +264,26 @@
 
       if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_hold, Resource.String.workbench_hold_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_timer, Resource.String.workbench_timer_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
         });
       }
 
       if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
         if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
-          ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.workbench_ptchart_abrv), () => {
-            manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.fluid_pt_abrv), () => {
+            manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
           });
         }
 
         if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
           ldb.AddItem(format(Resource.String.workbench_shsc, Resource.String.workbench_shsc_abrv), () => {
-            manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+            manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
           });
         }
       }

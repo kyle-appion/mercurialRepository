@@ -27,8 +27,16 @@
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
-  [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/ptchart", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme")]      
   public class PTChartActivity : IONActivity {
+    /// <summary>
+    /// The extra that is used to attach a sensor paload to the activity.
+    /// </summary>
+    public const string EXTRA_SENSOR = "ION.Droid.Activity.extra.SENSOR";
+    /// <summary>
+    /// The extra that will return the secondary unit for the pt chart.
+    /// </summary>
+    public const string EXTRA_RETURN_UNIT = "ION.Droid.Activity.extra.RETURN_UNIT";
 
     /// <summary>
     /// The value that indicates that an activity action/result was for the selection of a fluid.
@@ -58,6 +66,12 @@
         fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
         fluidNameView.Text = name;
         fluidPhaseToggleView.Visibility = (__ptChart.fluid.mixture) ? ViewStates.Visible : ViewStates.Invisible;
+        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
+        if (sensor != null) {
+          OnSensorChanged(sensor);
+        } else {
+          ClearInput();
+        }
       }
     } PTChart __ptChart;
 
@@ -151,51 +165,93 @@
     private Watcher temperatureTextWatcher { get; set; }
 
     /// <summary>
-    /// The sensor that will hold / provide the pressure measurements for calculation.
+    /// Whether or not the activity has locked the sensors.
     /// </summary>
-    /// <value>The pressure sensor.</value>
-    private Sensor pressureSensor {
+    private bool sensorLocked {
       get {
-        return __pressureSensor;
+        return __sensorLocked;
       }
       set {
-        if (__pressureSensor != null) {
-          __pressureSensor.onSensorStateChangedEvent -= OnPressureSensorChanged;
-        }
+        __sensorLocked = value;
 
-        __pressureSensor = value;
-
-        if (__pressureSensor != null) {
-          __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
-          OnPressureSensorChanged(__pressureSensor);
-        }
-
-        SynchronizeSensorsToViews();
+        pressureLockIconView.Visibility = value ? ViewStates.Visible : ViewStates.Invisible;
+        temperatureLockIconView.Visibility = value ? ViewStates.Visible : ViewStates.Invisible;
       }
-    } Sensor __pressureSensor;
+    } bool __sensorLocked;
+
     /// <summary>
-    /// The sensor that will hold / provide the temperature measurements for calculation.
+    /// The non-manual sensor that the activity is using to calculate pt measurements.
     /// </summary>
-    /// <value>The temperautre sensor.</value>
-    private Sensor temperatureSensor { 
+    /// <value>The sensor.</value>
+    private Sensor sensor {
       get {
-        return __temperatureSensor;
+        return __sensor;
       }
       set {
-        if (__temperatureSensor != null) {
-          __temperatureSensor.onSensorStateChangedEvent -= OnTemperatureSensorChanged;
+        if (__sensor != null) {
+          __sensor.onSensorStateChangedEvent -= OnSensorChanged;
         }
 
-        __temperatureSensor = value;
+        __sensor = value;
 
-        if (__temperatureSensor != null) {
-          __temperatureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
-          OnTemperatureSensorChanged(__temperatureSensor);
+        if (__sensor != null) {
+          __sensor.onSensorStateChangedEvent += OnSensorChanged;
+          switch (__sensor.type) {
+            case ESensorType.Pressure:
+              if (value is GaugeDeviceSensor) {
+                pressureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
+              } else {
+                pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Android.Resource.Drawable.IcMenuEdit));
+              }
+              temperatureSensorIconView.Visibility = ViewStates.Invisible;
+              break;
+            case ESensorType.Temperature:
+              if (value is GaugeDeviceSensor) {
+                temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
+              } else {
+                temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Android.Resource.Drawable.IcMenuEdit));
+              }
+              pressureSensorIconView.Visibility = ViewStates.Invisible;
+              break;
+          }
+        } else {
+          pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
+          temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
         }
 
-        SynchronizeSensorsToViews();
+        Refresh();
       }
-    } Sensor __temperatureSensor;
+    } Sensor __sensor;
+
+    private bool hasPressureSensor {
+      get {
+        return sensor != null && ESensorType.Pressure == sensor.type;
+      }
+    }
+
+    private bool hasTemperatureSensor {
+      get {
+        return sensor != null && ESensorType.Temperature == sensor.type;
+      }
+    }
+
+    private Unit pressureUnit {
+      get {
+        return (__sensor != null && ESensorType.Pressure == __sensor.type) ? sensor.unit : __pressureUnit;
+      }
+      set {
+        __pressureUnit = value;
+      }
+    } Unit __pressureUnit;
+
+    private Unit temperatureUnit {
+      get {
+        return __temperatureUnit;
+      }
+      set  {
+        __temperatureUnit = value;
+      }
+    } Unit __temperatureUnit;
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle bundle) {
@@ -205,10 +261,6 @@
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
       SetContentView(Resource.Layout.activity_ptchart);
-
-      __pressureSensor = new ManualSensor(ESensorType.Pressure);
-      __temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
-
 
       FindViewById(Resource.Id.fluid).SetOnClickListener(new ViewClickAction((view) => {
         var i = new Intent(this, typeof(FluidManagerActivity));
@@ -220,21 +272,41 @@
       fluidColorView = FindViewById(Resource.Id.color);
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
+      fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((button, isChecked) => {
+        if (isChecked) {
+          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
+        } else {
+          ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
+        }
+      }));
+
+      pressureUnit = ion.defaultUnits.pressure;
+      temperatureUnit = ion.defaultUnits.temperature;
 
       InitPressureWidgets();
       InitTemperatureWidgets();
 
       ptChart = PTChart.New(ion, Fluid.EState.Bubble);
 
-      pressureSensor.unit = ion.defaultUnits.pressure;
-      temperatureSensor.unit = ion.defaultUnits.temperature;
+      if (Intent.HasExtra(EXTRA_SENSOR)) {
+        var sp = (SensorParcelable)Intent.GetParcelableExtra(EXTRA_SENSOR);
+        var sensor = sp.Get(ion);
+        if (ESensorType.Pressure == sensor?.type || ESensorType.Temperature == sensor?.type) {
+          this.sensor = sensor;
+          sensorLocked = true;
+        } else {
+          Error("Cannot start PTChartActivity. Expected a pressure/temperature sensor, received: " + sensor?.type);
+          SetResult(Result.Canceled);
+          Finish();
+        }
+      } else {
+        sensorLocked = false;
+      }
     }
 
     // Overridden from IONActivity
     protected override void OnResume() {
       base.OnResume();
-
-      InvalidateActivity();
     }
 
     // Overridden from Activity
@@ -248,7 +320,6 @@
           return base.OnMenuItemSelected(featureId, item);
       }
     }
-
 
     // Overridden from IONActivity
     protected async override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
@@ -264,22 +335,20 @@
             var fluid = await ion.fluidManager.GetFluidAsync(fluidName);
             var state = (ptChart == null) ? Fluid.EState.Bubble : ptChart.state;
             ptChart = PTChart.New(ion, state, fluid);
-//          } else {
-//            Error(GetString(Resource.String.fluid_failed_to_load));
           }
           break;
 
         case REQUEST_PRESSURE_SENSOR:
           if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
             var psp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-            pressureSensor = psp.Get(ion);
+            sensor = psp.Get(ion);
           }
           break;
 
         case REQUEST_TEMPERATURE_SENSOR:
           if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
             var tsp = (SensorParcelable)data?.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-            temperatureSensor = tsp.Get(ion);
+            sensor = tsp.Get(ion);
           }
           break;
       }
@@ -300,51 +369,42 @@
       pressureTextWatcher = new Watcher((editable) => {
         var text = editable.ToString();
         try {
-          if ("".Equals(text)) {
-            ClearPressureInput();
-          } else {
-            pressureSensor.onSensorStateChangedEvent -= OnPressureSensorChanged;
-
+          if (!"".Equals(text) && sensor == null) {
             var amount = double.Parse(text);
-            pressureSensor.measurement = pressureSensor.unit.OfScalar(amount);
-
-            pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
-            UpdateTemperatureMeasurement();
+            var temp = ptChart.GetTemperature(pressureUnit.OfScalar(amount)).ConvertTo(temperatureUnit);
+            SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
+          } else {
+            ClearInput();
           }
         } catch (System.Exception e) {
-          Log.D(this, "Failed to resolve pressure input", e);
-          ClearPressureInput();
-          ClearTemperatureInput();
+          ClearInput();
         }
       });
 
       pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
-        if (!(temperatureSensor is GaugeDeviceSensor)) {
+        if (!sensorLocked && !hasTemperatureSensor) {
           var i = new Intent(this, typeof(DeviceManagerActivity));
           i.SetAction(Intent.ActionPick);
-          i.PutExtra(DeviceManagerActivity.EXTRA_SENSOR_TYPES, new int[] { (int)ESensorType.Pressure });
+          i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
           StartActivityForResult(i, REQUEST_PRESSURE_SENSOR);
         }
       }));
 
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!(temperatureSensor is GaugeDeviceSensor)) {
-          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
-          pressureEntryView.Enabled = true;
-          temperatureEntryView.Enabled = true;
-          InvalidateActivity();
-        }
+        sensor = null;
+        ClearInput();
       }));
 
       pressureClearView.SetOnClickListener(new ViewClickAction((view) => {
         ClearInput();
       }));
 
-      pressureUnitView.Text = pressureSensor.unit.ToString();
+      pressureUnitView.Text = pressureUnit.ToString();
       pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-        if (pressureSensor.isEditable) {
-          UnitDialog.Create(this, pressureSensor.supportedUnits, (obj, unit) => {
-            pressureSensor.unit = unit;
+        if (sensor == null || ESensorType.Temperature == sensor.type) {
+          UnitDialog.Create(this, SensorUtils.DEFAULT_PRESSURE_UNITS, (obj, unit) => {
+            pressureUnit = unit;
+            Refresh();
           }).Show();
         }
       }));
@@ -367,51 +427,43 @@
       temperatureTextWatcher = new Watcher((editable) => {
         var text = editable.ToString();
         try {
-          if ("".Equals(text)) {
-            ClearTemperatureInput();
-          } else {
-            temperatureSensor.onSensorStateChangedEvent -= OnTemperatureSensorChanged;
-
+          if (!"".Equals(text)) {
             var amount = double.Parse(text);
-            temperatureSensor.measurement = temperatureSensor.unit.OfScalar(amount);
-
-            temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
-            UpdatePressureMeasurement();
+            var press = ptChart.GetPressure(temperatureUnit.OfScalar(amount)).ConvertTo(pressureUnit);
+            SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
+          } else {
+            ClearInput();
           }
         } catch (System.Exception e) {
           Log.D(this, "Failed to resolve temperature input", e);
-          ClearPressureInput();
-          ClearTemperatureInput();
+          ClearInput();
         }
       });
 
       temperatureAddView.SetOnClickListener(new ViewClickAction((view) => {
-        if (!(pressureSensor is GaugeDeviceSensor)) {
+        if (!sensorLocked && !hasPressureSensor) {
           var i = new Intent(this, typeof(DeviceManagerActivity));
           i.SetAction(Intent.ActionPick);
-          i.PutExtra(DeviceManagerActivity.EXTRA_SENSOR_TYPES, new int[] { (int)ESensorType.Temperature });
+          i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Temperature);
           StartActivityForResult(i, REQUEST_TEMPERATURE_SENSOR);
         }
       }));
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!(pressureSensor is GaugeDeviceSensor)) {
-          temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
-          temperatureEntryView.Enabled = true;
-          pressureEntryView.Enabled = true;
-          InvalidateActivity();
-        }
+        sensor = null;
+        ClearInput();
       }));
 
       temperatureClearView.SetOnClickListener(new ViewClickAction((view) => {
         ClearInput();
       }));
 
-      temperatureUnitView.Text = temperatureSensor.unit.ToString();
+      temperatureUnitView.Text = temperatureUnit.ToString();
       temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-        if (temperatureSensor.isEditable) {
-          UnitDialog.Create(this, temperatureSensor.supportedUnits, (obj, unit) => {
-            temperatureSensor.unit = unit;
+        if (sensor == null || ESensorType.Pressure == sensor.type) {
+          UnitDialog.Create(this, SensorUtils.DEFAULT_TEMPERATURE_UNITS, (obj, unit) => {
+            temperatureUnit = unit;
+            Refresh();
           }).Show();
         }
       }));
@@ -422,113 +474,48 @@
     /// Called when the pressure sensor's state changes.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    private void OnPressureSensorChanged(Sensor sensor) {
-      SynchronizePressureMeasurement(sensor.measurement);
-      UpdateTemperatureMeasurement();
+    private void OnSensorChanged(Sensor sensor) {
+      switch (sensor.type) {
+        case ESensorType.Pressure:
+          var temp = ptChart.GetTemperature(sensor.measurement).ConvertTo(temperatureUnit);
+          SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
+          SetPressureInputQuietly(sensor.ToFormattedString());
+          break;
+
+        case ESensorType.Temperature:
+          var press = ptChart.GetPressure(sensor.measurement).ConvertTo(pressureUnit);
+          SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
+          SetTemperatureInputQuietly(sensor.ToFormattedString());
+          break;
+      }
     }
 
     /// <summary>
-    /// Called when the temperature sensor's state changes.
+    /// Refresh this instance.
     /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    private void OnTemperatureSensorChanged(Sensor sensor) {
-      SynchronizeTemperatureMeasurement(sensor.measurement);
-      UpdatePressureMeasurement();
-    }
-
-    /// <summary>
-    /// Updates the pressure's displayed measurement with the expected pressure at the
-    /// temperature sensor's current measurements
-    /// </summary>
-    private void UpdatePressureMeasurement() {
-      SynchronizePressureMeasurement(ptChart.GetPressure(temperatureSensor.measurement).ConvertTo(pressureSensor.measurement.unit));
-    }
-
-    /// <summary>
-    /// Updates the temperature's displayed measurement with the saturated temperature at the
-    /// pressure sensor's current measurement.
-    /// </summary>
-    private void UpdateTemperatureMeasurement() {
-      SynchronizeTemperatureMeasurement(ptChart.GetTemperature(pressureSensor.measurement).ConvertTo(temperatureSensor.unit));
-    }
-
-    /// <summary>
-    /// Synchronizes the views for the pt chart. Note: this will not actually set the entry text, as we cannot
-    /// determin who is the primary sensor.
-    /// </summary>
-    private void SynchronizeSensorsToViews() {
-      var locked = false;
-      if (pressureSensor is GaugeDeviceSensor) {
-        var ps = pressureSensor as GaugeDeviceSensor;
-        pressureSensorIconView.SetImageBitmap(cache.GetBitmap(ps.device.GetDeviceIcon()));
-        locked = true;
+    private void Refresh() {
+      if (sensor != null) {
+        OnSensorChanged(sensor);
+        pressureEntryView.Enabled = false;
+        temperatureEntryView.Enabled = false;
       } else {
-        if (temperatureSensor is GaugeDeviceSensor) {
-          pressureSensorIconView.Visibility = ViewStates.Invisible;
-        } else {
-          pressureSensorIconView.Visibility = ViewStates.Visible;
-          pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
-        }
+        ClearInput();
+        pressureEntryView.Enabled = true;
+        temperatureEntryView.Enabled = true;
+
+        pressureSensorIconView.Visibility = ViewStates.Visible;
+        temperatureSensorIconView.Visibility = ViewStates.Visible;
       }
 
-      if (temperatureSensor is GaugeDeviceSensor) {
-        var ts = temperatureSensor as GaugeDeviceSensor;
-        temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(ts.device.GetDeviceIcon()));
-        locked = true;
-      } else {
-        if (pressureSensor is GaugeDeviceSensor) {
-          temperatureSensorIconView.Visibility = ViewStates.Invisible;
-        } else {
-          temperatureSensorIconView.Visibility = ViewStates.Visible;
-          temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
-        }
-      }
-
-      if (locked) {
-        pressureLockIconView.Visibility = ViewStates.Visible;
-        temperatureLockIconView.Visibility = ViewStates.Visible;
-      } else {
-        pressureLockIconView.Visibility = ViewStates.Invisible;
-        temperatureLockIconView.Visibility = ViewStates.Invisible;
-      }
-
-      pressureEntryView.Enabled = !locked && pressureSensor.isEditable;
-      temperatureEntryView.Enabled = !locked && temperatureSensor.isEditable;
-    }
-
-    private void SynchronizePressureMeasurement(Scalar measurement) {
-      SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, measurement));
-      pressureUnitView.Text = measurement.unit.ToString();
-    }
-
-    /// <summary>
-    /// Synchronizes the UI with the given temperature measurement.
-    /// </summary>
-    /// <param name="measurement">Measurement.</param>
-    private void SynchronizeTemperatureMeasurement(Scalar measurement) {
-      SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, measurement));
-      temperatureUnitView.Text = measurement.unit.ToString();
+      pressureUnitView.Text = pressureUnit.ToString();
+      temperatureUnitView.Text = temperatureUnit.ToString();
     }
 
     /// <summary>
     /// Clears the input to the pressure and temperature entries.
     /// </summary>
     private void ClearInput() {
-      ClearPressureInput();
-      ClearTemperatureInput();
-    }
-
-    /// <summary>
-    /// Clears the text form the pressure entry view.
-    /// </summary>
-    private void ClearPressureInput() {
       SetPressureInputQuietly("");
-    }
-
-    /// <summary>
-    /// Clears the text from the temperature entry view.
-    /// </summary>
-    private void ClearTemperatureInput() {
       SetTemperatureInputQuietly("");
     }
 
@@ -554,31 +541,6 @@
       temperatureEntryView.Text = text;
 
       temperatureEntryView.AddTextChangedListener(temperatureTextWatcher);
-    }
-
-    /// <summary>
-    /// Invalidates and updates the views for the activity.
-    /// </summary>
-    private void InvalidateActivity() {
-      switch (ptChart.state) {
-        case Fluid.EState.Bubble:
-          fluidPhaseToggleView.Checked = true;
-          break;
-        case Fluid.EState.Dew:
-          fluidPhaseToggleView.Checked = false;
-          break;
-      }
-
-      SynchronizeSensorsToViews();
-
-      if (pressureSensor is GaugeDeviceSensor) {
-        UpdateTemperatureMeasurement();
-      } else if (temperatureSensor is GaugeDeviceSensor) {
-        UpdateTemperatureMeasurement();
-      } else {
-        ClearPressureInput();
-        ClearTemperatureInput();
-      }
     }
 
     /// <summary>

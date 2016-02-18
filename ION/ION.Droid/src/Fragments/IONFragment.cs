@@ -207,6 +207,22 @@
     }
 
     /// <summary>
+    /// Toasts the given message.
+    /// </summary>
+    /// <param name="stringResource">String resource.</param>
+    public void Alert(int stringResource) {
+      Alert(GetString(stringResource));
+    }
+
+    /// <summary>
+    /// Toasts the given message.
+    /// </summary>
+    /// <param name="message">Message.</param>
+    public void Alert(string message) {
+      Toast.MakeText(Activity, message, ToastLength.Short).Show();
+    }
+
+    /// <summary>
     /// Displays and error toast to the user.
     /// </summary>
     /// <param name="message">Message.</param>

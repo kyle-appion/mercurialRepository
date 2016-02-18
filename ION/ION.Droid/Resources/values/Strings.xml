@@ -99,11 +99,14 @@
   FLUIDS
   -->
   <string name="fluid_bubble">Bubble</string>
+  <string name="fluid_bubble_abrv">P/T bub</string>
   <string name="fluid_dew">Dew</string>
+  <string name="fluid_dew_abrv">P/T dew</string>
   <string name="fluid_failed_to_load">Failed to load fluid</string>
   <string name="fluid_empty_library">The ION application failed to load any refrigerants. Please contact Appion for more details.</string>
   <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
+  <string name="fluid_pt_abrv">P/T</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
 
   <!--
@@ -143,6 +146,8 @@
   <!--
   SUPERHEAT / SUBCOOL
   -->
+  <string name="sc">Subcool</string>
+  <string name="sh">Superheat</string>
   <string name="shsc">Superheat / Subcool</string>
 
   <!--
@@ -163,7 +168,6 @@
   <string name="workbench_timer">Time Tracker</string>
   <string name="workbench_timer_abrv">TIMER</string>
   <string name="workbench_ptchart">Pressure Temperature Chart</string>
-  <string name="workbench_ptchart_abrv">P/T</string>
   <string name="workbench_roc">Rate of Change</string>
   <string name="workbench_roc_abrv">RoC</string>
   <string name="workbench_shsc">Alternate Unit</string>

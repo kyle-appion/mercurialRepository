@@ -1,10 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.TestFixtures.Connections {
 
-using ION.Core.Connections;
+  using System;
+  using System.Threading.Tasks;
 
-/*
-namespace ION.TestsFixtures.Connections {
+  using ION.Core.Connections;
+
   public class MockConnection : IConnection {
     private static int INSTANCE_COUNT = 0;
 
@@ -31,6 +31,7 @@ namespace ION.TestsFixtures.Connections {
     public string name { get { return "MockConnection: " + id; } }
     // Overridden from IConnection
     public string address { get { return string.Format("{0:0000}", id); } }
+    public ESignalStrength signalStrength { get { return ESignalStrength.Fair; } }
     // Overridden from IConnection
     public int rssi { get { return 0; } }
     // Overridden from IConnection
@@ -76,5 +77,3 @@ namespace ION.TestsFixtures.Connections {
     }
   }
 }
-
-*/

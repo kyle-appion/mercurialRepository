@@ -1,6 +1,9 @@
 ﻿namespace ION.Droid.Sensors {
 
+  using System;
+
   using ION.Core.App;
+  using ION.Core.Devices;
   using ION.Core.Sensors;
 
   using ION.Droid.App;
@@ -28,6 +31,21 @@
           return c.GetString(Resource.String.measurement_temperature);
         default:
           return c.GetString(Resource.String.measurement_unknown);
+      }
+    }
+
+    /// <summary>
+    /// Converts the sensor to a sensor parcelable
+    /// </summary>
+    /// <returns>The parcelable.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public static SensorParcelable ToParcelable(this Sensor sensor) {
+      if (sensor is GaugeDeviceSensor) {
+        return new GaugeDeviceSensorParcelable(sensor as GaugeDeviceSensor);
+      } else if (sensor is ManualSensor) {
+        return new ManualSensorParcelable(sensor as ManualSensor);
+      } else {
+        throw new Exception("Cannot get sensor parcelable for sensor: " + sensor);
       }
     }
   }

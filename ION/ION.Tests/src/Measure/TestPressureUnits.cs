@@ -19,9 +19,7 @@ namespace ION.TestFixtures.Measure {
     private static readonly Unit KGCM = Units.Pressure.KG_CM;
     private static readonly Unit PSIG = Units.Pressure.PSIG;
     private static readonly Unit PSIA = Units.Pressure.PSIA;
-    private static readonly Unit TORR = Units.Vacuum.TORR;
-    private static readonly Unit MILLITORR = Units.Vacuum.MILLITORR;
-    private static readonly Unit MICRON = Units.Vacuum.MICRON;
+
 
     private static readonly double EPSILON = 0.01;
     private void AssertEquals(double expected, double received) {
@@ -126,36 +124,6 @@ namespace ION.TestFixtures.Measure {
     [Test]
     public void TestPascalToPSIG() {
       AssertEquals(10, PA.OfScalar(170272.573022).ConvertTo(PSIG).amount);
-    }
-
-    [Test]
-    public void TestTorrToPascal() {
-      AssertEquals(1333.22368, TORR.OfScalar(10).ConvertTo(PA).amount);
-    }
-
-    [Test]
-    public void TestPascalToTorr() {
-      AssertEquals(10, PA.OfScalar(1333.22368).ConvertTo(TORR).amount);
-    }
-
-    [Test]
-    public void TestMTorrToPascal() {
-      AssertEquals(1.3332237, MILLITORR.OfScalar(10).ConvertTo(PA).amount);
-    }
-
-    [Test]
-    public void TestPascalToMTorr() {
-      AssertEquals(10, PA.OfScalar(1.3332237).ConvertTo(MILLITORR).amount);
-    }
-
-    [Test]
-    public void TestMicronToPascal() {
-      AssertEquals(1.3332237, MICRON.OfScalar(10).ConvertTo(PA).amount);
-    }
-
-    [Test]
-    public void TestPascalToMicron() {
-      AssertEquals(10, PA.OfScalar(1.3332237).ConvertTo(MICRON).amount);
     }
 
     [Test]
