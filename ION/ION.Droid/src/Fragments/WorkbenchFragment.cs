@@ -117,8 +117,12 @@
       adapter.onSensorPropertyClicked += (manifold, sensorProperty) => {
         var sensor = sensorProperty.sensor;
 
-
-        if (sensorProperty is PTChartSensorProperty) {
+        if (sensorProperty is AlternateUnitSensorProperty) {
+          var asp = sensorProperty as AlternateUnitSensorProperty;
+          UnitDialog.Create(Activity, sensor.supportedUnits, (obj, u) => {
+            asp.unit = u;
+          }).Show();
+        } else if (sensorProperty is PTChartSensorProperty) {
           var pt = ((PTChartSensorProperty)sensorProperty);
           var i = new Intent(Activity, typeof(PTChartActivity));
           i.SetAction(Intent.ActionPick);
@@ -232,7 +236,7 @@
       }
 
       ldb.AddItem(Resource.String.rename, () => {
-        Toast.MakeText(Activity, "Rename up in this bitch", ToastLength.Short).Show();
+        new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
 
