@@ -215,9 +215,11 @@
         if (value is GaugeDeviceSensor) {
           pressureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
           pressureEntryView.Enabled = false;
+          pressureClearView.Visibility = ViewStates.Gone;
         } else {
           pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
           pressureEntryView.Enabled = isPressureLocked;
+          pressureClearView.Visibility = ViewStates.Visible;
         }
       }
     } Sensor __pressureSensor;
@@ -246,9 +248,11 @@
         if (value is GaugeDeviceSensor) {
           temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
           temperatureEntryView.Enabled = false;
+          temperatureClearView.Visibility = ViewStates.Gone;
         } else {
           temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
           temperatureEntryView.Enabled = isTemperatureLocked;
+          temperatureClearView.Visibility = ViewStates.Visible;
         }
       }
     } Sensor __temperatureSensor;
@@ -461,7 +465,6 @@
         if (!isPressureLocked) {
           pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           pressureEntryView.Enabled = true;
-          temperatureEntryView.Enabled = true;
         }
       }));
 
@@ -528,10 +531,9 @@
       }));
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!(pressureSensor is GaugeDeviceSensor)) {
+        if (!isTemperatureLocked) {
           temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureEntryView.Enabled = true;
-          pressureEntryView.Enabled = true;
         }
       }));
 
@@ -604,11 +606,11 @@
 
       switch (ptChart.state) {
         case Fluid.EState.Bubble:
-          fluidStateTextView.Text = GetString(Resource.String.sc);
+          fluidStateTextView.Text = GetString(Resource.String.fluid_sc_abrv);
           fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.red)));          
           break;
         case Fluid.EState.Dew:
-          fluidStateTextView.Text = GetString(Resource.String.sh);
+          fluidStateTextView.Text = GetString(Resource.String.fluid_sh_abrv);
           fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.blue)));
           break;
       }
