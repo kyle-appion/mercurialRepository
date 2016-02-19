@@ -214,9 +214,14 @@
               pressureSensorIconView.Visibility = ViewStates.Invisible;
               break;
           }
+
+          pressureClearView.Visibility = ViewStates.Gone;
+          temperatureClearView.Visibility = ViewStates.Gone;
         } else {
           pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
           temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
+          pressureClearView.Visibility = ViewStates.Visible;
+          temperatureClearView.Visibility = ViewStates.Visible;
         }
 
         Refresh();
@@ -302,6 +307,8 @@
       } else {
         sensorLocked = false;
       }
+
+      ;
     }
 
     // Overridden from IONActivity
@@ -391,8 +398,10 @@
       }));
 
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        sensor = null;
-        ClearInput();
+        if (!sensorLocked) {
+          sensor = null;
+          ClearInput();
+        }
       }));
 
       pressureClearView.SetOnClickListener(new ViewClickAction((view) => {
@@ -450,8 +459,10 @@
       }));
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        sensor = null;
-        ClearInput();
+        if (!sensorLocked) {
+          sensor = null;
+          ClearInput();
+        }
       }));
 
       temperatureClearView.SetOnClickListener(new ViewClickAction((view) => {

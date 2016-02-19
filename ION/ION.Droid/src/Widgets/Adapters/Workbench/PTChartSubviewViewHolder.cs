@@ -8,7 +8,7 @@
 
   using ION.Droid.Widgets.Templates;
 
-  class PTChartSubviewRecord : WorkbenchRecord<PTChartSensorProperty> {
+  class PTChartSubviewRecord : SensorPropertyRecord<PTChartSensorProperty> {
     public PTChartSubviewRecord(PTChartSensorProperty sp) : base(EViewType.PTChartSubview, sp) {
     }
   }

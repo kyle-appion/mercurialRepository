@@ -35,6 +35,7 @@
     /// </summary>
     private const int REQUEST_SENSOR = 1;
     private const int REQUEST_SHOW_PTCHART = 2;
+    private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = 3;
 
     /// <summary>
     /// The workbench that the fragment is currently working with.
@@ -114,17 +115,46 @@
       };
 
       adapter.onSensorPropertyClicked += (manifold, sensorProperty) => {
+        var sensor = sensorProperty.sensor;
+
+
         if (sensorProperty is PTChartSensorProperty) {
           var pt = ((PTChartSensorProperty)sensorProperty);
           var i = new Intent(Activity, typeof(PTChartActivity));
           i.SetAction(Intent.ActionPick);
-          i.PutExtra(PTChartActivity.EXTRA_SENSOR, pt.sensor.ToParcelable());
+          i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
           StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+        } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
+          var sp = sensorProperty as SuperheatSubcoolSensorProperty;
+          var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
+          i.SetAction(Intent.ActionPick);
+
+          switch (sensor.type) {
+            case ESensorType.Pressure:
+              i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+              if (manifold.secondarySensor != null) {
+                i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+              }
+              break;
+            case ESensorType.Temperature:
+              i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+              if (manifold.secondarySensor != null) {
+                i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+              }
+              break;
+            default:
+              var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
+              Log.E(this, msg);
+              Alert(msg);
+              break;
+          }
+
+          StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
         }
       };
 
-      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
-      itemTouchHelper.AttachToRecyclerView(list);
+//      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
+//      itemTouchHelper.AttachToRecyclerView(list);
     }
 
     /// <Docs>The integer request code originally supplied to

@@ -152,9 +152,10 @@
     <Compile Include="src\Views\ViewCheckChangedAction.cs" />
     <Compile Include="src\Widgets\Templates\PTChartSubviewTemplate.cs" />
     <Compile Include="src\Widgets\Templates\SuperheatSubcoolSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\ManifoldViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\PTChartSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\MeasurementViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\SuperheatSubcoolSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\ManifoldSubviewViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

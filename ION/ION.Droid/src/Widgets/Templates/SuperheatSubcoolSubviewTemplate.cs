@@ -2,9 +2,11 @@
   
   using System;
 
+  using Android.Graphics;
   using Android.Views;
   using Android.Widget;
 
+  using ION.Core.Fluids;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
@@ -20,7 +22,7 @@
   ///   View          | Resource.Id.view
   ///   TextView      | Resource.Id.measurement
   /// </code>
-  public class SuperheatSubcoolSubviewTemplate : ViewTemplate<PTChartSensorProperty> {
+  public class SuperheatSubcoolSubviewTemplate : ViewTemplate<SuperheatSubcoolSensorProperty> {
     private TextView title;
     private TextView fluid;
     private View divider;
@@ -37,7 +39,7 @@
     /// Binds the view template to the given data.
     /// </summary>
     /// <param name="t">T.</param>
-    protected override void OnBind(PTChartSensorProperty t) {
+    protected override void OnBind(SuperheatSubcoolSensorProperty t) {
       t.onSensorPropertyChanged += OnSensorPropertyChanged;
     }
 
@@ -45,16 +47,36 @@
     /// Invalidates the view within the template.
     /// </summary>
     public override void Invalidate() {
-      title.Text = parentView.Context.GetString(Resource.String.fluid_pt_abrv);
-      fluid.Text = item.manifold.ptChart.fluid.name;
+      Func<int, string> GetString = parentView.Context.GetString;
+      var pt = item.manifold.ptChart;
 
-      switch (item.sensor.type) {
-        case ESensorType.Pressure:
-          measurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, item.modifiedMeasurement);
-          break;
-        case ESensorType.Temperature:
-          measurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, item.modifiedMeasurement);
-          break;
+      if (pt.fluid.mixture) {
+        switch (pt.state) {
+          case Fluid.EState.Bubble:
+            title.Text = GetString(Resource.String.fluid_sh_abrv);
+            break;
+          case Fluid.EState.Dew:
+            break;
+        }
+      } else {
+        title.Text = "^_^";
+      }
+
+      fluid.Text = pt.fluid.name;
+      fluid.SetBackgroundColor(new Color(pt.fluid.color));
+
+      if (item.manifold.secondarySensor != null) {
+        switch (item.sensor.type) {
+          case ESensorType.Pressure:
+            measurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, item.modifiedMeasurement);
+            break;
+          case ESensorType.Temperature:
+            measurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, item.modifiedMeasurement);
+            break;
+        }
+      } else {
+        title.Text = GetString(Resource.String.fluid_sh_sc);
+        measurement.Text = parentView.Context.GetString(Resource.String.fluid_setup);
       }
     }
 

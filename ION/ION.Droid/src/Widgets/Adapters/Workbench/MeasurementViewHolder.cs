@@ -10,15 +10,15 @@
   using ION.Droid.Util;
   using ION.Droid.Widgets.Templates;
 
-  class MeasurementRecord : WorkbenchRecord<ISensorProperty> {
+  class MeasurementRecord : SensorPropertyRecord<ISensorProperty> {
     public MeasurementRecord(ISensorProperty sp) : base(EViewType.MeasurementSubview, sp) {
     }
   }
 
-  class MeasurementViewHolder : WorkbenchViewHolder<MeasurementRecord> {
+  class MeasurementSubviewViewHolder : WorkbenchViewHolder<MeasurementRecord> {
     private MeasurementSubviewTemplate template;
 
-    public MeasurementViewHolder(View view, BitmapCache cache) : base(view) {
+    public MeasurementSubviewViewHolder(View view, BitmapCache cache) : base(view) {
       template = new MeasurementSubviewTemplate(view, cache);
     }
 

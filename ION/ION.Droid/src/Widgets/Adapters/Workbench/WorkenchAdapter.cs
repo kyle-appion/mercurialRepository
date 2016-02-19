@@ -96,9 +96,11 @@
         case EViewType.Space:
           return new SpaceViewHolder(li.Inflate(Resource.Layout.list_item_space, parent, false));
         case EViewType.MeasurementSubview:
-          return new MeasurementViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
+          return new MeasurementSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
         case EViewType.PTChartSubview:
           return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
+        case EViewType.SuperheatSubcoolSubview:
+          return new SuperheatSubcoolSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -109,80 +111,47 @@
       var viewType = GetItemViewType(position);
       var record = records[position];
 
-      switch ((EViewType)viewType) {
-        case EViewType.Footer:
-          (holder as FooterViewHolder)?.BindTo(record as FooterRecord);
-          break;
+      if (record is SensorPropertyRecord) {
+        BuildSensorPropertyViewHolder(holder, position);
+      } else {
+        switch ((EViewType)viewType) {
+          case EViewType.Footer:
+            (holder as FooterViewHolder)?.BindTo(record as FooterRecord);
+            break;
 
-        case EViewType.Manifold:
-          var vr = records[position] as ManifoldRecord;
+          case EViewType.Manifold:
+            var vr = records[position] as ManifoldRecord;
 
-          if (vr != null) {
-            (holder as ManifoldViewHolder)?.BindTo(vr);
-          }
-
-          holder.ItemView.Click += (object sender, EventArgs e) => {
-            if (onManifoldClicked != null) {
-              onManifoldClicked(vr.item);
+            if (vr != null) {
+              (holder as ManifoldViewHolder)?.BindTo(vr);
             }
-          };
 
-          break;
+            holder.ItemView.Click += (object sender, EventArgs e) => {
+              if (onManifoldClicked != null) {
+                onManifoldClicked(vr.item);
+              }
+            };
 
-        case EViewType.Space:
-          var sr = records[position] as SpaceRecord;
+            break;
 
-          if (sr != null) {
-            (holder as SpaceViewHolder)?.BindTo(sr);  
-          }
+          case EViewType.Space:
+            var sr = records[position] as SpaceRecord;
 
-          break;
-
-        case EViewType.MeasurementSubview:
-          var mr = records[position] as MeasurementRecord;
-
-          if (mr != null) {
-            (holder as MeasurementViewHolder)?.BindTo(mr);
-          }
-/*
-          holder.ItemView.Click += (object sender, EventArgs e) => {
-            if (onManifoldClicked != null) {
-              onSensorPropertyClicked(mr.item);
+            if (sr != null) {
+              (holder as SpaceViewHolder)?.BindTo(sr);  
             }
-          };
-*/
 
-          break;
+            break;
 
-        case EViewType.PTChartSubview:
-          var pr = record as PTChartSubviewRecord;
-          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
-/*
-          holder.ItemView.Click += (object sender, EventArgs e) => {
-            if (onManifoldClicked != null) {
-              onSensorPropertyClicked(mr.item);
-            }
-          };
-*/
-          break;
-
-        default:
-          throw new Exception("Unknown view type: " + viewType);
-      }
-
-      var touchHelper = new TouchListenerHelper(holder);
-      touchHelper.dragStartListener = dragListener;
-      touchHelper.swipeStartListener = swipeListener;
-      holder.ItemView.SetOnTouchListener(touchHelper);
-/*
-      holder.ItemView.Click += (object sender, EventArgs e) => {
-        if (record is ManifoldRecord) {
-          if (onManifoldClicked != null) {
-            onManifoldClicked(((ManifoldRecord)record).item);
-          }
+          default:
+            throw new Exception("Unknown view type: " + viewType);
         }
-      };
-*/
+
+        var touchHelper = new TouchListenerHelper(holder);
+        touchHelper.dragStartListener = dragListener;
+        touchHelper.swipeStartListener = swipeListener;
+        holder.ItemView.SetOnTouchListener(touchHelper);
+      }
     }
 
     // Overridden from RecyclerView.Adapter
@@ -312,9 +281,44 @@
 
     // Overridden from IItemTouchHelperAdapter
     public void OnItemDismiss(int position) {
+/*
       records.RemoveAt(position);
 
       NotifyItemRemoved(position);
+*/
+    }
+
+    private void BuildSensorPropertyViewHolder(RecyclerView.ViewHolder holder, int position) {
+      var viewType = GetItemViewType(position);
+      var record = records[position] as SensorPropertyRecord;
+
+      switch ((EViewType)viewType) {
+        case EViewType.MeasurementSubview:
+          var mr = records[position] as MeasurementRecord;
+          (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
+          if (mr != null) {
+            (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
+          }
+          break;
+
+        case EViewType.PTChartSubview:
+          var pr = record as PTChartSubviewRecord;
+          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
+          break;
+
+        case EViewType.SuperheatSubcoolSubview:
+          var shr = record as SuperheatSubcoolSubviewRecord;
+          (holder as SuperheatSubcoolSubviewViewHolder)?.BindTo(shr);
+
+          break;
+      }
+
+      holder.ItemView.Click += (sender, e) => {
+        var manifold = FindManifoldAtIndex(position);
+        if (manifold != null && onSensorPropertyClicked != null) {
+          onSensorPropertyClicked(manifold, record.sensorProperty);
+        }
+      };
     }
 
     /// <summary>
@@ -335,6 +339,28 @@
     }
 
     /// <summary>
+    /// Attempts to find the manifold at the given index. If a manifold cannot be found using the given index, we will
+    /// return null. To find a manifold, we will look at the contents of the adapter. If the index is a sensor property,
+    /// we will walk backwards until we find a manifold. If the the index is a manifold, obviously we will return it.
+    /// If the index is anything else, we will return null.
+    /// </summary>
+    /// <returns>The manifold at index.</returns>
+    /// <param name="index">Index.</param>
+    private Manifold FindManifoldAtIndex(int index) {
+      var record = records[index];
+
+      if (index < 0) {
+        return null;
+      } else if (record is ManifoldRecord) {
+        return ((ManifoldRecord)record).item;
+      } else if (record is SensorPropertyRecord) {
+        return FindManifoldAtIndex(index - 1);
+      } else {
+        return null;
+      }
+    }
+
+    /// <summary>
     /// Creates the record for the given sensor property.
     /// </summary>
     /// <returns>The sensor property record.</returns>
@@ -342,6 +368,8 @@
     private IRecord CreateSensorPropertyRecord(ISensorProperty sp) {
       if (sp is PTChartSensorProperty) {
         return new PTChartSubviewRecord(sp as PTChartSensorProperty);
+      } else if (sp is SuperheatSubcoolSensorProperty) {
+        return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
       } else {
         return new MeasurementRecord(sp);
       }
@@ -357,6 +385,7 @@
     Space,
     MeasurementSubview,
     PTChartSubview,
+    SuperheatSubcoolSubview,
   }
 
   /// <summary>
@@ -373,6 +402,24 @@
 
     public WorkbenchRecord(EViewType viewType, T item) {
       this.viewType = viewType;
+      this.item = item;
+    }
+  }
+
+  class SensorPropertyRecord : IRecord {
+    public EViewType viewType { get; private set; }
+    public ISensorProperty sensorProperty { get; private set; }
+
+    public SensorPropertyRecord(EViewType viewType, ISensorProperty sensorProperty) {
+      this.viewType = viewType;
+      this.sensorProperty = sensorProperty;
+    }
+  }
+
+  class SensorPropertyRecord<T> : SensorPropertyRecord where T : ISensorProperty {
+    public T item;
+
+    public SensorPropertyRecord(EViewType viewType, T item) : base(viewType, item) {
       this.item = item;
     }
   }

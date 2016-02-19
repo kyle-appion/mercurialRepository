@@ -108,6 +108,13 @@
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
+  <string name="fluid_setup">Setup</string>
+  <string name="fluid_sc">Subcool</string>
+  <string name="fluid_sc_abrv">S/C</string>
+  <string name="fluid_sh">Superheat</string>
+  <string name="fluid_sh_sc">S/H S/C</string>
+  <string name="fluid_sh_abrv">S/H</string>
+  
 
   <!--
   MANIFOLD
@@ -144,19 +151,11 @@
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
 
   <!--
-  SUPERHEAT / SUBCOOL
-  -->
-  <string name="sc">Subcool</string>
-  <string name="sh">Superheat</string>
-  <string name="shsc">Superheat / Subcool</string>
-
-  <!--
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>
   <string name="workbench_add_viewer">Add New Viewer</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
-
   <string name="workbench_alt">Alternate Unit</string>
   <string name="workbench_alt_abrv">ALT</string>
   <string name="workbench_hold">Hold Reading</string>
@@ -170,7 +169,7 @@
   <string name="workbench_ptchart">Pressure Temperature Chart</string>
   <string name="workbench_roc">Rate of Change</string>
   <string name="workbench_roc_abrv">RoC</string>
-  <string name="workbench_shsc">Alternate Unit</string>
+  <string name="workbench_shsc">Superheat / Subcool</string>
   <string name="workbench_shsc_abrv">S/H S/C</string>
   
 </resources>
