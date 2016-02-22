@@ -84,14 +84,10 @@ namespace ION.Core.Sensors.Properties {
 
             foreach (var p in history) {
               tc += p.rise;
-              ION.Core.Util.Log.D(this, "TC: " + tc + " p.rise: " + p.rise);
             }
 
             ret.change = baseUnit.OfScalar(tc / history.Count);
             ret.rate = TimeSpan.FromMilliseconds((history.Last.Value.time - history.First.Value.time) / history.Count);
-
-            ION.Core.Util.Log.D(this, "tc: " + tc + " change is: " + ret.change + " rate is: " + ret.rate.TotalMilliseconds + " count is: " + history.Count);
-
 
             return ret;
           } else {
@@ -140,7 +136,6 @@ namespace ION.Core.Sensors.Properties {
             var b = scalar.ConvertTo(baseUnit).amount; 
             var rise = b - lastAmount;
             history.AddLast(new Point(Now(), rise));
-            ION.Core.Util.Log.D(this, "Rise: " + rise);
             lastAmount = b;
           }
         }
