@@ -6,7 +6,7 @@ using ION.Core.Measure;
 namespace ION.Core.Sensors.Properties {
   public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
-    private const long MAX_PLOT_LIFE = 5 * 1000;
+    private const long MAX_PLOT_LIFE = 1 * 1000;
 
     /// <summary>
     /// The measurement of the rate of change property. Getting this property will
@@ -18,10 +18,9 @@ namespace ION.Core.Sensors.Properties {
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
       get {
-        tracker.Add(sensor.measurement);
         var roc = tracker.rateOfChange;
 
-        var ret = sensor.unit.OfScalar(roc.change.amount * 60000 / roc.rate.TotalMilliseconds);
+        var ret = roc.change.unit.OfScalar(roc.change.amount * 60000 / roc.rate.TotalMilliseconds);
 
         if (ret.Abs().amount <= 0.001) {
           ret = tracker.baseUnit.OfScalar(0);
@@ -30,7 +29,6 @@ namespace ION.Core.Sensors.Properties {
         return ret.ConvertTo(sensor.unit);
       }
       protected set {
-        tracker.Add(value);
         NotifyChanged();
       }
     }
@@ -62,6 +60,13 @@ namespace ION.Core.Sensors.Properties {
       }
       NotifyChanged();
     }
+
+    /// <summary>
+    /// Called when the sensor property changes.
+    /// </summary>
+    protected override void OnSensorChanged() {
+      tracker.Add(sensor.measurement);
+    }
   }
 
   public class RateOfChange {
@@ -74,21 +79,24 @@ namespace ION.Core.Sensors.Properties {
 
           Delta ret = new Delta(TimeSpan.FromMilliseconds(0), baseUnit.OfScalar(0)); 
 
-          var newest = history.Last;
-          var oldest = history.First;
+          if (history.Count >= 2) {
+            var tc = 0.0;
 
-          if (newest != null && oldest != null && newest.Value != null && oldest.Value != null) { 
-            ION.Core.Util.Log.D(this, "Time: " + (newest.Value.time - oldest.Value.time).TotalMilliseconds);
-            ret = new Delta(newest.Value.time - oldest.Value.time, baseUnit.OfScalar(newest.Value.rise - oldest.Value.rise));
+            foreach (var p in history) {
+              tc += p.rise;
+              ION.Core.Util.Log.D(this, "TC: " + tc + " p.rise: " + p.rise);
+            }
+
+            ret.change = baseUnit.OfScalar(tc / history.Count);
+            ret.rate = TimeSpan.FromMilliseconds((history.Last.Value.time - history.First.Value.time) / history.Count);
+
+            ION.Core.Util.Log.D(this, "tc: " + tc + " change is: " + ret.change + " rate is: " + ret.rate.TotalMilliseconds + " count is: " + history.Count);
+
+
+            return ret;
           } else {
-            ret = new Delta(TimeSpan.FromMilliseconds(1), baseUnit.OfScalar(0));
+            return new Delta(TimeSpan.FromMilliseconds(0), baseUnit.OfScalar(0));
           }
-
-          if (ret.rate.Milliseconds == 0) {
-            ret.rate = TimeSpan.FromMilliseconds(1);
-          }
-
-          return ret;
         }
       }
     }
@@ -107,10 +115,13 @@ namespace ION.Core.Sensors.Properties {
     public Unit baseUnit { get; private set; }
     private DateTime lastAdd { get; set; }
 
+    private double lastAmount;
+
     public RateOfChange(Unit baseUnit) {
       history = new LinkedList<Point>();
       this.baseUnit = baseUnit.standardUnit;
       window = TimeSpan.FromMilliseconds(1000);
+      lastAmount = 0;
     }
 
     /// <summary>
@@ -120,10 +131,18 @@ namespace ION.Core.Sensors.Properties {
     public void Add(Scalar scalar) {
       if (scalar.CompatibleWith(baseUnit.quantity)) {
         lock (this) {
-//          if (DateTime.Now - lastAdd > DELAY) {
-            var b = scalar.ConvertTo(baseUnit); 
-            history.AddLast(new Point(DateTime.Now, b.amount));
-//          }
+
+          if (scalar.amount == 0 && lastAmount == 0) {
+            var b = scalar.ConvertTo(baseUnit).amount; 
+            history.AddLast(new Point(Now(), 0));
+            lastAmount = b;
+          } else {
+            var b = scalar.ConvertTo(baseUnit).amount; 
+            var rise = b - lastAmount;
+            history.AddLast(new Point(Now(), rise));
+            ION.Core.Util.Log.D(this, "Rise: " + rise);
+            lastAmount = b;
+          }
         }
       }
     }
@@ -141,10 +160,14 @@ namespace ION.Core.Sensors.Properties {
     /// </summary>
     private void Prune() {
       lock (this) {
-        while (history.Count > 1 && history.Last.Value.time - history.First.Value.time > window) {
+        while (history.Count > 0 && Now() - history.First.Value.time > window.TotalMilliseconds) {
           history.RemoveFirst();
         }
       }
+    }
+
+    private long Now() {
+      return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
     }
   }
 
@@ -159,14 +182,20 @@ namespace ION.Core.Sensors.Properties {
   }
 
   internal class Point {
-    public DateTime time;
+    /// <summary>
+    /// The time in milliseconds
+    /// </summary>
+    public long time;
+    /// <summary>
+    /// The rise in increments of baseUnit.
+    /// </summary>
     public double rise;
 
-    public Point(DateTime time, double rise) {
+    public Point(long time, double rise) {
       Set(time, rise);
     }
 
-    public Point Set(DateTime time, double rise) {
+    public Point Set(long time, double rise) {
       this.time = time;
       this.rise = rise;
       return this;
