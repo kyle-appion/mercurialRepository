@@ -69,12 +69,12 @@ namespace ION.Core.Sensors.Properties {
     public AbstractSensorProperty(Sensor sensor) {
       this.sensor = sensor;
       Reset();
-      this.sensor.onSensorStateChangedEvent += OnSensorChangedDelegate;
+      this.sensor.onSensorStateChangedEvent += SensorChangeEvent;
     }
 
     // Overridden from ISensorProperty
     public void Dispose() {
-      sensor.onSensorStateChangedEvent -= OnSensorChangedDelegate;
+      sensor.onSensorStateChangedEvent -= SensorChangeEvent;
     }
 
     // Overridden from ISensorProperty
@@ -93,12 +93,21 @@ namespace ION.Core.Sensors.Properties {
     }
 
     /// <summary>
+    /// Called when the sensor property changes
+    /// </summary>
+    protected virtual void OnSensorChanged() {
+    }
+
+    /// <summary>
     /// The callback that will set the sensor's modified measurement to the
     /// sensor's new reading.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    private void OnSensorChangedDelegate(Sensor sensor) {
+    private void SensorChangeEvent(Sensor sensor) {
       modifiedMeasurement = sensor.measurement;
+
+      OnSensorChanged();
+
       NotifyChanged();
     }
 /*
