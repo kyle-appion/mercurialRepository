@@ -51,8 +51,22 @@ namespace ION.Core.Sensors.Properties {
 
     // Overridden from AbstractSensorProperty
     public override void Reset() {
+      startTime = DateTime.Now;
       ellapsedTime = TimeSpan.FromMilliseconds(0);
+      NotifyChanged();
+    }
 
+    /// <summary>
+    /// Toggles whether or not the timer is running. Returns true if the toggles started the timer.
+    /// </summary>
+    public bool Toggle() {
+      if (isStarted) {
+        Stop();
+      } else {
+        Start();
+      }
+
+      return isStarted;
     }
 
     public void Start() {

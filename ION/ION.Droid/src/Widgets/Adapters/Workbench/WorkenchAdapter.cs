@@ -2,6 +2,7 @@
 
   using System;
   using System.Collections.ObjectModel;
+  using System.Threading.Tasks;
 
   using Android.App;
   using Android.Content;
@@ -43,16 +44,6 @@
         return records.Count;
       }
     }
-
-    /// <summary>
-    /// The drag listener that will be used to start the adapter dragging.
-    /// </summary>
-    public IOnStartDragListener dragListener { get; set; }
-    /// <summary>
-    /// The listener that will be used to start swipe actings
-    /// </summary>
-    /// <value>The swipe listener.</value>
-    public IOnStartSwipeListener swipeListener { get; set; }
 
     /// <summary>
     /// The current ION instance.
@@ -101,6 +92,10 @@
           return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
         case EViewType.SuperheatSubcoolSubview:
           return new SuperheatSubcoolSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
+        case EViewType.TimerSubview:
+          return new TimerSubviewViewHolder(li.Inflate(Resource.Layout.subview_timer_large, parent, false), cache);
+        case EViewType.RateOfChangeSubview:
+          return new RateOfChangeSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -126,11 +121,11 @@
               (holder as ManifoldViewHolder)?.BindTo(vr);
             }
 
-            holder.ItemView.Click += (object sender, EventArgs e) => {
+            holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
               if (onManifoldClicked != null) {
                 onManifoldClicked(vr.item);
               }
-            };
+            }));
 
             break;
 
@@ -146,11 +141,12 @@
           default:
             throw new Exception("Unknown view type: " + viewType);
         }
-
+        /*
         var touchHelper = new TouchListenerHelper(holder);
         touchHelper.dragStartListener = dragListener;
         touchHelper.swipeStartListener = swipeListener;
         holder.ItemView.SetOnTouchListener(touchHelper);
+    */
       }
     }
 
@@ -187,17 +183,17 @@
     public void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
       var manifold = workbenchEvent.manifold;
       int startIndex = IndexOfManifold(manifold);
-      int affectedRows = 1 + manifold.sensorPropertyCount;
+      int spc = manifold.sensorPropertyCount;
 
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           if (startIndex < 0) {
             records.Insert(records.Count - 1, new ManifoldRecord(manifold));
-            records.Insert(records.Count - 1, new SpaceRecord());
+//            records.Insert(records.Count - 1, new SpaceRecord());
             NotifyItemRangeInserted(records.Count - 1, 2);
           } else {
             records.Insert(startIndex, new ManifoldRecord(manifold));
-            records.Insert(startIndex, new SpaceRecord());
+//            records.Insert(startIndex, new SpaceRecord());
             NotifyItemRangeInserted(startIndex, 2);
           }
           break;
@@ -206,14 +202,45 @@
           break;
         case WorkbenchEvent.EType.Removed:
           if (startIndex >= 0) {
-            for (int i = startIndex; i < startIndex + affectedRows; i++) {
-              records.RemoveAt(i);
+            records.RemoveAt(startIndex);
+            for (int i = 0; i < spc; i++) {
+              records.RemoveAt(startIndex);
             }
-            NotifyItemRangeRemoved(startIndex, affectedRows);
+            NotifyItemRangeRemoved(startIndex, 1 + spc);
           }
           break;
         case WorkbenchEvent.EType.Swapped:
-          NotifyItemMoved(workbenchEvent.index, workbenchEvent.otherIndex);
+          var firstManifold = workbench[workbenchEvent.index];
+          var firstIndex = IndexOfManifold(firstManifold);
+          var fmr = records[firstIndex] as ManifoldRecord;
+          var fwe = fmr.expanded;
+
+          var secondManifold = workbench[workbenchEvent.otherIndex];
+          var secondIndex = IndexOfManifold(secondManifold);
+          var smr = records[secondIndex] as ManifoldRecord;
+          var swe = smr.expanded;
+
+
+          Task.Factory.StartNew(() => {
+            CollapseManifold(firstManifold);
+            CollapseManifold(secondManifold);
+
+            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+          }).ContinueWith((task) => {
+            records.Move(firstIndex, secondIndex);
+            NotifyItemMoved(firstIndex, secondIndex);
+
+            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
+          }).ContinueWith((task) => {
+            if (fwe) {
+              ExpandManifold(firstManifold);
+            }
+
+            if (swe) {
+              ExpandManifold(secondManifold);
+            }
+          });
+
           break;
         default:
           throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
@@ -233,6 +260,12 @@
         case ManifoldEvent.EType.Invalidated:
           break;
         case ManifoldEvent.EType.SensorPropertyAdded:
+          var mr = records[manifoldIndex] as ManifoldRecord;
+
+          if (manifold.sensorPropertyCount <= 1 && !mr.expanded) {
+            mr.expanded = true;
+          }
+
           index = manifoldIndex + 1 + manifoldEvent.index;
 
           records.Insert(index, CreateSensorPropertyRecord(manifold[manifoldEvent.index]));
@@ -243,13 +276,12 @@
         case ManifoldEvent.EType.SensorPropertyRemoved:
           index = manifoldIndex + 1 + manifoldEvent.index;
           records.RemoveAt(index);
-
           NotifyItemRemoved(index);
           break;
 
         case ManifoldEvent.EType.SensorPropertySwapped:
-          var from = manifoldIndex + 1;
-          var to = from + manifoldEvent.otherIndex;
+          var from = manifoldIndex + 1 + manifoldEvent.index;
+          var to = manifoldIndex + 1 + manifoldEvent.otherIndex;
           records.Move(from, to);
 
           NotifyItemMoved(from, to);
@@ -257,35 +289,125 @@
       }
     }
 
-    // Overridden from IItemTouchHelperAdapter
+    /// <summary>
+    /// Called when the given view holder is about to be dragged.
+    /// </summary>
+    /// <param name="vh">Vh.</param>
+    public void OnDragStart(RecyclerView.ViewHolder vh) {
+    }
+
+    /// <summary>
+    /// Raises the item move event.
+    /// </summary>
+    /// <param name="fromPosition">From position.</param>
+    /// <param name="toPosition">To position.</param>
     public bool OnItemMove(int fromPosition, int toPosition) {
-      return false;
-/*
       var from = records[fromPosition];
       var to = records[toPosition];
 
-      if (from is ViewerRecord && to is ViewerRecord) {
-        var fvr = from as ViewerRecord;
-        var tvr = to as ViewerRecord;
+      if (from is ManifoldRecord && to is ManifoldRecord) {
+        var fvr = from as ManifoldRecord;
+        var tvr = to as ManifoldRecord;
 
-        records.Move(fromPosition, toPosition);
-
-        NotifyItemMoved(fromPosition, toPosition);
+        workbench.Swap(workbench.IndexOf(fvr.item), workbench.IndexOf(tvr.item));
 
         return true;
+      } else if (from is SensorPropertyRecord && to is SensorPropertyRecord) {
+        var fp = FindManifoldAtIndex(fromPosition);
+        var tp = FindManifoldAtIndex(toPosition);
+
+        if (fp == tp) {
+          var i = IndexOfManifold(fp);
+          fp.SwapSensorProperties(fromPosition - i - 1, toPosition - i - 1);
+
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
-*/
     }
 
-    // Overridden from IItemTouchHelperAdapter
-    public void OnItemDismiss(int position) {
-/*
-      records.RemoveAt(position);
+    /// <summary>
+    /// Used to determine whether or not the adapter allows an item dismissal at the given position.
+    /// </summary>
+    /// <param name="position">Position.</param>
+    /// <param name="posiiton">Posiiton.</param>
+    public bool AllowItemDismissalAt(int position) {
+      var r = records[position];
 
-      NotifyItemRemoved(position);
-*/
+      return r is ManifoldRecord || r is SensorPropertyRecord;
+    }
+
+    /// <summary>
+    /// Raises the item dismiss event.
+    /// </summary>
+    /// <param name="position">Position.</param>
+    public void OnItemDismiss(int position) {
+      var r = records[position];
+
+      if (r is ManifoldRecord) {
+        var mr = r as ManifoldRecord;
+
+        workbench.Remove(mr.item);
+      } else if (r is SensorPropertyRecord) {
+        var spr = r as SensorPropertyRecord;
+
+        var manifold = FindManifoldAtIndex(position);
+        manifold.RemoveSensorProperty(spr.sensorProperty);
+      }
+    }
+
+    private void CollapseManifold(Manifold manifold) {
+      var index = IndexOfManifold(manifold);
+      var mr = records[index] as ManifoldRecord;
+
+      if (mr != null) {
+        if (mr.expanded) {
+          var count = manifold.sensorPropertyCount;
+
+          for (int i = count; i >= 1; i--) {
+            records.RemoveAt(index + i);
+          }
+
+          NotifyItemRangeRemoved(index + 1, count);
+        }
+
+        mr.expanded = false;
+      }
+    }
+
+    private void ExpandManifold(Manifold manifold) {
+      var index = IndexOfManifold(manifold);
+      var mr = records[index] as ManifoldRecord;
+
+      if (mr != null) {
+        if (!mr.expanded) {
+          var count = manifold.sensorPropertyCount;
+
+          for (int i = 1; i <= count; i++) {
+            records.Insert(index + i, CreateSensorPropertyRecord(manifold[i - 1]));
+          }
+
+          NotifyItemRangeRemoved(index + 1, count);
+        }
+
+        mr.expanded = true;
+      }
+    }
+
+    private void ToggleManifold(Manifold manifold) {
+      var index = IndexOfManifold(manifold);
+      var mr = records[index] as ManifoldRecord;
+
+      if (mr != null) {
+        if (mr.expanded) {
+          CollapseManifold(manifold);
+        } else {
+          ExpandManifold(manifold);
+        }
+      }
     }
 
     private void BuildSensorPropertyViewHolder(RecyclerView.ViewHolder holder, int position) {
@@ -301,6 +423,16 @@
           }
           break;
 
+        case EViewType.RateOfChangeSubview:
+          var rr = record as RateOfChangeSubviewRecord;
+          (holder as RateOfChangeSubviewViewHolder)?.BindTo(rr);
+          break;
+
+        case EViewType.TimerSubview:
+          var tr = record as TimerSubviewRecord;
+          (holder as TimerSubviewViewHolder)?.BindTo(tr);
+          break;
+
         case EViewType.PTChartSubview:
           var pr = record as PTChartSubviewRecord;
           (holder as PTChartSubviewViewHolder)?.BindTo(pr);
@@ -309,7 +441,6 @@
         case EViewType.SuperheatSubcoolSubview:
           var shr = record as SuperheatSubcoolSubviewRecord;
           (holder as SuperheatSubcoolSubviewViewHolder)?.BindTo(shr);
-
           break;
       }
 
@@ -347,11 +478,13 @@
     /// <returns>The manifold at index.</returns>
     /// <param name="index">Index.</param>
     private Manifold FindManifoldAtIndex(int index) {
-      var record = records[index];
-
       if (index < 0) {
         return null;
-      } else if (record is ManifoldRecord) {
+      }
+
+      var record = records[index];
+
+      if (record is ManifoldRecord) {
         return ((ManifoldRecord)record).item;
       } else if (record is SensorPropertyRecord) {
         return FindManifoldAtIndex(index - 1);
@@ -370,6 +503,10 @@
         return new PTChartSubviewRecord(sp as PTChartSensorProperty);
       } else if (sp is SuperheatSubcoolSensorProperty) {
         return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
+      } else if (sp is TimerSensorProperty) {
+        return new TimerSubviewRecord(sp as TimerSensorProperty);
+      } else if (sp is RateOfChangeSensorProperty) {
+        return new RateOfChangeSubviewRecord(sp as RateOfChangeSensorProperty);
       } else {
         return new MeasurementRecord(sp);
       }
@@ -384,8 +521,10 @@
     Manifold,
     Space,
     MeasurementSubview,
+    RateOfChangeSubview,
     PTChartSubview,
     SuperheatSubcoolSubview,
+    TimerSubview,
   }
 
   /// <summary>

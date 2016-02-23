@@ -10,6 +10,8 @@
   using ION.Droid.Widgets.Templates;
 
   class ManifoldRecord : WorkbenchRecord<Manifold> {
+    public bool expanded;
+    
     public ManifoldRecord(Manifold manifold) : base(EViewType.Manifold, manifold) {
     }
   }

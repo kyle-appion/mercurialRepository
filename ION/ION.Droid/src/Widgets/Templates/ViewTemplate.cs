@@ -35,6 +35,7 @@
       }
 
       item = t;
+
       OnBind(t);
 
       Invalidate();

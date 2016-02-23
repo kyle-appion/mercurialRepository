@@ -67,17 +67,23 @@
     }
 
     public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder source, RecyclerView.ViewHolder target) {
+/*
       if (source.ItemViewType != target.ItemViewType) {
         return false;
       }
+*/
 
       // Notify the adapter of the move
       return mAdapter.OnItemMove(source.AdapterPosition, target.AdapterPosition);
     }
 
     public override void OnSwiped(Android.Support.V7.Widget.RecyclerView.ViewHolder viewHolder, int i) {
-      // Notify the adapter of the dismissal
-      mAdapter.OnItemDismiss(viewHolder.AdapterPosition);
+      if (mAdapter.AllowItemDismissalAt(viewHolder.AdapterPosition)) {
+        // Notify the adapter of the dismissal
+        mAdapter.OnItemDismiss(viewHolder.AdapterPosition);
+      } else {
+        viewHolder.ItemView.Invalidate();
+      }
     }
 
     public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive) {
@@ -99,6 +105,16 @@
           IItemTouchHelperViewHolder itemViewHolder = (IItemTouchHelperViewHolder)viewHolder;
           itemViewHolder.OnItemSelected();
         }
+      }
+
+      switch (actionState) {
+        case ItemTouchHelper.ActionStateDrag:
+          mAdapter.OnDragStart(viewHolder);
+          break;
+        case ItemTouchHelper.ActionStateIdle:
+          break;
+        case ItemTouchHelper.ActionStateSwipe:
+          break;
       }
 
       base.OnSelectedChanged(viewHolder, actionState);

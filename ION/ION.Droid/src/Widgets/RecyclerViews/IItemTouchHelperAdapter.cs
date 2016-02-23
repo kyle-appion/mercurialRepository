@@ -2,10 +2,17 @@
 
   using System;
 
+  using Android.Support.V7.Widget;
+
   /// <summary>
   /// Interface to listen for a move or dismissal event from a ItemTouchHelper.Callback.
   /// </summary>
   public interface IItemTouchHelperAdapter {
+    /// <summary>
+    /// Called when the given view holder is about to be dragged.
+    /// </summary>
+    /// <param name="vh">Vh.</param>
+    void OnDragStart(RecyclerView.ViewHolder vh);
     /// <summary>
     /// Called when an item has been dragged far enough to trigger a move. This is called every time
     /// an item is shifted, and <strong>not</strong> at the end of a "drop" event.<br/>
@@ -18,6 +25,11 @@
     /// <param name="toPosition">Then resolved position of the moved item.</param>
     bool OnItemMove(int fromPosition, int toPosition);
 
+    /// <summary>
+    /// Used to determine whether or not the adapter allows an item dismissal at the given position.
+    /// </summary>
+    /// <param name="position">Position.</param>
+    bool AllowItemDismissalAt(int position);
     /// <summary>
     /// Called when an item has been dismissed by a swipe.<br/>
     /// <br/>

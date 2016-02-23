@@ -96,7 +96,11 @@
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: device not le");
       } else {
-        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
+        // TODO ahodder@appioninc.com: This is a test and should be removed
+        var ret = new LeConnection(ion.context, manager, device);
+        __leConnections[address] = ret;
+        return ret;
+//        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
       }
     }
 
