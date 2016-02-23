@@ -55,6 +55,8 @@
         return context.GetString(Resource.String.workbench_roc_abrv);
       } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
         return context.GetString(Resource.String.workbench_shsc_abrv);
+      } else if (sensorProperty is TimerSensorProperty) {
+        return context.GetString(Resource.String.workbench_timer_abrv);
       } else {
         return context.GetString(Resource.String.na);
       }

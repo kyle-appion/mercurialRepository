@@ -27,7 +27,7 @@
   using ION.Droid.Widgets.Adapters.Workbench;
   using ION.Droid.Widgets.RecyclerViews;
 
-  public class WorkbenchFragment : IONFragment, IOnStartDragListener, IOnStartSwipeListener {
+  public class WorkbenchFragment : IONFragment {
 
     /// <summary>
     /// The activity request code that will tell us when we return from the device
@@ -106,8 +106,6 @@
       }
 
       adapter = new WorkbenchAdapter(ion, Resources);
-      adapter.dragListener = this;
-      adapter.swipeListener = this;
       adapter.SetWorkbench(ion.currentWorkbench, OnAddViewer);
       list.SetAdapter(adapter);
       adapter.onManifoldClicked += (manifold) => {
@@ -157,8 +155,8 @@
         }
       };
 
-//      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
-//      itemTouchHelper.AttachToRecyclerView(list);
+      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
+      itemTouchHelper.AttachToRecyclerView(list);
     }
 
     /// <Docs>The integer request code originally supplied to
@@ -193,22 +191,6 @@
           base.OnActivityResult(requestCode, resultCode, data);
           break;
       }
-    }
-
-    /// <summary>
-    /// Called when a view is requesting a start of a drag.
-    /// </summary>
-    /// <param name="viewHolder">The holder of the view to drag.</param>
-    public void OnStartDrag(RecyclerView.ViewHolder viewHolder) {
-      itemTouchHelper.StartDrag(viewHolder);
-    }
-
-    /// <summary>
-    /// Called when a view is requesting a start of swipe event.
-    /// </summary>
-    /// <param name="viewHolder">View holder.</param>
-    public void OnStartSwipe(RecyclerView.ViewHolder viewHolder) {
-      itemTouchHelper.StartSwipe(viewHolder);
     }
 
     /// <summary>
@@ -322,7 +304,50 @@
         }
       }
 
+      ldb.AddItem("Add all subviews", () => {
+        AddAllSubviews(manifold);
+      });
+
       ldb.Show();
+    }
+
+    /// <summary>
+    /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
+    /// </summary>
+    private void AddAllSubviews(Manifold manifold) {
+      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
+        manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
+        manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
+        manifold.AddSensorProperty(new MaxSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
+        manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+        manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
+      }
+
+      if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
+        if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
+          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
+        }
+
+        if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
+          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+        }
+      }
     }
   }
 }

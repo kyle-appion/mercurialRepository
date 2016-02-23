@@ -138,6 +138,21 @@
     }
 
     /// <summary>
+    /// Queries the index of the given manifold or -1 if the manifold is not present in the workbench.
+    /// </summary>
+    /// <returns>The of.</returns>
+    /// <param name="manifold">Manifold.</param>
+    public int IndexOf(Manifold manifold) {
+      for (int i = 0; i < count; i++) {
+        if (manifold == this[i]) {
+          return i;
+        }
+      }
+
+      return -1;
+    }
+
+    /// <summary>
     /// Adds the given manifold to the workbench. A given manifold may only exist
     /// once in the workbench.
     /// </summary>

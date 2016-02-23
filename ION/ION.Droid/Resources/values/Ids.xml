@@ -34,6 +34,7 @@
   <item name="name" type="id"/>
   <item name="notes" type="id"/>
   <item name="ok_done" type="id"/>
+  <item name="play" type="id"/>
   <item name="preferred" type="id"/>
   <item name="pressure" type="id"/>
   <item name="save" type="id"/>

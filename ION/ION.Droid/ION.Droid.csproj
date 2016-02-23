@@ -157,6 +157,11 @@
     <Compile Include="src\Widgets\Adapters\Workbench\SuperheatSubcoolSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\ManifoldSubviewViewHolder.cs" />
     <Compile Include="src\Dialog\RenameDialog.cs" />
+    <Compile Include="src\Widgets\Templates\TimerSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\TimerSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Templates\RateOfChangeSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\RateOfChangeSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchTouchHelperCallback.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -360,6 +365,8 @@
     <AndroidResource Include="Resources\layout\subview_measurement_large.axml" />
     <AndroidResource Include="Resources\layout\viewer_large.axml" />
     <AndroidResource Include="Resources\layout\dialog_rename.axml" />
+    <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
+    <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
