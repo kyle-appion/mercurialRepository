@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using SQLite;
-
-namespace ION.IOS {
+using SQLite.Net;
+using SQLite.Net.Attributes;
+using SQLite.Net.Interop;
+namespace ION.Core.Database {
   public class SessionMeasurement {
 
     [PrimaryKey, AutoIncrement]
@@ -12,6 +14,7 @@ namespace ION.IOS {
     public string deviceMeasurement { get; set;}
 
     public SessionMeasurement() {
+      
     }
   }
 }
