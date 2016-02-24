@@ -20,7 +20,6 @@ namespace ION.IOS.ViewController.Logging {
     public void makeCellData(int job, string jName, UITableView tableView, nfloat cellHeight){
       JID = job;
       Name = jName;
-      Console.WriteLine("Width of the job table: " + tableView.Bounds);
       jobInfo = new UILabel(new CGRect(0,0,tableView.Bounds.Width, cellHeight));
       jobInfo.AdjustsFontSizeToFitWidth = true;
       jobInfo.TextAlignment = UITextAlignment.Center;

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using SQLite;
-
-namespace ION.IOS {
+using SQLite.Net;
+using SQLite.Net.Attributes;
+using SQLite.Net.Interop;
+namespace ION.Core.Database {
   public class Job {
 
     [PrimaryKey, AutoIncrement]
