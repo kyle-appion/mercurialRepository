@@ -113,6 +113,9 @@
       managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)context.GetSystemService(Context.BluetoothService))));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
+      alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
+        return new CompoundAlarmAlert(alarm, new PopupActivityAlert(alarm, context));
+      };
 
       managers.Add(fluidManager = new BaseFluidManager(this));
 

@@ -235,11 +235,10 @@
     /// </summary>
     /// <param name="fluidName"></param>
     /// <returns></returns>
-    private async Task<Fluid> LoadFluidAsync(string fluidName) {
+    private Task<Fluid> LoadFluidAsync(string fluidName) {
       var ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
-        Log.D(this, "RET: " + ret);
       ret.color = GetFluidColor(ret.name);
-      return ret;
+      return Task.FromResult(ret);
     }
 
     /// <summary>

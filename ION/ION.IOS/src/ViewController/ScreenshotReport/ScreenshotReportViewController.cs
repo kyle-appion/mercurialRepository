@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     private Task<Result> CommitScreenshotReport() {
       return Task.Factory.StartNew(() => {
         var report = new ScreenshotReport();
-        report.created = date;
+//        report.created = date;
         report.title = Strings.Report.SCREENSHOT_TITLE;
         report.subtitle = reportTitle.value;
         report.notes = notes.value;
