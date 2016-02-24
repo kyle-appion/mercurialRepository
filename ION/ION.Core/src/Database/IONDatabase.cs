@@ -19,12 +19,18 @@ namespace ION.Core.Database {
     /// The dao that is used to query devices.
     /// </summary>
     /// <value>The device DAO.</value>
-    public IDao<IDevice> deviceDao { get; private set; }
-    
+    public IDao<IDevice> deviceDao { get;  set; }
+    public Session sessionDao { get;  set; }
+    public Job JobDao { get;  set; }
+    public SessionMeasurement measurementDao { get;  set; }
+
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
       // Create the database
       deviceDao = new DeviceDao(this);
+      sessionDao = new Session();
+      JobDao = new Job();
+      measurementDao = new SessionMeasurement();
     }
 
     // Overridden from IIONManager

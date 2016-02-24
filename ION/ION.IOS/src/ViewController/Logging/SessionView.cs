@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UIKit;
 using Foundation;
 using CoreGraphics;
@@ -18,11 +19,14 @@ namespace ION.IOS.ViewController.Logging {
       sView.Hidden = true;   
 
       activityLoadingSessions = new UIActivityIndicatorView();
+      selectedIndex = 9999;
     }
 
     public UIView sView;
     public UIActivityIndicatorView activityLoadingSessions;
     public bool expanded;
+    public List<SessionData> allSessions;
+    public int selectedIndex;
   }
 }
 

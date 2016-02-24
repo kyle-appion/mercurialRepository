@@ -88,7 +88,8 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     private Task<Result> CommitScreenshotReport() {
       return Task.Factory.StartNew(() => {
         var report = new ScreenshotReport();
-        report.created = date;
+        ///save date in original format for localization later
+        //report.created = date;
         report.title = Strings.Report.SCREENSHOT_TITLE;
         report.subtitle = reportTitle.value;
         report.notes = notes.value;
@@ -98,9 +99,15 @@ namespace ION.IOS.ViewController.ScreenshotReport {
           return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
         }
 
-        var data = new string[items.Count, 2];
-        for (int i = 0; i < items.Count; i++) {
-          var item = items[i];
+        /// adding an extra spot to manually add the localized date
+        /// return here for possible raw data storage for different
+        /// exporting formats
+        var data = new string[items.Count + 1, 2];
+        data[0,0] = Strings.DATE;
+        data[0,1] = date.ToLocalTime().ToShortDateString();
+
+        for (int i = 1; i <= items.Count; i++) {
+          var item = items[i - 1];
           data[i, 0] = item.header;
           data[i, 1] = item.value;
         }

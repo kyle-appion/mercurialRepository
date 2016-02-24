@@ -4,31 +4,33 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using CoreGraphics;
 using UIKit;
 using System.IO;
 using SQLite;
 using System.Threading.Tasks;
+using System.Linq;
 
 using ION.IOS.ViewController;
-using ION.Core.Content;
-using ION.Core.Devices;
-using ION.Core.Util;
 using ION.IOS.Util;
 using ION.IOS.UI;
 
+using ION.Core.Database;
+using ION.Core.Content;
+using ION.Core.Devices;
+using ION.Core.Util;
+using ION.Core.App;
+
+
+
 namespace ION.IOS.ViewController.Logging {
   public partial class LoggingViewController : BaseIONViewController {
-    private SessionView listSessions;
-    private JobView listJobs;
-    private UIButton jobButton;
-    private UIButton sessionButton;
-    private string _pathToDatabase;
-    private bool jobSelected = true;
-    private bool sessionSelected = false;
-    public UITableView jobTable;
-    public UITableView sessionTable;
-    public AssociateJob jobScroll;
+    public ChooseReporting reportingSection;
+    public ChooseData dataSection;
+    public ChooseSaved savedReportsSection;
+    public ChooseGraphing graphingSection;
+    private IION ion;
 
     public LoggingViewController(IntPtr handle) : base(handle) {
     
@@ -44,7 +46,8 @@ namespace ION.IOS.ViewController.Logging {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      //**************************************************************
+      //*************************************************************
+      /*
       UIBarButtonItem dataRecord = new UIBarButtonItem(
         //UIImage.FromBundle("ic_record"),
         "R",
@@ -75,249 +78,264 @@ namespace ION.IOS.ViewController.Logging {
 
       UIBarButtonItem [] recordButtons = new UIBarButtonItem[]{dataStop,showRecords,dataRecord,};
       NavigationItem.SetRightBarButtonItems(recordButtons, true);
-      //**************************************************************
-
-      var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-      _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
-
+      //**************************************************************///
+      ion = AppState.context;
       SetupLoggingUI();
     }
     /// <summary>
     /// Creates the job and session views and adds their views/subviews to the mainview
     /// </summary>
     public void SetupLoggingUI(){
-      listJobs = new JobView(View);
-      listJobs.createJob.TouchUpInside += showNewJobAlert;
-      listSessions = new SessionView(View);
+      reportingSection = new ChooseReporting(View);
+      reportingSection.savedReports.TouchUpInside += loadSavedReports;
+      reportingSection.newReport.TouchUpInside += showDataSection;
 
-      ///button to switch to job listing
-      jobButton = new UIButton(new CGRect(.01 * View.Bounds.Width,.08 * View.Bounds.Height,.49 * View.Bounds.Width, .12 * View.Bounds.Height));
-      jobButton.Layer.CornerRadius = 8;
-      jobButton.Layer.BorderColor = UIColor.Black.CGColor;
-      jobButton.Layer.BorderWidth = 1f;
-      jobButton.SetTitle("Show Jobs", UIControlState.Normal);
-      jobButton.BackgroundColor = UIColor.LightGray;
-      ///user feedback for button press
-      jobButton.TouchUpInside += GetAllJobs;
-      jobButton.TouchDown += (sender, e) => { jobButton.BackgroundColor = UIColor.Blue;};
-      jobButton.TouchUpOutside += (sender, e) => { if(jobSelected == false) jobButton.BackgroundColor = UIColor.LightGray;};
-      ///button to switch to session listing
-      sessionButton = new UIButton(new CGRect(.5 * View.Bounds.Width,.08 * View.Bounds.Height,.49 * View.Bounds.Width, .12 * View.Bounds.Height));
-      sessionButton.Layer.CornerRadius = 8;
-      sessionButton.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionButton.Layer.BorderWidth = 1f;
-      sessionButton.SetTitle("Show Sessions", UIControlState.Normal);
-      sessionButton.BackgroundColor = UIColor.LightGray;
-      ///user feedback for button press
-      sessionButton.TouchUpInside += GetAllSessions;
-      sessionButton.TouchDown += (sender, e) => { sessionButton.BackgroundColor = UIColor.Blue;};
-      sessionButton.TouchUpOutside += (sender, e) => { if(sessionSelected == false) sessionButton.BackgroundColor = UIColor.LightGray;};
+      dataSection = new ChooseData(View);
+      dataSection.showGraphButton.TouchUpInside += showGraphSection;
 
-      sessionTable = new UITableView(new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, listSessions.sView.Bounds.Width, .07 * View.Bounds.Height));
-      sessionTable.RegisterClassForCellReuse(typeof(SessionCell),"sessionCell");
-      sessionTable.BackgroundColor = UIColor.Clear;
-      sessionTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      ///collapses and expands uiview when user taps the view
-      listSessions.sView.AddGestureRecognizer(new UITapGestureRecognizer (() => {
-        if(listSessions.expanded == true){
-          listSessions.expanded = false;
-          sessionTable.Hidden = true;
-          UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-            () =>{ 
-              listSessions.sView.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, .98 * View.Bounds.Width, .075 * View.Bounds.Height);
-            }, () => {});          
-        } else {
-          listSessions.expanded = true;
-          UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-            () =>{ 
-              listSessions.sView.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
-            }, () => {sessionTable.Hidden = false;});
-        }
-      }));
+      savedReportsSection = new ChooseSaved(View);
 
-      jobTable = new UITableView(new CGRect(0, .2 * View.Bounds.Height + listJobs.createJob.Bounds.Height, listJobs.jView.Bounds.Width, .07 * View.Bounds.Height));
-      jobTable.RegisterClassForCellReuse(typeof(JobCell),"jobCell");
-      jobTable.BackgroundColor = UIColor.Clear;
-      jobTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      ///collapses and expands uiview when user taps the view
-      listJobs.jView.AddGestureRecognizer(new UITapGestureRecognizer (() => {
-        if(listJobs.expanded == true){
-          listJobs.expanded = false;
-          jobTable.Hidden = true;
-          UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-            () =>{ 
-              listJobs.jView.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
-            }, () => {});          
-        } else {
-          listJobs.expanded = true;         
-          UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-            () =>{ 
-              listJobs.jView.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
-            }, () => {jobTable.Hidden = false;});
-        }
-      }));
+      graphingSection = new ChooseGraphing(View);
 
-      jobScroll = new AssociateJob(View, .07f * View.Bounds.Height);
+      View.AddSubview(reportingSection.reportType);
+      View.BringSubviewToFront(reportingSection.reportType);
+      View.AddSubview(dataSection.DataType);
+      View.BringSubviewToFront(dataSection.DataType);
+      View.AddSubview(savedReportsSection.showReports);
+      View.BringSubviewToFront(savedReportsSection.showReports);
+      View.AddSubview(graphingSection.graphingType);
+      View.BringSubviewToFront(graphingSection.graphingType);
+    }
+      
+    public void loadSavedReports (object sender, EventArgs e){
 
-      View.AddSubview(listSessions.sView);
-      View.BringSubviewToFront(listSessions.sView);
-      View.AddSubview(sessionButton);
-      View.BringSubviewToFront(sessionButton);
-
-      View.AddSubview(listJobs.jView);
-      View.BringSubviewToFront(listJobs.jView);
-      View.AddSubview(jobButton);
-      View.BringSubviewToFront(jobButton);
-
-      View.AddSubview(sessionTable);
-      View.BringSubviewToFront(sessionTable);
-      View.AddSubview(jobTable);
-      View.BringSubviewToFront(jobTable);
-
-      View.AddSubview(jobScroll.chooseJob);
-      View.BringSubviewToFront(jobScroll.chooseJob);
+      UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
+        () =>{ 
+          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+          reportingSection.newReport.Hidden = true;
+          reportingSection.savedReports.Hidden = true;
+        }, 
+        () => {
+          resizeSavedReportsSectionLarger();
+          reportingSection.step1.Hidden = false;
+        });
+      
+      reportingSection.resize = new UITapGestureRecognizer (() => {
+        resizeSavedReportsSectionSmaller();
+      });
+      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
     }
     /// <summary>
-    /// Queries for all the sessions a user has recorded and lists them in a tableview
+    /// Triggers the job and session section to appear/expand from the new reports button in the reporting section
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public async void GetAllSessions(object sender, EventArgs e){
-      listJobs.jView.Hidden = true;
-      listSessions.sView.Hidden = false;
-      jobSelected = false;
-      jobButton.BackgroundColor = UIColor.LightGray;
-      sessionSelected = true;
-      sessionButton.BackgroundColor = UIColor.Blue;
-      sessionButton.Enabled = false;
-      jobTable.Hidden = true;
-      if(listSessions.expanded)
-        sessionTable.Hidden = false;
+    public void showDataSection (object sender, EventArgs e){
+      UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
+        () =>{ 
+          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+          reportingSection.newReport.Hidden = true;
+          reportingSection.savedReports.Hidden = true;
+        }, 
+        () => {
+          resizeDataSectionLarger();
+          reportingSection.step1.Hidden = false;
+        });
 
-      if (listSessions.activityLoadingSessions != null)
-        listSessions.activityLoadingSessions = null;
-      
-      listSessions.activityLoadingSessions = new UIActivityIndicatorView(new CGRect(0, 0, listSessions.sView.Bounds.Width, .75 * View.Bounds.Height));
-      listSessions.activityLoadingSessions.Alpha = .4f;
-      listSessions.activityLoadingSessions.Layer.CornerRadius = 8;
-      listSessions.activityLoadingSessions.BackgroundColor = UIColor.DarkGray;
+      reportingSection.resize = new UITapGestureRecognizer (() => {
+        resizeDataSectionSmaller();
+      });
 
-      listSessions.sView.AddSubview(listSessions.activityLoadingSessions);
-      listSessions.sView.BringSubviewToFront(listSessions.activityLoadingSessions);
-
-      listSessions.activityLoadingSessions.StartAnimating();
-
-      var db = new SQLite.SQLiteConnection(_pathToDatabase);
-      var result = db.Query<Session>("SELECT SID, sessionStart, sessionEnd FROM Session ORDER BY SID");
-      List<SessionData> queriedSessions = new List<SessionData>();
-
-      foreach (var item in result) {
-        queriedSessions.Add(new SessionData(item.SID, item.sessionStart, item.sessionEnd));
-      }
-      ///table can only be 9 cells tall to allow for collapsing the menu still
-      if(queriedSessions.Count > 9)
-        sessionTable.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, listSessions.sView.Bounds.Width, 9 * .07 * View.Bounds.Height);
-      else
-        sessionTable.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height, listSessions.sView.Bounds.Width, queriedSessions.Count * .07 * View.Bounds.Height);
-      
-      sessionTable.Source = new LoggingSessionSource(queriedSessions,.07f * View.Bounds.Height,jobScroll);
-      sessionTable.ReloadData();
-
-      await Task.Delay(TimeSpan.FromSeconds(2));
-      listSessions.activityLoadingSessions.StopAnimating();
-      sessionButton.Enabled = true;
-    }
-
-    public void GetAllMeasurementsForSession(){
-      
-    }
-
-    public void GetAllMeasurements(){
-      
+      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
     }
     /// <summary>
-    /// Shows a textfield alert that lets the user enter a name for a new job that can be used to associate sessions
+    /// Expands the job and session section
+    /// </summary>
+    public void resizeDataSectionLarger(){
+      dataSection.DataType.Hidden = false;
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
+      }, 
+      () => {
+          dataSection.jobButton.Hidden = false;
+          dataSection.sessionButton.Hidden = false;
+          dataSection.showGraphButton.Hidden = false;
+          dataSection.jobTable.Hidden = true;
+          dataSection.sessionTable.Hidden = true;
+      });
+    }
+    /// <summary>
+    /// Collapses the job and session section
+    /// </summary>
+    public void resizeDataSectionSmaller(){      
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        reportingSection.step1.Hidden = true;
+        dataSection.jobButton.Hidden = true;
+        dataSection.jobTable.BackgroundColor = UIColor.LightGray;
+        dataSection.sessionButton.Hidden = true;
+        dataSection.sessionButton.BackgroundColor = UIColor.LightGray;
+        dataSection.showGraphButton.Hidden = true;
+        dataSection.jobTable.Hidden = true;
+        dataSection.sessionTable.Hidden = true;
+        dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
+        dataSection.selectedSessions = new ObservableCollection<int>();
+        dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
+        dataSection.showGraphButton.Enabled = false;
+        dataSection.showGraphButton.Alpha = .6f;
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+      }, 
+      () => {
+        dataSection.DataType.Hidden = true;
+        resizeReportingSectionLarger();
+      });      
+    }
+    /// <summary>
+    /// Expands the reporting type section
+    /// </summary>
+    public void resizeReportingSectionLarger(){
+      UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
+        () =>{
+          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .55 * View.Bounds.Height);
+        }, 
+        () => {
+          reportingSection.newReport.BackgroundColor = UIColor.LightGray;
+          reportingSection.savedReports.BackgroundColor = UIColor.LightGray;
+          reportingSection.newReport.Hidden = false;
+          reportingSection.savedReports.Hidden = false;
+          reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
+        });
+    }     
+    /// <summary>
+    /// Expands the saved reports section
+    /// </summary>
+    public void resizeSavedReportsSectionLarger(){
+      
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        savedReportsSection.showReports.Hidden = false;
+        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
+      }, 
+        () => {
+          savedReportsSection.reportTable.Hidden = false;
+          savedReportsSection.header.Hidden = false;
+        }); 
+    }
+    /// <summary>
+    /// Collapses the saved report section and then expands the reporting type section
+    /// </summary>
+    public void resizeSavedReportsSectionSmaller(){
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        reportingSection.step1.Hidden = true;
+        savedReportsSection.reportTable.Hidden = true;
+        savedReportsSection.header.Hidden = true;
+        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+      }, 
+        () => {
+          savedReportsSection.showReports.Hidden = true;
+          resizeReportingSectionLarger();
+        });  
+    }
+    /// <summary>
+    /// Expands the graphing section 
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public void showNewJobAlert(object sender, EventArgs e){
-      listJobs.createJob.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-      var window = UIApplication.SharedApplication.KeyWindow;
-      var vc = window.RootViewController;
-      while (vc.PresentedViewController != null) {
-        vc = vc.PresentedViewController;
-      }
+    public void showGraphSection(object sender, EventArgs e){
+      dataSection.jobButton.Hidden = true;
+      dataSection.jobButton.BackgroundColor = UIColor.LightGray;
+      dataSection.sessionButton.Hidden = true;
+      dataSection.sessionButton.BackgroundColor = UIColor.LightGray;
+      dataSection.showGraphButton.Hidden = true;
+      dataSection.jobTable.Hidden = true;
+      dataSection.sessionTable.Hidden = true;
 
-      UIAlertController createJobAlert = UIAlertController.Create ("Create Job", "Enter a name for the job you would like to create", UIAlertControllerStyle.Alert);
-      createJobAlert.AddTextField(textField => {});
-      createJobAlert.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
-        createNewJob(createJobAlert.TextFields[0].Text);
-      }));
-      createJobAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
-      vc.PresentViewController (createJobAlert, true, null);
+      reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
+
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+      }, 
+      () => {
+        dataSection.step2.Hidden = false;
+        resizeGraphingSectionLarger();
+      });
     }
+
     /// <summary>
-    /// Creates the Job table object with the name entered in the alert and then inserts that entry into the table
+    /// Resizes the graphing section larger.
     /// </summary>
-    /// <param name="Name">Name.</param>
-    public void createNewJob(string Name){
-      if (Name.Equals("")) {
-        return;
-      }
-      var db = new SQLite.SQLiteConnection(_pathToDatabase);
-      var job = new Job { jobName = Name };
-      db.Insert(job);
+    public void resizeGraphingSectionLarger(){       
+      var paramList = new List<string>();
+      string recordText = "";
 
-      jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
-    }
-
-    public void AssociateSessionToJob(){
-      
-    }
-    /// <summary>
-    /// Queries for all the jobs a user has created and lists them in a tableview
-    /// </summary>
-    public async void GetAllJobs (object sender, EventArgs e){
-      listSessions.sView.Hidden = true;
-      listJobs.jView.Hidden = false;
-      sessionSelected = false;
-      sessionButton.BackgroundColor = UIColor.LightGray;
-      jobSelected = true;
-      jobButton.BackgroundColor = UIColor.Blue;
-      jobButton.Enabled = false;
-      sessionTable.Hidden = true;
-
-      if(listJobs.expanded)
-        jobTable.Hidden = false;
-
-      if (listJobs.activityLoadingJobs != null)
-        listJobs.activityLoadingJobs = null;
-
-      listJobs.activityLoadingJobs = new UIActivityIndicatorView(new CGRect(0, 0, listJobs.jView.Bounds.Width, .75 * View.Bounds.Height));
-      listJobs.activityLoadingJobs.Alpha = .4f;
-      listJobs.activityLoadingJobs.Layer.CornerRadius = 8;
-      listJobs.activityLoadingJobs.BackgroundColor = UIColor.DarkGray;
-
-      listJobs.jView.AddSubview(listJobs.activityLoadingJobs);
-      listJobs.jView.BringSubviewToFront(listJobs.activityLoadingJobs);
-
-      listJobs.activityLoadingJobs.StartAnimating();
-
-      var db = new SQLite.SQLiteConnection(_pathToDatabase);
-      var result = db.Query<Job>("SELECT JID, jobName FROM Job ORDER BY JID");
-
-      List<JobData> queriedJobs = new List<JobData>();
-      foreach (var item in result) {
-        queriedJobs.Add(new JobData(item.JID, item.jobName));
+      foreach (var num in dataSection.selectedSessions) {
+        paramList.Add('"' + num.ToString() + '"');
       }
 
-      jobTable.Frame = new CGRect(.01 * View.Bounds.Width, .2 * View.Bounds.Height + listJobs.createJob.Bounds.Height, listJobs.jView.Bounds.Width, queriedJobs.Count * .07 * View.Bounds.Height);
-      jobTable.Source = new LoggingJobSource(queriedJobs, .07f * View.Bounds.Height);
-      jobTable.ReloadData();
+      var graphResult = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd FROM Session WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
 
-      await Task.Delay(TimeSpan.FromSeconds(2));
-      listJobs.activityLoadingJobs.StopAnimating();
-      jobButton.Enabled = true;
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        graphingSection.graphingType.Hidden = false;
+        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .23 * View.Bounds.Height, .98 * View.Bounds.Width, .72 * View.Bounds.Height);
+      }, 
+      () => {
+          graphingSection.header.Hidden = false;
+          graphingSection.rawData.Hidden = false;
+
+          if(graphResult.Count > 0){
+//            foreach(var record in graphResult){
+//              recordText += string.Concat(Environment.NewLine, (record.sessionStart.ToLocalTime() + " - " + record.sessionEnd.ToLocalTime()));
+//              var sessionM = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT deviceSN, deviceMeasurement FROM SessionMeasurement WHERE frnSID = ? ORDER BY MID DESC", record.SID);
+//
+//              foreach(var value in sessionM){
+//                recordText += string.Concat(Environment.NewLine, "\t" + value.deviceSN + " " + value.deviceMeasurement);
+//              }
+//            }
+
+            for(int s = 0; s < graphResult.Count; s++){
+              var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].SID);
+              recordText += string.Concat(Environment.NewLine, graphResult[s].sessionStart.ToLocalTime() + " - " + graphResult[s].sessionEnd.ToLocalTime());
+
+              for(int m = 0; m < deviceCount.Count; m++){
+                recordText += string.Concat(Environment.NewLine, "\t" + deviceCount[m].deviceSN);
+                var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].SID);
+
+                foreach(var meas in measurementCount){
+                  recordText += string.Concat(Environment.NewLine, "\t\t" + meas.deviceMeasurement);
+                }
+              }
+            }
+            graphingSection.rawData.Text = recordText;
+          } else {
+            graphingSection.rawData.Text = "No Session data available";
+          }
+      });
+
+      dataSection.resize = new UITapGestureRecognizer(() => {
+        resizeGraphingSectionSmaller();
+      });
+      dataSection.DataType.AddGestureRecognizer(dataSection.resize);
+    }
+
+    public void resizeGraphingSectionSmaller(){
+      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
+      dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
+      dataSection.selectedSessions = new ObservableCollection<int>();
+      dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
+      dataSection.showGraphButton.Enabled = false;
+      dataSection.showGraphButton.Alpha = .6f;
+      graphingSection.rawData.Text = ""; 
+
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        dataSection.step2.Hidden = true;
+        graphingSection.header.Hidden = true;
+        graphingSection.rawData.Hidden = true;
+        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .23 * View.Bounds.Height, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+      }, 
+      () => {
+          graphingSection.header.Hidden = true;
+          graphingSection.graphingType.Hidden = true;
+          dataSection.DataType.RemoveGestureRecognizer(dataSection.resize);
+          resizeDataSectionLarger();
+      });
     }
 
     public override void DidReceiveMemoryWarning() {
