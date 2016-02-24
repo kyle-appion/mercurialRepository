@@ -78,7 +78,7 @@ namespace ION.IOS.ViewController.Logging {
 
       UIBarButtonItem [] recordButtons = new UIBarButtonItem[]{dataStop,showRecords,dataRecord,};
       NavigationItem.SetRightBarButtonItems(recordButtons, true);
-      //**************************************************************///
+      //**************************************************************
       ion = AppState.context;
       SetupLoggingUI();
     }
