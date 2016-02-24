@@ -1,23 +1,26 @@
-﻿/*
-
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.IO;
+
 using CoreGraphics;
 using Foundation;
 using UIKit;
 using SQLite;
-using System.IO;
+
+using ION.Core.App;
 namespace ION.IOS.ViewController.Logging {
   public class LoggingSessionSource : UITableViewSource {
 
     List<SessionData> tableItems;
     nfloat cellHeight;
-    AssociateJob ajView;
-
-    public LoggingSessionSource(List<SessionData> sessionList, nfloat height, AssociateJob ChooseJob) {
-      tableItems = sessionList;
+    ObservableCollection<int> usingSessions;
+    IION ion;
+    public LoggingSessionSource(List<SessionData> allSessions, nfloat height, ObservableCollection<int> selectedSessions) {
+      tableItems = allSessions;
       cellHeight = height;
-      ajView = ChooseJob;
+      usingSessions = selectedSessions;
+      ion = AppState.context;
     }
 
     // Overridden from UITableViewSource
@@ -52,6 +55,11 @@ namespace ION.IOS.ViewController.Logging {
     
       cell.makeCellData(tableItems[indexPath.Row].SID, tableItems[indexPath.Row].start, tableItems[indexPath.Row].finish, tableView, cellHeight);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+
+      if(usingSessions.Contains(tableItems[indexPath.Row].SID)){
+//        cell.Accessory = UITableViewCellAccessory.Checkmark;
+        cell.BackgroundColor = UIColor.LightGray;
+      }
       return cell;            
     }
 
@@ -63,16 +71,17 @@ namespace ION.IOS.ViewController.Logging {
     {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
-          // remove that entry from the table and all the associated measurements
-          var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-          var _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
-          var db = new SQLite.SQLiteConnection(_pathToDatabase);        
+          // remove that entry from the table and all the associated measurements     
           // delete the measurement associated with the session being removed
-          db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement WHERE frnSID = " + tableItems[indexPath.Row].SID);
+          ion.database.Query<ION.Core.Database.SessionMeasurement>("DELETE FROM SessionMeasurement WHERE frnSID = " + tableItems[indexPath.Row].SID);
           // delete the session that was chosen for removal
-          db.Query<Session>("DELETE FROM Session WHERE SID = " + tableItems[indexPath.Row].SID);
+          ion.database.Query<ION.Core.Database.Session>("DELETE FROM Session WHERE SID = " + tableItems[indexPath.Row].SID);
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
+          // remove the item from the list of selected sessions
+          if (usingSessions.Contains(tableItems[indexPath.Row].SID)) {
+            usingSessions.Remove(tableItems[indexPath.Row].SID);
+          }
 
           // delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
@@ -88,35 +97,17 @@ namespace ION.IOS.ViewController.Logging {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
-      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
+      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].SID);
 
-      //tableItems[indexPath.Row];
-      if (ajView.chooseJob.Hidden == true)
-        associateSessionToJob(tableItems[indexPath.Row].SID, cellHeight, ajView);
-      else
-        Console.WriteLine("Job list was already being shown");
-    }
-
-    public void associateSessionToJob(int SID, nfloat cellHeight, AssociateJob ajView) {
-      var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-      var _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
-      var db = new SQLite.SQLiteConnection(_pathToDatabase);  
-
-      var result = db.Query<Job>("SELECT * FROM Job");
-      var queriedJobs = new List<JobData>();
-
-      foreach (var job in result) {
-        queriedJobs.Add(new JobData(job.JID, job.jobName));
+      if (usingSessions.Contains(tableItems[indexPath.Row].SID)) {
+        usingSessions.Remove(tableItems[indexPath.Row].SID);
+        tableView.ReloadData();
+      } else {
+        usingSessions.Add(tableItems[indexPath.Row].SID);
+        tableView.ReloadData();
       }
 
-      ajView.jobList.Source = new LoggingJobSource(queriedJobs, cellHeight);
-      ajView.jobList.ReloadData();
-
-      ajView.frnSID = SID;
-      ajView.chooseJob.Hidden = false;
     }
-
   }
 }
 
-*/
