@@ -1,0 +1,3 @@
+﻿
+"NSLocationAlwaysUsageDescription" = "Use GPS to gain access to current altitude (used in PT calculations)?";
+"CFBundleDisplayName" = "ION HVAC/R";
