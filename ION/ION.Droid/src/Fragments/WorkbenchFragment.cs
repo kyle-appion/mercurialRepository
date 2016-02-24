@@ -306,9 +306,11 @@
         }
       }
 
+#if DEBUG
       ldb.AddItem("Add all subviews", () => {
         AddAllSubviews(manifold);
       });
+#endif
 
       ldb.Show();
     }

@@ -12,9 +12,11 @@
   using Android.Views.Animations;
   using Android.Widget;
 
+  using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Sensors;
+  using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
   using ION.Droid.Dialog;
@@ -38,6 +40,10 @@
     /// The delegate that is called when a manifold is clicked.
     /// </summary>
     public delegate void OnManifoldClicked(AnalyzerView view, Analyzer analyzer, Analyzer.ESide side);
+    /// <summary>
+    /// The delegate that is called when a sensor property is clicked in a manifold on the analyzer.
+    /// </summary>
+    public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
 
     /// <summary>
     /// The event that is called when a sensor mount is clicked.
@@ -51,6 +57,10 @@
     /// The event that is called when a manifold is clicked.
     /// </summary>
     public event OnManifoldClicked onManifoldClicked;
+    /// <summary>
+    /// Called when a sensor property is clicked.
+    /// </summary>
+    public event OnSensorPropertyClicked onSensorPropertyClicked;
 
     /// <summary>
     /// The font that will be used for immdiate text views within the view group.
@@ -215,7 +225,7 @@
         __analyzer = value;
 
         if (__analyzer == null) {
-          __analyzer = new Analyzer();
+          __analyzer = new Analyzer(AppState.context);
         }
 
         __analyzer.onAnalyzerEvent += OnAnalyzerEvent;
@@ -251,7 +261,7 @@
       lowSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
       highSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
 
-      lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache, Resource.Drawable.xml_low_side_background);
+      lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache, Resource.Drawable.xml_low_side_background, OnSensorPropertyClick);
       lowSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, lowSideManifoldTemplate, Analyzer.ESide.Low));
       lowSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         if (lowSideManifoldTemplate.manifold != null) {
@@ -259,7 +269,7 @@
         }
       }));
 
-      highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache, Resource.Drawable.xml_high_side_background);
+      highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache, Resource.Drawable.xml_high_side_background, OnSensorPropertyClick);
       highSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, highSideManifoldTemplate, Analyzer.ESide.High));
       highSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         if (highSideManifoldTemplate.manifold != null) {
@@ -267,7 +277,7 @@
         }
       }));
 
-      analyzer = new Analyzer();
+      analyzer = new Analyzer(AppState.context);
 
       SetWillNotDraw(false);
       Focusable = false;
@@ -870,6 +880,17 @@
     }
 
     /// <summary>
+    /// Called when a sensor property is clicked.
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    /// <param name="sensorProperty">Sensor property.</param>
+    private void OnSensorPropertyClick(Manifold manifold, ISensorProperty sensorProperty) {
+      if (onSensorPropertyClicked != null) {
+        onSensorPropertyClicked(manifold, sensorProperty);
+      }
+    }
+
+    /// <summary>
     /// Notifies the on sensor mount clicked event handler that a sensor mount was clicked.
     /// </summary>
     /// <param name="index">Index.</param>
@@ -1068,7 +1089,7 @@
       private int background;
       private SubviewAdapter adapter;
 
-      public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int background) : base(view, cache) {
+      public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int background, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
         this.list = list;
         this.background = background;
 
@@ -1081,6 +1102,9 @@
         subviews = view.FindViewById<RecyclerView>(Resource.Id.list);
 
         adapter = new SubviewAdapter(cache);
+        adapter.onSensorPropertyClicked += (m, sp) => {
+          clicked(m, sp);
+        };
         list.SetLayoutManager(new LinearLayoutManager(view.Context));
         list.SetAdapter(adapter);
 

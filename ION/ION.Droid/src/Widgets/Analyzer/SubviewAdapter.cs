@@ -24,6 +24,9 @@
   using ION.Droid.Widgets.Templates;
 
   public class SubviewAdapter : RecyclerView.Adapter {
+    public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
+
+    public event OnSensorPropertyClicked onSensorPropertyClicked;
     /// <summary>
     /// The manifold whose sensor properties will be displayed.
     /// </summary>
@@ -91,11 +94,15 @@
 
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
-          return new MeasurementViewHolder(li.Inflate(Resource.Layout.subview_measurement_small, parent, false), cache);
-/*
-        case EViewType.FluidSubview:
-          return new FluidViewHolder(li.Inflate(Resource.Layout.list_item_small_fluid_subview, false), cache);
-*/
+          return new MeasurementSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_small, parent, false), cache);
+        case EViewType.PTChartSubview:
+          return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_small, parent, false));
+        case EViewType.SuperheatSubcoolSubview:
+          return new SuperheatSubcoolSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_small, parent, false));
+        case EViewType.TimerSubview:
+          return new TimerSubviewViewHolder(li.Inflate(Resource.Layout.subview_timer_small, parent, false), cache);
+        case EViewType.RateOfChangeSubview:
+          return new RateOfChangeSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_small, parent, false), cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -108,28 +115,44 @@
     /// <param name="position">Position.</param>
     public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       var viewType = GetItemViewType(position);
+      var record = records[position] as SensorPropertyRecord;
 
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
           var mr = records[position] as MeasurementRecord;
-
+          (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
           if (mr != null) {
-            (holder as MeasurementViewHolder)?.BindTo(mr);
+            (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
           }
           break;
-/*
-        case EViewType.FluidSubview:
-          var fr = records[position] as FluidRecord;
 
-          if (fr != null) {
-            (holder as FluidViewHolder)?.BindTo(fr);
-          }
-
+        case EViewType.RateOfChangeSubview:
+          var rr = record as RateOfChangeSubviewRecord;
+          (holder as RateOfChangeSubviewViewHolder)?.BindTo(rr);
           break;
-*/
-        default:
-          throw new Exception("Unknown view type: " + viewType);
+
+        case EViewType.TimerSubview:
+          var tr = record as TimerSubviewRecord;
+          (holder as TimerSubviewViewHolder)?.BindTo(tr);
+          break;
+
+        case EViewType.PTChartSubview:
+          var pr = record as PTChartSubviewRecord;
+          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
+          break;
+
+        case EViewType.SuperheatSubcoolSubview:
+          var shr = record as SuperheatSubcoolSubviewRecord;
+          (holder as SuperheatSubcoolSubviewViewHolder)?.BindTo(shr);
+          break;
       }
+
+      holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
+        var sp = records[position];
+        if (sp != null && onSensorPropertyClicked != null) {
+          onSensorPropertyClicked(manifold, record.sensorProperty);
+        }
+      }));
     }
 
     /// <summary>
@@ -156,18 +179,6 @@
     }
 
     /// <summary>
-    /// The record that represents a subview.
-    /// </summary>
-    /// <returns>The record for.</returns>
-    /// <param name="sensorProperty">Sensor property.</param>
-    private IRecord CreateRecordFor(ISensorProperty sensorProperty) {
-      if (false) {
-      } else {
-        return new MeasurementRecord(sensorProperty);
-      }
-    }
-
-    /// <summary>
     /// Called when a manifold event is thrown.
     /// </summary>
     /// <param name="me">Me.</param>
@@ -189,64 +200,81 @@
       }
     }
 
-    internal enum EViewType {
-      MeasurementSubview,
-      FluidSubview,
+    /// <summary>
+    /// Creates the record for the given sensor property.
+    /// </summary>
+    /// <returns>The sensor property record.</returns>
+    /// <param name="sp">Sp.</param>
+    private IRecord CreateRecordFor(ISensorProperty sp) {
+      if (sp is PTChartSensorProperty) {
+        return new PTChartSubviewRecord(sp as PTChartSensorProperty);
+      } else if (sp is SuperheatSubcoolSensorProperty) {
+        return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
+      } else if (sp is TimerSensorProperty) {
+        return new TimerSubviewRecord(sp as TimerSensorProperty);
+      } else if (sp is RateOfChangeSensorProperty) {
+        return new RateOfChangeSubviewRecord(sp as RateOfChangeSensorProperty);
+      } else {
+        return new MeasurementRecord(sp);
+      }
     }
   }
 
-  interface IRecord {
-    SubviewAdapter.EViewType viewType { get; }
+  enum EViewType {
+    MeasurementSubview,
+    RateOfChangeSubview,
+    PTChartSubview,
+    SuperheatSubcoolSubview,
+    TimerSubview,
   }
 
-  abstract class SubviewAdapterViewHolder : RecyclerView.ViewHolder {
+  interface IRecord {
+    EViewType viewType { get; }
+  }
+
+  class SensorPropertyRecord : IRecord {
+    public EViewType viewType { get; private set; }
+    public ISensorProperty sensorProperty { get; private set; }
+
+    public SensorPropertyRecord(EViewType viewType, ISensorProperty sensorProperty) {
+      this.viewType = viewType;
+      this.sensorProperty = sensorProperty;
+    }
+  }
+
+  class SensorPropertyRecord<T> : SensorPropertyRecord where T : ISensorProperty {
+    public T item;
+
+    public SensorPropertyRecord(EViewType viewType, T item) : base(viewType, item) {
+      this.item = item;
+    }
+  }
+
+  abstract class SubviewAdapterViewHolder : RecyclerView.ViewHolder, IItemTouchHelperViewHolder {
     public SubviewAdapterViewHolder(View view) : base(view) {
     }
 
     public abstract void BindTo(IRecord t);
     public abstract void Unbind();
+
+    // Overridden from IITouchHelperViewHolder
+    public virtual void OnItemSelected() {
+    }
+
+    // Overridden from IITouchHelperViewHolder
+    public virtual void OnItemClear() {
+    }
   }
 
   abstract class SubviewAdapterViewHolder<T> : SubviewAdapterViewHolder where T : IRecord {
     public SubviewAdapterViewHolder(View view) : base(view) {
     }
 
-    public sealed override void BindTo(IRecord t) {
+    public override void BindTo(IRecord t) {
       BindTo((T)t);
     }
 
     public abstract void BindTo(T t);
-  }
-
-  class MeasurementRecord : IRecord {
-    public SubviewAdapter.EViewType viewType {
-      get {
-        return SubviewAdapter.EViewType.MeasurementSubview;
-      }
-    }
-
-    public ISensorProperty sensorProperty { get; private set; }
-
-    public MeasurementRecord(ISensorProperty sensorProperty) {
-      this.sensorProperty = sensorProperty;
-    }
-  }
-
-  class MeasurementViewHolder : SubviewAdapterViewHolder<MeasurementRecord> {
-    private MeasurementRecord record;
-    private MeasurementSubviewTemplate template;
-
-    public MeasurementViewHolder(View view, BitmapCache cache) : base(view) {
-      template = new MeasurementSubviewTemplate(view, cache);
-    }
-
-    public override void BindTo(MeasurementRecord t) {
-      template.Bind(t.sensorProperty);
-    }
-
-    public override void Unbind() {
-      template.Unbind();
-    }
   }
 }
 

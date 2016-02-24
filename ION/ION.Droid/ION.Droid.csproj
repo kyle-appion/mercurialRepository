@@ -168,6 +168,11 @@
     <Compile Include="src\Preferences\BoundedAlarmPreference.cs" />
     <Compile Include="src\Activity\SensorPreferenceActivity.cs" />
     <Compile Include="src\Fragments\SensorAlarmPreferenceFragment.cs" />
+    <Compile Include="src\Widgets\Analyzer\MeasurementViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\PTChartSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\RateOfChangeSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
