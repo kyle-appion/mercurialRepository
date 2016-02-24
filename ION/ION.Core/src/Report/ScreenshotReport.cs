@@ -16,7 +16,7 @@
     /// The date that the report was created.
     /// </summary>
     /// <value>The created.</value>
-    public DateTime created { get; set; }
+//    public DateTime created { get; set; }
     /// <summary>
     /// The title of the report.
     /// </summary>
@@ -45,7 +45,7 @@
     public byte[] screenshot { get; set; }
 
     public ScreenshotReport() {
-      created = DateTime.Now;
+//      created = DateTime.Now;
       tableData = new string[0, 0];
       notes = "";
       screenshot = new byte[0];

@@ -73,16 +73,16 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Basement">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Base">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Maps">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Location">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.27.0.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +162,12 @@
     <Compile Include="src\Widgets\Templates\RateOfChangeSubviewTemplate.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\RateOfChangeSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchTouchHelperCallback.cs" />
+    <Compile Include="src\Alarms\Alerts\PopupActivityAlert.cs" />
+    <Compile Include="src\Preferences\NumberDialogPreference.cs" />
+    <Compile Include="src\Dialog\NumberEntryDialog.cs" />
+    <Compile Include="src\Preferences\BoundedAlarmPreference.cs" />
+    <Compile Include="src\Activity\SensorPreferenceActivity.cs" />
+    <Compile Include="src\Fragments\SensorAlarmPreferenceFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -367,6 +373,9 @@
     <AndroidResource Include="Resources\layout\dialog_rename.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
+    <AndroidResource Include="Resources\xml\preference_sensor_alarms.xml" />
+    <AndroidResource Include="Resources\layout\preference_bounded_alarm.axml" />
+    <AndroidResource Include="Resources\xml\preferences_sensor.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -410,6 +419,8 @@
     <Folder Include="src\Fragments\" />
     <Folder Include="src\Widgets\Adapters\FileManager\" />
     <Folder Include="src\Tasks\" />
+    <Folder Include="src\Alarms\" />
+    <Folder Include="src\Alarms\Alerts\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">

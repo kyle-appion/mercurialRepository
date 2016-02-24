@@ -145,12 +145,13 @@
         var report = new ScreenshotReport();
 
         report.screenshot = screenshot;
-        report.title = GetString(Resource.String.report_screenshot);
+        report.title = GetString(Resource.String.app_name) + " " + GetString(Resource.String.report_screenshot);
         report.subtitle = nameView.Text;
-        report.created = createdDate;
+//        report.created = createdDate;
         report.notes = notesView.Text;
 
         report.tableData = new string[,] {
+          { GetString(Resource.String.date), createdDate.ToShortDateString() + " " + createdDate.ToShortTimeString() },
           { GetString(Resource.String.address), addressView.Text },
           { GetString(Resource.String.city), cityView.Text },
           { GetString(Resource.String.state), ((Java.Lang.String)stateView.SelectedItem).ToString() },

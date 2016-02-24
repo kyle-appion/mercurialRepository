@@ -8,6 +8,7 @@
   <item name="alarm" type="id"/>
   <item name="arrow" type="id"/>
   <item name="battery" type="id"/>
+  <item name="button" type="id"/>
   <item name="city" type="id"/>
   <item name="clear" type="id"/>
   <item name="close" type="id"/>
@@ -45,6 +46,7 @@
   <item name="status" type="id"/>
   <item name="temperature" type="id"/>
   <item name="title" type="id"/>
+  <item name="toggle" type="id"/>
   <item name="type" type="id"/>
   <item name="unit" type="id"/>
   <item name="view" type="id"/>
