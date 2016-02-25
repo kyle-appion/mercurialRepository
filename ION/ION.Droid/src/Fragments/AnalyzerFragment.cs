@@ -31,10 +31,16 @@
     /// </summary>
     private const int MASK_REQUEST_PAYLOAD = unchecked((int)0x000000ff);
     /// <summary>
+    /// The mask that will get the lower nibble of the second least significant byte.
+    /// </summary>
+    private const int MASK_SIDE = unchecked((int)0x00000f00);
+    /// <summary>
     /// The constant value indicating that the fragment requested a sensor for a sensor mount. The first byte of this
     /// request will be the index of the sensor.
     /// </summary>
     private const int REQUEST_SENSOR_MOUNT_SENSOR = unchecked((int)0x01000000);
+    private const int REQUEST_SHOW_PTCHART = unchecked((int)0x02000000);
+    private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = unchecked((int)0x03000000);
     /// <summary>
     /// The constant that indicates a low side manifold.
     /// </summary>
@@ -69,6 +75,7 @@
       analyzerView.onSensorMountClicked += OnSensorMountClicked;
       analyzerView.onSensorMountLongClicked += OnSensorMountLongClicked;
       analyzerView.onManifoldClicked += OnManifoldClicked;
+      analyzerView.onSensorPropertyClicked += OnSensorPropertyClicked;
 
       return analyzerView;
     }
@@ -82,7 +89,7 @@
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
 
-      analyzer = new Analyzer();
+      analyzer = new Analyzer(ion);
       analyzerView.analyzer = analyzer;
     }
 
@@ -108,7 +115,38 @@
           var index = requestCode & MASK_REQUEST_PAYLOAD;
           var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
           analyzer.PutSensor(index, sp.Get(ion));
-          Log.D(this, "Received a sensor");
+          break;
+
+        case REQUEST_SHOW_SUPERHEAT_SUBCOOL:
+          var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
+          var manifold = analyzer.GetManifoldFromSide(side);
+
+          if (manifold != null) {
+            var psp = data.GetParcelableExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR) as SensorParcelable;
+            var ps = psp.Get(ion);
+
+            var tsp = data.GetParcelableExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR) as SensorParcelable;
+            var ts = tsp.Get(ion);
+
+            switch (manifold.primarySensor.type) {
+              case ESensorType.Pressure:
+                manifold.SetSecondarySensor(ts);
+                if (!analyzer.HasSensor(ts)) {
+                  analyzer.AddSensorToSide(side, ts);
+                }
+                break;
+
+              case ESensorType.Temperature:
+                manifold.SetSecondarySensor(ps);
+                if (!analyzer.HasSensor(ps)) {
+                  analyzer.AddSensorToSide(side, ps);
+                }
+                break;
+            }
+          } else {
+            // TODO ahodder@appioninc.com: Localize this error message.
+            Error("Failed to resolve return data from the superheat/subool activity.");
+          }
           break;
         default:
           Log.D(this, "Unknown request: " + request);
@@ -123,6 +161,15 @@
     /// <param name="sensorMountIndex">Sensor mount index.</param>
     private int EncodeSensorMountRequest(int sensorMountIndex) {
       return REQUEST_SENSOR_MOUNT_SENSOR | (MASK_REQUEST_PAYLOAD & sensorMountIndex);
+    }
+
+    /// <summary>
+    /// Creates an encoded superheat subcool request value.
+    /// </summary>
+    /// <returns>The superheat subcool request.</returns>
+    /// <param name="side">Side.</param>
+    private int EncodeSuperheatSubcoolRequest(Analyzer.ESide side) {
+      return REQUEST_SHOW_SUPERHEAT_SUBCOOL | (MASK_SIDE & ((int)side << 8));
     }
 
     /// <summary>
@@ -142,7 +189,7 @@
       }
 
       ldb.AddItem(Resource.String.rename, () => {
-        Toast.MakeText(Activity, "Rename up in this bitch", ToastLength.Short).Show();
+        new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
 
@@ -151,7 +198,9 @@
       });
 
       ldb.AddItem(Resource.String.alarm, () => {
-        Toast.MakeText(Activity, "Show some alarms up in dis bitch", ToastLength.Short).Show();
+        var i = new Intent(Activity, typeof(SensorPreferenceActivity));
+        i.PutExtra(SensorPreferenceActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
+        StartActivity(i);
       });
 
       if (dgs != null && dgs.device.isConnected) {
@@ -168,7 +217,7 @@
     }
 
     /// <summary>
-    /// Shows a dialog that will allow the user to add subviews to the given manifold.
+    /// Shows the add subview dialog.
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     private void ShowAddSubviewDialog(Manifold manifold) {
@@ -177,7 +226,6 @@
       };
 
       var ldb = new ListDialogBuilder(Activity);
-      ldb.SetTitle(Resource.String.manifold_select_subview);
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {
@@ -205,31 +253,76 @@
 
       if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_hold, Resource.String.workbench_hold_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_timer, Resource.String.workbench_timer_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
         });
       }
 
       if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
         if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
           ldb.AddItem(format(Resource.String.workbench_ptchart, Resource.String.fluid_pt_abrv), () => {
-            manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+            manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
           });
         }
 
         if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
           ldb.AddItem(format(Resource.String.workbench_shsc, Resource.String.workbench_shsc_abrv), () => {
-            manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+            manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
           });
         }
       }
 
+#if DEBUG
+      ldb.AddItem("Add all subviews", () => {
+        AddAllSubviews(manifold);
+      });
+#endif
+
       ldb.Show();
+    }
+
+    /// <summary>
+    /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
+    /// </summary>
+    private void AddAllSubviews(Manifold manifold) {
+      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
+        manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
+        manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
+        manifold.AddSensorProperty(new MaxSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
+        manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+        manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
+      }
+
+      if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {
+        if (!manifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))) {
+          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
+        }
+
+        if (!manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))) {
+          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+        }
+      }
     }
 
     /// <summary>
@@ -273,6 +366,94 @@
 
       if (manifold != null) {
         ShowManifoldContextDialog(manifold);
+      }
+    }
+
+    /// <summary>
+    /// Called when a sensor property is clicked in the analyzer view. Note: either the low or high side may be clicked
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    /// <param name="sensorProperty">Sensor property.</param>
+    private void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty) {
+      var sensor = sensorProperty.sensor;
+
+      if (sensorProperty is AlternateUnitSensorProperty) {
+        var asp = sensorProperty as AlternateUnitSensorProperty;
+        UnitDialog.Create(Activity, sensor.supportedUnits, (obj, u) => {
+          asp.unit = u;
+        }).Show();
+      } else if (sensorProperty is PTChartSensorProperty) {
+        var pt = ((PTChartSensorProperty)sensorProperty);
+        var i = new Intent(Activity, typeof(PTChartActivity));
+        i.SetAction(Intent.ActionPick);
+        i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
+        StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+      } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
+        ViewInSuperheatSubcoolActivity(manifold, sensorProperty);
+      }
+    }
+
+    /// <summary>
+    /// Views the in superheat subcool activity.
+    /// </summary>
+    /// <param name="">.</param>
+    private void ViewInSuperheatSubcoolActivity(Manifold manifold, ISensorProperty sensorProperty) {
+      var side = Analyzer.ESide.Low;
+
+      if (!analyzer.GetSideOfManifold(manifold, out side)) {
+        Error("Failed to open Superheat/Subcool activity; the manifold is not present in the analyzer.");
+        return;
+      }
+
+      // If the manifold does not have a secondary sensor, then we will need to query whether or not the analyzer has
+      // space to accept the returned sensor. If it does not, then we cannot open the activity safely.
+      if (manifold.secondarySensor == null && !analyzer.CanAddSensorToSide(side)) {
+        // TODO ahodder@appioninc.com: Localize this string.
+        var adb = new IONAlertDialog(Activity, Resource.String.error);
+        adb.SetMessage("We cannot open the Superheat / Subcool activity for the clicked subview. Currently, the " + side +
+          " side of the analyzer is full and cannot accept a sensor that is assigned there. Please remove a sensor " +
+          "from the " + side + " of the analyzer to make room.");
+
+        adb.SetNegativeButton(Resource.String.ok, (obj, args) => {
+          var dialog = obj as Android.App.Dialog;
+          dialog.Dismiss();
+        });
+
+        adb.Show();
+        return;
+      }
+
+      var sensor = sensorProperty.sensor;
+      var sp = sensorProperty as SuperheatSubcoolSensorProperty;
+      var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
+      i.SetAction(Intent.ActionPick);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_LOCK_FLUID, true);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_STATE, (int)analyzer.SideAsFluidState(side));
+
+
+      switch (sensor.type) {
+        case ESensorType.Pressure:
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_LOCKED, true);
+          if (manifold.secondarySensor != null) {
+            i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, manifold.secondarySensor.ToParcelable());
+          }
+          StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+          break;
+        case ESensorType.Temperature:
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_LOCKED, true);
+          if (manifold.secondarySensor != null) {
+            i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, manifold.secondarySensor.ToParcelable());
+          }
+          StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+          break;
+        default:
+          var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
+          Log.E(this, msg);
+          Alert(msg);
+          break;
       }
     }
   }

@@ -41,9 +41,9 @@
             android:id="@id/state"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textOn="@string/fluid_bubble"
-            android:textOff="@string/fluid_dew"
-            android:thumb="@drawable/selector_fluid_phase" />
+            android:textOff="@string/fluid_bubble"
+            android:textOn="@string/fluid_dew"
+            android:thumb="@drawable/selector_fluid_state" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space

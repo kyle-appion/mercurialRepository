@@ -23,6 +23,11 @@ namespace ION.Core.Alarms {
     event OnAlarmChanged onAlarmChanged;
 
     /// <summary>
+    /// The unique identifier for the alarm. Do not set this yourself; the alarm manager will resolve it for you.
+    /// </summary>
+    /// <value>The identifier.</value>
+    uint id { get; set; }
+    /// <summary>
     /// The name of the alarm.
     /// </summary>
     string name { get; set; }
