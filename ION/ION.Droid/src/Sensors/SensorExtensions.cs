@@ -16,21 +16,19 @@
     /// <param name="sensorType">Sensor type.</param>
     public static string GetTypeString(this ESensorType sensorType) {
       var ion = (AndroidION)AppState.context;
-      var c = ion.context;
-
       switch (sensorType) {
         case ESensorType.Humidity:
-          return c.GetString(Resource.String.measurement_humidity);
+          return ion.GetString(Resource.String.measurement_humidity);
         case ESensorType.Length:
-          return c.GetString(Resource.String.measurement_length);
+          return ion.GetString(Resource.String.measurement_length);
         case ESensorType.Mass:
-          return c.GetString(Resource.String.measurement_mass);
+          return ion.GetString(Resource.String.measurement_mass);
         case ESensorType.Pressure:
-          return c.GetString(Resource.String.measurement_pressure);
+          return ion.GetString(Resource.String.measurement_pressure);
         case ESensorType.Temperature:
-          return c.GetString(Resource.String.measurement_temperature);
+          return ion.GetString(Resource.String.measurement_temperature);
         default:
-          return c.GetString(Resource.String.measurement_unknown);
+          return ion.GetString(Resource.String.measurement_unknown);
       }
     }
 

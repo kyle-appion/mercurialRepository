@@ -27,20 +27,44 @@
     /// <summary>
     /// The minimum time to wait for the ION context to init.
     /// </summary>
-    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(3);
+    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(5);
 
     // Overridden from Activity
 		protected override void OnCreate (Bundle bundle) {
 			base.OnCreate (bundle);
       SetContentView(Resource.Layout.activity_main);
       Log.printer = new LogPrinter();
+      if (AppState.context == null) {
+        StartService(new Intent(this, typeof(AndroidION)));
+      }
 		}
 
     // Overridden from Activity
-    protected override async void OnResume() {
+    protected override void OnResume() {
       base.OnResume();
 
-      if (!(await InitApplication())) {
+      Task.Factory.StartNew(InitApplication);
+    }
+
+    /// <summary>
+    /// Initializes the application context.
+    /// </summary>
+    private async Task InitApplication() {
+      var success = false;
+
+      var start = DateTime.Now;
+      while (AppState.context == null) {
+        if (DateTime.Now - start > WAIT_TIME) {
+          success = false;
+          break;
+        }
+
+        await Task.Delay(50);
+      }
+
+      success = true;
+
+      if (!success) {
         string msg = "Failed to start ION. Please contact Appion for assistance.";
         Log.E(this, msg);
         var adb = new AlertDialog.Builder(this);
@@ -57,43 +81,5 @@
         Finish();
       }
     }
-
-    /// <summary>
-    /// Initializes the application context.
-    /// </summary>
-    private async Task<bool> InitApplication() {
-      var ion = AppState.context as AndroidION;
-
-      if (ion == null) {
-        try {
-          AppState.context = ion = new AndroidION(ApplicationContext);
-
-          var start = DateTime.Now;
-
-          if (await ion.Init()) {
-            // Wait for minimum time.
-            var d = DateTime.Now - start;
-
-            if (d < WAIT_TIME) {
-              await Task.Delay(WAIT_TIME - d);
-            }
-
-            AppState.context = ion;
-            return true;
-          } else {
-            // TODO ahodder@appioninc.com: display error message dialog at this point
-            return false;
-          }
-        } catch (Exception e) {
-          Log.E(this, "Failed to init ion", e);
-          return false;
-        }
-      } else {
-        Log.D(this, "The ION context is already alive");
-        return true;
-      }
-    }
 	}
 }
-
-
