@@ -56,13 +56,13 @@ namespace ION.Droid.Devices {
     /// <param name="device"></param>
     /// <returns></returns>
     public static string GetDeviceProductName(this IDevice device) {
-      var c = ((AndroidION)AppState.context).context;
+      var ion = (AndroidION)AppState.context;
       switch (device.type) {
         case EDeviceType.Gauge:
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;
           return serialNumber.deviceModel.GetTypeString();
         default:
-          return c.GetString(Resource.String.device_unknown);
+          return ion.GetString(Resource.String.device_unknown);
       }
     }
 
@@ -72,18 +72,18 @@ namespace ION.Droid.Devices {
     /// <param name="type"></param>
     /// <returns></returns>
     public static string GetTypeString(this EDeviceModel type) {
-      var c = ((AndroidION)AppState.context).context;
+      var ion = (AndroidION)AppState.context;
       switch (type) {
         case EDeviceModel.P300:
-          return c.GetString(Resource.String.device_p300);
+          return ion.GetString(Resource.String.device_p300);
         case EDeviceModel.P500:
-          return c.GetString(Resource.String.device_p500);
+          return ion.GetString(Resource.String.device_p500);
         case EDeviceModel.P800:
-          return c.GetString(Resource.String.device_p800);
+          return ion.GetString(Resource.String.device_p800);
         case EDeviceModel.AV760:
-          return c.GetString(Resource.String.device_av760);
+          return ion.GetString(Resource.String.device_av760);
         default:
-          return c.GetString(Resource.String.device_unknown);
+          return ion.GetString(Resource.String.device_unknown);
       }
     }
 
@@ -93,18 +93,18 @@ namespace ION.Droid.Devices {
     /// <param name="type"></param>
     /// <returns></returns>
     public static string GetSensorTypeName(this ESensorType type) {
-      var c = ((AndroidION)AppState.context).context;
+      var ion = (AndroidION)AppState.context;
       switch (type) {
         case ESensorType.Humidity:
-          return c.GetString(Resource.String.measurement_humidity);
+          return ion.GetString(Resource.String.measurement_humidity);
         case ESensorType.Pressure:
-          return c.GetString(Resource.String.measurement_pressure);
+          return ion.GetString(Resource.String.measurement_pressure);
         case ESensorType.Temperature:
-          return c.GetString(Resource.String.measurement_temperature);
+          return ion.GetString(Resource.String.measurement_temperature);
         case ESensorType.Vacuum:
-          return c.GetString(Resource.String.measurement_vacuum);
+          return ion.GetString(Resource.String.measurement_vacuum);
         default:
-          return c.GetString(Resource.String.measurement_unknown);
+          return ion.GetString(Resource.String.measurement_unknown);
       }
     }
   }

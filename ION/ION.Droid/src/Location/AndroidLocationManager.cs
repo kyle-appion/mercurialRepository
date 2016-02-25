@@ -29,8 +29,7 @@
     // Overridden from ILocationManager
     public bool allowLocationTracking {
       get {
-        var c = ion.context;
-        ion.preferences.GetBoolean(c.GetString(Resource.String.preferences_location_use), false);
+        ion.preferences.GetBoolean(ion.GetString(Resource.String.preferences_location_use), false);
         return false;
       }
       set {
@@ -72,7 +71,7 @@
 
     public AndroidLocationManager(AndroidION ion) {
       this.ion = ion;
-      google = new GoogleApiClient.Builder(ion.context)
+      google = new GoogleApiClient.Builder(ion)
         .AddConnectionCallbacks(this)
         .AddOnConnectionFailedListener(this)
         .AddApi(LocationServices.API)

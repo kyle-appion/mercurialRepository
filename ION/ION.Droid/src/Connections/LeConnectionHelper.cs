@@ -91,13 +91,13 @@
       if (device == null) {
         throw new ArgumentException("Create connection for " + address + " failed: no device");
       } else if (BluetoothDeviceType.Le == device.Type) {
-        var ret = new LeConnection(ion.context, manager, device);
+        var ret = new LeConnection(ion, manager, device);
         __leConnections[address] = ret;
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: device not le");
       } else {
         // TODO ahodder@appioninc.com: This is a test and should be removed
-        var ret = new LeConnection(ion.context, manager, device);
+        var ret = new LeConnection(ion, manager, device);
         __leConnections[address] = ret;
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
