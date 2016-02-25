@@ -264,7 +264,7 @@
       }
 
       for (int i = 0; i < sensors.Length; i++) {
-        if (sensor.Equals(sensors[i])) {
+        if (sensor == sensors[i]) {//sensor.Equals(sensors[i])) {
           return i;
         }
       }
@@ -475,7 +475,7 @@
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -673,6 +673,22 @@
     }
 
     /// <summary>
+    /// Queries the fluid state based on the side of the analyzer.
+    /// </summary>
+    /// <returns>The as fluid state.</returns>
+    /// <param name="side">Side.</param>
+    public Fluid.EState SideAsFluidState(ESide side) {
+      switch (side) {
+        case ESide.Low:
+          return Fluid.EState.Bubble;
+        case ESide.High:
+          return Fluid.EState.Dew;
+        default:
+          throw new Exception("Cannot get fluid state from side: " + side);
+      }
+    }
+
+    /// <summary>
     /// Attempts to add the sensor to the into the given range within the analyzer.
     /// </summary>
     /// <returns><c>true</c>, if sensor to high side was added, <c>false</c> otherwise.</returns>
@@ -681,6 +697,7 @@
       for (int i = startInclusive; i < endExclusive; i++) {
         if (sensors[i] == null) {
           sensors[i] = sensor;
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.Added, i));
           return true;
         }
       }

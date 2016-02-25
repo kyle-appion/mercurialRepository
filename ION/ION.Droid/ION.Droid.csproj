@@ -335,7 +335,6 @@
     <AndroidResource Include="Resources\layout\fragment_fluid_list.axml" />
     <AndroidResource Include="Resources\menu\save.xml" />
     <AndroidResource Include="Resources\drawable\ic_lock.png" />
-    <AndroidResource Include="Resources\drawable\selector_fluid_phase.xml" />
     <AndroidResource Include="Resources\layout\device_manager_group.axml" />
     <AndroidResource Include="Resources\layout\device_manager_device.axml" />
     <AndroidResource Include="Resources\layout\device_manager_serial.axml" />
@@ -381,6 +380,7 @@
     <AndroidResource Include="Resources\xml\preference_sensor_alarms.xml" />
     <AndroidResource Include="Resources\layout\preference_bounded_alarm.axml" />
     <AndroidResource Include="Resources\xml\preferences_sensor.xml" />
+    <AndroidResource Include="Resources\drawable\selector_fluid_state.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

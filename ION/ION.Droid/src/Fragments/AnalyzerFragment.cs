@@ -427,19 +427,25 @@
       var sp = sensorProperty as SuperheatSubcoolSensorProperty;
       var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
       i.SetAction(Intent.ActionPick);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_LOCK_FLUID, true);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
+      i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_STATE, (int)analyzer.SideAsFluidState(side));
+
 
       switch (sensor.type) {
         case ESensorType.Pressure:
           i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_LOCKED, true);
           if (manifold.secondarySensor != null) {
-            i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+            i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, manifold.secondarySensor.ToParcelable());
           }
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
         case ESensorType.Temperature:
           i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+          i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_LOCKED, true);
           if (manifold.secondarySensor != null) {
-            i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+            i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, manifold.secondarySensor.ToParcelable());
           }
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
