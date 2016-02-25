@@ -41,9 +41,9 @@
             android:id="@id/state"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textOn="@string/fluid_bubble"
-            android:textOff="@string/fluid_dew"
-            android:thumb="@drawable/selector_fluid_phase" />
+            android:textOff="@string/fluid_bubble"
+            android:textOn="@string/fluid_dew"
+            android:thumb="@drawable/selector_fluid_state" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space
@@ -229,6 +229,17 @@
             android:layout_width="@dimen/ptchart_unit_width"
             android:layout_height="match_parent" />
     </LinearLayout>
+<!-- Section Divider -->
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
+    <View
+        android:background="@color/black"
+        android:layout_height="@dimen/ptchart_section_divider_height"
+        android:layout_width="match_parent" />
+    <Space
+        android:layout_height="@dimen/view_padding"
+        android:layout_width="wrap_content" />
 <!-- Calculated Result Display -->
     <LinearLayout
         android:id="@id/ptchart_calculations"

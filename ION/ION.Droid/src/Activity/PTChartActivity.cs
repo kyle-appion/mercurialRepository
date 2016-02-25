@@ -66,7 +66,7 @@
         fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
         fluidNameView.Text = name;
         fluidPhaseToggleView.Visibility = (__ptChart.fluid.mixture) ? ViewStates.Visible : ViewStates.Invisible;
-        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
+        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Dew;
         if (sensor != null) {
           OnSensorChanged(sensor);
         } else {
@@ -279,9 +279,9 @@
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
       fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((button, isChecked) => {
         if (isChecked) {
-          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
-        } else {
           ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
+        } else {
+          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
         }
       }));
 

@@ -57,11 +57,6 @@
     /// <value><c>true</c> if is relative; otherwise, <c>false</c>.</value>
     public bool isRelative { get; set; }
     /// <summary>
-    /// Whether or not the sensor is editable.
-    /// </summary>
-    /// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
-    public bool isEditable { get; set; }
-    /// <summary>
     /// The unit code for the unit that is being passed.
     /// </summary>
     /// <value>The unit code.</value>
@@ -86,11 +81,8 @@
     }
 
     public ManualSensorParcelable(ManualSensor sensor) {
-      if (sensor is GaugeDeviceSensor) {
-        throw new InvalidOperationException("Do not use a DefaultSensorParcelable to pass a GaugeDeviceSensor. Please use a GaugeDeviceSensorParcelable instead.");
-      }
-
       sensorType = sensor.type;
+      isRelative = sensor.isRelative;
       unitCode = UnitLookup.GetCode(sensor.unit);
       amount = sensor.measurement.amount;
       name = sensor.name;
@@ -110,6 +102,7 @@
       var ret = new ManualSensor(sensorType, isRelative);
 
       ret.name = name;
+      ret.measurement = UnitLookup.GetUnit(unitCode).OfScalar(amount);
 
       return ret;
     }
