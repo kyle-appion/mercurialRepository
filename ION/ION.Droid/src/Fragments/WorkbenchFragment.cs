@@ -227,7 +227,9 @@
       });
 
       ldb.AddItem(Resource.String.alarm, () => {
-        Toast.MakeText(Activity, "Show some alarms up in dis bitch", ToastLength.Short).Show();
+        var i = new Intent(Activity, typeof(SensorPreferenceActivity));
+        i.PutExtra(SensorPreferenceActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
+        StartActivity(i);
       });
 
       if (dgs != null && dgs.device.isConnected) {
@@ -304,9 +306,11 @@
         }
       }
 
+#if DEBUG
       ldb.AddItem("Add all subviews", () => {
         AddAllSubviews(manifold);
       });
+#endif
 
       ldb.Show();
     }

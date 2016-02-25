@@ -20,6 +20,20 @@ namespace ION.Core.Alarms {
     AlarmAlertFactoryDelegate alertFactory { get; set; }
 
     /// <summary>
+    /// Queries the alarm by using the given id. If the alarm does not exist, then null will be returned.
+    /// </summary>
+    /// <returns>The alarm.</returns>
+    /// <param name="id">Identifier.</param>
+    IAlarm GetAlarm(uint id);
+    /// <summary>
+    /// Queries the alarm by using the given id. If the alarm does not exist, or is not of the given type, then null
+    /// will be returned.
+    /// </summary>
+    /// <returns>The alarm.</returns>
+    /// <param name="id">Identifier.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    T GetAlarm<T>(uint id) where T : IAlarm;
+    /// <summary>
     /// Queries a list of alarms that are registered to the given host.
     /// </summary>
     /// <returns>The alarms from host.</returns>

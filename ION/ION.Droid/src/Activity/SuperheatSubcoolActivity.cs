@@ -31,6 +31,10 @@
   public class SuperheatSubcoolActivity : IONActivity {
 
     /// <summary>
+    /// The extra that is used to get whether or not the fluid is locked in the activity.
+    /// </summary>
+    public const string EXTRA_LOCK_FLUID = "ION.Droid.Activity.extra.LOCK_FLUID";
+    /// <summary>
     /// The name of the fluid that is to be used for the activity.
     /// </summary>
     public const string EXTRA_FLUID_NAME = "ION.Droid.Activity.extra.FLUID_NAME";
@@ -43,9 +47,19 @@
     /// </summary>
     public const string EXTRA_PRESSURE_SENSOR = "ION.Droid.Activity.extra.PRESSURE_SENSOR";
     /// <summary>
+    /// The extra that is used if you wish to lock the editability of the pressure sensor. This will only work if a 
+    /// pressure sensor is also provided in the intent.
+    /// </summary>
+    public const string EXTRA_PRESSURE_LOCKED = "ION.Droid.Activity.extra.PRESSURE_LOCKED";
+    /// <summary>
     /// The extra that is used if the wish to provide a temperature sensor to the activity.
     /// </summary>
     public const string EXTRA_TEMPERATURE_SENSOR = "ION.Droid.Activity.extra.TEMPERATURE_SENSOR";
+    /// <summary>
+    /// The extra that is used if you wish to lock the editability of the temperature sensor. This will only work if a
+    /// temperature sensor is also provided in the intent.
+    /// </summary>
+    public const string EXTRA_TEMPERATURE_LOCKED = "ION.Droid.Activity.extra.TEMPERATURE_LOCKED";
 
     /// <summary>
     /// The value that indicates that an activity action/result was for the selection of a fluid.
@@ -185,10 +199,14 @@
         fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
         fluidNameView.Text = name;
         fluidPhaseToggleView.Visibility = (__ptChart.fluid.mixture) ? ViewStates.Visible : ViewStates.Invisible;
-        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
+        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Dew;
         UpdateCalculationMeasurements();
       }
     } PTChart __ptChart;
+    /// <summary>
+    /// Whether or not the fluid is locked by request.
+    /// </summary>
+    private bool isFluidLocked;
 
     /// <summary>
     /// The sensor that will hold / provide the pressure measurements for calculation.
@@ -205,6 +223,7 @@
 
         if (value == null) {
           value = new ManualSensor(ESensorType.Pressure, true);
+          value.name = GetString(Resource.String.manual);
         }
 
         __pressureSensor = value;
@@ -218,7 +237,7 @@
           pressureClearView.Visibility = ViewStates.Gone;
         } else {
           pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
-          pressureEntryView.Enabled = isPressureLocked;
+          pressureEntryView.Enabled = !isPressureLocked;
           pressureClearView.Visibility = ViewStates.Visible;
         }
       }
@@ -238,6 +257,7 @@
 
         if (value == null) {
           value = new ManualSensor(ESensorType.Temperature, false);
+          value.name = GetString(Resource.String.manual);
         }
 
         __temperatureSensor = value;
@@ -251,7 +271,7 @@
           temperatureClearView.Visibility = ViewStates.Gone;
         } else {
           temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
-          temperatureEntryView.Enabled = isTemperatureLocked;
+          temperatureEntryView.Enabled = !isTemperatureLocked;
           temperatureClearView.Visibility = ViewStates.Visible;
         }
       }
@@ -299,16 +319,20 @@
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
       __pressureSensor = new ManualSensor(ESensorType.Pressure);
+      __pressureSensor.name = GetString(Resource.String.manual);
       __pressureSensor.onSensorStateChangedEvent += OnPressureSensorChanged;
 
       __temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+      __temperatureSensor.name = GetString(Resource.String.manual);
       __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
 
       FindViewById(Resource.Id.fluid).SetOnClickListener(new ViewClickAction((view) => {
-        var i = new Intent(this, typeof(FluidManagerActivity));
-        i.SetAction(Intent.ActionPick);
-        i.PutExtra(FluidManagerActivity.EXTRA_SELECTED, ion.fluidManager.lastUsedFluid.name);
-        StartActivityForResult(i, REQUEST_FLUID);
+        if (!isFluidLocked) {
+          var i = new Intent(this, typeof(FluidManagerActivity));
+          i.SetAction(Intent.ActionPick);
+          i.PutExtra(FluidManagerActivity.EXTRA_SELECTED, ion.fluidManager.lastUsedFluid.name);
+          StartActivityForResult(i, REQUEST_FLUID);
+        }
       }));
 
       fluidColorView = FindViewById(Resource.Id.color);
@@ -316,9 +340,9 @@
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
       fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((v, isChecked) => {
         if (isChecked) {
-          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
-        } else {
           ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
+        } else {
+          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
         }
       }));
 
@@ -329,6 +353,8 @@
       pressureSensor.unit = ion.defaultUnits.pressure;
       temperatureSensor.unit = ion.defaultUnits.temperature;
 
+      isFluidLocked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
+      fluidPhaseToggleView.Enabled = !isFluidLocked;
       if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
         var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
         var fluid = await ion.fluidManager.GetFluidAsync(name);
@@ -344,8 +370,8 @@
       if (Intent.HasExtra(EXTRA_PRESSURE_SENSOR)) {
         var sp = Intent.GetParcelableExtra(EXTRA_PRESSURE_SENSOR) as SensorParcelable;
         if (sp != null) {
-          isPressureLocked = true;
           pressureSensor = sp.Get(ion);
+          isPressureLocked = Intent.GetBooleanExtra(EXTRA_PRESSURE_LOCKED, false);
         }
       }
 
@@ -353,8 +379,8 @@
       if (Intent.HasExtra(EXTRA_TEMPERATURE_SENSOR)) {
         var sp = Intent.GetParcelableExtra(EXTRA_TEMPERATURE_SENSOR) as SensorParcelable;
         if (sp != null) {
-          isTemperatureLocked = true;
           temperatureSensor = sp.Get(ion);
+          isTemperatureLocked = Intent.GetBooleanExtra(EXTRA_TEMPERATURE_LOCKED, false);
         }
       }
 
@@ -369,6 +395,25 @@
       base.OnResume();
     }
 
+    /// <Docs>The options menu in which you place your items.</Docs>
+    /// <returns>To be added.</returns>
+    /// <summary>
+    /// Raises the create options menu event.
+    /// </summary>
+    /// <param name="menu">Menu.</param>
+    public override bool OnCreateOptionsMenu(IMenu menu) {
+      base.OnCreateOptionsMenu(menu);
+
+      MenuInflater.Inflate(Resource.Menu.ok_done, menu);
+
+      var item = menu.FindItem(Resource.Id.ok_done);
+      item.ActionView.SetOnClickListener(new ViewClickAction((v) => {
+        ReturnWithResult();
+      }));
+
+      return true;
+    }
+
     /// <Docs>The panel that the menu is in.</Docs>
     /// <summary>
     /// Raises the menu item selected event.
@@ -380,6 +425,9 @@
         case Android.Resource.Id.Home:
           SetResult(Result.Canceled);
           Finish();
+          return true;
+        case Resource.Id.ok_done:
+          ReturnWithResult();
           return true;
         default:
           return base.OnMenuItemSelected(featureId, item);
@@ -430,6 +478,21 @@
     }
 
     /// <summary>
+    /// Returns from the activity with a fully packed intent describing the state of the activity upon completion.
+    /// </summary>
+    private void ReturnWithResult() {
+      var ret = new Intent();
+
+      ret.PutExtra(EXTRA_FLUID_NAME, ptChart.fluid.name);
+      ret.PutExtra(EXTRA_FLUID_STATE, (int)ptChart.state);
+      ret.PutExtra(EXTRA_PRESSURE_SENSOR, pressureSensor.ToParcelable());
+      ret.PutExtra(EXTRA_TEMPERATURE_SENSOR, temperatureSensor.ToParcelable());
+
+      SetResult(Result.Ok, ret);
+      Finish();
+    }
+
+    /// <summary>
     /// Initializes the pressure widgets for the activity.
     /// </summary>
     private void InitPressureWidgets() {
@@ -453,7 +516,7 @@
       });
 
       pressureAddView.SetOnClickListener(new ViewClickAction((view) => {
-        if (!(temperatureSensor is GaugeDeviceSensor)) {
+        if (!isPressureLocked) {
           var i = new Intent(this, typeof(DeviceManagerActivity));
           i.SetAction(Intent.ActionPick);
           i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)EDeviceFilter.Pressure);
@@ -464,6 +527,7 @@
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
         if (!isPressureLocked) {
           pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+          pressureSensor.name = GetString(Resource.String.manual);
           pressureEntryView.Enabled = true;
         }
       }));
@@ -533,6 +597,7 @@
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
         if (!isTemperatureLocked) {
           temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+          temperatureSensor.name = GetString(Resource.String.manual);
           temperatureEntryView.Enabled = true;
         }
       }));
@@ -606,11 +671,11 @@
 
       switch (ptChart.state) {
         case Fluid.EState.Bubble:
-          fluidStateTextView.Text = GetString(Resource.String.fluid_sc_abrv);
-          fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.red)));          
+          fluidStateTextView.Text = GetString(Resource.String.fluid_sc);
+          fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.red)));
           break;
         case Fluid.EState.Dew:
-          fluidStateTextView.Text = GetString(Resource.String.fluid_sh_abrv);
+          fluidStateTextView.Text = GetString(Resource.String.fluid_sh);
           fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.blue)));
           break;
       }

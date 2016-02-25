@@ -16,15 +16,28 @@ namespace ION.Core.Alarms {
       return new MockAlarmAlert(alarm);
     }
 
+    /// <summary>
+    /// The constant that marks an alarm as not having and id.
+    /// </summary>
+    private const uint NO_ID = 0;
 
     // Overridden from IAlarmManager
     public AlarmAlertFactoryDelegate alertFactory { get; set; }
+
+    /// <summary>
+    /// The counter that will increment for new alarm ids when alarms are added to the manager.
+    /// </summary>
+    private uint alarmIdCounter;
 
     /// <summary>
     /// The ion instance hosting the alarm manager.
     /// </summary>
     /// <value>The ion.</value>
     private IION ion { get; set; }
+    /// <summary>
+    /// A mapping of alarm ids to alarms.
+    /// </summary>
+    private Dictionary<uint, IAlarm> __idAlarmMapping = new Dictionary<uint, IAlarm>();
     /// <summary>
     /// The collection of alarms to their mapping objects (objects that
     /// they are linked to).
@@ -49,19 +62,62 @@ namespace ION.Core.Alarms {
       this.alertFactory = alertFactory;
     }
 
-    // Overridden from IAlarmManager
-    public async Task<InitializationResult> InitAsync() {
-      return new InitializationResult() { success = true };
+    /// <summary>
+    /// Initializes the IIONManager to the given IION.
+    /// </summary>
+    /// <returns>The async.</returns>
+    public Task<InitializationResult> InitAsync() {
+      return Task.FromResult(new InitializationResult() { success = true });
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Releases all resource used by the <see cref="ION.Core.Alarms.BaseAlarmManager"/> object.
+    /// </summary>
+    /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="ION.Core.Alarms.BaseAlarmManager"/>. The
+    /// <see cref="Dispose"/> method leaves the <see cref="ION.Core.Alarms.BaseAlarmManager"/> in an unusable state.
+    /// After calling <see cref="Dispose"/>, you must release all references to the
+    /// <see cref="ION.Core.Alarms.BaseAlarmManager"/> so the garbage collector can reclaim the memory that the
+    /// <see cref="ION.Core.Alarms.BaseAlarmManager"/> was occupying.</remarks>
     public void Dispose() {
       foreach (var alert in __firingAlerts) {
         alert.Stop();
       }
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Queries the alarm by using the given id. If the alarm does not exist, then null will be returned.
+    /// </summary>
+    /// <returns>The alarm.</returns>
+    /// <param name="id">Identifier.</param>
+    public IAlarm GetAlarm(uint id) {
+      if (__idAlarmMapping.ContainsKey(id)) {
+        return __idAlarmMapping[id];
+      } else {
+        return null;
+      }
+    }
+
+    /// <summary>
+    /// Queries the alarm by using the given id. If the alarm does not exist, then null will be returned.
+    /// </summary>
+    /// <returns>The alarm.</returns>
+    /// <param name="id">Identifier.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
+    public T GetAlarm<T>(uint id) where T : IAlarm {
+      var alarm = GetAlarm(id);
+
+      if (alarm != null && alarm is T) {
+        return (T)alarm;
+      } else {
+        return default(T);
+      }
+    }
+
+    /// <summary>
+    /// Queries a list of alarms that are registered to the given host.
+    /// </summary>
+    /// <returns>The alarms from host.</returns>
+    /// <param name="host">Host.</param>
     public List<IAlarm> GetAlarmsFromHost(object host) {
       List<IAlarm> ret = new List<IAlarm>();
 
@@ -72,7 +128,13 @@ namespace ION.Core.Alarms {
       return ret;
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Queries an alarm of the given type from the host's alarm collection
+    /// (if present).
+    /// </summary>
+    /// <returns>The alarm of type from host or null if the host or the alarm is not present.</returns>
+    /// <param name="host">Host.</param>
+    /// <typeparam name="T">The 1st type parameter.</typeparam>
     public T GetAlarmOfTypeFromHost<T>(object host) where T : IAlarm {
       if (__alarmMapping.ContainsKey(host)) {
         foreach (var alarm in __alarmMapping[host]) {
@@ -85,7 +147,12 @@ namespace ION.Core.Alarms {
       return default(T);
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Queries whether or not the host has one or more active alarms.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    /// <param name="host">Host.</param>
     public bool HostHasEnabledAlarms(object host) {
       foreach (IAlarm alarm in GetAlarmsFromHost(host)) {
         if (alarm.enabled) {
@@ -96,12 +163,21 @@ namespace ION.Core.Alarms {
       return false;
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Applies a custom alarm alert for the given alarm.
+    /// </summary>
+    /// <param name="alarm">Alarm.</param>
+    /// <param name="alertMode">alarm alert. Null allowed.</param>
     public void SetAlertModeForAlarm(IAlarm alarm, IAlarmAlert alertMode) {
       __alertMapping[alarm] = alertMode;
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Registers the given alarm to the given host.
+    /// </summary>
+    /// <param name="host">Host.</param>
+    /// <param name="alarm">Alarm.</param>
+    /// <returns>True if the alarm was registered to the host.</returns>
     public bool RegisterAlarmToHost(object host, IAlarm alarm) {
       if (HostHasAlarmOfType(alarm.GetType(), host)) {
         Log.D(this, "Object " + host.GetHashCode() + " already has an alarm of type " + alarm.GetType().Name);
@@ -115,27 +191,41 @@ namespace ION.Core.Alarms {
         __alarmMapping[host] = alarms = new HashSet<IAlarm>();
       }
 
+      alarm.id = ++alarmIdCounter;
+      __idAlarmMapping.Add(alarm.id, alarm);
       alarms.Add(alarm);
       alarm.onAlarmTriggered += OnAlarmTriggered;
+
 
       return true;
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Unregisters the alarm from the host.
+    /// </summary>
+    /// <param name="host">Host.</param>
+    /// <param name="alarm">Alarm.</param>
     public void UnregisterAlarmFromHost(object host, IAlarm alarm) {
       if (__alarmMapping.ContainsKey(host)) {
         __alarmMapping[host].Remove(alarm);
+        alarm.onAlarmTriggered -= OnAlarmTriggered;
+
+        if (__alarmMapping[host].Count == 0) {
+          __alarmMapping[host] = null;
+        }
       }
     }
 
-    // Overridden from IAlarmManager
+    /// <summary>
+    /// Unregisters all of the host's alarms (if any).
+    /// </summary>
+    /// <param name="host">Host.</param>
     public void UnregisterAllAlarmsFromHost(object host) {
       if (__alarmMapping.ContainsKey(host)) {
         foreach (var alarm in __alarmMapping[host]) {
-          alarm.onAlarmTriggered -= OnAlarmTriggered;
+          UnregisterAlarmFromHost(host, alarm);
         }
       }
-      __alarmMapping[host] = new HashSet<IAlarm>();
     }
 
     /// <summary>
