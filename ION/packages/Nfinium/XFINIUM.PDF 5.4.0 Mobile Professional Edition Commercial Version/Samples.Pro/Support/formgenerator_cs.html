@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\FormGenerator.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Forms<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Actions<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// FormGenerator sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> FormGenerator
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">()</span>
+        <span class="hl opt">{</span>
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">();</span>
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">);</span>
+            PdfBrush brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// First name</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;First name:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            PdfTextBoxField firstNameTextBox <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextBoxField</span><span class="hl opt">(</span><span class="hl str">&quot;firstname&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>firstNameTextBox<span class="hl opt">);</span>
+            firstNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            firstNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">45</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            firstNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            firstNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// Last name</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Last name:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">80</span><span class="hl opt">);</span>
+            PdfTextBoxField lastNameTextBox <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextBoxField</span><span class="hl opt">(</span><span class="hl str">&quot;lastname&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>lastNameTextBox<span class="hl opt">);</span>
+            lastNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            lastNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">75</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            lastNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            lastNameTextBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// Sex</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Sex:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">);</span>
+            PdfRadioButtonField sexRadioButton <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRadioButtonField</span><span class="hl opt">(</span><span class="hl str">&quot;sex&quot;</span><span class="hl opt">);</span>
+            PdfRadioButtonWidget maleRadioItem <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRadioButtonWidget</span><span class="hl opt">();</span>
+            sexRadioButton<span class="hl opt">.</span>Widgets<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>maleRadioItem<span class="hl opt">);</span>
+            PdfRadioButtonWidget femaleRadioItem <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRadioButtonWidget</span><span class="hl opt">();</span>
+            sexRadioButton<span class="hl opt">.</span>Widgets<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>femaleRadioItem<span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>sexRadioButton<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Male&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">180</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">);</span>
+            maleRadioItem<span class="hl opt">.</span>ExportValue <span class="hl opt">=</span> <span class="hl str">&quot;M&quot;</span><span class="hl opt">;</span>
+            maleRadioItem<span class="hl opt">.</span>CheckStyle <span class="hl opt">=</span> PdfCheckStyle<span class="hl opt">.</span>Circle<span class="hl opt">;</span>
+            maleRadioItem<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">105</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            maleRadioItem<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            maleRadioItem<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Female&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">280</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">);</span>
+            femaleRadioItem<span class="hl opt">.</span>ExportValue <span class="hl opt">=</span> <span class="hl str">&quot;F&quot;</span><span class="hl opt">;</span>
+            femaleRadioItem<span class="hl opt">.</span>CheckStyle <span class="hl opt">=</span> PdfCheckStyle<span class="hl opt">.</span>Circle<span class="hl opt">;</span>
+            femaleRadioItem<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">105</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            femaleRadioItem<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            femaleRadioItem<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// First car</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;First car:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">140</span><span class="hl opt">);</span>
+            PdfComboBoxField firstCarList <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfComboBoxField</span><span class="hl opt">(</span><span class="hl str">&quot;firstcar&quot;</span><span class="hl opt">);</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Mercedes&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Mercedes&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;BMW&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;BMW&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Audi&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Audi&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Volkswagen&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Volkswagen&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Porsche&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Porsche&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Honda&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Honda&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Toyota&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Toyota&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Lexus&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Lexus&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Infiniti&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Infiniti&quot;</span><span class="hl opt">));</span>
+            firstCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Acura&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Acura&quot;</span><span class="hl opt">));</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>firstCarList<span class="hl opt">);</span>
+            firstCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            firstCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">135</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            firstCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            firstCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// Second car</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Second car:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">170</span><span class="hl opt">);</span>
+            PdfListBoxField secondCarList <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfListBoxField</span><span class="hl opt">(</span><span class="hl str">&quot;secondcar&quot;</span><span class="hl opt">);</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Mercedes&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Mercedes&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;BMW&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;BMW&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Audi&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Audi&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Volkswagen&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Volkswagen&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Porsche&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Porsche&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Honda&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Honda&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Toyota&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Toyota&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Lexus&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Lexus&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Infiniti&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Infiniti&quot;</span><span class="hl opt">));</span>
+            secondCarList<span class="hl opt">.</span>Items<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfListItem</span><span class="hl opt">(</span><span class="hl str">&quot;Acura&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Acura&quot;</span><span class="hl opt">));</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>secondCarList<span class="hl opt">);</span>
+            secondCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            secondCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">165</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">60</span><span class="hl opt">);</span>
+            secondCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            secondCarList<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// I agree</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;I agree:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">240</span><span class="hl opt">);</span>
+            PdfCheckBoxField agreeCheckBox <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfCheckBoxField</span><span class="hl opt">(</span><span class="hl str">&quot;agree&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>agreeCheckBox<span class="hl opt">);</span>
+            agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            <span class="hl opt">(</span>agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> as PdfCheckWidget<span class="hl opt">).</span>ExportValue <span class="hl opt">=</span> <span class="hl str">&quot;YES&quot;</span><span class="hl opt">;</span>
+            <span class="hl opt">(</span>agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> as PdfCheckWidget<span class="hl opt">).</span>CheckStyle <span class="hl opt">=</span> PdfCheckStyle<span class="hl opt">.</span>Check<span class="hl opt">;</span>
+            agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">235</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">);</span>
+            agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>Black<span class="hl opt">;</span>
+            agreeCheckBox<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// Sign here</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Sign here:&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">270</span><span class="hl opt">);</span>
+            PdfSignatureField signHereField <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfSignatureField</span><span class="hl opt">(</span><span class="hl str">&quot;signhere&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>signHereField<span class="hl opt">);</span>
+            signHereField<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            signHereField<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">60</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Submit form</span>
+            PdfPushButtonField submitBtn <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPushButtonField</span><span class="hl opt">(</span><span class="hl str">&quot;submit&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>submitBtn<span class="hl opt">);</span>
+            submitBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">45</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">);</span>
+            <span class="hl opt">(</span>submitBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> as PdfPushButtonWidget<span class="hl opt">).</span>Caption <span class="hl opt">=</span> <span class="hl str">&quot;Submit form&quot;</span><span class="hl opt">;</span>
+            submitBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BackgroundColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>LightGray<span class="hl opt">;</span>
+            PdfSubmitFormAction submitFormAction <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfSubmitFormAction</span><span class="hl opt">();</span>
+            submitFormAction<span class="hl opt">.</span>DataFormat <span class="hl opt">=</span> PdfSubmitDataFormat<span class="hl opt">.</span>FDF<span class="hl opt">;</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;firstname&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;lastname&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;sex&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;firstcar&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;secondcar&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;agree&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span><span class="hl str">&quot;signhere&quot;</span><span class="hl opt">);</span>
+            submitFormAction<span class="hl opt">.</span>SubmitFields <span class="hl opt">=</span> <span class="hl kwa">true</span><span class="hl opt">;</span>
+            submitFormAction<span class="hl opt">.</span>Url <span class="hl opt">=</span> <span class="hl str">&quot;http://www.xfiniumsoft.com/&quot;</span><span class="hl opt">;</span>
+            submitBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>MouseUp <span class="hl opt">=</span> submitFormAction<span class="hl opt">;</span>
+
+            <span class="hl slc">// Reset form</span>
+            PdfPushButtonField resetBtn <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPushButtonField</span><span class="hl opt">(</span><span class="hl str">&quot;reset&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>resetBtn<span class="hl opt">);</span>
+            resetBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">85</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">);</span>
+            <span class="hl opt">(</span>resetBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> as PdfPushButtonWidget<span class="hl opt">).</span>Caption <span class="hl opt">=</span> <span class="hl str">&quot;Reset form&quot;</span><span class="hl opt">;</span>
+            resetBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BackgroundColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>LightGray<span class="hl opt">;</span>
+            PdfResetFormAction resetFormAction <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfResetFormAction</span><span class="hl opt">();</span>
+            resetBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>MouseUp <span class="hl opt">=</span> resetFormAction<span class="hl opt">;</span>
+
+            <span class="hl slc">// Print form</span>
+            PdfPushButtonField printBtn <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPushButtonField</span><span class="hl opt">(</span><span class="hl str">&quot;print&quot;</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Fields<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>printBtn<span class="hl opt">);</span>
+            printBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">);</span>
+            <span class="hl opt">(</span>printBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">]</span> as PdfPushButtonWidget<span class="hl opt">).</span>Caption <span class="hl opt">=</span> <span class="hl str">&quot;Print form&quot;</span><span class="hl opt">;</span>
+            printBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>BackgroundColor <span class="hl opt">=</span> PdfRgbColor<span class="hl opt">.</span>LightGray<span class="hl opt">;</span>
+            PdfJavaScriptAction printAction <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfJavaScriptAction</span><span class="hl opt">();</span>
+            printAction<span class="hl opt">.</span>Script <span class="hl opt">=</span> <span class="hl str">&quot;this.print(true);</span><span class="hl esc">\n</span><span class="hl str">&quot;</span><span class="hl opt">;</span>
+            printBtn<span class="hl opt">.</span>Widgets<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">].</span>MouseUp <span class="hl opt">=</span> printAction<span class="hl opt">;</span>
+
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.formgenerator.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->

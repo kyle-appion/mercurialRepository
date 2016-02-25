@@ -1,0 +1,442 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{71313512-D5C3-4E37-BCFB-88A36B5C080B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>ION.Droid</RootNamespace>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidApplication>True</AndroidApplication>
+    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AssemblyName>ION.Droid</AssemblyName>
+    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <ConsolePause>false</ConsolePause>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <ConsolePause>false</ConsolePause>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="Xfinium.Pdf.Xamarin.Android">
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\Xfinium.Pdf.Xamarin.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Render.Xamarin.Android">
+      <HintPath>..\packages\Nfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\Xfinium.Pdf.Render.Xamarin.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net">
+      <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
+    </Reference>
+    <Reference Include="SQLite.Net.Platform.XamarinAndroid">
+      <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Android.Export" />
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v13">
+      <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Location">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="src\Activity\MainActivity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Dialog\IONAlertDialog.cs" />
+    <Compile Include="src\Dialog\ListDialogBuilder.cs" />
+    <Compile Include="src\Util\BitmapCache.cs" />
+    <Compile Include="src\Util\LogPrinter.cs" />
+    <Compile Include="src\Connections\LeConnection.cs" />
+    <Compile Include="src\App\AndroidION.cs" />
+    <Compile Include="src\IO\AndroidFileManager.cs" />
+    <Compile Include="src\Location\AndroidLocationManager.cs" />
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="src\Sensors\SensorExtensions.cs" />
+    <Compile Include="src\Devices\DeviceExtensions.cs" />
+    <Compile Include="src\Activity\HomeActivity.cs" />
+    <Compile Include="src\Widgets\Adapters\Navigation\NavigationItem.cs" />
+    <Compile Include="src\Widgets\Adapters\Navigation\NavigationAdapter.cs" />
+    <Compile Include="src\Activity\IONActivity.cs" />
+    <Compile Include="src\Activity\IONPreferenceActivity.cs" />
+    <Compile Include="src\Preferences\IntListPreference.cs" />
+    <Compile Include="src\Activity\PTChartActivity.cs" />
+    <Compile Include="src\Views\ViewClickAction.cs" />
+    <Compile Include="src\Activity\FluidManagerActivity.cs" />
+    <Compile Include="src\Views\AdapterViewItemClickedAction.cs" />
+    <Compile Include="src\Views\ViewLongClickAction.cs" />
+    <Compile Include="src\Devices\DeviceParcelable.cs" />
+    <Compile Include="src\Util\GenericParcelableCreator.cs" />
+    <Compile Include="src\Sensors\SensorParcelable.cs" />
+    <Compile Include="src\Widgets\ListViewExtensions.cs" />
+    <Compile Include="src\Connections\LeConnectionHelper.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
+    <Compile Include="src\Activity\DeviceManagerActivity.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperViewHolder.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IOnStartDragListener.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SimpleItemTouchHelperCallback.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\TouchListenerHelper.cs" />
+    <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
+    <Compile Include="src\Dialog\UnitDialog.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IOnStartSwipeListener.cs" />
+    <Compile Include="src\Sensors\Properties\SensorPropertyExtensions.cs" />
+    <Compile Include="src\Widgets\Adapters\IONRecyclerViewAdapter.cs" />
+    <Compile Include="src\Widgets\Analyzer\AnalyzerView.cs" />
+    <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
+    <Compile Include="src\Widgets\Templates\ManifoldViewTemplate.cs" />
+    <Compile Include="src\Widgets\Analyzer\SensorMount.cs" />
+    <Compile Include="src\Fragments\IONFragment.cs" />
+    <Compile Include="src\Fragments\WorkbenchFragment.cs" />
+    <Compile Include="src\Fragments\GeneralApplicationSettingsFragment.cs" />
+    <Compile Include="src\Fragments\FluidFragment.cs" />
+    <Compile Include="src\Fragments\AnalyzerFragment.cs" />
+    <Compile Include="src\Activity\ScreenshotActivity.cs" />
+    <Compile Include="src\Fragments\FileManagerFragment.cs" />
+    <Compile Include="src\Widgets\Adapters\FileManager\FileManagerAdapter.cs" />
+    <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
+    <Compile Include="src\IO\FileExtensions.cs" />
+    <Compile Include="src\Activity\PdfViewerActivity.cs" />
+    <Compile Include="src\Tasks\DownloadCalibrationCertificateTask.cs" />
+    <Compile Include="src\Tasks\IONTask.cs" />
+    <Compile Include="src\Activity\CalibrationCertificateArchiveActivity.cs" />
+    <Compile Include="src\Animations\AnimationHelper.cs" />
+    <Compile Include="src\Widgets\Analyzer\SubviewAdapter.cs" />
+    <Compile Include="src\Widgets\Templates\MeasurementSubviewTemplate.cs" />
+    <Compile Include="src\Views\ViewCheckChangedAction.cs" />
+    <Compile Include="src\Widgets\Templates\PTChartSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Templates\SuperheatSubcoolSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\PTChartSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\MeasurementViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\SuperheatSubcoolSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\ManifoldSubviewViewHolder.cs" />
+    <Compile Include="src\Dialog\RenameDialog.cs" />
+    <Compile Include="src\Widgets\Templates\TimerSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\TimerSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Templates\RateOfChangeSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\RateOfChangeSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchTouchHelperCallback.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Assets\AboutAssets.txt" />
+    <AndroidResource Include="Resources\values\Colors.xml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_group.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\list_item_device_manager_device.axml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_sensor.axml" />
+    <AndroidResource Include="Resources\layout\list_item_device_manager_sensor_content.axml" />
+    <AndroidResource Include="Resources\values\Dimens_Static.xml" />
+    <AndroidResource Include="Resources\layout\button_scan.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\dialog_title.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <None Include="packages.config" />
+    <AndroidResource Include="Resources\drawable\img_splash_screen.png" />
+    <AndroidResource Include="Resources\drawable\hidden_button_selector.xml" />
+    <AndroidResource Include="Resources\drawable\ic_action_accept.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_edit.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_pause.png" />
+    <AndroidResource Include="Resources\drawable\ic_action_play.png" />
+    <AndroidResource Include="Resources\drawable\ic_alarm_active.png" />
+    <AndroidResource Include="Resources\drawable\ic_alarm_add.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downblack.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downfloor.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_downwhite.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_trenddown.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_trendup.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upblack.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upcieling.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_upwhite.png" />
+    <AndroidResource Include="Resources\drawable\ic_association.9.png" />
+    <AndroidResource Include="Resources\drawable\ic_association_linked.9.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_100.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_25.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_50.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_75.png" />
+    <AndroidResource Include="Resources\drawable\ic_battery_horiz_empty.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_broadcast.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_disconnected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_c3_paired.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_connected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_disconnected.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_nearby.png" />
+    <AndroidResource Include="Resources\drawable\ic_bluetooth_unknown.png" />
+    <AndroidResource Include="Resources\drawable\ic_bookmark.png" />
+    <AndroidResource Include="Resources\drawable\ic_compressor.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add_to_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_add_to_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_on_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_devices_on_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_document.png" />
+    <AndroidResource Include="Resources\drawable\ic_drawer.png" />
+    <AndroidResource Include="Resources\drawable\ic_expansionchamber.png" />
+    <AndroidResource Include="Resources\drawable\ic_folder.png" />
+    <AndroidResource Include="Resources\drawable\ic_gears.png" />
+    <AndroidResource Include="Resources\drawable\ic_link.png" />
+    <AndroidResource Include="Resources\drawable\ic_logo_appiondefault.png" />
+    <AndroidResource Include="Resources\drawable\ic_menu_moreoverflow.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_certificate.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_devmanager.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_power.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_ptconversion.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_screenshot.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_supersub.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_workbench.png" />
+    <AndroidResource Include="Resources\drawable\ic_pdf.png" />
+    <AndroidResource Include="Resources\drawable\ic_refresh.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gauge_tss.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugeav760.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep300.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep500.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugep800.png" />
+    <AndroidResource Include="Resources\drawable\ic_search.png" />
+    <AndroidResource Include="Resources\drawable\ic_settings.png" />
+    <AndroidResource Include="Resources\drawable\ic_subview_dropdown.png" />
+    <AndroidResource Include="Resources\drawable\ic_trash.png" />
+    <AndroidResource Include="Resources\drawable\icon_warning.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_carbon.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_dialog.9.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_list_white.9.png" />
+    <AndroidResource Include="Resources\drawable\img_bgd_subviewdisplay.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_blackclosex.png" />
+    <AndroidResource Include="Resources\drawable\img_button_down_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_up_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\img_button_whiteclosex.png" />
+    <AndroidResource Include="Resources\drawable\img_handle_left.9.png" />
+    <AndroidResource Include="Resources\drawable\img_handle_right.9.png" />
+    <AndroidResource Include="Resources\drawable\np_analyzer_slot.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_left_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_right_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_blue_tab.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_gray_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_green_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_light_blue_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_light_gray_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_padding_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_red_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_transparent_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_white_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_bordered_yellow_square.9.png" />
+    <AndroidResource Include="Resources\drawable\np_empty_viewer_curve_left.9.png" />
+    <AndroidResource Include="Resources\drawable\np_empty_viewer_curve_right.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_lower_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_red.9.png" />
+    <AndroidResource Include="Resources\drawable\np_half_rounded_square_upper_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_left_side_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rect_white_black_border.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_left_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_right_curve_corner.9.png" />
+    <AndroidResource Include="Resources\drawable\np_red_tab.9.png" />
+    <AndroidResource Include="Resources\drawable\np_right_side_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_green.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_light_blue.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_red.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_rect_white.9.png" />
+    <AndroidResource Include="Resources\drawable\np_rounded_square_middle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_selection_bottom_gold.9.png" />
+    <AndroidResource Include="Resources\drawable\np_square_black_border_white_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_curve_left_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_curve_right_background.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_bot.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_handle.9.png" />
+    <AndroidResource Include="Resources\drawable\np_viewer_sub_mid.9.png" />
+    <AndroidResource Include="Resources\drawable\selector_button_close_x.xml" />
+    <AndroidResource Include="Resources\drawable\selector_button_gold_black.xml" />
+    <AndroidResource Include="Resources\drawable\selector_group_indicator_black.xml" />
+    <AndroidResource Include="Resources\drawable\selector_group_indicator_white.xml" />
+    <AndroidResource Include="Resources\drawable\selector_ic_arrow_down.xml" />
+    <AndroidResource Include="Resources\drawable\selector_ic_arrow_up.xml" />
+    <AndroidResource Include="Resources\drawable\selector_text_blackgold.xml" />
+    <AndroidResource Include="Resources\drawable\shape_circle_gold.xml" />
+    <AndroidResource Include="Resources\layout\activity_main.axml" />
+    <AndroidResource Include="Resources\layout\fragment_workbench.axml" />
+    <AndroidResource Include="Resources\anim\blink_slow.xml" />
+    <AndroidResource Include="Resources\values\Ids.xml" />
+    <AndroidResource Include="Resources\layout\activity_home.axml" />
+    <AndroidResource Include="Resources\layout\navigation_category.axml" />
+    <AndroidResource Include="Resources\layout\navigation_icon_item.axml" />
+    <AndroidResource Include="Resources\values\Styles.xml" />
+    <AndroidResource Include="Resources\values\Preference_Values.xml" />
+    <AndroidResource Include="Resources\xml\preferences_application.xml" />
+    <AndroidResource Include="Resources\layout\activity_ion_preference.axml" />
+    <AndroidResource Include="Resources\layout\activity_ptchart.axml" />
+    <AndroidResource Include="Resources\values\Dimens.xml" />
+    <AndroidResource Include="Resources\layout\fluid.axml" />
+    <AndroidResource Include="Resources\layout\activity_fluid_manager.axml" />
+    <AndroidResource Include="Resources\layout\fragment_fluid_list.axml" />
+    <AndroidResource Include="Resources\menu\save.xml" />
+    <AndroidResource Include="Resources\drawable\ic_lock.png" />
+    <AndroidResource Include="Resources\drawable\selector_fluid_phase.xml" />
+    <AndroidResource Include="Resources\layout\device_manager_group.axml" />
+    <AndroidResource Include="Resources\layout\device_manager_device.axml" />
+    <AndroidResource Include="Resources\layout\device_manager_serial.axml" />
+    <AndroidResource Include="Resources\layout\device_manager_sensor.axml" />
+    <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
+    <AndroidResource Include="Resources\layout\list_item_add.axml" />
+    <AndroidResource Include="Resources\drawable\viewer_background.axml" />
+    <None Include="src\Widgets\RecyclerViews\ReadMe.md" />
+    <AndroidResource Include="Resources\layout\activity_superheat_subcool.axml" />
+    <AndroidResource Include="Resources\layout\list_item_space.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_inactive.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_top.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_top.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_active.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_bottom_active.axml" />
+    <AndroidResource Include="Resources\drawable\analyzer_manifold_low_bottom_inactive.axml" />
+    <AndroidResource Include="Resources\anim\enter.xml" />
+    <AndroidResource Include="Resources\anim\exit.xml" />
+    <AndroidResource Include="Resources\menu\screenshot.xml" />
+    <AndroidResource Include="Resources\menu\ok_done.xml" />
+    <AndroidResource Include="Resources\layout\ok_done.axml" />
+    <AndroidResource Include="Resources\values\arrays.xml" />
+    <AndroidResource Include="Resources\layout\activity_screenshot.axml" />
+    <AndroidResource Include="Resources\layout\fragment_file_manager.axml" />
+    <AndroidResource Include="Resources\layout\activity_screenshot_archive.axml" />
+    <AndroidResource Include="Resources\layout\list_item_file.axml" />
+    <AndroidResource Include="Resources\drawable\ic_logo_appion_a.png" />
+    <AndroidResource Include="Resources\layout\activity_calibration_certificate_archive.axml" />
+    <AndroidResource Include="Resources\menu\download.xml" />
+    <AndroidResource Include="Resources\drawable\xml_analyzer_viewer_background.xml" />
+    <AndroidResource Include="Resources\layout\analyzer_manifold_viewer.axml" />
+    <AndroidResource Include="Resources\drawable\xml_low_side_background.xml" />
+    <AndroidResource Include="Resources\drawable\xml_high_side_background.xml" />
+    <AndroidResource Include="Resources\drawable\xml_white_bordered_background.xml" />
+    <AndroidResource Include="Resources\layout\subview_measurement_small.axml" />
+    <AndroidResource Include="Resources\layout\subview_fluid_small.axml" />
+    <AndroidResource Include="Resources\layout\subview_fluid_large.axml" />
+    <AndroidResource Include="Resources\layout\subview_measurement_large.axml" />
+    <AndroidResource Include="Resources\layout\viewer_large.axml" />
+    <AndroidResource Include="Resources\layout\dialog_rename.axml" />
+    <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
+    <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\values\Strings.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <ItemGroup>
+    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
+      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
+      <Name>ION.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\menu\scan.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\App\" />
+    <Folder Include="src\IO\" />
+    <Folder Include="src\Location\" />
+    <Folder Include="src\Widgets\Adapters\" />
+    <Folder Include="Resources\drawable\" />
+    <Folder Include="src\Sensors\" />
+    <Folder Include="Resources\anim\" />
+    <Folder Include="src\Widgets\Adapters\Navigation\" />
+    <Folder Include="Resources\xml\" />
+    <Folder Include="src\Preferences\" />
+    <Folder Include="Resources\values-sw320dp\" />
+    <Folder Include="Resources\values-sw600dp\" />
+    <Folder Include="Resources\values-sw700dp\" />
+    <Folder Include="src\Views\" />
+    <Folder Include="src\Widgets\Adapters\Workbench\" />
+    <Folder Include="src\Widgets\RecyclerViews\" />
+    <Folder Include="src\Sensors\Properties\" />
+    <Folder Include="Assets\fonts\" />
+    <Folder Include="Assets\fonts\Droid_Sans\" />
+    <Folder Include="Assets\fonts\Roboto_Condensed\" />
+    <Folder Include="src\Widgets\Analyzer\" />
+    <Folder Include="src\Widgets\Templates\" />
+    <Folder Include="src\Fragments\" />
+    <Folder Include="src\Widgets\Adapters\FileManager\" />
+    <Folder Include="src\Tasks\" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="xamandroidsupportv4-18">
+      <Version>23.0.1.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="xamandroidsupportv13-18">
+      <Version>23.0.1.3</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="xamandroidsupportv7appcompat">
+      <Version>22.2.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="googleplayservices-location">
+      <Version>27.0.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans.ttf" />
+    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans-Bold.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Bold.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-BoldItalic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Italic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Light.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-LightItalic.ttf" />
+    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Regular.ttf" />
+  </ItemGroup>
+</Project>

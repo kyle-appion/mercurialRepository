@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\FormFill.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Forms
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' FormFill sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class FormFill
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl slc">''' &lt;param name=&quot;stream&quot;&gt;&lt;/param&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>stream <span class="hl kwa">As</span> Stream<span class="hl opt">)</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">(</span>stream<span class="hl opt">)</span>
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;firstname&quot;</span><span class="hl opt">),</span> PdfTextBoxField<span class="hl opt">).</span>Text <span class="hl opt">=</span> <span class="hl str">&quot;John&quot;</span>
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;lastname&quot;</span><span class="hl opt">),</span> PdfTextBoxField<span class="hl opt">).</span>Value <span class="hl opt">=</span> <span class="hl str">&quot;Doe&quot;</span>
+
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;sex&quot;</span><span class="hl opt">).</span><span class="hl kwd">Widgets</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> PdfRadioButtonWidget<span class="hl opt">).</span>Checked <span class="hl opt">=</span> <span class="hl kwa">True</span>
+
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;firstcar&quot;</span><span class="hl opt">),</span> PdfComboBoxField<span class="hl opt">).</span>SelectedIndex <span class="hl opt">=</span> <span class="hl num">0</span>
+
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;secondcar&quot;</span><span class="hl opt">),</span> PdfListBoxField<span class="hl opt">).</span>SelectedIndex <span class="hl opt">=</span> <span class="hl num">1</span>
+
+			<span class="hl kwd">TryCast</span><span class="hl opt">(</span>document<span class="hl opt">.</span>Form<span class="hl opt">.</span><span class="hl kwd">Fields</span><span class="hl opt">(</span><span class="hl str">&quot;agree&quot;</span><span class="hl opt">),</span> PdfCheckBoxField<span class="hl opt">).</span>Checked <span class="hl opt">=</span> <span class="hl kwa">True</span>
+
+			<span class="hl kwa">Dim</span> output <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() {</span><span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.formfill.pdf&quot;</span><span class="hl opt">)}</span>
+			<span class="hl kwa">Return</span> output
+		<span class="hl kwa">End Function</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->
