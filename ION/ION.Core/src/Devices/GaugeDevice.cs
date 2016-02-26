@@ -3,6 +3,7 @@
   using System;
   using System.Collections.Generic;
 
+  using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
@@ -108,9 +109,7 @@
 
     // Overridden from IDevice
     public void HandlePacket(byte[] packet) {
-      ION.Core.App.AppState.context.PostToMain(() => {
-        HandlePacketInternal(packet);
-      });
+      HandlePacketInternal(packet);
     }
 
     private void HandlePacketInternal(byte[] packet) {
@@ -229,18 +228,10 @@
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
     private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
-      ION.Core.App.AppState.context.PostToMain(() => {
+      AppState.context.PostToMain(() => {
         if (onDeviceEvent != null) {
           onDeviceEvent(new DeviceEvent(type, this));
         }
-
-/*
-        if (sensors != null) {
-          foreach (var sensor in sensors) {
-            sensor.NotifySensorStateChanged();
-          }
-        }
-*/
       });
     }
   }

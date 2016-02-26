@@ -269,11 +269,7 @@
     /// <param name="dtype">Dtype.</param>
     /// <param name="device">Device.</param>
     private void NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType type) {
-      if (onDeviceManagerEvent != null) {
-        ion.PostToMain(() => {
-          onDeviceManagerEvent(new DeviceManagerEvent(type, this));
-        });
-      }
+      NotifyOfDeviceManagerEvent(new DeviceManagerEvent(type, this));
     }
 
     /// <summary>
@@ -293,9 +289,17 @@
     /// <param name="type">Type.</param>
     /// <param name="device">Device.</param>
     private void NotifyOfDeviceEvent(DeviceEvent deviceEvent) {
+      NotifyOfDeviceManagerEvent(new DeviceManagerEvent(this, deviceEvent));
+    }
+
+    /// <summary>
+    /// Posts a new DeviceManager event to the device manager handler.
+    /// </summary>
+    /// <param name="dme">Dme.</param>
+    private void NotifyOfDeviceManagerEvent(DeviceManagerEvent dme) {
       if (onDeviceManagerEvent != null) {
         ion.PostToMain(() => {
-          onDeviceManagerEvent(new DeviceManagerEvent(this, deviceEvent));
+          onDeviceManagerEvent(dme);
         });
       }
     }

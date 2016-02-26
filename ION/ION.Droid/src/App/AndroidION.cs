@@ -11,6 +11,7 @@
   using Android.Content.PM;
   using Android.OS;
   using Android.Preferences;
+  using Android.Support.V4.App;
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
@@ -26,6 +27,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.Droid.Activity;
   using ION.Droid.Connections;
   using ION.Droid.Devices;
   using ION.Droid.Location;
@@ -36,6 +38,10 @@
     /// The name of the general ion preferences.
     /// </summary>
     public const string PREFERENCES_GENERAL = "ion.preferences";
+    /// <summary>
+    /// The id of that application's notification.
+    /// </summary>
+    private const int NOTIFICATION_APP_ID = 1;
 
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
@@ -128,6 +134,11 @@
         return GetSharedPreferences(PREFERENCES_GENERAL, FileCreationMode.Private);
       }
     }
+    /// <summary>
+    /// Whether or not the context is initialized.
+    /// </summary>
+    /// <value><c>true</c> if initialized; otherwise, <c>false</c>.</value>
+    public bool initialized { get; private set; }
 
     /// <summary>
     /// The android specfic message pump.
@@ -135,10 +146,14 @@
     /// <value>The handler.</value>
     private Android.OS.Handler handler { get; set; }
     /// <summary>
+    /// The application notification.
+    /// </summary>
+    private Notification notification;
+
+    /// <summary>
     /// The whole aggragation of the managers present within the ion context.
     /// </summary>
     private readonly List<IIONManager> managers = new List<IIONManager>();
-
 
     /// <Docs>Called by the system when the service is first created.</Docs>
     /// <para tool="javadoc-to-mdoc">Called by the system when the service is first created. Do not call this method directly.</para>
@@ -150,11 +165,15 @@
     public override async void OnCreate() {
       base.OnCreate();
 
+      initialized = false;
+
       Log.D(this, "Creating the AndroidION");
       if (AppState.context != null) {
         Log.D(this, "A previous service was discovered to be running. Killing it");
         AppState.context.Dispose();
       }
+
+      AppState.context = this;
 
       this.handler = new Android.OS.Handler();
 
@@ -182,9 +201,13 @@
         }
       }
 
+      deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
+
       currentWorkbench = new Workbench(this);
 
-      AppState.context = this;
+      UpdateNotification();
+
+      initialized = true;
     }
 
     /// <Docs>Called by the system to notify a Service that it is no longer used and is being removed.</Docs>
@@ -200,6 +223,12 @@
     public override void OnDestroy() {
       base.OnDestroy();
 
+      initialized = false;
+
+      AppState.context = null;
+
+      Log.D(this, "Destroying ION service");
+
       foreach (var m in managers) {
         try {
           m.Dispose();
@@ -207,6 +236,9 @@
           Log.E(this, "Failed to dipose of IIONManager: " + m.GetType().Name, e); 
         }
       }
+
+      var nm = GetSystemService(NotificationService) as NotificationManager;
+      nm.Cancel(NOTIFICATION_APP_ID);
     }
 
     /// <summary>
@@ -268,10 +300,43 @@
     }
 
     /// <summary>
-    /// Initializes the ion instance.
+    /// Updates (creating if necessary the application's notification.
     /// </summary>
-    public Task<bool> Init() {
-      return Task.FromResult(true);
+    private void UpdateNotification() {
+      var i = new Intent(this, typeof(HomeActivity));
+      var pi = PendingIntent.GetActivity(this, 0, i, PendingIntentFlags.UpdateCurrent);
+
+
+      var connected = 0;
+      foreach (var d in deviceManager.devices) {
+        if (d.isConnected) {
+          connected++;
+        }
+      }
+      var total = deviceManager.devices.Count;
+
+      var note = new NotificationCompat.Builder(this)
+        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault)
+        .SetContentTitle(GetString(Resource.String.app_name))
+        .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
+        .SetContentIntent(pi)
+        .SetOngoing(true);
+
+      var nm = GetSystemService(NotificationService) as NotificationManager;
+      nm.Notify(NOTIFICATION_APP_ID, note.Build());
+    }
+
+    /// <summary>
+    /// Called when a device manager throws an event.
+    /// </summary>
+    /// <param name="dm">Dm.</param>
+    /// <param name="dme">Dme.</param>
+    private void OnDeviceManagerEvent(DeviceManagerEvent dme) {
+      if (DeviceManagerEvent.EType.DeviceEvent == dme.type) {
+        if (DeviceEvent.EType.ConnectionChange == dme.deviceEvent.type) {
+          UpdateNotification();
+        }
+      }
     }
 
     /// <summary>

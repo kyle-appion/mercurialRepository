@@ -210,14 +210,12 @@
     /// Repopulates the device manager adapter.
     /// </summary>
     private void RefreshAdapter() {
-      ion.PostToMain(() => {
-        try {
-          adapter.SetDevices(ion.deviceManager.devices);
-          adapter.NotifyDataSetChanged();
-        } catch (Exception e) {
-          ION.Core.Util.Log.D(this, "asdfasdf", e);
-        }
-      });
+      try {
+        adapter.SetDevices(ion.deviceManager.devices);
+        adapter.NotifyDataSetChanged();
+      } catch (Exception e) {
+        ION.Core.Util.Log.D(this, "asdfasdf", e);
+      }
     }
 
     /// <summary>
