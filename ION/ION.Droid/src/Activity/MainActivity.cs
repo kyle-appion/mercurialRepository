@@ -53,7 +53,7 @@
       var success = false;
 
       var start = DateTime.Now;
-      while (AppState.context == null) {
+      while (AppState.context == null || !(AppState.context as AndroidION).initialized) {
         if (DateTime.Now - start > WAIT_TIME) {
           success = false;
           break;

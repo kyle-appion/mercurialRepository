@@ -22,7 +22,7 @@
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
 
-  [Activity(Label = "ActivityHome", Theme = "@style/AppTheme")]      
+  [Activity(Label = "ActivityHome", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask)]      
   public class HomeActivity : IONActivity, AbsListView.IOnItemClickListener {
 
     /// <summary>

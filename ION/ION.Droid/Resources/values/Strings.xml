@@ -94,6 +94,8 @@
   <string name="device_unknown">Unknown Device</string>
   <string name="long_range_mode">Long-Range Mode</string>
 
+  <string name="devices_connected_2arg">{0} of {1} devices connected</string>
+
   <!--
   ERRORS, GENERAL
   -->

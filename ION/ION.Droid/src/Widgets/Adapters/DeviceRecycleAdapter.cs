@@ -603,9 +603,6 @@
       /// </summary>
       /// <param name="sensor">Sensor.</param>
       private void OnSensorEvent(Sensor sensor) {
-        Log.D(this, "Sensor changed");
-        //      adapter.NotifyItemChanged(AdapterPosition);
-
         Invalidate();
       }
     }

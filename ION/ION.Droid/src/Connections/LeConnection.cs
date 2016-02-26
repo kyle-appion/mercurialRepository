@@ -203,8 +203,17 @@
 */
     }
 
+    /// <summary>
+    /// Dispose the specified disposing.
+    /// </summary>
+    /// <param name="disposing">If set to <c>true</c> disposing.</param>
+    protected override void Dispose(bool disposing) {
+      base.Dispose(disposing);
+      this.Dispose();
+    }
+
     // Overridden from IConnection
-    public void Dispose() {
+    public new void Dispose() {
       if (EConnectionState.Disconnected != connectionState) {
         Disconnect();
       }
@@ -212,7 +221,7 @@
 
     // Overridden from IConnection
     public async Task<bool> Connect() {
-      Log.D(this, "Beginning connection attempt");
+      Log.D(this, "Thread id: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
 
       if (EConnectionState.Disconnected != connectionState) {
         Log.D(this, "Connection not in a disconnected state: returning attempt as failed.");
@@ -223,24 +232,29 @@
 
       DateTime start = DateTime.Now;
       gatt = device.ConnectGatt(context, false, this);
-/*
-      await Task.Delay(50); // Wait for the adapter to catch up
 
+      await Task.Delay(100);
+/*
       if (!gatt.Connect()) {
-        Log.E(this, "Cannot connect: Gatt.connect failed");
-        Disconnect();
+        Log.D(this, "Failed to initially connect to the device");
         return false;
       }
 */
       await Task.Delay(100);
 
-      Log.D(this, "Starting connect spool");
+//      Log.D(this, "Starting connect spool");
       // Wait for the connection to be established
       while (ProfileState.Connected != manager.GetConnectionState(device, ProfileType.Gatt) && DateTime.Now - start < connectionTimeout) {
-        Log.D(this, "Connection not established yet");
-        await Task.Delay(25);
+//        Log.D(this, "Connection not established yet");
+        await Task.Delay(50);
       }
       Log.D(this, "Done waiting for connect spool");
+
+      if (ProfileState.Disconnected == manager.GetConnectionState(device, ProfileType.Gatt)) {
+        Log.D(this, "Failed to connect the remote device");
+        Disconnect();
+        return false;
+      }
 
 
       connectionState = EConnectionState.Resolving;
@@ -280,12 +294,12 @@
     }
 
     // Overridden from IConnection
-    public async Task<bool> Write(byte[] data) {
+    public Task<bool> Write(byte[] data) {
       if (EConnectionState.Connected == connectionState) {
         write.SetValue(data);
-        return gatt.WriteCharacteristic(write);
+        return Task.FromResult(gatt.WriteCharacteristic(write));
       } else {
-        return false;
+        return Task.FromResult(false);
       }
     }
 
