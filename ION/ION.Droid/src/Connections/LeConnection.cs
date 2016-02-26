@@ -221,8 +221,6 @@
 
     // Overridden from IConnection
     public async Task<bool> Connect() {
-      Log.D(this, "Thread id: " + System.Threading.Thread.CurrentThread.ManagedThreadId);
-
       if (EConnectionState.Disconnected != connectionState) {
         Log.D(this, "Connection not in a disconnected state: returning attempt as failed.");
         return false;
@@ -234,18 +232,9 @@
       gatt = device.ConnectGatt(context, false, this);
 
       await Task.Delay(100);
-/*
-      if (!gatt.Connect()) {
-        Log.D(this, "Failed to initially connect to the device");
-        return false;
-      }
-*/
-      await Task.Delay(100);
 
-//      Log.D(this, "Starting connect spool");
       // Wait for the connection to be established
       while (ProfileState.Connected != manager.GetConnectionState(device, ProfileType.Gatt) && DateTime.Now - start < connectionTimeout) {
-//        Log.D(this, "Connection not established yet");
         await Task.Delay(50);
       }
       Log.D(this, "Done waiting for connect spool");
@@ -255,7 +244,6 @@
         Disconnect();
         return false;
       }
-
 
       connectionState = EConnectionState.Resolving;
       // Attempt to discover the device's services
