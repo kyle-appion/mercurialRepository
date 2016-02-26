@@ -1,42 +1,101 @@
+<?php
+		session_start();
+		$hostname="localhost";
+		$username="ktjohnson";
+		$password="Workhard247!!";
+		$dbname="TeamProjects";
+		$usertable="Users";
+		$yourfield = "UID";
+		$connection = mysql_connect($hostname, $username, $password);
+
+		mysql_select_db($dbname, $connection);
+
+		$lname = $_GET['uname'];
+		$lpass = $_GET['pword'];
+
+		$query = "SELECT UID FROM $usertable WHERE u_name = '$lname' AND pass_w = '$lpass'";
+
+		$result = mysql_query($query);
+	 	$num_rows = mysql_num_rows($result);
+
+		if($num_rows != 1){
+			header('Location: http://www.buildtechhere.com');
+		}
+
+		if($row = mysql_fetch_assoc($result)){
+			$_SESSION["userID"] = $row["UID"];
+			if($row["UID"] == 1){
+				$_SESSION["profile"] = "Kyle";
+			} elseif ($row["UID"] == 2) {
+				$_SESSION["profile"] = "Sang";
+			} elseif ($row["UID"] == 3) {
+				$_SESSION["profile"] = "Alex";
+			} elseif ($row["UID"] == 4) {
+				$_SESSION["profile"] = "Bonnie";
+			} elseif ($row["UID"] == 5) {
+				$_SESSION["profile"] = "Jared";
+			} elseif ($row["UID"] == 6) {
+				$_SESSION["profile"] = "Yinebeb";
+			} elseif ($row["UID"] == 7) {
+				$_SESSION["profile"] = "Gloria";
+			}
+		}
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
-<title>Do you even TXSTATE?</title>
+<title>You've Made It!</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8" >
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js'></script>
 <style type="text/css">
 .loginHeader {
-	background-color: #F3B972;
+	background-color: #06457B;
 	text-align: center;
 	width: 100%;
-	height: 150px;
+	height: 10em;
+	border-radius: 3px;
 }
 .homeButtons{
 	width: 50%;
 	margin-left: 25%;
 }
-.shome{
-	align-content: center;
-	margin-left: 45%;
+.groupOption{
+	width: 8em;
+  height: 2em;
+  background-color: #5797B8;
+  float: right;
+  text-align: center;
+  line-height: 2em;
+  cursor: pointer;
+  border-radius: 5px;
 }
-.ghome{
-	align-content: center;
-margin-left: 45%;
+.groupStyle{
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
 }
-.ahome{
-	align-content: center;
-margin-left: 45%;
+.logoutOption{
+	width: 8em;
+  height: 2em;
+  background-color: #5797B8;
+  float: right;
+  text-align: center;
+  line-height: 2em;
+  cursor: pointer;
+  border-radius: 5px;
 }
-.bhome{
-	align-content: center;
-margin-left: 45%;
+.logoutStyle{
+	display: inline-block;
+	vertical-align: middle;
+	line-height: normal;
 }
-.yhome{
-	align-content: center;
-margin-left: 45%;
+.optionTable{
+	float: right;
 }
-
 </style>
+
 </head>
 
 <script>
@@ -45,38 +104,51 @@ margin-left: 45%;
 </script>
 
 <div class="loginHeader">
+	<table class="optionTable">
+		<tr>
+			<td>
+				<div class="groupOption"><span class="groupStyle">Group Area</span></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div class="logoutOption"><span class"logoutStyle">Log Out</span></div>
+			</td>
+		</tr>
+	</table>
+	</br>
+	<h1 style="text-align: center;">Hello You Awesome Person!</h1>
 </div>
-
-<h1 style="margin-left: 40%;">Hello You Awesome Person!</h1>
-
 <body>
-<div class="homeButtons">
-	<div class="shome" id="shome">
-		<input type="button" value="Sang's Home" onclick="document.location.href='sangM/start.html'">
-	</div>
-	<div class="ghome" id="ghome">
-		<input type="button" value="Gloria's Home" onclick="document.location.href='gloriaJ/start.html'">
-	</div>
-	<div class="ahome" id="ahome">
-		<input type="button" value="Alex's Home" onclick="document.location.href='alexG/start.html'">
-	</div>
-	<div class="bhome" id="bhome">
-		<input type="button" value="Bonnie's Home" onclick="document.location.href='bonnieW/start.html'">
-	</div>
-	<div class="yhome" id="yhome">
-		<input type="button" value="Yinebeb's Home" onclick="document.location.href='yineZ/start.html'">
-	</div>
-	<div style="height: 50px;"></div>
-	<div class="yhome">
-		<input type="button" value="Go Back" onclick="document.location.href='home.html'">
-	</div>
-</div>
 
 </body>
 </html>
+<script>
+  function logOut(){
+    window.location = "http://www.buildtechhere.com/"
+  }
+</script>
+<script>
+  $(document).ready(function(){
+    $('.groupOption').mousedown(function(){
+      $('.groupOption').css('background-color', "white");
+    });
 
-<?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
- ?>
+    $('.groupOption').click(function(){
+      window.location.href = "DropZone/Welcome.php";
+    });
+
+    $('.logoutOption').mousedown(function(){
+      $('.logoutOption').css('background-color', "white");
+    });
+
+    $('.logoutOption').click(function(){
+      window.location = "http://www.buildtechhere.com/"
+    });
+
+    $(document).on('mouseup', function(){
+      $('.groupOption').css('background-color', "#5797B8");
+      $('.logoutOption').css('background-color', "#5797B8");
+    });
+  });
+</script>

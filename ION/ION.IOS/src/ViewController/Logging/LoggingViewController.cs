@@ -1,8 +1,4 @@
-﻿/*
-
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CoreGraphics;
@@ -78,7 +74,7 @@ namespace ION.IOS.ViewController.Logging {
 
       UIBarButtonItem [] recordButtons = new UIBarButtonItem[]{dataStop,showRecords,dataRecord,};
       NavigationItem.SetRightBarButtonItems(recordButtons, true);
-      //**************************************************************
+      //**************************************************************///
       ion = AppState.context;
       SetupLoggingUI();
     }
@@ -154,6 +150,7 @@ namespace ION.IOS.ViewController.Logging {
     public void resizeDataSectionLarger(){
       dataSection.DataType.Hidden = false;
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
         dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
       }, 
       () => {
@@ -162,6 +159,7 @@ namespace ION.IOS.ViewController.Logging {
           dataSection.showGraphButton.Hidden = false;
           dataSection.jobTable.Hidden = true;
           dataSection.sessionTable.Hidden = true;
+          reportingSection.step1.Hidden = false;
       });
     }
     /// <summary>
@@ -249,9 +247,15 @@ namespace ION.IOS.ViewController.Logging {
       dataSection.sessionTable.Hidden = true;
 
       reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
-
+      //////resize reporting choice off screen
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+        reportingSection.step1.Hidden = true;
+        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, 0);
+      }, 
+        () => {});
+      
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .06 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
       }, 
       () => {
         dataSection.step2.Hidden = false;
@@ -274,21 +278,13 @@ namespace ION.IOS.ViewController.Logging {
 
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         graphingSection.graphingType.Hidden = false;
-        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .23 * View.Bounds.Height, .98 * View.Bounds.Width, .72 * View.Bounds.Height);
+        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .14 * View.Bounds.Height, .98 * View.Bounds.Width, .83 * View.Bounds.Height);
       }, 
       () => {
           graphingSection.header.Hidden = false;
           graphingSection.rawData.Hidden = false;
 
           if(graphResult.Count > 0){
-//            foreach(var record in graphResult){
-//              recordText += string.Concat(Environment.NewLine, (record.sessionStart.ToLocalTime() + " - " + record.sessionEnd.ToLocalTime()));
-//              var sessionM = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT deviceSN, deviceMeasurement FROM SessionMeasurement WHERE frnSID = ? ORDER BY MID DESC", record.SID);
-//
-//              foreach(var value in sessionM){
-//                recordText += string.Concat(Environment.NewLine, "\t" + value.deviceSN + " " + value.deviceMeasurement);
-//              }
-//            }
 
             for(int s = 0; s < graphResult.Count; s++){
               var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].SID);
@@ -299,7 +295,7 @@ namespace ION.IOS.ViewController.Logging {
                 var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].SID);
 
                 foreach(var meas in measurementCount){
-                  recordText += string.Concat(Environment.NewLine, "\t\t" + meas.deviceMeasurement);
+                  recordText += string.Concat(Environment.NewLine, "\t\t" + meas.deviceMeasurement + "\t" + meas.measurementDate.ToLocalTime());
                 }
               }
             }
@@ -328,7 +324,7 @@ namespace ION.IOS.ViewController.Logging {
         dataSection.step2.Hidden = true;
         graphingSection.header.Hidden = true;
         graphingSection.rawData.Hidden = true;
-        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .23 * View.Bounds.Height, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .14 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
       }, 
       () => {
           graphingSection.header.Hidden = true;
@@ -346,4 +342,3 @@ namespace ION.IOS.ViewController.Logging {
 }
 
 
-*/

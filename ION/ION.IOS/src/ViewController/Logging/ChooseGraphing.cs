@@ -12,7 +12,7 @@ namespace ION.IOS.ViewController.Logging {
     public nfloat cellHeight;
 
     public ChooseGraphing(UIView mainView) {
-      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .23 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
+      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .14 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       graphingType.BackgroundColor = UIColor.White;
       graphingType.Layer.BorderColor = UIColor.Black.CGColor;
       graphingType.Layer.BorderWidth = 1f;

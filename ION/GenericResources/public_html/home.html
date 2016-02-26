@@ -58,23 +58,36 @@ a {
   height: 150px;
   text-align: center;
   font-family: serif;
+  border-radius: 4px;
 }
 .col-md-12{
   text-align: center;
 }
 .headerText{
   margin-top: 50;
+  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 7;
+
+}
+.username{
+  font-weight: bold;
+}
+.password{
+  font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 <div class="welcomeHeader">
+</br>
+</br>
+  <div class="headerText" >
+    <h1>Entrance to procrastination</h1>
+  </div>
+</div>
 
-</div>
-<div class="headerText" >
-  <h3>Entrance to procrastination</h3>
-</div>
 <div class="container text-center" id="error">
   <svg height="100" width="100">
     <circle cx="50" cy="50" r="31" stroke="#679b08" stroke-width="9.5" fill="none" />
@@ -89,8 +102,8 @@ a {
     <div class="col-md-12">
       <div class="main-icon text-success"><span class="uxicon uxicon-clock-refresh"></span></div>
         <form action="Login.php">
-          Username: <input type="text" name="uname" size="25"></br>
-          Password: <input type="text" name="pword" size="25"></br>
+          <span class="username">Username: </span><input type="text" name="uname" size="20"></br>
+          <span class="password">Password: </span><input type="password" name="pword" size="20"></br>
           <input type="submit" value="Login">
         </form>
     </div>

@@ -68,7 +68,7 @@ namespace ION.IOS.ViewController.Analyzer {
       createSensors ();
 
 //      ion = AppState.context;
-
+//
 //      createLocalJobandSessionDatabase();
 //
 //      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
@@ -87,7 +87,7 @@ namespace ION.IOS.ViewController.Analyzer {
 //      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
 //      showRecords.BackgroundColor = UIColor.Green;
 //      showRecords.Layer.CornerRadius = 6;
-
+//
 //      dataRecord.TouchUpInside += recordDevices;
 //
 //      dataStop.TouchUpInside += stopRecording;
@@ -141,7 +141,7 @@ namespace ION.IOS.ViewController.Analyzer {
 //        foreach (sensor liveItem in analyzerSensors.viewList) {
 //          if (liveItem.currentSensor != null) {
 //            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
-//            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.ToString()};
+//            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.amount.ToString(), measurementDate = DateTime.UtcNow};
 //            ion.database.Insert(measurement);
 //          }
 //        }
@@ -170,17 +170,17 @@ namespace ION.IOS.ViewController.Analyzer {
 
 //    public void listOutSessions(object sender, EventArgs e){
 //
-////      ION.Core.Database.Job job = new ION.Core.Database.Job{jobName = "3rd and Dahlia" };
-////      ion.database.Insert(job);
-////      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (13,17,19,11)");
-////
-////      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
-////      Console.WriteLine("Measurements:");
-////      foreach (var item in result) {
-////        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
-////        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
-////      }
-////      Console.WriteLine("");
+//      ION.Core.Database.Job job = new ION.Core.Database.Job{jobName = "3rd and Dahlia" };
+//      ion.database.Insert(job);
+//      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (13,17,19,11)");
+//
+//      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
+//      Console.WriteLine("Measurements:");
+//      foreach (var item in result) {
+//        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+//        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
+//      }
+//      Console.WriteLine("");
 //      var result2 = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session ORDER BY SID");
 //      Console.WriteLine("Sessions Recorded:");
 //      foreach (var item in result2) {
@@ -206,10 +206,10 @@ namespace ION.IOS.ViewController.Analyzer {
 //      foreach (var item in result3) {
 //        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
 //      }
-////      db.Query<Session> ("DELETE FROM Session");
-////      db.Query<Session> ("VACUUM");
-////      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
-////      db.Query<SessionMeasurement>("VACUUM");
+//////      db.Query<Session> ("DELETE FROM Session");
+//////      db.Query<Session> ("VACUUM");
+//////      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
+//////      db.Query<SessionMeasurement>("VACUUM");
 //    }
     /// <summary>
     /// Creates the tables necessary to store and organize a user's sessions and jobs
@@ -899,7 +899,8 @@ namespace ION.IOS.ViewController.Analyzer {
       var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
         foreach(sensor item in analyzerSensors.viewList){
-          if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
+          //if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
+          if(item.currentSensor != null && item.currentSensor == sensor){
             existingConnection = true;
             //Console.WriteLine("Totes found an existing sensor associated");
             break;
@@ -975,7 +976,8 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 
         for(int i = start; i < stop; i ++){
-          if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor.device.serialNumber == sensor.device.serialNumber){
+          //if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor.device.serialNumber == sensor.device.serialNumber){
+          if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
             if(start == 0){
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
@@ -985,6 +987,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
               lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             } else {
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
@@ -994,6 +997,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
               lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
             }
             existingConnection = true;
             break;
@@ -1057,6 +1061,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].highArea.isManual = false;
               area.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+
               if(start == 0){
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;
                 analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Blue;
@@ -1076,6 +1081,7 @@ namespace ION.IOS.ViewController.Analyzer {
                 View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
                 analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               }
+
               if(sensor != null && sensor.device.isConnected.Equals(true)){
                 analyzerSensors.viewList[i].lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
                 analyzerSensors.viewList[i].lowArea.connectionColor.BackgroundColor = UIColor.Green;
@@ -1097,6 +1103,7 @@ namespace ION.IOS.ViewController.Analyzer {
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;
                 analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;
               }
+
               break;
             }
           }
@@ -1111,7 +1118,8 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 
         for(int i = start; i < stop; i ++){
-          if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor.device.serialNumber == sensor.device.serialNumber){
+          //if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor.device.serialNumber == sensor.device.serialNumber){
+          if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
             analyzerSensors.viewList[i].topLabel.Hidden = true;
             analyzerSensors.viewList[i].tLabelBottom.Hidden = true;
             analyzerSensors.viewList[i].middleLabel.Hidden = true;

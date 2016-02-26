@@ -12,6 +12,7 @@ namespace ION.Core.Database {
     public int frnSID { get; set; }
     public string deviceSN { get; set;}
     public string deviceMeasurement { get; set;}
+    public DateTime measurementDate { get; set;}
 
     public SessionMeasurement() {
       

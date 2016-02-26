@@ -1,4 +1,3 @@
-/*
 
 using System;
 using System.Collections.ObjectModel;
@@ -119,6 +118,3 @@ namespace ION.IOS.ViewController.Logging {
     }
   }
 }
-
-
-*/
