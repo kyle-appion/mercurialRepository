@@ -744,6 +744,9 @@ namespace ION.IOS.ViewController.Analyzer
         if (splits[0].Equals("Secondary") && pressedArea.manifold.secondarySensor == null) {
           continue;
         }
+        if (splits[0].Equals("Superheat") && pressedArea.manifold.primarySensor.type == ESensorType.Vacuum) {
+          continue;
+        }
         if (!pressedArea.tableSubviews.Contains (splits[0])) {          
           subviewAlert.AddAction (UIAlertAction.Create (subview, UIAlertActionStyle.Default, (action) => {
             pressedArea.tableSubviews.Add(splits[0]);
