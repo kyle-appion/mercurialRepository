@@ -279,7 +279,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewTemperatureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!temperatureSensorLocked) {
-          temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+          //temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+          temperatureSensor = null;
           ClearTemperatureInput();
         }
       }));
