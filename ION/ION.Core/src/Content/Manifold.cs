@@ -274,7 +274,10 @@
     /// <returns><c>true</c>, if accept secondary sensor was willed, <c>false</c> otherwise.</returns>
     /// <param name="sensor">Sensor.</param>
     public bool WillAcceptSecondarySensor(Sensor sensor) {
-      return ALLOWED_SECONDARY_SENSORS.Matches(new ESensorType[] { primarySensor.type, sensor.type });
+      if(sensor != null)
+        return ALLOWED_SECONDARY_SENSORS.Matches(new ESensorType[] { primarySensor.type, sensor.type });
+
+      return true;
     }
 
     /// <summary>

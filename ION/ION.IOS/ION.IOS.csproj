@@ -449,6 +449,7 @@
     <Compile Include="src\ViewController\Logging\ChooseData.cs" />
     <Compile Include="src\ViewController\Logging\ChooseGraphing.cs" />
     <Compile Include="src\ViewController\Logging\ChooseSaved.cs" />
+    <Compile Include="src\ViewController\Analyzer\secondarySensorCell.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

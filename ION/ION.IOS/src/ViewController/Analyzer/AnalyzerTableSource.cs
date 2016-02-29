@@ -117,7 +117,15 @@ namespace ION.IOS.ViewController.Analyzer
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
-      } else {
+      } else if (tableItems[indexPath.Row].Contains("Secondary")){
+        var cell = tableView.DequeueReusableCell("Secondary") as secondarySensorCell;
+        if (cell == null)
+          cell = new UITableViewCell(UITableViewCellStyle.Default, "Secondary") as secondarySensorCell;
+
+        cell.makeEvents(tableSensors,tableView.Bounds);
+        cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        return cell;
+      }else {
         var cell = tableView.DequeueReusableCell("Alternate") as altTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Alternate") as altTableCell;        

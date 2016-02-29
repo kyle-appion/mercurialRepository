@@ -38,16 +38,6 @@ namespace ION.IOS.ViewController.Analyzer
       analyzerSensors.snapRect7 = new CGRect(.765 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
       analyzerSensors.snapRect8 = new CGRect(.765 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 
-//      analyzerSensors.snapRect1 = new CGRect (View.Center.X - 150, View.Center.Y - 195, 65, 65);
-//      analyzerSensors.snapRect2 = new CGRect(View.Center.X - 150, View.Center.Y - 35, 65,65);
-//      analyzerSensors.snapRect3 = new CGRect(View.Center.X - 80, View.Center.Y - 195, 65,65);
-//      analyzerSensors.snapRect4 = new CGRect(View.Center.X - 80, View.Center.Y - 35, 65,65);
-//      /// RIGHT SIDE
-//      analyzerSensors.snapRect5 = new CGRect (View.Center.X + 15, View.Center.Y - 195, 65, 65);
-//      analyzerSensors.snapRect6 = new CGRect(View.Center.X + 15, View.Center.Y - 35, 65,65);
-//      analyzerSensors.snapRect7 = new CGRect(View.Center.X + 85, View.Center.Y - 195, 65,65);
-//      analyzerSensors.snapRect8 = new CGRect(View.Center.X + 85, View.Center.Y - 35, 65,65);
-
 			////CREATE CONSTANT POINT OF ORIGIN FOR EACH AREA
 			/// LEFT SIDE
 			analyzerSensors.snapPoint1 = new CGPoint (analyzerSensors.snapRect1.GetMidX (), analyzerSensors.snapRect1.GetMidY ());
@@ -748,9 +738,12 @@ namespace ION.IOS.ViewController.Analyzer
       }
 
       UIAlertController subviewAlert = UIAlertController.Create (Util.Strings.Analyzer.SUBVIEW, "", UIAlertControllerStyle.Alert);
+
       foreach (string subview in pressedArea.availableSubviews) {
         var splits = subview.Split(' ');
-
+        if (splits[0].Equals("Secondary") && pressedArea.manifold.secondarySensor == null) {
+          continue;
+        }
         if (!pressedArea.tableSubviews.Contains (splits[0])) {          
           subviewAlert.AddAction (UIAlertAction.Create (subview, UIAlertActionStyle.Default, (action) => {
             pressedArea.tableSubviews.Add(splits[0]);
