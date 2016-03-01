@@ -19,7 +19,7 @@ namespace ION.Core.Alarms {
     /// <summary>
     /// The constant that marks an alarm as not having and id.
     /// </summary>
-    private const uint NO_ID = 0;
+    private const int NO_ID = 0;
 
     // Overridden from IAlarmManager
     public AlarmAlertFactoryDelegate alertFactory { get; set; }
@@ -27,7 +27,7 @@ namespace ION.Core.Alarms {
     /// <summary>
     /// The counter that will increment for new alarm ids when alarms are added to the manager.
     /// </summary>
-    private uint alarmIdCounter;
+    private int alarmIdCounter;
 
     /// <summary>
     /// The ion instance hosting the alarm manager.
@@ -37,7 +37,7 @@ namespace ION.Core.Alarms {
     /// <summary>
     /// A mapping of alarm ids to alarms.
     /// </summary>
-    private Dictionary<uint, IAlarm> __idAlarmMapping = new Dictionary<uint, IAlarm>();
+    private Dictionary<int, IAlarm> __idAlarmMapping = new Dictionary<int, IAlarm>();
     /// <summary>
     /// The collection of alarms to their mapping objects (objects that
     /// they are linked to).
@@ -89,7 +89,7 @@ namespace ION.Core.Alarms {
     /// </summary>
     /// <returns>The alarm.</returns>
     /// <param name="id">Identifier.</param>
-    public IAlarm GetAlarm(uint id) {
+    public IAlarm GetAlarm(int id) {
       if (__idAlarmMapping.ContainsKey(id)) {
         return __idAlarmMapping[id];
       } else {
@@ -103,7 +103,7 @@ namespace ION.Core.Alarms {
     /// <returns>The alarm.</returns>
     /// <param name="id">Identifier.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
-    public T GetAlarm<T>(uint id) where T : IAlarm {
+    public T GetAlarm<T>(int id) where T : IAlarm {
       var alarm = GetAlarm(id);
 
       if (alarm != null && alarm is T) {
@@ -169,6 +169,11 @@ namespace ION.Core.Alarms {
     /// <param name="alarm">Alarm.</param>
     /// <param name="alertMode">alarm alert. Null allowed.</param>
     public void SetAlertModeForAlarm(IAlarm alarm, IAlarmAlert alertMode) {
+      if (__alertMapping.ContainsKey(alarm)) {
+        var alert = __alertMapping[alarm];
+        alert.Stop();
+        __firingAlerts.Remove(alert);
+      }
       __alertMapping[alarm] = alertMode;
     }
 
@@ -180,7 +185,7 @@ namespace ION.Core.Alarms {
     /// <returns>True if the alarm was registered to the host.</returns>
     public bool RegisterAlarmToHost(object host, IAlarm alarm) {
       if (HostHasAlarmOfType(alarm.GetType(), host)) {
-        Log.D(this, "Object " + host.GetHashCode() + " already has an alarm of type " + alarm.GetType().Name);
+        Log.E(this, "Object " + host + " already has an alarm of type " + alarm.GetType().Name);
         return false;
       }
       HashSet<IAlarm> alarms = null;
@@ -194,7 +199,7 @@ namespace ION.Core.Alarms {
       alarm.id = ++alarmIdCounter;
       __idAlarmMapping.Add(alarm.id, alarm);
       alarms.Add(alarm);
-      alarm.onAlarmTriggered += OnAlarmTriggered;
+      alarm.onAlarmEvent += OnAlarmEvent;
 
 
       return true;
@@ -206,9 +211,15 @@ namespace ION.Core.Alarms {
     /// <param name="host">Host.</param>
     /// <param name="alarm">Alarm.</param>
     public void UnregisterAlarmFromHost(object host, IAlarm alarm) {
+      alarm.onAlarmEvent -= OnAlarmEvent;
+
       if (__alarmMapping.ContainsKey(host)) {
         __alarmMapping[host].Remove(alarm);
-        alarm.onAlarmTriggered -= OnAlarmTriggered;
+
+        if (__alertMapping.ContainsKey(alarm)) {
+          __alertMapping[alarm].Stop();
+          __alertMapping.Remove(alarm);
+        }
 
         if (__alarmMapping[host].Count == 0) {
           __alarmMapping[host] = null;
@@ -248,39 +259,56 @@ namespace ION.Core.Alarms {
     /// The function that is called when a registered alarm is triggered.
     /// </summary>
     /// <param name="alarm">Alarm.</param>
-    private void OnAlarmTriggered(IAlarm alarm) {
+    private void FireAlarmAlerts(IAlarm alarm) {
       // Contension should never happen.
       lock (this) {
         IAlarmAlert alert = null;
 
         if (__alertMapping.ContainsKey(alarm)) {
           alert = __alertMapping[alarm];
+          alert.Stop();
         } else {
           alert = alertFactory(this, alarm);
+          __alertMapping[alarm] = alert;
         }
 
-        // Prevent a double start of an alert. This should only occur if there is a bug in the
-        // alarm implementation.
-        if (!alert.isStarted) {
-          __firingAlerts.Add(alert);
+        __firingAlerts.Add(alert);
+        alert.Start();
+      }
+    }
 
-          alert.onAlarmAlertStopped += OnAlarmAlertStopped;
-          alert.Start();
-        } else {
-          throw new Exception("Alarm was triggered, but alert cannot be started: the alert is already started.");
+    /// <summary>
+    /// Cancels the alerts that are associated with the given alarm.
+    /// </summary>
+    /// <returns><c>true</c> if this instance cancel alarm alerts the specified alarm; otherwise, <c>false</c>.</returns>
+    /// <param name="alarm">Alarm.</param>
+    private void CancelAlarmAlerts(IAlarm alarm) {
+      lock (this) {
+        if (__alertMapping.ContainsKey(alarm)) {
+          var alert = __alertMapping[alarm];
+          alert.Stop();
+          __firingAlerts.Remove(alert);
         }
       }
     }
 
     /// <summary>
-    /// The function that is called when an alarm alert has been finished.
+    /// Called when an alarm event is thrown by an alarm.
     /// </summary>
-    /// <param name="alert">Alert.</param>
-    private void OnAlarmAlertStopped(IAlarmAlert alert) {
-      // Contension should never happen.
+    /// <param name="alarmEvent">Alarm event.</param>
+    private void OnAlarmEvent(AlarmEvent alarmEvent) {
       lock (this) {
-        __firingAlerts.Remove(alert);
-        alert.onAlarmAlertStopped -= OnAlarmAlertStopped;
+        switch (alarmEvent.type) {
+          case AlarmEvent.EType.Triggered:
+            FireAlarmAlerts(alarmEvent.alarm);
+            break;
+          case AlarmEvent.EType.Reset:
+            CancelAlarmAlerts(alarmEvent.alarm);
+            break;
+          case AlarmEvent.EType.Cancelled:
+            CancelAlarmAlerts(alarmEvent.alarm);
+            break;
+        }
       }
     }
   }
@@ -288,38 +316,21 @@ namespace ION.Core.Alarms {
   /// <summary>
   /// An AlarmAlarm that does nothing.
   /// </summary>
-  internal class MockAlarmAlert : IAlarmAlert {
-    // Overridden from IAlarmAlert
-    public event OnAlarmAlertStopped onAlarmAlertStopped;
-
-    // Overridden from IAlarmAlert
-    public IAlarm alarm { get; private set; }
-    // Overridden from IAlarmAlert
-    public bool isStarted { get; private set; }
-    // Overridden from IAlarmAlert
-    public bool isFinished { get; private set; }
-
-    public MockAlarmAlert(IAlarm alarm) {
-      this.alarm = alarm;
+  internal class MockAlarmAlert : AbstractAlarmAlert {
+    public MockAlarmAlert(IAlarm alarm) : base(alarm) {
     }
 
-    // Overridden from IAlarmAlert
-    public bool Start() {
-      if (!isStarted) {
-        isStarted = true;
-        return true;
-      } else {
-        return false;
-      }
+    /// <summary>
+    /// Called by the alert when it is started.
+    /// </summary>
+    protected override bool OnStart() {
+      return true;
     }
 
-    // Overridden from IAlarmAlert
-    public void Stop() {
-      isFinished = true;
-    }
-
-    public void Reset() {
-      isStarted = isFinished = false;
+    /// <summary>
+    /// Called by the alert when it is stopped.
+    /// </summary>
+    protected override void OnStop() {
     }
   }
 }

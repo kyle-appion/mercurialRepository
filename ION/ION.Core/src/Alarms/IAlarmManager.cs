@@ -24,7 +24,7 @@ namespace ION.Core.Alarms {
     /// </summary>
     /// <returns>The alarm.</returns>
     /// <param name="id">Identifier.</param>
-    IAlarm GetAlarm(uint id);
+    IAlarm GetAlarm(int id);
     /// <summary>
     /// Queries the alarm by using the given id. If the alarm does not exist, or is not of the given type, then null
     /// will be returned.
@@ -32,7 +32,7 @@ namespace ION.Core.Alarms {
     /// <returns>The alarm.</returns>
     /// <param name="id">Identifier.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
-    T GetAlarm<T>(uint id) where T : IAlarm;
+    T GetAlarm<T>(int id) where T : IAlarm;
     /// <summary>
     /// Queries a list of alarms that are registered to the given host.
     /// </summary>

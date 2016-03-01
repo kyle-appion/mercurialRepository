@@ -18,6 +18,12 @@
     <item name="android:buttonStyle">@style/IONButton</item>
   </style>
 
+  <style name="DialogActivityTheme" parent="android:style/Theme.Holo.Light.Dialog">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:buttonStyle">@style/IONButton</item>    
+  </style>
+
   <style name="IONButton" parent="android:Widget.Button">
     <item name="android:background">@drawable/selector_button_gold_black</item>
     <item name="android:gravity">center</item>

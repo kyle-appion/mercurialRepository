@@ -24,9 +24,9 @@
     /// Queries the current running ion instance.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion {
+    public AndroidION ion {
       get {
-        return AppState.context;
+        return AppState.context as AndroidION;
       }
     }
     /// <summary>
