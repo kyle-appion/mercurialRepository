@@ -436,9 +436,6 @@
     <Compile Include="src\ViewController\Logging\LoggingViewController.designer.cs">
       <DependentUpon>LoggingViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Logging\Session.cs" />
-    <Compile Include="src\ViewController\Logging\Job.cs" />
-    <Compile Include="src\ViewController\Logging\SessionMeasurement.cs" />
     <Compile Include="src\ViewController\Logging\SessionView.cs" />
     <Compile Include="src\ViewController\Logging\JobView.cs" />
     <Compile Include="src\ViewController\Logging\SessionCell.cs" />
@@ -447,7 +444,16 @@
     <Compile Include="src\ViewController\Logging\LoggingSessionSource.cs" />
     <Compile Include="src\ViewController\Logging\JobData.cs" />
     <Compile Include="src\ViewController\Logging\LoggingJobSource.cs" />
-    <Compile Include="src\ViewController\Logging\AssociateJob.cs" />
+    <Compile Include="src\ViewController\Logging\MeasurementData.cs" />
+    <Compile Include="src\ViewController\Logging\ChooseReporting.cs" />
+    <Compile Include="src\ViewController\Logging\ChooseData.cs" />
+    <Compile Include="src\ViewController\Logging\ChooseGraphing.cs" />
+    <Compile Include="src\ViewController\Logging\ChooseSaved.cs" />
+    <Compile Include="src\ViewController\Analyzer\secondarySensorCell.cs" />
+    <Compile Include="src\Storyboard\SecondarySensorCell.cs" />
+    <Compile Include="src\Storyboard\SecondarySensorCell.designer.cs">
+      <DependentUpon>SecondarySensorCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -38,16 +38,6 @@ namespace ION.IOS.ViewController.Analyzer
       analyzerSensors.snapRect7 = new CGRect(.765 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
       analyzerSensors.snapRect8 = new CGRect(.765 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 
-//      analyzerSensors.snapRect1 = new CGRect (View.Center.X - 150, View.Center.Y - 195, 65, 65);
-//      analyzerSensors.snapRect2 = new CGRect(View.Center.X - 150, View.Center.Y - 35, 65,65);
-//      analyzerSensors.snapRect3 = new CGRect(View.Center.X - 80, View.Center.Y - 195, 65,65);
-//      analyzerSensors.snapRect4 = new CGRect(View.Center.X - 80, View.Center.Y - 35, 65,65);
-//      /// RIGHT SIDE
-//      analyzerSensors.snapRect5 = new CGRect (View.Center.X + 15, View.Center.Y - 195, 65, 65);
-//      analyzerSensors.snapRect6 = new CGRect(View.Center.X + 15, View.Center.Y - 35, 65,65);
-//      analyzerSensors.snapRect7 = new CGRect(View.Center.X + 85, View.Center.Y - 195, 65,65);
-//      analyzerSensors.snapRect8 = new CGRect(View.Center.X + 85, View.Center.Y - 35, 65,65);
-
 			////CREATE CONSTANT POINT OF ORIGIN FOR EACH AREA
 			/// LEFT SIDE
 			analyzerSensors.snapPoint1 = new CGPoint (analyzerSensors.snapRect1.GetMidX (), analyzerSensors.snapRect1.GetMidY ());
@@ -748,9 +738,15 @@ namespace ION.IOS.ViewController.Analyzer
       }
 
       UIAlertController subviewAlert = UIAlertController.Create (Util.Strings.Analyzer.SUBVIEW, "", UIAlertControllerStyle.Alert);
+
       foreach (string subview in pressedArea.availableSubviews) {
         var splits = subview.Split(' ');
-
+        if (splits[0].Equals("Secondary") && pressedArea.manifold.secondarySensor == null) {
+          continue;
+        }
+        if (splits[0].Equals("Superheat") && pressedArea.manifold.primarySensor.type == ESensorType.Vacuum) {
+          continue;
+        }
         if (!pressedArea.tableSubviews.Contains (splits[0])) {          
           subviewAlert.AddAction (UIAlertAction.Create (subview, UIAlertActionStyle.Default, (action) => {
             pressedArea.tableSubviews.Add(splits[0]);
@@ -776,7 +772,7 @@ namespace ION.IOS.ViewController.Analyzer
 			int start = analyzerSensors.areaList.IndexOf(position);
 			int swap = 0;
       bool removeLH = false;
-
+      Console.WriteLine("Swapping sensor");
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
         swap = analyzerSensors.areaList[0];
@@ -1321,6 +1317,7 @@ namespace ION.IOS.ViewController.Analyzer
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
         } else {
+          Console.WriteLine("No low high association");
           sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
         }
       } else {
@@ -1356,82 +1353,61 @@ namespace ION.IOS.ViewController.Analyzer
     }
     /// <summary>
     /// Ensures the sensors are in their correct placement after swapping
+    /// UIDYNAMICBEHAVIOR SUCKS
     /// </summary>
     /// <param name="analyzerSensors">Analyzer sensors.</param>
     /// <param name="View">View.</param>
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
-        analyzerSensors.animator = new UIDynamicAnimator(View);
         if (analyzerSensors.areaList [i] == 1) {
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea1.snapArea, analyzerSensors.locationList [i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea1.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea1.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList [i] == 2) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea2.snapArea, analyzerSensors.locationList [i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea2.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea2.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList [i] == 3) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea3.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea3.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea3.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList[i] == 4) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea4.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea4.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea4.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList[i] == 5) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea5.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea5.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea5.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList[i] == 6) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea6.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea6.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea6.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList[i] == 7) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea7.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea7.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
-
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea7.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         } else if (analyzerSensors.areaList[i] == 8) {
-
-          analyzerSensors.snap = new UISnapBehavior (analyzerSensors.snapArea8.snapArea, analyzerSensors.locationList[i]);
-          UIDynamicItemBehavior noRotate = new UIDynamicItemBehavior(analyzerSensors.snapArea8.snapArea);
-          noRotate.AllowsRotation = false;
-          analyzerSensors.animator.AddBehavior(noRotate);
-          analyzerSensors.animator.AddBehavior (analyzerSensors.snap);
+          UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
+            () =>{ 
+              analyzerSensors.snapArea8.snapArea.Center = analyzerSensors.locationList[i];
+            }, 
+            () => {});
         }
       }
     }
