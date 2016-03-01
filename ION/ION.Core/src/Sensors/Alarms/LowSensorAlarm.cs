@@ -12,6 +12,7 @@ namespace ION.Core.Sensors.Alarms {
 
     // Overridden from BoundedSensorAlarm
     public override bool IsTriggered() {
+      ION.Core.Util.Log.D(this, sensor.measurement + " < " + bounds + " == " + (sensor.measurement < bounds)); 
       return sensor.measurement < bounds;
     }
   }

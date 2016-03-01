@@ -2,9 +2,12 @@
 
   using System;
 
+  using Android.Content;
+
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Sensors;
+  using ION.Core.Sensors.Alarms;
 
   using ION.Droid.App;
 

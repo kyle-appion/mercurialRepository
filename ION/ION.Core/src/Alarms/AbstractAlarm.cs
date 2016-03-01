@@ -1,18 +1,18 @@
-﻿using System;
+﻿namespace ION.Core.Alarms {
 
-namespace ION.Core.Alarms {
+  using System;
+
   public abstract class AbstractAlarm : IAlarm {
     /// <summary>
-    /// The event pool that allows for notifications of the alarm trigger.
+    /// The event that is notified when an alarm event is thrown.
     /// </summary>
-    public event OnAlarmTriggered onAlarmTriggered;
-    /// <summary>
-    /// The event pool that allows for notifications of when the alarm's data
-    /// changes.
-    /// </summary>
-    public event OnAlarmChanged onAlarmChanged;
+    public event OnAlarmEvent onAlarmEvent;
 
-    public uint id { get; set; }
+    /// <summary>
+    /// The unique identifier for the alarm. Do not set this yourself; the alarm manager will resolve it for you.
+    /// </summary>
+    /// <value>The identifier.</value>
+    public int id { get; set; }
     /// <summary>
     /// The name of the alarm.
     /// </summary>
@@ -23,7 +23,7 @@ namespace ION.Core.Alarms {
       }
       set {
         __name = value;
-        NotifyAlarmChanged();
+        NotifyAlarmEvent(AlarmEvent.EType.Changed);
       }
     } string __name;
     /// <summary>
@@ -36,7 +36,7 @@ namespace ION.Core.Alarms {
       }
       set {
         __description = value;
-        NotifyAlarmChanged();
+        NotifyAlarmEvent(AlarmEvent.EType.Changed);
       }
     } string __description;
     /// <summary>
@@ -81,26 +81,37 @@ namespace ION.Core.Alarms {
     public bool Fire(bool force=false) {
       bool triggered = IsTriggered();
 
+      ION.Core.Util.Log.D(this, "Force: " + force + " enabled: " + enabled + " triggered:" + triggered + " pendingReset:" + pendingReset);
+
       if ((force) || (enabled && triggered && !pendingReset)) {
-        Trigger();
+        NotifyAlarmEvent(AlarmEvent.EType.Triggered);
         pendingReset = true;
         return true;
       } else {
         if (!triggered) {
-          Reset();
+          pendingReset = false;
         }
         return false;
       }
     }
 
     /// <summary>
-    /// Resets the alarm. PendingReset will be set to false and any other alarm
-    /// cleanup should happen here. This method should be called after a failed
-    /// fire attempt (an attempt that didn't meet any of its fire criteria.
+    /// Resets the alarm such that it will not be triggered, but is still enabeled. The alarm will trigger again once
+    /// it leaves its trigger range.
     /// </summary>
     public void Reset() {
-      OnReset();
+      enabled = true;
+      pendingReset = true;
+      NotifyAlarmEvent(AlarmEvent.EType.Reset);
+    }
+
+    /// <summary>
+    /// Cancels the alarm.
+    /// </summary>
+    public void Cancel() {
+      enabled = false;
       pendingReset = false;
+      NotifyAlarmEvent(AlarmEvent.EType.Cancelled);
     }
 
     /// <summary>
@@ -111,27 +122,11 @@ namespace ION.Core.Alarms {
     public abstract bool IsTriggered();
 
     /// <summary>
-    /// A call that will allow the child to react to a Reset call.
+    /// Called when the alarm wishes to thrown an alarm event.
     /// </summary>
-    protected virtual void OnReset() {
-      // Nope
-    }
-
-    /// <summary>
-    /// Safely called OnAlarmChanged.
-    /// </summary>
-    protected void NotifyAlarmChanged() {
-      if (onAlarmChanged != null) {
-        onAlarmChanged(this);
-      }
-    }
-
-    /// <summary>
-    /// The trigger function that will be called when the alarm is triggered.
-    /// </summary>
-    private void Trigger() {
-      if (onAlarmTriggered != null) {
-        onAlarmTriggered(this);
+    protected void NotifyAlarmEvent(AlarmEvent.EType type) {
+      if (onAlarmEvent != null) {
+        onAlarmEvent(new AlarmEvent(this, type));
       }
     }
   }

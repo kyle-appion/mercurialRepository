@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Preferences {
+﻿/*
+namespace ION.Droid.Preferences {
 
   using System;
 
@@ -30,13 +31,55 @@
     private Unit unit;
 
     public BoundedAlarmPreference(Context context, IAttributeSet attrs) : base(context, attrs) {
-      var a = context as SensorPreferenceActivity;
+      var a = context as SensorAlarmActivity;
 
       ion = AppState.context;
 
       if (a != null) {
-        var sp = a.Intent.GetParcelableExtra(SensorPreferenceActivity.EXTRA_SENSOR) as SensorParcelable;
+        var sp = a.Intent.GetParcelableExtra(SensorAlarmActivity.EXTRA_SENSOR) as SensorParcelable;
         sensor = sp.Get(ion);
+        unit = sensor.unit;
+      }
+    }
+
+    /// <summary>
+    /// Loads the alarm preference.
+    /// </summary>
+    /// <returns>The alarm preference.</returns>
+    private Scalar LoadAlarmPreference() {
+      var ret = unit.OfScalar(0);
+
+      var str = GetPersistedString();
+      if (str != null) {
+        var parts = str.Split(new char[] { ':' });
+
+        try {
+          var uc = int.Parse(parts[0]);
+          var amount = double.Parse(parts[1]);
+
+          var u = UnitLookup.GetUnit(uc);
+
+          if (unit.IsCompatible(u)) {
+            ret = u.OfScalar(amount);
+          }
+        } catch (Exception e) {
+          ION.Core.Util.Log.D(this, "Failed to load alarm preference", e);
+        }
+      }
+
+      return ret;
+    }
+
+    /// <summary>
+    /// Raises the set initial value event.
+    /// </summary>
+    /// <param name="restorePersistedValue">If set to <c>true</c> restore persisted value.</param>
+    /// <param name="defaultValue">Default value.</param>
+    protected override void OnSetInitialValue(bool restorePersistedValue, Java.Lang.Object defaultValue) {
+      if (restorePersistedValue) {
+        LoadAlarmPreference();
+      } else {
+        SaveAlarmPreference();
       }
     }
 
@@ -103,6 +146,8 @@
         }
       }));
 
+      button.Text = unit.ToString();
+
       return ret;
     }
 
@@ -145,3 +190,4 @@
   }
 }
 
+*/

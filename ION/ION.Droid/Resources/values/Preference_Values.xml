@@ -12,12 +12,6 @@
   <string name="preferences_location_use"></string>
   <string name="preferences_location_use_title">Allow GPS Location</string>
 
-  <string name="preferences_sensor_alarms">Sensor Alarm Preferences</string>
-  <string name="preferences_sensor_low_alarm">Low Alarm</string>
-  <string name="preferences_sensor_low_alarm_summary">Trigger a notification when the sensor\'s reading drops below the set value.</string>
-  <string name="preferences_sensor_high_alarm">High Alarm</string>
-  <string name="preferences_sensor_high_alarm_summary">Trigger a notification when the sensor\'s reading raised above the set value.</string>
-
   <string name="preferences_units_default">Default Units</string>
   <string name="preferences_units_length">Default Length Unit</string>
   <string name="preferences_units_length_title">Select a new default length</string>

@@ -198,8 +198,8 @@
       });
 
       ldb.AddItem(Resource.String.alarm, () => {
-        var i = new Intent(Activity, typeof(SensorPreferenceActivity));
-        i.PutExtra(SensorPreferenceActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
+        var i = new Intent(Activity, typeof(SensorAlarmActivity));
+        i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
         StartActivity(i);
       });
 

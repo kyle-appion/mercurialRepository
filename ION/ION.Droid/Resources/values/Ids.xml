@@ -38,6 +38,7 @@
   <item name="play" type="id"/>
   <item name="preferred" type="id"/>
   <item name="pressure" type="id"/>
+  <item name="reenable" type="id"/>
   <item name="save" type="id"/>
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>
@@ -45,6 +46,7 @@
   <item name="state" type="id"/>
   <item name="status" type="id"/>
   <item name="temperature" type="id"/>
+  <item name="text" type="id"/>
   <item name="title" type="id"/>
   <item name="toggle" type="id"/>
   <item name="type" type="id"/>
@@ -52,6 +54,12 @@
   <item name="view" type="id"/>
   <item name="viewpager" type="id"/>
   <item name="zip" type="id"/>
+
+  <!--
+  ALARM
+  -->
+  <item name="low_alarm" type="id"/>
+  <item name="high_alarm" type="id"/>
 
   <!--
   ANALYZER
