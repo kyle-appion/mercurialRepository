@@ -127,12 +127,16 @@
     <Compile Include="src\Location\SimpleLocation.cs" />
     <Compile Include="src\Sensors\ManualSensor.cs" />
     <Compile Include="src\Content\Analyzer.cs" />
+    <Compile Include="src\Database\Job.cs" />
+    <Compile Include="src\Database\Session.cs" />
+    <Compile Include="src\Database\SessionMeasurement.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
     <Compile Include="src\Sensors\SensorTypeFilter.cs" />
     <Compile Include="src\Sensors\Filters\SensorOfTypeFilter.cs" />
     <Compile Include="src\Devices\Filters\HasSensorOfTypeFilter.cs" />
     <Compile Include="src\Alarms\Alerts\AbstractAlarmAlert.cs" />
+    <Compile Include="src\Sensors\Properties\SecondarySensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

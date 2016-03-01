@@ -231,7 +231,7 @@ namespace ION.IOS.ViewController {
       var ret = new UINavigationController[] {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
-//        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+        //new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
         null, // Screenshot Navigation

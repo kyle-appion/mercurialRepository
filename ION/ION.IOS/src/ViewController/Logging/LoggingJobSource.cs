@@ -1,32 +1,43 @@
-﻿/*
 
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
+using System.IO;
+
 using CoreGraphics;
 using Foundation;
 using UIKit;
 using SQLite;
-using System.IO;
+
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.Logging {
   public class LoggingJobSource : UITableViewSource {
 
     List<JobData> tableItems;
+    ObservableCollection<int> usingSessions;
+    //IION ion;
     nfloat cellHeight;
 
-    public LoggingJobSource(List<JobData> jobList, nfloat height) {
-      tableItems = jobList;
-      cellHeight = height;;
+    public LoggingJobSource(List<JobData> allJobs, nfloat height, ObservableCollection<int> selectedSessions) {
+      tableItems = allJobs;
+      cellHeight = height;
+      usingSessions = selectedSessions;
+      //ion = AppState.context;
     }
 
     // Overridden from UITableViewSource
     public override nint NumberOfSections(UITableView tableView) {
-      return 1;
+      return tableItems.Count;
+    }
+
+    public override string TitleForHeader(UITableView tableView, nint section) {
+      return tableItems[(int)section].jName;
     }
 
     // Overridden from UITableViewSource
     public override nint RowsInSection(UITableView tableview, nint section) {
-      return tableItems.Count;
+      return tableItems[(int)section].jobSessions.Count;
     }
 
     // Overriden from UITableViewSource
@@ -34,8 +45,13 @@ namespace ION.IOS.ViewController.Logging {
       return cellHeight;
     }
     // Overriden from UITableViewSource
+    public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
+      return cellHeight;
+    }
+
+    // Overriden from UITableViewSource
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
-      return new UIView(new CGRect(0,0,0,0));
+      return tableItems[(int)section].headerView;
     }
     // Overriden from UITableViewSource
     public override UIView GetViewForFooter (UITableView tableView, nint section)
@@ -44,18 +60,25 @@ namespace ION.IOS.ViewController.Logging {
     }
 
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
-      var cell = tableView.DequeueReusableCell("jobCell") as JobCell;
+
+      var cell = tableView.DequeueReusableCell("jobCell") as SessionCell;
 
       if (cell == null)
-        cell = new JobCell ();   
+        cell = new SessionCell ();
 
-      cell.makeCellData(tableItems[indexPath.Row].JID, tableItems[indexPath.Row].jName, tableView, cellHeight);
+      cell.makeCellData(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID, tableItems[indexPath.Section].jobSessions[indexPath.Row].start,tableItems[indexPath.Section].jobSessions[indexPath.Row].finish ,tableView, cellHeight);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-      return cell;            
+
+      if(usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)){
+        //cell.Accessory = UITableViewCellAccessory.Checkmark;
+        cell.BackgroundColor = UIColor.LightGray;
+      }
+
+      return cell;
     }
 
     public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
-      return true;
+      return false;
     }
 
     public override void CommitEditingStyle (UITableView tableView, UITableViewCellEditingStyle editingStyle, Foundation.NSIndexPath indexPath)
@@ -63,16 +86,13 @@ namespace ION.IOS.ViewController.Logging {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
           // remove that job as well as the sessions and their measurements that are associated with that job
-          var documents = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-          var _pathToDatabase = Path.Combine(documents, "AppionJSO.db");
-          var db = new SQLite.SQLiteConnection(_pathToDatabase);
 
-          //reset any session's job association if it belongs to the job being removed
-          db.Query<Session>("UPDATE Session SET frnJID = null WHERE frnJID = " + tableItems[indexPath.Row].JID);
-          // delete the job chosen for removal
-          db.Query<Job>("DELETE FROM Job WHERE JID = " + tableItems[indexPath.Row].JID);
-          // remove the item from the underlying data source
-          tableItems.RemoveAt(indexPath.Row);
+//          //reset any session's job association if it belongs to the job being removed
+//          ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = null WHERE frnJID = " + tableItems[indexPath.Section].JID);
+//          // delete the job chosen for removal
+//          ion.database.Query<ION.Core.Database.Job>("DELETE FROM Job WHERE JID = " + tableItems[indexPath.Section].JID);
+//          // remove the item from the underlying data source
+//          tableItems.RemoveAt(indexPath.Row);
 
           // delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
@@ -85,17 +105,16 @@ namespace ION.IOS.ViewController.Logging {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
-      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].jName);
-      UITableViewCell cellG = tableView.CellAt(indexPath);
+      Console.WriteLine ("Clicked Job: " + tableItems[indexPath.Section].jName + "'s session " + tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
 
-      if (cellG.Accessory == UITableViewCellAccessory.Checkmark) {
-        cellG.Accessory = UITableViewCellAccessory.None;
+
+      if (usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)) {
+        usingSessions.Remove(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
       } else {
-        cellG.Accessory = UITableViewCellAccessory.Checkmark;
+        usingSessions.Add(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
       }
+
+      tableView.ReloadData();
     }
   }
 }
-
-
-*/
