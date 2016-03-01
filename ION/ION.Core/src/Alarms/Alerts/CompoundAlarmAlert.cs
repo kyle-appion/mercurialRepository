@@ -9,14 +9,9 @@ namespace ION.Core.Alarms.Alerts {
   /// </remarks>
   public class CompoundAlarmAlert : IAlarmAlert {
     // Overridden from IAlarmAlert
-    public event OnAlarmAlertStopped onAlarmAlertStopped;
-
-    // Overridden from IAlarmAlert
     public IAlarm alarm { get; private set; }
     // Overridden from IAlarmAlert
     public bool isStarted { get; private set; }
-    // Overridden from IAlarmAlert
-    public bool isFinished { get; private set; }
 
     /// <summary>
     /// The alerts that this alert is comprised of.
@@ -32,13 +27,12 @@ namespace ION.Core.Alarms.Alerts {
         if (alert.alarm != alarm) {
           throw new Exception("Cannot create CompountAlarmAlert: alarms don't match");
         }
-        alert.Reset();
       }
     }
 
     // Overridden from IAlarmAlert
     public bool Start() {
-      if (isStarted || isFinished) {
+      if (isStarted) {
         return false;
       }
 
@@ -55,21 +49,7 @@ namespace ION.Core.Alarms.Alerts {
         alert.Stop();
       }
 
-      isFinished = true;
-
-      if (onAlarmAlertStopped != null) {
-        onAlarmAlertStopped(this);
-      }
-    }
-
-    // Overridden from IAlarmAlert
-    public void Reset() {
-      foreach (var alert in alerts) {
-        alert.Reset();
-      }
-
       isStarted = false;
-      isFinished = false;
     }
   }
 }

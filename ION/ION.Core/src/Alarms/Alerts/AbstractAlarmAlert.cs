@@ -9,12 +9,6 @@
   /// only have to worry about their alert effects.
   /// </summary>
   public abstract class AbstractAlarmAlert : IAlarmAlert {
-
-    /// <summary>
-    /// The event pool that is used when the IAlarmAlert is stopped.
-    /// </summary>
-    public event OnAlarmAlertStopped onAlarmAlertStopped;
-
     /// <summary>
     /// The alarm that this alert is for.
     /// </summary>
@@ -26,12 +20,6 @@
     /// <value>true</value>
     /// <c>false</c>
     public bool isStarted { get; private set; }
-    /// <summary>
-    /// Whether or not the alert has started and stopped.
-    /// </summary>
-    /// <value>true</value>
-    /// <c>false</c>
-    public bool isFinished { get; private set; }
 
     public AbstractAlarmAlert(IAlarm alarm) {
       this.alarm = alarm;
@@ -58,19 +46,7 @@
     /// </summary>
     public void Stop() {
       OnStop();
-      isFinished = true;
-
-      if (onAlarmAlertStopped != null) {
-        onAlarmAlertStopped(this);
-      }
-    }
-
-    /// <summary>
-    /// Resets the alarm alert.
-    /// </summary>
-    public void Reset() {
       isStarted = false;
-      isFinished = false;
     }
 
     /// <summary>

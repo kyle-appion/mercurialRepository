@@ -10,41 +10,27 @@ using ION.IOS.UI;
 using ION.IOS.Util;
 
 namespace ION.IOS.Alarms.Alerts {
-  public class PopupWindowAlarmAlert : IAlarmAlert {
-    // Overridden from IAlarmAlert
-    public event OnAlarmAlertStopped onAlarmAlertStopped;
-
-    // Overridden from IAlarmAlert
-    public IAlarm alarm { get; private set; }
-    // Overridden from IAlarmAlert
-    public bool isStarted { get; private set; }
-    // Overridden from IAlarmAlert
-    public bool isFinished { get; private set; }
-
+  public class PopupWindowAlarmAlert : AbstractAlarmAlert {
     /// <summary>
     /// The alert view that will display the alarm information.
     /// </summary>
     /// <value>The alert view.</value>
     private UIAlertController alertView { get; set; }
 
-    public PopupWindowAlarmAlert(IAlarm alarm) {
-      this.alarm = alarm;
+    public PopupWindowAlarmAlert(IAlarm alarm) : base(alarm) {
     }
 
-    // Overridden from IAlarmAlert
-    public bool Start() {
-      if (isStarted) {
-        return false;
-      }
-
-      isStarted = true;
-
+    /// <summary>
+    /// Called by the alert when it is started.
+    /// </summary>
+    protected override bool OnStart() {
       alertView = UIAlertController.Create(alarm.name, alarm.description, UIAlertControllerStyle.Alert);
 
       alertView.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {
         alarm.enabled = false;
         Stop();
       }));
+
       alertView.AddAction(UIAlertAction.Create(Strings.Alarms.REENABLE, UIAlertActionStyle.Default, (action) => {
         alarm.enabled = true;
         Stop();
@@ -55,19 +41,12 @@ namespace ION.IOS.Alarms.Alerts {
       return true;
     }
 
-    // Overridden from IAlarmAlert
-    public void Stop() {
+    /// <summary>
+    /// Called by the alert when it is stopped.
+    /// </summary>
+    protected override void OnStop() {
       alertView.Dismiss();
       alertView = null;
-      if (onAlarmAlertStopped != null) {
-        onAlarmAlertStopped(this);
-      }
-    }
-
-    // Overridden from IAlarmAlert
-    public void Reset() {
-      isStarted = false;
-      isFinished = false;
     }
   }
 }

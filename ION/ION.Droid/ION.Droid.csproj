@@ -166,8 +166,10 @@
     <Compile Include="src\Preferences\NumberDialogPreference.cs" />
     <Compile Include="src\Dialog\NumberEntryDialog.cs" />
     <Compile Include="src\Preferences\BoundedAlarmPreference.cs" />
-    <Compile Include="src\Activity\SensorPreferenceActivity.cs" />
-    <Compile Include="src\Fragments\SensorAlarmPreferenceFragment.cs" />
+    <Compile Include="src\Activity\SensorAlarmActivity.cs" />
+    <Compile Include="src\Activity\AlarmPopupActivity.cs" />
+    <Compile Include="src\Alarms\Alerts\ToneAlarmAlert.cs" />
+    <Compile Include="src\Alarms\Alerts\VibrateAlarmAlert.cs" />
     <Compile Include="src\Widgets\Analyzer\MeasurementViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\PTChartSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\RateOfChangeSubviewViewHolder.cs" />
@@ -377,10 +379,10 @@
     <AndroidResource Include="Resources\layout\dialog_rename.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
-    <AndroidResource Include="Resources\xml\preference_sensor_alarms.xml" />
     <AndroidResource Include="Resources\layout\preference_bounded_alarm.axml" />
-    <AndroidResource Include="Resources\xml\preferences_sensor.xml" />
     <AndroidResource Include="Resources\drawable\selector_fluid_state.xml" />
+    <AndroidResource Include="Resources\layout\activity_sensor_alarm.axml" />
+    <AndroidResource Include="Resources\layout\activity_alarm_popup.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
