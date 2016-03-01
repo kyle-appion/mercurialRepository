@@ -95,9 +95,10 @@ namespace ION.IOS.ViewController.Analyzer
 
       conDisButton.TouchUpInside += delegate {
         if(currentSensor != null){
-          if (activityConnectStatus != null)
+          if (activityConnectStatus != null){
+            activityConnectStatus.StopAnimating();
             activityConnectStatus = null;
-
+          }
           activityConnectStatus = new UIActivityIndicatorView(new CGRect(.867 * snapArea.Bounds.Width, .035 * snapArea.Bounds.Height, .103 * snapArea.Bounds.Width, .179 * snapArea.Bounds.Height));
           snapArea.AddSubview(activityConnectStatus);
 
@@ -436,14 +437,13 @@ namespace ION.IOS.ViewController.Analyzer
     }
 
     public async void connectionSpinner(int conn){
+      activityConnectStatus.StartAnimating();
       if (conn == 1) {
         Connection.Image = UIImage.FromBundle("");
-        activityConnectStatus.StartAnimating();
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
         Connection.Image = UIImage.FromBundle("");
-        activityConnectStatus.StartAnimating();
-        currentSensor.device.connection.Connect();
+       await currentSensor.device.connection.Connect();
       }
 
       await Task.Delay(TimeSpan.FromSeconds(2));
