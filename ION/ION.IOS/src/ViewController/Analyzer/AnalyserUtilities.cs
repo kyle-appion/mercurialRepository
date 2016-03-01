@@ -772,7 +772,7 @@ namespace ION.IOS.ViewController.Analyzer
 			int start = analyzerSensors.areaList.IndexOf(position);
 			int swap = 0;
       bool removeLH = false;
-
+      Console.WriteLine("Swapping sensor");
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
         swap = analyzerSensors.areaList[0];
@@ -1317,6 +1317,7 @@ namespace ION.IOS.ViewController.Analyzer
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
         } else {
+          Console.WriteLine("No low high association");
           sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
         }
       } else {
