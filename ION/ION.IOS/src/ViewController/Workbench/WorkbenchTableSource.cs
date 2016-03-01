@@ -35,6 +35,7 @@
     private const string CELL_ROC_SUBVIEW = "cellRateOfChangeSubview";
     private const string CELL_TIMER_SUBVIEW = "cellTimerSubview";
     private const string CELL_SPACE = "cellSpace";
+    private const string CELL_SECONDARY = "cellLinked";
 
     /// <summary>
     /// The action that is called when the add row is clicked.
@@ -252,7 +253,14 @@
         cell.BackgroundColor = UIColor.Clear;
 
         return cell;
-      } else {
+      } else if (record is SecondarySensorRecord) {
+        var sr = record as SecondarySensorRecord;
+        var cell = tableView.DequeueReusableCell(CELL_SECONDARY) as SecondarySensorCell;
+
+        cell.UpdateTo(sr,tableView.Bounds.Width);
+
+        return cell;
+      }else {
         throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
       }
     }
@@ -391,6 +399,13 @@
         addAction(Strings.Workbench.Viewer.HOLD_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new HoldSensorProperty(sensor));
         });
+      }
+      if (manifold.secondarySensor != null) {
+        if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) { 
+          addAction(Strings.Workbench.Viewer.SECONDARY, (UIAlertAction action) => {
+            manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+          });
+        }
       }
       /*
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
@@ -580,6 +595,8 @@
         return new RateOfChangeRecord(manifold, sensorProperty);
       } else if (sensorProperty is PTChartSensorProperty || sensorProperty is SuperheatSubcoolSensorProperty) {
         return new FluidRecord(manifold, sensorProperty);
+      } else if (sensorProperty is SecondarySensorProperty){
+        return new SecondarySensorRecord(manifold, sensorProperty as SecondarySensorProperty);
       } else {
         throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
       }
@@ -608,6 +625,7 @@
       Timer,
       Fluid,
       RateOfChange,
+      Secondary,
     }
   }
 

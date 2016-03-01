@@ -358,18 +358,12 @@ namespace ION.IOS.ViewController.Analyzer
         ptFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(ptname));
         var ptcalc = manifold.ptChart.GetTemperature(manifold.primarySensor).ConvertTo(tUnit);
         if (!manifold.ptChart.fluid.mixture) {
-          if (ptcalc < 0) {
-            ptFluidState.Text = "PTBub";
-            ptcalc = ptcalc * -1;
-          } else {
-            ptFluidState.Text = "PTDew";
-          }
+          ptFluidState.Text = "PT";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
           ptFluidState.Text = "PTBub";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
           ptFluidState.Text = "PTDew";
-        } 
-
+        }
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
@@ -378,10 +372,7 @@ namespace ION.IOS.ViewController.Analyzer
         var ptcalc = manifold.ptChart.GetPressure(manifold.primarySensor).ConvertTo(pUnit);
 
         if (!manifold.ptChart.fluid.mixture) {
-          if (ptcalc < 0)
-            ptFluidState.Text = "PTBub";
-          else
-            ptFluidState.Text = "PTDew";
+          ptFluidState.Text = "PT";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
           ptFluidState.Text = "PTBub";
         } else if (manifold.ptChart.state.Equals(Fluid.EState.Dew)) {

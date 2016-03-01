@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Analyzer {
       //secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
       secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
 
-      cellHeader.Text = "Secondary";
+      cellHeader.Text = "Linked";
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
