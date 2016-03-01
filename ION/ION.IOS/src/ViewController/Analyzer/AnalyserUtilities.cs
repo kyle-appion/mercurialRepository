@@ -10,16 +10,24 @@ using UIKit;
 using CoreGraphics;
 using Foundation;
 using CoreAnimation;
-using ION.Core.Sensors;
+
 using ION.Core.Content;
+using ION.Core.Devices;
+using ION.Core.Util;
+using ION.Core.Sensors;
+using ION.Core.Sensors.Properties;
 using ION.Core.Fluids;
 using ION.Core.Measure;
+using ION.Core.App;
+
+using ION.IOS.ViewController.Alarms;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Analyzer
 {
 	class AnalyserUtilities 
 	{
-
+    public static IONPrimaryScreenController root { get; set; }
 		/// <summary>
 		/// Calculates the locations and snap points for sensor subviews
 		/// </summary>
@@ -714,6 +722,10 @@ namespace ION.IOS.ViewController.Analyzer
 
       addDeviceSheet = UIAlertController.Create (lhSensor.LabelTop.Text + " " + Util.Strings.ACTIONS, "", UIAlertControllerStyle.Alert);
 
+      addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
+        alarmRequestViewer(Sensor);
+      }));
+
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.ADDSUBVIEW, UIAlertActionStyle.Default, (action) => {
         subviewOptionChosen(lhSensor);
       }));
@@ -772,7 +784,6 @@ namespace ION.IOS.ViewController.Analyzer
 			int start = analyzerSensors.areaList.IndexOf(position);
 			int swap = 0;
       bool removeLH = false;
-      Console.WriteLine("Swapping sensor");
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
         swap = analyzerSensors.areaList[0];
@@ -1317,7 +1328,12 @@ namespace ION.IOS.ViewController.Analyzer
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
         } else {
-          Console.WriteLine("No low high association");
+          foreach (var item in analyzerSensors.viewList) {
+            if (item.lowArea.attachedSensor != null && item.lowArea.attachedSensor.currentSensor == analyzerSensors.viewList[start].currentSensor) {
+              LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
+              return;
+            }
+          }
           sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
         }
       } else {
@@ -2421,6 +2437,12 @@ namespace ION.IOS.ViewController.Analyzer
         Console.WriteLine("Occupied High side given Low side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The Low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       }
+    }
+
+    public static void alarmRequestViewer(sensor area) {
+      var alarm = Analyzer.AnalyzerViewController.arvc.InflateViewController<SensorAlarmViewController>("viewControllerSensorAlarms");
+      alarm.sensor = area.currentSensor;
+      Analyzer.AnalyzerViewController.arvc.NavigationController.PushViewController(alarm, true);
     }
 	}
 }
