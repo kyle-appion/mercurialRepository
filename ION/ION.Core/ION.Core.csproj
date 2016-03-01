@@ -231,9 +231,6 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R125.fluid">
       <LogicalName>R125.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R134A.fluid">
-      <LogicalName>R134A.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R141B.fluid">
       <LogicalName>R141B.fluid</LogicalName>
     </EmbeddedResource>
@@ -425,6 +422,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\ISOBUTAN.fluid">
       <LogicalName>ISOBUTAN.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
+      <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,32 +1,53 @@
-﻿using System;
+﻿namespace ION.Core.Alarms {
 
-namespace ION.Core.Alarms {
+  using System;
+
 
   /// <summary>
-  /// The delegate that is called when an alarm is triggered.
+  /// The delegate that is called when an alarm is throws an alarm event.
   /// </summary>
-  public delegate void OnAlarmTriggered(IAlarm alarm);
-  /// <summary>
-  /// The delegate that is called when the alarm's data is changed.
-  /// </summary>
-  public delegate void OnAlarmChanged(IAlarm alarm);
+  public delegate void OnAlarmEvent(AlarmEvent alarmEvent);
+
+  public class AlarmEvent {
+    public IAlarm alarm;
+    public EType type;
+
+    public AlarmEvent(IAlarm alarm, EType type) {
+      this.alarm = alarm;
+      this.type = type;
+    }
+
+    public enum EType {
+      /// <summary>
+      /// Called when the alarm is triggered.
+      /// </summary>
+      Triggered,
+      /// <summary>
+      /// Called when the alarm is reset.
+      /// </summary>
+      Reset,
+      /// <summary>
+      /// Called when the alarm is cancelled and will stop firing (if it is).
+      /// </summary>
+      Cancelled,
+      /// <summary>
+      /// Called when properties such as the alarm's name or description change.
+      /// </summary>
+      Changed,
+    }
+  }
 
   public interface IAlarm : IDisposable {
     /// <summary>
-    /// The event pool that allows for notifications of the alarm trigger.
+    /// The event pool that is alerted when the alarm throws an alarm event.
     /// </summary>
-    event OnAlarmTriggered onAlarmTriggered;
-    /// <summary>
-    /// The event pool that allows for notifications of when the alarm's data
-    /// changes.
-    /// </summary>
-    event OnAlarmChanged onAlarmChanged;
+    event OnAlarmEvent onAlarmEvent;
 
     /// <summary>
     /// The unique identifier for the alarm. Do not set this yourself; the alarm manager will resolve it for you.
     /// </summary>
     /// <value>The identifier.</value>
-    uint id { get; set; }
+    int id { get; set; }
     /// <summary>
     /// The name of the alarm.
     /// </summary>
@@ -71,11 +92,15 @@ namespace ION.Core.Alarms {
     bool IsTriggered();
 
     /// <summary>
-    /// Resets the alarm. PendingReset will be set to false and any other alarm
-    /// cleanup should happen here. This method should be called after a failed
-    /// fire attempt (an attempt that didn't meet any of its fire criteria.
+    /// Resets the alarm such that it will not be triggered, but is still enabeled. The alarm will trigger again once
+    /// it leaves its trigger range.
     /// </summary>
     void Reset();
+
+    /// <summary>
+    /// Cancels the alarm.
+    /// </summary>
+    void Cancel();
   }
 }
 

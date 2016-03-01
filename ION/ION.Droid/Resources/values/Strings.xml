@@ -16,12 +16,14 @@
   <string name="connect">Connect</string>
   <string name="connected">Connected</string>
   <string name="date">Date</string>
+  <string name="disabled">Disabled</string>
   <string name="disconnect">Disconnect</string>
   <string name="disconnect_all">Disconnect All</string>
   <string name="disconnected">Disconnected</string>
   <string name="download">Download</string>
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
+  <string name="enabled">Enabled</string>
   <string name="enter_number">Enter a number</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
@@ -29,6 +31,7 @@
   <string name="inactive">Inactive</string>
   <string name="library">Library</string>
   <string name="main">Main</string>
+  <string name="measurement">Measurement</string>
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
@@ -39,6 +42,7 @@
   <string name="open_with">Open With</string>
   <string name="pick_unit">Pick Unit</string>
   <string name="please_wait">Please Wait</string>
+  <string name="reenable">Re-enable</string>
   <string name="remove">Remove</string>
   <string name="rename">Rename</string>
   <string name="reports">Reports</string>
@@ -52,6 +56,21 @@
   <string name="state">State</string>
   <string name="unit">Unit</string>
   <string name="zip">Zip Code</string>
+
+  <!--
+  ALARM
+  -->
+  <string name="alarm">Alarm</string>
+  <string name="alarm_high">High Alarm</string>
+  <string name="alarm_high_for_1arg">{0}\'s High Alarm</string>
+  <string name="alarm_high_for_summary_2arg">The <b>High Alarm</b> for {0} has risen above {1}.</string>
+  <string name="alarm_high_summary">Trigger a notification when the sensor\'s reading rises above the set value.</string>
+  <string name="alarm_low">Low Alarm</string>
+  <string name="alarm_low_for_1arg">{0}\'s Low Alarm</string>
+  <string name="alarm_low_for_summary_2arg">The <b>Low Alarm</b> for {0} has dropped below {1}.</string>
+  <string name="alarm_low_summary">Trigger a notification when the sensor\'s reading drops below the set value.</string>
+  <string name="alarm_sensor">Sensor Alarms</string>
+  <string name="alarms">Alarms</string>
 
   <!--
   ANALYZER
@@ -98,6 +117,8 @@
   -->
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
+  <string name="error_invalid_number_entry">Please enter a real number</string>
+  <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
   <string name="error_pdf_viewer_missing">It appears that your device does not have a PDF viewer. Please install a PDF viewer to the file.</string>
 

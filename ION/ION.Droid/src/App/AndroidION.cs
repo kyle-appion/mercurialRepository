@@ -24,6 +24,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.Droid.Alarms.Alerts;
   using ION.Droid.Connections;
   using ION.Droid.Devices;
   using ION.Droid.Location;
@@ -114,7 +115,11 @@
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
-        return new CompoundAlarmAlert(alarm, new PopupActivityAlert(alarm, context));
+        return new CompoundAlarmAlert(alarm,
+          new PopupActivityAlert(alarm, context),
+          new VibrateAlarmAlert(alarm, context),
+          new ToneAlarmAlert(alarm, context)
+        );
       };
 
       managers.Add(fluidManager = new BaseFluidManager(this));

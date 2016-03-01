@@ -50,7 +50,7 @@
     /// <summary>
     /// The default preferred fluids.
     /// </summary>
-    private const string DEFAULT_FLUIDS = "R22,R134A,R407C,R410A";
+    private const string DEFAULT_FLUIDS = "R22,R134a,R407C,R410A";
     /// <summary>
     /// The default fluid color.
     /// </summary>
