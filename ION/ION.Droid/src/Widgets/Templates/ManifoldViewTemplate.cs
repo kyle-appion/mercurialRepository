@@ -5,6 +5,7 @@
   using Android.Views;
   using Android.Widget;
 
+  using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -104,6 +105,13 @@
 
       var gds = s as GaugeDeviceSensor;
       var d = gds?.device;
+
+      var ion = AppState.context;
+      if (ion.alarmManager.HostHasEnabledAlarms(s)) {
+        alarm.Visibility = ViewStates.Visible;
+      } else {
+        alarm.Visibility = ViewStates.Invisible;
+      }
 
       if (d != null) {
         title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
