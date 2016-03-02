@@ -261,7 +261,7 @@
           new NavigationIconItem() {
             id = Resource.Id.report_certificates,
             title = GetString(Resource.String.report_certificates),
-            icon = Resource.Drawable.ic_nav_certificates,
+            icon = Resource.Drawable.ic_nav_certificate,
             action = () => {
               StartActivity(typeof(CalibrationCertificateArchiveActivity));
             }
@@ -323,6 +323,7 @@
       if (action != null) {
         action();
       }
+      HideDrawer();
     }
 
     /// <summary>

@@ -83,6 +83,7 @@
     /// <param name="convert">Convert.</param>
     /// <param name="parent">Parent.</param>
     private View GetCategoryView(NavigationCategory category, int postition, View convert, ViewGroup parent) {
+      var res = parent.Context.Resources;
       CategoryViewHolder vh = convert?.Tag as CategoryViewHolder;
 
       if (convert == null || vh == null) {
@@ -90,6 +91,7 @@
         convert.Tag = vh = new CategoryViewHolder();
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
+        vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_medium));
       } else {
         vh = (CategoryViewHolder)convert.Tag;
       }
@@ -116,6 +118,8 @@
         convert.Tag = vh = new IconViewHolder();
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
+        vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_large));
+
         vh.icon = convert.FindViewById<ImageView>(Resource.Id.icon);
       } else {
         vh = (IconViewHolder)convert.Tag;

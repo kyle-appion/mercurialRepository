@@ -60,7 +60,7 @@ namespace ION.Droid.Devices {
       switch (device.type) {
         case EDeviceType.Gauge:
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;
-          return serialNumber.deviceModel.GetTypeString();
+          return GetTypeString(serialNumber.deviceModel);
         default:
           return ion.GetString(Resource.String.device_unknown);
       }

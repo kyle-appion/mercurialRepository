@@ -101,7 +101,7 @@
       var d = gds?.device;
 
       if (d != null) {
-        title.Text = d.serialNumber.deviceModel.GetModelCode() + ": " + s.name;
+        title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
 
         if (d.isConnected) {
           measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));

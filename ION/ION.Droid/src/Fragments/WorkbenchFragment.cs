@@ -104,6 +104,7 @@
       if (workbench == null) {
         workbench = ion.currentWorkbench;
       }
+      workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
       adapter = new WorkbenchAdapter(ion, Resources);
       adapter.SetWorkbench(ion.currentWorkbench, OnAddViewer);
@@ -159,6 +160,26 @@
       itemTouchHelper.AttachToRecyclerView(list);
     }
 
+    /// <Docs>Called when the Fragment is visible to the user.</Docs>
+    /// <summary>
+    /// Raises the start event.
+    /// </summary>
+    public override void OnResume() {
+      base.OnStart();
+      adapter.NotifyDataSetChanged();
+    }
+
+    /// <Docs>Called when the fragment is no longer in use.</Docs>
+    /// <summary>
+    /// Raises the destroy event.
+    /// </summary>
+    public override void OnDestroy() {
+      base.OnDestroy();
+      if (workbench != null) {
+        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+      }
+    }
+
     /// <Docs>The integer request code originally supplied to
     ///  startActivityForResult(), allowing you to identify who this
     ///  result came from.</Docs>
@@ -200,6 +221,35 @@
       var i = new Intent(Activity, typeof(DeviceManagerActivity));
       i.SetAction(Intent.ActionPick);
       StartActivityForResult(i, REQUEST_SENSOR);
+    }
+
+    /// <summary>
+    /// Called when a manifold event is thrown by the manifold.
+    /// </summary>
+    /// <param name="manifoldEvent">Manifold event.</param>
+    private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+      if (IsVisible) {
+        switch (workbenchEvent.type) {
+          case WorkbenchEvent.EType.Added:
+            goto case WorkbenchEvent.EType.Swapped;
+          case WorkbenchEvent.EType.Removed:
+            goto case WorkbenchEvent.EType.Swapped;
+          case WorkbenchEvent.EType.Swapped:
+            ion.SaveWorkbenchAsync();
+            break;
+          case WorkbenchEvent.EType.ManifoldEvent:
+            switch (workbenchEvent.manifoldEvent.type) {
+              case ManifoldEvent.EType.SensorPropertyAdded:
+                goto case ManifoldEvent.EType.SensorPropertySwapped;
+              case ManifoldEvent.EType.SensorPropertyRemoved:
+                goto case ManifoldEvent.EType.SensorPropertySwapped;
+              case ManifoldEvent.EType.SensorPropertySwapped:
+                ion.SaveWorkbenchAsync();
+                break;
+            }          
+            break;
+        }
+      }
     }
 
     /// <summary>

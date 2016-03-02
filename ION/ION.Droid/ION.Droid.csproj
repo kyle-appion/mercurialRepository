@@ -243,7 +243,6 @@
     <AndroidResource Include="Resources\drawable\ic_menu_moreoverflow.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_certificate.png" />
-    <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_devmanager.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_power.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_ptconversion.png" />
@@ -383,6 +382,7 @@
     <AndroidResource Include="Resources\drawable\selector_fluid_state.xml" />
     <AndroidResource Include="Resources\layout\activity_sensor_alarm.axml" />
     <AndroidResource Include="Resources\layout\activity_alarm_popup.axml" />
+    <AndroidResource Include="Resources\drawable\ic_folder_black.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

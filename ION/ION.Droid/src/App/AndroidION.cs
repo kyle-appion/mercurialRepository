@@ -40,6 +40,10 @@
     /// </summary>
     public const string PREFERENCES_GENERAL = "ion.preferences";
     /// <summary>
+    /// The file name for the primary workbench.
+    /// </summary>
+    public const string FILE_WORKBENCH = "primaryWorkbench.workbench";
+    /// <summary>
     /// The id of that application's notification.
     /// </summary>
     private const int NOTIFICATION_APP_ID = 1;
@@ -208,7 +212,18 @@
 
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
-      currentWorkbench = new Workbench(this);
+      try {
+        var internalDir = fileManager.GetApplicationInternalDirectory();
+        if (internalDir.ContainsFile(FILE_WORKBENCH)) {
+          var file = internalDir.GetFile(FILE_WORKBENCH);
+          currentWorkbench = await LoadWorkbenchAsync(file);
+        } else {
+          currentWorkbench = new Workbench(this);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to load workbench", e);
+        currentWorkbench = new Workbench(this);
+      }
 
       UpdateNotification();
 
@@ -301,7 +316,33 @@
     /// <returns>The workbench async.</returns>
     public Task SaveWorkbenchAsync() {
       return Task.Factory.StartNew(() => {
+        lock (this) {
+          var internalDir = fileManager.GetApplicationInternalDirectory();
+          var file = internalDir.GetFile(FILE_WORKBENCH, EFileAccessResponse.CreateIfMissing);
+          var wp = new WorkbenchParser();
+          try {
+            using (var s = file.OpenForWriting()) {
+              wp.WriteToStream(this, currentWorkbench, s);
+            }
+          } catch (Exception e) {
+            Log.E(this, "Failed to write workbench to file", e);
+          }
+        }
       });
+    }
+
+    public Task<Workbench> LoadWorkbenchAsync(IFile file) {
+      lock (this) {
+        var wp = new WorkbenchParser();
+        try {
+          using (var s = file.OpenForReading()) {
+            return Task.FromResult(wp.ReadFromStream(this, s));
+          }
+        } catch (Exception e) {
+          Log.E(this, "Failed to load workbench. Defaulting to a new one.", e);
+          return Task.FromResult(new Workbench(this));
+        }
+      }
     }
 
     /// <summary>

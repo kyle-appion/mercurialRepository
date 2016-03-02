@@ -2143,31 +2143,31 @@ namespace ION.Droid
 			public const int ic_folder = 2130837660;
 			
 			// aapt resource value: 0x7f02009d
-			public const int ic_gears = 2130837661;
+			public const int ic_folder_black = 2130837661;
 			
 			// aapt resource value: 0x7f02009e
-			public const int ic_link = 2130837662;
+			public const int ic_gears = 2130837662;
 			
 			// aapt resource value: 0x7f02009f
-			public const int ic_lock = 2130837663;
+			public const int ic_link = 2130837663;
 			
 			// aapt resource value: 0x7f0200a0
-			public const int ic_logo_appion_a = 2130837664;
+			public const int ic_lock = 2130837664;
 			
 			// aapt resource value: 0x7f0200a1
-			public const int ic_logo_appiondefault = 2130837665;
+			public const int ic_logo_appion_a = 2130837665;
 			
 			// aapt resource value: 0x7f0200a2
-			public const int ic_menu_moreoverflow = 2130837666;
+			public const int ic_logo_appiondefault = 2130837666;
 			
 			// aapt resource value: 0x7f0200a3
-			public const int ic_nav_analyzer = 2130837667;
+			public const int ic_menu_moreoverflow = 2130837667;
 			
 			// aapt resource value: 0x7f0200a4
-			public const int ic_nav_certificate = 2130837668;
+			public const int ic_nav_analyzer = 2130837668;
 			
 			// aapt resource value: 0x7f0200a5
-			public const int ic_nav_certificates = 2130837669;
+			public const int ic_nav_certificate = 2130837669;
 			
 			// aapt resource value: 0x7f0200a6
 			public const int ic_nav_devmanager = 2130837670;

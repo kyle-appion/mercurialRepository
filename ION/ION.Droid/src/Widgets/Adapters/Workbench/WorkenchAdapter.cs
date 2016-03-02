@@ -171,6 +171,10 @@
 
       records.Clear();
 
+      foreach (var m in workbench.manifolds) {
+        records.Add(new ManifoldRecord(m));
+      }
+
       records.Add(new FooterRecord(footerAction));
 
       NotifyDataSetChanged();

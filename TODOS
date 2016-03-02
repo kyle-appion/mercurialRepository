@@ -1,0 +1,90 @@
+TODOS
+
+ANDROID
+  Workbench Fragment
+     * workbench doesn't update contents when fragment changes
+
+    - Manifold
+      * manifold needs connecting widget
+      * manifold hide alarm unless sensor has alarm
+      * manifold needs subview bar with linked label
+      * manifold needs link divider from header and content
+      * manifold and subviews need to be removable
+      * add secondary (linked) sensor subview
+
+    - Manifold Context Dialog
+      * Update title to "XXX's Actions"
+      * Update subview dialog title to "Add Subview"
+      * change connect to reconnect
+      * change remove to "remove from workbench"
+
+  Device Manager
+    * Scan on activity start
+    * Fix add sensor button sizing
+    * add empty list textview
+
+    - Device Categories
+      * update title to "Batch XXX Actions"
+      * implement category option "Forget All" (only when disconnected)
+      * implement category option "Connect All" (only when disconnected)
+      * implement category option "Disconnect All" (only when connected)
+      * implement category option "Add All To Workbench"
+
+  Screenshot Activity
+    * Localize activity title
+    * Attempt to automatically set address location
+    * Add app version
+    * Allow screenshot to expand
+    * Add back icon button
+
+  Analyzer Fragment
+    * Add screenshot navigation action
+
+    - Sensor Mount
+      * Add "Add From" dialog on click
+        ** Create manual entry
+      * Fix swap animation
+        ** Works for requested swap (dialog yes), but not normal swap
+
+    - Swap Dialog
+      * Update title to "Complete Swap?"
+
+    - Manifold
+      * Update title to "XXX's Actions"
+      * Update subview dialog title to "Add Subview"
+      * Remove battery icon
+      * Make [dis]connected icons more size appropriate
+      * Only show alarm if primary sensor has an alarm
+      * make subview icons more size appropriate
+      * Add "Add From" dialog on click if analyzer has space
+        ** Create manual entry
+      * Show "Linked sensor as secondary" toast when a secondary sensor is added
+      * add secondary (linked) sensor subview
+      * fix shsc title label
+      * fix ptchart/shsc fluid labels
+      * make subviews have a locked matched height
+      * swapping a manifold with subviews to other empty doesn't ask to break subviews
+      * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
+
+  PTChart Activity
+    * Add "Help" button
+
+  Superheat/subcool activity
+    * Add "Help" button
+    * fix the superheat/subcool delta math error
+
+  Calibration Certificate Activity
+    * update activity name to localized name
+    * add empty list TextView
+
+  Settings Activity
+    * Fix crashes
+    * add application settings
+    * add location settings
+    * add alarm settings
+    * add debug mode?
+
+  Help Activity
+    * add about ion
+    * add send feedback
+    * link to videos and tutorials
