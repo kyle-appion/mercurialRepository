@@ -383,6 +383,7 @@
     <AndroidResource Include="Resources\layout\activity_sensor_alarm.axml" />
     <AndroidResource Include="Resources\layout\activity_alarm_popup.axml" />
     <AndroidResource Include="Resources\drawable\ic_folder_black.png" />
+    <AndroidResource Include="Resources\drawable\ic_help.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

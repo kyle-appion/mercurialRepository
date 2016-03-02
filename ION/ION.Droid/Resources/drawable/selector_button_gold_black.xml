@@ -3,20 +3,24 @@
 
   <item
     android:state_pressed="true"
+    android:tint="@color/gold"
     android:drawable="@drawable/img_button_down_gold"/>
 
 
   <item
     android:state_selected="true"
+    android:tint="@color/gold"
     android:drawable="@drawable/img_button_down_gold"/>
 
 
   <item
     android:state_hovered="true"
+    android:tint="@color/gold"
     android:drawable="@drawable/img_button_down_gold"/>
 
 
   <item
+    android:tint="@color/black"
     android:drawable="@drawable/img_button_up_gold"/>
 
 </selector>

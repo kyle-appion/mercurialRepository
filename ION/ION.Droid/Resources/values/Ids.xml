@@ -24,6 +24,7 @@
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
+  <item name="help" type="id"/>
   <item name="icon" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>

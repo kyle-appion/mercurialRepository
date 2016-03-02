@@ -41,9 +41,20 @@
             android:id="@id/state"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textOff="@string/fluid_bubble"
-            android:textOn="@string/fluid_dew"
+            android:textOn="@string/fluid_bubble"
+            android:textOff="@string/fluid_dew"
             android:thumb="@drawable/selector_fluid_state" />
+        <Space
+            android:layout_width="@dimen/padding"
+            android:layout_height="wrap_content" />
+        <ImageButton
+            android:id="@id/help"
+            android:background="@drawable/selector_button_gold_black"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_help"
+            android:tint="@color/black"
+            android:layout_width="@dimen/ptchart_fluid_color_height"
+            android:layout_height="@dimen/ptchart_fluid_color_height" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space
