@@ -99,7 +99,7 @@
         filter = EDeviceFilter.All;
       }
 
-      adapter = new DeviceRecycleAdapter(Resources);
+      adapter = new DeviceRecycleAdapter(this);
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;
@@ -122,6 +122,8 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
       RefreshAdapter();
+
+      ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
     }
 
     // Overridden from Activity

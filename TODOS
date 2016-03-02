@@ -1,6 +1,9 @@
 TODOS
 
 ANDROID
+  Application
+    * Support bluetooth classic
+
   Workbench Fragment
      * workbench doesn't update contents when fragment changes
 
@@ -9,21 +12,6 @@ ANDROID
       * manifold needs link divider from header and content
       * manifold and subviews need to be removable
       * add secondary (linked) sensor subview
-
-    - Manifold Context Dialog
-      * change connect to reconnect
-
-  Device Manager
-    * Scan on activity start
-    * Fix add sensor button sizing
-    * add empty list textview
-
-    - Device Categories
-      * update title to "Batch XXX Actions"
-      * implement category option "Forget All" (only when disconnected)
-      * implement category option "Connect All" (only when disconnected)
-      * implement category option "Disconnect All" (only when connected)
-      * implement category option "Add All To Workbench"
 
   Screenshot Activity
     * Allow screenshot to expand
