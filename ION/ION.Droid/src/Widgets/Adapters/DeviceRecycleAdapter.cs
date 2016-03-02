@@ -20,12 +20,20 @@
   using ION.Core.Util;
 
   using ION.Droid.Activity;
+  using ION.Droid.Dialog;
   using ION.Droid.Devices;
   using ION.Droid.Sensors;
   using ION.Droid.Util;
   using ION.Droid.Views;
 
   public class DeviceRecycleAdapter : IONRecyclerViewAdapter {
+    [Flags]
+    private enum Actions {
+      ConnectAll          = 1 << 0,
+      DisconnectAll       = 1 << 1,
+      ForgetAll           = 1 << 2,
+      AddAllToWorkbench   = 1 << 3,
+    }
 
     /// <summary>
     /// The delegate that will be notified when a sensor is clicked.
@@ -53,6 +61,10 @@
     /// <value>The ion.</value>
     private IION ion { get; set; }
     /// <summary>
+    /// The context for the adapter.
+    /// </summary>
+    private Context context;
+    /// <summary>
     /// The application resources.
     /// </summary>
     /// <value>The resources.</value>
@@ -75,10 +87,11 @@
       }
     }
 
-    public DeviceRecycleAdapter(Resources res) {
-      resources = res;
+    public DeviceRecycleAdapter(Context context) {
+      this.context = context;
+      resources = context.Resources;
       ion = AppState.context;
-      cache = new BitmapCache(res);
+      cache = new BitmapCache(resources);
     }
 
     // Overridden from RecyclerView.Adapter
@@ -188,27 +201,47 @@
 
       // Add the connected devices.
       if (connected.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.connected), Resource.Color.green, connected);
+        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.connected), Resource.Color.green, connected, () => {
+          BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
+            Resource.String.device_manager_batch_connected_actions,
+            connected);
+        });
       }
 
       // Add the broadcasting devices.
       if (broadcasting.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.long_range_mode), Resource.Color.light_blue, broadcasting);
+        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.long_range_mode), Resource.Color.light_blue, broadcasting, () => {
+          BuildBatchOptionsDialog(Actions.AddAllToWorkbench,
+            Resource.String.device_manager_batch_long_range_actions,
+            broadcasting);
+        });
       }
 
       // Add the new devices.
       if (newDevices.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.device_manager_new_devices_found), Resource.Color.light_gray, newDevices);
+        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.device_manager_new_devices_found), Resource.Color.light_gray, newDevices, () => {
+          BuildBatchOptionsDialog(Actions.ConnectAll,
+            Resource.String.device_manager_batch_new_device_actions,
+            newDevices);
+        });
       }
 
       // Add the available devices.
       if (available.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.available), Resource.Color.yellow, available);
+        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.available), Resource.Color.yellow, available, () => {
+          BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
+            Resource.String.device_manager_batch_available_actions,
+            available);
+        });
       }
 
       // Add the disconnected devices.
       if (disconnected.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.disconnected), Resource.Color.red, disconnected);
+        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.disconnected), Resource.Color.red, disconnected, () => {
+          BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
+            Resource.String.device_manager_batch_disconnected_actions,
+            disconnected);
+        });
       }
 
       NotifyDataSetChanged();
@@ -219,11 +252,12 @@
     /// </summary>
     /// <param name="records">Records.</param>
     /// <param name="device">Device.</param>
-    private void AddGaugeDevicesToRecords(List<IRecord> records, string title, int color, List<IDevice> devices) {
+    private void AddGaugeDevicesToRecords(List<IRecord> records, string title, int color, List<IDevice> devices, Action action) {
       var r = new CategoryRecord() {
         counter = 0,
         title = title,
         color = new Android.Graphics.Color(resources.GetColor(color)),
+        action = action,
       };
 
       records.Add(r);
@@ -302,7 +336,62 @@
     /// <param name="sr">Sr.</param>
     private void OnSensorRecordClicked(int pos, SensorRecord sr) {
       onSensorReturnClicked(sr.sensor, pos);
+    }
 
+    /// <summary>
+    /// Builds an options dialog for a device state category.
+    /// </summary>
+    /// <param name="actions">Actions.</param>
+    /// <param name="title">Title.</param>
+    /// <param name="devices">Devices.</param>
+    private void BuildBatchOptionsDialog(Actions actions, int title, IEnumerable<IDevice> devices) {
+      var ldb = new ListDialogBuilder(context);
+      ldb.SetTitle(title);
+
+      for (int i = 1; i <= 32; i++) {
+        if ((i & (int)actions) == i) {
+          switch ((Actions)i) {
+            case Actions.ConnectAll:
+              ldb.AddItem(Resource.String.connect_all, () => {
+                foreach (var device in devices) {
+                  device.connection.Connect();
+                }
+              });
+              break;
+
+            case Actions.DisconnectAll:
+              ldb.AddItem(Resource.String.disconnect_all, () => {
+                foreach (var device in devices) {
+                  device.connection.Disconnect();
+                }
+              });
+              break;
+
+            case Actions.ForgetAll:
+              ldb.AddItem(Resource.String.forget_all, () => {
+                foreach (var device in devices) {
+                  ion.deviceManager.DeleteDevice(device.serialNumber);
+                }
+              });
+              break;
+
+            case Actions.AddAllToWorkbench:
+              ldb.AddItem(Resource.String.device_manager_add_all_to_workbench, () => {
+                foreach (var device in devices) {
+                  var gd = device as GaugeDevice;
+                  if (gd != null) {
+                    foreach (var sensor in gd.sensors) {
+                      ion.currentWorkbench.AddSensor(sensor);
+                    }
+                  }
+                }
+              });
+              break;
+          }
+        }
+      }
+
+      ldb.Show();
     }
 
     /// <summary>
@@ -340,6 +429,7 @@
       public int counter { get; set; }
       public string title { get; set; }
       public Android.Graphics.Color color { get; set; }
+      public Action action { get; set; }
     }
 
     class GaugeDeviceRecord : IRecord {
@@ -386,6 +476,11 @@
         this.adapter = adapter;
         counter = view.FindViewById<TextView>(Resource.Id.counter);
         title = view.FindViewById<TextView>(Resource.Id.title);
+        view.FindViewById(Resource.Id.icon).SetOnClickListener(new ViewClickAction((v) => {
+          if (record != null) {
+            record.action();
+          }
+        }));
       }
 
       public void BindTo(CategoryRecord record) {

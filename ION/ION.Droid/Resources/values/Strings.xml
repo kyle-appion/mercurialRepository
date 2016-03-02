@@ -16,6 +16,7 @@
   <string name="city">City</string>
   <string name="close">Close</string>
   <string name="connect">Connect</string>
+  <string name="connect_all">Connect All</string>
   <string name="connected">Connected</string>
   <string name="date">Date</string>
   <string name="disabled">Disabled</string>
@@ -30,6 +31,7 @@
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
+  <string name="forget_all">Forget All</string>
   <string name="inactive">Inactive</string>
   <string name="library">Library</string>
   <string name="main">Main</string>
