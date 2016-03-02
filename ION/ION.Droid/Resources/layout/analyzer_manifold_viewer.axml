@@ -37,12 +37,21 @@
                     android:src="@drawable/ic_battery_horiz_100"
                     android:layout_width="@dimen/analyzer_battery_icon_width"
                     android:layout_height="@dimen/analyzer_battery_icon_height" />
-                <ImageView
-                    android:id="@id/connection"
-                    android:visibility="visible"
-                    android:src="@drawable/ic_bluetooth_disconnected"
+                <FrameLayout
                     android:layout_width="@dimen/analyzer_icon_size"
-                    android:layout_height="@dimen/analyzer_icon_size" />
+                    android:layout_height="@dimen/analyzer_icon_size">
+                    <ImageView
+                        android:id="@id/connection"
+                        android:visibility="visible"
+                        android:src="@drawable/ic_bluetooth_disconnected"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <ProgressBar
+                        android:id="@id/progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="true" />
+                </FrameLayout>
             </LinearLayout>
             <LinearLayout
                 android:id="@id/content"
