@@ -89,6 +89,11 @@
     /// </summary>
     /// <value>The fluid state toggle.</value>
     private Switch fluidPhaseToggleView { get; set; }
+    /// <summary>
+    /// The button that will show the help dialog.
+    /// </summary>
+    /// <value>The help view.</value>
+    private ImageButton helpView { get; set; }
 
     /// <summary>
     /// The view that maintains the click events for the pressure sensor interaction.
@@ -198,8 +203,14 @@
         var name = __ptChart.fluid.name;
         fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
         fluidNameView.Text = name;
-        fluidPhaseToggleView.Visibility = (__ptChart.fluid.mixture) ? ViewStates.Visible : ViewStates.Invisible;
-        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Dew;
+        if (__ptChart.fluid.mixture) {
+          fluidPhaseToggleView.Visibility = ViewStates.Visible;
+          helpView.Visibility = ViewStates.Visible;
+        } else {
+          fluidPhaseToggleView.Visibility = ViewStates.Invisible;
+          helpView.Visibility = ViewStates.Invisible;
+        }
+        fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
         UpdateCalculationMeasurements();
       }
     } PTChart __ptChart;
@@ -335,14 +346,25 @@
         }
       }));
 
+      helpView = FindViewById<ImageButton>(Resource.Id.help);
+      helpView.SetOnClickListener(new ViewClickAction((v) => {
+        var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
+        ldb.SetMessage(Resource.String.fluid_help_clarification);
+        ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
+          var dialog = obj as Android.App.Dialog;
+          dialog.Dismiss();
+        });
+        ldb.Show();
+      }));
+
       fluidColorView = FindViewById(Resource.Id.color);
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
       fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((v, isChecked) => {
         if (isChecked) {
-          ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
-        } else {
           ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
+        } else {
+          ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
         }
       }));
 
