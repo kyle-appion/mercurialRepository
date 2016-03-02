@@ -29,8 +29,8 @@
     // Overridden from ILocationManager
     public bool allowLocationTracking {
       get {
-        ion.preferences.GetBoolean(ion.GetString(Resource.String.preferences_location_use), false);
-        return false;
+//        ion.preferences.GetBoolean(ion.GetString(Resource.String.preferences_location_use), false);
+        return true;
       }
       set {
       }

@@ -45,6 +45,7 @@
   <string name="open_with">Open With</string>
   <string name="pick_unit">Pick Unit</string>
   <string name="please_wait">Please Wait</string>
+  <string name="reconnect">Reconnect</string>
   <string name="reenable">Re-enable</string>
   <string name="remove">Remove</string>
   <string name="rename">Rename</string>
@@ -190,6 +191,8 @@
   WORKBENCH
   -->
   <string name="workbench">Workbench</string>
+  <string name="workbench_remove">Remove from Workbench</string>
+
   <string name="workbench_add_viewer">Add New Viewer</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
   <string name="workbench_alt">Alternate Unit</string>

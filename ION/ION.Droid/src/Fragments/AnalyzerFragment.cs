@@ -183,7 +183,7 @@
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
       if (dgs != null && !dgs.device.isConnected) {
-        ldb.AddItem(Resource.String.connect, () => {
+        ldb.AddItem(Resource.String.reconnect, () => {
           dgs.device.connection.Connect();
         });
       }

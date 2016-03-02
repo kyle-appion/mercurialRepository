@@ -16,19 +16,23 @@
     private const long PULSE_LENGTH = 350;
     private const long INTERVAL_LENGTH = 500;
 
-    private Context context;
+    private AndroidION ion;
     private Vibrator vibrator;
 
 
-    public VibrateAlarmAlert(IAlarm alarm, Context context) : base(alarm) {
-      this.context = context;
+    public VibrateAlarmAlert(IAlarm alarm, AndroidION ion) : base(alarm) {
+      this.ion = ion;
     }
 
     /// <summary>
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
-      vibrator = context.GetSystemService(Context.VibratorService) as Vibrator;
+      if (!ion.preferences.alarm.allowsVibrate) {
+        return false;
+      }
+
+      vibrator = ion.GetSystemService(Context.VibratorService) as Vibrator;
 
       var pl = PULSE_LENGTH;
       var il = INTERVAL_LENGTH;

@@ -11,17 +11,19 @@
   using ION.Core.App;
   using ION.Core.Util;
 
+  using ION.Droid.App;
+
   public class ToneAlarmAlert : AbstractAlarmAlert {
 
-    private Context context;
+    private AndroidION ion;
     private MediaPlayer mp;
     private Android.Net.Uri uri;
 
-    public ToneAlarmAlert(IAlarm alarm, Context context) : this(alarm, context, RingtoneManager.GetDefaultUri(RingtoneType.Alarm)) {
+    public ToneAlarmAlert(IAlarm alarm, AndroidION ion) : this(alarm, ion, RingtoneManager.GetDefaultUri(RingtoneType.Alarm)) {
     }
 
-    public ToneAlarmAlert(IAlarm alarm, Context context, Android.Net.Uri uri) : base(alarm) {
-      this.context = context;
+    public ToneAlarmAlert(IAlarm alarm, AndroidION ion, Android.Net.Uri uri) : base(alarm) {
+      this.ion = ion;
       this.uri = uri;
     }
 
@@ -29,9 +31,13 @@
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
+      if (!ion.preferences.alarm.allowsSounds) {
+        return false;
+      }
+
       try {
         mp = new MediaPlayer();
-        mp.SetDataSource(context, uri);
+        mp.SetDataSource(ion, uri);
         mp.SetAudioStreamType(Stream.Alarm);
         mp.Looping = true;
         mp.SetVolume(1.0f, 1.0f);
