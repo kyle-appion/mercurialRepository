@@ -5,16 +5,12 @@ ANDROID
      * workbench doesn't update contents when fragment changes
 
     - Manifold
-      * manifold needs connecting widget
-      * manifold hide alarm unless sensor has alarm
       * manifold needs subview bar with linked label
       * manifold needs link divider from header and content
       * manifold and subviews need to be removable
       * add secondary (linked) sensor subview
 
     - Manifold Context Dialog
-      * Update title to "XXX's Actions"
-      * Update subview dialog title to "Add Subview"
       * change connect to reconnect
       * change remove to "remove from workbench"
 
@@ -50,8 +46,6 @@ ANDROID
       * Update title to "Complete Swap?"
 
     - Manifold
-      * Update title to "XXX's Actions"
-      * Update subview dialog title to "Add Subview"
       * Remove battery icon
       * Make [dis]connected icons more size appropriate
       * Only show alarm if primary sensor has an alarm
