@@ -5,6 +5,7 @@
   using Android.Views;
   using Android.Widget;
 
+  using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Devices;
 
@@ -42,6 +43,8 @@
     public ImageView connection { get; private set; }
     public ImageView icon { get; private set; }
 
+    public ProgressBar progress { get; private set; }
+
     public Manifold manifold { get; private set; }
 
     private int lastBattery;
@@ -58,6 +61,8 @@
       battery = view.FindViewById<ImageView>(Resource.Id.battery);
       connection = view.FindViewById<ImageView>(Resource.Id.connection);
       icon = view.FindViewById<ImageView>(Resource.Id.icon);
+
+      progress = view.FindViewById<ProgressBar>(Resource.Id.progress);
 
       lastBattery = -1;
     }
@@ -103,27 +108,45 @@
       if (d != null) {
         title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
 
-        if (d.isConnected) {
-          measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
-          unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+        progress.Visibility = ViewStates.Invisible;
+        connection.Visibility = ViewStates.Visible;
+        switch (d.connection.connectionState) {
+          case EConnectionState.Connected:
+            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
 
-          connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
-          status.Text = c.GetString(Resource.String.connected);
-          status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.green)));
-        } else {
-          measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
-          unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
+            status.Text = c.GetString(Resource.String.connected);
+            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.green)));
+            break;
+          case EConnectionState.Broadcasting:
+            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
 
-          connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
-          status.Text = c.GetString(Resource.String.disconnected);
-          status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.red)));
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
+            status.Text = c.GetString(Resource.String.disconnected);
+            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+            break;
+          case EConnectionState.Disconnected:
+            measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+            unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
+
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
+            status.Text = c.GetString(Resource.String.disconnected);
+            status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.red)));
+            break;
+          case EConnectionState.Connecting:
+            goto case EConnectionState.Resolving;
+          case EConnectionState.Resolving:
+            progress.Visibility = ViewStates.Visible;
+            connection.Visibility = ViewStates.Invisible;
+            break;
         }
 
         icon.SetImageBitmap(cache.GetBitmap(d.GetDeviceIcon()));
 
         status.Visibility = ViewStates.Visible;
         battery.Visibility = ViewStates.Visible;
-        connection.Visibility = ViewStates.Visible;
         icon.Visibility = ViewStates.Visible;
       } else {
         status.Visibility = ViewStates.Invisible;

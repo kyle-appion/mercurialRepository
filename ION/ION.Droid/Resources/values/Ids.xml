@@ -30,6 +30,7 @@
   <item name="loading" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
+  <item name="progress" type="id"/>
   <item name="main" type="id"/>
   <item name="measurement" type="id"/>
   <item name="name" type="id"/>
