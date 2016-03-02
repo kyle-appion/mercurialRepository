@@ -12,7 +12,6 @@ ANDROID
 
     - Manifold Context Dialog
       * change connect to reconnect
-      * change remove to "remove from workbench"
 
   Device Manager
     * Scan on activity start
@@ -27,7 +26,6 @@ ANDROID
       * implement category option "Add All To Workbench"
 
   Screenshot Activity
-    * Add app version
     * Allow screenshot to expand
 
   Analyzer Fragment
@@ -63,13 +61,6 @@ ANDROID
   Calibration Certificate Activity
     * update activity name to localized name
     * add empty list TextView
-
-  Settings Activity
-    * Fix crashes
-    * add application settings
-    * add location settings
-    * add alarm settings
-    * add debug mode?
 
   Help Activity
     * add about ion

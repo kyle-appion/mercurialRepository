@@ -14,8 +14,8 @@
     android:title="@string/preferences_units_default">
     <!-- Length -->
     <ListPreference
+      android:key="@string/pkey_unit_length"
       android:title="@string/preferences_units_length"
-      android:key="@string/preferences_units_length"
       android:summary="%s"
       android:dialogTitle="@string/preferences_units_length_title"
       android:entries="@array/preferences_units_length_entries"
@@ -23,8 +23,8 @@
       android:defaultValue="@integer/preferences_units_length_default"/>
     <!-- Pressure -->
     <ListPreference
+      android:key="@string/pkey_unit_pressure"
       android:title="@string/preferences_units_pressure"
-      android:key="@string/preferences_units_pressure"
       android:summary="%s"
       android:dialogTitle="@string/preferences_units_pressure_title"
       android:entries="@array/preferences_units_pressure_entries"
@@ -32,8 +32,8 @@
       android:defaultValue="@integer/preferences_units_pressure_default"/>
     <!-- Temperature -->
     <ListPreference
+      android:key="@string/pkey_unit_temperature"
       android:title="@string/preferences_units_temperature"
-      android:key="@string/preferences_units_temperature"
       android:summary="%s"
       android:dialogTitle="@string/preferences_units_temperature_title"
       android:entries="@array/preferences_units_temperature_entries"
@@ -41,12 +41,40 @@
       android:defaultValue="@integer/preferences_units_temperature_default"/>
     <!-- Vacuum -->
     <ListPreference
+      android:key="@string/pkey_unit_vacuum"
       android:title="@string/preferences_units_vacuum"
-      android:key="@string/preferences_units_vacuum"
       android:summary="%s"
       android:dialogTitle="@string/preferences_units_vacuum_title"
       android:entries="@array/preferences_units_vacuum_entries"
       android:entryValues="@array/preferences_units_vacuum_values"
       android:defaultValue="@integer/preferences_units_vacuum_default"/>
   </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/preferences_alarm">
+    <SwitchPreference
+      android:key="@string/pkey_alarm_vibrate"
+      android:defaultValue="true"
+      android:title="@string/preferences_alarm_vibrate"
+      android:summaryOn="@string/preferences_alarm_vibrate_on"
+      android:summaryOff="@string/preferences_alarm_vibrate_off"/>
+    <SwitchPreference
+      android:key="@string/pkey_alarm_sound"
+      android:defaultValue="true"
+      android:title="@string/preferences_alarm_sound"
+      android:summaryOn="@string/preferences_alarm_sound_on"
+      android:summaryOff="@string/preferences_alarm_sound_off"/>
+  </PreferenceCategory>
+
+<!--
+  <PreferenceCategory
+    android:title="@string/preference_location">
+    <SwitchPreference
+    android:key="@string/pkey_location_offset"
+    android:title="@string/preferences_location_offset"
+    android:defaultValue="true"
+    android:summaryOn="@string/preferences_location_offset_on"
+    android:summaryOff="@string/preferences_location_offset_off"/>
+  </PreferenceCategory>
+-->
 </PreferenceScreen>

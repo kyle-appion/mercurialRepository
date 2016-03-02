@@ -175,6 +175,7 @@
     <Compile Include="src\Widgets\Analyzer\RateOfChangeSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
+    <Compile Include="src\Preferences\AppPrefs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -384,6 +385,7 @@
     <AndroidResource Include="Resources\layout\activity_alarm_popup.axml" />
     <AndroidResource Include="Resources\drawable\ic_folder_black.png" />
     <AndroidResource Include="Resources\drawable\ic_help.png" />
+    <AndroidResource Include="Resources\values\Preference_Keys.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
