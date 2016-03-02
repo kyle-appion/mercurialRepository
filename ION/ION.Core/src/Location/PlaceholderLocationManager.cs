@@ -72,6 +72,15 @@
     /// </summary>
     public void StopAutomaticLocationPolling() {
     }
+
+    /// <summary>
+    /// Queries the address of the given location.
+    /// </summary>
+    /// <returns>The address from location async.</returns>
+    /// <param name="location">Location.</param>
+    public Task<Address> GetAddressFromLocationAsync(ILocation location) {
+      return Task.FromResult(default(Address));
+    }
   }
 }
 

@@ -149,6 +149,28 @@
     }
 
     /// <summary>
+    /// Queries an address from the given location.
+    /// </summary>
+    /// <param name="location">Location.</param>
+    public async Task<ION.Core.Location.Address> GetAddressFromLocationAsync(ILocation location) {
+      var lat = location.latitude.amount;
+      var lng = location.longitude.amount;
+      var geocoder = new Geocoder(ion, Java.Util.Locale.Default);
+      var addresses = await geocoder.GetFromLocationAsync(lat, lng, 1);
+      var first = addresses[0];
+      if (first == null) {
+        return new ION.Core.Location.Address();
+      } else {
+        return new ION.Core.Location.Address() {
+          address = first.GetAddressLine(0),
+          city = first.Locality,
+          state = first.AdminArea,
+          zip = first.PostalCode,
+        };
+      }
+    }
+
+    /// <summary>
     /// Raises the connected event.
     /// </summary>
     /// <param name="connectionHint">Connection hint.</param>
@@ -182,7 +204,8 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
-      lastKnownLocation = new SimpleLocation(true, location.Altitude, location.Longitude, location.Latitude);
+      var loc = new SimpleLocation(true, location.Altitude, location.Longitude, location.Latitude);
+      lastKnownLocation = loc;
     }
   }
 }

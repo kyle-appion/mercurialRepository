@@ -23,7 +23,7 @@
   using ION.Droid.Dialog;
   using ION.Droid.Views;
 
-  [Activity(Label = "ScreenshotActivity", Theme="@style/TerminalActivityTheme")]      
+  [Activity(Label="@string/report_screenshot", Theme="@style/TerminalActivityTheme")]      
   public class ScreenshotActivity : IONActivity {
 
     /// <summary>
@@ -37,6 +37,7 @@
     private ImageView imageView;
     private EditText nameView;
     private TextView dateView;
+    private TextView versionView;
     private EditText addressView;
     private EditText cityView;
     private Spinner stateView;
@@ -50,14 +51,18 @@
     /// Raises the create event.
     /// </summary>
     /// <param name="savedInstanceState">Saved instance state.</param>
-    protected override void OnCreate(Bundle savedInstanceState) {
+    protected async override void OnCreate(Bundle savedInstanceState) {
       base.OnCreate(savedInstanceState);
+
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
 
       SetContentView(Resource.Layout.activity_screenshot);
 
       imageView = FindViewById<ImageView>(Resource.Id.content);
       nameView = FindViewById<EditText>(Resource.Id.name);
       dateView = FindViewById<TextView>(Resource.Id.date);
+      versionView = FindViewById<TextView>(Resource.Id.version);
       addressView = FindViewById<EditText>(Resource.Id.address);
       cityView = FindViewById<EditText>(Resource.Id.city);
       stateView = FindViewById<Spinner>(Resource.Id.state);
@@ -67,6 +72,7 @@
       createdDate = DateTime.Now;
 
       dateView.Text = createdDate.ToShortDateString();
+      versionView.Text = ion.version;
 
       if (Intent.HasExtra(EXTRA_PNG_BYTES)) {
         screenshot = Intent.GetByteArrayExtra(EXTRA_PNG_BYTES);
@@ -75,6 +81,22 @@
       } else {
         Error(GetString(Resource.String.report_screenshot_error_screenshot_missing));
       }
+
+      var loc = ion.locationManager.lastKnownLocation;
+      var address = await ion.locationManager.GetAddressFromLocationAsync(loc);
+
+      addressView.Text = address.address;
+      cityView.Text = address.city;
+      if (!string.IsNullOrEmpty(address.state)) {
+        string[] states = Resources.GetStringArray(Resource.Array.us_states);
+        var index = Array.FindIndex(states, (s) => {
+          return s.Equals(address.state);
+        });
+        if (index >= 0 && index < states.Length) {
+          stateView.SetSelection(index);
+        }
+      }
+      zipView.Text = address.zip;
     }
 
     /// <Docs>The options menu in which you place your items.</Docs>
@@ -105,6 +127,9 @@
     /// <param name="item">Item.</param>
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
+        case Android.Resource.Id.Home:
+          Finish();
+          return true;
         case Resource.Id.ok_done:
           string errorMessage = "";
           if (ValidateForm(out errorMessage)) {
@@ -152,6 +177,7 @@
 
         report.tableData = new string[,] {
           { GetString(Resource.String.date), createdDate.ToShortDateString() + " " + createdDate.ToShortTimeString() },
+          { GetString(Resource.String.app_version), ion.version },
           { GetString(Resource.String.address), addressView.Text },
           { GetString(Resource.String.city), cityView.Text },
           { GetString(Resource.String.state), ((Java.Lang.String)stateView.SelectedItem).ToString() },

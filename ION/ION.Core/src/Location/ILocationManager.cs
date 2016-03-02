@@ -1,11 +1,16 @@
-﻿using System;
+﻿namespace ION.Core.Location {
 
-using ION.Core.App;
-using ION.Core.Measure;
+  using System;
+  using System.Threading.Tasks;
 
-namespace ION.Core.Location {
+  using ION.Core.App;
+  using ION.Core.Measure;
+
   public delegate void OnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation);
 
+  /// <summary>
+  /// A manager that will abstract a platforms location interfaces.
+  /// </summary>
   public interface ILocationManager : IIONManager {
     /// <summary>
     /// The event that will be notified when the location manager's location changes.
@@ -39,6 +44,13 @@ namespace ION.Core.Location {
     /// Stops location polling.
     /// </summary>
     void StopAutomaticLocationPolling();
+
+    /// <summary>
+    /// Queries the address of the given location.
+    /// </summary>
+    /// <returns>The address from location async.</returns>
+    /// <param name="location">Location.</param>
+    Task<Address> GetAddressFromLocationAsync(ILocation location);
   }
 
   /// <summary>

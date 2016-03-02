@@ -53,6 +53,7 @@
   <item name="toggle" type="id"/>
   <item name="type" type="id"/>
   <item name="unit" type="id"/>
+  <item name="version" type="id"/>
   <item name="view" type="id"/>
   <item name="viewpager" type="id"/>
   <item name="zip" type="id"/>

@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">ION HVAC/R</string>
+  <!-- This is NOT the actual version, just the string "App Version" -->
+  <string name="app_version">App Version</string>
 
   <!--
   GENERAL APPLICATION STRINGS
