@@ -48,6 +48,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </TableRow>
+    <!-- App Version -->
+        <TableRow>
+            <TextView
+                android:text="@string/app_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+        <!-- The long ass retarded hint is used to set a mimum width since android won't size the table correctly. -->
+            <TextView
+                android:id="@id/version"
+                android:singleLine="true"
+                android:hint="XXXXXXXXXXXXXXXXXXXXXX"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </TableRow>
     <!-- Address -->
         <TableRow>
             <TextView

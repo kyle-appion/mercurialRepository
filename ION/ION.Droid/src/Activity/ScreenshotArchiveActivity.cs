@@ -18,7 +18,7 @@
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
 
-  [Activity(Label = "ScreenshotArchiveActivity", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/report_screenshot_archive", Theme = "@style/TerminalActivityTheme")]      
   public class ScreenshotArchiveActivity : IONActivity {
 
     /// <summary>
@@ -34,9 +34,8 @@
 
       SetContentView(Resource.Layout.activity_screenshot_archive);
 
-      ActionBar.SetDisplayHomeAsUpEnabled(true);
-      ActionBar.SetHomeButtonEnabled(true);
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
 
       fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
       fragment.folder = ion.screenshotReportFolder;

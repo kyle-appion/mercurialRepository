@@ -11,22 +11,42 @@
     /// </summary>
     /// <value>true</value>
     /// <c>false</c>
-    public bool isValid { get; private set; }
+    public bool isValid { get; set; }
     /// <summary>
     /// The altitude of the location.
     /// </summary>
     /// <value>The altitude.</value>
-    public Scalar altitude { get; private set; }
+    public Scalar altitude { get; set; }
     /// <summary>
     /// The longitude of the location.
     /// </summary>
     /// <value>The longitude.</value>
-    public Scalar longitude { get; private set; }
+    public Scalar longitude { get; set; }
     /// <summary>
     /// The latitude of the location.
     /// </summary>
     /// <value>The latitude.</value>
-    public Scalar latitude { get; private set; }
+    public Scalar latitude { get; set; }
+    /// <summary>
+    /// The last known address the device was located in.
+    /// </summary>
+    /// <value>The address.</value>
+    public string address { get; set; }
+    /// <summary>
+    /// The last known city the device was located in.
+    /// </summary>
+    /// <value>The city.</value>
+    public string city { get; set; }
+    /// <summary>
+    /// The last known state the device was located in.
+    /// </summary>
+    /// <value>The state.</value>
+    public string state { get; set; }
+    /// <summary>
+    /// The last known zip the device was located in.
+    /// </summary>
+    /// <value>The zip.</value>
+    public string zip { get; set; }
 
     public SimpleLocation() {
       this.isValid = false;

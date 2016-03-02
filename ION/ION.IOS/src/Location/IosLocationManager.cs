@@ -108,6 +108,16 @@
     }
 
     /// <summary>
+    /// Gets the addres from location async.
+    /// </summary>
+    /// <returns>The addres from location async.</returns>
+    /// <param name="location">Location.</param>
+    public async Address GetAddresFromLocationAsync(ILocation location) {
+      // TODO ahodder@appioninc.com: Implement get address
+      return Task.FromResult(default(Address));
+    }
+
+    /// <summary>
     /// Called when we receive new location data.
     /// </summary>
     /// <param name="sender">Sender.</param>

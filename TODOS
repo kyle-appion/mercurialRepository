@@ -27,11 +27,8 @@ ANDROID
       * implement category option "Add All To Workbench"
 
   Screenshot Activity
-    * Localize activity title
-    * Attempt to automatically set address location
     * Add app version
     * Allow screenshot to expand
-    * Add back icon button
 
   Analyzer Fragment
     * Add screenshot navigation action
@@ -60,11 +57,7 @@ ANDROID
       * swapping a manifold with subviews to other empty doesn't ask to break subviews
       * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
 
-  PTChart Activity
-    * Add "Help" button
-
   Superheat/subcool activity
-    * Add "Help" button
     * fix the superheat/subcool delta math error
 
   Calibration Certificate Activity
