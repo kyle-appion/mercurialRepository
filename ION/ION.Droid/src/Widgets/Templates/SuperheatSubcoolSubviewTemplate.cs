@@ -56,10 +56,19 @@
             title.Text = GetString(Resource.String.fluid_sh_abrv);
             break;
           case Fluid.EState.Dew:
+            title.Text = GetString(Resource.String.fluid_sc_abrv);
             break;
         }
       } else {
-        title.Text = "^_^";
+        if (item.manifold.secondarySensor != null) {
+          if (item.modifiedMeasurement <= 0) {
+            title.Text = GetString(Resource.String.fluid_sh_abrv);
+          } else {
+            title.Text = GetString(Resource.String.fluid_sc_abrv);
+          }
+        } else {
+          title.Text = GetString(Resource.String.fluid_sh_sc);
+        }
       }
 
       fluid.Text = pt.fluid.name;
@@ -75,7 +84,6 @@
             break;
         }
       } else {
-        title.Text = GetString(Resource.String.fluid_sh_sc);
         measurement.Text = parentView.Context.GetString(Resource.String.fluid_setup);
       }
     }

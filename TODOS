@@ -29,17 +29,10 @@ ANDROID
       * Update title to "Complete Swap?"
 
     - Manifold
-      * Remove battery icon
-      * Make [dis]connected icons more size appropriate
-      * Only show alarm if primary sensor has an alarm
-      * make subview icons more size appropriate
       * Add "Add From" dialog on click if analyzer has space
         ** Create manual entry
       * Show "Linked sensor as secondary" toast when a secondary sensor is added
       * add secondary (linked) sensor subview
-      * fix shsc title label
-      * fix ptchart/shsc fluid labels
-      * make subviews have a locked matched height
       * swapping a manifold with subviews to other empty doesn't ask to break subviews
       * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
 

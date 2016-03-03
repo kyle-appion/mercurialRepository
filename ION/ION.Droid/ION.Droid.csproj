@@ -379,7 +379,6 @@
     <AndroidResource Include="Resources\layout\dialog_rename.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
-    <AndroidResource Include="Resources\layout\preference_bounded_alarm.axml" />
     <AndroidResource Include="Resources\drawable\selector_fluid_state.xml" />
     <AndroidResource Include="Resources\layout\activity_sensor_alarm.axml" />
     <AndroidResource Include="Resources\layout\activity_alarm_popup.axml" />

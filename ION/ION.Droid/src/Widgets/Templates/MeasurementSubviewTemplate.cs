@@ -63,8 +63,8 @@
         icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_refresh));
         divider.Visibility = ViewStates.Visible;
       } else {
-        icon.Visibility = ViewStates.Gone;
-        divider.Visibility = ViewStates.Gone;
+        icon.Visibility = ViewStates.Invisible;
+        divider.Visibility = ViewStates.Invisible;
       }
 
       measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, true);

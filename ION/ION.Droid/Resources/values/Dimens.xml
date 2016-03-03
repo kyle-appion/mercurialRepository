@@ -37,14 +37,13 @@
   <!-- The icon height for the battery icon within the manifold for the analyzer. -->
   <dimen name="analyzer_battery_icon_height">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
-  <dimen name="analyzer_icon_size">14dp</dimen>
+  <dimen name="analyzer_icon_size">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_device_icon_size">32dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
   <dimen name="analyzer_viewer_text_size">18sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
   <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
-
 
   <!--
   Device Manager dimensions
@@ -66,7 +65,6 @@
   <!-- The size of an icon in the fluid dialog manager. -->
   <dimen name="fluid_icon_size">64dp</dimen>
 
-
   <!--
   PTChart dimensions
   -->
@@ -82,7 +80,6 @@
   <dimen name="ptchart_unit_width">64dp</dimen>
   <!-- The width and height of the clear button in the ptchart activity. -->
   <dimen name="ptchart_clear_size">12dp</dimen>
-
 
   <!--
   Viewer dimensions

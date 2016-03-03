@@ -517,7 +517,7 @@
       if (analyzer.CanSensorsSwapSafely(first, second)) {
         AnimateSensorMountSwap(first, second);
       } else {
-        var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold));
+        var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_complete_swap));
         adb.SetMessage(Context.GetString(Resource.String.analyzer_replace_primary_sensor));
         adb.SetNegativeButton(Resource.String.cancel, (obj, args) => {
           var dialog = obj as Dialog;
