@@ -33,9 +33,6 @@ ANDROID
       * swapping a manifold with subviews to other empty doesn't ask to break subviews
       * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
 
-  Superheat/subcool activity
-    * fix the superheat/subcool delta math error
-
   Calibration Certificate Activity
     * add empty list TextView
 
