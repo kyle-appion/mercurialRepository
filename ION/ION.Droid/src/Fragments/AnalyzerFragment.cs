@@ -88,6 +88,8 @@
     /// <param name="savedInstanceState">Saved instance state.</param>
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
+      SetHasOptionsMenu(true);
+      AddFlags(EFlags.AllowScreenshot);
 
       analyzer = new Analyzer(ion);
       analyzerView.analyzer = analyzer;
