@@ -676,7 +676,7 @@
       saturatedTemperatureUnitView.Text = temperatureSensor.unit.ToString();
 
       var calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
-        temperatureSensor.measurement, pressureSensor.isRelative).ConvertTo(tu);
+        temperatureSensor.measurement, /*false).ConvertTo(tu);//*/ pressureSensor.isRelative).ConvertTo(tu);
 
       if (!ptChart.fluid.mixture) {
         if (calculation < 0) {

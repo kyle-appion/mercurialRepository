@@ -1,8 +1,9 @@
-﻿using System;
+﻿namespace ION.Core.Math {
 
-using ION.Core.Measure;
+  using System;
 
-namespace ION.Core.Math {
+  using ION.Core.Measure;
+
   /// <summary>
   /// A collection of functions that compute physics calculations.
   /// </summary>
@@ -17,7 +18,7 @@ namespace ION.Core.Math {
     /// <param name="elevation">Elevation.</param>
     public static Scalar AtmosphericPressureFromElevation(Scalar elevation) {
       var meters = elevation.ConvertTo(Units.Length.METER);
-      var pascals = 101325 * System.Math.Pow(1 - (0.0000225577 * meters.amount), 5.25588); 
+      var pascals = 101325 * Math.Pow(1 - (2.25577 * Math.Pow(10, -5) * meters.amount), 5.25588); 
       return Units.Pressure.PASCAL.OfScalar(pascals);
     }
 

@@ -173,8 +173,14 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Scalar CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
+      var oldPress = pressure;
+/*
       if (isRelative) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      }
+*/
+      if (!isRelative) {
+        pressure = Physics.ConvertAbsolutePressureToRelative(pressure, elevation);
       }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
@@ -193,8 +199,13 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Scalar CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
+/*
       if (isRelative) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
+      }
+*/
+      if (!isRelative) {
+        pressure = Physics.ConvertAbsolutePressureToRelative(pressure, elevation);
       }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
