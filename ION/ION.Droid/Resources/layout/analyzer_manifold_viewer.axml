@@ -31,12 +31,14 @@
                     android:layout_weight="1"
                     android:layout_width="0px"
                     android:layout_height="wrap_content" />
+            <!--
                 <ImageView
                     android:id="@id/battery"
                     android:visibility="visible"
                     android:src="@drawable/ic_battery_horiz_100"
                     android:layout_width="@dimen/analyzer_battery_icon_width"
                     android:layout_height="@dimen/analyzer_battery_icon_height" />
+-->
                 <FrameLayout
                     android:layout_width="@dimen/analyzer_icon_size"
                     android:layout_height="@dimen/analyzer_icon_size">

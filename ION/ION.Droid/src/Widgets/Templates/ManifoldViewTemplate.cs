@@ -154,32 +154,43 @@
         icon.SetImageBitmap(cache.GetBitmap(d.GetDeviceIcon()));
 
         status.Visibility = ViewStates.Visible;
-        battery.Visibility = ViewStates.Visible;
         icon.Visibility = ViewStates.Visible;
       } else {
         status.Visibility = ViewStates.Invisible;
-        battery.Visibility = ViewStates.Invisible;
         connection.Visibility = ViewStates.Invisible;
         icon.Visibility = ViewStates.Invisible;
       }
 
-      // Update Battery
-      var bat = d.battery;
-      if (d.isConnected) {
-        if (bat >= 100) {
-          battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
-        } else if (bat >= 75) {
-          battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_75));
-        } else if (bat >= 50) {
-          battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_50));
-        } else if (bat >= 25) {
-          battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_25));
+      InvalidateBattery(d);
+    }
+
+    private void InvalidateBattery(GaugeDevice device) {
+      if (battery == null) {
+        return;
+      }
+
+      if (device != null) {
+        var bat = device.battery;
+        if (device.isConnected) {
+          if (bat >= 100) {
+            battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
+          } else if (bat >= 75) {
+            battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_75));
+          } else if (bat >= 50) {
+            battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_50));
+          } else if (bat >= 25) {
+            battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_25));
+          } else {
+            battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_empty));
+          }
         } else {
-          battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_empty));
+          battery.Visibility = ViewStates.Invisible;
+          lastBattery = -1;
         }
+
+        battery.Visibility = ViewStates.Visible;
       } else {
         battery.Visibility = ViewStates.Invisible;
-        lastBattery = -1;
       }
     }
 
