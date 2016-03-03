@@ -48,11 +48,7 @@
 
       cache = new BitmapCache(Resources);
 
-      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_settings, Resource.Color.gray));
       ActionBar.SetDisplayHomeAsUpEnabled(true);
-
-      this.PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
-      AddPreferencesFromResource(Resource.Xml.preferences_application);
     }
 
     // Overridden from IONActivity
@@ -128,7 +124,7 @@
     }
 
     // Overridden from ISharedPreferencesOnSharedPreferenceChangeListener
-    public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
+    public virtual void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
       if (GetString(Resource.String.preferences_display_wakelock).Equals(key)) {
         SetWakeLock(prefs.GetBoolean(key, false));   
       }

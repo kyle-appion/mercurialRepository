@@ -3,6 +3,7 @@
   using System;
 
   using Android.Content;
+  using Android.Content.PM;
 
   using ION.Core.App;
   using ION.Core.Measure;
@@ -38,7 +39,30 @@
     /// <value>The prefs.</value>
     public ISharedPreferences prefs { get; set; }
 
+    /// <summary>
+    /// The version of the application.
+    /// </summary>
+    /// <value>The app version.</value>
+    public string appVersion {
+      get {
+        var d = ion.PackageManager.GetPackageInfo(ion.PackageName, PackageInfoFlags.MetaData).VersionName;
+        var ret = prefs.GetString(ion.GetString(Resource.String.pkey_app_version), null);
+
+        if (!d.Equals(ret)) {
+          ret = d;
+
+          var e = prefs.Edit();
+          e.PutString(ion.GetString(Resource.String.pkey_app_version), d);
+          e.Commit();
+        }
+
+        return ret;
+      }
+    }
+
     public AppPrefs(AndroidION ion, ISharedPreferences prefs) {
+      this.ion = ion;
+      this.prefs = prefs;
       alarm = new AlarmPreferences(ion, prefs);
       units = new UnitPreferences(ion, prefs);
     }

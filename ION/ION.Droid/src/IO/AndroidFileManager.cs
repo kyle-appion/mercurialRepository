@@ -50,8 +50,12 @@
 
     // Overridden from IFileManager
     public IFile CreateTemporaryFile(string name, EFileAccessResponse accessResponse = EFileAccessResponse.ReplaceIfExists) {
+      var jf = Java.IO.File.CreateTempFile(name, "", new Java.IO.File(GetApplicationExternalDirectory().fullPath));
+      return new IONFile(new FileInfo(jf.AbsolutePath));
+/*
       var tempFileName = System.IO.Path.GetTempPath() + name;
       return new IONFile(new FileInfo(tempFileName));
+*/
     }
   }
 

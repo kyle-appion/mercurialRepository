@@ -58,7 +58,7 @@
     /// Queries the full version of the ion instance.
     /// </summary>
     /// <value>The version.</value>
-    public string version { get { return PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.MetaData).VersionName; } }
+    public string version { get { return preferences.appVersion; } }
 
     /// <summary>
     /// The database that will store all of the application data.
@@ -184,6 +184,7 @@
 
       this.handler = new Android.OS.Handler();
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
+      var discard = preferences.appVersion; // Sets the current application version.
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
@@ -330,6 +331,14 @@
           }
         }
       });
+    }
+
+    /// <summary>
+    /// Creates a new application dump object.
+    /// </summary>
+    /// <returns>The application dump.</returns>
+    public IAppDump CreateApplicationDump() {
+      return new BaseAppDump(this, new AndroidPlatformInfo(this));
     }
 
     /// <summary>
