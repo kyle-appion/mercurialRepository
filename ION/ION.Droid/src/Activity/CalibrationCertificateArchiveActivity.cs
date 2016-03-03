@@ -21,7 +21,7 @@
   using ION.Droid.Fragments;
   using ION.Droid.Tasks;
 
-  [Activity(Label = "CalibrationCertificateArchiveActvity", Theme="@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/report_certificates", Theme="@style/TerminalActivityTheme")]      
   public class CalibrationCertificateArchiveActivity : IONActivity {
 
     /// <summary>
