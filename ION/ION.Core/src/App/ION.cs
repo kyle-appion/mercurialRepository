@@ -3,6 +3,8 @@
   using System;
   using System.Threading.Tasks;
 
+  using Newtonsoft.Json.Linq;
+
   using ION.Core.Alarms;
   using ION.Core.Content;
   using ION.Core.Database;
@@ -125,6 +127,12 @@
     void PostToMainDelayed(Action action, TimeSpan delay);
 
     Task SaveWorkbenchAsync();
+
+    /// <summary>
+    /// Creates a new application dump object.
+    /// </summary>
+    /// <returns>The application dump.</returns>
+    IAppDump CreateApplicationDump();
   } // End IION
 
   /// <summary>

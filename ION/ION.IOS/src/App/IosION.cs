@@ -174,6 +174,14 @@
     }
 
     /// <summary>
+    /// Creates a new application dump object.
+    /// </summary>
+    /// <returns>The application dump.</returns>
+    public IAppDump CreateApplicationDump() {
+      return new BaseAppDump(this, new IOSPlatforInfo());
+    }
+
+    /// <summary>
     /// Initializes the ION instance.
     /// </summary>
     public async Task Init() {

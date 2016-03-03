@@ -138,6 +138,9 @@
     <Compile Include="src\Alarms\Alerts\AbstractAlarmAlert.cs" />
     <Compile Include="src\Sensors\Properties\SecondarySensorProperty.cs" />
     <Compile Include="src\Location\Address.cs" />
+    <Compile Include="src\App\IAppDump.cs" />
+    <Compile Include="src\App\Appion.cs" />
+    <Compile Include="src\App\Constants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

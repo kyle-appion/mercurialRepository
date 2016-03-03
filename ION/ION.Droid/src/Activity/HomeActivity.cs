@@ -285,7 +285,15 @@
             title = GetString(Resource.String.settings),
             icon = Resource.Drawable.ic_settings,
             action = () => {
-              StartActivity(typeof(IONPreferenceActivity));
+              StartActivity(typeof(AppPreferenceActivity));
+            }
+          },
+          new NavigationIconItem() {
+            id = Resource.Id.help,
+            title = GetString(Resource.String.help),
+            icon = Resource.Drawable.ic_help,
+            action = () => {
+              StartActivity(typeof(HelpPreferenceActivity));
             }
           }
         },

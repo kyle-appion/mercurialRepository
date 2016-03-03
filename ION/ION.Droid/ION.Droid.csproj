@@ -176,6 +176,10 @@
     <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
     <Compile Include="src\Preferences\AppPrefs.cs" />
+    <Compile Include="src\Activity\HelpActivity.cs" />
+    <Compile Include="src\Activity\AppPreferencesActivity.cs" />
+    <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
+    <Compile Include="src\App\AndroidPlatformInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -385,6 +389,7 @@
     <AndroidResource Include="Resources\drawable\ic_folder_black.png" />
     <AndroidResource Include="Resources\drawable\ic_help.png" />
     <AndroidResource Include="Resources\values\Preference_Keys.xml" />
+    <AndroidResource Include="Resources\xml\preferences_help.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
