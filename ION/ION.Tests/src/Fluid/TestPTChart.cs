@@ -26,7 +26,7 @@
     private void TestAllTemperature(PTChart pt, Unit inUnit, double[] pressAndExpected) {
       for (int i = 0; i < pressAndExpected.Length; i += 2) {
         var temp = pt.GetTemperature(inUnit.OfScalar(pressAndExpected[i]));
-        Assert.AreEqual(pressAndExpected[i + 1], temp.amount, 0.5);
+        Assert.AreEqual(pressAndExpected[i + 1], temp.amount, 0.25);
       }
     }
 
