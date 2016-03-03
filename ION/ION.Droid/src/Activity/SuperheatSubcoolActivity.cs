@@ -533,7 +533,6 @@
             pressureSensor.measurement = pressureSensor.unit.OfScalar(double.Parse(text));
           }
         } catch (System.Exception e) {
-          ClearInput();
         }
       });
 
@@ -603,7 +602,6 @@
             temperatureSensor.measurement = temperatureSensor.unit.OfScalar(double.Parse(text));
           }
         } catch (System.Exception e) {
-          ClearInput();
         }
       });
 

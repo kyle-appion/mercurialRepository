@@ -405,7 +405,6 @@
             ClearInput();
           }
         } catch (System.Exception e) {
-          ClearInput();
         }
       });
 
@@ -465,8 +464,6 @@
             ClearInput();
           }
         } catch (System.Exception e) {
-          Log.D(this, "Failed to resolve temperature input", e);
-          ClearInput();
         }
       });
 
@@ -590,7 +587,6 @@
       
       // Overridden from ITextWatcher
       public void AfterTextChanged(IEditable editable) {
-        Log.D(this, "Stuff is happening: " + editable);
         if (afterTextChanged != null) {
           afterTextChanged(editable);
         }
