@@ -25,9 +25,6 @@ ANDROID
       * Fix swap animation
         ** Works for requested swap (dialog yes), but not normal swap
 
-    - Swap Dialog
-      * Update title to "Complete Swap?"
-
     - Manifold
       * Add "Add From" dialog on click if analyzer has space
         ** Create manual entry
@@ -40,7 +37,6 @@ ANDROID
     * fix the superheat/subcool delta math error
 
   Calibration Certificate Activity
-    * update activity name to localized name
     * add empty list TextView
 
   Help Activity
