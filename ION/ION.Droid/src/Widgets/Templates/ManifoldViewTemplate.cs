@@ -156,9 +156,12 @@
         status.Visibility = ViewStates.Visible;
         icon.Visibility = ViewStates.Visible;
       } else {
+        title.Text = s.type.GetSensorTypeName() + ": " + s.name;
+
         status.Visibility = ViewStates.Invisible;
         connection.Visibility = ViewStates.Invisible;
         icon.Visibility = ViewStates.Invisible;
+        progress.Visibility = ViewStates.Invisible;
       }
 
       InvalidateBattery(d);
