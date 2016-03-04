@@ -41,6 +41,7 @@
     private const int REQUEST_SENSOR_MOUNT_SENSOR = unchecked((int)0x01000000);
     private const int REQUEST_SHOW_PTCHART = unchecked((int)0x02000000);
     private const int REQUEST_SHOW_SUPERHEAT_SUBCOOL = unchecked((int)0x03000000);
+    private const int REQUEST_MANIFOLD_ON_SIDE = unchecked((int)0x04000000);
     /// <summary>
     /// The constant that indicates a low side manifold.
     /// </summary>
@@ -150,6 +151,15 @@
             Error("Failed to resolve return data from the superheat/subool activity.");
           }
           break;
+
+        case REQUEST_MANIFOLD_ON_SIDE:
+          var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
+          var msp = data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR) as SensorParcelable;
+          var s = msp.Get(ion);
+
+          TrySetManifold(mside, s);
+
+          break;
         default:
           Log.D(this, "Unknown request: " + request);
           break;
@@ -172,6 +182,32 @@
     /// <param name="side">Side.</param>
     private int EncodeSuperheatSubcoolRequest(Analyzer.ESide side) {
       return REQUEST_SHOW_SUPERHEAT_SUBCOOL | (MASK_SIDE & ((int)side << 8));
+    }
+
+    /// <summary>
+    /// Creates an encoded manifold sensor request value.
+    /// </summary>
+    /// <returns>The manifold side request.</returns>
+    /// <param name="side">Side.</param>
+    private int EncodeManifoldSideRequest(Analyzer.ESide side) {
+      return REQUEST_MANIFOLD_ON_SIDE | (MASK_SIDE & ((int)side << 8));
+    }
+
+    /// <summary>
+    /// Attempts to set the manifold at the given side.
+    /// </summary>
+    /// <returns><c>true</c>, if set manifold was tryed, <c>false</c> otherwise.</returns>
+    /// <param name="side">Side.</param>
+    /// <param name="sensor">Sensor.</param>
+    private bool TrySetManifold(Analyzer.ESide side, Sensor sensor) {
+      if (analyzer.CanAddSensorToSide(side) && !analyzer.HasSensor(sensor)) {
+        analyzer.AddSensorToSide(side, sensor);
+        analyzer.SetManifold(side, sensor);
+        return true;
+      } else {
+        Log.E(this, "Trying to add a sensor to a manifold that already has a sensor.");
+        return false;
+      }
     }
 
     /// <summary>
@@ -329,6 +365,68 @@
     }
 
     /// <summary>
+    /// Shows a dialog that will add a sensor to a sensor mount.
+    /// </summary>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="index">Index.</param>
+    private void ShowAddFromDialog(Analyzer analyzer, int index) {
+      var ldb = new ListDialogBuilder(Activity);
+      ldb.SetTitle(Resource.String.analyzer_add_from);
+      ldb.AddItem(Resource.String.device_manager, () => {
+        var i = new Intent(Activity, typeof(DeviceManagerActivity));
+        i.SetAction(Intent.ActionPick);
+        StartActivityForResult(i, EncodeSensorMountRequest(index));
+      });
+      ldb.AddItem(Resource.String.analyzer_create_editable_pressure, () => {
+        new ManualSensorEditDialog(Activity, ESensorType.Pressure, true, (obj, sensor) => {
+          analyzer.PutSensor(index, sensor, false);
+        }).Show();
+      });
+      ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
+        new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
+          analyzer.PutSensor(index, sensor, false);
+        }).Show();
+      });
+      ldb.Show();
+    }
+
+    /// <summary>
+    /// Shows a dialog that will add a sensor to a manifold of the given side.
+    /// </summary>
+    /// <param name="analyzer">Analyzer.</param>
+    /// <param name="index">Index.</param>
+    private void ShowAddFromDialog(Analyzer analyzer, Analyzer.ESide side) {
+      var ldb = new ListDialogBuilder(Activity);
+      ldb.SetTitle(Resource.String.analyzer_add_from);
+      ldb.AddItem(Resource.String.device_manager, () => {
+        var i = new Intent(Activity, typeof(DeviceManagerActivity));
+        i.SetAction(Intent.ActionPick);
+        StartActivityForResult(i, this.EncodeManifoldSideRequest(side));
+      });
+      ldb.AddItem(Resource.String.analyzer_create_editable_pressure, () => {
+        new ManualSensorEditDialog(Activity, ESensorType.Pressure, true, (obj, sensor) => {
+          TrySetManifold(side, sensor);
+        }).Show();
+      });
+      ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
+        new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
+          TrySetManifold(side, sensor);
+        }).Show();
+      });
+      ldb.Show();
+    }
+
+    /// <summary>
+    /// Shows a dialog that will allow the user to view the sensor in a larger more indepth view.
+    /// </summary>
+    /// <param name="sensor">Sensor.</param>
+    private void ShowSensorDialog(Sensor sensor) {
+      var adb = new IONAlertDialog(Activity);
+
+      adb.Show();
+    }
+
+    /// <summary>
     /// Called when a sensor mount is clicked in the analyzer.
     /// </summary>
     /// <param name="view">View.</param>
@@ -336,11 +434,10 @@
     /// <param name="index">Index.</param>
     private void OnSensorMountClicked(AnalyzerView view, Analyzer analyzer, int index) {
       if (analyzer.HasSensorAt(index)) {
+        ShowSensorDialog(analyzer[index]);
         Log.D(this, "Analyzer view callback sensor mount clicked at index: " + index);
       } else {
-        var i = new Intent(Activity, typeof(DeviceManagerActivity));
-        i.SetAction(Intent.ActionPick);
-        StartActivityForResult(i, EncodeSensorMountRequest(index));
+        ShowAddFromDialog(analyzer, index);
       }
     }
 
@@ -354,6 +451,7 @@
       if (analyzer.HasSensorAt(index)) {
         analyzerView.StartDraggingSensorMount(index);
       } else {
+        ShowAddFromDialog(analyzer, index);
       }
       Log.D(this, "Analyzer view callback sensor mount long clicked at index: " + index);
     }
@@ -369,6 +467,8 @@
 
       if (manifold != null) {
         ShowManifoldContextDialog(manifold);
+      } else {
+        ShowAddFromDialog(analyzer, side);
       }
     }
 

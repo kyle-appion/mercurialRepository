@@ -180,6 +180,7 @@
     <Compile Include="src\Activity\AppPreferencesActivity.cs" />
     <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
+    <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -390,6 +391,7 @@
     <AndroidResource Include="Resources\drawable\ic_help.png" />
     <AndroidResource Include="Resources\values\Preference_Keys.xml" />
     <AndroidResource Include="Resources\xml\preferences_help.xml" />
+    <AndroidResource Include="Resources\layout\dialog_manual_sensor_edit.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

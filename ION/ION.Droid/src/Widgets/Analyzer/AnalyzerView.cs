@@ -264,17 +264,13 @@
       lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache, Resource.Drawable.xml_low_side_background, OnSensorPropertyClick);
       lowSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, lowSideManifoldTemplate, Analyzer.ESide.Low));
       lowSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
-        if (lowSideManifoldTemplate.manifold != null) {
-          NotifyManifoldClicked(Analyzer.ESide.Low);
-        }
+        NotifyManifoldClicked(Analyzer.ESide.Low);
       }));
 
       highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache, Resource.Drawable.xml_high_side_background, OnSensorPropertyClick);
       highSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, highSideManifoldTemplate, Analyzer.ESide.High));
       highSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
-        if (highSideManifoldTemplate.manifold != null) {
-          NotifyManifoldClicked(Analyzer.ESide.High);
-        }
+        NotifyManifoldClicked(Analyzer.ESide.High);
       }));
 
       analyzer = new Analyzer(AppState.context);
