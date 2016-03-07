@@ -267,8 +267,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             pressureSensor = new ManualSensor(ESensorType.Pressure, false);
             var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
             pressureSensor.measurement = measurement;
-            buttonPressureUnit.Enabled = true;
           }
+          buttonPressureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
 //          ClearPressureInput();
@@ -308,8 +308,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
             var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
             temperatureSensor.measurement = measurement;
-            buttonTemperatureUnit.Enabled = true;
           }
+          buttonTemperatureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdateTemperature: invalid string " + editTemperature.Text + ".", e);
 //          ClearTemperatureInput();
@@ -460,7 +460,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           calculation = calculation * -1;
         }
       }
-      Console.WriteLine("the calculation is: " + calculation.amount.ToString("N"));
       labelFluidDelta.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
     }
 
