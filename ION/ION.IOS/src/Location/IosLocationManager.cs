@@ -112,7 +112,7 @@
     /// </summary>
     /// <returns>The addres from location async.</returns>
     /// <param name="location">Location.</param>
-    public async Address GetAddresFromLocationAsync(ILocation location) {
+    public Task<Address> GetAddressFromLocationAsync(ILocation location) {
       // TODO ahodder@appioninc.com: Implement get address
       return Task.FromResult(default(Address));
     }

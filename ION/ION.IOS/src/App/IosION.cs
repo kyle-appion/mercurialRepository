@@ -24,6 +24,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.IOS;
   using ION.IOS.Alarms.Alerts;
   using ION.IOS.IO;
   using ION.IOS.Location;
@@ -178,7 +179,7 @@
     /// </summary>
     /// <returns>The application dump.</returns>
     public IAppDump CreateApplicationDump() {
-      return new BaseAppDump(this, new IOSPlatforInfo());
+      return new BaseAppDump(this, new IOSPlatformInfo());
     }
 
     /// <summary>
