@@ -114,10 +114,10 @@ namespace ION.IOS.ViewController.Workbench {
       if (ptchart.fluid.mixture) {
         switch (sensorProperty.manifold.ptChart.state) {
           case Fluid.EState.Bubble:
-            labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
+            labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
             break;
           case Fluid.EState.Dew:
-            labelTitle.Text = Strings.Fluid.SUBCOOL_ABRV;
+            labelTitle.Text = Strings.Fluid.SUPERHEAT_ABRV;
             break;
           default:
             labelTitle.Text = Strings.UNKNOWN;

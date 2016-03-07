@@ -36,6 +36,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static sensorGroup analyzerSensors;
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
+    public static AnalyzerViewController arvc;
 //    public static bool isRecording = false;
 //    public static UIButton dataRecord;
 //    public static UIButton dataStop;
@@ -55,7 +56,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
-
+      arvc = this;
       lowHighSensors = new LowHighArea (View, this);
       mentryView = new ManualView(View);
       analyzerSensors = new sensorGroup(View, this);
@@ -782,7 +783,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       Sensor.panGesture = new UIPanGestureRecognizer (() => {
         if (Sensor.panGesture.State == UIGestureRecognizerState.Began) {
-
+          View.BringSubviewToFront(Sensor.snapArea);
         }
         if ((Sensor.panGesture.State == UIGestureRecognizerState.Began || Sensor.panGesture.State == UIGestureRecognizerState.Changed) && (Sensor.panGesture.NumberOfTouches == 1)) {
 
