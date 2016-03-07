@@ -7,6 +7,7 @@
   <!--
   GENERAL APPLICATION STRINGS
   -->
+  <string name="actions">Actions</string>
   <string name="active">Active</string>
   <string name="add">Add</string>
   <string name="address">Address</string>
@@ -84,13 +85,17 @@
   ANALYZER
   -->
   <string name="analyzer">Analyzer</string>
+  <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
   <string name="analyzer_complete_swap">Complete Swap?</string>
   <string name="analyzer_create_editable_pressure">Create Editable Pressure Entry</string>
   <string name="analyzer_create_editable_temperature">Create Editable Temperature Entry</string>
-  <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
+  <string name="analyzer_display_link">Display Link</string>
   <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to %1$s side: the side is full.</string>
+  <string name="analyzer_side_none">Unspecified</string>
+  <string name="analyzer_side_low">Low Side</string>
+  <string name="analyzer_side_high">High Side</string>
 
   <!--
   CALCULATORS
