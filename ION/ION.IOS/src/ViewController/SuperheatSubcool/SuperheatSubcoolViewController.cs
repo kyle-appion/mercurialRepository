@@ -57,7 +57,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           OnPressureSensorChanged(pressureSensor);
         }
 
-        if (temperatureSensor != null) {
+        if (temperatureSensor != null && pressureSensor != null) {
           OnTemperatureSensorChanged(temperatureSensor);
         }
 
@@ -238,7 +238,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+          //pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+          pressureSensor = null;
           ClearPressureInput();
         }
       }));
@@ -256,6 +257,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       editPressure.AddTarget((object obj, EventArgs args) => {
         try {
           if (pressureSensor != null && pressureSensor.isEditable) {
+            var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
+            pressureSensor.measurement = measurement;
+          }
+          ////if user removes a pressure sensor, they need to be able to create a new manual sensor
+          if (pressureSensor == null){
+            pressureSensor = new ManualSensor(ESensorType.Pressure, false);
             var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
             pressureSensor.measurement = measurement;
           }
@@ -288,6 +295,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       editTemperature.AddTarget((object obj, EventArgs args) => {
         try {
           if (temperatureSensor != null && temperatureSensor.isEditable) {
+            var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
+            temperatureSensor.measurement = measurement;
+          }
+          ////if user removes a temperature sensor, they need to be able to create a new manual sensor
+          if (temperatureSensor == null){
+            temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
             var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
             temperatureSensor.measurement = measurement;
           }
@@ -327,9 +340,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     // Overridden from BaseIONViewController
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
-
-      OnPressureSensorChanged(pressureSensor);
-      OnTemperatureSensorChanged(temperatureSensor);
+      if (pressureSensor != null) {
+        OnPressureSensorChanged(pressureSensor);
+      }
+      if (temperatureSensor != null && pressureSensor != null) {
+        OnTemperatureSensorChanged(temperatureSensor);
+      }
     }
 
     // Overridden from BaseIONViewController

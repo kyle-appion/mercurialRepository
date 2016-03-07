@@ -264,6 +264,13 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
           ptChart = PTChart.New(ion, ptChart.state, fluid);
+
+          if (pressureSensor is GaugeDeviceSensor) {
+            entryMode = new SensorEntryMode(this,pressureSensor, temperatureUnit, ptChart, editPressure, editTemperature);
+          } else if (temperatureSensor is GaugeDeviceSensor){
+            entryMode = new SensorEntryMode(this, temperatureSensor, pressureUnit, ptChart, editTemperature, editPressure);
+          }
+
           InvalidateViewController();
         };
         NavigationController.PushViewController(sb, true);

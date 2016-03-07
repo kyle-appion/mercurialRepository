@@ -154,11 +154,19 @@
       Fluid ret = null;
 
       if (__cache.ContainsKey(fluidName)) {
+        Log.D(this, "Already had that fluid yo");
         var reference = __cache[fluidName];
-        ret = reference.Target as Fluid;
+        if (!reference.IsAlive) {
+          Log.D(this, "But it was garbage collected so removing key");
+          __cache.Remove(fluidName);
+        } else {          
+          ret = reference.Target as Fluid;
+        }
       }
 
-        Log.D(this, "Looking for " + fluidName);
+      if(ret != null)
+        Log.D(this, "ret is currently occupied");
+        //Log.D(this, "Looking for " + fluidName);
       if (ret == null && HasFluid(fluidName)) {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));
@@ -222,7 +230,9 @@
     /// <param name="fluidName">Fluid name.</param>
     private bool HasFluid(string fluidName) {
       foreach (var fn in GetAvailableFluidNames()) {
-        if (fn.Equals(fluidName)) { 
+//        if (fn.Equals(fluidName)) {
+        var exists = String.Compare(fn,fluidName,StringComparison.CurrentCultureIgnoreCase);
+        if (exists.Equals(0)) { 
           return true;
         }
       }

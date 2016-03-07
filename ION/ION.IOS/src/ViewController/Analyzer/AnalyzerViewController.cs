@@ -783,7 +783,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       Sensor.panGesture = new UIPanGestureRecognizer (() => {
         if (Sensor.panGesture.State == UIGestureRecognizerState.Began) {
-
+          View.BringSubviewToFront(Sensor.snapArea);
         }
         if ((Sensor.panGesture.State == UIGestureRecognizerState.Began || Sensor.panGesture.State == UIGestureRecognizerState.Changed) && (Sensor.panGesture.NumberOfTouches == 1)) {
 
