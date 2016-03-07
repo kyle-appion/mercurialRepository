@@ -231,6 +231,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           dm.displayFilter = new SensorOfTypeFilter(ESensorType.Pressure);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             pressureSensor = sensor;
+            buttonPressureUnit.Enabled = true;
           };
           NavigationController.PushViewController(dm, true);
         }
@@ -240,6 +241,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (!pressureSensorLocked) {
           //pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           pressureSensor = null;
+          buttonPressureUnit.Enabled = false;
           ClearPressureInput();
         }
       }));
@@ -265,6 +267,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             pressureSensor = new ManualSensor(ESensorType.Pressure, false);
             var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
             pressureSensor.measurement = measurement;
+            buttonPressureUnit.Enabled = true;
           }
         } catch (Exception e) {
           Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
@@ -279,6 +282,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           dm.displayFilter = new SensorOfTypeFilter(ESensorType.Temperature);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             temperatureSensor = sensor;
+            buttonTemperatureUnit.Enabled = true;
           };
           NavigationController.PushViewController(dm, true);
         }
@@ -288,6 +292,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (!temperatureSensorLocked) {
           //temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureSensor = null;
+          buttonTemperatureUnit.Enabled = false;
           ClearTemperatureInput();
         }
       }));
@@ -303,6 +308,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
             var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
             temperatureSensor.measurement = measurement;
+            buttonTemperatureUnit.Enabled = true;
           }
         } catch (Exception e) {
           Log.E(this, "Failed to UpdateTemperature: invalid string " + editTemperature.Text + ".", e);
@@ -423,7 +429,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       var pressureScalar = pressureSensor.measurement;
       var temperatureScalar = temperatureSensor.measurement;
 
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, false).ConvertTo(temperatureUnit);
+      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, pressureSensor.isRelative).ConvertTo(temperatureUnit);
 
       if (ptChart.fluid.mixture) {
         switch (ptChart.state) {
@@ -454,7 +460,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           calculation = calculation * -1;
         }
       }
-
+      Console.WriteLine("the calculation is: " + calculation.amount.ToString("N"));
       labelFluidDelta.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
     }
 
