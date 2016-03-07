@@ -753,7 +753,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       foreach (string subview in pressedArea.availableSubviews) {
         var splits = subview.Split(' ');
-        if (splits[0].Equals("Secondary") && pressedArea.manifold.secondarySensor == null) {
+        if (splits[0].Equals("Linked") && pressedArea.manifold.secondarySensor == null) {
           continue;
         }
         if (splits[0].Equals("Superheat") && pressedArea.manifold.primarySensor.type == ESensorType.Vacuum) {

@@ -86,7 +86,7 @@
     /// <returns>The temperature.</returns>
     /// <param name="temperatureSensor">Temperature sensor.</param>
     public Scalar GetTemperature(Sensor pressureSensor) {
-      return GetTemperature(pressureSensor.measurement, pressureSensor.isRelative || Units.Pressure.PSIA.Equals(pressureSensor.unit));
+        return GetTemperature(pressureSensor.measurement, pressureSensor.isRelative || Units.Pressure.PSIA.Equals(pressureSensor.unit));
     }
 
     /// <summary>
