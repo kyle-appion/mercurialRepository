@@ -53,7 +53,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(RoCTableCell), "Rate");
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");
-      subviewTable.RegisterClassForCellReuse(typeof(secondarySensorCell), "Secondary");
+      subviewTable.RegisterClassForCellReuse(typeof(secondarySensorCell), "Linked");
       maxReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       minReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
@@ -92,6 +92,7 @@ namespace ION.IOS.ViewController.Analyzer
       minType = "hold";
       holdType = "hold";
       isManual = false;
+      isLinked = false;
 
       conDisButton.TouchUpInside += delegate {
         if(currentSensor != null){
@@ -177,10 +178,11 @@ namespace ION.IOS.ViewController.Analyzer
     public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
     public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
-      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Secondary Sensor"
+      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Linked Sensor (Linked)"
     };
     private bool isUpdating { get; set; }
     public bool isManual;
+    public bool isLinked;
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
 
@@ -316,6 +318,7 @@ namespace ION.IOS.ViewController.Analyzer
       
       var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
+        isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
@@ -336,6 +339,15 @@ namespace ION.IOS.ViewController.Analyzer
         }
       } else {
         shReading.Text = Util.Strings.Analyzer.SETUP;
+        if (isLinked.Equals(true)) {
+          isLinked = false;
+          if (attachedSensor != null) {            
+            attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+            attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
+            attachedSensor.topLabel.TextColor = UIColor.Black;
+            attachedSensor = null;
+          }
+        }
       }
 
       if (manifold.ptChart != null) {
