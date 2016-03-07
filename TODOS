@@ -4,6 +4,11 @@ ANDROID
   Application
     * Support bluetooth classic
 
+  DeviceManager
+    * Weird glitch were items (clicked at the right time) will swap order.
+      (ie. Connect a device, and expand it as it connects will result in the
+      devices sensors above the device).
+
   Workbench Fragment
      * workbench doesn't update contents when fragment changes
 
@@ -17,17 +22,11 @@ ANDROID
     * Allow screenshot to expand
 
   Analyzer Fragment
-    * Add screenshot navigation action
-
     - Sensor Mount
-      * Add "Add From" dialog on click
-        ** Create manual entry
       * Fix swap animation
         ** Works for requested swap (dialog yes), but not normal swap
 
     - Manifold
-      * Add "Add From" dialog on click if analyzer has space
-        ** Create manual entry
       * Show "Linked sensor as secondary" toast when a secondary sensor is added
       * add secondary (linked) sensor subview
       * swapping a manifold with subviews to other empty doesn't ask to break subviews
@@ -35,8 +34,3 @@ ANDROID
 
   Calibration Certificate Activity
     * add empty list TextView
-
-  Help Activity
-    * add about ion
-    * add send feedback
-    * link to videos and tutorials

@@ -417,16 +417,6 @@
     }
 
     /// <summary>
-    /// Shows a dialog that will allow the user to view the sensor in a larger more indepth view.
-    /// </summary>
-    /// <param name="sensor">Sensor.</param>
-    private void ShowSensorDialog(Sensor sensor) {
-      var adb = new IONAlertDialog(Activity);
-
-      adb.Show();
-    }
-
-    /// <summary>
     /// Called when a sensor mount is clicked in the analyzer.
     /// </summary>
     /// <param name="view">View.</param>
@@ -434,8 +424,9 @@
     /// <param name="index">Index.</param>
     private void OnSensorMountClicked(AnalyzerView view, Analyzer analyzer, int index) {
       if (analyzer.HasSensorAt(index)) {
-        ShowSensorDialog(analyzer[index]);
-        Log.D(this, "Analyzer view callback sensor mount clicked at index: " + index);
+        var side = Analyzer.ESide.Low;
+        analyzer.GetSideOfIndex(index, out side);
+        new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
       } else {
         ShowAddFromDialog(analyzer, index);
       }

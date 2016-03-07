@@ -180,6 +180,7 @@
     <Compile Include="src\Activity\AppPreferencesActivity.cs" />
     <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
+    <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -392,6 +393,7 @@
     <AndroidResource Include="Resources\values\Preference_Keys.xml" />
     <AndroidResource Include="Resources\xml\preferences_help.xml" />
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_edit.axml" />
+    <AndroidResource Include="Resources\layout\analyzer_dialog_viewer.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

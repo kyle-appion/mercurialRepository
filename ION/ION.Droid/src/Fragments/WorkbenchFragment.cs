@@ -156,8 +156,8 @@
         }
       };
 
-      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
-      itemTouchHelper.AttachToRecyclerView(list);
+//      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
+//      itemTouchHelper.AttachToRecyclerView(list);
     }
 
     /// <Docs>Called when the Fragment is visible to the user.</Docs>
