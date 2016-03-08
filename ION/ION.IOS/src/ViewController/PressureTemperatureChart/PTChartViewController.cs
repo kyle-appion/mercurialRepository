@@ -414,6 +414,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     private void SetTemperatureMeasurementFromEditText() {
       try {
         var amount = double.Parse(editTemperature.Text);
+        Console.WriteLine("gathered measurement: " + amount);
+        Console.WriteLine("using unit gives amount: " + temperatureSensor.unit.OfScalar(amount).amount);
         temperatureSensor.measurement = temperatureSensor.unit.OfScalar(amount);
       } catch (Exception e) {
         Log.E(this, "Failed to set temperature", e);

@@ -264,8 +264,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
           ////if user removes a pressure sensor, they need to be able to create a new manual sensor
           if (pressureSensor == null){
-            pressureSensor = new ManualSensor(ESensorType.Pressure, false);
-            var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
+            pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+            var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
+            Console.WriteLine("newly created manual sensor has measurement: " + measurement.amount + " and a unit of " + measurement.unit.ToString());
             pressureSensor.measurement = measurement;
           }
           buttonPressureUnit.Enabled = true;
@@ -306,7 +307,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           ////if user removes a temperature sensor, they need to be able to create a new manual sensor
           if (temperatureSensor == null){
             temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
-            var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
+            var measurement = temperatureUnit.OfScalar(double.Parse("0.00"));
             temperatureSensor.measurement = measurement;
           }
           buttonTemperatureUnit.Enabled = true;
@@ -521,7 +522,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }
 
       pressureUnit = measurement.unit;
-      buttonPressureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
       var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
 
