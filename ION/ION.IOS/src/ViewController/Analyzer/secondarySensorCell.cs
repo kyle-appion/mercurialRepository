@@ -37,10 +37,31 @@ namespace ION.IOS.ViewController.Analyzer {
       secondaryReading.AdjustsFontSizeToFitWidth = true;
       secondaryReading.TextAlignment = UITextAlignment.Center;
 
-      if (lhSensor.manifold.secondarySensor != null) {
-        secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
-      } else {
-        secondaryReading.Text = "";
+//      if (lhSensor.currentSensor != null) {
+//        if (lhSensor.attachedSensor.isManual) {
+//          secondaryReading.Text = lhSensor.attachedSensor.manualSensor.measurement.amount.ToString("N") + " " + lhSensor.attachedSensor.manualSensor.unit;
+//        } else {
+//          secondaryReading.Text = lhSensor.attachedSensor.currentSensor.measurement.amount.ToString("N") + " " + lhSensor.attachedSensor.currentSensor.unit;
+//        }
+//      } else {
+//        secondaryReading.Text = "";
+//      }
+      if (lhSensor.currentSensor != null && lhSensor.manifold.secondarySensor != null) {
+        if (lhSensor.currentSensor != lhSensor.manifold.primarySensor) {
+          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
+        } else if(lhSensor.currentSensor == lhSensor.manifold.primarySensor){
+          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = "";
+        }
+      } else if (lhSensor.manualSensor != null && lhSensor.manifold.secondarySensor != null) {
+        if (lhSensor.manualSensor != lhSensor.manifold.primarySensor) {
+          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
+        } else if(lhSensor.manualSensor == lhSensor.manifold.primarySensor){
+          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = "";
+        }
       }
       this.AddSubview(cellHeader);
       this.AddSubview(secondaryReading);

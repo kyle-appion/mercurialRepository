@@ -761,7 +761,13 @@ namespace ION.IOS.ViewController.Analyzer
         }
         if (!pressedArea.tableSubviews.Contains (splits[0])) {          
           subviewAlert.AddAction (UIAlertAction.Create (subview, UIAlertActionStyle.Default, (action) => {
-            pressedArea.tableSubviews.Add(splits[0]);
+            ////set linked sensor to always be first in the table
+            if(splits[0].Equals("Linked")){
+              pressedArea.tableSubviews.Insert(0,splits[0]);
+            } else {
+              pressedArea.tableSubviews.Add(splits[0]);
+            }
+            //pressedArea.tableSubviews.Add(splits[0]);
             pressedArea.subviewTable.Source = new AnalyzerTableSource(pressedArea.tableSubviews, pressedArea);
             pressedArea.subviewTable.ReloadData();
             if(pressedArea.subviewTable.Hidden)

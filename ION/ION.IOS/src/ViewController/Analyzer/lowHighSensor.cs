@@ -397,19 +397,19 @@ namespace ION.IOS.ViewController.Analyzer
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
 
-      if (currentSensor != null) {
-        if (manifold.secondarySensor != null && currentSensor.type == ESensorType.Pressure) {
-          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else if (manifold.secondarySensor != null && currentSensor.type == ESensorType.Temperature) {
+      if (currentSensor != null && manifold.secondarySensor != null) {
+        if (currentSensor != manifold.primarySensor) {
           secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+        } else if(currentSensor == manifold.primarySensor){
+          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
         } else {
           secondaryReading.Text = "";
         }
-      } else if (manualSensor != null) {
-        if (manifold.secondarySensor != null && manualSensor.type == ESensorType.Pressure) {
-          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else if ( manifold.secondarySensor != null && manualSensor.type == ESensorType.Temperature){
+      } else if (manualSensor != null && manifold.secondarySensor != null) {
+        if (manualSensor != manifold.primarySensor) {
           secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+        } else if(manualSensor == manifold.primarySensor){
+          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
         } else {
           secondaryReading.Text = "";
         }
