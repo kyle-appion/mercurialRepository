@@ -45,8 +45,10 @@ namespace ION.IOS.Alarms.Alerts {
     /// Called by the alert when it is stopped.
     /// </summary>
     protected override void OnStop() {
-      alertView.Dismiss();
-      alertView = null;
+      if (alertView != null) {
+        alertView.Dismiss();
+        alertView = null;
+      }
     }
   }
 }
