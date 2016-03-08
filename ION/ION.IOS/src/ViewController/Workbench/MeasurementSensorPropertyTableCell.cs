@@ -54,7 +54,9 @@ namespace ION.IOS.ViewController.Workbench {
 
       buttonIcon.TouchUpInside += (object sender, EventArgs e) => {
         if (onIconClicked != null) {
-          onIconClicked(this, record.sensorProperty);
+          if(record != null){
+            onIconClicked(this, record.sensorProperty);
+          }
         }
       };
 

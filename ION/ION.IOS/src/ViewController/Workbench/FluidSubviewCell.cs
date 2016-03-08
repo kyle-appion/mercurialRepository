@@ -143,7 +143,14 @@ namespace ION.IOS.ViewController.Workbench {
         labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
       } else {
         var meas = sensorProperty.modifiedMeasurement;
-        labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+        if (ptchart.fluid.mixture) {
+          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+        } else {
+          if (meas < 0) {
+            meas = meas * -1;
+          }
+          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
+        }
       }
     }
 
