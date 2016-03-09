@@ -315,7 +315,6 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
-      
       var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
         isLinked = true;
@@ -334,6 +333,14 @@ namespace ION.IOS.ViewController.Analyzer
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, manifold.secondarySensor.isRelative);
+          ptAmount = calculation.amount;
+          if (!manifold.ptChart.fluid.mixture && calculation < 0) {
+            calculation = calculation * -1;
+          }
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+        } else {
+          manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
           ptAmount = calculation.amount;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -397,24 +404,44 @@ namespace ION.IOS.ViewController.Analyzer
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
 
+//      if (currentSensor != null && manifold.secondarySensor != null) {
+//        if (currentSensor != manifold.primarySensor) {
+//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+//        } else if (currentSensor == manifold.primarySensor) {
+//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+//        } else {
+//          secondaryReading.Text = "Not Linked";
+//        }
+//      } else if (manualSensor != null && manifold.secondarySensor != null) {
+//        if (manualSensor != manifold.primarySensor) {
+//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+//        } 
+//        else if (manualSensor == manifold.primarySensor) {
+//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+//        } 
+//        else {
+//          secondaryReading.Text = "Not Linked";
+//        }
+//      } else {
+//        secondaryReading.Text = "Not Linked";      
+//      }
       if (currentSensor != null && manifold.secondarySensor != null) {
         if (currentSensor != manifold.primarySensor) {
           secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-        } else if(currentSensor == manifold.primarySensor){
+        } else if (currentSensor == manifold.primarySensor) {
           secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
         } else {
-          secondaryReading.Text = "";
+          secondaryReading.Text = "Not Linked";
         }
       } else if (manualSensor != null && manifold.secondarySensor != null) {
-        if (manualSensor != manifold.primarySensor) {
-          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-        } else if(manualSensor == manifold.primarySensor){
+        if(manualSensor.type.Equals(ESensorType.Pressure)){
           secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
         } else {
-          secondaryReading.Text = "";
+          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
         }
+      } else {
+        secondaryReading.Text = "Not Linked";      
       }
-
     }
     /// <summary>
     /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER
