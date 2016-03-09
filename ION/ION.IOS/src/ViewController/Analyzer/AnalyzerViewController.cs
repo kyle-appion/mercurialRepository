@@ -470,6 +470,7 @@ namespace ION.IOS.ViewController.Analyzer {
         start.pressedSensor.lowArea.manualGType = "Vacuum";
         start.pressedSensor.highArea.manualGType = "Vacuum";
       }
+
       ///SET MANUALSENSOR MEASUREMENT AND UNIT TYPE
       start.pressedSensor.manualSensor.unit = AnalyserUtilities.getManualUnit(start.pressedSensor.manualSensor.type,mentryView.mbuttonText.Text.ToLower());
       start.pressedSensor.lowArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(start.pressedSensor.manualSensor.type,mentryView.mbuttonText.Text.ToLower());
@@ -477,7 +478,8 @@ namespace ION.IOS.ViewController.Analyzer {
 
       start.pressedSensor.manualSensor.measurement = new Scalar(start.pressedSensor.lowArea.manifold.primarySensor.unit,Convert.ToDouble(mentryView.mtextValue.Text));
 
-
+      start.pressedSensor.lowArea.manualSensor = start.pressedSensor.manualSensor;
+      start.pressedSensor.highArea.manualSensor = start.pressedSensor.manualSensor;
       ///CREATE PTCHART AND MANIFOLD MEASUREMENTS
       if(start.pressedSensor.manualSensor.type == ESensorType.Pressure || start.pressedSensor.manualSensor.type == ESensorType.Temperature){
         //Console.WriteLine(start.pressedSensor.manualSensor.type.ToString() + " sensor given so making ptChart");
