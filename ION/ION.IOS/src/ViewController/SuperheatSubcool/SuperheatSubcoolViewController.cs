@@ -200,8 +200,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       ion = AppState.context;
 
-      ptChart = PTChart.New(ion, Fluid.EState.Dew);
-
+      if (initialManifold == null) {
+        ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      } else {
+        ptChart = PTChart.New(ion, initialManifold.ptChart.state);
+      }
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
@@ -266,7 +269,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           if (pressureSensor == null){
             pressureSensor = new ManualSensor(ESensorType.Pressure, true);
             var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
-            Console.WriteLine("newly created manual sensor has measurement: " + measurement.amount + " and a unit of " + measurement.unit.ToString());
             pressureSensor.measurement = measurement;
           }
           buttonPressureUnit.Enabled = true;
@@ -318,9 +320,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
 
-      ptChart = PTChart.New(ion, Fluid.EState.Bubble);
-
-
+      //ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+      //ptChart = PTChart.New(ion, initialManifold.ptChart.state);
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
         var sensor = initialManifold.primarySensor;

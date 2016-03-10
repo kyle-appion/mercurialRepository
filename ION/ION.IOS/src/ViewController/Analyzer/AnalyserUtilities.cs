@@ -1377,7 +1377,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       UIAlertController addDeviceSheet;
 
-      addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, "Do you want to remove the current sensor's setup?", UIAlertControllerStyle.Alert);
+      addDeviceSheet = UIAlertController.Create(Util.Strings.Analyzer.ACTION, "Do you want to remove the current sensor setup?", UIAlertControllerStyle.Alert);
       addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
 
         if(item != null){

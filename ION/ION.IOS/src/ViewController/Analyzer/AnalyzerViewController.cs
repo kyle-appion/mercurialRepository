@@ -785,7 +785,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       Sensor.panGesture = new UIPanGestureRecognizer (() => {
         if (Sensor.panGesture.State == UIGestureRecognizerState.Began) {
-          //View.BringSubviewToFront(Sensor.snapArea);
+          View.BringSubviewToFront(Sensor.snapArea);
         }
         if ((Sensor.panGesture.State == UIGestureRecognizerState.Began || Sensor.panGesture.State == UIGestureRecognizerState.Changed) && (Sensor.panGesture.NumberOfTouches == 1)) {
 
@@ -812,7 +812,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
 
         } else if (Sensor.panGesture.State == UIGestureRecognizerState.Ended) {
-
+          View.SendSubviewToBack(Sensor.snapArea);
           // reset offsets when dragging ends so that they will be recalculated for next touch and drag that occurs
           dx = 0;
           dy = 0;
