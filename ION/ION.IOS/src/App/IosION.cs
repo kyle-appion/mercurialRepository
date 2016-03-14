@@ -178,7 +178,7 @@
     /// </summary>
     /// <returns>The application dump.</returns>
     public IAppDump CreateApplicationDump() {
-      return new BaseAppDump(this, new IOSPlatforInfo());
+      return new BaseAppDump(this, new IOSPlatformInfo());
     }
 
     /// <summary>
