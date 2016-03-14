@@ -1,14 +1,26 @@
 ﻿using System;
 
 using ION.Core.Measure;
-using ION.Core.Sensors;
-
 namespace ION.Core.Devices.Protocols {
+
+  using ION.Core.Sensors;
+
+  /// <summary>
+  /// An enumeration of the supported protocols.
+  /// </summary>
+  public enum EProtocolVersion {
+    Classic,
+    V1,
+    V2,
+    V3,
+  }
+
   public class Protocol {
     /// <summary>
     /// The array of supported BLE protocols.
     /// </summary>
     public static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {
+      new ClassicProtocol(),
       new BleV1Protocol(),
       new BleV2Protocol(),
       new BleV3Protocol(),
@@ -20,7 +32,7 @@ namespace ION.Core.Devices.Protocols {
     /// </summary>
     /// <returns>The protocol from version.</returns>
     /// <param name="version">Version.</param>
-    public static IGaugeProtocol FindProtocolFromVersion(int version) {
+    public static IGaugeProtocol FindProtocolFromVersion(EProtocolVersion version) {
       // Could be made more efficient with a binary search if the protocol count
       // keeps increasing.
       foreach (IGaugeProtocol protocol in PROTOCOLS) {
@@ -37,7 +49,7 @@ namespace ION.Core.Devices.Protocols {
     /// <summary>
     /// Queries the version of the protocol.
     /// </summary>
-    int version { get; }
+    EProtocolVersion version { get; }
 
     /// <summary>
     /// The value that indicates that a sensor is not attached to a device.
@@ -97,7 +109,7 @@ namespace ION.Core.Devices.Protocols {
     /// <summary>
     /// Queries the version of the protocol that parsed the gauge packet.
     /// </summary>
-    public int version { get; private set; }
+    public EProtocolVersion version { get; private set; }
     /// <summary>
     /// Queries the battery level of the terminus who spawned this packet.
     /// </summary>
@@ -119,7 +131,7 @@ namespace ION.Core.Devices.Protocols {
     /// <param name="version"></param>
     /// <param name="battery"></param>
     /// <param name="readings"></param>
-    public GaugePacket(int version, int battery, GaugeReading[] readings) : this() {
+    public GaugePacket(EProtocolVersion version, int battery, GaugeReading[] readings) : this() {
       this.version = version;
       this.battery = battery;
       this.gaugeReadings = readings;

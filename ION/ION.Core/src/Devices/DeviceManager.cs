@@ -7,6 +7,7 @@
 
   using ION.Core.App;
   using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Protocols;
 
   public class DeviceManagerEvent {
     public EType type { get; private set; }
@@ -58,7 +59,7 @@
   /// this, the factory can create duplicate devices. It is up to the hosting type to
   /// manage collisions.
   /// </summary>
-  public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
+  public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, EProtocolVersion protocol);
   /// <summary>
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
@@ -122,7 +123,7 @@
     /// The scan mode that delegates out the platform specific scan procedures.
     /// </summary>
     /// <value>The scanner.</value>
-    IConnectionHelper connectionHelper { get; }
+    IConnectionHelper connectionHelper { get; set; }
 
     /// <summary>
     /// Requests that the device manager enable its communication backend.
@@ -149,7 +150,7 @@
     /// <param name="serialNumber">Serial number.</param>
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
-    IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocol);
+    IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
 
     /// <summary>
     /// Permanentely deletes the device from the device manager and any persistent backend

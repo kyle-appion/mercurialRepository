@@ -141,6 +141,8 @@
     <Compile Include="src\App\IAppDump.cs" />
     <Compile Include="src\App\Appion.cs" />
     <Compile Include="src\App\Constants.cs" />
+    <Compile Include="src\Devices\Connections\ConnectionHelperCollection.cs" />
+    <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

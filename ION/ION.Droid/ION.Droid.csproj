@@ -16,8 +16,6 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
     <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
-    <ReleaseVersion>1</ReleaseVersion>
-    <SynchReleaseVersion>false</SynchReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -188,6 +186,8 @@
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
     <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
+    <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
+    <Compile Include="src\Connections\ClassicConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

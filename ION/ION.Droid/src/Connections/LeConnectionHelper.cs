@@ -2,14 +2,18 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   using Android.Bluetooth;
   using Android.Bluetooth.LE;
+  using Android.Content;
   using Android.OS;
 
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Protocols;
   using ION.Core.Util;
 
   using ION.Droid.App;
@@ -23,7 +27,7 @@
       }
     }
 
-    private AndroidION ion { get; set; }
+    private Context context;
 
     /// <summary>
     /// The bluetooth manager that holds the adapter.
@@ -47,8 +51,8 @@
     /// </summary>
     private Dictionary<string, LeConnection> __leConnections = new Dictionary<string, LeConnection>();
 
-    public LeConnectionHelper(AndroidION ion, BluetoothManager manager) {
-      this.ion = ion;
+    public LeConnectionHelper(Context context, BluetoothManager manager) {
+      this.context = context;
       this.manager = manager;
       this.adapter = manager.Adapter;
       if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
@@ -63,44 +67,57 @@
     }
 
     // Overridden from BaseConnectionHelper
-    protected override void DoStartScan() {
+    protected async override Task OnScan(TimeSpan scanTime, CancellationToken token) {
       scanDelegate.Start(OnDeviceFound);
+      await Task.Delay(scanTime);
     }
 
     // Overridden from BaseConnectionHelper
-    protected override void DoStopScan() {
+    protected override void OnStop() {
       scanDelegate.Stop();
     }
 
     // Overridden from BaseConnectionHelper
-    protected override void OnDispose() {
-      base.OnDispose();
-
-      scanDelegate.Stop();
+    public override Task<bool> Enable() {
+      return Task.FromResult(adapter.Enable());
     }
 
     // Overridden from BaseConnectionHelper
-    public override bool Enable() {
-      return adapter.Enable();
-    }
-
-    // Overridden from BaseConnectionHelper
-    public override IConnection CreateConnectionFor(string address) {
+    public override IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
       var device = adapter.GetRemoteDevice(address);
 
       if (device == null) {
         throw new ArgumentException("Create connection for " + address + " failed: no device");
       } else if (BluetoothDeviceType.Le == device.Type) {
-        var ret = new LeConnection(ion, manager, device);
+        var ret = new LeConnection(context, manager, device);
         __leConnections[address] = ret;
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: device not le");
       } else {
         // TODO ahodder@appioninc.com: This is a test and should be removed
-        var ret = new LeConnection(ion, manager, device);
+        var ret = new LeConnection(context, manager, device);
         __leConnections[address] = ret;
         return ret;
 //        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the connection helper can resolve the given protocol.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    /// <param name="protocol">Protocol.</param>
+    public override bool CanResolveProtocol(EProtocolVersion protocol) {
+      switch (protocol) {
+        case EProtocolVersion.V1:
+          return true;
+        case EProtocolVersion.V2:
+          return true;
+        case EProtocolVersion.V3:
+          return true;
+        default:
+          return false;
       }
     }
 
@@ -116,7 +133,11 @@
         }
 
         var serialNumber = GaugeSerialNumber.Parse(device.Name);
-        int protocol = (int)scanRecord?[0];
+        int pv = (int)scanRecord?[0];
+        var protocol = EProtocolVersion.V1;
+        if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
+          protocol = (EProtocolVersion)pv;
+        }
 
         NotifyDeviceFound(serialNumber, device.Address, scanRecord, protocol);
       } catch (Exception e) {
