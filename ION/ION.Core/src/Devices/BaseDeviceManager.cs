@@ -180,6 +180,7 @@
     public void ForgetFoundDevices() {
       lock (this) {
         foreach (var device in foundDevices) {
+          device.Dispose();
           Unregister(device);
         }
       }
@@ -197,6 +198,7 @@
     public async void DeleteDevice(ISerialNumber serialNumber) {
       var device = this[serialNumber];
       if (device != null) {
+        device.Dispose();
         Unregister(device);
         await ion.database.deviceDao.DeleteAsync(device);
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
