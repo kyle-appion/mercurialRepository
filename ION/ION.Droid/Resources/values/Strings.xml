@@ -122,8 +122,11 @@
   -->
   <string name="device_av760">AV760</string>
   <string name="device_p300">P300</string>
+  <string name="device_pt300">PT300</string>
   <string name="device_p500">P500</string>
+  <string name="device_pt500">PT500</string>
   <string name="device_p800">P800</string>
+  <string name="device_pt800">PT800</string>
   <string name="device_serial_number">Serial Number</string>
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
