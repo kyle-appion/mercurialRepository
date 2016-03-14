@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\Text.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">.</span>Text<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// Text sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> Text
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">()</span>
+        <span class="hl opt">{</span>
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">();</span>
+            PdfStandardFont helveticaBold <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>HelveticaBold<span class="hl opt">,</span> <span class="hl num">16</span><span class="hl opt">);</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+            <span class="hl kwd">DrawTextLines</span><span class="hl opt">(</span>page<span class="hl opt">,</span> helveticaBold<span class="hl opt">);</span>
+
+            page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+            <span class="hl kwd">DrawTextWrap</span><span class="hl opt">(</span>page<span class="hl opt">,</span> helveticaBold<span class="hl opt">);</span>
+
+            page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+            <span class="hl kwd">DrawTextRenderingModes</span><span class="hl opt">(</span>page<span class="hl opt">,</span> helveticaBold<span class="hl opt">);</span>
+
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.text.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">DrawTextLines</span><span class="hl opt">(</span>PdfPage page<span class="hl opt">,</span> PdfStandardFont titleFont<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">);</span>
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text lines&quot;</span><span class="hl opt">,</span> titleFont<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">80</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Simple text line with default top left text alignment and no rotation&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text align&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">);</span>
+
+            redPen<span class="hl opt">.</span>DashPattern <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">};</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">165</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">165</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">205</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">205</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">205</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">,</span> <span class="hl num">205</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">125</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">205</span><span class="hl opt">);</span>
+
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// Top left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">125</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Top center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">125</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Top right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">125</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">165</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">165</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">165</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">205</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">205</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">205</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text rotation&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">);</span>
+
+            redPen<span class="hl opt">.</span>DashPattern <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">1</span> <span class="hl opt">};</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">345</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">345</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">345</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">,</span> <span class="hl num">305</span><span class="hl opt">,</span> <span class="hl num">345</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">265</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">345</span><span class="hl opt">);</span>
+
+            slo<span class="hl opt">.</span>Rotation <span class="hl opt">=</span> <span class="hl num">30</span><span class="hl opt">;</span>
+            <span class="hl slc">// Top left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">265</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Top center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">265</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Top right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">265</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Middle right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Middle Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom left aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Left<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">345</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Left&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom center aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">305</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">345</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Center&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Bottom right aligned text</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Right<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">590</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">345</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Bottom Right&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">DrawTextWrap</span><span class="hl opt">(</span>PdfPage page<span class="hl opt">,</span> PdfStandardFont titleFont<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">);</span>
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text wrapping&quot;</span><span class="hl opt">,</span> titleFont<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> helvetica<span class="hl opt">;</span>
+
+            <span class="hl slc">// Height is not set, text has no vertical limit.</span>
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Justified<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">70</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">280</span><span class="hl opt">;</span>
+            <span class="hl kwb">string</span> text <span class="hl opt">=</span> <span class="hl str">&quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit. &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;Sed vel euismod risus. Fusce viverra, nisi auctor ullamcorper porttitor, &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;ipsum lacus lobortis metus, sit amet dictum lacus velit nec diam. &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;Morbi arcu diam, euismod a auctor nec, aliquam in lectus.&quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;Ut ultricies iaculis augue sit amet adipiscing. Aenean blandit tortor a nisi &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;dignissim fermentum id adipiscing mauris. Aenean libero turpis, varius nec ultricies &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;faucibus, pretium quis lectus. Morbi mollis lorem vel erat condimentum mattis mollis &quot;</span> <span class="hl opt">+</span>
+                <span class="hl str">&quot;nulla sollicitudin. Nunc ut massa id felis laoreet feugiat eget at eros.&quot;</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>text<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">147</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">147</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">147</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">147</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Height is set, text is limited on vertical.</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">310</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">70</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">280</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">77</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>text<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfPath clipPath <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPath</span><span class="hl opt">();</span>
+            clipPath<span class="hl opt">.</span><span class="hl kwd">AddRectangle</span><span class="hl opt">(</span><span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">160</span><span class="hl opt">,</span> <span class="hl num">280</span><span class="hl opt">,</span> <span class="hl num">77</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawPath</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> clipPath<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SetClip</span><span class="hl opt">(</span>clipPath<span class="hl opt">);</span>
+
+            <span class="hl slc">// Height is not set but text is cliped on vertical.</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">310</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">160</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">280</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>text<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">500</span><span class="hl opt">);</span>
+            <span class="hl slc">// Wrapped text is always rotated around top left corner, no matter the text alignment</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">,</span> <span class="hl num">280</span><span class="hl opt">,</span> <span class="hl num">80</span><span class="hl opt">,</span> <span class="hl num">30</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">20</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">400</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">280</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">80</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Rotation <span class="hl opt">=</span> <span class="hl num">30</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>text<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">310</span><span class="hl opt">,</span> <span class="hl num">600</span><span class="hl opt">,</span> <span class="hl num">590</span><span class="hl opt">,</span> <span class="hl num">600</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">750</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Rotation around the center of the box requires some affine transformations.</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">TranslateTransform</span><span class="hl opt">(</span><span class="hl num">450</span><span class="hl opt">,</span> <span class="hl num">600</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RotateTransform</span><span class="hl opt">(</span><span class="hl num">30</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">, -</span><span class="hl num">140</span><span class="hl opt">, -</span><span class="hl num">40</span><span class="hl opt">,</span> <span class="hl num">280</span><span class="hl opt">,</span> <span class="hl num">80</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">= -</span><span class="hl num">140</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">= -</span><span class="hl num">40</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">280</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">80</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Rotation <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>text<span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">DrawTextRenderingModes</span><span class="hl opt">(</span>PdfPage page<span class="hl opt">,</span> PdfStandardFont titleFont<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">);</span>
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">);</span>
+            PdfStandardFont helveticaBold <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">80</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text rendering modes&quot;</span><span class="hl opt">,</span> titleFont<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Fill text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Stroke text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">160</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Fill and stroke text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">230</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Invisible text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Fill and clip text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">370</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Stroke and clip text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">440</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Fill, stroke and clip text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">510</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Clip text&quot;</span><span class="hl opt">,</span> helvetica<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">20</span><span class="hl opt">,</span> <span class="hl num">580</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Fill text - text interior is filled because only the brush is available for drawing. </span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> helveticaBold<span class="hl opt">,</span> brush<span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// Stroke text - text outline is stroked becuase only the pen is available for drawing.</span>
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">300</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">160</span><span class="hl opt">;</span>
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> helveticaBold<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> redPen<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Fill and stroke text - text interior is filled and text outline is stroked </span>
+            <span class="hl slc">// because both pen and brush are available.</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">230</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> redPen<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Invisible text - text is not displayed because both pen and brush are not available.</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">300</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// Fill and clip text - text interior is filled and then text outline is added to current clipping path.</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            helveticaBold<span class="hl opt">.</span>TextRenderingMode <span class="hl opt">=</span> PdfTextRenderingMode<span class="hl opt">.</span>FillAndClipText<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">370</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            <span class="hl kwd">DrawHorizontalLines</span><span class="hl opt">(</span>page<span class="hl opt">.</span>Graphics<span class="hl opt">,</span> redPen<span class="hl opt">,</span> slo<span class="hl opt">.</span>X<span class="hl opt">,</span> slo<span class="hl opt">.</span>Y<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// Stroke and clip text - text outline is stroked and then text outline is added to current clipping path.</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            helveticaBold<span class="hl opt">.</span>TextRenderingMode <span class="hl opt">=</span> PdfTextRenderingMode<span class="hl opt">.</span>StrokeAndClipText<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">440</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> redPen<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            <span class="hl kwd">DrawHorizontalLines</span><span class="hl opt">(</span>page<span class="hl opt">.</span>Graphics<span class="hl opt">,</span> redPen<span class="hl opt">,</span> slo<span class="hl opt">.</span>X<span class="hl opt">,</span> slo<span class="hl opt">.</span>Y<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// Fill, Stroke and clip text - text interior is filled, text outline is stroked and then text outline is added to current clipping path.</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            helveticaBold<span class="hl opt">.</span>TextRenderingMode <span class="hl opt">=</span> PdfTextRenderingMode<span class="hl opt">.</span>FillStrokeAndClipText<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">510</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> redPen<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            <span class="hl kwd">DrawHorizontalLines</span><span class="hl opt">(</span>page<span class="hl opt">.</span>Graphics<span class="hl opt">,</span> redPen<span class="hl opt">,</span> slo<span class="hl opt">.</span>X<span class="hl opt">,</span> slo<span class="hl opt">.</span>Y<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// Clip text - text outline is added to current clipping path.</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">SaveGraphicsState</span><span class="hl opt">();</span>
+            helveticaBold<span class="hl opt">.</span>TextRenderingMode <span class="hl opt">=</span> PdfTextRenderingMode<span class="hl opt">.</span>ClipText<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">580</span><span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Pen <span class="hl opt">=</span> redPen<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> brush<span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;A B C&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            <span class="hl kwd">DrawHorizontalLines</span><span class="hl opt">(</span>page<span class="hl opt">.</span>Graphics<span class="hl opt">,</span> redPen<span class="hl opt">,</span> slo<span class="hl opt">.</span>X<span class="hl opt">,</span> slo<span class="hl opt">.</span>Y<span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">RestoreGraphicsState</span><span class="hl opt">();</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">DrawHorizontalLines</span><span class="hl opt">(</span>PdfGraphics g<span class="hl opt">,</span> PdfPen pen<span class="hl opt">,</span> <span class="hl kwb">double</span> x<span class="hl opt">,</span> <span class="hl kwb">double</span> y<span class="hl opt">,</span> <span class="hl kwb">double</span> width<span class="hl opt">,</span> <span class="hl kwb">double</span> height<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">double</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> height<span class="hl opt">;</span> i <span class="hl opt">=</span> i <span class="hl opt">+</span> <span class="hl num">5</span><span class="hl opt">)</span>
+            <span class="hl opt">{</span>
+                g<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>pen<span class="hl opt">,</span> x<span class="hl opt">,</span> y <span class="hl opt">+</span> i<span class="hl opt">,</span> x <span class="hl opt">+</span> width<span class="hl opt">,</span> y <span class="hl opt">+</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.12, http://www.andre-simon.de/-->

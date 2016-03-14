@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <!--
+    This file will contain the list of common identifies that are used by the
+    application. This file is the default that should apply to all phones.
+  -->
+
+  <!--
+  General/Common dimensions
+  -->
+  <!-- A general padding that is to be between views. -->
+  <dimen name="view_padding">5dp</dimen>
+
+  <!--
+  Activity Dimensions
+  -->
+  <!-- The width and Height that and activity will use to pad it's content. -->
+  <dimen name="activity_padding">16dp</dimen>
+  <!-- The width of the navigation drawer for the home activity. -->
+  <dimen name="drawer_width">300dp</dimen>
+  <!-- The width and height of the icon in a drawer's navigation item. -->
+  <dimen name="drawer_navigation_icon_size">48dp</dimen>
+  <!-- The text size for the title of a navigation drawer's category title. -->
+  <dimen name="drawer_navigation_category_text_size">18sp</dimen>
+  <!-- The text size for the title of a navigation drawer's item title. -->
+  <dimen name="drawer_navigation_item_text_size">24sp</dimen>
+  <!-- The height for the "divider" view for the navigation drawer's large separator view. -->
+  <dimen name="drawer_navigation_separator_large_height">2dp</dimen>
+  <!-- The height for the "divider" view for the navigation drawer's small separator view. -->
+  <dimen name="drawer_navigation_separator_small_height">1dp</dimen>
+
+  <!--
+  Analyzer Dimensions
+  -->
+  <!-- The icon width for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_width">14dp</dimen>
+  <!-- The icon height for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_height">24dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_icon_size">24dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_device_icon_size">32dp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+
+  <!--
+  Device Manager dimensions
+  -->
+  <!-- The width and height of the a connect icon in the device manager. -->
+  <dimen name="device_manager_connect_icon_size">64dp</dimen>
+  <!-- The width and height of the a device icon in the device manager. -->
+  <dimen name="device_manager_device_icon_size">48dp</dimen>
+  <!-- The width and height of the a sensor icon in the device manager. -->
+  <dimen name="device_manager_sensor_icon_size">48dp</dimen>
+
+  <!--
+  Fluid
+  -->
+  <!-- The general width of the the fuid color. -->
+  <dimen name="fluid_color_width">96dp</dimen>
+  <!-- The general height of the the fuid color. -->
+  <dimen name="fluid_color_height">64dp</dimen>
+  <!-- The size of an icon in the fluid dialog manager. -->
+  <dimen name="fluid_icon_size">64dp</dimen>
+
+  <!--
+  PTChart dimensions
+  -->
+  <!-- The height of the fluid color view in the ptchart activity. -->
+  <dimen name="ptchart_fluid_color_height">64dp</dimen>
+  <!-- The width of the fluid color view in the ptchart activity. -->
+  <dimen name="ptchart_fluid_color_width">96dp</dimen>
+  <!-- The width and height of an icon in the ptchart activity. -->
+  <dimen name="ptchart_icon_size">64dp</dimen>
+  <!-- The height of the view that divides the sections within the ptchart activity. -->
+  <dimen name="ptchart_section_divider_height">2dp</dimen>
+  <!-- The width of the unit button in the ptchart activity. -->
+  <dimen name="ptchart_unit_width">64dp</dimen>
+  <!-- The width and height of the clear button in the ptchart activity. -->
+  <dimen name="ptchart_clear_size">12dp</dimen>
+
+  <!--
+  Viewer dimensions
+  -->
+  <!-- The height of the battery icon. -->
+  <dimen name="viewer_battery_icon_height">24dp</dimen>
+  <!-- The width of the battery icon. -->
+  <dimen name="viewer_battery_icon_width">48dp</dimen>
+  <!-- The width and hieght of the connection icon in the viewer's header. -->
+  <dimen name="viewer_connection_icon_size">48dp</dimen>
+  <!-- The width and height of the device icon in the viewer's content. -->
+  <dimen name="viewer_device_icon_size">64dp</dimen>
+  <!-- The width and height of the alarm icon in the viewer's footer. -->
+  <dimen name="viewer_alarm_icon_size">32dp</dimen>
+  <!-- The text size for the name view in the viewer' content. -->
+  <dimen name="viewer_name_text_size">30dp</dimen>
+  <!-- The text size for the measurement view in the viewer's content. -->
+  <dimen name="viewer_measurement_text_size">64sp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_large_icon_size">48dp</dimen>
+  <!-- The text size for the unit view in the viewer's footer. -->
+  <dimen name="viewer_text_size">24sp</dimen>
+</resources>
+

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\SearchText.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Content
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' Search text sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class SearchText
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>input <span class="hl kwa">As</span> Stream<span class="hl opt">)</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">(</span>input<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> ce <span class="hl kwa">As New</span> <span class="hl kwd">PdfContentExtractor</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">))</span>
+
+			<span class="hl slc">' Simple search.</span>
+			<span class="hl kwa">Dim</span> searchResults <span class="hl kwa">As</span> PdfTextSearchResultCollection <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">SearchText</span><span class="hl opt">(</span><span class="hl str">&quot;at&quot;</span><span class="hl opt">)</span>
+			<span class="hl kwd">HighlightSearchResults</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> searchResults<span class="hl opt">,</span> PdfRgbColor<span class="hl opt">.</span>Red<span class="hl opt">)</span>
+
+			<span class="hl slc">' Whole words search.</span>
+			searchResults <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">SearchText</span><span class="hl opt">(</span><span class="hl str">&quot;at&quot;</span><span class="hl opt">,</span> PdfTextSearchOptions<span class="hl opt">.</span>WholeWordSearch<span class="hl opt">)</span>
+			<span class="hl kwd">HighlightSearchResults</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> searchResults<span class="hl opt">,</span> PdfRgbColor<span class="hl opt">.</span>Green<span class="hl opt">)</span>
+
+			<span class="hl slc">' Regular expression search, find all words that start with uppercase.</span>
+			searchResults <span class="hl opt">=</span> ce<span class="hl opt">.</span><span class="hl kwd">SearchText</span><span class="hl opt">(</span><span class="hl str">&quot;[A-Z][a-z]*&quot;</span><span class="hl opt">,</span> PdfTextSearchOptions<span class="hl opt">.</span>RegExSearch<span class="hl opt">)</span>
+			<span class="hl kwd">HighlightSearchResults</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">),</span> searchResults<span class="hl opt">,</span> PdfRgbColor<span class="hl opt">.</span>Blue<span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> output <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() {</span><span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.searchtext.pdf&quot;</span><span class="hl opt">)}</span>
+			<span class="hl kwa">Return</span> output
+		<span class="hl kwa">End Function</span>
+
+		<span class="hl kwa">Private</span> Shared <span class="hl kwa">Sub</span> <span class="hl kwd">HighlightSearchResults</span><span class="hl opt">(</span>page <span class="hl kwa">As</span> PdfPage<span class="hl opt">,</span> searchResults <span class="hl kwa">As</span> PdfTextSearchResultCollection<span class="hl opt">,</span> color <span class="hl kwa">As</span> PdfColor<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> pen <span class="hl kwa">As New</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span>color<span class="hl opt">,</span> <span class="hl num">0.5</span><span class="hl opt">)</span>
+
+			<span class="hl kwa">For</span> i <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> searchResults<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+				<span class="hl kwa">Dim</span> tfc <span class="hl kwa">As</span> PdfTextFragmentCollection <span class="hl opt">=</span> <span class="hl kwd">searchResults</span><span class="hl opt">(</span>i<span class="hl opt">).</span>TextFragments
+				<span class="hl kwa">For</span> j <span class="hl kwa">As</span> <span class="hl kwb">Integer</span> <span class="hl opt">=</span> <span class="hl num">0</span> <span class="hl kwa">To</span> tfc<span class="hl opt">.</span>Count <span class="hl opt">-</span> <span class="hl num">1</span>
+					<span class="hl kwa">Dim</span> path <span class="hl kwa">As New</span> <span class="hl kwd">PdfPath</span><span class="hl opt">()</span>
+
+					path<span class="hl opt">.</span><span class="hl kwd">StartSubpath</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>j<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>X<span class="hl opt">,</span> <span class="hl kwd">tfc</span><span class="hl opt">(</span>j<span class="hl opt">).</span><span class="hl kwd">FragmentCorners</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">).</span>Y<span class="hl opt">)</span>
+					path<span class="hl opt">.</span><span class="hl kwd">AddPolygon</span><span class="hl opt">(</span><span class="hl kwd">tfc</span><span class="hl opt">(</span>j<span class="hl opt">).</span>FragmentCorners<span class="hl opt">)</span>
+
+					page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawPath</span><span class="hl opt">(</span>pen<span class="hl opt">,</span> path<span class="hl opt">)</span>
+				<span class="hl kwa">Next</span>
+			<span class="hl kwa">Next</span>
+		<span class="hl kwa">End Sub</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->
