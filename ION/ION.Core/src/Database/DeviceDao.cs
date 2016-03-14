@@ -1,17 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Database {
 
-using SQLite;
-using SQLite.Net;
-using SQLite.Net.Attributes;
-using SQLite.Net.Interop;
+  using System;
+  using System.Collections.Generic;
+  using System.Linq;
+  using System.Threading.Tasks;
 
-using ION.Core.Devices;
-using ION.Core.Util;
+  using SQLite;
+  using SQLite.Net;
+  using SQLite.Net.Attributes;
+  using SQLite.Net.Interop;
 
-namespace ION.Core.Database {
+  using ION.Core.Devices;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.Util;
+
   public class DeviceDao : IDao<IDevice> {
 
     //database.BeginTransaction();
@@ -108,7 +110,7 @@ namespace ION.Core.Database {
     private async Task<IDevice> InflateAsync(Device device) {
       try {
         var serialNumber = GaugeSerialNumber.Parse(device.serialNumber);
-        return database.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, device.protocol);
+        return database.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, (EProtocolVersion)device.protocol);
       } catch (Exception e) {
         Log.E(this, "Cannot inflate device", e);
         return null;
@@ -125,7 +127,7 @@ namespace ION.Core.Database {
       if (ret == null) {
         ret = new Device();
         ret.serialNumber = device.serialNumber.ToString();
-        ret.protocol = device.protocol.version;
+        ret.protocol = (int)device.protocol.version;
         ret.connectionAddress = device.connection.address;
       }
 

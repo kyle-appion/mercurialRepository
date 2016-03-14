@@ -4,6 +4,7 @@
   using System.Collections.Generic;
 
   using Android.App;
+  using Android.Bluetooth;
   using Android.Content;
   using Android.OS;
   using Android.Support.V7.Widget;
@@ -11,6 +12,7 @@
   using Android.Widget;
 
   using ION.Core.App;
+  using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
@@ -18,6 +20,8 @@
   using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
+  using ION.Droid.App;
+  using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
   using ION.Droid.Widgets.Adapters;
@@ -74,6 +78,10 @@
     /// The filter for the activity.
     /// </summary>
     private EDeviceFilter filter;
+    /// <summary>
+    /// The connection helper that the application was using before the activity started.
+    /// </summary>
+    private IConnectionHelper previousHelper;
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
@@ -123,6 +131,10 @@
     protected override void OnResume() {
       base.OnResume();
 
+      previousHelper = ion.deviceManager.connectionHelper;
+      var bm = (BluetoothManager)GetSystemService(BluetoothService);
+      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(this, bm), new ClassicConnectionHelper(this, bm));
+
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
       InvalidateOptionsMenu();
@@ -136,6 +148,9 @@
     // Overridden from Activity
     protected override void OnPause() {
       base.OnPause();
+
+      ion.deviceManager.connectionHelper.Dispose();
+      ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.Stop();
@@ -192,8 +207,7 @@
           if (dm.connectionHelper.isScanning) {
             dm.connectionHelper.Stop();
           } else {
-            var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
+            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
 
           return true;

@@ -1,11 +1,13 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Devices.Connections {
 
-using ION.Core.Connections;
-using ION.Core.Util;
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-namespace ION.Core.Devices.Connections {
+  using ION.Core.Connections;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.Util;
+
   /// <summary>
   /// The delegate that is called when the connection helper's scan state changes.
   /// </summary>
@@ -16,7 +18,7 @@ namespace ION.Core.Devices.Connections {
   /// <param name="connectionHelper">The connection helper that found the device.</param>
   /// <param name="serialNumber">The serial number of device that was found.</param>
   /// <param name="packet">The packet that we provided with the scan event. May be null.</param>
-  public delegate void OnDeviceFound(IConnectionHelper connectionHelper, ISerialNumber serialNumber, string address, byte[] packet, int protocolVersion);
+  public delegate void OnDeviceFound(IConnectionHelper connectionHelper, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocolVersion);
 
   /// <summary>
   /// ConnectionHelper is an interface that is used to abstract away various
@@ -44,23 +46,23 @@ namespace ION.Core.Devices.Connections {
     /// Whether or not the connection helper is currently scanning.
     /// </summary>
     bool isScanning { get; }
-    /// <summary>
-    /// Queries whether or not the scan is finished (the connection helper has no
-    /// pending repeats).
-    /// </summary>
-    /// <value><c>true</c> if is finished; otherwise, <c>false</c>.</value>
-    bool isFinished { get; }
 
     /// <summary>
     /// Enables the connection helper's backend.
     /// </summary>
-    bool Enable();
+    Task<bool> Enable();
+    /// <summary>
+    /// Queries whether or not the connection helper can resolve the given protocol.
+    /// </summary>
+    /// <returns><c>true</c> if this instance can resole protocol the specified protocol; otherwise, <c>false</c>.</returns>
+    /// <param name="protocol">Protocol.</param>
+    bool CanResolveProtocol(EProtocolVersion protocol);
     /// <summary>
     /// Creates the connection for the given address.
     /// </summary>
     /// <returns>The connection for.</returns>
     /// <param name="identifier">Address.</param>
-    IConnection CreateConnectionFor(string address);
+    IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
     /// <summary>
     /// Performs a scan for the given scan time. Note: the scan time is 
     /// nothing more than a hint. The connection helper does NOT necessarily need
@@ -70,11 +72,9 @@ namespace ION.Core.Devices.Connections {
     /// scan should be refired.
     /// </summary>
     /// <param name="scanTime">Scan time.</param>
-    /// <param name="options">The repeat options for the connection helper. Maybe
-    /// null is a scan repeat is not desired.</param>
     /// <returns>True if the scan was started, false otherwise. False may
     /// be returned if the connection helper is currently scanning.</returns>
-    bool Scan(TimeSpan scanTime, ScanRepeatOptions options=null);
+    Task<bool> Scan(TimeSpan scanTime);
     /// <summary>
     /// Stops a scan regardless of whether or not it is in progress. The
     /// scan will NOT repeat after this call. A call to Reset must be made
@@ -82,30 +82,5 @@ namespace ION.Core.Devices.Connections {
     /// </summary>
     void Stop();
   } // End IScanMode
-
-  /// <summary>
-  /// The options that used to determine how the connection helper will resolve
-  /// repeats.
-  /// </summary>
-  public class ScanRepeatOptions {
-    public const int REPEAT_FOREVER = -1;
-    /// <summary>
-    /// The number of times that the scan will repeat after a completed
-    /// scan has resolved. When this reaches 0, the scan will is considered
-    /// complete and will not longer repeat. If repeat count is equal to
-    /// REPEAT_FOREVER, then the scan will repeat indefinitely (until
-    /// explicitly stopped).
-    /// </summary>
-    public int repeatCount;
-    /// <summary>
-    /// The time that will span repeated scans.
-    /// </summary>
-    public TimeSpan restInterval;
-
-    public ScanRepeatOptions(int repeatCount, TimeSpan restInterval) {
-      this.repeatCount = repeatCount;
-      this.restInterval = restInterval;
-    }
-  } // End RepeatOptions
 }
 

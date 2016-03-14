@@ -17,7 +17,7 @@
   /// </summary>
   public class BleV1Protocol : BaseBinaryProtocol {
     // Overriden from IGaugeProtocol
-    public override int version { get { return 1; } }
+    public override EProtocolVersion version { get { return EProtocolVersion.V1; } }
     // Overridden from IGagueProtocol
     public override bool supportsBroadcasting { get { return false; } }
 
@@ -31,7 +31,7 @@
           throw new ArgumentException("Cannot parse: bad packet size {" + len + "}");
         }
 
-        int version = r.ReadByte();
+        var version = (EProtocolVersion)((int)r.ReadByte());
 
         if (version != this.version) {
           throw new ArgumentException("Cannot parse: invalid version code");

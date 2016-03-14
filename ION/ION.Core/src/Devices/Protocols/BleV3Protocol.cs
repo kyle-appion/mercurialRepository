@@ -16,7 +16,7 @@
   /// </summary>
   public class BleV3Protocol : BaseBinaryProtocol {
     // Overridden from IGaugeProtocol
-    public override int version { get { return 3; } }
+    public override EProtocolVersion version { get { return EProtocolVersion.V3; } }
     // Overridden from IGaugeProtocol
     public override int removedGaugeValue { get { return short.MaxValue; } }
     // Overridden from IGagueProtocol
@@ -32,7 +32,7 @@
           throw new ArgumentException("Cannot parse: bad packet size {" + len + "}");
         }
 
-        int version = r.ReadByte();
+        var version = (EProtocolVersion)((int)r.ReadByte());
         if (version != this.version) {
           throw new ArgumentException("Cannot parse: invalid version code");
         }

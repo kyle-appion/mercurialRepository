@@ -14,7 +14,7 @@
   /// </summary>
   public class BleV2Protocol : BleV1Protocol {
     // Overridden from IGaugeProtocol
-    public override int version { get { return 2; } }
+    public override EProtocolVersion version { get { return EProtocolVersion.V2; } }
     // Overridden from IGagueProtocol
     public override bool supportsBroadcasting { get { return true; } }
 

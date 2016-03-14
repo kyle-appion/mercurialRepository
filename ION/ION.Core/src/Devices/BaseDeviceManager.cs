@@ -91,7 +91,7 @@
       get {
         return __connectionHelper;
       }
-      protected set {
+      set {
         if (__connectionHelper != null) {
           __connectionHelper.onDeviceFound -= OnDeviceFound;
           __connectionHelper.onScanStateChanged -= OnScanStateChanged;
@@ -135,7 +135,7 @@
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
       if (!connectionHelper.isEnabled) {
-        if (!connectionHelper.Enable()) {
+        if (!await connectionHelper.Enable()) {
           return new InitializationResult() {
             success = false,
             errorMessage = "Failed to init device manager: failed to enable connection helper."
@@ -166,6 +166,7 @@
     // Overridden from IDeviceManager
     public void Dispose() {
       __connectionHelper.onDeviceFound -= OnDeviceFound;
+      __connectionHelper.onScanStateChanged -= OnScanStateChanged;
 
       foreach (var device in devices) {
         device.connection.Disconnect();
@@ -187,7 +188,7 @@
     }
 
     // Overridden from IDeviceManager
-    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocolVersion) {
+    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
       var ret = CreateDeviceInternal(serialNumber, connectionAddress, protocolVersion);
       // The register proved superfluous. Consider merging this functions with the internal one.
 //      Register(ret);
@@ -214,11 +215,11 @@
       return knownDevices.Contains(device);
     }
 
-    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, int protocolVersion) {
+    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        var connection = connectionHelper.CreateConnectionFor(connectionAddress);
+        var connection = connectionHelper.CreateConnectionFor(connectionAddress, protocolVersion);
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
         if (protocol == null) {
           protocol = Protocol.PROTOCOLS[0];
@@ -310,7 +311,7 @@
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
     /// <param name="device">Device.</param>
-    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, int protocol) {
+    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
       var device = this[serialNumber];
 
       if (device == null) {
@@ -368,7 +369,7 @@
     /// <returns>The error header.</returns>
     /// <param name="serialNumber">Serial number.</param>
     /// <param name="protocol">Protocol.</param>
-    private string BuildErrorHeader(ISerialNumber serialNumber, int protocol) {
+    private string BuildErrorHeader(ISerialNumber serialNumber, EProtocolVersion protocol) {
       return "Failed to create device from serial number: " + serialNumber + ", Protocol: " + protocol;
     }
   }
