@@ -157,6 +157,9 @@
       var lng = location.longitude.amount;
       var geocoder = new Geocoder(ion, Java.Util.Locale.Default);
       var addresses = await geocoder.GetFromLocationAsync(lat, lng, 1);
+      if (addresses == null || addresses.Count <= 0) {
+        return new ION.Core.Location.Address();
+      }
       var first = addresses[0];
       if (first == null) {
         return new ION.Core.Location.Address();
