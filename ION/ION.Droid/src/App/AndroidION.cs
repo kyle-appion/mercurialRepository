@@ -377,7 +377,7 @@
       var total = deviceManager.devices.Count;
 
       var note = new NotificationCompat.Builder(this)
-        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault)
+        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault_small)
         .SetContentTitle(GetString(Resource.String.app_name))
         .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
         .SetContentIntent(pi)
