@@ -104,6 +104,13 @@
       adapter.sensorFilter = BuildSensorFilter(filter);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;
       adapter.onDatasetChanged += (adapter) => {
+        if (adapter.ItemCount > 0) {
+          empty.Visibility = ViewStates.Gone;
+          list.Visibility = ViewStates.Visible;
+        } else {
+          empty.Visibility = ViewStates.Visible;
+          list.Visibility = ViewStates.Gone;
+        }
 //        OnAdapterRefreshed();
       };
 

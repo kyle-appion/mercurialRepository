@@ -19,6 +19,7 @@
     public event OnDatasetChanged onDatasetChanged;
 
     public IONRecyclerViewAdapter() {
+      RegisterAdapterDataObserver(new InternalObserver(this));
     }
 
     public void NotifyChanged() {
@@ -39,6 +40,7 @@
       /// </summary>
       public override void OnChanged() {
         base.OnChanged();
+        ION.Core.Util.Log.D(this, "THE ADAPTER HAS CHANGED");
         adapter.NotifyChanged();
       }
     }
