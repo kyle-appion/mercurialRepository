@@ -118,7 +118,7 @@
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(new CBCentralManager(DispatchQueue.CurrentQueue))));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper()));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));
