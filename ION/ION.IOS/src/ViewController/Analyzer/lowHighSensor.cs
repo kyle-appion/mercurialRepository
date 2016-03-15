@@ -53,7 +53,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(RoCTableCell), "Rate");
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");
-      subviewTable.RegisterClassForCellReuse(typeof(secondarySensorCell), "Secondary");
+      subviewTable.RegisterClassForCellReuse(typeof(secondarySensorCell), "Linked");
       maxReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       minReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
       holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
@@ -92,6 +92,7 @@ namespace ION.IOS.ViewController.Analyzer
       minType = "hold";
       holdType = "hold";
       isManual = false;
+      isLinked = false;
 
       conDisButton.TouchUpInside += delegate {
         if(currentSensor != null){
@@ -177,10 +178,11 @@ namespace ION.IOS.ViewController.Analyzer
     public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
     public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
-      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Secondary Sensor"
+      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Linked Sensor (Linked)"
     };
     private bool isUpdating { get; set; }
     public bool isManual;
+    public bool isLinked;
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
 
@@ -313,16 +315,16 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
-      
       var manifold = Event.manifold;
       if (manifold.secondarySensor != null) {
+        isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
-          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, false);
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
           ptAmount = calculation.amount;
-          if (calculation < 0) {
+          if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
@@ -330,12 +332,32 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
-          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, false);
-          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, manifold.secondarySensor.isRelative);
           ptAmount = calculation.amount;
+          if (!manifold.ptChart.fluid.mixture && calculation < 0) {
+            calculation = calculation * -1;
+          }
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+        } else {
+          manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
+          ptAmount = calculation.amount;
+          if (!manifold.ptChart.fluid.mixture && calculation < 0) {
+            calculation = calculation * -1;
+          }
+          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
         }
       } else {
         shReading.Text = Util.Strings.Analyzer.SETUP;
+        if (isLinked.Equals(true)) {
+          isLinked = false;
+          if (attachedSensor != null) {            
+            attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+            attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
+            attachedSensor.topLabel.TextColor = UIColor.Black;
+            attachedSensor = null;
+          }
+        }
       }
 
       if (manifold.ptChart != null) {
@@ -382,24 +404,44 @@ namespace ION.IOS.ViewController.Analyzer
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
       }
 
-      if (currentSensor != null) {
-        if (manifold.secondarySensor != null && currentSensor.type == ESensorType.Pressure) {
-          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else if (manifold.secondarySensor != null && currentSensor.type == ESensorType.Temperature) {
+//      if (currentSensor != null && manifold.secondarySensor != null) {
+//        if (currentSensor != manifold.primarySensor) {
+//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+//        } else if (currentSensor == manifold.primarySensor) {
+//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+//        } else {
+//          secondaryReading.Text = "Not Linked";
+//        }
+//      } else if (manualSensor != null && manifold.secondarySensor != null) {
+//        if (manualSensor != manifold.primarySensor) {
+//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+//        } 
+//        else if (manualSensor == manifold.primarySensor) {
+//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+//        } 
+//        else {
+//          secondaryReading.Text = "Not Linked";
+//        }
+//      } else {
+//        secondaryReading.Text = "Not Linked";      
+//      }
+      if (currentSensor != null && manifold.secondarySensor != null) {
+        if (currentSensor != manifold.primarySensor) {
           secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-        } else {
-          secondaryReading.Text = "";
-        }
-      } else if (manualSensor != null) {
-        if (manifold.secondarySensor != null && manualSensor.type == ESensorType.Pressure) {
+        } else if (currentSensor == manifold.primarySensor) {
           secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else if ( manifold.secondarySensor != null && manualSensor.type == ESensorType.Temperature){
-          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
         } else {
-          secondaryReading.Text = "";
+          secondaryReading.Text = "Not Linked";
         }
+      } else if (manualSensor != null && manifold.secondarySensor != null) {
+        if(manualSensor.type.Equals(ESensorType.Pressure)){
+          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+        }
+      } else {
+        secondaryReading.Text = "Not Linked";      
       }
-
     }
     /// <summary>
     /// EVENT TO OPEN THE SH/SC VIEW CONTROLLER

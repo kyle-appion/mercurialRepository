@@ -36,6 +36,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static sensorGroup analyzerSensors;
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
+    public static AnalyzerViewController arvc;
 //    public static bool isRecording = false;
 //    public static UIButton dataRecord;
 //    public static UIButton dataStop;
@@ -55,7 +56,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
-
+      arvc = this;
       lowHighSensors = new LowHighArea (View, this);
       mentryView = new ManualView(View);
       analyzerSensors = new sensorGroup(View, this);
@@ -469,6 +470,7 @@ namespace ION.IOS.ViewController.Analyzer {
         start.pressedSensor.lowArea.manualGType = "Vacuum";
         start.pressedSensor.highArea.manualGType = "Vacuum";
       }
+
       ///SET MANUALSENSOR MEASUREMENT AND UNIT TYPE
       start.pressedSensor.manualSensor.unit = AnalyserUtilities.getManualUnit(start.pressedSensor.manualSensor.type,mentryView.mbuttonText.Text.ToLower());
       start.pressedSensor.lowArea.manifold.primarySensor.unit = AnalyserUtilities.getManualUnit(start.pressedSensor.manualSensor.type,mentryView.mbuttonText.Text.ToLower());
@@ -476,7 +478,8 @@ namespace ION.IOS.ViewController.Analyzer {
 
       start.pressedSensor.manualSensor.measurement = new Scalar(start.pressedSensor.lowArea.manifold.primarySensor.unit,Convert.ToDouble(mentryView.mtextValue.Text));
 
-
+      start.pressedSensor.lowArea.manualSensor = start.pressedSensor.manualSensor;
+      start.pressedSensor.highArea.manualSensor = start.pressedSensor.manualSensor;
       ///CREATE PTCHART AND MANIFOLD MEASUREMENTS
       if(start.pressedSensor.manualSensor.type == ESensorType.Pressure || start.pressedSensor.manualSensor.type == ESensorType.Temperature){
         //Console.WriteLine(start.pressedSensor.manualSensor.type.ToString() + " sensor given so making ptChart");
@@ -782,7 +785,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       Sensor.panGesture = new UIPanGestureRecognizer (() => {
         if (Sensor.panGesture.State == UIGestureRecognizerState.Began) {
-
+          View.BringSubviewToFront(Sensor.snapArea);
         }
         if ((Sensor.panGesture.State == UIGestureRecognizerState.Began || Sensor.panGesture.State == UIGestureRecognizerState.Changed) && (Sensor.panGesture.NumberOfTouches == 1)) {
 
@@ -809,7 +812,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
 
         } else if (Sensor.panGesture.State == UIGestureRecognizerState.Ended) {
-
+          View.SendSubviewToBack(Sensor.snapArea);
           // reset offsets when dragging ends so that they will be recalculated for next touch and drag that occurs
           dx = 0;
           dy = 0;
