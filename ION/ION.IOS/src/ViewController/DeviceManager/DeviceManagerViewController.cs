@@ -83,15 +83,13 @@ namespace ION.IOS.ViewController.DeviceManager {
       InitNavigationBar("ic_nav_device_manager", true);
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, async delegate {
         if (ion.deviceManager.connectionHelper.isScanning) {
           ion.deviceManager.connectionHelper.Stop();
         } else {
 //          var opts = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
-          if (!ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+          if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
             Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
-          } else {
-            ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         }
       });
