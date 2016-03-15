@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\PDFA.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Standards<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// PDF/A sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> PDFA
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>Stream iccInput<span class="hl opt">,</span> Stream ttfInput<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">();</span>
+
+            <span class="hl slc">// Setup the document by creating a PDF/A output intent, based on a RGB ICC profile, </span>
+            <span class="hl slc">// and document information and metadata</span>
+            PdfIccColorSpace icc <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfIccColorSpace</span><span class="hl opt">();</span>
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> profilePayload <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>iccInput<span class="hl opt">.</span>Length<span class="hl opt">];</span>
+            iccInput<span class="hl opt">.</span><span class="hl kwd">Read</span><span class="hl opt">(</span>profilePayload<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> profilePayload<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+            icc<span class="hl opt">.</span>IccProfile <span class="hl opt">=</span> profilePayload<span class="hl opt">;</span>
+            PdfOutputIntent oi <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfOutputIntent</span><span class="hl opt">();</span>
+            oi<span class="hl opt">.</span>Type <span class="hl opt">=</span> PdfOutputIntentType<span class="hl opt">.</span>PdfA1<span class="hl opt">;</span>
+            oi<span class="hl opt">.</span>Info <span class="hl opt">=</span> <span class="hl str">&quot;sRGB IEC61966-2.1&quot;</span><span class="hl opt">;</span>
+            oi<span class="hl opt">.</span>OutputConditionIdentifier <span class="hl opt">=</span> <span class="hl str">&quot;Custom&quot;</span><span class="hl opt">;</span>
+            oi<span class="hl opt">.</span>DestinationOutputProfile <span class="hl opt">=</span> icc<span class="hl opt">;</span>
+            document<span class="hl opt">.</span>OutputIntents <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfOutputIntentCollection</span><span class="hl opt">();</span>
+            document<span class="hl opt">.</span>OutputIntents<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>oi<span class="hl opt">);</span>
+
+            document<span class="hl opt">.</span>DocumentInformation <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfDocumentInformation</span><span class="hl opt">();</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM Software&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Title <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM.PDF PDF/A-1B Demo&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Creator <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM.PDF PDF/A-1B Demo&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Producer <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM.PDF&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Keywords <span class="hl opt">=</span> <span class="hl str">&quot;pdf/a&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>DocumentInformation<span class="hl opt">.</span>Subject <span class="hl opt">=</span> <span class="hl str">&quot;PDF/A-1B Sample produced by XFINIUM.PDF&quot;</span><span class="hl opt">;</span>
+            document<span class="hl opt">.</span>XmpMetadata <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfXmpMetadata</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Rotation <span class="hl opt">=</span> <span class="hl num">90</span><span class="hl opt">;</span>
+
+            <span class="hl slc">// All fonts must be embedded in a PDF/A document.</span>
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfAnsiTrueTypeFont</span><span class="hl opt">(</span>ttfInput<span class="hl opt">,</span> <span class="hl num">24</span><span class="hl opt">,</span> <span class="hl kwa">true</span><span class="hl opt">);</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">128</span><span class="hl opt">));</span>
+
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> page<span class="hl opt">.</span>Width <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> page<span class="hl opt">.</span>Height <span class="hl opt">/</span> <span class="hl num">2</span> <span class="hl opt">-</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;XFINIUM.PDF&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> page<span class="hl opt">.</span>Height <span class="hl opt">/</span> <span class="hl num">2</span> <span class="hl opt">+</span> <span class="hl num">10</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Top<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Font<span class="hl opt">.</span>Size <span class="hl opt">=</span> <span class="hl num">16</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;This is a sample PDF/A document that shows the PDF/A capabilities in XFINIUM.PDF library&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            <span class="hl slc">// The document is formatted as PDF/A using the PdfAFormatter class:</span>
+            <span class="hl slc">// PdfAFormatter.Save(document, outputStream, PdfAFormat.PdfA1b);</span>
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.pdfa.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.12, http://www.andre-simon.de/-->
