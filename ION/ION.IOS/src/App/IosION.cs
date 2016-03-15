@@ -24,6 +24,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
+  using ION.IOS;
   using ION.IOS.Alarms.Alerts;
   using ION.IOS.IO;
   using ION.IOS.Location;

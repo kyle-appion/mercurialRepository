@@ -251,14 +251,14 @@
         var cell = tableView.DequeueReusableCell(CELL_SPACE);
 
         cell.BackgroundColor = UIColor.Clear;
-
+        cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       } else if (record is SecondarySensorRecord) {
         var sr = record as SecondarySensorRecord;
         var cell = tableView.DequeueReusableCell(CELL_SECONDARY) as SecondarySensorCell;
 
         cell.UpdateTo(sr,tableView.Bounds.Width);
-
+        cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         return cell;
       }else {
         throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");

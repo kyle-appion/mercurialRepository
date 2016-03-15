@@ -57,7 +57,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           OnPressureSensorChanged(pressureSensor);
         }
 
-        if (temperatureSensor != null) {
+        if (temperatureSensor != null && pressureSensor != null) {
           OnTemperatureSensorChanged(temperatureSensor);
         }
 
@@ -200,8 +200,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       ion = AppState.context;
 
-      ptChart = PTChart.New(ion, Fluid.EState.Dew);
-
+      if (initialManifold == null) {
+        ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      } else {
+        ptChart = PTChart.New(ion, initialManifold.ptChart.state);
+      }
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
@@ -231,6 +234,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           dm.displayFilter = new SensorOfTypeFilter(ESensorType.Pressure);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             pressureSensor = sensor;
+            buttonPressureUnit.Enabled = true;
           };
           NavigationController.PushViewController(dm, true);
         }
@@ -238,7 +242,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+          //pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+          pressureSensor = null;
+          buttonPressureUnit.Enabled = false;
           ClearPressureInput();
         }
       }));
@@ -259,6 +265,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             var measurement = pressureUnit.OfScalar(double.Parse(editPressure.Text));
             pressureSensor.measurement = measurement;
           }
+          ////if user removes a pressure sensor, they need to be able to create a new manual sensor
+          if (pressureSensor == null){
+            pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+            var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
+            pressureSensor.measurement = measurement;
+          }
+          buttonPressureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
 //          ClearPressureInput();
@@ -272,6 +285,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           dm.displayFilter = new SensorOfTypeFilter(ESensorType.Temperature);
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             temperatureSensor = sensor;
+            buttonTemperatureUnit.Enabled = true;
           };
           NavigationController.PushViewController(dm, true);
         }
@@ -281,6 +295,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (!temperatureSensorLocked) {
           //temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureSensor = null;
+          buttonTemperatureUnit.Enabled = false;
           ClearTemperatureInput();
         }
       }));
@@ -291,6 +306,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             var measurement = temperatureUnit.OfScalar(double.Parse(editTemperature.Text));
             temperatureSensor.measurement = measurement;
           }
+          ////if user removes a temperature sensor, they need to be able to create a new manual sensor
+          if (temperatureSensor == null){
+            temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+            var measurement = temperatureUnit.OfScalar(double.Parse("0.00"));
+            temperatureSensor.measurement = measurement;
+          }
+          buttonTemperatureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdateTemperature: invalid string " + editTemperature.Text + ".", e);
 //          ClearTemperatureInput();
@@ -298,9 +320,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
 
-      ptChart = PTChart.New(ion, Fluid.EState.Bubble);
-
-
+      //ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+      //ptChart = PTChart.New(ion, initialManifold.ptChart.state);
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
         var sensor = initialManifold.primarySensor;
@@ -327,9 +348,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     // Overridden from BaseIONViewController
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
-
-      OnPressureSensorChanged(pressureSensor);
-      OnTemperatureSensorChanged(temperatureSensor);
+      if (pressureSensor != null) {
+        OnPressureSensorChanged(pressureSensor);
+      }
+      if (temperatureSensor != null && pressureSensor != null) {
+        OnTemperatureSensorChanged(temperatureSensor);
+      }
     }
 
     // Overridden from BaseIONViewController
@@ -407,7 +431,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       var pressureScalar = pressureSensor.measurement;
       var temperatureScalar = temperatureSensor.measurement;
 
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, false).ConvertTo(temperatureUnit);
+      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureScalar, temperatureScalar, pressureSensor.isRelative).ConvertTo(temperatureUnit);
 
       if (ptChart.fluid.mixture) {
         switch (ptChart.state) {
@@ -438,7 +462,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           calculation = calculation * -1;
         }
       }
-
       labelFluidDelta.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
     }
 
@@ -500,7 +523,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       }
 
       pressureUnit = measurement.unit;
-      buttonPressureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
       var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
 

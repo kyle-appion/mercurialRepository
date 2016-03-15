@@ -142,6 +142,10 @@
     public Task SaveWorkbenchAsync() {
       return null;
     }
+
+    public void CreateApplicationDump(){
+      
+    }
   }
 }
 

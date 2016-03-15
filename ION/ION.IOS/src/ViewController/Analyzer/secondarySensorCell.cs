@@ -37,10 +37,22 @@ namespace ION.IOS.ViewController.Analyzer {
       secondaryReading.AdjustsFontSizeToFitWidth = true;
       secondaryReading.TextAlignment = UITextAlignment.Center;
 
-      if (lhSensor.manifold.secondarySensor != null) {
-        secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
+      if (lhSensor.currentSensor != null && lhSensor.manifold.secondarySensor != null) {
+        if (lhSensor.currentSensor != lhSensor.manifold.primarySensor) {
+          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
+        } else if (lhSensor.currentSensor == lhSensor.manifold.primarySensor) {
+          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = "Not Linked";
+        }
+      } else if (lhSensor.manualSensor != null && lhSensor.manifold.secondarySensor != null) {
+        if(lhSensor.manualSensor.type.Equals(ESensorType.Pressure)){
+          secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
+        }
       } else {
-        secondaryReading.Text = "";
+        secondaryReading.Text = "Not Linked";      
       }
       this.AddSubview(cellHeader);
       this.AddSubview(secondaryReading);
