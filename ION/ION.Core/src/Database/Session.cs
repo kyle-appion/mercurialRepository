@@ -1,24 +1,34 @@
-﻿using System;
-using System.IO;
-using SQLite;
-using SQLite.Net;
-using SQLite.Net.Attributes;
-using SQLite.Net.Interop;
-namespace ION.Core.Database {
+﻿namespace ION.Core.Database {
 
-    public class Session {
-      
-      [PrimaryKey, AutoIncrement]
-      public int SID { get; set;}
-      public int frnJID{ get; set; }
-      public DateTime sessionStart { get; set;}
-      public DateTime sessionEnd { get; set;}
+  using System;
 
-      public Session() {
-      
-      }
+  using SQLite.Net.Attributes;
 
-    }
-
+  /// <summary>
+  /// An aggragation of sensor measurement contained into a logical component.
+  /// </summary>
+  public class Session : ITableRow {
+    /// <summary>
+    /// Queries the primary id of the table item.
+    /// </summary>
+    /// <value>The identifier.</value>
+    [PrimaryKey, AutoIncrement]
+    public int id { get; set;}
+    /// <summary>
+    /// The of the job that the session belongs to.
+    /// </summary>
+    /// <value>The job identifier.</value>
+    public int jobId { get; set; }
+    /// <summary>
+    /// The start date of the session.
+    /// </summary>
+    /// <value>The session start.</value>
+    public DateTime sessionStart { get; set;}
+    /// <summary>
+    /// The end date of the session.
+    /// </summary>
+    /// <value>The session end.</value>
+    public DateTime sessionEnd { get; set;}
+  }
 }
 

@@ -64,9 +64,7 @@
     <Compile Include="src\Content\Manifold.cs" />
     <Compile Include="src\Util\Arrays.cs" />
     <Compile Include="src\Content\Workbench.cs" />
-    <Compile Include="src\Database\IDao.cs" />
     <Compile Include="src\Database\IONDatabase.cs" />
-    <Compile Include="src\Database\DeviceDao.cs" />
     <Compile Include="src\Util\DateTime.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
     <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
@@ -129,7 +127,6 @@
     <Compile Include="src\Content\Analyzer.cs" />
     <Compile Include="src\Database\Job.cs" />
     <Compile Include="src\Database\Session.cs" />
-    <Compile Include="src\Database\SessionMeasurement.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
     <Compile Include="src\Sensors\SensorTypeFilter.cs" />
@@ -143,6 +140,11 @@
     <Compile Include="src\App\Constants.cs" />
     <Compile Include="src\Devices\Connections\ConnectionHelperCollection.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
+    <Compile Include="src\Database\SensorMeasurement.cs" />
+    <Compile Include="src\Database\ITableRow.cs" />
+    <Compile Include="src\Database\Device.cs" />
+    <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
+    <Compile Include="src\Devices\SerialNumberExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

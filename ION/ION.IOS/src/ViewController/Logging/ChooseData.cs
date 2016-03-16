@@ -152,7 +152,7 @@ namespace ION.IOS.ViewController.Logging {
       List<SessionData> queriedSessions = new List<SessionData>();
 
       for (int i = 0; i < result.Count; i++) {
-        queriedSessions.Add(new SessionData(result[i].SID, result[i].sessionStart, result[i].sessionEnd));
+        queriedSessions.Add(new SessionData(result[i].id, result[i].sessionStart, result[i].sessionEnd));
 
         var measurements = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT MID, frnSID, deviceSN, deviceMeasurement FROM SessionMeasurement WHERE frnSID = " + queriedSessions[i].SID);
 
@@ -200,10 +200,10 @@ namespace ION.IOS.ViewController.Logging {
 
       List<JobData> queriedJobs = new List<JobData>();
       for (int i = 0; i < result.Count; i++) {
-        queriedJobs.Add(new JobData(result[i].JID, result[i].jobName,jobTable,cellHeight, selectedSessions));
-        var jSessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + result[i].JID);
+        queriedJobs.Add(new JobData(result[i].id, result[i].jobName,jobTable,cellHeight, selectedSessions));
+        var jSessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + result[i].id);
         foreach (var sess in jSessions) {
-          queriedJobs[i].jobSessions.Add(new SessionData(sess.SID, sess.sessionStart, sess.sessionEnd));
+          queriedJobs[i].jobSessions.Add(new SessionData(sess.id, sess.sessionStart, sess.sessionEnd));
         }
 
       }

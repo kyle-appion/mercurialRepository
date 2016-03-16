@@ -287,12 +287,12 @@ namespace ION.IOS.ViewController.Logging {
           if(graphResult.Count > 0){
 
             for(int s = 0; s < graphResult.Count; s++){
-              var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].SID);
+              var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].id);
               recordText += string.Concat(Environment.NewLine, graphResult[s].sessionStart.ToLocalTime() + " - " + graphResult[s].sessionEnd.ToLocalTime());
 
               for(int m = 0; m < deviceCount.Count; m++){
                 recordText += string.Concat(Environment.NewLine, "\t" + deviceCount[m].deviceSN);
-                var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].SID);
+                var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].id);
 
                 foreach(var meas in measurementCount){
                   recordText += string.Concat(Environment.NewLine, "\t\t" + meas.deviceMeasurement + "\t" + meas.measurementDate.ToLocalTime());
