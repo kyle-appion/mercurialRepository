@@ -228,11 +228,15 @@
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
     private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
-      AppState.context.PostToMain(() => {
-        if (onDeviceEvent != null) {
-          onDeviceEvent(new DeviceEvent(type, this));
-        }
-      });
+      try {
+        AppState.context.PostToMain(() => {
+          if (onDeviceEvent != null) {
+            onDeviceEvent(new DeviceEvent(type, this));
+          }
+        });
+      } catch (Exception e) {
+        Log.E(this, "FAILED TO POST DEVICE EVENT TO MAIN THREAD!!!!", e);
+      }
     }
   }
 }

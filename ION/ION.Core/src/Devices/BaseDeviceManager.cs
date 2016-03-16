@@ -5,6 +5,7 @@
   using System.Threading.Tasks;
 
   using ION.Core.App;
+  using ION.Core.Database;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
@@ -152,7 +153,7 @@
       }
 
       try {
-        var devices = await ion.database.deviceDao.QueryForAllAsync();
+        var devices = await ion.database.QueryForAllDevicesAsync();
         foreach (IDevice device in devices) {
           Register(device);
         } 
@@ -201,7 +202,8 @@
       if (device != null) {
         device.Dispose();
         Unregister(device);
-        await ion.database.deviceDao.DeleteAsync(device);
+        var db = ion.database;
+        await db.DeleteAsync<Device>(await db.DeconstructDevice(device));
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
       }
     }
@@ -343,7 +345,8 @@
 
           if (device.isConnected) {
             Log.D(this, "Attempting to save device");
-            await ion.database.deviceDao.SaveAsync(device);
+            var d = await ion.database.DeconstructDevice(device);
+            await ion.database.SaveAsync<Device>(d);
           }
           break;
       }
