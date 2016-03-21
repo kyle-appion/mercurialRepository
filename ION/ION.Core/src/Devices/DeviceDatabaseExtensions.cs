@@ -19,7 +19,7 @@
     public static async Task<List<IDevice>> QueryForAllDevicesAsync(this IONDatabase db) {
       var ret = new List<IDevice>();
 
-      foreach (var d in await db.QueryForAllAsync<Device>()) {
+      foreach (var d in await db.QueryForAllAsync<DeviceRow>()) {
         ret.Add(await db.ReconstructDevice(d));
       }
 
@@ -31,18 +31,18 @@
     /// </summary>
     /// <returns>The for using serial number async.</returns>
     /// <param name="serialNumber">Serial number.</param>
-    public static Task<Device> QueryForUsingSerialNumberAsync(this IONDatabase db, ISerialNumber serialNumber) {
+    public static Task<DeviceRow> QueryForUsingSerialNumberAsync(this IONDatabase db, ISerialNumber serialNumber) {
       Log.D("DDD", "QueryFor: " + serialNumber);
       try {
         var serial = serialNumber.ToString();
-        if (db.Table<Device>().Count() > 0) {
-          return Task.FromResult(db.Table<Device>().Where(x => x.serialNumber == serial).First());
+        if (db.Table<DeviceRow>().Count() > 0) {
+          return Task.FromResult(db.Table<DeviceRow>().Where(x => x.serialNumber == serial).First());
         } else {
-          return Task.FromResult(default(Device));
+          return Task.FromResult(default(DeviceRow));
         }
       } catch (Exception e) {
         Log.E(typeof(DeviceDatabaseExtensions).Name, "Failed to query for using serial number.", e);
-        return Task.FromResult(default(Device));
+        return Task.FromResult(default(DeviceRow));
       }
     }
 
@@ -51,11 +51,11 @@
     /// </summary>
     /// <returns>The device.</returns>
     /// <param name="device">Device.</param>
-    public static async Task<Device> DeconstructDevice(this IONDatabase db, IDevice device) {
+    public static async Task<DeviceRow> DeconstructDevice(this IONDatabase db, IDevice device) {
       var ret = await db.QueryForUsingSerialNumberAsync(device.serialNumber);
 
       if (ret == null) {
-        ret = new Device() {
+        ret = new DeviceRow() {
           serialNumber = device.serialNumber.ToString(),
           protocol = (int)device.protocol.version,
           connectionAddress = device.connection.address,
@@ -74,7 +74,7 @@
     /// <returns>The device.</returns>
     /// <param name="db">Db.</param>
     /// <param name="device">Device.</param>
-    public static Task<IDevice> ReconstructDevice(this IONDatabase db, Device device) {
+    public static Task<IDevice> ReconstructDevice(this IONDatabase db, DeviceRow device) {
       if (!device.serialNumber.IsValidSerialNumber()) {
         throw new Exception("Failed to parse " + device.serialNumber + " into a serial number");
       }

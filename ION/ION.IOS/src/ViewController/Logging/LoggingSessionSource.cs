@@ -75,7 +75,7 @@ namespace ION.IOS.ViewController.Logging {
           // delete the measurement associated with the session being removed
           ion.database.Query<ION.Core.Database.SessionMeasurement>("DELETE FROM SessionMeasurement WHERE frnSID = " + tableItems[indexPath.Row].SID);
           // delete the session that was chosen for removal
-          ion.database.Query<ION.Core.Database.Session>("DELETE FROM Session WHERE SID = " + tableItems[indexPath.Row].SID);
+          ion.database.Query<ION.Core.Database.SessionRow>("DELETE FROM Session WHERE SID = " + tableItems[indexPath.Row].SID);
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
           // remove the item from the list of selected sessions

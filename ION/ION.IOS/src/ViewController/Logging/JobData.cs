@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.Logging {
       };
 
       jobSelect = new UITapGestureRecognizer(() => {
-        var sessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + JID);
+        var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE frnJID = " + JID);
         if(selected.Equals(false)){
           selected = true;
           foreach(var sesh in sessions){

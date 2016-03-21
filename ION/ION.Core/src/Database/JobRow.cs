@@ -5,7 +5,7 @@
   /// <summary>
   /// A job is an encapsulation of work performed for a po.
   /// </summary>
-  public class Job : ITableRow {
+  public class JobRow : ITableRow {
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

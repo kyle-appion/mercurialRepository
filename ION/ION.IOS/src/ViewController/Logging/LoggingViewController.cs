@@ -274,7 +274,7 @@ namespace ION.IOS.ViewController.Logging {
         paramList.Add('"' + num.ToString() + '"');
       }
 
-      var graphResult = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd FROM Session WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
+      var graphResult = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM Session WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
 
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         graphingSection.graphingType.Hidden = false;

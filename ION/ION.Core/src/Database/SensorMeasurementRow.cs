@@ -11,13 +11,19 @@
   /// This entity is a struct due to the nature of its inteded use. Many thousands of these are expected to be loaded
   /// into an array, an we will need the most efficient storage medium possible to ensure the lowest system load.
   /// </remarks>
-  public class SensorMeasurement : ITableRow {
+  public class SensorMeasurementRow : ITableRow {
      /// <summary>
      /// Queries the primary id of the table item.
      /// </summary>
      /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
     public int id { get; set; }
+    /// <summary>
+    /// The id of the session that the measurement was recorded under.
+    /// </summary>
+    /// <value>The session identifier.</value>
+    [Indexed]
+    public int sessionId { get; set; }
     /// <summary>
     /// The id of the device who owns the sensor that stored the measurement.
     /// </summary>

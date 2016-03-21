@@ -28,11 +28,13 @@
     /// </summary>
     /// <value>The ion.</value>
     public IION ion { get { return AppState.context; } }
+
     /// <summary>
     /// The bitmap cache that will store common bitmaps.
     /// </summary>
     /// <value>The cache.</value>
     public BitmapCache cache { get; private set; }
+
     /// <summary>
     /// The flags that are used by the activity.
     /// </summary>
@@ -71,10 +73,11 @@
     /// <param name="menu">Menu.</param>
     public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
       inflater.Inflate(Resource.Menu.screenshot, menu);
+      inflater.Inflate(Resource.Menu.record, menu);
 
       var ss = menu.FindItem(Resource.Id.screenshot);
       var icon = ss.Icon;
-     icon.Mutate().SetColorFilter(GetColor(Resource.Color.gray), PorterDuff.Mode.SrcIn);
+      icon.Mutate().SetColorFilter(GetColor(Resource.Color.gray), PorterDuff.Mode.SrcIn);
       ss.SetIcon(icon);
     }
 
@@ -88,6 +91,7 @@
       base.OnPrepareOptionsMenu(menu);
 
       menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));
+      menu.FindItem(Resource.Id.record).SetVisible(HasFlags(EFlags.StartRecording));
     }
 
     /// <Docs>The menu item that was selected.</Docs>
@@ -106,6 +110,10 @@
       switch (item.ItemId) {
         case Resource.Id.screenshot:
           CaptureScreenToBitmap();
+          return true;
+        case Resource.Id.record:
+          ToggleRecordingSession(item);
+          Alert("Record clicked");
           return true;
         default:
           return base.OnOptionsItemSelected(item);
@@ -142,6 +150,9 @@
       for (int i = 0; i < 32; i++) {
         switch ((EFlags)i) {
           case EFlags.AllowScreenshot:
+            Activity.InvalidateOptionsMenu();
+            break;
+          case EFlags.StartRecording:
             Activity.InvalidateOptionsMenu();
             break;
         }
@@ -207,6 +218,23 @@
     }
 
     /// <summary>
+    /// Toggles the recording session.
+    /// </summary>
+    public async void ToggleRecordingSession(IMenuItem item) {
+      if (ion.dataLogManager.isRecording) {
+        if (!await ion.dataLogManager.StopRecording()) {
+          Log.D(this, "Failed to stop recording");
+        }
+        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPlay, Resource.Color.light_gray));
+      } else {
+        if (!await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(5))) {
+          Log.D(this, "Failed to begin recording");
+        }
+        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPause, Resource.Color.light_gray));
+      }
+    }
+
+    /// <summary>
     /// Toasts the given message.
     /// </summary>
     /// <param name="stringResource">String resource.</param>
@@ -230,6 +258,15 @@
       Log.E(this, message, e);
       Toast.MakeText(Activity, message, ToastLength.Long).Show();
     }
+  }
+
+  /// <summary>
+  /// The flags that the ion activity supports.
+  /// </summary>
+  [Flags]
+  public enum EFlags {
+    AllowScreenshot = 1 << 0,
+    StartRecording = 1 << 1,
   }
 }
 

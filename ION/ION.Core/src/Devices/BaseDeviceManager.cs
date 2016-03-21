@@ -203,7 +203,7 @@
         device.Dispose();
         Unregister(device);
         var db = ion.database;
-        await db.DeleteAsync<Device>(await db.DeconstructDevice(device));
+        await db.DeleteAsync<DeviceRow>(await db.DeconstructDevice(device));
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
       }
     }
@@ -346,7 +346,7 @@
           if (device.isConnected) {
             Log.D(this, "Attempting to save device");
             var d = await ion.database.DeconstructDevice(device);
-            await ion.database.SaveAsync<Device>(d);
+            await ion.database.SaveAsync<DeviceRow>(d);
           }
           break;
       }

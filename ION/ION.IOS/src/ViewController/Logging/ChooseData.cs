@@ -148,7 +148,7 @@ namespace ION.IOS.ViewController.Logging {
 
       activityLoadingTables.StartAnimating();
 
-      var result = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd FROM Session ORDER BY SID DESC");
+      var result = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM Session ORDER BY SID DESC");
       List<SessionData> queriedSessions = new List<SessionData>();
 
       for (int i = 0; i < result.Count; i++) {
@@ -196,12 +196,12 @@ namespace ION.IOS.ViewController.Logging {
 
       activityLoadingTables.StartAnimating();
 
-      var result = ion.database.Query<ION.Core.Database.Job>("SELECT JID, jobName FROM Job ORDER BY JID");
+      var result = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID, jobName FROM Job ORDER BY JID");
 
       List<JobData> queriedJobs = new List<JobData>();
       for (int i = 0; i < result.Count; i++) {
         queriedJobs.Add(new JobData(result[i].id, result[i].jobName,jobTable,cellHeight, selectedSessions));
-        var jSessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + result[i].id);
+        var jSessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE frnJID = " + result[i].id);
         foreach (var sess in jSessions) {
           queriedJobs[i].jobSessions.Add(new SessionData(sess.id, sess.sessionStart, sess.sessionEnd));
         }
