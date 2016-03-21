@@ -125,8 +125,6 @@
     <Compile Include="src\Location\SimpleLocation.cs" />
     <Compile Include="src\Sensors\ManualSensor.cs" />
     <Compile Include="src\Content\Analyzer.cs" />
-    <Compile Include="src\Database\Job.cs" />
-    <Compile Include="src\Database\Session.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
     <Compile Include="src\Sensors\SensorTypeFilter.cs" />
@@ -140,11 +138,18 @@
     <Compile Include="src\App\Constants.cs" />
     <Compile Include="src\Devices\Connections\ConnectionHelperCollection.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
-    <Compile Include="src\Database\SensorMeasurement.cs" />
     <Compile Include="src\Database\ITableRow.cs" />
-    <Compile Include="src\Database\Device.cs" />
     <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
     <Compile Include="src\Devices\SerialNumberExtensions.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogManager.cs" />
+    <Compile Include="src\Report\DataLogs\LoggingSession.cs" />
+    <Compile Include="src\Util\Timer.cs" />
+    <Compile Include="src\Job\Job.cs" />
+    <Compile Include="src\Database\JobRow.cs" />
+    <Compile Include="src\Database\SensorMeasurementRow.cs" />
+    <Compile Include="src\Database\SessionRow.cs" />
+    <Compile Include="src\Database\DeviceRow.cs" />
+    <Compile Include="src\Job\IJobManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -175,6 +180,8 @@
     <Folder Include="src\Fluids\Embedded\" />
     <Folder Include="src\Measure\Json\" />
     <Folder Include="src\Devices\Filters\" />
+    <Folder Include="src\Report\DataLogs\" />
+    <Folder Include="src\Job\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">

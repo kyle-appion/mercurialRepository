@@ -28,6 +28,10 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <ConsolePause>false</ConsolePause>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AndroidSigningKeyStore>/Users/ahodder/Documents/code_space/certs/AppionPrivateKeystore.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -407,6 +411,7 @@
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_edit.axml" />
     <AndroidResource Include="Resources\layout\analyzer_dialog_viewer.axml" />
     <AndroidResource Include="Resources\drawable\ic_logo_appiondefault_small.png" />
+    <AndroidResource Include="Resources\menu\record.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

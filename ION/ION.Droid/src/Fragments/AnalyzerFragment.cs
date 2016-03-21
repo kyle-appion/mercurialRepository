@@ -90,9 +90,12 @@
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
       SetHasOptionsMenu(true);
-      AddFlags(EFlags.AllowScreenshot);
+      AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
 
-      analyzer = new Analyzer(ion);
+      analyzer = ion.currentAnalyzer;
+      if (analyzer == null) {
+        analyzer = new Analyzer(ion);
+      }
       analyzerView.analyzer = analyzer;
     }
 

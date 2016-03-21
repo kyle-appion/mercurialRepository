@@ -22,10 +22,10 @@
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
       // Create the database
-      CreateTable<Device>();
-      CreateTable<Job>();
-      CreateTable<Session>();
-      CreateTable<SensorMeasurement>();
+      CreateTable<DeviceRow>();
+      CreateTable<JobRow>();
+      CreateTable<SessionRow>();
+      CreateTable<SensorMeasurementRow>();
     }
 
     /// <summary>

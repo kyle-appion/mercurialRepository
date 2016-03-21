@@ -67,9 +67,14 @@
     // Overridden from IION
     public IFluidManager fluidManager { get; set; }
     // Overridden from IION
-    public Workbench currentWorkbench { get; set; }
-    // Overridden from IION
     public ILocationManager locationManager { get; set; }
+    /// <summary>
+    /// The current primary analyzer for the ion context.
+    /// </summary>
+    /// <value>The current analyzer.</value>
+    public Analyzer currentAnalyzer { get; set; }
+    // Overridden from IION
+    public Workbench currentWorkbench { get; set; }
 
     // Overridden from IION
     public IUnits defaultUnits { get; private set; }

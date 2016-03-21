@@ -6,7 +6,7 @@
 
   using ION.Core.Util;
 
-  public class Device : ITableRow {
+  public class DeviceRow : ITableRow {
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

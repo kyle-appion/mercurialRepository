@@ -13,6 +13,7 @@
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
+  using ION.Core.Report.DataLogs;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
@@ -85,15 +86,27 @@
     /// </summary>
     IFluidManager fluidManager { get; }
     /// <summary>
-    /// The current primary workbench for the ION context.
-    /// </summary>
-    /// <value>The current workbench.</value>
-    Workbench currentWorkbench { get; }
-    /// <summary>
     /// Queries the location manager that is responsbile for ascertaining the user's altitude.
     /// </summary>
     /// <value>The location manager.</value>
     ILocationManager locationManager { get; }
+    /// <summary>
+    /// Queries the data log manager that is responsible for storing sensor data.
+    /// </summary>
+    /// <value>The data log manager.</value>
+    DataLogManager dataLogManager { get; }
+
+    /// <summary>
+    /// The current primary analyzer for the ion context.
+    /// </summary>
+    /// <value>The current analyzer.</value>
+    Analyzer currentAnalyzer { get; }
+    /// <summary>
+    /// The current primary workbench for the ION context.
+    /// </summary>
+    /// <value>The current workbench.</value>
+    Workbench currentWorkbench { get; }
+
     /// <summary>
     /// The default units for the ION instance.
     /// </summary>

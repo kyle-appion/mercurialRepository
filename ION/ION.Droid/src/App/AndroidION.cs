@@ -24,6 +24,7 @@
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
+  using ION.Core.Report.DataLogs;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
@@ -88,15 +89,26 @@
     /// <value>The fluid manager.</value>
     public IFluidManager fluidManager { get; set; }
     /// <summary>
-    /// The current primary workbench for the ION context.
-    /// </summary>
-    /// <value>The current workbench.</value>
-    public Workbench currentWorkbench { get; set; }
-    /// <summary>
     /// Queries the location manager that is responsbile for ascertaining the user's altitude.
     /// </summary>
     /// <value>The location manager.</value>
     public ILocationManager locationManager { get; set; }
+    /// <summary>
+    /// Queries the data log manager that is responsible for storing sensor data.
+    /// </summary>
+    /// <value>The data log manager.</value>
+    public DataLogManager dataLogManager { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current analyzer.
+    /// </summary>
+    /// <value>The current analyzer.</value>
+    public Analyzer currentAnalyzer { get; set; }
+    /// <summary>
+    /// The current primary workbench for the ION context.
+    /// </summary>
+    /// <value>The current workbench.</value>
+    public Workbench currentWorkbench { get; set; }
 
     /// <summary>
     /// The default units for the ION instance.
@@ -152,10 +164,6 @@
     /// </summary>
     /// <value>The handler.</value>
     private Android.OS.Handler handler { get; set; }
-    /// <summary>
-    /// The application notification.
-    /// </summary>
-    private Notification notification;
 
     /// <summary>
     /// The whole aggragation of the managers present within the ion context.
@@ -192,6 +200,7 @@
       managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)GetSystemService(Context.BluetoothService))));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
+      managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, 
           new PopupActivityAlert(alarm, this),
@@ -226,6 +235,9 @@
         Log.E(this, "Failed to load workbench", e);
         currentWorkbench = new Workbench(this);
       }
+
+      // TODO Save/load analyzer.
+      currentAnalyzer = new Analyzer(this);
 
       UpdateNotification();
 
