@@ -76,28 +76,30 @@
           return;
         }
 
+        var sensors = new HashSet<GaugeDeviceSensor>();
+
+        foreach (var s in ion.currentAnalyzer.GetSensors()) {
+          var gds = s as GaugeDeviceSensor;
+          if (gds != null && gds.device.isConnected && !sensors.Contains(gds)) {
+            sensors.Add(gds);
+          }
+        }
+
+        foreach (var m in ion.currentWorkbench.manifolds) {
+          var gds = m.primarySensor as GaugeDeviceSensor;
+          if (gds != null && gds.device.isConnected && !sensors.Contains(gds)) {
+            sensors.Add(gds);
+          }
+        }
+
         var rows = new List<SensorMeasurementRow>();
         var db = ion.database;
         var now = DateTime.Now;
 
-        foreach (var m in ion.currentWorkbench.manifolds) {
-          var gds = m.primarySensor as GaugeDeviceSensor;
-          if (gds != null) {
-            rows.Add(await CreateSensorMeasurement(ion.database, gds, now));
-          }
+        foreach (var gds in sensors) {
+          rows.Add(CreateSensorMeasurement(db, gds, now));
         }
 
-        foreach (var s in ion.currentAnalyzer.GetSensors()) {
-          var gds = s as GaugeDeviceSensor;
-          if (gds != null) {
-            rows.Add(await CreateSensorMeasurement(ion.database, gds, now));
-          }
-        }
-
-        if (!isActive) {
-          // Stop short if we have been canceled. This may not be needed.
-          return;
-        }
         var inserted = db.InsertAll(rows, true);
         Log.D(this, "Inserted " + inserted + " of " + rows.Count + " measurement rows");
       } catch (Exception e) {
