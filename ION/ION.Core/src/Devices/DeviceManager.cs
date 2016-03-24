@@ -153,11 +153,18 @@
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
 
     /// <summary>
+    /// Saves the given device to the database.
+    /// </summary>
+    /// <returns>The device.</returns>
+    /// <param name="device">Device.</param>
+    Task<bool> SaveDevice(IDevice device);
+
+    /// <summary>
     /// Permanentely deletes the device from the device manager and any persistent backend
     /// it is using. The device will be moved to the "Found Devices" collection.
     /// </summary>
     /// <param name="serialNumber">Serial number.</param>
-    void DeleteDevice(ISerialNumber serialNumber);
+    Task<bool> DeleteDevice(ISerialNumber serialNumber);
 
     /// <summary>
     /// Determines whether this instance is device known the specified device.
@@ -165,6 +172,18 @@
     /// <returns><c>true</c> if this instance is device known the specified device; otherwise, <c>false</c>.</returns>
     /// <param name="device">Device.</param>
     bool IsDeviceKnown(IDevice device);
+
+    /// <summary>
+    /// Registers the device to the known device's mapping.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    void Register(IDevice device);
+
+    /// <summary>
+    /// Unregisters the device from the device manager.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    void Unregister(IDevice device);
 
     /// <summary>
     /// Attempts to connect to the given device. 

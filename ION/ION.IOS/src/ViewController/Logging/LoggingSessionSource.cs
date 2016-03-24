@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,8 @@ using CoreGraphics;
 using Foundation;
 using UIKit;
 using SQLite;
+
+using ION.Core.Database;
 
 using ION.Core.App;
 namespace ION.IOS.ViewController.Logging {
@@ -71,11 +74,14 @@ namespace ION.IOS.ViewController.Logging {
     {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
+          var sessionId = tableItems[indexPath.Row].SID;
           // remove that entry from the table and all the associated measurements     
           // delete the measurement associated with the session being removed
-          ion.database.Query<ION.Core.Database.SessionMeasurement>("DELETE FROM SessionMeasurement WHERE frnSID = " + tableItems[indexPath.Row].SID);
+          ion.database.Table<SensorMeasurementRow>()
+            .Delete(smr => smr.sessionId == sessionId);
           // delete the session that was chosen for removal
-          ion.database.Query<ION.Core.Database.SessionRow>("DELETE FROM Session WHERE SID = " + tableItems[indexPath.Row].SID);
+          ion.database.Table<SessionRow>()
+            .Delete(sr => sr.id == sessionId);
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
           // remove the item from the list of selected sessions

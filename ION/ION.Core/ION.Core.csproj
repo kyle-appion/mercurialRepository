@@ -150,6 +150,11 @@
     <Compile Include="src\Database\SessionRow.cs" />
     <Compile Include="src\Database\DeviceRow.cs" />
     <Compile Include="src\Job\IJobManager.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogReport.cs" />
+    <Compile Include="src\Report\DataLogs\SensorLog.cs" />
+    <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
+    <Compile Include="src\Report\DataLogs\SessionResults.cs" />
+    <Compile Include="src\Connections\MockConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

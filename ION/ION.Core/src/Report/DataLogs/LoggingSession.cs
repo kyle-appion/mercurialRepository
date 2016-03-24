@@ -97,7 +97,8 @@
         var now = DateTime.Now;
 
         foreach (var gds in sensors) {
-          rows.Add(CreateSensorMeasurement(db, gds, now));
+          // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
+          rows.Add(await CreateSensorMeasurement(db, gds, now));
         }
 
         var inserted = db.InsertAll(rows, true);

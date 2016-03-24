@@ -18,6 +18,7 @@
   using ION.Core.App;
   using ION.Core.Util;
 
+  using ION.Droid.Activity.DataLogging;
   using ION.Droid.Fragments;
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
@@ -274,6 +275,14 @@
               StartActivity(typeof(ScreenshotArchiveActivity));
             }
           },
+          new NavigationIconItem() {
+            id = Resource.Id.report_data_logging,
+            title = GetString(Resource.String.report_data_logging),
+            icon = Android.Resource.Drawable.StatSysDataBluetooth,
+            action = () => {
+              StartActivity(typeof(DataLoggingReportActivity));
+            }
+          }
         },
       };
 

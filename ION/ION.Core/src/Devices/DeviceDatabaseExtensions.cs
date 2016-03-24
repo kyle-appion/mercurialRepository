@@ -19,7 +19,8 @@
     public static async Task<List<IDevice>> QueryForAllDevicesAsync(this IONDatabase db) {
       var ret = new List<IDevice>();
 
-      foreach (var d in await db.QueryForAllAsync<DeviceRow>()) {
+      var devices = await db.QueryForAllAsync<DeviceRow>();
+      foreach (var d in devices) {
         ret.Add(await db.ReconstructDevice(d));
       }
 

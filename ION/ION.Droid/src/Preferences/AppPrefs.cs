@@ -60,6 +60,24 @@
       }
     }
 
+    /// <summary>
+    /// Queries whether or not this is the application's first launch.
+    /// </summary>
+    /// <value><c>true</c> if first launch; otherwise, <c>false</c>.</value>
+    public bool firstLaunch {
+      get {
+        var ret = prefs.GetBoolean(ion.GetString(Resource.String.pkey_first_launch), true);        
+
+        if (ret) {
+          var e = prefs.Edit();
+          e.PutBoolean(ion.GetString(Resource.String.pkey_first_launch), false);
+          e.Commit();
+        }
+
+        return ret;
+      }
+    }
+
     public AppPrefs(AndroidION ion, ISharedPreferences prefs) {
       this.ion = ion;
       this.prefs = prefs;

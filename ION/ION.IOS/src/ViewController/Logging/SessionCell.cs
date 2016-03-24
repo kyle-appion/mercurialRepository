@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using UIKit;
 using CoreGraphics;
 
 using ION.Core.App;
+using ION.Core.Database;
+
+using SQLite;
 
 
 namespace ION.IOS.ViewController.Logging {
@@ -29,7 +33,10 @@ namespace ION.IOS.ViewController.Logging {
       finish = end.ToLocalTime();
       ion = AppState.context;
 
-      var deviceAmount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + SID);
+      var deviceAmount = ion.database.Table<SensorMeasurementRow>()
+        .Where(smr => smr.sessionId == SID)
+        .Select(smr => smr.deviceId).Distinct()
+        .Count();
 
       var duration = finish.Subtract(start).TotalMinutes;
 
@@ -63,7 +70,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionInfo.TextAlignment = UITextAlignment.Left;
       sessionInfo.Layer.BorderColor = UIColor.Black.CGColor;
       sessionInfo.Layer.BorderWidth = 1f;
-      sessionInfo.Text = start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min " + deviceAmount.Count + " devices";
+      sessionInfo.Text = start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min " + deviceAmount + " devices";
 
       this.AddSubview(sessionInfo);
     }

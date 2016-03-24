@@ -1,4 +1,4 @@
-﻿namespace ION.Core {
+﻿namespace ION.Core.Database {
 
   using System;
 

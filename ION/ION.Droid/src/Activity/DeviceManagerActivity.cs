@@ -54,11 +54,6 @@
     private const long DEFAULT_SCAN_TIME = 5000;
 
     /// <summary>
-    /// The current ion instance.
-    /// </summary>
-    /// <value>The ion.</value>
-    private IION ion { get; set; }
-    /// <summary>
     /// The view that will display all of the devices for the activity.
     /// </summary>
     /// <value>The list.</value>
@@ -92,8 +87,6 @@
 
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
-
-      ion = AppState.context;
 
       list = FindViewById<RecyclerView>(Resource.Id.list);
       empty = FindViewById<TextView>(Resource.Id.view);
