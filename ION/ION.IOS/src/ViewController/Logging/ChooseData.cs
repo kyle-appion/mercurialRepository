@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using CoreGraphics;
 using SQLite;
 
 using ION.Core.App;
+using ION.Core.Database;
 
 namespace ION.IOS.ViewController.Logging {
   
@@ -154,10 +156,18 @@ namespace ION.IOS.ViewController.Logging {
       for (int i = 0; i < result.Count; i++) {
         queriedSessions.Add(new SessionData(result[i].id, result[i].sessionStart, result[i].sessionEnd));
 
-        var measurements = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT MID, frnSID, deviceSN, deviceMeasurement FROM SessionMeasurement WHERE frnSID = " + queriedSessions[i].SID);
+        var sessionId = queriedSessions[i].SID;
 
+        var measurements = ion.database.Table<SensorMeasurementRow>()
+          .Where(smr => smr.deviceId == sessionId)
+          .AsEnumerable();
+          
         foreach(var value in measurements){
-          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(value.MID,value.frnSID,value.deviceSN, value.deviceMeasurement));
+          var serialNumber = ion.database.Table<DeviceRow>()
+            .Where(dr => dr.id == value.deviceId)
+            .First().serialNumber;
+          
+          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(value.id, value.sessionId, serialNumber, value.measurement + ""));
         }
       }
       allSessions = queriedSessions;

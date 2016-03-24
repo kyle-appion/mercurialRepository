@@ -15,6 +15,7 @@ using ION.IOS.UI;
 using ION.Core.Database;
 using ION.Core.Content;
 using ION.Core.Devices;
+using ION.Core.Report.DataLogs;
 using ION.Core.Util;
 using ION.Core.App;
 
@@ -286,16 +287,27 @@ namespace ION.IOS.ViewController.Logging {
 
           if(graphResult.Count > 0){
 
+            var db = ion.database;
             for(int s = 0; s < graphResult.Count; s++){
-              var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].id);
+              var sessionId = graphResult[s].id;
+              var distinct = db.Table<SensorMeasurementRow>()
+                .Where(smr => smr.sessionId == sessionId)
+                .GroupBy(smr => smr.deviceId)
+                .Select(g => g.Last())
+                .AsEnumerable();
               recordText += string.Concat(Environment.NewLine, graphResult[s].sessionStart.ToLocalTime() + " - " + graphResult[s].sessionEnd.ToLocalTime());
 
-              for(int m = 0; m < deviceCount.Count; m++){
-                recordText += string.Concat(Environment.NewLine, "\t" + deviceCount[m].deviceSN);
-                var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].id);
+              foreach (var m in distinct) {
+                var serialNumber = db.Table<DeviceRow>().Where(dr => dr.id == m.id).First().serialNumber;
+                recordText += string.Concat(Environment.NewLine, "\t" + serialNumber);
 
-                foreach(var meas in measurementCount){
-                  recordText += string.Concat(Environment.NewLine, "\t\t" + meas.deviceMeasurement + "\t" + meas.measurementDate.ToLocalTime());
+                var measurements = db.Table<SensorMeasurementRow>()
+                  .Where(smr => smr.deviceId == m.deviceId)
+                  .Where(smr => smr.sessionId == sessionId)
+                  .AsEnumerable();
+
+                foreach (var meas in measurements) {
+                  recordText += string.Concat(Environment.NewLine, "\t\t" + meas.measurement + "\t" + meas.recordedDate.ToLocalTime());
                 }
               }
             }

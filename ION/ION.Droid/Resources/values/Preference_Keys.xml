@@ -11,6 +11,7 @@
   The keys that are used for preferences. These should almost never change once set.
   -->
   <string name="pkey_app_version">app_version</string>
+  <string name="pkey_first_launch">first_launch"</string>
   <string name="pkey_send_feedback">send_feedback</string>
   <string name="pkey_youtube">youtube</string>
 

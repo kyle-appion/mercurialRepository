@@ -9,6 +9,8 @@
   <item name="arrow" type="id"/>
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
+  <item name="card" type="id"/>
+  <item name="check" type="id"/>
   <item name="city" type="id"/>
   <item name="clear" type="id"/>
   <item name="close" type="id"/>
@@ -18,17 +20,20 @@
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
   <item name="date" type="id"/>
+  <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
   <item name="empty" type="id"/>
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
+  <item name="graph" type="id"/>
   <item name="help" type="id"/>
   <item name="icon" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
   <item name="loading" type="id"/>
+  <item name="next" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
   <item name="progress" type="id"/>
@@ -54,6 +59,7 @@
   <item name="toggle" type="id"/>
   <item name="type" type="id"/>
   <item name="unit" type="id"/>
+  <item name="up" type="id"/>
   <item name="version" type="id"/>
   <item name="view" type="id"/>
   <item name="viewpager" type="id"/>
@@ -103,7 +109,15 @@
   -->
   <item name="reports" type="id"/>
   <item name="report_certificates" type="id"/>
+  <item name="report_data_logging" type="id"/>
+  <item name="report_graph" type="id"/>
+  <item name="report_job" type="id"/>
+  <item name="report_new" type="id"/>
+  <item name="report_pick" type="id"/>
+  <item name="report_saved" type="id"/>
   <item name="report_screenshot_archive" type="id"/>
+  <item name="report_selection" type="id"/>
+  <item name="report_sessions" type="id"/>
 
   <!--
   WORKBENCH

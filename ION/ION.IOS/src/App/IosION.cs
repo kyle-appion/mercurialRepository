@@ -20,6 +20,7 @@
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
+  using ION.Core.Report.DataLogs;
   using ION.Core.Pdf;
   using ION.Core.Sensors;
   using ION.Core.Util;
@@ -68,6 +69,11 @@
     public IFluidManager fluidManager { get; set; }
     // Overridden from IION
     public ILocationManager locationManager { get; set; }
+    /// <summary>
+    /// Queries the data log manager that is responsible for storing sensor data.
+    /// </summary>
+    /// <value>The data log manager.</value>
+    public DataLogManager dataLogManager { get; set; }
     /// <summary>
     /// The current primary analyzer for the ion context.
     /// </summary>
@@ -126,6 +132,7 @@
       managers.Add(locationManager = new IosLocationManager(this));
       managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper()));
       managers.Add(alarmManager = new BaseAlarmManager(this));
+      managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));
       };

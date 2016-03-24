@@ -105,12 +105,12 @@
     public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       var li = LayoutInflater.From(parent.Context);
 
-      switch ((ViewType)viewType) {
-        case ViewType.Category:
+      switch ((EViewType)viewType) {
+        case EViewType.Category:
           return new CategoryViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_group, parent, false));
-        case ViewType.Device:
+        case EViewType.Device:
           return new GaugeDeviceViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_device, parent, false), cache);
-        case ViewType.Sensor:
+        case EViewType.Sensor:
           return new SensorViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_sensor, parent, false), cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
@@ -121,20 +121,20 @@
     public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       var viewType = GetItemViewType(position);
 
-      switch ((ViewType)viewType) {
-        case ViewType.Category:
+      switch ((EViewType)viewType) {
+        case EViewType.Category:
           var cr = records[position] as CategoryRecord;
           if (cr != null) {
             (holder as CategoryViewHolder)?.BindTo(cr);
           }
           break;
-        case ViewType.Device:
+        case EViewType.Device:
           var gr = records[position] as GaugeDeviceRecord;
           if (gr != null) {
             (holder as GaugeDeviceViewHolder)?.BindTo(gr, OnGaugeDeviceClicked);
           }
           break;
-        case ViewType.Sensor:
+        case EViewType.Sensor:
           var sr = records[position] as SensorRecord;
           if (sr != null) {
             (holder as SensorViewHolder)?.BindTo(sr, OnSensorRecordClicked);
@@ -397,7 +397,7 @@
     /// <summary>
     /// The types of views (and implicitly, view holders) that are in the adapter.
     /// </summary>
-    public enum ViewType {
+    public enum EViewType {
       Category,
       Device,
       Sensor,
@@ -415,14 +415,14 @@
     }
 
     interface IRecord {
-      ViewType viewType { get; }
+      EViewType viewType { get; }
     }
 
     class CategoryRecord : IRecord {
       // Overridden from IRecord
-      public ViewType viewType {
+      public EViewType viewType {
         get {
-          return ViewType.Category;
+          return EViewType.Category;
         }
       }        
 
@@ -434,9 +434,9 @@
 
     class GaugeDeviceRecord : IRecord {
       // Overridden from IRecord
-      public ViewType viewType {
+      public EViewType viewType {
         get {
-          return ViewType.Device;
+          return EViewType.Device;
         }
       }
 
@@ -447,9 +447,9 @@
 
     class SensorRecord : IRecord {
       // Overridden from IRecord
-      public ViewType viewType {
+      public EViewType viewType {
         get {
-          return ViewType.Sensor;
+          return EViewType.Sensor;
         }
       }
 
