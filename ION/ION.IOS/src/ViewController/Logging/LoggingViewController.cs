@@ -310,7 +310,9 @@ namespace ION.IOS.ViewController.Logging {
       });
       dataSection.DataType.AddGestureRecognizer(dataSection.resize);
     }
-
+    /// <summary>
+    /// Resizes the graphing section smaller and returns the user to the session/job selection view
+    /// </summary>
     public void resizeGraphingSectionSmaller(){
       reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
       dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;

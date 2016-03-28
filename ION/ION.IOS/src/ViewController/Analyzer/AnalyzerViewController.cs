@@ -353,8 +353,7 @@ namespace ION.IOS.ViewController.Analyzer {
         sensorActions.pressedSensor.isManual = pressedArea.isManual;
 
         ///SHOW ACTIONSHEET FOR SENSOR OPTIONS
-        pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;    
-
+        pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;
       } 
       else {
 
@@ -760,7 +759,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.changePTFluid.Hidden = true;
           }
 
-          break;
+          break; 
         }
       }
 

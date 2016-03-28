@@ -138,7 +138,7 @@ namespace ION.IOS.ViewController.Analyzer
     public string manualGType;
     public UILabel holdReading;
     public double holdValue;
-    public string holdType;
+    public string holdType; 
     public UILabel shReading;
     public UILabel shFluidType;
     public UILabel shFluidState;

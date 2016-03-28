@@ -39,7 +39,7 @@ namespace ION.IOS.ViewController {
     /// <value>The navigation.</value>
     public FlyoutNavigationController navigation { get; private set; }
 
-
+     
 		public IONPrimaryScreenController (IntPtr handle) : base (handle) {
       // Nope
 		}

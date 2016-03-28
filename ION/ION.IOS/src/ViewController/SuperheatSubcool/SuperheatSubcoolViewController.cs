@@ -187,7 +187,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         InitNavigationBar("ic_nav_superheat_subcool", false);
         backAction = () => {
           root.navigation.ToggleMenu();
-        };
+        }; 
       }
 
       NavigationItem.Title = Strings.Fluid.SUPERHEAT_SUBCOOL;
