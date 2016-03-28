@@ -222,6 +222,7 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon167x167.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
