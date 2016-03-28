@@ -1,5 +1,15 @@
 TODOS
 
+IOS
+  Device Manager
+    * Fix the connection spinner.
+    * Let the user cancel a connection attempt (related to the spinner)
+    * Fix the issue that newly found devices refresh the list and reorganize it
+    * Fix the issue that connecting to a device marks all other devices (known
+      or not) as disconnected
+      
+
+
 ANDROID
   Application
     * Support bluetooth classic
