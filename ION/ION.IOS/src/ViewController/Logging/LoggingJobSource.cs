@@ -107,7 +107,6 @@ namespace ION.IOS.ViewController.Logging {
     {
       Console.WriteLine ("Clicked Job: " + tableItems[indexPath.Section].jName + "'s session " + tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
 
-
       if (usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)) {
         usingSessions.Remove(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
       } else {
