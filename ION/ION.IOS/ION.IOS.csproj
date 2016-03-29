@@ -101,6 +101,12 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xamarin.iOS">
+      <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\Xamarin.iOS10\OxyPlot.Xamarin.iOS.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -222,6 +228,18 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\tracker_circle.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\scroll_up.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\scroll_down.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\graph_menu.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\checked_checkbox.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\unchecked_checkbox.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -455,6 +473,17 @@
       <DependentUpon>SecondarySensorCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\App\IOSPlatformInfo.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerAnimatedDismissed.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerAnimatedTransitioning.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerTransitionDelegate.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerViewController.cs" />
+    <Compile Include="src\ViewController\Logging\graphCell.cs" />
+    <Compile Include="src\ViewController\Logging\graphingTableSource.cs" />
+    <Compile Include="src\ViewController\Logging\GraphingView.cs" />
+    <Compile Include="src\ViewController\Logging\legendCell.cs" />
+    <Compile Include="src\ViewController\Logging\legendSource.cs" />
+    <Compile Include="src\ViewController\Logging\LegendView.cs" />
+    <Compile Include="src\ViewController\Logging\CustomPickerModel.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -508,5 +537,11 @@
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="oxyplot">
+      <Version>2015.1.744</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>
