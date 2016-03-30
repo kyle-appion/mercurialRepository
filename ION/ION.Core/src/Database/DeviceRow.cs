@@ -40,6 +40,19 @@
     /// <value>The protocol.</value>
     public int protocol { get; set; }
 
+    /// <summary>
+    /// Serves as a hash function for a <see cref="ION.Core.Database.DeviceRow"/> object.
+    /// </summary>
+    /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+    public override int GetHashCode() {
+      return id;
+    }
+
+    public override bool Equals(object obj) {
+      var dr = obj as DeviceRow;
+      return dr != null && id == dr.id;
+    }
+
     // Overridden from Object
     public override string ToString() {
       return "Device {" +

@@ -222,16 +222,15 @@
           return;
         }
       }
-      ;
-      ;
-      ;
 
+/*
 #if DEBUG
       if (preferences.firstLaunch) {
         Log.D(this, "Creating debug data logs.");
         CreateDebugDataLogs(3);
       }
 #endif
+*/
 
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -475,7 +474,7 @@
               s.recordedDate = recorded;
               s.sensorIndex = 0;
               s.sessionId = j;
-              s.unitCode = UnitLookup.GetCode(Units.Pressure.PSIG);
+//              s.unitCode = UnitLookup.GetCode(Units.Pressure.PSIG);
               s.measurement = wave(k, 800, step.TotalMinutes);
               smr[l * devicesCount + k] = s;
             }

@@ -42,6 +42,30 @@
     /// The records that are present in the adapter.
     /// </summary>
     private List<IRecord> records = new List<IRecord>();
+    /// <summary>
+    /// The start date that is used as the earliest domain item.
+    /// </summary>
+    public DateTime start {
+      get {
+        return __start;
+      }
+      set {
+        __start = value;
+        NotifyDataSetChanged();
+      }
+    } DateTime __start;
+    /// <summary>
+    /// The end date that is used as the latest domain item.
+    /// </summary>
+    public DateTime end {
+      get {
+        return __end;
+      }
+      set {
+        __end = value;
+        NotifyDataSetChanged();
+      }
+    } DateTime __end;
 
     public GraphSelectionAdapter(IION ion) {
       this.ion = ion;
@@ -82,7 +106,7 @@
 
       switch (record.viewType) {
         case EViewType.Graph:
-          ((GraphViewHolder)holder).BindTo(ion, record as GraphRecord);
+          ((GraphViewHolder)holder).BindTo(ion, record as GraphRecord, start, end);
           return;
       }
     }
@@ -98,7 +122,6 @@
         records.Add(new GraphRecord(l, false));
       }
 
-      Log.D(this, "graph adapter has: " + this.ItemCount + " items");
       NotifyDataSetChanged();
     }
 
@@ -154,7 +177,7 @@
       };
     }
 
-    public void BindTo(IION ion, GraphRecord record) {
+    public void BindTo(IION ion, GraphRecord record, DateTime start, DateTime end) {
       this.record = record;
 
       var sn = ion.database.Table<DeviceRow>().Where(dr => dr.id == record.logs.deviceId).First().serialNumber;
@@ -166,18 +189,18 @@
       checkBox.Checked = record.isChecked;
       serialNumber.Text = sn;
 
-      var model = new PlotModel();
-      model.Background = OxyColors.Transparent;
+      var model = new PlotModel() {
+        Padding = new OxyThickness(0),
+      };
+//      model.PlotMargins = new OxyThickness(-5, -5, -5, -5); // -5
 
       var xAxis = new DateTimeAxis() {
         Position = AxisPosition.Bottom,
-        Minimum = DateTimeAxis.ToDouble(record.logs.start),
-        AbsoluteMinimum = DateTimeAxis.ToDouble(record.logs.start),
-        Maximum = DateTimeAxis.ToDouble(record.logs.end),
-        AbsoluteMaximum = DateTimeAxis.ToDouble(record.logs.end),
+        Minimum = DateTimeAxis.ToDouble(start),
+        Maximum = DateTimeAxis.ToDouble(end),
+        IsAxisVisible = false,
         IsZoomEnabled = false,
         IsPanEnabled = false,
-        IsAxisVisible = false,
         MinimumPadding = 0, 
         MaximumPadding = 0,
       };
@@ -186,7 +209,29 @@
         Position = AxisPosition.Left,
         Minimum = sensor.minMeasurement.ConvertTo(u).amount,
         Maximum = sensor.maxMeasurement.ConvertTo(u).amount,
+        IsAxisVisible = false,
+        IsZoomEnabled = false,
+        IsPanEnabled = false,
+        MinimumPadding = 0, 
+        MaximumPadding = 0,
       };
+
+      var series = new LineSeries {
+        StrokeThickness = 3,
+        MarkerType = MarkerType.Circle,
+        MarkerSize = 4,
+        MarkerStroke = OxyColors.Black,
+        MarkerStrokeThickness = 1,
+      };
+
+      foreach (var i in record.logs.logs) {
+        series.Points.Add(DateTimeAxis.CreateDataPoint(i.recordedDate, i.measurement));
+      }
+
+      model.Axes.Add(xAxis);
+      model.Axes.Add(yAxis);
+      model.Series.Add(series);
+      plot.Model = model;
     }
   }
 }

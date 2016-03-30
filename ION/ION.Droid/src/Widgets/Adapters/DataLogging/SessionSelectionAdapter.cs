@@ -1,12 +1,14 @@
 ﻿namespace ION.Droid.Widgets.Adapters.DataLogging {
 
   using System;
+  using System.Linq;
   using System.Collections.Generic;
 
   using Android.Support.V7.Widget;
   using Android.Views;
   using Android.Widget;
 
+  using ION.Core.App;
   using ION.Core.Database;
   using ION.Core.Util;
 
@@ -53,8 +55,10 @@
       var li = LayoutInflater.From(parent.Context);
 
       switch ((EViewType)viewType) {
+        case EViewType.Job:
+          return new JobViewHolder(this, li.Inflate(Resource.Layout.list_item_job, parent, false));
         case EViewType.Session:
-          return new SessionViewHolder(li.Inflate(Resource.Layout.list_item_session, parent, false));
+          return new SessionViewHolder(this, li.Inflate(Resource.Layout.list_item_session, parent, false));
         default:
           throw new Exception("Cannot create view holer for: " + ((EViewType)viewType));  
       }
@@ -69,6 +73,9 @@
       var record = records[position];
 
       switch (record.viewType) {
+        case EViewType.Job:
+          ((JobViewHolder)holder).BindTo(record as JobRecord);
+          return;
         case EViewType.Session:
           ((SessionViewHolder)holder).BindTo(record as SessionRecord);
           return;
@@ -76,15 +83,40 @@
     }
 
     /// <summary>
+    /// Sets the sessions that are to be added to the adapter.
+    /// </summary>
+    /// <param name="ion">Ion.</param>
+    /// <param name="sessions">Sessions.</param>
+    public void AddSessions(IION ion, IEnumerable<SessionRow> sessions) {
+      foreach (var s in sessions) {
+        records.Add(new SessionRecord(s));
+      }
+    }
+
+    /// <summary>
     /// Sets the jobs that the adapter will display.
     /// </summary>
     /// <param name="jobs">Jobs.</param>
-    public void SetSessions(IEnumerable<SessionRow> sessions) {
-      records.Clear();
-      foreach (var j in sessions) {
-        records.Add(new SessionRecord(j));
+    public void AddJobs(IION ion, IEnumerable<JobRow> jobs) {
+      foreach (var j in jobs) {
+        var jr = new JobRecord(j);
+        records.Add(jr);
+
+        var sessions = new List<SessionRecord>();
+
+        var sessionRows = ion.database.Table<SessionRow>()
+          .Where(sr => sr.jobId == j.id)
+          .AsEnumerable();
+
+        foreach (var s in sessionRows) {
+          var sr = new SessionRecord(s);
+          records.Add(sr);
+          sessions.Add(sr);
+        }
+
+        jr.sessions = sessions;
       }
-      Log.D(this, "Sessions = " + records.Count);
+
       NotifyDataSetChanged();
     }
 
@@ -116,7 +148,24 @@
     /// An enumeration that will enumerate the type of views that the adapter will show.
     /// </summary>
     public enum EViewType {
+      Job,
       Session,
+    }
+  }
+
+  public class JobRecord : SessionSelectionAdapter.IRecord {
+    public SessionSelectionAdapter.EViewType viewType {
+      get {
+        return SessionSelectionAdapter.EViewType.Job;
+      }
+    }
+
+    public JobRow jobRow { get; set; }
+    public IEnumerable<SessionRecord> sessions { get; set; }
+    public bool isChecked { get; set; }
+
+    public JobRecord(JobRow row) {
+      this.jobRow = row;
     }
   }
 
@@ -135,18 +184,61 @@
     }
   }
 
-  public class SessionViewHolder : RecyclerView.ViewHolder {
+  public class JobViewHolder : RecyclerView.ViewHolder {
+    private SessionSelectionAdapter adapter;
     private TextView name;
     private CheckBox checkBox;
 
-    private SessionRecord record;
+    private JobRecord record;
 
-    public SessionViewHolder(View view) : base(view) {
+    public JobViewHolder(SessionSelectionAdapter adapter, View view) : base(view) {
+      this.adapter = adapter;
       name = view.FindViewById<TextView>(Resource.Id.name);
       checkBox = view.FindViewById<CheckBox>(Resource.Id.check);
       view.SetOnClickListener(new ViewClickAction((v) => {
         if (record != null) {
           checkBox.Checked = record.isChecked = !record.isChecked;
+
+          foreach (var sr in record.sessions) {
+            sr.isChecked = record.isChecked;
+          }
+
+          adapter.NotifyDataSetChanged();
+        }
+      }));
+    }
+
+    public void BindTo(JobRecord record) {
+      this.record = record;
+
+      name.Text = record.jobRow.jobName;
+
+      record.isChecked = false;
+      foreach (var sr in record.sessions) {
+        if (sr.isChecked) {
+          record.isChecked = true;
+          break;
+        }
+      }
+      checkBox.Checked = record.isChecked;
+    }
+  }
+
+  public class SessionViewHolder : RecyclerView.ViewHolder {
+    private SessionSelectionAdapter adapter;
+    private TextView name;
+    private CheckBox checkBox;
+
+    private SessionRecord record;
+
+    public SessionViewHolder(SessionSelectionAdapter adapter, View view) : base(view) {
+      this.adapter = adapter;
+      name = view.FindViewById<TextView>(Resource.Id.name);
+      checkBox = view.FindViewById<CheckBox>(Resource.Id.check);
+      view.SetOnClickListener(new ViewClickAction((v) => {
+        if (record != null) {
+          checkBox.Checked = record.isChecked = !record.isChecked;
+          adapter.NotifyDataSetChanged();
         }
       }));
     }

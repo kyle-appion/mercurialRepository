@@ -93,23 +93,6 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@id/report_job"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/report_jobs" />
-                <Button
-                    android:id="@id/report_sessions"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/report_sessions" />
-            </LinearLayout>
             <android.support.v7.widget.RecyclerView
                 android:id="@id/list"
                 android:layout_width="match_parent"
@@ -161,27 +144,17 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <TextView
+                android:id="@id/time"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@id/report_job"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/report_jobs" />
-                <Button
-                    android:id="@id/report_sessions"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/report_sessions" />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="0dp"
+                android:layout_weight="1">
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="wrap_content"
@@ -206,6 +179,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </LinearLayout>
+            <AbsoluteLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+                <ImageView
+                    android:id="@id/left"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/shape_circle_gold" />
+                <ImageView
+                    android:id="@id/right"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/shape_circle_gold" />
+            </AbsoluteLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

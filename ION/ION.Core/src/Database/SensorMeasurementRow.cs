@@ -41,7 +41,7 @@
     /// <value>The recorded date.</value>
     public DateTime recordedDate { get; set; }
     /// <summary>
-    /// The magnitude of the measurement. The unit for the measurement is stored in unit.
+    /// The magnitude of the measurement. The unit for this measurement is the base unit for the device.
     /// </summary>
     /// <value>The measurement.</value>
     public double measurement { get; set; }
@@ -50,7 +50,40 @@
     /// ION.Core.Sensors.UnitLookup.GetUnit(int)
     /// </summary>
     /// <value>The unit code.</value>
-    public int unitCode { get; set; }
+//    public int unitCode { get; set; }
+
+    /// <summary>
+    /// Serves as a hash function for a <see cref="ION.Core.Database.SensorMeasurementRow"/> object.
+    /// </summary>
+    /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
+    public override int GetHashCode() {
+      return id;
+    }
+
+    /// <summary>
+    /// Determines whether the specified <see cref="System.Object"/> is equal to the current <see cref="ION.Core.Database.SensorMeasurementRow"/>.
+    /// </summary>
+    /// <param name="obj">The <see cref="System.Object"/> to compare with the current <see cref="ION.Core.Database.SensorMeasurementRow"/>.</param>
+    /// <returns><c>true</c> if the specified <see cref="System.Object"/> is equal to the current
+    /// <see cref="ION.Core.Database.SensorMeasurementRow"/>; otherwise, <c>false</c>.</returns>
+    public override bool Equals(object obj) {
+      var smr = obj as SensorMeasurementRow;
+      return smr != null && id == smr.id;
+    }
+
+/*
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents the current <see cref="ION.Core.Database.SensorMeasurementRow"/>.
+    /// </summary>
+    /// <returns>A <see cref="System.String"/> that represents the current <see cref="ION.Core.Database.SensorMeasurementRow"/>.</returns>
+    public override string ToString() {
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}, unitCode={6}]", id, sessionId, deviceId, sensorIndex, recordedDate, measurement, unitCode);
+    }
+*/
+
+    public override string ToString() {
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", id, sessionId, deviceId, sensorIndex, recordedDate, measurement);
+    }
   }
 }
 
