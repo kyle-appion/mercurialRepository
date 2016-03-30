@@ -30,6 +30,7 @@
   <item name="graph" type="id"/>
   <item name="help" type="id"/>
   <item name="icon" type="id"/>
+  <item name="left" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
   <item name="loading" type="id"/>
@@ -47,6 +48,7 @@
   <item name="pressure" type="id"/>
   <item name="record" type="id"/>
   <item name="reenable" type="id"/>
+  <item name="right" type="id"/>
   <item name="save" type="id"/>
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>
@@ -55,6 +57,7 @@
   <item name="status" type="id"/>
   <item name="temperature" type="id"/>
   <item name="text" type="id"/>
+  <item name="time" type="id"/>
   <item name="title" type="id"/>
   <item name="toggle" type="id"/>
   <item name="type" type="id"/>

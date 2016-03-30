@@ -122,13 +122,13 @@
     /// </summary>
     /// <returns>The session data.</returns>
     /// <param name="session">Session.</param>
-    public Task<SessionResults> QuerySessionData(SessionRow session) {
+    public Task<SessionResults> QuerySessionData(int sessionId) {
       return Task.Factory.StartNew(() => {
         var db = ion.database;
 
         // TODO ahodder@appioninc.com: This could be optimized
         var res = db.Table<SensorMeasurementRow>()
-          .Where(smr => smr.sessionId == session.id)
+          .Where(smr => smr.sessionId == sessionId)
           .GroupBy(smr => smr.deviceId)
           .Select(g => g.Last());
 
@@ -136,7 +136,7 @@
         foreach (var row in res) {
           var query = db.Table<SensorMeasurementRow>()
             .Where(smr => smr.deviceId == row.deviceId)
-            .Where(smr => smr.sessionId == session.id)
+            .Where(smr => smr.sessionId == sessionId)
             .OrderBy(s => s.recordedDate)
             .AsEnumerable();
 
@@ -151,15 +151,30 @@
             deviceId = row.deviceId,
             logs = logs,
             index = row.sensorIndex,
-            unitCode = row.unitCode,
+//            unitCode = row.unitCode,
           });
         }
+        var tmp = dsl.ToArray();
 
+        var start = DateTime.Now;
+        var end = DateTime.FromFileTime(0);
+
+        foreach (var d in tmp) {
+          foreach (var log in d.logs) {
+            if (log.recordedDate < start) {
+              start = log.recordedDate;
+            } else if (log.recordedDate > end) {
+              end = log.recordedDate;
+            }
+          }
+        }
+
+        // TODO ahodder@appioninc.com: Finish start/end time
         return new SessionResults() {
           complete = true,
-          deviceSensorLogs = dsl.ToArray(),
-          startTime = session.sessionStart,
-          endTime = session.sessionEnd,
+          deviceSensorLogs = tmp,
+          startTime = start,
+          endTime = end,
         };
       });
     }

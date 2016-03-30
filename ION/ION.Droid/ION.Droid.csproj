@@ -204,9 +204,9 @@
     <Compile Include="src\Activity\DataLogging\NewReportFragment.cs" />
     <Compile Include="src\Activity\DataLogging\DataLoggingReportActivity.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
-    <Compile Include="src\Widgets\Adapters\DataLogging\JobsSelectionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
