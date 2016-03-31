@@ -20,7 +20,7 @@
     /// The unit code that all of the senor log measurements will be in.
     /// </summary>
     /// <value>The unit code.</value>
-    public int unitCode { get; internal set; }
+//    public int unitCode { get; internal set; }
     /// <summary>
     /// The date sorted array of the actual logs.
     /// </summary>
@@ -66,7 +66,7 @@
       return new DeviceSensorLogs() {
         deviceId = this.deviceId,
         index = this.index,
-        unitCode = this.unitCode,
+//        unitCode = this.unitCode,
         logs = sl,
       };
     }
