@@ -90,7 +90,7 @@
 
       switch ((EViewType)viewType) {
         case EViewType.Graph:
-          return new GraphViewHolder(li.Inflate(Resource.Layout.list_item_data_log, parent, false));
+          return new GraphViewHolder(li.Inflate(Resource.Layout.list_item_data_log_graph, parent, false));
         default:
           throw new Exception("Cannot create view holder for: " + ((EViewType)viewType));
       }

@@ -207,6 +207,9 @@
     <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
+    <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
+    <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -427,7 +430,11 @@
     <AndroidResource Include="Resources\anim\card_flip_left_out.xml" />
     <AndroidResource Include="Resources\layout\list_item_job.axml" />
     <AndroidResource Include="Resources\layout\list_item_session.axml" />
-    <AndroidResource Include="Resources\layout\list_item_data_log.axml" />
+    <AndroidResource Include="Resources\anim\fade_out.xml" />
+    <AndroidResource Include="Resources\anim\fade_in.xml" />
+    <AndroidResource Include="Resources\layout\list_item_data_log_graph.axml" />
+    <AndroidResource Include="Resources\layout\list_item_data_log_overview.axml" />
+    <AndroidResource Include="Resources\layout\dialog_date_time.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

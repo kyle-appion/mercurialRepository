@@ -25,11 +25,13 @@
   using ION.Core.Util;
 
   using ION.Droid.Activity;
+  using ION.Droid.Dialog;
+  using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.DataLogging;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
 
-  [Activity(Label = "DataLoggingReportActivity", Theme="@style/TerminalActivityTheme")]      
+  [Activity(Label = "DataLoggingReportActivity", Theme="@style/TerminalActivityTheme")]
   public class DataLoggingReportActivity : IONActivity {
 
     /// <summary>
@@ -58,9 +60,14 @@
     /// </summary>
     private SessionSelectionAdapter sessionAdapter;
     /// <summary>
-    /// The adapter that will display the session content graphs. 
+    /// The adapter that will display the session content graphs.
     /// </summary>
     private GraphSelectionAdapter graphAdapter;
+    /// <summary>
+    /// The adapter that will display the overview of the graph selection.
+    /// </summary>
+    private GraphOverviewAdapter overviewAdapter;
+
     /// <summary>
     /// The view that will perform the left bounded selection for the graphs.
     /// </summary>
@@ -122,6 +129,7 @@
       InitNewSavedViews();
       InitSelectionViews();
       InitGraphViews();
+      InitGraphOptionsViews();
 
       report = new DataLogReport();
       MarkCardViewAsFocused(newSavedCard);
@@ -191,7 +199,30 @@
 
       SetCardViewTitleVisible(view, true);
 
-      view.FindViewById(Resource.Id.next).SetOnClickListener(new ViewClickAction((v) => {
+      view.FindViewById(Resource.Id.next).SetOnClickListener(new ViewClickAction(async (v) => {
+        // Build the logs that will be included in the graph selection.
+        var logs = new List<DeviceSensorLogs>();
+        foreach (var s in sessionAdapter.GetCheckedSessions()) {
+          var sessionData = await ion.dataLogManager.QuerySessionData(s.id);
+          logs.AddRange(sessionData.deviceSensorLogs);
+        }
+
+        absoluteStart = DateTime.Now;
+
+        foreach (var log in logs) {
+          if (log.start < absoluteStart) {
+            absoluteStart = localStart = log.start;
+          }
+
+          if (log.end > absoluteEnd) {
+            absoluteEnd = localEnd = log.end;
+          }
+        }
+
+        graphAdapter.SetLogs(logs);
+        overviewAdapter.SetLogs(logs);
+
+        // Switch to the graph view
         InvalidateGraphViews();
         MarkCardViewAsFocused(graphCard);
       }));
@@ -215,6 +246,7 @@
       var left = view.FindViewById(Resource.Id.left);
       var right = view.FindViewById(Resource.Id.right);
       var time = view.FindViewById<TextView>(Resource.Id.time);
+      var options = view.FindViewById(Resource.Id.options);
 
       var lb = new Rect(); // List bounds
 
@@ -239,7 +271,7 @@
             if (lb.Width() != 0) {
               leftOverlay.width = x - lb.Left;
               list.Invalidate();
-              UpdateGraphSelection();
+              UpdateGraphSelectionDatesFromMeasurements();
             }
             break;
           case MotionEventActions.Up:
@@ -269,7 +301,7 @@
             if (lb.Width() != 0) {
               rightOverlay.width = (lb.Left + plotWidth) - x;
               list.Invalidate();
-              UpdateGraphSelection();
+              UpdateGraphSelectionDatesFromMeasurements();
             }
             break;
           case MotionEventActions.Up:
@@ -277,6 +309,10 @@
             break;
         }
       };
+
+      options.SetOnClickListener(new ViewClickAction((v) => {
+        FlipToGraphOptions();
+      }));
 
       SetCardViewTitleVisible(view, true);
 
@@ -289,6 +325,51 @@
 
       list.Overlay.Add(leftOverlay);
       list.Overlay.Add(rightOverlay);
+    }
+
+    /// <summary>
+    /// Initializes the options views for the graph content view.
+    /// </summary>
+    private void InitGraphOptionsViews() {
+      var view = graphCard.FindViewById(Resource.Id.content2);
+      var options = view.FindViewById(Resource.Id.options);
+      var list = view.FindViewById<RecyclerView>(Resource.Id.list);
+      list.SetLayoutManager(new LinearLayoutManager(this));
+      var start = view.FindViewById<Button>(Resource.Id.start);
+      var end = view.FindViewById<Button>(Resource.Id.end);
+
+      options.SetOnClickListener(new ViewClickAction((v) => {
+        FlipToGraph();
+      }));
+
+      start.SetOnClickListener(new ViewClickAction((v) => {
+        new DateTimePickerDialog(GetString(Resource.String.pick_time), absoluteStart, localEnd, localStart, (o, dt) => {
+          if (dt < absoluteStart) {
+            dt = absoluteStart;
+            Alert(Resource.String.report_data_logging_error_setting_time_to_lowest);
+          }
+          localStart = dt;
+          start.Text = dt.ToFullShortString();
+          MeasureOverlayFromGraphSelectionDates();
+          InvalidateGraphOverlays();
+        }).Show(this);
+      }));
+
+      end.SetOnClickListener(new ViewClickAction((v) => {
+        new DateTimePickerDialog(GetString(Resource.String.pick_time), localStart, absoluteEnd, localEnd, (o, dt) => {
+          if (dt > absoluteEnd) {
+            dt = absoluteEnd;
+            Alert(Resource.String.report_data_logging_error_setting_time_to_highest);
+          }
+          localEnd = dt;
+          end.Text = dt.ToFullShortString();
+          MeasureOverlayFromGraphSelectionDates();
+          InvalidateGraphOverlays();
+        }).Show(this);
+      }));
+
+      overviewAdapter = new GraphOverviewAdapter(ion);
+      list.SetAdapter(overviewAdapter);
     }
 
     /// <summary>
@@ -327,34 +408,18 @@
       var list = view.FindViewById<RecyclerView>(Resource.Id.list);
       var left = view.FindViewById(Resource.Id.left);
       var right = view.FindViewById(Resource.Id.right);
-
-      // Build the logs that will be included in the graph selection.
-      var logs = new List<DeviceSensorLogs>();
-      foreach (var s in sessionAdapter.GetCheckedSessions()) {
-        var sessionData = await ion.dataLogManager.QuerySessionData(s.id);
-        logs.AddRange(sessionData.deviceSensorLogs);
-      }
-
-      absoluteStart = DateTime.Now;
-
-      foreach (var log in logs) {
-        if (log.start < absoluteStart) {
-          absoluteStart = localStart = log.start;
-        }
-
-        if (log.end > absoluteEnd) {
-          absoluteEnd = localEnd = log.end;
-        }
-      }
-
-      graphAdapter.SetLogs(logs);
+      var start = view.FindViewById<Button>(Resource.Id.start);
+      var end = view.FindViewById<Button>(Resource.Id.end);
 
       // Bail if we don't have anything to graph.
       if (graphAdapter.ItemCount <= 0) {
         return;
       }
 
-      UpdateGraphSelection();
+      start.Text = localStart.ToFullShortString();
+      end.Text = localEnd.ToFullShortString();
+
+      UpdateGraphSelectionDatesFromMeasurements();
 
       var tries = 0;
       var row = list.FindViewHolderForAdapterPosition(0)?.ItemView;
@@ -394,7 +459,7 @@
     /// <summary>
     /// Updates the graph selection based on the overlays.
     /// </summary>
-    private void UpdateGraphSelection() {
+    private void UpdateGraphSelectionDatesFromMeasurements() {
       var view = graphCard;
       var time = view.FindViewById<TextView>(Resource.Id.time);
 
@@ -405,8 +470,65 @@
       localStart = absoluteStart + sd;
       localEnd = absoluteEnd - ed;
 
-      time.Text = localStart.ToShortDateString() + " " + localStart.ToShortTimeString() + "\t\t" +
-        localEnd.ToShortDateString() + " " + localEnd.ToShortTimeString(); 
+      time.Text = localStart.ToFullShortString() + "\t\t" + localEnd.ToFullShortString();
+    }
+
+    /// <summary>
+    /// Determines the leftTabX and rightTabX from the current graph selection dates.
+    /// </summary>
+    private void MeasureOverlayFromGraphSelectionDates() {
+      var view = graphCard;
+      var list = view.FindViewById<RecyclerView>(Resource.Id.list);
+
+      // Measure the dimensions of the list.
+      var lb = new Rect();
+      list.GetGlobalVisibleRect(lb);
+
+      var sd = localStart - absoluteStart;
+      var ed = localEnd - absoluteEnd;
+      var range = absoluteEnd - absoluteStart;
+
+      var startWidth = sd.Ticks / (double)range.Ticks;
+      var endWidth = ed.Ticks / (double)range.Ticks;
+
+      leftTabX = lb.Left + (int)(startWidth * plotWidth);
+      rightTabX = lb.Left + plotWidth - (int)(endWidth * plotWidth);
+    }
+
+    /// <summary>
+    /// Updates the graph overlays to reflect the current leftTabX and rightTabx.
+    /// </summary>
+    private void InvalidateGraphOverlays() {
+      var view = graphCard;
+      var list = view.FindViewById<RecyclerView>(Resource.Id.list);
+      var time = view.FindViewById<TextView>(Resource.Id.time);
+      var left = view.FindViewById(Resource.Id.left);
+      var right = view.FindViewById(Resource.Id.right);
+
+      // Measure the dimensions of the list.
+      var lb = new Rect();
+      list.GetGlobalVisibleRect(lb);
+
+      leftOverlay.width = leftTabX - lb.Left;
+      rightOverlay.width = (lb.Left + plotWidth) - rightTabX;
+      left.SetX(leftTabX - left.Width);
+      right.SetX(rightTabX - right.Width);
+
+      time.Text = localStart.ToFullShortString() + "\t\t" + localEnd.ToFullShortString();
+    }
+
+    /// <summary>
+    /// Flips to graph card to the graph options.
+    /// </summary>
+    private void FlipToGraphOptions() {
+      FlipView(graphCard, Resource.Id.content, Resource.Id.content2);
+    }
+
+    /// <summary>
+    /// Flips the graph options card to the graph.
+    /// </summary>
+    private void FlipToGraph() {
+      FlipView(graphCard, Resource.Id.content2, Resource.Id.content);
     }
 
     /// <summary>
@@ -457,20 +579,39 @@
     /// <param name="view">View.</param>
     /// <param name="hideId">Hide identifier.</param>
     /// <param name="revealId">Reveal identifier.</param>
-    private void FlipView(View card, int hideId, int revealId) {
+    private void FlipView(View view, int hideId, int revealId) {
       var fo = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_out);
-      fo.AnimationEnd += (obj, args) => {
-        Log.D(this, "Animation end");
-        card.FindViewById(hideId).Visibility = ViewStates.Gone;
-        card.FindViewById(revealId).Visibility = ViewStates.Visible;
+      var fi = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_in);
+      var fadeOut = AnimatorInflater.LoadAnimator(this, Resource.Animation.fade_out);
+      var fadeIn = AnimatorInflater.LoadAnimator(this, Resource.Animation.fade_in);
+
+      var hideView = view.FindViewById(hideId);
+      var revealView = view.FindViewById(revealId);
+
+      fo.SetTarget(view);
+      fi.SetTarget(view);
+      fadeOut.SetTarget(hideView);
+      fadeIn.SetTarget(revealView);
+
+      var animOut = new AnimatorSet();
+      animOut.Play(fo);
+      animOut.SetDuration(350);
+      animOut.AnimationEnd += (obj, args) => {
+        hideView.Visibility = ViewStates.Gone;
+        revealView.Visibility = ViewStates.Visible;
       };
 
-      var fi = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_in);
+      var animIn = new AnimatorSet();
+      animIn.Play(fi);
+      animIn.SetDuration(350);
 
       var animationSet = new AnimatorSet();
-      animationSet.Play(fo)
-        .Before(fi);
-      animationSet.SetTarget(card);
+      animationSet.AnimationEnd += (obj, args) => {
+        hideView.Visibility = ViewStates.Gone;
+        revealView.Visibility = ViewStates.Visible;
+      };
+      animationSet.Play(animOut)
+        .Before(animIn);
       animationSet.Start();
     }
   }
@@ -532,7 +673,7 @@
       }
       bounds.Top = 0;
       bounds.Bottom = canvas.Height;
-      
+
       canvas.DrawRect(bounds, paint);
     }
 
@@ -573,4 +714,3 @@
     }
   }
 }
-

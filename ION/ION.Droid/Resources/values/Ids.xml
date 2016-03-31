@@ -17,6 +17,7 @@
   <item name="connect" type="id"/>
   <item name="connection" type="id"/>
   <item name="content" type="id"/>
+  <item name="content2" type="id"/>
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
   <item name="date" type="id"/>
@@ -24,6 +25,7 @@
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
   <item name="empty" type="id"/>
+  <item name="end" type="id"/>
   <item name="exit" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
@@ -43,6 +45,7 @@
   <item name="name" type="id"/>
   <item name="notes" type="id"/>
   <item name="ok_done" type="id"/>
+  <item name="options" type="id"/>
   <item name="play" type="id"/>
   <item name="preferred" type="id"/>
   <item name="pressure" type="id"/>
@@ -53,6 +56,7 @@
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>
   <item name="settings" type="id"/>
+  <item name="start" type="id"/>
   <item name="state" type="id"/>
   <item name="status" type="id"/>
   <item name="temperature" type="id"/>
@@ -113,6 +117,9 @@
   <item name="reports" type="id"/>
   <item name="report_certificates" type="id"/>
   <item name="report_data_logging" type="id"/>
+  <item name="report_data_logging_lowest_measurement" type="id"/>
+  <item name="report_data_logging_highest_measurement" type="id"/>
+  <item name="report_data_logging_measurement_count" type="id"/>
   <item name="report_graph" type="id"/>
   <item name="report_job" type="id"/>
   <item name="report_new" type="id"/>

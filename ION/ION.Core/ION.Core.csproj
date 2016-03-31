@@ -65,7 +65,6 @@
     <Compile Include="src\Util\Arrays.cs" />
     <Compile Include="src\Content\Workbench.cs" />
     <Compile Include="src\Database\IONDatabase.cs" />
-    <Compile Include="src\Util\DateTime.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
     <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
@@ -155,6 +154,7 @@
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
     <Compile Include="src\Connections\MockConnection.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
