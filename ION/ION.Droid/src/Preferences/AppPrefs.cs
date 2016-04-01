@@ -23,6 +23,11 @@
     /// <value>The alarm.</value>
     public AlarmPreferences alarm { get; private set; }
     /// <summary>
+    /// The location preferences.
+    /// </summary>
+    /// <value>The location.</value>
+    public LocationPreferences location { get; private set; }
+    /// <summary>
     /// The unit preferences.
     /// </summary>
     /// <value>The units.</value>
@@ -82,6 +87,7 @@
       this.ion = ion;
       this.prefs = prefs;
       alarm = new AlarmPreferences(ion, prefs);
+      location = new LocationPreferences(ion, prefs);
       units = new UnitPreferences(ion, prefs);
     }
   }
@@ -132,6 +138,46 @@
     }
 
     public AlarmPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+    }
+  }
+
+  public class LocationPreferences : BasePreferences {
+    /// <summary>
+    /// Queries whether or not the user will allow the application to use the device's GPS.
+    /// </summary>
+    /// <value><c>true</c> if allows gps; otherwise, <c>false</c>.</value>
+    public bool allowsGps {
+      get {
+        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_location_gps), true);
+      }
+      set {
+        var e = prefs.Edit();
+
+        e.PutBoolean(ion.GetString(Resource.String.pkey_location_gps), value);
+
+        e.Commit();
+      }
+    }
+
+    /// <summary>
+    /// Queries or sets the user's manually entered elevation.
+    /// </summary>
+    /// <value>The custom elevation.</value>
+    public double customElevation {
+      get {
+        return prefs.GetFloat(ion.GetString(Resource.String.pkey_location_elevation), 0.0f);
+      }
+
+      set {
+        var e = prefs.Edit();
+
+        e.PutFloat(ion.GetString(Resource.String.pkey_location_elevation), (float)value);
+
+        e.Commit();
+      }
+    }
+
+    public LocationPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
     }
   }
 

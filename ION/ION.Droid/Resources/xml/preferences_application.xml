@@ -11,6 +11,24 @@
     android:summaryOff="@string/preferences_display_wakelock_off"/>
 
   <PreferenceCategory
+    android:title="@string/preferences_location">
+    <SwitchPreference
+      android:title="@string/preferences_location_gps"
+      android:key="@string/pkey_location_gps"
+      android:defaultValue="true"
+      android:disableDependentsState="true"
+      android:summaryOn="@string/preferences_location_gps_on"
+      android:summaryOff="@string/preferences_location_gps_off"/>
+
+    <Preference
+      android:key="@string/pkey_location_elevation"
+      android:dependency="@string/pkey_location_gps"
+      android:title="@string/preferences_location_elevation"
+      android:defaultValue="0"
+      android:summary="@string/preferences_location_elevation_summary"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
     android:title="@string/preferences_units_default">
     <!-- Length -->
     <ListPreference
