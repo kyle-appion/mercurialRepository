@@ -89,9 +89,9 @@
     /// </summary>
     private int plotWidth;
     /// <summary>
-    /// The data log report that
+    /// The logs that we will select from.
     /// </summary>
-    private DataLogReport report;
+    private List<DeviceSensorLogs> logs;
     /// <summary>
     /// The start time for the data logs to include in the report.
     /// </summary>
@@ -131,7 +131,6 @@
       InitGraphViews();
       InitGraphOptionsViews();
 
-      report = new DataLogReport();
       MarkCardViewAsFocused(newSavedCard);
     }
 
@@ -181,9 +180,8 @@
       }));
 
       view.FindViewById(Resource.Id.report_new).SetOnClickListener(new ViewClickAction((v) => {
-        report = new DataLogReport();
 //        FlipView(view, Resource.Id.content, Resource.Id.status);
-        InvalidateNewSavedViews();
+        InvalidateSelectionViews();
         MarkCardViewAsFocused(selectionCard);
       }));
     }
@@ -193,6 +191,10 @@
     /// </summary>
     private async void InitSelectionViews() {
       var view = selectionCard;
+      view.SetOnClickListener(new ViewClickAction((v) => {
+        MarkCardViewAsFocused(selectionCard);
+      }));
+      view.Visibility = ViewStates.Gone;
 
       var list = view.FindViewById<RecyclerView>(Resource.Id.list);
       list.SetLayoutManager(new LinearLayoutManager(this));
@@ -201,7 +203,7 @@
 
       view.FindViewById(Resource.Id.next).SetOnClickListener(new ViewClickAction(async (v) => {
         // Build the logs that will be included in the graph selection.
-        var logs = new List<DeviceSensorLogs>();
+        logs = new List<DeviceSensorLogs>();
         foreach (var s in sessionAdapter.GetCheckedSessions()) {
           var sessionData = await ion.dataLogManager.QuerySessionData(s.id);
           logs.AddRange(sessionData.deviceSensorLogs);
@@ -222,6 +224,7 @@
         graphAdapter.SetLogs(logs);
         overviewAdapter.SetLogs(logs);
 
+        InvalidateSelectionViews();
         // Switch to the graph view
         InvalidateGraphViews();
         MarkCardViewAsFocused(graphCard);
@@ -238,6 +241,7 @@
     /// </summary>
     private void InitGraphViews() {
       var view = graphCard;
+      view.Visibility = ViewStates.Gone;
 
       var list = view.FindViewById<RecyclerView>(Resource.Id.list);
       list.SetLayoutManager(new LinearLayoutManager(this));
@@ -381,7 +385,7 @@
       var text = view.FindViewById(Resource.Id.text);
       var check = view.FindViewById<CheckBox>(Resource.Id.state);
 
-      check.Checked = report != null;
+      check.Checked = true;
     }
 
     /// <summary>
@@ -389,12 +393,13 @@
     /// </summary>
     private void InvalidateSelectionViews() {
       var view = selectionCard;
+      view.Visibility = ViewStates.Visible;
       var title = view.FindViewById(Resource.Id.title);
       var text = view.FindViewById(Resource.Id.text);
       var check = view.FindViewById<CheckBox>(Resource.Id.state);
       var list = view.FindViewById<RecyclerView>(Resource.Id.list);
 
-      check.Checked = report != null && report.results != null && report.results.Count > 0;
+      check.Checked = logs != null && logs.Count > 0;
     }
 
     /// <summary>
@@ -402,6 +407,7 @@
     /// </summary>
     private async void InvalidateGraphViews() {
       var view = graphCard;
+      view.Visibility = ViewStates.Visible;
       var title = view.FindViewById(Resource.Id.title);
       var text = view.FindViewById(Resource.Id.text);
       var check = view.FindViewById<CheckBox>(Resource.Id.state);

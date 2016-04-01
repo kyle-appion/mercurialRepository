@@ -210,6 +210,8 @@
   <string name="report_data_logging_select_start_datetime">Choose a manual start date for the graph</string>
   <string name="report_data_logging_select_end_datetime">Choose a manual end date for the graph</string>
   <string name="report_data_logging_step_1">Step 1</string>
+  <string name="report_data_logging_step_2">Step 2</string>
+  <string name="report_data_logging_step_3">Step 3</string>
   <string name="report_jobs">Jobs</string>
   <string name="report_name">Report Name</string>
   <string name="report_new">New Report</string>
