@@ -1,8 +1,10 @@
 TODOS
 
 ANDROID
-  Application
-    * Support bluetooth classic
+  Application APK / Runtime
+    * Clearing the cache destroys the application (ie. the application will not
+      start). This appears to be because the cache contained important non-apk
+      dlls that are necessary for the c# runtime.
 
   DeviceManager
     * Weird glitch were items (clicked at the right time) will swap order.

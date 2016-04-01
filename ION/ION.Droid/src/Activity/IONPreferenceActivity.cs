@@ -13,6 +13,7 @@
   using Android.Widget;
 
   using ION.Core.App;
+  using ION.Core.Sensors;
   using ION.Core.Util;
 
   using ION.Droid.App;

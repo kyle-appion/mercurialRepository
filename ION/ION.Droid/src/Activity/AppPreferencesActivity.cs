@@ -16,6 +16,8 @@
   using ION.Core.Util;
 
   using ION.Droid.App;
+  using ION.Droid.Dialog;
+  using ION.Droid.Dialog;
   using ION.Droid.Fragments;
   using ION.Droid.Util;
 
@@ -30,6 +32,19 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_settings, Resource.Color.gray));
       this.PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
       AddPreferencesFromResource(Resource.Xml.preferences_application);
+
+
+      var elevationPreference = FindPreference(GetString(Resource.String.pkey_location_elevation));
+      elevationPreference.PreferenceClick += (sender, e) => {
+        new NumberEntryDialog() {
+          title = GetString(Resource.String.preferences_location_elevation),
+          message = GetString(Resource.String.preferences_location_elevation_set),
+          initialValue = ion.preferences.location.customElevation,
+          handler = (o, d) => {
+            ion.preferences.location.customElevation = d;
+          },
+        }.Show(this);
+      };
     }
   }
 }

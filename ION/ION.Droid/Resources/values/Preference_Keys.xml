@@ -19,7 +19,8 @@
   <string name="pkey_alarm_vibrate">alarm_vibrate</string>
   <string name="pkey_alarm_sound">alarm_sound</string>
 
-  <string name="pkey_location_offset">location_offset</string>
+  <string name="pkey_location_elevation">location_elevation</string>
+  <string name="pkey_location_gps">location_gps</string>
 
   <string name="pkey_unit_length">unit_length</string>
   <string name="pkey_unit_pressure">unit_pressure</string>
