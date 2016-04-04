@@ -188,40 +188,40 @@
     // Overridden from IUnits
     public Unit length {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_length, Units.Length.FOOT);
+        return AssertUnitGet(Resource.String.pkey_unit_length, Units.Length.FOOT);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_length, Quantity.Length, Units.Length.FOOT);
+        AssertUnitSet(Resource.String.pkey_unit_length, Quantity.Length, Units.Length.FOOT);
       }
     }
 
     // Overridden from IUnits
     public Unit pressure {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_pressure, Units.Pressure.PSIG);
+        return AssertUnitGet(Resource.String.pkey_unit_pressure, Units.Pressure.PSIG);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_pressure, Quantity.Pressure, Units.Pressure.PSIG);
+        AssertUnitSet(Resource.String.pkey_unit_pressure, Quantity.Pressure, Units.Pressure.PSIG);
       }
     }
 
     // Overridden from IUnits
     public Unit temperature {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_temperature, Units.Temperature.FAHRENHEIT);
+        return AssertUnitGet(Resource.String.pkey_unit_temperature, Units.Temperature.FAHRENHEIT);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_temperature, Quantity.Temperature, Units.Temperature.FAHRENHEIT);
+        AssertUnitSet(Resource.String.pkey_unit_temperature, Quantity.Temperature, Units.Temperature.FAHRENHEIT);
       }
     }
 
     // Overridden from IUnits
     public Unit vacuum {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_vacuum, Units.Vacuum.MICRON);
+        return AssertUnitGet(Resource.String.pkey_unit_vacuum, Units.Vacuum.MICRON);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_vacuum, Quantity.Vacuum, Units.Vacuum.MICRON);
+        AssertUnitSet(Resource.String.pkey_unit_vacuum, Quantity.Vacuum, Units.Vacuum.MICRON);
       }
     }
 
@@ -254,7 +254,11 @@
       var key = ion.GetString(preferenceKey);
 
       try {
-        return UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+
+        Log.D(this, "Asserting the acquisition of the unit: " + ret);
+
+        return ret;
       } catch (Exception e) {
         Log.E(this, "Failed to retrieve unit for key: " + key);
         AssertUnitSet(preferenceKey, backup.quantity, backup);

@@ -284,7 +284,11 @@
       socket = device.CreateInsecureRfcommSocketToServiceRecord(SPP);
 
       connectThread = new Thread(() => {
+        try {
         socket.Connect();
+        } catch (Exception e) {
+          Log.E(this, "Failed to connect to classic socket.");
+        }
       });
       connectThread.Start();
 

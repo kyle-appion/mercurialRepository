@@ -140,7 +140,6 @@
     /// Platform code for stopping a scan.
     /// </summary>
     public void Stop() {
-      adapter.CancelDiscovery();
       try {
         if (isScanning) {
           context.UnregisterReceiver(receiver);

@@ -191,7 +191,7 @@
           lastBattery = -1;
         }
 
-        battery.Visibility = ViewStates.Visible;
+//        battery.Visibility = ViewStates.Visible;
       } else {
         battery.Visibility = ViewStates.Invisible;
       }
