@@ -23,7 +23,7 @@ namespace ION.IOS.ViewController.Logging
 		{
 			measurementCount = 0;
 			highestMeasurement = -9999;
-			lowestMeasurement = 9999;
+			lowestMeasurement = 9999999;
 
 			header = new UILabel (new CGRect (0,0,.98 * parentView.Bounds.Width,.055 * parentView.Bounds.Height));
 			header.BackgroundColor = UIColor.Black;
@@ -36,7 +36,6 @@ namespace ION.IOS.ViewController.Logging
 			information.Layer.BorderWidth = 1f;
 			information.Lines = 0;
 			information.AdjustsFontSizeToFitWidth = true;
-
 
 			foreach (var measurement in data.readings) {
 				if (measurement > highestMeasurement) {

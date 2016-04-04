@@ -246,6 +246,7 @@
     <InterfaceDefinition Include="Resources\View.xib" />
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\IONNavigationCell.xib" />
+    <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -484,6 +485,18 @@
     <Compile Include="src\ViewController\Logging\legendSource.cs" />
     <Compile Include="src\ViewController\Logging\LegendView.cs" />
     <Compile Include="src\ViewController\Logging\CustomPickerModel.cs" />
+    <Compile Include="src\ViewController\Logging\xmlReport.cs" />
+    <Compile Include="src\ViewController\JobManager\CreateJobView.cs" />
+    <Compile Include="src\Storyboard\JobManagerViewController.cs" />
+    <Compile Include="src\Storyboard\JobManagerViewController.designer.cs">
+      <DependentUpon>JobManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\JobManager\JobViewController.cs" />
+    <Compile Include="src\ViewController\JobManager\JobViewController.designer.cs">
+      <DependentUpon>JobViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Logging\PreviewOutputInfo.cs" />
+    <Compile Include="src\ViewController\Logging\PDFViewDataSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -515,6 +528,7 @@
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
     <Folder Include="src\ViewController\Logging\" />
+    <Folder Include="src\ViewController\JobManager\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

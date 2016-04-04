@@ -29,7 +29,7 @@ namespace ION.IOS.ViewController.Logging
 
 		public void setupGraph(deviceReadings data, double cellWidth, double cellHeight, DateTime earliest, DateTime latest, 
 							   UIView leftTrackerView, UIView rightTrackerView, double trackerHeight, UIView parentView, 
-							   UIImageView leftTrackerCircle, UIImageView rightTrackerCircle, UITableView tableView, UILabel chosenDates)
+							   UIImageView leftTrackerCircle, UIImageView rightTrackerCircle, UITableView tableView)
 		{
 			cellData = data;
 			graphTable = tableView;
@@ -38,7 +38,7 @@ namespace ION.IOS.ViewController.Logging
 			 
 			//plotView = new PlotView(new CGRect(0,0, .8 * cellWidth, .8 *cellHeight)){
 			plotView = new PlotView(new CGRect(0,0, .8 * cellWidth, cellHeight)){
-				Model = CreatePlotModel(earliest, latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle, chosenDates),		
+				Model = CreatePlotModel(earliest, latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle),		
 			};
 			plotView.BackgroundColor = UIColor.Clear;
 
@@ -55,7 +55,7 @@ namespace ION.IOS.ViewController.Logging
 			includeLabel.AdjustsFontSizeToFitWidth = true;
 
 			//includeButton = new UIButton (new CGRect (.85 * cellWidth,.45 * cellHeight,.1 * cellWidth, .1 * cellWidth));
-			includeButton = new UIButton (new CGRect (.85 * cellWidth,.35 * cellHeight,.1 * cellWidth, .1 * cellWidth));
+			includeButton = new UIButton (new CGRect (.85 * cellWidth,.35 * cellHeight,.09 * cellWidth, .09 * cellWidth));
 			if (ChosenDates.includeList.Contains(cellData.name)) {
         includeButton.SetBackgroundImage (UIImage.FromBundle ("ic_checkbox"), UIControlState.Normal);
 			} else {
@@ -88,19 +88,19 @@ namespace ION.IOS.ViewController.Logging
 		/// </summary>
 		/// <returns>The plot model.</returns>	
 		public PlotModel CreatePlotModel( DateTime earliest, DateTime latest, UIView leftTrackerView, UIView rightTrackerView, 
-										  double trackerHeight, UIView parentView,UIImageView leftTrackerCircle, UIImageView rightTrackerCircle,
-										  UILabel chosenDates) {
-			var lowValue = 9999.9;
-			var highValue = -9999.9;
-
+										  double trackerHeight, UIView parentView,UIImageView leftTrackerCircle, UIImageView rightTrackerCircle) {
+			var lowValue = 9999999.9;
+			var highValue = -9999.9;    
+      //Console.WriteLine("Device: " + cellData.name);
 			foreach (var reading in cellData.readings) {
+        //Console.WriteLine("Current Lowest: " + lowValue + " new reading: " + reading);
 				if (reading < lowValue) {
 					lowValue = reading;
 				}
 				if (reading > highValue) {
 					highValue = reading;
 				} 
-			}
+			} 
 
 			var plotModel = new PlotModel();
 
@@ -108,7 +108,7 @@ namespace ION.IOS.ViewController.Logging
 			plotModel.PlotAreaBackground = OxyColors.White;
 			plotModel.DefaultFontSize = 0;
 			plotModel.PlotAreaBorderThickness = new OxyThickness(0,0,0,0);
-			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,4);
+			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,-5);
 			//plotModel.Background = OxyColors.SteelBlue;
 
 			/// The bottom axis of the graph which will be a datetime one 
