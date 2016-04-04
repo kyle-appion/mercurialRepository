@@ -13,23 +13,25 @@ namespace ION.IOS.ViewController.Logging {
     public UITapGestureRecognizer resize;
     
     public ChooseReporting(UIView mainView) {
-      reportType = new UIView(new CGRect(.01 * mainView.Bounds.Width, 0, .98 * mainView.Bounds.Width, .55 * mainView.Bounds.Height));
+      reportType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .25 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .55 * mainView.Bounds.Height));
       reportType.BackgroundColor = UIColor.White;
       reportType.Layer.BorderColor = UIColor.Black.CGColor;
       reportType.Layer.BorderWidth = 1f;
       reportType.Layer.CornerRadius = 8;
 
-      savedReports = new UIButton(new CGRect(.25 * reportType.Bounds.Width,.2 * mainView.Bounds.Height,.5 * reportType.Bounds.Width, .12 * mainView.Bounds.Height));
+      savedReports = new UIButton(new CGRect(.25 * reportType.Bounds.Width,.25 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .25 * reportType.Bounds.Height));
       savedReports.SetTitle("Saved Reports", UIControlState.Normal);
-      savedReports.BackgroundColor = UIColor.LightGray;
-      savedReports.SetTitleColor(UIColor.White, UIControlState.Normal);
+      savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      savedReports.SetTitleColor(UIColor.Black, UIControlState.Normal);
       savedReports.Layer.CornerRadius = 8;
+      savedReports.Layer.BorderWidth = 2f;
 
-      newReport = new UIButton(new CGRect(.25 * reportType.Bounds.Width,.35 * mainView.Bounds.Height,.5 * reportType.Bounds.Width, .12 * mainView.Bounds.Height));
+      newReport = new UIButton(new CGRect(.25 * reportType.Bounds.Width,.55 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .25 * reportType.Bounds.Height));
       newReport.SetTitle("New Report", UIControlState.Normal);
-      newReport.BackgroundColor = UIColor.LightGray;
-      newReport.SetTitleColor(UIColor.White, UIControlState.Normal);
+      newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      newReport.SetTitleColor(UIColor.Black, UIControlState.Normal);
       newReport.Layer.CornerRadius = 8;
+      newReport.Layer.BorderWidth = 2f;
 
       step1 = new UILabel(new CGRect(0, .13 * reportType.Bounds.Height,reportType.Bounds.Width, .07 * mainView.Bounds.Height));
       step1.Text = "Step 1";
@@ -38,13 +40,13 @@ namespace ION.IOS.ViewController.Logging {
       step1.AdjustsFontSizeToFitWidth = true;
       step1.Hidden = true;
 
-      savedReports.TouchUpInside += (sender, e) => {savedReports.BackgroundColor = UIColor.LightGray;};
-      savedReports.TouchDown += (sender, e) => {savedReports.BackgroundColor = UIColor.Blue;};
-      savedReports.TouchUpOutside += (sender, e) => {savedReports.BackgroundColor = UIColor.LightGray;};
+      savedReports.TouchUpInside += (sender, e) => {newReport.Enabled = true; savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
+      savedReports.TouchDown += (sender, e) => {newReport.Enabled = false; savedReports.BackgroundColor = UIColor.Blue;};
+      savedReports.TouchUpOutside += (sender, e) => {newReport.Enabled = true; savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
-      newReport.TouchUpInside += (sender, e) => {newReport.BackgroundColor = UIColor.LightGray;};
-      newReport.TouchDown += (sender, e) => {newReport.BackgroundColor = UIColor.Blue;};
-      newReport.TouchUpOutside += (sender, e) => {newReport.BackgroundColor = UIColor.LightGray;};
+      newReport.TouchUpInside += (sender, e) => {savedReports.Enabled = true; newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
+      newReport.TouchDown += (sender, e) => {savedReports.Enabled = false; newReport.BackgroundColor = UIColor.Blue;};
+      newReport.TouchUpOutside += (sender, e) => {savedReports.Enabled = true; newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
       reportType.AddSubview(savedReports);
       reportType.AddSubview(newReport);

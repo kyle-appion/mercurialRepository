@@ -1,9 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.IO;
 using UIKit;
 using Foundation;
 using CoreGraphics;
+using QuickLook;
+
+using Xfinium.Pdf;
+using Xfinium.Pdf.Graphics;
+using Xfinium.Pdf.Graphics.Text;
+
+using ION.Core.Report;
 
 using OxyPlot;
 using OxyPlot.Axes;
@@ -15,9 +23,10 @@ namespace ION.IOS.ViewController.Logging
 	public struct deviceReadings {
 		public string type;
 		public string name;
+    public int frnJID;
+    public int SID;
 		public List<double> readings;
 		public List<DateTime> times;
-		public bool included;
 	}
 
 	public static class ChosenDates {
@@ -65,7 +74,7 @@ namespace ION.IOS.ViewController.Logging
 		public int deviceCount;
 		public double dateMultiplier;
 
-		public GraphingView (UIView mainView, List<deviceReadings> pressuresTemperatures)
+		public GraphingView (UIView mainView, UIViewController mainVC, List<deviceReadings> pressuresTemperatures)
 		{			
 			selectedData = pressuresTemperatures;
 			deviceCount = selectedData.Count;
@@ -74,6 +83,7 @@ namespace ION.IOS.ViewController.Logging
 			topCell = 0;
 			ChosenDates.includeList = new List<string> ();
 			//ChosenDates.allTimes = new List<string> ();
+
 			getEarliestAndLatest ();
 
       //gView = new UIView (new CGRect (.01 * mainView.Bounds.Width,.14 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .86 * mainView.Bounds.Height));
@@ -108,9 +118,10 @@ namespace ION.IOS.ViewController.Logging
 					trackerHeight = .7 * gView.Bounds.Height;
 					bottomCell = 4;
 					break;
-			}
+			}	
 
-			createButtons ();
+      createButtons (mainVC);
+
       if (deviceCount > 0) {
         graphTable = new UITableView(new CGRect(.1 * gView.Bounds.Width, .075 * gView.Bounds.Height, .85 * gView.Bounds.Width, trackerHeight));
         graphTable.BackgroundColor = UIColor.Clear;
@@ -142,6 +153,7 @@ namespace ION.IOS.ViewController.Logging
       } else {
         var noData = new UILabel(new CGRect(0,0,gView.Bounds.Width,60));
         noData.Text = "No Data Available";
+        noData.TextAlignment = UITextAlignment.Center;
         gView.AddSubview(noData);
       }
 		}
@@ -169,8 +181,8 @@ namespace ION.IOS.ViewController.Logging
 				}
 				if(leftDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && leftDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
 					if(rightTrackerCircle.Center.X - 12 > leftDrag.LocationInView(mainView).X){
-						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.065 * mainView.Bounds.Height, leftDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-						leftTrackerCircle.Frame = new CGRect(leftDrag.LocationInView(mainView).X - 12,.065 * mainView.Bounds.Height + trackerHeight,24,26);
+						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.075 * mainView.Bounds.Height, leftDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
+						leftTrackerCircle.Frame = new CGRect(leftDrag.LocationInView(mainView).X - 12,.075 * mainView.Bounds.Height + trackerHeight,24,26);
 					}
 				}
 				if (leftDrag.State == UIGestureRecognizerState.Ended){
@@ -211,8 +223,8 @@ namespace ION.IOS.ViewController.Logging
         //if(rightDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rightDrag.LocationInView(mainView).X < (.765 * mainView.Bounds.Width)){
         if(rightDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rightDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
 					if(leftTrackerCircle.Center.X + 12 < rightDrag.LocationInView(mainView).X){
-						rightTrackerView.Frame = new CGRect(rightDrag.LocationInView(mainView).X,.065 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rightDrag.LocationInView(mainView).X, trackerHeight);
-						rightTrackerCircle.Frame = new CGRect(rightDrag.LocationInView(mainView).X - 12,.065 * mainView.Bounds.Height + trackerHeight,24,26);
+						rightTrackerView.Frame = new CGRect(rightDrag.LocationInView(mainView).X,.075 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rightDrag.LocationInView(mainView).X, trackerHeight);
+						rightTrackerCircle.Frame = new CGRect(rightDrag.LocationInView(mainView).X - 12,.075 * mainView.Bounds.Height + trackerHeight,24,26);
 					}
 				}
 				if (rightDrag.State == UIGestureRecognizerState.Ended){
@@ -243,7 +255,7 @@ namespace ION.IOS.ViewController.Logging
 		/// <summary>
 		/// Creates the buttons to navigate and manipulate the graph and its included data
 		/// </summary>
-		public void createButtons(){
+		public void createButtons(UIViewController mainVC){
 			resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .92 * gView.Bounds.Height, .25 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;
 			resetButton.SetTitle ("Reset", UIControlState.Normal);
@@ -282,44 +294,66 @@ namespace ION.IOS.ViewController.Logging
 
 			exportGraph = new UIButton (new CGRect (.7 * gView.Bounds.Width, .92 * gView.Bounds.Height,.25 * gView.Bounds.Width,.08 * gView.Bounds.Height));
 			exportGraph.BackgroundColor = UIColor.Green;
-			exportGraph.SetTitle ("Export", UIControlState.Normal);
-			exportGraph.Layer.CornerRadius = 8;
+			exportGraph.SetTitle ("Export", UIControlState.Normal); 
+			exportGraph.Layer.CornerRadius = 8; 
 
 			exportGraph.TouchUpInside += (sender, e) => {
+        
 				Console.WriteLine("using graph data starting at " + ChosenDates.subLeft + " and ending at " + ChosenDates.subRight);
 				exportGraph.BackgroundColor = UIColor.Green;
-				foreach(var name in ChosenDates.includeList){
-					Console.WriteLine("included in reporting: " + name);
-				}
-			};
+        ShowToast(mainVC);
+
+//        var reportData = new List<deviceReadings>();
+//        foreach(var sensor in selectedData){
+//          if(ChosenDates.includeList.Contains(sensor.name)){
+//            reportData.Add(sensor);
+//          }
+//        }
+//        var report = new xmlReport(ChosenDates.subLeft, ChosenDates.subRight,reportData);
+//        Console.WriteLine("Report will start at date: " + report.startDate.ToString() + " and end with date: " + report.endDate.ToString());
+//        foreach(var deviceData in report.Sensors){
+//          Console.WriteLine("Using deviceSN: " + deviceData.deviceSN + " from session: " + deviceData.SID);
+//          if(deviceData.JID > 0){
+//            Console.WriteLine("Associated to JID: " + deviceData.JID);
+//          }
+//        }
+			}; 
 			exportGraph.TouchDown += (sender, e) => {exportGraph.BackgroundColor = UIColor.Blue;};
 			exportGraph.TouchUpOutside += (sender, e) => {exportGraph.BackgroundColor = UIColor.Green;};
 
 			menuButton = new UIButton (new CGRect (.9 * gView.Bounds.Width,5,.075 * gView.Bounds.Width,.05 * gView.Bounds.Height));
 			menuButton.SetBackgroundImage (UIImage.FromBundle ("ic_settings"), UIControlState.Normal);
 
-			scrollUp = new UIButton (new CGRect (0,.075 *gView.Bounds.Height,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
+      var scrollPosition = .16 * gView.Bounds.Height;
+      if (UserInterfaceIdiomIsPhone) {
+        scrollPosition = .19 * gView.Bounds.Height;
+      } 
+      scrollUp = new UIButton (new CGRect (0,scrollPosition,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
 			scrollUp.SetImage (UIImage.FromBundle ("ic_scrollup"), UIControlState.Normal);
 			scrollUp.Enabled = false;
+      //scrollUp.Layer.BorderWidth = 1f;
 			scrollUp.TouchUpInside += (sender, e) => {
 				graphTable.ScrollToRow(NSIndexPath.FromRowSection(topCell,0), UITableViewScrollPosition.Top, true);
-				if(topCell <= 0){ 
+				if(topCell <= 0){
 					topCell = 0;
 					scrollUp.Enabled = false;
+          scrollDown.Enabled = true;
 				} else {
 					topCell = topCell - 1;
 					bottomCell = bottomCell -1;
 					scrollDown.Enabled = true;
-				}
-			};
-
-			scrollDown = new UIButton (new CGRect (0,trackerHeight,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
+				} 
+			}; 
+        
+      scrollDown = new UIButton (new CGRect (0, .6 * gView.Bounds.Height,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
 			scrollDown.SetImage (UIImage.FromBundle ("ic_scrolldown"), UIControlState.Normal);
+      //scrollDown.Layer.BorderWidth = 1f;
 			scrollDown.TouchUpInside += (sender, e) => {
 				graphTable.ScrollToRow(NSIndexPath.FromRowSection(bottomCell,0), UITableViewScrollPosition.Bottom, true);
 				if(bottomCell >= deviceCount - 1){
 					bottomCell = deviceCount - 1;
 					scrollDown.Enabled = false;
+          scrollUp.Enabled = true;
 				} else {
 					topCell = topCell + 1;
 					bottomCell = bottomCell + 1;
@@ -354,26 +388,148 @@ namespace ION.IOS.ViewController.Logging
 
 			ChosenDates.subLeft = earliest;
 			ChosenDates.subRight = latest;
-			Console.WriteLine ("Final earliest " + earliest + " and latest " + latest);
-			Console.WriteLine ("Final earliest year " + earliest.Year + " and latest year " + latest.Year);
-			Console.WriteLine ("Final earliest month " + earliest.Month + " and latest month " + latest.Month);
-			Console.WriteLine ("Final earliest day " + earliest.Day + " and latest day " + latest.Day);
-			Console.WriteLine ("Final earliest hour " + earliest.Hour + " and latest hour " + latest.Hour);
-			Console.WriteLine ("Final earliest minute " + earliest.Minute + " and latest minute " + latest.Minute);
+//			Console.WriteLine ("Final earliest " + earliest + " and latest " + latest);
+//			Console.WriteLine ("Final earliest year " + earliest.Year + " and latest year " + latest.Year);
+//			Console.WriteLine ("Final earliest month " + earliest.Month + " and latest month " + latest.Month);
+//			Console.WriteLine ("Final earliest day " + earliest.Day + " and latest day " + latest.Day);
+//			Console.WriteLine ("Final earliest hour " + earliest.Hour + " and latest hour " + latest.Hour);
+//			Console.WriteLine ("Final earliest minute " + earliest.Minute + " and latest minute " + latest.Minute);
 
 //			foreach (var time in timeList) {
 //				ChosenDates.allTimes.Add(time.ToString());
 //			}
 //			ChosenDates.allTimes.Sort ((x, y) => String.Compare (x, y));
 		}
-		/*
-		/// <summary>
-		/// Adjusts the second y axis to scale along side the first y axis and the x axis
-		/// </summary>
-		private void AdjustY1Extent()
-		{
-			RAX.Zoom (LAX.ActualMinimum, LAX.ActualMaximum);
-		}
-		*/
+    public async void ShowToast(UIViewController mainVC){
+      UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Report", null,null,null);
+      messageBox.Show();
+      await Task.Delay(TimeSpan.FromSeconds(1));
+      createPDF(messageBox,mainVC);
+    }
+    public void createPDF(UIAlertView messageBox,UIViewController mainVC){
+      var allGraphs = new UIScrollView(new CGRect(0,0,gView.Bounds.Width,gView.Bounds.Height));
+      var reportHolder = new DataLoggingReport();
+
+      reportHolder.title = "Logging Report";
+      reportHolder.subtitle = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
+
+      var cellHeight = allGraphs.Bounds.Height / 8f;
+      for (int i = 0; i < selectedData.Count; i++) {
+        var cell = graphTable.DequeueReusableCell("graphingCell") as graphCell;
+        if (cell == null) {
+          cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
+        }
+        cell.setupGraph (selectedData [i],allGraphs.Bounds.Width, cellHeight, ChosenDates.subLeft,ChosenDates.subRight, leftTrackerView, rightTrackerView, trackerHeight, gView, leftTrackerCircle, rightTrackerCircle,graphTable);
+        cell.plotView.Frame = new CGRect(0,i * cellHeight,allGraphs.Bounds.Width,cellHeight);
+
+        allGraphs.AddSubview(cell.plotView);
+      }
+
+      var convertedImage = ION.IOS.UI.UIViewExtensions.Capture(allGraphs);
+
+      reportHolder.screenshot = convertedImage.AsPNG().ToArray();
+      Console.WriteLine("First byte array length: " + reportHolder.screenshot.Length);
+
+      reportHolder.tableData = new string[selectedData.Count,4];
+
+      for (int n = 0; n < selectedData.Count; n++) {
+        var lowest = 99999999999.0;
+        var highest = -9999999999.0;
+        var total = 0;
+        foreach (var measurement in selectedData[n].readings) {
+          if (measurement > highest) {
+            highest = measurement;
+          }
+          if (measurement < lowest) {
+            lowest = measurement;
+          }
+          total++;
+        }
+        reportHolder.tableData[n, 0] = "Device SN: " + selectedData[n].name;
+        reportHolder.tableData[n, 1] = "Lowest Measurement: " + lowest;
+        reportHolder.tableData[n, 2] = "Highest Measurement: " + highest;
+        reportHolder.tableData[n, 3] = "Number of Measurements: " + total;
+      }
+
+      string outputPath = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
+
+      MemoryStream imageStream = new MemoryStream(reportHolder.screenshot);
+      Console.WriteLine("Stream byte array length: " + imageStream.Length);
+
+      PdfFixedDocument document = new PdfFixedDocument();
+      PdfStandardFont helveticaBoldTitle = new PdfStandardFont(PdfStandardFontFace.HelveticaBold, 16);
+      PdfStandardFont helveticaSection = new PdfStandardFont(PdfStandardFontFace.Helvetica, 10);
+
+      PdfPage page = document.Pages.Add();
+     
+      DrawImages(page, imageStream, helveticaBoldTitle, helveticaSection);
+
+      page = document.Pages.Add();
+
+      DrawExtraInfo(page, imageStream, helveticaBoldTitle, helveticaSection, reportHolder);
+
+      PreviewOutputInfo output = new PreviewOutputInfo(document, "Graph_Testing.pdf");
+
+      output.Document.Save(outputPath + "/" + output.FileName);
+
+      messageBox.DismissWithClickedButtonIndex(0, true);
+      //var showConverted = new UIImageView(allGraphs.Frame);
+      //      showConverted.BackgroundColor = UIColor.White;
+      //      showConverted.Image = convertedImage;
+      //gView.AddSubview(showConverted);
+
+      QLPreviewController previewController = new QLPreviewController();
+      previewController.DataSource = new PDFViewDataSource(output.FileName);
+      mainVC.PresentViewController(previewController, true, null);
+    }
+
+
+    private static void DrawImages(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont)
+    {
+      PdfBrush brush = new PdfBrush();
+
+      PdfPngImage jpeg = new PdfPngImage(imageStream);
+
+      page.Graphics.DrawString(ChosenDates.subLeft.ToString() + "-" + ChosenDates.subRight.ToString(), titleFont, brush, 160, 50);
+
+      // Draw the image on the page
+      page.Graphics.DrawImage(jpeg, 3, 90, 600, 600);
+
+      page.Graphics.CompressAndClose();
+    }
+
+    private static void DrawExtraInfo(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont, DataLoggingReport report)
+    {
+      PdfBrush brush = new PdfBrush();
+
+      PdfPen blackPen = new PdfPen(PdfRgbColor.Black, 0.5);
+      page.Graphics.DrawRectangle(blackPen, 50, 20, 500, 750, 0);
+
+      var pageSize = 750;
+      var eInfoSpace = (double)pageSize / report.tableData.GetLength(0);
+      var yAxis = 20.0;
+      for(int i = 0; i < report.tableData.GetLength(0);i++) {
+        page.Graphics.DrawString(report.tableData[i,0], titleFont, brush, 180, yAxis);
+       
+        page.Graphics.DrawString(report.tableData[i,1], titleFont, brush, 52, yAxis + (.25 * eInfoSpace));
+
+        page.Graphics.DrawString(report.tableData[i,2], titleFont, brush, 52, yAxis + (.5 * eInfoSpace));
+
+        page.Graphics.DrawString(report.tableData[i,3], titleFont, brush, 52, yAxis + (.75 * eInfoSpace));
+        yAxis = ((i + 1) * eInfoSpace) + 20;
+      }
+
+      page.Graphics.CompressAndClose();
+    }
+
+    /*
+    /// <summary>
+    /// Adjusts the second y axis to scale along side the first y axis and the x axis
+    /// </summary>
+    private void AdjustY1Extent()
+    {
+      RAX.Zoom (LAX.ActualMinimum, LAX.ActualMaximum);
+    }
+    */
 	}
 }

@@ -37,12 +37,12 @@ namespace ION.IOS.ViewController.Analyzer {
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
     public static AnalyzerViewController arvc;
-//    public static bool isRecording = false;
-//    public static UIButton dataRecord;
-//    public static UIButton dataStop;
-//    public static UIButton showRecords;
-//    private IION ion;
-//    private int lastSession;
+    public static bool isRecording = false;
+    public static UIButton dataRecord;
+    public static UIButton dataStop;
+    public static UIButton showRecords;
+    private IION ion;
+    private int lastSession;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -66,34 +66,36 @@ namespace ION.IOS.ViewController.Analyzer {
         root.navigation.ToggleMenu();
       };
 
+      Title = "Analyzer";
+
       createSensors ();
 
-//      ion = AppState.context;
-//
-//      createLocalJobandSessionDatabase();
-//
-//      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
-//      dataRecord.BackgroundColor = UIColor.LightGray;
-//      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
-//      dataRecord.Enabled = true;
-//      dataRecord.Layer.CornerRadius = 6;
-//
-//      dataStop = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height + 30, 30, 30));
-//      dataStop.BackgroundColor = UIColor.LightGray;
-//      dataStop.SetImage(UIImage.FromBundle("ic_stop"),UIControlState.Normal);
-//      dataStop.Enabled = false;
-//      dataStop.Alpha = .4f;
-//      dataStop.Layer.CornerRadius = 6;
-//
-//      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
-//      showRecords.BackgroundColor = UIColor.Green;
-//      showRecords.Layer.CornerRadius = 6;
-//
-//      dataRecord.TouchUpInside += recordDevices;
-//
-//      dataStop.TouchUpInside += stopRecording;
-//
-//      showRecords.TouchUpInside += listOutSessions;
+      ion = AppState.context;
+
+      createLocalJobandSessionDatabase();
+
+      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
+      dataRecord.BackgroundColor = UIColor.LightGray;
+      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
+      dataRecord.Enabled = true;
+      dataRecord.Layer.CornerRadius = 6;
+
+      dataStop = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height + 30, 30, 30));
+      dataStop.BackgroundColor = UIColor.LightGray;
+      dataStop.SetImage(UIImage.FromBundle("ic_stop"),UIControlState.Normal);
+      dataStop.Enabled = false;
+      dataStop.Alpha = .4f;
+      dataStop.Layer.CornerRadius = 6;
+
+      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
+      showRecords.BackgroundColor = UIColor.Green;
+      showRecords.Layer.CornerRadius = 6;
+
+      dataRecord.TouchUpInside += recordDevices;
+
+      dataStop.TouchUpInside += stopRecording;
+
+      showRecords.TouchUpInside += listOutSessions;
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
       mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;
@@ -114,11 +116,11 @@ namespace ION.IOS.ViewController.Analyzer {
         this.View.SendSubviewToBack (mentryView.mView);
       };
 
-//      View.AddSubview(dataRecord);
-//      View.BringSubviewToFront(dataRecord);
-//      View.AddSubview(dataStop);
-//      View.BringSubviewToFront(dataStop);
-//      View.AddSubview(showRecords);
+      View.AddSubview(dataRecord);
+      View.BringSubviewToFront(dataRecord);
+      View.AddSubview(dataStop);
+      View.BringSubviewToFront(dataStop);
+      View.AddSubview(showRecords);
     }
 
     /// <summary>
@@ -127,99 +129,100 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-//    public async void recordDevices(object sender, EventArgs e){
-//      isRecording = true;
-//      dataStop.Enabled = true;
-//      dataStop.Alpha = 1f;
-//      dataRecord.Enabled = false;
-//      dataRecord.Alpha = .4f;
-//
-//      ION.Core.Database.Session session = new ION.Core.Database.Session{sessionStart = DateTime.UtcNow, sessionEnd = DateTime.UtcNow};
-//      ion.database.Insert(session);
-//      lastSession = session.SID;
-//
-//      while (isRecording) {
-//        foreach (sensor liveItem in analyzerSensors.viewList) {
-//          if (liveItem.currentSensor != null) {
-//            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
-//            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.amount.ToString(), measurementDate = DateTime.UtcNow};
-//            ion.database.Insert(measurement);
-//          }
-//        }
-//        await Task.Delay(TimeSpan.FromSeconds(10));
-//      }
-//    }
+    public async void recordDevices(object sender, EventArgs e){
+      isRecording = true;
+      dataStop.Enabled = true;
+      dataStop.Alpha = 1f;
+      dataRecord.Enabled = false;
+      dataRecord.Alpha = .4f;
+
+      ION.Core.Database.Session session = new ION.Core.Database.Session{sessionStart = DateTime.UtcNow, sessionEnd = DateTime.UtcNow};
+      ion.database.Insert(session);
+      lastSession = session.SID;
+
+      while (isRecording) {
+        foreach (sensor liveItem in analyzerSensors.viewList) {
+          if (liveItem.currentSensor != null) {
+            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
+            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.amount.ToString(), measurementDate = DateTime.UtcNow};
+            ion.database.Insert(measurement);
+          }
+        }
+        await Task.Delay(TimeSpan.FromSeconds(10));
+      }
+    }
     /// <summary>
     /// clicking this button stops the recording process and closes out the session with the end time
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-//    public void stopRecording(object sender, EventArgs e){
-//      Console.WriteLine("Current stop time is: " + DateTime.Now + " for session " + lastSession);
-//      ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
-//
-//      var result = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE SID = " + lastSession);
-//
-//      Console.WriteLine("Working session entry is now: " + result[0].SID + " " + result[0].sessionStart.ToLocalTime() + " " + result[0].sessionEnd.ToLocalTime());
-//
-//      isRecording = false;
-//      dataStop.Enabled = false;
-//      dataStop.Alpha = .4f;
-//      dataRecord.Enabled = true;
-//      dataRecord.Alpha = 1f;
-//    }
+    public void stopRecording(object sender, EventArgs e){
+      Console.WriteLine("Current stop time is: " + DateTime.Now + " for session " + lastSession);
+      ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
 
-//    public void listOutSessions(object sender, EventArgs e){
-//
-//      ION.Core.Database.Job job = new ION.Core.Database.Job{jobName = "3rd and Dahlia" };
+      var result = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE SID = " + lastSession);
+
+      Console.WriteLine("Working session entry is now: " + result[0].SID + " " + result[0].sessionStart.ToLocalTime() + " " + result[0].sessionEnd.ToLocalTime());
+
+      isRecording = false;
+      dataStop.Enabled = false;
+      dataStop.Alpha = .4f;
+      dataRecord.Enabled = true;
+      dataRecord.Alpha = 1f;
+    }
+
+    public void listOutSessions(object sender, EventArgs e){
+
+//      ION.Core.Database.Job job = new ION.Core.Database.Job{jobName = "Cheezer's Pub" };
 //      ion.database.Insert(job);
-//      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (13,17,19,11)");
-//
-//      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
-//      Console.WriteLine("Measurements:");
-//      foreach (var item in result) {
-//        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
-//        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
-//      }
-//      Console.WriteLine("");
-//      var result2 = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session ORDER BY SID");
-//      Console.WriteLine("Sessions Recorded:");
-//      foreach (var item in result2) {
-//        Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart.ToLocalTime() + " End:" + item.sessionEnd.ToLocalTime());
-//
-//        var duration = item.sessionEnd.Subtract(item.sessionStart).Hours * 60;
-//        duration += item.sessionEnd.Subtract(item.sessionStart).Minutes;
-//        duration += item.sessionEnd.Subtract(item.sessionStart).Seconds / 60;
-//
-//        var formatTime = item.sessionStart.ToLocalTime();
-//
-//        if(item.sessionStart.TimeOfDay.Equals("PM")){
-//          formatTime.AddHours(12);
-//          formatTime = formatTime - formatTime.TimeOfDay;
-//        }else{
-//          formatTime = formatTime - formatTime.TimeOfDay;
-//        }
-//        Console.WriteLine("Session:" + item.SID + " Start:" + formatTime + " Difference:" + duration.ToString("0.0") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
-//      }
-//      Console.WriteLine("");
-//      var result3 = ion.database.Query<ION.Core.Database.Job>("SELECT * FROM Job ORDER BY JID");
-//
-//      foreach (var item in result3) {
-//        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
-//      }
+//      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 1 WHERE SID IN (2,3)");
+//      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (1)");
+
+      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
+      Console.WriteLine("Measurements:");
+      foreach (var item in result) {
+        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
+        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
+      }
+      Console.WriteLine("");
+      var result2 = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session ORDER BY SID");
+      Console.WriteLine("Sessions Recorded:");
+      foreach (var item in result2) {
+        Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart.ToLocalTime() + " End:" + item.sessionEnd.ToLocalTime());
+
+        var duration = item.sessionEnd.Subtract(item.sessionStart).Hours * 60;
+        duration += item.sessionEnd.Subtract(item.sessionStart).Minutes;
+        duration += item.sessionEnd.Subtract(item.sessionStart).Seconds / 60;
+
+        var formatTime = item.sessionStart.ToLocalTime();
+
+        if(item.sessionStart.TimeOfDay.Equals("PM")){
+          formatTime.AddHours(12);
+          formatTime = formatTime - formatTime.TimeOfDay;
+        }else{
+          formatTime = formatTime - formatTime.TimeOfDay;
+        }
+        Console.WriteLine("Session:" + item.SID + " Difference:" + duration.ToString("0.00") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
+      }
+      Console.WriteLine("");
+      var result3 = ion.database.Query<ION.Core.Database.Job>("SELECT * FROM Job ORDER BY JID");
+
+      foreach (var item in result3) {
+        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
+      }
 //////      db.Query<Session> ("DELETE FROM Session");
 //////      db.Query<Session> ("VACUUM");
 //////      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
 //////      db.Query<SessionMeasurement>("VACUUM");
-//    }
+    }
     /// <summary>
     /// Creates the tables necessary to store and organize a user's sessions and jobs
     /// </summary>
-//    public void createLocalJobandSessionDatabase(){
-//      ion.database.CreateTable<ION.Core.Database.Session>();
-//      ion.database.CreateTable<ION.Core.Database.Job>();
-//      ion.database.CreateTable<ION.Core.Database.SessionMeasurement>();
-//    }
+    public void createLocalJobandSessionDatabase(){
+      ion.database.CreateTable<ION.Core.Database.Session>();
+      ion.database.CreateTable<ION.Core.Database.Job>();
+      ion.database.CreateTable<ION.Core.Database.SessionMeasurement>();
+    }
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
     /// </summary>

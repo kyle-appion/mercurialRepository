@@ -38,13 +38,13 @@ namespace ION.IOS.ViewController.Logging {
       DataType.Layer.BorderColor = UIColor.Black.CGColor;
       DataType.Layer.BorderWidth = 1f;
       DataType.Hidden = true;
-      DataType.Layer.CornerRadius = 8;
+      DataType.Layer.CornerRadius = 8; 
 
       selectedSessions = new ObservableCollection<int>();
       selectedSessions.CollectionChanged += checkForSelected;
       cellHeight = .07f * mainView.Bounds.Height;
 
-      step2 = new UILabel(new CGRect(0,0,DataType.Bounds.Width, cellHeight));
+      step2 = new UILabel(new CGRect(0,.9 * DataType.Bounds.Height,DataType.Bounds.Width, cellHeight));
       step2.Text = "Step 2";
       step2.TextColor = UIColor.Black;
       step2.TextAlignment = UITextAlignment.Center;
@@ -58,26 +58,28 @@ namespace ION.IOS.ViewController.Logging {
       jobButton = new UIButton(new CGRect(0,0,.49 * mainView.Bounds.Width, .12 * mainView.Bounds.Height));
       jobButton.Layer.CornerRadius = 8;
       jobButton.Layer.BorderColor = UIColor.Black.CGColor;
-      jobButton.Layer.BorderWidth = 1f;
+      jobButton.Layer.BorderWidth = 2f;
       jobButton.SetTitle("Show Jobs", UIControlState.Normal);
-      jobButton.BackgroundColor = UIColor.LightGray;
+      jobButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+      jobButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       jobButton.Hidden = true;
       ///user feedback for button press
       jobButton.TouchUpInside += GetAllJobs;
       jobButton.TouchDown += (sender, e) => { jobButton.BackgroundColor = UIColor.Blue;};
-      jobButton.TouchUpOutside += (sender, e) => { };
+      jobButton.TouchUpOutside += (sender, e) => { jobButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
       ///button to switch to session listing
       sessionButton = new UIButton(new CGRect(.49 * mainView.Bounds.Width,0,.49 * mainView.Bounds.Width, .12 * mainView.Bounds.Height));
       sessionButton.Layer.CornerRadius = 8;
       sessionButton.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionButton.Layer.BorderWidth = 1f;
+      sessionButton.Layer.BorderWidth = 2f;
       sessionButton.SetTitle("Show Sessions", UIControlState.Normal);
-      sessionButton.BackgroundColor = UIColor.LightGray;
+      sessionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+      sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       sessionButton.Hidden = true;
       ///user feedback for button press
       sessionButton.TouchUpInside += GetAllSessions;
       sessionButton.TouchDown += (sender, e) => { sessionButton.BackgroundColor = UIColor.Blue;};
-      sessionButton.TouchUpOutside += (sender, e) => { sessionButton.BackgroundColor = UIColor.LightGray;};
+      sessionButton.TouchUpOutside += (sender, e) => { sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
       showGraphButton = new UIButton(new CGRect(.25 * DataType.Bounds.Width,10 * cellHeight,.5 * DataType.Bounds.Width, cellHeight));
       showGraphButton.Layer.BorderColor = UIColor.Black.CGColor;
@@ -128,15 +130,17 @@ namespace ION.IOS.ViewController.Logging {
     /// <param name="e">E.</param>
     public async void GetAllSessions(object sender, EventArgs e){      
       jobSelected = false;
-      jobButton.BackgroundColor = UIColor.LightGray;
+      jobButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       sessionSelected = true;
       sessionButton.BackgroundColor = UIColor.Blue;
       sessionButton.Enabled = false;
       jobTable.Hidden = true;
       sessionTable.Hidden = false;
 
-      if (activityLoadingTables != null)
+      if (activityLoadingTables != null) {
+        activityLoadingTables.StopAnimating();
         activityLoadingTables = null;
+      }
 
       activityLoadingTables = new UIActivityIndicatorView(new CGRect(0, 0, DataType.Bounds.Width, DataType.Bounds.Height));
       activityLoadingTables.Alpha = .4f;
@@ -166,7 +170,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.Source = new LoggingSessionSource(allSessions,cellHeight, selectedSessions);
       sessionTable.ReloadData();
 
-      await Task.Delay(TimeSpan.FromSeconds(2));
+      await Task.Delay(TimeSpan.FromSeconds(1));
       activityLoadingTables.StopAnimating();
       sessionButton.Enabled = true;
     }
@@ -176,15 +180,17 @@ namespace ION.IOS.ViewController.Logging {
     /// </summary>
     public async void GetAllJobs (object sender, EventArgs e){
       sessionSelected = false;
-      sessionButton.BackgroundColor = UIColor.LightGray;
+      sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       jobSelected = true;
       jobButton.BackgroundColor = UIColor.Blue;
       jobButton.Enabled = false;
       sessionTable.Hidden = true;
       jobTable.Hidden = false;
 
-      if (activityLoadingTables != null)
+      if (activityLoadingTables != null) {
+        activityLoadingTables.StopAnimating();
         activityLoadingTables = null;
+      }
 
       activityLoadingTables = new UIActivityIndicatorView(new CGRect(0, 0, DataType.Bounds.Width, DataType.Bounds.Height));
       activityLoadingTables.Alpha = .4f;
@@ -205,14 +211,13 @@ namespace ION.IOS.ViewController.Logging {
         foreach (var sess in jSessions) {
           queriedJobs[i].jobSessions.Add(new SessionData(sess.SID, sess.sessionStart, sess.sessionEnd));
         }
-
       }
       allJobs = queriedJobs;
       jobTable.Frame = new CGRect(0, jobButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight);
       jobTable.Source = new LoggingJobSource(allJobs, cellHeight, selectedSessions);
       jobTable.ReloadData();
 
-      await Task.Delay(TimeSpan.FromSeconds(2));
+      await Task.Delay(TimeSpan.FromSeconds(1));
       activityLoadingTables.StopAnimating();
       jobButton.Enabled = true;
     }

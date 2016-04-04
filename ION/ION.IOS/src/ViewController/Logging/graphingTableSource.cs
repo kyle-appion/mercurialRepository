@@ -95,7 +95,7 @@ namespace ION.IOS.ViewController.Logging
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
 			}
 				
-			cell.setupGraph (tableItems [indexPath.Row],tableView.Bounds.Width, .15 * parentView.Bounds.Height, earliest,latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle,tableView, chosenDates);
+			cell.setupGraph (tableItems [indexPath.Row],tableView.Bounds.Width, .15 * parentView.Bounds.Height, earliest,latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle,tableView);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;
 		}
