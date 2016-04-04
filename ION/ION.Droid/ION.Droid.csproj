@@ -210,6 +210,7 @@
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IONRecyclerViewAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -435,6 +436,7 @@
     <AndroidResource Include="Resources\layout\list_item_data_log_graph.axml" />
     <AndroidResource Include="Resources\layout\list_item_data_log_overview.axml" />
     <AndroidResource Include="Resources\layout\dialog_date_time.axml" />
+    <AndroidResource Include="Resources\layout\list_item_ion_recycler_view_holder.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
