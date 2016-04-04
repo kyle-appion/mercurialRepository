@@ -1,10 +1,12 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Alarms {
 
-using ION.Core.Alarms;
-using ION.Core.Measure;
-using ION.Core.Sensors;
+  using System;
 
-namespace ION.Core.Sensors.Alarms {
+  using ION.Core.Alarms;
+  using ION.Core.Devices;
+  using ION.Core.Measure;
+  using ION.Core.Sensors;
+
   public class LowSensorAlarm : BoundedSensorAlarm {
     
     public LowSensorAlarm(string name, string description, Sensor sensor) : base(name, description, sensor) {
@@ -12,8 +14,14 @@ namespace ION.Core.Sensors.Alarms {
 
     // Overridden from BoundedSensorAlarm
     public override bool IsTriggered() {
-      ION.Core.Util.Log.D(this, sensor.measurement + " < " + bounds + " == " + (sensor.measurement < bounds)); 
-      return sensor.measurement < bounds;
+      var triggered = sensor.measurement < bounds;
+      var gds = sensor as GaugeDeviceSensor;
+
+      if (gds != null) {
+        return gds.device.isConnected && triggered;
+      } else {
+        return triggered;
+      }
     }
   }
 }
