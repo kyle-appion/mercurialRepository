@@ -49,7 +49,7 @@
       }));
 
       FindViewById(Resource.Id.reenable).SetOnClickListener(new ViewClickAction((v) => {
-        alarm.Cancel();
+        alarm.Reset();
         alarm.enabled = true;
         Finish();
       }));

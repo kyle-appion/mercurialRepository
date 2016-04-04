@@ -1,8 +1,20 @@
 TODOS
 
+IOS
+  Device Manager
+    * Fix the connection spinner.
+    * Let the user cancel a connection attempt (related to the spinner)
+    * Fix the issue that newly found devices refresh the list and reorganize it
+    * Fix the issue that connecting to a device marks all other devices (known
+      or not) as disconnected
+      
+
+
 ANDROID
-  Application
-    * Support bluetooth classic
+  Application APK / Runtime
+    * Clearing the cache destroys the application (ie. the application will not
+      start). This appears to be because the cache contained important non-apk
+      dlls that are necessary for the c# runtime.
 
   DeviceManager
     * Weird glitch were items (clicked at the right time) will swap order.

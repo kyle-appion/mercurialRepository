@@ -1,11 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Devices.Connections {
+  using System;
+  using System.Threading;
+  using System.Threading.Tasks;
 
-using ION.Core.Connections;
-using ION.Core.Util;
+  using ION.Core.Connections;
+  using ION.Core.Devices.Protocols;
+  using ION.Core.Util;
 
-namespace ION.Core.Devices.Connections {
   /// <summary>
   /// BaseScanMode provides a basic implementation of common scan modes.
   /// This allows children modes to simply implement that platform specific
@@ -13,9 +14,13 @@ namespace ION.Core.Devices.Connections {
   /// lifting.
   /// </summary>
   public abstract class BaseConnectionHelper : IConnectionHelper {
-    // Overridden from IScanMode
+    /// <summary>
+    /// The event pool that is notified when the connection helper state changes.
+    /// </summary>
     public event OnScanStateChanged onScanStateChanged;
-    // Overridden from IScanMode
+    /// <summary>
+    /// The event pool that is nofied when the connection helper discovers a device.
+    /// </summary>
     public event OnDeviceFound onDeviceFound;
 
     // Overridden from IScanMode
@@ -30,24 +35,15 @@ namespace ION.Core.Devices.Connections {
         NotifyScanStateChanged();
       }
     } bool __isScanning;
-    // Overridden from IScanMode
-    public virtual bool isFinished { 
+    /// <summary>
+    /// Whether or not the connection helper requires its own timer to handle scanning.
+    /// </summary>
+    protected virtual bool requiresCustomTime {
       get {
-        return !isScanning && (scanOptions != null && scanOptions.repeatCount == 0);
+        return false;
       }
     }
 
-    /// <summary>
-    /// The scan repeats options that were set at the start of the scan.
-    /// </summary>
-    /// <value>The scan options.</value>
-    private ScanRepeatOptions scanOptions { get; set; }
-
-    /// <summary>
-    /// The running scan task. Will be null if not scanning.
-    /// </summary>
-    /// <value>The scan task.</value>
-    private Task scanTask { get; set; }
     /// <summary>
     /// The token that is used to cancel the scan task.
     /// </summary>
@@ -59,85 +55,53 @@ namespace ION.Core.Devices.Connections {
     }
 
     // Overridden from IScanMode
-    public abstract bool Enable();
-
-    // Overridden from IScanMode
-    public abstract IConnection CreateConnectionFor(string address);
-
-    // Overridden from IScanMode
-    public bool Scan(TimeSpan scanTime, ScanRepeatOptions options) {
+    public async Task<bool> Scan(TimeSpan scanTime) {
       lock (this) {
         if (isScanning) {
           return false;
+        } else {
+          isScanning = true;
         }
       }
 
       cancellationToken = new CancellationTokenSource();
       var token = cancellationToken.Token;
 
-      scanTask = Task.Factory.StartNew(async () => {
-        try {
-          token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-          Log.D(this, "Start scan for " + scanTime.TotalMilliseconds + "ms");
+      try {
+        var task = OnScan(scanTime, token);
 
-          StartScan();
+        var start = DateTime.Now;
 
-          var timer = DateTime.Now;
-          while (DateTime.Now - timer < scanTime) {
-            token.ThrowIfCancellationRequested();
-            await Task.Delay(100);
+        while (!(task.IsCompleted || task.IsCanceled || task.IsFaulted || token.IsCancellationRequested)) {
+          if (!requiresCustomTime && (DateTime.Now - start > scanTime)) {
+            cancellationToken.Cancel();
+            break;
+          } else {
+            await Task.Delay(50);
           }
-          token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-          StopScan();
-          Log.D(this, "Stopping scan");
-
-          if (options != null) {
-            while (options.repeatCount == ScanRepeatOptions.REPEAT_FOREVER || --options.repeatCount > 0) {
-              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-              Log.D(this, "Continuing scan");
-              timer = DateTime.Now;
-              while (DateTime.Now - timer < options.restInterval) {
-                token.ThrowIfCancellationRequested();
-                await Task.Delay(100);
-              }
-              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-              StartScan();
-              timer = DateTime.Now;
-              while (DateTime.Now - timer < scanTime) {
-                token.ThrowIfCancellationRequested();
-                await Task.Delay(100);
-              }
-              token.ThrowIfCancellationRequested(); // Check that we aren't cancelled.
-              StopScan();
-            }
-          }
-        } catch (Exception e) {
-          Log.E(this, "Something broke during scanning", e);
-        } finally {
-          Log.D(this, "Stopping scan");
-          Stop();
         }
-      }, cancellationToken.Token);
+
+        cancellationToken = null;
+      } catch (Exception e) {
+        Log.E(this, "Something broke during scanning", e);
+      } finally {
+        Stop();
+      }
+
       return true;
     }
 
     // Overridden from IScanMode
     public void Stop() {
-      Log.D(this, "stop");
       lock (this) {
-        if (this.isScanning) {
-          cancellationToken.Cancel();
-          StopScan();
+        if (isScanning) {
+          if (cancellationToken != null) {
+            cancellationToken.Cancel();
+          }
+          OnStop();
         }
-        scanTask = null;
+        isScanning = false;
       }
-    }
-
-    /// <summary>
-    /// Called when the scan mode is being disposed.
-    /// </summary>
-    protected virtual void OnDispose() {
-      // Nope
     }
 
     /// <summary>
@@ -155,32 +119,40 @@ namespace ION.Core.Devices.Connections {
     /// <param name="device">SerialNumber.</param>
     /// <param name="packet">Packet.</param>
     /// <param name="protocol">Protocol version.</param>
-    protected void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] packet, int protocolVersion) {
+    protected void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocolVersion) {
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, packet, protocolVersion);
       }
     }
 
-    private void StartScan() {
-      isScanning = true;
-      DoStartScan();
-    }
+    /// <summary>
+    /// Enables the connection helper's backend.
+    /// </summary>
+    public abstract Task<bool> Enable();
 
-    private void StopScan() {
-      Log.D(this, "Stopping scan");
-      DoStopScan();
-      isScanning = false;
-    }
-
+    /// <summary>
+    /// Creates the connection for the given address.
+    /// </summary>
+    /// <returns>The connection for.</returns>
+    /// <param name="identifier">Address.</param>
+    /// <param name="address">Address.</param>
+    public abstract IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
+    /// <summary>
+    /// Queries whether or not the connection helper can resolve the given protocol.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    /// <param name="protocol">Protocol.</param>
+    public abstract bool CanResolveProtocol(EProtocolVersion protocol);
     /// <summary>
     /// Platform code for starting a scan.
     /// </summary>
     /// <returns>The scan async.</returns>
-    protected abstract void DoStartScan();
+    protected abstract Task OnScan(TimeSpan scanTime, CancellationToken token);
     /// <summary>
     /// Platform code for stopping a scan.
     /// </summary>
-    protected abstract void DoStopScan();
+    protected abstract void OnStop();
   }
 }
 

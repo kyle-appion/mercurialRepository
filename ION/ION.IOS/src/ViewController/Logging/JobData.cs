@@ -38,19 +38,19 @@ namespace ION.IOS.ViewController.Logging {
       };
 
       jobSelect = new UITapGestureRecognizer(() => {
-        var sessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + JID);
+        var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE frnJID = " + JID);
         if(selected.Equals(false)){
           selected = true;
           foreach(var sesh in sessions){
-            if(!selectedSessions.Contains(sesh.SID)){
-              selectedSessions.Add(sesh.SID);
+            if(!selectedSessions.Contains(sesh.id)){
+              selectedSessions.Add(sesh.id);
             }
           }
         } else {
           selected = false;
           foreach(var sesh in sessions){
-            if(selectedSessions.Contains(sesh.SID)){
-              selectedSessions.Remove(sesh.SID);
+            if(selectedSessions.Contains(sesh.id)){
+              selectedSessions.Remove(sesh.id);
             }
           }
         }

@@ -1,6 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Util {
+  
+  using System;
 
-namespace ION.Core.Util {
   /// <summary>
   /// Some usful extensions to the date time class.
   /// </summary>

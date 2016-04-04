@@ -7,6 +7,7 @@
 
   using ION.Core.App;
   using ION.Core.Devices.Connections;
+  using ION.Core.Devices.Protocols;
 
   public class DeviceManagerEvent {
     public EType type { get; private set; }
@@ -58,7 +59,7 @@
   /// this, the factory can create duplicate devices. It is up to the hosting type to
   /// manage collisions.
   /// </summary>
-  public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, int protocol);
+  public delegate IDevice DeviceFactoryDelegate(ISerialNumber serialNumber, string connectionIdentifier, EProtocolVersion protocol);
   /// <summary>
   /// The delegate that is notified when the device manager's state changes.
   /// </summary>
@@ -122,7 +123,7 @@
     /// The scan mode that delegates out the platform specific scan procedures.
     /// </summary>
     /// <value>The scanner.</value>
-    IConnectionHelper connectionHelper { get; }
+    IConnectionHelper connectionHelper { get; set; }
 
     /// <summary>
     /// Requests that the device manager enable its communication backend.
@@ -149,14 +150,21 @@
     /// <param name="serialNumber">Serial number.</param>
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
-    IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocol);
+    IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
+
+    /// <summary>
+    /// Saves the given device to the database.
+    /// </summary>
+    /// <returns>The device.</returns>
+    /// <param name="device">Device.</param>
+    Task<bool> SaveDevice(IDevice device);
 
     /// <summary>
     /// Permanentely deletes the device from the device manager and any persistent backend
     /// it is using. The device will be moved to the "Found Devices" collection.
     /// </summary>
     /// <param name="serialNumber">Serial number.</param>
-    void DeleteDevice(ISerialNumber serialNumber);
+    Task<bool> DeleteDevice(ISerialNumber serialNumber);
 
     /// <summary>
     /// Determines whether this instance is device known the specified device.
@@ -164,6 +172,18 @@
     /// <returns><c>true</c> if this instance is device known the specified device; otherwise, <c>false</c>.</returns>
     /// <param name="device">Device.</param>
     bool IsDeviceKnown(IDevice device);
+
+    /// <summary>
+    /// Registers the device to the known device's mapping.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    void Register(IDevice device);
+
+    /// <summary>
+    /// Unregisters the device from the device manager.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    void Unregister(IDevice device);
 
     /// <summary>
     /// Attempts to connect to the given device. 

@@ -64,10 +64,7 @@
     <Compile Include="src\Content\Manifold.cs" />
     <Compile Include="src\Util\Arrays.cs" />
     <Compile Include="src\Content\Workbench.cs" />
-    <Compile Include="src\Database\IDao.cs" />
     <Compile Include="src\Database\IONDatabase.cs" />
-    <Compile Include="src\Database\DeviceDao.cs" />
-    <Compile Include="src\Util\DateTime.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
     <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
@@ -127,9 +124,6 @@
     <Compile Include="src\Location\SimpleLocation.cs" />
     <Compile Include="src\Sensors\ManualSensor.cs" />
     <Compile Include="src\Content\Analyzer.cs" />
-    <Compile Include="src\Database\Job.cs" />
-    <Compile Include="src\Database\Session.cs" />
-    <Compile Include="src\Database\SessionMeasurement.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCalibrationCertificate.cs" />
     <Compile Include="src\Devices\Certificates\GaugeDeviceCertificatePdfExporter.cs" />
     <Compile Include="src\Sensors\SensorTypeFilter.cs" />
@@ -143,6 +137,26 @@
     <Compile Include="src\App\Constants.cs" />
     <Compile Include="src\Report\DataLoggingReport.cs" />
     <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />
+    <Compile Include="src\Devices\Connections\ConnectionHelperCollection.cs" />
+    <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
+    <Compile Include="src\Database\ITableRow.cs" />
+    <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
+    <Compile Include="src\Devices\SerialNumberExtensions.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogManager.cs" />
+    <Compile Include="src\Report\DataLogs\LoggingSession.cs" />
+    <Compile Include="src\Util\Timer.cs" />
+    <Compile Include="src\Job\Job.cs" />
+    <Compile Include="src\Database\JobRow.cs" />
+    <Compile Include="src\Database\SensorMeasurementRow.cs" />
+    <Compile Include="src\Database\SessionRow.cs" />
+    <Compile Include="src\Database\DeviceRow.cs" />
+    <Compile Include="src\Job\IJobManager.cs" />
+    <Compile Include="src\Report\DataLogs\DataLogReport.cs" />
+    <Compile Include="src\Report\DataLogs\SensorLog.cs" />
+    <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
+    <Compile Include="src\Report\DataLogs\SessionResults.cs" />
+    <Compile Include="src\Connections\MockConnection.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -173,6 +187,8 @@
     <Folder Include="src\Fluids\Embedded\" />
     <Folder Include="src\Measure\Json\" />
     <Folder Include="src\Devices\Filters\" />
+    <Folder Include="src\Report\DataLogs\" />
+    <Folder Include="src\Job\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
@@ -182,7 +198,7 @@
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
