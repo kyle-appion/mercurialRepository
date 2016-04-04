@@ -43,14 +43,17 @@
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
+  <string name="next">Next</string>
   <string name="notes">Notes</string>
   <string name="ok">OK</string>
   <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
+  <string name="pick_time">Pick Time</string>
   <string name="pick_unit">Pick Unit</string>
   <string name="please_wait">Please Wait</string>
   <string name="reconnect">Reconnect</string>
+  <string name="record">Record</string>
   <string name="reenable">Re-enable</string>
   <string name="remove">Remove</string>
   <string name="rename">Rename</string>
@@ -63,6 +66,8 @@
   <string name="settings">Settings</string>
   <string name="stable">Stable</string>
   <string name="state">State</string>
+  <string name="text">Text"</string>
+  <string name="title">Title</string>
   <string name="unit">Unit</string>
   <string name="zip">Zip Code</string>
 
@@ -122,8 +127,11 @@
   -->
   <string name="device_av760">AV760</string>
   <string name="device_p300">P300</string>
+  <string name="device_pt300">PT300</string>
   <string name="device_p500">P500</string>
+  <string name="device_pt500">PT500</string>
   <string name="device_p800">P800</string>
+  <string name="device_pt800">PT800</string>
   <string name="device_serial_number">Serial Number</string>
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
@@ -193,12 +201,27 @@
   <string name="report_certificates_downloading">Downloading Certificates</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
+  <string name="report_data_logging">Data Log Report</string>
+  <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
+  <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
+  <string name="report_data_logging_highest_measurement">Highest Measurement</string>
+  <string name="report_data_logging_lowest_measurement">Lowest Measurement</string>
+  <string name="report_data_logging_measurement_count">Number of Measurements</string>
+  <string name="report_data_logging_select_start_datetime">Choose a manual start date for the graph</string>
+  <string name="report_data_logging_select_end_datetime">Choose a manual end date for the graph</string>
+  <string name="report_data_logging_step_1">Step 1</string>
+  <string name="report_data_logging_step_2">Step 2</string>
+  <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_jobs">Jobs</string>
   <string name="report_name">Report Name</string>
+  <string name="report_new">New Report</string>
+  <string name="report_saved">Saved Report</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+  <string name="report_sessions">Sessions</string>
 
   <!--
   WORKBENCH

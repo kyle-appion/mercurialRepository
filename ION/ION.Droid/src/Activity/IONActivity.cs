@@ -240,13 +240,5 @@
       Toast.MakeText(this, message, ToastLength.Long).Show();
     }
   }
-
-  /// <summary>
-  /// The flags that the ion activity supports.
-  /// </summary>
-  [Flags]
-  public enum EFlags {
-    AllowScreenshot = 1 << 0,
-  }
 }
 

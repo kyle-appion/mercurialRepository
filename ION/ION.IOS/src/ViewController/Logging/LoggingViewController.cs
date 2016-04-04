@@ -16,6 +16,7 @@ using ION.IOS.UI;
 using ION.Core.Database;
 using ION.Core.Content;
 using ION.Core.Devices;
+using ION.Core.Report.DataLogs;
 using ION.Core.Util;
 using ION.Core.App;
 
@@ -41,8 +42,8 @@ namespace ION.IOS.ViewController.Logging {
 
       backAction = () => {
         root.navigation.ToggleMenu();
-      }; 
-      Title = "Reports"; 
+      };
+      Title = "Reports";
       /*************************************************************
       var recordView = new UIImageView(new CGRect(0,0,30,30));
       recordView.Image = UIImage.FromBundle("ic_play");
@@ -142,7 +143,7 @@ namespace ION.IOS.ViewController.Logging {
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
         () =>{
           reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, .25 * View.Bounds.Height, .98 * View.Bounds.Width, .55 * View.Bounds.Height);
-        }, 
+        },
         () => {
           reportingSection.newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
           reportingSection.savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -150,7 +151,7 @@ namespace ION.IOS.ViewController.Logging {
           reportingSection.savedReports.Hidden = false;
           reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
         });
-    }     
+    }
     /// <summary>
     /// Expands the saved reports section
     /// </summary>
@@ -159,11 +160,11 @@ namespace ION.IOS.ViewController.Logging {
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         savedReportsSection.showReports.Hidden = false;
         savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
-      }, 
+      },
         () => {
           savedReportsSection.reportTable.Hidden = false;
           savedReportsSection.header.Hidden = false;
-        }); 
+        });
     }
     /// <summary>
     /// Collapses the saved report section and then expands the reporting type section
@@ -175,11 +176,11 @@ namespace ION.IOS.ViewController.Logging {
         savedReportsSection.reportTable.Hidden = true;
         savedReportsSection.header.Hidden = true;
         savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
-      }, 
+      },
         () => {
           savedReportsSection.showReports.Hidden = true;
           resizeReportingSectionLarger();
-        });  
+        });
     }
     /// <summary>
     /// Expands the job and session section
@@ -259,7 +260,7 @@ namespace ION.IOS.ViewController.Logging {
     /// <summary>
     /// Resizes the graphing section larger.
     /// </summary>
-    public void resizeGraphingSectionLarger(){ 
+    public void resizeGraphingSectionLarger(){
       if (activityLoadingGraphs != null) {
         activityLoadingGraphs = null;
       }
@@ -281,7 +282,7 @@ namespace ION.IOS.ViewController.Logging {
       var graphResult = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd, frnJID FROM Session WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
 
       var tempResults = new List<deviceReadings>();
-      for(int s = 0; s < graphResult.Count; s++){        
+      for(int s = 0; s < graphResult.Count; s++){
         var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].SID);
 
         for(int m = 0; m < deviceCount.Count; m++){
@@ -307,8 +308,8 @@ namespace ION.IOS.ViewController.Logging {
         activityLoadingGraphs.StartAnimating();
         graphingSection.graphingType.Hidden = false;
         graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .14 * View.Bounds.Height, .98 * View.Bounds.Width, .83 * View.Bounds.Height);
-      }, 
-      () => {            
+      },
+      () => {
           graphingSection.graphingView = new GraphingView(graphingSection.graphingType,this, tempResults);
           graphingSection.legendView = new LegendView(graphingSection.graphingType,tempResults,this,graphingSection.graphingView.earliest, graphingSection.graphingView.latest);
           graphingSection.graphingType.AddSubview (graphingSection.graphingView.gView);
@@ -323,7 +324,7 @@ namespace ION.IOS.ViewController.Logging {
           });
           dataSection.DataType.AddGestureRecognizer(dataSection.resize);
         });
-    } 
+    }
     /// <summary>
     /// Resizes the graphing section smaller and returns the user to the session/job selection view
     /// </summary>

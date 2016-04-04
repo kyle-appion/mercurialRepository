@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Content {
 
   using System;
+  using System.Collections.Generic;
 
   using ION.Core.App;
   using ION.Core.Fluids;
@@ -233,6 +234,22 @@
       this.ion = ion;
       this.sensorsPerSide = sensorsPerSide;
       sensors = new Sensor[sensorsPerSide * 2];
+    }
+
+    /// <summary>
+    /// Queries the list of sensor that are present in the analyzer.
+    /// </summary>
+    /// <returns>The sensors.</returns>
+    public List<Sensor> GetSensors() {
+      var ret = new List<Sensor>();
+
+      for (int i = 0; i < sensors.Length; i++) {
+        if (sensors[i] != null) {
+          ret.Add(sensors[i]);
+        }
+      }
+
+      return ret;
     }
 
     /// <summary>

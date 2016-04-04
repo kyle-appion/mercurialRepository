@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using CoreGraphics;
 using SQLite;
 
 using ION.Core.App;
+using ION.Core.Database;
 
 namespace ION.IOS.ViewController.Logging {
   
@@ -152,16 +154,24 @@ namespace ION.IOS.ViewController.Logging {
 
       activityLoadingTables.StartAnimating();
 
-      var result = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd FROM Session ORDER BY SID DESC");
+      var result = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM Session ORDER BY SID DESC");
       List<SessionData> queriedSessions = new List<SessionData>();
 
       for (int i = 0; i < result.Count; i++) {
-        queriedSessions.Add(new SessionData(result[i].SID, result[i].sessionStart, result[i].sessionEnd));
+        queriedSessions.Add(new SessionData(result[i].id, result[i].sessionStart, result[i].sessionEnd));
 
-        var measurements = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT MID, frnSID, deviceSN, deviceMeasurement FROM SessionMeasurement WHERE frnSID = " + queriedSessions[i].SID);
+        var sessionId = queriedSessions[i].SID;
 
+        var measurements = ion.database.Table<SensorMeasurementRow>()
+          .Where(smr => smr.deviceId == sessionId)
+          .AsEnumerable();
+          
         foreach(var value in measurements){
-          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(value.MID,value.frnSID,value.deviceSN, value.deviceMeasurement));
+          var serialNumber = ion.database.Table<DeviceRow>()
+            .Where(dr => dr.id == value.deviceId)
+            .First().serialNumber;
+          
+          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(value.id, value.sessionId, serialNumber, value.measurement + ""));
         }
       }
       allSessions = queriedSessions;
@@ -202,14 +212,14 @@ namespace ION.IOS.ViewController.Logging {
 
       activityLoadingTables.StartAnimating();
 
-      var result = ion.database.Query<ION.Core.Database.Job>("SELECT JID, jobName FROM Job ORDER BY JID");
+      var result = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID, jobName FROM Job ORDER BY JID");
 
       List<JobData> queriedJobs = new List<JobData>();
       for (int i = 0; i < result.Count; i++) {
-        queriedJobs.Add(new JobData(result[i].JID, result[i].jobName,jobTable,cellHeight, selectedSessions));
-        var jSessions = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE frnJID = " + result[i].JID);
+        queriedJobs.Add(new JobData(result[i].id, result[i].jobName,jobTable,cellHeight, selectedSessions));
+        var jSessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE frnJID = " + result[i].id);
         foreach (var sess in jSessions) {
-          queriedJobs[i].jobSessions.Add(new SessionData(sess.SID, sess.sessionStart, sess.sessionEnd));
+          queriedJobs[i].jobSessions.Add(new SessionData(sess.id, sess.sessionStart, sess.sessionEnd));
         }
       }
       allJobs = queriedJobs;

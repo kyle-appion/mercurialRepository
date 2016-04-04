@@ -23,6 +23,11 @@
     /// <value>The alarm.</value>
     public AlarmPreferences alarm { get; private set; }
     /// <summary>
+    /// The location preferences.
+    /// </summary>
+    /// <value>The location.</value>
+    public LocationPreferences location { get; private set; }
+    /// <summary>
     /// The unit preferences.
     /// </summary>
     /// <value>The units.</value>
@@ -60,10 +65,29 @@
       }
     }
 
+    /// <summary>
+    /// Queries whether or not this is the application's first launch.
+    /// </summary>
+    /// <value><c>true</c> if first launch; otherwise, <c>false</c>.</value>
+    public bool firstLaunch {
+      get {
+        var ret = prefs.GetBoolean(ion.GetString(Resource.String.pkey_first_launch), true);        
+
+        if (ret) {
+          var e = prefs.Edit();
+          e.PutBoolean(ion.GetString(Resource.String.pkey_first_launch), false);
+          e.Commit();
+        }
+
+        return ret;
+      }
+    }
+
     public AppPrefs(AndroidION ion, ISharedPreferences prefs) {
       this.ion = ion;
       this.prefs = prefs;
       alarm = new AlarmPreferences(ion, prefs);
+      location = new LocationPreferences(ion, prefs);
       units = new UnitPreferences(ion, prefs);
     }
   }
@@ -117,6 +141,46 @@
     }
   }
 
+  public class LocationPreferences : BasePreferences {
+    /// <summary>
+    /// Queries whether or not the user will allow the application to use the device's GPS.
+    /// </summary>
+    /// <value><c>true</c> if allows gps; otherwise, <c>false</c>.</value>
+    public bool allowsGps {
+      get {
+        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_location_gps), true);
+      }
+      set {
+        var e = prefs.Edit();
+
+        e.PutBoolean(ion.GetString(Resource.String.pkey_location_gps), value);
+
+        e.Commit();
+      }
+    }
+
+    /// <summary>
+    /// Queries or sets the user's manually entered elevation.
+    /// </summary>
+    /// <value>The custom elevation.</value>
+    public double customElevation {
+      get {
+        return prefs.GetFloat(ion.GetString(Resource.String.pkey_location_elevation), 0.0f);
+      }
+
+      set {
+        var e = prefs.Edit();
+
+        e.PutFloat(ion.GetString(Resource.String.pkey_location_elevation), (float)value);
+
+        e.Commit();
+      }
+    }
+
+    public LocationPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+    }
+  }
+
   /// <summary>
   /// The preferences that are used to query the application's default unit preferences.
   /// </summary>
@@ -124,40 +188,40 @@
     // Overridden from IUnits
     public Unit length {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_length, Units.Length.FOOT);
+        return AssertUnitGet(Resource.String.pkey_unit_length, Units.Length.FOOT);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_length, Quantity.Length, Units.Length.FOOT);
+        AssertUnitSet(Resource.String.pkey_unit_length, Quantity.Length, Units.Length.FOOT);
       }
     }
 
     // Overridden from IUnits
     public Unit pressure {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_pressure, Units.Pressure.PSIG);
+        return AssertUnitGet(Resource.String.pkey_unit_pressure, Units.Pressure.PSIG);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_pressure, Quantity.Pressure, Units.Pressure.PSIG);
+        AssertUnitSet(Resource.String.pkey_unit_pressure, Quantity.Pressure, Units.Pressure.PSIG);
       }
     }
 
     // Overridden from IUnits
     public Unit temperature {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_temperature, Units.Temperature.FAHRENHEIT);
+        return AssertUnitGet(Resource.String.pkey_unit_temperature, Units.Temperature.FAHRENHEIT);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_temperature, Quantity.Temperature, Units.Temperature.FAHRENHEIT);
+        AssertUnitSet(Resource.String.pkey_unit_temperature, Quantity.Temperature, Units.Temperature.FAHRENHEIT);
       }
     }
 
     // Overridden from IUnits
     public Unit vacuum {
       get {
-        return AssertUnitGet(Resource.String.preferences_units_vacuum, Units.Vacuum.MICRON);
+        return AssertUnitGet(Resource.String.pkey_unit_vacuum, Units.Vacuum.MICRON);
       }
       set {
-        AssertUnitSet(Resource.String.preferences_units_vacuum, Quantity.Vacuum, Units.Vacuum.MICRON);
+        AssertUnitSet(Resource.String.pkey_unit_vacuum, Quantity.Vacuum, Units.Vacuum.MICRON);
       }
     }
 
@@ -190,7 +254,11 @@
       var key = ion.GetString(preferenceKey);
 
       try {
-        return UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+
+        Log.D(this, "Asserting the acquisition of the unit: " + ret);
+
+        return ret;
       } catch (Exception e) {
         Log.E(this, "Failed to retrieve unit for key: " + key);
         AssertUnitSet(preferenceKey, backup.quantity, backup);

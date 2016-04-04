@@ -99,7 +99,7 @@
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
       SetHasOptionsMenu(true);
-      AddFlags(EFlags.AllowScreenshot);
+      AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
 
       if (workbench == null) {
         workbench = ion.currentWorkbench;

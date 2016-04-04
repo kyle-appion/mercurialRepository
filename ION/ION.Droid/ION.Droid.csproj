@@ -28,6 +28,10 @@
     <AndroidLinkMode>None</AndroidLinkMode>
     <ConsolePause>false</ConsolePause>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AndroidSigningKeyStore>/Users/ahodder/Documents/code_space/certs/AppionPrivateKeystore.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -38,6 +42,10 @@
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <ConsolePause>false</ConsolePause>
     <RunCodeAnalysis>false</RunCodeAnalysis>
+    <AndroidSigningKeyStore>/Users/ahodder/Documents/code_space/certs/AppionPrivateKeystore.keystore</AndroidSigningKeyStore>
+    <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
+    <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
+    <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -57,32 +65,41 @@
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android.Export" />
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xamarin.Android">
+      <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Android.Support.v13">
-      <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Basement">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Base">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Maps">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Location">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.CardView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.CardView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.CardView.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +199,18 @@
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
     <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
+    <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
+    <Compile Include="src\Connections\ClassicConnection.cs" />
+    <Compile Include="src\Activity\DataLogging\NewReportFragment.cs" />
+    <Compile Include="src\Activity\DataLogging\DataLoggingReportActivity.cs" />
+    <Compile Include="src\Views\ViewExtensions.cs" />
+    <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
+    <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
+    <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IONRecyclerViewAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -394,6 +423,20 @@
     <AndroidResource Include="Resources\xml\preferences_help.xml" />
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_edit.axml" />
     <AndroidResource Include="Resources\layout\analyzer_dialog_viewer.axml" />
+    <AndroidResource Include="Resources\drawable\ic_logo_appiondefault_small.png" />
+    <AndroidResource Include="Resources\menu\record.xml" />
+    <AndroidResource Include="Resources\layout\activity_data_logging_report.axml" />
+    <AndroidResource Include="Resources\values\integers.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_left_in.xml" />
+    <AndroidResource Include="Resources\anim\card_flip_left_out.xml" />
+    <AndroidResource Include="Resources\layout\list_item_job.axml" />
+    <AndroidResource Include="Resources\layout\list_item_session.axml" />
+    <AndroidResource Include="Resources\anim\fade_out.xml" />
+    <AndroidResource Include="Resources\anim\fade_in.xml" />
+    <AndroidResource Include="Resources\layout\list_item_data_log_graph.axml" />
+    <AndroidResource Include="Resources\layout\list_item_data_log_overview.axml" />
+    <AndroidResource Include="Resources\layout\dialog_date_time.axml" />
+    <AndroidResource Include="Resources\layout\list_item_ion_recycler_view_holder.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -439,6 +482,8 @@
     <Folder Include="src\Tasks\" />
     <Folder Include="src\Alarms\" />
     <Folder Include="src\Alarms\Alerts\" />
+    <Folder Include="src\Activity\DataLogging\" />
+    <Folder Include="src\Widgets\Adapters\DataLogging\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">
@@ -455,6 +500,10 @@
     </XamarinComponentReference>
     <XamarinComponentReference Include="googleplayservices-location">
       <Version>27.0.0.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="oxyplot">
+      <Version>2015.1.744</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

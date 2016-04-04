@@ -16,14 +16,17 @@
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
   using ION.Core.App;
+  using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Content.Parsers;
   using ION.Core.Database;
   using ION.Core.Devices;
+  using ION.Core.Devices.Protocols;
   using ION.Core.Fluids;
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
+  using ION.Core.Report.DataLogs;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
@@ -88,15 +91,26 @@
     /// <value>The fluid manager.</value>
     public IFluidManager fluidManager { get; set; }
     /// <summary>
-    /// The current primary workbench for the ION context.
-    /// </summary>
-    /// <value>The current workbench.</value>
-    public Workbench currentWorkbench { get; set; }
-    /// <summary>
     /// Queries the location manager that is responsbile for ascertaining the user's altitude.
     /// </summary>
     /// <value>The location manager.</value>
     public ILocationManager locationManager { get; set; }
+    /// <summary>
+    /// Queries the data log manager that is responsible for storing sensor data.
+    /// </summary>
+    /// <value>The data log manager.</value>
+    public DataLogManager dataLogManager { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current analyzer.
+    /// </summary>
+    /// <value>The current analyzer.</value>
+    public Analyzer currentAnalyzer { get; set; }
+    /// <summary>
+    /// The current primary workbench for the ION context.
+    /// </summary>
+    /// <value>The current workbench.</value>
+    public Workbench currentWorkbench { get; set; }
 
     /// <summary>
     /// The default units for the ION instance.
@@ -152,10 +166,6 @@
     /// </summary>
     /// <value>The handler.</value>
     private Android.OS.Handler handler { get; set; }
-    /// <summary>
-    /// The application notification.
-    /// </summary>
-    private Notification notification;
 
     /// <summary>
     /// The whole aggragation of the managers present within the ion context.
@@ -192,6 +202,7 @@
       managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)GetSystemService(Context.BluetoothService))));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
+      managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, 
           new PopupActivityAlert(alarm, this),
@@ -212,6 +223,15 @@
         }
       }
 
+/*
+#if DEBUG
+      if (preferences.firstLaunch) {
+        Log.D(this, "Creating debug data logs.");
+        CreateDebugDataLogs(3);
+      }
+#endif
+*/
+
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
       try {
@@ -226,6 +246,9 @@
         Log.E(this, "Failed to load workbench", e);
         currentWorkbench = new Workbench(this);
       }
+
+      // TODO Save/load analyzer.
+      currentAnalyzer = new Analyzer(this);
 
       UpdateNotification();
 
@@ -377,7 +400,7 @@
       var total = deviceManager.devices.Count;
 
       var note = new NotificationCompat.Builder(this)
-        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault)
+        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault_small)
         .SetContentTitle(GetString(Resource.String.app_name))
         .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
         .SetContentIntent(pi)
@@ -398,6 +421,107 @@
           UpdateNotification();
         }
       }
+    }
+
+    /// <summary>
+    /// Creates some test data logging points. Note: these are for testing only and will break during real use.
+    /// </summary>
+    /// <param name="initialJobs">Initial jobs.</param>
+    private async void CreateDebugDataLogs(int initialJobs) {
+      var devices = new IDevice[] {
+        deviceManager.CreateDevice(GaugeSerialNumber.Parse("P816B1337"), MockConnection.MOCK_ADDRESS, EProtocolVersion.V1),
+        deviceManager.CreateDevice(GaugeSerialNumber.Parse("P516A8008"), MockConnection.MOCK_ADDRESS, EProtocolVersion.V2),
+      };
+
+      foreach (var d in devices) {
+        if (!await deviceManager.SaveDevice(d)) {
+          throw new Exception("Failed to save test device");
+        } else {
+          Log.D(this, "Saved device: " + d);
+          deviceManager.Register(d);
+        }
+      }
+      
+      var waves = new Wave[] { Sin, Square, SawTooth };
+
+      var db = database;
+      for (int i = 0; i < initialJobs; i++) {
+        var job = new JobRow();
+        job.jobName = "Job: " + (i + 1);
+        db.Insert(job);
+
+        var sessionCount = initialJobs * 2;
+        var logs = (sessionCount + 1) * 2;
+
+        for (int j = 0; j < sessionCount; j++) {
+          var session = new SessionRow();
+          session.jobId = job.id;
+
+          var start = session.sessionStart = DateTime.FromFileTimeUtc(1458668748L);
+          var end = session.sessionEnd = session.sessionStart + TimeSpan.FromMinutes(logs);
+          var devicesCount = devices.Length;
+
+          var smr = new SensorMeasurementRow[logs * devicesCount];
+          for (int l = 0; l < devicesCount; l++) {
+            var sn = devices[l].serialNumber.ToString();
+            var did = database.Table<DeviceRow>().Where(dr => dr.serialNumber.Equals(sn)).First().id;
+            Wave wave = waves[j % waves.Length];
+            for (int k = 0; k < logs; k++) {
+              var step = TimeSpan.FromMinutes(1);
+              var recorded = start + step;
+              var s = new SensorMeasurementRow();
+              s.deviceId = did;
+              s.recordedDate = recorded;
+              s.sensorIndex = 0;
+              s.sessionId = j;
+//              s.unitCode = UnitLookup.GetCode(Units.Pressure.PSIG);
+              s.measurement = wave(k, 800, step.TotalMinutes);
+              smr[l * devicesCount + k] = s;
+            }
+          }
+
+          var insterted = db.InsertAll(smr, true);
+          Log.D(this, "Inserted: " + insterted + " logs into the database");
+          await db.SaveAsync<SessionRow>(session);
+          Log.D(this, "Session id: " + session.id);
+        }
+      }
+    }
+
+    /// <summary>
+    /// A simple type abstraction for wave generation.
+    /// </summary>
+    private delegate double Wave(int x, double range, double period);
+    /// <summary>
+    /// Produces a sin wave.
+    /// </summary>
+    /// <param name="x">The x coordinate.</param>
+    private double Sin(int x, double range, double period) {
+      return range * Math.Sin(x / period);
+    }
+
+    /// <summary>
+    /// Produces a square wave.
+    /// </summary>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="range">Range.</param>
+    /// <param name="period">Period.</param>
+    private double Square(int x, double range, double period) {
+      var step = ((long)range) / 10;
+      x = x / 10 * 10; // round to lowest 10.
+      return Sin(x, range, period);
+    }
+
+    /// <summary>
+    /// Saws the tooth.
+    /// </summary>
+    /// <returns>The tooth.</returns>
+    /// <param name="x">The x coordinate.</param>
+    /// <param name="range">Range.</param>
+    /// <param name="period">Period.</param>
+    private double SawTooth(int x, double range, double period) {
+      var p = (int)period;
+      return x % p;
     }
 
     /// <summary>

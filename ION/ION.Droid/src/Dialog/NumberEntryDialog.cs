@@ -43,7 +43,7 @@
 
       adb.SetView(entry);
 
-      var ret = adb.Create();
+      AlertDialog ret = null;
 
       adb.SetNegativeButton(context.GetString(Resource.String.cancel), (obj, args) => {
         var dialog = obj as Android.App.Dialog;
@@ -63,6 +63,8 @@
           Toast.MakeText(context, Resource.String.error_failed_to_parse_number, ToastLength.Long).Show();
         }
       });
+
+      ret = adb.Create();
 
       ret.Show();
       return ret;

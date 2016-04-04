@@ -5,6 +5,8 @@
   using System.Threading.Tasks;
 
   using ION.Core.App;
+  using ION.Core.Connections;
+  using ION.Core.Database;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
@@ -91,7 +93,7 @@
       get {
         return __connectionHelper;
       }
-      protected set {
+      set {
         if (__connectionHelper != null) {
           __connectionHelper.onDeviceFound -= OnDeviceFound;
           __connectionHelper.onScanStateChanged -= OnScanStateChanged;
@@ -135,7 +137,7 @@
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
       if (!connectionHelper.isEnabled) {
-        if (!connectionHelper.Enable()) {
+        if (!await connectionHelper.Enable()) {
           return new InitializationResult() {
             success = false,
             errorMessage = "Failed to init device manager: failed to enable connection helper."
@@ -152,7 +154,7 @@
       }
 
       try {
-        var devices = await ion.database.deviceDao.QueryForAllAsync();
+        var devices = await ion.database.QueryForAllDevicesAsync();
         foreach (IDevice device in devices) {
           Register(device);
         } 
@@ -166,6 +168,7 @@
     // Overridden from IDeviceManager
     public void Dispose() {
       __connectionHelper.onDeviceFound -= OnDeviceFound;
+      __connectionHelper.onScanStateChanged -= OnScanStateChanged;
 
       foreach (var device in devices) {
         device.connection.Disconnect();
@@ -180,27 +183,45 @@
     public void ForgetFoundDevices() {
       lock (this) {
         foreach (var device in foundDevices) {
+          device.Dispose();
           Unregister(device);
         }
       }
     }
 
     // Overridden from IDeviceManager
-    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, int protocolVersion) {
+    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
       var ret = CreateDeviceInternal(serialNumber, connectionAddress, protocolVersion);
       // The register proved superfluous. Consider merging this functions with the internal one.
 //      Register(ret);
       return ret;
     }
 
+    /// <summary>
+    /// Saves the given device to the database.
+    /// </summary>
+    /// <returns>The device.</returns>
+    /// <param name="device">Device.</param>
+    public async Task<bool> SaveDevice(IDevice device) {
+      Log.D(this, "Attempting to save device");
+      var d = await ion.database.DeconstructDevice(device);
+      var ret = await ion.database.SaveAsync<DeviceRow>(d);
+      Log.D(this, "Save device with id: " + d.id);
+      return ret;
+    }
+
     // Overridden from IDeviceManager
-    public async void DeleteDevice(ISerialNumber serialNumber) {
+    public async Task<bool> DeleteDevice(ISerialNumber serialNumber) {
       var device = this[serialNumber];
       if (device != null) {
+        device.Dispose();
         Unregister(device);
-        await ion.database.deviceDao.DeleteAsync(device);
+        var db = ion.database;
+        await db.DeleteAsync<DeviceRow>(await db.DeconstructDevice(device));
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
+        return true;
       }
+      return false;
     }
 
     // Overridden from IDeviceManager
@@ -212,11 +233,40 @@
       return knownDevices.Contains(device);
     }
 
-    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, int protocolVersion) {
+    /// <summary>
+    /// Registers the device to the known device's mapping.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    public void Register(IDevice device) {
+      __foundDevices.Remove(device.serialNumber);
+      __knownDevices.Add(device.serialNumber, device);
+    }
+
+    /// <summary>
+    /// Unregisters the device from the device manager.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    public void Unregister(IDevice device) {
+      __foundDevices.Remove(device.serialNumber);
+      __knownDevices.Remove(device.serialNumber);
+      device.onDeviceEvent -= OnDeviceEvent;
+    }
+
+    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        var connection = connectionHelper.CreateConnectionFor(connectionAddress);
+        // TODO ahodder@appioninc.com: Debug todo that affects the program as it is running.
+#if DEBUG
+        IConnection connection = null;
+        if (MockConnection.MOCK_ADDRESS.Equals(connectionAddress)) {
+          connection = new MockConnection();
+        } else {
+          connection = connectionHelper.CreateConnectionFor(connectionAddress, protocolVersion);
+        }
+#else
+        var connection = connectionHelper.CreateConnectionFor(connectionAddress, protocolVersion);
+#endif
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
         if (protocol == null) {
           protocol = Protocol.PROTOCOLS[0];
@@ -240,25 +290,6 @@
       }
 
       return ret;
-    }
-
-    /// <summary>
-    /// Registers the device to the known device's mapping.
-    /// </summary>
-    /// <param name="device">Device.</param>
-    private void Register(IDevice device) {
-      __foundDevices.Remove(device.serialNumber);
-      __knownDevices.Add(device.serialNumber, device);
-    }
-
-    /// <summary>
-    /// Unregisters the device from the device manager.
-    /// </summary>
-    /// <param name="device">Device.</param>
-    private void Unregister(IDevice device) {
-      __foundDevices.Remove(device.serialNumber);
-      __knownDevices.Remove(device.serialNumber);
-      device.onDeviceEvent -= OnDeviceEvent;
     }
 
     /// <summary>
@@ -308,7 +339,7 @@
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
     /// <param name="device">Device.</param>
-    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, int protocol) {
+    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
       var device = this[serialNumber];
 
       if (device == null) {
@@ -339,8 +370,7 @@
           }
 
           if (device.isConnected) {
-            Log.D(this, "Attempting to save device");
-            await ion.database.deviceDao.SaveAsync(device);
+            await SaveDevice(device);
           }
           break;
       }
@@ -366,7 +396,7 @@
     /// <returns>The error header.</returns>
     /// <param name="serialNumber">Serial number.</param>
     /// <param name="protocol">Protocol.</param>
-    private string BuildErrorHeader(ISerialNumber serialNumber, int protocol) {
+    private string BuildErrorHeader(ISerialNumber serialNumber, EProtocolVersion protocol) {
       return "Failed to create device from serial number: " + serialNumber + ", Protocol: " + protocol;
     }
   }

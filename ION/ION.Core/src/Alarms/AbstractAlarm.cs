@@ -2,6 +2,8 @@
 
   using System;
 
+  using ION.Core.Util;
+
   public abstract class AbstractAlarm : IAlarm {
     /// <summary>
     /// The event that is notified when an alarm event is thrown.
@@ -81,9 +83,9 @@
     public bool Fire(bool force=false) {
       bool triggered = IsTriggered();
 
-      ION.Core.Util.Log.D(this, "Force: " + force + " enabled: " + enabled + " triggered:" + triggered + " pendingReset:" + pendingReset);
+      Log.D(this, "Force: " + force + " enabled: " + enabled + " triggered:" + triggered + " pendingReset:" + pendingReset);
 
-      if ((force) || (enabled && triggered && !pendingReset)) {
+      if (force || (!pendingReset && enabled && triggered)) {
         NotifyAlarmEvent(AlarmEvent.EType.Triggered);
         pendingReset = true;
         return true;
@@ -100,8 +102,8 @@
     /// it leaves its trigger range.
     /// </summary>
     public void Reset() {
+      Log.D(this, "Reset alarm");
       enabled = true;
-      pendingReset = true;
       NotifyAlarmEvent(AlarmEvent.EType.Reset);
     }
 
@@ -109,6 +111,7 @@
     /// Cancels the alarm.
     /// </summary>
     public void Cancel() {
+      Log.D(this, "Cancel alarm");
       enabled = false;
       pendingReset = false;
       NotifyAlarmEvent(AlarmEvent.EType.Cancelled);

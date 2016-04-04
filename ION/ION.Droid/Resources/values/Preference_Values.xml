@@ -18,16 +18,17 @@
   <string name="preferences_alarm_vibrate_on">The device will vibrate [if able] when an alarm is fired.</string>
   <string name="preferences_alarm_vibrate_off">Alarms will not cause the device to vibrate.</string>
 
-  <string name="preferences_display_wakelock">Allow Device To Sleep</string>
-  <string name="preferences_display_wakelock_on">Will not sleep while ION is open</string>
-  <string name="preferences_display_wakelock_off">Sleep as normal</string>
+  <string name="preferences_display_wakelock">Keep Screen On</string>
+  <string name="preferences_display_wakelock_on">Your device\'s screen will not turn off while ION is displayed. WARNING: This may reduce battery life.</string>
+  <string name="preferences_display_wakelock_off">Your device\'s screen will turn off normally.</string>
 
-<!--
   <string name="preferences_location">Location Preferences</string>
-  <string name="preferences_location_offset">Allow Use Of Your Location</string>
-  <string name="preferences_location_offset_on">Use of your location will be used for various features throughout the application.</string>
-  <string name="preferences_location_offset_off">Your location will not be explicity accessed by the application.</string>
--->
+  <string name="preferences_location_elevation">Custom Elevation</string>
+  <string name="preferences_location_elevation_set">Please enter your custom elevation.</string>
+  <string name="preferences_location_elevation_summary">Enter the elevation that will be used throughout the application.</string>
+  <string name="preferences_location_gps">Allow Use Of Your Location</string>
+  <string name="preferences_location_gps_on">Use of your location will be used for various features throughout the application.</string>
+  <string name="preferences_location_gps_off">Your location will not be explicity accessed by the application.</string>
 
   <string name="preferences_units_default">Default Units</string>
   <string name="preferences_units_length">Default Length Unit</string>

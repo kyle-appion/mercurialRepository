@@ -4,6 +4,7 @@
   using System.Collections.Generic;
 
   using Android.App;
+  using Android.Bluetooth;
   using Android.Content;
   using Android.OS;
   using Android.Support.V7.Widget;
@@ -11,6 +12,7 @@
   using Android.Widget;
 
   using ION.Core.App;
+  using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
@@ -18,6 +20,8 @@
   using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
+  using ION.Droid.App;
+  using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
   using ION.Droid.Widgets.Adapters;
@@ -50,11 +54,6 @@
     private const long DEFAULT_SCAN_TIME = 5000;
 
     /// <summary>
-    /// The current ion instance.
-    /// </summary>
-    /// <value>The ion.</value>
-    private IION ion { get; set; }
-    /// <summary>
     /// The view that will display all of the devices for the activity.
     /// </summary>
     /// <value>The list.</value>
@@ -74,6 +73,10 @@
     /// The filter for the activity.
     /// </summary>
     private EDeviceFilter filter;
+    /// <summary>
+    /// The connection helper that the application was using before the activity started.
+    /// </summary>
+    private IConnectionHelper previousHelper;
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
@@ -84,8 +87,6 @@
 
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
-
-      ion = AppState.context;
 
       list = FindViewById<RecyclerView>(Resource.Id.list);
       empty = FindViewById<TextView>(Resource.Id.view);
@@ -104,6 +105,13 @@
       adapter.sensorFilter = BuildSensorFilter(filter);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;
       adapter.onDatasetChanged += (adapter) => {
+        if (adapter.ItemCount > 0) {
+          empty.Visibility = ViewStates.Gone;
+          list.Visibility = ViewStates.Visible;
+        } else {
+          empty.Visibility = ViewStates.Visible;
+          list.Visibility = ViewStates.Gone;
+        }
 //        OnAdapterRefreshed();
       };
 
@@ -115,6 +123,10 @@
     /// </summary>
     protected override void OnResume() {
       base.OnResume();
+
+      previousHelper = ion.deviceManager.connectionHelper;
+      var bm = (BluetoothManager)GetSystemService(BluetoothService);
+      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(this, bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -129,6 +141,9 @@
     // Overridden from Activity
     protected override void OnPause() {
       base.OnPause();
+
+      ion.deviceManager.connectionHelper.Dispose();
+      ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.Stop();
@@ -185,8 +200,7 @@
           if (dm.connectionHelper.isScanning) {
             dm.connectionHelper.Stop();
           } else {
-            var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
+            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
 
           return true;

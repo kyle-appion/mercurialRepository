@@ -7,7 +7,7 @@
   /// </summary>
   public class SimpleLocation : ILocation {
     /// <summary>
-    /// Wether or not the location is valid.
+    /// Wether or not the location is valid, meaning the location is up to date by a primary location provider.
     /// </summary>
     /// <value>true</value>
     /// <c>false</c>
