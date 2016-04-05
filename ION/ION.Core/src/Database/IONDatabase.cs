@@ -43,7 +43,7 @@
     /// <param name="id">Identifier.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public Task<T> QueryForAsync<T>(long id) where T : class, ITableRow {
-      return Task.FromResult(Table<T>().Where(x => x.id == id).First());
+      return Task.FromResult(Table<T>().Where(x => x._id == id).First());
     }
 
     /// <summary>
@@ -74,7 +74,7 @@
 
       try {
         int affected = 0;
-        if (t.id > 0) {
+        if (t._id > 0) {
           affected = Update(t);
         } else {
           affected = Insert(t);
@@ -103,7 +103,7 @@
       BeginTransaction();
 
       try {
-        var affected = Delete(t.id);
+        var affected = Delete(t._id);
 
         if (affected > 0) {
           Commit();

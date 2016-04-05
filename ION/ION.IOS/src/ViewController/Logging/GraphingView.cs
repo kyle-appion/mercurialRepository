@@ -11,6 +11,7 @@ using Xfinium.Pdf;
 using Xfinium.Pdf.Graphics;
 using Xfinium.Pdf.Graphics.Text;
 
+using ION.Core.Database;
 using ION.Core.Report;
 
 using OxyPlot;
@@ -445,6 +446,7 @@ namespace ION.IOS.ViewController.Logging
           }
           total++;
         }
+
         reportHolder.tableData[n, 0] = "Device SN: " + selectedData[n].name;
         reportHolder.tableData[n, 1] = "Lowest Measurement: " + lowest;
         reportHolder.tableData[n, 2] = "Highest Measurement: " + highest;

@@ -12,18 +12,20 @@
   /// into an array, an we will need the most efficient storage medium possible to ensure the lowest system load.
   /// </remarks>
   public class SensorMeasurementRow : ITableRow {
+    [Ignore]
+    public int _id {get { return MID;} set { MID = value;}}
      /// <summary>
      /// Queries the primary id of the table item.
      /// </summary>
      /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
-    public int id { get; set; }
+    public int MID { get; set; }
     /// <summary>
     /// The id of the session that the measurement was recorded under.
     /// </summary>
     /// <value>The session identifier.</value>
     [Indexed]
-    public int sessionId { get; set; }
+    public int frn_SID { get; set; }
     /// <summary>
     /// The id of the device who owns the sensor that stored the measurement.
     /// </summary>
@@ -57,7 +59,7 @@
     /// </summary>
     /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
     public override int GetHashCode() {
-      return id;
+      return MID;
     }
 
     /// <summary>
@@ -68,7 +70,7 @@
     /// <see cref="ION.Core.Database.SensorMeasurementRow"/>; otherwise, <c>false</c>.</returns>
     public override bool Equals(object obj) {
       var smr = obj as SensorMeasurementRow;
-      return smr != null && id == smr.id;
+      return smr != null && MID == smr.MID;
     }
 
 /*
@@ -82,7 +84,7 @@
 */
 
     public override string ToString() {
-      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", id, sessionId, deviceId, sensorIndex, recordedDate, measurement);
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", MID, frn_SID, deviceId, sensorIndex, recordedDate, measurement);
     }
   }
 }
