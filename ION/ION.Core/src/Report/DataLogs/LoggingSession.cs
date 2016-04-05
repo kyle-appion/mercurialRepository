@@ -119,8 +119,8 @@
       var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
 
-      ret.deviceId = d.id;
-      ret.sessionId = session.id;
+      ret.deviceId = d.DID;
+      ret.frn_SID = session.SID;
       ret.sensorIndex = sensor.index;
       ret.recordedDate = date;
       ret.measurement = meas.amount;

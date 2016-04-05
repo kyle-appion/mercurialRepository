@@ -206,7 +206,7 @@
       Log.D(this, "Attempting to save device");
       var d = await ion.database.DeconstructDevice(device);
       var ret = await ion.database.SaveAsync<DeviceRow>(d);
-      Log.D(this, "Save device with id: " + d.id);
+      Log.D(this, "Save device with id: " + d.DID);
       return ret;
     }
 

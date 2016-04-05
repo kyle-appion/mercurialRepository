@@ -136,20 +136,11 @@ namespace ION.IOS.ViewController.Analyzer {
       dataRecord.Enabled = false;
       dataRecord.Alpha = .4f;
 
-      ION.Core.Database.Session session = new ION.Core.Database.Session{sessionStart = DateTime.UtcNow, sessionEnd = DateTime.UtcNow};
+      ION.Core.Database.SessionRow session = new ION.Core.Database.SessionRow{sessionStart = DateTime.UtcNow, sessionEnd = DateTime.UtcNow};
       ion.database.Insert(session);
       lastSession = session.SID;
 
-      while (isRecording) {
-        foreach (sensor liveItem in analyzerSensors.viewList) {
-          if (liveItem.currentSensor != null) {
-            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
-            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.amount.ToString(), measurementDate = DateTime.UtcNow};
-            ion.database.Insert(measurement);
-          }
-        }
-        await Task.Delay(TimeSpan.FromSeconds(10));
-      }
+      ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(10));
     }
     /// <summary>
     /// clicking this button stops the recording process and closes out the session with the end time
@@ -160,7 +151,7 @@ namespace ION.IOS.ViewController.Analyzer {
       Console.WriteLine("Current stop time is: " + DateTime.Now + " for session " + lastSession);
       ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
 
-      var result = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE SID = " + lastSession);
+      var result = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE SID = " + lastSession);
 
       Console.WriteLine("Working session entry is now: " + result[0].SID + " " + result[0].sessionStart.ToLocalTime() + " " + result[0].sessionEnd.ToLocalTime());
 
@@ -178,14 +169,14 @@ namespace ION.IOS.ViewController.Analyzer {
 //      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 1 WHERE SID IN (2,3)");
 //      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (1)");
 
-      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
+      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
       Console.WriteLine("Measurements:");
-      foreach (var item in result) {
+//      foreach (var item in result) {
         //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
-        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
-      }
+//        //Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
+//      }
       Console.WriteLine("");
-      var result2 = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session ORDER BY SID");
+      var result2 = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session ORDER BY SID");
       Console.WriteLine("Sessions Recorded:");
       foreach (var item in result2) {
         Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart.ToLocalTime() + " End:" + item.sessionEnd.ToLocalTime());
@@ -205,7 +196,7 @@ namespace ION.IOS.ViewController.Analyzer {
         Console.WriteLine("Session:" + item.SID + " Difference:" + duration.ToString("0.00") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
       }
       Console.WriteLine("");
-      var result3 = ion.database.Query<ION.Core.Database.Job>("SELECT * FROM Job ORDER BY JID");
+      var result3 = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM Job ORDER BY JID");
 
       foreach (var item in result3) {
         Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
