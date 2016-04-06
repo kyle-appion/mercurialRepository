@@ -389,17 +389,6 @@ namespace ION.IOS.ViewController.Logging
 
 			ChosenDates.subLeft = earliest;
 			ChosenDates.subRight = latest;
-//			Console.WriteLine ("Final earliest " + earliest + " and latest " + latest);
-//			Console.WriteLine ("Final earliest year " + earliest.Year + " and latest year " + latest.Year);
-//			Console.WriteLine ("Final earliest month " + earliest.Month + " and latest month " + latest.Month);
-//			Console.WriteLine ("Final earliest day " + earliest.Day + " and latest day " + latest.Day);
-//			Console.WriteLine ("Final earliest hour " + earliest.Hour + " and latest hour " + latest.Hour);
-//			Console.WriteLine ("Final earliest minute " + earliest.Minute + " and latest minute " + latest.Minute);
-
-//			foreach (var time in timeList) {
-//				ChosenDates.allTimes.Add(time.ToString());
-//			}
-//			ChosenDates.allTimes.Sort ((x, y) => String.Compare (x, y));
 		}
     public async void ShowToast(UIViewController mainVC){
       UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Report", null,null,null);

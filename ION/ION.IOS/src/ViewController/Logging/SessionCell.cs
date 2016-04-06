@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.Logging {
       ion = AppState.context;
 
       var deviceAmount = ion.database.Table<SensorMeasurementRow>()
-        .Where(smr => smr.sessionId == SID)
+        .Where(smr => smr.frn_SID == SID)
         .Select(smr => smr.deviceId).Distinct()
         .Count();
 

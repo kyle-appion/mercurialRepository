@@ -44,29 +44,7 @@ namespace ION.IOS.ViewController.Logging {
         root.navigation.ToggleMenu();
       };
       Title = "Reports";
-      /*************************************************************
-      var recordView = new UIImageView(new CGRect(0,0,30,30));
-      recordView.Image = UIImage.FromBundle("ic_play");
-      UIBarButtonItem dataRecord = new UIBarButtonItem(recordView);
-      dataRecord.Clicked += (sender, e) => {
-        Console.WriteLine("Clicked record");
-      };
-      var stopView = new UIImageView(new CGRect(0,0,30,30));
-      stopView.Image = UIImage.FromBundle("ic_unchecked");
-      UIBarButtonItem dataStop= new UIBarButtonItem(stopView);
-      dataStop.Clicked += (sender, e) => {
-        Console.WriteLine("Clicked stop");
-      };
-      var pauseView = new UIImageView(new CGRect(0,0,30,30));
-      pauseView.Image = UIImage.FromBundle("ic_pause");
-      UIBarButtonItem dataPause= new UIBarButtonItem(pauseView);
-      dataPause.Clicked += (sender, e) => {
-        Console.WriteLine("Clicked pause");
-      };
 
-      UIBarButtonItem [] recordButtons = new UIBarButtonItem[]{dataStop,dataPause,dataRecord};
-      NavigationItem.SetRightBarButtonItems(recordButtons, true);
-      //////////////////////////////////////////////////////////*/
       ion = AppState.context;
       SetupLoggingUI();
     }
@@ -89,6 +67,8 @@ namespace ION.IOS.ViewController.Logging {
       View.AddSubview(dataSection.DataType);
       View.AddSubview(savedReportsSection.showReports);
       View.AddSubview(graphingSection.graphingType);
+      View.AddSubview(dataSection.showGraphButton);
+      View.BringSubviewToFront(dataSection.showGraphButton);
     }
      /// <summary>
      /// Loads the saved reports.
@@ -96,22 +76,26 @@ namespace ION.IOS.ViewController.Logging {
      /// <param name="sender">Sender.</param>
      /// <param name="e">E.</param>
     public void loadSavedReports (object sender, EventArgs e){
-
+      View.BringSubviewToFront(reportingSection.reportType);
+      reportingSection.newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-        () =>{ 
-          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
-          reportingSection.newReport.Hidden = true;
-          reportingSection.savedReports.Hidden = true;
+        () =>{          
+          dataSection.jobButton.Hidden = true;
+          dataSection.sessionButton.Hidden = true;
+          dataSection.showGraphButton.Hidden = true;
+          dataSection.jobTable.Hidden = true;
+          dataSection.sessionTable.Hidden = true;
+          dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
+          dataSection.selectedSessions = new ObservableCollection<int>();
+          dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
+          dataSection.showGraphButton.Enabled = false;
+          dataSection.showGraphButton.Alpha = .6f;
+          dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
         }, 
         () => {
+          dataSection.DataType.Hidden = true;
           resizeSavedReportsSectionLarger();
-          reportingSection.step1.Hidden = false;
         });
-      
-      reportingSection.resize = new UITapGestureRecognizer (() => {
-        resizeSavedReportsSectionSmaller();
-      });
-      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
     }
     /// <summary>
     /// Triggers the job and session section to appear/expand from the new reports button in the reporting section
@@ -119,22 +103,18 @@ namespace ION.IOS.ViewController.Logging {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
     public void showDataSection (object sender, EventArgs e){
+      View.BringSubviewToFront(reportingSection.reportType);
+      reportingSection.savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-        () =>{ 
-          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
-          reportingSection.newReport.Hidden = true;
-          reportingSection.savedReports.Hidden = true;
+        () =>{          
+          savedReportsSection.reportTable.Hidden = true;
+          savedReportsSection.header.Hidden = true;
+          savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
         }, 
         () => {
+          savedReportsSection.showReports.Hidden = true;
           resizeDataSectionLarger();
-          reportingSection.step1.Hidden = false;
         });
-
-      reportingSection.resize = new UITapGestureRecognizer (() => {
-        resizeDataSectionSmaller();
-      });
-
-      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
     }
     /// <summary>
     /// Expands the reporting type section
@@ -142,44 +122,24 @@ namespace ION.IOS.ViewController.Logging {
     public void resizeReportingSectionLarger(){
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
         () =>{
-          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, .25 * View.Bounds.Height, .98 * View.Bounds.Width, .55 * View.Bounds.Height);
+          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
         },
         () => {
-          reportingSection.newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-          reportingSection.savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
           reportingSection.newReport.Hidden = false;
           reportingSection.savedReports.Hidden = false;
-          reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
         });
     }
     /// <summary>
     /// Expands the saved reports section
     /// </summary>
-    public void resizeSavedReportsSectionLarger(){
-
-      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+    public void resizeSavedReportsSectionLarger(){      
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         savedReportsSection.showReports.Hidden = false;
-        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
+        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
       },
-        () => {
+        () => {          
           savedReportsSection.reportTable.Hidden = false;
           savedReportsSection.header.Hidden = false;
-        });
-    }
-    /// <summary>
-    /// Collapses the saved report section and then expands the reporting type section
-    /// </summary>
-    public void resizeSavedReportsSectionSmaller(){
-      View.BringSubviewToFront(reportingSection.reportType);
-      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.step1.Hidden = true;
-        savedReportsSection.reportTable.Hidden = true;
-        savedReportsSection.header.Hidden = true;
-        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
-      },
-        () => {
-          savedReportsSection.showReports.Hidden = true;
-          resizeReportingSectionLarger();
         });
     }
     /// <summary>
@@ -188,43 +148,21 @@ namespace ION.IOS.ViewController.Logging {
     public void resizeDataSectionLarger(){
       dataSection.DataType.Hidden = false;
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height, .98 * View.Bounds.Width, .8 * View.Bounds.Height);
+        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
       }, 
-      () => {
+      () => { 
+          dataSection.jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           dataSection.jobButton.Hidden = false;
           dataSection.sessionButton.Hidden = false;
           dataSection.showGraphButton.Hidden = false;
-          dataSection.jobTable.Hidden = true;
+          dataSection.jobTable.Hidden = false;
           dataSection.sessionTable.Hidden = true;
-          reportingSection.step1.Hidden = false;
-      });
-    }
-    /// <summary>
-    /// Collapses the job and session section
-    /// </summary>
-    public void resizeDataSectionSmaller(){
-      View.BringSubviewToFront(reportingSection.reportType);
-      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.step1.Hidden = true;
-        dataSection.jobButton.Hidden = true;
-        dataSection.jobButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-        dataSection.sessionButton.Hidden = true;
-        dataSection.sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-        dataSection.showGraphButton.Hidden = true;
-        dataSection.jobTable.Hidden = true;
-        dataSection.sessionTable.Hidden = true;
-        dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
-        dataSection.selectedSessions = new ObservableCollection<int>();
-        dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
-        dataSection.showGraphButton.Enabled = false;
-        dataSection.showGraphButton.Alpha = .6f;
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
-      },
-      () => {
-        dataSection.DataType.Hidden = true;
-        resizeReportingSectionLarger();
-      });      
+          if(dataSection.selectedSessions.Count <= 0){
+            dataSection.showGraphButton.Enabled = false;
+            dataSection.showGraphButton.Alpha = .6f;
+          }
+        });
     }
     /// <summary>
     /// Expands the graphing section 
@@ -240,16 +178,14 @@ namespace ION.IOS.ViewController.Logging {
       dataSection.jobTable.Hidden = true;
       dataSection.sessionTable.Hidden = true;
 
-      reportingSection.reportType.RemoveGestureRecognizer(reportingSection.resize);
       //////resize reporting choice off screen
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.step1.Hidden = true;
         reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, 0);
       }, 
         () => {});
       
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .14 * View.Bounds.Height);
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .14 * View.Bounds.Height);
       },
       () => {
         dataSection.step2.Hidden = false;
@@ -279,25 +215,25 @@ namespace ION.IOS.ViewController.Logging {
         paramList.Add('"' + num.ToString() + '"');
       }
 
-      var graphResult = ion.database.Query<ION.Core.Database.Session>("SELECT SID, sessionStart, sessionEnd, frnJID FROM Session WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
+      var graphResult = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd, frn_JID FROM SessionRow WHERE SID in (" + string.Join(",",paramList.ToArray()) + ")");
 
       var tempResults = new List<deviceReadings>();
       for(int s = 0; s < graphResult.Count; s++){
-        var deviceCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT DISTINCT deviceSN FROM SessionMeasurement WHERE frnSID = " + graphResult[s].SID);
+        var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT deviceId FROM SensorMeasurementRow WHERE frn_SID = " + graphResult[s].SID);
 
         for(int m = 0; m < deviceCount.Count; m++){
           var activeDevice = new deviceReadings();
           activeDevice.times = new List<DateTime>();
           activeDevice.readings = new List<double>();
           activeDevice.SID = graphResult[s].SID;
-          activeDevice.frnJID = graphResult[s].frnJID;
-          activeDevice.name = deviceCount[m].deviceSN;
+          activeDevice.frnJID = graphResult[s].frn_JID;
+          activeDevice.name = deviceCount[m].deviceId.ToString();
 
-          var measurementCount = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement WHERE deviceSN = ? AND frnSID = ?",deviceCount[m].deviceSN, graphResult[s].SID);
+          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE deviceId = ? AND frn_SID = ?",deviceCount[m].deviceId, graphResult[s].SID);
 
           foreach(var meas in measurementCount){
-            activeDevice.times.Add(meas.measurementDate.ToLocalTime());
-            var measurement = Convert.ToDouble(meas.deviceMeasurement);
+            activeDevice.times.Add(meas.recordedDate.ToLocalTime());
+            var measurement = Convert.ToDouble(meas.measurement);
             activeDevice.readings.Add(measurement);
           }
           tempResults.Add(activeDevice);
@@ -330,10 +266,6 @@ namespace ION.IOS.ViewController.Logging {
     /// </summary>
     public void resizeGraphingSectionSmaller(){
       View.BringSubviewToFront(dataSection.DataType);
-      reportingSection.reportType.AddGestureRecognizer(reportingSection.resize);
-      dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
-      dataSection.selectedSessions = new ObservableCollection<int>();
-      dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
       dataSection.showGraphButton.Enabled = false;
       dataSection.showGraphButton.Alpha = .6f;
       if (graphingSection.graphingView != null) {

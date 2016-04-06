@@ -7,14 +7,15 @@
   using ION.Core.Util;
 
   public class DeviceRow : ITableRow {
-    [Ignore]
-    public int _id {get { return DID;} set { DID = value;}}
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>
     /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
     public int DID { get; set; }
+    [Ignore]
+    public int _id {get { return DID;} set { DID = value;}}
+
     /// <summary>
     /// Gets or sets the serial number.
     /// </summary>

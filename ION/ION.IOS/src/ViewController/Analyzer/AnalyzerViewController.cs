@@ -72,8 +72,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
       ion = AppState.context;
 
-      createLocalJobandSessionDatabase();
-
       dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
       dataRecord.BackgroundColor = UIColor.LightGray;
       dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
@@ -129,7 +127,7 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public async void recordDevices(object sender, EventArgs e){
+    public void recordDevices(object sender, EventArgs e){
       isRecording = true;
       dataStop.Enabled = true;
       dataStop.Alpha = 1f;
@@ -149,9 +147,9 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <param name="e">E.</param>
     public void stopRecording(object sender, EventArgs e){
       Console.WriteLine("Current stop time is: " + DateTime.Now + " for session " + lastSession);
-      ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
-
-      var result = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE SID = " + lastSession);
+//      ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
+      ion.dataLogManager.StopRecording();
+      var result = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE SID = " + lastSession);
 
       Console.WriteLine("Working session entry is now: " + result[0].SID + " " + result[0].sessionStart.ToLocalTime() + " " + result[0].sessionEnd.ToLocalTime());
 
@@ -169,8 +167,8 @@ namespace ION.IOS.ViewController.Analyzer {
 //      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 1 WHERE SID IN (2,3)");
 //      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (1)");
 
-      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
-      Console.WriteLine("Measurements:");
+//      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
+//      Console.WriteLine("Measurements:");
 //      foreach (var item in result) {
         //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
 //        //Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
@@ -201,18 +199,10 @@ namespace ION.IOS.ViewController.Analyzer {
       foreach (var item in result3) {
         Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
       }
-//////      db.Query<Session> ("DELETE FROM Session");
+//////      db.Query<Session> ("DELETE FROM SessionRow");
 //////      db.Query<Session> ("VACUUM");
-//////      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
+//////      db.Query<SessionMeasurement>("DELETE FROM SensorMeasurementRow");
 //////      db.Query<SessionMeasurement>("VACUUM");
-    }
-    /// <summary>
-    /// Creates the tables necessary to store and organize a user's sessions and jobs
-    /// </summary>
-    public void createLocalJobandSessionDatabase(){
-      ion.database.CreateTable<ION.Core.Database.Session>();
-      ion.database.CreateTable<ION.Core.Database.Job>();
-      ion.database.CreateTable<ION.Core.Database.SessionMeasurement>();
     }
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
