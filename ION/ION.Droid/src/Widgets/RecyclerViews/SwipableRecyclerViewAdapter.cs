@@ -11,12 +11,23 @@
   using Android.Support.V7.Widget;
   using Android.Util;
   using Android.Views;
+  using Android.Widget;
 
   /// <summary>
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-  public abstract class IONRecyclerViewAdapter : RecyclerView.Adapter {
+  public abstract class SwipableRecyclerViewAdapter : RecyclerView.Adapter {
+    /// <summary>
+    /// The delegate that will be notified when the adapter's content changes.
+    /// </summary>
+    public delegate void OnDatasetChanged(SwipableRecyclerViewAdapter adapter);
+
+    /// <summary>
+    /// The event that will be notified when the ION RecyclerView's data set changes.
+    /// </summary>
+    public event OnDatasetChanged onDatasetChanged;
+
     /// <summary>
     /// The number of records that are present in the adapter.
     /// </summary>
@@ -37,6 +48,11 @@
     }
 
     /// <summary>
+    /// The recycler view that this adapter is working within.
+    /// </summary>
+    /// <value>The recycler view.</value>
+    public RecyclerView recyclerView { get; private set; }
+    /// <summary>
     /// The handler that will post delayed actions to the main thread.
     /// </summary>
     public Handler handler { get; private set; }
@@ -46,6 +62,11 @@
     /// </summary>
     /// <value>The swipe confirm timeout.</value>
     public int swipeConfirmTimeout { get; set; }
+    /// <summary>
+    /// The color of the view that is swiped.
+    /// </summary>
+    /// <value>The color of the swipe background.</value>
+    public Color swipeBackgroundColor { get; set; }
 
     /// <summary>
     /// The records that the recycler view will display.
@@ -56,8 +77,27 @@
     /// </summary>
     private HashSet<IRecord> recordsPendingRemoval = new HashSet<IRecord>();
 
-    public IONRecyclerViewAdapter() {
+    public SwipableRecyclerViewAdapter() {
       handler = new Handler();
+      swipeBackgroundColor = Color.LightBlue;
+    }
+
+    /// <summary>
+    /// Raises the attached to recycler view event.
+    /// </summary>
+    /// <param name="recyclerView">Recycler view.</param>
+    public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
+      base.OnAttachedToRecyclerView(recyclerView);
+      this.recyclerView = recyclerView;
+    }
+
+    /// <summary>
+    /// Raises the detached from recycler view event.
+    /// </summary>
+    /// <param name="recyclerView">Recycler view.</param>
+    public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
+      base.OnDetachedFromRecyclerView(recyclerView);
+      this.recyclerView = recyclerView;
     }
 
     /// <summary>
@@ -66,23 +106,47 @@
     /// <param name="holder">Holder.</param>
     /// <param name="position">Position.</param>
     public override sealed void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+      var record = records[position];
       var vh = holder as IONRecyclerViewHolder;
+
+      if (vh == null) {
+        vh = OnCreateViewHolder(record, position);
+      }
 
       if (vh == null) {
         throw new Exception("IONRecyclerViewAdapter cannot accept viewholder's that do not extend IONRecyclerViewHolder");
       }
 
       if (recordsPendingRemoval.Contains(vh)) {
+        vh.ItemView.SetBackgroundColor(swipeBackgroundColor);
       } else {
       }
     }
 
     /// <summary>
-    /// Performs the normal OnBindViewHolder.
+    /// Binds the given record to the view holder.
     /// </summary>
-    /// <param name="">.</param>
+    /// <param name="record">Record.</param>
+    /// <param name="vh">Vh.</param>
     /// <param name="position">Position.</param>
-    public abstract void DoBindViewHolder(IRecord record, RecyclerView.ViewHolder viewHolder, int position);
+    public abstract void OnBindViewHolder(IRecord record, IONRecyclerViewHolder vh, int position);
+
+    /// <summary>
+    /// Queries whether or not the given record in the recycler view is pending removal.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is pending removal; otherwise, <c>false</c>.</returns>
+    public bool IsPendingRemoval(int position) {
+      return recordsPendingRemoval.Contains(records[position]);
+    }
+
+    /// <summary>
+    /// Notifies the OnDataSetChanged event that the adapter changed.
+    /// </summary>
+    public void NotifyChanged() {
+      if (onDatasetChanged != null) {
+        onDatasetChanged(this);
+      }
+    }
 
     /// <summary>
     /// The contract for a record that will live in the recycler view.
@@ -94,16 +158,37 @@
       /// <value>The type of the view.</value>
       int ViewType { get; }
     }
+
+    /// <summary>
+    /// The observer that will be used by the adapter to propogate events to the OnDataSetChanged.
+    /// </summary>
+    private class InternalObserver : RecyclerView.AdapterDataObserver {
+      private SwipableRecyclerViewAdapter adapter { get; set; }
+
+      public InternalObserver(SwipableRecyclerViewAdapter adapter) {
+        this.adapter = adapter;
+      }
+
+      /// <summary>
+      /// Raises the changed event.
+      /// </summary>
+      public override void OnChanged() {
+        base.OnChanged();
+        adapter.NotifyChanged();
+      }
+    }
   }
 
   /// <summary>
   /// The base view holder that will be used for the IONRecyclerViewAdapter.
   /// </summary>
   public class IONRecyclerViewHolder : RecyclerView.ViewHolder {
-    protected IONRecyclerViewAdapter adapter { get; private set; }
+    protected SwipableRecyclerViewAdapter adapter { get; private set; }
+    internal Button button;
 
-    public IONRecyclerViewHolder(IONRecyclerViewAdapter adapter, View view) : base(view) {
+    public IONRecyclerViewHolder(SwipableRecyclerViewAdapter adapter, View view) : base(view) {
       this.adapter = adapter;
+      this.button = view.FindViewById<Button>(Resource.Id.button);
     }
   }
 
