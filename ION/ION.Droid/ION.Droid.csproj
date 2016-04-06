@@ -210,7 +210,8 @@
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IONRecyclerViewAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeableRecyclerViewTouchHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
