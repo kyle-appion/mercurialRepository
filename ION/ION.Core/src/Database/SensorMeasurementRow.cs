@@ -12,14 +12,14 @@
   /// into an array, an we will need the most efficient storage medium possible to ensure the lowest system load.
   /// </remarks>
   public class SensorMeasurementRow : ITableRow {
-    [Ignore]
-    public int _id {get { return MID;} set { MID = value;}}
-     /// <summary>
-     /// Queries the primary id of the table item.
-     /// </summary>
-     /// <value>The identifier.</value>
+    /// <summary>
+    /// Queries the primary id of the table item.
+    /// </summary>
+    /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
     public int MID { get; set; }
+    [Ignore]
+    public int _id {get { return MID;} set { MID = value;}}
     /// <summary>
     /// The id of the session that the measurement was recorded under.
     /// </summary>

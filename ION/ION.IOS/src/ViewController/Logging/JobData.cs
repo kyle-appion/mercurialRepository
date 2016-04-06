@@ -42,15 +42,15 @@ namespace ION.IOS.ViewController.Logging {
         if(selected.Equals(false)){
           selected = true;
           foreach(var sesh in sessions){
-            if(!selectedSessions.Contains(sesh.id)){
-              selectedSessions.Add(sesh.id);
+            if(!selectedSessions.Contains(sesh._id)){
+              selectedSessions.Add(sesh._id);
             }
           }
         } else {
           selected = false;
           foreach(var sesh in sessions){
-            if(selectedSessions.Contains(sesh.id)){
-              selectedSessions.Remove(sesh.id);
+            if(selectedSessions.Contains(sesh._id)){
+              selectedSessions.Remove(sesh._id);
             }
           }
         }

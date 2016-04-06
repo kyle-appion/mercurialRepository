@@ -21,9 +21,9 @@
 
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
-      // Create the database
-      CreateTable<DeviceRow>();
+      // Create the database 
       CreateTable<JobRow>();
+      CreateTable<DeviceRow>();
       CreateTable<SessionRow>();
       CreateTable<SensorMeasurementRow>();
     }

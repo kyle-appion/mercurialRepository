@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Report.DataLogs {
 
   using System;
+  using System.Diagnostics;
   using System.Collections.Generic;
   using System.Threading;
   using System.Threading.Tasks;
@@ -78,11 +79,16 @@
 
         var sensors = new HashSet<GaugeDeviceSensor>();
 
+        if(ion.currentAnalyzer == null){
+          Debug.WriteLine("Analyzer isn't instantiated");
+        }
+        else{
         foreach (var s in ion.currentAnalyzer.GetSensors()) {
           var gds = s as GaugeDeviceSensor;
           if (gds != null && gds.device.isConnected && !sensors.Contains(gds)) {
             sensors.Add(gds);
           }
+        }
         }
 
         foreach (var m in ion.currentWorkbench.manifolds) {
@@ -94,7 +100,7 @@
 
         var rows = new List<SensorMeasurementRow>();
         var db = ion.database;
-        var now = DateTime.Now;
+        var now = DateTime.Now; 
 
         foreach (var gds in sensors) {
           // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
@@ -124,6 +130,7 @@
       ret.sensorIndex = sensor.index;
       ret.recordedDate = date;
       ret.measurement = meas.amount;
+
 //      ret.unitCode = UnitLookup.GetCode(meas.unit);
 
       return ret;

@@ -221,6 +221,7 @@
       } catch (Exception e) {
         Log.E(this, "Failed to init ION", e);
       }
+      currentAnalyzer = new Analyzer(ION.Core.App.AppState.context);
     }
 
     private async Task<Workbench> LoadWorkbenchAsync(IFile file) {

@@ -102,18 +102,14 @@
           return false;
         }
 
-        Log.D(this, "Cancelling current logging session.");
-
-        currentSession.Cancel();
+        currentSession.session.sessionEnd = DateTime.Now;
 
         Log.D(this, "Saving session: " + currentSession.session);
 
-        currentSession.session.sessionEnd = DateTime.Now;
 
         var ret = ion.database.SaveAsync(currentSession.session).Result;       
 
-        ion.database.Update();
-
+        ion.database.Update(ret);
         currentSession.Dispose();
         currentSession = null;
 

@@ -13,7 +13,7 @@ namespace ION.IOS.ViewController.Logging {
     private nfloat cellHeight;
 
     public ChooseSaved(UIView mainView) {
-      showReports = new UIView(new CGRect(.01 * mainView.Bounds.Width,.15 * mainView.Bounds.Height,.98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
+      showReports = new UIView(new CGRect(.01 * mainView.Bounds.Width,.05 * mainView.Bounds.Height,.98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       showReports.BackgroundColor = UIColor.White;
       showReports.Layer.BorderColor = UIColor.Black.CGColor;
       showReports.Layer.BorderWidth = 1f;
@@ -38,7 +38,6 @@ namespace ION.IOS.ViewController.Logging {
       reportTable.BackgroundColor = UIColor.Clear;
       reportTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       reportTable.Hidden = true;
-
 
       showReports.AddSubview(reportTable);
       showReports.BringSubviewToFront(reportTable);

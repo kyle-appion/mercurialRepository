@@ -78,17 +78,16 @@ namespace ION.IOS.ViewController.Logging {
           // remove that entry from the table and all the associated measurements     
           // delete the measurement associated with the session being removed
           ion.database.Table<SensorMeasurementRow>()
-            .Delete(smr => smr.sessionId == sessionId);
+            .Delete(smr => smr.frn_SID == sessionId);
           // delete the session that was chosen for removal
           ion.database.Table<SessionRow>()
-            .Delete(sr => sr.id == sessionId);
-          // remove the item from the underlying data source
-          tableItems.RemoveAt(indexPath.Row);
+            .Delete(sr => sr.SID == sessionId);
           // remove the item from the list of selected sessions
           if (usingSessions.Contains(tableItems[indexPath.Row].SID)) {
             usingSessions.Remove(tableItems[indexPath.Row].SID);
           }
-
+          // remove the item from the underlying data source
+          tableItems.RemoveAt(indexPath.Row);
           // delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
           break;

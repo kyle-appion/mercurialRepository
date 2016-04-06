@@ -8,14 +8,15 @@
   /// An aggragation of sensor measurement contained into a logical component.
   /// </summary>
   public class SessionRow : ITableRow {
-    [Ignore]
-    public int _id {get { return SID;} set { SID = value;}}
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>
     /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
     public int SID { get; set;}
+    [Ignore]
+    public int _id {get { return SID;} set { SID = value;}}
+
     /// <summary>
     /// The of the job that the session belongs to.
     /// </summary>

@@ -6,20 +6,20 @@
   /// A job is an encapsulation of work performed for a po.
   /// </summary>
   public class JobRow : ITableRow {
-    [Ignore]
-    public int _id {get { return JID;} set { JID = value;}}
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>
     /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
     public int JID { get; set;}
+
+    [Ignore]
+    public int _id {get { return JID;} set { JID = value;}}
     /// <summary>
     /// The user defined name of the job.
     /// </summary>
     /// <value>The name of the job.</value>
     public string jobName { get; set; }
-
 
     /// <summary>
     /// Serves as a hash function for a <see cref="ION.Core.Database.JobRow"/> object.
