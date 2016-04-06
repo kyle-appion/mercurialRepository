@@ -85,7 +85,7 @@
         else{
         foreach (var s in ion.currentAnalyzer.GetSensors()) {
           var gds = s as GaugeDeviceSensor;
-          if (gds != null && gds.device.isConnected && !sensors.Contains(gds)) {
+          if (gds != null && gds.device.isConnected) {
             sensors.Add(gds);
           }
         }
@@ -93,7 +93,7 @@
 
         foreach (var m in ion.currentWorkbench.manifolds) {
           var gds = m.primarySensor as GaugeDeviceSensor;
-          if (gds != null && gds.device.isConnected && !sensors.Contains(gds)) {
+          if (gds != null && gds.device.isConnected) {
             sensors.Add(gds);
           }
         }

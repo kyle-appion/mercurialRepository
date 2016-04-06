@@ -5,7 +5,8 @@
   using Android.Support.V7.Widget;
 
   /// <summary>
-  /// A simple extension of the RecyclerView that will allow for the ion extensions to the class.
+  /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
+  /// and other touch/convenience interactions. 
   /// </summary>
   public abstract class IONRecyclerViewAdapter : RecyclerView.Adapter {
     /// <summary>

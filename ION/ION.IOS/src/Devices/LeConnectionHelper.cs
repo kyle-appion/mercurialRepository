@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.Devices {
+﻿                namespace ION.IOS.Devices {
 
   using System;
   using System.Collections.Generic;
@@ -89,7 +89,6 @@
     /// <c>false</c>
     /// <param name="protocol">Protocol.</param>
     public override bool CanResolveProtocol(EProtocolVersion protocol) {
-      Log.D(this, "Can resolve protocol: " + protocol);
       switch (protocol) {
         case EProtocolVersion.V1:
           return true;
@@ -151,12 +150,28 @@
           var bytes = new byte[20];
           Array.Copy(scanRecord, 2, bytes, 0, Math.Min(scanRecord.Length - 2, bytes.Length));
           scanRecord = bytes;
-          protocol = (EProtocolVersion)((int)scanRecord[0]);
+          // TODO ahodder@appioninc.com: This is 255 for v4 of the bt gauges.
+          var unsafeProtocolValue = (int)scanRecord[0];
+          protocol = ResolveProtocolValue(unsafeProtocolValue);
         }
 
         NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), scanRecord, protocol);
       } catch (Exception e) {
         Log.E(this, "Failed to resolve newly found device: " + name, e);
+      }
+    }
+
+    /// <summary>
+    /// Attempts to resolve the protocol value.
+    /// </summary>
+    /// <returns>The protocol value.</returns>
+    /// <param name="value">Value.</param>
+    private EProtocolVersion ResolveProtocolValue(int value) {
+      var pv = (EProtocolVersion)value;
+      if (EProtocolVersion.V1 == pv || EProtocolVersion.V2 == pv || EProtocolVersion.V3 == pv) {
+        return pv;
+      } else {
+        return EProtocolVersion.V1;
       }
     }
 

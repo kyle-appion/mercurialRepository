@@ -6,6 +6,8 @@
   /// A job is an encapsulation of work performed for a po.
   /// </summary>
   public class JobRow : ITableRow {
+    [Ignore]
+    public int _id { get { return id; } set { id = value; } } 
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

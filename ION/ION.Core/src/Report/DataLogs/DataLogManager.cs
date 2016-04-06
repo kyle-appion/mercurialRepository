@@ -102,11 +102,19 @@
           return false;
         }
 
+        Log.D(this, "Cancelling current logging session.");
+
         currentSession.session.sessionEnd = DateTime.Now;
+
+        if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
+          Log.E(this, "Failed to update session end time.");
+        }
+
+        currentSession.Cancel();
 
         Log.D(this, "Saving session: " + currentSession.session);
 
-        var ret = ion.database.SaveAsync(currentSession.session).Result;       
+        var ret = ion.database.SaveAsync(currentSession.session).Result;
 
         ion.database.Update(ret);
         currentSession.Dispose();
