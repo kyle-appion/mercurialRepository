@@ -182,6 +182,7 @@
 
       var sn = ion.database.Table<DeviceRow>().Where(dr => dr.id == record.logs.deviceId).First().serialNumber;
       var serial = SerialNumberExtensions.ParseSerialNumber(sn);
+      // TODO ahodder@appioninc.com: Broken. We should no assert that this is a gauge device
       var device = ion.deviceManager[serial] as GaugeDevice;
       var sensor = device[record.logs.index];
       var u = sensor.unit.standardUnit;
