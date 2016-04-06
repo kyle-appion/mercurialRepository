@@ -160,7 +160,7 @@ namespace ION.IOS.ViewController.Logging {
 
       UIView.Animate(.3, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         var newCenter = bottomBorder.Frame;
-        newCenter.X = .75f * DataType.Bounds.Width;
+        newCenter.X = .7f * DataType.Bounds.Width;
         bottomBorder.Frame = newCenter;
       },() => {});
 

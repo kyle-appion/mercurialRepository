@@ -106,7 +106,6 @@
 
         Log.D(this, "Saving session: " + currentSession.session);
 
-
         var ret = ion.database.SaveAsync(currentSession.session).Result;       
 
         ion.database.Update(ret);
