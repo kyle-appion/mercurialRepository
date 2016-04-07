@@ -81,21 +81,21 @@
 
       switch ((EViewType)viewType) {
         case EViewType.Footer:
-          return new FooterViewHolder(li.Inflate(Resource.Layout.list_item_add, parent, false));
+          return new FooterViewHolder(parent, Resource.Layout.list_item_add);
         case EViewType.Manifold:
-          return new ManifoldViewHolder(li.Inflate(Resource.Layout.viewer_large, parent, false), cache);
+          return new ManifoldViewHolder(parent, Resource.Layout.viewer_large, cache);
         case EViewType.Space:
-          return new SpaceViewHolder(li.Inflate(Resource.Layout.list_item_space, parent, false));
+          return new SpaceViewHolder(parent, Resource.Layout.list_item_space);
         case EViewType.MeasurementSubview:
-          return new MeasurementSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
+          return new MeasurementSubviewViewHolder(parent, Resource.Layout.subview_measurement_large, cache);
         case EViewType.PTChartSubview:
-          return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
+          return new PTChartSubviewViewHolder(parent, Resource.Layout.subview_fluid_large);
         case EViewType.SuperheatSubcoolSubview:
-          return new SuperheatSubcoolSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_large, parent, false));
+          return new SuperheatSubcoolSubviewViewHolder(parent, Resource.Layout.subview_fluid_large);
         case EViewType.TimerSubview:
-          return new TimerSubviewViewHolder(li.Inflate(Resource.Layout.subview_timer_large, parent, false), cache);
+          return new TimerSubviewViewHolder(parent, Resource.Layout.subview_timer_large, cache);
         case EViewType.RateOfChangeSubview:
-          return new RateOfChangeSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_large, parent, false), cache);
+          return new RateOfChangeSubviewViewHolder(parent, Resource.Layout.subview_measurement_large, cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -163,7 +163,7 @@
     /// <param name="viewHolder">View holder.</param>
     /// <param name="index">Index.</param>
     public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
-      return record is MeasurementRecord;
+      return record is MeasurementRecord || record is ManifoldRecord;
     }
 
     /// <summary>
@@ -172,18 +172,23 @@
     /// <returns>The view holder swipe action.</returns>
     /// <param name="index">Index.</param>
     public override Action GetViewHolderSwipeAction(int index) {
-      return () => {
-        records.RemoveAt(index);
-        NotifyItemRemoved(index);
-      };
-    }
-
-    /// <summary>
-    /// Called immediately before the record is removed from the adapter.
-    /// </summary>
-    /// <param name="record">Record.</param>
-    /// <param name="position">Position.</param>
-    public override void OnRemove(IRecord record, int position) {
+      var record = records[index];
+      if (record is SensorPropertyRecord) {
+        var spr = record as SensorPropertyRecord;
+        var manifold = spr.manifold;
+        return () => {
+          manifold.RemoveSensorProperty(spr.sensorProperty);
+        };
+      } else if (record is ManifoldRecord) {
+        var mr = record as ManifoldRecord;
+        return () => {
+          workbench.Remove(mr.item);
+        };
+      } else {
+        return () => {
+          Log.E(this, "GetViewHolderSwipeAction returned null action");
+        };
+      }
     }
 
     // Overridden from RecyclerView.Adapter
@@ -308,7 +313,7 @@
 
           index = manifoldIndex + 1 + manifoldEvent.index;
 
-          records.Insert(index, CreateSensorPropertyRecord(manifold[manifoldEvent.index]));
+          records.Insert(index, CreateSensorPropertyRecord(manifold, manifold[manifoldEvent.index]));
 
           NotifyItemInserted(index);
           break;
@@ -427,7 +432,7 @@
           var count = manifold.sensorPropertyCount;
 
           for (int i = 1; i <= count; i++) {
-            records.Insert(index + i, CreateSensorPropertyRecord(manifold[i - 1]));
+            records.Insert(index + i, CreateSensorPropertyRecord(manifold, manifold[i - 1]));
           }
 
           NotifyItemRangeRemoved(index + 1, count);
@@ -538,18 +543,23 @@
     /// </summary>
     /// <returns>The sensor property record.</returns>
     /// <param name="sp">Sp.</param>
-    private IRecord CreateSensorPropertyRecord(ISensorProperty sp) {
+    private IRecord CreateSensorPropertyRecord(Manifold manifold, ISensorProperty sp) {
+      SensorPropertyRecord ret = null;
+
       if (sp is PTChartSensorProperty) {
-        return new PTChartSubviewRecord(sp as PTChartSensorProperty);
+        ret = new PTChartSubviewRecord(sp as PTChartSensorProperty);
       } else if (sp is SuperheatSubcoolSensorProperty) {
-        return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
+        ret = new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
       } else if (sp is TimerSensorProperty) {
-        return new TimerSubviewRecord(sp as TimerSensorProperty);
+        ret = new TimerSubviewRecord(sp as TimerSensorProperty);
       } else if (sp is RateOfChangeSensorProperty) {
-        return new RateOfChangeSubviewRecord(sp as RateOfChangeSensorProperty);
+        ret = new RateOfChangeSubviewRecord(sp as RateOfChangeSensorProperty);
       } else {
-        return new MeasurementRecord(sp);
+        ret = new MeasurementRecord(sp);
       }
+
+      ret.manifold = manifold;
+      return ret;
     }
   }
 
@@ -579,6 +589,7 @@
 
   class SensorPropertyRecord : SwipableRecyclerViewAdapter.IRecord {
     public int viewType { get; private set; }
+    public Manifold manifold { get; set; }
     public ISensorProperty sensorProperty { get; private set; }
 
     public SensorPropertyRecord(EViewType viewType, ISensorProperty sensorProperty) {
@@ -618,7 +629,7 @@
   }
 
   abstract class WorkbenchViewHolder : SwipableViewHolder, IItemTouchHelperViewHolder {
-    public WorkbenchViewHolder(View view) : base(view) {
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
     public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
@@ -634,7 +645,7 @@
   }
 
   abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
-    public WorkbenchViewHolder(View view) : base(view) {
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
     public override void BindTo(SwipableRecyclerViewAdapter.IRecord t) {
@@ -645,7 +656,7 @@
   }
 
   class SpaceViewHolder : WorkbenchViewHolder<SpaceRecord> {
-    public SpaceViewHolder(View view) : base(view) {
+    public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
     /// <summary>
@@ -667,7 +678,7 @@
 
     private Button add;
 
-    public FooterViewHolder(View view) : base(view) {
+    public FooterViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       add = view.FindViewById<Button>(Resource.Id.add);
     }
 

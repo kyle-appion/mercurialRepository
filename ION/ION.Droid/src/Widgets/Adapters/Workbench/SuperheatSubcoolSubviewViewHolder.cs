@@ -16,7 +16,7 @@
   class SuperheatSubcoolSubviewViewHolder : WorkbenchViewHolder<SuperheatSubcoolSubviewRecord> {
     private SuperheatSubcoolSubviewTemplate template;
 
-    public SuperheatSubcoolSubviewViewHolder(View view) : base(view) {
+    public SuperheatSubcoolSubviewViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       template = new SuperheatSubcoolSubviewTemplate(view);
     }
 
