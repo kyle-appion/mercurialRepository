@@ -2,6 +2,7 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Collections.ObjectModel;
 
 
   using Android.Content;
@@ -9,15 +10,22 @@
   using Android.Graphics.Drawables;
   using Android.OS;
   using Android.Support.V7.Widget;
+  using Android.Support.V7.Widget.Helper;
   using Android.Util;
   using Android.Views;
   using Android.Widget;
+
+  using ION.Droid.Views;
 
   /// <summary>
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
   public abstract class SwipableRecyclerViewAdapter : RecyclerView.Adapter {
+    /// <summary>
+    /// The number of milliseconds that will ellapse before the swiped row will return.
+    /// </summary>
+    private const long PENDING_ACTION_DELAY = 2500;
     /// <summary>
     /// The delegate that will be notified when the adapter's content changes.
     /// </summary>
@@ -71,15 +79,26 @@
     /// <summary>
     /// The records that the recycler view will display.
     /// </summary>
-    private List<IRecord> records = new List<IRecord>();
+    protected readonly ObservableCollection<IRecord> records = new ObservableCollection<IRecord>();
     /// <summary>
-    /// The records that are pending removal from the recycler adapter.
+    /// The records that have pending actions.
     /// </summary>
-    private HashSet<IRecord> recordsPendingRemoval = new HashSet<IRecord>();
+    private Dictionary<IRecord, Action> pendingActions = new Dictionary<IRecord, Action>();
+
+    /// <summary>
+    /// The item decorator that will draw the action button behind a swiped view.
+    /// </summary>
+    private ItemTouchHelper touchHelperDecoration;
+    /// <summary>
+    /// The item decorator that will resolve item swipes.
+    /// </summary>
+    private RecyclerView.ItemDecoration swipeDecoration;
 
     public SwipableRecyclerViewAdapter() {
       handler = new Handler();
       swipeBackgroundColor = Color.LightBlue;
+      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this));
+      swipeDecoration = new SwipeAnimationDecorator(Color.Blue);
     }
 
     /// <summary>
@@ -89,6 +108,9 @@
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
       this.recyclerView = recyclerView;
+      touchHelperDecoration.AttachToRecyclerView(recyclerView);
+//      recyclerView.AddItemDecoration(touchHelperDecoration);
+      recyclerView.AddItemDecoration(swipeDecoration);
     }
 
     /// <summary>
@@ -98,6 +120,17 @@
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
       this.recyclerView = recyclerView;
+//      recyclerView.RemoveItemDecoration(touchHelperDecoration);
+      recyclerView.RemoveItemDecoration(swipeDecoration);
+    }
+
+    /// <summary>
+    /// Raises the create view holder event.
+    /// </summary>
+    /// <param name="parent">Parent.</param>
+    /// <param name="viewType">View type.</param>
+    public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+      return OnCreateSwipableViewHolder(parent, viewType);
     }
 
     /// <summary>
@@ -107,21 +140,42 @@
     /// <param name="position">Position.</param>
     public override sealed void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
       var record = records[position];
-      var vh = holder as IONRecyclerViewHolder;
-
-      if (vh == null) {
-        vh = OnCreateViewHolder(record, position);
-      }
+      var vh = holder as SwipableViewHolder;
 
       if (vh == null) {
         throw new Exception("IONRecyclerViewAdapter cannot accept viewholder's that do not extend IONRecyclerViewHolder");
       }
 
-      if (recordsPendingRemoval.Contains(vh)) {
-        vh.ItemView.SetBackgroundColor(swipeBackgroundColor);
+      OnBindViewHolder(record, vh, position);
+
+      if (pendingActions.ContainsKey(record)) {
+/*
+        vh.content.Visibility = ViewStates.Gone;
+        vh.button.Visibility = ViewStates.Visible;
+        vh.button.SetOnClickListener(new ViewClickAction((v) => {
+          var action = pendingActions[record];
+          pendingActions.Remove(record);
+          if (action != null) {
+            handler.RemoveCallbacks(action);
+          }
+          
+          NotifyItemChanged(records.IndexOf(record));
+        }));
+*/
+        ION.Core.Util.Log.D(this, "Pending actions view states changed");
       } else {
+//        vh.content.Visibility = ViewStates.Visible;
+//        vh.button.Visibility = ViewStates.Gone;
+        ION.Core.Util.Log.D(this, "binding view");
       }
     }
+
+    /// <summary>
+    /// Called when the adapter needs a new view holder.
+    /// </summary>
+    /// <param name="parent">Parent.</param>
+    /// <param name="viewType">View type.</param>
+    public abstract SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType);
 
     /// <summary>
     /// Binds the given record to the view holder.
@@ -129,14 +183,74 @@
     /// <param name="record">Record.</param>
     /// <param name="vh">Vh.</param>
     /// <param name="position">Position.</param>
-    public abstract void OnBindViewHolder(IRecord record, IONRecyclerViewHolder vh, int position);
+    public abstract void OnBindViewHolder(IRecord record, SwipableViewHolder vh, int position);
 
     /// <summary>
-    /// Queries whether or not the given record in the recycler view is pending removal.
+    /// Queries whether or not the given view holder is swipeable.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is view holder swipable the specified viewHolder index; otherwise, <c>false</c>.</returns>
+    /// <param name="viewHolder">View holder.</param>
+    /// <param name="index">Index.</param>
+    public abstract bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index);
+
+    /// <summary>
+    /// Queries the action that is triggered when the swipe revealed button is clicked.
+    /// </summary>
+    /// <returns>The view holder swipe action.</returns>
+    /// <param name="index">Index.</param>
+    public abstract Action GetViewHolderSwipeAction(int index);
+
+    /// <summary>
+    /// Queries whether or not the given record in the recycler view has a pending action.
     /// </summary>
     /// <returns><c>true</c> if this instance is pending removal; otherwise, <c>false</c>.</returns>
-    public bool IsPendingRemoval(int position) {
-      return recordsPendingRemoval.Contains(records[position]);
+    public bool HasPendingAction(int position) {
+      return pendingActions.ContainsKey(records[position]);
+    }
+
+    /// <summary>
+    /// Performs a swipe action for the given position.
+    /// </summary>
+    /// <param name="swipePosition">Swipe position.</param>
+    public void PerformSwipeAction(int swipePosition) {
+      Toast.MakeText(recyclerView.Context, "Swipey, swipey", ToastLength.Long).Show();
+      var record = records[swipePosition];
+      if (!pendingActions.ContainsKey(record)) {
+//        var action = GetViewHolderSwipeAction(swipePosition);
+        Action action = () => {
+          Remove(swipePosition);
+        };
+
+        pendingActions.Add(record, action);
+        NotifyItemChanged(swipePosition);
+        handler.PostDelayed(action, PENDING_ACTION_DELAY);
+      }
+    }
+
+    /// <summary>
+    /// Removes the item at the given position.
+    /// </summary>
+    /// <param name="position">Position.</param>
+    public void Remove(int position) {
+      var record = records[position];
+
+      if (pendingActions.ContainsKey(record)) {
+        pendingActions.Remove(record);
+      }
+
+      if (records.Contains(record)) {
+        OnRemove(record, position);
+        records.RemoveAt(position);
+        NotifyItemRemoved(position);
+      }
+    }
+
+    /// <summary>
+    /// Called immediately before the record is removed from the adapter.
+    /// </summary>
+    /// <param name="record">Record.</param>
+    /// <param name="position">Position.</param>
+    public void OnRemove(IRecord record, int position) {
     }
 
     /// <summary>
@@ -156,7 +270,7 @@
       /// Queries the view type of the record. This is used for identification and record switching.
       /// </summary>
       /// <value>The type of the view.</value>
-      int ViewType { get; }
+      int viewType { get; }
     }
 
     /// <summary>
@@ -182,72 +296,21 @@
   /// <summary>
   /// The base view holder that will be used for the IONRecyclerViewAdapter.
   /// </summary>
-  public class IONRecyclerViewHolder : RecyclerView.ViewHolder {
-    protected SwipableRecyclerViewAdapter adapter { get; private set; }
+  public class SwipableViewHolder : RecyclerView.ViewHolder {
+//    protected SwipableRecyclerViewAdapter adapter { get; internal set; }
+    internal LinearLayout content;
+    /// <summary>
+    /// The button that is revealed when the view holder is swiped.
+    /// </summary>
     internal Button button;
 
-    public IONRecyclerViewHolder(SwipableRecyclerViewAdapter adapter, View view) : base(view) {
-      this.adapter = adapter;
-      this.button = view.FindViewById<Button>(Resource.Id.button);
-    }
-  }
-
-  /// <summary>
-  /// The item decorator that will draw a color behind the view as it is swiped for removal.
-  /// </summary>
-  internal class ItemRemovedDecorator : RecyclerView.ItemDecoration {
-    private Drawable color;
-    private bool initialized;
-
-    public ItemRemovedDecorator(int color) : this(new Color(color)) {
-    }
-
-    public ItemRemovedDecorator(Color color) {
-      this.color = new ColorDrawable(color);
-    }
-
-    public override void OnDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-      if (parent.GetItemAnimator().IsRunning) {
-        /* Because this decorator will fire when an item is swiped for removal, meaning the view is removed and the 
-         * recycler view is animating the closure of void, we will need to account for the views being animated. Because
-         * the IONRecyclerViewAdapter is meant as a linear list of records, we can assert that the views being animated
-         * we be the view above and below the removed view.
-         */
-
-        View aboveView = null;
-        View belowView = null;
-
-        int left = 0, right = parent.Width, top = 0, bottom = 0;
-
-        int childCount = parent.GetLayoutManager().ChildCount;
-        for (int i = 0; i < childCount; i++) {
-          var child = parent.GetLayoutManager().GetChildAt(i);
-
-          if (child.TranslationY < 0) {
-            aboveView = child;
-          } else if (child.TranslationY > 0) {
-            if (belowView == null) {
-              belowView = child;
-            }
-          }
-        }
-
-        if (aboveView != null && belowView != null) {
-          top = aboveView.Bottom + (int)aboveView.TranslationY;
-          bottom = belowView.Top + (int)belowView.TranslationY;
-        } else if (aboveView != null) {
-          top = aboveView.Bottom + (int)aboveView.TranslationY;
-          bottom = aboveView.Bottom;
-        } else if (belowView != null) {
-          top = belowView.Top;
-          bottom = belowView.Top + (int)belowView.TranslationY;
-        }
-
-        color.SetBounds(left, top, right, bottom);
-        color.Draw(canvas);
-
-        base.OnDraw(canvas, parent, state);
-      }
+    public SwipableViewHolder(View view) : base(view) {
+/*
+    base(LayoutInflater.From(view.Context).Inflate(Resource.Layout.list_item_ion_recycler_view_holder, null, false)) {
+      content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
+      content.AddView(view);
+      button = ItemView.FindViewById<Button>(Resource.Id.button);
+*/
     }
   }
 }
