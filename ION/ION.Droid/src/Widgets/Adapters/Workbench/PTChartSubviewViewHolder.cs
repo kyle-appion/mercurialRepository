@@ -16,7 +16,7 @@
   class PTChartSubviewViewHolder : WorkbenchViewHolder<PTChartSubviewRecord> {
     private PTChartSubviewTemplate template;
 
-    public PTChartSubviewViewHolder(View view) : base(view) {
+    public PTChartSubviewViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       template = new PTChartSubviewTemplate(view);
     }
 

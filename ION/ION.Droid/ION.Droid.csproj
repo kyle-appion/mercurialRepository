@@ -178,7 +178,6 @@
     <Compile Include="src\Widgets\Adapters\Workbench\TimerSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Templates\RateOfChangeSubviewTemplate.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\RateOfChangeSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchTouchHelperCallback.cs" />
     <Compile Include="src\Alarms\Alerts\PopupActivityAlert.cs" />
     <Compile Include="src\Preferences\NumberDialogPreference.cs" />
     <Compile Include="src\Dialog\NumberEntryDialog.cs" />

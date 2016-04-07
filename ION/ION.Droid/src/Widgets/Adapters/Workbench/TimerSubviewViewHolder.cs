@@ -18,7 +18,7 @@
   class TimerSubviewViewHolder : WorkbenchViewHolder<TimerSubviewRecord> {
     private TimerSubviewTemplate template;
 
-    public TimerSubviewViewHolder(View view, BitmapCache cache) : base(view) {
+    public TimerSubviewViewHolder(ViewGroup parent, int viewResource, BitmapCache cache) : base(parent, viewResource) {
       template = new TimerSubviewTemplate(view, cache);
     }
 

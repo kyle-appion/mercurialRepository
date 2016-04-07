@@ -18,7 +18,7 @@
   class RateOfChangeSubviewViewHolder : WorkbenchViewHolder<RateOfChangeSubviewRecord> {
     private RateOfChangeSubviewTemplate template;
 
-    public RateOfChangeSubviewViewHolder(View view, BitmapCache cache) : base(view) {
+    public RateOfChangeSubviewViewHolder(ViewGroup parent, int viewResource, BitmapCache cache) : base(parent, viewResource) {
       template = new RateOfChangeSubviewTemplate(view, cache);
     }
 
