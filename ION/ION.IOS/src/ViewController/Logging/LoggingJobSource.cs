@@ -70,8 +70,8 @@ namespace ION.IOS.ViewController.Logging {
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
       if(usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)){
-        //cell.Accessory = UITableViewCellAccessory.Checkmark;
-        cell.BackgroundColor = UIColor.LightGray;
+        cell.Accessory = UITableViewCellAccessory.Checkmark;
+        //cell.BackgroundColor = UIColor.LightGray;
       }
 
       return cell;

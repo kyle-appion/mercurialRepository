@@ -19,7 +19,7 @@ namespace ION.IOS.ViewController.Logging
 
 		public override nint RowsInSection (UITableView tableview, nint section)
 		{
-			return tableItems.Count;
+			return ChosenDates.includeList.Count;
 		}
 
 		public override nint NumberOfSections (UITableView tableView)
@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.Logging
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "legendCell") as legendCell;
 			}
 
-			cell.setupTable (parentView,tableItems [indexPath.Row]);
+			cell.setupTable (parentView,tableItems [indexPath.Row],tableItems);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;
 		}

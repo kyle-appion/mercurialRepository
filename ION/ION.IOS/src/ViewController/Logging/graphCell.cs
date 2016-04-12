@@ -15,71 +15,82 @@ namespace ION.IOS.ViewController.Logging
 	{
 		public PlotView plotView;
 		public deviceReadings cellData;
+    public List<deviceReadings> allData;
 		public LinearAxis LAX;
 		public LinearAxis RAX;
-		public DateTimeAxis BAX;
+		public LinearAxis BAX;
 		public UILabel deviceName;
 		public UILabel includeLabel;
 		public UIButton includeButton;
 		public UITableView graphTable;
+    public UIView buttonImage;
 
 		public graphCell(IntPtr handle) {
 		
 		}
 
-		public void setupGraph(deviceReadings data, double cellWidth, double cellHeight, DateTime earliest, DateTime latest, 
-							   UIView leftTrackerView, UIView rightTrackerView, double trackerHeight, UIView parentView, 
-							   UIImageView leftTrackerCircle, UIImageView rightTrackerCircle, UITableView tableView)
+    public void setupGraph(deviceReadings startData, List<deviceReadings> totalData, double cellWidth, double cellHeight, double trackerHeight, UIView parentView, UITableView tableView)
 		{
-			cellData = data;
+      cellData = startData;
+      allData = totalData;
 			graphTable = tableView;
-			this.BackgroundColor = UIColor.Clear;
+      this.BackgroundColor = UIColor.Clear;
 			this.Layer.BorderWidth = 1f;
 			 
-			//plotView = new PlotView(new CGRect(0,0, .8 * cellWidth, .8 *cellHeight)){
 			plotView = new PlotView(new CGRect(0,0, .8 * cellWidth, cellHeight)){
-				Model = CreatePlotModel(earliest, latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle),		
+				Model = CreatePlotModel(trackerHeight, parentView),
+        BackgroundColor = UIColor.Clear,
 			};
-			plotView.BackgroundColor = UIColor.Clear;
 
-			//deviceName = new UILabel (new CGRect (.2 * cellWidth,.8 * cellHeight,.2 * cellWidth,.2 * cellHeight));
-			deviceName = new UILabel (new CGRect (.8 * cellWidth,.8 * cellHeight,.2 * cellWidth,.2 * cellHeight));
+			deviceName = new UILabel (new CGRect (0, .9 * cellHeight,.3 * cellWidth,.25 * cellHeight));
 			deviceName.Text = cellData.name;
 			deviceName.AdjustsFontSizeToFitWidth = true;
 			deviceName.TextAlignment = UITextAlignment.Center;
+      //deviceName.Layer.BorderWidth = 1f;
 
-			//includeLabel = new UILabel (new CGRect (.825 * cellWidth,.2 * cellHeight,.15 * cellWidth,.25 * cellHeight));
-			includeLabel = new UILabel (new CGRect (.825 * cellWidth,.1 * cellHeight,.15 * cellWidth,.25 * cellHeight));
-			includeLabel.TextAlignment = UITextAlignment.Center;
-			includeLabel.Text = "Include";
-			includeLabel.AdjustsFontSizeToFitWidth = true;
-
-			//includeButton = new UIButton (new CGRect (.85 * cellWidth,.45 * cellHeight,.1 * cellWidth, .1 * cellWidth));
-			includeButton = new UIButton (new CGRect (.85 * cellWidth,.35 * cellHeight,.09 * cellWidth, .09 * cellWidth));
-			if (ChosenDates.includeList.Contains(cellData.name)) {
-        includeButton.SetBackgroundImage (UIImage.FromBundle ("ic_checkbox"), UIControlState.Normal);
-			} else {
-        includeButton.SetBackgroundImage (UIImage.FromBundle ("ic_unchecked"), UIControlState.Normal);
-			}
-			includeButton.Layer.CornerRadius = 8;
+			includeButton = new UIButton (new CGRect (.799 * cellWidth,0,.2 * cellWidth, 1.17 * cellHeight));
 			includeButton.SetTitleColor (UIColor.White, UIControlState.Normal);
+      includeButton.Layer.BorderWidth = 1f;
+
+      includeLabel = new UILabel (new CGRect (.8 * cellWidth,0,includeButton.Bounds.Width,.25 * includeButton.Bounds.Height));
+      includeLabel.TextAlignment = UITextAlignment.Center;
+      includeLabel.Text = "Included";
+      includeLabel.AdjustsFontSizeToFitWidth = true;
+      includeLabel.Layer.BorderWidth = 1f;
+      includeLabel.BackgroundColor = UIColor.Black;
+      includeLabel.TextColor = UIColor.White;
+
+      buttonImage = new UIView(new CGRect(.8 * cellWidth,.25 * includeButton.Bounds.Height, includeButton.Bounds.Width,.75 * includeButton.Bounds.Height));
+      buttonImage.BackgroundColor = UIColor.Yellow;
+      buttonImage.UserInteractionEnabled = true;
+      var image = new UIImageView(new CGRect(.25 * buttonImage.Bounds.Width, .25 * buttonImage.Bounds.Height,.5 * buttonImage.Bounds.Width, .5 * buttonImage.Bounds.Width));
+      image.Layer.CornerRadius = 12;
+      image.BackgroundColor = UIColor.White;
+      if (ChosenDates.includeList.Contains(cellData.name)) {
+        image.Image = UIImage.FromBundle("ic_checkbox");
+      } else {
+        image.Image = UIImage.FromBundle("ic_unchecked");
+      }
+      buttonImage.AddSubview(image);
 
 			includeButton.TouchUpInside += (sender, e) => {
 				if (ChosenDates.includeList.Contains (cellData.name)) {
 					ChosenDates.includeList.Remove (cellData.name);
-					includeButton.SetBackgroundImage(UIImage.FromBundle ("ic_unchecked"), UIControlState.Normal);
+          image.Image = UIImage.FromBundle ("ic_unchecked");
 				} else {
 					ChosenDates.includeList.Add (cellData.name);
-					includeButton.SetBackgroundImage(UIImage.FromBundle ("ic_checkbox"), UIControlState.Normal);
+          image.Image = UIImage.FromBundle ("ic_checkbox");
 				}
-				Console.WriteLine("Clicked " + data.name);
+				Console.WriteLine("Clicked " + cellData.name);
 			};
 
 			this.AddSubview (plotView);
-			this.AddSubview (deviceName);
-			this.BringSubviewToFront (deviceName);
+			this.AddSubview (deviceName);			
 			this.AddSubview (includeLabel);
+      this.AddSubview (buttonImage);
 			this.AddSubview (includeButton);
+      this.BringSubviewToFront(includeButton);
+      this.BringSubviewToFront (deviceName);
 		}
 
 		/// <summary>
@@ -87,48 +98,46 @@ namespace ION.IOS.ViewController.Logging
 		/// series(recording session) for the device/sensor
 		/// </summary>
 		/// <returns>The plot model.</returns>	
-		public PlotModel CreatePlotModel( DateTime earliest, DateTime latest, UIView leftTrackerView, UIView rightTrackerView, 
-										  double trackerHeight, UIView parentView,UIImageView leftTrackerCircle, UIImageView rightTrackerCircle) {
+		public PlotModel CreatePlotModel(double trackerHeight, UIView parentView) {
 			var lowValue = 9999999.9;
 			var highValue = -9999.9;    
-      //Console.WriteLine("Device: " + cellData.name);
-			foreach (var reading in cellData.readings) {
-        //Console.WriteLine("Current Lowest: " + lowValue + " new reading: " + reading);
-				if (reading < lowValue) {
-					lowValue = reading;
-				}
-				if (reading > highValue) {
-					highValue = reading;
-				} 
-			} 
 
+      foreach (var device in allData) {
+        if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
+          foreach (var reading in device.readings) {
+            if (reading < lowValue) {
+              lowValue = reading;
+            }
+            if (reading > highValue) {
+              highValue = reading;
+            } 
+          }
+        }
+      } 
 			var plotModel = new PlotModel();
 
 			plotModel.Background = OxyColors.Transparent;
 			plotModel.PlotAreaBackground = OxyColors.White;
 			plotModel.DefaultFontSize = 0;
 			plotModel.PlotAreaBorderThickness = new OxyThickness(0,0,0,0);
-			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,-5);
-			//plotModel.Background = OxyColors.SteelBlue;
+			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,5);
 
-			/// The bottom axis of the graph which will be a datetime one 
-			BAX = new DateTimeAxis {
-				Position = AxisPosition.Bottom,
-				StringFormat = "HH:mm",
-				Maximum = DateTimeAxis.ToDouble (latest),
-				AbsoluteMaximum = DateTimeAxis.ToDouble (latest),
-				Minimum = DateTimeAxis.ToDouble (earliest),
-				AbsoluteMinimum = DateTimeAxis.ToDouble (earliest),
-				IntervalLength = latest.Subtract(earliest).TotalMinutes,
-				MinorIntervalType = DateTimeIntervalType.Seconds,
-				IntervalType = DateTimeIntervalType.Minutes,
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				MinimumPadding = 0,
-				MaximumPadding = 0,
-				AxislineThickness = 0,
-			};
+			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
+      /// Corresponsding date indexes will provide the plot points
+      BAX = new LinearAxis {
+        Position = AxisPosition.Bottom,
+        Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
+        AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
+        Minimum = 0,
+        AbsoluteMinimum = 0,
+        IntervalLength = 1,
+        IsAxisVisible = false,
+        IsZoomEnabled = false,
+        IsPanEnabled = false,
+        MinimumPadding = 0,
+        MaximumPadding = 0,
+        AxislineThickness = 0,
+      };
 			/// left axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
 			/// this will be used for pressure measurements
 			LAX = new LinearAxis {
@@ -145,170 +154,39 @@ namespace ION.IOS.ViewController.Logging
 				MaximumPadding = 0,
 				AxislineThickness = 0,
 			};
-			/// right axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
-			/// this will be used for temperature measurements
-			RAX = new LinearAxis {
-				Position = AxisPosition.Right,
-				Maximum = highValue + 4,
-				AbsoluteMaximum = highValue + 4,
-				Minimum = lowValue - 4,
-				AbsoluteMinimum = lowValue - 4,
-				Key = "right",
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				MinimumPadding = 0,
-				MaximumPadding = 0,
-				AxislineThickness= 0,
-			};
 
 			plotModel.Axes.Add (BAX);
 			plotModel.Axes.Add (LAX);
-			plotModel.Axes.Add (RAX);
 		
 			var color = OxyColors.Blue;
 
-//			if(cellData.type.Equals("temperature")){
-//				color = OxyColors.Red;
-//			} else if (cellData.type.Equals("vacuum")){
-//				color = OxyColors.Maroon;
-//			}
-
-			var series = new LineSeries {
-				MarkerType = MarkerType.Circle,
-				MarkerSize = 1,
-				MarkerStroke = color,
-				MarkerFill = color,
-				LineStyle = LineStyle.Solid,
-				Color = color,
-				Title = cellData.name,
-			};
-
-			for (int i = 0; i < cellData.readings.Count; i++) {
-				series.Points.Add(DateTimeAxis.CreateDataPoint(cellData.times[i], cellData.readings[i]));
-				//Console.WriteLine ("Device " + cellData.name + " " + cellData.times [i] + " " + cellData.readings [i]);
+			if(cellData.type.Equals("Temperature")){
+				color = OxyColors.Red;
+			} else if (cellData.type.Equals("Vacuum")){
+				color = OxyColors.Maroon;
 			}
-			//Console.WriteLine (Environment.NewLine);
-			plotModel.Series.Add (series);
+
+      foreach(var device in allData){
+        if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
+          var series = new LineSeries {
+            MarkerType = MarkerType.Circle,
+            MarkerSize = 1,
+            MarkerStroke = color,
+            MarkerFill = color,
+            LineStyle = LineStyle.Solid,
+            Color = color,
+          };
+
+          for(int i = 0; i < device.times.Count; i++) {
+            var index = ChosenDates.allTimes[device.times[i].ToString()];
+            var measurement = device.readings[i];
+            series.Points.Add(new DataPoint(index,measurement));
+          }
+          plotModel.Series.Add (series);
+        }
+      }			
 
 			plotModel.IsLegendVisible = false;
-
-			/// when a user drags a spot on the graph the corresponding
-			/// left or right tracker will move to reach it based on changing delta
-//			plotModel.TouchDelta += (sender, e) => {
-//				if(e.Position.X <= plotModel.PlotArea.Center.X){
-//					if(e.Position.X < plotModel.PlotArea.Left){
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{  
-//								leftTrackerView.Frame = new CGRect(.1 * parentView.Bounds.Width,.075 * parentView.Bounds.Height, 1, trackerHeight);
-//
-//								var trackerRect = leftTrackerCircle.Center;
-//								trackerRect.X = leftTrackerView.Center.X + (.5f * leftTrackerView.Bounds.Width);
-//								leftTrackerCircle.Center = trackerRect;
-//							},() => {});
-//						ChosenDates.subLeft = earliest;
-//					} else {
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								leftTrackerView.Frame = new CGRect(.1 * parentView.Bounds.Width,.075 * parentView.Bounds.Height, e.Position.X, trackerHeight);
-//
-//								var trackerRect = leftTrackerCircle.Center;
-//								trackerRect.X = leftTrackerView.Center.X + (.5f * leftTrackerView.Bounds.Width);
-//								leftTrackerCircle.Center = trackerRect;
-//							},() => {}); 
-//						
-//						var dateDouble = series.InverseTransform(e.Position).X;
-//						ChosenDates.subLeft = DateTime.FromOADate(dateDouble).AddDays(1);
-//					}
-//				} else if (e.Position.X >= plotModel.PlotArea.Center.X) {
-//					if(e.Position.X > plotModel.PlotArea.Right){
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								rightTrackerView.Frame = new CGRect(.915 * graphTable.Bounds.Width,.075 * parentView.Bounds.Height, 1, trackerHeight);
-//
-//								var trackerRect = rightTrackerCircle.Center;
-//								trackerRect.X = rightTrackerView.Center.X - rightTrackerView.Bounds.Width;
-//								rightTrackerCircle.Center = trackerRect;
-//							},() => {});							
-//						ChosenDates.subRight = latest;
-//					} else {
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								rightTrackerView.Frame = new CGRect(e.Position.X + .1 * parentView.Bounds.Width, .075 * parentView.Bounds.Height, plotModel.PlotArea.Right - e.Position.X, trackerHeight);
-//	
-//								var trackerRect = rightTrackerCircle.Center;
-//								trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
-//								rightTrackerCircle.Center = trackerRect;
-//							},() => {});
-//						
-//						var dateDouble = series.InverseTransform(e.Position).X;
-//						ChosenDates.subRight = DateTime.FromOADate(dateDouble).AddDays(1);
-//					}
-//				}
-//				var middleDate = series.InverseTransform(plotModel.PlotArea.Center).X;
-//				Console.WriteLine("The middle value of the graph is " + DateTime.FromOADate(middleDate).AddDays(1));
-//				chosenDates.Text = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
-//			};
-//
-//			/// when a user just taps a spot on the graph the corresponding
-//			/// left or right tracker will move to reach it
-//			plotModel.TouchCompleted += (sender, e) => {
-//				if(e.Position.X <= plotModel.PlotArea.Center.X){
-//					if(e.Position.X < plotModel.PlotArea.Left){
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								leftTrackerView.Frame = new CGRect(.1 * parentView.Bounds.Width,.075 * parentView.Bounds.Height, 1, trackerHeight);
-//
-//								var trackerRect = leftTrackerCircle.Center;
-//								trackerRect.X = leftTrackerView.Center.X + (.5f * leftTrackerView.Bounds.Width);
-//								leftTrackerCircle.Center = trackerRect;
-//							},() => {});							
-//						ChosenDates.subLeft = earliest;
-//					} else {
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								leftTrackerView.Frame = new CGRect(.1 * parentView.Bounds.Width,.075 * parentView.Bounds.Height, e.Position.X, trackerHeight);
-//
-//								var trackerRect = leftTrackerCircle.Center;
-//								trackerRect.X = leftTrackerView.Center.X + (.5f * leftTrackerView.Bounds.Width);
-//								leftTrackerCircle.Center = trackerRect;
-//							},() => {}); 
-//						
-//						var dateDouble = series.InverseTransform(e.Position).X;
-//						ChosenDates.subLeft = DateTime.FromOADate(dateDouble).AddDays(1);
-//					}
-//				} else if (e.Position.X > plotModel.PlotArea.Center.X) {
-//					if(e.Position.X > plotModel.PlotArea.Right){
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								rightTrackerView.Frame = new CGRect(.915 * graphTable.Bounds.Width,.075 * parentView.Bounds.Height, 1, trackerHeight);
-//
-//								var trackerRect = rightTrackerCircle.Center;
-//								trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
-//								rightTrackerCircle.Center = trackerRect;
-//							},() => {});							
-//						ChosenDates.subRight = latest;
-//					} else {
-//						UIView.Animate(.15,0, UIViewAnimationOptions.CurveLinear,
-//							() =>{ 
-//								rightTrackerView.Frame = new CGRect(e.Position.X + .1 * parentView.Bounds.Width, .075 * parentView.Bounds.Height, plotModel.PlotArea.Right - e.Position.X, trackerHeight);
-//
-//								var trackerRect = rightTrackerCircle.Center;
-//								trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
-//								rightTrackerCircle.Center = trackerRect;
-//							},() => {});
-//						
-//						var dateDouble = series.InverseTransform(e.Position).X;
-//						ChosenDates.subRight = DateTime.FromOADate(dateDouble).AddDays(1);
-//					}
-//				}
-//				Console.WriteLine("touch completed " + ChosenDates.subLeft + " " + ChosenDates.subRight);
-//				Console.WriteLine("plot area with axis area " + plotModel.PlotAndAxisArea + 
-//								  " plot area " + plotModel.PlotArea + " plot area border thickness" 
-//								  + plotModel.PlotAreaBorderThickness);
-//				Console.WriteLine("plotmargins " + plotModel.PlotMargins + " actual plot margins " + plotModel.ActualPlotMargins);
-//				chosenDates.Text = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
-//			};
 
 			return plotModel;
 		}

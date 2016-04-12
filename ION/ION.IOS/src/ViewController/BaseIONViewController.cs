@@ -95,7 +95,6 @@ namespace ION.IOS.ViewController {
     public void TakeScreenshot(OnScreenshotCompleted completed) {
       Task.Factory.StartNew(() => {
         var image = View.Capture();
-
       });
     }
 

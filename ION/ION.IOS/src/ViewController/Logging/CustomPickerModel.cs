@@ -22,64 +22,45 @@ using UIKit;
 using CoreGraphics;
 using System.Collections.Generic;
 
-namespace DBwithSQLlite
+namespace ION.IOS.ViewController.Logging
 {
     public class CustomPickerModel : UIPickerViewModel
     {
         private List<string> _itemsList;
-		//private UIView parentView;
 
-		public CustomPickerModel(List<string> itemsList, UIView View)
-        {
-            _itemsList = itemsList;
-			//parentView = View;
-        }
+    public CustomPickerModel(List<string> itemsList, UIView View)
+    {
+      _itemsList = itemsList;
 
-        public override nint GetComponentCount(UIPickerView picker)
-        {
-            return 1;
-        }
-//		public override nint GetComponentCount(UIPickerView picker)
-//		{
-//			return 1;
-//		}
-        public override nint GetRowsInComponent(UIPickerView picker, nint component)
-        {
-            return _itemsList.Count;
-        }
+    }
 
-        public override UIView GetView(UIPickerView picker, nint row, nint component, UIView view)
-        {
-            var label = new UILabel(new CGRect(0, 0, 300, 37))
-            {
-                BackgroundColor = UIColor.Clear,
-                Text = _itemsList[(int)row],
-                TextAlignment = UITextAlignment.Center,
-                Font = UIFont.BoldSystemFontOfSize(22.0f)
-            };
+    public override nint GetComponentCount(UIPickerView picker)
+    {
+        return 1;
+    }
 
-            return label;
-        }
+    public override nint GetRowsInComponent(UIPickerView picker, nint component)
+    {
+        return _itemsList.Count;
+    }
+
+    public override UIView GetView(UIPickerView picker, nint row, nint component, UIView view)
+    {
+        var label = new UILabel(new CGRect(0, 0, 300, 37))
+        {
+            BackgroundColor = UIColor.Clear,
+            Text = _itemsList[(int)row],
+            TextAlignment = UITextAlignment.Center,
+            Font = UIFont.BoldSystemFontOfSize(22.0f)
+        };
+
+        return label;
+    }
 
 		public override void DidChangeValue (string forKey)
 		{
 			Console.WriteLine ("Changed 3");
 		}
-			
-//		public override UIView GetView(UIPickerView picker, nint row, nint component, UIView view)
-//		{
-//			var holderView = new UIView (new CGRect (0,0,300,.5 * parentView.Bounds.Height));
-//			var pieceString = _itemsList[(int)row].Split('/'
-//			var label = new UILabel(new CGRect(0, 0, 300, 37))
-//			{
-//				BackgroundColor = UIColor.Clear,
-//				Text = _itemsList[(int)row],
-//				TextAlignment = UITextAlignment.Center,
-//				Font = UIFont.BoldSystemFontOfSize(22.0f)
-//			};
-//
-//			return label;
-//		}
-    }
+  }
 }
 
