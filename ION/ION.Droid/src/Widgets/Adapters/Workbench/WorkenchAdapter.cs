@@ -30,7 +30,7 @@
   /// swipeListener for swipping).
   /// that you assign
   /// </summary>
-  public class WorkbenchAdapter : RecyclerView.Adapter, IItemTouchHelperAdapter {
+  public class WorkbenchAdapter : SwipableRecyclerViewAdapter/*RecyclerView.Adapter*/, IItemTouchHelperAdapter {
 
     public delegate void OnManifoldClicked(Manifold manifold);
     public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
@@ -63,7 +63,7 @@
     /// <summary>
     /// The records that are contained within the adapter.
     /// </summary>
-    private ObservableCollection<IRecord> records = new ObservableCollection<IRecord>();
+//    private ObservableCollection<IRecord> records = new ObservableCollection<IRecord>();
 
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
@@ -76,7 +76,7 @@
     }
 
     // Overridden from RecyclerView.Adapter
-    public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+    public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
       var li = LayoutInflater.From(parent.Context);
 
       switch ((EViewType)viewType) {
@@ -101,10 +101,15 @@
       }
     }
 
-    // Overridden from RecyclerView.Adapter
-    public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-      var viewType = GetItemViewType(position);
-      var record = records[position];
+    /// <summary>
+    /// Binds the given record to the view holder.
+    /// </summary>
+    /// <param name="record">Record.</param>
+    /// <param name="vh">Vh.</param>
+    /// <param name="position">Position.</param>
+    /// <param name="holder">Holder.</param>
+    public override void OnBindViewHolder(IRecord record, SwipableViewHolder holder, int position) {
+      var viewType = record.viewType;
 
       if (record is SensorPropertyRecord) {
         BuildSensorPropertyViewHolder(holder, position);
@@ -148,6 +153,37 @@
         holder.ItemView.SetOnTouchListener(touchHelper);
     */
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the given view holder is swipeable.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    /// <param name="viewHolder">View holder.</param>
+    /// <param name="index">Index.</param>
+    public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
+      return record is MeasurementRecord;
+    }
+
+    /// <summary>
+    /// Queries the action that is triggered when the swipe revealed button is clicked.
+    /// </summary>
+    /// <returns>The view holder swipe action.</returns>
+    /// <param name="index">Index.</param>
+    public override Action GetViewHolderSwipeAction(int index) {
+      return () => {
+        records.RemoveAt(index);
+        NotifyItemRemoved(index);
+      };
+    }
+
+    /// <summary>
+    /// Called immediately before the record is removed from the adapter.
+    /// </summary>
+    /// <param name="record">Record.</param>
+    /// <param name="position">Position.</param>
+    public override void OnRemove(IRecord record, int position) {
     }
 
     // Overridden from RecyclerView.Adapter
@@ -531,30 +567,22 @@
     TimerSubview,
   }
 
-  /// <summary>
-  /// The interface that represents a "record" item in the adapter. This interface is
-  /// used to abstract the types of views in the adapter.
-  /// </summary>
-  interface IRecord {
-    EViewType viewType { get; }
-  }
-
-  class WorkbenchRecord<T> : IRecord {
-    public EViewType viewType { get; private set; }
+  class WorkbenchRecord<T> : SwipableRecyclerViewAdapter.IRecord {
+    public int viewType { get; private set; }
     public T item;
 
     public WorkbenchRecord(EViewType viewType, T item) {
-      this.viewType = viewType;
+      this.viewType = (int)viewType;
       this.item = item;
     }
   }
 
-  class SensorPropertyRecord : IRecord {
-    public EViewType viewType { get; private set; }
+  class SensorPropertyRecord : SwipableRecyclerViewAdapter.IRecord {
+    public int viewType { get; private set; }
     public ISensorProperty sensorProperty { get; private set; }
 
     public SensorPropertyRecord(EViewType viewType, ISensorProperty sensorProperty) {
-      this.viewType = viewType;
+      this.viewType = (int)viewType;
       this.sensorProperty = sensorProperty;
     }
   }
@@ -567,18 +595,18 @@
     }
   }
 
-  class SpaceRecord : IRecord {
-    public EViewType viewType {
+  class SpaceRecord : SwipableRecyclerViewAdapter.IRecord {
+    public int viewType {
       get {
-        return EViewType.Space;
+        return (int)EViewType.Space;
       }
     }
   }
 
-  class FooterRecord : IRecord {
-    public EViewType viewType { 
+  class FooterRecord : SwipableRecyclerViewAdapter.IRecord {
+    public int viewType { 
       get {
-        return EViewType.Footer;
+        return (int)EViewType.Footer;
       }
     }
 
@@ -589,11 +617,11 @@
     }
   }
 
-  abstract class WorkbenchViewHolder : RecyclerView.ViewHolder, IItemTouchHelperViewHolder {
+  abstract class WorkbenchViewHolder : SwipableViewHolder, IItemTouchHelperViewHolder {
     public WorkbenchViewHolder(View view) : base(view) {
     }
 
-    public abstract void BindTo(IRecord t);
+    public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
     public abstract void Unbind();
 
     // Overridden from IITouchHelperViewHolder
@@ -605,11 +633,11 @@
     }
   }
 
-  abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : IRecord {
+  abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
     public WorkbenchViewHolder(View view) : base(view) {
     }
 
-    public override void BindTo(IRecord t) {
+    public override void BindTo(SwipableRecyclerViewAdapter.IRecord t) {
       BindTo((T)t);
     }
 

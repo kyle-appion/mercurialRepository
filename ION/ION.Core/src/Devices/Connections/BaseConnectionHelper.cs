@@ -54,7 +54,47 @@
       Stop();
     }
 
+    /// <summary>
+    /// Performs a scan for the given scan time. Note: the scan time is 
+    /// nothing more than a hint. The connection helper does NOT necessarily need
+    /// to use the exact time. This is to allow for various hardware or 
+    /// system constraints that prevent explict control over scan systems.
+    /// The provided options describe how many times and how frequently the
+    /// scan should be refired.
+    /// </summary>
+    /// <param name="scanTime">Scan time.</param>
+    /// <returns>True if the scan was started, false otherwise. False may
+    /// be returned if the connection helper is currently scanning.</returns>
+    public async Task<bool> Scan(TimeSpan scanTime) {
+      lock (this) {
+        if (isScanning) {
+          return false;
+        } else {
+          isScanning = true;
+        }
+      }
+
+      cancellationToken = new CancellationTokenSource();
+      var token = cancellationToken.Token;
+
+      var task = Task.Factory.StartNew(async () => {
+        try {
+          DO_SCAN();
+          await Task.Delay(TimeSpan.FromSeconds(5));
+        } catch (Exception e) {
+          Log.E(this, "Something broke during scanning", e);
+        }
+      });
+
+      await task;
+      return true;
+    }
+
+    protected virtual void DO_SCAN() {
+    }
+
     // Overridden from IScanMode
+/*
     public async Task<bool> Scan(TimeSpan scanTime) {
       lock (this) {
         if (isScanning) {
@@ -90,6 +130,7 @@
 
       return true;
     }
+*/
 
     // Overridden from IScanMode
     public void Stop() {

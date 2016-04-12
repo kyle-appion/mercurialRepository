@@ -157,6 +157,7 @@
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
     <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\Database\Deprecated\Device.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -189,6 +190,7 @@
     <Folder Include="src\Devices\Filters\" />
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
+    <Folder Include="src\Database\Deprecated\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
@@ -451,6 +453,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
       <LogicalName>R134a.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
+      <LogicalName>UpgradeDatabase.sql</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
