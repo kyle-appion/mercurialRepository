@@ -211,7 +211,8 @@
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SwipeableRecyclerViewTouchHelper.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

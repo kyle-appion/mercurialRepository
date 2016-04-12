@@ -3,15 +3,22 @@
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.IO;
   using System.Threading.Tasks;
 
   using SQLite.Net; 
   using SQLite.Net.Interop;
    
   using ION.Core.App;
+  using ION.Core.Database.Deprecated;
+  using ION.Core.IO;
   using ION.Core.Util;
 
   public class IONDatabase : SQLiteConnection, IIONManager {
+    /// <summary>
+    /// The file/resource name that is used to upgrade the database.
+    /// </summary>
+    private const string UPGRADE_DATABASE = "UpgradeDatabase.sql";
 
     /// <summary>
     /// The ion context that this database is running within.
@@ -115,6 +122,19 @@
         Log.E(this, "Failed to delete the item: " + t + " to the database", e);
         Rollback();
         return Task.FromResult(false);
+      }
+    }
+
+    /// <summary>
+    /// Performs all of the upgrades necessary for the database.
+    /// </summary>
+    private async void PerformUpgrade() {
+      var sr = new StreamReader(EmbeddedResource.Load(UPGRADE_DATABASE));
+      var query = await sr.ReadToEndAsync();
+      try {
+        Execute(query);
+      } catch (Exception e) {
+        Log.E(this, "Failed to upgrade database.", e);
       }
     }
   }
