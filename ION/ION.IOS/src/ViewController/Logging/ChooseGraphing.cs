@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseData checkData;
 
     public ChooseGraphing(UIView mainView, ChooseData dataSection) {
-      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .14 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
+      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .04 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       graphingType.BackgroundColor = UIColor.White;
       graphingType.Layer.BorderColor = UIColor.Black.CGColor;
       graphingType.Layer.BorderWidth = 1f;
@@ -52,31 +52,29 @@ namespace ION.IOS.ViewController.Logging {
       legendView.menuButton.TouchUpInside += (sender, e) => {
         checkData.DataType.RemoveGestureRecognizer(checkData.resize);
         ////calculate left tracker size based on manual selected dates
-        var TotalTime = graphingView.latest.Subtract(graphingView.earliest).TotalMilliseconds;
-        var ldifference = ChosenDates.subLeft.Subtract(graphingView.earliest).TotalMilliseconds;
-        var width = ldifference /  TotalTime;
-        var final = width * (.8 * graphingView.graphTable.Bounds.Width);
+        var leftIndex = ChosenDates.allTimes[ChosenDates.subLeft.ToString()];
+        Console.WriteLine("Using index " + leftIndex + " for left tracker");
+        var lwidth = graphingView.dateMultiplier * leftIndex;
 
         ///resize left tracker to match manual selection
-        graphingView.leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.075 * mainView.Bounds.Height, final, graphingView.trackerHeight);
+        graphingView.leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lwidth, graphingView.trackerHeight);
         var trackerRect = graphingView.leftTrackerCircle.Center;
         trackerRect.X = graphingView.leftTrackerView.Center.X + (.5f * graphingView.leftTrackerView.Bounds.Width);
         graphingView.leftTrackerCircle.Center = trackerRect;
 
         ////calculate right tracker size based on manual selected dates
-        var rdifference = graphingView.latest.Subtract(ChosenDates.subRight).TotalMilliseconds;
-        var rwidth = rdifference /  TotalTime;
-        var rfinal = rwidth * (.8 * graphingView.graphTable.Bounds.Width);
-        rfinal = .915 * graphingView.graphTable.Bounds.Width - (nfloat)rfinal;
-        rwidth = .915 * graphingView.graphTable.Bounds.Width - rfinal;
+        var rightIndex = ChosenDates.allTimes[ChosenDates.subRight.ToString()];
+        var rfinal = (graphingView.dateMultiplier * rightIndex) + (.1 * mainView.Bounds.Width);
+        double rwidth = ChosenDates.allTimes[ChosenDates.latest.ToString()] - rightIndex;
+        rwidth = rwidth * graphingView.dateMultiplier;
 
         ///resize right tracker to match manual selection
-        graphingView.rightTrackerView.Frame = new CGRect(rfinal,.075 * mainView.Bounds.Height,rwidth,graphingView.trackerHeight);
+        graphingView.rightTrackerView.Frame = new CGRect(rfinal,.15 * mainView.Bounds.Height,rwidth,graphingView.trackerHeight);
         trackerRect = graphingView.rightTrackerCircle.Center;
         trackerRect.X = graphingView.rightTrackerView.Center.X - (.5f * graphingView.rightTrackerView.Bounds.Width);
         graphingView.rightTrackerCircle.Center = trackerRect;
 
-        graphingView.subDates.Text = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
+        graphingView.subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
 
         UIView.Transition(
           fromView:legendView.lView,

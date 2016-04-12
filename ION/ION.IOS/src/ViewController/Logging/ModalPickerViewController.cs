@@ -63,13 +63,12 @@ namespace ION.IOS.ViewController.Logging
     }
 
     UILabel _headerLabel;
-    UILabel _dateYear;
     UIButton _doneButton;
     UIButton _cancelButton;
     UIViewController _parent;
     UIView _internalView;
 
-    public ModalPickerViewController(ModalPickerType pickerType, string headerText, UIViewController parent, UILabel yearLabel)
+    public ModalPickerViewController(ModalPickerType pickerType, string headerText, UIViewController parent)
     {
       HeaderBackgroundColor = UIColor.White;
       HeaderTextColor = UIColor.Black;
@@ -78,7 +77,6 @@ namespace ION.IOS.ViewController.Logging
       _parent = parent;
       DoneButtonText = "Done";
       CancelButtonText = "Cancel";
-      _dateYear = yearLabel;
     }
 
     public override void ViewDidLoad()
@@ -135,7 +133,6 @@ namespace ION.IOS.ViewController.Logging
       _internalView.BackgroundColor = HeaderBackgroundColor;
 
       _internalView.AddSubview(_headerLabel);
-      _internalView.AddSubview (_dateYear);
       _internalView.AddSubview (_cancelButton);
       _internalView.AddSubview(_doneButton);
 

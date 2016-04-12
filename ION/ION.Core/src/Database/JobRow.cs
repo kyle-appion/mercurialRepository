@@ -7,7 +7,7 @@
   /// </summary>
   public class JobRow : ITableRow {
     [Ignore]
-    public int _id { get { return id; } set { id = value; } } 
+    public int _id {get { return JID;} set { JID = value;}}
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>
@@ -15,8 +15,7 @@
     [PrimaryKey, AutoIncrement]
     public int JID { get; set;}
 
-    [Ignore]
-    public int _id {get { return JID;} set { JID = value;}}
+
     /// <summary>
     /// The user defined name of the job.
     /// </summary>

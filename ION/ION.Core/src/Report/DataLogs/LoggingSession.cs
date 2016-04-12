@@ -126,12 +126,16 @@
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
 
       ret.deviceId = d.DID;
+      Debug.WriteLine("DID: " + ret.deviceId);
       ret.frn_SID = session.SID;
+      Debug.WriteLine("frn_SID: " + ret.frn_SID);
       ret.sensorIndex = sensor.index;
+      Debug.WriteLine("sensorIndex: " + ret.sensorIndex);
       ret.recordedDate = date;
+      Debug.WriteLine("recordedDate " + ret.recordedDate.ToString());
       ret.measurement = meas.amount;
-
-//      ret.unitCode = UnitLookup.GetCode(meas.unit);
+      Debug.WriteLine("Actual measurement " + sensor.measurement);
+      Debug.WriteLine("Standardized measurement " + ret.measurement);
 
       return ret;
     }

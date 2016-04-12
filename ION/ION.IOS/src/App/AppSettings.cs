@@ -23,9 +23,13 @@ namespace ION.IOS.App {
     const string KEY_SOUND = "settings_alarm_sound";
     const string KEY_HAPTIC = "settings_alarm_haptic";
 
+    // Screen Settings
+    const string KEY_WAKE_LOCK = "settings_screen_leave_on";
+
     public readonly Location location = new Location();
     public readonly DefaultUnits units = new DefaultUnits();
     public readonly Alarm alarm = new Alarm();
+    public readonly ScreenSettings screen = new ScreenSettings();
 
     private NSDictionary settingsBundle { get; set; }
 
@@ -76,7 +80,7 @@ namespace ION.IOS.App {
         var val = item[KEY_DEFAULT_VALUE];
         ION.Core.Util.Log.D(this, "Resolving key " + key);
 
-        switch (key.ToString()) {
+        switch (key.ToString()) { 
           // Location
           case KEY_USE_GEO_LOCATION:
             location.useGeoLocation = ((NSNumber)val).BoolValue;
@@ -103,6 +107,9 @@ namespace ION.IOS.App {
           case KEY_HAPTIC:
             alarm.haptic = ((NSNumber)val).BoolValue;
             break;
+          case KEY_WAKE_LOCK:
+            screen.leaveOn = ((NSNumber)val).BoolValue;
+            break;
         }
       } // End foreach
 
@@ -118,7 +125,10 @@ namespace ION.IOS.App {
 
       // Alarm
         KEY_SOUND, alarm.sound,
-        KEY_HAPTIC, alarm.haptic
+        KEY_HAPTIC, alarm.haptic,
+
+      // Screen
+        KEY_WAKE_LOCK, screen.leaveOn
       );
 
       NSUserDefaults.StandardUserDefaults.RegisterDefaults(defaults);
@@ -163,5 +173,9 @@ namespace ION.IOS.App {
   public class Alarm {
     public bool sound { get; set; }
     public bool haptic { get; set; }
+  }
+
+  public class ScreenSettings{
+    public bool leaveOn {get; set;}
   }
 }

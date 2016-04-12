@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using UIKit;
 using Foundation;
@@ -17,36 +18,17 @@ namespace ION.IOS.ViewController.Logging
 		//string cellIdentifier;
 		List<deviceReadings> tableItems;
 		UIView parentView;
-		UIView leftTrackerView;
-		UIView rightTrackerView;
 		public double trackerHeight;
-	
-		DateTime earliest;
-		DateTime latest;
 
-		UIImageView leftTrackerCircle;
-		UIImageView rightTrackerCircle;
-
-		UILabel chosenDates;
-
-		public graphingTableSource (List<deviceReadings> items,UIView View, DateTime start, DateTime end, UIView leftTracker, UIView rightTracker, double tHeight, 
-								    UIImageView leftCircle, UIImageView rightCircle, UILabel showChosen){
-
+		public graphingTableSource (List<deviceReadings> items,UIView View, double tHeight){
 			tableItems = items;
 			parentView = View;
-			earliest = start;
-			latest = end;
-			leftTrackerView = leftTracker;
-			rightTrackerView = rightTracker;
 			trackerHeight = tHeight;
-			leftTrackerCircle = leftCircle;
-			rightTrackerCircle = rightCircle;
-			chosenDates = showChosen;
 		}
 
 		public override nint RowsInSection (UITableView tableview, nint section)
 		{
-			return tableItems.Count;
+      return ChosenDates.includeList.Count;
 		}
 
 		public override nint NumberOfSections (UITableView tableView)
@@ -94,15 +76,15 @@ namespace ION.IOS.ViewController.Logging
 			if (cell == null) {
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
 			}
-				
-			cell.setupGraph (tableItems [indexPath.Row],tableView.Bounds.Width, .15 * parentView.Bounds.Height, earliest,latest, leftTrackerView, rightTrackerView, trackerHeight, parentView, leftTrackerCircle, rightTrackerCircle,tableView);
+			
+      cell.setupGraph (tableItems [indexPath.Row], tableItems,tableView.Bounds.Width, .15 * parentView.Bounds.Height, trackerHeight, parentView, tableView);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;
 		}
 
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].name);
+      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].name);
 
 //			var cell = (graphCell)tableView.CellAt (indexPath);
 //			Console.WriteLine ("Plotview bounds " + cell.plotView.Bounds);

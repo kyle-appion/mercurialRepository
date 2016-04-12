@@ -244,6 +244,14 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\unchecked_checkbox.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon167x167.png" />
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

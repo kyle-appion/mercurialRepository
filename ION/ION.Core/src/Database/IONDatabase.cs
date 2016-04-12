@@ -5,9 +5,9 @@
   using System.Linq;
   using System.Threading.Tasks;
 
-  using SQLite.Net;
+  using SQLite.Net; 
   using SQLite.Net.Interop;
-
+   
   using ION.Core.App;
   using ION.Core.Util;
 
@@ -17,11 +17,11 @@
     /// The ion context that this database is running within.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion { get; private set; }
+    public IION ion { get; private set; } 
 
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
-      // Create the database 
+      // Create the database
       CreateTable<JobRow>();
       CreateTable<DeviceRow>();
       CreateTable<SessionRow>();
@@ -34,7 +34,7 @@
     /// <returns>The async.</returns>
     public Task<InitializationResult> InitAsync() {
       return Task.FromResult(new InitializationResult() { success = true });
-    }
+    } 
 
     /// <summary>
     /// Queries for the item with the given id.
