@@ -83,6 +83,12 @@
     /// </summary>
     EDeviceType deviceType { get; }
     /// <summary>
+    /// Queries the device code from the serial number. The device code is the raw string code for the device model.
+    ///  Every serial number has at least a 2 character device code that identifies the device.
+    /// </summary>
+    /// <value>The device code.</value>
+    string deviceCode { get; }
+    /// <summary>
     /// Queries the serial number as a raw string. This is useful when
     /// printing the serial number.
     /// </summary>
@@ -131,21 +137,45 @@
   /// </code>
   /// </summary>
   public class GaugeSerialNumber : ISerialNumber {
-
-
-    // Overridden from ISerialNumber
+    /// <summary>
+    /// Queries the model of the device that this serial number represents.
+    /// </summary>
+    /// <value>The device model.</value>
     public EDeviceModel deviceModel { get; private set; }
-    // Overridden from ISerialNumber
+    /// <summary>
+    /// Queries the type of device that this serial number is representative of.
+    /// </summary>
+    /// <value>The type of the device.</value>
     public EDeviceType deviceType { get { return EDeviceType.Gauge; } }
-    // Overridden from ISerialNumber
+    /// <summary>
+    /// Queries the device code from the serial number. The device code is the raw string code for the device model.
+    ///  Every serial number has at least a 2 character device code that identifies the device.
+    /// </summary>
+    /// <value>The device code.</value>
+    public string deviceCode { get; private set; }
+    /// <summary>
+    /// Queries the serial number as a raw string. This is useful when
+    /// printing the serial number.
+    /// </summary>
+    /// <value>The raw serial.</value>
     public string rawSerial { get; private set; }
-    // Overridden from ISerialNumber
+    /// <summary>
+    /// Queries the date that the product (and implicitly the serial number)
+    /// was created.
+    /// </summary>
+    /// <value>The manufacture date.</value>
     public DateTime manufactureDate { get; private set; }
-    // Overridden from ISerialNumber
+    /// <summary>
+    /// Queries the batch id of the serial number (and implicitly the product).
+    /// Used to identify where in the batch the product was as well as
+    /// solidifying an enumeration in which products may be identified.
+    /// </summary>
+    /// <value>The batch identifier.</value>
     public ushort batchId { get; private set; }
 
-    public GaugeSerialNumber(EDeviceModel model, string rawSerial, DateTime manufactureDate, ushort batchId) {
+    public GaugeSerialNumber(EDeviceModel model, string deviceCode, string rawSerial, DateTime manufactureDate, ushort batchId) {
       this.deviceModel = model;
+      this.deviceCode = deviceCode;
       this.rawSerial = rawSerial;
       this.manufactureDate = manufactureDate;
       this.batchId = batchId;
@@ -214,7 +244,7 @@
         string rawBatchId = serial.Substring(5, 4);
         EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
 
-        return new GaugeSerialNumber(deviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
+        return new GaugeSerialNumber(deviceModel, rawDeviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
       } else if (serial.Length == 10) {
         string rawDeviceModel = serial.Substring(0, 3);
         string rawYearCode = serial.Substring(3, 2);
@@ -222,7 +252,7 @@
         string rawBatchId = serial.Substring(6, 4);
         EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
 
-        return new GaugeSerialNumber(deviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
+        return new GaugeSerialNumber(deviceModel, rawDeviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
       } else {
         throw new ArgumentException("Cannot parse serial: expected serial of length 9 or 10, received length " + serial.Length);
       }

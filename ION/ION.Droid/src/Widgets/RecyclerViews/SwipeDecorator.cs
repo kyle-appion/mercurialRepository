@@ -12,9 +12,12 @@
     private SwipableRecyclerViewAdapter adapter;
     private Drawable background;
 
-    public SwipeDecorator(SwipableRecyclerViewAdapter adapter) : base(0, ItemTouchHelper.Left) {
+    public SwipeDecorator(SwipableRecyclerViewAdapter adapter) : this(adapter, Color.Red) {
+    }
+
+    public SwipeDecorator(SwipableRecyclerViewAdapter adapter, Color color) : base(0, ItemTouchHelper.Left) {
       this.adapter = adapter;
-      background = new ColorDrawable(Color.Transparent);
+      background = new ColorDrawable(color);
     }
 
     /// <summary>
@@ -34,12 +37,23 @@
     /// <param name="recyclerView">Recycler view.</param>
     /// <param name="viewHolder">View holder.</param>
     public override int GetSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-      var adapter = recyclerView.GetAdapter() as SwipableRecyclerViewAdapter;
-      if (adapter != null && adapter.HasPendingAction(viewHolder.AdapterPosition)) {
+      var record = adapter[viewHolder.AdapterPosition];
+
+      if (adapter.HasPendingAction(viewHolder.AdapterPosition)) {
+        return ItemTouchHelper.Right;
+      } else if (adapter.IsViewHolderSwipable(record, viewHolder as SwipableViewHolder, viewHolder.AdapterPosition)) {
+        return base.GetSwipeDirs(recyclerView, viewHolder);
+      } else {
+        return 0;
+      }
+/*
+      if (adapter != null && adapter.HasPendingAction(viewHolder.AdapterPosition) ||
+        !adapter.IsViewHolderSwipable(record, viewHolder as SwipableViewHolder, viewHolder.AdapterPosition)) {
         return 0;
       } else {
         return base.GetSwipeDirs(recyclerView, viewHolder);
       }
+*/
     }
 
     /// <summary>
@@ -50,7 +64,11 @@
     public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
       var swipePosition = viewHolder.AdapterPosition;
 
-      adapter.PerformSwipeAction(swipePosition);
+      if (adapter.HasPendingAction(viewHolder.AdapterPosition)) {
+        adapter.CancelSwipeAction(swipePosition);
+      } else {
+        adapter.PerformSwipeAction(swipePosition);
+      }
     }
 
     /// <summary>

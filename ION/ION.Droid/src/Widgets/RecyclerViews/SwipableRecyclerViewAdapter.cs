@@ -69,12 +69,7 @@
     /// The delay that is applied when a swipe event is performed. After this delay, the swiped action will be commited.
     /// </summary>
     /// <value>The swipe confirm timeout.</value>
-    public int swipeConfirmTimeout { get; set; }
-    /// <summary>
-    /// The color of the view that is swiped.
-    /// </summary>
-    /// <value>The color of the swipe background.</value>
-    public Color swipeBackgroundColor { get; set; }
+    public long swipeConfirmTimeout { get; set; }
 
     /// <summary>
     /// The records that the recycler view will display.
@@ -96,9 +91,9 @@
 
     public SwipableRecyclerViewAdapter() {
       handler = new Handler();
-      swipeBackgroundColor = Color.LightBlue;
-      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this));
-      swipeDecoration = new SwipeAnimationDecorator(Color.Blue);
+      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
+      swipeDecoration = new SwipeAnimationDecorator(Color.Red);
+      swipeConfirmTimeout = PENDING_ACTION_DELAY;
     }
 
     /// <summary>
@@ -131,7 +126,6 @@
     /// <param name="viewType">View type.</param>
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       return OnCreateSwipableViewHolder(parent, viewType);
-
     }
 
     /// <summary>
@@ -150,9 +144,18 @@
       OnBindViewHolder(record, vh, position);
 
       if (pendingActions.ContainsKey(record)) {
-        vh.content.Visibility = ViewStates.Gone;
+        vh.ItemView.SetBackgroundColor(Color.Red);
+        vh.content.Visibility = ViewStates.Invisible;
         vh.button.Visibility = ViewStates.Visible;
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
+          Action action = GetViewHolderSwipeAction(position);
+          if (action != null) {
+            action();
+          }
+          handler.RemoveCallbacks(pendingActions[record]);
+          pendingActions.Remove(record);
+          NotifyItemChanged(position);
+/*
           var action = pendingActions[record];
           pendingActions.Remove(record);
           if (action != null) {
@@ -160,11 +163,13 @@
           }
           
           NotifyItemChanged(records.IndexOf(record));
+*/
         }));
       } else {
+        vh.ItemView.SetBackgroundColor(Color.Transparent);
         vh.ItemView.Visibility = ViewStates.Visible;
         vh.content.Visibility = ViewStates.Visible;
-        vh.button.Visibility = ViewStates.Gone;
+        vh.button.Visibility = ViewStates.Invisible;
       }
     }
 
@@ -211,13 +216,37 @@
     /// </summary>
     /// <param name="swipePosition">Swipe position.</param>
     public void PerformSwipeAction(int swipePosition) {
-      Toast.MakeText(recyclerView.Context, "Swipey, swipey", ToastLength.Long).Show();
+      var record = records[swipePosition];
+      Action action = () => {
+        handler.RemoveCallbacks(pendingActions[record]);
+        pendingActions.Remove(record);
+        NotifyItemChanged(swipePosition);
+      };
+      pendingActions.Add(record, action);
+      handler.PostDelayed(action, swipeConfirmTimeout);
+      NotifyItemChanged(swipePosition);
+
+/*
       var record = records[swipePosition];
       if (!pendingActions.ContainsKey(record)) {
+        var vh = recyclerView.FindViewHolderForAdapterPosition(swipePosition) as SwipableViewHolder;
         var action = GetViewHolderSwipeAction(swipePosition);
         pendingActions.Add(record, action);
         NotifyItemChanged(swipePosition);
-        handler.PostDelayed(action, PENDING_ACTION_DELAY);
+        handler.PostDelayed(action, swipeConfirmTimeout);
+      }
+*/
+    }
+
+    /// <summary>
+    /// Cancels an active swipe.
+    /// </summary>
+    /// <returns><c>true</c> if this instance cancel swipe action the specified swipePosition; otherwise, <c>false</c>.</returns>
+    /// <param name="swipePosition">Swipe position.</param>
+    public void CancelSwipeAction(int swipePosition) {
+      var action = pendingActions[records[swipePosition]];
+      if (action != null) {
+        action();
       }
     }
 
