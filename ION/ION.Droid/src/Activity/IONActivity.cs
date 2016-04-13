@@ -2,6 +2,7 @@
 
   using System;
   using System.IO;
+  using System.Threading.Tasks;
 
   using Android.App;
   using Android.Content;
@@ -15,6 +16,7 @@
   using ION.Core.Util;
 
   using ION.Droid.App;
+  using ION.Droid.Dialog;
   using ION.Droid.Fragments;
   using ION.Droid.Util;
 
@@ -200,6 +202,50 @@
       } catch (Exception e) {
         Error("Failed to take screenshot", e);
       }
+    }
+
+    /// <summary>
+    /// Shows a dialog that will turn explaining to the user that bluetooth is off.
+    /// </summary>
+    public void ShowBluetoothOffDialog() {
+      var adb = new IONAlertDialog(this);
+      adb.SetTitle(Resource.String.error_bluetooth);
+      adb.SetMessage(Resource.String.error_bluetooth_scan_module_off);
+      adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
+        var dialog = obj as Dialog;
+        dialog.Dismiss();
+      });
+        adb.SetPositiveButton(Resource.String.enable_bluetooth, (obj, e) => {
+        var dialog = obj as Dialog;
+        dialog.Dismiss();
+        ion.deviceManager.connectionHelper.Enable();
+        ShowEnableBluetoothDialog();
+      });
+      adb.Show();
+    }
+
+    /// <summary>
+    /// Shows an async progress dialog that will show until the bluetooth adapter is enabled or the operation times out.
+    /// </summary>
+    private async void ShowEnableBluetoothDialog() {
+      var pd = new ProgressDialog(this);
+      pd.SetTitle(Resource.String.please_wait);
+      pd.SetMessage(GetString(Resource.String.enabling_bluetooth));
+      pd.Indeterminate = true;
+      pd.SetCanceledOnTouchOutside(false);
+      pd.Show();
+
+      var start = DateTime.Now;
+      var timeout = TimeSpan.FromSeconds(8);
+      while (DateTime.Now - start < timeout) {
+        await Task.Delay(50);
+      }
+
+      if (!ion.deviceManager.connectionHelper.isEnabled) {
+        Alert(Resource.String.error_bluetooth_enable_fail);
+      }
+
+      pd.Dismiss();
     }
 
     /// <summary>

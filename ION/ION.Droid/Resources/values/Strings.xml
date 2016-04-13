@@ -28,6 +28,8 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="enabling_bluetooth">Enabling Bluetooth...</string>
+  <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
   <string name="enter_number">Enter a number</string>
   <string name="error">Error</string>
@@ -144,6 +146,9 @@
   <!--
   ERRORS, GENERAL
   -->
+  <string name="error_bluetooth">Bluetooth Error</string>
+  <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
+  <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>

@@ -134,8 +134,13 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
       RefreshAdapter();
+      var connectionHelper = ion.deviceManager.connectionHelper;
 
-      ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+      if (connectionHelper.isEnabled) {
+        ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+      } else {
+        ShowBluetoothOffDialog();
+      }
     }
 
     // Overridden from Activity
@@ -167,12 +172,17 @@
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
         var dm = ion.deviceManager;
-        if (dm.connectionHelper.isScanning) {
-          dm.connectionHelper.Stop();
+
+        if (dm.connectionHelper.isEnabled) {
+          if (dm.connectionHelper.isScanning) {
+            dm.connectionHelper.Stop();
+          } else {
+  //          var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(10000));
+  //          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
+            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+          }
         } else {
-//          var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(10000));
-//          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
-          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+          ShowBluetoothOffDialog();
         }
       }));
 
