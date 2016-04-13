@@ -30,7 +30,7 @@
   /// swipeListener for swipping).
   /// that you assign
   /// </summary>
-  public class WorkbenchAdapter : SwipableRecyclerViewAdapter/*RecyclerView.Adapter*/, IItemTouchHelperAdapter {
+  public class WorkbenchAdapter : SwipableRecyclerViewAdapter {
 
     public delegate void OnManifoldClicked(Manifold manifold);
     public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
@@ -113,6 +113,7 @@
 
       if (record is SensorPropertyRecord) {
         BuildSensorPropertyViewHolder(holder, position);
+        holder.button.Text = holder.button.Context.GetString(Resource.String.remove);
       } else {
         switch ((EViewType)viewType) {
           case EViewType.Footer:
@@ -120,6 +121,8 @@
             break;
 
           case EViewType.Manifold:
+            holder.button.Text = holder.button.Context.GetString(Resource.String.remove);
+
             var vr = records[position] as ManifoldRecord;
 
             if (vr != null) {
@@ -146,12 +149,12 @@
           default:
             throw new Exception("Unknown view type: " + viewType);
         }
-        /*
+/*
         var touchHelper = new TouchListenerHelper(holder);
         touchHelper.dragStartListener = dragListener;
         touchHelper.swipeStartListener = swipeListener;
         holder.ItemView.SetOnTouchListener(touchHelper);
-    */
+*/
       }
     }
 
@@ -334,18 +337,13 @@
       }
     }
 
-    /// <summary>
-    /// Called when the given view holder is about to be dragged.
-    /// </summary>
-    /// <param name="vh">Vh.</param>
-    public void OnDragStart(RecyclerView.ViewHolder vh) {
-    }
 
     /// <summary>
     /// Raises the item move event.
     /// </summary>
     /// <param name="fromPosition">From position.</param>
     /// <param name="toPosition">To position.</param>
+/*
     public bool OnItemMove(int fromPosition, int toPosition) {
       var from = records[fromPosition];
       var to = records[toPosition];
@@ -373,22 +371,13 @@
         return false;
       }
     }
-
-    /// <summary>
-    /// Used to determine whether or not the adapter allows an item dismissal at the given position.
-    /// </summary>
-    /// <param name="position">Position.</param>
-    /// <param name="posiiton">Posiiton.</param>
-    public bool AllowItemDismissalAt(int position) {
-      var r = records[position];
-
-      return r is ManifoldRecord || r is SensorPropertyRecord;
-    }
+*/
 
     /// <summary>
     /// Raises the item dismiss event.
     /// </summary>
     /// <param name="position">Position.</param>
+/*
     public void OnItemDismiss(int position) {
       var r = records[position];
 
@@ -403,6 +392,7 @@
         manifold.RemoveSensorProperty(spr.sensorProperty);
       }
     }
+*/
 
     private void CollapseManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);

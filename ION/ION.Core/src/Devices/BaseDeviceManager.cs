@@ -271,7 +271,8 @@
         if (protocol == null) {
           protocol = Protocol.PROTOCOLS[0];
         }
-        ret = __deviceFactory.CreateDeviceFromSerialNumber(serialNumber, connection, protocol);
+        var definition = __deviceFactory.GetDeviceDefinition(serialNumber);
+        ret = definition.CreateDevice(serialNumber, connection, protocol);
         ret.onDeviceEvent += OnDeviceEvent;
       } else {
         if (!ret.connection.address.Equals(connectionAddress)) {
