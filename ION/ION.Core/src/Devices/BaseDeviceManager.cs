@@ -217,7 +217,7 @@
         device.Dispose();
         Unregister(device);
         var db = ion.database;
-        await db.DeleteAsync<DeviceRow>(await db.DeconstructDevice(device));
+        var deleted = await db.DeleteAsync<DeviceRow>(await db.DeconstructDevice(device));
         NotifyOfDeviceEvent(DeviceEvent.EType.Deleted, device);
         return true;
       }

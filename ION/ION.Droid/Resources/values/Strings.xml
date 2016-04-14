@@ -35,6 +35,7 @@
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
+  <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
   <string name="help">Help</string>
   <string name="inactive">Inactive</string>
@@ -142,6 +143,8 @@
 
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
+  <string name="devices_forget">Forget Device?</string>
+  <string name="devices_forget_warning">If you forget a device, the device will permanently be deleted from the application. You will no longer see the device until you scan for it again. The device\'s reports and certificates will not be deleted.</string>
 
   <!--
   ERRORS, GENERAL

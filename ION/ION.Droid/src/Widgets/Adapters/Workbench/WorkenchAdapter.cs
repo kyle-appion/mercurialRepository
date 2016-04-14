@@ -38,13 +38,6 @@
     public event OnManifoldClicked onManifoldClicked;
     public event OnSensorPropertyClicked onSensorPropertyClicked;
 
-    // Overridden from RecyclerView.Adapter
-    public override int ItemCount {
-      get {
-        return records.Count;
-      }
-    }
-
     /// <summary>
     /// The current ION instance.
     /// </summary>
@@ -618,20 +611,12 @@
     }
   }
 
-  abstract class WorkbenchViewHolder : SwipableViewHolder, IItemTouchHelperViewHolder {
+  abstract class WorkbenchViewHolder : SwipableViewHolder {
     public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
     public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
     public abstract void Unbind();
-
-    // Overridden from IITouchHelperViewHolder
-    public virtual void OnItemSelected() {
-    }
-
-    // Overridden from IITouchHelperViewHolder
-    public virtual void OnItemClear() {
-    }
   }
 
   abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
