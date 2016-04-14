@@ -135,14 +135,8 @@
     <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
     <Compile Include="src\Activity\DeviceManagerActivity.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperAdapter.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IItemTouchHelperViewHolder.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IOnStartDragListener.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SimpleItemTouchHelperCallback.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\TouchListenerHelper.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
     <Compile Include="src\Dialog\UnitDialog.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IOnStartSwipeListener.cs" />
     <Compile Include="src\Sensors\Properties\SensorPropertyExtensions.cs" />
     <Compile Include="src\Widgets\Adapters\IONRecyclerViewAdapter.cs" />
     <Compile Include="src\Widgets\Analyzer\AnalyzerView.cs" />
@@ -380,7 +374,6 @@
     <AndroidResource Include="Resources\layout\activity_device_manager.axml" />
     <AndroidResource Include="Resources\layout\list_item_add.axml" />
     <AndroidResource Include="Resources\drawable\viewer_background.axml" />
-    <None Include="src\Widgets\RecyclerViews\ReadMe.md" />
     <AndroidResource Include="Resources\layout\activity_superheat_subcool.axml" />
     <AndroidResource Include="Resources\layout\list_item_space.axml" />
     <AndroidResource Include="Resources\drawable\analyzer_manifold_high_bottom_inactive.axml" />

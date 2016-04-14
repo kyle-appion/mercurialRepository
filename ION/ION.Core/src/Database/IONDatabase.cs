@@ -110,7 +110,7 @@
       BeginTransaction();
 
       try {
-        var affected = Delete(t.id);
+        var affected = Delete(t);
 
         if (affected > 0) {
           Commit();

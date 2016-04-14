@@ -25,8 +25,9 @@
   using ION.Droid.Sensors;
   using ION.Droid.Util;
   using ION.Droid.Views;
+  using ION.Droid.Widgets.RecyclerViews;
 
-  public class DeviceRecycleAdapter : IONRecyclerViewAdapter {
+  public class DeviceRecycleAdapter : SwipableRecyclerViewAdapter/*IONRecyclerViewAdapter*/ {
     [Flags]
     private enum Actions {
       ConnectAll          = 1 << 0,
@@ -75,18 +76,6 @@
     /// <value>The cache.</value>
     private BitmapCache cache { get; set; }
 
-    /// <summary>
-    /// The records that are contained within the adapter.
-    /// </summary>
-    private List<IRecord> records = new List<IRecord>();
-
-    // Overridden from RecyclerView.Adapter
-    public override int ItemCount {
-      get {
-        return records.Count;
-      }
-    }
-
     public DeviceRecycleAdapter(Context context) {
       this.context = context;
       resources = context.Resources;
@@ -102,23 +91,21 @@
     }
 
     // Overridden from RecyclerView.Adapter
-    public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
-      var li = LayoutInflater.From(parent.Context);
-
+    public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
       switch ((EViewType)viewType) {
         case EViewType.Category:
-          return new CategoryViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_group, parent, false));
+          return new CategoryViewHolder(this, parent);
         case EViewType.Device:
-          return new GaugeDeviceViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_device, parent, false), cache);
+          return new GaugeDeviceViewHolder(this, parent, cache);
         case EViewType.Sensor:
-          return new SensorViewHolder(this, li.Inflate(Resource.Layout.list_item_device_manager_sensor, parent, false), cache);
+          return new SensorViewHolder(this, parent, cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
     }
 
     // Overridden from RecyclerView.Adapter
-    public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public override void OnBindViewHolder(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder holder, int position) {
       var viewType = GetItemViewType(position);
 
       switch ((EViewType)viewType) {
@@ -129,6 +116,7 @@
           }
           break;
         case EViewType.Device:
+          holder.button.Text = resources.GetString(Resource.String.forget);
           var gr = records[position] as GaugeDeviceRecord;
           if (gr != null) {
             (holder as GaugeDeviceViewHolder)?.BindTo(gr, OnGaugeDeviceClicked);
@@ -151,6 +139,35 @@
 
       var record = holder as DeviceViewHolder;
       record?.OnUnbind();
+    }
+
+    /// <summary>
+    /// Queries whether or not the given view holder is swipeable.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    /// <param name="viewHolder">View holder.</param>
+    /// <param name="index">Index.</param>
+    /// <param name="record">Record.</param>
+    public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+      return record is GaugeDeviceRecord;
+    }
+
+    /// <summary>
+    /// Queries the action that is triggered when the swipe revealed button is clicked.
+    /// </summary>
+    /// <returns>The view holder swipe action.</returns>
+    /// <param name="index">Index.</param>
+    public override Action GetViewHolderSwipeAction(int index) {
+      var record = this[index];
+
+      if (record is GaugeDeviceRecord) {
+        return () => {
+          ShowRequestForgetDevices(new GaugeDeviceRecord[] { record as GaugeDeviceRecord });
+        };
+      } else {
+        return null;
+      }
     }
 
     /// <summary>
@@ -201,7 +218,7 @@
 
       // Add the connected devices.
       if (connected.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.connected), Resource.Color.green, connected, () => {
+        AddGaugeDevicesToRecords(resources.GetString(Resource.String.connected), Resource.Color.green, connected, () => {
           BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
             Resource.String.device_manager_batch_connected_actions,
             connected);
@@ -210,7 +227,7 @@
 
       // Add the broadcasting devices.
       if (broadcasting.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.long_range_mode), Resource.Color.light_blue, broadcasting, () => {
+        AddGaugeDevicesToRecords(resources.GetString(Resource.String.long_range_mode), Resource.Color.light_blue, broadcasting, () => {
           BuildBatchOptionsDialog(Actions.AddAllToWorkbench,
             Resource.String.device_manager_batch_long_range_actions,
             broadcasting);
@@ -219,7 +236,7 @@
 
       // Add the new devices.
       if (newDevices.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.device_manager_new_devices_found), Resource.Color.light_gray, newDevices, () => {
+        AddGaugeDevicesToRecords(resources.GetString(Resource.String.device_manager_new_devices_found), Resource.Color.light_gray, newDevices, () => {
           BuildBatchOptionsDialog(Actions.ConnectAll,
             Resource.String.device_manager_batch_new_device_actions,
             newDevices);
@@ -228,7 +245,7 @@
 
       // Add the available devices.
       if (available.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.available), Resource.Color.yellow, available, () => {
+        AddGaugeDevicesToRecords(resources.GetString(Resource.String.available), Resource.Color.yellow, available, () => {
           BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
             Resource.String.device_manager_batch_available_actions,
             available);
@@ -237,7 +254,7 @@
 
       // Add the disconnected devices.
       if (disconnected.Count > 0) {
-        AddGaugeDevicesToRecords(records, resources.GetString(Resource.String.disconnected), Resource.Color.red, disconnected, () => {
+        AddGaugeDevicesToRecords(resources.GetString(Resource.String.disconnected), Resource.Color.red, disconnected, () => {
           BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
             Resource.String.device_manager_batch_disconnected_actions,
             disconnected);
@@ -252,7 +269,7 @@
     /// </summary>
     /// <param name="records">Records.</param>
     /// <param name="device">Device.</param>
-    private void AddGaugeDevicesToRecords(List<IRecord> records, string title, int color, List<IDevice> devices, Action action) {
+    private void AddGaugeDevicesToRecords(string title, int color, List<IDevice> devices, Action action) {
       var r = new CategoryRecord() {
         counter = 0,
         title = title,
@@ -270,8 +287,6 @@
             device = device as GaugeDevice,
             expanded = false,
           });
-
-//          AddGaugeDeviceSensorRecords(records, device as GaugeDevice);
         }
       }
     }
@@ -281,7 +296,7 @@
     /// </summary>
     /// <returns>The gauge device sensor records.</returns>
     /// <param name="device">Device.</param>
-    private void AddGaugeDeviceSensorRecords(List<IRecord> records, GaugeDeviceRecord deviceRecord, int offset=-1) {
+    private void AddGaugeDeviceSensorRecords(GaugeDeviceRecord deviceRecord, int offset=-1) {
       var device = deviceRecord.device;
       var sensors = new List<GaugeDeviceSensor>();
 
@@ -318,10 +333,12 @@
       var start = pos + 1;
 
       if (gr.expanded) {
-        records.RemoveRange(start, gr.sensorsAttachedCount);
+        for (int i = gr.sensorsAttachedCount; i > 0; i--) {
+          records.RemoveAt(start);
+        }
         NotifyItemRangeRemoved(start, gr.sensorsAttachedCount);        
       } else {
-        AddGaugeDeviceSensorRecords(records, gr, start);
+        AddGaugeDeviceSensorRecords(gr, start);
         NotifyItemRangeInserted(start, gr.sensorsAttachedCount);
       }
 
@@ -369,9 +386,12 @@
 
             case Actions.ForgetAll:
               ldb.AddItem(Resource.String.forget_all, () => {
+                var list = new List<GaugeDeviceRecord>();
                 foreach (var device in devices) {
-                  ion.deviceManager.DeleteDevice(device.serialNumber);
+                  var record = GetRecordFromDevice(device as GaugeDevice);
+                  list.Add(record);
                 }
+                ShowRequestForgetDevices(list);
               });
               break;
 
@@ -394,6 +414,59 @@
       ldb.Show();
     }
 
+    private GaugeDeviceRecord GetRecordFromDevice(GaugeDevice device) {
+      foreach (var record in records) {
+        if ((int)EViewType.Device == record.viewType && (record as GaugeDeviceRecord).device.Equals(device)) {
+          return record as GaugeDeviceRecord;
+        }
+      }
+
+      return null;
+    }
+
+    /// <summary>
+    /// Shows a dialog that will confirm with the user that they wish to delete a gauge record permanently.
+    /// </summary>
+    /// <param name="gr">Gr.</param>
+    private void ShowRequestForgetDevices(IEnumerable<GaugeDeviceRecord> gr) {
+      var adb = new IONAlertDialog(context);
+      adb.SetTitle(Resource.String.devices_forget);
+      adb.SetMessage(Resource.String.devices_forget_warning);
+      adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
+        var dialog = obj as Dialog;
+        dialog.Dismiss();
+      });
+      adb.SetPositiveButton(Resource.String.forget, (obj, e) => {
+        var dialog = obj as Dialog;
+        dialog.Dismiss();
+
+        ForgetDevices(gr);
+      });
+
+      adb.Show();
+    }
+
+    /// <summary>
+    /// Forgets all of the gauge device records that are given.
+    /// </summary>
+    /// <param name="records">Records.</param>
+    private void ForgetDevices(IEnumerable<GaugeDeviceRecord> gdr) {
+      foreach (var gr in gdr) {
+        var index = records.IndexOf(gr);
+        var count = gr.sensorsAttachedCount;
+
+        records.RemoveAt(index);
+        if (gr.expanded) {
+          for (int i = count; i > 0; i--) {
+            records.RemoveAt(index);
+          }
+        }
+
+        NotifyItemRangeRemoved(index, count + 1);
+        ion.deviceManager.DeleteDevice(gr.device.serialNumber);
+      }
+    }
+
     /// <summary>
     /// The types of views (and implicitly, view holders) that are in the adapter.
     /// </summary>
@@ -414,15 +487,11 @@
       Disconnected,
     }
 
-    interface IRecord {
-      EViewType viewType { get; }
-    }
-
-    class CategoryRecord : IRecord {
+    class CategoryRecord : SwipableRecyclerViewAdapter.IRecord {
       // Overridden from IRecord
-      public EViewType viewType {
+      public int viewType {
         get {
-          return EViewType.Category;
+          return (int)EViewType.Category;
         }
       }        
 
@@ -432,11 +501,11 @@
       public Action action { get; set; }
     }
 
-    class GaugeDeviceRecord : IRecord {
+    class GaugeDeviceRecord : SwipableRecyclerViewAdapter.IRecord {
       // Overridden from IRecord
-      public EViewType viewType {
+      public int viewType {
         get {
-          return EViewType.Device;
+          return (int)EViewType.Device;
         }
       }
 
@@ -445,20 +514,20 @@
       public bool expanded;
     }
 
-    class SensorRecord : IRecord {
+    class SensorRecord : SwipableRecyclerViewAdapter.IRecord {
       // Overridden from IRecord
-      public EViewType viewType {
+      public int viewType {
         get {
-          return EViewType.Sensor;
+          return (int)EViewType.Sensor;
         }
       }
 
       public GaugeDeviceSensor sensor { get; set; }
     }
 
-    abstract class DeviceViewHolder : RecyclerView.ViewHolder {
+    abstract class DeviceViewHolder : SwipableViewHolder {
 
-      public DeviceViewHolder(View view) : base(view) {
+      public DeviceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       }
 
       public abstract void OnUnbind();
@@ -472,7 +541,7 @@
       private TextView counter { get; set; }
       private TextView title { get; set; }
 
-      public CategoryViewHolder(DeviceRecycleAdapter adapter, View view) : base(view) {
+      public CategoryViewHolder(DeviceRecycleAdapter adapter, ViewGroup parent) : base(parent, Resource.Layout.list_item_device_manager_group) {
         this.adapter = adapter;
         counter = view.FindViewById<TextView>(Resource.Id.counter);
         title = view.FindViewById<TextView>(Resource.Id.title);
@@ -491,7 +560,7 @@
       public void Invalidate() {
         var res = ItemView.Context.Resources;
 
-        ItemView.SetBackgroundColor(record.color);
+        content.SetBackgroundColor(record.color);
 
         counter.Text = record.counter + "";
         title.Text = record.title;
@@ -533,7 +602,8 @@
       private ProgressBar progress { get; set; }
 
 
-      public GaugeDeviceViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
+      public GaugeDeviceViewHolder(DeviceRecycleAdapter adapter, ViewGroup parent, BitmapCache cache) :
+      base(parent, Resource.Layout.list_item_device_manager_device) {
         this.adapter = adapter;
         this.cache = cache;
 
@@ -653,7 +723,8 @@
       private TextView measurement { get; set; }
       private ImageButton add { get; set; }
 
-      public SensorViewHolder(DeviceRecycleAdapter adapter, View view, BitmapCache cache) : base(view) {
+      public SensorViewHolder(DeviceRecycleAdapter adapter, ViewGroup parent, BitmapCache cache) :
+      base(parent, Resource.Layout.list_item_device_manager_sensor) {
         this.adapter = adapter;
         this.cache = cache;
 
