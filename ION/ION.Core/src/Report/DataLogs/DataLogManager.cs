@@ -168,7 +168,7 @@
 
         foreach (var d in tmp) {
           foreach (var log in d.logs) {
-            if (log.recordedDate < start) {
+            if (log.recordedDate < start) { 
               start = log.recordedDate;
             } else if (log.recordedDate > end) {
               end = log.recordedDate;
