@@ -69,12 +69,7 @@
     /// The delay that is applied when a swipe event is performed. After this delay, the swiped action will be commited.
     /// </summary>
     /// <value>The swipe confirm timeout.</value>
-    public int swipeConfirmTimeout { get; set; }
-    /// <summary>
-    /// The color of the view that is swiped.
-    /// </summary>
-    /// <value>The color of the swipe background.</value>
-    public Color swipeBackgroundColor { get; set; }
+    public long swipeConfirmTimeout { get; set; }
 
     /// <summary>
     /// The records that the recycler view will display.
@@ -96,9 +91,9 @@
 
     public SwipableRecyclerViewAdapter() {
       handler = new Handler();
-      swipeBackgroundColor = Color.LightBlue;
-      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this));
-      swipeDecoration = new SwipeAnimationDecorator(Color.Blue);
+      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
+      swipeDecoration = new SwipeAnimationDecorator(Color.Red);
+      swipeConfirmTimeout = PENDING_ACTION_DELAY;
     }
 
     /// <summary>
@@ -149,10 +144,18 @@
       OnBindViewHolder(record, vh, position);
 
       if (pendingActions.ContainsKey(record)) {
-/*
-        vh.content.Visibility = ViewStates.Gone;
+        vh.ItemView.SetBackgroundColor(Color.Red);
+        vh.content.Visibility = ViewStates.Invisible;
         vh.button.Visibility = ViewStates.Visible;
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
+          Action action = GetViewHolderSwipeAction(position);
+          if (action != null) {
+            action();
+          }
+          handler.RemoveCallbacks(pendingActions[record]);
+          pendingActions.Remove(record);
+          NotifyItemChanged(position);
+/*
           var action = pendingActions[record];
           pendingActions.Remove(record);
           if (action != null) {
@@ -160,13 +163,13 @@
           }
           
           NotifyItemChanged(records.IndexOf(record));
-        }));
 */
-        ION.Core.Util.Log.D(this, "Pending actions view states changed");
+        }));
       } else {
-//        vh.content.Visibility = ViewStates.Visible;
-//        vh.button.Visibility = ViewStates.Gone;
-        ION.Core.Util.Log.D(this, "binding view");
+        vh.ItemView.SetBackgroundColor(Color.Transparent);
+        vh.ItemView.Visibility = ViewStates.Visible;
+        vh.content.Visibility = ViewStates.Visible;
+        vh.button.Visibility = ViewStates.Invisible;
       }
     }
 
@@ -213,44 +216,38 @@
     /// </summary>
     /// <param name="swipePosition">Swipe position.</param>
     public void PerformSwipeAction(int swipePosition) {
-      Toast.MakeText(recyclerView.Context, "Swipey, swipey", ToastLength.Long).Show();
+      var record = records[swipePosition];
+      Action action = () => {
+        handler.RemoveCallbacks(pendingActions[record]);
+        pendingActions.Remove(record);
+        NotifyItemChanged(swipePosition);
+      };
+      pendingActions.Add(record, action);
+      handler.PostDelayed(action, swipeConfirmTimeout);
+      NotifyItemChanged(swipePosition);
+
+/*
       var record = records[swipePosition];
       if (!pendingActions.ContainsKey(record)) {
-//        var action = GetViewHolderSwipeAction(swipePosition);
-        Action action = () => {
-          Remove(swipePosition);
-        };
-
+        var vh = recyclerView.FindViewHolderForAdapterPosition(swipePosition) as SwipableViewHolder;
+        var action = GetViewHolderSwipeAction(swipePosition);
         pendingActions.Add(record, action);
         NotifyItemChanged(swipePosition);
-        handler.PostDelayed(action, PENDING_ACTION_DELAY);
+        handler.PostDelayed(action, swipeConfirmTimeout);
       }
+*/
     }
 
     /// <summary>
-    /// Removes the item at the given position.
+    /// Cancels an active swipe.
     /// </summary>
-    /// <param name="position">Position.</param>
-    public void Remove(int position) {
-      var record = records[position];
-
-      if (pendingActions.ContainsKey(record)) {
-        pendingActions.Remove(record);
+    /// <returns><c>true</c> if this instance cancel swipe action the specified swipePosition; otherwise, <c>false</c>.</returns>
+    /// <param name="swipePosition">Swipe position.</param>
+    public void CancelSwipeAction(int swipePosition) {
+      var action = pendingActions[records[swipePosition]];
+      if (action != null) {
+        action();
       }
-
-      if (records.Contains(record)) {
-        OnRemove(record, position);
-        records.RemoveAt(position);
-        NotifyItemRemoved(position);
-      }
-    }
-
-    /// <summary>
-    /// Called immediately before the record is removed from the adapter.
-    /// </summary>
-    /// <param name="record">Record.</param>
-    /// <param name="position">Position.</param>
-    public void OnRemove(IRecord record, int position) {
     }
 
     /// <summary>
@@ -298,19 +295,25 @@
   /// </summary>
   public class SwipableViewHolder : RecyclerView.ViewHolder {
 //    protected SwipableRecyclerViewAdapter adapter { get; internal set; }
+    /// <summary>
+    /// The inflated content view.
+    /// </summary>
+    protected View view;
+    /// <summary>
+    /// The internal content view that the inflated view resource lives.
+    /// </summary>
     internal LinearLayout content;
     /// <summary>
     /// The button that is revealed when the view holder is swiped.
     /// </summary>
     internal Button button;
 
-    public SwipableViewHolder(View view) : base(view) {
-/*
-    base(LayoutInflater.From(view.Context).Inflate(Resource.Layout.list_item_ion_recycler_view_holder, null, false)) {
+
+    public SwipableViewHolder(ViewGroup parent, int viewResource) :
+        base(LayoutInflater.From(parent.Context).Inflate(Resource.Layout.list_item_ion_recycler_view_holder, parent, false)) {
       content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
-      content.AddView(view);
+      view = LayoutInflater.From(parent.Context).Inflate(viewResource, content, true);
       button = ItemView.FindViewById<Button>(Resource.Id.button);
-*/
     }
   }
 }

@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:gravity="center_vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     <LinearLayout
         android:id="@id/content"
-        android:background="@color/red"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <Button
         android:id="@id/button"
-        android:visibility="gone"
-        android:text="Click Me"
-        android:layout_gravity="end|center_vertical"
+        android:visibility="visible"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/black" />
+<!--style="@android:style/Widget.Material.Light.Button.Borderless" -->
+</RelativeLayout>

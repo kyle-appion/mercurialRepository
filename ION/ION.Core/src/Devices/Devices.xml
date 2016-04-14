@@ -24,8 +24,10 @@ GaugeDeviceSensor:
     type:
       {required}
       The type of sensor. Valid entries: length, mass, pressure, temperature, vacuum
+    relative:
+      Whether or not the sensor is a relative sensor.
+      {False, True}. Defaults to true
     removable:
-      {required}
       Whether or not the sensor is removable from the device proper as a boolean string
       {False, True}.  Defaults to false
     min:

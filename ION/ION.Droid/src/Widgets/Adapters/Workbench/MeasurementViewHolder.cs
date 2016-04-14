@@ -18,7 +18,7 @@
   class MeasurementSubviewViewHolder : WorkbenchViewHolder<MeasurementRecord> {
     private MeasurementSubviewTemplate template;
 
-    public MeasurementSubviewViewHolder(View view, BitmapCache cache) : base(view) {
+    public MeasurementSubviewViewHolder(ViewGroup parent, int viewResource, BitmapCache cache) : base(parent, viewResource) {
       template = new MeasurementSubviewTemplate(view, cache);
     }
 
