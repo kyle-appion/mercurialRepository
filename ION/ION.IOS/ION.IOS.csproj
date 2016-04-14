@@ -104,6 +104,18 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xamarin.iOS">
+      <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\Xamarin.iOS10\OxyPlot.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.XlsIO.Portable">
+      <HintPath>..\..\..\..\..\..\Downloads\syncfusionessentialxamarin\lib\pcl\Syncfusion.XlsIO.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Compression.Portable">
+      <HintPath>..\..\..\..\..\..\Downloads\syncfusionessentialxamarin\lib\pcl\Syncfusion.Compression.Portable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -225,13 +237,34 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\tracker_circle.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\scroll_up.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\scroll_down.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\graph_menu.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\checked_checkbox.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\unchecked_checkbox.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon167x167.png" />
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
     <InterfaceDefinition Include="Resources\View.xib" />
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\IONNavigationCell.xib" />
+    <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -459,6 +492,29 @@
       <DependentUpon>SecondarySensorCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\App\IOSPlatformInfo.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerAnimatedDismissed.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerAnimatedTransitioning.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerTransitionDelegate.cs" />
+    <Compile Include="src\ViewController\Logging\ModalPickerViewController.cs" />
+    <Compile Include="src\ViewController\Logging\graphCell.cs" />
+    <Compile Include="src\ViewController\Logging\graphingTableSource.cs" />
+    <Compile Include="src\ViewController\Logging\GraphingView.cs" />
+    <Compile Include="src\ViewController\Logging\legendCell.cs" />
+    <Compile Include="src\ViewController\Logging\legendSource.cs" />
+    <Compile Include="src\ViewController\Logging\LegendView.cs" />
+    <Compile Include="src\ViewController\Logging\CustomPickerModel.cs" />
+    <Compile Include="src\ViewController\Logging\xmlReport.cs" />
+    <Compile Include="src\ViewController\JobManager\CreateJobView.cs" />
+    <Compile Include="src\Storyboard\JobManagerViewController.cs" />
+    <Compile Include="src\Storyboard\JobManagerViewController.designer.cs">
+      <DependentUpon>JobManagerViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\JobManager\JobViewController.cs" />
+    <Compile Include="src\ViewController\JobManager\JobViewController.designer.cs">
+      <DependentUpon>JobViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Logging\PreviewOutputInfo.cs" />
+    <Compile Include="src\ViewController\Logging\PDFViewDataSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -491,6 +547,7 @@
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />
     <Folder Include="src\ViewController\Logging\" />
+    <Folder Include="src\ViewController\JobManager\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -513,5 +570,11 @@
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="oxyplot">
+      <Version>2015.1.744</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

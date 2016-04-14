@@ -57,7 +57,17 @@
         list.Add(device.serialNumber);
       }
 //      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
+      ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
+      ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
 
+      if (ion.settings.screen.leaveOn) {        
+        UIApplication.SharedApplication.IdleTimerDisabled = true;
+      }
+      if (ion.settings.location.useGeoLocation) {
+        ion.locationManager.StartAutomaticLocationPolling();
+      }
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -74,17 +84,29 @@
       // This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) 
       // or when the user quits the application and it begins the transition to the background state.
       // Games should use this method to pause the game.
+
     }
 
     public override void DidEnterBackground(UIApplication application) {
       // Use this method to release shared resources, save user data, invalidate timers and store the application state.
       // If your application supports background exection this method is called instead of WillTerminate when the user quits.
+      UIApplication.SharedApplication.IdleTimerDisabled = false;
     }
 
     public override void WillEnterForeground(UIApplication application) {
       // Called as part of the transiton from background to active state.
       // Here you can undo many of the changes made on entering the background.
-      ion.locationManager.StartAutomaticLocationPolling();
+      ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
+      ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
+
+      if (ion.settings.screen.leaveOn) {
+        UIApplication.SharedApplication.IdleTimerDisabled = true;
+      }
+      if (ion.settings.location.useGeoLocation) {
+        ion.locationManager.StartAutomaticLocationPolling();
+      }
     }
 
     public override void OnActivated(UIApplication application) {

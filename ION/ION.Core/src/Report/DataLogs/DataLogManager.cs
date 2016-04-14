@@ -18,7 +18,7 @@
     /// Gets a value indicating whether this <see cref="ION.Core.Report.DataLogs.DataLogManager"/> is recording.
     /// </summary>
     /// <value><c>true</c> if is recording; otherwise, <c>false</c>.</value>
-    public bool isRecording { 
+    public bool isRecording {
       get {
         return currentSession != null;
       }
@@ -72,10 +72,10 @@
 
         var db = ion.database;
 
-        var id = job != null ? job.id : 0;
+        var id = job != null ? job.JID : 0;
 
         var session = new SessionRow() {
-          jobId = id,
+          frn_JID = id,
           sessionStart = DateTime.Now,
           sessionEnd = DateTime.Now,
         };
@@ -116,6 +116,7 @@
 
         var ret = ion.database.SaveAsync(currentSession.session).Result;
 
+        ion.database.Update(ret);
         currentSession.Dispose();
         currentSession = null;
 
@@ -134,7 +135,7 @@
 
         // TODO ahodder@appioninc.com: This could be optimized
         var res = db.Table<SensorMeasurementRow>()
-          .Where(smr => smr.sessionId == sessionId)
+          .Where(smr => smr.frn_SID == sessionId)
           .GroupBy(smr => smr.deviceId)
           .Select(g => g.Last());
 
@@ -142,7 +143,7 @@
         foreach (var row in res) {
           var query = db.Table<SensorMeasurementRow>()
             .Where(smr => smr.deviceId == row.deviceId)
-            .Where(smr => smr.sessionId == sessionId)
+            .Where(smr => smr.frn_SID == sessionId)
             .OrderBy(s => s.recordedDate)
             .AsEnumerable();
 
@@ -167,7 +168,7 @@
 
         foreach (var d in tmp) {
           foreach (var log in d.logs) {
-            if (log.recordedDate < start) {
+            if (log.recordedDate < start) { 
               start = log.recordedDate;
             } else if (log.recordedDate > end) {
               end = log.recordedDate;

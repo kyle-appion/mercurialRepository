@@ -28,7 +28,7 @@ using ION.Core.Fluids;
 using ION.Core.Measure;
 using ION.Core.App;
 
-namespace ION.IOS.ViewController.Analyzer {
+namespace ION.IOS.ViewController.Analyzer { 
   
 	public partial class AnalyzerViewController : BaseIONViewController {
     public static manualEntry start = new manualEntry ();
@@ -37,12 +37,11 @@ namespace ION.IOS.ViewController.Analyzer {
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
     public static AnalyzerViewController arvc;
-//    public static bool isRecording = false;
+    public static bool isRecording = false;
 //    public static UIButton dataRecord;
 //    public static UIButton dataStop;
 //    public static UIButton showRecords;
-//    private IION ion;
-//    private int lastSession;
+    private IION ion;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -66,11 +65,11 @@ namespace ION.IOS.ViewController.Analyzer {
         root.navigation.ToggleMenu();
       };
 
-      createSensors ();
+      Title = "Analyzer";
 
-//      ion = AppState.context;
+      createSensors ();
 //
-//      createLocalJobandSessionDatabase();
+      ion = AppState.context;
 //
 //      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
 //      dataRecord.BackgroundColor = UIColor.LightGray;
@@ -127,27 +126,14 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-//    public async void recordDevices(object sender, EventArgs e){
+//    public void recordDevices(object sender, EventArgs e){
 //      isRecording = true;
 //      dataStop.Enabled = true;
 //      dataStop.Alpha = 1f;
 //      dataRecord.Enabled = false;
 //      dataRecord.Alpha = .4f;
 //
-//      ION.Core.Database.Session session = new ION.Core.Database.Session{sessionStart = DateTime.UtcNow, sessionEnd = DateTime.UtcNow};
-//      ion.database.Insert(session);
-//      lastSession = session.SID;
-//
-//      while (isRecording) {
-//        foreach (sensor liveItem in analyzerSensors.viewList) {
-//          if (liveItem.currentSensor != null) {
-//            Console.WriteLine("Serial: " + liveItem.currentSensor.device.serialNumber + " Measurement: " + liveItem.currentSensor.measurement + " Date: " + DateTime.Now);
-//            var measurement = new ION.Core.Database.SessionMeasurement { frnSID = lastSession, deviceSN = liveItem.currentSensor.device.serialNumber.ToString(), deviceMeasurement = liveItem.currentSensor.measurement.amount.ToString(), measurementDate = DateTime.UtcNow};
-//            ion.database.Insert(measurement);
-//          }
-//        }
-//        await Task.Delay(TimeSpan.FromSeconds(10));
-//      }
+//      ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(10));
 //    }
     /// <summary>
     /// clicking this button stops the recording process and closes out the session with the end time
@@ -155,12 +141,7 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
 //    public void stopRecording(object sender, EventArgs e){
-//      Console.WriteLine("Current stop time is: " + DateTime.Now + " for session " + lastSession);
-//      ion.database.Execute("UPDATE Session SET sessionEnd = ? WHERE SID = " + lastSession, DateTime.Now);
-//
-//      var result = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session WHERE SID = " + lastSession);
-//
-//      Console.WriteLine("Working session entry is now: " + result[0].SID + " " + result[0].sessionStart.ToLocalTime() + " " + result[0].sessionEnd.ToLocalTime());
+//      ion.dataLogManager.StopRecording();
 //
 //      isRecording = false;
 //      dataStop.Enabled = false;
@@ -171,18 +152,99 @@ namespace ION.IOS.ViewController.Analyzer {
 
 //    public void listOutSessions(object sender, EventArgs e){
 //
-//      ION.Core.Database.Job job = new ION.Core.Database.Job{jobName = "3rd and Dahlia" };
-//      ion.database.Insert(job);
-//      ion.database.Query<ION.Core.Database.Session>("UPDATE Session SET frnJID = 2 WHERE SID IN (13,17,19,11)");
+////      ION.Core.Database.JobRow job = new ION.Core.Database.JobRow{jobName = "Cheezer's Pub" };
+////      ion.database.Insert(job);
+////      ION.Core.Database.JobRow job2 = new ION.Core.Database.JobRow{jobName = "3rd and Dahlia" };
+////      ion.database.Insert(job2);
+////      ion.database.Query<ION.Core.Database.SessionRow>("UPDATE SessionRow SET frn_JID = 1 WHERE SID IN (4)");
+////      ion.database.Query<ION.Core.Database.SessionRow>("UPDATE SessionRow SET frn_JID = 2 WHERE SID IN (1,3)");
 //
-//      var result = ion.database.Query<ION.Core.Database.SessionMeasurement>("SELECT * FROM SessionMeasurement ORDER BY frnSID, MID");
+////      ION.Core.Database.DeviceRow device1 = new ION.Core.Database.DeviceRow{_id = 1,serialNumber = "P814J0806", name = "P814J0806", lastConnected = DateTime.Now, connectionAddress = "F9B348C2-870C-28BB-15A8-C6403324DFDE", protocol = 1};
+////      ion.database.Insert(device1);
+////      ION.Core.Database.DeviceRow device2 = new ION.Core.Database.DeviceRow{_id = 2,serialNumber = "V714E0522", name = "V714E0522", lastConnected = DateTime.Now, connectionAddress = "DE5F6B34-AE72-8E06-9488-F525116193C7", protocol = 1};
+////      ion.database.Insert(device2);
+////      ION.Core.Database.DeviceRow device3 = new ION.Core.Database.DeviceRow{_id = 3,serialNumber = "P814E0282", name = "P814E0282", lastConnected = DateTime.Now, connectionAddress = "FA04298A-987D-5783-782F-86F1CB548B4F", protocol = 1};
+////      ion.database.Insert(device3);
+////      ION.Core.Database.DeviceRow device4 = new ION.Core.Database.DeviceRow{_id = 4,serialNumber = "PT816B1005", name = "PT816B1005", lastConnected = DateTime.Now, connectionAddress = "60AD4DB8-FEF2-8962-8980-5F8300A5DA37", protocol = 1};
+////      ion.database.Insert(device4);
+////      ION.Core.Database.DeviceRow device5 = new ION.Core.Database.DeviceRow{_id = 5,serialNumber = "P514J0106", name = "P514J0106", lastConnected = DateTime.Now, connectionAddress = "7EC893EC-191A-579F-4C8B-FCCF0164BE78", protocol = 1};
+////      ion.database.Insert(device5);
+////      ION.Core.Database.DeviceRow device6 = new ION.Core.Database.DeviceRow{_id = 6,serialNumber = "PT516B1003", name = "PT516B1003", lastConnected = DateTime.Now, connectionAddress = "4A868878-1E99-9A3F-812F-16FD31A0D2BB", protocol = 1};
+////      ion.database.Insert(device6);
+//
+////      for (int i = 0; i < 5; i++) {
+////        ION.Core.Database.SessionRow session = new ION.Core.Database.SessionRow{ _id = i, sessionStart = DateTime.Now.AddHours(i), sessionEnd = DateTime.Now.AddHours(i).AddMinutes(6) };
+////        ion.database.Insert(session);
+////      }
+//
+////      ION.Core.Database.SensorMeasurementRow measurement1 = new ION.Core.Database.SensorMeasurementRow{_id = 0, frn_SID = 1, deviceId = 1,sensorIndex = 0, measurement = 100, recordedDate = DateTime.Parse("4/8/2016 4:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement2 = new ION.Core.Database.SensorMeasurementRow{_id = 1, frn_SID = 1, deviceId = 2,sensorIndex = 0, measurement = 100, recordedDate = DateTime.Parse("4/8/2016 4:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement3 = new ION.Core.Database.SensorMeasurementRow{_id = 2, frn_SID = 1, deviceId = 3,sensorIndex = 0, measurement = 100, recordedDate = DateTime.Parse("4/8/2016 4:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement4 = new ION.Core.Database.SensorMeasurementRow{_id = 3, frn_SID = 1, deviceId = 4,sensorIndex = 0, measurement = 100, recordedDate = DateTime.Parse("4/8/2016 4:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement5 = new ION.Core.Database.SensorMeasurementRow{_id = 4, frn_SID = 1, deviceId = 5,sensorIndex = 0, measurement = 100, recordedDate = DateTime.Parse("4/8/2016 4:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement6 = new ION.Core.Database.SensorMeasurementRow{_id = 5, frn_SID = 1, deviceId = 1,sensorIndex = 0, measurement = 300, recordedDate = DateTime.Parse("4/8/2016 4:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement7 = new ION.Core.Database.SensorMeasurementRow{_id = 6, frn_SID = 1, deviceId = 2,sensorIndex = 0, measurement = 150, recordedDate = DateTime.Parse("4/8/2016 4:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement8 = new ION.Core.Database.SensorMeasurementRow{_id = 7, frn_SID = 1, deviceId = 3,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 4:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement9 = new ION.Core.Database.SensorMeasurementRow{_id = 8, frn_SID = 1, deviceId = 4,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 4:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement10 = new ION.Core.Database.SensorMeasurementRow{_id = 9, frn_SID = 1, deviceId = 5,sensorIndex = 0, measurement = 180, recordedDate = DateTime.Parse("4/8/2016 4:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement11 = new ION.Core.Database.SensorMeasurementRow{_id = 10, frn_SID = 2, deviceId = 1,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 5:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement12 = new ION.Core.Database.SensorMeasurementRow{_id = 11, frn_SID = 2, deviceId = 2,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 5:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement13 = new ION.Core.Database.SensorMeasurementRow{_id = 12, frn_SID = 2, deviceId = 3,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 5:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement14 = new ION.Core.Database.SensorMeasurementRow{_id = 13, frn_SID = 2, deviceId = 4,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 5:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement15 = new ION.Core.Database.SensorMeasurementRow{_id = 14, frn_SID = 2, deviceId = 5,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 5:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement16 = new ION.Core.Database.SensorMeasurementRow{_id = 15, frn_SID = 2, deviceId = 1,sensorIndex = 0, measurement = 190, recordedDate = DateTime.Parse("4/8/2016 5:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement17 = new ION.Core.Database.SensorMeasurementRow{_id = 16, frn_SID = 2, deviceId = 2,sensorIndex = 0, measurement = 240, recordedDate = DateTime.Parse("4/8/2016 5:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement18 = new ION.Core.Database.SensorMeasurementRow{_id = 17, frn_SID = 2, deviceId = 3,sensorIndex = 0, measurement = 270, recordedDate = DateTime.Parse("4/8/2016 5:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement19 = new ION.Core.Database.SensorMeasurementRow{_id = 18, frn_SID = 2, deviceId = 4,sensorIndex = 0, measurement = 260, recordedDate = DateTime.Parse("4/8/2016 5:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement20 = new ION.Core.Database.SensorMeasurementRow{_id = 19, frn_SID = 2, deviceId = 5,sensorIndex = 0, measurement = 250, recordedDate = DateTime.Parse("4/8/2016 5:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement21 = new ION.Core.Database.SensorMeasurementRow{_id = 20, frn_SID = 3, deviceId = 1,sensorIndex = 0, measurement = 900, recordedDate = DateTime.Parse("4/8/2016 6:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement22 = new ION.Core.Database.SensorMeasurementRow{_id = 21, frn_SID = 3, deviceId = 2,sensorIndex = 0, measurement = 900, recordedDate = DateTime.Parse("4/8/2016 6:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement23 = new ION.Core.Database.SensorMeasurementRow{_id = 22, frn_SID = 3, deviceId = 3,sensorIndex = 0, measurement = 900, recordedDate = DateTime.Parse("4/8/2016 6:24:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement24 = new ION.Core.Database.SensorMeasurementRow{_id = 23, frn_SID = 3, deviceId = 1,sensorIndex = 0, measurement = 900, recordedDate = DateTime.Parse("4/8/2016 6:27:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement25 = new ION.Core.Database.SensorMeasurementRow{_id = 24, frn_SID = 3, deviceId = 2,sensorIndex = 0, measurement = 900, recordedDate = DateTime.Parse("4/8/2016 6:27:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement26 = new ION.Core.Database.SensorMeasurementRow{_id = 25, frn_SID = 3, deviceId = 3,sensorIndex = 0, measurement = 500, recordedDate = DateTime.Parse("4/8/2016 6:27:41")};
+////      ION.Core.Database.SensorMeasurementRow measurement27 = new ION.Core.Database.SensorMeasurementRow{_id = 26, frn_SID = 3, deviceId = 1,sensorIndex = 0, measurement = 700, recordedDate = DateTime.Parse("4/8/2016 6:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement28 = new ION.Core.Database.SensorMeasurementRow{_id = 27, frn_SID = 3, deviceId = 2,sensorIndex = 0, measurement = 300, recordedDate = DateTime.Parse("4/8/2016 6:30:41 PM")};
+////      ION.Core.Database.SensorMeasurementRow measurement29 = new ION.Core.Database.SensorMeasurementRow{_id = 28, frn_SID = 3, deviceId = 3,sensorIndex = 0, measurement = 200, recordedDate = DateTime.Parse("4/8/2016 6:30:41 PM")};
+////      ion.database.Insert(measurement1);
+////      ion.database.Insert(measurement2);
+////      ion.database.Insert(measurement3);
+////      ion.database.Insert(measurement4);
+////      ion.database.Insert(measurement5);
+////      ion.database.Insert(measurement6);
+////      ion.database.Insert(measurement7);
+////      ion.database.Insert(measurement8);
+////      ion.database.Insert(measurement9);
+////      ion.database.Insert(measurement10);
+////      ion.database.Insert(measurement11);
+////      ion.database.Insert(measurement12);
+////      ion.database.Insert(measurement13);
+////      ion.database.Insert(measurement14);
+////      ion.database.Insert(measurement15);
+////      ion.database.Insert(measurement16);
+////      ion.database.Insert(measurement17);
+////      ion.database.Insert(measurement18);
+////      ion.database.Insert(measurement19);
+////      ion.database.Insert(measurement20);
+////      ion.database.Insert(measurement21);
+////      ion.database.Insert(measurement22);
+////      ion.database.Insert(measurement23);
+////      ion.database.Insert(measurement24);
+////      ion.database.Insert(measurement25);
+////      ion.database.Insert(measurement26);
+////      ion.database.Insert(measurement27);
+////      ion.database.Insert(measurement28);
+////      ion.database.Insert(measurement29);
+//
+//
+//      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
 //      Console.WriteLine("Measurements:");
 //      foreach (var item in result) {
-//        //Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart + " End:" + item.sessionEnd);
-//        Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
+//        Console.WriteLine("MID:" + item.MID + " Measurement:" + item.measurement + " for Session:" + item.frn_SID);
+//        //Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
 //      }
 //      Console.WriteLine("");
-//      var result2 = ion.database.Query<ION.Core.Database.Session>("SELECT * FROM Session ORDER BY SID");
+//      var result2 = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow ORDER BY SID");
 //      Console.WriteLine("Sessions Recorded:");
 //      foreach (var item in result2) {
 //        Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart.ToLocalTime() + " End:" + item.sessionEnd.ToLocalTime());
@@ -199,26 +261,26 @@ namespace ION.IOS.ViewController.Analyzer {
 //        }else{
 //          formatTime = formatTime - formatTime.TimeOfDay;
 //        }
-//        Console.WriteLine("Session:" + item.SID + " Start:" + formatTime + " Difference:" + duration.ToString("0.0") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
+//        Console.WriteLine("Session:" + item.SID + " Difference:" + duration.ToString("0.00") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
 //      }
 //      Console.WriteLine("");
-//      var result3 = ion.database.Query<ION.Core.Database.Job>("SELECT * FROM Job ORDER BY JID");
+//      Console.WriteLine("Jobs Created");
+//      var result3 = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow ORDER BY JID");
 //
 //      foreach (var item in result3) {
 //        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
 //      }
-//////      db.Query<Session> ("DELETE FROM Session");
-//////      db.Query<Session> ("VACUUM");
-//////      db.Query<SessionMeasurement>("DELETE FROM SessionMeasurement");
-//////      db.Query<SessionMeasurement>("VACUUM");
-//    }
-    /// <summary>
-    /// Creates the tables necessary to store and organize a user's sessions and jobs
-    /// </summary>
-//    public void createLocalJobandSessionDatabase(){
-//      ion.database.CreateTable<ION.Core.Database.Session>();
-//      ion.database.CreateTable<ION.Core.Database.Job>();
-//      ion.database.CreateTable<ION.Core.Database.SessionMeasurement>();
+//
+//      var result4 = ion.database.Query<ION.Core.Database.DeviceRow>("SELECT * FROM DeviceRow");
+
+//      foreach (var item in result4) {
+//        Console.WriteLine(item.ToString());
+//        Console.WriteLine(Environment.NewLine);
+//      }
+////////      db.Query<Session> ("DELETE FROM SessionRow");
+////////      db.Query<Session> ("VACUUM");
+////////      db.Query<SessionMeasurement>("DELETE FROM SensorMeasurementRow");
+////////      db.Query<SessionMeasurement>("VACUUM");
 //    }
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
@@ -235,10 +297,9 @@ namespace ION.IOS.ViewController.Analyzer {
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, View);
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, View);
 
-      //UIImageView compressor = new UIImageView(new CGRect(148,92,25,25));
       UIImageView compressor = new UIImageView(new CGRect(.462 * View.Bounds.Width,.161 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height));        
       compressor.Image = UIImage.FromBundle("ic_compressor");
-      //UIImageView expansion = new UIImageView(new CGRect(148,286,25,25));
+
       UIImageView expansion = new UIImageView(new CGRect(.462 * View.Bounds.Width,.503 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height ));
       expansion.Image = UIImage.FromBundle("ic_expansionchamber");
 
@@ -353,8 +414,7 @@ namespace ION.IOS.ViewController.Analyzer {
         sensorActions.pressedSensor.isManual = pressedArea.isManual;
 
         ///SHOW ACTIONSHEET FOR SENSOR OPTIONS
-        pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;    
-
+        pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;
       } 
       else {
 
@@ -760,7 +820,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.changePTFluid.Hidden = true;
           }
 
-          break;
+          break; 
         }
       }
 

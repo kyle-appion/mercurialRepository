@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.Logging {
       ion = AppState.context;
 
       var deviceAmount = ion.database.Table<SensorMeasurementRow>()
-        .Where(smr => smr.sessionId == SID)
+        .Where(smr => smr.frn_SID == SID)
         .Select(smr => smr.deviceId).Distinct()
         .Count();
 
@@ -70,7 +70,8 @@ namespace ION.IOS.ViewController.Logging {
       sessionInfo.TextAlignment = UITextAlignment.Left;
       sessionInfo.Layer.BorderColor = UIColor.Black.CGColor;
       sessionInfo.Layer.BorderWidth = 1f;
-      sessionInfo.Text = start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min " + deviceAmount + " devices";
+      sessionInfo.Text = start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min";
+      sessionInfo.Font = UIFont.SystemFontOfSize(20);
 
       this.AddSubview(sessionInfo);
     }

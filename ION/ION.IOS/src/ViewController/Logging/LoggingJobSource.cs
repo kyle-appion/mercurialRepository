@@ -70,8 +70,8 @@ namespace ION.IOS.ViewController.Logging {
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
       if(usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)){
-        //cell.Accessory = UITableViewCellAccessory.Checkmark;
-        cell.BackgroundColor = UIColor.LightGray;
+        cell.Accessory = UITableViewCellAccessory.Checkmark;
+        //cell.BackgroundColor = UIColor.LightGray;
       }
 
       return cell;
@@ -107,7 +107,6 @@ namespace ION.IOS.ViewController.Logging {
     {
       Console.WriteLine ("Clicked Job: " + tableItems[indexPath.Section].jName + "'s session " + tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
 
-
       if (usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)) {
         usingSessions.Remove(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID);
       } else {
@@ -116,5 +115,6 @@ namespace ION.IOS.ViewController.Logging {
 
       tableView.ReloadData();
     }
+      
   }
 }

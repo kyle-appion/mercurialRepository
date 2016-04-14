@@ -8,7 +8,7 @@
     /// Queries the primary id of the table item.
     /// </summary>
     /// <value>The identifier.</value>
-    int id { get; set; }
+    int _id { get; set; }
   }
 }
 

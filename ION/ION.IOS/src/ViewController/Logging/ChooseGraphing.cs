@@ -1,18 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using UIKit;
 using Foundation;
 using CoreGraphics;
 
 namespace ION.IOS.ViewController.Logging {
+  
   public class ChooseGraphing : UIView {
 
     public UIView graphingType;
     public UILabel header;
-    public UITextView rawData;
+
     public nfloat cellHeight;
 
-    public ChooseGraphing(UIView mainView) {
-      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .14 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
+    public GraphingView graphingView;
+    public LegendView legendView;
+    public ChooseData checkData;
+
+    public ChooseGraphing(UIView mainView, ChooseData dataSection) {
+      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .04 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       graphingType.BackgroundColor = UIColor.White;
       graphingType.Layer.BorderColor = UIColor.Black.CGColor;
       graphingType.Layer.BorderWidth = 1f;
@@ -21,25 +27,70 @@ namespace ION.IOS.ViewController.Logging {
 
       cellHeight = .07f * mainView.Bounds.Height;
 
-      header = new UILabel(new CGRect(0,0,graphingType.Bounds.Width, cellHeight));
-      header.Layer.BorderColor = UIColor.Black.CGColor;
-      header.Layer.BorderWidth = 1f;
-      header.TextAlignment = UITextAlignment.Center;
-      header.Text = "Graphing";
-      header.TextColor = UIColor.Black;
-      header.AdjustsFontSizeToFitWidth = true;
-      header.Hidden = true;
-
-      rawData = new UITextView(new CGRect(0,cellHeight, graphingType.Bounds.Width, (.72 * mainView.Bounds.Height) - cellHeight));
-      rawData.Editable = false;
-      rawData.Text = "";
-      rawData.TextColor = UIColor.Black;
-      rawData.Hidden = true;
-
-      graphingType.AddSubview(header);
-      graphingType.BringSubviewToFront(header);
-      graphingType.AddSubview(rawData);
+      checkData = dataSection;
     }
+
+    public void SetupSettingsButtons(UIView mainView, UIActivityIndicatorView activityLoadingGraphs){
+      graphingView.menuButton.TouchUpInside += (sender, e) => {
+        legendView.beginValue.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
+        legendView.endValue.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
+        checkData.DataType.RemoveGestureRecognizer(checkData.resize);
+
+        UIView.Transition(
+          fromView:graphingView.gView,
+          toView:legendView.lView,
+          duration:.5,
+          options: UIViewAnimationOptions.TransitionFlipFromRight,
+          completion: () =>{
+            graphingType.SendSubviewToBack(graphingView.gView);
+            graphingType.BringSubviewToFront(legendView.lView);
+            checkData.DataType.AddGestureRecognizer(checkData.resize);
+          }
+        );
+      };
+
+      legendView.menuButton.TouchUpInside += (sender, e) => {
+        checkData.DataType.RemoveGestureRecognizer(checkData.resize);
+        ////calculate left tracker size based on manual selected dates
+        var leftIndex = ChosenDates.allTimes[ChosenDates.subLeft.ToString()];
+        Console.WriteLine("Using index " + leftIndex + " for left tracker");
+        var lwidth = graphingView.dateMultiplier * leftIndex;
+
+        ///resize left tracker to match manual selection
+        graphingView.leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lwidth, graphingView.trackerHeight);
+        var trackerRect = graphingView.leftTrackerCircle.Center;
+        trackerRect.X = graphingView.leftTrackerView.Center.X + (.5f * graphingView.leftTrackerView.Bounds.Width);
+        graphingView.leftTrackerCircle.Center = trackerRect;
+
+        ////calculate right tracker size based on manual selected dates
+        var rightIndex = ChosenDates.allTimes[ChosenDates.subRight.ToString()];
+        var rfinal = (graphingView.dateMultiplier * rightIndex) + (.1 * mainView.Bounds.Width);
+        double rwidth = ChosenDates.allTimes[ChosenDates.latest.ToString()] - rightIndex;
+        rwidth = rwidth * graphingView.dateMultiplier;
+
+        ///resize right tracker to match manual selection
+        graphingView.rightTrackerView.Frame = new CGRect(rfinal,.15 * mainView.Bounds.Height,rwidth,graphingView.trackerHeight);
+        trackerRect = graphingView.rightTrackerCircle.Center;
+        trackerRect.X = graphingView.rightTrackerView.Center.X - (.5f * graphingView.rightTrackerView.Bounds.Width);
+        graphingView.rightTrackerCircle.Center = trackerRect;
+
+        graphingView.subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
+
+        UIView.Transition(
+          fromView:legendView.lView,
+          toView:graphingView.gView,
+          duration:.5,
+          options: UIViewAnimationOptions.TransitionFlipFromRight,
+          completion: () =>{
+            graphingType.SendSubviewToBack(legendView.lView);
+            graphingType.BringSubviewToFront(graphingView.gView);
+            checkData.DataType.AddGestureRecognizer(checkData.resize);
+          }
+        );
+      };
+      activityLoadingGraphs.StopAnimating();
+    }
+
   }
 }
 

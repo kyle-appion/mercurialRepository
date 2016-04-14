@@ -31,6 +31,7 @@ namespace ION.IOS.ViewController {
   using ION.IOS.ViewController.SuperheatSubcool;
   using ION.IOS.ViewController.Workbench;
   using ION.IOS.ViewController.Logging;
+  using ION.IOS.ViewController.JobManager;
 
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
@@ -60,18 +61,18 @@ namespace ION.IOS.ViewController {
         new Section (Strings.Navigation.MAIN.ToUpper()) {
           new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
           new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
-#if DEBUG
-          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_nav_workbench")),
-#endif
         },
         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
+#if DEBUG
+//          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_nav_workbench")),
+//          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_nav_workbench")),
+#endif
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_download")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
-
         },
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
@@ -233,11 +234,12 @@ namespace ION.IOS.ViewController {
       var ret = new UINavigationController[] {
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
-#if DEBUG
-        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
-#endif
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
+#if DEBUG
+//        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
+//        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+#endif
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation

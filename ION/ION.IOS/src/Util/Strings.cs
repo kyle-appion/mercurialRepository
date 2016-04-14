@@ -207,15 +207,16 @@ namespace ION.IOS.Util {
       DOWNLOADING_CERTIFICATES = "report_downloading_certificates".FromResources(),
       DOWNLOADING_CERTIFICATES_FAILURES = "report_downloading_certificates_failures".FromResources(),
       FAILED_TO_DOWNLOAD = "report_failed_to_download".FromResources(),
+      LOGGING = "report_create".FromResources(),
+      MANAGER = "report_job".FromResources(),
       TITLE = "report_title".FromResources(),
       NOTES = "report_notes".FromResources(),
-      REPORTS = "reports".FromResources(),
+      REPORTS = "Reports".FromResources(),
       SCREENSHOT = "report_screenshot".FromResources(),
       SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
       SCREENSHOT_TITLE = "report_screenshot_title".FromResources(),
       STATE = "report_state".FromResources(),
-      ZIP = "report_zip".FromResources(),
-      LOGGING = "Logging".FromResources()
+      ZIP = "report_zip".FromResources()
       ;
     }
 

@@ -10,7 +10,7 @@ namespace ION.IOS.ViewController.Logging {
   public class JobData {
 
     public int JID;
-    public string jName;
+    public string jName; 
     public ObservableCollection<SessionData> jobSessions;
     public UIView headerView;
     public UILabel headerName;
@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Logging {
       jobSessions = new ObservableCollection<SessionData>();
 
       headerView = new UIView(new CGRect(0,0,jobTable.Bounds.Width,cellHeight)){
-        BackgroundColor = UIColor.DarkGray,
+        BackgroundColor = UIColor.Black,
       };
 
       headerName = new UILabel(new CGRect(0,0,jobTable.Bounds.Width, cellHeight)){
@@ -34,22 +34,23 @@ namespace ION.IOS.ViewController.Logging {
         TextAlignment = UITextAlignment.Center,
         AdjustsFontSizeToFitWidth = true,
         BackgroundColor = UIColor.Clear,
+        TextColor = UIColor.White,
       };
 
       jobSelect = new UITapGestureRecognizer(() => {
-        var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM Session WHERE frnJID = " + JID);
+        var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID = " + JID);
         if(selected.Equals(false)){
           selected = true;
           foreach(var sesh in sessions){
-            if(!selectedSessions.Contains(sesh.id)){
-              selectedSessions.Add(sesh.id);
+            if(!selectedSessions.Contains(sesh.SID)){
+              selectedSessions.Add(sesh.SID);
             }
           }
         } else {
           selected = false;
           foreach(var sesh in sessions){
-            if(selectedSessions.Contains(sesh.id)){
-              selectedSessions.Remove(sesh.id);
+            if(selectedSessions.Contains(sesh.SID)){
+              selectedSessions.Remove(sesh.SID);
             }
           }
         }

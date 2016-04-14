@@ -12,7 +12,10 @@
     /// </summary>
     /// <value>The identifier.</value>
     [PrimaryKey, AutoIncrement]
-    public int id { get; set; }
+    public int DID { get; set; }
+    [Ignore]
+    public int _id {get { return DID;} set { DID = value;}}
+
     /// <summary>
     /// Gets or sets the serial number.
     /// </summary>
@@ -45,18 +48,18 @@
     /// </summary>
     /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
     public override int GetHashCode() {
-      return id;
+      return DID;
     }
 
     public override bool Equals(object obj) {
       var dr = obj as DeviceRow;
-      return dr != null && id == dr.id;
+      return dr != null && DID == dr.DID;
     }
 
     // Overridden from Object
     public override string ToString() {
       return "Device {" +
-        "id: " + id +
+        "id: " + DID +
         ", serialNumber: " + serialNumber +
         ", name: " + name +
         ", lastConnected: " + lastConnected.ToUTCMilliseconds() + 
