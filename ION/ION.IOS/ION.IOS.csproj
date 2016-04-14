@@ -110,6 +110,12 @@
     <Reference Include="OxyPlot.Xamarin.iOS">
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\Xamarin.iOS10\OxyPlot.Xamarin.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="Syncfusion.XlsIO.Portable">
+      <HintPath>..\..\..\..\..\..\Downloads\syncfusionessentialxamarin\lib\pcl\Syncfusion.XlsIO.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.Compression.Portable">
+      <HintPath>..\..\..\..\..\..\Downloads\syncfusionessentialxamarin\lib\pcl\Syncfusion.Compression.Portable.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">

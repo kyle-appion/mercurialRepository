@@ -28,7 +28,7 @@ using ION.Core.Fluids;
 using ION.Core.Measure;
 using ION.Core.App;
 
-namespace ION.IOS.ViewController.Analyzer {
+namespace ION.IOS.ViewController.Analyzer { 
   
 	public partial class AnalyzerViewController : BaseIONViewController {
     public static manualEntry start = new manualEntry ();
@@ -41,7 +41,7 @@ namespace ION.IOS.ViewController.Analyzer {
 //    public static UIButton dataRecord;
 //    public static UIButton dataStop;
 //    public static UIButton showRecords;
-//    private IION ion;
+    private IION ion;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       createSensors ();
 //
-//      ion = AppState.context;
+      ion = AppState.context;
 //
 //      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
 //      dataRecord.BackgroundColor = UIColor.LightGray;

@@ -225,7 +225,7 @@ namespace ION.IOS.ViewController.Logging
 				}
 				if (rightDrag.State == UIGestureRecognizerState.Ended){
           
-          rightTrackerView.BackgroundColor = UIColor.Red;
+          rightTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
 					UIView.Transition(
 						withView:subDates,
 						duration:.5,
@@ -301,7 +301,8 @@ namespace ION.IOS.ViewController.Logging
         
 				Console.WriteLine("using graph data starting at " + ChosenDates.subLeft + " and ending at " + ChosenDates.subRight);
         exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
-//        ShowToast(mainVC);
+
+        ChooseReportType(mainVC);
 
 //        var reportData = new List<deviceReadings>();
 //        foreach(var sensor in selectedData){
@@ -362,7 +363,7 @@ namespace ION.IOS.ViewController.Logging
 					scrollUp.Enabled = true;
 				}
 			};
-      extendedDown = new UIButton(new CGRect(0,.65 * gView.Bounds.Height,.1 * gView.Bounds.Width,.35 * gView.Bounds.Height));
+      extendedDown = new UIButton(new CGRect(0,.75 * gView.Bounds.Height,.1 * gView.Bounds.Width,.25 * gView.Bounds.Height));
       extendedDown.TouchUpInside += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchUpInside);};
       extendedDown.TouchDown += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchDown);};
 
@@ -390,12 +391,32 @@ namespace ION.IOS.ViewController.Logging
       ChosenDates.subRight = ChosenDates.latest;
     }
 
-    public async void ShowToast(UIViewController mainVC){
-      UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Report", null,null,null);
-      messageBox.Show();
-      await Task.Delay(TimeSpan.FromSeconds(1));
-      createPDF(messageBox,mainVC);
+    public void ChooseReportType(UIViewController mainVC){
+      UIAlertView reportBox = new UIAlertView("Create Report", "Choose a format", null,"Cancel","Spreadsheet","PDF");
+      reportBox.Show();
+      reportBox.Clicked += (sender, e) => {
+        if(e.ButtonIndex.Equals(1)){
+          UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Spreadsheet", null,null,null);
+          messageBox.Show();
+          createSpreadsheet(messageBox,mainVC);
+        } else if (e.ButtonIndex.Equals(2)){
+          Console.WriteLine("Create A PDF");
+          UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating PDF", null,null,null);
+          messageBox.Show();
+          messageBox.DismissWithClickedButtonIndex(0,true);
+          //createPDF(messageBox,mainVC);
+        }
+      };
     }
+
+    public void createSpreadsheet(UIAlertView messageBox, UIViewController mainVC){
+      Console.WriteLine("Using date range: " + ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString());
+      foreach (var device in ChosenDates.includeList) {
+        Console.WriteLine("Using device: " + device);
+      }
+      messageBox.DismissWithClickedButtonIndex(0,true);
+    }
+
     public void createPDF(UIAlertView messageBox,UIViewController mainVC){
       var allGraphs = new UIScrollView(new CGRect(0,0,gView.Bounds.Width,gView.Bounds.Height));
       var reportHolder = new DataLoggingReport();

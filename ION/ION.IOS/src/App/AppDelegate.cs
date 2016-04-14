@@ -59,6 +59,9 @@
 //      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
       ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
       ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
+
       if (ion.settings.screen.leaveOn) {        
         UIApplication.SharedApplication.IdleTimerDisabled = true;
       }
@@ -95,6 +98,8 @@
       // Here you can undo many of the changes made on entering the background.
       ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
       ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
 
       if (ion.settings.screen.leaveOn) {
         UIApplication.SharedApplication.IdleTimerDisabled = true;

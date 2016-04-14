@@ -115,5 +115,6 @@ namespace ION.IOS.ViewController.Logging {
 
       tableView.ReloadData();
     }
+      
   }
 }

@@ -269,8 +269,9 @@ namespace ION.IOS.ViewController.Logging {
           var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE deviceId = ? AND frn_SID = ? ORDER BY MID ASC",deviceCount[m].deviceId, graphResult[s].SID);
 
           var deviceIndex = SerialNumberExtensions.ParseSerialNumber(activeDevice.name);
+
           var type = ion.deviceManager[deviceIndex] as GaugeDevice;
-         
+
           //activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
           activeDevice.type = "Pressure";
 
@@ -300,8 +301,6 @@ namespace ION.IOS.ViewController.Logging {
       var breakPoint = 0;
 
       foreach (var time in holderList) {
-        Console.WriteLine("Extra Plots: " + extraPlots);
-        Console.WriteLine("Index: " + indexes + " Time: " + time);
         ChosenDates.allTimes.Add(time, indexes);
         ChosenDates.allIndexes.Add(indexes, time);
         if (sessionBreaks[breakPoint].Equals(time)) {
