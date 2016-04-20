@@ -1,13 +1,14 @@
-﻿using System;
+﻿namespace ION.Core.Sensors {
 
-using Newtonsoft.Json;
+  using System;
 
-using ION.Core.Devices;
-using ION.Core.Measure;
-using ION.Core.Sensors.Serialization;
-using ION.Core.Util;
+  using Newtonsoft.Json;
 
-namespace ION.Core.Sensors {
+  using ION.Core.App;
+  using ION.Core.Devices;
+  using ION.Core.Measure;
+  using ION.Core.Sensors.Serialization;
+  using ION.Core.Util;
 
   /// <summary>
   /// Enumerates the possible sensors.
@@ -346,11 +347,14 @@ namespace ION.Core.Sensors {
     /// </summary>
     public void NotifySensorStateChanged() {
       // TODO ahodder@appioninc.com: This post and posts like it need to disappear.
-      ION.Core.App.AppState.context.PostToMain(() => {
-        if (onSensorStateChangedEvent != null) {
-          onSensorStateChangedEvent(this);
-        }
-      });
+      var ion = AppState.context;
+      if (ion != null) {
+        ion.PostToMain(() => {
+          if (onSensorStateChangedEvent != null) {
+            onSensorStateChangedEvent(this);
+          }
+        });
+      }
     }
 
     /// <summary>

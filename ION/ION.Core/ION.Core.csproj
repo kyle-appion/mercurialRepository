@@ -102,7 +102,6 @@
     <Compile Include="src\Devices\BaseDeviceManager.cs" />
     <Compile Include="src\Devices\DeviceFactory.cs" />
     <Compile Include="src\IO\EmbeddedResource.cs" />
-    <Compile Include="src\Devices\Connections\ConnectionHelper.cs" />
     <Compile Include="src\Devices\Connections\BaseConnectionHelper.cs" />
     <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
@@ -158,8 +157,10 @@
     <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Database\Deprecated\Device.cs" />
-    <Compile Include="src\Excel\DataLogExporter.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
+    <Compile Include="src\Content\WhatsNew.cs" />
+    <Compile Include="src\Devices\Connections\IConnectionFactory.cs" />
+    <Compile Include="src\Devices\Connections\IConnectionHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -193,6 +194,7 @@
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
     <Folder Include="src\Database\Deprecated\" />
+    <Folder Include="src\Excel\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
@@ -204,11 +206,23 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\..\..\..\..\..\Downloads\DocumentFormat.OpenXml\DocumentFormat.OpenXml.dll</HintPath>
-    </Reference>
     <Reference Include="SpreadsheetLight">
       <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core">
+      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.core.interfaces">
+      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.util">
+      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.util.dll</HintPath>
+    </Reference>
+    <Reference Include="NUnit.VisualStudio.TestAdapter">
+      <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\..\..\..\..\..\Downloads\DocumentFormat.OpenXml\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

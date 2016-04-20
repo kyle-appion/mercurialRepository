@@ -50,18 +50,13 @@
     /// <value>The app version.</value>
     public string appVersion {
       get {
-        var d = ion.PackageManager.GetPackageInfo(ion.PackageName, PackageInfoFlags.MetaData).VersionName;
-        var ret = prefs.GetString(ion.GetString(Resource.String.pkey_app_version), null);
+        return prefs.GetString(ion.GetString(Resource.String.pkey_app_version), null);
+      }
 
-        if (!d.Equals(ret)) {
-          ret = d;
-
-          var e = prefs.Edit();
-          e.PutString(ion.GetString(Resource.String.pkey_app_version), d);
-          e.Commit();
-        }
-
-        return ret;
+      set {
+        var e = prefs.Edit();
+        e.PutString(ion.GetString(Resource.String.pkey_app_version), value);
+        e.Commit();
       }
     }
 
@@ -80,6 +75,22 @@
         }
 
         return ret;
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the application should show the what's new dialog.
+    /// </summary>
+    /// <value><c>true</c> if show whats new; otherwise, <c>false</c>.</value>
+    public bool showWhatsNew {
+      get {
+        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_whats_new), true);
+      }
+
+      set {
+        var e = prefs.Edit();
+        e.PutBoolean(ion.GetString(Resource.String.pkey_whats_new), value);
+        e.Commit();
       }
     }
 
@@ -148,7 +159,7 @@
     /// <value><c>true</c> if allows gps; otherwise, <c>false</c>.</value>
     public bool allowsGps {
       get {
-        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_location_gps), true);
+        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_location_gps), false);
       }
       set {
         var e = prefs.Edit();

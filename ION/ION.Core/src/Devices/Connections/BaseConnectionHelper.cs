@@ -65,6 +65,7 @@
     /// <param name="scanTime">Scan time.</param>
     /// <returns>True if the scan was started, false otherwise. False may
     /// be returned if the connection helper is currently scanning.</returns>
+/*
     public async Task<bool> Scan(TimeSpan scanTime) {
       lock (this) {
         if (isScanning) {
@@ -92,9 +93,9 @@
 
     protected virtual void DO_SCAN() {
     }
+*/
 
     // Overridden from IScanMode
-/*
     public async Task<bool> Scan(TimeSpan scanTime) {
       lock (this) {
         if (isScanning) {
@@ -130,7 +131,6 @@
 
       return true;
     }
-*/
 
     // Overridden from IScanMode
     public void Stop() {
@@ -177,7 +177,7 @@
     /// <returns>The connection for.</returns>
     /// <param name="identifier">Address.</param>
     /// <param name="address">Address.</param>
-    public abstract IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
+//    public abstract IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
     /// <summary>
     /// Queries whether or not the connection helper can resolve the given protocol.
     /// </summary>

@@ -82,7 +82,7 @@
 
         if (dgs != null && !dgs.device.isConnected) {
           ldb.AddItem(Resource.String.reconnect, () => {
-            dgs.device.connection.Connect();
+            dgs.device.connection.ConnectAsync();
           });
         }
 

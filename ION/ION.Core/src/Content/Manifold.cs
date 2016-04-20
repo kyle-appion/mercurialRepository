@@ -187,11 +187,7 @@
     /// The sensor properties that are within the manifold.
     /// </summary>
     /// <value>The sensor properties.</value>
-    public List<ISensorProperty> sensorProperties { 
-      get {
-        return new List<ISensorProperty>(__sensorProperties);
-      }
-    } List<ISensorProperty> __sensorProperties = new List<ISensorProperty>();
+    public readonly List<ISensorProperty> sensorProperties = new List<ISensorProperty>();
 
     /// <summary>
     /// The number of sensor properties are held in the manifold.
@@ -209,7 +205,7 @@
     /// <param name="index">Index.</param>
     public ISensorProperty this[int index] {
       get {
-        return __sensorProperties[index];
+        return sensorProperties[index];
       }
     }
 
@@ -234,6 +230,14 @@
     public Manifold(Sensor primarySensor) {
       this.primarySensor = primarySensor;
       this.primarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+    }
+
+    /// <summary>
+    /// Returns a <see cref="System.String"/> that represents the current <see cref="ION.Core.Content.Manifold"/>.
+    /// </summary>
+    /// <returns>A <see cref="System.String"/> that represents the current <see cref="ION.Core.Content.Manifold"/>.</returns>
+    public override string ToString() {
+      return string.Format("[Manifold: primarySensor={0}, secondarySensor={1}, sensorPropertyCount={2}]", primarySensor, secondarySensor, sensorProperties);
     }
 
     // Overridden from IDispose
@@ -291,8 +295,8 @@
       if (HasSensorPropertyOfType(sensorProperty.GetType())) {
         return false;
       } else {
-        __sensorProperties.Add(sensorProperty);
-        NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, __sensorProperties.Count - 1);
+        sensorProperties.Add(sensorProperty);
+        NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
         return true;
       }
     }
@@ -303,7 +307,7 @@
     /// <returns>The of sensor property.</returns>
     /// <param name="sensorProperty">Sensor property.</param>
     public int IndexOfSensorProperty(ISensorProperty sensorProperty) {
-      return __sensorProperties.IndexOf(sensorProperty);
+      return sensorProperties.IndexOf(sensorProperty);
     }
 
     /// <summary>
@@ -312,9 +316,13 @@
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     public void SwapSensorProperties(int first, int second) {
-      var sp = sensorProperties[first];
+      if (first == second) {
+        return;
+      }
+
+      var tmp = sensorProperties[first];
       sensorProperties[first] = sensorProperties[second];
-      sensorProperties[second] = sp;
+      sensorProperties[second] = tmp;
       NotifyOfEvent(ManifoldEvent.EType.SensorPropertySwapped, first, second);
     }
 
@@ -323,7 +331,7 @@
     /// </summary>
     /// <param name="sensorProperty">Sensor property.</param>
     public void RemoveSensorProperty(ISensorProperty sensorProperty) {
-      RemoveSensorPropertyAt(__sensorProperties.IndexOf(sensorProperty));
+      RemoveSensorPropertyAt(sensorProperties.IndexOf(sensorProperty));
     }
 
     /// <summary>
@@ -331,7 +339,7 @@
     /// </summary>
     /// <param name="index">Index.</param>
     public void RemoveSensorPropertyAt(int index) {
-      __sensorProperties.RemoveAt(index);
+      sensorProperties.RemoveAt(index);
       NotifyOfEvent(ManifoldEvent.EType.SensorPropertyRemoved, index);
     }
 

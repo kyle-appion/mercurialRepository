@@ -62,7 +62,7 @@
     /// </summary>
     /// <returns>The connection for.</returns>
     /// <param name="identifier">Address.</param>
-    IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
+//    IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
     /// <summary>
     /// Performs a scan for the given scan time. Note: the scan time is 
     /// nothing more than a hint. The connection helper does NOT necessarily need

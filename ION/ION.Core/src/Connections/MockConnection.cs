@@ -81,7 +81,7 @@
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    public Task<bool> Connect() {
+    public Task<bool> ConnectAsync() {
       return Task.FromResult(false);
     }
     /// <summary>
@@ -94,8 +94,8 @@
     /// </summary>
     /// <returns></returns>
     /// <param name="packet">Packet.</param>
-    public Task<bool> Write(byte[] packet) {
-      return Task.FromResult(false);
+    public bool Write(byte[] packet) {
+      return false;
     }
   }
 }
