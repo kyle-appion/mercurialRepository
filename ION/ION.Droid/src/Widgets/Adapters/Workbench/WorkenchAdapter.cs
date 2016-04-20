@@ -62,7 +62,7 @@
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
-//      dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
+      dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
     }
 
     /// <summary>
@@ -71,7 +71,7 @@
     /// <param name="recyclerView">Recycler view.</param>
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-//      dragDecoration.AttachToRecyclerView(recyclerView);
+      dragDecoration.AttachToRecyclerView(recyclerView);
     }
 
     /// <summary>
@@ -273,21 +273,46 @@
           records[secondIndex] = tmp;
           NotifyItemMoved(startIndex, secondIndex);
 
-          for (int i = manifoldSensorPropertyCount; i > 0; i--) {
-            var index = startIndex + i;
-            var t = records[index];
-            records.RemoveAt(index);
-            records.Insert(secondIndex, t);
-            NotifyItemMoved(startIndex + i, secondIndex + 1);
+          int fi, si, fc, sc;
+          if (startIndex < secondIndex) {
+            fi = startIndex;
+            fc = manifoldSensorPropertyCount;
+            si = secondIndex;
+            sc = sm.sensorPropertyCount;
+          } else {
+            fi = secondIndex;
+            fc = sm.sensorPropertyCount;
+            si = startIndex;
+            sc = manifoldSensorPropertyCount;
           }
 
-          for (int i = sm.sensorPropertyCount; i >= 0; i--) {
-            var index = secondIndex + i;
-            var t = records[index];
-            records.RemoveAt(index);
-            records.Insert(startIndex, t);
-            NotifyItemMoved(secondIndex + i, startIndex);
+          var fr = records.GetRange(fi + 1, fc);
+          var sr = records.GetRange(si + 1, sc);
+
+          records.RemoveRange(fi + 1, fc);
+          records.RemoveRange(si + 1, sc);
+
+          records.InsertRange(fi + 1, sr);
+          records.InsertRange(si + 1 + sc, fr);
+
+          NotifyItemRangeRemoved(fi + 1, fc);
+          NotifyItemRangeRemoved(si + 1, sc);
+
+          NotifyItemRangeInserted(fi + 1, sc);
+          NotifyItemRangeInserted(si + 1 - (sc - fc), fc);
+
+/*
+          // Animate sr to fi
+          for (int i = sc; i > 0; i--) {
+            NotifyItemMoved(si + i, fi + 1);  
           }
+        
+          // Animate fr to si
+          for (int i = fc; i > 0; i--) {
+            NotifyItemMoved(fi + sc + i, si + 1);
+          }
+*/
+
           break;
         default:
           throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
