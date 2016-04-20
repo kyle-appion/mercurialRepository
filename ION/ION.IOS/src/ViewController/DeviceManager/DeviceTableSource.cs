@@ -213,7 +213,7 @@
         cell.UpdateTo(r, () => {
           if (onSensorAddClicked != null) {
             if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {
-              r.sensor.device.connection.Connect();
+              r.sensor.device.connection.ConnectAsync();
             }
             onSensorAddClicked(r.sensor, indexPath);
           }

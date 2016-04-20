@@ -371,7 +371,7 @@
             case Actions.ConnectAll:
               ldb.AddItem(Resource.String.connect_all, () => {
                 foreach (var device in devices) {
-                  device.connection.Connect();
+                  device.connection.ConnectAsync();
                 }
               });
               break;
@@ -623,7 +623,7 @@
           var device = record.device;
           switch (device.connection.connectionState) {
             case EConnectionState.Disconnected:
-              device.connection.Connect();
+              device.connection.ConnectAsync();
               break;
             default:
               device.connection.Disconnect();

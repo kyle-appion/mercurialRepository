@@ -17,13 +17,11 @@
   using ION.Core.Devices.Protocols;
   using ION.Core.Util;
 
-
   public class ClassicConnection : IConnection {
-
     /// <summary>
     /// The bytes that make up the request packet.
     /// </summary>
-    private static byte[] REQUEST_DPT = System.Text.Encoding.UTF8.GetBytes("1 REQUEST DPT\r\n");
+    private static byte[] DPT = System.Text.Encoding.UTF8.GetBytes("1 REQUEST DPT\r\n");
     /// <summary>
     /// The profile id that we are using for bluetooth communications.
     /// </summary>
@@ -133,10 +131,6 @@
     /// The timer that will request new packets periodically while connected.
     /// </summary>
     private System.Timers.Timer timer;
-    /// <summary>
-    /// The thread that the actual socket connection runs on.
-    /// </summary>
-    private Thread connectThread;
 
     public ClassicConnection(BluetoothDevice device) {
       this.device = device;
@@ -144,113 +138,63 @@
     }
 
     /// <summary>
-    /// Releases all resource used by the <see cref="ION.Droid.Connections.ClassicConnection"/> object.
-    /// </summary>
-    /// <remarks>Call <see cref="Dispose"/> when you are finished using the
-    /// <see cref="ION.Droid.Connections.ClassicConnection"/>. The <see cref="Dispose"/> method leaves the
-    /// <see cref="ION.Droid.Connections.ClassicConnection"/> in an unusable state. After calling <see cref="Dispose"/>,
-    /// you must release all references to the <see cref="ION.Droid.Connections.ClassicConnection"/> so the garbage
-    /// collector can reclaim the memory that the <see cref="ION.Droid.Connections.ClassicConnection"/> was occupying.</remarks>
-    public void Dispose() {
-      if (EConnectionState.Disconnected != connectionState) {
-        Disconnect();
-      }
-    }
-
-    /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    public async Task<bool> Connect() {
-      Log.D(this, "connect");
+    /// <returns>The async.</returns>
+    public Task<bool> ConnectAsync() {
+      return Task.Factory.StartNew(() => {
+        if (EConnectionState.Connected == connectionState) {
+          return true;
+        } else if (EConnectionState.Disconnected != connectionState) {
+          Log.D(this, "Connection not in a disconnected state: returing as failed.");
+          return false;
+        }
 
-      if (EConnectionState.Connected == connectionState) {
+        connectionState = EConnectionState.Connecting;
+
+        if (!ConnectInternal()) {
+          Disconnect();
+          return false;
+        }
+
+        timer = new System.Timers.Timer(150);
+        timer.Elapsed += OnRequest;
+        timer.Start();
+
+        connectionState = EConnectionState.Connected;
         return true;
-      } else if (EConnectionState.Disconnected != connectionState) {
-        Log.D(this, "Connection not in a disconnected state: returing as failed.");
-        return false;
-      }
-
-      connectionState = EConnectionState.Connecting;
-
-      if (!await ConnectInternal()) {
-        Disconnect();
-        return false;
-      }
-
-      timer = new System.Timers.Timer(150);
-      timer.Elapsed += DoTimerRequest;
-      timer.Start();
-
-      connectionState = EConnectionState.Connected;
-
-      return true;
+      });
     }
 
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
-      Log.D(this, "Disconnect");
-
-      if (connectThread != null) {
-        connectThread.Abort();
+      if (timer != null) {
+        timer.Stop();
+        timer.Dispose();
+        timer = null;
       }
-      connectThread = null;
 
       if (input != null) {
         input.Close();
+        input.Dispose();
+        input = null;
       }
-      input = null;
-
 
       if (output != null) {
         output.Close();
-      }
-      output = null;
-
-      if (timer != null) {
-        timer.Stop();
-        timer = null;
+        output.Dispose();
+        output = null;
       }
 
       if (socket != null) {
         socket.Close();
+        socket.Dispose();
+        socket = null;
       }
-      socket = null;
 
       connectionState = EConnectionState.Disconnected;
-    }
-
-    /// <summary>
-    /// Attempts to get the serial number from the connection.
-    /// </summary>
-    /// <returns>The serial number.</returns>
-    public async Task<ISerialNumber> RequestSerialNumber() {
-      if (__lastPacket != null) {
-        Log.D(this, "REQUEST SERIAL NUMBER: " + System.Text.UTF8Encoding.UTF8.GetString(__lastPacket));
-      }
-      GaugeSerialNumber serialNumber = null;
-
-      if (__lastPacket != null) {
-        if (ClassicProtocol.ParseSerialNumber(lastPacket, out serialNumber)) {
-          return serialNumber;
-        }
-      }
-
-      if (await Connect()) {
-        if (await RequestAsync()) {
-          Disconnect();
-          if (ClassicProtocol.ParseSerialNumber(lastPacket, out serialNumber)) {
-            return serialNumber;
-          } else {
-            throw new Exception("Failed to parse serial number");
-          }
-        } else {
-          throw new Exception("Failed to request serial number");
-        }
-      } else {
-        throw new Exception("Failed to connect and request serial number");
-      }
     }
 
     /// <summary>
@@ -258,91 +202,81 @@
     /// </summary>
     /// <returns></returns>
     /// <param name="data">Data.</param>
-    public async Task<bool> Write(byte[] data) {
-      try {
-        if (EConnectionState.Connected != connectionState) {
-          return false;
-        }
-
-        output.Write(data, 0, data.Length);
-        output.Flush();
-
-        return true;
-      } catch (Exception e) {
-        Log.E(this, "Failed to write data: " + data, e);
-        return false;
-      }
+    public bool Write(byte[] data) {
+      return false;
     }
 
     /// <summary>
-    /// The internal connect method used by the backend.
+    /// Attempts to resolve the serial number of the connection.
     /// </summary>
-    private async Task<bool> ConnectInternal() {
-      Log.D(this, "connect internal");
-      DateTime start = DateTime.Now;
-
-      socket = device.CreateInsecureRfcommSocketToServiceRecord(SPP);
-
-      connectThread = new Thread(() => {
+    /// <returns>The serial number.</returns>
+    public Task<GaugeSerialNumber> ResolveSerialNumber() {
+      return Task.Factory.StartNew(() => {
         try {
-        socket.Connect();
-        } catch (Exception e) {
-          Log.E(this, "Failed to connect to classic socket.");
+          if (ConnectInternal()) {
+            GaugeSerialNumber ret = null;
+            int tries = 5;
+
+            while (ret == null && tries-- > 0) {
+              var packet = RequestPacket();
+
+              ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
+            }
+
+            return ret;
+          } else {
+            Log.E(this, "Failed to resolve serial number: failed to connect.");
+            return null;
+          }
+        } finally {
+          Log.D(this, "Disconnecting serial number");
+          Disconnect();
         }
       });
-      connectThread.Start();
-
-      while (!socket.IsConnected) {
-        if (DateTime.Now - start > connectionTimeout) {
-          Log.E(this, "Failed to connect: timedout");
-          Disconnect();
-          return false;
-        } else {
-          await Task.Delay(50);
-        }
-      }
-
-      input = new StreamReader(socket.InputStream);
-      output = socket.OutputStream;
-
-      return true;
     }
 
-    private async void DoTimerRequest(object obj, System.Timers.ElapsedEventArgs args) {
-      if (EConnectionState.Connected == connectionState) {
-        await RequestAsync();
-      } else {
-        timer.Elapsed -= DoTimerRequest;
+    /// <summary>
+    /// Connects to the device's bluetooth socket.
+    /// </summary>
+    /// <returns>The to socket.</returns>
+    private bool ConnectInternal() {
+      try {
+        socket = device.CreateInsecureRfcommSocketToServiceRecord(SPP);
+        socket.Connect();
+        input = new StreamReader(socket.InputStream);
+        output = socket.OutputStream;
+        return true;
+      } catch (Exception e) {
+        Log.E(this, "Failed to connect to the class device", e);
+        return false;
       }
     }
 
     /// <summary>
-    /// Writes a request dpt packet out to the remote device and awaits a response. If the packet is valid, the last
-    /// packet will be set.
+    /// Requests a single packet from the remote device.
     /// </summary>
-    /// <returns><c>true</c>, if async was writed, <c>false</c> otherwise.</returns>
-    /// <param name="data">Data.</param>
-    private async Task<bool> RequestAsync() {
-      try {
-        if (EConnectionState.Connected != connectionState) {
-          return false;
+    /// <returns>The packet.</returns>
+    private string RequestPacket() {
+      output.Write(DPT, 0, DPT.Length);
+      output.Flush();
+
+      return input.ReadLine();
+    }
+
+    /// <summary>
+    /// Performs a timer event that will request a new packet.
+    /// </summary>
+    /// <param name="obh">Obh.</param>
+    /// <param name="args">Arguments.</param>
+    private void OnRequest(object obj, System.Timers.ElapsedEventArgs args) {
+      if (EConnectionState.Connected == connectionState) {
+        lastPacket = System.Text.Encoding.UTF8.GetBytes(RequestPacket());
+      } else {
+        var t = obj as System.Timers.Timer;
+        if (t != null) {
+          t.Elapsed -= OnRequest;
         }
-
-        if (await Write(REQUEST_DPT)) {
-
-          var packet = input.ReadLine();
-
-          lastPacket = System.Text.UTF8Encoding.UTF8.GetBytes(packet);
-
-          return true;
-        } else {
-          return false;
-        }
-      } catch (Exception e) {
-        //        Log.E(this, "Failed to request async", e);
-        return false;
       }
     }
   }
 }
-

@@ -35,6 +35,7 @@
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
+  <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
   <string name="help">Help</string>
@@ -46,6 +47,7 @@
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
+  <string name="_new">New</string>
   <string name="next">Next</string>
   <string name="notes">Notes</string>
   <string name="ok">OK</string>
@@ -73,6 +75,8 @@
   <string name="title">Title</string>
   <string name="undo">Undo</string>
   <string name="unit">Unit</string>
+  <string name="updated">Updated</string>
+  <string name="whats_new_in">What\'s New in {0}</string>
   <string name="zip">Zip Code</string>
 
   <!--

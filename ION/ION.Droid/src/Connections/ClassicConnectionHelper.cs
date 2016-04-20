@@ -141,11 +141,9 @@
     /// </summary>
     public void Stop() {
       try {
-        if (isScanning) {
-          context.UnregisterReceiver(receiver);
-        }
+        context.UnregisterReceiver(receiver);
       } catch (Exception e) {
-        Log.E(this, "We are unregistering the classic receiver too many times. Please stawp.", e);
+        Log.E(this, "We are unregistering the classic receiver too many times. Please stawp.");
       }
       isScanning = false;
     }
@@ -202,15 +200,12 @@
             if (!__connections.ContainsKey(device.Address)) {
               var connection = new ClassicConnection(device);
               __connections.Add(device.Address, connection);
-              for (int i = 5; i > 0; i--) {
-                try {
-                  var serialNumber = await connection.RequestSerialNumber();
-                  NotifyDeviceFound(serialNumber, device.Address, null, EProtocolVersion.Classic);
-                  Log.D(this, "Got a valid serial number: " + serialNumber);
-                  break;
-                } catch (Exception e) {
-                  Log.E(this, "Failed to get classic serial number", e);
-                }
+
+              var serialNumber = await connection.ResolveSerialNumber();
+              if (serialNumber != null) {
+                NotifyDeviceFound(serialNumber, device.Address, null, EProtocolVersion.Classic);
+              } else {
+                Log.E(this, "Failed to discover serial number for: " + device.Name);
               }
             }
           }
@@ -228,6 +223,7 @@
       return device.Name == null || APPION_GAUGE.Equals(device.Name) || GaugeSerialNumber.IsValid(device.Name);
     }
 
+/*
     /// <summary>
     /// Creates the connection for the given address.
     /// </summary>
@@ -237,6 +233,7 @@
     public IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
       return new ClassicConnection(adapter.GetRemoteDevice(address));
     }
+*/
   }
 
   class ClassicReceiver : BroadcastReceiver {

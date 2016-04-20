@@ -206,6 +206,10 @@
     <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
+    <Compile Include="src\Dialog\WhatsNewDialog.cs" />
+    <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
+    <Compile Include="src\Location\GpsAltitudeProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -431,6 +435,8 @@
     <AndroidResource Include="Resources\layout\list_item_data_log_overview.axml" />
     <AndroidResource Include="Resources\layout\dialog_date_time.axml" />
     <AndroidResource Include="Resources\layout\list_item_ion_recycler_view_holder.axml" />
+    <AndroidResource Include="Resources\xml\whats_new.xml" />
+    <AndroidResource Include="Resources\layout\dialog_whats_new.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

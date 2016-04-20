@@ -22,6 +22,17 @@
     // Overridden from ILocationManager
     public event OnLocationChanged onLocationChanged;
 
+    /// <summary>
+    /// Whether or not the location manager is enabled (in a working state).
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool isEnabled {
+      get {
+        return false;
+      }
+    }
+
     // Overridden from ILocationManager
     public bool allowLocationTracking { 
       get {

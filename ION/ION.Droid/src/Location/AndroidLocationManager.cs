@@ -17,6 +17,264 @@
 
   using ION.Droid.App;
 
+  public class AndroidLocationManager : Java.Lang.Object, ILocationManager, GoogleApiClient.IConnectionCallbacks,
+  GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener, ISharedPreferencesOnSharedPreferenceChangeListener {
+    /// <summary>
+    /// The event that will be notified when the location manager's location changes.
+    /// </summary>
+    public event OnLocationChanged onLocationChanged;
+
+    /// <summary>
+    /// Whether or not the location manager is enabled (in a working state).
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool isEnabled {
+      get {
+        return client != null && client.IsConnected;
+      }
+    }
+    /// <summary>
+    /// Whether or not the location manager should track locations.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool allowLocationTracking { get; set; }
+    /// <summary>
+    /// The last known location of the location manager.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    /// <summary>
+    /// The last location known by the location manager.
+    /// </summary>
+    /// <value>The last know location.</value>
+    public ILocation lastKnownLocation { get; internal set; }
+    /// <summary>
+    /// Whether or not the location manager is polling locations.
+    /// </summary>
+    /// <value><c>true</c> if is polling; otherwise, <c>false</c>.</value>
+    public bool isPolling { get; internal set; }
+    /// <summary>
+    /// The ion instance that provides a android 
+    /// </summary>
+    private AndroidION ion;
+    /// <summary>
+    /// The client that will communication with the location services.
+    /// </summary>
+    private GoogleApiClient client;
+    /// <summary>
+    /// The provider that will attempt to glean the user's altitude.
+    /// </summary>
+    private GpsAltitudeProvider altitudeProvider;
+    /// <summary>
+    /// The current running location request. Null is not request is running.
+    /// </summary>
+    private LocationRequest request;
+
+    public AndroidLocationManager(AndroidION ion) {
+      this.ion = ion;
+    }
+
+    /// <summary>
+    /// Releases all resource used by the <see cref="ION.Droid.Location.AndroidLocationManager"/> object.
+    /// </summary>
+    /// <remarks>Call <see cref="Dispose"/> when you are finished using the
+    /// <see cref="ION.Droid.Location.AndroidLocationManager"/>. The <see cref="Dispose"/> method leaves the
+    /// <see cref="ION.Droid.Location.AndroidLocationManager"/> in an unusable state. After calling
+    /// <see cref="Dispose"/>, you must release all references to the
+    /// <see cref="ION.Droid.Location.AndroidLocationManager"/> so the garbage collector can reclaim the memory that the
+    /// <see cref="ION.Droid.Location.AndroidLocationManager"/> was occupying.</remarks>
+    public void Dispose() {
+      StopAutomaticLocationPolling();
+      ion.preferences.prefs.UnregisterOnSharedPreferenceChangeListener(this);
+    }
+
+    /// <summary>
+    /// Initializes the IIONManager to the given IION.
+    /// </summary>
+    /// <returns>The async.</returns>
+    public async Task<InitializationResult> InitAsync() {
+      if (IsGooglePlayServicesInstalled()) {
+        client = InitGooglePlayServices();
+        client.Connect();
+        while (client.IsConnecting && !client.IsConnected) {
+          await Task.Delay(50);
+        }
+        if (client.IsConnected) {
+          StartAutomaticLocationPolling();
+        }
+      }
+      altitudeProvider = new GpsAltitudeProvider(ion.GetSystemService(Context.LocationService) as LocationManager);
+      altitudeProvider.onAltitudeEvent += (ap, e) => {
+        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+      };
+
+      if (altitudeProvider.isEnabled) {
+//        altitudeProvider.StartUpdates();
+        altitudeProvider.RequestSingleLocation();
+      } else {
+        Log.D(this, "Not doing the altitude find");
+      }
+
+      ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
+
+      return new InitializationResult() {
+        success = true,
+      };
+    }
+
+    /// <summary>
+    /// Attempts to start automatic location polling.
+    /// </summary>
+    /// <returns>true</returns>
+    /// <c>false</c>
+    public bool StartAutomaticLocationPolling() {
+      Log.D(this, "Startings automatic location polling");
+      request = new LocationRequest();
+      request.SetFastestInterval(500);
+      request.SetInterval(3000);
+      request.SetNumUpdates(60);
+      request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
+      LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
+      isPolling = true;
+      return true;
+    }
+
+    /// <summary>
+    /// Stops location polling.
+    /// </summary>
+    public void StopAutomaticLocationPolling() {
+      Log.D(this, "Stopping automatic location polling");
+      LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
+      isPolling = false;
+    }
+
+    /// <summary>
+    /// Gets the address from location async.
+    /// </summary>
+    /// <returns>The address from location async.</returns>
+    /// <param name="location">Location.</param>
+    public async Task<ION.Core.Location.Address> GetAddressFromLocationAsync(ILocation location) {
+      var lat = location.latitude.amount;
+      var lng = location.longitude.amount;
+      var geocoder = new Geocoder(ion, Java.Util.Locale.Default);
+      var addresses = await geocoder.GetFromLocationAsync(lat, lng, 1);
+      if (addresses == null || addresses.Count <= 0) {
+        return new ION.Core.Location.Address();
+      }
+      var first = addresses[0];
+      if (first == null) {
+        return new ION.Core.Location.Address();
+      } else {
+        return new ION.Core.Location.Address() {
+          address = first.GetAddressLine(0),
+          city = first.Locality,
+          state = first.AdminArea,
+          zip = first.PostalCode,
+        };
+      }
+    }
+
+    /// <summary>
+    /// Called when connected to the GoogleApiClient.
+    /// </summary>
+    /// <param name="bundle">Bundle.</param>
+    public void OnConnected(Bundle bundle) {
+      Log.D(this, "OnConnected to the GoogleApiClient");
+    }
+
+    /// <summary>
+    /// Called when disconnected from the GoogleApiClient.
+    /// </summary>
+    public void OnDisconnected() {
+      Log.D(this, "OnDisconnected from the GoogleApiClient");
+    }
+
+    /// <summary>
+    /// Called when the connection to the GoogleApiClient fails.
+    /// </summary>
+    /// <param name="bundle">Bundle.</param>
+    public void OnConnectionFailed(ConnectionResult bundle) {
+      Log.D(this, "Failed to connect to the GoogleApiClient");
+    }
+
+    /// <summary>
+    /// Called when the GoogleApiClient notifies of a location change.
+    /// </summary>
+    /// <param name="location">Location.</param>
+    public void OnLocationChanged(Location location) {
+      Log.D(this, "Location changed: " + location);
+      var altitude = location.Altitude;
+      if (altitude == 0) {
+        var l = altitudeProvider.lastKnownLocation;
+        if (l != null) {
+          altitude = l.Altitude;
+        }
+      }
+      lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, location.Latitude);
+    }
+
+    /// <summary>
+    /// Called when the location is suspended.
+    /// </summary>
+    /// <param name="i">The index.</param>
+    public void OnConnectionSuspended(int i) {
+      Log.D(this, "GoogleApiClient connection suspended");
+    }
+
+    /// <summary>
+    /// Raises the shared preferences changed event.
+    /// </summary>
+    /// <param name="prefs">Prefs.</param>
+    /// <param name="key">Key.</param>
+    public async void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
+      if (ion.GetString(Resource.String.pkey_location_gps).Equals(key)) {
+        if (prefs.GetBoolean(key, false)) {
+          await InitAsync();
+        } else {
+          StopAutomaticLocationPolling();
+          lastKnownLocation = new SimpleLocation() {
+            altitude = ion.preferences.units.length.OfScalar(ion.preferences.location.customElevation),
+          };
+        }
+      } else if (ion.GetString(Resource.String.pkey_location_elevation).Equals(key)) {
+        lastKnownLocation = new SimpleLocation() {
+          altitude = ion.preferences.units.length.OfScalar(ion.preferences.location.customElevation),
+        };
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not google play services is installed.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is google play services installed; otherwise, <c>false</c>.</returns>
+    private bool IsGooglePlayServicesInstalled() {
+      var instance = GoogleApiAvailability.Instance;
+      int queryResult = instance.IsGooglePlayServicesAvailable(ion);
+      if (ConnectionResult.Success == queryResult) {
+        return true;
+      }
+
+      if (instance.IsUserResolvableError(queryResult)) {
+        Log.E(this, string.Format("Google play services are not installed on this device: {0}", instance.GetErrorString(queryResult)));
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// Inits the google play services.
+    /// </summary>
+    /// <returns><c>true</c>, if google play services was inited, <c>false</c> otherwise.</returns>
+    private GoogleApiClient InitGooglePlayServices() {
+      return new GoogleApiClient.Builder(ion, this, this)
+        .AddApi(LocationServices.API).Build();
+    }
+  }
+}
+
+#if false
 
   public class AndroidLocationManager : Java.Lang.Object, ILocationManager, GoogleApiClient.IConnectionCallbacks,
   GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener, ISharedPreferencesOnSharedPreferenceChangeListener {
@@ -69,8 +327,14 @@
     /// <value>The google.</value>
     private GoogleApiClient google { get; set; }
 
+    private AndroidLocationListener listener;
+
     public AndroidLocationManager(AndroidION ion) {
       this.ion = ion;
+      listener = new AndroidLocationListener();
+      listener.locationHandler += (obj, e) => {
+        Log.D(this, "Location changed to: " + e);
+      };
     }
 
     /// <summary>
@@ -78,21 +342,27 @@
     /// </summary>
     /// <returns>The async.</returns>
     public async Task<InitializationResult> InitAsync() {
-      Log.D(this, "Altitude: " + await CoerceAltitude());
+      var lm = ion.GetSystemService(Context.LocationService) as LocationManager;
+      var c = new Criteria();
+      c.Accuracy = Accuracy.Fine;
+      c.AltitudeRequired = true;
+      c.CostAllowed = false;
 
-      ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
+      lm.RequestLocationUpdates(1000, 100, c, listener, Looper.MainLooper);
+
 
       if (ion.preferences.location.allowsGps) {
-        if (await InitGoogleApis()) {
-          return new InitializationResult() {
-            success = true,
-          };
+        try {
+          if (await InitGoogleApis()) {
+//            Log.D(this, "Altitude: " + await CoerceAltitude());
+          }
+//          StartAutomaticLocationPolling();
+        } catch (Exception e) {
+          Log.E(this, "Failed to start location polling by GPS.", e);
         }
+      } else {
+        lastKnownLocation = new SimpleLocation(false, ion.preferences.location.customElevation, 0, 0);
       }
-
-      lastKnownLocation = new SimpleLocation() {
-        altitude = ion.preferences.units.length.OfScalar(ion.preferences.location.customElevation),
-      };
 
       return new InitializationResult() {
         success = true,
@@ -173,6 +443,7 @@
     /// <param name="connectionHint">Connection hint.</param>
     public void OnConnected(Bundle connectionHint) {
       var location = LocationServices.FusedLocationApi.GetLastLocation(google);
+
       if (location != null) {
         lastKnownLocation = new SimpleLocation(true, location.Altitude, location.Longitude, location.Latitude);
       } else {
@@ -282,7 +553,7 @@
 
       ret.SetInterval(1000);
       ret.SetPriority(LocationRequest.PriorityHighAccuracy);
-      ret.SetNumUpdates(1);
+      ret.SetNumUpdates(15);
 
       return ret;
     }
@@ -292,30 +563,33 @@
     /// </summary>
     /// <returns>The google apis.</returns>
     private async Task<bool> InitGoogleApis() {
-//      return Task.Factory.StartNew(() => {
-      google = new GoogleApiClient.Builder(ion)
-        .AddConnectionCallbacks(this)
-        .AddOnConnectionFailedListener(this)
-        .AddApi(LocationServices.API)
-        .Build();
-      
-      google.Connect();
+      try {
+        google = new GoogleApiClient.Builder(ion)
+          .AddConnectionCallbacks(this)
+          .AddOnConnectionFailedListener(this)
+          .AddApi(LocationServices.API)
+          .Build();
+        
+        google.Connect();
 
-      var started = DateTime.Now;
+        var started = DateTime.Now;
 
-      while (!google.IsConnected && DateTime.Now - started < TimeSpan.FromMilliseconds(INITIAL_WAIT)) {
-        await Task.Delay(10);
-      }
+        while (!google.IsConnected && DateTime.Now - started < TimeSpan.FromMilliseconds(INITIAL_WAIT)) {
+          await Task.Delay(10);
+        }
 
-      Log.D(this, "google.IsConnected: " + google.IsConnected);
-      LocationServices.FusedLocationApi.RequestLocationUpdates(google, CreateLocationRequestSingleUpdate(), this);
+        Log.D(this, "google.IsConnected: " + google.IsConnected);
+        LocationServices.FusedLocationApi.RequestLocationUpdates(google, CreateLocationRequestSingleUpdate(), this);
 
-      if (!google.IsConnected) {
+        if (!google.IsConnected) {
+          return false;
+        } else {
+          return true;
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to init google apis()", e);
         return false;
-      } else {
-        return true;
       }
-//      });
     }
   }
 
@@ -327,6 +601,12 @@
     public EventHandler<string> providerDisabledHandler;
     public EventHandler<string> providerEnabledHandler;
 
+    /// <summary>
+    /// The last known location for the listener.
+    /// </summary>
+    /// <value>The last known location.</value>
+    public Location lastKnownLocation { get; internal set; }
+
     /// <Docs>The new location, as a Location object.</Docs>
     /// <remarks>Called when the location has changed.</remarks>
     /// <summary>
@@ -334,7 +614,9 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
+      Log.D(this, "AndroidLocationListener: location is: " + location);
       if (locationHandler != null) {
+        lastKnownLocation = location;
         locationHandler(this, location);
       }
     }
@@ -383,3 +665,4 @@
   }
 }
 
+#endif

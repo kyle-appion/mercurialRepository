@@ -61,7 +61,7 @@
     /// Queries the full version of the ion instance.
     /// </summary>
     /// <value>The version.</value>
-    public string version { get { return preferences.appVersion; } }
+    public string version { get { return PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.MetaData).VersionName; } }
 
     /// <summary>
     /// The database that will store all of the application data.
@@ -188,18 +188,20 @@
       if (AppState.context != null) {
         Log.D(this, "A previous service was discovered to be running. Killing it");
         AppState.context.Dispose();
+        AppState.context = null;
       }
-
-      AppState.context = this;
 
       this.handler = new Android.OS.Handler();
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
       var discard = preferences.appVersion; // Sets the current application version.
+      var bluetoothManager = (BluetoothManager)GetSystemService(Context.BluetoothService);
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
       managers.Add(fileManager = new AndroidFileManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)GetSystemService(Context.BluetoothService))));
+      managers.Add(deviceManager = new BaseDeviceManager(this, 
+        new AndroidConnectionFactory(this, bluetoothManager),
+        new LeConnectionHelper(this, bluetoothManager)));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
@@ -235,23 +237,33 @@
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
       try {
+        Workbench w = null;
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
           var file = internalDir.GetFile(FILE_WORKBENCH);
-          currentWorkbench = await LoadWorkbenchAsync(file);
+          w = await LoadWorkbenchAsync(file);
         } else {
-          currentWorkbench = new Workbench(this);
+          w = new Workbench(this);
         }
+        currentWorkbench = w;
       } catch (Exception e) {
         Log.E(this, "Failed to load workbench", e);
         currentWorkbench = new Workbench(this);
       }
 
+      if (currentWorkbench == null) {
+        currentWorkbench = new Workbench(this);
+      }
+
+      if (currentAnalyzer == null) {
+        currentAnalyzer = new Analyzer(this);
+      }
+
       // TODO Save/load analyzer.
-      currentAnalyzer = new Analyzer(this);
 
       UpdateNotification();
 
+      AppState.context = this;
       initialized = true;
     }
 
