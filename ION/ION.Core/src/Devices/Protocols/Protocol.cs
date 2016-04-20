@@ -9,17 +9,17 @@ namespace ION.Core.Devices.Protocols {
   /// An enumeration of the supported protocols.
   /// </summary>
   public enum EProtocolVersion {
-    Classic,
-    V1,
-    V2,
-    V3,
+    Classic = 0,
+    V1 = 1,
+    V2 = 2,
+    V3 = 3,
   }
 
   public class Protocol {
     /// <summary>
     /// The array of supported BLE protocols.
     /// </summary>
-    public static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {
+    private static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {
       new ClassicProtocol(),
       new BleV1Protocol(),
       new BleV2Protocol(),

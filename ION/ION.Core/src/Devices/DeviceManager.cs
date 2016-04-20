@@ -120,6 +120,11 @@
     /// <value>The device factory delegate.</value>
     DeviceFactoryDelegate deviceFactoryDelegate { get; }
     /// <summary>
+    /// The factory that is responsible for creating new connections.
+    /// </summary>
+    /// <value>The connection factory.</value>
+    IConnectionFactory connectionFactory { get; set; }
+    /// <summary>
     /// The scan mode that delegates out the platform specific scan procedures.
     /// </summary>
     /// <value>The scanner.</value>

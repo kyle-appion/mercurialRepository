@@ -126,11 +126,15 @@
 //      defaultUnits = new IosUnits();
       // Order matters - Manager's with no dependencies should come first such
       // that later manager's may depend on them.
+      var centralManager = new CBCentralManager(new DispatchQueue("ION iOS Bluetooth", true));
+
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper()));
+      managers.Add(deviceManager = new BaseDeviceManager(this, 
+        new IosConnectionFactory(centralManager),
+        new LeConnectionHelper(centralManager)));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {

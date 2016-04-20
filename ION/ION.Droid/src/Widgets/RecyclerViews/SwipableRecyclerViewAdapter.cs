@@ -2,8 +2,6 @@
 
   using System;
   using System.Collections.Generic;
-  using System.Collections.ObjectModel;
-
 
   using Android.Content;
   using Android.Graphics;
@@ -16,31 +14,23 @@
   using Android.Widget;
 
   using ION.Droid.Views;
+  using ION.Droid.Widgets.Adapters;
 
   /// <summary>
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-  public abstract class SwipableRecyclerViewAdapter : RecyclerView.Adapter {
+  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter {
     /// <summary>
     /// The number of milliseconds that will ellapse before the swiped row will return.
     /// </summary>
     private const long PENDING_ACTION_DELAY = 2500;
-    /// <summary>
-    /// The delegate that will be notified when the adapter's content changes.
-    /// </summary>
-    public delegate void OnDatasetChanged(SwipableRecyclerViewAdapter adapter);
-
-    /// <summary>
-    /// The event that will be notified when the ION RecyclerView's data set changes.
-    /// </summary>
-    public event OnDatasetChanged onDatasetChanged;
 
     /// <summary>
     /// The number of records that are present in the adapter.
     /// </summary>
     /// <value>The item count.</value>
-    public override int ItemCount {
+    public sealed override int ItemCount {
       get {
         return records.Count;
       }
@@ -74,7 +64,8 @@
     /// <summary>
     /// The records that the recycler view will display.
     /// </summary>
-    protected readonly ObservableCollection<IRecord> records = new ObservableCollection<IRecord>();
+    protected readonly List<IRecord> records = new List<IRecord>();
+
     /// <summary>
     /// The records that have pending actions.
     /// </summary>
@@ -104,7 +95,6 @@
       base.OnAttachedToRecyclerView(recyclerView);
       this.recyclerView = recyclerView;
       touchHelperDecoration.AttachToRecyclerView(recyclerView);
-//      recyclerView.AddItemDecoration(touchHelperDecoration);
       recyclerView.AddItemDecoration(swipeDecoration);
     }
 
@@ -115,7 +105,6 @@
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
       this.recyclerView = recyclerView;
-//      recyclerView.RemoveItemDecoration(touchHelperDecoration);
       recyclerView.RemoveItemDecoration(swipeDecoration);
     }
 
@@ -155,15 +144,6 @@
           handler.RemoveCallbacks(pendingActions[record]);
           pendingActions.Remove(record);
           NotifyItemChanged(position);
-/*
-          var action = pendingActions[record];
-          pendingActions.Remove(record);
-          if (action != null) {
-            handler.RemoveCallbacks(action);
-          }
-          
-          NotifyItemChanged(records.IndexOf(record));
-*/
         }));
       } else {
         vh.ItemView.SetBackgroundColor(Color.Transparent);
@@ -171,6 +151,15 @@
         vh.content.Visibility = ViewStates.Visible;
         vh.button.Visibility = ViewStates.Invisible;
       }
+    }
+
+    /// <summary>
+    /// Queries the record at the given index.
+    /// </summary>
+    /// <returns>The <see cref="ION.Droid.Widgets.RecyclerViews.SwipableRecyclerViewAdapter+IRecord"/>.</returns>
+    /// <param name="index">Index.</param>
+    public IRecord GetRecordAt(int index) {
+      return records[index];
     }
 
     /// <summary>
@@ -225,17 +214,6 @@
       pendingActions.Add(record, action);
       handler.PostDelayed(action, swipeConfirmTimeout);
       NotifyItemChanged(swipePosition);
-
-/*
-      var record = records[swipePosition];
-      if (!pendingActions.ContainsKey(record)) {
-        var vh = recyclerView.FindViewHolderForAdapterPosition(swipePosition) as SwipableViewHolder;
-        var action = GetViewHolderSwipeAction(swipePosition);
-        pendingActions.Add(record, action);
-        NotifyItemChanged(swipePosition);
-        handler.PostDelayed(action, swipeConfirmTimeout);
-      }
-*/
     }
 
     /// <summary>
@@ -251,15 +229,6 @@
     }
 
     /// <summary>
-    /// Notifies the OnDataSetChanged event that the adapter changed.
-    /// </summary>
-    public void NotifyChanged() {
-      if (onDatasetChanged != null) {
-        onDatasetChanged(this);
-      }
-    }
-
-    /// <summary>
     /// The contract for a record that will live in the recycler view.
     /// </summary>
     public interface IRecord {
@@ -268,25 +237,6 @@
       /// </summary>
       /// <value>The type of the view.</value>
       int viewType { get; }
-    }
-
-    /// <summary>
-    /// The observer that will be used by the adapter to propogate events to the OnDataSetChanged.
-    /// </summary>
-    private class InternalObserver : RecyclerView.AdapterDataObserver {
-      private SwipableRecyclerViewAdapter adapter { get; set; }
-
-      public InternalObserver(SwipableRecyclerViewAdapter adapter) {
-        this.adapter = adapter;
-      }
-
-      /// <summary>
-      /// Raises the changed event.
-      /// </summary>
-      public override void OnChanged() {
-        base.OnChanged();
-        adapter.NotifyChanged();
-      }
     }
   }
 

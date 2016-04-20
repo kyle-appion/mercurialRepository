@@ -180,7 +180,7 @@
     public void BindTo(IION ion, GraphRecord record, DateTime start, DateTime end) {
       this.record = record;
 
-      var sn = ion.database.Table<DeviceRow>().Where(dr => dr.id == record.logs.deviceId).First().serialNumber;
+      var sn = ion.database.Table<DeviceRow>().Where(dr => dr.serialNumber == record.logs.deviceId).First().serialNumber;
       var serial = SerialNumberExtensions.ParseSerialNumber(sn);
       // TODO ahodder@appioninc.com: Broken. We should no assert that this is a gauge device
       var device = ion.deviceManager[serial] as GaugeDevice;

@@ -34,6 +34,14 @@
       AddPreferencesFromResource(Resource.Xml.preferences_application);
 
 
+
+      var allowLocationPreference = FindPreference(GetString(Resource.String.pkey_location_gps)) as SwitchPreference;
+      allowLocationPreference.PreferenceClick += (sender, e) => {
+        
+//        if (ion.locationManager.canGetAlititude) {
+//        }
+      };
+
       var elevationPreference = FindPreference(GetString(Resource.String.pkey_location_elevation));
       elevationPreference.PreferenceClick += (sender, e) => {
         new NumberEntryDialog() {

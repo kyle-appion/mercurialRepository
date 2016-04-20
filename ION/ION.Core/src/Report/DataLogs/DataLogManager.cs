@@ -116,7 +116,7 @@
 
         var ret = ion.database.SaveAsync(currentSession.session).Result;
 
-        ion.database.Update(ret);
+//        ion.database.Update(ret);
         currentSession.Dispose();
         currentSession = null;
 

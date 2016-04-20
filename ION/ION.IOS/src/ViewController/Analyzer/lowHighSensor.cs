@@ -485,7 +485,7 @@ namespace ION.IOS.ViewController.Analyzer
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
         Connection.Image = UIImage.FromBundle("");
-       await currentSensor.device.connection.Connect();
+       await currentSensor.device.connection.ConnectAsync();
       }
 
       await Task.Delay(TimeSpan.FromSeconds(2));

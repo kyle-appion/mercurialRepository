@@ -103,29 +103,25 @@
     /// The number of manifolds that are present in the workbench.
     /// </summary>
     /// <value>The count.</value>
-    public int count { get { return __manifolds.Count; } }
+    public int count { get { return manifolds.Count; } }
     /// <summary>
     /// The indexer that will poll a manifold from the workbench.
     /// </summary>
     /// <param name="index">Index.</param>
     public Manifold this[int index] {
       get {
-        return __manifolds[index];
+        return manifolds[index];
       }
 
       private set {
-        __manifolds[index] = value;
+        manifolds[index] = value;
       }
     }
 
     /// <summary>
     /// The backing list of manifolds for the workbench.
     /// </summary>
-    public List<Manifold> manifolds {
-      get {
-        return new List<Manifold>(__manifolds);
-      }
-    } List<Manifold> __manifolds = new List<Manifold>();
+    public readonly List<Manifold> manifolds = new List<Manifold>();
 
     public Workbench(IION ion) {
       this.ion = ion;
@@ -143,13 +139,7 @@
     /// <returns>The of.</returns>
     /// <param name="manifold">Manifold.</param>
     public int IndexOf(Manifold manifold) {
-      for (int i = 0; i < count; i++) {
-        if (manifold == this[i]) {
-          return i;
-        }
-      }
-
-      return -1;
+      return manifolds.IndexOf(manifold);
     }
 
     /// <summary>
@@ -159,12 +149,12 @@
     /// <param name="manifold">Manifold.</param>
     /// <returns>True if the manifold was added, false otherwise.</returns>
     public bool Add(Manifold manifold) {
-      if (__manifolds.Contains(manifold)) {
+      if (manifolds.Contains(manifold)) {
         return false;
       } else {
-        __manifolds.Add(manifold);
+        manifolds.Add(manifold);
         manifold.onManifoldEvent += OnManifoldEvent;
-        NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, __manifolds.Count - 1);
+        NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, manifolds.Count - 1);
         return true;
       } 
     }
@@ -190,11 +180,15 @@
     /// </summary>
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
-    public void Swap(int first, int second) { 
-      var m = this[first];
-      this[first] = this[second];
-      this[second] = m;
-      NotifyOfEvent(WorkbenchEvent.EType.Swapped, m, second, first);
+    public void Swap(int first, int second) {
+      if (first == second) {
+        ION.Core.Util.Log.D(this, "Not swapping manifolds");
+        return;
+      }
+      var tmp = manifolds[first];
+      manifolds[first] = manifolds[second];
+      manifolds[second] = tmp;
+      NotifyOfEvent(WorkbenchEvent.EType.Swapped, tmp, second, first);
     }
 
     /// <summary>
@@ -203,7 +197,7 @@
     /// <param name="manifold">Manifold.</param>
     public void Remove(Manifold manifold) {
       var index = manifolds.IndexOf(manifold);
-      __manifolds.Remove(manifold);
+      manifolds.Remove(manifold);
       manifold.onManifoldEvent -= OnManifoldEvent;
       NotifyOfEvent(WorkbenchEvent.EType.Removed, manifold, index);
     }
@@ -212,7 +206,7 @@
     /// Clears the workbench of all manifolds.
     /// </summary>
     public void Clear() {
-      foreach (Manifold m in __manifolds) {
+      foreach (Manifold m in manifolds) {
         Remove(m);
       }
     }
@@ -227,7 +221,7 @@
       var gd = device as GaugeDevice;
 
       if (gd != null) {
-        foreach (var m in __manifolds) {
+        foreach (var m in manifolds) {
           var p = m.primarySensor as GaugeDeviceSensor;
           var s = m.secondarySensor as GaugeDeviceSensor;
 
@@ -245,7 +239,7 @@
     /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
     /// <param name="sensor">Sensor.</param>
     public bool ContainsSensor(Sensor sensor) {
-      foreach (Manifold manifold in __manifolds) {
+      foreach (Manifold manifold in manifolds) {
         if (manifold.primarySensor.Equals(sensor)) {
           return true;
         }

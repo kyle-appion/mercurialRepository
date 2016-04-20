@@ -229,11 +229,14 @@
     /// </summary>
     private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
       try {
-        AppState.context.PostToMain(() => {
-          if (onDeviceEvent != null) {
-            onDeviceEvent(new DeviceEvent(type, this));
-          }
-        });
+        var ion = AppState.context;
+        if (ion != null) {
+          ion.PostToMain(() => {
+            if (onDeviceEvent != null) {
+              onDeviceEvent(new DeviceEvent(type, this));
+            }
+          });
+        }
       } catch (Exception e) {
         Log.E(this, "FAILED TO POST DEVICE EVENT TO MAIN THREAD!!!!", e);
       }
