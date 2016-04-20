@@ -68,12 +68,14 @@
 
     // Overridden from BaseConnectionHelper
     protected async override Task OnScan(TimeSpan scanTime, CancellationToken token) {
+      Log.D(this, "LeScan started");
       scanDelegate.Start(OnDeviceFound);
       await Task.Delay(scanTime);
     }
 
     // Overridden from BaseConnectionHelper
     protected override void OnStop() {
+      Log.D(this, "LeScan stopped");
       scanDelegate.Stop();
     }
 
@@ -82,6 +84,7 @@
       return Task.FromResult(adapter.Enable());
     }
 
+/*
     // Overridden from BaseConnectionHelper
     public override IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
       var device = adapter.GetRemoteDevice(address);
@@ -101,6 +104,7 @@
 //        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
       }
     }
+*/
 
     /// <summary>
     /// Queries whether or not the connection helper can resolve the given protocol.

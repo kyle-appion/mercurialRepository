@@ -1,7 +1,7 @@
 ﻿namespace ION.Droid.Widgets.Adapters.Workbench {
 
   using System;
-  using System.Collections.ObjectModel;
+  using System.Collections.Generic;
   using System.Threading.Tasks;
 
   using Android.App;
@@ -39,6 +39,12 @@
     public event OnSensorPropertyClicked onSensorPropertyClicked;
 
     /// <summary>
+    /// The workbench that the adapter is currently working with.
+    /// </summary>
+    /// <value>The workbench.</value>
+    public Workbench workbench { get; internal set; }
+
+    /// <summary>
     /// The current ION instance.
     /// </summary>
     /// <value>The ion.</value>
@@ -49,18 +55,31 @@
     /// <value>The cache.</value>
     private BitmapCache cache { get; set; }
     /// <summary>
-    /// The workbench that the adapter is currently working with.
+    /// The drag decoration.
     /// </summary>
-    /// <value>The workbench.</value>
-    private Workbench workbench { get; set; }
-    /// <summary>
-    /// The records that are contained within the adapter.
-    /// </summary>
-//    private ObservableCollection<IRecord> records = new ObservableCollection<IRecord>();
+    private ItemTouchHelper dragDecoration;
 
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
+//      dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
+    }
+
+    /// <summary>
+    /// Raises the attached to recycler view event.
+    /// </summary>
+    /// <param name="recyclerView">Recycler view.</param>
+    public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
+      base.OnAttachedToRecyclerView(recyclerView);
+//      dragDecoration.AttachToRecyclerView(recyclerView);
+    }
+
+    /// <summary>
+    /// Raises the detached from recycler view event.
+    /// </summary>
+    /// <param name="recyclerView">Recycler view.</param>
+    public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
+      base.OnDetachedFromRecyclerView(recyclerView);
     }
 
     // Overridden from RecyclerView.Adapter
@@ -142,12 +161,6 @@
           default:
             throw new Exception("Unknown view type: " + viewType);
         }
-/*
-        var touchHelper = new TouchListenerHelper(holder);
-        touchHelper.dragStartListener = dragListener;
-        touchHelper.swipeStartListener = swipeListener;
-        holder.ItemView.SetOnTouchListener(touchHelper);
-*/
       }
     }
 
@@ -159,7 +172,7 @@
     /// <param name="viewHolder">View holder.</param>
     /// <param name="index">Index.</param>
     public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
-      return record is MeasurementRecord || record is ManifoldRecord;
+      return record is ManifoldRecord || record is SensorPropertyRecord;
     }
 
     /// <summary>
@@ -224,7 +237,7 @@
     public void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
       var manifold = workbenchEvent.manifold;
       int startIndex = IndexOfManifold(manifold);
-      int spc = manifold.sensorPropertyCount;
+      int manifoldSensorPropertyCount = manifold.sensorPropertyCount;
 
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
@@ -244,44 +257,39 @@
         case WorkbenchEvent.EType.Removed:
           if (startIndex >= 0) {
             records.RemoveAt(startIndex);
-            for (int i = 0; i < spc; i++) {
+            for (int i = 0; i < manifoldSensorPropertyCount; i++) {
               records.RemoveAt(startIndex);
             }
-            NotifyItemRangeRemoved(startIndex, 1 + spc);
+            NotifyItemRangeRemoved(startIndex, 1 + manifoldSensorPropertyCount);
           }
           break;
         case WorkbenchEvent.EType.Swapped:
-          var firstManifold = workbench[workbenchEvent.index];
-          var firstIndex = IndexOfManifold(firstManifold);
-          var fmr = records[firstIndex] as ManifoldRecord;
-          var fwe = fmr.expanded;
+          var sm = workbench[workbenchEvent.otherIndex];
+          var secondIndex = IndexOfManifold(sm);
+          var offset = manifoldSensorPropertyCount + 1;
 
-          var secondManifold = workbench[workbenchEvent.otherIndex];
-          var secondIndex = IndexOfManifold(secondManifold);
-          var smr = records[secondIndex] as ManifoldRecord;
-          var swe = smr.expanded;
+          var tmp = records[startIndex];
+          records[startIndex] = records[secondIndex];
+          records[secondIndex] = tmp;
+          NotifyItemMoved(startIndex, secondIndex);
 
+          for (int i = manifoldSensorPropertyCount; i > 0; i--) {
+            var index = startIndex + i;
+            var t = records[index];
+            records.RemoveAt(index);
+            records.Insert(secondIndex, t);
+            NotifyItemMoved(startIndex + i, secondIndex + 1);
+          }
 
-          Task.Factory.StartNew(() => {
-            CollapseManifold(firstManifold);
-            CollapseManifold(secondManifold);
-
-            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
-          }).ContinueWith((task) => {
-            records.Move(firstIndex, secondIndex);
-            NotifyItemMoved(firstIndex, secondIndex);
-
-            Task.Delay(TimeSpan.FromMilliseconds(100)).Wait();
-          }).ContinueWith((task) => {
-            if (fwe) {
-              ExpandManifold(firstManifold);
-            }
-
-            if (swe) {
-              ExpandManifold(secondManifold);
-            }
-          });
-
+/*
+          for (int i = sm.sensorPropertyCount; i >= 0; i--) {
+            var index = secondIndex + i;
+            var tmp = records[index];
+            records.RemoveAt(index);
+            records.Insert(startIndex, tmp);
+            NotifyItemMoved(secondIndex + i, startIndex);
+          }
+*/
           break;
         default:
           throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
@@ -323,8 +331,9 @@
         case ManifoldEvent.EType.SensorPropertySwapped:
           var from = manifoldIndex + 1 + manifoldEvent.index;
           var to = manifoldIndex + 1 + manifoldEvent.otherIndex;
-          records.Move(from, to);
-
+          var tmp = records[from];
+          records[from] = records[to];
+          records[to] = tmp;
           NotifyItemMoved(from, to);
           break;
       }
@@ -366,28 +375,7 @@
     }
 */
 
-    /// <summary>
-    /// Raises the item dismiss event.
-    /// </summary>
-    /// <param name="position">Position.</param>
-/*
-    public void OnItemDismiss(int position) {
-      var r = records[position];
-
-      if (r is ManifoldRecord) {
-        var mr = r as ManifoldRecord;
-
-        workbench.Remove(mr.item);
-      } else if (r is SensorPropertyRecord) {
-        var spr = r as SensorPropertyRecord;
-
-        var manifold = FindManifoldAtIndex(position);
-        manifold.RemoveSensorProperty(spr.sensorProperty);
-      }
-    }
-*/
-
-    private void CollapseManifold(Manifold manifold) {
+    public void CollapseManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
 
@@ -406,7 +394,7 @@
       }
     }
 
-    private void ExpandManifold(Manifold manifold) {
+    public void ExpandManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
 
@@ -425,7 +413,7 @@
       }
     }
 
-    private void ToggleManifold(Manifold manifold) {
+    public void ToggleManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
 

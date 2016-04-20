@@ -69,7 +69,7 @@ namespace ION.Core.Connections {
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    Task<bool> Connect();
+    Task<bool> ConnectAsync();
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
@@ -78,7 +78,7 @@ namespace ION.Core.Connections {
     /// Writes the given packet out to the remote terminus.
     /// </summary>
     /// <returns></returns>
-    Task<bool> Write(byte[] packet);
+    bool Write(byte[] packet);
   }
 
   /// <summary>

@@ -219,7 +219,7 @@
       try {
         Parse(serial);
         return true;
-      } catch (ArgumentException) {
+      } catch (ArgumentException e) {
         ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid serial");
         return false;
       }
@@ -272,7 +272,7 @@
 
       int year = 2000 + Convert.ToInt32(yearCode); 
 
-      if (year < 2014 || year > 2099) {
+      if (year < 2013 || year > 2099) {
         throw new ArgumentException("Cannot build manufacture date: year " + yearCode + " is out of range, expected [14, 99]");
       }
 

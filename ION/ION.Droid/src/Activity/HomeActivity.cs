@@ -19,6 +19,7 @@
   using ION.Core.Util;
 
   using ION.Droid.Activity.DataLogging;
+  using ION.Droid.Dialog;
   using ION.Droid.Fragments;
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
@@ -121,6 +122,13 @@
           Log.D(this, "SHOW_FRAGMENT extra value: " + show + " invalid. Defaulting to workbench");
           DisplayWorkbench();
           break;
+      }
+
+      if (!ion.version.Equals(ion.preferences.appVersion)/* && !ion.preferences.firstLaunch*/) {
+        if (ion.preferences.showWhatsNew) {
+          new WhatsNewDialog(ion, this).Show();
+        }
+        ion.preferences.appVersion = ion.version;
       }
     }
 
@@ -275,6 +283,8 @@
               StartActivity(typeof(ScreenshotArchiveActivity));
             }
           },
+
+#if DEBUG
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
             title = GetString(Resource.String.report_data_logging),
@@ -283,6 +293,7 @@
               StartActivity(typeof(DataLoggingReportActivity));
             }
           }
+#endif
         },
       };
 

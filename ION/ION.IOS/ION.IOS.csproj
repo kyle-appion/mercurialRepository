@@ -459,6 +459,7 @@
       <DependentUpon>SecondarySensorCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\App\IOSPlatformInfo.cs" />
+    <Compile Include="src\Devices\IosConnectionFactory.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

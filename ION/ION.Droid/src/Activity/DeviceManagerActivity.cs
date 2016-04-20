@@ -112,7 +112,6 @@
           empty.Visibility = ViewStates.Visible;
           list.Visibility = ViewStates.Gone;
         }
-//        OnAdapterRefreshed();
       };
 
       list.SetAdapter(adapter);

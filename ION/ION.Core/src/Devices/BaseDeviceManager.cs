@@ -89,6 +89,8 @@
     // Overridden from IDeviceManager
     public DeviceFactoryDelegate deviceFactoryDelegate { get; protected set; }
     // Overridden from IDeviceManager
+    public IConnectionFactory connectionFactory { get; set; }
+    // Overridden from IDeviceManager
     public IConnectionHelper connectionHelper {
       get {
         return __connectionHelper;
@@ -129,8 +131,9 @@
     /// </summary>
     private DeviceFactory __deviceFactory;
 
-    public BaseDeviceManager(IION ion, IConnectionHelper connectionHelper) {
+    public BaseDeviceManager(IION ion, IConnectionFactory connectionFactory, IConnectionHelper connectionHelper) {
       this.ion = ion;
+      this.connectionFactory = connectionFactory;
       this.connectionHelper = connectionHelper;
     }
 
@@ -262,14 +265,14 @@
         if (MockConnection.MOCK_ADDRESS.Equals(connectionAddress)) {
           connection = new MockConnection();
         } else {
-          connection = connectionHelper.CreateConnectionFor(connectionAddress, protocolVersion);
+          connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
         }
 #else
-        var connection = connectionHelper.CreateConnectionFor(connectionAddress, protocolVersion);
+        var connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
 #endif
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
         if (protocol == null) {
-          protocol = Protocol.PROTOCOLS[0];
+          protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
         }
         var definition = __deviceFactory.GetDeviceDefinition(serialNumber);
         ret = definition.CreateDevice(serialNumber, connection, protocol);

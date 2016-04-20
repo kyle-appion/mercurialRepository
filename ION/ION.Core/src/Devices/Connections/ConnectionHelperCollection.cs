@@ -86,6 +86,7 @@
     /// <returns>The connection for.</returns>
     /// <param name="identifier">Address.</param>
     /// <param name="address">Address.</param>
+/*
     public override IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
       foreach (var h in helpers) {
         if (h.CanResolveProtocol(protocolVersion)) {
@@ -95,6 +96,7 @@
 
       throw new Exception("Cannot create connection for: " + address);
     }
+*/
 
     /// <summary>
     /// Queries whether or not the connection helper can resolve the given protocol.

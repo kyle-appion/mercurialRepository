@@ -13,6 +13,7 @@
   <string name="pkey_app_version">app_version</string>
   <string name="pkey_first_launch">first_launch"</string>
   <string name="pkey_send_feedback">send_feedback</string>
+  <string name="pkey_whats_new">whats_new</string>
   <string name="pkey_youtube">youtube</string>
 
 
@@ -21,6 +22,7 @@
 
   <string name="pkey_location_elevation">location_elevation</string>
   <string name="pkey_location_gps">location_gps</string>
+  <string name="pkey_location_gps_error">location_gps_error</string>
 
   <string name="pkey_unit_length">unit_length</string>
   <string name="pkey_unit_pressure">unit_pressure</string>
