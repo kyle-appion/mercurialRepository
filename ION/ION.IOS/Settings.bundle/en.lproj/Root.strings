@@ -16,5 +16,7 @@
 "settings_location" = "Location Settings";
 "settings_location_use_geolocation" = "Use Current Location";
 
+"settings_logging" = "Logging Settings";
+"settings_default_logging_interval" = "Logging Interval";
 
 "use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";

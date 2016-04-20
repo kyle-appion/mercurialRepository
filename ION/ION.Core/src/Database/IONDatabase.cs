@@ -31,6 +31,7 @@
       // Create the database
       CreateTable<JobRow>();
       CreateTable<DeviceRow>();
+      CreateTable<LoggingDeviceRow>();
       CreateTable<SessionRow>();
       CreateTable<SensorMeasurementRow>();
     }

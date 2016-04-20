@@ -158,6 +158,8 @@
     <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Database\Deprecated\Device.cs" />
+    <Compile Include="src\Excel\DataLogExporter.cs" />
+    <Compile Include="src\Database\LoggingDeviceRow.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -201,6 +203,12 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net45+wp80+win8+wpa81+dnxcore50\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\..\..\..\..\..\Downloads\DocumentFormat.OpenXml\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="SpreadsheetLight">
+      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

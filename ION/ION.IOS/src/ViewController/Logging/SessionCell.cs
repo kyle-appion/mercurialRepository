@@ -35,7 +35,7 @@ namespace ION.IOS.ViewController.Logging {
 
       var deviceAmount = ion.database.Table<SensorMeasurementRow>()
         .Where(smr => smr.frn_SID == SID)
-        .Select(smr => smr.deviceId).Distinct()
+        .Select(smr => smr.serialNumber).Distinct()
         .Count();
 
       var duration = finish.Subtract(start).TotalMinutes;

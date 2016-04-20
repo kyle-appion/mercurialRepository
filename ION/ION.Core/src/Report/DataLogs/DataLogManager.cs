@@ -136,13 +136,13 @@
         // TODO ahodder@appioninc.com: This could be optimized
         var res = db.Table<SensorMeasurementRow>()
           .Where(smr => smr.frn_SID == sessionId)
-          .GroupBy(smr => smr.deviceId)
+          .GroupBy(smr => smr.serialNumber)
           .Select(g => g.Last());
 
         var dsl = new List<DeviceSensorLogs>();
         foreach (var row in res) {
           var query = db.Table<SensorMeasurementRow>()
-            .Where(smr => smr.deviceId == row.deviceId)
+            .Where(smr => smr.serialNumber == row.serialNumber)
             .Where(smr => smr.frn_SID == sessionId)
             .OrderBy(s => s.recordedDate)
             .AsEnumerable();
@@ -155,7 +155,7 @@
           }
 
           dsl.Add(new DeviceSensorLogs() {
-            deviceId = row.deviceId,
+            deviceId = row.serialNumber,
             logs = logs,
             index = row.sensorIndex,
 //            unitCode = row.unitCode,

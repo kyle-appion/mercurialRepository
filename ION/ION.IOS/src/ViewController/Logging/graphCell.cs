@@ -41,8 +41,9 @@ namespace ION.IOS.ViewController.Logging
 				Model = CreatePlotModel(trackerHeight, parentView),
         BackgroundColor = UIColor.Clear,
 			};
+      //plotView.Layer.BorderWidth = 1f;
 
-			deviceName = new UILabel (new CGRect (0, .9 * cellHeight,.3 * cellWidth,.25 * cellHeight));
+			deviceName = new UILabel (new CGRect (0,.92 * cellHeight,.3 * cellWidth,.25 * cellHeight));
 			deviceName.Text = cellData.name;
 			deviceName.AdjustsFontSizeToFitWidth = true;
 			deviceName.TextAlignment = UITextAlignment.Center;
@@ -100,11 +101,23 @@ namespace ION.IOS.ViewController.Logging
 		/// <returns>The plot model.</returns>	
 		public PlotModel CreatePlotModel(double trackerHeight, UIView parentView) {
 			var lowValue = 9999999.9;
-			var highValue = -9999.9;    
+			var highValue = -9999.9; 
+
+      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
+
+      if (cellData.type.Equals("Temperature")) {
+        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+      } else if (cellData.type.Equals("Vacuum")) {
+        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
+      }
 
       foreach (var device in allData) {
         if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
+//          var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
+//          var standardUnit = lookup.standardUnit;
           foreach (var reading in device.readings) {
+//            var workingValue = standardUnit.OfScalar(reading);
+//            var finalValue = workingValue.ConvertTo(lookup);
             if (reading < lowValue) {
               lowValue = reading;
             }
@@ -113,14 +126,23 @@ namespace ION.IOS.ViewController.Logging
             } 
           }
         }
-      } 
+      }
+      var color = OxyColors.Blue;
+      var buffer = 10000;
+      if(cellData.type.Equals("Temperature")){
+        color = OxyColors.Red;
+        buffer = 1;
+      } else if (cellData.type.Equals("Vacuum")){
+        color = OxyColors.Maroon;
+        buffer = 2000;
+      }
 			var plotModel = new PlotModel();
 
 			plotModel.Background = OxyColors.Transparent;
 			plotModel.PlotAreaBackground = OxyColors.White;
 			plotModel.DefaultFontSize = 0;
 			plotModel.PlotAreaBorderThickness = new OxyThickness(0,0,0,0);
-			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,5);
+			plotModel.PlotMargins = new OxyThickness(-5,-5,-5,-5);
 
 			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
       /// Corresponsding date indexes will provide the plot points
@@ -142,10 +164,10 @@ namespace ION.IOS.ViewController.Logging
 			/// this will be used for pressure measurements
 			LAX = new LinearAxis {
 				Position = AxisPosition.Left,
-				Maximum = highValue + 4,
-				AbsoluteMaximum = highValue + 4,
-				Minimum = lowValue - 4,
-				AbsoluteMinimum = lowValue - 4,
+        Maximum = highValue + buffer,
+				AbsoluteMaximum = highValue + buffer,
+        Minimum = lowValue - buffer,
+        AbsoluteMinimum = lowValue - buffer,
 				Key = "left",
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
@@ -157,14 +179,6 @@ namespace ION.IOS.ViewController.Logging
 
 			plotModel.Axes.Add (BAX);
 			plotModel.Axes.Add (LAX);
-		
-			var color = OxyColors.Blue;
-
-			if(cellData.type.Equals("Temperature")){
-				color = OxyColors.Red;
-			} else if (cellData.type.Equals("Vacuum")){
-				color = OxyColors.Maroon;
-			}
 
       foreach(var device in allData){
         if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
@@ -177,14 +191,23 @@ namespace ION.IOS.ViewController.Logging
             Color = color,
           };
 
+
           for(int i = 0; i < device.times.Count; i++) {
+//            var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
+//            var standardUnit = lookup.standardUnit;
+//            var workingValue = standardUnit.OfScalar(device.readings[i]);
+//            Console.WriteLine("Standard measurement: " + workingValue.amount);
+//            var finalValue = workingValue.ConvertTo(lookup);
+//            Console.WriteLine("Final measurement: " + finalValue.amount);
+
             var index = ChosenDates.allTimes[device.times[i].ToString()];
             var measurement = device.readings[i];
+            //series.Points.Add(new DataPoint(index,finalValue.amount));
             series.Points.Add(new DataPoint(index,measurement));
           }
           plotModel.Series.Add (series);
         }
-      }			
+      }
 
 			plotModel.IsLegendVisible = false;
 

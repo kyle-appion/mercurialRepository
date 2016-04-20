@@ -98,10 +98,20 @@
           }
         }
 
+
+
         var rows = new List<SensorMeasurementRow>();
         var db = ion.database;
-        var now = DateTime.Now; 
-
+        var now = DateTime.Now;
+        foreach(var gds in sensors){
+          var existing = db.Query<LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?",gds.device.serialNumber.ToString());
+          Debug.WriteLine("SN: " +gds.device.serialNumber.ToString() + " had " + existing.Count + " records");
+          if(existing.Count.Equals(0)){
+            Debug.WriteLine("No entry for device");
+            var newDevice = new LoggingDeviceRow{serialNumber = gds.device.serialNumber.ToString()};
+            db.Insert(newDevice);
+          }
+        }
         foreach (var gds in sensors) {
           // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
           rows.Add(await CreateSensorMeasurement(db, gds, now));
@@ -125,8 +135,8 @@
       var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
 
-      ret.deviceId = d.DID;
-      Debug.WriteLine("DID: " + ret.deviceId);
+      ret.serialNumber = sensor.device.serialNumber.ToString();
+      Debug.WriteLine("Serial: " + ret.serialNumber);
       ret.frn_SID = session.SID;
       Debug.WriteLine("frn_SID: " + ret.frn_SID);
       ret.sensorIndex = sensor.index;
