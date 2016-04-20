@@ -8,6 +8,8 @@
   <string name="preferences_app_version">App Version</string>
   <string name="preferences_send_feedback">Send Feeback</string>
   <string name="preferences_send_feedback_failed">It appears you do not have an e-mail application. Would you like to go use Google Play instead?</string>
+  <string name="preferences_show_whats_new">Show What\'s New on startup?</string>
+  <string name="preferences_show_whats_new_summary">Shows a dialog when the application first launches a new version describing what has changed.</string>
   <string name="preferences_videos">Videos and Tutorials</string>
 
   <string name="preferences_alarm">General Alarm Preferences</string>

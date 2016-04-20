@@ -10,12 +10,24 @@
     android:summaryOn="@string/preferences_display_wakelock_on"
     android:summaryOff="@string/preferences_display_wakelock_off"/>
 
+  <SwitchPreference
+    android:title="@string/preferences_show_whats_new"
+    android:key="@string/pkey_whats_new"
+    android:summary="@string/preferences_show_whats_new_summary"
+    android:defaultValue="true"/>
+
   <PreferenceCategory
     android:title="@string/preferences_location">
+<!--
+    <Preference
+      android:title="NO GPS"
+      android:key="@string/pkey_location_gps_error"
+      android:summary="YOU AIN'T GOT NO GPS"/>
+-->
     <SwitchPreference
       android:title="@string/preferences_location_gps"
       android:key="@string/pkey_location_gps"
-      android:defaultValue="true"
+      android:defaultValue="false"
       android:disableDependentsState="true"
       android:summaryOn="@string/preferences_location_gps_on"
       android:summaryOff="@string/preferences_location_gps_off"/>

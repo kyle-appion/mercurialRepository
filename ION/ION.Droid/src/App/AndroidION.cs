@@ -61,7 +61,7 @@
     /// Queries the full version of the ion instance.
     /// </summary>
     /// <value>The version.</value>
-    public string version { get { return preferences.appVersion; } }
+    public string version { get { return PackageManager.GetPackageInfo(PackageName, PackageInfoFlags.MetaData).VersionName; } }
 
     /// <summary>
     /// The database that will store all of the application data.
@@ -188,18 +188,21 @@
       if (AppState.context != null) {
         Log.D(this, "A previous service was discovered to be running. Killing it");
         AppState.context.Dispose();
+        AppState.context = null;
       }
 
       AppState.context = this;
-
       this.handler = new Android.OS.Handler();
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
       var discard = preferences.appVersion; // Sets the current application version.
+      var bluetoothManager = (BluetoothManager)GetSystemService(Context.BluetoothService);
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
       managers.Add(fileManager = new AndroidFileManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new LeConnectionHelper(this, (BluetoothManager)GetSystemService(Context.BluetoothService))));
+      managers.Add(deviceManager = new BaseDeviceManager(this, 
+        new AndroidConnectionFactory(this, bluetoothManager),
+        new LeConnectionHelper(this, bluetoothManager)));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
@@ -235,20 +238,29 @@
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
       try {
+        Workbench w = null;
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
           var file = internalDir.GetFile(FILE_WORKBENCH);
-          currentWorkbench = await LoadWorkbenchAsync(file);
+          w = await LoadWorkbenchAsync(file);
         } else {
-          currentWorkbench = new Workbench(this);
+          w = new Workbench(this);
         }
+        currentWorkbench = w;
       } catch (Exception e) {
         Log.E(this, "Failed to load workbench", e);
         currentWorkbench = new Workbench(this);
       }
 
+      if (currentWorkbench == null) {
+        currentWorkbench = new Workbench(this);
+      }
+
+      if (currentAnalyzer == null) {
+        currentAnalyzer = new Analyzer(this);
+      }
+
       // TODO Save/load analyzer.
-      currentAnalyzer = new Analyzer(this);
 
       UpdateNotification();
 
@@ -421,107 +433,6 @@
           UpdateNotification();
         }
       }
-    }
-
-    /// <summary>
-    /// Creates some test data logging points. Note: these are for testing only and will break during real use.
-    /// </summary>
-    /// <param name="initialJobs">Initial jobs.</param>
-    private async void CreateDebugDataLogs(int initialJobs) {
-      var devices = new IDevice[] {
-        deviceManager.CreateDevice(GaugeSerialNumber.Parse("P816B1337"), MockConnection.MOCK_ADDRESS, EProtocolVersion.V1),
-        deviceManager.CreateDevice(GaugeSerialNumber.Parse("P516A8008"), MockConnection.MOCK_ADDRESS, EProtocolVersion.V2),
-      };
-
-      foreach (var d in devices) {
-        if (!await deviceManager.SaveDevice(d)) {
-          throw new Exception("Failed to save test device");
-        } else {
-          Log.D(this, "Saved device: " + d);
-          deviceManager.Register(d);
-        }
-      }
-      
-      var waves = new Wave[] { Sin, Square, SawTooth };
-
-      var db = database;
-      for (int i = 0; i < initialJobs; i++) {
-        var job = new JobRow();
-        job.jobName = "Job: " + (i + 1);
-        db.Insert(job);
-
-        var sessionCount = initialJobs * 2;
-        var logs = (sessionCount + 1) * 2;
-
-        for (int j = 0; j < sessionCount; j++) {
-          var session = new SessionRow();
-          session.jobId = job.id;
-
-          var start = session.sessionStart = DateTime.FromFileTimeUtc(1458668748L);
-          var end = session.sessionEnd = session.sessionStart + TimeSpan.FromMinutes(logs);
-          var devicesCount = devices.Length;
-
-          var smr = new SensorMeasurementRow[logs * devicesCount];
-          for (int l = 0; l < devicesCount; l++) {
-            var sn = devices[l].serialNumber.ToString();
-            var did = database.Table<DeviceRow>().Where(dr => dr.serialNumber.Equals(sn)).First().id;
-            Wave wave = waves[j % waves.Length];
-            for (int k = 0; k < logs; k++) {
-              var step = TimeSpan.FromMinutes(1);
-              var recorded = start + step;
-              var s = new SensorMeasurementRow();
-              s.deviceId = did;
-              s.recordedDate = recorded;
-              s.sensorIndex = 0;
-              s.sessionId = j;
-//              s.unitCode = UnitLookup.GetCode(Units.Pressure.PSIG);
-              s.measurement = wave(k, 800, step.TotalMinutes);
-              smr[l * devicesCount + k] = s;
-            }
-          }
-
-          var insterted = db.InsertAll(smr, true);
-          Log.D(this, "Inserted: " + insterted + " logs into the database");
-          await db.SaveAsync<SessionRow>(session);
-          Log.D(this, "Session id: " + session.id);
-        }
-      }
-    }
-
-    /// <summary>
-    /// A simple type abstraction for wave generation.
-    /// </summary>
-    private delegate double Wave(int x, double range, double period);
-    /// <summary>
-    /// Produces a sin wave.
-    /// </summary>
-    /// <param name="x">The x coordinate.</param>
-    private double Sin(int x, double range, double period) {
-      return range * Math.Sin(x / period);
-    }
-
-    /// <summary>
-    /// Produces a square wave.
-    /// </summary>
-    /// <param name="x">The x coordinate.</param>
-    /// <param name="range">Range.</param>
-    /// <param name="period">Period.</param>
-    private double Square(int x, double range, double period) {
-      var step = ((long)range) / 10;
-      x = x / 10 * 10; // round to lowest 10.
-      return Sin(x, range, period);
-    }
-
-    /// <summary>
-    /// Saws the tooth.
-    /// </summary>
-    /// <returns>The tooth.</returns>
-    /// <param name="x">The x coordinate.</param>
-    /// <param name="range">Range.</param>
-    /// <param name="period">Period.</param>
-    private double SawTooth(int x, double range, double period) {
-      var p = (int)period;
-      return x % p;
     }
 
     /// <summary>

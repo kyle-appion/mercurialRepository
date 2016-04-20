@@ -68,10 +68,11 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchI18n>
+    </MtouchI18n>
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
-    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -109,13 +110,7 @@
     <Reference Include="OxyPlot.Xamarin.iOS">
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\Xamarin.iOS10\OxyPlot.Xamarin.iOS.dll</HintPath>
     </Reference>
-    <Reference Include="FlexCel">
-      <HintPath>..\Components\FlexCel-6.7.16-trial\lib\ios-unified\FlexCel.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTK-1.0" />
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\..\..\..\..\..\Downloads\DocumentFormat.OpenXml\DocumentFormat.OpenXml.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -516,6 +511,7 @@
     <Compile Include="src\ViewController\Logging\PreviewOutputInfo.cs" />
     <Compile Include="src\ViewController\Logging\PDFViewDataSource.cs" />
     <Compile Include="src\ViewController\Logging\QLPreviewItemExtensions.cs" />
+    <Compile Include="src\Devices\IosConnectionFactory.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -575,10 +571,6 @@
   <ItemGroup>
     <XamarinComponentReference Include="oxyplot">
       <Version>2015.1.744</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="FlexCel-trial">
-      <Version>6.7.16</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

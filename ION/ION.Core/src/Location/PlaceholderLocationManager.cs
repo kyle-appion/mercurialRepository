@@ -5,6 +5,7 @@
 
   using ION.Core.App;
 
+#if false
   /// <summary>
   /// This location manager is a location manager is primarily used when a platform's real location manager fails to
   /// resolve. This will allow the rest of the application to always depend on a location manager, even if it is not
@@ -13,6 +14,8 @@
   public class PlaceholderLocationManager : ILocationManager {
     // Overridden from ILocationManager
     public event OnLocationChanged onLocationChanged;
+
+    public bool isEnabled { get; set; }
 
     /// <summary>
     /// Whether or not the location manager should track locations.
@@ -82,5 +85,6 @@
       return Task.FromResult(default(Address));
     }
   }
+#endif
 }
 

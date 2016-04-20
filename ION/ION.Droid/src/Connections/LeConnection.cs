@@ -220,7 +220,7 @@
     }
 
     // Overridden from IConnection
-    public async Task<bool> Connect() {
+    public async Task<bool> ConnectAsync() {
       if (EConnectionState.Disconnected != connectionState) {
         Log.D(this, "Connection not in a disconnected state: returning attempt as failed.");
         return false;
@@ -282,12 +282,12 @@
     }
 
     // Overridden from IConnection
-    public Task<bool> Write(byte[] data) {
+    public bool Write(byte[] data) {
       if (EConnectionState.Connected == connectionState) {
         write.SetValue(data);
-        return Task.FromResult(gatt.WriteCharacteristic(write));
+        return gatt.WriteCharacteristic(write);
       } else {
-        return Task.FromResult(false);
+        return false;
       }
     }
 
