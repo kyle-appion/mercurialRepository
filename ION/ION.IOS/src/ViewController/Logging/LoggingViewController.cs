@@ -268,12 +268,16 @@ namespace ION.IOS.ViewController.Logging {
 
           var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? ORDER BY MID ASC",activeDevice.name, graphResult[s].SID);
 
+
+
           var deviceIndex = SerialNumberExtensions.ParseSerialNumber(activeDevice.name);
 
           var type = ion.deviceManager[deviceIndex] as GaugeDevice;
-
-          activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
-          //activeDevice.type = "Pressure";
+          if (type == null) {
+            activeDevice.type = "Pressure";
+          } else {
+            activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
+          }
 
           foreach(var meas in measurementCount){
             activeDevice.times.Add(meas.recordedDate.ToLocalTime());

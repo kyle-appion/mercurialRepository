@@ -22,10 +22,10 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
 
+using DocumentFormat.OpenXml;
+
 using FlexCel.Core;
 using FlexCel.XlsAdapter;
-
-using DocumentFormat.OpenXml;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -457,6 +457,7 @@ namespace ION.IOS.ViewController.Logging
       fileName = "test.xlsx";
       //fileName = DateTime.UtcNow.ToLocalTime();
       Console.WriteLine("Filename WOULD be: " + DateTime.UtcNow.ToLocalTime());
+
       XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
       xls.AllowOverwritingFiles = true; 
 
@@ -573,7 +574,6 @@ namespace ION.IOS.ViewController.Logging
 
       xls.AutofitCol(1, false, 1.1);
       xls.Save(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), fileName));
-
       messageBox.DismissWithClickedButtonIndex(0, false);
     }
 

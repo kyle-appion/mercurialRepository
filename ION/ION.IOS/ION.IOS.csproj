@@ -39,8 +39,6 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <MtouchI18n>
-    </MtouchI18n>
     <MtouchSdkVersion>8.4</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
@@ -71,7 +69,7 @@
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
-    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
+    <MtouchExtraArgs>-v -v -v -time -time</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
