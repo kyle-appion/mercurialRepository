@@ -36,13 +36,13 @@ namespace ION.IOS.ViewController.Logging {
     private IION ion;
     public nfloat cellHeight;
 
-    public ChooseData(UIView mainView) {
+    public ChooseData(UIView mainView, ObservableCollection<int> selected) {
       DataType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .15 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .7 * mainView.Bounds.Height));
       DataType.BackgroundColor = UIColor.White;
       DataType.Layer.BorderColor = UIColor.Black.CGColor;
       DataType.Layer.BorderWidth = 1f; 
 
-      selectedSessions = new ObservableCollection<int>();
+      selectedSessions = selected;
       selectedSessions.CollectionChanged += checkForSelected;
       cellHeight = .07f * mainView.Bounds.Height;
 
@@ -202,8 +202,8 @@ namespace ION.IOS.ViewController.Logging {
         var measurements = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY MID ASC", result[i].SID);
 
         foreach (var meas in measurements) {
-          var SerialN = ion.database.Query<ION.Core.Database.DeviceRow>("SELECT serialNumber FROM DeviceRow WHERE DID = ? LIMIT 1", meas.deviceId);
-          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(meas.MID, meas.frn_SID, SerialN[0].serialNumber, meas.measurement.ToString()));
+          //var SerialN = ion.database.Query<ION.Core.Database.DeviceRow>("SELECT serialNumber FROM DeviceRow WHERE DID = ? LIMIT 1", meas.serialNumber);
+          queriedSessions[i].sessionMeasurements.Add(new MeasurementData(meas.MID, meas.frn_SID, meas.serialNumber, meas.measurement.ToString()));
         }
 //        var measurements = ion.database.Table<SensorMeasurementRow>()
 //          .Where(smr => smr.frn_SID == sessionId)

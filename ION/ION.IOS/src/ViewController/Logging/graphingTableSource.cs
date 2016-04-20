@@ -76,7 +76,7 @@ namespace ION.IOS.ViewController.Logging
 			if (cell == null) {
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
 			}
-			
+
       cell.setupGraph (tableItems [indexPath.Row], tableItems,tableView.Bounds.Width, .15 * parentView.Bounds.Height, trackerHeight, parentView, tableView);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;

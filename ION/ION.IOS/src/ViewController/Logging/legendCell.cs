@@ -44,13 +44,10 @@ namespace ION.IOS.ViewController.Logging
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
       }
 
-      Console.WriteLine("Using the standard unit of : " + defaultUnit);
-
-
-      foreach (var device in allData) {
+      foreach (var device in allData) {        
         if (device.name.Equals(deviceData.name) && device.type.Equals(deviceData.type)) {
           foreach (var reading in device.readings) {
-            if (reading < highestMeasurement) {
+            if (reading < lowestMeasurement) {
               lowestMeasurement = reading;
             }
             if (reading > highestMeasurement) {
@@ -61,22 +58,20 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
-      Console.WriteLine("lowest value: " + lowestMeasurement);
+
       var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
-      Console.WriteLine("looked up unit: " + lookup.ToString());
+
       var standardUnit = lookup.standardUnit;
-      Console.WriteLine("standardUnit is : " + standardUnit.ToString());
+
       var workingValue = standardUnit.OfScalar(highestMeasurement);
-      Console.WriteLine("working value is: " + workingValue.amount);
+
       var finalHighest = workingValue.ConvertTo(lookup);
-      Console.WriteLine("final highest is: " + finalHighest.amount);
+
       workingValue = standardUnit.OfScalar(lowestMeasurement);
       var finalLowest = workingValue.ConvertTo(lookup);
-      Console.WriteLine("final lowest is: " + finalLowest.amount);
+
       workingValue = standardUnit.OfScalar((totalValue/totalMeasurements));
       var finalAverage = workingValue.ConvertTo(lookup);
-      Console.WriteLine("final average is: " + finalAverage.amount);
-
 
       information.Text = "Lowest Measurement: " + finalLowest.amount.ToString("N") + " " + lookup.ToString() + "\nHighest Measurement: " + finalHighest.amount.ToString("N") + " " + lookup.ToString() + "\n" + "Average measurement: " + finalAverage.amount.ToString("N") + " " + lookup.ToString();
 

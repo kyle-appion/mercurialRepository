@@ -38,6 +38,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseGraphing graphingSection;
     private IION ion;
     public UIActivityIndicatorView activityLoadingGraphs;
+    public ObservableCollection<int> selectedSessions;
 
     public LoggingViewController(IntPtr handle) : base(handle) {
     
@@ -55,7 +56,7 @@ namespace ION.IOS.ViewController.Logging {
       };
       Title = "Reports";
       ChosenDates.includeList = new List<string> ();
-      //ChosenDates.allTimes = new List<string>();
+      selectedSessions = new ObservableCollection<int>();
       ChosenDates.allTimes = new Dictionary<string,int> ();
       ion = AppState.context;
       SetupLoggingUI();
@@ -68,7 +69,7 @@ namespace ION.IOS.ViewController.Logging {
       reportingSection.savedReports.TouchUpInside += loadSavedReports;
       reportingSection.newReport.TouchUpInside += showDataSection;
 
-      dataSection = new ChooseData(View);
+      dataSection = new ChooseData(View,selectedSessions);
       dataSection.showGraphButton.TouchUpInside += showGraphSection;
 
       savedReportsSection = new ChooseSaved(View);
@@ -255,7 +256,7 @@ namespace ION.IOS.ViewController.Logging {
       var sessionBreaks = new string[graphResult.Count];
 
       for(int s = 0; s < graphResult.Count; s++){
-        var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT deviceId FROM SensorMeasurementRow WHERE frn_SID = ?", graphResult[s].SID);
+        var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
 
         for(int m = 0; m < deviceCount.Count; m++){
           var activeDevice = new deviceReadings();
@@ -263,17 +264,16 @@ namespace ION.IOS.ViewController.Logging {
           activeDevice.readings = new List<double>();
           activeDevice.SID = graphResult[s].SID;
           activeDevice.frnJID = graphResult[s].frn_JID;
-          var deviceSerial = ion.database.Query<ION.Core.Database.DeviceRow>("SELECT serialNumber FROM DeviceRow WHERE DID = ?", deviceCount[m].deviceId);
-          activeDevice.name = deviceSerial[0].serialNumber;
+          activeDevice.name = deviceCount[m].serialNumber;
 
-          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE deviceId = ? AND frn_SID = ? ORDER BY MID ASC",deviceCount[m].deviceId, graphResult[s].SID);
+          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? ORDER BY MID ASC",activeDevice.name, graphResult[s].SID);
 
           var deviceIndex = SerialNumberExtensions.ParseSerialNumber(activeDevice.name);
 
           var type = ion.deviceManager[deviceIndex] as GaugeDevice;
 
-          //activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
-          activeDevice.type = "Pressure";
+          activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
+          //activeDevice.type = "Pressure";
 
           foreach(var meas in measurementCount){
             activeDevice.times.Add(meas.recordedDate.ToLocalTime());
@@ -317,7 +317,7 @@ namespace ION.IOS.ViewController.Logging {
         graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .14 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
       },
       () => {
-          graphingSection.graphingView = new GraphingView(graphingSection.graphingType,this, tempResults);
+          graphingSection.graphingView = new GraphingView(graphingSection.graphingType,this, tempResults,selectedSessions);
           graphingSection.legendView = new LegendView(graphingSection.graphingType,tempResults,this);
           graphingSection.graphingType.AddSubview (graphingSection.graphingView.gView);
           graphingSection.graphingType.AddSubview (graphingSection.legendView.lView);

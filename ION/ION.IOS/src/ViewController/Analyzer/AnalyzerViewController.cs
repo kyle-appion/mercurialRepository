@@ -37,11 +37,11 @@ namespace ION.IOS.ViewController.Analyzer {
     public static LowHighArea lowHighSensors;
     public static ManualView mentryView;
     public static AnalyzerViewController arvc;
-    public static bool isRecording = false;
+
 //    public static UIButton dataRecord;
 //    public static UIButton dataStop;
 //    public static UIButton showRecords;
-    private IION ion;
+//    private IION ion;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -68,9 +68,9 @@ namespace ION.IOS.ViewController.Analyzer {
       Title = "Analyzer";
 
       createSensors ();
-//
-      ion = AppState.context;
-//
+
+//      ion = AppState.context;
+
 //      dataRecord = new UIButton(new CGRect(.4 * View.Bounds.Width, .3 * View.Bounds.Height, 30, 30));
 //      dataRecord.BackgroundColor = UIColor.LightGray;
 //      dataRecord.SetImage(UIImage.FromBundle("ic_record"),UIControlState.Normal);
@@ -87,7 +87,7 @@ namespace ION.IOS.ViewController.Analyzer {
 //      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
 //      showRecords.BackgroundColor = UIColor.Green;
 //      showRecords.Layer.CornerRadius = 6;
-//
+
 //      dataRecord.TouchUpInside += recordDevices;
 //
 //      dataStop.TouchUpInside += stopRecording;
@@ -112,7 +112,7 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.mtextValue.ResignFirstResponder();
         this.View.SendSubviewToBack (mentryView.mView);
       };
-
+//
 //      View.AddSubview(dataRecord);
 //      View.BringSubviewToFront(dataRecord);
 //      View.AddSubview(dataStop);
@@ -127,7 +127,6 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
 //    public void recordDevices(object sender, EventArgs e){
-//      isRecording = true;
 //      dataStop.Enabled = true;
 //      dataStop.Alpha = 1f;
 //      dataRecord.Enabled = false;
@@ -143,7 +142,6 @@ namespace ION.IOS.ViewController.Analyzer {
 //    public void stopRecording(object sender, EventArgs e){
 //      ion.dataLogManager.StopRecording();
 //
-//      isRecording = false;
 //      dataStop.Enabled = false;
 //      dataStop.Alpha = .4f;
 //      dataRecord.Enabled = true;
@@ -240,7 +238,7 @@ namespace ION.IOS.ViewController.Analyzer {
 //      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
 //      Console.WriteLine("Measurements:");
 //      foreach (var item in result) {
-//        Console.WriteLine("MID:" + item.MID + " Measurement:" + item.measurement + " for Session:" + item.frn_SID);
+//        Console.WriteLine("MID:" + item.MID + " Measurement:" + item.measurement + " for Session:" + item.frn_SID + " for device: " + item.serialNumber);
 //        //Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
 //      }
 //      Console.WriteLine("");
@@ -271,8 +269,8 @@ namespace ION.IOS.ViewController.Analyzer {
 //        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName);
 //      }
 //
-//      var result4 = ion.database.Query<ION.Core.Database.DeviceRow>("SELECT * FROM DeviceRow");
-
+//      var result4 = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM DeviceRow");
+//
 //      foreach (var item in result4) {
 //        Console.WriteLine(item.ToString());
 //        Console.WriteLine(Environment.NewLine);

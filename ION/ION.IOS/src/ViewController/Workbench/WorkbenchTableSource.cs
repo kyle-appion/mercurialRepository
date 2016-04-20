@@ -319,7 +319,6 @@
         }));
 
         vc.PresentViewController(textAlert, true, null);
-
       }));
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {

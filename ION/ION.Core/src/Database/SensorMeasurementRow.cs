@@ -31,7 +31,7 @@
     /// </summary>
     /// <value>The device identifier.</value>
     [Indexed]
-    public int deviceId { get; set; }
+    public string serialNumber { get; set; }
     /// <summary>
     /// The sensors index within the device.
     /// </summary>
@@ -84,7 +84,7 @@
 */
 
     public override string ToString() {
-      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", MID, frn_SID, deviceId, sensorIndex, recordedDate, measurement);
+      return string.Format("[SensorMeasurementRow: id={0}, sessionId={1}, deviceId={2}, sensorIndex={3}, recordedDate={4}, measurement={5}]", MID, frn_SID, serialNumber, sensorIndex, recordedDate, measurement);
     }
   }
 }

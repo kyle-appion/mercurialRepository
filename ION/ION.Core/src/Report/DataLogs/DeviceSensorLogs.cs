@@ -10,7 +10,7 @@
     /// The id of the device who owns the device sensor.
     /// </summary>
     /// <value>The device identifier.</value>
-    public int deviceId { get; internal set; }
+    public string deviceId { get; internal set; }
     /// <summary>
     /// The index of the device sensor.
     /// </summary>
