@@ -34,7 +34,7 @@
   /// <summary>
   /// The class is used to bypass the inability of the GoogleApiClient to return a location with an altitude.
   /// </summary>
-  public class GpsAltitudeProvider : Java.Lang.Object, ILocationListener {
+  public class GpsAltitudeProvider : Java.Lang.Object, ILocationListener, IDisposable {
     /// <summary>
     /// The delegate that is used to register to the OnAltitudeEvent event.
     /// </summary>
@@ -67,8 +67,24 @@
     /// </summary>
     private DateTime lastLocationReceivedTime;
 
+    private bool disposed;
+
     public GpsAltitudeProvider(LocationManager lm) {
       this.lm = lm;
+    }
+
+    /// <summary>
+    /// Releases all resource used by the <see cref="ION.Droid.Location.GpsAltitudeProvider"/> object.
+    /// </summary>
+    /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="ION.Droid.Location.GpsAltitudeProvider"/>.
+    /// The <see cref="Dispose"/> method leaves the <see cref="ION.Droid.Location.GpsAltitudeProvider"/> in an unusable
+    /// state. After calling <see cref="Dispose"/>, you must release all references to the
+    /// <see cref="ION.Droid.Location.GpsAltitudeProvider"/> so the garbage collector can reclaim the memory that the
+    /// <see cref="ION.Droid.Location.GpsAltitudeProvider"/> was occupying.</remarks>
+    public void Dispose() {
+      lm.RemoveUpdates(this);
+      disposed = true;
+
     }
 
     /// <Docs>The new location, as a Location object.</Docs>
@@ -146,7 +162,7 @@
         lm.RequestSingleUpdate(LocationManager.GpsProvider, this, Looper.MainLooper);
 
         var start = DateTime.Now;
-        while (lastKnownLocation == null || !lastKnownLocation.Equals(old)) {
+        while (!disposed && (lastKnownLocation == null || !lastKnownLocation.Equals(old))) {
           Log.D(this, "gps location not found after " + (DateTime.Now - start));
           Thread.Sleep(250);
         }

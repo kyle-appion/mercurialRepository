@@ -88,6 +88,9 @@
     public void Dispose() {
       StopAutomaticLocationPolling();
       ion.preferences.prefs.UnregisterOnSharedPreferenceChangeListener(this);
+      if (altitudeProvider != null) {
+        altitudeProvider.Dispose();
+      }
     }
 
     /// <summary>
@@ -110,12 +113,14 @@
         lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
       };
 
+/*
       if (altitudeProvider.isEnabled) {
 //        altitudeProvider.StartUpdates();
         altitudeProvider.RequestSingleLocation();
       } else {
         Log.D(this, "Not doing the altitude find");
       }
+*/
 
       ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
 
