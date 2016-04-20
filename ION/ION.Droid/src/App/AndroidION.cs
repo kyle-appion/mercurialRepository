@@ -191,6 +191,7 @@
         AppState.context = null;
       }
 
+      AppState.context = this;
       this.handler = new Android.OS.Handler();
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
       var discard = preferences.appVersion; // Sets the current application version.
@@ -263,7 +264,6 @@
 
       UpdateNotification();
 
-      AppState.context = this;
       initialized = true;
     }
 
