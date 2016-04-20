@@ -174,8 +174,9 @@ namespace ION.IOS.Connections {
           Log.D(this, "Name characteristic read: " + name);
         } else if (args.Characteristic.Equals(readCharacteristic)) {
           lastPacket = readCharacteristic.Value.ToArray();
+          Log.D(this, "Receiving new data packet");
         } else {
-          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
+//          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
         }
       };
 
@@ -197,7 +198,7 @@ namespace ION.IOS.Connections {
     }
 
     // Overridden from IConnection
-    public async Task<bool> Connect() {
+    public async Task<bool> ConnectAsync() {
       if (EConnectionState.Disconnected != connectionState) {
         return false;
       }
@@ -270,26 +271,24 @@ namespace ION.IOS.Connections {
     }
 
     // Overridden from IConnection
-    public Task<bool> Write(byte[] packet) {
-      return Task.Run(() => {
-        if (EConnectionState.Connected != connectionState) {
-          return false;
-        }
+    public bool Write(byte[] packet) {
+      if (EConnectionState.Connected != connectionState) {
+        return false;
+      }
 
-        NSData data = NSData.FromArray(packet);
-        __nativeDevice.WriteValue(data, writeCharacteristic, CBCharacteristicWriteType.WithoutResponse);
+      NSData data = NSData.FromArray(packet);
+      __nativeDevice.WriteValue(data, writeCharacteristic, CBCharacteristicWriteType.WithoutResponse);
 
-        return true;
-      });
+      return true;
     }
 
 
     public async Task<string> PullDeviceName() {
-      Log.D(this, "Pulling device name");
+      Log.D(this, "Pulling device name for " + __nativeDevice.Name);
       bool needsDisconnect = false;
       if (EConnectionState.Connected != connectionState) {
         needsDisconnect = true;
-        await Connect();
+        await ConnectAsync();
       }
 
       try {

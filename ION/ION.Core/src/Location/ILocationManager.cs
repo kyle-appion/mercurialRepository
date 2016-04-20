@@ -18,10 +18,22 @@
     event OnLocationChanged onLocationChanged;
 
     /// <summary>
+    /// Whether or not the location manager is enabled (in a working state).
+    /// </summary>
+    /// <value><c>true</c> if is enabled; otherwise, <c>false</c>.</value>
+    bool isEnabled { get; }
+
+    /// <summary>
     /// Whether or not the location manager should track locations.
     /// </summary>
     /// <value><c>true</c> if allow location tracking; otherwise, <c>false</c>.</value>
     bool allowLocationTracking { get; set; }
+
+    /// <summary>
+    /// Whether or not the location manager get get the altitude of the user.
+    /// </summary>
+    /// <value><c>true</c> if can get altitude; otherwise, <c>false</c>.</value>
+//    bool canGetAltitude { get; set; }
 
     /// <summary>
     /// The last location known by the location manager.

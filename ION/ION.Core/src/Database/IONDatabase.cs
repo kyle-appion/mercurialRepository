@@ -6,9 +6,9 @@
   using System.IO;
   using System.Threading.Tasks;
 
-  using SQLite.Net; 
+  using SQLite.Net;
   using SQLite.Net.Interop;
-   
+
   using ION.Core.App;
   using ION.Core.Database.Deprecated;
   using ION.Core.IO;
@@ -24,7 +24,7 @@
     /// The ion context that this database is running within.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion { get; private set; } 
+    public IION ion { get; private set; }
 
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
@@ -42,7 +42,7 @@
     /// <returns>The async.</returns>
     public Task<InitializationResult> InitAsync() {
       return Task.FromResult(new InitializationResult() { success = true });
-    } 
+    }
 
     /// <summary>
     /// Queries for the item with the given id.
@@ -111,7 +111,7 @@
       BeginTransaction();
 
       try {
-        var affected = Delete(t._id);
+        var affected = Delete(t);
 
         if (affected > 0) {
           Commit();

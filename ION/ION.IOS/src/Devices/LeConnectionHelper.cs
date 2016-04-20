@@ -65,8 +65,8 @@
     /// </summary>
     private CancellationTokenSource cancelSource;
 
-    public LeConnectionHelper() {
-      centralManager = new CBCentralManager(new DispatchQueue("ION iOS Bluetooth", true));
+    public LeConnectionHelper(CBCentralManager centralManager) {
+      this.centralManager = centralManager;
       centralManager.UpdatedState += (object sender, EventArgs e) => {
         NotifyScanStateChanged();
       };
@@ -79,7 +79,7 @@
         var adData = e.AdvertisementData;
 
         if (name == null) {
-          Log.E(this, "No name was provided for peripheral. Attempting to pull from scan record.");
+          Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
           if (adData != null) {
             var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
             if (data != null) {
@@ -167,6 +167,7 @@
       return EProtocolVersion.Classic != protocol;
     }
 
+/*
     /// <summary>
     /// Initializes a new instance of the <see cref="ION.IOS.Devices.LeConnectionHelper"/> class.
     /// </summary>
@@ -180,6 +181,7 @@
 
       return new IosLeConnection(centralManager, peripheral);
     }
+*/
 
     /// <summary>
     /// Performs a scan for the given scan time. Note: the scan time is 
@@ -223,6 +225,8 @@
       if (cancelSource != null) {
         cancelSource.Cancel();
       }
+
+      centralManager.StopScan();
     }
 
     /// <summary>

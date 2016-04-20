@@ -105,7 +105,7 @@
         var sessions = new List<SessionRecord>();
 
         var sessionRows = ion.database.Table<SessionRow>()
-          .Where(sr => sr.jobId == j.id)
+          .Where(sr => sr.frn_JID == j._id)
           .AsEnumerable();
 
         foreach (var s in sessionRows) {

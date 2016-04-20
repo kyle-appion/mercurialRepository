@@ -250,20 +250,12 @@
     }
   }
 
-  abstract class SubviewAdapterViewHolder : RecyclerView.ViewHolder, IItemTouchHelperViewHolder {
+  abstract class SubviewAdapterViewHolder : RecyclerView.ViewHolder {
     public SubviewAdapterViewHolder(View view) : base(view) {
     }
 
     public abstract void BindTo(IRecord t);
     public abstract void Unbind();
-
-    // Overridden from IITouchHelperViewHolder
-    public virtual void OnItemSelected() {
-    }
-
-    // Overridden from IITouchHelperViewHolder
-    public virtual void OnItemClear() {
-    }
   }
 
   abstract class SubviewAdapterViewHolder<T> : SubviewAdapterViewHolder where T : IRecord {

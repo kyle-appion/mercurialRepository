@@ -28,11 +28,15 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="enabling_bluetooth">Enabling Bluetooth...</string>
+  <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
   <string name="enter_number">Enter a number</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="favorites">Favorites</string>
+  <string name="_fixed">Fixed</string>
+  <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
   <string name="help">Help</string>
   <string name="inactive">Inactive</string>
@@ -43,6 +47,7 @@
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
+  <string name="_new">New</string>
   <string name="next">Next</string>
   <string name="notes">Notes</string>
   <string name="ok">OK</string>
@@ -70,6 +75,8 @@
   <string name="title">Title</string>
   <string name="undo">Undo</string>
   <string name="unit">Unit</string>
+  <string name="updated">Updated</string>
+  <string name="whats_new_in">What\'s New in {0}</string>
   <string name="zip">Zip Code</string>
 
   <!--
@@ -140,10 +147,15 @@
 
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
+  <string name="devices_forget">Forget Device?</string>
+  <string name="devices_forget_warning">If you forget a device, the device will permanently be deleted from the application. You will no longer see the device until you scan for it again. The device\'s reports and certificates will not be deleted.</string>
 
   <!--
   ERRORS, GENERAL
   -->
+  <string name="error_bluetooth">Bluetooth Error</string>
+  <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
+  <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>

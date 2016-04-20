@@ -205,7 +205,7 @@
         // Build the logs that will be included in the graph selection.
         logs = new List<DeviceSensorLogs>();
         foreach (var s in sessionAdapter.GetCheckedSessions()) {
-          var sessionData = await ion.dataLogManager.QuerySessionData(s.id);
+          var sessionData = await ion.dataLogManager.QuerySessionData(s._id);
           logs.AddRange(sessionData.deviceSensorLogs);
         }
 
@@ -231,7 +231,7 @@
       }));
 
       sessionAdapter = new SessionSelectionAdapter();
-      sessionAdapter.AddSessions(ion, ion.database.Table<SessionRow>().Where(sr => sr.jobId == 0).AsEnumerable());
+      sessionAdapter.AddSessions(ion, ion.database.Table<SessionRow>().Where(sr => sr.frn_JID == 0).AsEnumerable());
       sessionAdapter.AddJobs(ion, await ion.database.QueryForAllAsync<JobRow>());
       list.SetAdapter(sessionAdapter);
     }

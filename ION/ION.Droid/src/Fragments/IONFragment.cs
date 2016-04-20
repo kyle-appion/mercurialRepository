@@ -91,7 +91,9 @@
       base.OnPrepareOptionsMenu(menu);
 
       menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));
+#if DEBUG
       menu.FindItem(Resource.Id.record).SetVisible(HasFlags(EFlags.StartRecording));
+#endif
     }
 
     /// <Docs>The menu item that was selected.</Docs>

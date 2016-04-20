@@ -305,7 +305,7 @@
         // Append gauge device sensor context items
         if (!sensor.device.isConnected) {
           dialog.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-            sensor.device.connection.Connect();
+            sensor.device.connection.ConnectAsync();
           }));
         }
       }

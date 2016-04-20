@@ -169,7 +169,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (conn == 1) {
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
-        currentSensor.device.connection.Connect();
+        currentSensor.device.connection.ConnectAsync();
       }
 
       await Task.Delay(TimeSpan.FromSeconds(2));
