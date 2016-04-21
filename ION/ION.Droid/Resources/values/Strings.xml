@@ -34,6 +34,7 @@
   <string name="enter_number">Enter a number</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
+  <string name="exit_ion">Exit ION</string>
   <string name="favorites">Favorites</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
@@ -97,7 +98,7 @@
   <!--
   ANALYZER
   -->
-  <string name="analyzer">Analyzer</string>
+  <string name="analyzer">System Analyzer</string>
   <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
   <string name="analyzer_complete_swap">Complete Swap?</string>
@@ -180,10 +181,10 @@
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
   <string name="fluid_setup">Setup</string>
   <string name="fluid_sc">Subcool</string>
-  <string name="fluid_sc_abrv">S/C</string>
+  <string name="fluid_sc_abrv">SC</string>
   <string name="fluid_sh">Superheat</string>
-  <string name="fluid_sh_sc">S/H S/C</string>
-  <string name="fluid_sh_abrv">S/H</string>
+  <string name="fluid_sh_sc">SH / SC</string>
+  <string name="fluid_sh_abrv">SH</string>
   
 
   <!--
