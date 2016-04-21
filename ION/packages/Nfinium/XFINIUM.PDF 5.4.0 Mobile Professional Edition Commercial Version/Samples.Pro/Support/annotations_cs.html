@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\Annotations.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Annotations<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Actions<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Destinations<span class="hl opt">;</span>
+<span class="hl kwa">using</span> System<span class="hl opt">.</span>IO<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// Annotations sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> Annotations
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Main method for running the sample.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public static</span> SampleOutputInfo<span class="hl opt">[]</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>Stream flashStream<span class="hl opt">,</span> Stream u3dStream<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl slc">// Create a PDF document with 10 pages.</span>
+            PdfFixedDocument document <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">();</span>
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">12</span><span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateTextAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateSquareCircleAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateFileAttachmentAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateInkAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateLineAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreatePolygonAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreatePolylineAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateRubberStampAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateTextMarkupAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateRichMediaAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">,</span> flashStream<span class="hl opt">);</span>
+
+            <span class="hl kwd">Create3DAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">,</span> u3dStream<span class="hl opt">);</span>
+
+            <span class="hl kwd">CreateRedactionAnnotations</span><span class="hl opt">(</span>document<span class="hl opt">,</span> helvetica<span class="hl opt">,</span> u3dStream<span class="hl opt">);</span>
+
+            <span class="hl slc">// Compress the page graphic content.</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span>Count<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                document<span class="hl opt">.</span>Pages<span class="hl opt">[</span>i<span class="hl opt">].</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+            <span class="hl opt">}</span>
+
+            SampleOutputInfo<span class="hl opt">[]</span> output <span class="hl opt">=</span> <span class="hl kwa">new</span> SampleOutputInfo<span class="hl opt">[] {</span> <span class="hl kwa">new</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.annotations.pdf&quot;</span><span class="hl opt">) };</span>
+            <span class="hl kwa">return</span> output<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateTextAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            <span class="hl kwb">string</span><span class="hl opt">[]</span> textAnnotationNames <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">string</span><span class="hl opt">[]</span> 
+                <span class="hl opt">{</span> 
+                    <span class="hl str">&quot;Comment&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Check&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Circle&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Cross&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Help&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Insert&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Key&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;NewParagraph&quot;</span><span class="hl opt">,</span> 
+                    <span class="hl str">&quot;Note&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Paragraph&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;RightArrow&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;RightPointer&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Star&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;UpArrow&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;UpLeftArrow&quot;</span> 
+                <span class="hl opt">};</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;B/W text annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> textAnnotationNames<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfTextAnnotation ta <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextAnnotation</span><span class="hl opt">();</span>
+                ta<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                ta<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a &quot;</span> <span class="hl opt">+</span> textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; annotation.&quot;</span><span class="hl opt">;</span>
+                ta<span class="hl opt">.</span>IconName <span class="hl opt">=</span> textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ta<span class="hl opt">);</span>
+                ta<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">],</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            Random rnd <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Random</span><span class="hl opt">();</span>
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> rgb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">];</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Color text annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> textAnnotationNames<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfTextAnnotation ta <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextAnnotation</span><span class="hl opt">();</span>
+                ta<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                ta<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a &quot;</span> <span class="hl opt">+</span> textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; annotation.&quot;</span><span class="hl opt">;</span>
+                ta<span class="hl opt">.</span>IconName <span class="hl opt">=</span> textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">);</span>
+                ta<span class="hl opt">.</span>OutlineColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span>rgb<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">);</span>
+                ta<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span>rgb<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ta<span class="hl opt">);</span>
+                ta<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>textAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">],</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">340</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text annotations with custom icons&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">700</span><span class="hl opt">);</span>
+            PdfTextAnnotation customTextAnnotation <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextAnnotation</span><span class="hl opt">();</span>
+            customTextAnnotation<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+            customTextAnnotation<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Text annotation with custom icon.&quot;</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>customTextAnnotation<span class="hl opt">);</span>
+            customTextAnnotation<span class="hl opt">.</span>IconName <span class="hl opt">=</span> <span class="hl str">&quot;Custom icon appearance&quot;</span><span class="hl opt">;</span>
+            customTextAnnotation<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">720</span><span class="hl opt">);</span>
+
+            PdfAnnotationAppearance customAppearance <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfAnnotationAppearance</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            PdfPen bluePen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+            customTextAnnotation<span class="hl opt">.</span>NormalAppearance <span class="hl opt">=</span> customAppearance<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateSquareCircleAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Square annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            PdfSquareAnnotation square1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfSquareAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>square1<span class="hl opt">);</span>
+            square1<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            square1<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Square annotation with red border&quot;</span><span class="hl opt">;</span>
+            square1<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            square1<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            square1<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+
+            PdfSquareAnnotation square2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfSquareAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>square2<span class="hl opt">);</span>
+            square2<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            square2<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Square annotation with blue interior&quot;</span><span class="hl opt">;</span>
+            square2<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            square2<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            square2<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">);</span>
+            square2<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">270</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+
+            PdfSquareAnnotation square3 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfSquareAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>square3<span class="hl opt">);</span>
+            square3<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            square3<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Square annotation with yellow border and green interior&quot;</span><span class="hl opt">;</span>
+            square3<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            square3<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            square3<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            square3<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">470</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Circle annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">350</span><span class="hl opt">);</span>
+
+            PdfCircleAnnotation circle1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfCircleAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>circle1<span class="hl opt">);</span>
+            circle1<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            circle1<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Circle annotation with red border&quot;</span><span class="hl opt">;</span>
+            circle1<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            circle1<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            circle1<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+
+            PdfCircleAnnotation circle2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfCircleAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>circle2<span class="hl opt">);</span>
+            circle2<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            circle2<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Circle annotation with blue interior&quot;</span><span class="hl opt">;</span>
+            circle2<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">null</span><span class="hl opt">;</span>
+            circle2<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            circle2<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">);</span>
+            circle2<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">270</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+
+            PdfCircleAnnotation circle3 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfCircleAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>circle3<span class="hl opt">);</span>
+            circle3<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.pdf&quot;</span><span class="hl opt">;</span>
+            circle3<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Circle annotation with yellow border and green interior&quot;</span><span class="hl opt">;</span>
+            circle3<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            circle3<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            circle3<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            circle3<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">470</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateFileAttachmentAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+            Random rnd <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Random</span><span class="hl opt">();</span>
+            <span class="hl slc">// Random binary data to be used a file content for file attachment annotations.</span>
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> fileData <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">256</span><span class="hl opt">];</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            <span class="hl kwb">string</span><span class="hl opt">[]</span> fileAttachmentAnnotationNames <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">string</span><span class="hl opt">[]</span> 
+                <span class="hl opt">{</span> 
+                    <span class="hl str">&quot;Graph&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Paperclip&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;PushPin&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Tag&quot;</span>
+                <span class="hl opt">};</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;B/W file attachment annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fileAttachmentAnnotationNames<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>fileData<span class="hl opt">);</span>
+
+                PdfFileAttachmentAnnotation faa <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFileAttachmentAnnotation</span><span class="hl opt">();</span>
+                faa<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a &quot;</span> <span class="hl opt">+</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; annotation.&quot;</span><span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>IconName <span class="hl opt">=</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                faa<span class="hl opt">.</span>Payload <span class="hl opt">=</span> fileData<span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>FileName <span class="hl opt">=</span> <span class="hl str">&quot;BlackAndWhite&quot;</span> <span class="hl opt">+</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot;.dat&quot;</span><span class="hl opt">;</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>faa<span class="hl opt">);</span>
+                faa<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">],</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">90</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> rgb <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">];</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Color file attachment annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> fileAttachmentAnnotationNames<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>fileData<span class="hl opt">);</span>
+
+                PdfFileAttachmentAnnotation faa <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFileAttachmentAnnotation</span><span class="hl opt">();</span>
+                faa<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a &quot;</span> <span class="hl opt">+</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; annotation.&quot;</span><span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>IconName <span class="hl opt">=</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                faa<span class="hl opt">.</span>Payload <span class="hl opt">=</span> fileData<span class="hl opt">;</span>
+                faa<span class="hl opt">.</span>FileName <span class="hl opt">=</span> <span class="hl str">&quot;Color&quot;</span> <span class="hl opt">+</span> fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot;.dat&quot;</span><span class="hl opt">;</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">);</span>
+                faa<span class="hl opt">.</span>OutlineColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span>rgb<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+                rnd<span class="hl opt">.</span><span class="hl kwd">NextBytes</span><span class="hl opt">(</span>rgb<span class="hl opt">);</span>
+                faa<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span>rgb<span class="hl opt">[</span><span class="hl num">0</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">1</span><span class="hl opt">],</span> rgb<span class="hl opt">[</span><span class="hl num">2</span><span class="hl opt">]);</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>faa<span class="hl opt">);</span>
+                faa<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">300</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>fileAttachmentAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">],</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">340</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;File attachment annotations with custom icons&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">700</span><span class="hl opt">);</span>
+            PdfFileAttachmentAnnotation customFileAttachmentAnnotation <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFileAttachmentAnnotation</span><span class="hl opt">();</span>
+            customFileAttachmentAnnotation<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+            customFileAttachmentAnnotation<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;File attachment annotation with custom icon.&quot;</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>customFileAttachmentAnnotation<span class="hl opt">);</span>
+            customFileAttachmentAnnotation<span class="hl opt">.</span>IconName <span class="hl opt">=</span> <span class="hl str">&quot;Custom icon appearance&quot;</span><span class="hl opt">;</span>
+            customFileAttachmentAnnotation<span class="hl opt">.</span>Location <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">720</span><span class="hl opt">);</span>
+
+            PdfAnnotationAppearance customAppearance <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfAnnotationAppearance</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            PdfPen bluePen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+            customFileAttachmentAnnotation<span class="hl opt">.</span>NormalAppearance <span class="hl opt">=</span> customAppearance<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateInkAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+            Random rnd <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Random</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Ink annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            <span class="hl slc">// The ink annotation will contain 3 lines, each one with 10 points.</span>
+            PdfPoint<span class="hl opt">[][]</span> points <span class="hl opt">=</span> <span class="hl kwa">new</span> PdfPoint<span class="hl opt">[</span><span class="hl num">3</span><span class="hl opt">][];</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> points<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                points<span class="hl opt">[</span>i<span class="hl opt">] =</span> <span class="hl kwa">new</span> PdfPoint<span class="hl opt">[</span><span class="hl num">10</span><span class="hl opt">];</span>
+                <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> points<span class="hl opt">[</span>i<span class="hl opt">].</span>Length<span class="hl opt">;</span> j<span class="hl opt">++)</span>
+                <span class="hl opt">{</span>
+                    points<span class="hl opt">[</span>i<span class="hl opt">][</span>j<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span>rnd<span class="hl opt">.</span><span class="hl kwd">NextDouble</span><span class="hl opt">() *</span> page<span class="hl opt">.</span>Width<span class="hl opt">,</span> rnd<span class="hl opt">.</span><span class="hl kwd">NextDouble</span><span class="hl opt">() *</span> page<span class="hl opt">.</span>Height<span class="hl opt">);</span>
+                <span class="hl opt">}</span>
+            <span class="hl opt">}</span>
+
+            PdfInkAnnotation ia <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfInkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>ia<span class="hl opt">);</span>
+            ia<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am an ink annotation.&quot;</span><span class="hl opt">;</span>
+            ia<span class="hl opt">.</span>InkColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">);</span>
+            ia<span class="hl opt">.</span>InkWidth <span class="hl opt">=</span> <span class="hl num">5</span><span class="hl opt">;</span>
+            ia<span class="hl opt">.</span>Points <span class="hl opt">=</span> points<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateLineAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Line annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            PdfLineEndSymbol<span class="hl opt">[]</span> les <span class="hl opt">=</span> <span class="hl kwa">new</span> PdfLineEndSymbol<span class="hl opt">[]</span> 
+                <span class="hl opt">{</span> 
+                    PdfLineEndSymbol<span class="hl opt">.</span>Circle<span class="hl opt">,</span> PdfLineEndSymbol<span class="hl opt">.</span>ClosedArrow<span class="hl opt">,</span> PdfLineEndSymbol<span class="hl opt">.</span>None<span class="hl opt">,</span> PdfLineEndSymbol<span class="hl opt">.</span>OpenArrow
+                <span class="hl opt">};</span>
+
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> les<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfLineAnnotation la <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLineAnnotation</span><span class="hl opt">();</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>la<span class="hl opt">);</span>
+                la<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                la<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a line annotation with &quot;</span> <span class="hl opt">+</span> les<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">ToString</span><span class="hl opt">() +</span> <span class="hl str">&quot; ending.&quot;</span><span class="hl opt">;</span>
+                la<span class="hl opt">.</span>StartPoint <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                la<span class="hl opt">.</span>EndPoint <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">(</span><span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+                la<span class="hl opt">.</span>EndLineSymbol <span class="hl opt">=</span> les<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Line end symbol: &quot;</span> <span class="hl opt">+</span> les<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">ToString</span><span class="hl opt">(),</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">270</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">40</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreatePolygonAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Polygon annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            <span class="hl kwb">int</span><span class="hl opt">[]</span> vertices <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[]{</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">6</span> <span class="hl opt">};</span>
+            <span class="hl kwb">double</span> centerY <span class="hl opt">=</span> <span class="hl num">125</span><span class="hl opt">,</span> centerX <span class="hl opt">=</span> <span class="hl num">150</span><span class="hl opt">;</span>
+            <span class="hl kwb">double</span> radius <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> vertices<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfPoint<span class="hl opt">[]</span> points <span class="hl opt">=</span> <span class="hl kwa">new</span> PdfPoint<span class="hl opt">[</span>vertices<span class="hl opt">[</span>i<span class="hl opt">]];</span>
+                <span class="hl kwb">double</span> angle <span class="hl opt">=</span> <span class="hl num">90</span><span class="hl opt">;</span>
+                <span class="hl kwb">double</span> rotation <span class="hl opt">=</span> <span class="hl num">360</span> <span class="hl opt">/</span> vertices<span class="hl opt">[</span>i<span class="hl opt">];</span>
+
+                <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> vertices<span class="hl opt">[</span>i<span class="hl opt">];</span> j<span class="hl opt">++)</span>
+                <span class="hl opt">{</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">();</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">].</span>X <span class="hl opt">=</span> centerX <span class="hl opt">+</span> radius <span class="hl opt">*</span> Math<span class="hl opt">.</span><span class="hl kwd">Cos</span><span class="hl opt">(</span>Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> angle <span class="hl opt">/</span> <span class="hl num">180</span><span class="hl opt">);</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">].</span>Y <span class="hl opt">=</span> centerY <span class="hl opt">-</span> radius <span class="hl opt">*</span> Math<span class="hl opt">.</span><span class="hl kwd">Sin</span><span class="hl opt">(</span>Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> angle <span class="hl opt">/</span> <span class="hl num">180</span><span class="hl opt">);</span>
+                    angle <span class="hl opt">=</span> angle <span class="hl opt">+</span> rotation<span class="hl opt">;</span>
+                <span class="hl opt">}</span>
+
+                PdfPolygonAnnotation polygon <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPolygonAnnotation</span><span class="hl opt">();</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>polygon<span class="hl opt">);</span>
+                polygon<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                polygon<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Polygon annotation with &quot;</span> <span class="hl opt">+</span> vertices<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; vertices.&quot;</span><span class="hl opt">;</span>
+                polygon<span class="hl opt">.</span>Points <span class="hl opt">=</span> points<span class="hl opt">;</span>
+                polygon<span class="hl opt">.</span>LineColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">192</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+                polygon<span class="hl opt">.</span>LineWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+                polygon<span class="hl opt">.</span>InteriorColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">);</span>
+
+                centerY <span class="hl opt">=</span> centerY <span class="hl opt">+</span> <span class="hl num">150</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreatePolylineAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Polyline annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            <span class="hl kwb">int</span><span class="hl opt">[]</span> vertices <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">int</span><span class="hl opt">[] {</span> <span class="hl num">3</span><span class="hl opt">,</span> <span class="hl num">4</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">6</span> <span class="hl opt">};</span>
+            <span class="hl kwb">double</span> centerY <span class="hl opt">=</span> <span class="hl num">125</span><span class="hl opt">,</span> centerX <span class="hl opt">=</span> <span class="hl num">150</span><span class="hl opt">;</span>
+            <span class="hl kwb">double</span> radius <span class="hl opt">=</span> <span class="hl num">50</span><span class="hl opt">;</span>
+
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> vertices<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfPoint<span class="hl opt">[]</span> points <span class="hl opt">=</span> <span class="hl kwa">new</span> PdfPoint<span class="hl opt">[</span>vertices<span class="hl opt">[</span>i<span class="hl opt">]];</span>
+                <span class="hl kwb">double</span> angle <span class="hl opt">=</span> <span class="hl num">90</span><span class="hl opt">;</span>
+                <span class="hl kwb">double</span> rotation <span class="hl opt">=</span> <span class="hl num">360</span> <span class="hl opt">/</span> vertices<span class="hl opt">[</span>i<span class="hl opt">];</span>
+
+                <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> j <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> j <span class="hl opt">&lt;</span> vertices<span class="hl opt">[</span>i<span class="hl opt">];</span> j<span class="hl opt">++)</span>
+                <span class="hl opt">{</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">] =</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPoint</span><span class="hl opt">();</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">].</span>X <span class="hl opt">=</span> centerX <span class="hl opt">+</span> radius <span class="hl opt">*</span> Math<span class="hl opt">.</span><span class="hl kwd">Cos</span><span class="hl opt">(</span>Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> angle <span class="hl opt">/</span> <span class="hl num">180</span><span class="hl opt">);</span>
+                    points<span class="hl opt">[</span>j<span class="hl opt">].</span>Y <span class="hl opt">=</span> centerY <span class="hl opt">-</span> radius <span class="hl opt">*</span> Math<span class="hl opt">.</span><span class="hl kwd">Sin</span><span class="hl opt">(</span>Math<span class="hl opt">.</span>PI <span class="hl opt">*</span> angle <span class="hl opt">/</span> <span class="hl num">180</span><span class="hl opt">);</span>
+                    angle <span class="hl opt">=</span> angle <span class="hl opt">+</span> rotation<span class="hl opt">;</span>
+                <span class="hl opt">}</span>
+
+                PdfPolylineAnnotation polyline <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPolylineAnnotation</span><span class="hl opt">();</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>polyline<span class="hl opt">);</span>
+                polyline<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                polyline<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Polyline annotation with &quot;</span> <span class="hl opt">+</span> vertices<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; vertices.&quot;</span><span class="hl opt">;</span>
+                polyline<span class="hl opt">.</span>Points <span class="hl opt">=</span> points<span class="hl opt">;</span>
+                polyline<span class="hl opt">.</span>LineColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">192</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+                polyline<span class="hl opt">.</span>LineWidth <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+
+                centerY <span class="hl opt">=</span> centerY <span class="hl opt">+</span> <span class="hl num">150</span><span class="hl opt">;</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateRubberStampAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            <span class="hl kwb">string</span><span class="hl opt">[]</span> rubberStampAnnotationNames <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">string</span><span class="hl opt">[]</span> 
+                <span class="hl opt">{</span> 
+                    <span class="hl str">&quot;Approved&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;AsIs&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Confidential&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Departmental&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Draft&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Experimental&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Expired&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Final&quot;</span><span class="hl opt">,</span> 
+                    <span class="hl str">&quot;ForComment&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;ForPublicRelease&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;NotApproved&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;NotForPublicRelease&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;Sold&quot;</span><span class="hl opt">,</span> <span class="hl str">&quot;TopSecret&quot;</span> 
+                <span class="hl opt">};</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Rubber stamp annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> rubberStampAnnotationNames<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfRubberStampAnnotation rsa <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRubberStampAnnotation</span><span class="hl opt">();</span>
+                rsa<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;Xfinium.Pdf&quot;</span><span class="hl opt">;</span>
+                rsa<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;I am a &quot;</span> <span class="hl opt">+</span> rubberStampAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">] +</span> <span class="hl str">&quot; rubber stamp annotation.&quot;</span><span class="hl opt">;</span>
+                rsa<span class="hl opt">.</span>StampName <span class="hl opt">=</span> rubberStampAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">];</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>rsa<span class="hl opt">);</span>
+                rsa<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">70</span> <span class="hl opt">+</span> <span class="hl num">50</span> <span class="hl opt">*</span> i<span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">);</span>
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>rubberStampAnnotationNames<span class="hl opt">[</span>i<span class="hl opt">],</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">270</span><span class="hl opt">,</span> <span class="hl num">85</span> <span class="hl opt">+</span> <span class="hl num">50</span> <span class="hl opt">*</span> i<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Stamp annotations with custom appearance&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            PdfRubberStampAnnotation customRubberStampAnnotation <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRubberStampAnnotation</span><span class="hl opt">();</span>
+            customRubberStampAnnotation<span class="hl opt">.</span>Contents <span class="hl opt">=</span> <span class="hl str">&quot;Rubber stamp annotation with custom appearance.&quot;</span><span class="hl opt">;</span>
+            customRubberStampAnnotation<span class="hl opt">.</span>StampName <span class="hl opt">=</span> <span class="hl str">&quot;Custom&quot;</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>customRubberStampAnnotation<span class="hl opt">);</span>
+            customRubberStampAnnotation<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">350</span><span class="hl opt">,</span> <span class="hl num">70</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">);</span>
+
+            PdfAnnotationAppearance customAppearance <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfAnnotationAppearance</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            PdfPen redPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            PdfPen bluePen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">192</span><span class="hl opt">),</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>redPen<span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">5</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">,</span> <span class="hl num">40</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawLine</span><span class="hl opt">(</span>bluePen<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Height<span class="hl opt">,</span> customAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            customAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">CompressAndClose</span><span class="hl opt">();</span>
+            customRubberStampAnnotation<span class="hl opt">.</span>NormalAppearance <span class="hl opt">=</span> customAppearance<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateTextMarkupAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Text markup annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            PdfTextMarkupAnnotationType<span class="hl opt">[]</span> tmat <span class="hl opt">=</span> <span class="hl kwa">new</span> PdfTextMarkupAnnotationType<span class="hl opt">[]</span> 
+                <span class="hl opt">{</span> 
+                    PdfTextMarkupAnnotationType<span class="hl opt">.</span>Highlight<span class="hl opt">,</span> PdfTextMarkupAnnotationType<span class="hl opt">.</span>Squiggly<span class="hl opt">,</span> PdfTextMarkupAnnotationType<span class="hl opt">.</span>StrikeOut<span class="hl opt">,</span> PdfTextMarkupAnnotationType<span class="hl opt">.</span>Underline
+                <span class="hl opt">};</span>
+
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> blackBrush<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> font<span class="hl opt">;</span>
+
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Bottom<span class="hl opt">;</span>
+            <span class="hl kwa">for</span> <span class="hl opt">(</span><span class="hl kwb">int</span> i <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span> i <span class="hl opt">&lt;</span> tmat<span class="hl opt">.</span>Length<span class="hl opt">;</span> i<span class="hl opt">++)</span>
+            <span class="hl opt">{</span>
+                PdfTextMarkupAnnotation tma <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfTextMarkupAnnotation</span><span class="hl opt">();</span>
+                page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>tma<span class="hl opt">);</span>
+                tma<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">50</span> <span class="hl opt">*</span> i<span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">,</span> font<span class="hl opt">.</span>Size <span class="hl opt">+</span> <span class="hl num">2</span><span class="hl opt">);</span>
+                tma<span class="hl opt">.</span>TextMarkupType <span class="hl opt">=</span> tmat<span class="hl opt">[</span>i<span class="hl opt">];</span>
+
+                slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">150</span><span class="hl opt">;</span>
+                slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">100</span> <span class="hl opt">+</span> <span class="hl num">50</span> <span class="hl opt">*</span> i <span class="hl opt">+</span> font<span class="hl opt">.</span>Size<span class="hl opt">;</span>
+                
+                page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>tmat<span class="hl opt">[</span>i<span class="hl opt">].</span><span class="hl kwd">ToString</span><span class="hl opt">() +</span> <span class="hl str">&quot; annotation.&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+            <span class="hl opt">}</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateRichMediaAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">,</span> Stream flashStream<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Rich media annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> flashContent <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>flashStream<span class="hl opt">.</span>Length<span class="hl opt">];</span>
+            flashStream<span class="hl opt">.</span><span class="hl kwd">Read</span><span class="hl opt">(</span>flashContent<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> flashContent<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+
+            PdfRichMediaAnnotation rma <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRichMediaAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>rma<span class="hl opt">);</span>
+            rma<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">,</span> <span class="hl num">400</span><span class="hl opt">);</span>
+            rma<span class="hl opt">.</span>FlashPayload <span class="hl opt">=</span> flashContent<span class="hl opt">;</span>
+            rma<span class="hl opt">.</span>FlashFile <span class="hl opt">=</span> <span class="hl str">&quot;clock.swf&quot;</span><span class="hl opt">;</span>
+            rma<span class="hl opt">.</span>ActivationCondition <span class="hl opt">=</span> PdfRichMediaActivationCondition<span class="hl opt">.</span>PageVisible<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">Create3DAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">,</span> Stream u3dStream<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Rotation <span class="hl opt">=</span> <span class="hl num">90</span><span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;3D annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            <span class="hl kwb">byte</span><span class="hl opt">[]</span> u3dContent <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">byte</span><span class="hl opt">[</span>u3dStream<span class="hl opt">.</span>Length<span class="hl opt">];</span>
+            u3dStream<span class="hl opt">.</span><span class="hl kwd">Read</span><span class="hl opt">(</span>u3dContent<span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> u3dContent<span class="hl opt">.</span>Length<span class="hl opt">);</span>
+
+            Pdf3DView view0 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view0<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] {</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">, -</span><span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">1</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">, -</span><span class="hl num">0.417542</span><span class="hl opt">, -</span><span class="hl num">0.881257</span><span class="hl opt">, -</span><span class="hl num">0.125705</span> <span class="hl opt">};</span>
+            view0<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view0<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Default&quot;</span><span class="hl opt">;</span>
+            view0<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Default&quot;</span><span class="hl opt">;</span>
+            view0<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view0<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">30</span><span class="hl opt">;</span>
+
+            Pdf3DView view1 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view1<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] { -</span><span class="hl num">0.999888</span><span class="hl opt">,</span> <span class="hl num">0.014949</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0.014949</span><span class="hl opt">,</span> <span class="hl num">0.999887</span><span class="hl opt">,</span> <span class="hl num">0.00157084</span><span class="hl opt">,</span> <span class="hl num">0.0000234825</span><span class="hl opt">,</span> <span class="hl num">0.00157066</span><span class="hl opt">, -</span><span class="hl num">0.999999</span><span class="hl opt">, -</span><span class="hl num">0.416654</span><span class="hl opt">, -</span><span class="hl num">0.761122</span><span class="hl opt">, -</span><span class="hl num">0.00184508</span> <span class="hl opt">};</span>
+            view1<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view1<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Top&quot;</span><span class="hl opt">;</span>
+            view1<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Top&quot;</span><span class="hl opt">;</span>
+            view1<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view1<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">14.8096</span><span class="hl opt">;</span>
+
+            Pdf3DView view2 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view2<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] { -</span><span class="hl num">1.0</span><span class="hl opt">, -</span><span class="hl num">0.0000411671</span><span class="hl opt">,</span> <span class="hl num">0.0000000000509201</span><span class="hl opt">, -</span><span class="hl num">0.00000101387</span><span class="hl opt">,</span> <span class="hl num">0.0246288</span><span class="hl opt">,</span> <span class="hl num">0.999697</span><span class="hl opt">, -</span><span class="hl num">0.0000411546</span><span class="hl opt">,</span> <span class="hl num">0.999697</span><span class="hl opt">, -</span><span class="hl num">0.0246288</span><span class="hl opt">, -</span><span class="hl num">0.417072</span><span class="hl opt">, -</span><span class="hl num">0.881787</span><span class="hl opt">, -</span><span class="hl num">0.121915</span> <span class="hl opt">};</span>
+            view2<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view2<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Side&quot;</span><span class="hl opt">;</span>
+            view2<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Side&quot;</span><span class="hl opt">;</span>
+            view2<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view2<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">12.3794</span><span class="hl opt">;</span>
+
+            Pdf3DView view3 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view3<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] { -</span><span class="hl num">0.797002</span><span class="hl opt">, -</span><span class="hl num">0.603977</span><span class="hl opt">, -</span><span class="hl num">0.0000000438577</span><span class="hl opt">, -</span><span class="hl num">0.294384</span><span class="hl opt">,</span> <span class="hl num">0.388467</span><span class="hl opt">,</span> <span class="hl num">0.873173</span><span class="hl opt">, -</span><span class="hl num">0.527376</span><span class="hl opt">,</span> <span class="hl num">0.695921</span><span class="hl opt">, -</span><span class="hl num">0.48741</span><span class="hl opt">, -</span><span class="hl num">0.3518</span><span class="hl opt">, -</span><span class="hl num">0.844506</span><span class="hl opt">, -</span><span class="hl num">0.0675629</span> <span class="hl opt">};</span>
+            view3<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view3<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Isometric&quot;</span><span class="hl opt">;</span>
+            view3<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Isometric&quot;</span><span class="hl opt">;</span>
+            view3<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view3<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">15.1226</span><span class="hl opt">;</span>
+
+            Pdf3DView view4 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view4<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] {</span> <span class="hl num">0.00737633</span><span class="hl opt">, -</span><span class="hl num">0.999973</span><span class="hl opt">, -</span><span class="hl num">0.0000000000147744</span><span class="hl opt">, -</span><span class="hl num">0.0656414</span><span class="hl opt">, -</span><span class="hl num">0.000484206</span><span class="hl opt">,</span> <span class="hl num">0.997843</span><span class="hl opt">, -</span><span class="hl num">0.997816</span><span class="hl opt">, -</span><span class="hl num">0.00736042</span><span class="hl opt">, -</span><span class="hl num">0.0656432</span><span class="hl opt">, -</span><span class="hl num">0.293887</span><span class="hl opt">, -</span><span class="hl num">0.757928</span><span class="hl opt">, -</span><span class="hl num">0.119485</span> <span class="hl opt">};</span>
+            view4<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view4<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Front&quot;</span><span class="hl opt">;</span>
+            view4<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Front&quot;</span><span class="hl opt">;</span>
+            view4<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view4<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">15.1226</span><span class="hl opt">;</span>
+
+            Pdf3DView view5 <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DView</span><span class="hl opt">();</span>
+            view5<span class="hl opt">.</span>CameraToWorldMatrix <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwb">double</span><span class="hl opt">[] {</span> <span class="hl num">0.0151008</span><span class="hl opt">,</span> <span class="hl num">0.999886</span><span class="hl opt">,</span> <span class="hl num">0.0000000000261366</span><span class="hl opt">,</span> <span class="hl num">0.0492408</span><span class="hl opt">, -</span><span class="hl num">0.000743662</span><span class="hl opt">,</span> <span class="hl num">0.998787</span><span class="hl opt">,</span> <span class="hl num">0.998673</span><span class="hl opt">, -</span><span class="hl num">0.0150825</span><span class="hl opt">, -</span><span class="hl num">0.0492464</span><span class="hl opt">, -</span><span class="hl num">0.540019</span><span class="hl opt">, -</span><span class="hl num">0.756862</span><span class="hl opt">, -</span><span class="hl num">0.118884</span> <span class="hl opt">};</span>
+            view5<span class="hl opt">.</span>CenterOfOrbit <span class="hl opt">=</span> <span class="hl num">0.123106</span><span class="hl opt">;</span>
+            view5<span class="hl opt">.</span>ExternalName <span class="hl opt">=</span> <span class="hl str">&quot;Back&quot;</span><span class="hl opt">;</span>
+            view5<span class="hl opt">.</span>InternalName <span class="hl opt">=</span> <span class="hl str">&quot;Back&quot;</span><span class="hl opt">;</span>
+            view5<span class="hl opt">.</span>Projection <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DProjection</span><span class="hl opt">();</span>
+            view5<span class="hl opt">.</span>Projection<span class="hl opt">.</span>FieldOfView <span class="hl opt">=</span> <span class="hl num">12.3794</span><span class="hl opt">;</span>
+
+            Pdf3DStream _3dStream <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DStream</span><span class="hl opt">();</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view0<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view1<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view2<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view3<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view4<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Views<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>view5<span class="hl opt">);</span>
+            _3dStream<span class="hl opt">.</span>Content <span class="hl opt">=</span> u3dContent<span class="hl opt">;</span>
+            _3dStream<span class="hl opt">.</span>DefaultViewIndex <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            Pdf3DAnnotation _3da <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">Pdf3DAnnotation</span><span class="hl opt">();</span>
+            _3da<span class="hl opt">.</span>Stream <span class="hl opt">=</span> _3dStream<span class="hl opt">;</span>
+
+            PdfAnnotationAppearance appearance <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfAnnotationAppearance</span><span class="hl opt">(</span><span class="hl num">200</span><span class="hl opt">,</span> <span class="hl num">200</span><span class="hl opt">);</span>
+            appearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Click to activate&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+            _3da<span class="hl opt">.</span>NormalAppearance <span class="hl opt">=</span> appearance<span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>_3da<span class="hl opt">);</span>
+            _3da<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">36</span><span class="hl opt">,</span> <span class="hl num">36</span><span class="hl opt">,</span> <span class="hl num">720</span><span class="hl opt">,</span> <span class="hl num">540</span><span class="hl opt">);</span>
+
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> font<span class="hl opt">;</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> blackBrush<span class="hl opt">;</span>
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">585</span> <span class="hl opt">+</span> <span class="hl num">18</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+
+            PdfPen blackPen <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfPen</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">),</span> <span class="hl num">1</span><span class="hl opt">);</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>blackPen<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">50</span> <span class="hl opt">+</span> <span class="hl num">120</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Top&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfGoTo3DViewAction gotoTopView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfGoTo3DViewAction</span><span class="hl opt">();</span>
+            gotoTopView<span class="hl opt">.</span>ViewIndex <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            gotoTopView<span class="hl opt">.</span>TargetAnnotation <span class="hl opt">=</span> _3da<span class="hl opt">;</span>
+            PdfLinkAnnotation linkGotoTopView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLinkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>linkGotoTopView<span class="hl opt">);</span>
+            linkGotoTopView<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            linkGotoTopView<span class="hl opt">.</span>Action <span class="hl opt">=</span> gotoTopView<span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>blackPen<span class="hl opt">,</span> <span class="hl num">190</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">190</span> <span class="hl opt">+</span> <span class="hl num">120</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Side&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfGoTo3DViewAction gotoSideView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfGoTo3DViewAction</span><span class="hl opt">();</span>
+            gotoSideView<span class="hl opt">.</span>ViewIndex <span class="hl opt">=</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            gotoSideView<span class="hl opt">.</span>TargetAnnotation <span class="hl opt">=</span> _3da<span class="hl opt">;</span>
+            PdfLinkAnnotation linkGotoSideView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLinkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>linkGotoSideView<span class="hl opt">);</span>
+            linkGotoSideView<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">190</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            linkGotoSideView<span class="hl opt">.</span>Action <span class="hl opt">=</span> gotoSideView<span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>blackPen<span class="hl opt">,</span> <span class="hl num">330</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">330</span> <span class="hl opt">+</span> <span class="hl num">120</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Isometric&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfGoTo3DViewAction gotoIsometricView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfGoTo3DViewAction</span><span class="hl opt">();</span>
+            gotoIsometricView<span class="hl opt">.</span>ViewIndex <span class="hl opt">=</span> <span class="hl num">3</span><span class="hl opt">;</span>
+            gotoIsometricView<span class="hl opt">.</span>TargetAnnotation <span class="hl opt">=</span> _3da<span class="hl opt">;</span>
+            PdfLinkAnnotation linkGotoIsometricView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLinkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>linkGotoIsometricView<span class="hl opt">);</span>
+            linkGotoIsometricView<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">330</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            linkGotoIsometricView<span class="hl opt">.</span>Action <span class="hl opt">=</span> gotoIsometricView<span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>blackPen<span class="hl opt">,</span> <span class="hl num">470</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">470</span> <span class="hl opt">+</span> <span class="hl num">120</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Front&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfGoTo3DViewAction gotoFrontView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfGoTo3DViewAction</span><span class="hl opt">();</span>
+            gotoFrontView<span class="hl opt">.</span>ViewIndex <span class="hl opt">=</span> <span class="hl num">4</span><span class="hl opt">;</span>
+            gotoFrontView<span class="hl opt">.</span>TargetAnnotation <span class="hl opt">=</span> _3da<span class="hl opt">;</span>
+            PdfLinkAnnotation linkGotoFrontView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLinkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>linkGotoFrontView<span class="hl opt">);</span>
+            linkGotoFrontView<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">470</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            linkGotoFrontView<span class="hl opt">.</span>Action <span class="hl opt">=</span> gotoFrontView<span class="hl opt">;</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span>blackPen<span class="hl opt">,</span> <span class="hl num">610</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">610</span> <span class="hl opt">+</span> <span class="hl num">120</span> <span class="hl opt">/</span> <span class="hl num">2</span><span class="hl opt">;</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Back&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfGoTo3DViewAction gotoBackView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfGoTo3DViewAction</span><span class="hl opt">();</span>
+            gotoBackView<span class="hl opt">.</span>ViewIndex <span class="hl opt">=</span> <span class="hl num">5</span><span class="hl opt">;</span>
+            gotoBackView<span class="hl opt">.</span>TargetAnnotation <span class="hl opt">=</span> _3da<span class="hl opt">;</span>
+            PdfLinkAnnotation linkGotoBackView <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfLinkAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>linkGotoBackView<span class="hl opt">);</span>
+            linkGotoBackView<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">610</span><span class="hl opt">,</span> <span class="hl num">585</span><span class="hl opt">,</span> <span class="hl num">120</span><span class="hl opt">,</span> <span class="hl num">18</span><span class="hl opt">);</span>
+            linkGotoBackView<span class="hl opt">.</span>Action <span class="hl opt">=</span> gotoBackView<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private static</span> <span class="hl kwb">void</span> <span class="hl kwd">CreateRedactionAnnotations</span><span class="hl opt">(</span>PdfFixedDocument document<span class="hl opt">,</span> PdfFont font<span class="hl opt">,</span> Stream flashStream<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            PdfBrush blackBrush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">();</span>
+
+            PdfPage page <span class="hl opt">=</span> document<span class="hl opt">.</span>Pages<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">();</span>
+
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;Redaction annotations&quot;</span><span class="hl opt">,</span> font<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">);</span>
+
+            PdfStandardFont helvetica <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>Helvetica<span class="hl opt">,</span> <span class="hl num">10</span><span class="hl opt">);</span>
+            page<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span>
+                <span class="hl str">&quot;Open the file with Adobe Acrobat, right click on the annotation and select</span> <span class="hl esc">\&quot;</span><span class="hl str">Apply redactions</span><span class="hl esc">\&quot;</span><span class="hl str">. The text under the annotation will be redacted.&quot;</span><span class="hl opt">,</span> 
+                helvetica<span class="hl opt">,</span> blackBrush<span class="hl opt">,</span> <span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">110</span><span class="hl opt">);</span>
+
+            PdfFormXObject redactionAppearance <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfFormXObject</span><span class="hl opt">(</span><span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+            redactionAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawRectangle</span><span class="hl opt">(</span><span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>LightGreen<span class="hl opt">),</span>
+                <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> redactionAppearance<span class="hl opt">.</span>Width<span class="hl opt">,</span> redactionAppearance<span class="hl opt">.</span>Height<span class="hl opt">);</span>
+            PdfStringAppearanceOptions sao <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringAppearanceOptions</span><span class="hl opt">();</span>
+            sao<span class="hl opt">.</span>Brush <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfBrush</span><span class="hl opt">(</span>PdfRgbColor<span class="hl opt">.</span>DarkRed<span class="hl opt">);</span>
+            sao<span class="hl opt">.</span>Font <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStandardFont</span><span class="hl opt">(</span>PdfStandardFontFace<span class="hl opt">.</span>HelveticaBold<span class="hl opt">,</span> <span class="hl num">32</span><span class="hl opt">);</span>
+            PdfStringLayoutOptions slo <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfStringLayoutOptions</span><span class="hl opt">();</span>
+            slo<span class="hl opt">.</span>Width <span class="hl opt">=</span> redactionAppearance<span class="hl opt">.</span>Width<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Height <span class="hl opt">=</span> redactionAppearance<span class="hl opt">.</span>Height<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>X <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>Y <span class="hl opt">=</span> <span class="hl num">0</span><span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>HorizontalAlign <span class="hl opt">=</span> PdfStringHorizontalAlign<span class="hl opt">.</span>Center<span class="hl opt">;</span>
+            slo<span class="hl opt">.</span>VerticalAlign <span class="hl opt">=</span> PdfStringVerticalAlign<span class="hl opt">.</span>Middle<span class="hl opt">;</span>
+            redactionAppearance<span class="hl opt">.</span>Graphics<span class="hl opt">.</span><span class="hl kwd">DrawString</span><span class="hl opt">(</span><span class="hl str">&quot;This content has been redacted&quot;</span><span class="hl opt">,</span> sao<span class="hl opt">,</span> slo<span class="hl opt">);</span>
+
+            PdfRedactionAnnotation redactionAnnotation <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRedactionAnnotation</span><span class="hl opt">();</span>
+            page<span class="hl opt">.</span>Annotations<span class="hl opt">.</span><span class="hl kwd">Add</span><span class="hl opt">(</span>redactionAnnotation<span class="hl opt">);</span>
+            redactionAnnotation<span class="hl opt">.</span>Author <span class="hl opt">=</span> <span class="hl str">&quot;XFINIUM.PDF&quot;</span><span class="hl opt">;</span>
+            redactionAnnotation<span class="hl opt">.</span>BorderColor <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfRgbColor</span><span class="hl opt">(</span><span class="hl num">192</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">);</span>
+            redactionAnnotation<span class="hl opt">.</span>BorderWidth <span class="hl opt">=</span> <span class="hl num">1</span><span class="hl opt">;</span>
+            redactionAnnotation<span class="hl opt">.</span>OverlayAppearance <span class="hl opt">=</span> redactionAppearance<span class="hl opt">;</span>
+            redactionAnnotation<span class="hl opt">.</span>VisualRectangle <span class="hl opt">=</span> <span class="hl kwa">new</span> <span class="hl kwd">PdfVisualRectangle</span><span class="hl opt">(</span><span class="hl num">50</span><span class="hl opt">,</span> <span class="hl num">100</span><span class="hl opt">,</span> <span class="hl num">250</span><span class="hl opt">,</span> <span class="hl num">150</span><span class="hl opt">);</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->
