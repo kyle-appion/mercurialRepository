@@ -40,7 +40,7 @@
 
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
-      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_certificate, Resource.Color.gray));
+      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_certificates, Resource.Color.gray));
 
       fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
       fragment.folder = ion.calibrationCertificateFolder;

@@ -92,6 +92,7 @@
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
         vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_medium));
+        vh.title.SetTextColor(res.GetColor(Resource.Color.gray));
       } else {
         vh = (CategoryViewHolder)convert.Tag;
       }
@@ -119,6 +120,7 @@
 
         vh.title = convert.FindViewById<TextView>(Resource.Id.title);
         vh.title.SetTextSize(Android.Util.ComplexUnitType.Px, res.GetDimension(Resource.Dimension.text_size_large));
+        vh.title.SetTextColor(res.GetColor(Resource.Color.white));
 
         vh.icon = convert.FindViewById<ImageView>(Resource.Id.icon);
       } else {

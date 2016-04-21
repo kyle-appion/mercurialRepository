@@ -277,7 +277,6 @@
     <AndroidResource Include="Resources\drawable\ic_logo_appiondefault.png" />
     <AndroidResource Include="Resources\drawable\ic_menu_moreoverflow.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer.png" />
-    <AndroidResource Include="Resources\drawable\ic_nav_certificate.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_devmanager.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_power.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_ptconversion.png" />
@@ -437,6 +436,8 @@
     <AndroidResource Include="Resources\layout\list_item_ion_recycler_view_holder.axml" />
     <AndroidResource Include="Resources\xml\whats_new.xml" />
     <AndroidResource Include="Resources\layout\dialog_whats_new.axml" />
+    <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
+    <AndroidResource Include="Resources\drawable\ic_scroll.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

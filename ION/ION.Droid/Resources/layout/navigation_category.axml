@@ -6,7 +6,7 @@
     <TextView
         android:id="@id/title"
         android:textColor="@color/white"
-        android:gravity="center_vertical"
+        android:gravity="bottom"
         android:textAllCaps="true"
         android:textStyle="bold"
         android:textSize="@dimen/drawer_navigation_category_text_size"

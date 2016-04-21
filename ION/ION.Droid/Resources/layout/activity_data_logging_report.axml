@@ -13,6 +13,22 @@
         card_view:cardElevation="4dp"
         card_view:contentPadding="10dp">
         <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding"
+            android:orientation="horizontal">
+            <Button
+                android:id="@id/report_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/report_new" />
+            <Button
+                android:id="@id/report_new"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/report_saved" />
+        </LinearLayout>
+        <LinearLayout
             android:id="@id/status"
             android:layout_gravity="center"
             android:layout_width="match_parent"
