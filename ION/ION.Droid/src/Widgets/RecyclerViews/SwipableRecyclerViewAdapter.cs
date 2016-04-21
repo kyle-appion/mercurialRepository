@@ -159,7 +159,11 @@
     /// <returns>The <see cref="ION.Droid.Widgets.RecyclerViews.SwipableRecyclerViewAdapter+IRecord"/>.</returns>
     /// <param name="index">Index.</param>
     public IRecord GetRecordAt(int index) {
-      return records[index];
+      if (index >= 0 && index < records.Count) {
+        return records[index];
+      } else {
+        return null;
+      }
     }
 
     /// <summary>

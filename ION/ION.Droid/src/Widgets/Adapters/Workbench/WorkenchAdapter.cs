@@ -45,24 +45,35 @@
     public Workbench workbench { get; internal set; }
 
     /// <summary>
+    /// The handler that is used for some UI actions in the adapter.
+    /// </summary>
+    /// <value>The handler.</value>
+    public Handler handler { get; internal set; }
+
+    /// <summary>
     /// The current ION instance.
     /// </summary>
     /// <value>The ion.</value>
-    private IION ion { get; set; }
+    private IION ion;
     /// <summary>
     /// The bitmap cache that will contain all of the bitmaps used in the adapter.
     /// </summary>
     /// <value>The cache.</value>
-    private BitmapCache cache { get; set; }
+    private BitmapCache cache;
     /// <summary>
     /// The drag decoration.
     /// </summary>
     private ItemTouchHelper dragDecoration;
+    /// <summary>
+    /// The stack of pending expands.
+    /// </summary>
+    private Stack<List<Tuple<Manifold, bool>>> expansionStack = new Stack<List<Tuple<Manifold, bool>>>();
 
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
       dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
+      handler = new Handler();
     }
 
     /// <summary>
@@ -273,49 +284,35 @@
           records[secondIndex] = tmp;
           NotifyItemMoved(startIndex, secondIndex);
 
-          int fi, si, fc, sc;
-          if (startIndex < secondIndex) {
-            fi = startIndex;
-            fc = manifoldSensorPropertyCount;
-            si = secondIndex;
-            sc = sm.sensorPropertyCount;
-          } else {
-            fi = secondIndex;
-            fc = sm.sensorPropertyCount;
-            si = startIndex;
-            sc = manifoldSensorPropertyCount;
-          }
-
-          var fr = records.GetRange(fi + 1, fc);
-          var sr = records.GetRange(si + 1, sc);
-
-          records.RemoveRange(fi + 1, fc);
-          records.RemoveRange(si + 1, sc);
-
-          records.InsertRange(fi + 1, sr);
-          records.InsertRange(si + 1 + sc, fr);
-
-          NotifyItemRangeRemoved(fi + 1, fc);
-          NotifyItemRangeRemoved(si + 1, sc);
-
-          NotifyItemRangeInserted(fi + 1, sc);
-          NotifyItemRangeInserted(si + 1 - (sc - fc), fc);
-
-/*
-          // Animate sr to fi
-          for (int i = sc; i > 0; i--) {
-            NotifyItemMoved(si + i, fi + 1);  
-          }
-        
-          // Animate fr to si
-          for (int i = fc; i > 0; i--) {
-            NotifyItemMoved(fi + sc + i, si + 1);
-          }
-*/
-
           break;
         default:
           throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
+      }
+    }
+
+    /// <summary>
+    /// Pushes a new manifold expanssion state, effectively saving whether or not a manifold is expanded.
+    /// </summary>
+    public void SaveManifoldExpansionState() {
+      var tuples = new List<Tuple<Manifold, bool>>();
+      foreach (var m in workbench.manifolds) {
+        tuples.Add(new Tuple<Manifold, bool>(m, IsManifoldExpanded(m)));
+        this.CollapseManifold(m);
+      }
+      expansionStack.Push(tuples);
+    }
+
+    /// <summary>
+    /// Restores the manifold expanssion states.
+    /// </summary>
+    public void RestoreManifoldExpansionState() {
+      var tuples = expansionStack.Pop();
+      if (tuples != null) {
+        foreach (var t in tuples) {
+          if (t.Item2) {
+            ExpandManifold(t.Item1);
+          }
+        }
       }
     }
 
@@ -363,41 +360,6 @@
     }
 
 
-    /// <summary>
-    /// Raises the item move event.
-    /// </summary>
-    /// <param name="fromPosition">From position.</param>
-    /// <param name="toPosition">To position.</param>
-/*
-    public bool OnItemMove(int fromPosition, int toPosition) {
-      var from = records[fromPosition];
-      var to = records[toPosition];
-
-      if (from is ManifoldRecord && to is ManifoldRecord) {
-        var fvr = from as ManifoldRecord;
-        var tvr = to as ManifoldRecord;
-
-        workbench.Swap(workbench.IndexOf(fvr.item), workbench.IndexOf(tvr.item));
-
-        return true;
-      } else if (from is SensorPropertyRecord && to is SensorPropertyRecord) {
-        var fp = FindManifoldAtIndex(fromPosition);
-        var tp = FindManifoldAtIndex(toPosition);
-
-        if (fp == tp) {
-          var i = IndexOfManifold(fp);
-          fp.SwapSensorProperties(fromPosition - i - 1, toPosition - i - 1);
-
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-*/
-
     public void CollapseManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
@@ -434,6 +396,22 @@
 
         mr.expanded = true;
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the manifold is expanded.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is manifold expanded the specified manifold; otherwise, <c>false</c>.</returns>
+    /// <param name="manifold">Manifold.</param>
+    public bool IsManifoldExpanded(Manifold manifold) {
+      var index = IndexOfManifold(manifold);
+      var mr = records[index] as ManifoldRecord;
+
+      if (mr != null) {
+        return mr.expanded;
+      }
+
+      return false;
     }
 
     public void ToggleManifold(Manifold manifold) {
