@@ -30,6 +30,7 @@
     private ImageView icon { get; set; }
     private View divider { get; set; }
     private TextView measurement { get; set; }
+    private TextView unit { get; set; }
 
     public MeasurementSubviewTemplate(View view, BitmapCache cache) : base(view) {
       this.cache = cache;
@@ -37,6 +38,7 @@
       icon = view.FindViewById<ImageView>(Resource.Id.icon);
       divider = view.FindViewById(Resource.Id.view);
       measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+      unit = view.FindViewById<TextView>(Resource.Id.unit);
 
       icon.SetOnClickListener(new ViewClickAction((v) => {
         if (item != null && item.supportedReset) {
@@ -67,7 +69,8 @@
         divider.Visibility = ViewStates.Invisible;
       }
 
-      measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, true);
+      measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, false);
+      unit.Text = item.sensor.unit.ToString();
     }
 
     /// <summary>
