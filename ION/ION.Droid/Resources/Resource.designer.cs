@@ -812,6 +812,9 @@ namespace ION.Droid
 			// aapt resource value: 0x7f010069
 			public const int track = 2130772073;
 			
+			// aapt resource value: 0x7f0100f4
+			public const int typeface = 2130772212;
+			
 			// aapt resource value: 0x7f010012
 			public const int uiCompass = 2130771986;
 			
@@ -1499,11 +1502,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f070065
 			public const int analyzer_viewer_text_size = 2131165285;
 			
-			// aapt resource value: 0x7f070094
-			public const int arrow_height = 2131165332;
+			// aapt resource value: 0x7f070095
+			public const int arrow_height = 2131165333;
 			
-			// aapt resource value: 0x7f070093
-			public const int arrow_width = 2131165331;
+			// aapt resource value: 0x7f070094
+			public const int arrow_width = 2131165332;
 			
 			// aapt resource value: 0x7f070000
 			public const int cardview_compat_inset_shadow = 2131165184;
@@ -1565,44 +1568,44 @@ namespace ION.Droid
 			// aapt resource value: 0x7f070054
 			public const int highlight_alpha_material_light = 2131165268;
 			
-			// aapt resource value: 0x7f07008c
-			public const int icon_large = 2131165324;
-			
 			// aapt resource value: 0x7f07008d
-			public const int icon_medium = 2131165325;
+			public const int icon_large = 2131165325;
 			
 			// aapt resource value: 0x7f07008e
-			public const int icon_small = 2131165326;
-			
-			// aapt resource value: 0x7f07008b
-			public const int icon_very_large = 2131165323;
+			public const int icon_medium = 2131165326;
 			
 			// aapt resource value: 0x7f07008f
-			public const int icon_very_small = 2131165327;
+			public const int icon_small = 2131165327;
+			
+			// aapt resource value: 0x7f07008c
+			public const int icon_very_large = 2131165324;
+			
+			// aapt resource value: 0x7f070090
+			public const int icon_very_small = 2131165328;
 			
 			// aapt resource value: 0x7f070058
 			public const int item_touch_helper_max_drag_scroll_per_frame = 2131165272;
 			
-			// aapt resource value: 0x7f07007c
-			public const int keyline_1 = 2131165308;
-			
 			// aapt resource value: 0x7f07007d
-			public const int keyline_1_minus_8 = 2131165309;
+			public const int keyline_1 = 2131165309;
 			
 			// aapt resource value: 0x7f07007e
-			public const int keyline_2_content = 2131165310;
+			public const int keyline_1_minus_8 = 2131165310;
 			
 			// aapt resource value: 0x7f07007f
-			public const int keyline_2_title = 2131165311;
+			public const int keyline_2_content = 2131165311;
 			
-			// aapt resource value: 0x7f070090
-			public const int nav_icon = 2131165328;
+			// aapt resource value: 0x7f070080
+			public const int keyline_2_title = 2131165312;
 			
-			// aapt resource value: 0x7f070081
-			public const int nav_padding = 2131165313;
+			// aapt resource value: 0x7f070091
+			public const int nav_icon = 2131165329;
 			
-			// aapt resource value: 0x7f07008a
-			public const int navigation_drawer_width = 2131165322;
+			// aapt resource value: 0x7f070082
+			public const int nav_padding = 2131165314;
+			
+			// aapt resource value: 0x7f07008b
+			public const int navigation_drawer_width = 2131165323;
 			
 			// aapt resource value: 0x7f070055
 			public const int notification_large_icon_height = 2131165269;
@@ -1613,8 +1616,8 @@ namespace ION.Droid
 			// aapt resource value: 0x7f070057
 			public const int notification_subtext_size = 2131165271;
 			
-			// aapt resource value: 0x7f070080
-			public const int padding = 2131165312;
+			// aapt resource value: 0x7f070081
+			public const int padding = 2131165313;
 			
 			// aapt resource value: 0x7f070003
 			public const int place_autocomplete_button_padding = 2131165187;
@@ -1664,35 +1667,35 @@ namespace ION.Droid
 			// aapt resource value: 0x7f070071
 			public const int ptchart_unit_width = 2131165297;
 			
+			// aapt resource value: 0x7f070088
+			public const int text_size_large = 2131165320;
+			
 			// aapt resource value: 0x7f070087
-			public const int text_size_large = 2131165319;
+			public const int text_size_medium = 2131165319;
 			
 			// aapt resource value: 0x7f070086
-			public const int text_size_medium = 2131165318;
+			public const int text_size_small = 2131165318;
 			
 			// aapt resource value: 0x7f070085
-			public const int text_size_small = 2131165317;
+			public const int text_size_tiny = 2131165317;
 			
-			// aapt resource value: 0x7f070084
-			public const int text_size_tiny = 2131165316;
+			// aapt resource value: 0x7f07008a
+			public const int text_size_title = 2131165322;
 			
 			// aapt resource value: 0x7f070089
-			public const int text_size_title = 2131165321;
+			public const int text_size_xlarge = 2131165321;
 			
-			// aapt resource value: 0x7f070088
-			public const int text_size_xlarge = 2131165320;
+			// aapt resource value: 0x7f070084
+			public const int thick_separator = 2131165316;
 			
 			// aapt resource value: 0x7f070083
-			public const int thick_separator = 2131165315;
+			public const int thin_separator = 2131165315;
 			
-			// aapt resource value: 0x7f070082
-			public const int thin_separator = 2131165314;
+			// aapt resource value: 0x7f070093
+			public const int toast_icon_height = 2131165331;
 			
 			// aapt resource value: 0x7f070092
-			public const int toast_icon_height = 2131165330;
-			
-			// aapt resource value: 0x7f070091
-			public const int toast_icon_width = 2131165329;
+			public const int toast_icon_width = 2131165330;
 			
 			// aapt resource value: 0x7f070059
 			public const int view_padding = 2131165273;
@@ -1719,10 +1722,13 @@ namespace ION.Droid
 			public const int viewer_name_text_size = 2131165304;
 			
 			// aapt resource value: 0x7f07007a
-			public const int viewer_subview_large_icon_size = 2131165306;
+			public const int viewer_subview_large = 2131165306;
 			
 			// aapt resource value: 0x7f07007b
-			public const int viewer_text_size = 2131165307;
+			public const int viewer_subview_large_icon_size = 2131165307;
+			
+			// aapt resource value: 0x7f07007c
+			public const int viewer_text_size = 2131165308;
 			
 			static Dimension()
 			{
@@ -6806,6 +6812,13 @@ namespace ION.Droid
 			
 			// aapt resource value: 23
 			public const int Toolbar_titleTextColor = 23;
+			
+			public static int[] TypefaceTextView = new int[]
+			{
+					2130772212};
+			
+			// aapt resource value: 0
+			public const int TypefaceTextView_typeface = 0;
 			
 			public static int[] View = new int[]
 			{

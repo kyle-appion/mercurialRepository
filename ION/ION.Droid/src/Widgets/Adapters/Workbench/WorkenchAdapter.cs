@@ -144,6 +144,7 @@
             break;
 
           case EViewType.Manifold:
+            var template = (holder as ManifoldViewHolder).template;
             holder.button.Text = holder.button.Context.GetString(Resource.String.remove);
 
             var vr = records[position] as ManifoldRecord;
@@ -157,6 +158,20 @@
                 onManifoldClicked(vr.item);
               }
             }));
+
+            if (template.toggle != null) {
+              if (vr.item.sensorPropertyCount > 0) {
+                template.arrow.Visibility = ViewStates.Visible;
+                template.toggle.SetOnClickListener(new ViewClickAction((v) => {
+                  ToggleManifold(vr.item);
+                  template.MarkAsExpanded(IsManifoldExpanded(vr.item));
+                }));
+              } else {
+                template.arrow.Visibility = ViewStates.Gone;
+                template.toggle.SetOnClickListener(null);
+              }
+              template.MarkAsExpanded(IsManifoldExpanded(vr.item));
+            }
 
             break;
 
@@ -234,6 +249,7 @@
 
       foreach (var m in workbench.manifolds) {
         records.Add(new ManifoldRecord(m));
+        records.Add(new SpaceRecord());
       }
 
       records.Add(new FooterRecord(footerAction));
@@ -253,12 +269,13 @@
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           if (startIndex < 0) {
-            records.Insert(records.Count - 1, new ManifoldRecord(manifold));
-//            records.Insert(records.Count - 1, new SpaceRecord());
-            NotifyItemRangeInserted(records.Count - 1, 2);
+            var i = records.Count - 1;
+            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
+            records.Insert(i + 1, new SpaceRecord());
+            NotifyItemRangeInserted(i, 2);
           } else {
+            records.Insert(startIndex, new SpaceRecord());
             records.Insert(startIndex, new ManifoldRecord(manifold));
-//            records.Insert(startIndex, new SpaceRecord());
             NotifyItemRangeInserted(startIndex, 2);
           }
           break;
@@ -271,7 +288,12 @@
             for (int i = 0; i < manifoldSensorPropertyCount; i++) {
               records.RemoveAt(startIndex);
             }
-            NotifyItemRangeRemoved(startIndex, 1 + manifoldSensorPropertyCount);
+            var count = 1 + manifoldSensorPropertyCount;
+            if (records[startIndex] is SpaceRecord) {
+              records.RemoveAt(startIndex);
+              count++;
+            }
+            NotifyItemRangeRemoved(startIndex, count);
           }
           break;
         case WorkbenchEvent.EType.Swapped:
@@ -339,12 +361,14 @@
 
           records.Insert(index, CreateSensorPropertyRecord(manifold, manifold[manifoldEvent.index]));
 
+          NotifyItemChanged(manifoldIndex);
           NotifyItemInserted(index);
           break;
 
         case ManifoldEvent.EType.SensorPropertyRemoved:
           index = manifoldIndex + 1 + manifoldEvent.index;
           records.RemoveAt(index);
+          NotifyItemChanged(manifoldIndex);
           NotifyItemRemoved(index);
           break;
 
@@ -372,6 +396,7 @@
             records.RemoveAt(index + i);
           }
 
+          NotifyItemChanged(index);
           NotifyItemRangeRemoved(index + 1, count);
         }
 
@@ -391,6 +416,7 @@
             records.Insert(index + i, CreateSensorPropertyRecord(manifold, manifold[i - 1]));
           }
 
+          NotifyItemChanged(index);
           NotifyItemRangeRemoved(index + 1, count);
         }
 
@@ -604,12 +630,18 @@
     public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
+    }
+
     public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
     public abstract void Unbind();
   }
 
   abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
     public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+    }
+
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
     }
 
     public override void BindTo(SwipableRecyclerViewAdapter.IRecord t) {
@@ -620,7 +652,8 @@
   }
 
   class SpaceViewHolder : WorkbenchViewHolder<SpaceRecord> {
-    public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+
+    public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource, false) {
     }
 
     /// <summary>
@@ -640,10 +673,12 @@
   class FooterViewHolder : WorkbenchViewHolder<FooterRecord> {
     public FooterRecord record;
 
-    private Button add;
+    private View add;
+    private TextView text;
 
     public FooterViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
-      add = view.FindViewById<Button>(Resource.Id.add);
+      add = view.FindViewById(Resource.Id.add);
+      text = add.FindViewById<TextView>(Resource.Id.text);
     }
 
     // Overridden from WorkbenchViewHolder
@@ -651,7 +686,7 @@
       this.record = record;
 
       var c = ItemView.Context;
-      add.Text = c.GetString(Resource.String.workbench_add_viewer);
+      text.Text = c.GetString(Resource.String.workbench_add_viewer);
 
       add.SetOnClickListener(new ViewClickAction((view) => {
         record.onClick();

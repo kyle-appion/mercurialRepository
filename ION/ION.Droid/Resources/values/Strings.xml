@@ -243,7 +243,7 @@
   <string name="workbench">Workbench</string>
   <string name="workbench_remove">Remove from Workbench</string>
 
-  <string name="workbench_add_viewer">Add New Viewer</string>
+  <string name="workbench_add_viewer">Add to Workbench</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
   <string name="workbench_alt">Alternate Unit</string>
   <string name="workbench_alt_abrv">ALT</string>

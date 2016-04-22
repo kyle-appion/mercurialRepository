@@ -134,8 +134,6 @@
 
       if (pendingActions.ContainsKey(record)) {
         vh.ItemView.SetBackgroundColor(Color.Red);
-        vh.content.Visibility = ViewStates.Invisible;
-        vh.button.Visibility = ViewStates.Visible;
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
           Action action = GetViewHolderSwipeAction(position);
           if (action != null) {
@@ -148,8 +146,8 @@
       } else {
         vh.ItemView.SetBackgroundColor(Color.Transparent);
         vh.ItemView.Visibility = ViewStates.Visible;
-        vh.content.Visibility = ViewStates.Visible;
-        vh.button.Visibility = ViewStates.Invisible;
+        vh.HideButton();
+
       }
     }
 
@@ -248,7 +246,6 @@
   /// The base view holder that will be used for the IONRecyclerViewAdapter.
   /// </summary>
   public class SwipableViewHolder : RecyclerView.ViewHolder {
-//    protected SwipableRecyclerViewAdapter adapter { get; internal set; }
     /// <summary>
     /// The inflated content view.
     /// </summary>
@@ -262,12 +259,41 @@
     /// </summary>
     internal Button button;
 
+    private bool usesSwipeLayout;
 
-    public SwipableViewHolder(ViewGroup parent, int viewResource) :
-        base(LayoutInflater.From(parent.Context).Inflate(Resource.Layout.list_item_ion_recycler_view_holder, parent, false)) {
-      content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
-      view = LayoutInflater.From(parent.Context).Inflate(viewResource, content, true);
-      button = ItemView.FindViewById<Button>(Resource.Id.button);
+
+    public SwipableViewHolder(ViewGroup parent, int viewResource) : this(parent, viewResource, true) {
+    }
+
+    public SwipableViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(BuildContentView(parent, viewResource, useSwipeParent)) {
+      this.usesSwipeLayout = useSwipeParent;
+      if (useSwipeParent) {
+        content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
+        view = LayoutInflater.From(parent.Context).Inflate(viewResource, content, true);
+        button = ItemView.FindViewById<Button>(Resource.Id.button);
+      }
+    }
+
+    public void RevealButton() {
+      if (usesSwipeLayout) {
+        content.Visibility = ViewStates.Invisible;
+        button.Visibility = ViewStates.Visible;
+      }
+    }
+
+    public void HideButton() {
+      if (usesSwipeLayout) {
+        content.Visibility = ViewStates.Visible;
+        button.Visibility = ViewStates.Invisible;
+      }
+    }
+
+    private static View BuildContentView(ViewGroup parent, int viewResource, bool useSwipeParent) {
+      if (useSwipeParent) {
+        return LayoutInflater.From(parent.Context).Inflate(Resource.Layout.list_item_ion_recycler_view_holder, parent, false);
+      } else {
+        return LayoutInflater.From(parent.Context).Inflate(viewResource, parent, false);
+      }
     }
   }
 }

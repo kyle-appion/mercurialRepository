@@ -210,6 +210,7 @@
     <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
+    <Compile Include="src\Widgets\TypefaceTextView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -407,7 +408,6 @@
     <AndroidResource Include="Resources\layout\subview_fluid_small.axml" />
     <AndroidResource Include="Resources\layout\subview_fluid_large.axml" />
     <AndroidResource Include="Resources\layout\subview_measurement_large.axml" />
-    <AndroidResource Include="Resources\layout\viewer_large.axml" />
     <AndroidResource Include="Resources\layout\dialog_rename.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_large.axml" />
     <AndroidResource Include="Resources\layout\subview_timer_small.axml" />
@@ -438,6 +438,8 @@
     <AndroidResource Include="Resources\layout\dialog_whats_new.axml" />
     <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
     <AndroidResource Include="Resources\drawable\ic_scroll.png" />
+    <AndroidResource Include="Resources\values\Styleable.xml" />
+    <AndroidResource Include="Resources\layout\viewer_large.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -474,8 +476,6 @@
     <Folder Include="src\Widgets\RecyclerViews\" />
     <Folder Include="src\Sensors\Properties\" />
     <Folder Include="Assets\fonts\" />
-    <Folder Include="Assets\fonts\Droid_Sans\" />
-    <Folder Include="Assets\fonts\Roboto_Condensed\" />
     <Folder Include="src\Widgets\Analyzer\" />
     <Folder Include="src\Widgets\Templates\" />
     <Folder Include="src\Fragments\" />
@@ -509,13 +509,7 @@
     </XamarinComponentReference>
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans.ttf" />
-    <AndroidAsset Include="Assets\fonts\Droid_Sans\DroidSans-Bold.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Bold.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-BoldItalic.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Italic.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Light.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-LightItalic.ttf" />
-    <AndroidAsset Include="Assets\fonts\Roboto_Condensed\RobotoCondensed-Regular.ttf" />
+    <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
+    <AndroidAsset Include="Assets\fonts\RobotoCondensed.ttf" />
   </ItemGroup>
 </Project>
