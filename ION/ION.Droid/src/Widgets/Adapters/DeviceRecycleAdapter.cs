@@ -13,6 +13,7 @@
 
   using ION.Core.App;
   using ION.Core.Connections;
+  using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Devices.Filters;
   using ION.Core.Sensors;
@@ -27,7 +28,7 @@
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
 
-  public class DeviceRecycleAdapter : SwipableRecyclerViewAdapter/*IONRecyclerViewAdapter*/ {
+  public class DeviceRecycleAdapter : SwipableRecyclerViewAdapter {
     [Flags]
     private enum Actions {
       ConnectAll          = 1 << 0,
@@ -75,12 +76,17 @@
     /// </summary>
     /// <value>The cache.</value>
     private BitmapCache cache { get; set; }
+    /// <summary>
+    /// Whether or not a sensor row will show the return to button.
+    /// </summary>
+    private bool showReturnClickedButton; 
 
-    public DeviceRecycleAdapter(Context context) {
+    public DeviceRecycleAdapter(Context context, bool showReturnClickedButton) {
       this.context = context;
       resources = context.Resources;
       ion = AppState.context;
       cache = new BitmapCache(resources);
+      this.showReturnClickedButton = showReturnClickedButton;
     }
 
     // Overridden from RecyclerView.Adapter
@@ -125,7 +131,13 @@
         case EViewType.Sensor:
           var sr = records[position] as SensorRecord;
           if (sr != null) {
-            (holder as SensorViewHolder)?.BindTo(sr, OnSensorRecordClicked);
+            SensorViewHolder.OnSensorAddButtonClicked action;
+            if (this.showReturnClickedButton) {
+            action = OnSensorRecordClicked;
+            } else {
+              action = null;
+            }
+            (holder as SensorViewHolder)?.BindTo(sr, action);
           }
           break;
         default:
@@ -718,10 +730,12 @@
       private OnSensorAddButtonClicked onClicked { get; set; }
 
       private DeviceRecycleAdapter adapter { get; set; }
-      private ImageView icon { get; set; }
-      private TextView type { get; set; }
-      private TextView measurement { get; set; }
-      private ImageButton add { get; set; }
+      private ImageView icon;
+      private TextView type;
+      private TextView measurement;
+      private ImageView workbench;
+      private ImageView analyzer;
+      private ImageButton add;
 
       public SensorViewHolder(DeviceRecycleAdapter adapter, ViewGroup parent, BitmapCache cache) :
       base(parent, Resource.Layout.list_item_device_manager_sensor) {
@@ -731,7 +745,67 @@
         icon = view.FindViewById<ImageView>(Resource.Id.icon);
         type = view.FindViewById<TextView>(Resource.Id.type);
         measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+        workbench = view.FindViewById<ImageView>(Resource.Id.workbench);
+        analyzer = view.FindViewById<ImageView>(Resource.Id.analyzer);
         add = view.FindViewById<ImageButton>(Resource.Id.add);
+
+        workbench.SetOnClickListener(new ViewClickAction((v) => {
+          var w = adapter.ion.currentWorkbench;
+          if (w.ContainsSensor(record.sensor)) {
+            var adb = new IONAlertDialog(parent.Context);
+            adb.SetTitle(Resource.String.workbench_remove);
+            adb.SetMessage(Resource.String.workbench_remove_sensor);
+            adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
+              var dialog = obj as Dialog;
+              dialog.Dismiss();
+              Invalidate();
+            });
+            adb.SetPositiveButton(Resource.String.ok, (obj, e) => {
+              var dialog = obj as Dialog;
+              dialog.Dismiss();
+              w.Remove(record.sensor);
+              Invalidate();
+            });
+            adb.Show();
+          } else {
+            adapter.ion.currentWorkbench.Add(new Manifold(record.sensor));
+            Toast.MakeText(parent.Context, Resource.String.workbench_added_sensor, ToastLength.Short).Show();
+            Invalidate();
+          }
+        }));
+
+        analyzer.SetOnClickListener(new ViewClickAction((v) => {
+          var a = adapter.ion.currentAnalyzer;
+          if (a.HasSensor(record.sensor)) {
+            var adb = new IONAlertDialog(parent.Context);
+            adb.SetTitle(Resource.String.analyzer_remove_sensor);
+            adb.SetMessage(Resource.String.analyzer_remove_sensor_remote);
+            adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
+              var dialog = obj as Dialog;
+              dialog.Dismiss();
+              Invalidate();
+            });
+            adb.SetPositiveButton(Resource.String.ok, (obj, e) => {
+              var dialog = obj as Dialog;
+              dialog.Dismiss();
+              a.RemoveSensor(record.sensor);
+              Invalidate();
+            });
+            adb.Show();
+          } else {
+            if (a.CanAddSensorToSide(Analyzer.ESide.Low)) {
+              a.AddSensorToSide(Analyzer.ESide.Low, record.sensor);
+              Toast.MakeText(parent.Context, Resource.String.analyzer_added_to_low, ToastLength.Short).Show();
+            } else if(a.CanAddSensorToSide(Analyzer.ESide.High)) {
+              a.AddSensorToSide(Analyzer.ESide.High, record.sensor);
+              Toast.MakeText(parent.Context, Resource.String.analyzer_added_to_high, ToastLength.Short).Show();
+            } else {
+              Toast.MakeText(parent.Context, Resource.String.analyzer_full, ToastLength.Long).Show();
+            }
+            Invalidate();
+          }
+        }));
+
         add.SetOnClickListener(new ViewClickAction((v) => {
           onClicked(AdapterPosition, record);
         }));
@@ -743,7 +817,9 @@
       public void BindTo(SensorRecord record, OnSensorAddButtonClicked onClicked) {
         OnUnbind();
         this.record = record;
-        this.record.sensor.onSensorStateChangedEvent += OnSensorEvent;
+        if (onClicked != null) {
+          record.sensor.onSensorStateChangedEvent += OnSensorEvent;
+        }
         this.onClicked = onClicked;
         Invalidate();
       }
@@ -755,12 +831,34 @@
         var sensor = record.sensor;
         type.Text = sensor.type.GetTypeString();
         measurement.Text = sensor.ToFormattedString(true);
+
+        if (onClicked == null) {
+          add.Visibility = ViewStates.Gone;
+        } else {
+          add.Visibility = ViewStates.Visible;
+        }
+
+        if (adapter.ion.currentWorkbench.ContainsSensor(record.sensor)) {
+          workbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_workbench));
+          workbench.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
+        } else {
+          workbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_workbench));
+          workbench.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
+        }
+
+        if (adapter.ion.currentAnalyzer.HasSensor(record.sensor)) {
+          analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_analyzer));
+          analyzer.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
+        } else {
+          analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_analyzer));
+          analyzer.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
+        }
       }
 
       // Overridden from DeviceViewHolder
       public override void OnUnbind() {
-        if (this.record != null) {
-          this.record.sensor.onSensorStateChangedEvent -= OnSensorEvent;
+        if (record != null && onClicked != null) {
+          record.sensor.onSensorStateChangedEvent -= OnSensorEvent;
         }
       }
 

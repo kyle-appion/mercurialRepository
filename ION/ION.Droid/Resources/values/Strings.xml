@@ -101,11 +101,16 @@
   <string name="analyzer">System Analyzer</string>
   <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
+  <string name="analyzer_added_to_high">Added Sensor to High Side in the System Analyzer</string>
+  <string name="analyzer_added_to_low">Added Sensor to Low Side in the System Analyzer</string>
   <string name="analyzer_complete_swap">Complete Swap?</string>
   <string name="analyzer_create_editable_pressure">Create Editable Pressure Entry</string>
   <string name="analyzer_create_editable_temperature">Create Editable Temperature Entry</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_remove_sensor">Remove Sensor?</string>
+  <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
   <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
+  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to %1$s side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
   <string name="analyzer_side_low">Low Side</string>
@@ -242,7 +247,9 @@
   -->
   <string name="workbench">Workbench</string>
   <string name="workbench_remove">Remove from Workbench</string>
+  <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
+  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
   <string name="workbench_add_viewer">Add to Workbench</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
   <string name="workbench_alt">Alternate Unit</string>
@@ -260,5 +267,4 @@
   <string name="workbench_roc_abrv">RoC</string>
   <string name="workbench_shsc">Superheat / Subcool</string>
   <string name="workbench_shsc_abrv">S/H S/C</string>
-  
 </resources>

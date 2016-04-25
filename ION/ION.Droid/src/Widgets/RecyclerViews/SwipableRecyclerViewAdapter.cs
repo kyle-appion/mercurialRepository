@@ -134,6 +134,7 @@
 
       if (pendingActions.ContainsKey(record)) {
         vh.ItemView.SetBackgroundColor(Color.Red);
+        vh.RevealButton();
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
           Action action = GetViewHolderSwipeAction(position);
           if (action != null) {
