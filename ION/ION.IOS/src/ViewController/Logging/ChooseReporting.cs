@@ -19,8 +19,9 @@ namespace ION.IOS.ViewController.Logging {
       reportType.Layer.CornerRadius = 8;
 
       newReport = new UIButton(new CGRect(0,.3 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
+      newReport.Enabled = false;
       newReport.SetTitle("New Report", UIControlState.Normal);
-      newReport.BackgroundColor = UIColor.Blue;
+      newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
       newReport.SetTitleColor(UIColor.Black, UIControlState.Normal);
       newReport.Layer.CornerRadius = 8;
       newReport.Layer.BorderWidth = 2f;
@@ -32,13 +33,28 @@ namespace ION.IOS.ViewController.Logging {
       savedReports.Layer.CornerRadius = 8;
       savedReports.Layer.BorderWidth = 2f;
 
-      savedReports.TouchUpInside += (sender, e) => {newReport.Enabled = true; savedReports.BackgroundColor = UIColor.Blue;};
-      savedReports.TouchDown += (sender, e) => {newReport.Enabled = false; savedReports.BackgroundColor = UIColor.Blue;};
-      savedReports.TouchUpOutside += (sender, e) => {newReport.Enabled = true; savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
+      savedReports.TouchUpInside += (sender, e) => {newReport.Enabled = true; savedReports.Enabled = false; savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);};
+      savedReports.TouchDown += (sender, e) => {newReport.Enabled = false; savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);};
+      savedReports.TouchUpOutside += (sender, e) => {
+        if(!savedReports.Enabled){          
+          savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);
+          newReport.Enabled = true; 
+        } else {
+          savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+        }
+      };
 
-      newReport.TouchUpInside += (sender, e) => {savedReports.Enabled = true; newReport.BackgroundColor = UIColor.Blue;};
-      newReport.TouchDown += (sender, e) => {savedReports.Enabled = false; newReport.BackgroundColor = UIColor.Blue;};
-      newReport.TouchUpOutside += (sender, e) => {savedReports.Enabled = true; newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
+      newReport.TouchUpInside += (sender, e) => {savedReports.Enabled = true; newReport.Enabled = false; newReport.BackgroundColor = UIColor.FromRGB(95,212,48);};
+      newReport.TouchDown += (sender, e) => {savedReports.Enabled = false; newReport.BackgroundColor = UIColor.FromRGB(95,212,48);};
+      newReport.TouchUpOutside += (sender, e) => {
+
+        if(!newReport.Enabled){
+          newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
+          savedReports.Enabled = true;
+        } else {
+          newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+        }         
+      };
 
       reportType.AddSubview(savedReports);
       reportType.AddSubview(newReport);

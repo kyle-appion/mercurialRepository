@@ -63,7 +63,7 @@
     /// </summary>
     /// <param name="notification">Notification.</param>
     private void OnKeyboardUp(NSNotification notification) {
-      var keyboardRect = UIKeyboard.BoundsFromNotification(notification);
+      var keyboardRect = UIKeyboard.FrameBeginFromNotification(notification);
 
       if (!FindActiveView(vc.View)) {
         Log.E(this, "Failed to find active view. Ignoring keyboard event");
@@ -72,7 +72,21 @@
 
       var viewRect = FindBoundsInViewController(activeView, vc);
 
+      if (vc.View.Bounds.Bottom.Equals(keyboardRect.Y)) {
+        if (viewRect.Bottom < (keyboardRect.Y - keyboardRect.Height)) {
+          return;
+        }
+      }
+      else if (viewRect.Bottom < keyboardRect.Y) {
+        PerformScroll(-totalScrolled);
+        return;
+      }
+
       var scrollAmount = viewRect.Bottom - keyboardRect.Height;
+
+      if((totalScrolled + scrollAmount) > keyboardRect.Height){
+        scrollAmount = keyboardRect.Height - totalScrolled;
+      }
 
       if (scrollAmount > 0) {
         PerformScroll(scrollAmount);

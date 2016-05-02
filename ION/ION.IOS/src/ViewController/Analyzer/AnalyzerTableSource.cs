@@ -51,9 +51,8 @@ namespace ION.IOS.ViewController.Analyzer
         case UITableViewCellEditingStyle.Delete:
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
-          Console.WriteLine("There are " + tableItems.Count.ToString() + " subviews left");
-          if (tableItems.Count.Equals(0)) {
-            Console.WriteLine("All done with subviews");
+
+          if (tableItems.Count.Equals(0)) {           
             tableSensors.subviewHide.SetImage(null, UIControlState.Normal);
           }
           // delete the row from the table

@@ -128,8 +128,8 @@ file.
 "report_screenshot_title" = "ION HVAC/R Screenshot Report";
 "report_state" = "State";
 "report_zip" = "Zip Code";
-"report_create" = "Create Report";
-"report_job" = "Job Manager";
+"report_create" = "Reporting";
+"report_job" = "Job Settings";
 
 /* SENSOR */
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
+
 namespace ION.IOS.ViewController.Analyzer
 {
 	public class sensorGroup

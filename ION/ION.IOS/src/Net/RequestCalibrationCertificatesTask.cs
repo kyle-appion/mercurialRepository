@@ -4,6 +4,7 @@
   using System.Collections.Generic;
   using System.IO;
   using System.Net;
+  using System.Linq;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -154,6 +155,15 @@
                 ret.Add(new CalibrationCertificateRequestResult(GaugeSerialNumber.Parse(s.Name)));
               } else {
                 ret.Add(new CalibrationCertificateRequestResult(response.ToCalibrationCertificate()));
+                var existing = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?", response.serialNumber);                  
+                if(existing.Count.Equals(0)){
+                  Log.D(this,"Creating new entry for device: " + response.serialNumber + " with a calibration date of: " + response.calDate);
+                  var addDevice = new ION.Core.Database.LoggingDeviceRow(){serialNumber = response.serialNumber, nistDate = response.calDate};
+                  ion.database.Insert(addDevice);
+                } else {
+                  Log.D(this,"Updating last calibration date of: " + response.calDate + " for SN: " + response.serialNumber);
+                  ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ? WHERE serialNumber = ?",response.calDate,response.serialNumber);
+                }
               }
             } catch (Exception e) {
               Log.E(this, "Failed to parse certificate: " + s.Value, e);
