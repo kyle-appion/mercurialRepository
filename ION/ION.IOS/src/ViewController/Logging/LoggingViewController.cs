@@ -12,6 +12,7 @@ using System.Linq;
 using ION.IOS.ViewController;
 using ION.IOS.Util;
 using ION.IOS.UI;
+using ION.Core.IO;
 
 using ION.Core.Database;
 using ION.Core.Content;
@@ -19,6 +20,7 @@ using ION.Core.Devices;
 using ION.Core.Report.DataLogs;
 using ION.Core.Util;
 using ION.Core.App;
+using ION.IOS.ViewController.FileManager;
 
 namespace ION.IOS.ViewController.Logging {
   public static class ChosenDates {
@@ -49,7 +51,7 @@ namespace ION.IOS.ViewController.Logging {
       // Perform any additional setup after loading the view, typically from a nib.
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
 
-      InitNavigationBar("ic_nav_workbench", false);
+      InitNavigationBar("ic_graph_menu", false);
 
       backAction = () => {
         root.navigation.ToggleMenu();
@@ -69,7 +71,7 @@ namespace ION.IOS.ViewController.Logging {
       reportingSection.savedReports.TouchUpInside += loadSavedReports;
       reportingSection.newReport.TouchUpInside += showDataSection;
 
-      dataSection = new ChooseData(View,selectedSessions);
+      dataSection = new ChooseData(View,selectedSessions,this);
       dataSection.showGraphButton.TouchUpInside += showGraphSection;
 
       savedReportsSection = new ChooseSaved(View);
@@ -88,6 +90,7 @@ namespace ION.IOS.ViewController.Logging {
      /// <param name="sender">Sender.</param>
      /// <param name="e">E.</param>
     public void loadSavedReports (object sender, EventArgs e){
+      reportingSection.newReport.Enabled = false;
       View.BringSubviewToFront(reportingSection.reportType);
       reportingSection.newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
@@ -99,9 +102,9 @@ namespace ION.IOS.ViewController.Logging {
           dataSection.sessionTable.Hidden = true;
           dataSection.middleBorder.Hidden = true;
           dataSection.bottomBorder.Hidden = true;
-          dataSection.selectedSessions.CollectionChanged -= dataSection.checkForSelected;
-          dataSection.selectedSessions = new ObservableCollection<int>();
-          dataSection.selectedSessions.CollectionChanged += dataSection.checkForSelected;
+          while(dataSection.selectedSessions.Count > 0){
+            dataSection.selectedSessions.RemoveAt(0);
+          }
           dataSection.showGraphButton.Enabled = false;
           dataSection.showGraphButton.Alpha = .6f;
           dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
@@ -117,6 +120,7 @@ namespace ION.IOS.ViewController.Logging {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
     public void showDataSection (object sender, EventArgs e){
+      reportingSection.savedReports.Enabled = false;
       View.BringSubviewToFront(reportingSection.reportType);
       reportingSection.savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
@@ -146,7 +150,8 @@ namespace ION.IOS.ViewController.Logging {
     /// <summary>
     /// Expands the saved reports section
     /// </summary>
-    public void resizeSavedReportsSectionLarger(){      
+    public void resizeSavedReportsSectionLarger(){
+      List<string> files = new List<string>();
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         savedReportsSection.showReports.Hidden = false;
         savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
@@ -154,6 +159,15 @@ namespace ION.IOS.ViewController.Logging {
         () => {          
           savedReportsSection.reportTable.Hidden = false;
           savedReportsSection.header.Hidden = false;
+          savedReportsSection.header.ClipsToBounds = true;
+          var dir = ion.fileManager.GetApplicationInternalDirectory();
+          foreach(var file in Directory.GetFiles(dir.fullPath,"*.xlsx")){
+            files.Add(file);
+          }
+          savedReportsSection.reportTable.Source = new SpreadsheetTableSource(files);
+          savedReportsSection.reportTable.ReloadData();
+          savedReportsSection.reportTable.Hidden = false;
+          reportingSection.newReport.Enabled = true;
         });
     }
     /// <summary>
@@ -167,8 +181,8 @@ namespace ION.IOS.ViewController.Logging {
         dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
         dataSection.DataType.Layer.CornerRadius = 0f;
         dataSection.DataType.Layer.BorderWidth = 1f;
-      }, 
-      () => { 
+      },
+      () => {
           dataSection.jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           dataSection.jobButton.Hidden = false;
           dataSection.sessionButton.Hidden = false;
@@ -183,7 +197,8 @@ namespace ION.IOS.ViewController.Logging {
           if(dataSection.selectedSessions.Count <= 0){
             dataSection.showGraphButton.Enabled = false;
             dataSection.showGraphButton.Alpha = .6f;
-          } 
+          }
+          reportingSection.savedReports.Enabled = true;
         });
     }
     /// <summary>
@@ -247,17 +262,18 @@ namespace ION.IOS.ViewController.Logging {
 
       foreach (var num in dataSection.selectedSessions) {
         paramList.Add('"' + num.ToString() + '"');
+        Console.WriteLine("Querying with session:"+ num);
       }
 
       var graphResult = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd, frn_JID FROM SessionRow WHERE SID in (" + string.Join(",",paramList.ToArray()) + ") ORDER BY SID");
-
+      Console.WriteLine("Grabbed " + graphResult.Count + " session results");
       var tempResults = new List<deviceReadings>();
       var holderList = new List<string>();
       var sessionBreaks = new string[graphResult.Count];
 
       for(int s = 0; s < graphResult.Count; s++){
         var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
-
+        Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
         for(int m = 0; m < deviceCount.Count; m++){
           var activeDevice = new deviceReadings();
           activeDevice.times = new List<DateTime>();
@@ -267,17 +283,10 @@ namespace ION.IOS.ViewController.Logging {
           activeDevice.name = deviceCount[m].serialNumber;
 
           var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? ORDER BY MID ASC",activeDevice.name, graphResult[s].SID);
-
-
-
-          var deviceIndex = SerialNumberExtensions.ParseSerialNumber(activeDevice.name);
-
-          var type = ion.deviceManager[deviceIndex] as GaugeDevice;
-          if (type == null) {
-            activeDevice.type = "Pressure";
-          } else {
-            activeDevice.type = type[measurementCount[0].sensorIndex].type.ToString();
-          }
+          Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex);
+          var df = ion.deviceManager.__deviceFactory;
+          var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.name)) as GaugeDeviceDefinition;
+          activeDevice.type = tempD.sensorDefinitions[measurementCount[0].sensorIndex].sensorType.ToString();
 
           foreach(var meas in measurementCount){
             activeDevice.times.Add(meas.recordedDate.ToLocalTime());
@@ -291,7 +300,7 @@ namespace ION.IOS.ViewController.Logging {
         }
         if (holderList.Count > 0) {
           sessionBreaks[s] = holderList[holderList.Count - 1];
-        } 
+        }
       }
       holderList.OrderBy(x => x);
 
@@ -326,12 +335,16 @@ namespace ION.IOS.ViewController.Logging {
           graphingSection.graphingType.AddSubview (graphingSection.graphingView.gView);
           graphingSection.graphingType.AddSubview (graphingSection.legendView.lView);
           graphingSection.graphingType.SendSubviewToBack (graphingSection.legendView.lView);
-          graphingSection.SetupSettingsButtons(graphingSection.graphingType,activityLoadingGraphs);
+          if(holderList.Count > 0){
+            graphingSection.SetupSettingsButtons(graphingSection.graphingType,activityLoadingGraphs);
+            View.AddSubview(graphingSection.graphingView.resetButton);
+            View.AddSubview(graphingSection.graphingView.exportGraph);
+          } else {
+            activityLoadingGraphs.StopAnimating();
+          }
           graphingSection.graphingView.Hidden = false;
           graphingSection.legendView.Hidden = false;
 
-          View.AddSubview(graphingSection.graphingView.resetButton);
-          View.AddSubview(graphingSection.graphingView.exportGraph);
           dataSection.resize = new UITapGestureRecognizer(() => {
             resizeGraphingSectionSmaller();
           });
@@ -344,8 +357,10 @@ namespace ION.IOS.ViewController.Logging {
     public void resizeGraphingSectionSmaller(){
       View.BringSubviewToFront(dataSection.DataType);
       if (graphingSection.graphingView != null) {
-        graphingSection.graphingView.resetButton.Hidden = true;
-        graphingSection.graphingView.exportGraph.Hidden = true;
+        if (graphingSection.graphingView.resetButton != null) {
+          graphingSection.graphingView.resetButton.Hidden = true;
+          graphingSection.graphingView.exportGraph.Hidden = true;
+        }
         if (graphingSection.graphingView.graphTable != null) {
           graphingSection.graphingView.graphTable.Source = null;
           graphingSection.graphingView.graphTable.ReloadData();
@@ -365,6 +380,12 @@ namespace ION.IOS.ViewController.Logging {
           dataSection.DataType.RemoveGestureRecognizer(dataSection.resize);
           resizeDataSectionLarger();
       });
+    }
+
+    public override void ViewDidAppear(bool animated) {
+      if (dataSection.DataType != null) {
+        dataSection.ReloadAllJobs();
+      }
     }
 
     public override void DidReceiveMemoryWarning() {

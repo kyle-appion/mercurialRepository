@@ -44,7 +44,9 @@ namespace ION.Core.Database {
       return "Device {" +
         "id: " + LDID +
         ", serialNumber: " + serialNumber +
-        ", name: " + name + "}";
+        ", name: " + name + 
+        ", nistDate:" + nistDate + 
+        "}";
     }
   }
 }

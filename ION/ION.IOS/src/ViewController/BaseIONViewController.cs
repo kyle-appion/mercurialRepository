@@ -29,6 +29,7 @@ namespace ION.IOS.ViewController {
     public const string VC_PDF_VIEWER = "viewControllerPdfViewer";
     public const string VC_LOGGING = "viewControllerLogging";
     public const string VC_JOB_MANAGER = "viewControllerJobManager";
+    public const string VC_EDIT_JOB = "viewControllerEditJob";
 
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation

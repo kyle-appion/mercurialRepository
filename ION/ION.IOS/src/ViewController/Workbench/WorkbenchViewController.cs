@@ -2,6 +2,7 @@ namespace ION.IOS.ViewController.Workbench {
 
   using System;
   using System.Collections.Generic;
+  using System.Threading.Tasks;
 
   using CoreGraphics;
   using Foundation;
@@ -42,6 +43,8 @@ namespace ION.IOS.ViewController.Workbench {
     /// <value>The source.</value>
     private WorkbenchTableSource source { get; set; }
 
+    public UIButton recordButton;
+
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
     }
@@ -61,8 +64,17 @@ namespace ION.IOS.ViewController.Workbench {
         TakeScreenshot();
       };
       button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
+
+      recordButton = new UIButton(new CGRect(0,0,31,30));
+      recordButton.TouchUpInside += (sender, e) => {
+        RecordDevices();
+      };
+      recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+
       var barButton = new UIBarButtonItem(button);
-      NavigationItem.RightBarButtonItem = barButton;
+      var barButton2 = new UIBarButtonItem(recordButton);
+
+      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};
 
       Title = Strings.Workbench.SELF.FromResources();
 
@@ -85,6 +97,12 @@ namespace ION.IOS.ViewController.Workbench {
       base.ViewDidAppear(animated);
 
       tableContent.ReloadData();
+
+      if (ion.dataLogManager.isRecording) {
+        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+      } else {
+        recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+      }
     }
 
     // Overridden from UIViewController
@@ -131,6 +149,29 @@ namespace ION.IOS.ViewController.Workbench {
       } catch (Exception e) {
         Log.E(this, "Failed to create pdf", e);
       }
+    }
+
+    private void RecordDevices(){
+      var recordingMessage = "";
+      if (ion.dataLogManager.isRecording) {
+        recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        recordButton.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.StopRecording();
+        recordingMessage = "Recording has stopped";
+      } else {
+        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+        recordButton.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+        recordingMessage = "Recording has started";
+      }
+      showRecordingToast(recordingMessage);
+    }
+
+    public async void showRecordingToast(string recordingMessage){
+      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
+      messageBox.Show();
+      await Task.Delay(TimeSpan.FromSeconds(1));
+      messageBox.DismissWithClickedButtonIndex(0, true);
     }
   }
 }

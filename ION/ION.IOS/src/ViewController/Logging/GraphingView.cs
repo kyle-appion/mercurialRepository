@@ -9,9 +9,9 @@ using Foundation;
 using CoreGraphics;
 using QuickLook;
 
-using Xfinium.Pdf;
-using Xfinium.Pdf.Graphics;
-using Xfinium.Pdf.Graphics.Text;
+//using Xfinium.Pdf;
+//using Xfinium.Pdf.Graphics;
+//using Xfinium.Pdf.Graphics.Text;
 
 using ION.Core.Database;
 using ION.Core.Report;
@@ -21,8 +21,6 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
-
-using DocumentFormat.OpenXml;
 
 using FlexCel.Core;
 using FlexCel.XlsAdapter;
@@ -100,6 +98,7 @@ namespace ION.IOS.ViewController.Logging
 			gView.Layer.CornerRadius = 8;
 			gView.Layer.BorderColor = UIColor.Black.CGColor;
 			gView.Layer.BorderWidth = 1f;
+
       if (ChosenDates.includeList.Count > 0) {
   			switch (ChosenDates.includeList.Count) {
           case 0:
@@ -396,7 +395,7 @@ namespace ION.IOS.ViewController.Logging
     }
 
     public async void ChooseReportType(UIViewController mainVC,ObservableCollection<int> sessions){
-      UIAlertView reportBox = new UIAlertView("Create Report", "Choose a format", null,"Cancel","Spreadsheet","PDF");
+      UIAlertView reportBox = new UIAlertView("Create Report", "Choose a format", null,"Cancel","Spreadsheet");
       reportBox.Show();
       reportBox.Clicked += async (sender, e) => {
         if(e.ButtonIndex.Equals(1)){
@@ -421,15 +420,19 @@ namespace ION.IOS.ViewController.Logging
     public List<deviceReadings> categorizeData(ObservableCollection<int> sessions, List<string> sessionBreaks){
       var ion = AppState.context;
       var deviceList = new List<deviceReadings>();
+     
       foreach (var session in sessions) {
         var endtime = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY recordedDate DESC LIMIT 1",session);
-        sessionBreaks.Add(endtime[0].recordedDate.ToLocalTime().ToString());
+        if (endtime.Count > 0) {
+          sessionBreaks.Add(endtime[0].recordedDate.ToLocalTime().ToString());
+        }
       }
       var paramList = new List<string>();
 
       foreach (var num in sessions) {
         paramList.Add('"' + num.ToString() + '"');
       }
+
       foreach (var package in ChosenDates.includeList) {
         var device = new deviceReadings();
         var bundle = ion.database.Query<SensorMeasurementRow>("SELECT sensorIndex, recordedDate,measurement FROM SensorMeasurementRow Where frn_SID IN (" + string.Join(",",paramList.ToArray()) + ") AND serialNumber = ? AND recordedDate BETWEEN ? AND ? ORDER BY recordedDate ASC",package,ChosenDates.subLeft, ChosenDates.subRight.AddSeconds(5));
@@ -454,10 +457,26 @@ namespace ION.IOS.ViewController.Logging
     }
     public void createSpreadsheet(UIAlertView messageBox, UIViewController mainVC, List<deviceReadings> dataList, List<string> sessionBreaks){
       messageBox.Dismissed += previewSpreadsheet;
-      fileName = "test.xlsx";
-      //fileName = DateTime.UtcNow.ToLocalTime();
-      Console.WriteLine("Filename WOULD be: " + DateTime.UtcNow.ToLocalTime());
+      //fileName = "test.xlsx";
+      fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".xlsx";
 
+      var needOrdered = new List<DateTime>(); 
+      var masterTimes = new List<string>(); 
+
+      foreach (var device in dataList) {
+        foreach (var time in device.times) {
+          if(!needOrdered.Contains(time.Date)){
+            needOrdered.Add(time);
+          }
+        }
+      }
+      needOrdered.Sort();
+
+      foreach (var time in needOrdered) {
+        if(!masterTimes.Contains(time.ToString())){
+          masterTimes.Add(time.ToString());
+        }
+      }
       XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
       xls.AllowOverwritingFiles = true; 
 
@@ -485,8 +504,6 @@ namespace ION.IOS.ViewController.Logging
       borderColor.VAlignment = TVFlxAlignment.top;
       borderColor.HAlignment = THFlxAlignment.center;
       xls.AddFormat(borderColor);
-      var needOrdered = new List<DateTime>(); 
-      var masterTimes = new List<string>(); 
      
       foreach (var device in dataList) {
         foreach (var time in device.times) {
@@ -588,117 +605,117 @@ namespace ION.IOS.ViewController.Logging
       vc.PresentViewController (previewController, true, null);
     }
 
-    public void createPDF(UIAlertView messageBox,UIViewController mainVC){
-      var allGraphs = new UIScrollView(new CGRect(0,0,gView.Bounds.Width,gView.Bounds.Height));
-      var reportHolder = new DataLoggingReport();
+//    public void createPDF(UIAlertView messageBox,UIViewController mainVC){
+//      var allGraphs = new UIScrollView(new CGRect(0,0,gView.Bounds.Width,gView.Bounds.Height));
+//      var reportHolder = new DataLoggingReport();
+//
+//      reportHolder.title = "Logging Report";
+//      reportHolder.subtitle = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
+//
+//      var cellHeight = allGraphs.Bounds.Height / 8f;
+//      for (int i = 0; i < selectedData.Count; i++) {
+//        var cell = graphTable.DequeueReusableCell("graphingCell") as graphCell;
+//        if (cell == null) {
+//          cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
+//        } 
+//        cell.setupGraph (selectedData [i], selectedData, allGraphs.Bounds.Width, cellHeight, trackerHeight, gView, graphTable);
+//        cell.plotView.Frame = new CGRect(0,i * cellHeight,allGraphs.Bounds.Width,cellHeight);
+//
+//        allGraphs.AddSubview(cell.plotView);
+//      }
+//
+//      var convertedImage = ION.IOS.UI.UIViewExtensions.Capture(allGraphs);
+//
+//      reportHolder.screenshot = convertedImage.AsPNG().ToArray();
+//      Console.WriteLine("First byte array length: " + reportHolder.screenshot.Length);
+//
+//      reportHolder.tableData = new string[selectedData.Count,4];
+//
+//      for (int n = 0; n < selectedData.Count; n++) {
+//        var lowest = 99999999999.0;
+//        var highest = -9999999999.0;
+//        var total = 0;
+//        foreach (var measurement in selectedData[n].readings) {
+//          if (measurement > highest) {
+//            highest = measurement;
+//          }
+//          if (measurement < lowest) {
+//            lowest = measurement;
+//          }
+//          total++;
+//        }
+//
+//        reportHolder.tableData[n, 0] = "Device SN: " + selectedData[n].name;
+//        reportHolder.tableData[n, 1] = "Lowest Measurement: " + lowest;
+//        reportHolder.tableData[n, 2] = "Highest Measurement: " + highest;
+//        reportHolder.tableData[n, 3] = "Number of Measurements: " + total;
+//      }
+//
+//      string outputPath = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
+//
+//      MemoryStream imageStream = new MemoryStream(reportHolder.screenshot);
+//
+//      PdfFixedDocument document = new PdfFixedDocument();
+//      PdfStandardFont helveticaBoldTitle = new PdfStandardFont(PdfStandardFontFace.HelveticaBold, 16);
+//      PdfStandardFont helveticaSection = new PdfStandardFont(PdfStandardFontFace.Helvetica, 10);
+//
+//      PdfPage page = document.Pages.Add();
+//     
+//      DrawImages(page, imageStream, helveticaBoldTitle, helveticaSection);
+//
+//      page = document.Pages.Add();
+//
+//      DrawExtraInfo(page, imageStream, helveticaBoldTitle, helveticaSection, reportHolder);
+//
+//      PreviewOutputInfo output = new PreviewOutputInfo(document, "Graph_Testing.pdf");
+//
+//      output.Document.Save(outputPath + "/" + output.FileName);
+//
+//      messageBox.DismissWithClickedButtonIndex(0, true);
+//
+//      QLPreviewController previewController = new QLPreviewController();
+//      previewController.DataSource = new PDFViewDataSource(output.FileName);
+//      mainVC.PresentViewController(previewController, true, null);
+//    }
 
-      reportHolder.title = "Logging Report";
-      reportHolder.subtitle = ChosenDates.subLeft.ToString() + " - " + ChosenDates.subRight.ToString();
 
-      var cellHeight = allGraphs.Bounds.Height / 8f;
-      for (int i = 0; i < selectedData.Count; i++) {
-        var cell = graphTable.DequeueReusableCell("graphingCell") as graphCell;
-        if (cell == null) {
-          cell = new UITableViewCell(UITableViewCellStyle.Default, "graphingCell") as graphCell;
-        } 
-        cell.setupGraph (selectedData [i], selectedData, allGraphs.Bounds.Width, cellHeight, trackerHeight, gView, graphTable);
-        cell.plotView.Frame = new CGRect(0,i * cellHeight,allGraphs.Bounds.Width,cellHeight);
-
-        allGraphs.AddSubview(cell.plotView);
-      }
-
-      var convertedImage = ION.IOS.UI.UIViewExtensions.Capture(allGraphs);
-
-      reportHolder.screenshot = convertedImage.AsPNG().ToArray();
-      Console.WriteLine("First byte array length: " + reportHolder.screenshot.Length);
-
-      reportHolder.tableData = new string[selectedData.Count,4];
-
-      for (int n = 0; n < selectedData.Count; n++) {
-        var lowest = 99999999999.0;
-        var highest = -9999999999.0;
-        var total = 0;
-        foreach (var measurement in selectedData[n].readings) {
-          if (measurement > highest) {
-            highest = measurement;
-          }
-          if (measurement < lowest) {
-            lowest = measurement;
-          }
-          total++;
-        }
-
-        reportHolder.tableData[n, 0] = "Device SN: " + selectedData[n].name;
-        reportHolder.tableData[n, 1] = "Lowest Measurement: " + lowest;
-        reportHolder.tableData[n, 2] = "Highest Measurement: " + highest;
-        reportHolder.tableData[n, 3] = "Number of Measurements: " + total;
-      }
-
-      string outputPath = Environment.GetFolderPath (Environment.SpecialFolder.MyDocuments);
-
-      MemoryStream imageStream = new MemoryStream(reportHolder.screenshot);
-
-      PdfFixedDocument document = new PdfFixedDocument();
-      PdfStandardFont helveticaBoldTitle = new PdfStandardFont(PdfStandardFontFace.HelveticaBold, 16);
-      PdfStandardFont helveticaSection = new PdfStandardFont(PdfStandardFontFace.Helvetica, 10);
-
-      PdfPage page = document.Pages.Add();
-     
-      DrawImages(page, imageStream, helveticaBoldTitle, helveticaSection);
-
-      page = document.Pages.Add();
-
-      DrawExtraInfo(page, imageStream, helveticaBoldTitle, helveticaSection, reportHolder);
-
-      PreviewOutputInfo output = new PreviewOutputInfo(document, "Graph_Testing.pdf");
-
-      output.Document.Save(outputPath + "/" + output.FileName);
-
-      messageBox.DismissWithClickedButtonIndex(0, true);
-
-      QLPreviewController previewController = new QLPreviewController();
-      previewController.DataSource = new PDFViewDataSource(output.FileName);
-      mainVC.PresentViewController(previewController, true, null);
-    }
-
-
-    private static void DrawImages(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont)
-    {
-      PdfBrush brush = new PdfBrush();
-
-      PdfPngImage jpeg = new PdfPngImage(imageStream);
-
-      page.Graphics.DrawString(ChosenDates.subLeft.ToString() + "-" + ChosenDates.subRight.ToString(), titleFont, brush, 160, 50);
-
-      // Draw the image on the page
-      page.Graphics.DrawImage(jpeg, 3, 90, 600, 600);
-
-      page.Graphics.CompressAndClose();
-    }
-
-    private static void DrawExtraInfo(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont, DataLoggingReport report)
-    {
-      PdfBrush brush = new PdfBrush();
-
-      PdfPen blackPen = new PdfPen(PdfRgbColor.Black, 0.5);
-      page.Graphics.DrawRectangle(blackPen, 50, 20, 500, 750, 0);
-
-      var pageSize = 750;
-      var eInfoSpace = (double)pageSize / report.tableData.GetLength(0);
-      var yAxis = 20.0;
-      for(int i = 0; i < report.tableData.GetLength(0);i++) {
-        page.Graphics.DrawString(report.tableData[i,0], titleFont, brush, 180, yAxis);
-       
-        page.Graphics.DrawString(report.tableData[i,1], titleFont, brush, 52, yAxis + (.25 * eInfoSpace));
-
-        page.Graphics.DrawString(report.tableData[i,2], titleFont, brush, 52, yAxis + (.5 * eInfoSpace));
-
-        page.Graphics.DrawString(report.tableData[i,3], titleFont, brush, 52, yAxis + (.75 * eInfoSpace));
-        yAxis = ((i + 1) * eInfoSpace) + 20;
-      }
-
-      page.Graphics.CompressAndClose();
-    }
+//    private static void DrawImages(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont)
+//    {
+//      PdfBrush brush = new PdfBrush();
+//
+//      PdfPngImage jpeg = new PdfPngImage(imageStream);
+//
+//      page.Graphics.DrawString(ChosenDates.subLeft.ToString() + "-" + ChosenDates.subRight.ToString(), titleFont, brush, 160, 50);
+//
+//      // Draw the image on the page
+//      page.Graphics.DrawImage(jpeg, 3, 90, 600, 600);
+//
+//      page.Graphics.CompressAndClose();
+//    }
+//
+//    private static void DrawExtraInfo(PdfPage page, Stream imageStream, PdfFont titleFont, PdfFont sectionFont, DataLoggingReport report)
+//    {
+//      PdfBrush brush = new PdfBrush();
+//
+//      PdfPen blackPen = new PdfPen(PdfRgbColor.Black, 0.5);
+//      page.Graphics.DrawRectangle(blackPen, 50, 20, 500, 750, 0);
+//
+//      var pageSize = 750;
+//      var eInfoSpace = (double)pageSize / report.tableData.GetLength(0);
+//      var yAxis = 20.0;
+//      for(int i = 0; i < report.tableData.GetLength(0);i++) {
+//        page.Graphics.DrawString(report.tableData[i,0], titleFont, brush, 180, yAxis);
+//       
+//        page.Graphics.DrawString(report.tableData[i,1], titleFont, brush, 52, yAxis + (.25 * eInfoSpace));
+//
+//        page.Graphics.DrawString(report.tableData[i,2], titleFont, brush, 52, yAxis + (.5 * eInfoSpace));
+//
+//        page.Graphics.DrawString(report.tableData[i,3], titleFont, brush, 52, yAxis + (.75 * eInfoSpace));
+//        yAxis = ((i + 1) * eInfoSpace) + 20;
+//      }
+//
+//      page.Graphics.CompressAndClose();
+//    }
 
     /*
     /// <summary>

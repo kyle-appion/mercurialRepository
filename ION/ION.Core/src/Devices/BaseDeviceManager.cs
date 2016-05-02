@@ -129,7 +129,7 @@
     /// <summary>
     /// The factory that is used to create devices.
     /// </summary>
-    private DeviceFactory __deviceFactory;
+    public DeviceFactory __deviceFactory {get; internal set;}
 
     public BaseDeviceManager(IION ion, IConnectionFactory connectionFactory, IConnectionHelper connectionHelper) {
       this.ion = ion;

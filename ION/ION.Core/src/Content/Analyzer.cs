@@ -6,6 +6,7 @@
   using ION.Core.App;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
+  using ION.Core.Content.Properties;
 
   /// <summary>
   /// A collection of data pertaining to a state change within the analyzer.
@@ -222,6 +223,8 @@
     /// </summary>
     private Sensor[] sensors;
 
+    public List<Sensor> sensorList;
+
     /// <summary>
     /// Creates a new analyzer.
     /// </summary>
@@ -423,7 +426,7 @@
       RemoveSensor(index);
 
       sensors[index] = sensor;
-      sensor.onSensorStateChangedEvent += OnSensorChangedEvent;
+      //sensor.onSensorStateChangedEvent += OnSensorChangedEvent;
 
       var ae = new AnalyzerEvent(AnalyzerEvent.EType.Added, index);
       NotifyOfAnalyzerEvent(ae);

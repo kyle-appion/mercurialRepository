@@ -79,16 +79,13 @@
 
         var sensors = new HashSet<GaugeDeviceSensor>();
 
-        if(ion.currentAnalyzer == null){
-          Debug.WriteLine("Analyzer isn't instantiated");
-        }
-        else{
-        foreach (var s in ion.currentAnalyzer.GetSensors()) {
-          var gds = s as GaugeDeviceSensor;
-          if (gds != null && gds.device.isConnected) {
-            sensors.Add(gds);
+        if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
+          foreach (var s in ion.currentAnalyzer.sensorList) {
+            var gds = s as GaugeDeviceSensor;
+            if (gds != null && gds.device.isConnected) {
+              sensors.Add(gds);
+            }
           }
-        }
         }
 
         foreach (var m in ion.currentWorkbench.manifolds) {
@@ -97,8 +94,6 @@
             sensors.Add(gds);
           }
         }
-
-
 
         var rows = new List<SensorMeasurementRow>();
         var db = ion.database;

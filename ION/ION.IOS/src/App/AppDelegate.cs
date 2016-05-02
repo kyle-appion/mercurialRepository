@@ -68,6 +68,12 @@
       if (ion.settings.location.useGeoLocation) {
         ion.locationManager.StartAutomaticLocationPolling();
       }
+
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 0) {
+        Console.WriteLine("Default logging interval not set, so setting it to 30 seconds");
+        NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
+      }
+
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 

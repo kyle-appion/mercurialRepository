@@ -130,6 +130,7 @@
     /// <value>The scanner.</value>
     IConnectionHelper connectionHelper { get; set; }
 
+    DeviceFactory __deviceFactory { get; }
     /// <summary>
     /// Requests that the device manager enable its communication backend.
     /// </summary>

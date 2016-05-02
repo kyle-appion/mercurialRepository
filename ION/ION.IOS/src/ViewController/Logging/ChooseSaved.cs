@@ -3,6 +3,8 @@ using UIKit;
 using Foundation;
 using CoreGraphics;
 
+using ION.IOS.ViewController.FileManager;
+
 namespace ION.IOS.ViewController.Logging {
   
   public class ChooseSaved {
@@ -19,10 +21,14 @@ namespace ION.IOS.ViewController.Logging {
       showReports.Layer.BorderWidth = 1f;
       showReports.Hidden = true;
       showReports.Layer.CornerRadius = 8;
+      showReports.ClipsToBounds = true;
 
       cellHeight = .07f * mainView.Bounds.Height;
 
       header = new UILabel(new CGRect(0,0,showReports.Bounds.Width, cellHeight));
+      header.BackgroundColor = UIColor.FromRGB(95,212,48);
+      header.Font = UIFont.BoldSystemFontOfSize(20);
+      header.ClipsToBounds = true;
       header.Layer.BorderColor = UIColor.Black.CGColor;
       header.Layer.BorderWidth = 1f;
       header.TextAlignment = UITextAlignment.Center;
@@ -33,8 +39,8 @@ namespace ION.IOS.ViewController.Logging {
 
       activityLoadingReports = new UIActivityIndicatorView(new CGRect(0,0, showReports.Bounds.Width, showReports.Bounds.Height));
 
-      reportTable = new UITableView(new CGRect(0, cellHeight, showReports.Bounds.Width, .07 * mainView.Bounds.Height));
-      reportTable.RegisterClassForCellReuse(typeof(SessionCell),"savedReportCell");
+      reportTable = new UITableView(new CGRect(0, cellHeight, showReports.Bounds.Width, .75 * mainView.Bounds.Height - cellHeight));
+      reportTable.RegisterClassForCellReuse(typeof(SpreadsheetCell),"spreadsheetCell");
       reportTable.BackgroundColor = UIColor.Clear;
       reportTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       reportTable.Hidden = true;
