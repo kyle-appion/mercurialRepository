@@ -53,7 +53,6 @@ namespace ION.IOS.ViewController.Logging {
         checkData.DataType.RemoveGestureRecognizer(checkData.resize);
         ////calculate left tracker size based on manual selected dates
         var leftIndex = ChosenDates.allTimes[ChosenDates.subLeft.ToString()];
-        Console.WriteLine("Using index " + leftIndex + " for left tracker");
         var lwidth = graphingView.dateMultiplier * leftIndex;
 
         ///resize left tracker to match manual selection

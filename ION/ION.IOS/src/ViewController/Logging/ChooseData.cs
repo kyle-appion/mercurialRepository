@@ -386,6 +386,14 @@ namespace ION.IOS.ViewController.Logging {
       jobTable.ReloadData();
       jobTable.LayoutIfNeeded();
 
+      if (result.Count.Equals(0)) {
+        Console.WriteLine("There are no jobs");
+        noJobLabel.Hidden = false;
+      } else {
+        Console.WriteLine("There are jobs available");
+        noJobLabel.Hidden = true;
+      }
+
       refreshJobs.EndRefreshing();
       jobButton.Enabled = true;
     }
