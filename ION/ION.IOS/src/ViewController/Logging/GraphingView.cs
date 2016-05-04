@@ -9,10 +9,6 @@ using Foundation;
 using CoreGraphics;
 using QuickLook;
 
-//using Xfinium.Pdf;
-//using Xfinium.Pdf.Graphics;
-//using Xfinium.Pdf.Graphics.Text;
-
 using ION.Core.Database;
 using ION.Core.Report;
 using ION.Core.App;
@@ -192,14 +188,14 @@ namespace ION.IOS.ViewController.Logging
 					}
 				}
 				if (leftDrag.State == UIGestureRecognizerState.Ended){          
-          leftTrackerView.BackgroundColor = UIColor.Red;
-          subDates.TextColor = UIColor.Red;
+          leftTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
+          subDates.TextColor = UIColor.Green;
 					UIView.Transition(
 						withView:subDates,
 						duration:.5,
 						options: UIViewAnimationOptions.TransitionCrossDissolve,
 						animation: () =>{
-              subDates.TextColor = UIColor.Red;
+              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
 							subDates.TextColor = UIColor.Black;
               leftTrackerView.BackgroundColor = UIColor.Gray;
 						},
@@ -246,7 +242,7 @@ namespace ION.IOS.ViewController.Logging
 						duration:.5,
 						options: UIViewAnimationOptions.TransitionCrossDissolve,
 						animation: () =>{
-              subDates.TextColor = UIColor.Red;
+              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
 							subDates.TextColor = UIColor.Black;
               rightTrackerView.BackgroundColor = UIColor.Gray;
 						},
@@ -314,12 +310,8 @@ namespace ION.IOS.ViewController.Logging
 			exportGraph.Layer.CornerRadius = 8; 
 
 			exportGraph.TouchUpInside += (sender, e) => {
-        
-				Console.WriteLine("using graph data starting at " + ChosenDates.subLeft + " and ending at " + ChosenDates.subRight);
         exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
-
         ChooseReportType(mainVC,sessions);
-
 			}; 
 			exportGraph.TouchDown += (sender, e) => {exportGraph.BackgroundColor = UIColor.Blue;};
       exportGraph.TouchUpOutside += (sender, e) => {exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);};
@@ -354,7 +346,6 @@ namespace ION.IOS.ViewController.Logging
       scrollDown = new UIButton (new CGRect (0, .65 * gView.Bounds.Height,.1 * gView.Bounds.Width, .1 * gView.Bounds.Width));
 			scrollDown.SetImage (UIImage.FromBundle ("ic_scrolldown"), UIControlState.Normal);
 			scrollDown.TouchUpInside += (sender, e) => {
-        Console.WriteLine("Scrolling down to index: " + bottomCell);
 				graphTable.ScrollToRow(NSIndexPath.FromRowSection(bottomCell,0), UITableViewScrollPosition.Bottom, true);
 				if(bottomCell >= deviceCount - 1){
 					bottomCell = deviceCount - 1;
@@ -395,7 +386,7 @@ namespace ION.IOS.ViewController.Logging
     }
 
     public async void ChooseReportType(UIViewController mainVC,ObservableCollection<int> sessions){
-      UIAlertView reportBox = new UIAlertView("Create Report", "Choose a format", null,"Cancel","Spreadsheet");
+      UIAlertView reportBox = new UIAlertView("Report", "Choose a format", null,"Cancel","Create Spreadsheet");
       reportBox.Show();
       reportBox.Clicked += async (sender, e) => {
         if(e.ButtonIndex.Equals(1)){
@@ -411,8 +402,8 @@ namespace ION.IOS.ViewController.Logging
           Console.WriteLine("Create A PDF");
           UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating PDF", null,null,null);
           messageBox.Show();
-          messageBox.DismissWithClickedButtonIndex(0,true);
           //createPDF(messageBox,mainVC);
+          createPDF(messageBox);
         }
       };
     }
@@ -603,6 +594,12 @@ namespace ION.IOS.ViewController.Logging
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
       vc.PresentViewController (previewController, true, null);
+    }
+
+    public void createPDF(UIAlertView messageBox){
+
+
+      messageBox.DismissWithClickedButtonIndex(0,true);
     }
 
 //    public void createPDF(UIAlertView messageBox,UIViewController mainVC){

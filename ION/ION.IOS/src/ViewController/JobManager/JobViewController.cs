@@ -26,7 +26,6 @@ namespace ION.IOS.ViewController.JobManager {
       AutomaticallyAdjustsScrollViewInsets = false;
 
       if (!pushed) {
-        Console.WriteLine("Was not pushed");
         InitNavigationBar("ic_job_settings", false);
         backAction = () => {
           root.navigation.ToggleMenu();

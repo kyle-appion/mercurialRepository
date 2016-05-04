@@ -52,7 +52,7 @@ namespace ION.IOS.ViewController.Logging {
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
 
       InitNavigationBar("ic_graph_menu", false);
-
+      AutomaticallyAdjustsScrollViewInsets = false;
       backAction = () => {
         root.navigation.ToggleMenu();
       };
@@ -126,7 +126,6 @@ namespace ION.IOS.ViewController.Logging {
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
         () =>{          
           savedReportsSection.reportTable.Hidden = true;
-          savedReportsSection.header.Hidden = true;
           savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
         }, 
         () => {
@@ -158,8 +157,6 @@ namespace ION.IOS.ViewController.Logging {
       },
         () => {          
           savedReportsSection.reportTable.Hidden = false;
-          savedReportsSection.header.Hidden = false;
-          savedReportsSection.header.ClipsToBounds = true;
           var dir = ion.fileManager.GetApplicationInternalDirectory();
           foreach(var file in Directory.GetFiles(dir.fullPath,"*.xlsx")){
             files.Add(file);
