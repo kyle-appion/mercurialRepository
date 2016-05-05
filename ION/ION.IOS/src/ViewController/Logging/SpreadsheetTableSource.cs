@@ -14,8 +14,10 @@ using QuickLook;
 namespace ION.IOS.ViewController.Logging {
   public class SpreadsheetTableSource : UITableViewSource  {
     List<string> fileList;
-    public SpreadsheetTableSource(List<string> fileNames) {
+    string imageName;
+    public SpreadsheetTableSource(List<string> fileNames, string reportType) {
       fileList = fileNames;
+      imageName = reportType;
     }
 
     // Overriden from UITableViewSource
@@ -34,13 +36,11 @@ namespace ION.IOS.ViewController.Logging {
         case UITableViewCellEditingStyle.Delete:
           var index = (int)indexPath.Row;
           Console.WriteLine("Deleting from index: " + index);
-//          files[index].Delete();
-//          files.RemoveAt(index);
 
-          //tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
           System.IO.File.Delete(fileList[index]);
           fileList.RemoveAt(indexPath.Row);
-          tableView.ReloadData();
+          tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
+          //tableView.ReloadData();
           break;
       }
     }
@@ -71,8 +71,9 @@ namespace ION.IOS.ViewController.Logging {
 
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {      
-      var window = UIApplication.SharedApplication.Windows[0].RootViewController;
-      var vc = window;
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+
       var splits = fileList[indexPath.Row].Split('/');
       var name = splits[splits.Length - 1];
 
@@ -91,7 +92,7 @@ namespace ION.IOS.ViewController.Logging {
 
         var file = fileList[indexPath.Row];
          
-        cell.setupTable("ic_excel", tableView.Bounds.Width,file);
+      cell.setupTable(imageName, tableView.Bounds.Width,file);
       cell.Layer.BorderWidth = 1f;
       return cell;
     }

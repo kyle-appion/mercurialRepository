@@ -184,6 +184,7 @@ namespace ION.IOS.ViewController {
 
           try {
             GaugeDeviceCertificatePdfExporter.Export(ion, result.certificate, stream);
+            ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ?",result.certificate.lastTestCalibrationDate);
           } catch (Exception e) {
             Log.E(this, "Failed to export certificate.", e);
             file.Delete();

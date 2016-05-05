@@ -102,6 +102,7 @@ namespace ION.IOS.ViewController.Logging {
           dataSection.sessionTable.Hidden = true;
           dataSection.middleBorder.Hidden = true;
           dataSection.bottomBorder.Hidden = true;
+          dataSection.noJobLabel.Hidden = true;
           while(dataSection.selectedSessions.Count > 0){
             dataSection.selectedSessions.RemoveAt(0);
           }
@@ -125,7 +126,13 @@ namespace ION.IOS.ViewController.Logging {
       reportingSection.savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
         () =>{          
-          savedReportsSection.reportTable.Hidden = true;
+          savedReportsSection.spreadsheetTable.Hidden = true;
+          savedReportsSection.pdfTable.Hidden = true;
+          savedReportsSection.savedHeader.Hidden = true;
+          savedReportsSection.spreadsheetButton.Hidden = true;
+          savedReportsSection.pdfButton.Hidden = true;
+          savedReportsSection.middleBorder.Hidden = true;
+          savedReportsSection.bottomBorder.Hidden = true;
           savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
         }, 
         () => {
@@ -150,20 +157,36 @@ namespace ION.IOS.ViewController.Logging {
     /// Expands the saved reports section
     /// </summary>
     public void resizeSavedReportsSectionLarger(){
-      List<string> files = new List<string>();
+      List<string> spreadsheets = new List<string>();
+      List<string> pdfs = new List<string>();
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         savedReportsSection.showReports.Hidden = false;
         savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
       },
-        () => {          
-          savedReportsSection.reportTable.Hidden = false;
-          var dir = ion.fileManager.GetApplicationInternalDirectory();
-          foreach(var file in Directory.GetFiles(dir.fullPath,"*.xlsx")){
-            files.Add(file);
+        () => {
+          savedReportsSection.spreadsheetTable.Hidden = false;
+          savedReportsSection.pdfTable.Hidden = false;
+          savedReportsSection.savedHeader.Hidden = false;
+          savedReportsSection.spreadsheetButton.Hidden = false;
+          savedReportsSection.pdfButton.Hidden = false;
+          savedReportsSection.middleBorder.Hidden = false;
+          savedReportsSection.bottomBorder.Hidden = false;
+          var dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+          foreach(var file in Directory.GetFiles(dir,"*.xlsx")){
+            spreadsheets.Add(file);
           }
-          savedReportsSection.reportTable.Source = new SpreadsheetTableSource(files);
-          savedReportsSection.reportTable.ReloadData();
-          savedReportsSection.reportTable.Hidden = false;
+          foreach(var file in Directory.GetFiles(dir,"*.pdf")){
+            pdfs.Add(file);
+          }
+          savedReportsSection.spreadsheetTable.Source = new SpreadsheetTableSource(spreadsheets,"ic_excel");
+          savedReportsSection.spreadsheetTable.ReloadData();
+          savedReportsSection.spreadsheetTable.Hidden = false;
+
+          savedReportsSection.pdfTable.Source = new SpreadsheetTableSource(pdfs,"ic_pdf");
+          savedReportsSection.pdfTable.ReloadData();
+          savedReportsSection.pdfTable.Hidden = true;
+
+          savedReportsSection.spreadsheetButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           reportingSection.newReport.Enabled = true;
         });
     }
@@ -179,7 +202,7 @@ namespace ION.IOS.ViewController.Logging {
         dataSection.DataType.Layer.CornerRadius = 0f;
         dataSection.DataType.Layer.BorderWidth = 1f;
       },
-      () => {
+      () => { 
           dataSection.jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           dataSection.jobButton.Hidden = false;
           dataSection.sessionButton.Hidden = false;
@@ -214,24 +237,24 @@ namespace ION.IOS.ViewController.Logging {
       dataSection.sessionTable.Hidden = true;
       dataSection.middleBorder.Hidden = true;
       dataSection.bottomBorder.Hidden = true;
+      dataSection.noJobLabel.Hidden = true;
       reportingSection.newReport.Hidden = true;
       reportingSection.savedReports.Hidden = true;
       //////resize reporting choice off screen
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, 0);
       }, 
-        () => {
+        () => {     
           reportingSection.reportType.Hidden = true;
         });
       
-      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
+      UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
         dataSection.DataType.Layer.CornerRadius = 8f;
         dataSection.DataType.Layer.BorderWidth = 0;
       },
       () => {
         dataSection.step2.Hidden = false;
-        View.BringSubviewToFront(dataSection.DataType);
         resizeGraphingSectionLarger();
       });
     }
@@ -259,30 +282,30 @@ namespace ION.IOS.ViewController.Logging {
 
       foreach (var num in dataSection.selectedSessions) {
         paramList.Add('"' + num.ToString() + '"');
-        Console.WriteLine("Querying with session:"+ num);
       }
 
       var graphResult = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd, frn_JID FROM SessionRow WHERE SID in (" + string.Join(",",paramList.ToArray()) + ") ORDER BY SID");
-      Console.WriteLine("Grabbed " + graphResult.Count + " session results");
+
       var tempResults = new List<deviceReadings>();
       var holderList = new List<string>();
       var sessionBreaks = new string[graphResult.Count];
 
       for(int s = 0; s < graphResult.Count; s++){
-        var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
-        Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
+        var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber, sensorIndex FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
+        //Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
+  
         for(int m = 0; m < deviceCount.Count; m++){
           var activeDevice = new deviceReadings();
           activeDevice.times = new List<DateTime>();
           activeDevice.readings = new List<double>();
           activeDevice.SID = graphResult[s].SID;
           activeDevice.frnJID = graphResult[s].frn_JID;
-          activeDevice.name = deviceCount[m].serialNumber;
+          activeDevice.serialNumber = deviceCount[m].serialNumber;
 
-          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? ORDER BY MID ASC",activeDevice.name, graphResult[s].SID);
-          Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex);
+          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
+          //Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex + " for device: " + measurementCount[0].serialNumber);
           var df = ion.deviceManager.__deviceFactory;
-          var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.name)) as GaugeDeviceDefinition;
+          var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.serialNumber)) as GaugeDeviceDefinition;
           activeDevice.type = tempD.sensorDefinitions[measurementCount[0].sensorIndex].sensorType.ToString();
 
           foreach(var meas in measurementCount){
@@ -307,6 +330,7 @@ namespace ION.IOS.ViewController.Logging {
       if (extraPlots == 0) {
         extraPlots = 1;
       }
+      Console.WriteLine("Extra plots: " + extraPlots);
       var indexes = 0;
       var breakPoint = 0;
 
@@ -320,7 +344,7 @@ namespace ION.IOS.ViewController.Logging {
           indexes = indexes + 1;
         }
       }
-
+      Console.WriteLine("added all times to master lists");
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         activityLoadingGraphs.StartAnimating();
         graphingSection.graphingType.Hidden = false;

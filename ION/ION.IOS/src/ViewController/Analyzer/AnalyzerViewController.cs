@@ -131,19 +131,18 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public void recordDevices(){
-      Console.WriteLine("Logging Interval: " + NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
+    public void recordDevices(){     
       var recordingMessage = "";
       if (ion.dataLogManager.isRecording) {
         dataRecord.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
-        recordingMessage = "Recording has stopped";
+        recordingMessage = "Session recording has stopped";
       } else {
         dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Recording has started";
+        recordingMessage = "Session recording has started";
       }
       showRecordingToast(recordingMessage);
     }
@@ -870,7 +869,11 @@ namespace ION.IOS.ViewController.Analyzer {
         sensorActions.pressedSensor.highArea.LabelTop.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.lowArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
         sensorActions.pressedSensor.highArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
-      }));
+        if(sensorActions.pressedSensor.currentSensor != null){
+          ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,sensorActions.pressedSensor.currentSensor.device.serialNumber.ToString());
+          ion.database.Query<ION.Core.Database.DeviceRow>("UPDATE DeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,sensorActions.pressedSensor.currentSensor.device.serialNumber.ToString());
+        }
+        }));
       this.View.Window.RootViewController.PresentViewController(textAlert, true, null);
     }
 

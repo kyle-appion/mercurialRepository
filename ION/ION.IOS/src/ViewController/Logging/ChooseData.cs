@@ -148,7 +148,9 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.EstimatedRowHeight = 0;
       refreshSessions = new UIRefreshControl();
       refreshSessions.ValueChanged += (sender, e) => {
-        ReloadAllSessions();
+        if(!ion.dataLogManager.isRecording){
+          ReloadAllSessions();
+        }
       };
 
       sessionTable.InsertSubview(refreshSessions,0);
@@ -216,7 +218,9 @@ namespace ION.IOS.ViewController.Logging {
         newCenter.X = .72f * DataType.Bounds.Width;
         bottomBorder.Frame = newCenter;
       },() => {
-        GetAllSessions();
+        if(!ion.dataLogManager.isRecording){
+          GetAllSessions();
+        }
       });
     }
 
