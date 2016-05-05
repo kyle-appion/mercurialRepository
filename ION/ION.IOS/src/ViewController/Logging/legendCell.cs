@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Logging
 			header.TextColor = UIColor.White;
 			header.TextAlignment = UITextAlignment.Center;
 			header.AdjustsFontSizeToFitWidth = true;
-      header.Text = deviceData.name;
+      header.Text = deviceData.serialNumber;
 
 			information = new UILabel (new CGRect (0,.055 * parentView.Bounds.Height,.98 * parentView.Bounds.Width,.111 * parentView.Bounds.Height));
 			information.Layer.BorderWidth = 1f;
@@ -51,7 +51,7 @@ namespace ION.IOS.ViewController.Logging
       }
 
       foreach (var device in allData) {        
-        if (device.name.Equals(deviceData.name) && device.type.Equals(deviceData.type)) {
+        if (device.serialNumber.Equals(deviceData.serialNumber) && device.type.Equals(deviceData.type)) {
           foreach (var reading in device.readings) {
             if (reading < lowestMeasurement) {
               lowestMeasurement = reading;

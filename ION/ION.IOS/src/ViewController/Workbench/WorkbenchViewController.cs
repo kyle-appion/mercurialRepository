@@ -157,12 +157,12 @@ namespace ION.IOS.ViewController.Workbench {
         recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
         recordButton.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
-        recordingMessage = "Recording has stopped";
+        recordingMessage = "Session recording has stopped";
       } else {
         recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
         recordButton.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Recording has started";
+        recordingMessage = "Session recording has started";
       }
       showRecordingToast(recordingMessage);
     }

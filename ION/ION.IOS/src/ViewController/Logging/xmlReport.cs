@@ -24,7 +24,7 @@ namespace ION.IOS.ViewController.Logging {
       Sensors = new List<sessionInfo>();
       foreach (var item in pressureTemperatures) {
         var entry = new sessionInfo();
-        entry.deviceSN = item.name;
+        entry.deviceSN = item.serialNumber;
         entry.SID = item.SID;
         if (item.frnJID != null) {
           entry.JID = item.frnJID;        
