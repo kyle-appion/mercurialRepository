@@ -56,8 +56,10 @@ namespace ION.IOS.ViewController.Logging
 
 		public UITableView graphTable;
 
-		public UIPanGestureRecognizer leftDrag;
-		public UIPanGestureRecognizer rightDrag;
+    public UIPanGestureRecognizer lTrackerDrag;
+		public UIPanGestureRecognizer lViewDrag;
+    public UIPanGestureRecognizer rTrackerDrag;
+		public UIPanGestureRecognizer rViewDrag;
 
 		public UIImageView leftTrackerCircle;
 		public UIImageView rightTrackerCircle;
@@ -178,22 +180,22 @@ namespace ION.IOS.ViewController.Logging
 			leftTrackerCircle.Image = UIImage.FromBundle ("ic_tracker_circle");
 			leftTrackerCircle.UserInteractionEnabled = true;
 
-			leftDrag = new UIPanGestureRecognizer (() => {
+			lTrackerDrag = new UIPanGestureRecognizer (() => {
 				var xPlot = leftTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
-				if(leftDrag.State == UIGestureRecognizerState.Changed){
+				if(lTrackerDrag.State == UIGestureRecognizerState.Changed){
           var index = (int)xPlot/(int)dateMultiplier;
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
 				}
-				if(leftDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && leftDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
-					if(rightTrackerCircle.Center.X - 12 > leftDrag.LocationInView(mainView).X){
-						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, leftDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-						leftTrackerCircle.Frame = new CGRect(leftDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+				if(lTrackerDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lTrackerDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
+					if(rightTrackerCircle.Center.X - 12 > lTrackerDrag.LocationInView(mainView).X){
+						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lTrackerDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
+						leftTrackerCircle.Frame = new CGRect(lTrackerDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
 					}
 				}
-				if (leftDrag.State == UIGestureRecognizerState.Ended){          
+				if (lTrackerDrag.State == UIGestureRecognizerState.Ended){          
           leftTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
           subDates.TextColor = UIColor.Green;
 					UIView.Transition(
@@ -208,9 +210,42 @@ namespace ION.IOS.ViewController.Logging
 						completion: () =>{}
 					);
 				}
-			}); 
+			});
+
+      lViewDrag = new UIPanGestureRecognizer (() => {
+        var xPlot = leftTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
+        if(lViewDrag.State == UIGestureRecognizerState.Changed){
+          var index = (int)xPlot/(int)dateMultiplier;
+          if(ChosenDates.allIndexes.ContainsKey(index)){
+            ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
+          }
+          subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
+        }
+        if(lViewDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lViewDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
+          if(rightTrackerCircle.Center.X - 12 > lViewDrag.LocationInView(mainView).X){
+            leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lViewDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
+            leftTrackerCircle.Frame = new CGRect(lViewDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+          }
+        }
+        if (lViewDrag.State == UIGestureRecognizerState.Ended){          
+          leftTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
+          subDates.TextColor = UIColor.Green;
+          UIView.Transition(
+            withView:subDates,
+            duration:.5,
+            options: UIViewAnimationOptions.TransitionCrossDissolve,
+            animation: () =>{
+              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
+              subDates.TextColor = UIColor.Black;
+              leftTrackerView.BackgroundColor = UIColor.Gray;
+            },
+            completion: () =>{}
+          );
+        }
+      }); 
 			 
-			leftTrackerCircle.AddGestureRecognizer (leftDrag);
+			leftTrackerCircle.AddGestureRecognizer (lTrackerDrag);
+      leftTrackerView.AddGestureRecognizer(lViewDrag);
 
 			rightTrackerView = new UIView (new CGRect (.915 * graphTable.Bounds.Width,.15 * gView.Bounds.Height, 1, trackerHeight));
 			rightTrackerView.BackgroundColor = UIColor.Gray;
@@ -224,9 +259,9 @@ namespace ION.IOS.ViewController.Logging
 			trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
 			rightTrackerCircle.Center = trackerRect;
 
-			rightDrag = new UIPanGestureRecognizer (() => {
+			rTrackerDrag = new UIPanGestureRecognizer (() => {
 				var xPlot = rightTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
-				if(rightDrag.State == UIGestureRecognizerState.Changed){          
+				if(rTrackerDrag.State == UIGestureRecognizerState.Changed){          
           var index = (int)xPlot/(int)dateMultiplier;
           Console.WriteLine("Using index: " + index);
           if(ChosenDates.allIndexes.ContainsKey(index)){
@@ -234,13 +269,13 @@ namespace ION.IOS.ViewController.Logging
           }
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
 				}
-        if(rightDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rightDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
-					if(leftTrackerCircle.Center.X + 12 < rightDrag.LocationInView(mainView).X){
-						rightTrackerView.Frame = new CGRect(rightDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rightDrag.LocationInView(mainView).X, trackerHeight);
-						rightTrackerCircle.Frame = new CGRect(rightDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+        if(rTrackerDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rTrackerDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
+					if(leftTrackerCircle.Center.X + 12 < rTrackerDrag.LocationInView(mainView).X){
+						rightTrackerView.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rTrackerDrag.LocationInView(mainView).X, trackerHeight);
+						rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
 					}
 				}
-				if (rightDrag.State == UIGestureRecognizerState.Ended){
+				if (rTrackerDrag.State == UIGestureRecognizerState.Ended){
           
           rightTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
 					UIView.Transition(
@@ -256,8 +291,42 @@ namespace ION.IOS.ViewController.Logging
 					);
 				}
 			});
+
+      rViewDrag = new UIPanGestureRecognizer (() => {
+        var xPlot = rViewDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width);
+        if(rViewDrag.State == UIGestureRecognizerState.Changed){          
+          var index = (int)xPlot/(int)dateMultiplier;
+          Console.WriteLine("Using index: " + index);
+          if(ChosenDates.allIndexes.ContainsKey(index)){
+            ChosenDates.subRight = DateTime.Parse(ChosenDates.allIndexes[index]);
+          }
+          subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
+        }
+        if(rViewDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rViewDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
+          if(leftTrackerCircle.Center.X + 12 < rViewDrag.LocationInView(mainView).X){
+            rightTrackerView.Frame = new CGRect(rViewDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rViewDrag.LocationInView(mainView).X, trackerHeight);
+            rightTrackerCircle.Frame = new CGRect(rViewDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+          }
+        }
+        if (rViewDrag.State == UIGestureRecognizerState.Ended){
+
+          rightTrackerView.BackgroundColor = UIColor.FromRGB(49, 111, 18);
+          UIView.Transition(
+            withView:subDates,
+            duration:.5,
+            options: UIViewAnimationOptions.TransitionCrossDissolve,
+            animation: () =>{
+              subDates.TextColor = UIColor.FromRGB(49, 111, 18);
+              subDates.TextColor = UIColor.Black;
+              rightTrackerView.BackgroundColor = UIColor.Gray;
+            },
+            completion: () =>{}
+          );
+        }
+      });
 				
-			rightTrackerCircle.AddGestureRecognizer (rightDrag);
+			rightTrackerCircle.AddGestureRecognizer (rTrackerDrag);
+      rightTrackerView.AddGestureRecognizer(rViewDrag);
 
 			subDates = new UILabel (new CGRect (.1 * gView.Bounds.Width,0,.8 * gView.Bounds.Width,.1 * gView.Bounds.Height));
 			subDates.AdjustsFontSizeToFitWidth = true;
@@ -456,8 +525,10 @@ namespace ION.IOS.ViewController.Logging
 
         var certInfo = ion.database.Query<LoggingDeviceRow>("SELECT nistDate, name  FROM LoggingDeviceRow WHERE serialNumber = ? ORDER BY nistDate DESC LIMIT 1", package.serialNumber);
 
-        package.nistDate = certInfo[0].nistDate;
-        package.name = certInfo[0].name;
+        if (certInfo.Count > 0) {
+          package.nistDate = certInfo[0].nistDate;
+          package.name = certInfo[0].name;
+        }
 
         var timesReadings = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate, measurement FROM SensorMeasurementRow WHERE serialNumber = ? and sensorIndex = ?  AND recordedDate BETWEEN ? AND ? ORDER BY recordedDate ASC",package.serialNumber,sIndex,ChosenDates.subLeft, ChosenDates.subRight);
 
@@ -639,7 +710,7 @@ namespace ION.IOS.ViewController.Logging
 
       var scaleReduction = 100 - (dataList.Count * 6);
       XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
-      xls.AllowOverwritingFiles = true;
+      xls.AllowOverwritingFiles = true; 
       xls.PrintScale = scaleReduction;
 
       TFlxFormat blackout = xls.GetDefaultFormat; //1
@@ -661,7 +732,7 @@ namespace ION.IOS.ViewController.Logging
       borderColor.HAlignment = THFlxAlignment.center;
       xls.AddFormat(borderColor);
 
-      var headerStartIndex = 1;
+      var headerStartIndex = 3;
 
       if (dataList.Count > 3) {
         headerStartIndex = (dataList.Count + 1) / 2;
