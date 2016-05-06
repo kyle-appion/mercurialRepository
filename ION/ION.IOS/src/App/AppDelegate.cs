@@ -34,6 +34,8 @@
     /// <value>The ion.</value>
     public IosION ion { get; private set; }
 
+    public bool intervalWarning = false;
+
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // Initialize the application state.
       // Set Navigation Bar preferences
@@ -97,6 +99,12 @@
       // Use this method to release shared resources, save user data, invalidate timers and store the application state.
       // If your application supports background exection this method is called instead of WillTerminate when the user quits.
       UIApplication.SharedApplication.IdleTimerDisabled = false;
+
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+        intervalWarning = false;
+      } else {
+        intervalWarning = true;
+      }
     }
 
     public override void WillEnterForeground(UIApplication application) {
@@ -106,6 +114,13 @@
       ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
       ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
       ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
+
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+        if (intervalWarning == true) {
+          UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"OK",null);
+          loggingWarning.Show();
+        } 
+      }
 
       if (ion.settings.screen.leaveOn) {
         UIApplication.SharedApplication.IdleTimerDisabled = true;
