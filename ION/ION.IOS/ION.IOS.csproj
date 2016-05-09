@@ -522,7 +522,6 @@
     <Compile Include="src\ViewController\Logging\legendSource.cs" />
     <Compile Include="src\ViewController\Logging\LegendView.cs" />
     <Compile Include="src\ViewController\Logging\CustomPickerModel.cs" />
-    <Compile Include="src\ViewController\Logging\xmlReport.cs" />
     <Compile Include="src\Storyboard\JobManagerViewController.cs" />
     <Compile Include="src\Storyboard\JobManagerViewController.designer.cs">
       <DependentUpon>JobManagerViewController.cs</DependentUpon>

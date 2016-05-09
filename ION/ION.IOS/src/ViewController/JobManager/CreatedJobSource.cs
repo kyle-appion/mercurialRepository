@@ -33,13 +33,18 @@ namespace ION.IOS.ViewController.JobManager {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
           var index = (int)indexPath.Row;
-          Console.WriteLine("Deleting from index: " + index);
+          var Name = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", jobID[indexPath.Row]);
+
+          var xmlPath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), Name[0].jobName + ".xml");
+          if(System.IO.File.Exists(xmlPath)){
+            System.IO.File.Delete(xmlPath);
+          }
           ion.database.Query<ION.Core.Database.SessionRow>("UPDATE SessionRow SET frn_JID = 0 WHERE frn_JID = ?",jobID[index]);
           ion.database.Delete<ION.Core.Database.JobRow>(jobID[index]);
 
           jobID.RemoveAt(indexPath.Row);
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Left);
-          //tableView.ReloadData();
+
           break;
       }
     }
@@ -70,7 +75,6 @@ namespace ION.IOS.ViewController.JobManager {
 
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {      
-      Console.WriteLine("pushing tab controller for existing job");
       var jevc = vc.InflateViewController<JobEditViewController>(BaseIONViewController.VC_EDIT_JOB);
       jevc.frnJID = jobID[indexPath.Row];
       vc.NavigationController.PushViewController(jevc,true);

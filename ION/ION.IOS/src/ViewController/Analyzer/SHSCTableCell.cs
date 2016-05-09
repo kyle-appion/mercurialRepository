@@ -23,19 +23,16 @@ namespace ION.IOS.ViewController.Analyzer {
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
       
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
-      //cellHeader.Text = Util.Strings.Analyzer.SH;
-      //cellHeader.Text = lhSensor.shFluidState.Text;
+
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
       cellHeader.TextAlignment = UITextAlignment.Center;
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
-      fluidType = lhSensor.shFluidType;
+      fluidType = lhSensor.shFluidType; 
       if (lhSensor.manifold != null && lhSensor.manifold.ptChart != null) {
         var name = lhSensor.manifold.ptChart.fluid.name;
         fluidType.Text = name;
