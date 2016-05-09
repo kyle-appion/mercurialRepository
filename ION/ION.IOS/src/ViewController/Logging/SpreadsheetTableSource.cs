@@ -38,7 +38,7 @@ namespace ION.IOS.ViewController.Logging {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
           var index = (int)indexPath.Row;
-          Console.WriteLine("Deleting from index: " + index);
+          Console.WriteLine("Deleting file: " +fileList[index]+ " from index: " + index);
 
           System.IO.File.Delete(fileList[index]);
           fileList.RemoveAt(indexPath.Row);

@@ -40,11 +40,18 @@ namespace ION.IOS.ViewController.JobManager {
               editView.jobName.BackgroundColor = UIColor.White;
             },()=>{});
           return;
-        }
+        } 
         if(frnJID.Equals(0)){
-          var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text};         
-          ion.database.Insert(job);
-          this.NavigationController.PopViewController(true);
+          var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
+
+          if(jobCheck.Count == 0){
+            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text};         
+            ion.database.Insert(job);
+            this.NavigationController.PopViewController(true);
+          } else {
+            editView.confirmLabel.TextColor = UIColor.Red;
+            editView.confirmLabel.Text = "Job Name Already Exists";
+          }
         } else {
           ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
           this.NavigationController.PopViewController(true);
