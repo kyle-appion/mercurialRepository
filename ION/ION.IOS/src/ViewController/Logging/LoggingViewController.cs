@@ -178,11 +178,11 @@ namespace ION.IOS.ViewController.Logging {
           foreach(var file in Directory.GetFiles(dir,"*.pdf")){
             pdfs.Add(file);
           }
-          savedReportsSection.spreadsheetTable.Source = new SpreadsheetTableSource(spreadsheets,"ic_excel");
+          savedReportsSection.spreadsheetTable.Source = new SpreadsheetTableSource(spreadsheets,"ic_excel",this);
           savedReportsSection.spreadsheetTable.ReloadData();
           savedReportsSection.spreadsheetTable.Hidden = false;
 
-          savedReportsSection.pdfTable.Source = new SpreadsheetTableSource(pdfs,"ic_pdf");
+          savedReportsSection.pdfTable.Source = new SpreadsheetTableSource(pdfs,"ic_pdf",this);
           savedReportsSection.pdfTable.ReloadData();
           savedReportsSection.pdfTable.Hidden = true;
 
@@ -194,6 +194,7 @@ namespace ION.IOS.ViewController.Logging {
     /// Expands the job and session section
     /// </summary>
     public void resizeDataSectionLarger(){
+      dataSection.noJobLabel.Hidden = true;
       dataSection.DataType.Hidden = false;
       reportingSection.reportType.Hidden = false;
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
@@ -404,7 +405,7 @@ namespace ION.IOS.ViewController.Logging {
     }
 
     public override void ViewDidAppear(bool animated) {
-      if (dataSection.DataType != null) {
+      if (dataSection.DataType != null && dataSection.step2.Hidden) {
         dataSection.ReloadAllJobs();
       }
     }

@@ -14,6 +14,7 @@ namespace ION.IOS.ViewController.JobManager {
     UITabBar tabManager;
     EditJobView editView;
     JobSessionView associateView;
+    JobNotesView notesView;
     public UIButton saveButton;
     public int frnJID;
     IION ion;
@@ -61,37 +62,52 @@ namespace ION.IOS.ViewController.JobManager {
 
       editView = new EditJobView(View,frnJID);
       associateView = new JobSessionView(View,tabManager,UIApplication.SharedApplication.StatusBarFrame.Size.Height * 2,frnJID);
+      notesView = new JobNotesView(View, frnJID);
 
-      var tab1 = new UITabBarItem();
-      tab1.Tag = 0;
-      tab1.Image = UIImage.FromBundle("ic_small_edit");
-      tab1.Title = "Job Info";
+      var infoTab = new UITabBarItem();
+      infoTab.Tag = 0;
+      infoTab.Image = UIImage.FromBundle("ic_small_edit");
+      infoTab.Title = "Job Info";
 
       if (!frnJID.Equals(0)) {
-        var tab2 = new UITabBarItem();
-        tab2.Tag = 1;
-        tab2.Image = UIImage.FromBundle("ic_small_list");
-        tab2.Title = "Sessions";
+        var sessionTab = new UITabBarItem();
+        sessionTab.Tag = 1;
+        sessionTab.Image = UIImage.FromBundle("ic_small_list");
+        sessionTab.Title = "Sessions";
 
-        tabManager.Items = new UITabBarItem[]{ tab1, tab2 };
+        var notesTab = new UITabBarItem();
+        notesTab.Tag = 2;
+        notesTab.Image = UIImage.FromBundle("ic_notes");
+        notesTab.Title = "Notes";
+
+        tabManager.Items = new UITabBarItem[]{ infoTab, sessionTab, notesTab };
       } else {
-        tabManager.Items = new UITabBarItem[]{ tab1 };
+        tabManager.Items = new UITabBarItem[]{ infoTab };
       }
 
-      tabManager.SelectedItem = tab1;
+      tabManager.SelectedItem = infoTab;
       tabManager.ItemSelected += (sender, e) => {
         switch(e.Item.Tag) {
           case 0:
             NavigationItem.Title = "Edit Job";
             saveButton.Hidden = false;
             associateView.sessionView.Hidden = true;
+            notesView.notesView.Hidden = true;
             editView.editView.Hidden = false;
             break;
           case 1:
             NavigationItem.Title = "Edit Sessions Links";
             saveButton.Hidden = true;
             editView.editView.Hidden = true;
+            notesView.notesView.Hidden = true;
             associateView.sessionView.Hidden = false;
+            break;
+          case 2:
+            NavigationItem.Title = "Add Notes";
+            saveButton.Hidden = true;
+            editView.editView.Hidden = true;
+            associateView.sessionView.Hidden = true;
+            notesView.notesView.Hidden = false;
             break;
         }
       };
@@ -99,6 +115,7 @@ namespace ION.IOS.ViewController.JobManager {
       View.AddSubview(tabManager);
       View.AddSubview(editView.editView);
       View.AddSubview(associateView.sessionView);
+      View.AddSubview(notesView.notesView);
     }
 
     public override void DidReceiveMemoryWarning() {

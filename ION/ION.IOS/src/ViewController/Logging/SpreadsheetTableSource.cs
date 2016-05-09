@@ -15,9 +15,12 @@ namespace ION.IOS.ViewController.Logging {
   public class SpreadsheetTableSource : UITableViewSource  {
     List<string> fileList;
     string imageName;
-    public SpreadsheetTableSource(List<string> fileNames, string reportType) {
+    UIViewController LoggingViewController;
+
+    public SpreadsheetTableSource(List<string> fileNames, string reportType, UIViewController viewController) {
       fileList = fileNames;
       imageName = reportType;
+      LoggingViewController = viewController;
     }
 
     // Overriden from UITableViewSource
@@ -71,16 +74,13 @@ namespace ION.IOS.ViewController.Logging {
 
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {      
-      var window = UIApplication.SharedApplication.KeyWindow;
-      var vc = window.RootViewController;
-
       var splits = fileList[indexPath.Row].Split('/');
       var name = splits[splits.Length - 1];
-
+     
       QLPreviewItemBundle prevItem = new QLPreviewItemBundle (name, fileList[indexPath.Row]);
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
-      vc.PresentViewController (previewController, true, null);
+      LoggingViewController.NavigationController.PushViewController (previewController, true);
     }
 
     // Overridden from UITableViewSource
@@ -90,7 +90,7 @@ namespace ION.IOS.ViewController.Logging {
         cell = new UITableViewCell(UITableViewCellStyle.Default, "spreadsheetCell") as SpreadsheetCell;
       }
 
-        var file = fileList[indexPath.Row];
+      var file = fileList[indexPath.Row];
          
       cell.setupTable(imageName, tableView.Bounds.Width,file);
       cell.Layer.BorderWidth = 1f;

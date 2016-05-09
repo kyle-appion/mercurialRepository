@@ -46,6 +46,8 @@ namespace ION.IOS.ViewController.Logging
 		public UIView leftTrackerView;
 		public UIView rightTrackerView;
 
+    public UIViewController mainVC;
+
 		public UIButton menuButton;
 		public UIButton resetButton;
 		public UIButton exportGraph;
@@ -74,10 +76,10 @@ namespace ION.IOS.ViewController.Logging
 		public List<deviceReadings> selectedData;
 		public double dateMultiplier;
 
-    public GraphingView (UIView mainView, UIViewController mainVC, List<deviceReadings> pressuresTemperatures,ObservableCollection<int> sessions)
+    public GraphingView (UIView mainView, UIViewController viewController, List<deviceReadings> pressuresTemperatures,ObservableCollection<int> sessions)
 		{			
 			selectedData = pressuresTemperatures;
-
+      mainVC = viewController;
 			topCell = 0;
 
       foreach (var device in selectedData) {
@@ -132,7 +134,7 @@ namespace ION.IOS.ViewController.Logging
   					break;
   			}
 
-        createButtons (mainVC,sessions);
+        createButtons (sessions);
 
         graphTable = new UITableView(new CGRect(.1 * gView.Bounds.Width, .15 * gView.Bounds.Height, .85 * gView.Bounds.Width, trackerHeight));
         graphTable.BackgroundColor = UIColor.Clear;
@@ -340,7 +342,7 @@ namespace ION.IOS.ViewController.Logging
 		/// <summary>
 		/// Creates the buttons to navigate and manipulate the graph and its included data
 		/// </summary>
-    public void createButtons(UIViewController mainVC,ObservableCollection<int> sessions){
+    public void createButtons(ObservableCollection<int> sessions){
       var deviceCount = ChosenDates.includeList.Count;
       resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .89 * mainVC.View.Bounds.Height, .25 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;
@@ -382,7 +384,7 @@ namespace ION.IOS.ViewController.Logging
 			exportGraph.TouchUpInside += (sender, e) => {
         exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
 
-        ChooseReportType(mainVC,sessions);
+        ChooseReportType(sessions);
 			}; 
 			exportGraph.TouchDown += (sender, e) => {exportGraph.BackgroundColor = UIColor.Blue;};
       exportGraph.TouchUpOutside += (sender, e) => {exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);};
@@ -458,9 +460,8 @@ namespace ION.IOS.ViewController.Logging
     /// <summary>
     /// Shows a popup that lets the user choose a spreadsheet or a pdf document of their chosen session/device/time values
     /// </summary>
-    /// <param name="mainVC">Papa bear view controller to display popup</param>
     /// <param name="sessions">List of sessions included in the graphing</param>
-    public void ChooseReportType(UIViewController mainVC,ObservableCollection<int> sessions){
+    public void ChooseReportType(ObservableCollection<int> sessions){
       UIAlertView reportBox = new UIAlertView("Report", "Choose a format", null,"Cancel","Create Spreadsheet","Create PDF");
       reportBox.Show();
       reportBox.Clicked += async (sender, e) => {
@@ -471,7 +472,7 @@ namespace ION.IOS.ViewController.Logging
           UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Spreadsheet", null,null,null);
           messageBox.Show();
           await Task.Delay(TimeSpan.FromMilliseconds (100));
-          createSpreadsheet(messageBox,mainVC,data,sessionBreaks);
+          createSpreadsheet(messageBox,data,sessionBreaks);
 
         } else if (e.ButtonIndex.Equals(2)){          
           var sessionBreaks = new List<string>();
@@ -479,7 +480,7 @@ namespace ION.IOS.ViewController.Logging
           UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating PDF", null,null,null);
           messageBox.Show();
           await Task.Delay(TimeSpan.FromMilliseconds (100));
-          createPDF(messageBox,mainVC,data,sessionBreaks);
+          createPDF(messageBox,data,sessionBreaks);
         }
       };
     }
@@ -546,10 +547,9 @@ namespace ION.IOS.ViewController.Logging
     /// to the correct timestamp
     /// </summary>
     /// <param name="messageBox">Pop up alert to dismiss after calculations are completed</param>
-    /// <param name="mainVC">Same papa bear viewcontroller for displaying popup</param>
     /// <param name="dataList">List of the device packages</param>
     /// <param name="sessionBreaks">list of when a session ends to mark it</param>
-    public void createSpreadsheet(UIAlertView messageBox, UIViewController mainVC, List<deviceReadings> dataList, List<string> sessionBreaks){
+    public void createSpreadsheet(UIAlertView messageBox, List<deviceReadings> dataList, List<string> sessionBreaks){
       messageBox.Dismissed += previewSpreadsheet;
       fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".xlsx";
        
@@ -676,24 +676,25 @@ namespace ION.IOS.ViewController.Logging
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
     public void previewSpreadsheet(object sender, EventArgs e){
-      var window = UIApplication.SharedApplication.Windows[0].RootViewController;
-      var vc = window;
-
       var dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), fileName);
-      QLPreviewItemBundle prevItem = new QLPreviewItemBundle (fileName, dir);
+      QLPreviewItemBundle prevItem = new QLPreviewItemBundle (fileName, dir);     
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
-      vc.PresentViewController (previewController, true, null);
+      mainVC.NavigationController.PushViewController (previewController, true);
+    }
+
+    public void sendSpreadsheetEmail(object sender, EventArgs e){
+      Console.WriteLine("Sending an email");
     }
 
     /// <summary>
     /// Takes the packaged device data to create a pdf with each device's times and measurements
     /// </summary>
     /// <param name="messageBox">Pop up alert to dismiss after calculations are completed</param>
-    /// <param name="mainVC">Reliable papa bear to launch a preview controller</param>
+
     /// <param name="dataList">list of packaged device data</param>
     /// <param name="sessionBreaks">list of session break times to mark report</param>
-    public void createPDF(UIAlertView messageBox, UIViewController mainVC, List<deviceReadings> dataList, List<string> sessionBreaks){
+    public void createPDF(UIAlertView messageBox, List<deviceReadings> dataList, List<string> sessionBreaks){
       messageBox.Dismissed += previewPDF;
       fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".pdf";
        
@@ -875,14 +876,11 @@ namespace ION.IOS.ViewController.Logging
     }
 
     public void previewPDF(object sender, EventArgs e){
-      var window = UIApplication.SharedApplication.Windows[0].RootViewController;
-      var vc = window;
-
       var dir = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), fileName);
       QLPreviewItemBundle prevItem = new QLPreviewItemBundle (fileName, dir);
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
-      vc.PresentViewController (previewController, true, null);
+      mainVC.NavigationController.PushViewController (previewController, true);
     }
       
     /*

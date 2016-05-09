@@ -68,9 +68,19 @@
       if (!FindActiveView(vc.View)) {
         Log.E(this, "Failed to find active view. Ignoring keyboard event");
         return;
-      }
+      } 
 
       var viewRect = FindBoundsInViewController(activeView, vc);
+
+      Console.WriteLine("View Controller view bottom: " + vc.View.Bounds.Bottom);
+      Console.WriteLine("View controller text field: " + viewRect.Bottom);
+      Console.WriteLine("KeyBoard Y: " + keyboardRect.Y);
+      Console.WriteLine("KeyBoard top location: " + (keyboardRect.Y - keyboardRect.Height));
+
+      if((keyboardRect.Y - keyboardRect.Height) < (vc.View.Bounds.Bottom - keyboardRect.Height) ){
+        Console.WriteLine("Black space is showing");
+        return;
+      }
 
       if (vc.View.Bounds.Bottom.Equals(keyboardRect.Y)) {
         if (viewRect.Bottom < (keyboardRect.Y - keyboardRect.Height)) {

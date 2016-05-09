@@ -165,7 +165,7 @@ namespace ION.IOS.ViewController.Logging {
       refreshJobs.ValueChanged += (sender, e) => {
         ReloadAllJobs();
       };
-      jobTable.InsertSubview(refreshJobs,0);
+      jobTable.InsertSubview(refreshJobs,0);  
       jobTable.SendSubviewToBack(refreshJobs);
 
       noJobLabel = new UIButton(new CGRect(0,2 * jobButton.Bounds.Height,DataType.Bounds.Width,cellHeight));
@@ -174,11 +174,14 @@ namespace ION.IOS.ViewController.Logging {
       noJobLabel.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       noJobLabel.Layer.BorderWidth = 1f;
       noJobLabel.Hidden = true;
+      noJobLabel.TouchDown += (sender, e) => {noJobLabel.BackgroundColor = UIColor.Blue;};
+      noJobLabel.TouchUpOutside += (sender, e) => {noJobLabel.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
       noJobLabel.TouchUpInside += (sender, e) => {
+        noJobLabel.BackgroundColor = UIColor.FromRGB(255, 215, 101);
         var jmvc = vc.InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER);
         jmvc.pushed = true;
-        vc.NavigationController.PushViewController(jmvc,true);
-      };
+        parentVC.NavigationController.PushViewController(jmvc,true);
+      }; 
        
       DataType.AddSubview(sessionHeader);
       DataType.AddSubview(jobButton);
