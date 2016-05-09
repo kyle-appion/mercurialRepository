@@ -264,7 +264,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\ic_plus.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_record.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\ic_graph_menu.pdf" />
@@ -273,6 +272,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\ic_job_settings.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\ic_nav_certificate.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\ic_notes.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -549,6 +552,7 @@
     <Compile Include="src\ViewController\JobManager\AvailableSessionCell.cs" />
     <Compile Include="src\ViewController\JobManager\AvailableSessionSource.cs" />
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
+    <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

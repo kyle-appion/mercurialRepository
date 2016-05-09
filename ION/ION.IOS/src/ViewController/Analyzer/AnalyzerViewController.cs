@@ -87,7 +87,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (ion.dataLogManager.isRecording) {
         dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
       } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
       }
 
       var button = new UIBarButtonItem(dataRecord);
@@ -134,7 +134,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public void recordDevices(){     
       var recordingMessage = "";
       if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
         recordingMessage = "Session recording has stopped";
@@ -1149,7 +1149,7 @@ namespace ION.IOS.ViewController.Analyzer {
         dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
       } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
       }
     }

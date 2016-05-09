@@ -71,8 +71,7 @@
         ion.locationManager.StartAutomaticLocationPolling();
       }
 
-      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 0) {
-        Console.WriteLine("Default logging interval not set, so setting it to 30 seconds");
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
         NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
       }
 

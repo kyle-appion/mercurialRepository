@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Workbench {
       recordButton.TouchUpInside += (sender, e) => {
         RecordDevices();
       };
-      recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 
       var barButton = new UIBarButtonItem(button);
       var barButton2 = new UIBarButtonItem(recordButton);
@@ -101,7 +101,7 @@ namespace ION.IOS.ViewController.Workbench {
       if (ion.dataLogManager.isRecording) {
         recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
       } else {
-        recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
       }
     }
 
@@ -154,7 +154,7 @@ namespace ION.IOS.ViewController.Workbench {
     private void RecordDevices(){
       var recordingMessage = "";
       if (ion.dataLogManager.isRecording) {
-        recordButton.SetImage(UIImage.FromBundle("ic_play"), UIControlState.Normal);
+        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
         recordButton.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
         recordingMessage = "Session recording has stopped";
