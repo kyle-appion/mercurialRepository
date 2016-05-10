@@ -23,9 +23,13 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
+      if (lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+        lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
+      }
+
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
       fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
+
 
       cellHeader = lhSensor.ptFluidState;
       cellHeader.TextColor = UIColor.White;
@@ -50,9 +54,7 @@ namespace ION.IOS.ViewController.Analyzer {
       fluidType.Layer.BorderWidth = 1f;
 
       tempReading = lhSensor.ptReading;
-//      if (lhSensor.manifold.ptChart != null) {
-//        lhSensor.ptReading.Text = 
-//      } 
+
       tempReading.AdjustsFontSizeToFitWidth = true;
       tempReading.TextAlignment = UITextAlignment.Center;
       tempReading.Layer.BorderColor = UIColor.Black.CGColor;

@@ -315,7 +315,9 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
+
       var manifold = Event.manifold;
+      Console.WriteLine("Manifold updating. Current manifold fluid: " + manifold.ptChart.fluid.name + " Last chosen fluid: " + ion.fluidManager.lastUsedFluid.name); 
       if (manifold.secondarySensor != null) {
         isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
