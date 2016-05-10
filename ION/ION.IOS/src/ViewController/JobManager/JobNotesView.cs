@@ -16,6 +16,7 @@ namespace ION.IOS.ViewController.JobManager {
     public UILabel notesHeader;
     public UILabel saveStatus;
     public UIButton saveNotes;
+    public UIButton readNotes;
     public IION ion;
     public string fileDir;
     
@@ -48,10 +49,9 @@ namespace ION.IOS.ViewController.JobManager {
 
       var infoQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", frnJID);
       if (infoQuery.Count > 0) {
-        Console.WriteLine("looking at name: " + infoQuery[0].jobName + " to get note info");
         fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), infoQuery[0].jobName + ".xml");
-        Console.WriteLine("File path is: " + fileDir);
       }
+
       saveNotes = new UIButton(new CGRect(.35 * notesView.Bounds.Width, .71 * notesView.Bounds.Height, .3 * notesView.Bounds.Width, .05 * notesView.Bounds.Height));
       saveNotes.SetTitle("Save Notes", UIControlState.Normal);
       saveNotes.SetTitleColor(UIColor.Black, UIControlState.Normal);
@@ -63,44 +63,92 @@ namespace ION.IOS.ViewController.JobManager {
         saveNotes.BackgroundColor = UIColor.FromRGB(255, 215, 101);
         notesText.ResignFirstResponder();
 
-        if (!frnJID.Equals(0)) {          
-          if(File.Exists(fileDir)){
-            System.IO.File.Delete(fileDir);
-            using (XmlWriter writer = XmlWriter.Create(fileDir))
+        updateNotes(frnJID);
+        Console.WriteLine("Updated Notes");
+        using (XmlReader reader = XmlReader.Create(fileDir))
+        {
+          while (reader.Read())
+          {
+            // Only detect start elements.
+            if (reader.IsStartElement())
             {
-              writer.WriteStartDocument();
-              writer.WriteStartElement("Job");
-
-              writer.WriteStartElement("Notes");
-
-              writer.WriteElementString("Info", notesText.Text);   // <-- These are new
-
-              writer.WriteEndElement();
-
-              writer.WriteEndElement();
-              writer.WriteEndDocument();
-            }
-          } else {
-            using (XmlWriter writer = XmlWriter.Create(fileDir))
-            {
-              writer.WriteStartDocument();
-              writer.WriteStartElement("Job");
-
-              writer.WriteStartElement("Notes");
-
-              writer.WriteElementString("Info", notesText.Text);   // <-- These are new
-
-              writer.WriteEndElement();
-
-              writer.WriteEndElement();
-              writer.WriteEndDocument();
+              // Get element name and switch on it.
+              switch (reader.Name)
+              {
+                case "Info":
+                  // Search for the attribute name on this current node.
+                  string attribute = reader["Info"];
+                  if (attribute != null) {
+                    Console.WriteLine(" Has attribute name: " + attribute);
+                  } 
+                  // Next read will contain text.
+                  if (reader.Read())
+                  {
+                    notesText.Text = reader.Value.Trim();
+                    Console.WriteLine("Notes: "); 
+                    Console.WriteLine(reader.Value.Trim());
+                  }
+                  break;
+              }
             }
           }
         }
+
         saveStatus.Hidden = false;
         fadeStatus();
       };
 
+      loadNotes(frnJID);
+
+      notesView.AddSubview(notesHeader);
+      notesView.AddSubview(notesText);
+      notesView.AddSubview(saveNotes);
+      notesView.AddSubview(saveStatus);
+    }
+
+    public async void fadeStatus(){
+      await Task.Delay(TimeSpan.FromSeconds(3));
+      saveStatus.Hidden = true;
+    }
+
+    public void updateNotes(int frnJID){
+      if (!frnJID.Equals(0)) {          
+        if(File.Exists(fileDir)){
+          System.IO.File.Delete(fileDir);
+          using (XmlWriter writer = XmlWriter.Create(fileDir))
+          {
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Job");
+
+            writer.WriteStartElement("Notes");
+
+            writer.WriteElementString("Info", notesText.Text);   // <-- These are new
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+          }
+        } else {
+          using (XmlWriter writer = XmlWriter.Create(fileDir))
+          {
+            writer.WriteStartDocument();
+            writer.WriteStartElement("Job");
+
+            writer.WriteStartElement("Notes");
+
+            writer.WriteElementString("Info", notesText.Text);   // <-- These are new
+
+            writer.WriteEndElement();
+
+            writer.WriteEndElement();
+            writer.WriteEndDocument();
+          }
+        }
+      }
+    }
+
+    public void loadNotes(int frnJID){
       if (!frnJID.Equals(0)) {        
         if(File.Exists(fileDir)){
           // Create an XML reader for this file.
@@ -132,16 +180,6 @@ namespace ION.IOS.ViewController.JobManager {
           }
         }         
       }
-
-      notesView.AddSubview(notesHeader);
-      notesView.AddSubview(notesText);
-      notesView.AddSubview(saveNotes);
-      notesView.AddSubview(saveStatus);
-    }
-
-    public async void fadeStatus(){
-      await Task.Delay(TimeSpan.FromSeconds(3));
-      saveStatus.Hidden = true;
     }
 
   }

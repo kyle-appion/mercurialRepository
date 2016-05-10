@@ -245,6 +245,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       SynchronizePressureIcons();
       SynchronizeTemperatureIcons();
+
+      if (ptChart != null) {
+        ptChart = PTChart.New(ion, ptChart.state);
+      }
     }
 
     // Overridden from ViewController
