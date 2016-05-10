@@ -10,6 +10,7 @@
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
+  using ION.Core.Sensors;
   using ION.Core.Util;
 
   /// <summary>
@@ -201,6 +202,45 @@
     }
 
     /// <summary>
+    /// Queries all of the device that are of the given type.
+    /// </summary>
+    /// <returns>The all devices of type.</returns>
+    /// <param name="deviceType">Device type.</param>
+    public List<IDevice> GetAllDevicesOfType(EDeviceType deviceType) {
+      var ret = new List<IDevice>();
+
+      foreach (var device in devices) {
+        if (device.type == deviceType) {
+          ret.Add(device);
+        }
+      }
+
+      return ret;
+    }
+
+    /// <summary>
+    /// Gets the type of the all gauge device sensors of.
+    /// </summary>
+    /// <returns>The all gauge devices of type.</returns>
+    /// <param name="sensorType">Sensor type.</param>
+    public List<GaugeDeviceSensor> GetAllGaugeDeviceSensorsOfType(ESensorType sensorType) {
+      var ret = new List<GaugeDeviceSensor>();
+
+      foreach (var device in devices) {
+        var gd = device as GaugeDevice;
+        if (gd != null) {
+          foreach (var sensor in gd.sensors) {
+            if (sensor.type == sensorType) {
+              ret.Add(sensor);
+            }
+          }
+        }
+      }
+
+      return ret;
+    }
+
+    /// <summary>
     /// Saves the given device to the database.
     /// </summary>
     /// <returns>The device.</returns>
@@ -351,9 +391,12 @@
         __foundDevices[serialNumber] = device;
       }
 
-      if (device.protocol.supportsBroadcasting) {
-        Log.D(this, device.serialNumber + " " + packet.ToByteString());
-        device.HandlePacket(packet);
+      if (device.protocol is IGaugeProtocol) {
+        var gp = device.protocol as IGaugeProtocol;
+        if (gp.supportsBroadcasting) {
+          Log.D(this, device.serialNumber + " " + packet.ToByteString());
+          device.HandlePacket(packet);
+        }
       }
       device.connection.lastSeen = DateTime.Now;
 

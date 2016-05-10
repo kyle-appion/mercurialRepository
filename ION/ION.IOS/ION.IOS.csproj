@@ -111,6 +111,24 @@
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\Xamarin.iOS10\OxyPlot.Xamarin.iOS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK-1.0" />
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0-trial\lib\ios-unified\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="DocumentFormat.OpenXml">
+      <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes.Grid">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Themes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Themes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.UI">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -512,6 +530,17 @@
     <Compile Include="src\ViewController\Logging\PDFViewDataSource.cs" />
     <Compile Include="src\ViewController\Logging\QLPreviewItemExtensions.cs" />
     <Compile Include="src\Devices\IosConnectionFactory.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\ITable.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\ScrollableTableCollectionView.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\Table.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\TestBenchViewController.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\InternalTestBenchViewController.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\InternalTestBenchViewController.designer.cs">
+      <DependentUpon>InternalTestBenchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\GaugeTesting\TableDataSet.cs" />
+    <Compile Include="src\Connections\BluefruitLeConnection.cs" />
+    <Compile Include="src\Connections\BaseIOSConnection.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -545,6 +574,7 @@
     <Folder Include="src\ViewController\Help\" />
     <Folder Include="src\ViewController\Logging\" />
     <Folder Include="src\ViewController\JobManager\" />
+    <Folder Include="src\ViewController\GaugeTesting\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -574,8 +604,11 @@
       <Visible>False</Visible>
     </XamarinComponentReference>
     <XamarinComponentReference Include="FlexCel-trial">
-      <InstallationInProgress>True</InstallationInProgress>
-      <Version>6.7.16</Version>
+      <Version>6.8.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="dsgridview">
+      <Version>3.0.2</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>

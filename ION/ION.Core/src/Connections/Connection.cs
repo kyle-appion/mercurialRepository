@@ -36,6 +36,11 @@ namespace ION.Core.Connections {
     /// </summary>
     EConnectionState connectionState { get; }
     /// <summary>
+    /// Queries whether or not the connection is connected.
+    /// </summary>
+    /// <value><c>true</c> if is connected; otherwise, <c>false</c>.</value>
+    bool isConnected { get; }
+    /// <summary>
     /// Queries the name of the connection. For almost every device, this will be the
     /// device's serial number.
     /// </summary>

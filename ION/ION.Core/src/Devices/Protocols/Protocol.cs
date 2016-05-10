@@ -9,6 +9,7 @@ namespace ION.Core.Devices.Protocols {
   /// An enumeration of the supported protocols.
   /// </summary>
   public enum EProtocolVersion {
+    TestBenchInternal = -1,
     Classic = 0,
     V1 = 1,
     V2 = 2,
@@ -50,7 +51,9 @@ namespace ION.Core.Devices.Protocols {
     /// Queries the version of the protocol.
     /// </summary>
     EProtocolVersion version { get; }
+  }
 
+  public interface IGaugeProtocol : IProtocol {
     /// <summary>
     /// The value that indicates that a sensor is not attached to a device.
     /// </summary>
@@ -62,9 +65,7 @@ namespace ION.Core.Devices.Protocols {
     /// </summary>
     /// <value><c>true</c> if supports broadcasting; otherwise, <c>false</c>.</value>
     bool supportsBroadcasting { get; }
-  }
 
-  public interface IGaugeProtocol : IProtocol {
     /// <summary>
     /// Parses the provided packet. If the packet cannot be parsed, this method will
     /// throw an argument exception.

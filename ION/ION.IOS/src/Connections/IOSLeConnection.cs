@@ -63,6 +63,16 @@ namespace ION.IOS.Connections {
         }
       }
     } EConnectionState __connectionState;
+    /// <summary>
+    /// Queries whether or not the connection is connected.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool isConnected {
+      get {
+        return EConnectionState.Connected == connectionState;
+      }
+    }
     // Overridden from IConnection
     // public string name { get { return __nativeDevice.Name; } }
     public string name { get; set; }
@@ -151,12 +161,15 @@ namespace ION.IOS.Connections {
       name = __nativeDevice.Name;
 
       onServiceDiscoveredDelegate = ((object obj, NSErrorEventArgs args) => {
+        Log.D(this, "Discovered services " + __nativeDevice.Services.Length + " for device " + name + "...");
         foreach (CBService service in __nativeDevice.Services) {
+          Log.D(this, "Service is: " + service.UUID);
           __nativeDevice.DiscoverCharacteristics(service);
         }
       });
 
       onCharacteristicDiscoveredDelegate = (object obj, CBServiceEventArgs args) => {
+        Log.D(this, "Discovered Characteristics");
         if (EConnectionState.Connecting == connectionState) {
           if (ValidateServices()) {
             Log.D(this, name + " validated services");
@@ -215,8 +228,8 @@ namespace ION.IOS.Connections {
       centralManager.ConnectPeripheral(__nativeDevice, options);
 
       Log.D(this, "Awaiting physical connection....");
-      while (CBPeripheralState.Connected != __nativeDevice.State) {
-        if (DateTime.Now - start > connectionTimeout) {
+      while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
+        if (DateTime.Now - start > TimeSpan.FromSeconds(5)/*connectionTimeout*/) {
           Log.D(this, "timeout: failed to connect");
           Disconnect();
           return false;
@@ -227,10 +240,10 @@ namespace ION.IOS.Connections {
 
       await Task.Delay(100);
 
-      __nativeDevice.DiscoverServices(DESIRED_SERVICES);
+      __nativeDevice.DiscoverServices((CBUUID[])null/*DESIRED_SERVICES*/);
 
       Log.D(this, "Awaiting service discovery");
-      while (EConnectionState.Connected != connectionState) {
+      while (EConnectionState.Connected != connectionState && EConnectionState.Disconnected != connectionState) {
         if (DateTime.Now - start > connectionTimeout) {
           Log.D(this, "timeout: failed to validate services");
           Disconnect();
