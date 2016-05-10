@@ -2,6 +2,8 @@
   
   using System;
 
+  using ION.Core.Internal;
+
   public static class SerialNumberExtensions {
     /// <summary>
     /// Queries whether or not the given string is a valid serial number.
@@ -9,11 +11,8 @@
     /// <returns><c>true</c> if is valid serial number the specified serialNumber; otherwise, <c>false</c>.</returns>
     /// <param name="serialNumber">Serial number.</param>
     public static bool IsValidSerialNumber(this string serialNumber) {
-      if (GaugeSerialNumber.IsValid(serialNumber)) {
-        return true;
-      } else {
-        throw new Exception("Cannot parse serial number: invalid serial number: " + serialNumber);
-      }
+      return GaugeSerialNumber.IsValid(serialNumber)
+        || BluefruitSerialNumber.IsValid(serialNumber);
     }
 
     /// <summary>
@@ -23,6 +22,8 @@
     public static ISerialNumber ParseSerialNumber(this string serialNumber) {
       if (GaugeSerialNumber.IsValid(serialNumber)) {
         return GaugeSerialNumber.Parse(serialNumber);
+      } else if (BluefruitSerialNumber.IsValid(serialNumber)) {
+        return BluefruitSerialNumber.Parse(serialNumber);
       } else {
         throw new Exception("Cannot parse serial number: invalid serial number: " + serialNumber);
       }

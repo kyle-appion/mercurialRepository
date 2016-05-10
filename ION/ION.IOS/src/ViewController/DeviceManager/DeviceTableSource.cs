@@ -13,6 +13,7 @@
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
+  using ION.Core.Internal;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
@@ -243,10 +244,11 @@
       dict.Add(EDeviceState.Disconnected, new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED));
 
       foreach (var device in ion.deviceManager.devices) {
-        var gd = device as GaugeDevice;
-        if (gd != null) {
+        if (device is GaugeDevice) {
+          var gd = device as GaugeDevice;
           if (sensorFilter == null || gd.HasSensorMatchingFilter(sensorFilter)) {
             var r = new DeviceRecord(gd, expandedDevice == device);
+            r.expandable = true;
             var state = GetStateFor(device);
             var section = dict[state];
             section.records.Add(r);
@@ -262,6 +264,14 @@
 
             section.records.Add(new SpaceRecord());
           }
+        } else if (device is BluefruitDevice) {
+#if DEBUG
+          var r = new DeviceRecord(device);
+          r.expandable = false;
+          var state = GetStateFor(device);
+          var section = dict[state];
+          section.records.Add(r);
+#endif
         }
       }
 
@@ -312,7 +322,7 @@
       var record = section.records[(int)indexPath.Row] as DeviceRecord;
       var gd = record.device as GaugeDevice;
 
-      if (record.expanded) {
+      if (!record.expandable || record.expanded) {
         return;
       }
 
@@ -339,7 +349,7 @@
       var record = section.records[(int)indexPath.Row] as DeviceRecord;
       var gd = record.device as GaugeDevice;
 
-      if (!record.expanded) {
+      if (!record.expandable || !record.expanded) {
         return;
       }
 

@@ -30,6 +30,8 @@ namespace ION.IOS.ViewController {
     public const string VC_LOGGING = "viewControllerLogging";
     public const string VC_JOB_MANAGER = "viewControllerJobManager";
 
+    public const string VC_INTERNAL_TEST_BENCH = "viewControllerInternalTestBench";
+
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation
     /// bar.

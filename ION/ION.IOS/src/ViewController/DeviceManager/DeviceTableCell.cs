@@ -24,6 +24,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     }
 
     public IDevice device { get; set; }
+    public bool expandable { get; set; }
     public bool expanded { get; set; }
 
     public DeviceRecord(IDevice device, bool expanded = false) {

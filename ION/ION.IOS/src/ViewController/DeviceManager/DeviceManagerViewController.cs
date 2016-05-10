@@ -40,7 +40,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The filter that is used to limit the devices that are displayed in the view controller.
     /// </summary>
     public IFilter<Sensor> displayFilter {
-      get {      
+      get {
         return __displayFilter;
       }
       set {

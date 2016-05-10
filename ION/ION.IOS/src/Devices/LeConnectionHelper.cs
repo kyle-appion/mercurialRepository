@@ -71,59 +71,7 @@
         NotifyScanStateChanged();
       };
 
-      centralManager.DiscoveredPeripheral += async (object sender, CBDiscoveredPeripheralEventArgs e) => {
-        Log.D(this, "Discovered Peripheral: " + e.Peripheral.Name);
-
-        var peripheral = e.Peripheral;
-        var name = peripheral.Name;
-        var adData = e.AdvertisementData;
-
-        if (name == null) {
-          Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
-          if (adData != null) {
-            var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
-            if (data != null) {
-              name = data.ToString();
-            }
-          }
-        }
-
-        if (name == null) {
-          // Try connecting to the peripheral as a last resort to get the peripheral stuff.
-          Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
-          var connection = new IosLeConnection(centralManager, peripheral);
-          name = await connection.PullDeviceName();
-          if (name == null) {
-            Log.E(this, "Failed to resolce peripheral name. The peripheral will not be presented to the application.");
-            return;
-          }
-        }
-
-        try {
-          var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
-          var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
-          byte[] broadcastPacket = null;
-          var protocol = EProtocolVersion.V1;
-          if (ourData != null) {
-            broadcastPacket = ((NSData)ourData).ToArray();
-            var bytes = new byte[20];
-            Array.Copy(broadcastPacket, 2, bytes, 0, Math.Min(broadcastPacket.Length - 2, bytes.Length));
-            broadcastPacket = bytes;
-            // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
-            var rawProtocol = (EProtocolVersion)broadcastPacket[0];
-            if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
-              protocol = rawProtocol;
-            } else {
-              protocol = EProtocolVersion.V1;
-            }
-          }
-
-          NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
-        } catch (Exception ex) {
-          Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
-        }
-
-      };
+      centralManager.DiscoveredPeripheral += OnDiscoveredPeripheral;
 
       centralManager.ConnectedPeripheral += (object sender, CBPeripheralEventArgs e) => {
       };
@@ -227,6 +175,67 @@
       }
 
       centralManager.StopScan();
+    }
+
+    /// <summary>
+    /// Called when a new peripheral is found.
+    /// </summary>
+    private async void OnDiscoveredPeripheral(object sender, CBDiscoveredPeripheralEventArgs e) {
+      Log.D(this, "Discovered Peripheral: " + e.Peripheral.Name);
+
+      var peripheral = e.Peripheral;
+      var name = peripheral.Name;
+      var adData = e.AdvertisementData;
+
+      if (name == null) {
+        Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
+        if (adData != null) {
+          var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
+          if (data != null) {
+            name = data.ToString();
+          }
+        }
+      }
+
+      if (name == null) {
+        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
+        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
+        var connection = new IosLeConnection(centralManager, peripheral);
+        name = await connection.PullDeviceName();
+        if (name == null) {
+          Log.E(this, "Failed to resolce peripheral name. The peripheral will not be presented to the application.");
+          return;
+        }
+      }
+
+      if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
+        return;
+      }
+
+      try {
+        var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
+        Log.D(this, "Resolving: " + serialNumber);
+        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
+        byte[] broadcastPacket = null;
+        var protocol = EProtocolVersion.V1;
+        if (ourData != null) {
+          broadcastPacket = ((NSData)ourData).ToArray();
+          var bytes = new byte[20];
+          Array.Copy(broadcastPacket, 2, bytes, 0, Math.Min(broadcastPacket.Length - 2, bytes.Length));
+          broadcastPacket = bytes;
+          // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
+          var rawProtocol = (EProtocolVersion)broadcastPacket[0];
+          if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
+            protocol = rawProtocol;
+          } else {
+            protocol = EProtocolVersion.V1;
+          }
+        }
+
+        NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
+      } catch (Exception ex) {
+        Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
+      }
     }
 
     /// <summary>

@@ -13,6 +13,10 @@ namespace ION.Core.Devices {
     /// </summary>
     Gauge,
     /// <summary>
+    /// A device that is used by appion internally.
+    /// </summary>
+    InternalInterface,
+    /// <summary>
     /// A marker for an unknown device.
     /// </summary>
     Unknown,
