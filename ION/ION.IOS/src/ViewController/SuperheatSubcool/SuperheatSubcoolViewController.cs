@@ -354,6 +354,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if (temperatureSensor != null && pressureSensor != null) {
         OnTemperatureSensorChanged(temperatureSensor);
       }
+      if (ptChart != null) {
+        ptChart = PTChart.New(ion, ptChart.state);
+      }
     }
 
     // Overridden from BaseIONViewController
