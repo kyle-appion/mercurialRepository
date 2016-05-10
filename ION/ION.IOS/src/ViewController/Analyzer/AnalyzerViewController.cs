@@ -245,7 +245,9 @@ namespace ION.IOS.ViewController.Analyzer {
       /// this sets the table cells to start directly under the low side area
       if (!UserInterfaceIdiomIsPhone) {
         analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.43f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
-      }         
+      } else {
+        analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.71f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
+      }      
     }
 
     /// <summary>
