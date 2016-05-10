@@ -99,9 +99,7 @@
       // If your application supports background exection this method is called instead of WillTerminate when the user quits.
       UIApplication.SharedApplication.IdleTimerDisabled = false;
 
-      if (ion.settings.location.useGeoLocation) {
-        ion.locationManager.StopAutomaticLocationPolling();
-      }
+      ion.locationManager.StopAutomaticLocationPolling();
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         intervalWarning = false;
@@ -120,7 +118,13 @@
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {
-          UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"OK",null);
+          UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"Close","Return to Settings");
+          loggingWarning.Clicked += (sender, e) => {
+            if(e.ButtonIndex.Equals(1)){
+              Console.WriteLine("Return to settings");
+              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+            }
+          };
           loggingWarning.Show();
         } 
       } 
