@@ -218,6 +218,8 @@
 				<string>1 minute</string>
 				<string>5 minute</string>
 				<string>10 minute</string>
+				<string>30 minute</string>
+				<string>60 minute</string>
 			</array>
 			<key>Values</key>
 			<array>
@@ -226,6 +228,8 @@
 				<integer>60</integer>
 				<integer>300</integer>
 				<integer>600</integer>
+				<integer>1800</integer>
+				<integer>3600</integer>
 			</array>
 		</dict>
 	</array>

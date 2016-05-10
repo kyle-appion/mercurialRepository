@@ -26,6 +26,10 @@ namespace ION.IOS.ViewController.Workbench {
     public SuperheatSubcoolSensorProperty shsc { get; set; }
 
     public FluidRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
+      if (manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+        manifold.ptChart = PTChart.New(AppState.context, manifold.ptChart.state);
+      }
+
       pt = sensorProperty as PTChartSensorProperty;
       shsc = sensorProperty as SuperheatSubcoolSensorProperty;
     }
