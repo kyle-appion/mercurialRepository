@@ -114,7 +114,7 @@ namespace ION.IOS.ViewController.JobManager {
     public void updateNotes(int frnJID){
       if (!frnJID.Equals(0)) {          
         if(File.Exists(fileDir)){
-          System.IO.File.Delete(fileDir);
+          File.Delete(fileDir);
           using (XmlWriter writer = XmlWriter.Create(fileDir))
           {
             writer.WriteStartDocument();
