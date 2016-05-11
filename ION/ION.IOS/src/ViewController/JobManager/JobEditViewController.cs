@@ -42,8 +42,6 @@ namespace ION.IOS.ViewController.JobManager {
           return;
         }
 
-
-
         if(frnJID.Equals(0)){
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 
@@ -56,6 +54,14 @@ namespace ION.IOS.ViewController.JobManager {
             editView.confirmLabel.Text = "Job Name Already Exists";
           }
         } else {
+          var previousName = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", frnJID);
+          var fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), previousName[0].jobName + ".xml");
+          if(System.IO.File.Exists(fileDir)){
+            var newFileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), editView.jobName.Text + ".xml");
+            System.IO.File.Copy(fileDir,newFileDir);
+            System.IO.File.Delete(fileDir);
+          }
+
           ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
           this.NavigationController.PopViewController(true);
         }
