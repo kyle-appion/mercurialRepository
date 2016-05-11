@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.JobManager {
                     Console.WriteLine("Notes: "); 
                     Console.WriteLine(reader.Value.Trim());
                   }
-                  break;
+                  break; 
               }
             }
           }

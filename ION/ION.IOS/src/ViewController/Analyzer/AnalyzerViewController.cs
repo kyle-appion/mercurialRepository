@@ -39,7 +39,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static AnalyzerViewController arvc;
 
     public static UIButton dataRecord;
-//    public static UIButton showRecords;
+    public static UIButton showRecords;
 
     public List<Sensor> sensorList;
     private IION ion;
@@ -97,11 +97,11 @@ namespace ION.IOS.ViewController.Analyzer {
 
       createSensors ();
 
-//      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
-//      showRecords.BackgroundColor = UIColor.Green;
-//      showRecords.Layer.CornerRadius = 6;
-//
-//      showRecords.TouchUpInside += listOutSessions;
+      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
+      showRecords.BackgroundColor = UIColor.Green;
+      showRecords.Layer.CornerRadius = 6;
+
+      showRecords.TouchUpInside += listOutSessions;
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
       mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;
@@ -122,7 +122,7 @@ namespace ION.IOS.ViewController.Analyzer {
         this.View.SendSubviewToBack (mentryView.mView);
       };
 
-//      View.AddSubview(showRecords);
+      View.AddSubview(showRecords);
     }
 
     /// <summary>
@@ -155,7 +155,7 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void listOutSessions(object sender, EventArgs e){
-      Console.WriteLine("Logging interval is set to: " + NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
+      analyzerSensors.viewList[0].lowArea.subviewTable.SetEditing(true, true);
 //      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
 //      Console.WriteLine("Measurements:");
 //      foreach (var item in result) {

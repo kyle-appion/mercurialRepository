@@ -136,10 +136,39 @@ namespace ION.IOS.ViewController.Analyzer
 			
 		}
 
+    public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
+      Console.WriteLine("Can move the row");
+      return true;
+    }
+
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
+      Console.WriteLine("Moving the row");
+      var item = tableItems[sourceIndexPath.Row];
+      var deleteAt = sourceIndexPath.Row;
+      var insertAt = destinationIndexPath.Row;
+
+      // are we inserting 
+      if (destinationIndexPath.Row < sourceIndexPath.Row) {
+        // add one to where we delete, because we're increasing the index by inserting
+        deleteAt += 1;
+      } else {
+        // add one to where we insert, because we haven't deleted the original yet
+        insertAt += 1;
+      }
+      tableItems.Insert (insertAt, item);
+      tableItems.RemoveAt (deleteAt);
+
+      tableView.SetEditing(false, true);
+    }
+
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
 			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
 		}
+
+    public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, NSIndexPath indexPath) {
+      return UITableViewCellEditingStyle.None;
+    }
 
 	}
 }
