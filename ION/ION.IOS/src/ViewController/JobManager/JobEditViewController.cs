@@ -40,7 +40,10 @@ namespace ION.IOS.ViewController.JobManager {
               editView.jobName.BackgroundColor = UIColor.White;
             },()=>{});
           return;
-        } 
+        }
+
+
+
         if(frnJID.Equals(0)){
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 

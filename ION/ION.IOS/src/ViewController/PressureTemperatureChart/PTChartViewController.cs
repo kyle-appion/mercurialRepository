@@ -11,6 +11,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
+  using ION.Core.Location;
   using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
@@ -203,6 +204,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }
 
       ion = AppState.context;
+
+      ion.locationManager.onLocationChanged += DeltaOnLocationChanged;
 
       ptChart = PTChart.New(ion, Fluid.EState.Dew);
 
@@ -577,6 +580,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       protected void OnSensorChanged(Sensor sensor) {
         Invalidate();
       }
+
+    }
+    public void DeltaOnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation){
+      InvalidateViewController();
     }
   }
 }

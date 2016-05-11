@@ -109,6 +109,8 @@
       native.LocationsUpdated += ResolveLocationChange;
       native.StartMonitoringSignificantLocationChanges();
       isPolling = true;
+      lastKnownLocation = new IosLocation(native.Location);
+
       return true;
     }
 
@@ -116,6 +118,7 @@
     public void StopAutomaticLocationPolling() {
       native.LocationsUpdated -= ResolveLocationChange;
       isPolling = false;
+      lastKnownLocation = new SimpleLocation(false,0,0,0);
     }
 
     /// <summary>

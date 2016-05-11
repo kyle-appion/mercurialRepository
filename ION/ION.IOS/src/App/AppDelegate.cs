@@ -69,6 +69,8 @@
       }
       if (ion.settings.location.useGeoLocation) {
         ion.locationManager.StartAutomaticLocationPolling();
+      } else {
+        ion.locationManager.StopAutomaticLocationPolling();
       }
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
@@ -134,6 +136,8 @@
       }
       if (ion.settings.location.useGeoLocation) {
         ion.locationManager.StartAutomaticLocationPolling();
+      }else {
+        ion.locationManager.StopAutomaticLocationPolling();
       }
     }
 

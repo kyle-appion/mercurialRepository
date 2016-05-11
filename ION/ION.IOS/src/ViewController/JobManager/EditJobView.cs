@@ -64,7 +64,6 @@ namespace ION.IOS.ViewController.JobManager  {
         TextAlignment = UITextAlignment.Center,
       };
       jobName.Layer.BorderWidth = 1f;
-      //jobName.Layer.CornerRadius = 8;
       jobName.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
         return true;
@@ -79,7 +78,6 @@ namespace ION.IOS.ViewController.JobManager  {
         TextAlignment = UITextAlignment.Center,
       };
       customerNumber.Layer.BorderWidth = 1f;
-      //customerNumber.Layer.CornerRadius = 8;
       customerNumber.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
         return true;
@@ -109,7 +107,6 @@ namespace ION.IOS.ViewController.JobManager  {
         TextAlignment = UITextAlignment.Center,
       };
       prodOrderNumber.Layer.BorderWidth = 1f;
-      //prodOrderNumber.Layer.CornerRadius = 8;
       prodOrderNumber.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
         return true;
