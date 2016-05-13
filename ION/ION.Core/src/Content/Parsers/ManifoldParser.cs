@@ -217,13 +217,12 @@
 
     private void WriteSensorProperty(ISensorProperty property, BinaryWriter writer) {      
       var name = property.GetType();
-      Log.D(this,"Manifold has sensor property: " + name.Name);
         writer.Write(name.Name);
     }
 
     private void ReadSensorProperty(Manifold manifold, BinaryReader reader) {
-        var name = reader.ReadString();
-        Log.D(this, "Property: " + name);
+      var name = reader.ReadString();
+     
       if (name != null) {
         if (name.Equals("MinSensorProperty")) {
           manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
