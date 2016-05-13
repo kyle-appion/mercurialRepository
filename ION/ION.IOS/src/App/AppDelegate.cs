@@ -148,6 +148,9 @@
 
     public override void WillTerminate(UIApplication application) {
       try {
+        Console.WriteLine("Closing app and listing workbench manifolds");
+
+        //ion.SaveWorkbenchAsync();
         ion.Dispose();
       } catch (Exception e) {
         Log.E(this, "Failed to terminate ion instance", e);

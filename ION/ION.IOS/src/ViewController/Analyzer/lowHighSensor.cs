@@ -121,10 +121,11 @@ namespace ION.IOS.ViewController.Analyzer
 			snapArea = new UIView (areaRect);
       cellHeight = .521f * snapArea.Bounds.Height;
       subviewTable = new UITableView (tblRect);
+      subviewTable.Bounces = false;
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
       LabelMiddle = new UILabel (new CGRect(.2 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
-      LabelSubview = new UILabel (new CGRect(-1, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
+      LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       LabelSubview.ClipsToBounds = true;
       subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .213 * snapArea.Bounds.Width, .204 * areaRect.Height));
       subviewDivider = new UIView(new CGRect(0,.8 * areaRect.Height,areaRect.Width,2));
@@ -141,7 +142,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(maximumTableCell),"Maximum");
       subviewTable.RegisterClassForCellReuse(typeof(minimumTableCell),"Minimum");
       subviewTable.RegisterClassForCellReuse(typeof(holdTableCell), "Hold");
-      subviewTable.RegisterClassForCellReuse(typeof(altTableCell), "Alternate");
+      subviewTable.RegisterClassForCellReuse(typeof(altTableCell), "Alternate"); 
       subviewTable.RegisterClassForCellReuse(typeof(RoCTableCell), "Rate");
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");

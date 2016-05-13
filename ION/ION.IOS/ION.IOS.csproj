@@ -298,7 +298,6 @@
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
-    <Compile Include="src\App\AppDelegate.cs" />
     <Compile Include="src\UI\Toast.cs" />
     <Compile Include="src\Connections\IosLeConnection.cs" />
     <Compile Include="src\Util\NSExtensions.cs" />
@@ -552,6 +551,7 @@
     <Compile Include="src\ViewController\JobManager\AvailableSessionSource.cs" />
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
+    <Compile Include="src\App\AppDelegate.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
