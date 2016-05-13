@@ -100,7 +100,7 @@
       // Use this method to release shared resources, save user data, invalidate timers and store the application state.
       // If your application supports background exection this method is called instead of WillTerminate when the user quits.
       UIApplication.SharedApplication.IdleTimerDisabled = false;
-      Console.WriteLine("Entered Background");
+
       ion.locationManager.StopAutomaticLocationPolling();
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
@@ -148,8 +148,9 @@
 
     public override void WillTerminate(UIApplication application) {
       try {
-        Console.WriteLine("Closing app and listing workbench manifolds");
-
+        if(ion.dataLogManager.isRecording){
+          var done = ion.dataLogManager.StopRecording().Result;
+        }
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {

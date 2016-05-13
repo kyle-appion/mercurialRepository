@@ -24,7 +24,6 @@
 
     // Overridden from IParser
     public void WriteToStream(IION ion, Manifold manifold, Stream stream) {
-      Log.D(this,"Manifold Parser Writing");
       var writer = new BinaryWriter(stream);
       try {
         // Persist the version of the parser
@@ -33,7 +32,7 @@
         WriteSensor(manifold.primarySensor, writer);
         // Write secondary sensor
         WriteSensor(manifold.secondarySensor, writer);
-  //*************************************************************************************************** 
+
         // Write fluid name
         if (manifold.ptChart == null) {
           writer.Write(false); // Doens't have a pt chart.
@@ -46,7 +45,7 @@
             writer.Write(manifold.ptChart.fluid.name);
           }
         }
- //***************************************************************************************************
+
         writer.Write(manifold.sensorProperties.Count);
         // Write sensor properties
         foreach (var sp in manifold.sensorProperties) {
