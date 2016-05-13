@@ -64,6 +64,10 @@
     /// The list of the shown sections.
     /// </summary>
     private List<Section> shownSections = new List<Section>();
+    /// <summary>
+    /// The current expanded device.
+    /// </summary>
+    private IDevice expandedDevice;
 
     /// <summary>
     /// The app context that the source is using.
@@ -222,15 +226,19 @@
           if (added > 0) {
             tableView.InsertRows(ToNSIndexPath(Arrays.Range(index, index + added - 1), indexPath.Section), UITableViewRowAnimation.Right);
           }
-/*
+
           if (expandedDevice != null && expandedDevice != r.device) {
-            var ip = IndexPathOfDevice(expandedDevice);
-            if (ip != null) {
-              DoCollapse(ip);
+            var s = deviceToSection[expandedDevice];
+            var sectionIndex = shownSections.IndexOf(s);
+            var i = s.IndexOfRecord(expandedDevice);
+            var removed = s.CollapseRecord(i);
+            if (removed > 0 && shownSections.Contains(s)) {
+              i += 1;
+              tableView.DeleteRows(ToNSIndexPath(Arrays.Range(i, i + removed - 1), sectionIndex), UITableViewRowAnimation.Left);
             }
           }
+
           expandedDevice = r.device;
-*/
         }
       }
     }
