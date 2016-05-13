@@ -100,9 +100,8 @@
         var now = DateTime.Now;
         foreach(var gds in sensors){
           var existing = db.Query<LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?",gds.device.serialNumber.ToString());
-          Debug.WriteLine("SN: " +gds.device.serialNumber.ToString() + " had " + existing.Count + " records");
+
           if(existing.Count.Equals(0)){
-            Debug.WriteLine("No entry for device");
             var newDevice = new LoggingDeviceRow{serialNumber = gds.device.serialNumber.ToString()};
             db.Insert(newDevice);
           }
@@ -113,7 +112,6 @@
         }
 
         var inserted = db.InsertAll(rows, true);
-        Log.D(this, "Inserted " + inserted + " of " + rows.Count + " measurement rows");
       } catch (Exception e) {
         Log.E(this, "Failed to resolve timer callback", e);
       }
@@ -131,16 +129,11 @@
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
 
       ret.serialNumber = sensor.device.serialNumber.ToString();
-      Debug.WriteLine("Serial: " + ret.serialNumber);
+
       ret.frn_SID = session.SID;
-      Debug.WriteLine("frn_SID: " + ret.frn_SID);
       ret.sensorIndex = sensor.index;
-      Debug.WriteLine("sensorIndex: " + ret.sensorIndex);
       ret.recordedDate = date;
-      Debug.WriteLine("recordedDate " + ret.recordedDate.ToString());
       ret.measurement = meas.amount;
-      Debug.WriteLine("Actual measurement " + sensor.measurement);
-      Debug.WriteLine("Standardized measurement " + ret.measurement);
 
       return ret;
     }
