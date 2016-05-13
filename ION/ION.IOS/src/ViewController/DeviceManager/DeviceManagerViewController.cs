@@ -121,6 +121,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       allowRefresh = false;
       ion.deviceManager.connectionHelper.Stop();
       deviceSource.Release();
+      ion.deviceManager.ForgetFoundDevices();
     }
 
     // Overridden from UIViewController
