@@ -213,33 +213,53 @@
         var r = record as DeviceRecord;
 
         if (r.isExpanded) {
-          var index = indexPath.Row;
-          var removed = section.CollapseRecord(index);
-          index += 1;
-          if (removed > 0) {
-            tableView.DeleteRows(ToNSIndexPath(Arrays.Range(index, index + removed - 1), indexPath.Section), UITableViewRowAnimation.Left);
-          }
+          DoCollapse(indexPath);    
         } else {
-          var index = indexPath.Row;
-          var added = section.ExpandRecord(index);
-          index += 1;
-          if (added > 0) {
-            tableView.InsertRows(ToNSIndexPath(Arrays.Range(index, index + added - 1), indexPath.Section), UITableViewRowAnimation.Right);
-          }
-
-          if (expandedDevice != null && expandedDevice != r.device) {
-            var s = deviceToSection[expandedDevice];
-            var sectionIndex = shownSections.IndexOf(s);
-            var i = s.IndexOfRecord(expandedDevice);
-            var removed = s.CollapseRecord(i);
-            if (removed > 0 && shownSections.Contains(s)) {
-              i += 1;
-              tableView.DeleteRows(ToNSIndexPath(Arrays.Range(i, i + removed - 1), sectionIndex), UITableViewRowAnimation.Left);
-            }
-          }
-
-          expandedDevice = r.device;
+          DoExpand(indexPath);
         }
+      }
+    }
+
+    private void DoExpand(NSIndexPath indexPath) {
+      var r = shownSections[indexPath.Section].records[indexPath.Row];
+      var dr = r as DeviceRecord;
+      if (dr == null) {
+        return;
+      }
+      var section = deviceToSection[dr.device];
+      var index = indexPath.Row;
+      var added = section.ExpandRecord(index);
+      index += 1;
+      if (added > 0) {
+        tableView.InsertRows(ToNSIndexPath(Arrays.Range(index, index + added - 1), indexPath.Section), UITableViewRowAnimation.Right);
+      }
+
+      if (expandedDevice != null && expandedDevice != dr.device) {
+        var s = deviceToSection[expandedDevice];
+        var sectionIndex = shownSections.IndexOf(s);
+        var i = s.IndexOfRecord(expandedDevice);
+        var removed = s.CollapseRecord(i);
+        if (removed > 0 && shownSections.Contains(s)) {
+          i += 1;
+          tableView.DeleteRows(ToNSIndexPath(Arrays.Range(i, i + removed - 1), sectionIndex), UITableViewRowAnimation.Left);
+        }
+      }
+
+      expandedDevice = dr.device;
+    }
+
+    private void DoCollapse(NSIndexPath indexPath) {
+      var r = shownSections[indexPath.Section].records[indexPath.Row];
+      var dr = r as DeviceRecord;
+      if (dr == null) {
+        return;
+      }
+      var section = deviceToSection[dr.device];
+      var index = indexPath.Row;
+      var removed = section.CollapseRecord(index);
+      index += 1;
+      if (removed > 0) {
+        tableView.DeleteRows(ToNSIndexPath(Arrays.Range(index, index + removed - 1), indexPath.Section), UITableViewRowAnimation.Left);
       }
     }
 
@@ -399,9 +419,9 @@
                 if (oldSection.devices.Count <= 0) {
                   var index = shownSections.IndexOf(oldSection);
                   shownSections.Remove(oldSection);
-                AnimateSectionRemoval(index);
+                  AnimateSectionRemoval(index);
                 } else {
-                AnimateRemoveDevice(NSIndexPath.FromRowSection(recordIndex, shownSections.IndexOf(oldSection)), numberRemoved);
+                  AnimateRemoveDevice(NSIndexPath.FromRowSection(recordIndex, shownSections.IndexOf(oldSection)), numberRemoved);
                 }
               }
             }
@@ -414,17 +434,20 @@
               shownSections.Add(section);
               shownSections.Sort(new SectionSorter());
               sectionIndex = shownSections.IndexOf(section);
-            AnimateSectionAdd(sectionIndex);
+              AnimateSectionAdd(sectionIndex);
             } else {
               sectionIndex = shownSections.IndexOf(section);
             }
 
             int index = -1;
             if (section.AddDevice(device, out index)) {
-            AnimateAddDevice(NSIndexPath.FromRowSection(index, sectionIndex));
+              AnimateAddDevice(NSIndexPath.FromRowSection(index, sectionIndex));
             }
 
             deviceToSection[device] = section;
+            if (EDeviceState.Connected == state) {
+              DoExpand(NSIndexPath.FromRowSection(index, shownSections.IndexOf(section)));
+            }
           }
 
           Invalidate();
