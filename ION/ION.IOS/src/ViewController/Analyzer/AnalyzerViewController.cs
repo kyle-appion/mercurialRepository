@@ -71,6 +71,7 @@ namespace ION.IOS.ViewController.Analyzer {
       sensorList = new List<Sensor>();
       analyzer = ion.currentAnalyzer;
       analyzer.sensorList = sensorList;
+      AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
         root.navigation.ToggleMenu();
@@ -122,7 +123,7 @@ namespace ION.IOS.ViewController.Analyzer {
         this.View.SendSubviewToBack (mentryView.mView);
       };
 
-      View.AddSubview(showRecords);
+//      View.AddSubview(showRecords);
     }
 
     /// <summary>
@@ -155,7 +156,6 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void listOutSessions(object sender, EventArgs e){
-      analyzerSensors.viewList[0].lowArea.subviewTable.SetEditing(true, true);
 //      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
 //      Console.WriteLine("Measurements:");
 //      foreach (var item in result) {
@@ -240,14 +240,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       AddLowHighGestures ();
 
-      mentryView.mView.Layer.CornerRadius = 10;
-      ///weird padding added to first snaparea's low side table
-      /// this sets the table cells to start directly under the low side area
-      if (!UserInterfaceIdiomIsPhone) {
-        analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.43f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
-      } else {
-        analyzerSensors.snapArea1.lowArea.subviewTable.ContentInset = new UIEdgeInsets(-.71f * analyzerSensors.snapArea1.lowArea.cellHeight, 0, 0, 0);
-      }      
+      mentryView.mView.Layer.CornerRadius = 10;     
     }
 
     /// <summary>

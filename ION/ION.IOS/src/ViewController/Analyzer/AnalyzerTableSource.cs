@@ -166,9 +166,9 @@ namespace ION.IOS.ViewController.Analyzer
 			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
 		}
 
-    public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, NSIndexPath indexPath) {
-      return UITableViewCellEditingStyle.None;
-    }
+//    public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, NSIndexPath indexPath) {
+//      return UITableViewCellEditingStyle.Delete;
+//    }
 
 	}
 }

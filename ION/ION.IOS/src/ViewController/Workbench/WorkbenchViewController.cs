@@ -58,6 +58,7 @@ namespace ION.IOS.ViewController.Workbench {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
+      AutomaticallyAdjustsScrollViewInsets = false; 
 
       var button = new UIButton(new CGRect(0, 0, 31, 30));
       button.TouchUpInside += (obj, args) => {
@@ -116,6 +117,7 @@ namespace ION.IOS.ViewController.Workbench {
     private void OnRequestViewer() {
       var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+        Log.D(this,"Adding device to workbench");
         workbench.AddSensor(sensor);
       };
       NavigationController.PushViewController(sb, true);
@@ -125,7 +127,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// Called when the backing workbench throws a new event.
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
-    private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+    private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {      
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           goto case WorkbenchEvent.EType.Swapped;
@@ -133,6 +135,7 @@ namespace ION.IOS.ViewController.Workbench {
           goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Swapped:
           ion.SaveWorkbenchAsync();
+
           break;
       }
     }
