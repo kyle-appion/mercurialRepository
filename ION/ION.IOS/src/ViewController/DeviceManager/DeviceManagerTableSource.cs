@@ -84,11 +84,29 @@
       this.ion = ion;
       this.vc = vc;
       this.tableView = tableView;
-      allSections.Add(EDeviceState.Connected, new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN));
-      allSections.Add(EDeviceState.Broadcasting, new Section(EDeviceState.Broadcasting, Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE));
-      allSections.Add(EDeviceState.New, new Section(EDeviceState.New, Strings.Device.NEW_DEVICES.FromResources(), Colors.LIGHT_GRAY));
-      allSections.Add(EDeviceState.Available, new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW));
-      allSections.Add(EDeviceState.Disconnected, new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED));
+      var connected = new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
+      connected.actions = BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
+        Strings.Device.Manager.CONNECTED_ACTIONS, connected);
+      allSections.Add(EDeviceState.Connected, connected);
+
+      var broadcasting = new Section(EDeviceState.Broadcasting, Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE);
+      connected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.AddAllToWorkbench,
+        Strings.Device.Manager.BROADCASTING_ACTIONS, broadcasting);
+      allSections.Add(EDeviceState.Broadcasting, broadcasting);
+
+      var @new = new Section(EDeviceState.New, Strings.Device.NEW_DEVICES.FromResources(), Colors.LIGHT_GRAY);
+      @new.actions = BuildBatchOptionsDialog(Actions.ConnectAll, Strings.Device.Manager.NEW_ACTIONS, @new);
+      allSections.Add(EDeviceState.New, @new);
+
+      var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
+      @avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
+        Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
+      allSections.Add(EDeviceState.Available, avail);
+
+      var disconnected = new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
+      disconnected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
+        Strings.Device.Manager.DISCONNECTED_ACTIONS, disconnected);
+      allSections.Add(EDeviceState.Disconnected, disconnected);
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
     }
@@ -483,6 +501,62 @@
     }
 
     /// <summary>
+    /// Build the batch options dialog for the given section.
+    /// </summary>
+    /// <param name="actions">Actions.</param>
+    /// <param name="title">Title.</param>
+    /// <param name="section">Section.</param>
+    private Action BuildBatchOptionsDialog (Actions actions, string title, Section section) {
+      return () => {
+        var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.ActionSheet);
+
+        for (int i = 1; i <= 32; i++) {
+          if ((i & (int)actions) == i) {
+            switch ((Actions)i) {
+              case Actions.ConnectAll:
+                dialog.AddAction(UIAlertAction.Create(Strings.Device.CONNECT_ALL, UIAlertActionStyle.Default, (action) => {
+                  foreach (var device in section.devices) {
+                    device.connection.ConnectAsync();
+                  }
+                }));
+                break;
+              case Actions.DisconnectAll:
+                dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT_ALL, UIAlertActionStyle.Default, (action) => {
+                  foreach (var device in section.devices) {
+                    device.connection.Disconnect();
+                  }
+                }));
+                break;
+              case Actions.ForgetAll:
+                dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET_ALL, UIAlertActionStyle.Default, (action) => {
+                  foreach (var device in section.devices) {
+                    ion.deviceManager.DeleteDevice(device.serialNumber);
+                  }
+                }));
+                break;
+              case Actions.AddAllToWorkbench:
+                dialog.AddAction(UIAlertAction.Create(Strings.Workbench.ADD_ALL_TO_WORKBENCH, UIAlertActionStyle.Default, (action) => {
+                  foreach (var device in section.devices) {
+                    var gd = device as GaugeDevice;
+                    if (gd != null) {
+                      foreach (var sensor in gd.sensors) {
+                        ion.currentWorkbench.AddSensor(sensor);
+                      }
+                    }
+                  }
+                }));
+                break;
+            }
+          }
+        }
+
+        dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+
+        dialog.Show();
+      };
+    }
+
+    /// <summary>
     /// Builds the header that is used to forget devices.
     /// </summary>
     /// <returns>The forget header.</returns>
@@ -508,6 +582,14 @@
       }));
 
       dialog.Show();
+    }
+
+    [Flags]
+    private enum Actions {
+      ConnectAll          = 1 << 0,
+      DisconnectAll       = 1 << 1,
+      ForgetAll           = 1 << 2,
+      AddAllToWorkbench   = 1 << 3,
     }
   }
 
@@ -603,6 +685,7 @@
     public List<IRecord> records = new List<IRecord>();
 
     public DeviceSectionHeaderTableCell cell;
+    public Action actions;
 
     public Section(EDeviceState state, string name, CGColor color) {
       this.state = state;
@@ -658,7 +741,7 @@
       }
 
       if (cell != null) {
-        cell.UpdateTo(this);
+        cell.UpdateTo(this, actions);
       }
 
       return true;
@@ -689,7 +772,7 @@
       removed = size;
 
       if (cell != null) {
-        cell.UpdateTo(this);
+        cell.UpdateTo(this, actions);
       }
 
       return true;
