@@ -46,7 +46,7 @@ namespace ION.Core.Content.Properties {
     }
 
     // Overridden from ISensorProperty
-    public void Dispose() {
+    public virtual void Dispose() {
       manifold.onManifoldChanged -= OnManifoldChanged;
     }
 

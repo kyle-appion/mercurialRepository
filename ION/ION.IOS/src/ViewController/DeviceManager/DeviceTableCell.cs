@@ -15,21 +15,28 @@ namespace ION.IOS.ViewController.DeviceManager {
   using ION.IOS.Devices;
   using ION.IOS.UI;
 
-  public class DeviceRecord : IDeviceTableRecord {
-    // Overridden from IDeviceTableSource
-    public DeviceTableSource.EViewType viewType {
+  public class DeviceRecord : IRecord {
+    /// <summary>
+    /// The view type of the record.
+    /// </summary>
+    /// <value>The type of the view.</value>
+    public EViewType viewType {
       get {
-        return DeviceTableSource.EViewType.Device;
+        return EViewType.Device;
       }
     }
 
     public IDevice device { get; set; }
-    public bool expandable { get; set; }
-    public bool expanded { get; set; }
+    public bool isExpandable { 
+      get {
+        return device is GaugeDevice;
+      }
+    }
+    public bool isExpanded { get; set; }
 
     public DeviceRecord(IDevice device, bool expanded = false) {
       this.device = device;
-      this.expanded = expanded;
+      this.isExpanded = expanded;
     }
   }
 

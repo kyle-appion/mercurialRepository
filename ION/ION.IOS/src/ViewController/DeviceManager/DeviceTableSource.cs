@@ -1,5 +1,5 @@
-﻿namespace ION.IOS.ViewController.DeviceManager {
-  
+﻿/*
+
   using System;
   using System.Collections.Generic;
   using System.Linq;
@@ -524,3 +524,4 @@
   }
 }
 
+*/

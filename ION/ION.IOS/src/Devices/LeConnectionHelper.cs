@@ -181,7 +181,7 @@
     /// Called when a new peripheral is found.
     /// </summary>
     private async void OnDiscoveredPeripheral(object sender, CBDiscoveredPeripheralEventArgs e) {
-      Log.D(this, "Discovered Peripheral: " + e.Peripheral.Name);
+//      Log.D(this, "Discovered Peripheral: " + e.Peripheral.Name);
 
       var peripheral = e.Peripheral;
       var name = peripheral.Name;
@@ -214,7 +214,6 @@
 
       try {
         var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
-        Log.D(this, "Resolving: " + serialNumber);
         var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
         byte[] broadcastPacket = null;
         var protocol = EProtocolVersion.V1;

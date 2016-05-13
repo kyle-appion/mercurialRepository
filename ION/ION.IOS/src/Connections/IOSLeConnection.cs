@@ -161,18 +161,14 @@ namespace ION.IOS.Connections {
       name = __nativeDevice.Name;
 
       onServiceDiscoveredDelegate = ((object obj, NSErrorEventArgs args) => {
-        Log.D(this, "Discovered services " + __nativeDevice.Services.Length + " for device " + name + "...");
         foreach (CBService service in __nativeDevice.Services) {
-          Log.D(this, "Service is: " + service.UUID);
           __nativeDevice.DiscoverCharacteristics(service);
         }
       });
 
       onCharacteristicDiscoveredDelegate = (object obj, CBServiceEventArgs args) => {
-        Log.D(this, "Discovered Characteristics");
         if (EConnectionState.Connecting == connectionState) {
           if (ValidateServices()) {
-            Log.D(this, name + " validated services");
             connectionState = EConnectionState.Connected;
           } else {
             Log.E(this, "Failed to resolve characteristics");
@@ -184,10 +180,8 @@ namespace ION.IOS.Connections {
         if (args.Characteristic.Equals(nameCharacteristic)) {
           var bytes = nameCharacteristic?.Value?.ToArray();
           name = System.Text.Encoding.UTF8.GetString(bytes);
-          Log.D(this, "Name characteristic read: " + name);
         } else if (args.Characteristic.Equals(readCharacteristic)) {
           lastPacket = readCharacteristic.Value.ToArray();
-          Log.D(this, "Receiving new data packet");
         } else {
 //          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
         }
@@ -227,10 +221,8 @@ namespace ION.IOS.Connections {
 
       centralManager.ConnectPeripheral(__nativeDevice, options);
 
-      Log.D(this, "Awaiting physical connection....");
       while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
         if (DateTime.Now - start > TimeSpan.FromSeconds(5)/*connectionTimeout*/) {
-          Log.D(this, "timeout: failed to connect");
           Disconnect();
           return false;
         } else {
@@ -242,10 +234,8 @@ namespace ION.IOS.Connections {
 
       __nativeDevice.DiscoverServices((CBUUID[])null/*DESIRED_SERVICES*/);
 
-      Log.D(this, "Awaiting service discovery");
       while (EConnectionState.Connected != connectionState && EConnectionState.Disconnected != connectionState) {
         if (DateTime.Now - start > connectionTimeout) {
-          Log.D(this, "timeout: failed to validate services");
           Disconnect();
           return false;
         } else {
@@ -278,7 +268,6 @@ namespace ION.IOS.Connections {
 
     // Overridden from IConnection
     public void Disconnect() {
-      Log.D(this, name + " disconnected");
       centralManager.CancelPeripheralConnection(__nativeDevice);
       connectionState = EConnectionState.Disconnected;
     }
@@ -297,7 +286,6 @@ namespace ION.IOS.Connections {
 
 
     public async Task<string> PullDeviceName() {
-      Log.D(this, "Pulling device name for " + __nativeDevice.Name);
       bool needsDisconnect = false;
       if (EConnectionState.Connected != connectionState) {
         needsDisconnect = true;
@@ -315,11 +303,8 @@ namespace ION.IOS.Connections {
           await Task.Delay(10);
         }
 
-        Log.D(this, "Name is: " + name);
-
         return name;
       } catch (Exception e) {
-        Log.E(this, "wtf?", e);
         return null;
       } finally {
         if (needsDisconnect) {

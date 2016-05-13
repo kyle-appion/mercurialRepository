@@ -106,6 +106,7 @@
         native.DesiredAccuracy = 100;// Desired accuracy in meters.
       }
 
+      lastKnownLocation = new IosLocation(native.Location);
       native.LocationsUpdated += ResolveLocationChange;
       native.StartMonitoringSignificantLocationChanges();
       isPolling = true;
@@ -116,6 +117,7 @@
     public void StopAutomaticLocationPolling() {
       native.LocationsUpdated -= ResolveLocationChange;
       isPolling = false;
+      lastKnownLocation = new SimpleLocation(false, 0, 0, 0);
     }
 
     /// <summary>

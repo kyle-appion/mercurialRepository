@@ -51,7 +51,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         __displayFilter = value;
 
         if (deviceSource != null) {
-          deviceSource.SetSensorFilter(__displayFilter);
+          deviceSource.sensorFilter = __displayFilter;
         }
       }
     } IFilter<Sensor> __displayFilter = new YesFilter<Sensor>();
@@ -65,7 +65,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The device source for our device table.
     /// </summary>
     /// <value>The device source.</value>
-    private DeviceTableSource deviceSource { get; set; }
+    private DeviceManagerTableSource deviceSource { get; set; }
     /// <summary>
     /// Whether or not the view controller is allowing a refresh to be preformed.
     /// </summary>
@@ -87,7 +87,6 @@ namespace ION.IOS.ViewController.DeviceManager {
         if (ion.deviceManager.connectionHelper.isScanning) {
           ion.deviceManager.connectionHelper.Stop();
         } else {
-//          var opts = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(5000));
           if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
             Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
           }
@@ -98,8 +97,8 @@ namespace ION.IOS.ViewController.DeviceManager {
 
       UpdateScanState();
 
-      tableContent.Source = deviceSource = new DeviceTableSource(ion, this, tableContent);
-      deviceSource.SetSensorFilter(displayFilter);
+      tableContent.Source = deviceSource = new DeviceManagerTableSource(ion, this, tableContent);
+      deviceSource.sensorFilter = displayFilter;
       deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
         if (onSensorReturnDelegate != null) {
           onSensorReturnDelegate(sensor);
@@ -108,19 +107,13 @@ namespace ION.IOS.ViewController.DeviceManager {
         }
         return false;
       };
-
-//      deviceSource.onDeleteDevice = (IDevice device) => {
-//        ion.deviceManager.DeleteDevice(device.serialNumber);
-//        return true;
-//      };
-//      this.PostUpdate();
     }
 
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
       allowRefresh = true;
       ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-//      PostUpdate();
+      deviceSource.Reload();
     }
 
     public override void ViewWillDisappear(bool animated) {
@@ -146,7 +139,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     private void PostUpdate() {
       if (IsViewLoaded) {
-        deviceSource.RefreshContent();
+        deviceSource.Reload();
         ion.PostToMainDelayed(PostUpdate, TimeSpan.FromMilliseconds(5000));
       }
     }
