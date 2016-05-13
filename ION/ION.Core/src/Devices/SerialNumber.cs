@@ -39,6 +39,7 @@
         case EDeviceModel.AV760: return "V7";
         case EDeviceModel._3XTM: return "T3";
         case EDeviceModel.HT: return "HT";
+        case EDeviceModel.InternalBluefruit: return "Bf";
       default: {
           throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
         }

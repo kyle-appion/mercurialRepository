@@ -76,7 +76,7 @@ namespace ION.Core.Devices {
   /// <summary>
   /// The contract for an ION device.
   /// </summary>
-  public interface IDevice : IDisposable {
+  public interface IDevice : IDisposable, IComparable<IDevice> {
     /// <summary>
     /// The event registery that will be notified when the device's
     /// connection state changes

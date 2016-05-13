@@ -36,25 +36,9 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <param name="deviceGroup">Device group.</param>
     public void UpdateTo(Section section, Action optionsClicked = null) {
       viewBackground.BackgroundColor = new UIColor(section.color);
-      labelCounter.Text = CountDeviceRecord(section) + "";
+      labelCounter.Text = "" + section.devices.Count;
       labelTitle.Text = section.name;
       this.optionsClicked = optionsClicked;
-    }
-
-    /// <summary>
-    /// Counts the number of devices in the section.
-    /// </summary>
-    /// <returns>The device record.</returns>
-    private int CountDeviceRecord(Section section) {
-      int ret = 0;
-
-      foreach (var r in section.records) {
-        if (r is DeviceRecord) {
-          ret++;
-        }
-      }
-
-      return ret;
     }
 	}
 }

@@ -541,6 +541,7 @@
     <Compile Include="src\ViewController\GaugeTesting\TableDataSet.cs" />
     <Compile Include="src\Connections\BluefruitLeConnection.cs" />
     <Compile Include="src\Connections\BaseIOSConnection.cs" />
+    <Compile Include="src\ViewController\DeviceManager\DeviceManagerTableSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

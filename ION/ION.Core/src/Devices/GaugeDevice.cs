@@ -107,6 +107,17 @@
       connection.Disconnect();
     }
 
+    /// <Docs>To be added.</Docs>
+    /// <para>Returns the sort order of the current instance compared to the specified object.</para>
+    /// <summary>
+    /// Compares to.
+    /// </summary>
+    /// <returns>The to.</returns>
+    /// <param name="other">Other.</param>
+    public int CompareTo(IDevice other) {
+      return serialNumber.CompareTo(other.serialNumber);
+    }
+
     // Overridden from IDevice
     public void HandlePacket(byte[] packet) {
       HandlePacketInternal(packet);

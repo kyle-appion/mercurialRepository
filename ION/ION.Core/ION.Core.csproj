@@ -168,7 +168,8 @@
     <Compile Include="src\Internal\BluefruitDevice.cs" />
     <Compile Include="src\Internal\BluefruitProtocol.cs" />
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
-    <Compile Include="src\Devices\Sorters\ModelTypeSerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

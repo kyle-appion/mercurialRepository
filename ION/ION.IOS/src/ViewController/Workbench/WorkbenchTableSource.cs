@@ -81,10 +81,9 @@
           expanded = true,
         });
 
-/*
         foreach (var sp in manifold.sensorProperties) {
+          records.Add(CreateRecordForSensorProperty(manifold, sp));
         }
-*/
 
         records.Add(new SpaceRecord());
       }
