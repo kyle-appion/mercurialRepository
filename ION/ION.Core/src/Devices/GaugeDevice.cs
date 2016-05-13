@@ -128,9 +128,10 @@
         GaugePacket gp = __protocol.ParsePacket(packet);
 
         if (sensorCount == gp.gaugeReadings.Length) {
+          int oldBattery;
           battery = gp.battery;
 
-          var changed = false;
+          var changed = oldBattery != battery;
 
           for (int i = 0; i < sensorCount; i++) {
             var reading = gp.gaugeReadings[i];
