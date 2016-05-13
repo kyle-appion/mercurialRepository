@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using System.Linq;
 
 using ION.Core.IO;
 
@@ -18,7 +19,7 @@ namespace ION.IOS.ViewController.Logging {
     UIViewController LoggingViewController;
 
     public SpreadsheetTableSource(List<string> fileNames, string reportType, UIViewController viewController) {
-      fileList = fileNames;
+      fileList = fileNames.OrderByDescending(x => x).ToList();
       imageName = reportType;
       LoggingViewController = viewController;
     }
