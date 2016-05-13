@@ -97,9 +97,12 @@ namespace ION.IOS.Util {
       public static readonly string
       AVAILABLE = "device_available".FromResources(),
       CONNECTED = "device_connected".FromResources(),
+      CONNECT_ALL = "device_connect_all".FromResources(),
       DISCONNECT = "device_disconnect".FromResources(),
+      DISCONNECT_ALL = "device_disconnect_all".FromResources(),
       DISCONNECTED = "device_disconnected".FromResources(),
       FORGET = "device_forget".FromResources(),
+      FORGET_ALL = "device_forget_all".FromResources(),
       FORGET_DESC = "device_forget_desc".FromResources(),
       FORGET_NAME = "device_forget_name".FromResources(),
       FORGET_NAME_WHERE = "device_forget_name_where".FromResources(),
@@ -117,6 +120,11 @@ namespace ION.IOS.Util {
       public static class Manager {
         public static readonly string
         SELF = "device_manager".FromResources(),
+        AVAILABLE_ACTIONS = "device_manager_available_actions".FromResources(),
+        BROADCASTING_ACTIONS = "device_manager_broadcasting_actions".FromResources(),
+        CONNECTED_ACTIONS = "device_manager_connected_actions".FromResources(),
+        DISCONNECTED_ACTIONS = "device_manager_disconnected_actions".FromResources(),
+        NEW_ACTIONS = "device_manager_new_actions".FromResources(),
         SCAN = "device_manager_scan".FromResources(),
         SCANNING = "device_manager_scanning".FromResources()
         ;
@@ -237,6 +245,7 @@ namespace ION.IOS.Util {
     public static class Workbench {
       public static readonly string
       SELF = "workbench".FromResources(),
+      ADD_ALL_TO_WORKBENCH = "workbench_add_all_to_workbench".FromResources(),
       REMOVE = "workbench_remove".FromResources(),
       SELECT_VIEWER_ACTION = "workbench_select_viewer_action".FromResources()
       ;

@@ -35,10 +35,13 @@ file.
 
 /* DEVICE */
 "device_available" = "Available";
+"device_connect_all" = "Connect All";
 "device_connected" = "Connected";
 "device_disconnect" = "Disconnect";
+"device_disconnect_all" = "Disconnect All";
 "device_disconnected" = "Disconnected";
 "device_forget" = "Forget";
+"device_forget_all" = "Forget All";
 "device_forget_desc" = "Forgetting a device will remove it from the application database. All data based on this device will also be deleted. This operation is irreversible (although you can reconnect the device at a later time). Are you sure you wish to continue?";
 "device_forget_name" = "Forget {0}";
 "device_forget_name_where" = "Forget {0}\n({1})";
@@ -54,6 +57,11 @@ file.
 
 /* DEVICE MANAGER */
 "device_manager" = "Device Manager";
+"device_manager_available_actions" = "Available Device Actions";
+"device_manager_broadcasting_actions" = "Broadcasting Device Actions";
+"device_manager_connected_actions" = "Connected Device Actions";
+"device_manager_disconnected_actions" = "DisconnectedDevice Actions";
+"device_manager_new_actions" = "New Device Actions";
 "device_manager_scan" = "Scan";
 "device_manager_scanning" = "Scanning";
 
@@ -143,6 +151,7 @@ file.
 
 /* WORKBENCH */
 "workbench" = "Workbench";
+"workbench_add_all" = "Add all to Workbench";
 "workbench_remove" = "Remove From Workbench";
 "workbench_select_viewer_action" = "Select a viewer action";
 
