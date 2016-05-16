@@ -44,6 +44,23 @@ namespace ION.Core.Devices.Protocols {
 
       return null;
     }
+
+    public static IGaugeProtocol FindProtocolFromVersion(int version) {
+      switch (version) {
+        case -1: 
+          return FindProtocolFromVersion(EProtocolVersion.TestBenchInternal);
+        case 0: 
+          return FindProtocolFromVersion(EProtocolVersion.Classic);
+        case 1: 
+          return FindProtocolFromVersion(EProtocolVersion.V1);
+        case 2: 
+          return FindProtocolFromVersion(EProtocolVersion.V2);
+        case 3: 
+          return FindProtocolFromVersion(EProtocolVersion.V3);
+        default:
+          return null;
+      }
+    }
   }
 
   public interface IProtocol {
