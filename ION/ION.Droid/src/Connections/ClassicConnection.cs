@@ -54,6 +54,16 @@
       }
     } EConnectionState __connectionState;
     /// <summary>
+    /// Queries whether or not the connection is connected.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool isConnected {
+      get {
+        return EConnectionState.Connected == connectionState;
+      }
+    }
+    /// <summary>
     /// Queries the name of the connection. For almost every device, this will be the
     /// device's serial number.
     /// </summary>
