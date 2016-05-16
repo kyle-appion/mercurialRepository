@@ -84,7 +84,7 @@ namespace ION.IOS.ViewController.Logging
 
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].name);
+      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].serialNumber);
 
 //			var cell = (graphCell)tableView.CellAt (indexPath);
 //			Console.WriteLine ("Plotview bounds " + cell.plotView.Bounds);

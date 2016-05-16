@@ -1,5 +1,6 @@
 ﻿using System;
 
+using ION.Core.Location;
 using ION.Core.Measure;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
@@ -43,11 +44,18 @@ namespace ION.Core.Content.Properties {
     public AbstractManifoldSensorProperty(Manifold manifold) {
       this.manifold = manifold;
       manifold.onManifoldChanged += OnManifoldChanged;
+      App.AppState.context.locationManager.onLocationChanged += OnLocationChanged;
     }
 
     // Overridden from ISensorProperty
     public virtual void Dispose() {
       manifold.onManifoldChanged -= OnManifoldChanged;
+
+      App.AppState.context.locationManager.onLocationChanged -= OnLocationChanged;
+    }
+
+    private void OnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation){
+      NotifyChanged();
     }
 
     // Overridden from ISensorProperty

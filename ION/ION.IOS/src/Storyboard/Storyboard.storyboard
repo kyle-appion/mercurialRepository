@@ -1848,7 +1848,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KyA-Gr-3uw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1798" y="3034.9999999999995"/>
+            <point key="canvasLocation" x="2407" y="3052"/>
+        </scene>
+        <!--Job Edit View Controller-->
+        <scene sceneID="TfW-bc-VUx">
+            <objects>
+                <viewController storyboardIdentifier="viewControllerEditJob" id="CqR-Ki-5UV" customClass="JobEditViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Tcb-eO-ueJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="P77-mm-1g5"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Prb-Tf-FUi">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ter-Zw-5jz" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3041" y="3052"/>
         </scene>
         <!--viewControllerFileBrowser-->
         <scene sceneID="rSr-Ue-pPj">
@@ -2134,7 +2152,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f3s-lo-cqU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2408" y="3034.9999999999995"/>
+            <point key="canvasLocation" x="1798" y="3052"/>
         </scene>
         <!--viewControllerSuperheatSubcool-->
         <scene sceneID="Xuw-JB-I4e">

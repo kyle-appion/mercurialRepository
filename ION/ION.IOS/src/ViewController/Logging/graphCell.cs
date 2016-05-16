@@ -32,6 +32,7 @@ namespace ION.IOS.ViewController.Logging
     public void setupGraph(deviceReadings startData, List<deviceReadings> totalData, double cellWidth, double cellHeight, double trackerHeight, UIView parentView, UITableView tableView)
 		{
       cellData = startData;
+      var combineName = cellData.serialNumber + "/" + cellData.type;
       allData = totalData;
 			graphTable = tableView;
       this.BackgroundColor = UIColor.Clear;
@@ -41,13 +42,11 @@ namespace ION.IOS.ViewController.Logging
 				Model = CreatePlotModel(trackerHeight, parentView),
         BackgroundColor = UIColor.Clear,
 			};
-      //plotView.Layer.BorderWidth = 1f;
 
 			deviceName = new UILabel (new CGRect (0,.92 * cellHeight,.3 * cellWidth,.25 * cellHeight));
-			deviceName.Text = cellData.name;
+      deviceName.Text = cellData.serialNumber;
 			deviceName.AdjustsFontSizeToFitWidth = true;
 			deviceName.TextAlignment = UITextAlignment.Center;
-      //deviceName.Layer.BorderWidth = 1f;
 
 			includeButton = new UIButton (new CGRect (.799 * cellWidth,0,.2 * cellWidth, 1.17 * cellHeight));
 			includeButton.SetTitleColor (UIColor.White, UIControlState.Normal);
@@ -67,22 +66,21 @@ namespace ION.IOS.ViewController.Logging
       var image = new UIImageView(new CGRect(.25 * buttonImage.Bounds.Width, .25 * buttonImage.Bounds.Height,.5 * buttonImage.Bounds.Width, .5 * buttonImage.Bounds.Width));
       image.Layer.CornerRadius = 12;
       image.BackgroundColor = UIColor.White;
-      if (ChosenDates.includeList.Contains(cellData.name)) {
+      if (ChosenDates.includeList.Contains(combineName)) {
         image.Image = UIImage.FromBundle("ic_checkbox");
       } else {
         image.Image = UIImage.FromBundle("ic_unchecked");
       }
       buttonImage.AddSubview(image);
 
-			includeButton.TouchUpInside += (sender, e) => {
-				if (ChosenDates.includeList.Contains (cellData.name)) {
-					ChosenDates.includeList.Remove (cellData.name);
+			includeButton.TouchUpInside += (sender, e) => {        
+        if (ChosenDates.includeList.Contains (combineName)) {
+          ChosenDates.includeList.Remove (combineName);
           image.Image = UIImage.FromBundle ("ic_unchecked");
 				} else {
-					ChosenDates.includeList.Add (cellData.name);
+          ChosenDates.includeList.Add (combineName);
           image.Image = UIImage.FromBundle ("ic_checkbox");
 				}
-				Console.WriteLine("Clicked " + cellData.name);
 			};
 
 			this.AddSubview (plotView);
@@ -112,12 +110,8 @@ namespace ION.IOS.ViewController.Logging
       }
 
       foreach (var device in allData) {
-        if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
-//          var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
-//          var standardUnit = lookup.standardUnit;
+        if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
           foreach (var reading in device.readings) {
-//            var workingValue = standardUnit.OfScalar(reading);
-//            var finalValue = workingValue.ConvertTo(lookup);
             if (reading < lowValue) {
               lowValue = reading;
             }
@@ -151,7 +145,7 @@ namespace ION.IOS.ViewController.Logging
         Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
         AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
         Minimum = 0,
-        AbsoluteMinimum = 0,
+        AbsoluteMinimum = -1,
         IntervalLength = 1,
         IsAxisVisible = false,
         IsZoomEnabled = false,
@@ -181,7 +175,7 @@ namespace ION.IOS.ViewController.Logging
 			plotModel.Axes.Add (LAX);
 
       foreach(var device in allData){
-        if (device.name.Equals(cellData.name) && device.type.Equals(cellData.type)) {
+        if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
           var series = new LineSeries {
             MarkerType = MarkerType.Circle,
             MarkerSize = 1,
@@ -191,18 +185,9 @@ namespace ION.IOS.ViewController.Logging
             Color = color,
           };
 
-
           for(int i = 0; i < device.times.Count; i++) {
-//            var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
-//            var standardUnit = lookup.standardUnit;
-//            var workingValue = standardUnit.OfScalar(device.readings[i]);
-//            Console.WriteLine("Standard measurement: " + workingValue.amount);
-//            var finalValue = workingValue.ConvertTo(lookup);
-//            Console.WriteLine("Final measurement: " + finalValue.amount);
-
             var index = ChosenDates.allTimes[device.times[i].ToString()];
             var measurement = device.readings[i];
-            //series.Points.Add(new DataPoint(index,finalValue.amount));
             series.Points.Add(new DataPoint(index,measurement));
           }
           plotModel.Series.Add (series);

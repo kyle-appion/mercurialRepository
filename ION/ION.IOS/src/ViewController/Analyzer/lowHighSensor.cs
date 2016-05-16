@@ -4,15 +4,18 @@ using System.Threading.Tasks;
 using Foundation;
 using UIKit;
 using CoreGraphics;
+
 using ION.Core.App;
 using ION.Core.Measure;
 using ION.Core.Content;
+using ION.Core.Connections;
 using ION.Core.Devices;
+using ION.Core.Fluids;
+using ION.Core.Location;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
-using ION.Core.Connections;
+
 using ION.IOS.Util;
-using ION.Core.Fluids;
 using ION.IOS.ViewController.FluidManager;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.PressureTemperatureChart;
@@ -21,19 +24,109 @@ namespace ION.IOS.ViewController.Analyzer
 {
 	public class lowHighSensor
 	{
+    public IION ion { get; set; }
+    public nfloat cellHeight;
+    public UILabel maxReading;
+    public double max;
+    public string maxType;
+    public UILabel minReading;
+    public double min;
+    public string minType;
+    public string manualGType;
+    public UILabel holdReading;
+    public double holdValue;
+    public string holdType; 
+    public UILabel shReading;
+    public UILabel shFluidType;
+    public UILabel shFluidState;
+    public UIButton changeFluid;
+    public UILabel ptReading;
+    public UILabel ptFluidState;
+    public double ptAmount = 0;
+    public UILabel ptFluidType;
+    public UIButton changePTFluid;
+    public UILabel altReading;
+    public Unit altUnit;
+    public UILabel rocReading;
+    public UIImageView rocImage;
+    public UILabel secondaryReading;
+    public UIView snapArea;
+    public UIView subviewDivider;
+    public UIView headingDivider;
+    public UIView connectionColor;
+    public UITapGestureRecognizer shortPress;
+    public CGRect areaRect;
+    public UILabel LabelTop;
+    public UILabel LabelMiddle;
+    public UILabel LabelBottom;
+    public UILabel LabelSubview;
+    public UIButton subviewHide;
+    public UITableView subviewTable;
+    public UIImageView Connection;
+    public UIImageView DeviceImage;
+    public UIButton conDisButton;
+    private AnalyzerViewController __analyzerviewcontroller;
+    public Unit tUnit;
+    public Unit pUnit;
+    public sensor attachedSensor;
+    public UIActivityIndicatorView activityConnectStatus;
+    public List<string> tableSubviews = new List<string>();
+    public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
+    public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
+    public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
+    public List<string> availableSubviews = new List<string> {
+      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Linked Sensor (Linked)"
+    };
+    private bool isUpdating { get; set; }
+    public bool isManual;
+    public bool isLinked;
+    private RateOfChangeSensorProperty roc;
+    public AlternateUnitSensorProperty alt;
+
+    public GaugeDeviceSensor currentSensor{
+
+      get { return __currentSensor;}
+      set { if (__currentSensor != null) {
+          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
+        }
+        __currentSensor = value;
+        if (__currentSensor != null) {
+          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
+        }
+      }
+    } GaugeDeviceSensor __currentSensor;
+
+    public ManualSensor manualSensor{
+      get { return __manualSensor; }
+      set {
+        __manualSensor = value;  
+      }
+    } ManualSensor __manualSensor;
+
+    public Manifold manifold{
+
+      get { return __manifold;}
+      set { if (__manifold != null) {
+          __manifold.onManifoldEvent -= manifoldUpdating;
+        }
+        __manifold = value;
+        if (__manifold != null) {
+          __manifold.onManifoldEvent += manifoldUpdating;
+        }
+      }
+    } Manifold __manifold;
+
 		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController)
 		{
-      //new CGRect(9, 325, 149,115)
 			snapArea = new UIView (areaRect);
       cellHeight = .521f * snapArea.Bounds.Height;
-      //Low: new CGRect(9,438,149,122)
-      //High: new CGRect(165,438,149,122)y
       subviewTable = new UITableView (tblRect);
-      //new CGRect(0,0,128,25), new CGRect(0,25,149,40), new CGRect(0,65,149,25),new CGRect(0,92,150,25)
+      subviewTable.Bounces = false;
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
       LabelMiddle = new UILabel (new CGRect(.2 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
-      LabelSubview = new UILabel (new CGRect(-1, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
+      LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
+      LabelSubview.ClipsToBounds = true;
       subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .213 * snapArea.Bounds.Width, .204 * areaRect.Height));
       subviewDivider = new UIView(new CGRect(0,.8 * areaRect.Height,areaRect.Width,2));
       headingDivider = new UIView(new CGRect(.033 * areaRect.Width,.234 * areaRect.Height,.932 * areaRect.Width,1));
@@ -49,7 +142,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(maximumTableCell),"Maximum");
       subviewTable.RegisterClassForCellReuse(typeof(minimumTableCell),"Minimum");
       subviewTable.RegisterClassForCellReuse(typeof(holdTableCell), "Hold");
-      subviewTable.RegisterClassForCellReuse(typeof(altTableCell), "Alternate");
+      subviewTable.RegisterClassForCellReuse(typeof(altTableCell), "Alternate"); 
       subviewTable.RegisterClassForCellReuse(typeof(RoCTableCell), "Rate");
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");
@@ -125,100 +218,8 @@ namespace ION.IOS.ViewController.Analyzer
 
       changeFluid.TouchUpInside += openSHSC;
       changePTFluid.TouchUpInside += openPTC;
+      ion.locationManager.onLocationChanged += OnLocationChanged;
 		}
-
-    public IION ion { get; set; }
-    public nfloat cellHeight;
-    public UILabel maxReading;
-    public double max;
-    public string maxType;
-    public UILabel minReading;
-    public double min;
-    public string minType;
-    public string manualGType;
-    public UILabel holdReading;
-    public double holdValue;
-    public string holdType; 
-    public UILabel shReading;
-    public UILabel shFluidType;
-    public UILabel shFluidState;
-    public UIButton changeFluid;
-    public UILabel ptReading;
-    public UILabel ptFluidState;
-    public double ptAmount = 0;
-    public UILabel ptFluidType;
-    public UIButton changePTFluid;
-    public UILabel altReading;
-    public Unit altUnit;
-    public UILabel rocReading;
-    public UIImageView rocImage;
-    public UILabel secondaryReading;
-		public UIView snapArea;
-    public UIView subviewDivider;
-    public UIView headingDivider;
-    public UIView connectionColor;
-		public UITapGestureRecognizer shortPress;
-		public CGRect areaRect;
-		public UILabel LabelTop;
-		public UILabel LabelMiddle;
-		public UILabel LabelBottom;
-		public UILabel LabelSubview;
-    public UIButton subviewHide;
-		public UITableView subviewTable;
-    public UIImageView Connection;
-    public UIImageView DeviceImage;
-    public UIButton conDisButton;
-    private AnalyzerViewController __analyzerviewcontroller;
-    public Unit tUnit;
-    public Unit pUnit;
-    public sensor attachedSensor;
-    public UIActivityIndicatorView activityConnectStatus;
-		public List<string> tableSubviews = new List<string>();
-    public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
-    public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
-    public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
-    public List<string> availableSubviews = new List<string> {
-      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Linked Sensor (Linked)"
-    };
-    private bool isUpdating { get; set; }
-    public bool isManual;
-    public bool isLinked;
-    private RateOfChangeSensorProperty roc;
-    public AlternateUnitSensorProperty alt;
-
-    public GaugeDeviceSensor currentSensor{
-
-      get { return __currentSensor;}
-      set { if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
-        }
-        __currentSensor = value;
-        if (__currentSensor != null) {
-          __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-        }
-      }
-    } GaugeDeviceSensor __currentSensor;
-
-    public ManualSensor manualSensor{
-      get { return __manualSensor; }
-      set {
-        __manualSensor = value;  
-      }
-    } ManualSensor __manualSensor;
-
-    public Manifold manifold{
-
-      get { return __manifold;}
-      set { if (__manifold != null) {
-          __manifold.onManifoldEvent -= manifoldUpdating;
-        }
-        __manifold = value;
-        if (__manifold != null) {
-          __manifold.onManifoldEvent += manifoldUpdating;
-        }
-      }
-    } Manifold __manifold;
-
     private async void DoUpdateRocCell() {
 
       var meas = roc.modifiedMeasurement;
@@ -316,6 +317,34 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
       var manifold = Event.manifold;
+
+      updateSHSCCell(manifold);
+
+      updatePTCell(manifold);
+
+      if (currentSensor != null && manifold.secondarySensor != null) {
+        if (currentSensor != manifold.primarySensor) {
+          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+        } else if (currentSensor == manifold.primarySensor) {
+          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = "Not Linked";
+        }
+      } else if (manualSensor != null && manifold.secondarySensor != null) {
+        if(manualSensor.type.Equals(ESensorType.Pressure)){
+          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
+        } else {
+          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
+        }
+      } else {
+        secondaryReading.Text = "Not Linked";      
+      }
+    }
+    /// <summary>
+    /// Updates the calculations and labels for a SH/SC cell
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    public void updateSHSCCell(Manifold manifold){
       if (manifold.secondarySensor != null) {
         isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
@@ -374,7 +403,12 @@ namespace ION.IOS.ViewController.Analyzer
           shFluidState.Text = Util.Strings.Analyzer.SH;
         }  
       }
-
+    }
+    /// <summary>
+    /// Updates the calculations and labels for a pt cell
+    /// </summary>
+    /// <param name="manifold">Manifold.</param>
+    public void updatePTCell(Manifold manifold){
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
@@ -402,45 +436,6 @@ namespace ION.IOS.ViewController.Analyzer
           ptFluidState.Text = "PTDew";
         } 
         ptReading.Text = ptcalc.amount.ToString("N") + " " + ptcalc.unit;
-      }
-
-//      if (currentSensor != null && manifold.secondarySensor != null) {
-//        if (currentSensor != manifold.primarySensor) {
-//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-//        } else if (currentSensor == manifold.primarySensor) {
-//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-//        } else {
-//          secondaryReading.Text = "Not Linked";
-//        }
-//      } else if (manualSensor != null && manifold.secondarySensor != null) {
-//        if (manualSensor != manifold.primarySensor) {
-//          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-//        } 
-//        else if (manualSensor == manifold.primarySensor) {
-//          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-//        } 
-//        else {
-//          secondaryReading.Text = "Not Linked";
-//        }
-//      } else {
-//        secondaryReading.Text = "Not Linked";      
-//      }
-      if (currentSensor != null && manifold.secondarySensor != null) {
-        if (currentSensor != manifold.primarySensor) {
-          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-        } else if (currentSensor == manifold.primarySensor) {
-          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else {
-          secondaryReading.Text = "Not Linked";
-        }
-      } else if (manualSensor != null && manifold.secondarySensor != null) {
-        if(manualSensor.type.Equals(ESensorType.Pressure)){
-          secondaryReading.Text = manifold.secondarySensor.measurement.amount.ToString("N") + " " + manifold.secondarySensor.unit;
-        } else {
-          secondaryReading.Text = manifold.primarySensor.measurement.amount.ToString("N") + " " + manifold.primarySensor.unit;
-        }
-      } else {
-        secondaryReading.Text = "Not Linked";      
       }
     }
     /// <summary>
@@ -481,10 +476,10 @@ namespace ION.IOS.ViewController.Analyzer
     public async void connectionSpinner(int conn){
       activityConnectStatus.StartAnimating();
       if (conn == 1) {
-        Connection.Image = UIImage.FromBundle("");
+        Connection.Image = Connection.Image;
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
-        Connection.Image = UIImage.FromBundle("");
+        Connection.Image = Connection.Image;
        await currentSensor.device.connection.ConnectAsync();
       }
 
@@ -495,6 +490,13 @@ namespace ION.IOS.ViewController.Analyzer
         Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
       } else {
         Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+      }
+    }
+
+    public void OnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation){
+      if(this.__manifold != null){
+        updateSHSCCell(__manifold);
+        updatePTCell(__manifold);
       }
     }
 	}

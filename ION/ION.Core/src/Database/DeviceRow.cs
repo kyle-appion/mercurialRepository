@@ -37,6 +37,7 @@
     /// </summary>
     /// <value>The connection address.</value>
     public string connectionAddress { get; set; }
+
     /// <summary>
     /// Gets or sets the protocol version.
     /// </summary>

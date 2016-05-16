@@ -4,16 +4,11 @@ using UIKit;
 using CoreGraphics;
 using ION.Core.Devices;
 using ION.Core.Sensors;
-using ION.IOS.ViewController.SuperheatSubcool;
-using ION.IOS.ViewController.PressureTemperatureChart;
 
 namespace ION.IOS.ViewController.Analyzer
 {
-	//public delegate void sensorEvent (UILabel topLabel, UILabel middleLabel, UILabel bottomLabel, string identifier);
-	
   public class sensor
 	{
-    //public event sensorEvent sensorChanged;
     public sensor (UIView mainView, AnalyzerViewController ViewController)
 		{
       lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
@@ -25,7 +20,7 @@ namespace ION.IOS.ViewController.Analyzer
     public lowHighSensor lowArea;
     public lowHighSensor highArea;
 
-    public UIImageView addIcon;// = new UIImageView(new CGRect(7,7,50,50));
+    public UIImageView addIcon;
     public UIImageView connectionImage = new UIImageView();
     public UIImageView deviceImage = new UIImageView ();
 

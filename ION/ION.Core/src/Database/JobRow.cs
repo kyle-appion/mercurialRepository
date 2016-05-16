@@ -21,7 +21,21 @@
     /// </summary>
     /// <value>The name of the job.</value>
     public string jobName { get; set; }
-
+    /// <summary>
+    /// Gets or sets the po number.
+    /// </summary>
+    /// <value>The po number.</value>
+    public string poNumber { get; set; }
+    /// <summary>
+    /// Gets or sets the customer number.
+    /// </summary>
+    /// <value>The customer number.</value>
+    public string customerNumber { get; set; }
+    /// <summary>
+    /// Gets or sets the dispatch number.
+    /// </summary>
+    /// <value>The dispatch number.</value>
+    public string dispatchNumber { get; set; }
     /// <summary>
     /// Serves as a hash function for a <see cref="ION.Core.Database.JobRow"/> object.
     /// </summary>

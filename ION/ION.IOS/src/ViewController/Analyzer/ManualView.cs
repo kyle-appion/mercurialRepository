@@ -9,6 +9,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public ManualView(UIView mainView) {
       
       mView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
+      mView.ClipsToBounds = true;
       mcloseButton = new UIButton(new CGRect(0,.753 * mView.Bounds.Height, .503 * mView.Bounds.Width, .246 * mView.Bounds.Height));
       mcloseButton.ReverseTitleShadowWhenHighlighted = true;
       mdoneButton = new UIButton(new CGRect(.5 * mView.Bounds.Width, .753 * mView.Bounds.Height, .5 * mView.Bounds.Width, .246 * mView.Bounds.Height));
@@ -58,6 +59,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mdeviceType.TextAlignment = UITextAlignment.Right;
       mdeviceType.Font = UIFont.FromName("Helvetica-Bold", 20f);
       popupText = new UILabel (new CGRect(0,0,mView.Bounds.Width,.158 * mView.Bounds.Height));
+      popupText.ClipsToBounds = true;
       mbuttonBorder = new UIView (new CGRect(0,.753 * mView.Bounds.Height,mView.Bounds.Width,1));
       mbuttonBorder.BackgroundColor = UIColor.LightGray;
       mbuttonBorder2 = new UIView(new CGRect(.5 * mView.Bounds.Width,.753 * mView.Bounds.Height,1,.246 * mView.Bounds.Height));
