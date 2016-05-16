@@ -106,10 +106,11 @@
         native.DesiredAccuracy = 100;// Desired accuracy in meters.
       }
 
-      lastKnownLocation = new IosLocation(native.Location);
       native.LocationsUpdated += ResolveLocationChange;
       native.StartMonitoringSignificantLocationChanges();
       isPolling = true;
+      lastKnownLocation = new IosLocation(native.Location);
+
       return true;
     }
 

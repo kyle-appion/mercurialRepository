@@ -68,11 +68,10 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <MtouchI18n>
-    </MtouchI18n>
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -192,7 +191,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
@@ -247,7 +245,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_action_edit.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\Contents.json" />
@@ -271,6 +268,29 @@
     <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\ic_excel.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_edit.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\edit-11-32.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\view-details-32.png" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\ic_plus.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\ic_graph_menu.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\ic_more_info.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\ic_job_settings.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\ic_nav_certificate.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\ic_notes.png" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -278,6 +298,8 @@
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\IONNavigationCell.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
+    <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
+    <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -291,7 +313,6 @@
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
-    <Compile Include="src\App\AppDelegate.cs" />
     <Compile Include="src\UI\Toast.cs" />
     <Compile Include="src\Connections\IosLeConnection.cs" />
     <Compile Include="src\Util\NSExtensions.cs" />
@@ -463,7 +484,6 @@
     <Compile Include="src\ViewController\Analyzer\LowHighArea.cs" />
     <Compile Include="src\ViewController\Analyzer\lowHighSensor.cs" />
     <Compile Include="src\ViewController\Analyzer\manualEntry.cs" />
-    <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\Analyzer\sensorGroup.cs" />
     <Compile Include="src\ViewController\Analyzer\ManualView.cs" />
     <Compile Include="src\ViewController\Analyzer\ActionView.cs" />
@@ -516,8 +536,6 @@
     <Compile Include="src\ViewController\Logging\legendSource.cs" />
     <Compile Include="src\ViewController\Logging\LegendView.cs" />
     <Compile Include="src\ViewController\Logging\CustomPickerModel.cs" />
-    <Compile Include="src\ViewController\Logging\xmlReport.cs" />
-    <Compile Include="src\ViewController\JobManager\CreateJobView.cs" />
     <Compile Include="src\Storyboard\JobManagerViewController.cs" />
     <Compile Include="src\Storyboard\JobManagerViewController.designer.cs">
       <DependentUpon>JobManagerViewController.cs</DependentUpon>
@@ -542,6 +560,25 @@
     <Compile Include="src\Connections\BluefruitLeConnection.cs" />
     <Compile Include="src\Connections\BaseIOSConnection.cs" />
     <Compile Include="src\ViewController\DeviceManager\DeviceManagerTableSource.cs" />
+    <Compile Include="src\ViewController\Logging\SpreadsheetTableSource.cs" />
+    <Compile Include="src\ViewController\Logging\SpreadsheetCell.cs" />
+    <Compile Include="src\ViewController\JobManager\ManageJobView.cs" />
+    <Compile Include="src\ViewController\JobManager\CreatedJobSource.cs" />
+    <Compile Include="src\ViewController\JobManager\CreatedJobCell.cs" />
+    <Compile Include="src\ViewController\JobManager\JobEditViewController.cs" />
+    <Compile Include="src\ViewController\JobManager\JobEditViewController.designer.cs">
+      <DependentUpon>JobEditViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\JobManager\EditJobView.cs" />
+    <Compile Include="src\ViewController\JobManager\JobSessionView.cs" />
+    <Compile Include="src\ViewController\JobManager\FloatLabeledTextField.cs" />
+    <Compile Include="src\ViewController\JobManager\AssociatedSessionSource.cs" />
+    <Compile Include="src\ViewController\JobManager\AssociatedSessionCell.cs" />
+    <Compile Include="src\ViewController\JobManager\AvailableSessionCell.cs" />
+    <Compile Include="src\ViewController\JobManager\AvailableSessionSource.cs" />
+    <Compile Include="src\ViewController\Analyzer\sensor.cs" />
+    <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
+    <Compile Include="src\App\AppDelegate.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

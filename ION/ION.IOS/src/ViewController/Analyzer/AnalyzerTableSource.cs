@@ -51,9 +51,8 @@ namespace ION.IOS.ViewController.Analyzer
         case UITableViewCellEditingStyle.Delete:
           // remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
-          Console.WriteLine("There are " + tableItems.Count.ToString() + " subviews left");
-          if (tableItems.Count.Equals(0)) {
-            Console.WriteLine("All done with subviews");
+
+          if (tableItems.Count.Equals(0)) {           
             tableSensors.subviewHide.SetImage(null, UIControlState.Normal);
           }
           // delete the row from the table
@@ -137,10 +136,39 @@ namespace ION.IOS.ViewController.Analyzer
 			
 		}
 
+    public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
+      Console.WriteLine("Can move the row");
+      return true;
+    }
+
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
+      Console.WriteLine("Moving the row");
+      var item = tableItems[sourceIndexPath.Row];
+      var deleteAt = sourceIndexPath.Row;
+      var insertAt = destinationIndexPath.Row;
+
+      // are we inserting 
+      if (destinationIndexPath.Row < sourceIndexPath.Row) {
+        // add one to where we delete, because we're increasing the index by inserting
+        deleteAt += 1;
+      } else {
+        // add one to where we insert, because we haven't deleted the original yet
+        insertAt += 1;
+      }
+      tableItems.Insert (insertAt, item);
+      tableItems.RemoveAt (deleteAt);
+
+      tableView.SetEditing(false, true);
+    }
+
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
 			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row]);
 		}
+
+//    public override UITableViewCellEditingStyle EditingStyleForRow(UITableView tableView, NSIndexPath indexPath) {
+//      return UITableViewCellEditingStyle.Delete;
+//    }
 
 	}
 }

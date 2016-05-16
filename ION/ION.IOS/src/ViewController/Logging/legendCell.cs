@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Logging
 			header.TextColor = UIColor.White;
 			header.TextAlignment = UITextAlignment.Center;
 			header.AdjustsFontSizeToFitWidth = true;
-      header.Text = deviceData.name;
+      header.Text = deviceData.serialNumber;
 
 			information = new UILabel (new CGRect (0,.055 * parentView.Bounds.Height,.98 * parentView.Bounds.Width,.111 * parentView.Bounds.Height));
 			information.Layer.BorderWidth = 1f;
@@ -35,17 +35,23 @@ namespace ION.IOS.ViewController.Logging
 
       var totalMeasurements = 0;
       double totalValue = 0;
-      Console.WriteLine("Measurement set is of type: " + deviceData.type);
-      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
 
+      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
+ 
       if (deviceData.type.Equals("Temperature")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+        Console.WriteLine("Changed to temperature default unit: " + defaultUnit);
+        if (defaultUnit == null) {
+          defaultUnit = "18";
+          NSUserDefaults.StandardUserDefaults.SetInt(18, "settings_units_default_temperature");
+        }
       } else if (deviceData.type.Equals("Vacuum")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
+        Console.WriteLine("Changed to vacuum default unit: " + defaultUnit);
       }
 
       foreach (var device in allData) {        
-        if (device.name.Equals(deviceData.name) && device.type.Equals(deviceData.type)) {
+        if (device.serialNumber.Equals(deviceData.serialNumber) && device.type.Equals(deviceData.type)) {
           foreach (var reading in device.readings) {
             if (reading < lowestMeasurement) {
               lowestMeasurement = reading;

@@ -68,11 +68,9 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
-#if DEBUG
-//          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_nav_workbench")),
-//          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_nav_workbench")),
-#endif
-          new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_download")),
+          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+          new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
 #if DEBUG
@@ -198,6 +196,7 @@ namespace ION.IOS.ViewController {
 
           try {
             GaugeDeviceCertificatePdfExporter.Export(ion, result.certificate, stream);
+            ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ?",result.certificate.lastTestCalibrationDate);
           } catch (Exception e) {
             Log.E(this, "Failed to export certificate.", e);
             file.Delete();
@@ -248,10 +247,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-#if DEBUG
-//        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
-//        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
-#endif
+        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
+        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation

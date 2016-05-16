@@ -1,7 +1,7 @@
 namespace ION.IOS.ViewController.FileManager {
   
   using System;
-
+  using CoreGraphics;
   using Foundation;
   using UIKit;
 

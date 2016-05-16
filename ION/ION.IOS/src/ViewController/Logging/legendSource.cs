@@ -74,7 +74,7 @@ namespace ION.IOS.ViewController.Logging
 
 		public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
 		{
-			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].name);
+			Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].serialNumber);
 		}
 	}
 }

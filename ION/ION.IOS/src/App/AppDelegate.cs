@@ -34,6 +34,8 @@
     /// <value>The ion.</value>
     public IosION ion { get; private set; }
 
+    public bool intervalWarning = false;
+
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // Initialize the application state.
       // Set Navigation Bar preferences
@@ -67,7 +69,14 @@
       }
       if (ion.settings.location.useGeoLocation) {
         ion.locationManager.StartAutomaticLocationPolling();
+      } else {
+        ion.locationManager.StopAutomaticLocationPolling();
       }
+
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
+        NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
+      }
+
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -91,6 +100,14 @@
       // Use this method to release shared resources, save user data, invalidate timers and store the application state.
       // If your application supports background exection this method is called instead of WillTerminate when the user quits.
       UIApplication.SharedApplication.IdleTimerDisabled = false;
+
+      ion.locationManager.StopAutomaticLocationPolling();
+
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+        intervalWarning = false;
+      } else {
+        intervalWarning = true;
+      }
     }
 
     public override void WillEnterForeground(UIApplication application) {
@@ -101,11 +118,26 @@
       ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
       ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound_");
 
+      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
+        if (intervalWarning == true) {
+          UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"Close","Return to Settings");
+          loggingWarning.Clicked += (sender, e) => {
+            if(e.ButtonIndex.Equals(1)){
+              Console.WriteLine("Return to settings");
+              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+            }
+          };
+          loggingWarning.Show();
+        } 
+      } 
+
       if (ion.settings.screen.leaveOn) {
         UIApplication.SharedApplication.IdleTimerDisabled = true;
       }
       if (ion.settings.location.useGeoLocation) {
         ion.locationManager.StartAutomaticLocationPolling();
+      }else {
+        ion.locationManager.StopAutomaticLocationPolling();
       }
     }
 
@@ -116,6 +148,10 @@
 
     public override void WillTerminate(UIApplication application) {
       try {
+        if(ion.dataLogManager.isRecording){
+          var done = ion.dataLogManager.StopRecording().Result;
+        }
+        ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {
         Log.E(this, "Failed to terminate ion instance", e);

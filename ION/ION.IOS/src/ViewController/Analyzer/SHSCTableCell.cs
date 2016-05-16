@@ -21,14 +21,14 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      
+      if (lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+        lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
+      }
+
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //fluidType = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //tempReading = new UILabel(new CGRect(.5 * tableRect.Width, .5 * lhSensor.cellHeight, .5 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
-      //cellHeader.Text = Util.Strings.Analyzer.SH;
-      //cellHeader.Text = lhSensor.shFluidState.Text;
+
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);
@@ -91,7 +91,6 @@ namespace ION.IOS.ViewController.Analyzer {
       this.AddSubview(tempReading);
       this.AddSubview(lhSensor.changeFluid);
     }
-
   }
 }
 

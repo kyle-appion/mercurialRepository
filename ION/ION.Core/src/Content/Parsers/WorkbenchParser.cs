@@ -14,14 +14,11 @@ namespace ION.Core.Content.Parsers {
     public void WriteToStream(IION ion, Workbench workbench, Stream stream) {
       try {
         var mp = new ManifoldParser();
-
         using (var writer = new BinaryWriter(stream)) {
           // Persist the version of the parser
           writer.Write(version);
-
           // Write how many manifolds are present in the workbench
           writer.Write(workbench.count);
-
           for (int i = 0; i < workbench.count; i++) {
             mp.WriteToStream(ion, workbench[i], stream);
           }
@@ -41,7 +38,7 @@ namespace ION.Core.Content.Parsers {
 
           // TODO ahodder@appioninc.com: Implement version checking
           // Throw or delegate on version difference
-          if (this.version != version) {
+          if (this.version != version) { 
             throw new IOException("Cannot read workbench from stream: expected version " + this.version + " receved " + version);
           }
 

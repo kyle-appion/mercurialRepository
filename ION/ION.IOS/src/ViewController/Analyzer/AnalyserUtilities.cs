@@ -578,7 +578,15 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <summary>
 		/// WHAT TODO WHEN THEY WANT TO REMOVE A SINGLE SENSOR
 		/// </summary>
-		public static void RemoveDevice(actionPopup Sensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors){
+    public static void RemoveDevice(actionPopup Sensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors, List<Sensor> sensorList){
+      for(int i = 0; i < sensorList.Count; i++){
+        if (sensorList[i] != null) {
+          if (sensorList[i].name == Sensor.pressedSensor.currentSensor.device.name && sensorList[i].type == Sensor.pressedSensor.currentSensor.type) {
+            sensorList.Remove(Sensor.pressedSensor.currentSensor);
+          }
+        }
+      }
+
       Sensor.pressedSensor.snapArea.RemoveGestureRecognizer (Sensor.addLong);
       Sensor.pressedSensor.snapArea.RemoveGestureRecognizer(Sensor.addPan);
       Sensor.pressedSensor.availableView.Hidden = false;
@@ -667,9 +675,6 @@ namespace ION.IOS.ViewController.Analyzer
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
       else if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier)
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-
-      Console.WriteLine("Low side identifier after single sensor " + Sensor.pressedView.AccessibilityIdentifier + " removal: " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-      Console.WriteLine("High side identifier after single sensor " + Sensor.pressedView.AccessibilityIdentifier + " removal: " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
 		}
 		/// <summary>
 		/// Calculates the position for the Low and High subviews
