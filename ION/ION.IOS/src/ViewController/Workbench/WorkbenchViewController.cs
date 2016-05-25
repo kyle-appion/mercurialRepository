@@ -71,9 +71,9 @@ namespace ION.IOS.ViewController.Workbench {
 //        RecordDevices();
 //      };
 //      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//
+
       var barButton = new UIBarButtonItem(button);
-      //var barButton2 = new UIBarButtonItem(recordButton);
+//      var barButton2 = new UIBarButtonItem(recordButton);
 
       //NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};
       NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton};
@@ -99,7 +99,7 @@ namespace ION.IOS.ViewController.Workbench {
       base.ViewDidAppear(animated);
 
       tableContent.ReloadData();
-//
+
 //      if (ion.dataLogManager.isRecording) {
 //        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
 //      } else {

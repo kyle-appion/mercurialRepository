@@ -75,7 +75,7 @@ namespace ION.IOS.ViewController.Analyzer
     public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
     public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
-      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)", "Linked Sensor (Linked)"
+      "Linked Sensor (Linked)","Pressure / Temperature (P/T)","Superheat / Subcool (S/H or S/C)", "Minimum Reading (MIN)","Maximum Reading (MAX)", "Hold Reading (HOLD)",  "Rate of Change (RoC)", "Alternate Unit(ALT)" 
     };
     private bool isUpdating { get; set; }
     public bool isManual;
@@ -139,7 +139,7 @@ namespace ION.IOS.ViewController.Analyzer
       activityConnectStatus.Hidden = true;
       conDisButton = new UIButton(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
-      DeviceImage = new UIImageView(new CGRect(0, .234 * areaRect.Height, .214 * areaRect.Width,.214 * areaRect.Width));
+      DeviceImage = new UIImageView(new CGRect(0, .3 * areaRect.Height, .214 * areaRect.Width,.214 * areaRect.Width));
       subviewTable.RegisterClassForCellReuse(typeof(maximumTableCell),"Maximum");
       subviewTable.RegisterClassForCellReuse(typeof(minimumTableCell),"Minimum");
       subviewTable.RegisterClassForCellReuse(typeof(holdTableCell), "Hold");
@@ -264,7 +264,11 @@ namespace ION.IOS.ViewController.Analyzer
         Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       }
 
-      LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
+      if (currentSensor.unit != Units.Vacuum.MICRON) {
+        LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
+      } else {
+        LabelMiddle.Text = " " + sensor.measurement.amount;
+      }
       LabelBottom.Text = sensor.measurement.unit.ToString() + "  ";
       LabelSubview.Text = " " + LabelTop.Text + Util.Strings.Analyzer.LHTABLE;
 
@@ -276,16 +280,22 @@ namespace ION.IOS.ViewController.Analyzer
             max = Convert.ToDouble(LabelMiddle.Text);
             maxType = currentSensor.unit.ToString();
           }
-
-          maxReading.Text = max.ToString("N") + " " + maxType;
+          if (currentSensor.unit != Units.Vacuum.MICRON) {
+            maxReading.Text = max.ToString("N") + " " + maxType;
+          } else {
+            maxReading.Text = max.ToString() + " " + maxType;
+          }
         } 
         if (subview.Equals("Minimum")) {
           if (Convert.ToDouble(LabelMiddle.Text) < min) {
             min = Convert.ToDouble(LabelMiddle.Text);
             minType = currentSensor.unit.ToString();
           }
-          
-          minReading.Text = min.ToString("N") + " " + minType;
+          if (currentSensor.unit != Units.Vacuum.MICRON) {
+            minReading.Text = min.ToString("N") + " " + minType;
+          } else {
+            minReading.Text = min.ToString() + " " + minType;
+          }
         } 
         if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text + " ";

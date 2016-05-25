@@ -156,8 +156,11 @@ namespace ION.IOS.ViewController.Analyzer {
         pconnection.BackgroundColor = UIColor.Red;
         pconnectionStatus.Hidden = false;
       }
-
-      pgaugeValue.Text = sensor.measurement.amount.ToString("N");
+      if (sensor.unit != ION.Core.Measure.Units.Vacuum.MICRON) {
+        pgaugeValue.Text = sensor.measurement.amount.ToString("N");
+      } else {
+        pgaugeValue.Text = sensor.measurement.amount.ToString();
+      }
       pvalueType.Text = sensor.measurement.unit.ToString();
     }
 

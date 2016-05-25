@@ -42,14 +42,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public double minTemperature;
     public double maxTemperature;
 
-    public PTSlideView(PTChart chart, UIScrollView scrollView, UILabel temperatures, Unit pUnit, Unit tUnit) {
+    public PTSlideView(PTChart chart, UIScrollView scrollView, Unit pUnit, Unit tUnit) {
       ptChart = chart;
       sViewWidth = scrollView.Bounds.Width;
       sViewHeight = scrollView.Bounds.Height;
-      temperatureLabels = temperatures;
       lookup = pUnit;
       tempLookup = tUnit;
-      this.Frame = new CGRect(0, 0, 3 * sViewWidth, sViewHeight);
+      this.Frame = new CGRect(0, 0, 2188.8, sViewHeight);
+      Console.WriteLine("slider content size: " + this.Frame.Width);
     }
     public PTSlideView(IntPtr handle) : base(handle){}
 
@@ -69,40 +69,44 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       //var minPressure = Math.Floor(ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup).amount);
       var minTemperature = ptChart.fluid.GetMinimumTemperature();
+      Console.WriteLine("Pulled min temperature: " + minTemperature);
       maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup).amount;
       maxPressure = maxPressure - (maxPressure % 5);
       var maxTemperature = ptChart.fluid.GetMaximumTemperature();
+      Console.WriteLine("Pulled max temperature: " + maxTemperature);
       startGap = sViewWidth / 2.0;
       var measurementWidth = this.Frame.Width - sViewWidth;
+      var minPressure = ptChart.fluid.GetMinimumPressure(ptChart.state);
+      Console.WriteLine("Min Pressure: " + minPressure.ConvertTo(lookup).amount + lookup + " Max Pressure: " + maxPressure);
 
       first15 = (measurementWidth * .15);
-
+      Console.WriteLine("First area is " + first15 + " pixels wide");
       second15 = (measurementWidth * .15);
-
+      Console.WriteLine("Second area is " + second15 + " pixels wide");
       middle25 = (measurementWidth * .25);
-
+      Console.WriteLine("Third area is " + middle25 + " pixels wide");
       last45 = (measurementWidth * .45);
-
+      Console.WriteLine("Last area is " + last45 + " pixels wide");
       firstMeasurements = setPressureRange(lookup,1);
       firstTicks = first15 / firstMeasurements;
+      Console.WriteLine("First tick width: " + firstTicks);
       firstEnd = first15 + startGap;
 
       secondMeasurements = setPressureRange(lookup,2);
       secondTicks = second15 / (secondMeasurements - firstMeasurements);
       secondEnd = second15 + firstEnd;
-
+      Console.WriteLine("Second tick width: " + secondTicks);
       middleMeasurements = setPressureRange(lookup,3);
       thirdTicks = middle25 / (middleMeasurements - secondMeasurements);
       middleEnd = middle25 + secondEnd;
-
+      Console.WriteLine("Third tick width: " + thirdTicks);
       lastTicks = last45 / ((maxPressure - middleMeasurements));
       lastEnd = last45 + middleEnd;
-
+      Console.WriteLine("Fourth tick width: " + lastTicks);
       firstMod = setPressureMod(lookup, 1);
       secondMod = setPressureMod(lookup, 2);
       thirdMod = setPressureMod(lookup, 3);
       fourthMod = setPressureMod(lookup, 4);
-
 
       CGContext gctx = UIGraphics.GetCurrentContext();
 
@@ -113,15 +117,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       pressurePath = new CGPath ();
       temperaturePath = new CGPath ();
-
-      var below0 = Math.Floor(0 - minTemperature.ConvertTo(tempLookup).amount);
-
-      var above0 = Math.Floor(maxTemperature.ConvertTo(tempLookup).amount - 0);
-
-      if (below0 > 0) {
-        above0 += below0;
-      }
-      var tempTicks = (2 * sViewWidth) / above0;
 
       var increase = startGap;
 
@@ -135,7 +130,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
             new CGPoint(increase, .25 * this.Frame.Height)
           });
-          DrawNumber(count, increase);
+          DrawPressureNumber(count, increase);
+          Console.WriteLine("first section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -155,7 +151,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
             new CGPoint(increase, .25 * sViewHeight)         
           });
-          DrawNumber(count, increase);
+          DrawPressureNumber(count, increase);
+          Console.WriteLine("secnd section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight), 
@@ -174,7 +171,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
             new CGPoint(increase, .25 * sViewHeight)
           });
-          DrawNumber(count, increase);
+          DrawPressureNumber(count, increase);
+          Console.WriteLine("Third section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else if (count % secondMod == 0){
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -193,7 +191,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
             new CGPoint(increase, .25 * sViewHeight)
           });
-          DrawNumber(count, increase);
+          DrawPressureNumber(count, increase);
+          Console.WriteLine("fourth section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } 
         else if(count % thirdMod == 0){
           pressurePath.AddLines(new CGPoint[] {
@@ -205,21 +204,47 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         increase += lastTicks;
       }
 
-      count = 0;
+      //var below0 = Math.Floor(0 - minTemperature.ConvertTo(tempLookup).amount);
+      var below0 = ptChart.GetTemperature(new Scalar(lookup,0), true).ConvertTo(tempLookup).amount;
+      Console.WriteLine("Lowest temp: " + below0);
+      var maxTempPressure = maxPressure;
+      var above0 = ptChart.GetTemperature(new Scalar(lookup,maxTempPressure), true).ConvertTo(tempLookup).amount;
+      Console.WriteLine("Highest temp: " + above0);
+
+      var endBuffer = 0.0;
+      while (System.Double.IsNaN(above0)) {
+        maxTempPressure -= 1;
+        endBuffer += .5;
+        above0 = ptChart.GetTemperature(new Scalar(lookup,maxTempPressure), true).ConvertTo(tempLookup).amount;
+        Console.WriteLine("Highest temp: " + above0);
+      }
+      above0 += endBuffer;
+
+      var tempRange = 0.0;
+
+      if (below0 < 0) {
+        Console.WriteLine("total temp range: " + (above0 +(-1 * below0)));
+        tempRange = above0 + (-1 * below0);
+      } else {
+        Console.WriteLine("total temp range: " + (above0 + below0));
+        tempRange = above0 + below0;
+      }
+
+      var tempTicks = (2 * sViewWidth) / tempRange;
+      Console.WriteLine("Each degree is " + tempTicks + " pixels wide");
+
+      count = (int)Math.Floor(below0);
       increase = startGap;
-      var tempEnd = measurementWidth + startGap;
-      var temperatureString = "";
-      while(increase < tempEnd){
+
+      for (; count < 0; count++) {        
         if (count % 10 == 0) {
-          temperatureString += count;
           temperaturePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
 
             new CGPoint(increase, .75 * sViewHeight)
           });
+          DrawTemperatureNumber(count, increase);
         } else {
-          temperatureString += " ";
-
           temperaturePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
 
@@ -227,10 +252,26 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           });
         }
         increase += tempTicks;
-        count++;
       }
 
-      temperatureLabels.Text = temperatureString;
+      for (int i = 0; i <= above0; i++) {        
+        if (i % 10 == 0) {
+          temperaturePath.AddLines(new CGPoint[] {
+            new CGPoint(increase, .5 * sViewHeight),
+
+            new CGPoint(increase, .75 * sViewHeight)
+          });
+          DrawTemperatureNumber(i, increase);
+        } else if(i % 1 == 0){
+          temperaturePath.AddLines(new CGPoint[] {
+            new CGPoint(increase, .5 * sViewHeight),
+
+            new CGPoint(increase, .63 * sViewHeight)
+          });
+        }
+        increase += tempTicks;
+      }
+
       gctx.AddPath (pressurePath);
       gctx.DrawPath (CGPathDrawingMode.FillStroke);
       UIColor.Red.SetStroke ();
@@ -424,7 +465,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             return 1;
 
           case 3:
-            return 5;
+            return 1;
 
           default:
             return 10;    
@@ -446,12 +487,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }
     }
 
-    private void DrawNumber(int count, double increase){
+    private void DrawPressureNumber(int count, double increase){
       using (var font = new CTFont("Verdana", 10))
       using (var context = UIGraphics.GetCurrentContext ()) {
         UIColor.Clear.SetFill ();
 
-        CGRect erect = new CGRect(increase -10 , 10, 20, 20);
+        CGRect erect = new CGRect(increase - 15 , 10, 30, 20);
 
         // Fill and stroke the the circle first so the
         // number will be drawn on top of the circle
@@ -480,6 +521,61 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             Font = font,
             ParagraphStyle = alignStyle,
             ForegroundColor = UIColor.Blue.CGColor
+          }, stringRange);
+
+          // Create a container for the attributed string 
+          using (var framesetter = new CTFramesetter(attrString)) {
+
+            erect.Y = -erect.Y;
+
+            path.AddRect (erect);
+
+            using (var frame = framesetter.GetFrame (stringRange, path, null)) {
+              context.SaveState ();
+              context.TranslateCTM ((nfloat)0, erect.Height);
+              context.ScaleCTM (1, -1);
+              frame.Draw (context);
+              context.RestoreState ();
+            }
+          }
+        }
+      }
+    }
+
+    private void DrawTemperatureNumber(double degree, double increase){
+      using (var font = new CTFont("Verdana", 10))
+      using (var context = UIGraphics.GetCurrentContext ()) {
+        UIColor.Clear.SetFill ();
+
+        CGRect erect = new CGRect(increase -15 , (.63 * sViewHeight) + 20, 30, 20);
+
+        // Fill and stroke the the circle first so the
+        // number will be drawn on top of the circle
+        //          using (var path = new CGPath()) { 
+        //            path.AddEllipseInRect (erect);
+        //            context.AddPath (path);
+        //            context.DrawPath (CGPathDrawingMode.FillStroke);
+        //          }
+
+
+        // Then draw the number 'on top of' the circle
+        using (var path = new CGPath())
+        using (var attrString = new NSMutableAttributedString(degree.ToString ())) {
+
+          // We'll Set the justification to center so it'll
+          // print the number in the center of the erect
+          CTParagraphStyle alignStyle = new CTParagraphStyle(new CTParagraphStyleSettings {
+            Alignment = CTTextAlignment.Center
+          });
+
+          // Calculate the range of the attributed string
+          NSRange stringRange = new NSRange(0, attrString.Length);
+
+          // Add style attributes to the attributed string
+          attrString.AddAttributes (new CTStringAttributes {
+            Font = font,
+            ParagraphStyle = alignStyle,
+            ForegroundColor = UIColor.Red.CGColor
           }, stringRange);
 
           // Create a container for the attributed string 
