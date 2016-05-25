@@ -245,7 +245,7 @@ namespace ION.IOS.Util {
     public static class Workbench {
       public static readonly string
       SELF = "workbench".FromResources(),
-      ADD_ALL_TO_WORKBENCH = "workbench_add_all_to_workbench".FromResources(),
+      ADD_ALL_TO_WORKBENCH = "workbench_add_all".FromResources(),
       REMOVE = "workbench_remove".FromResources(),
       SELECT_VIEWER_ACTION = "workbench_select_viewer_action".FromResources()
       ;

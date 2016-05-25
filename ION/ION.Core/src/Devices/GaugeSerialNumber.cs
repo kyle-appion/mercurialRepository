@@ -127,7 +127,7 @@
         Parse(serial);
         return true;
       } catch (ArgumentException e) {
-        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid GaugeDeviceSerial");
+//        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid GaugeDeviceSerial");
         return false;
       }
     }

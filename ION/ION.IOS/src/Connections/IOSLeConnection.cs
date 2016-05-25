@@ -171,7 +171,9 @@ namespace ION.IOS.Connections {
           if (ValidateServices()) {
             connectionState = EConnectionState.Connected;
           } else {
+#if DEBUG
             Log.E(this, "Failed to resolve characteristics");
+#endif
           }
         }
       };
@@ -190,7 +192,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-//      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
+      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
@@ -201,7 +203,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
-//      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
+      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
     }
 
     // Overridden from IConnection
@@ -324,11 +326,9 @@ namespace ION.IOS.Connections {
       writeCharacteristic = null;
 
       foreach (CBService service in __nativeDevice.Services) {
-        Log.D(this, "Service: " + service.UUID);
         if (service != null && service.Characteristics != null) {
           // Apparently services can be null after discovery?
           foreach (CBCharacteristic characteristic in service.Characteristics) {
-            Log.D(this, "Characteristic: " + characteristic.UUID);
             if (READ_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               readCharacteristic = characteristic;
             } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
@@ -350,7 +350,7 @@ namespace ION.IOS.Connections {
     /// <param name="sensor">Sensor.</param>
     /// <param name="args">Arguments.</param>
     private void OnPeripheralDisconnected(object sensor, CBPeripheralErrorEventArgs args) {
-      if (args.Peripheral.Equals(__nativeDevice)) {
+      if (args.Peripheral != null && args.Peripheral.Equals(__nativeDevice)) {
         Disconnect();
       }
     }

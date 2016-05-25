@@ -603,6 +603,8 @@
     <Compile Include="src\Alarms\PTSlideView.cs" />
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
     <Compile Include="src\Connections\IosConnectionFactory.cs" />
+    <Compile Include="src\Alarms\Alerts\VibrateAlarmAlert.cs" />
+    <Compile Include="src\Alarms\Alerts\SoundAlarmAlert.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -138,7 +138,7 @@
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
-        return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm));
+        return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
       };
       managers.Add(fluidManager = new BaseFluidManager(this));
     }
