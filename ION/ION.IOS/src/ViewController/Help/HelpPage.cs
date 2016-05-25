@@ -59,6 +59,7 @@
   public enum EHelpItemType { 
     Link,
     Info,
+    Walkthrough,
   }
 
   public interface IHelpItem {
@@ -106,8 +107,7 @@
     }
   }
 
-  public class InfoHelpItem : AbstractHelpItem { 
-    public string subtitle { get; set; }
+  public class InfoHelpItem : AbstractHelpItem {    public string subtitle { get; set; }
 
     public InfoHelpItem(string title, string subtitle) : base(EHelpItemType.Info, title) {
       this.subtitle = subtitle;

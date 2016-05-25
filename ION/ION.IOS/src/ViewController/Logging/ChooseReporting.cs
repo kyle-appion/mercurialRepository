@@ -23,14 +23,14 @@ namespace ION.IOS.ViewController.Logging {
       newReport.SetTitle("New Report", UIControlState.Normal);
       newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
       newReport.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      newReport.Layer.CornerRadius = 8;
+      newReport.Layer.CornerRadius = 5;
       newReport.Layer.BorderWidth = 2f;
 
       savedReports = new UIButton(new CGRect(.5 * reportType.Bounds.Width,.3 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
       savedReports.SetTitle("Saved Reports", UIControlState.Normal);
       savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       savedReports.SetTitleColor(UIColor.Black, UIControlState.Normal);
-      savedReports.Layer.CornerRadius = 8;
+      savedReports.Layer.CornerRadius = 5;
       savedReports.Layer.BorderWidth = 2f;
 
       savedReports.TouchUpInside += (sender, e) => {newReport.Enabled = true; savedReports.Enabled = false; savedReports.BackgroundColor = UIColor.FromRGB(95,212,48);};

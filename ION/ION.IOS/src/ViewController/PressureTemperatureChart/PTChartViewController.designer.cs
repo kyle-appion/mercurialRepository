@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Xamarin Studio Business to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		UIKit.UIImageView imageTemperatureLock { get; set; }
 
 		[Outlet]
-    UIKit.UILabel labelFluidName { get; set ; }
+		UIKit.UILabel labelFluidName { get; set; }
 
 		[Outlet]
 		UIKit.UILabel labelPressure { get; set; }
@@ -49,15 +49,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		UIKit.UISegmentedControl switchFluidState { get; set; }
 
 		[Outlet]
-    UIKit.UIView viewFluidColor {
-      get {
-        return p;
-      }
-      set {
-        ION.Core.Util.Log.D(this, "setting label to " + p?.Description);
-        p = value;
-      }
-    } UIKit.UIView p;
+		UIKit.UIView viewFluidColor { get; set; }
 
 		[Outlet]
 		UIKit.UIView viewFluidHeader { get; set; }
@@ -76,44 +68,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (viewFluidHeader != null) {
-				viewFluidHeader.Dispose ();
-				viewFluidHeader = null;
-			}
-
-			if (viewFluidColor != null) {
-				viewFluidColor.Dispose ();
-				viewFluidColor = null;
-			}
-
-			if (labelFluidName != null) {
-				labelFluidName.Dispose ();
-				labelFluidName = null;
-			}
-
-			if (switchFluidState != null) {
-				switchFluidState.Dispose ();
-				switchFluidState = null;
-			}
-
-			if (viewPressureSection != null) {
-				viewPressureSection.Dispose ();
-				viewPressureSection = null;
-			}
-
-			if (imagePressureLock != null) {
-				imagePressureLock.Dispose ();
-				imagePressureLock = null;
-			}
-
-			if (imagePressureIcon != null) {
-				imagePressureIcon.Dispose ();
-				imagePressureIcon = null;
-			}
-
 			if (buttonPressureUnit != null) {
 				buttonPressureUnit.Dispose ();
 				buttonPressureUnit = null;
+			}
+
+			if (buttonTemperatureUnit != null) {
+				buttonTemperatureUnit.Dispose ();
+				buttonTemperatureUnit = null;
 			}
 
 			if (editPressure != null) {
@@ -121,9 +83,64 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 				editPressure = null;
 			}
 
+			if (editTemperature != null) {
+				editTemperature.Dispose ();
+				editTemperature = null;
+			}
+
+			if (imagePressureIcon != null) {
+				imagePressureIcon.Dispose ();
+				imagePressureIcon = null;
+			}
+
+			if (imagePressureLock != null) {
+				imagePressureLock.Dispose ();
+				imagePressureLock = null;
+			}
+
+			if (imageTemperatureIcon != null) {
+				imageTemperatureIcon.Dispose ();
+				imageTemperatureIcon = null;
+			}
+
+			if (imageTemperatureLock != null) {
+				imageTemperatureLock.Dispose ();
+				imageTemperatureLock = null;
+			}
+
+			if (labelFluidName != null) {
+				labelFluidName.Dispose ();
+				labelFluidName = null;
+			}
+
 			if (labelPressure != null) {
 				labelPressure.Dispose ();
 				labelPressure = null;
+			}
+
+			if (labelTemperature != null) {
+				labelTemperature.Dispose ();
+				labelTemperature = null;
+			}
+
+			if (switchFluidState != null) {
+				switchFluidState.Dispose ();
+				switchFluidState = null;
+			}
+
+			if (viewFluidColor != null) {
+				viewFluidColor.Dispose ();
+				viewFluidColor = null;
+			}
+
+			if (viewFluidHeader != null) {
+				viewFluidHeader.Dispose ();
+				viewFluidHeader = null;
+			}
+
+			if (viewPressureSection != null) {
+				viewPressureSection.Dispose ();
+				viewPressureSection = null;
 			}
 
 			if (viewPressureTouchArea != null) {
@@ -139,31 +156,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart
 			if (viewTemperatureTouchArea != null) {
 				viewTemperatureTouchArea.Dispose ();
 				viewTemperatureTouchArea = null;
-			}
-
-			if (imageTemperatureLock != null) {
-				imageTemperatureLock.Dispose ();
-				imageTemperatureLock = null;
-			}
-
-			if (imageTemperatureIcon != null) {
-				imageTemperatureIcon.Dispose ();
-				imageTemperatureIcon = null;
-			}
-
-			if (buttonTemperatureUnit != null) {
-				buttonTemperatureUnit.Dispose ();
-				buttonTemperatureUnit = null;
-			}
-
-			if (editTemperature != null) {
-				editTemperature.Dispose ();
-				editTemperature = null;
-			}
-
-			if (labelTemperature != null) {
-				labelTemperature.Dispose ();
-				labelTemperature = null;
 			}
 		}
 	}

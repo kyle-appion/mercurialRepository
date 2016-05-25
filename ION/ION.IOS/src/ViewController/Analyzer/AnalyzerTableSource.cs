@@ -73,6 +73,7 @@ namespace ION.IOS.ViewController.Analyzer
         }
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Minimum")) {
         var cell = tableView.DequeueReusableCell("Minimum") as minimumTableCell;
@@ -81,6 +82,7 @@ namespace ION.IOS.ViewController.Analyzer
         
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Hold")) {
         var cell = tableView.DequeueReusableCell("Hold") as holdTableCell;
@@ -89,6 +91,7 @@ namespace ION.IOS.ViewController.Analyzer
         
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Rate")) {
         var cell = tableView.DequeueReusableCell("Rate") as RoCTableCell;
@@ -99,6 +102,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.Layer.BorderColor = UIColor.Black.CGColor;
         cell.Layer.BorderWidth = 1f;
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Superheat")) {
         var cell = tableView.DequeueReusableCell("Superheat") as SHSCTableCell;
@@ -107,6 +111,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Pressure")) {
         var cell = tableView.DequeueReusableCell("Pressure") as PTTableCell;
@@ -115,6 +120,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (tableItems[indexPath.Row].Contains("Linked")){
         var cell = tableView.DequeueReusableCell("Linked") as secondarySensorCell;
@@ -123,6 +129,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       }else {
         var cell = tableView.DequeueReusableCell("Alternate") as altTableCell;
@@ -131,18 +138,17 @@ namespace ION.IOS.ViewController.Analyzer
         
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       }
 			
 		}
 
     public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
-      Console.WriteLine("Can move the row");
       return true;
     }
 
     public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
-      Console.WriteLine("Moving the row");
       var item = tableItems[sourceIndexPath.Row];
       var deleteAt = sourceIndexPath.Row;
       var insertAt = destinationIndexPath.Row;

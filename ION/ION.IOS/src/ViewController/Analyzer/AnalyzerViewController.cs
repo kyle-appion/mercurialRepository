@@ -39,7 +39,8 @@ namespace ION.IOS.ViewController.Analyzer {
     public static AnalyzerViewController arvc;
 
     public static UIButton dataRecord;
-    public static UIButton showRecords;
+    public static UIImageView compressor;
+    public static UIImageView expansion;
 
     public List<Sensor> sensorList;
     private IION ion;
@@ -77,32 +78,26 @@ namespace ION.IOS.ViewController.Analyzer {
         root.navigation.ToggleMenu();
       };
 
-      dataRecord = new UIButton(new CGRect(0,0,30,30));
-      dataRecord.BackgroundColor = UIColor.Clear;
-      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
-      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
-      dataRecord.TouchUpInside += (sender, e) => {
-        recordDevices();
-      };
+//      dataRecord = new UIButton(new CGRect(0,0,35,35));
+//      dataRecord.BackgroundColor = UIColor.Clear;
+//      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
+//      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
+//      dataRecord.TouchUpInside += (sender, e) => {
+//        recordDevices();
+//      };
 
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-      } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-      }
+//      if (ion.dataLogManager.isRecording) {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+//      } else {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+//      }
 
-      var button = new UIBarButtonItem(dataRecord);
+//      var button = new UIBarButtonItem(dataRecord);
 
-      NavigationItem.RightBarButtonItem = button;
+//      NavigationItem.RightBarButtonItem = button;
       Title = "Analyzer";
 
       createSensors ();
-
-      showRecords = new UIButton(new CGRect(.4 * View.Bounds.Width + 35, .3 * View.Bounds.Height, 30, 30));
-      showRecords.BackgroundColor = UIColor.Green;
-      showRecords.Layer.CornerRadius = 6;
-
-      showRecords.TouchUpInside += listOutSessions;
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
       mentryView.dtypeButton.TouchUpInside += showDeviceTypePicker;
@@ -122,8 +117,6 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.mtextValue.ResignFirstResponder();
         this.View.SendSubviewToBack (mentryView.mView);
       };
-
-//      View.AddSubview(showRecords);
     }
 
     /// <summary>
@@ -132,75 +125,29 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public void recordDevices(){     
-      var recordingMessage = "";
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.StopRecording();
-        recordingMessage = "Session recording has stopped";
-      } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Session recording has started";
-      }
-      showRecordingToast(recordingMessage);
-    }
+//    public void recordDevices(){     
+//      var recordingMessage = "";
+//      if (ion.dataLogManager.isRecording) {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+//        dataRecord.BackgroundColor = UIColor.Clear;
+//        ion.dataLogManager.StopRecording();
+//        recordingMessage = "Session recording has stopped";
+//      } else {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+//        dataRecord.BackgroundColor = UIColor.Clear;
+//        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+//        recordingMessage = "Session recording has started";
+//      }
+//      showRecordingToast(recordingMessage);
+//    }
+//
+//    public async void showRecordingToast(string recordingMessage){
+//      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
+//      messageBox.Show();
+//      await Task.Delay(TimeSpan.FromSeconds(1));
+//      messageBox.DismissWithClickedButtonIndex(0, true);
+//    }
 
-    public async void showRecordingToast(string recordingMessage){
-      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
-      messageBox.Show();
-      await Task.Delay(TimeSpan.FromSeconds(1));
-      messageBox.DismissWithClickedButtonIndex(0, true);
-    }
-
-    public void listOutSessions(object sender, EventArgs e){
-//      var result = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow ORDER BY frn_SID, MID");
-//      Console.WriteLine("Measurements:");
-//      foreach (var item in result) {
-//        Console.WriteLine("MID:" + item.MID + " Measurement:" + item.measurement + " for Session:" + item.frn_SID + " for device: " + item.serialNumber);
-//        //Console.WriteLine("Session:" + item.frnSID + " SN:" + item.deviceSN + " MID:" + item.MID + " Measurement:" + item.deviceMeasurement);
-//      }
-//      Console.WriteLine("");
-//      var result2 = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow ORDER BY SID");
-//      Console.WriteLine("Sessions Recorded:");
-//      foreach (var item in result2) {
-//        Console.WriteLine("SID:" + item.SID + " Start:" + item.sessionStart.ToLocalTime() + " End:" + item.sessionEnd.ToLocalTime() + " Job:" + item.frn_JID);
-//
-//        var duration = item.sessionEnd.Subtract(item.sessionStart).Hours * 60;
-//        duration += item.sessionEnd.Subtract(item.sessionStart).Minutes;
-//        duration += item.sessionEnd.Subtract(item.sessionStart).Seconds / 60;
-//
-//        var formatTime = item.sessionStart.ToLocalTime();
-//
-//        if(item.sessionStart.TimeOfDay.Equals("PM")){
-//          formatTime.AddHours(12);
-//          formatTime = formatTime - formatTime.TimeOfDay;
-//        }else{
-//          formatTime = formatTime - formatTime.TimeOfDay;
-//        }
-//        Console.WriteLine("Session:" + item.SID + " Difference:" + duration.ToString("0.00") + "min" + " Raw difference:" + item.sessionEnd.Subtract(item.sessionStart));
-//      }
-//      Console.WriteLine("");
-//      Console.WriteLine("Jobs Created");
-//      var result3 = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow ORDER BY JID");
-//
-//      foreach (var item in result3) {
-//        Console.WriteLine("Job:" + item.JID + " Name:" + item.jobName + " Customer#:" + item.customerNumber + " Dispatch#:" + item.dispatchNumber + " PO#:" + item.poNumber);
-//      }
-//
-//      var result4 = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow");
-//
-//      foreach (var item in result4) {
-//        Console.WriteLine(item.ToString());
-//        Console.WriteLine(Environment.NewLine);
-//      }
-//////      db.Query<Session> ("DELETE FROM SessionRow");
-//////      db.Query<Session> ("VACUUM");
-//////      db.Query<SessionMeasurement>("DELETE FROM SensorMeasurementRow");
-//////      db.Query<SessionMeasurement>("VACUUM");
-    }
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
     /// </summary>
@@ -216,10 +163,16 @@ namespace ION.IOS.ViewController.Analyzer {
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, View);
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, View);
 
-      UIImageView compressor = new UIImageView(new CGRect(.462 * View.Bounds.Width,.161 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height));        
+      //UIImageView compressor = new UIImageView(new CGRect(.462 * View.Bounds.Width,.161 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height));
+      //UIImageView expansion = new UIImageView(new CGRect(.462 * View.Bounds.Width,.503 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height ));
+      if (UserInterfaceIdiomIsPhone) {
+        compressor = new UIImageView(new CGRect(.46 * View.Bounds.Width, .093 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.46 * View.Bounds.Width,.435 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
+      } else {
+        compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width, .093 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width,.435 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
+      }
       compressor.Image = UIImage.FromBundle("ic_compressor");
-
-      UIImageView expansion = new UIImageView(new CGRect(.462 * View.Bounds.Width,.503 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height ));
       expansion.Image = UIImage.FromBundle("ic_expansionchamber");
 
       View.AddSubview(compressor);
@@ -248,7 +201,7 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="popupType">Popup type.</param>
     void ShowPopup(sensor pressedArea, int popupType){
-      if (pressedArea.availableView.Hidden) {        
+      if (pressedArea.availableView.Hidden) {
         ///IF SENSOR IS ACTIVE SET THAT SENSOR'S INFO IN THE POPUP
         pressedArea.sactionView.pdeviceName.Text = pressedArea.topLabel.Text;
         var amount = Convert.ToDecimal(pressedArea.middleLabel.Text);
@@ -410,7 +363,7 @@ namespace ION.IOS.ViewController.Analyzer {
       start.pressedSensor.lowArea.LabelTop.Text = mentryView.dtypeButton.AccessibilityIdentifier;
       start.pressedSensor.lowArea.LabelMiddle.Text = amount.ToString("N");
       start.pressedSensor.lowArea.LabelBottom.Text = mentryView.mbuttonText.Text;
-      start.pressedSensor.lowArea.LabelSubview.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier + Util.Strings.Analyzer.LHTABLE;
+      start.pressedSensor.lowArea.LabelSubview.Text = "  " + mentryView.dtypeButton.AccessibilityIdentifier + Util.Strings.Analyzer.LHTABLE;
       start.pressedSensor.lowArea.Connection.Hidden = true;
       start.pressedSensor.lowArea.connectionColor.Hidden = true;
       start.pressedSensor.lowArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
@@ -419,7 +372,7 @@ namespace ION.IOS.ViewController.Analyzer {
       start.pressedSensor.highArea.LabelTop.Text = mentryView.dtypeButton.AccessibilityIdentifier;
       start.pressedSensor.highArea.LabelMiddle.Text = amount.ToString("N");
       start.pressedSensor.highArea.LabelBottom.Text = mentryView.mbuttonText.Text;
-      start.pressedSensor.highArea.LabelSubview.Text = " " + mentryView.dtypeButton.AccessibilityIdentifier + Util.Strings.Analyzer.LHTABLE;
+      start.pressedSensor.highArea.LabelSubview.Text = "  " + mentryView.dtypeButton.AccessibilityIdentifier + Util.Strings.Analyzer.LHTABLE;
       start.pressedSensor.highArea.Connection.Hidden = true;
       start.pressedSensor.highArea.connectionColor.Hidden = true;
       start.pressedSensor.highArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
@@ -666,7 +619,7 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].lowArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
           analyzerSensors.viewList[i].lowArea.LabelMiddle.Text =  amount.ToString("N");
           analyzerSensors.viewList[i].lowArea.LabelBottom.Text = mentryView.mbuttonText.Text;
-          analyzerSensors.viewList[i].lowArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
+          analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
           analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;          
           analyzerSensors.viewList[i].lowArea.Connection.Hidden = true;
           analyzerSensors.viewList[i].lowArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
@@ -674,7 +627,7 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].highArea.LabelTop.Text = analyzerSensors.viewList[i].topLabel.Text;
           analyzerSensors.viewList[i].highArea.LabelMiddle.Text =  amount.ToString("N");
           analyzerSensors.viewList[i].highArea.LabelBottom.Text = mentryView.mbuttonText.Text;
-          analyzerSensors.viewList[i].highArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
+          analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
           analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;          
           analyzerSensors.viewList[i].highArea.Connection.Hidden = true;
           analyzerSensors.viewList[i].highArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
@@ -862,8 +815,8 @@ namespace ION.IOS.ViewController.Analyzer {
         sensorActions.pressedSensor.sactionView.pdeviceName.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.lowArea.LabelTop.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.highArea.LabelTop.Text = textAlert.TextFields[0].Text;
-        sensorActions.pressedSensor.lowArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
-        sensorActions.pressedSensor.highArea.LabelSubview.Text = " " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
+        sensorActions.pressedSensor.lowArea.LabelSubview.Text = "  " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
+        sensorActions.pressedSensor.highArea.LabelSubview.Text = "  " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
         if(sensorActions.pressedSensor.currentSensor != null){
           ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,sensorActions.pressedSensor.currentSensor.device.serialNumber.ToString());
           ion.database.Query<ION.Core.Database.DeviceRow>("UPDATE DeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,sensorActions.pressedSensor.currentSensor.device.serialNumber.ToString());
@@ -926,14 +879,14 @@ namespace ION.IOS.ViewController.Analyzer {
           area.lowArea.LabelTop.Text = " " + sensor.device.name;
           area.lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
           area.lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
-          area.lowArea.LabelSubview.Text = " " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
+          area.lowArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
           area.lowArea.DeviceImage.Image = area.deviceImage.Image;
           area.lowArea.isManual = false;
 
           area.highArea.LabelTop.Text = " " + sensor.device.name;
           area.highArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
           area.highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
-          area.highArea.LabelSubview.Text = " " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
+          area.highArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
           area.highArea.DeviceImage.Image = area.deviceImage.Image;
           area.highArea.isManual = false;
         }
@@ -1034,7 +987,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
               analyzerSensors.viewList[i].lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";
+              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
               analyzerSensors.viewList[i].lowArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].lowArea.isManual = false;
               analyzerSensors.viewList[i].highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1043,7 +996,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.LabelMiddle.Text = sensor.measurement.amount.ToString("N");
               analyzerSensors.viewList[i].highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].highArea.LabelSubview.Text = " " + analyzerSensors.viewList[i].topLabel.Text + "'s subviews";
+              analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
               analyzerSensors.viewList[i].highArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].highArea.isManual = false;
               area.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1140,13 +1093,13 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public override void ViewDidAppear(bool animated) {
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-      } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-      }
+//      if (ion.dataLogManager.isRecording) {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+//        dataRecord.BackgroundColor = UIColor.Clear;
+//      } else {
+//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+//        dataRecord.BackgroundColor = UIColor.Clear;
+//      }
     }
 	}
 }

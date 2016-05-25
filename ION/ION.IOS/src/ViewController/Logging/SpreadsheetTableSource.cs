@@ -26,13 +26,13 @@ namespace ION.IOS.ViewController.Logging {
 
     // Overriden from UITableViewSource
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
-      //return new UIView(new CGRect(0,0,0,0));
+      //return new UIView(new CGRect(0,0,0,0)); 
       return null;
     }
     // Overriden from UITableViewSource
     public override UIView GetViewForFooter (UITableView tableView, nint section)
-    {     
-      return new UIView (new CGRect(0,0,0,0));
+    {
+      return new UIView (new CGRect(0,0,0,0)); 
     }
     // Override from UITableViewSource
     public override void CommitEditingStyle(UITableView tableView, UITableViewCellEditingStyle editingStyle, NSIndexPath indexPath) {

@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 using CoreGraphics;
 using Foundation;
@@ -15,18 +16,15 @@ namespace ION.IOS.ViewController.JobManager {
 
     List<ION.IOS.ViewController.Logging.SessionData> tableItems;
     List<int> sessionID;
-    //IION ion;
+
     double cellHeight;
     double cellWidth;
-    //int JID;
-
+     
     public AvailableSessionSource(List<ION.IOS.ViewController.Logging.SessionData> sessions,double height,double width,int frnJID, List<int> addList) {
-      tableItems = sessions;
+      tableItems = sessions.OrderByDescending(x => x.SID).ToList();;
       cellHeight = height;
       cellWidth = width;
-      //JID = frnJID;
       sessionID = addList;
-      //ion = AppState.context;
     }
 
     // Overridden from UITableViewSource

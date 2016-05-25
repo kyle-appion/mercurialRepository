@@ -29,7 +29,7 @@
   using ION.IOS.Alarms.Alerts;
   using ION.IOS.IO;
   using ION.IOS.Location;
-  using ION.IOS.Devices;
+  using ION.IOS.Connections;
 
   /// <summary>
   /// The iOS ION implementation.

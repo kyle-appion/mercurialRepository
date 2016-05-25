@@ -30,6 +30,7 @@ namespace ION.IOS.ViewController {
     public const string VC_LOGGING = "viewControllerLogging";
     public const string VC_JOB_MANAGER = "viewControllerJobManager";
     public const string VC_EDIT_JOB = "viewControllerEditJob";
+    public const string VC_WALKTHROUGH_MENU = "viewControllerWalkthroughMenu"; 
 
     public const string VC_INTERNAL_TEST_BENCH = "viewControllerInternalTestBench";
 
