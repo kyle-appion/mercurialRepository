@@ -762,7 +762,11 @@ namespace ION.IOS.ViewController.Analyzer
         addDeviceSheet.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
           Sensor.lowArea.connectionSpinner(1);
         }));
-      } 
+      }
+
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.RENAME, UIAlertActionStyle.Default, (action) => {
+        renamePopup(Sensor);
+      }));
 
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
@@ -2541,6 +2545,34 @@ namespace ION.IOS.ViewController.Analyzer
       var alarm = Analyzer.AnalyzerViewController.arvc.InflateViewController<SensorAlarmViewController>("viewControllerSensorAlarms");
       alarm.sensor = area.currentSensor;
       Analyzer.AnalyzerViewController.arvc.NavigationController.PushViewController(alarm, true);
+    }
+
+    /// <summary>
+    /// Shows the popup to rename a sensor
+    /// </summary>
+    public static void renamePopup(sensor Sensor){
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+      while (vc.PresentedViewController != null) {
+        vc = vc.PresentedViewController;
+      }
+
+      UIAlertController textAlert = UIAlertController.Create (Util.Strings.Analyzer.ENTERNAME, Sensor.topLabel.Text, UIAlertControllerStyle.Alert);
+      textAlert.AddTextField(textField => {});
+      textAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
+      textAlert.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.OKSAVE, UIAlertActionStyle.Default, UIAlertAction => {
+        Sensor.topLabel.Text = " " + textAlert.TextFields[0].Text;
+        Sensor.sactionView.pdeviceName.Text = textAlert.TextFields[0].Text;
+        Sensor.lowArea.LabelTop.Text = textAlert.TextFields[0].Text;
+        Sensor.highArea.LabelTop.Text = textAlert.TextFields[0].Text;
+        Sensor.lowArea.LabelSubview.Text = "  " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
+        Sensor.highArea.LabelSubview.Text = "  " + textAlert.TextFields[0].Text + Util.Strings.Analyzer.LHTABLE;
+        if(Sensor.currentSensor != null){
+          AppState.context.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,Sensor.currentSensor.device.serialNumber.ToString());
+          AppState.context.database.Query<ION.Core.Database.DeviceRow>("UPDATE DeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,Sensor.currentSensor.device.serialNumber.ToString());
+        }
+      }));
+      vc.PresentViewController(textAlert, true, null);
     }
 	}
 }
