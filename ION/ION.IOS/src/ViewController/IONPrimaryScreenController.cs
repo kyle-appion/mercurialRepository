@@ -32,6 +32,7 @@ namespace ION.IOS.ViewController {
   using ION.IOS.ViewController.Workbench;
   using ION.IOS.ViewController.Logging;
   using ION.IOS.ViewController.JobManager;
+  using ION.IOS.ViewController.Walkthrough;
 
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
@@ -67,8 +68,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
-          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+          //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
@@ -211,13 +212,16 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
+        .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
+          OpenWalkthroughSections();
+        })
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
-          if (!MFMailComposeViewController.CanSendMail) {
-            Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
-          } else {
-            DoSendAppionFeedback();
-          }
-        }).Build();
+        if (!MFMailComposeViewController.CanSendMail) {
+          Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
+        } else {
+          DoSendAppionFeedback();
+        }
+      }).Build();
 
       vc.page = landing;
 
@@ -261,6 +265,17 @@ namespace ION.IOS.ViewController {
       vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/json", file.name);
 
       navigation.PresentViewController(vc, true, null);
+    }
+
+    /// <summary>
+    /// Prepares and displays an email resolver such that the user can fire
+    /// off an email to complain to appion.
+    /// </summary>
+    private void OpenWalkthroughSections() {
+      Console.WriteLine("Opening Walkthrough");
+      var wvc = InflateViewController<WalkthroughMenuViewController>(BaseIONViewController.VC_WALKTHROUGH_MENU);
+
+      PresentViewControllerFromSelected(wvc);
     }
 
     /// <summary>

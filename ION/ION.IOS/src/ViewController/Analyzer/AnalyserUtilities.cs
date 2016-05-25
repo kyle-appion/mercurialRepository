@@ -35,16 +35,24 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <param name="View">View.</param>
 		public static void CreateSnapArea(sensorGroup analyzerSensors, UIView View){
 			////CREATE STATIC SENSOR LOCATIONS
-			/// LEFT SIDE
-      analyzerSensors.snapRect1 = new CGRect (.031 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      analyzerSensors.snapRect2 = new CGRect(.031 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+			/// LEFT SIDE 
+      //analyzerSensors.snapRect1 = new CGRect (.031 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      analyzerSensors.snapRect1 = new CGRect (.028 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      //analyzerSensors.snapRect2 = new CGRect(.031 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect2 = new CGRect(.028 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      //analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      //analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 			/// RIGHT SIDE
-      analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect7 = new CGRect(.765 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect8 = new CGRect(.765 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      //analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      //analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      //analyzerSensors.snapRect7 = new CGRect(.765 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect7 = new CGRect(.769 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      //analyzerSensors.snapRect8 = new CGRect(.765 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect8 = new CGRect(.769 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 
 			////CREATE CONSTANT POINT OF ORIGIN FOR EACH AREA
 			/// LEFT SIDE
@@ -77,14 +85,14 @@ namespace ION.IOS.ViewController.Analyzer
     public static void CreateManualViews(ManualView mentryView, UIView View){
       mentryView.mView.BackgroundColor = UIColor.White;
       mentryView.mView.Hidden = true;
-      mentryView.mView.Layer.CornerRadius = 10f;
+      mentryView.mView.Layer.CornerRadius = 5;
       mentryView.mView.Layer.BorderWidth = 1f;
       mentryView.mView.Layer.BorderColor = UIColor.LightGray.CGColor;
       mentryView.popupText.Text = Util.Strings.Analyzer.CREATEMANUAL;
       mentryView.popupText.TextAlignment = UITextAlignment.Center;
       mentryView.popupText.AdjustsFontSizeToFitWidth = true;
       mentryView.popupText.BackgroundColor = UIColor.FromRGB(9,221,255);
-      mentryView.popupText.Layer.CornerRadius = 5f;
+      mentryView.popupText.Layer.CornerRadius = 5;
       mentryView.popupText.ClipsToBounds = false;
       mentryView.popupText.Font = UIFont.FromName("Helvetica-Bold", 27f);
       mentryView.mdeviceType.Text = Util.Strings.Analyzer.DEVICETYPE + ":";
@@ -95,7 +103,7 @@ namespace ION.IOS.ViewController.Analyzer
       mentryView.dtypeButton.Font = UIFont.FromName("Helvetica-Bold", 20f);
       mentryView.mtextValue.Layer.BorderColor = UIColor.LightGray.CGColor;
       mentryView.mtextValue.Layer.BorderWidth = 1f;
-      mentryView.mtextValue.Layer.CornerRadius = 5f;
+      mentryView.mtextValue.Layer.CornerRadius = 5;
       mentryView.mbuttonText.UserInteractionEnabled = false;
       mentryView.mbuttonText.Text = "psig";
       mentryView.mbuttonText.Font = UIFont.FromName("Helvetica-Bold", 20f);
@@ -137,12 +145,12 @@ namespace ION.IOS.ViewController.Analyzer
       sactionView.pdisplayLink.Font = UIFont.FromName("Helvetica", 12f);
       sactionView.pconnectionStatus.AdjustsFontSizeToFitWidth = true;
       sactionView.connectionColor.BackgroundColor = UIColor.Clear;
-      sactionView.connectionColor.Layer.CornerRadius = 8;
+      sactionView.connectionColor.Layer.CornerRadius = 5;
       sactionView.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       sactionView.connectionColor.Layer.BorderWidth = 1f;
       sactionView.pconnection.Layer.BorderColor = UIColor.Black.CGColor;
       sactionView.pconnection.Layer.BorderWidth = 1f;
-      sactionView.pconnection.Layer.CornerRadius = 8;
+      sactionView.pconnection.Layer.CornerRadius = 5;
 
       sactionView.aView.BringSubviewToFront(sactionView.pconnection);
     }
@@ -165,13 +173,13 @@ namespace ION.IOS.ViewController.Analyzer
       };
 
       Sensor.sactionView = new ActionView(mainView);
-      Sensor.sactionView.aView.Layer.CornerRadius = 10;
+      Sensor.sactionView.aView.Layer.CornerRadius = 5;
       CreateActionViews(Sensor.sactionView);
       Sensor.addIcon = new UIImageView(new CGRect(.107 * Sensor.snapArea.Bounds.Width,.107 * Sensor.snapArea.Bounds.Height,.769 * Sensor.snapArea.Bounds.Width,.769 * Sensor.snapArea.Bounds.Height));
       Sensor.addIcon.Image = UIImage.FromBundle("ic_device_add");
       Sensor.addIcon.BackgroundColor = UIColor.Clear;
-      Sensor.snapArea.Layer.CornerRadius = 10;
-      Sensor.availableView.Layer.CornerRadius = 10;
+      Sensor.snapArea.Layer.CornerRadius = 5;
+      Sensor.availableView.Layer.CornerRadius = 5;
       Sensor.snapArea.Layer.BorderColor = UIColor.Black.CGColor;
       Sensor.snapArea.Layer.BorderWidth = 2f;
       Sensor.snapArea.AddSubview(Sensor.availableView);
@@ -205,12 +213,12 @@ namespace ION.IOS.ViewController.Analyzer
       lowArea.snapArea.Alpha = 1f;
       lowArea.snapArea.UserInteractionEnabled = true;
       lowArea.snapArea.AccessibilityIdentifier = "low";        
-      lowArea.snapArea.Layer.CornerRadius = 10;
+      lowArea.snapArea.Layer.CornerRadius = 5;
       lowArea.snapArea.Hidden = true;
 
       lowArea.LabelTop.AdjustsFontSizeToFitWidth = true;
       lowArea.LabelTop.Text = "";
-      lowArea.LabelTop.Layer.CornerRadius = 10;
+      lowArea.LabelTop.Layer.CornerRadius = 5;
       lowArea.LabelTop.ClipsToBounds = true;
 
       lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
@@ -239,7 +247,7 @@ namespace ION.IOS.ViewController.Analyzer
       lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
       lowArea.Connection.BackgroundColor = UIColor.Clear;
       lowArea.connectionColor.BackgroundColor = UIColor.Clear;
-      lowArea.connectionColor.Layer.CornerRadius = 6;
+      lowArea.connectionColor.Layer.CornerRadius = 5;
       lowArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       lowArea.connectionColor.Layer.BorderWidth = 1f;
       lowArea.subviewDivider.BackgroundColor = UIColor.Black;
@@ -269,12 +277,12 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.snapArea.Alpha = 1f;
       highArea.snapArea.UserInteractionEnabled = true;
       highArea.snapArea.AccessibilityIdentifier = "high";
-      highArea.snapArea.Layer.CornerRadius = 10;
+      highArea.snapArea.Layer.CornerRadius = 5;
       highArea.snapArea.Hidden = true;
 
       highArea.LabelTop.AdjustsFontSizeToFitWidth = true;
       highArea.LabelTop.Text = "";
-      highArea.LabelTop.Layer.CornerRadius = 10;
+      highArea.LabelTop.Layer.CornerRadius = 5;
       highArea.LabelTop.ClipsToBounds = true;
 
       highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
@@ -303,7 +311,7 @@ namespace ION.IOS.ViewController.Analyzer
       highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
       highArea.Connection.BackgroundColor = UIColor.Clear;
       highArea.connectionColor.BackgroundColor = UIColor.Clear;
-      highArea.connectionColor.Layer.CornerRadius = 6;
+      highArea.connectionColor.Layer.CornerRadius = 5;
       highArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       highArea.connectionColor.Layer.BorderWidth = 1f;
       highArea.subviewDivider.BackgroundColor = UIColor.Black;
@@ -347,11 +355,11 @@ namespace ION.IOS.ViewController.Analyzer
 			lowHighSensors.lowArea.snapArea.Alpha = 1f;
 			lowHighSensors.lowArea.snapArea.UserInteractionEnabled = true;
 			lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";				
-			lowHighSensors.lowArea.snapArea.Layer.CornerRadius = 10;
+			lowHighSensors.lowArea.snapArea.Layer.CornerRadius = 5;
 
 			lowHighSensors.lowArea.LabelTop.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.lowArea.LabelTop.Text = "";
-			lowHighSensors.lowArea.LabelTop.Layer.CornerRadius = 10;
+			lowHighSensors.lowArea.LabelTop.Layer.CornerRadius = 5;
 			lowHighSensors.lowArea.LabelTop.ClipsToBounds = true;
 
 			lowHighSensors.lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
@@ -380,7 +388,7 @@ namespace ION.IOS.ViewController.Analyzer
       lowHighSensors.lowArea.Connection.BackgroundColor = UIColor.Clear;
       //lowHighSensors.lowArea.connectionColor.BackgroundColor = UIColor.Clear;
       lowHighSensors.lowArea.Connection.Hidden = true;
-      lowHighSensors.lowArea.connectionColor.Layer.CornerRadius = 6;
+      lowHighSensors.lowArea.connectionColor.Layer.CornerRadius = 5;
       lowHighSensors.lowArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       lowHighSensors.lowArea.connectionColor.Layer.BorderWidth = 1f;
       lowHighSensors.lowArea.connectionColor.Hidden = true;
@@ -411,11 +419,11 @@ namespace ION.IOS.ViewController.Analyzer
 			lowHighSensors.highArea.snapArea.Alpha = 1f;
 			lowHighSensors.highArea.snapArea.UserInteractionEnabled = true;
 			lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-			lowHighSensors.highArea.snapArea.Layer.CornerRadius = 10;
+			lowHighSensors.highArea.snapArea.Layer.CornerRadius = 5;
 
 			lowHighSensors.highArea.LabelTop.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.highArea.LabelTop.Text = "";
-			lowHighSensors.highArea.LabelTop.Layer.CornerRadius = 10;
+			lowHighSensors.highArea.LabelTop.Layer.CornerRadius = 5;
 			lowHighSensors.highArea.LabelTop.ClipsToBounds = true;
 
 			lowHighSensors.highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
@@ -444,7 +452,7 @@ namespace ION.IOS.ViewController.Analyzer
       lowHighSensors.highArea.Connection.Hidden = true;
       lowHighSensors.highArea.Connection.BackgroundColor = UIColor.Clear;
       //lowHighSensors.highArea.connectionColor.BackgroundColor = UIColor.Clear;
-      lowHighSensors.highArea.connectionColor.Layer.CornerRadius = 6;
+      lowHighSensors.highArea.connectionColor.Layer.CornerRadius = 5;
       lowHighSensors.highArea.connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       lowHighSensors.highArea.connectionColor.Layer.BorderWidth = 1f;
       lowHighSensors.highArea.connectionColor.Hidden = true;
@@ -485,7 +493,7 @@ namespace ION.IOS.ViewController.Analyzer
 			topLabel.Text = " Press " + subview.AccessibilityIdentifier;
 			topLabel.Hidden = true;
 			topLabel.ClipsToBounds = true;
-      topLabel.Layer.CornerRadius = 10;
+      topLabel.Layer.CornerRadius = 5;
 
       tLabelBottom.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect(0, .2 * subview.Bounds.Height, subview.Bounds.Width, .12 * subview.Bounds.Height);
       tLabelBottom.BackgroundColor = UIColor.Blue;
@@ -497,7 +505,7 @@ namespace ION.IOS.ViewController.Analyzer
 			middleLabel.Hidden = true;
 			middleLabel.TextAlignment = UITextAlignment.Right;
 
-      bottomLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, .676 * subview.Bounds.Height, .969 * subview.Frame.Size.Width, .261 * subview.Frame.Size.Height);
+      bottomLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, .676 * subview.Bounds.Height, .969 * subview.Frame.Size.Width, .3 * subview.Frame.Size.Height);
 			bottomLabel.AdjustsFontSizeToFitWidth = true;
 			bottomLabel.Text = "";
 			bottomLabel.Hidden = true;
@@ -683,10 +691,12 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <param name="View">View.</param>
 		public static void CreateLowHighArea(LowHighArea lowHighSensors, UIView View){
 			////CREATE ANALYSER HIGH AND LOW AREAS
-      //lowHighSensors.lowArea.areaRect = new CGRect(View.Center.X - 151, View.Center.Y + 35, 149, 115);
-      lowHighSensors.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      //lowHighSensors.highArea.areaRect = new CGRect (View.Center.X + 4, View.Center.Y + 35, 149, 115); 
-      lowHighSensors.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+
+      //lowHighSensors.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+      lowHighSensors.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .48 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+
+      //lowHighSensors.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+      lowHighSensors.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .48 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
 		}
     /// <summary>
     /// Calculates the position for the Low and High subviews
@@ -695,10 +705,12 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="View">View.</param>
     public static void CreateLowHighArea(sensor Sensor, UIView View){      
       ////CREATE ANALYSER HIGH AND LOW AREAS
-      //lowHighSensors.lowArea.areaRect = new CGRect(View.Center.X - 151, View.Center.Y + 35, 149, 115);
-      Sensor.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      //lowHighSensors.highArea.areaRect = new CGRect (View.Center.X + 4, View.Center.Y + 35, 149, 115); 
-      Sensor.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+
+      //Sensor.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+      Sensor.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .4 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+
+      //Sensor.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
+      Sensor.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .4 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
     }
 
     public static void applyLowHighGestures(lowHighSensor lowArea, lowHighSensor highArea, LowHighArea lowHighSensors, sensor Sensor){

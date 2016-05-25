@@ -1,6 +1,7 @@
 namespace ION.IOS.ViewController.PressureTemperatureChart {
 
   using System;
+  using System.Drawing;
   using System.Threading.Tasks;
 
   using CoreGraphics;
@@ -33,6 +34,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public event onUnitChanged tUnitChanged;
     private const int SECTION_DEW = 0;
     private const int SECTION_BUBBLE = 1;
+
+    public SliderView ptSlider;
+    public UIScrollView measurementScroller;
 
     public Manifold initialManifold { get; set; }
     /// <summary>
@@ -230,6 +234,66 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
         }
       }
+//      measurementScroller = new UIScrollView(new CGRect(.025 * View.Bounds.Width,.5 * View.Bounds.Height, .95 * View.Bounds.Width, 128));
+//      measurementScroller.ShowsHorizontalScrollIndicator = false;
+//      measurementScroller.ContentSize = new CGSize(3 * measurementScroller.Bounds.Width,measurementScroller.Bounds.Height);
+//      measurementScroller.AutoresizingMask = UIViewAutoresizing.FlexibleWidth;
+//      measurementScroller.Layer.CornerRadius = 5;
+//      measurementScroller.Layer.BorderWidth = 1f;
+//
+//      var ptValueLabel = new UILabel(new CGRect(.05 * View.Bounds.Width, .7 * View.Bounds.Height, .9 * View.Bounds.Width, .3 * View.Bounds.Height));
+//      ptValueLabel.Lines = 0;
+//
+//      var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1,.48 * View.Bounds.Height, 1,.18 * View.Bounds.Height));
+//      topMark.BackgroundColor = UIColor.Black;
+//
+//      ptSlider = new SliderView(measurementScroller,ptChart, pressureUnit, temperatureUnit);
+//
+//      measurementScroller.Scrolled += (sender, e) => {
+//        if(measurementScroller.ContentOffset.X >= 0){
+//          if((measurementScroller.ContentOffset.X + ptSlider.measurementView.startGap) <= ptSlider.measurementView.firstEnd){
+//            var value = measurementScroller.ContentOffset.X / ptSlider.measurementView.firstTicks;
+//            editPressure.Text = value.ToString("N");
+//            ptValueLabel.Text = "Section 1 width: " + ptSlider.measurementView.first15 +"\n"
+//                              + "Range: " + 10 +"\n"
+//                              + "PerTick: " + ptSlider.measurementView.firstTicks +"\n"
+//                              + "Offset: " + measurementScroller.ContentOffset.X+"\n"
+//                              + "ticks for section: " + value;
+//          } else if ((measurementScroller.ContentOffset.X + ptSlider.measurementView.startGap) <= ptSlider.measurementView.secondEnd){
+//            var value = ((measurementScroller.ContentOffset.X - ptSlider.measurementView.first15) / ptSlider.measurementView.secondTicks) + ptSlider.measurementView.firstMeasurements;
+//            editPressure.Text = value.ToString("N");
+//            ptValueLabel.Text = "Section 1 width: " + ptSlider.measurementView.second15 +"\n"
+//                              + "Range: " + ptSlider.measurementView.firstMeasurements +"\n"
+//                              + "PerTick: " + ptSlider.measurementView.secondTicks +"\n"
+//                              + "Offset: " + measurementScroller.ContentOffset.X +"\n"
+//                              + "ticks for section: " + value;
+//          } else if ((measurementScroller.ContentOffset.X + ptSlider.measurementView.startGap) <= ptSlider.measurementView.middleEnd){
+//            var value = ((measurementScroller.ContentOffset.X - (ptSlider.measurementView.second15 + ptSlider.measurementView.first15))/ ptSlider.measurementView.thirdTicks) + ptSlider.measurementView.secondMeasurements;
+//            editPressure.Text = value.ToString("N");
+//            ptValueLabel.Text = "Section 3 width: " + ptSlider.measurementView.middle25 + "\n"
+//                              + "Range: " + ptSlider.measurementView.middleMeasurements +"\n"
+//                              + "PerTick: " + ptSlider.measurementView.thirdTicks +"\n"
+//                              + "Offset: " + measurementScroller.ContentOffset.X +"\n"
+//                              + "ticks for section: " + value;         
+//          } else if ((measurementScroller.ContentOffset.X + ptSlider.measurementView.startGap) <= ptSlider.measurementView.lastEnd){
+//            var value = ((measurementScroller.ContentOffset.X - (ptSlider.measurementView.middle25 + ptSlider.measurementView.second15 + ptSlider.measurementView.first15))/ ptSlider.measurementView.lastTicks) + ptSlider.measurementView.middleMeasurements;
+//            editPressure.Text = value.ToString("N");
+//            ptValueLabel.Text = "Section 4 width: " + ptSlider.measurementView.last45 + "\n"
+//                              + "Range: " + (ptSlider.measurementView.maxPressure - ptSlider.measurementView.middleMeasurements) +"\n"
+//                              + "PerTick: " + ptSlider.measurementView.lastTicks +"\n"
+//                              + "Offset: " + measurementScroller.ContentOffset.X+"\n"
+//                              + "ticks for section: " + value;
+//          }
+//
+//          SetPressureMeasurementFromEditText();
+//        }
+//      }; 
+//
+//      measurementScroller.BackgroundColor = UIColor.White;
+//      measurementScroller.AddSubview(ptSlider.measurementView);
+//      View.AddSubview(measurementScroller);
+//      View.AddSubview(ptValueLabel);
+//      View.AddSubview(topMark);
     }
 
     // Overridden from ViewController
@@ -278,6 +342,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             entryMode = new SensorEntryMode(this, temperatureSensor, pressureUnit, ptChart, editTemperature, editPressure);
           }
 
+//          ptSlider.measurementView.resetData(ptChart,pressureUnit, temperatureUnit);
+//
+//          measurementScroller.ContentOffset = new CGPoint(measurementScroller.Bounds.Width,0);
+//
           InvalidateViewController();
         };
         NavigationController.PushViewController(sb, true);

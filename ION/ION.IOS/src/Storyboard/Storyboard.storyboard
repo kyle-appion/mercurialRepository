@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10116" systemVersion="15A4310" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="120">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15A4310" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="120">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
@@ -291,7 +291,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="GF2-8A-fsx" userLabel="viewDivider">
-                                                            <rect key="frame" x="112" y="0.0" width="1" height="48"/>
+                                                            <rect key="frame" x="104" y="0.0" width="1" height="48"/>
                                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="1" id="3qf-Kj-ZA6"/>
@@ -306,19 +306,19 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dAy-vE-Qhz" userLabel="buttonIcon">
-                                                            <rect key="frame" x="64" y="0.0" width="48" height="48"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K5Y-Hv-i98" userLabel="button">
+                                                            <rect key="frame" x="121" y="0.0" width="447" height="48"/>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dAy-vE-Qhz" userLabel="buttonIcon">
+                                                            <rect key="frame" x="64" y="4" width="40" height="40"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="48" id="5Yf-AX-Qph"/>
-                                                                <constraint firstAttribute="width" constant="48" id="jeA-3z-1It"/>
+                                                                <constraint firstAttribute="height" constant="40" id="5Yf-AX-Qph"/>
+                                                                <constraint firstAttribute="width" constant="40" id="jeA-3z-1It"/>
                                                             </constraints>
                                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                             <state key="normal">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K5Y-Hv-i98" userLabel="button">
-                                                            <rect key="frame" x="121" y="0.0" width="447" height="48"/>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -390,8 +390,11 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jcc-H1-GK5" userLabel="buttonIcon">
-                                                            <rect key="frame" x="64" y="0.0" width="48" height="48"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dwn-Y2-82j" userLabel="button">
+                                                            <rect key="frame" x="121" y="0.0" width="447" height="48"/>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jcc-H1-GK5" userLabel="buttonIcon">
+                                                            <rect key="frame" x="64" y="4" width="40" height="40"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="48" id="97a-32-DO9"/>
                                                                 <constraint firstAttribute="height" constant="48" id="L3W-xO-wOX"/>
@@ -400,9 +403,6 @@
                                                             <state key="normal">
                                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                                             </state>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dwn-Y2-82j" userLabel="button">
-                                                            <rect key="frame" x="121" y="0.0" width="447" height="48"/>
                                                         </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -458,22 +458,11 @@
                                                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hil-AC-SqV" userLabel="buttonReset">
-                                                            <rect key="frame" x="64" y="0.0" width="48" height="48"/>
+                                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6vo-9P-4l9" userLabel="buttonPlayPause">
+                                                            <rect key="frame" x="120" y="4" width="40" height="40"/>
                                                             <constraints>
-                                                                <constraint firstAttribute="height" constant="48" id="xFi-Xy-O8v"/>
-                                                                <constraint firstAttribute="width" constant="48" id="xGf-Xe-mPk"/>
-                                                            </constraints>
-                                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
-                                                            <state key="normal">
-                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                            </state>
-                                                        </button>
-                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6vo-9P-4l9" userLabel="buttonPlayPause">
-                                                            <rect key="frame" x="112" y="0.0" width="48" height="48"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="48" id="T0b-jD-PTS"/>
-                                                                <constraint firstAttribute="height" constant="48" id="fbZ-m6-F8c"/>
+                                                                <constraint firstAttribute="width" constant="40" id="T0b-jD-PTS"/>
+                                                                <constraint firstAttribute="height" constant="40" id="fbZ-m6-F8c"/>
                                                             </constraints>
                                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                             <state key="normal">
@@ -481,7 +470,7 @@
                                                             </state>
                                                         </button>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N6i-o3-BCs" userLabel="viewDivider">
-                                                            <rect key="frame" x="160" y="1" width="1" height="48"/>
+                                                            <rect key="frame" x="144" y="1" width="1" height="48"/>
                                                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="1" id="0aa-9N-9ax"/>
@@ -493,6 +482,17 @@
                                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
+                                                        <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hil-AC-SqV" userLabel="buttonReset">
+                                                            <rect key="frame" x="72" y="9" width="40" height="40"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="40" id="xFi-Xy-O8v"/>
+                                                                <constraint firstAttribute="width" constant="40" id="xGf-Xe-mPk"/>
+                                                            </constraints>
+                                                            <color key="tintColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <state key="normal">
+                                                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                            </state>
+                                                        </button>
                                                     </subviews>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                     <constraints>
@@ -661,7 +661,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PyE-Nn-ZAe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1798" y="465.99999999999994"/>
+            <point key="canvasLocation" x="1798" y="465"/>
         </scene>
         <!--Analyzer View Controller-->
         <scene sceneID="Zkl-xC-oyZ">
@@ -1091,7 +1091,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1XI-Je-CHG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2407" y="465.99999999999994"/>
+            <point key="canvasLocation" x="2407" y="465"/>
         </scene>
         <!--viewControllerDeviceManager-->
         <scene sceneID="qBy-IU-ycY">
@@ -2090,6 +2090,42 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CcJ-DY-uvo" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2407" y="2394.9999999999995"/>
+        </scene>
+        <!--Walkthrough Menu View Controller-->
+        <scene sceneID="gB4-0Y-cwd">
+            <objects>
+                <viewController storyboardIdentifier="viewControllerWalkthroughMenu" id="T2i-iW-76h" customClass="WalkthroughMenuViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="IfA-Q5-hN2"/>
+                        <viewControllerLayoutGuide type="bottom" id="nWu-g9-DOz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="6yl-Fl-eZG">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0PW-bx-C71" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3041" y="2394"/>
+        </scene>
+        <!--Walkthrough Screenshot View Controller-->
+        <scene sceneID="EPj-CW-MvL">
+            <objects>
+                <viewController storyboardIdentifier="viewControllerWalkthroughScreenshot" id="5Nl-yb-5V7" customClass="WalkthroughScreenshotViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="e98-bc-uaA"/>
+                        <viewControllerLayoutGuide type="bottom" id="fqK-FP-qMd"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="aLU-Oo-rnM">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0qr-s0-FWQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3677" y="2394"/>
         </scene>
         <!--viewControllerLogging-->
         <scene sceneID="kif-TK-cAn">
