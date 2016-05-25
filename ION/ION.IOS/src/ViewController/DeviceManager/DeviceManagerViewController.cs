@@ -24,7 +24,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <summary>
     /// The time in milliseconds that the view controller will perform a scan for.
     /// </summary>
-    private const int DEFAULT_SCAN_TIME = 5000;
+    private const int DEFAULT_SCAN_TIME = 30000;
     /// <summary>
     /// The delegate that is used to pass a sensor back from the device manager.
     /// </summary>

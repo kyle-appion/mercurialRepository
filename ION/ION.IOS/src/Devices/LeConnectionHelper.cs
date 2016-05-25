@@ -150,7 +150,7 @@
       isScanning = true;
       cancelSource = new CancellationTokenSource();
       var options = new PeripheralScanningOptions();
-      options.AllowDuplicatesKey = false;
+      options.AllowDuplicatesKey = true;
       centralManager.ScanForPeripherals((CBUUID[])null, options);
 
       var startTime = DateTime.Now;
@@ -224,7 +224,10 @@
           broadcastPacket = bytes;
           // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
           var rawProtocol = (EProtocolVersion)broadcastPacket[0];
-          if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
+          if (serialNumber.rawSerial.Length == 8) {
+            // TODO ahodder@appioninc.com: Finish 
+//            protocol = EProtocolVersion.Rigado;
+          } else if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
             protocol = rawProtocol;
           } else {
             protocol = EProtocolVersion.V1;
@@ -250,6 +253,7 @@
     /// Notifies the OnDeviceFound event that a new device has been discovered by the connection helper.
     /// </summary>
     private void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] broadcastPacket, EProtocolVersion protocol) {
+//      Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, broadcastPacket, protocol);
       }

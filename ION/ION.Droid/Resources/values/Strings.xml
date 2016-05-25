@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">ION HVAC/R</string>
   <!-- This is NOT the actual version, just the string "App Version" -->
@@ -215,12 +215,15 @@
   REPORT
   -->
   <string name="reports">Reports</string>
+  <string name="report_by_date">By Date</string>
+  <string name="report_by_job">By Job</string>
   <string name="report_certificates">Calibration Certificates</string>
   <string name="report_certificates_download">Download Certificates?</string>
   <string name="report_certificates_downloading">Downloading Certificates</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
-  <string name="report_data_logging">Data Log Report</string>
+  <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
+  <string name="report_data_logging">Reporting</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
   <string name="report_data_logging_highest_measurement">Highest Measurement</string>
@@ -231,15 +234,17 @@
   <string name="report_data_logging_step_1">Step 1</string>
   <string name="report_data_logging_step_2">Step 2</string>
   <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_graph">Graph</string>
   <string name="report_jobs">Jobs</string>
   <string name="report_name">Report Name</string>
   <string name="report_new">New Report</string>
-  <string name="report_saved">Saved Report</string>
+  <string name="report_saved">Saved Reports</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+  <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
 
   <!--

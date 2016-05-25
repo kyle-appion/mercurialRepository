@@ -1,6 +1,7 @@
 namespace ION.IOS.ViewController.GaugeTesting {
 
   using System;
+  using System.Collections.Generic;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -21,6 +22,7 @@ namespace ION.IOS.ViewController.GaugeTesting {
   using ION.Core.Internal.Testing;
   using ION.Core.IO;
   using ION.Core.Sensors;
+  using ION.Core.Util;
 
   public partial class InternalTestBenchViewController : BaseIONViewController {
 
@@ -33,13 +35,29 @@ namespace ION.IOS.ViewController.GaugeTesting {
     private Av760ProductionTest test;
     private Thread thread;
 
+    /// <summary>
+    /// The list of the sensors that are held in the table.
+    /// </summary>
+    private List<GaugeDeviceSensor> sensors = new List<GaugeDeviceSensor>();
+
 
     public InternalTestBenchViewController (IntPtr handle) : base (handle) {
       var dm = AppState.context.deviceManager;
       var bf = dm.GetAllDevicesOfType(EDeviceType.InternalInterface);
       var deviceSensors = dm.GetAllGaugeDeviceSensorsOfType(ESensorType.Vacuum);
 
-      test = new Av760ProductionTest(XmlTestProcedureParser.DoParse(EmbeddedResource.Load("Av760TestingProcedure.xml")), bf[0] as BluefruitDevice, deviceSensors);
+      foreach (var sensor in dm.GetAllGaugeDeviceSensorsOfType(ESensorType.Vacuum)) {
+        if (sensor.device.isConnected) {
+          sensors.Add(sensor);
+        }
+      }
+
+      if (bf == null) {
+        throw new Exception("You need a valid bluefruit connected to visit this view controller.");
+      }
+
+      test = new Av760ProductionTest(XmlTestProcedureParser.DoParse(EmbeddedResource.Load("Av760TestingProcedure.xml")), bf[0] as BluefruitDevice, sensors);
+      test.onTargetPointMet += OnTargetPointMet;
       var scanButton = new UIButton(new CGRect(0, 0, 45, 30));
       scanButton.SetTitle("Test", UIControlState.Normal);
       scanButton.TouchUpInside += Do;
@@ -48,7 +66,12 @@ namespace ION.IOS.ViewController.GaugeTesting {
       var b = new UIBarButtonItem(scanButton);
       NavigationItem.RightBarButtonItem = b;
 
-      var ch = new string[] { "Serial", "500,000", "150,000", "50,000", "25,000", "1,000", "500", "200"};
+      var tp = test.procedure.targetPoints;
+      var ch = new string[tp.Count + 1];
+      ch[0] = "Serial";
+      for (int i = 0; i < tp.Count; i++) {
+        ch[i + 1] = tp[i].target.amount + "";
+      }
 
       var gds = dm.GetAllGaugeDeviceSensorsOfType(ESensorType.Vacuum);
       var serials = new string[gds.Count];
@@ -71,6 +94,16 @@ namespace ION.IOS.ViewController.GaugeTesting {
 
       table = new TableDataSet("Test Table", ch, serials, content);
 		}
+
+    /// <summary>
+    /// Called when the test procedure meets a new test point.
+    /// </summary>
+    private void OnTargetPointMet(TestProcedure.TargetPoint tp) {
+      for (int i = 0; i < sensors.Count; i++) {
+        var sensor = sensors[i];
+        table.SetValue(i, tp.target.amount + "", sensor.measurement.amount + "");
+      }
+    }
 
     private void Do(object sender, EventArgs e) {
       var view = new LoadingOverlay(View.Bounds, "Testing");

@@ -127,7 +127,7 @@
         Parse(serial);
         return true;
       } catch (ArgumentException e) {
-//        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid serial", e);
+        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid serial", e);
         return false;
       }
     }
@@ -140,6 +140,11 @@
     public static GaugeSerialNumber Parse(string serial) {
       if (serial == null) {
         throw new ArgumentException("Cannot parse serial: serial is null");
+      }
+
+      // TODO ahodder@appioninc.com: remove this
+      if ("P516E003".Equals(serial) || "RigDfu".Equals(serial)) {
+        return new GaugeSerialNumber(EDeviceModel.PT500, "PT8", serial, BuildManufactureDate("16", 'E'), (ushort)3);
       }
 
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate

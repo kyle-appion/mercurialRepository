@@ -579,6 +579,7 @@
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
     <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\Connections\IosRigadoConnection.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

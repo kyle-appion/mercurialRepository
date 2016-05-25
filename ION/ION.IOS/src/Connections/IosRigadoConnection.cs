@@ -1,5 +1,5 @@
-namespace ION.IOS.Connections {
-  
+﻿namespace ION.IOS {
+
   using System;
   using System.Threading;
   using System.Threading.Tasks;
@@ -11,28 +11,28 @@ namespace ION.IOS.Connections {
   using ION.Core.Connections;
   using ION.Core.Util;
 
-  public class IosLeConnection : IConnection {
+  public class IosRigadoConnection : IConnection {
     /// <summary>
     /// The base UUID that identifies services, charactertistics and descriptors
     /// within the BluetoothGatt API.
     /// </summary>
-    private const string BASE_UUID = "0000****-0000-1000-8000-00805f9b34fb";
+    private const string BASE_UUID = "6e40****-b5a3-f393-e0a9-e50e24dcca9e";
     /// <summary>
     /// The Rx characteristic.
     /// </summary>
-    private static readonly ServiceCharacteristicPair READ_CHARACTERISTIC = new ServiceCharacteristicPair("ffe0", "ffe4");
+    private static readonly ServiceCharacteristicPair READ_CHARACTERISTIC = new ServiceCharacteristicPair("0001", "0003");
     /// <summary>
     /// The Tx characteristic.
     /// </summary>
-    private static readonly ServiceCharacteristicPair WRITE_CHARACTERISTIC = new ServiceCharacteristicPair("ffe5", "ffe9");
+    private static readonly ServiceCharacteristicPair WRITE_CHARACTERISTIC = new ServiceCharacteristicPair("0001", "0002");
     /// <summary>
     /// The characteristic for the name.
     /// </summary>
-    private static readonly ServiceCharacteristicPair NAME_CHARACTERISTIC = new ServiceCharacteristicPair("ff90", "ff91");
+//    private static readonly ServiceCharacteristicPair NAME_CHARACTERISTIC = new ServiceCharacteristicPair("ff90", "ff91");
     /// <summary>
     /// The services to fetch on scan.
     /// </summary>
-    private static readonly CBUUID[] DESIRED_SERVICES = new CBUUID[] { READ_CHARACTERISTIC.service, WRITE_CHARACTERISTIC.service, NAME_CHARACTERISTIC.service };
+    private static readonly CBUUID[] DESIRED_SERVICES = new CBUUID[] { READ_CHARACTERISTIC.service, WRITE_CHARACTERISTIC.service, /*NAME_CHARACTERISTIC.service*/ };
 
     /// <summary>
     /// A utility method used to create the UUIDs necessary for use of the
@@ -155,7 +155,7 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <param name="centeralManager">Centeral manager.</param>
     /// <param name="peripheral">Peripheral.</param>
-    public IosLeConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
+    public IosRigadoConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
       this.centralManager = centralManager;
       __nativeDevice = peripheral;
       name = __nativeDevice.Name;
@@ -183,14 +183,14 @@ namespace ION.IOS.Connections {
         } else if (args.Characteristic.Equals(readCharacteristic)) {
           lastPacket = readCharacteristic.Value.ToArray();
         } else {
-//          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
+          //          Log.D(this, "Received unknown characteristic value: " + args.Characteristic);
         }
       };
 
       __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-//      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
+      //      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
@@ -201,7 +201,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
-//      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
+      //      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
     }
 
     // Overridden from IConnection
@@ -243,7 +243,7 @@ namespace ION.IOS.Connections {
         }
       }
 
-//      __nativeDevice.ReadValue(nameCharacteristic);
+      //      __nativeDevice.ReadValue(nameCharacteristic);
       /*
       while (nameCharacteristic.Value == null) {
         if (DateTime.Now - start > connectionTimeout) {
@@ -333,8 +333,8 @@ namespace ION.IOS.Connections {
               readCharacteristic = characteristic;
             } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               writeCharacteristic = characteristic;
-            } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
-              nameCharacteristic = characteristic;
+//            } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
+//              nameCharacteristic = characteristic;
             }
           }
         }
@@ -364,5 +364,6 @@ namespace ION.IOS.Connections {
         this.characteristic = CBUUID.FromString(characteristic);
       }
     }
-  } // End IOSLeConnection
+  }
 }
+

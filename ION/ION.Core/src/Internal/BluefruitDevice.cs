@@ -72,25 +72,26 @@
     }
 
     /// <summary>
-    /// Queries whether or not the bluefruit rig is initialized.
-    /// </summary>
-    /// <value><c>true</c> if is initialized; otherwise, <c>false</c>.</value>
-    public bool isInitialized {
-      get {
-        return EState.Initialized == state;
-      }
-    }
-
-    /// <summary>
     /// The current degree angle of the bluefruit's stepper.
     /// </summary>
     /// <value>The current angle.</value>
     public float currentAngle { get; private set; }
 
     /// <summary>
-    /// The current state of bluefruit.
+    /// The stepper representtion of the remote stepper 1.
     /// </summary>
-    private EState state;
+    public Stepper controlStepper { get; internal set; }
+
+    /// <summary>
+    /// Gets or sets the exhaust stepper.
+    /// </summary>
+    /// <value>The exhaust stepper.</value>
+    public Stepper exhaustStepper { get; internal set; }
+    /// <summary>
+    /// The vrc micron measurement.
+    /// </summary>
+    /// <value>The vrc measurement.</value>
+    public float vrcMeasurement { get; internal set; }
 
 
     public BluefruitDevice(BluefruitSerialNumber serialNumber, IConnection connection, BluefruitProtocol protcol) {
@@ -106,6 +107,9 @@
       connection.onDataReceived += ((IConnection conn, byte[] packet) => {
         HandlePacket(packet);
       });
+
+      controlStepper = new Stepper();
+      exhaustStepper = new Stepper();
     }
 
     /// <summary>
@@ -137,12 +141,67 @@
     /// </summary>
     /// <param name="packet">Packet.</param>
     public void HandlePacket(byte[] packet) {
-//      Log.D(this, "Packet is " + packet.ToByteString());
-      using (var reader = new BinaryReader(new MemoryStream(packet))) {
-        state = (EState)reader.ReadInt32BE();
+      try {
+        packet = CharacterBytesToRawBytes(packet);
+        Log.D(this, "Packet is " + packet.ToByteString());
+        using (var reader = new BinaryReader(new MemoryStream(packet))) {
+          controlStepper.state = (Stepper.EState)reader.ReadByte();
+          controlStepper.rotation = reader.ReadSingle();
+
+          exhaustStepper.state = (Stepper.EState)reader.ReadByte();
+          exhaustStepper.rotation = reader.ReadSingle();
+
+          this.vrcMeasurement = reader.ReadUInt32();
+
+        }
+
+        NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
+      } catch (Exception e) {
+        Log.E(this, "Failed to resolve packet", e);
       }
-//      Log.D(this, "State: " + state);
-      NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
+    }
+
+    /// <summary>
+    /// Converts a character byte array into a raw 0 indexed byte array.
+    /// </summary>
+    /// <returns>The bytes to raw bytes.</returns>
+    /// <param name="chars">Chars.</param>
+    private byte[] CharacterBytesToRawBytes(byte[] chars) {
+      var ret = new byte[chars.Length / 2];
+
+      for (int i = 0, k = 0; i < chars.Length; i += 2, k++) {
+        byte highNibble = CharToNibble((char)chars[i]);
+        byte lowNibble = CharToNibble((char)chars[i + 1]);
+
+        if (highNibble == 0xff) {
+          throw new Exception("Could not parse high nibble: " + chars[i]);
+        }
+
+        if (lowNibble == 0xff) {
+          throw new Exception("Could not parse low nibble: " + chars[i + 1]);
+        }
+
+        ret[k] = (byte)(highNibble * 16 + lowNibble);
+      }
+
+      return ret;
+    }
+
+    /// <summary>
+    /// Reads the given character as a nibble.
+    /// </summary>
+    /// <returns>The to nibble.</returns>
+    /// <param name="ch">Ch.</param>
+    private byte CharToNibble(char ch) {
+      if (ch >= '0' && ch <= '9') {
+        return (byte)(ch - '0');
+      } else if (ch >= 'a' && ch <= 'f') {
+        return (byte)(ch - 'a');
+      } else if (ch >= 'A' && ch <= 'F') {
+        return (byte)(ch - 'A');
+      } else {
+        return 0xff;
+      }
     }
 
     /// <summary>
@@ -162,15 +221,36 @@
         Log.E(this, "FAILED TO POST DEVICE EVENT TO MAIN THREAD!!!!", e);
       }
     }
+  }
+
+  public class Stepper {
+    /// <summary>
+    /// The curret state of the stepper.
+    /// </summary>
+    public EState state { get; internal set; }
+    /// <summary>
+    /// The current rotation of the stepper.
+    /// </summary>
+    /// <value>The rotation.</value>
+    public float rotation { get; internal set; }
+    /// <summary>
+    /// Whether or not the stepper is moving.
+    /// </summary>
+    /// <value><c>true</c> if is moving; otherwise, <c>false</c>.</value>
+    public bool isMoving { 
+      get {
+        return (state & EState.Moving) == EState.Moving;
+      }
+    }
 
     /// <summary>
     /// The enumeration of the states that the bluefruit can be in.
     /// </summary>
     [Flags]
     public enum EState {
-      Initialized = 1,
+      Home = 1,
       Moving = 2,
-    }
+    }    
   }
 }
 
