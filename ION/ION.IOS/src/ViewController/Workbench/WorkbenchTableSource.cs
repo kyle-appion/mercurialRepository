@@ -311,19 +311,6 @@
         }
       }
 
-      dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
-        UIAlertController textAlert = UIAlertController.Create(Strings.ENTER_NAME, manifold.primarySensor.name, UIAlertControllerStyle.Alert);
-        textAlert.AddTextField(textField => {});
-        textAlert.AddAction (UIAlertAction.Create (Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
-        textAlert.AddAction (UIAlertAction.Create (Strings.OK_SAVE, UIAlertActionStyle.Default, UIAlertAction => {
-          ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,manifold.primarySensor.name);
-          ion.database.Query<ION.Core.Database.DeviceRow>("UPDATE DeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,manifold.primarySensor.name);
-          manifold.primarySensor.name = textAlert.TextFields[0].Text;
-        }));
-
-        vc.PresentViewController(textAlert, true, null);
-      }));
-
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
         ShowAddSubviewDialog(tableView, manifold);
       }));
@@ -332,6 +319,10 @@
         var ac = this.vc.InflateViewController<SensorAlarmViewController>(BaseIONViewController.VC_SENSOR_ALARMS);
         ac.sensor = manifold.primarySensor;
         this.vc.NavigationController.PushViewController(ac, true);
+      }));
+
+      dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE, UIAlertActionStyle.Default, (action) => {
+        workbench.Remove(manifold);
       }));
 
       if (manifold.primarySensor is GaugeDeviceSensor) {
@@ -344,8 +335,17 @@
         }
       }
 
-      dialog.AddAction(UIAlertAction.Create(Strings.Workbench.REMOVE, UIAlertActionStyle.Default, (action) => {
-        workbench.Remove(manifold);
+      dialog.AddAction(UIAlertAction.Create(Strings.RENAME, UIAlertActionStyle.Default, (action) => {
+        UIAlertController textAlert = UIAlertController.Create(Strings.ENTER_NAME, manifold.primarySensor.name, UIAlertControllerStyle.Alert);
+        textAlert.AddTextField(textField => {});
+        textAlert.AddAction (UIAlertAction.Create (Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
+        textAlert.AddAction (UIAlertAction.Create (Strings.OK_SAVE, UIAlertActionStyle.Default, UIAlertAction => {
+          ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,manifold.primarySensor.name);
+          ion.database.Query<ION.Core.Database.DeviceRow>("UPDATE DeviceRow SET name = ? WHERE serialNumber = ?",textAlert.TextFields[0].Text,manifold.primarySensor.name);
+          manifold.primarySensor.name = textAlert.TextFields[0].Text;
+        }));
+
+        vc.PresentViewController(textAlert, true, null);
       }));
 
       dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
@@ -382,45 +382,12 @@
 
       var sensor = manifold.primarySensor;
 
-      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
-        });
-      }
-      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.MIN_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new MinSensorProperty(sensor));
-        });
-      }
-      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new MaxSensorProperty(sensor));
-        });
-      }
-      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) { 
-        addAction(Strings.Workbench.Viewer.HOLD_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new HoldSensorProperty(sensor));
-        });
-      }
       if (manifold.secondarySensor != null) {
         if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) { 
           addAction(Strings.Workbench.Viewer.SECONDARY, (UIAlertAction action) => {
             manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
           });
         }
-      }
-      /*
-      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
-        });
-      }
-      */
-
-      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new TimerSensorProperty(sensor));
-        });
       }
 
       // The location of this block is kind of obnoxious, by pt chart is used by both of the below blocks.
@@ -446,6 +413,44 @@
         manifold.ptChart = ptChart;
         addAction(Strings.Workbench.Viewer.SHSC_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
+        });
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.MIN_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new MinSensorProperty(sensor));
+        });
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new MaxSensorProperty(sensor));
+        });
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) { 
+        addAction(Strings.Workbench.Viewer.HOLD_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new HoldSensorProperty(sensor));
+        });
+      }
+
+      if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
+        });
+      }
+
+      /*
+      if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
+        });
+      }
+      */
+
+      if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+        addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
+          manifold.AddSensorProperty(new TimerSensorProperty(sensor));
         });
       }
 

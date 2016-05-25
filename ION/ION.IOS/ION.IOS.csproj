@@ -574,7 +574,7 @@
     <Compile Include="src\ViewController\Walkthrough\WorkBenchWalkthrough.cs" />
     <Compile Include="src\ViewController\Walkthrough\AnalyzerWalkthrough.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\SliderView.cs" />
-    <Compile Include="src\Alarms\PTSlideView.cs" />
+    <Compile Include="src\ViewController\PressureTemperatureChart\PTSlideView.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

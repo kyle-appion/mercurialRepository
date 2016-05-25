@@ -364,7 +364,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 			lowHighSensors.lowArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
       lowHighSensors.lowArea.LabelMiddle.Text = Util.Strings.Analyzer.LOWUNDEFINED;
-			lowHighSensors.lowArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
+			lowHighSensors.lowArea.LabelMiddle.TextAlignment = UITextAlignment.Center;
 
 			lowHighSensors.lowArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.lowArea.LabelBottom.Text = "";
@@ -428,7 +428,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 			lowHighSensors.highArea.LabelMiddle.AdjustsFontSizeToFitWidth = true;
       lowHighSensors.highArea.LabelMiddle.Text = Util.Strings.Analyzer.HIGHUNDEFINED;
-			lowHighSensors.highArea.LabelMiddle.TextAlignment = UITextAlignment.Left;
+			lowHighSensors.highArea.LabelMiddle.TextAlignment = UITextAlignment.Center;
 
 			lowHighSensors.highArea.LabelBottom.AdjustsFontSizeToFitWidth = true;
 			lowHighSensors.highArea.LabelBottom.Text = "";
@@ -589,8 +589,10 @@ namespace ION.IOS.ViewController.Analyzer
     public static void RemoveDevice(actionPopup Sensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors, List<Sensor> sensorList){
       for(int i = 0; i < sensorList.Count; i++){
         if (sensorList[i] != null) {
-          if (sensorList[i].name == Sensor.pressedSensor.currentSensor.device.name && sensorList[i].type == Sensor.pressedSensor.currentSensor.type) {
-            sensorList.Remove(Sensor.pressedSensor.currentSensor);
+          if (Sensor.pressedSensor.currentSensor != null) {
+            if (sensorList[i].name == Sensor.pressedSensor.currentSensor.device.name && sensorList[i].type == Sensor.pressedSensor.currentSensor.type) {
+              sensorList.Remove(Sensor.pressedSensor.currentSensor);
+            }
           }
         }
       }
@@ -735,21 +737,32 @@ namespace ION.IOS.ViewController.Analyzer
         vc = vc.PresentedViewController;
       }
 
-      UIAlertController addDeviceSheet;
+      UIAlertController addDeviceSheet; 
 
       addDeviceSheet = UIAlertController.Create (lhSensor.LabelTop.Text + " " + Util.Strings.ACTIONS, "", UIAlertControllerStyle.Alert);
-
-      addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
-        alarmRequestViewer(Sensor);
-      }));
+      if (Sensor.currentSensor != null && !Sensor.currentSensor.device.isConnected){
+        addDeviceSheet.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
+          Sensor.lowArea.connectionSpinner(2);
+        }));
+      }
 
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.ADDSUBVIEW, UIAlertActionStyle.Default, (action) => {
         subviewOptionChosen(lhSensor);
       }));
 
+      addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
+        alarmRequestViewer(Sensor);
+      }));
+
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.REMOVESENSOR, UIAlertActionStyle.Default, (action) => {
         RemoveDevice (Sensor, lowHighSensors);
       }));
+
+      if (Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected) {
+        addDeviceSheet.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
+          Sensor.lowArea.connectionSpinner(1);
+        }));
+      } 
 
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
 
@@ -773,9 +786,10 @@ namespace ION.IOS.ViewController.Analyzer
         if (splits[0].Equals("Linked") && pressedArea.manifold.secondarySensor == null) {
           continue;
         }
-        if (splits[0].Equals("Superheat") && pressedArea.manifold.primarySensor.type == ESensorType.Vacuum) {
+        if ((splits[0].Equals("Superheat") || splits[0].Equals("Pressure")) && pressedArea.manifold.primarySensor.type == ESensorType.Vacuum) {
           continue;
         }
+
         if (!pressedArea.tableSubviews.Contains (splits[0])) {          
           subviewAlert.AddAction (UIAlertAction.Create (subview, UIAlertActionStyle.Default, (action) => {
             ////set linked sensor to always be first in the table
@@ -784,7 +798,7 @@ namespace ION.IOS.ViewController.Analyzer
             } else {
               pressedArea.tableSubviews.Add(splits[0]);
             }
-            //pressedArea.tableSubviews.Add(splits[0]);
+
             pressedArea.subviewTable.Source = new AnalyzerTableSource(pressedArea.tableSubviews, pressedArea);
             pressedArea.subviewTable.ReloadData();
             if(pressedArea.subviewTable.Hidden)
@@ -1357,6 +1371,7 @@ namespace ION.IOS.ViewController.Analyzer
         } else {
           bool foundAssociation = false;
           foreach (var item in analyzerSensors.viewList){
+
             if (item.lowArea.attachedSensor != null) {
               if (item.lowArea.attachedSensor.currentSensor != null && (item.lowArea.attachedSensor.currentSensor == analyzerSensors.viewList[start].currentSensor || item.lowArea.attachedSensor.currentSensor == analyzerSensors.viewList[swap].currentSensor)) {
                 LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View, item);
@@ -1398,6 +1413,7 @@ namespace ION.IOS.ViewController.Analyzer
       addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
 
         if(item != null){
+          var holdState = item.lowArea.manifold.ptChart.state;
           if(item.lowArea.currentSensor != null){
             item.lowArea.manifold = new Manifold(item.lowArea.currentSensor);
             item.highArea.manifold = new Manifold(item.highArea.currentSensor);
@@ -1407,6 +1423,8 @@ namespace ION.IOS.ViewController.Analyzer
           }
           item.lowArea.manifold.SetSecondarySensor(null);
           item.highArea.manifold.SetSecondarySensor(null);
+          item.lowArea.manifold.ptChart = PTChart.New(AppState.context,holdState);
+          item.highArea.manifold.ptChart = PTChart.New(AppState.context,holdState);
           item.lowArea.attachedSensor = null;
           item.highArea.attachedSensor = null;
         }
@@ -1535,7 +1553,6 @@ namespace ION.IOS.ViewController.Analyzer
         addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
           if(removeSensor.lowArea.attachedSensor != null){
             Console.WriteLine("low high sensor has a linked sensor already");
-            Console.WriteLine("attached sensor is from device " + removeSensor.lowArea.attachedSensor.manualSensor.name);
             removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             removeSensor.lowArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Black;

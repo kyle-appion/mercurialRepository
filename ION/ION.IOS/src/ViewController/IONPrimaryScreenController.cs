@@ -68,8 +68,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS) {
-          //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
