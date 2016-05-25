@@ -20,6 +20,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseSaved(UIView mainView) {
       showReports = new UIView(new CGRect(.01 * mainView.Bounds.Width,.05 * mainView.Bounds.Height,.98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       showReports.BackgroundColor = UIColor.White;
+      showReports.Layer.CornerRadius = 5;
       showReports.Layer.BorderColor = UIColor.Black.CGColor;
       showReports.Layer.BorderWidth = 1f;
       showReports.Hidden = true;

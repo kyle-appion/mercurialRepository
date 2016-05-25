@@ -17,9 +17,9 @@ namespace ION.IOS.ViewController.JobManager {
     public ManageJobView(UIView parentView,List<int> jobID, JobViewController manageVC) {
       ion = AppState.context;
 
-      mjView = new UIView(new CGRect(.01 * parentView.Bounds.Width,50, .98 * parentView.Bounds.Width, .78 * parentView.Bounds.Height));
+      mjView = new UIView(new CGRect(.01 * parentView.Bounds.Width,50, .98 * parentView.Bounds.Width, .88 * parentView.Bounds.Height));
       mjView.BackgroundColor = UIColor.White;
-      mjView.Layer.CornerRadius = 8;
+      mjView.Layer.CornerRadius = 5;
       mjView.ClipsToBounds = true;     
 
       currentJobs = new UITableView(new CGRect(0,0,mjView.Bounds.Width,mjView.Bounds.Height));
@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.JobManager {
       jobRefresh = new UIRefreshControl();
       jobRefresh.ValueChanged += (sender, e) => {
         refreshJobList(manageVC);
-      }; 
+      };
 
       currentJobs.InsertSubview(jobRefresh,0);
       currentJobs.SendSubviewToBack(jobRefresh);

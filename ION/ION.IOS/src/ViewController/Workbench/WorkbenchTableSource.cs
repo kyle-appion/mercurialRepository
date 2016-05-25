@@ -129,7 +129,7 @@
     // Overridden from UITableViewSource
     public override bool CanEditRow(UITableView tableView, NSIndexPath path) {
       var record = records[path.Row];
-      return record is ViewerRecord || !((record is AddRecord));
+      return record is ViewerRecord || !((record is AddRecord)) || !((record is SpaceRecord));
     }
 
     // Overridden from UITableViewSource
@@ -207,14 +207,14 @@
             onAddClicked();
           }
         });
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is ViewerRecord) {
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
         cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is MeasurementRecord) {
         var meas = record as MeasurementRecord;
@@ -223,34 +223,35 @@
         cell.UpdateTo(meas, GetLocalizedTitleString(meas.sensorProperty), "ic_refresh", (obj, sp) => {
           sp.Reset();
         });
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is TimerRecord) {
         var timer = record as TimerRecord;
         var cell = tableView.DequeueReusableCell(CELL_TIMER_SUBVIEW) as TimerSensorPropertyCell;
 
         cell.UpdateTo(timer);
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is RateOfChangeRecord) {
         var rr = record as RateOfChangeRecord;
         var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
 
         cell.UpdateTo(rr);
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is FluidRecord) {
         var fr = record as FluidRecord;
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
         cell.UpdateTo(fr);
-
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is SpaceRecord) {
         var cell = tableView.DequeueReusableCell(CELL_SPACE);
 
         cell.BackgroundColor = UIColor.Clear;
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       } else if (record is SecondarySensorRecord) {
         var sr = record as SecondarySensorRecord;
@@ -258,6 +259,7 @@
 
         cell.UpdateTo(sr,tableView.Bounds.Width);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+        cell.Layer.CornerRadius = 5;
         return cell;
       }else {
         throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
@@ -512,7 +514,7 @@
 
         case WorkbenchEvent.EType.Removed:
           var start = recordIndex;
-          var end = start;
+          var end = start + 1;
 
           vr = records[start] as ViewerRecord;
 

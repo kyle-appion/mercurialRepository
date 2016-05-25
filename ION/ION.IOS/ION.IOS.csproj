@@ -248,9 +248,6 @@
     <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\Contents.json" />
@@ -263,7 +260,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\view-details-32.png" />
     <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\ic_plus.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\ic_graph_menu.pdf" />
@@ -273,9 +269,21 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\ic_nav_certificate.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\ic_notes.png" />
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text_top.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text_top.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_record_stop.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record %281%29.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\walkthrough_arrow.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -285,6 +293,7 @@
     <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
+    <InterfaceDefinition Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -552,6 +561,20 @@
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
     <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuViewController.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuViewController.designer.cs">
+      <DependentUpon>WalkthroughMenuViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuView.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughTableSource.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.designer.cs">
+      <DependentUpon>WalkthroughScreenshotViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\Walkthrough\WorkBenchWalkthrough.cs" />
+    <Compile Include="src\ViewController\Walkthrough\AnalyzerWalkthrough.cs" />
+    <Compile Include="src\ViewController\PressureTemperatureChart\SliderView.cs" />
+    <Compile Include="src\Alarms\PTSlideView.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -585,6 +608,7 @@
     <Folder Include="src\ViewController\Help\" />
     <Folder Include="src\ViewController\Logging\" />
     <Folder Include="src\ViewController\JobManager\" />
+    <Folder Include="src\ViewController\Walkthrough\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -72,7 +72,7 @@ namespace ION.IOS.ViewController.Workbench {
     public override void AwakeFromNib() {
       base.AwakeFromNib();
 
-      viewBackground.Layer.CornerRadius = 10f;
+      viewBackground.Layer.CornerRadius = 5;
 
       var tapper = new UITapGestureRecognizer(() => {
         if (onBackgroundClicked != null) {

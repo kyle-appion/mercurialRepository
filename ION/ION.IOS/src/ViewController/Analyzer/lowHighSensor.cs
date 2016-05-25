@@ -123,11 +123,12 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable = new UITableView (tblRect);
       subviewTable.Bounces = false;
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
-      LabelMiddle = new UILabel (new CGRect(.2 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
+      LabelMiddle = new UILabel (new CGRect(.1 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
       LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       LabelSubview.ClipsToBounds = true;
-      subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .213 * snapArea.Bounds.Width, .204 * areaRect.Height));
+      subviewHide = new UIButton(new CGRect(.791 * snapArea.Bounds.Width, .8 * areaRect.Height, .209 * snapArea.Bounds.Width, .203 * areaRect.Height));
+      subviewHide.ClipsToBounds = true;
       subviewDivider = new UIView(new CGRect(0,.8 * areaRect.Height,areaRect.Width,2));
       headingDivider = new UIView(new CGRect(.033 * areaRect.Width,.234 * areaRect.Height,.932 * areaRect.Width,1));
       connectionColor = new UIView(new CGRect(.838 * areaRect.Width, .017 * areaRect.Height, .14 * areaRect.Width,.217 * areaRect.Height));
