@@ -69,8 +69,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS.ToUpper()) {
-          //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+#if DEBUG
+          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+#endif
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
@@ -251,8 +253,10 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-//        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
-//        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+#if DEBUG
+        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
+        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+#endif
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation
