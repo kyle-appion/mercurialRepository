@@ -79,8 +79,6 @@
       this.rows = rows;
       this.temperatures = temperatures;
       this.pressureValues = pressureValues;
-      ;
-
     }
 
     /// <summary>
@@ -132,7 +130,7 @@
       switch (state) {
         case EState.Bubble:
           return PRESSURE.OfScalar(pressureValues[rows - 1]);
-        case EState.Dew:
+        case EState.Dew:         
           return PRESSURE.OfScalar(pressureValues[2 * rows - 1]);
         default:
           throw new ArgumentException("Cannot get minimum pressure for state: " + state);
@@ -160,7 +158,7 @@
       var offset = (mixture && EState.Dew == state) ? rows : 0;
       int i = BinSearch(pressureValues, pressure.amount, 0 + offset, rows + offset);
 
-      if (i >= 0) {
+      if (i >= 0) {       
         return TEMPERATURE.OfScalar(temperatures[i]);
       } else {
         i = ~i;
@@ -188,9 +186,9 @@
       }
 
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
-
+      ION.Core.Util.Log.D(this, "Index for temp: " + i);
       if (i >= 0) {
-        return PRESSURE.OfScalar(pressureValues[i + offset]); 
+        return PRESSURE.OfScalar(pressureValues[i + offset]);
       } else {
         i = ~i;
         double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);

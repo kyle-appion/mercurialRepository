@@ -46,7 +46,9 @@ namespace ION.IOS.ViewController.Logging {
       DataType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .15 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .7 * mainView.Bounds.Height));
       DataType.BackgroundColor = UIColor.White;
       DataType.Layer.BorderColor = UIColor.Black.CGColor;
-      DataType.Layer.BorderWidth = 1f; 
+      DataType.Layer.BorderWidth = 1f;
+      DataType.Layer.CornerRadius = 5;
+      DataType.ClipsToBounds = true;
 
       selectedSessions = selected;
       selectedSessions.CollectionChanged += checkForSelected;
@@ -56,14 +58,14 @@ namespace ION.IOS.ViewController.Logging {
       step2.BackgroundColor = UIColor.FromRGB(95,212,48);
       step2.ClipsToBounds = true;
       step2.Layer.BorderWidth = 1f;
-      step2.Layer.CornerRadius = 8;
+      step2.Layer.CornerRadius = 5;
       step2.Text = "Back To Session List"; 
       step2.TextColor = UIColor.Black;
       step2.TextAlignment = UITextAlignment.Center;
       step2.AdjustsFontSizeToFitWidth = true;
       step2.Hidden = true;
 
-      backArrow = new UIImageView(new CGRect(.15 * DataType.Bounds.Width,.01 * mainView.Bounds.Height,.1 * step2.Bounds.Width, .05 * mainView.Bounds.Height));
+      backArrow = new UIImageView(new CGRect(.15 * DataType.Bounds.Width,.015 * mainView.Bounds.Height,.1 * step2.Bounds.Width, .05 * mainView.Bounds.Height));
       backArrow.Image = UIImage.FromBundle("img_bent_arrow");
       step2.AddSubview(backArrow);
 
@@ -107,7 +109,7 @@ namespace ION.IOS.ViewController.Logging {
       };
 
       sessionHeader = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .061 * mainView.Bounds.Height));
-      sessionHeader.Layer.CornerRadius = 8f;
+      sessionHeader.Layer.CornerRadius = 5;
       sessionHeader.Text = "Session Selection";
       sessionHeader.TextAlignment = UITextAlignment.Center;
       sessionHeader.Font = UIFont.BoldSystemFontOfSize(20);
@@ -115,7 +117,7 @@ namespace ION.IOS.ViewController.Logging {
 
       middleBorder = new UILabel(new CGRect(.5 * DataType.Bounds.Width,jobButton.Bounds.Height,2,jobButton.Bounds.Height));
       middleBorder.BackgroundColor = UIColor.Black;
-      middleBorder.Layer.CornerRadius = 8f;
+      middleBorder.Layer.CornerRadius = 5;
 
       bottomBorder = new UILabel(new CGRect(.45 * jobButton.Bounds.Width,1.76 * jobButton.Bounds.Height,.1 * jobButton.Bounds.Width,.08 * jobButton.Bounds.Height));
       bottomBorder.BackgroundColor = UIColor.Blue;

@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.Devices {
+﻿namespace ION.IOS.Connections {
 
   using System;
   using System.Collections.Generic;
@@ -203,7 +203,7 @@
         var connection = new IosLeConnection(centralManager, peripheral);
         name = await connection.PullDeviceName();
         if (name == null) {
-          Log.E(this, "Failed to resolce peripheral name. The peripheral will not be presented to the application.");
+          Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
           return;
         }
       }

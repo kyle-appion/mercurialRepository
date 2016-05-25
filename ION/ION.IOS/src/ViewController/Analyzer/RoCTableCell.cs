@@ -36,7 +36,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.rocReading;
-      cellReading.Text = Util.Strings.Analyzer.STABLE;
+      cellReading.Text = Util.Strings.Workbench.Viewer.ROC_STABLE;
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica-Bold", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;

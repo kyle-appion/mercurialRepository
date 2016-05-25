@@ -178,7 +178,7 @@ namespace ION.IOS.ViewController.Logging
 			leftTrackerView.BackgroundColor = UIColor.Gray;
 			leftTrackerView.Alpha = .4f;
 
-			leftTrackerCircle = new UIImageView (new CGRect (.1 * gView.Bounds.Width - 12, .15 * gView.Bounds.Height + trackerHeight, 24,26));
+			leftTrackerCircle = new UIImageView (new CGRect (.1 * gView.Bounds.Width - 15, .15 * gView.Bounds.Height + trackerHeight, 30,33));
 			leftTrackerCircle.Image = UIImage.FromBundle ("ic_tracker_circle");
 			leftTrackerCircle.UserInteractionEnabled = true;
 
@@ -192,9 +192,9 @@ namespace ION.IOS.ViewController.Logging
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
 				}
 				if(lTrackerDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lTrackerDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
-					if(rightTrackerCircle.Center.X - 12 > lTrackerDrag.LocationInView(mainView).X){
+					if(rightTrackerCircle.Center.X - 15 > lTrackerDrag.LocationInView(mainView).X){
 						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lTrackerDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-						leftTrackerCircle.Frame = new CGRect(lTrackerDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+						leftTrackerCircle.Frame = new CGRect(lTrackerDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
 					}
 				}
 				if (lTrackerDrag.State == UIGestureRecognizerState.Ended){          
@@ -224,9 +224,9 @@ namespace ION.IOS.ViewController.Logging
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
         }
         if(lViewDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lViewDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
-          if(rightTrackerCircle.Center.X - 12 > lViewDrag.LocationInView(mainView).X){
+          if(rightTrackerCircle.Center.X - 15 > lViewDrag.LocationInView(mainView).X){
             leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lViewDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
-            leftTrackerCircle.Frame = new CGRect(lViewDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+            leftTrackerCircle.Frame = new CGRect(lViewDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
           }
         }
         if (lViewDrag.State == UIGestureRecognizerState.Ended){          
@@ -253,7 +253,7 @@ namespace ION.IOS.ViewController.Logging
 			rightTrackerView.BackgroundColor = UIColor.Gray;
 			rightTrackerView.Alpha = .4f;
 
-			rightTrackerCircle = new UIImageView (new CGRect (0, .15 * gView.Bounds.Height + trackerHeight,24, 26));
+			rightTrackerCircle = new UIImageView (new CGRect (0, .15 * gView.Bounds.Height + trackerHeight,30, 33));
 			rightTrackerCircle.Image = UIImage.FromBundle ("ic_tracker_circle");
 			rightTrackerCircle.UserInteractionEnabled = true;
 
@@ -272,9 +272,9 @@ namespace ION.IOS.ViewController.Logging
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
 				}
         if(rTrackerDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rTrackerDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
-					if(leftTrackerCircle.Center.X + 12 < rTrackerDrag.LocationInView(mainView).X){
+					if(leftTrackerCircle.Center.X + 15 < rTrackerDrag.LocationInView(mainView).X){
 						rightTrackerView.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rTrackerDrag.LocationInView(mainView).X, trackerHeight);
-						rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+						rightTrackerCircle.Frame = new CGRect(rTrackerDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
 					}
 				}
 				if (rTrackerDrag.State == UIGestureRecognizerState.Ended){
@@ -305,9 +305,9 @@ namespace ION.IOS.ViewController.Logging
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
         }
         if(rViewDrag.LocationInView(mainView).X > (.11 * mainView.Bounds.Width) && rViewDrag.LocationInView(mainView).X < (.915 * graphTable.Bounds.Width)){
-          if(leftTrackerCircle.Center.X + 12 < rViewDrag.LocationInView(mainView).X){
+          if(leftTrackerCircle.Center.X + 15 < rViewDrag.LocationInView(mainView).X){
             rightTrackerView.Frame = new CGRect(rViewDrag.LocationInView(mainView).X,.15 * mainView.Bounds.Height,(.915 * graphTable.Bounds.Width) - rViewDrag.LocationInView(mainView).X, trackerHeight);
-            rightTrackerCircle.Frame = new CGRect(rViewDrag.LocationInView(mainView).X - 12,.15 * mainView.Bounds.Height + trackerHeight,24,26);
+            rightTrackerCircle.Frame = new CGRect(rViewDrag.LocationInView(mainView).X - 15,.15 * mainView.Bounds.Height + trackerHeight,30,33);
           }
         }
         if (rViewDrag.State == UIGestureRecognizerState.Ended){
@@ -430,7 +430,7 @@ namespace ION.IOS.ViewController.Logging
 					scrollUp.Enabled = true;
 				}
 			};
-      extendedDown = new UIButton(new CGRect(0,.75 * gView.Bounds.Height,.1 * gView.Bounds.Width,.25 * gView.Bounds.Height));
+      extendedDown = new UIButton(new CGRect(0,.75 * gView.Bounds.Height,.1 * gView.Bounds.Width,.15 * gView.Bounds.Height));
       extendedDown.TouchUpInside += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchUpInside);};
       extendedDown.TouchDown += (sender, e) => {scrollDown.SendActionForControlEvents(UIControlEvent.TouchDown);};
 

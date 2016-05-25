@@ -11,8 +11,10 @@ namespace ION.IOS.ViewController.Analyzer
 	{
     public sensor (UIView mainView, AnalyzerViewController ViewController)
 		{
-      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
-      highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
+      //lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
+      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .505 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.707 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.3 * mainView.Bounds.Height), ViewController);
+      //highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
+      highArea = new lowHighSensor (new CGRect (.507 * mainView.Bounds.Width, .505 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.507 * mainView.Bounds.Width,.707 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.3 * mainView.Bounds.Height), ViewController);
     }
 		public UIView snapArea;
     public UIView availableView;

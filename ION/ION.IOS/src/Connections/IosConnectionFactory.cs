@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.Devices {
+﻿namespace ION.IOS.Connections {
 
   using System;
 

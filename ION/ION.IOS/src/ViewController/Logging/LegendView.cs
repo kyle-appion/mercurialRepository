@@ -41,7 +41,6 @@ namespace ION.IOS.ViewController.Logging
       selectedData = pressuresTemperatures;
       parentVC = mainVC;
 
-      //lView = new UIView (new CGRect (.01 * mainView.Bounds.Width,.14 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .86 * mainView.Bounds.Height));
       lView = new UIView (new CGRect (0,0,mainView.Bounds.Width,mainView.Bounds.Height));
       lView.BackgroundColor = UIColor.White;
       lView.Layer.CornerRadius = 8;
@@ -66,26 +65,27 @@ namespace ION.IOS.ViewController.Logging
       header.Text = "Graph Information";
       header.Font = UIFont.BoldSystemFontOfSize(20);
 
-      bluePlot = new UIImageView(new CGRect(.1 * lView.Bounds.Width,.15 * lView.Bounds.Height,.1 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      bluePlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.1 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       bluePlot.Image = UIImage.FromBundle("img_blue_plot");
-      blueLabel = new UILabel(new CGRect(.2 * lView.Bounds.Width,.15 * lView.Bounds.Height,.15 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      blueLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.1 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       blueLabel.AdjustsFontSizeToFitWidth = true;
       blueLabel.Text = "Pressure";
       blueLabel.TextAlignment = UITextAlignment.Center;
 
-      burgundyPlot = new UIImageView(new CGRect(.35 * lView.Bounds.Width,.15 * lView.Bounds.Height,.1 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      burgundyPlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.165 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       burgundyPlot.Image = UIImage.FromBundle("img_burgundy_plot");
-      burgundyLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.15 * lView.Bounds.Height,.15 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      burgundyLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.165 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       burgundyLabel.AdjustsFontSizeToFitWidth = true;
       burgundyLabel.Text = "Vacuum";
       burgundyLabel.TextAlignment = UITextAlignment.Center;
 
-      redPlot = new UIImageView(new CGRect(.6 * lView.Bounds.Width,.15 * lView.Bounds.Height,.1 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      redPlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.23 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       redPlot.Image = UIImage.FromBundle("img_red_plot");
-      redLabel = new UILabel(new CGRect(.7 * lView.Bounds.Width,.15 * lView.Bounds.Height,.15 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      redLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.23 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       redLabel.AdjustsFontSizeToFitWidth = true;
       redLabel.Text = "Temperature";
       redLabel.TextAlignment = UITextAlignment.Center;
+
 
       createDatePicker ();
 
@@ -109,11 +109,12 @@ namespace ION.IOS.ViewController.Logging
     }
 
     public void createDatePicker(){     
-      beginValue = new UIButton (new CGRect (.15 * lView.Bounds.Width, .34 * lView.Bounds.Height, .62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      beginValue = new UIButton (new CGRect (.19 * lView.Bounds.Width, .34 * lView.Bounds.Height, .62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
       beginValue.SetTitle (ChosenDates.subLeft.ToString (), UIControlState.Normal);
       beginValue.SetTitleColor (UIColor.Black, UIControlState.Normal);
       beginValue.Layer.BorderColor = UIColor.Black.CGColor;
       beginValue.Layer.BorderWidth = 1f;
+      beginValue.Layer.CornerRadius = 5;
       beginValue.UserInteractionEnabled = true;
       beginValue.TouchUpInside += BeginningDatePickerTapped;
 
@@ -122,11 +123,12 @@ namespace ION.IOS.ViewController.Logging
       beginLabel.TextAlignment = UITextAlignment.Center;
       beginLabel.Text = "Select a start time for the graph";
 
-      endValue = new UIButton (new CGRect (.15 * lView.Bounds.Width, .43 * lView.Bounds.Height,.62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
+      endValue = new UIButton (new CGRect (.19 * lView.Bounds.Width, .43 * lView.Bounds.Height,.62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
       endValue.SetTitle (ChosenDates.subRight.ToString (), UIControlState.Normal);
       endValue.SetTitleColor (UIColor.Black, UIControlState.Normal);
       endValue.Layer.BorderColor = UIColor.Black.CGColor;
       endValue.Layer.BorderWidth = 1f;
+      endValue.Layer.CornerRadius = 5;
       endValue.UserInteractionEnabled = true;
       endValue.TouchUpInside += EndingDatePickerTapped;
 
@@ -146,6 +148,7 @@ namespace ION.IOS.ViewController.Logging
       extraInfoTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       extraInfoTable.Layer.CornerRadius = 3;
       extraInfoTable.Source = new legendSource (selectedData,lView);
+      extraInfoTable.Bounces = false;
     } 
 
     async void BeginningDatePickerTapped (object sender, EventArgs e)

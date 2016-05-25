@@ -200,7 +200,7 @@ namespace ION.IOS.ViewController.Logging {
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
         dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
-        dataSection.DataType.Layer.CornerRadius = 0f;
+        dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 1f;
       },
       () => { 
@@ -247,11 +247,11 @@ namespace ION.IOS.ViewController.Logging {
       }, 
         () => {     
           reportingSection.reportType.Hidden = true;
-        });
+        }); 
       
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
-        dataSection.DataType.Layer.CornerRadius = 8f;
+        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 15, .98 * View.Bounds.Width, .1 * View.Bounds.Height);
+        dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 0;
       },
       () => {

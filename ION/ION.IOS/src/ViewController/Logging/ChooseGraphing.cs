@@ -22,7 +22,7 @@ namespace ION.IOS.ViewController.Logging {
       graphingType.BackgroundColor = UIColor.White;
       graphingType.Layer.BorderColor = UIColor.Black.CGColor;
       graphingType.Layer.BorderWidth = 1f;
-      graphingType.Layer.CornerRadius = 8;
+      graphingType.Layer.CornerRadius = 5;
       graphingType.Hidden = true;
 
       cellHeight = .07f * mainView.Bounds.Height;
