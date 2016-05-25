@@ -12,6 +12,13 @@
 
   public class Av760ProductionTest {
 
+    public delegate void OnTargetPointMet(TestProcedure.TargetPoint tp);
+
+    /// <summary>
+    /// The event handler that is notified when the test yields a target point that was met by the test rig.
+    /// </summary>
+    public event OnTargetPointMet onTargetPointMet;
+
     /// <summary>
     /// </summary>
     public List<GaugeDeviceSensor> sensors {
@@ -29,7 +36,7 @@
     /// <summary>
     /// The procedure that is used for the test.
     /// </summary>
-    private TestProcedure procedure;
+    public TestProcedure procedure { get; private set; }
 
     public Av760ProductionTest(TestProcedure procedure, BluefruitDevice bf, List<GaugeDeviceSensor> gaugeSensors) {
       if (ESensorType.Vacuum != procedure.sensorType) {
@@ -50,40 +57,27 @@
       var conn = bluefruit.connection;
       var protocol = bluefruit.protocol as BluefruitProtocol;
 
-      Log.D(this, "Writing to the remote terminus...");
-
-      conn.Write(protocol.CreateInitializeCommand());
-
-      while (!bluefruit.isInitialized) {
-        Log.D(this, "bluefruit is not initialized");
-        await Task.Delay(500);
-      }
-
-      Log.D(this, "Bluefruit initialized! Moving to run loop");
-
-      int dir = 0;
-      int degrees = 45;
-      for (;;) {
-        try {
-          if (!conn.isConnected) {
-            break;
+      foreach (var tp in procedure.targetPoints) {
+        for (;;) {
+          if (tp.target.AssertEquals(bluefruit.vrcMeasurement, 0.01)) { // If the vrc is reading a target point
+            if (onTargetPointMet != null) {
+              onTargetPointMet(tp);
+            }
+          } else {
+            if (tp.target > bluefruit.vrcMeasurement) { // If we over shot the target, move back a little.
+              if (!bluefruit.controlStepper.isMoving) {
+                conn.Write(protocol.CreateModifyTargetDegreeAngle(0.5f, BluefruitProtocol.EDirection.Close)); // Rotate slightly
+              }
+            } else { // Otherwise, we need to inch our way in.
+              if (!bluefruit.controlStepper.isMoving) {
+                conn.Write(protocol.CreateModifyTargetDegreeAngle(0.5f, BluefruitProtocol.EDirection.Open)); // Rotate slightly
+              }
+            }
           }
-          
-          var target = Units.Vacuum.MICRON.OfScalar(targetMicron);
-          targetMicron -= 50000;
-          if (targetMicron <= 0) {
-            targetMicron = 760000;
-          }
-//          conn.Write(protocol.CreateSetTargetMicronCommand(target));
-          Log.D(this, "Moving motor to target: " + degrees);
-
-          conn.Write(protocol.CreateModifyTargetDegreeAngle(degrees));
-
-          await Task.Delay(TimeSpan.FromSeconds(10));
-        } catch (Exception e) {
-          Log.E(this, "ERROR!!!!!", e);
-          break;
         }
+
+        await Task.Delay(TimeSpan.FromMilliseconds(500));
+
       }
 
       // Cleanup

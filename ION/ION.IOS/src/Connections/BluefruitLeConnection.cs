@@ -58,7 +58,7 @@
       NSData data = NSData.FromArray(packet);
       __nativeDevice.WriteValue(data, writeCharacteristic, CBCharacteristicWriteType.WithoutResponse);
 
-      Log.D(this, "Wrote: " + packet.ToByteString());
+//      Log.D(this, "Wrote: " + packet.ToByteString());
 
       return true;
     }

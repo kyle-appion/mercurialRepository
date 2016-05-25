@@ -211,6 +211,10 @@
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
+    <Compile Include="src\Activity\DataLogging\ReportSessionListAdapter.cs" />
+    <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
+    <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
+    <Compile Include="src\Activity\DataLogging\EViewType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -440,6 +444,8 @@
     <AndroidResource Include="Resources\drawable\ic_scroll.png" />
     <AndroidResource Include="Resources\values\Styleable.xml" />
     <AndroidResource Include="Resources\layout\viewer_large.axml" />
+    <AndroidResource Include="Resources\layout\fragment_new_report.axml" />
+    <AndroidResource Include="Resources\layout\list_item_list_section_header.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
