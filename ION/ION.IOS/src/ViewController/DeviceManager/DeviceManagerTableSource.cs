@@ -94,7 +94,7 @@
       allSections.Add(EDeviceState.Connected, connected);
 
       var broadcasting = new Section(EDeviceState.Broadcasting, Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE);
-      connected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.AddAllToWorkbench,
+      broadcasting.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.AddAllToWorkbench,
         Strings.Device.Manager.BROADCASTING_ACTIONS, broadcasting);
       allSections.Add(EDeviceState.Broadcasting, broadcasting);
 
@@ -180,7 +180,6 @@
     /// <param name="tableView">Table view.</param>
     public override nint NumberOfSections(UITableView tableView) {
       var section = shownSections.Count;
-      Log.D(this, section + " sections");
       return section;
     }
 
@@ -192,7 +191,6 @@
     /// <param name="section">Section.</param>
     public override nint RowsInSection(UITableView tableview, nint section) {
       var rows = shownSections[(int)section].records.Count;
-      Log.D(this, rows + " Rows in section " + shownSections[(int)section].state);
       return rows;
     }
 
@@ -311,7 +309,7 @@
       f.Width = w;
       cell.Frame = f;
 
-      cell.UpdateTo(section);
+      cell.UpdateTo(section, section.actions);
 
       var ret = new UIView();
       ret.AddSubview(cell);
@@ -540,6 +538,10 @@
     private Action BuildBatchOptionsDialog (Actions actions, string title, Section section) {
       return () => {
         var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.ActionSheet);
+
+        foreach (var s in shownSections) {
+          Log.D(this, "Section name: " + s.name);
+        }
 
         for (int i = 1; i <= 32; i++) {
           if ((i & (int)actions) == i) {
@@ -774,6 +776,7 @@
       if (cell != null) {
         cell.UpdateTo(this, actions);
       }
+
 
       return true;
     }

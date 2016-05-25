@@ -68,14 +68,14 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-        new Section(Strings.Report.REPORTS) {
+        new Section(Strings.Report.REPORTS.ToUpper()) {
           //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
 #if DEBUG
-        new Section("Gauge Testing") {
+        new Section("Gauge Testing".ToUpper()) {
           new IONElement("AV760 Testing", OnAv760Clicked, UIImage.FromBundle("ic_render_gauge_av760")),
         },
 #endif
@@ -251,8 +251,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
-        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+//        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
+//        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation

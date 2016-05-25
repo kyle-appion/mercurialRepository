@@ -39,6 +39,9 @@ namespace ION.IOS.ViewController.DeviceManager {
       labelCounter.Text = "" + section.devices.Count;
       labelTitle.Text = section.name;
       var image = UIImage.FromBundle("ic_more_info");
+      image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
+      this.buttonOptions.SetImage(image, UIControlState.Normal);
+      buttonOptions.TintColor = UIColor.White;
       this.optionsClicked = optionsClicked;
     }
 	}

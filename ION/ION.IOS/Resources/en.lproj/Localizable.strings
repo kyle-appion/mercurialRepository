@@ -60,7 +60,7 @@ file.
 "device_manager_available_actions" = "Available Device Actions";
 "device_manager_broadcasting_actions" = "Broadcasting Device Actions";
 "device_manager_connected_actions" = "Connected Device Actions";
-"device_manager_disconnected_actions" = "DisconnectedDevice Actions";
+"device_manager_disconnected_actions" = "Disconnected Device Actions";
 "device_manager_new_actions" = "New Device Actions";
 "device_manager_scan" = "Scan";
 "device_manager_scanning" = "Scanning";

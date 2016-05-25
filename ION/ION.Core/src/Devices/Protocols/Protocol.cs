@@ -47,9 +47,9 @@ namespace ION.Core.Devices.Protocols {
 
     public static IGaugeProtocol FindProtocolFromVersion(int version) {
       switch (version) {
-        case -1: 
+        case -2: 
           return FindProtocolFromVersion(EProtocolVersion.TestBenchInternal);
-        case 0: 
+        case -1: 
           return FindProtocolFromVersion(EProtocolVersion.Classic);
         case 1: 
           return FindProtocolFromVersion(EProtocolVersion.V1);
