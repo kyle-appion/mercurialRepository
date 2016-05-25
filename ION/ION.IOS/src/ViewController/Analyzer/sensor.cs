@@ -56,7 +56,13 @@ namespace ION.IOS.ViewController.Analyzer
     public bool isManual = false;
 
     public void gaugeUpdating(Sensor sensor){
-      middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
+      if (sensor.unit != ION.Core.Measure.Units.Vacuum.MICRON) {
+        Console.WriteLine("Not Micron");
+        middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
+      } else {
+        Console.WriteLine("Definitely micron");
+        middleLabel.Text = sensor.measurement.amount.ToString();
+      }
       bottomLabel.Text = sensor.measurement.unit.ToString();
     }
   }
