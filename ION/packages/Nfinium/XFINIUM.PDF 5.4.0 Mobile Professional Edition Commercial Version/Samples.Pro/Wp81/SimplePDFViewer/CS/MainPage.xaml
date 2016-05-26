@@ -1,0 +1,31 @@
+﻿<Page
+    x:Class="Xfinium.Pdf.Samples.Pro.WP81.SimplePDFViewer.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Xfinium.Pdf.Samples.Pro.WP81.SimplePDFViewer"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Margin="19,0,0,0">
+            <TextBlock Text="XFINIUM.PDF" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
+            <TextBlock Text="Page Thumbnails" Margin="0,-6.5,0,26.5" Style="{ThemeResource HeaderTextBlockStyle}" CharacterSpacing="{ThemeResource PivotHeaderItemCharacterSpacing}"/>
+        </StackPanel>
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0" VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="PDF file: xfinium.pdf" HorizontalAlignment="Left" Margin="10, 0, 0, 0" TextWrapping="Wrap" VerticalAlignment="Center"/>
+            <ScrollViewer Grid.Row="1">
+                <StackPanel Name="pageThumbnails" Orientation="Vertical" VerticalAlignment="Top" HorizontalAlignment="Center"></StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Page>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\RemoveReplaceImages.vb</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl">Imports System<span class="hl opt">.</span>IO
+Imports Xfinium<span class="hl opt">.</span>Pdf
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Graphics
+Imports Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Transforms
+
+Namespace Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+	<span class="hl slc">''' &lt;summary&gt;</span>
+	<span class="hl slc">''' RemoveReplaceImages sample.</span>
+	<span class="hl slc">''' &lt;/summary&gt;</span>
+	<span class="hl kwa">Public</span> Class <span class="hl slc">RemoveReplaceImages</span>
+		<span class="hl slc">''' &lt;summary&gt;</span>
+		<span class="hl slc">''' Main method for running the sample.</span>
+		<span class="hl slc">''' &lt;/summary&gt;</span>
+		<span class="hl kwa">Public</span> Shared <span class="hl kwa">Function</span> <span class="hl kwd">Run</span><span class="hl opt">(</span>input <span class="hl kwa">As</span> Stream<span class="hl opt">)</span> <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">()</span>
+			<span class="hl slc">' Load the input file.</span>
+			<span class="hl kwa">Dim</span> document <span class="hl kwa">As New</span> <span class="hl kwd">PdfFixedDocument</span><span class="hl opt">(</span>input<span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> replaceImageTransform <span class="hl kwa">As New</span> <span class="hl kwd">PdfReplaceImageTransform</span><span class="hl opt">()</span>
+			replaceImageTransform<span class="hl opt">.</span>ReplaceImage <span class="hl opt">+=</span> <span class="hl kwa">New</span> <span class="hl kwd">EventHandler</span><span class="hl opt">(</span>Of PdfReplaceImageEventArgs<span class="hl opt">)(</span>AddressOf HandleReplaceImage<span class="hl opt">)</span>
+			<span class="hl kwa">Dim</span> pageTransformer <span class="hl kwa">As New</span> <span class="hl kwd">PdfPageTransformer</span><span class="hl opt">(</span>document<span class="hl opt">.</span><span class="hl kwd">Pages</span><span class="hl opt">(</span><span class="hl num">2</span><span class="hl opt">))</span>
+			pageTransformer<span class="hl opt">.</span><span class="hl kwd">ApplyTransform</span><span class="hl opt">(</span>replaceImageTransform<span class="hl opt">)</span>
+			replaceImageTransform<span class="hl opt">.</span>ReplaceImage <span class="hl opt">-=</span> <span class="hl kwa">New</span> <span class="hl kwd">EventHandler</span><span class="hl opt">(</span>Of PdfReplaceImageEventArgs<span class="hl opt">)(</span>AddressOf HandleReplaceImage<span class="hl opt">)</span>
+
+			<span class="hl kwa">Dim</span> output <span class="hl kwa">As</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() =</span> <span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">() {</span><span class="hl kwa">New</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>document<span class="hl opt">,</span> <span class="hl str">&quot;xfinium.pdf.sample.removereplaceimages.pdf&quot;</span><span class="hl opt">)}</span>
+			<span class="hl kwa">Return</span> output
+		<span class="hl kwa">End Function</span>
+
+		<span class="hl kwa">Private</span> Shared <span class="hl kwa">Sub</span> <span class="hl kwd">HandleReplaceImage</span><span class="hl opt">(</span>sender <span class="hl kwa">As Object</span><span class="hl opt">,</span> e <span class="hl kwa">As</span> PdfReplaceImageEventArgs<span class="hl opt">)</span>
+			<span class="hl kwa">If</span> e<span class="hl opt">.</span>OldImageID<span class="hl opt">.</span>Value <span class="hl opt">=</span> <span class="hl str">&quot;/Im1&quot;</span> <span class="hl kwa">Then</span>
+				<span class="hl slc">' Replace the existing image with a checkers board.</span>
+				<span class="hl kwa">Dim</span> checkers <span class="hl kwa">As New</span> <span class="hl kwd">MemoryStream</span><span class="hl opt">(</span><span class="hl kwa">New</span> <span class="hl kwb">Byte</span><span class="hl opt">() {</span><span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> _
+					<span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> _
+					<span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> _
+					<span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> <span class="hl num">0</span><span class="hl opt">,</span> <span class="hl num">255</span><span class="hl opt">,</span> _
+					<span class="hl num">0</span><span class="hl opt">})</span>
+				<span class="hl kwa">Dim</span> rawImage <span class="hl kwa">As New</span> <span class="hl kwd">PdfRawImage</span><span class="hl opt">(</span>checkers<span class="hl opt">)</span>
+				rawImage<span class="hl opt">.</span>Width <span class="hl opt">=</span> <span class="hl num">5</span>
+				rawImage<span class="hl opt">.</span>Height <span class="hl opt">=</span> <span class="hl num">5</span>
+				rawImage<span class="hl opt">.</span>BitsPerComponent <span class="hl opt">=</span> <span class="hl num">8</span>
+				rawImage<span class="hl opt">.</span>ColorSpace <span class="hl opt">=</span> <span class="hl kwa">New</span> <span class="hl kwd">PdfGrayColorSpace</span><span class="hl opt">()</span>
+
+				e<span class="hl opt">.</span>NewImage <span class="hl opt">=</span> rawImage
+			<span class="hl kwa">Else</span>
+				<span class="hl kwa">If</span> e<span class="hl opt">.</span>OldImageID<span class="hl opt">.</span>Value <span class="hl opt">=</span> <span class="hl str">&quot;/Im2&quot;</span> <span class="hl kwa">Then</span>
+					<span class="hl slc">' Remove the image from the page by setting the new image (the replacement image) to null.</span>
+					e<span class="hl opt">.</span>NewImage <span class="hl opt">=</span> <span class="hl kwa">Nothing</span>
+				<span class="hl kwa">End If</span>
+			<span class="hl kwa">End If</span>
+		<span class="hl kwa">End Sub</span>
+	<span class="hl kwa">End</span> Class
+<span class="hl kwa">End</span> Namespace
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->

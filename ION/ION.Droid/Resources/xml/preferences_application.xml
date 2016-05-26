@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:ion="http://schemas.android.com/apk/res-auto"
+  android:title="@string/preferences">
+
+  <SwitchPreference
+    android:title="@string/preferences_display_wakelock"
+    android:key="@string/preferences_display_wakelock"
+    android:defaultValue="true"
+    android:summaryOn="@string/preferences_display_wakelock_on"
+    android:summaryOff="@string/preferences_display_wakelock_off"/>
+
+  <SwitchPreference
+    android:title="@string/preferences_show_whats_new"
+    android:key="@string/pkey_whats_new"
+    android:summary="@string/preferences_show_whats_new_summary"
+    android:defaultValue="true"/>
+
+  <PreferenceCategory
+    android:title="@string/preferences_location">
+<!--
+    <Preference
+      android:title="NO GPS"
+      android:key="@string/pkey_location_gps_error"
+      android:summary="YOU AIN'T GOT NO GPS"/>
+-->
+    <SwitchPreference
+      android:title="@string/preferences_location_gps"
+      android:key="@string/pkey_location_gps"
+      android:defaultValue="false"
+      android:disableDependentsState="true"
+      android:summaryOn="@string/preferences_location_gps_on"
+      android:summaryOff="@string/preferences_location_gps_off"/>
+
+    <Preference
+      android:key="@string/pkey_location_elevation"
+      android:dependency="@string/pkey_location_gps"
+      android:title="@string/preferences_location_elevation"
+      android:defaultValue="0"
+      android:summary="@string/preferences_location_elevation_summary"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/preferences_units_default">
+    <!-- Length -->
+    <ListPreference
+      android:key="@string/pkey_unit_length"
+      android:title="@string/preferences_units_length"
+      android:summary="%s"
+      android:dialogTitle="@string/preferences_units_length_title"
+      android:entries="@array/preferences_units_length_entries"
+      android:entryValues="@array/preferences_units_length_values"
+      android:defaultValue="@integer/preferences_units_length_default"/>
+    <!-- Pressure -->
+    <ListPreference
+      android:key="@string/pkey_unit_pressure"
+      android:title="@string/preferences_units_pressure"
+      android:summary="%s"
+      android:dialogTitle="@string/preferences_units_pressure_title"
+      android:entries="@array/preferences_units_pressure_entries"
+      android:entryValues="@array/preferences_units_pressure_values"
+      android:defaultValue="@integer/preferences_units_pressure_default"/>
+    <!-- Temperature -->
+    <ListPreference
+      android:key="@string/pkey_unit_temperature"
+      android:title="@string/preferences_units_temperature"
+      android:summary="%s"
+      android:dialogTitle="@string/preferences_units_temperature_title"
+      android:entries="@array/preferences_units_temperature_entries"
+      android:entryValues="@array/preferences_units_temperature_values"
+      android:defaultValue="@integer/preferences_units_temperature_default"/>
+    <!-- Vacuum -->
+    <ListPreference
+      android:key="@string/pkey_unit_vacuum"
+      android:title="@string/preferences_units_vacuum"
+      android:summary="%s"
+      android:dialogTitle="@string/preferences_units_vacuum_title"
+      android:entries="@array/preferences_units_vacuum_entries"
+      android:entryValues="@array/preferences_units_vacuum_values"
+      android:defaultValue="@integer/preferences_units_vacuum_default"/>
+  </PreferenceCategory>
+
+  <PreferenceCategory
+    android:title="@string/preferences_alarm">
+    <SwitchPreference
+      android:key="@string/pkey_alarm_vibrate"
+      android:defaultValue="true"
+      android:title="@string/preferences_alarm_vibrate"
+      android:summaryOn="@string/preferences_alarm_vibrate_on"
+      android:summaryOff="@string/preferences_alarm_vibrate_off"/>
+    <SwitchPreference
+      android:key="@string/pkey_alarm_sound"
+      android:defaultValue="true"
+      android:title="@string/preferences_alarm_sound"
+      android:summaryOn="@string/preferences_alarm_sound_on"
+      android:summaryOff="@string/preferences_alarm_sound_off"/>
+  </PreferenceCategory>
+
+<!--
+  <PreferenceCategory
+    android:title="@string/preference_location">
+    <SwitchPreference
+    android:key="@string/pkey_location_offset"
+    android:title="@string/preferences_location_offset"
+    android:defaultValue="true"
+    android:summaryOn="@string/preferences_location_offset_on"
+    android:summaryOff="@string/preferences_location_offset_off"/>
+  </PreferenceCategory>
+-->
+</PreferenceScreen>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:background="@drawable/np_square_black_border_white_background"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/viewer_subview_large_icon_size">
+    <TextView
+        android:id="@id/title"
+        android:gravity="center"
+        android:layout_width="80dp"
+        android:layout_height="match_parent"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/white"
+        android:background="@color/black" />
+    <ImageView
+        android:id="@id/icon"
+        android:layout_width="@dimen/viewer_subview_large_icon_size"
+        android:layout_height="@dimen/viewer_subview_large_icon_size"
+        android:tint="@color/black" />
+    <Space
+        android:layout_width="@dimen/padding"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@id/play"
+        android:layout_width="@dimen/viewer_subview_large_icon_size"
+        android:layout_height="@dimen/viewer_subview_large_icon_size"
+        android:tint="@color/black" />
+    <View
+        android:id="@id/view"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"
+        android:background="@color/black" />
+    <TextView
+        android:id="@id/measurement"
+        android:gravity="center_vertical|right"
+        android:layout_width="0dp"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@color/black"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
+</LinearLayout>
