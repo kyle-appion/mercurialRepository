@@ -109,7 +109,11 @@
       native.LocationsUpdated += ResolveLocationChange;
       native.StartMonitoringSignificantLocationChanges();
       isPolling = true;
-      lastKnownLocation = new IosLocation(native.Location);
+      if (native.Location != null) {
+        lastKnownLocation = new IosLocation(native.Location);
+      } else {
+        lastKnownLocation = new IosLocation();
+      }
 
       return true;
     }
@@ -118,7 +122,7 @@
     public void StopAutomaticLocationPolling() {
       native.LocationsUpdated -= ResolveLocationChange;
       isPolling = false;
-      lastKnownLocation = new SimpleLocation(false,0,0,0);
+      lastKnownLocation = new SimpleLocation(false, 0, 0, 0);
     }
 
     /// <summary>

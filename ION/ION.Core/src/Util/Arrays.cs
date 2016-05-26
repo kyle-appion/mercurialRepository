@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.Core.Util {
 
-namespace ION.Core.Util {
+  using System;
+  using System.Collections.Generic;
+  using System.Text;
+
   public static class Arrays {
     /// <summary>
     /// Concatenates the other arrays to this array.
@@ -35,6 +37,30 @@ namespace ION.Core.Util {
       }
 
       return ret;
+    }
+
+    /// <summary>
+    /// Converts the array to a comma separated string.
+    /// </summary>
+    /// <returns>The string.</returns>
+    public static string AsString<T>(this T[] source) {
+      if (source == null) {
+        return "NULL";
+      } else if (source.Length < 0) {
+        return "";
+      } else if (source.Length == 1) { 
+        return source[0].ToString();
+      } else {
+        var sb = new StringBuilder();
+        for (int i = 0; i < source.Length - 1; i++) {
+          sb.Append(source[i].ToString());
+          sb.Append(",");
+        }
+
+        sb.Append(source[source.Length - 1]);
+
+        return sb.ToString();
+      }
     }
   }
 }

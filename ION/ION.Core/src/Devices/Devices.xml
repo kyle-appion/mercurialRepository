@@ -36,6 +36,8 @@ GaugeDeviceSensor:
       The unit that the minum measurement was in. See the unit strings section for a
       list of valid units.
 
+InternalDevice:
+  The element that defines a device that is used in internal appion operations.
 
 ::APPENDIX::
 Unit Strings
@@ -176,4 +178,6 @@ Unit Strings
       <SupportedUnit>celsius</SupportedUnit>
     </GaugeDeviceSensor>
   </GaugeDevice>
+
+  <InternalDevice deviceCode="Bf"/>
 </Devices>

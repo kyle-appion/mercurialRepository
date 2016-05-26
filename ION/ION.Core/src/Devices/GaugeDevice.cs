@@ -107,6 +107,17 @@
       connection.Disconnect();
     }
 
+    /// <Docs>To be added.</Docs>
+    /// <para>Returns the sort order of the current instance compared to the specified object.</para>
+    /// <summary>
+    /// Compares to.
+    /// </summary>
+    /// <returns>The to.</returns>
+    /// <param name="other">Other.</param>
+    public int CompareTo(IDevice other) {
+      return serialNumber.CompareTo(other.serialNumber);
+    }
+
     // Overridden from IDevice
     public void HandlePacket(byte[] packet) {
       HandlePacketInternal(packet);
@@ -114,12 +125,17 @@
 
     private void HandlePacketInternal(byte[] packet) {
       try {
+        if (Protocol.FindProtocolFromVersion(packet[0]).version != this.protocol.version) {
+          Log.E(this, "We have to fix the protocol for " + serialNumber + ". We were protocol: " + protocol.version + " we should be protocol: " + packet[0]);
+          __protocol = Protocol.FindProtocolFromVersion(packet[0]);
+        }
         GaugePacket gp = __protocol.ParsePacket(packet);
 
         if (sensorCount == gp.gaugeReadings.Length) {
+          int oldBattery = battery;
           battery = gp.battery;
 
-          var changed = false;
+          var changed = oldBattery != battery;
 
           for (int i = 0; i < sensorCount; i++) {
             var reading = gp.gaugeReadings[i];
@@ -151,10 +167,9 @@
           throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
         }
       } catch (Exception e) {
-//        Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
+        Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet.ToByteString() + "}", e);
       }
 
-      //        Log.D(this, "Device packet is: " + packet.ToByteString());
     }
 
     /// <summary>

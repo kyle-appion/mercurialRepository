@@ -1,5 +1,5 @@
 ﻿namespace ION.TestFixtures.Connections {
-
+  /*
   using System;
 
   using ION.Core.Connections;
@@ -46,5 +46,6 @@
     protected override void DoStopScan() {
     }
   }
+  */
 }
 

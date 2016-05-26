@@ -27,12 +27,14 @@
     private TextView fluid;
     private View divider;
     private TextView measurement;
+    private TextView unit;
 
     public SuperheatSubcoolSubviewTemplate(View view) : base(view) {
       title = view.FindViewById<TextView>(Resource.Id.title);
       fluid = view.FindViewById<TextView>(Resource.Id.fluid);
       divider = view.FindViewById(Resource.Id.view);
       measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+      unit = view.FindViewById<TextView>(Resource.Id.unit);
     }
 
     /// <summary>
@@ -86,6 +88,8 @@
       } else {
         measurement.Text = parentView.Context.GetString(Resource.String.fluid_setup);
       }
+
+      unit.Text = item.sensor.unit.ToString();
     }
 
     /// <summary>

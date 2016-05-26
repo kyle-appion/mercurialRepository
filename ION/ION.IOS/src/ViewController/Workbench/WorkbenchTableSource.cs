@@ -78,12 +78,12 @@
       foreach (var manifold in workbench.manifolds) {
         records.Add(new ViewerRecord() {
           manifold = manifold,
-          expanded = true, 
+          expanded = true,
         });
 
-        foreach (var property in manifold.sensorProperties) {
-          records.Add(CreateRecordForSensorProperty(manifold,property));
-        } 
+        foreach (var sp in manifold.sensorProperties) {
+          records.Add(CreateRecordForSensorProperty(manifold, sp));
+        }
 
         records.Add(new SpaceRecord());
       }

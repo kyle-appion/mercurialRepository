@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.Devices {
+﻿namespace ION.IOS.Connections {
 
   using System;
 
@@ -7,7 +7,9 @@
 
   using ION.Core.Connections;
   using ION.Core.Devices.Connections;
+  using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
+  using ION.Core.Internal;
 
   using ION.IOS.Connections;
 
@@ -34,7 +36,16 @@
         throw new Exception("Cannot create connection to " + address + ": the address is not valid");
       }
 
-      return new IosLeConnection(centralManager, peripheral);
+      if (!SerialNumberExtensions.IsValidSerialNumber(peripheral.Name)) {
+        throw new Exception("Cannot create connection: peripheral does not have a valid serial number.");
+      }
+
+      var serialNumber = SerialNumberExtensions.ParseSerialNumber(peripheral.Name);
+      if (serialNumber is BluefruitSerialNumber) {
+        return new BluefruitLeConnection(centralManager, peripheral);
+      } else {
+        return new IosLeConnection(centralManager, peripheral);
+      }
     }
   }
 }

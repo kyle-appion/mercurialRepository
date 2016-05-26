@@ -30,11 +30,11 @@ namespace ION.Core.Util {
     } static IPrinter __printer = new DeadPrinter();
 
     static Log() {
-      #if DEBUG
+#if DEBUG
       logLevel = Level.Debug;
-      #else
+#else
       logLevel = Level.Error;
-      #endif // DEBUG
+#endif // DEBUG
     }
 
     /// <summary>
@@ -51,7 +51,6 @@ namespace ION.Core.Util {
           printer.Print(Level.Debug, FormatTag(tag), message, e.ToString());
         }
       }
-
       // TODO ahodder@appioninc.com: Write to log file.
     }
 

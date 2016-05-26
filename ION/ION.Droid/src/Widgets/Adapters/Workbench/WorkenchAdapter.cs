@@ -45,24 +45,35 @@
     public Workbench workbench { get; internal set; }
 
     /// <summary>
+    /// The handler that is used for some UI actions in the adapter.
+    /// </summary>
+    /// <value>The handler.</value>
+    public Handler handler { get; internal set; }
+
+    /// <summary>
     /// The current ION instance.
     /// </summary>
     /// <value>The ion.</value>
-    private IION ion { get; set; }
+    private IION ion;
     /// <summary>
     /// The bitmap cache that will contain all of the bitmaps used in the adapter.
     /// </summary>
     /// <value>The cache.</value>
-    private BitmapCache cache { get; set; }
+    private BitmapCache cache;
     /// <summary>
     /// The drag decoration.
     /// </summary>
     private ItemTouchHelper dragDecoration;
+    /// <summary>
+    /// The stack of pending expands.
+    /// </summary>
+    private Stack<List<Tuple<Manifold, bool>>> expansionStack = new Stack<List<Tuple<Manifold, bool>>>();
 
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
       dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
+      handler = new Handler();
     }
 
     /// <summary>
@@ -133,6 +144,7 @@
             break;
 
           case EViewType.Manifold:
+            var template = (holder as ManifoldViewHolder).template;
             holder.button.Text = holder.button.Context.GetString(Resource.String.remove);
 
             var vr = records[position] as ManifoldRecord;
@@ -146,6 +158,20 @@
                 onManifoldClicked(vr.item);
               }
             }));
+
+            if (template.toggle != null) {
+              if (vr.item.sensorPropertyCount > 0) {
+                template.arrow.Visibility = ViewStates.Visible;
+                template.toggle.SetOnClickListener(new ViewClickAction((v) => {
+                  ToggleManifold(vr.item);
+                  template.MarkAsExpanded(IsManifoldExpanded(vr.item));
+                }));
+              } else {
+                template.arrow.Visibility = ViewStates.Gone;
+                template.toggle.SetOnClickListener(null);
+              }
+              template.MarkAsExpanded(IsManifoldExpanded(vr.item));
+            }
 
             break;
 
@@ -223,6 +249,7 @@
 
       foreach (var m in workbench.manifolds) {
         records.Add(new ManifoldRecord(m));
+        records.Add(new SpaceRecord());
       }
 
       records.Add(new FooterRecord(footerAction));
@@ -242,12 +269,13 @@
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           if (startIndex < 0) {
-            records.Insert(records.Count - 1, new ManifoldRecord(manifold));
-//            records.Insert(records.Count - 1, new SpaceRecord());
-            NotifyItemRangeInserted(records.Count - 1, 2);
+            var i = records.Count - 1;
+            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
+            records.Insert(i + 1, new SpaceRecord());
+            NotifyItemRangeInserted(i, 2);
           } else {
+            records.Insert(startIndex, new SpaceRecord());
             records.Insert(startIndex, new ManifoldRecord(manifold));
-//            records.Insert(startIndex, new SpaceRecord());
             NotifyItemRangeInserted(startIndex, 2);
           }
           break;
@@ -260,7 +288,12 @@
             for (int i = 0; i < manifoldSensorPropertyCount; i++) {
               records.RemoveAt(startIndex);
             }
-            NotifyItemRangeRemoved(startIndex, 1 + manifoldSensorPropertyCount);
+            var count = 1 + manifoldSensorPropertyCount;
+            if (records[startIndex] is SpaceRecord) {
+              records.RemoveAt(startIndex);
+              count++;
+            }
+            NotifyItemRangeRemoved(startIndex, count);
           }
           break;
         case WorkbenchEvent.EType.Swapped:
@@ -273,49 +306,35 @@
           records[secondIndex] = tmp;
           NotifyItemMoved(startIndex, secondIndex);
 
-          int fi, si, fc, sc;
-          if (startIndex < secondIndex) {
-            fi = startIndex;
-            fc = manifoldSensorPropertyCount;
-            si = secondIndex;
-            sc = sm.sensorPropertyCount;
-          } else {
-            fi = secondIndex;
-            fc = sm.sensorPropertyCount;
-            si = startIndex;
-            sc = manifoldSensorPropertyCount;
-          }
-
-          var fr = records.GetRange(fi + 1, fc);
-          var sr = records.GetRange(si + 1, sc);
-
-          records.RemoveRange(fi + 1, fc);
-          records.RemoveRange(si + 1, sc);
-
-          records.InsertRange(fi + 1, sr);
-          records.InsertRange(si + 1 + sc, fr);
-
-          NotifyItemRangeRemoved(fi + 1, fc);
-          NotifyItemRangeRemoved(si + 1, sc);
-
-          NotifyItemRangeInserted(fi + 1, sc);
-          NotifyItemRangeInserted(si + 1 - (sc - fc), fc);
-
-/*
-          // Animate sr to fi
-          for (int i = sc; i > 0; i--) {
-            NotifyItemMoved(si + i, fi + 1);  
-          }
-        
-          // Animate fr to si
-          for (int i = fc; i > 0; i--) {
-            NotifyItemMoved(fi + sc + i, si + 1);
-          }
-*/
-
           break;
         default:
           throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
+      }
+    }
+
+    /// <summary>
+    /// Pushes a new manifold expanssion state, effectively saving whether or not a manifold is expanded.
+    /// </summary>
+    public void SaveManifoldExpansionState() {
+      var tuples = new List<Tuple<Manifold, bool>>();
+      foreach (var m in workbench.manifolds) {
+        tuples.Add(new Tuple<Manifold, bool>(m, IsManifoldExpanded(m)));
+        this.CollapseManifold(m);
+      }
+      expansionStack.Push(tuples);
+    }
+
+    /// <summary>
+    /// Restores the manifold expanssion states.
+    /// </summary>
+    public void RestoreManifoldExpansionState() {
+      var tuples = expansionStack.Pop();
+      if (tuples != null) {
+        foreach (var t in tuples) {
+          if (t.Item2) {
+            ExpandManifold(t.Item1);
+          }
+        }
       }
     }
 
@@ -342,12 +361,14 @@
 
           records.Insert(index, CreateSensorPropertyRecord(manifold, manifold[manifoldEvent.index]));
 
+          NotifyItemChanged(manifoldIndex);
           NotifyItemInserted(index);
           break;
 
         case ManifoldEvent.EType.SensorPropertyRemoved:
           index = manifoldIndex + 1 + manifoldEvent.index;
           records.RemoveAt(index);
+          NotifyItemChanged(manifoldIndex);
           NotifyItemRemoved(index);
           break;
 
@@ -363,41 +384,6 @@
     }
 
 
-    /// <summary>
-    /// Raises the item move event.
-    /// </summary>
-    /// <param name="fromPosition">From position.</param>
-    /// <param name="toPosition">To position.</param>
-/*
-    public bool OnItemMove(int fromPosition, int toPosition) {
-      var from = records[fromPosition];
-      var to = records[toPosition];
-
-      if (from is ManifoldRecord && to is ManifoldRecord) {
-        var fvr = from as ManifoldRecord;
-        var tvr = to as ManifoldRecord;
-
-        workbench.Swap(workbench.IndexOf(fvr.item), workbench.IndexOf(tvr.item));
-
-        return true;
-      } else if (from is SensorPropertyRecord && to is SensorPropertyRecord) {
-        var fp = FindManifoldAtIndex(fromPosition);
-        var tp = FindManifoldAtIndex(toPosition);
-
-        if (fp == tp) {
-          var i = IndexOfManifold(fp);
-          fp.SwapSensorProperties(fromPosition - i - 1, toPosition - i - 1);
-
-          return true;
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    }
-*/
-
     public void CollapseManifold(Manifold manifold) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
@@ -410,6 +396,7 @@
             records.RemoveAt(index + i);
           }
 
+          NotifyItemChanged(index);
           NotifyItemRangeRemoved(index + 1, count);
         }
 
@@ -429,11 +416,28 @@
             records.Insert(index + i, CreateSensorPropertyRecord(manifold, manifold[i - 1]));
           }
 
+          NotifyItemChanged(index);
           NotifyItemRangeRemoved(index + 1, count);
         }
 
         mr.expanded = true;
       }
+    }
+
+    /// <summary>
+    /// Queries whether or not the manifold is expanded.
+    /// </summary>
+    /// <returns><c>true</c> if this instance is manifold expanded the specified manifold; otherwise, <c>false</c>.</returns>
+    /// <param name="manifold">Manifold.</param>
+    public bool IsManifoldExpanded(Manifold manifold) {
+      var index = IndexOfManifold(manifold);
+      var mr = records[index] as ManifoldRecord;
+
+      if (mr != null) {
+        return mr.expanded;
+      }
+
+      return false;
     }
 
     public void ToggleManifold(Manifold manifold) {
@@ -626,12 +630,18 @@
     public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
     }
 
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
+    }
+
     public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
     public abstract void Unbind();
   }
 
   abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
     public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+    }
+
+    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
     }
 
     public override void BindTo(SwipableRecyclerViewAdapter.IRecord t) {
@@ -642,7 +652,8 @@
   }
 
   class SpaceViewHolder : WorkbenchViewHolder<SpaceRecord> {
-    public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+
+    public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource, false) {
     }
 
     /// <summary>
@@ -662,10 +673,12 @@
   class FooterViewHolder : WorkbenchViewHolder<FooterRecord> {
     public FooterRecord record;
 
-    private Button add;
+    private View add;
+    private TextView text;
 
     public FooterViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
-      add = view.FindViewById<Button>(Resource.Id.add);
+      add = view.FindViewById(Resource.Id.add);
+      text = add.FindViewById<TextView>(Resource.Id.text);
     }
 
     // Overridden from WorkbenchViewHolder
@@ -673,7 +686,7 @@
       this.record = record;
 
       var c = ItemView.Context;
-      add.Text = c.GetString(Resource.String.workbench_add_viewer);
+      text.Text = c.GetString(Resource.String.workbench_add_viewer);
 
       add.SetOnClickListener(new ViewClickAction((view) => {
         record.onClick();

@@ -79,6 +79,7 @@
     /// unit list.
     /// </summary>
     public static Unit[] DEFAULT_PRESSURE_UNITS = new Unit[] {
+      Units.Pressure.PSIA,
       Units.Pressure.PSIG,
       Units.Pressure.BAR,
       Units.Pressure.IN_HG,

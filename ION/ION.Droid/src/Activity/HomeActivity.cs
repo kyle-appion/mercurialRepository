@@ -267,23 +267,6 @@
         id = Resource.Id.reports,
         title = GetString(Resource.String.reports),
         items = new NavigationItem[] {
-          new NavigationIconItem() {
-            id = Resource.Id.report_certificates,
-            title = GetString(Resource.String.report_certificates),
-            icon = Resource.Drawable.ic_nav_certificate,
-            action = () => {
-              StartActivity(typeof(CalibrationCertificateArchiveActivity));
-            }
-          },
-          new NavigationIconItem() {
-            id = Resource.Id.report_screenshot_archive,
-            title = GetString(Resource.String.report_screenshot_archive),
-            icon = Android.Resource.Drawable.IcMenuCamera,
-            action = () => {
-              StartActivity(typeof(ScreenshotArchiveActivity));
-            }
-          },
-
 #if DEBUG
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
@@ -292,8 +275,24 @@
             action = () => {
               StartActivity(typeof(DataLoggingReportActivity));
             }
-          }
+          },
 #endif
+          new NavigationIconItem() {
+            id = Resource.Id.report_screenshot_archive,
+            title = GetString(Resource.String.report_screenshot_archive),
+            icon = Android.Resource.Drawable.IcMenuCamera,
+            action = () => {
+              StartActivity(typeof(ScreenshotArchiveActivity));
+            }
+          },
+          new NavigationIconItem() {
+            id = Resource.Id.report_certificates,
+            title = GetString(Resource.String.report_certificates),
+            icon = Resource.Drawable.ic_nav_certificates,
+            action = () => {
+              StartActivity(typeof(CalibrationCertificateArchiveActivity));
+            }
+          },
         },
       };
 
@@ -324,7 +323,7 @@
         items = new NavigationItem[] {
           new NavigationIconItem() {
             id = Resource.Id.exit,
-            title = GetString(Resource.String.exit),
+            title = GetString(Resource.String.exit_ion),
             icon = Resource.Drawable.ic_nav_power,
             action = () => {
               Shutdown();
@@ -378,7 +377,7 @@
       public override void OnDrawerOpened(View drawerView) {
         base.OnDrawerOpened(drawerView);
         lastTitle = activity.ActionBar.Title;
-        activity.ActionBar.Title = activity.GetString(Resource.String.navigation);
+//        activity.ActionBar.Title = activity.GetString(Resource.String.navigation);
       }
 
       // Overridden from ActionBarDrawerToggle

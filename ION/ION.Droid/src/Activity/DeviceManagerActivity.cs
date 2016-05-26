@@ -100,7 +100,7 @@
         filter = EDeviceFilter.All;
       }
 
-      adapter = new DeviceRecycleAdapter(this);
+      adapter = new DeviceRecycleAdapter(this, Intent.ActionPick.Equals(Intent.Action));
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
       adapter.onSensorReturnClicked += OnSensorReturnClicked;

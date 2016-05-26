@@ -9,12 +9,19 @@ namespace ION.IOS.ViewController.DeviceManager {
 
   using ION.IOS.Util;
 
-  public class SerialNumberRecord : IDeviceTableRecord {
-    public DeviceTableSource.EViewType viewType {
+  public class SerialNumberRecord : IRecord {
+    public EViewType viewType {
       get {
-        return DeviceTableSource.EViewType.SerialNumber;
+        return EViewType.SerialNumber;
       }
     }
+
+    public bool isExpandable { 
+      get {
+        return false;
+      }
+    }
+    public bool isExpanded { get; set; }
 
     public ISerialNumber serialNumber { get; set; }
 

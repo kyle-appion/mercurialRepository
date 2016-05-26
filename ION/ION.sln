@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.IOS", "ION.IOS\ION.IOS.
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ION.CoreExtensions", "ION.CoreExtensions\ION.CoreExtensions.shproj", "{CCD6F504-0E93-45CB-8803-52050A76A58D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Measurement", "Measurement\Measurement.csproj", "{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,18 @@ Global
 		{71313512-D5C3-4E37-BCFB-88A36B5C080B}.Release|iPhone.Build.0 = Release|Any CPU
 		{71313512-D5C3-4E37-BCFB-88A36B5C080B}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{71313512-D5C3-4E37-BCFB-88A36B5C080B}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|iPhone.Build.0 = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B0BC5BDF-DCA6-4C5A-8381-F7D6D545F427}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2D0DD9F-3A70-4607-B040-B6DF8DFDA2EB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
@@ -93,7 +107,12 @@ Global
 		$1.inheritsSet = VisualStudio
 		$1.inheritsScope = text/plain
 		$0.TextStylePolicy = $2
-		$2.inheritsSet = null
+		$2.FileWidth = 120
+		$2.TabWidth = 2
+		$2.IndentWidth = 2
+		$2.EolMarker = Unix
+		$2.inheritsSet = VisualStudio
+		$2.inheritsScope = text/plain
 		$2.scope = text/x-csharp
 		$0.CSharpFormattingPolicy = $3
 		$3.IndentSwitchBody = True

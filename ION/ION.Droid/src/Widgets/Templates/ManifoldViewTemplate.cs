@@ -34,15 +34,19 @@
 
     public BitmapCache cache { get; private set; }
 
+    public View toggle { get; private set; }
+
     public TextView title { get; private set; }
     public TextView measurement { get; private set; }
     public TextView alarm { get; private set; }
     public TextView status { get; private set; }
     public TextView unit { get; private set; }
+    public TextView serialNumber { get; private set; }
 
     public ImageView battery { get; private set; }
     public ImageView connection { get; private set; }
     public ImageView icon { get; private set; }
+    public ImageView arrow { get; private set; }
 
     public ProgressBar progress { get; private set; }
 
@@ -53,15 +57,19 @@
     public ManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
       this.cache = cache;
 
+      toggle = view.FindViewById(Resource.Id.toggle);
+
       title = view.FindViewById<TextView>(Resource.Id.name);
       measurement = view.FindViewById<TextView>(Resource.Id.measurement);
       alarm = view.FindViewById<TextView>(Resource.Id.alarm);
       status = view.FindViewById<TextView>(Resource.Id.status);
       unit = view.FindViewById<TextView>(Resource.Id.unit);
+      serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
 
       battery = view.FindViewById<ImageView>(Resource.Id.battery);
       connection = view.FindViewById<ImageView>(Resource.Id.connection);
       icon = view.FindViewById<ImageView>(Resource.Id.icon);
+      arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
 
       progress = view.FindViewById<ProgressBar>(Resource.Id.progress);
 
@@ -115,6 +123,9 @@
 
       if (d != null) {
         title.Text = d.serialNumber.deviceModel.GetTypeString() + ": " + s.name;
+        if (serialNumber != null) {
+          serialNumber.Text = gds.device.serialNumber.ToString();
+        }
 
         progress.Visibility = ViewStates.Invisible;
         connection.Visibility = ViewStates.Visible;
@@ -157,6 +168,9 @@
         icon.Visibility = ViewStates.Visible;
       } else {
         title.Text = s.type.GetSensorTypeName() + ": " + s.name;
+        if (serialNumber != null) {
+          serialNumber.Text = s.name;
+        }
 
         status.Visibility = ViewStates.Invisible;
         connection.Visibility = ViewStates.Invisible;
@@ -165,6 +179,14 @@
       }
 
       InvalidateBattery(d);
+    }
+
+    public void MarkAsExpanded(bool expanded) {
+      if (expanded) {
+        arrow.SetImageResource(Resource.Drawable.ic_arrow_upwhite);
+      } else {
+        arrow.SetImageResource(Resource.Drawable.ic_arrow_downwhite);
+      }
     }
 
     private void InvalidateBattery(GaugeDevice device) {

@@ -12,13 +12,20 @@ namespace ION.IOS.ViewController.DeviceManager {
   using ION.IOS.Sensors;
   using ION.IOS.UI;
 
-  public class SensorRecord : IDeviceTableRecord {
+  public class SensorRecord : IRecord {
     // Overridden from IDeviceTableRecord
-    public DeviceTableSource.EViewType viewType {
+    public EViewType viewType {
       get {
-        return DeviceTableSource.EViewType.Sensor;
+        return EViewType.Sensor;
       }
     }
+
+    public bool isExpandable { 
+      get {
+        return false;
+      }
+    }
+    public bool isExpanded { get; set; }
 
     public GaugeDeviceSensor sensor { get; set; }
 
