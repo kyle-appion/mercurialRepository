@@ -400,7 +400,8 @@
           if (!"".Equals(text) && sensor == null) {
             var amount = double.Parse(text);
             var temp = ptChart.GetTemperature(pressureUnit.OfScalar(amount)).ConvertTo(temperatureUnit);
-            SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
+//            SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
+            SetTemperatureInputQuietly(temp.amount + "");
           } else {
             ClearInput();
           }
@@ -459,7 +460,8 @@
           if (!"".Equals(text)) {
             var amount = double.Parse(text);
             var press = ptChart.GetPressure(temperatureUnit.OfScalar(amount)).ConvertTo(pressureUnit);
-            SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
+//            SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
+            SetPressureInputQuietly(press.amount + "");
           } else {
             ClearInput();
           }
@@ -507,14 +509,22 @@
       switch (sensor.type) {
         case ESensorType.Pressure:
           var temp = ptChart.GetTemperature(sensor.measurement).ConvertTo(temperatureUnit);
+          SetTemperatureInputQuietly(temp.amount + "");
+          SetPressureInputQuietly(sensor.measurement.amount + "");
+/*
           SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
           SetPressureInputQuietly(sensor.ToFormattedString());
+*/
           break;
 
         case ESensorType.Temperature:
           var press = ptChart.GetPressure(sensor.measurement).ConvertTo(pressureUnit);
+          SetPressureInputQuietly(press.amount + "");
+          SetTemperatureInputQuietly(sensor.measurement.amount + "");
+/*
           SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
           SetTemperatureInputQuietly(sensor.ToFormattedString());
+*/
           break;
       }
     }
