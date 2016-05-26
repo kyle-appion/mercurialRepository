@@ -1,5 +1,5 @@
 ﻿namespace ION.Droid.Activity.DataLogging {
-
+/*
   using Android.Widgets;
 
   using ION.Core.Database;
@@ -52,5 +52,6 @@
       checkBox.Checked = record.isChecked;
     }
   }
+*/
 }
 

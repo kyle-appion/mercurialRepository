@@ -1,5 +1,5 @@
 ﻿namespace ION.Droid.Activity.DataLogging {
-
+/*
   using System;
   using System.Collections.Generic;
 
@@ -31,5 +31,6 @@
     public JobRecord() {
     }
   }
+*/
 }
 
