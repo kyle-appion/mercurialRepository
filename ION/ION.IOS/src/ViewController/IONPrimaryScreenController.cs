@@ -26,6 +26,7 @@ namespace ION.IOS.ViewController {
   using ION.IOS.ViewController.Analyzer;
   using ION.IOS.ViewController.FileManager;
   using ION.IOS.ViewController.Help;
+  using ION.IOS.ViewController.GaugeTesting;
   using ION.IOS.ViewController.PressureTemperatureChart;
   using ION.IOS.ViewController.Settings;
   using ION.IOS.ViewController.SuperheatSubcool;
@@ -67,14 +68,19 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-        new Section(Strings.Report.REPORTS) {
-          #if DEBUG
+        new Section(Strings.Report.REPORTS.ToUpper()) {
+#if DEBUG
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
-          #endif
+#endif
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
+#if DEBUG
+        new Section("Gauge Testing".ToUpper()) {
+          new IONElement("AV760 Testing", OnAv760Clicked, UIImage.FromBundle("ic_render_gauge_av760")),
+        },
+#endif
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
@@ -83,6 +89,12 @@ namespace ION.IOS.ViewController {
       navigation.ViewControllers = BuildViewControllers();
       // Create the menu
     }
+
+    private void OnAv760Clicked() {
+      var vc = InflateViewController<InternalTestBenchViewController>(BaseIONViewController.VC_INTERNAL_TEST_BENCH);
+      PresentViewControllerFromSelected(vc);
+    }
+
     /// <summary>
     /// Opens the application's settings.
     /// </summary>
@@ -241,10 +253,10 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-        #if DEBUG
-        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)), 
+#if DEBUG
+        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
-        #endif
+#endif
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation

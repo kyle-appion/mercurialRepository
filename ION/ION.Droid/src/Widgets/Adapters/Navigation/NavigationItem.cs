@@ -5,6 +5,7 @@
 
 
   using Android.Content;
+  using Android.Graphics;
   using Android.Graphics.Drawables;
 
   /// <summary>

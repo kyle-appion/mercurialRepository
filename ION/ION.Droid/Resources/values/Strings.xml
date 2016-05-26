@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+﻿﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">ION HVAC/R</string>
   <!-- This is NOT the actual version, just the string "App Version" -->
@@ -34,6 +34,7 @@
   <string name="enter_number">Enter a number</string>
   <string name="error">Error</string>
   <string name="exit">Exit</string>
+  <string name="exit_ion">Exit ION</string>
   <string name="favorites">Favorites</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
@@ -97,14 +98,19 @@
   <!--
   ANALYZER
   -->
-  <string name="analyzer">Analyzer</string>
+  <string name="analyzer">System Analyzer</string>
   <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
+  <string name="analyzer_added_to_high">Added Sensor to High Side in the System Analyzer</string>
+  <string name="analyzer_added_to_low">Added Sensor to Low Side in the System Analyzer</string>
   <string name="analyzer_complete_swap">Complete Swap?</string>
   <string name="analyzer_create_editable_pressure">Create Editable Pressure Entry</string>
   <string name="analyzer_create_editable_temperature">Create Editable Temperature Entry</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_remove_sensor">Remove Sensor?</string>
+  <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
   <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
+  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to %1$s side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
   <string name="analyzer_side_low">Low Side</string>
@@ -180,10 +186,10 @@
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
   <string name="fluid_setup">Setup</string>
   <string name="fluid_sc">Subcool</string>
-  <string name="fluid_sc_abrv">S/C</string>
+  <string name="fluid_sc_abrv">SC</string>
   <string name="fluid_sh">Superheat</string>
-  <string name="fluid_sh_sc">S/H S/C</string>
-  <string name="fluid_sh_abrv">S/H</string>
+  <string name="fluid_sh_sc">SH / SC</string>
+  <string name="fluid_sh_abrv">SH</string>
   
 
   <!--
@@ -209,12 +215,15 @@
   REPORT
   -->
   <string name="reports">Reports</string>
+  <string name="report_by_date">By Date</string>
+  <string name="report_by_job">By Job</string>
   <string name="report_certificates">Calibration Certificates</string>
   <string name="report_certificates_download">Download Certificates?</string>
   <string name="report_certificates_downloading">Downloading Certificates</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
-  <string name="report_data_logging">Data Log Report</string>
+  <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
+  <string name="report_data_logging">Reporting</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
   <string name="report_data_logging_highest_measurement">Highest Measurement</string>
@@ -225,15 +234,17 @@
   <string name="report_data_logging_step_1">Step 1</string>
   <string name="report_data_logging_step_2">Step 2</string>
   <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_graph">Graph</string>
   <string name="report_jobs">Jobs</string>
   <string name="report_name">Report Name</string>
   <string name="report_new">New Report</string>
-  <string name="report_saved">Saved Report</string>
+  <string name="report_saved">Saved Reports</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+  <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
 
   <!--
@@ -241,8 +252,10 @@
   -->
   <string name="workbench">Workbench</string>
   <string name="workbench_remove">Remove from Workbench</string>
+  <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
-  <string name="workbench_add_viewer">Add New Viewer</string>
+  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
+  <string name="workbench_add_viewer">Add to Workbench</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
   <string name="workbench_alt">Alternate Unit</string>
   <string name="workbench_alt_abrv">ALT</string>
@@ -259,5 +272,4 @@
   <string name="workbench_roc_abrv">RoC</string>
   <string name="workbench_shsc">Superheat / Subcool</string>
   <string name="workbench_shsc_abrv">S/H S/C</string>
-  
 </resources>

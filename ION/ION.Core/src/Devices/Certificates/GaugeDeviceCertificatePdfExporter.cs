@@ -76,7 +76,7 @@
       var pdf = new PdfFixedDocument(EmbeddedResource.Load("digital_gauge_cert.pdf"));
       // Header
       (pdf.Form.Fields[FIELD_CERT_BY] as PdfTextBoxField).Value = certificate.certifiedBy;
-      (pdf.Form.Fields[FIELD_CERT_DATE] as PdfTextBoxField).Value = certificate.lastTestCalibrationDate + "";
+      (pdf.Form.Fields[FIELD_CERT_DATE] as PdfTextBoxField).Value = certificate.lastTestCalibrationDate.ToString("d");
       // Unit Tested
       (pdf.Form.Fields[FIELD_PART_NO] as PdfTextBoxField).Text = certificate.testPartNumber;
       (pdf.Form.Fields[FIELD_SERIAL_NO] as PdfTextBoxField).Text = certificate.testSerialNumber + "";
@@ -85,7 +85,7 @@
       (pdf.Form.Fields[FIELD_CAL_SERIAL_NO] as PdfTextBoxField).Text = certificate.controlSerial;
 //      (pdf.Form.Fields[KEY_CONTROL_TRANSDUCER] as PdfTextBoxField).Text = certificate.controlTransducer;
       (pdf.Form.Fields[FIELD_CAL_ACCURACY] as PdfTextBoxField).Text = certificate.controlAccuracy + "";
-      (pdf.Form.Fields[FIELD_CAL_DATE] as PdfTextBoxField).Text = certificate.lastControlCalibrationDate + "";
+      (pdf.Form.Fields[FIELD_CAL_DATE] as PdfTextBoxField).Text = certificate.lastControlCalibrationDate.ToString("d");
       // Ambient Conditions
       (pdf.Form.Fields[FIELD_AMB_TEMP] as PdfTextBoxField).Text = certificate.environmentTemperature + "";
       (pdf.Form.Fields[FIELD_AMB_RH] as PdfTextBoxField).Text = certificate.environmentHumidity + "";

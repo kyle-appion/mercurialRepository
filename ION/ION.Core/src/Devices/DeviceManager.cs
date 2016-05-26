@@ -8,6 +8,7 @@
   using ION.Core.App;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
+  using ION.Core.Sensors;
 
   public class DeviceManagerEvent {
     public EType type { get; private set; }
@@ -131,6 +132,7 @@
     IConnectionHelper connectionHelper { get; set; }
 
     DeviceFactory __deviceFactory { get; }
+
     /// <summary>
     /// Requests that the device manager enable its communication backend.
     /// </summary>
@@ -157,6 +159,19 @@
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
+
+    /// <summary>
+    /// Queries all of the device that are of the given type.
+    /// </summary>
+    /// <returns>The all devices of type.</returns>
+    /// <param name="deviceType">Device type.</param>
+    List<IDevice> GetAllDevicesOfType(EDeviceType deviceType);
+    /// <summary>
+    /// Queries all the gauge device sensors of the given sensor type.
+    /// </summary>
+    /// <returns>The all gauge devices of type.</returns>
+    /// <param name="sensorType">Sensor type.</param>
+    List<GaugeDeviceSensor> GetAllGaugeDeviceSensorsOfType(ESensorType sensorType);
 
     /// <summary>
     /// Saves the given device to the database.

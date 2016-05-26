@@ -27,12 +27,14 @@
     private TextView fluid;
     private View divider;
     private TextView measurement;
+    private TextView unit;
 
     public PTChartSubviewTemplate(View view) : base(view) {
       title = view.FindViewById<TextView>(Resource.Id.title);
       fluid = view.FindViewById<TextView>(Resource.Id.fluid);
       divider = view.FindViewById(Resource.Id.view);
       measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+      unit = view.FindViewById<TextView>(Resource.Id.unit);
     }
 
     /// <summary>
@@ -74,6 +76,8 @@
           measurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, item.modifiedMeasurement);
           break;
       }
+
+      unit.Text = item.unit.ToString();
     }
 
     /// <summary>

@@ -63,6 +63,16 @@
         }
       }
     } EConnectionState __connectionState;
+    /// <summary>
+    /// Queries whether or not the connection is connected.
+    /// </summary>
+    /// <value>true</value>
+    /// <c>false</c>
+    public bool isConnected {
+      get {
+        return EConnectionState.Connected == connectionState;
+      }
+    }
     // Overridden from IConnection
     public string name { get; set; }
     // Overridden from IConnection

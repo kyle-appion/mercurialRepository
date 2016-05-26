@@ -17,7 +17,7 @@
   }
 
   class ManifoldViewHolder : WorkbenchViewHolder<ManifoldRecord> {
-    private ManifoldViewTemplate template;
+    public ManifoldViewTemplate template;
 
     public ManifoldViewHolder(ViewGroup parent, int viewResource, BitmapCache cache) : base(parent, viewResource) {
       template = new ManifoldViewTemplate(view, cache);

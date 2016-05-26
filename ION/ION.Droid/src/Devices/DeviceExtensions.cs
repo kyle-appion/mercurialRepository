@@ -88,6 +88,12 @@ namespace ION.Droid.Devices {
           return ion.GetString(Resource.String.device_p800);
         case EDeviceModel.AV760:
           return ion.GetString(Resource.String.device_av760);
+        case EDeviceModel.PT300:
+          return ion.GetString(Resource.String.device_pt300);
+        case EDeviceModel.PT500:
+          return ion.GetString(Resource.String.device_pt500);
+        case EDeviceModel.PT800:
+          return ion.GetString(Resource.String.device_pt800);
         default:
           return ion.GetString(Resource.String.device_unknown);
       }

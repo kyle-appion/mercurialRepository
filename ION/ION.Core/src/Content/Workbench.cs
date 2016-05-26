@@ -203,6 +203,32 @@
     }
 
     /// <summary>
+    /// Removes all instances where the primary sensor is equal to the given the sensor from the workbench.
+    /// </summary>
+    /// <param name="sensor">Sensor.</param>
+    public void Remove(Sensor sensor) {
+      for (int i = count - 1; i >= 0; i--) {
+        if (manifolds[i].primarySensor.Equals(sensor)) {
+          var m = manifolds[i];
+          manifolds.RemoveAt(i);
+          this.NotifyOfEvent(WorkbenchEvent.EType.Removed, m, 1);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Removes the manifold who is using the given sensor as a primary sensor.
+    /// </summary>
+    /// <param name="sensor">Sensor.</param>
+    public void RemovePrimarySensor(Sensor sensor) {
+      foreach (var m in manifolds) {
+        if (m.primarySensor.Equals(sensor)) {
+          Remove(m);
+        }
+      }
+    }
+
+    /// <summary>
     /// Clears the workbench of all manifolds.
     /// </summary>
     public void Clear() {

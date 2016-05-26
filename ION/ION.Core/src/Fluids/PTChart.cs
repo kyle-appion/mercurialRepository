@@ -59,25 +59,14 @@
     }
 
     private IION ion { get; set; }
-/*
-      set {
-        if (value == null) {
-          value = Units.Length.METER.OfScalar(0);
-        }
-        __elevation = value;
-      }
-    } Scalar __elevation;
-*/
 
-
-    private PTChart(IION ion, Fluid.EState state, Fluid fluid) {//, Scalar elevation) {
+    private PTChart(IION ion, Fluid.EState state, Fluid fluid) {
       if (fluid == null) {
         throw new Exception("Cannot create a PTChart with a null fluid");
       }
       this.ion = ion;
       this.state = state;
       this.fluid = fluid;
-//      this.elevation = elevation;
     }
 
     /// <summary>
@@ -102,9 +91,10 @@
     /// <param name="pressure">Pressure.</param>
     /// <param name="isRelative">Is relative.</param>
     public Scalar GetTemperature(Scalar pressure, bool isRelative = true) {
-      if (isRelative) {
+      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
+
       return fluid.GetTemperatureFromPressure(state, pressure);
     }
 
@@ -118,7 +108,7 @@
     }
 
     /// <summary>
-    /// Queries the pressure of the fluid at the given temperature.
+    /// Queries the absolute pressure of the fluid at the given temperature.
     /// </summary>
     /// <remarks>
     /// IsRelative is used to indicate whether or not the returned pressure should
@@ -134,6 +124,7 @@
       if (isRelative) {
         ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
       }
+
 
       return ret;
     }
@@ -175,13 +166,9 @@
     public Scalar CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
       var oldPress = pressure;
 
-      if (isRelative) {
+      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
-
-//      if (!isRelative) {
-//        pressure = Physics.ConvertAbsolutePressureToRelative(pressure, elevation);
-//      }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
       return temperature - saturatedTemperature;
@@ -199,13 +186,8 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public Scalar CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
-/*
-      if (isRelative) {
+      if (isRelative || pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
-      }
-*/
-      if (!isRelative) {
-        pressure = Physics.ConvertAbsolutePressureToRelative(pressure, elevation);
       }
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);

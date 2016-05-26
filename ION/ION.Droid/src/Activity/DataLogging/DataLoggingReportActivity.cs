@@ -31,7 +31,7 @@
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
 
-  [Activity(Label = "DataLoggingReportActivity", Theme="@style/TerminalActivityTheme")]
+  [Activity(Label = "@string/report_data_logging", Theme="@style/TerminalActivityTheme")]
   public class DataLoggingReportActivity : IONActivity {
 
     /// <summary>

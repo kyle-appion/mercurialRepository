@@ -13,7 +13,6 @@
         android:layout_weight="1"
         android:background="@drawable/np_bordered_white_square"
         android:gravity="center_vertical"
-        android:padding="@dimen/padding"
         android:orientation="horizontal">
         <ImageView
             android:id="@id/icon"
@@ -43,10 +42,26 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
     </LinearLayout>
+    <ImageView
+        android:id="@id/workbench"
+        android:layout_width="@dimen/device_manager_sensor_icon_size"
+        android:layout_height="@dimen/device_manager_sensor_icon_size"
+        android:background="@drawable/img_button_up_gold"
+        android:src="@drawable/ic_devices_add_to_workbench"
+        android:padding="1dp"
+        android:scaleType="fitCenter" />
+    <ImageView
+        android:id="@id/analyzer"
+        android:layout_width="@dimen/device_manager_sensor_icon_size"
+        android:layout_height="@dimen/device_manager_sensor_icon_size"
+        android:background="@drawable/img_button_up_gold"
+        android:src="@drawable/ic_devices_add_to_analyzer"
+        android:padding="1dp"
+        android:scaleType="fitCenter" />
     <ImageButton
         android:id="@id/add"
-        android:layout_width="@dimen/device_manager_device_icon_size"
-        android:layout_height="@dimen/device_manager_device_icon_size"
+        android:layout_width="@dimen/device_manager_sensor_icon_size"
+        android:layout_height="@dimen/device_manager_sensor_icon_size"
         android:background="@drawable/img_button_up_gold"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_devices_add" />

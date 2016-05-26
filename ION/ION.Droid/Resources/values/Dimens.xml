@@ -19,11 +19,11 @@
   <!-- The width of the navigation drawer for the home activity. -->
   <dimen name="drawer_width">300dp</dimen>
   <!-- The width and height of the icon in a drawer's navigation item. -->
-  <dimen name="drawer_navigation_icon_size">48dp</dimen>
+  <dimen name="drawer_navigation_icon_size">36dp</dimen>
   <!-- The text size for the title of a navigation drawer's category title. -->
-  <dimen name="drawer_navigation_category_text_size">18sp</dimen>
+  <dimen name="drawer_navigation_category_text_size">24sp</dimen>
   <!-- The text size for the title of a navigation drawer's item title. -->
-  <dimen name="drawer_navigation_item_text_size">24sp</dimen>
+  <dimen name="drawer_navigation_item_text_size">36sp</dimen>
   <!-- The height for the "divider" view for the navigation drawer's large separator view. -->
   <dimen name="drawer_navigation_separator_large_height">2dp</dimen>
   <!-- The height for the "divider" view for the navigation drawer's small separator view. -->
@@ -99,7 +99,9 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large_icon_size">48dp</dimen>
+  <dimen name="viewer_subview_large">48dp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_large_icon_size">36dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
   <dimen name="viewer_text_size">24sp</dimen>
 </resources>

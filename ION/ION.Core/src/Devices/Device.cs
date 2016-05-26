@@ -13,6 +13,10 @@ namespace ION.Core.Devices {
     /// </summary>
     Gauge,
     /// <summary>
+    /// A device that is used by appion internally.
+    /// </summary>
+    InternalInterface,
+    /// <summary>
     /// A marker for an unknown device.
     /// </summary>
     Unknown,
@@ -72,7 +76,7 @@ namespace ION.Core.Devices {
   /// <summary>
   /// The contract for an ION device.
   /// </summary>
-  public interface IDevice : IDisposable {
+  public interface IDevice : IDisposable, IComparable<IDevice> {
     /// <summary>
     /// The event registery that will be notified when the device's
     /// connection state changes

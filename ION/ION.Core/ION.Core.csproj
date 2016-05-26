@@ -161,6 +161,15 @@
     <Compile Include="src\Content\WhatsNew.cs" />
     <Compile Include="src\Devices\Connections\IConnectionFactory.cs" />
     <Compile Include="src\Devices\Connections\IConnectionHelper.cs" />
+    <Compile Include="src\Internal\Testing\Av760ProductionTest.cs" />
+    <Compile Include="src\Internal\Testing\TestProcedure.cs" />
+    <Compile Include="src\Internal\Testing\XmlTestProcedureParser.cs" />
+    <Compile Include="src\Internal\BluefruitSerialNumber.cs" />
+    <Compile Include="src\Internal\BluefruitDevice.cs" />
+    <Compile Include="src\Internal\BluefruitProtocol.cs" />
+    <Compile Include="src\Devices\GaugeSerialNumber.cs" />
+    <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -195,6 +204,9 @@
     <Folder Include="src\Job\" />
     <Folder Include="src\Database\Deprecated\" />
     <Folder Include="src\Excel\" />
+    <Folder Include="src\Internal\" />
+    <Folder Include="src\Internal\Testing\" />
+    <Folder Include="src\Devices\Sorters\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
@@ -220,9 +232,6 @@
     </Reference>
     <Reference Include="NUnit.VisualStudio.TestAdapter">
       <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\NUnit.VisualStudio.TestAdapter.dll</HintPath>
-    </Reference>
-    <Reference Include="DocumentFormat.OpenXml">
-      <HintPath>..\..\..\..\..\..\Downloads\DocumentFormat.OpenXml\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -478,6 +487,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
       <LogicalName>UpgradeDatabase.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Internal\Testing\Av760TestingProcedure.xml">
+      <LogicalName>Av760TestingProcedure.xml</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

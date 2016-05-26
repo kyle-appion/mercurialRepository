@@ -32,6 +32,8 @@ namespace ION.IOS.ViewController {
     public const string VC_EDIT_JOB = "viewControllerEditJob";
     public const string VC_WALKTHROUGH_MENU = "viewControllerWalkthroughMenu"; 
 
+    public const string VC_INTERNAL_TEST_BENCH = "viewControllerInternalTestBench";
+
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation
     /// bar.
