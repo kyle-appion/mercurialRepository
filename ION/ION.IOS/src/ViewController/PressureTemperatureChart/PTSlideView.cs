@@ -6,6 +6,7 @@ using CoreText;
 
 using ION.Core.Fluids;
 using ION.Core.Measure;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.PressureTemperatureChart {
   public class PTSlideView : UIView{
@@ -22,7 +23,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     double secondMod;
     double thirdMod;
     double fourthMod;
-    public int firstMeasurements;
+    public double firstMeasurements;
     public int secondMeasurements;
     public int middleMeasurements;
     public double startGap;
@@ -38,11 +39,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public double middleEnd;
     public double last45;
     public double lastEnd;
-    public double maxPressure;
     public double minTemperature;
     public double maxTemperature;
-
+    IION ion;
     public PTSlideView(PTChart chart, UIScrollView scrollView, Unit pUnit, Unit tUnit) {
+      ion = AppState.context;
       ptChart = chart;
       sViewWidth = scrollView.Bounds.Width;
       sViewHeight = scrollView.Bounds.Height;
@@ -67,42 +68,39 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public override void Draw (CGRect rect) {
       base.Draw (rect);
 
-      //var minPressure = Math.Floor(ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup).amount);
-      var minTemperature = ptChart.fluid.GetMinimumTemperature();
-      Console.WriteLine("Pulled min temperature: " + minTemperature);
-      maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup).amount;
-      maxPressure = maxPressure - (maxPressure % 5);
-      var maxTemperature = ptChart.fluid.GetMaximumTemperature();
-      Console.WriteLine("Pulled max temperature: " + maxTemperature);
+      var minTemperature = ptChart.fluid.GetMinimumTemperature().ConvertTo(tempLookup);
+      maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount;
+      var minPressure = ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup);
+      minPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(minPressure,ion.locationManager.lastKnownLocation.altitude);
+      var maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup);
+      maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure,ion.locationManager.lastKnownLocation.altitude);
+        
+      Console.WriteLine("Pulled min temperature: " + ptChart.fluid.GetMinimumTemperature() + " conveted to unit using: " + minTemperature);
+      Console.WriteLine("Pulled max temperature: " + ptChart.fluid.GetMaximumTemperature()+ " conveted to unit using: " + maxTemperature);
+      Console.WriteLine("Pulled min pressure: " + ptChart.fluid.GetMinimumPressure(ptChart.state) + " converted to : " + minPressure);
+      Console.WriteLine("Pulled max pressure: " + ptChart.fluid.GetMaximumPressure(ptChart.state) + " converted to unit using: " + maxPressure);
+      Console.WriteLine("Min starting value: " + Math.Ceiling(minPressure.amount));
+
       startGap = sViewWidth / 2.0;
       var measurementWidth = this.Frame.Width - sViewWidth;
-      var minPressure = ptChart.fluid.GetMinimumPressure(ptChart.state);
-      Console.WriteLine("Min Pressure: " + minPressure.ConvertTo(lookup).amount + lookup + " Max Pressure: " + maxPressure);
 
       first15 = (measurementWidth * .15);
-      Console.WriteLine("First area is " + first15 + " pixels wide");
       second15 = (measurementWidth * .15);
-      Console.WriteLine("Second area is " + second15 + " pixels wide");
       middle25 = (measurementWidth * .25);
-      Console.WriteLine("Third area is " + middle25 + " pixels wide");
       last45 = (measurementWidth * .45);
-      Console.WriteLine("Last area is " + last45 + " pixels wide");
-      firstMeasurements = setPressureRange(lookup,1);
-      firstTicks = first15 / firstMeasurements;
-      Console.WriteLine("First tick width: " + firstTicks);
-      firstEnd = first15 + startGap;
 
-      secondMeasurements = setPressureRange(lookup,2);
-      secondTicks = second15 / (secondMeasurements - firstMeasurements);
-      secondEnd = second15 + firstEnd;
-      Console.WriteLine("Second tick width: " + secondTicks);
-      middleMeasurements = setPressureRange(lookup,3);
-      thirdTicks = middle25 / (middleMeasurements - secondMeasurements);
-      middleEnd = middle25 + secondEnd;
-      Console.WriteLine("Third tick width: " + thirdTicks);
-      lastTicks = last45 / ((maxPressure - middleMeasurements));
-      lastEnd = last45 + middleEnd;
-      Console.WriteLine("Fourth tick width: " + lastTicks);
+      firstMeasurements = setPressureRange(lookup,1);
+      firstTicks = first15/(firstMeasurements - minPressure.amount);
+
+      secondMeasurements = setPressureRange(lookup, 2);
+      secondTicks = second15 / (secondMeasurements - setPressureRange(lookup,1));
+
+      middleMeasurements = setPressureRange(lookup, 3);
+      thirdTicks = middle25 / (middleMeasurements - setPressureRange(lookup,2));
+
+      var lastMeasurements = maxPressure.amount - middleMeasurements;
+      lastTicks = last45 / lastMeasurements;      
+
       firstMod = setPressureMod(lookup, 1);
       secondMod = setPressureMod(lookup, 2);
       thirdMod = setPressureMod(lookup, 3);
@@ -117,13 +115,28 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       pressurePath = new CGPath ();
       temperaturePath = new CGPath ();
+      var count = (int)Math.Ceiling(minPressure.amount);
+      Console.WriteLine("Count starts at: " + count);
+      var increase = startGap + ((count - minPressure.amount)/ first15 * measurementWidth);
 
-      var increase = startGap;
+      if(count % firstMod == 0){          
+        pressurePath.AddLines(new CGPoint[] {
+          new CGPoint(increase, .5 * sViewHeight), 
 
-      var count = 0;
+          new CGPoint(increase, .25 * this.Frame.Height)
+        });
+        DrawPressureNumber(count, increase);
+      } else {
+        pressurePath.AddLines(new CGPoint[] {
+          new CGPoint(increase, .5 * sViewHeight),
 
-      for(; count < firstMeasurements; count++){
-        
+          new CGPoint(increase, .4 * this.Frame.Height)         
+        });
+      }
+      increase += firstTicks;
+      count++;
+
+      for(; count < firstMeasurements; count++){        
         if(count % firstMod == 0){          
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight), 
@@ -131,20 +144,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             new CGPoint(increase, .25 * this.Frame.Height)
           });
           DrawPressureNumber(count, increase);
-          Console.WriteLine("first section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
 
             new CGPoint(increase, .4 * this.Frame.Height)         
           });
-        }
-       
+        }       
         increase += firstTicks;
       }
 
-      for (; count < secondMeasurements;count++) {
-        
+      for (; count < secondMeasurements;count++) {        
         if (count % secondMod == 0) {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -152,7 +162,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             new CGPoint(increase, .25 * sViewHeight)         
           });
           DrawPressureNumber(count, increase);
-          Console.WriteLine("secnd section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight), 
@@ -163,8 +172,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         increase += secondTicks;
       }
 
-      for (; count < middleMeasurements;count++) {
-       
+      for (; count < middleMeasurements;count++) {       
         if (count % thirdMod == 0) {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -172,7 +180,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             new CGPoint(increase, .25 * sViewHeight)
           });
           DrawPressureNumber(count, increase);
-          Console.WriteLine("Third section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } else if (count % secondMod == 0){
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -183,8 +190,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         increase += thirdTicks;
       }
 
-      for (; count < maxPressure;count++) {
-        
+      for (; count < maxPressure.amount;count++) {        
         if (count % fourthMod == 0) {
           pressurePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -192,7 +198,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             new CGPoint(increase, .25 * sViewHeight)
           });
           DrawPressureNumber(count, increase);
-          Console.WriteLine("fourth section "+ count + lookup + "="+ptChart.GetTemperature(new Scalar(lookup,count),true).ConvertTo(tempLookup) + tempLookup);
         } 
         else if(count % thirdMod == 0){
           pressurePath.AddLines(new CGPoint[] {
@@ -204,39 +209,32 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         increase += lastTicks;
       }
 
-      //var below0 = Math.Floor(0 - minTemperature.ConvertTo(tempLookup).amount);
-      var below0 = ptChart.GetTemperature(new Scalar(lookup,0), true).ConvertTo(tempLookup).amount;
-      Console.WriteLine("Lowest temp: " + below0);
-      var maxTempPressure = maxPressure;
-      var above0 = ptChart.GetTemperature(new Scalar(lookup,maxTempPressure), true).ConvertTo(tempLookup).amount;
-      Console.WriteLine("Highest temp: " + above0);
+      var below0 = minTemperature.amount;
+      var above0 = maxTemperature;
+      var tempRange = above0 - below0;
+      var tempTicks = measurementWidth / tempRange;
+      count = (int)Math.Ceiling(below0);
+      Console.WriteLine("Temp count starts at: " + count);
+      increase = startGap + ((count - minTemperature.amount)/ tempRange * measurementWidth);
 
-      var endBuffer = 0.0;
-      while (System.Double.IsNaN(above0)) {
-        maxTempPressure -= 1;
-        endBuffer += .5;
-        above0 = ptChart.GetTemperature(new Scalar(lookup,maxTempPressure), true).ConvertTo(tempLookup).amount;
-        Console.WriteLine("Highest temp: " + above0);
-      }
-      above0 += endBuffer;
+      if (count % 10 == 0) {
+        temperaturePath.AddLines(new CGPoint[] {
+          new CGPoint(increase, .5 * sViewHeight),
 
-      var tempRange = 0.0;
-
-      if (below0 < 0) {
-        Console.WriteLine("total temp range: " + (above0 +(-1 * below0)));
-        tempRange = above0 + (-1 * below0);
+          new CGPoint(increase, .75 * sViewHeight)
+        });
+        DrawTemperatureNumber(count, increase);
       } else {
-        Console.WriteLine("total temp range: " + (above0 + below0));
-        tempRange = above0 + below0;
+        temperaturePath.AddLines(new CGPoint[] {
+          new CGPoint(increase, .5 * sViewHeight),
+
+          new CGPoint(increase, .63 * sViewHeight)
+        });
       }
+      increase += tempTicks;
+      count++;
 
-      var tempTicks = (2 * sViewWidth) / tempRange;
-      Console.WriteLine("Each degree is " + tempTicks + " pixels wide");
-
-      count = (int)Math.Floor(below0);
-      increase = startGap;
-
-      for (; count < 0; count++) {        
+      for (; count <= above0; count++) {        
         if (count % 10 == 0) {
           temperaturePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
@@ -245,24 +243,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           });
           DrawTemperatureNumber(count, increase);
         } else {
-          temperaturePath.AddLines(new CGPoint[] {
-            new CGPoint(increase, .5 * sViewHeight),
-
-            new CGPoint(increase, .63 * sViewHeight)
-          });
-        }
-        increase += tempTicks;
-      }
-
-      for (int i = 0; i <= above0; i++) {        
-        if (i % 10 == 0) {
-          temperaturePath.AddLines(new CGPoint[] {
-            new CGPoint(increase, .5 * sViewHeight),
-
-            new CGPoint(increase, .75 * sViewHeight)
-          });
-          DrawTemperatureNumber(i, increase);
-        } else if(i % 1 == 0){
           temperaturePath.AddLines(new CGPoint[] {
             new CGPoint(increase, .5 * sViewHeight),
 

@@ -250,8 +250,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       ptSlider = new SliderView(measurementScroller,ptChart, pressureUnit, temperatureUnit);
       ptSlider.pUnitLabel.Text = pressureUnit.ToString();
       ptSlider.tUnitLabel.Text = temperatureUnit.ToString();
-      measurementScroller.Scrolled += (sender, e) => {
-        
+      measurementScroller.Scrolled += (sender, e) => {        
         setPressureValueFromSlider();
       }; 
 
@@ -638,15 +637,19 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       if(measurementScroller.ContentOffset.X >= 0){
         if(measurementScroller.ContentOffset.X <= 218.88){
           var value = measurementScroller.ContentOffset.X / ptSlider.measurementView.firstTicks;
+          value = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(new Scalar(pressureUnit,value),ion.locationManager.lastKnownLocation.altitude).amount;
           editPressure.Text = value.ToString("N");
         } else if (measurementScroller.ContentOffset.X <= 437.76){
           var value = ((measurementScroller.ContentOffset.X - ptSlider.measurementView.first15) / ptSlider.measurementView.secondTicks) + ptSlider.measurementView.firstMeasurements;
+          //value = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(new Scalar(pressureUnit,value),ion.locationManager.lastKnownLocation.altitude).amount;
           editPressure.Text = value.ToString("N");
         } else if (measurementScroller.ContentOffset.X <= 802.56){
           var value = ((measurementScroller.ContentOffset.X - (ptSlider.measurementView.second15 + ptSlider.measurementView.first15))/ ptSlider.measurementView.thirdTicks) + ptSlider.measurementView.secondMeasurements;
+          //value = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(new Scalar(pressureUnit,value),ion.locationManager.lastKnownLocation.altitude).amount;
           editPressure.Text = value.ToString("N");        
         } else if (measurementScroller.ContentOffset.X <= 1459.2){
           var value = ((measurementScroller.ContentOffset.X - (ptSlider.measurementView.middle25 + ptSlider.measurementView.second15 + ptSlider.measurementView.first15))/ ptSlider.measurementView.lastTicks) + ptSlider.measurementView.middleMeasurements;
+          //value = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(new Scalar(pressureUnit,value),ion.locationManager.lastKnownLocation.altitude).amount;
           editPressure.Text = value.ToString("N");
         }
 
