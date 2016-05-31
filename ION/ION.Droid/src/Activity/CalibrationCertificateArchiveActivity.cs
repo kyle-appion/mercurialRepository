@@ -7,6 +7,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Net;
   using Android.OS;
   using Android.Runtime;
@@ -21,7 +22,7 @@
   using ION.Droid.Fragments;
   using ION.Droid.Tasks;
 
-  [Activity(Label = "@string/report_certificates", Theme="@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/report_certificates", Theme="@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class CalibrationCertificateArchiveActivity : IONActivity {
 
     /// <summary>

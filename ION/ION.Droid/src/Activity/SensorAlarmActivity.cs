@@ -7,6 +7,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Preferences;
   using Android.Runtime;
@@ -22,7 +23,7 @@
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
-  [Activity(Label = "@string/alarm_sensor", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/alarm_sensor", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class SensorAlarmActivity : IONActivity {
 
     /// <summary>

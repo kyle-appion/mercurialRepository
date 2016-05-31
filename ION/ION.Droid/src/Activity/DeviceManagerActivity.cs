@@ -6,6 +6,7 @@
   using Android.App;
   using Android.Bluetooth;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Views;
@@ -36,7 +37,7 @@
     Temperature = 1 << 1,
   }
 
-  [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
+  [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
   public class DeviceManagerActivity : IONActivity {
     /// <summary>
     /// The extra key that is used to pull a masked Filter enum which is used to filter only the given devices.

@@ -78,6 +78,7 @@ def run():
     fluid_lib = r.fluidlib()
     fluids = fluid_lib[CWD + '/fluids/']
     fluids = fluids + fluid_lib[CWD + '/mixtures/']
+    print fluids, len(fluids)
 
     out = OUT_PATH
 
@@ -85,9 +86,16 @@ def run():
         shutil.rmtree(out)
     os.makedirs(out)
 
+    failures = []
+
     for fluid in fluids:
-        print 'Converting ' + fluid
-        convert_fluid(fluid, OUT_PATH)
+        tries = 0;
+        if convert_fluid(fluid, OUT_PATH):
+            failures.append(fluid)
+
+    print 'Failed to create the following fluids'
+    for fluid in failures:
+        print fluid
 
 def convert_fluid(fluid_name, out_path, step=0.25):
     '''
@@ -101,7 +109,8 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         fluid = r.setup(u'def', fluid_name)
 
         # remove any unnecessary file extensions
-        fluid_name = r.name()['hname']
+        #fluid_name = r.name()['hname']
+        print 'Converting ' + fluid_name
 
         # Get some of the meta data for the fluid
         x = [] # the fluid composition (mole fractions of mixtures). Empty for single fluid
@@ -125,20 +134,25 @@ def convert_fluid(fluid_name, out_path, step=0.25):
             temp = tmin + (step * i)
             try:
                 bubble.append(r.satt(temp, x, kph=1)['p'])
-                dew.append(r.satt(temp, x, kph=2)['p'])
-                rowsOut = rowsOut + 1
             except:
+                bubble.append(float('nan'))
+            try:
+                dew.append(r.satt(temp, x, kph=2)['p'])
+            except:
+                dew.append(float('nan'))
+            rowsOut = rowsOut + 1
+#            except:
                 # Quick and dirty fix for some fluids not accepting Fluids that
                 # are exaclty the tmin
-                tmin = temp
-                temp = []
-                bubble = []
-                dew = []
-                rowsOut = 0
+#                tmin = temp
+#                temp = []
+#                bubble = []
+#                dew = []
+#                rowsOut = 0
 
         if rowsOut <= 0:
-            print "Failed to export fluid", fluid_name
-            return
+            print 'Failed to export fluid {0} with expected rows {1}: \n{2}'.format(fluid_name, rows, traceback.format_exc())
+            return False
 
         similar = True
         # Check if the fluid has a pressure difference for the different phases
@@ -163,9 +177,10 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         file.write(data)
         file.flush()
         file.close()
+        return True
     except Exception, e:
         print 'Failed to convert fluid {0}: \n{1}'.format(fluid_name, traceback.format_exc())
-#        sys.exit(1)
+        return False
 
 if __name__ == '__main__':
     run()

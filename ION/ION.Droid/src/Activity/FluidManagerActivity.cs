@@ -8,6 +8,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
   using Android.Runtime;
@@ -24,7 +25,7 @@
 
   using ION.Droid.Fragments;
 
-  [Activity(Label = "FluidManagerActivity", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "FluidManagerActivity", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class FluidManagerActivity : Activity {
 
     /// <summary>
