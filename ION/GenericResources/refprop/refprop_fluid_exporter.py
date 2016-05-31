@@ -60,7 +60,7 @@ import refprop as r
 
 VERSION = 1
 CWD = os.getcwd()
-EPSILON = 0.0005 # the allowance of float precision error
+EPSILON = 0.005 # the allowance of float precision error
 OUT_PATH = './output/' # the out directory for the data files
 OUT_EXT = '.fluid' # the file extension for the converted files
 
@@ -159,6 +159,7 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         for i in range(rowsOut):
             similar = math.fabs(bubble[i] - dew[i]) <= EPSILON
             if not similar:
+                print fluid_name, 'failed to be similar at temp', (i * step + tmin)
                 break
 
         # Write the fluid to its file
