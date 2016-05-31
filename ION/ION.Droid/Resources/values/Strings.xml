@@ -184,6 +184,7 @@
   <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
   <string name="fluid_help_select_state">Select Dew or Bubble</string>
   <string name="fluid_help_clarification"><b>Dew Point</b> is used to calculate Superheat (low side, in vapor).\n\n<b>Bubble Point</b> is used to calculate Subcool (high side, in liquid).\n\nThis affects measurements of <u>blended refrigerants</u>, since these points are usually not the same.</string>
+  <string name="fluid_manager">Fluid Manager</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>

@@ -117,18 +117,19 @@
 
       MenuInflater.Inflate(Resource.Menu.save, menu);
 
+      menu.FindItem(Resource.Id.save).ActionView.Click += (sender, e) => {
+        var res = new Intent();
+        res.PutExtra(EXTRA_SELECTED, selectedFluid);
+        SetResult(Result.Ok, res);
+        Finish();
+      };
+
       return true;
     }
 
     // Overridden from Activity
     public override bool OnPrepareOptionsMenu(IMenu menu) {
       base.OnPrepareOptionsMenu(menu);
-
-      var save = menu.FindItem(Resource.Id.save);
-      // TODO ahodder@appioninc.com: Changes the color filter for the fluid check icon, too.
-      // refer to resources/menu/save.xml
-//      save.Icon.SetColorFilter(new Color(Resources.GetColor(Resource.Color.green)), PorterDuff.Mode.DstAtop);
-
       return true;
     }
 
