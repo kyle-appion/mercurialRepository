@@ -351,7 +351,7 @@
       var ion = AppState.context;
       if (ion != null) {
         ion.PostToMain(() => {
-          if (onSensorStateChangedEvent != null) {
+          if (onSensorStateChangedEvent != null) {            
             onSensorStateChangedEvent(this);
           }
         });
@@ -395,7 +395,9 @@
       if (!this.unit.IsCompatible(unit)) {
         throw new ArgumentException("Cannot set unit: " + unit + " is not compatible with " + this.unit);
       }
-
+      if (this.unit.Equals(unit)) {
+        return;
+      }
       __measurement = __measurement.ConvertTo(unit);
       NotifySensorStateChanged();
     }
