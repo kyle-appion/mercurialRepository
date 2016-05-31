@@ -186,14 +186,17 @@
       }
 
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
-      ION.Core.Util.Log.D(this, "Index for temp: " + i);
+
       if (i >= 0) {
         return PRESSURE.OfScalar(pressureValues[i + offset]);
       } else {
         i = ~i;
+        if (i >= temperatures.Length) {
+          i = temperatures.Length - 2;
+        }
         double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
         var ret = PRESSURE.OfScalar(Interpolate(magnitude, pressureValues[i + offset], pressureValues[i + 1 + offset]));
-        ION.Core.Util.Log.D(this, "Ret: " + ret);
+        //ION.Core.Util.Log.D(this, "Ret: " + ret);
         return ret;
       }
     }
@@ -239,7 +242,7 @@
     /// <param name="higher"></param>
     /// <returns></returns>
     private static double FindMagnitudeOf(double amount, double lower, double higher) {
-      return 1 - ((higher / amount) / (higher / lower));
+      return (amount - lower) / (higher - lower);
     }
 
     /// <summary>
