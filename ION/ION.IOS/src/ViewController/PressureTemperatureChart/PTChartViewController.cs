@@ -250,13 +250,13 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       editTemperature.Text = temperatureSensor.measurement.amount.ToString("N");
 
       ptSlider.temperatureScroller.Scrolled += (sender, e) => {
-        if(temperatureSensor == null){
-          Log.D(this, "temperature sensor was null");
-          temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
-          temperatureSensor.unit = temperatureUnit;
-        }
-
         if(ptSlider.temperatureScroller.Dragging){
+          if(temperatureSensor == null){
+            Log.D(this, "temperature sensor was null");
+            temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+            temperatureSensor.unit = temperatureUnit;
+          }
+
           var value = setTemperatureValueFromSlider();
           Console.WriteLine("using temperature unit: " + temperatureUnit + " and pressure unit: " + pressureUnit);
           var pressureValue = ptChart.GetPressure(new Scalar(temperatureUnit,value),true).ConvertTo(pressureUnit).amount;
@@ -277,22 +277,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             "pressure for " + value + temperatureUnit + " temp: " + pressureValue;
         }  
       };
-
-      ptSlider.temperatureScroller.DraggingStarted += (sender, e) => {
-        Log.D(this, "temperature sensor start: " + temperatureSensor.unit);
-      };
-
-      ptSlider.temperatureScroller.DraggingEnded += (sender, e) => {
-        Log.D(this, "temperature sensor unit end: " + temperatureSensor.unit);
-      };
+       
 
       ptSlider.pressureScroller.Scrolled += (sender, e) => {
-        if(pressureSensor == null){
-          Log.D(this, "pressure sensor was null");
-          pressureSensor = new ManualSensor(ESensorType.Pressure,true);
-          pressureSensor.unit = pressureUnit;
-        }
+
         if(ptSlider.pressureScroller.Dragging){
+          if(pressureSensor == null){
+            Log.D(this, "pressure sensor was null");
+            pressureSensor = new ManualSensor(ESensorType.Pressure,true);
+            pressureSensor.unit = pressureUnit;
+          }
+
           var value = setPressureValueFromSlider();
 
           var temperatureValue = ptChart.GetTemperature(new Scalar(pressureUnit,value),true).ConvertTo(temperatureUnit).amount;
@@ -441,6 +436,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var supportedUnits = pressureSensor != null ? pressureSensor.supportedUnits : SensorUtils.DEFAULT_PRESSURE_UNITS;
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, supportedUnits, (obj, unit) => {
             pressureUnit = unit;
+            if(pressureSensor != null){
+              entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
+            } else {
+              entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
+            }
             ptSlider.temperatureView.resetData(ptChart,unit,temperatureUnit);
             ptSlider.pressureView.resetData(ptChart,unit,temperatureUnit);
             ptSlider.pUnitLabel.Text = unit.ToString();
@@ -501,6 +501,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var supportedUnits = temperatureSensor != null ? temperatureSensor.supportedUnits : SensorUtils.DEFAULT_TEMPERATURE_UNITS;
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, supportedUnits, (obj, unit) => {
             temperatureUnit = unit;
+            if(pressureSensor != null){
+              entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
+            } else {
+              entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
+            }
             ptSlider.temperatureView.resetData(ptChart,pressureUnit,unit);
             ptSlider.pressureView.resetData(ptChart,pressureUnit,unit);
             ptSlider.tUnitLabel.Text = unit.ToString();
