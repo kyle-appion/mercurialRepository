@@ -6,6 +6,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
   using Android.Runtime;
@@ -27,7 +28,7 @@
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
-  [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_supersub", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_supersub", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class SuperheatSubcoolActivity : IONActivity {
 
     /// <summary>

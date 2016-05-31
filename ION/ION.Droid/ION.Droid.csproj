@@ -186,7 +186,6 @@
     <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
     <Compile Include="src\Preferences\AppPrefs.cs" />
-    <Compile Include="src\Activity\HelpActivity.cs" />
     <Compile Include="src\Activity\AppPreferencesActivity.cs" />
     <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
     <Compile Include="src\App\AndroidPlatformInfo.cs" />

@@ -113,15 +113,6 @@
         lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
       };
 
-/*
-      if (altitudeProvider.isEnabled) {
-//        altitudeProvider.StartUpdates();
-        altitudeProvider.RequestSingleLocation();
-      } else {
-        Log.D(this, "Not doing the altitude find");
-      }
-*/
-
       ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
 
       return new InitializationResult() {
@@ -156,7 +147,7 @@
     }
 
     /// <summary>
-    /// Gets the address from location async.
+    /// Gets the address from location async. This may throw a timeout exception if the geocoder fails to work.
     /// </summary>
     /// <returns>The address from location async.</returns>
     /// <param name="location">Location.</param>
@@ -201,7 +192,7 @@
     /// </summary>
     /// <param name="bundle">Bundle.</param>
     public void OnConnectionFailed(ConnectionResult bundle) {
-      Log.D(this, "Failed to connect to the GoogleApiClient");
+      Log.E(this, "Failed to connect to the GoogleApiClient");
     }
 
     /// <summary>
@@ -209,7 +200,6 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
-      Log.D(this, "Location changed: " + location);
       var altitude = location.Altitude;
       if (altitude == 0) {
         var l = altitudeProvider.lastKnownLocation;
@@ -217,6 +207,7 @@
           altitude = l.Altitude;
         }
       }
+      Log.D(this, "Location changed: " + location + ", Altitude: " + altitude);
       lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, location.Latitude);
     }
 
