@@ -196,6 +196,7 @@
           break;
         case BluetoothDevice.ActionFound:
           var device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
+          Log.D(this, "The device's name is: " + device.Name);
           if (IsAppionDevice(device) && BluetoothDeviceType.Classic == device.Type) {
             if (!__connections.ContainsKey(device.Address)) {
               var connection = new ClassicConnection(device);

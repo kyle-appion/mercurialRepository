@@ -125,7 +125,7 @@
 
     private void HandlePacketInternal(byte[] packet) {
       try {
-        if (Protocol.FindProtocolFromVersion(packet[0]).version != this.protocol.version) {
+        if (EProtocolVersion.Classic != protocol.version && Protocol.FindProtocolFromVersion(packet[0]).version != this.protocol.version) {
           Log.E(this, "We have to fix the protocol for " + serialNumber + ". We were protocol: " + protocol.version + " we should be protocol: " + packet[0]);
           __protocol = Protocol.FindProtocolFromVersion(packet[0]);
         }
