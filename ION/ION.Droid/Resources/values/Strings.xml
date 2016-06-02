@@ -1,4 +1,4 @@
-﻿﻿<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">ION HVAC/R</string>
   <!-- This is NOT the actual version, just the string "App Version" -->
@@ -64,6 +64,8 @@
   <string name="remove">Remove</string>
   <string name="rename">Rename</string>
   <string name="reports">Reports</string>
+  <string name="request_shutdown">Shutdown ION</string>
+  <string name="request_shutdown_message">Shutting down ION will disconnect all of your devices.</string>
   <string name="save">Save</string>
   <string name="saving">Saving</string>
   <string name="scan">Scan</string>
@@ -162,6 +164,7 @@
   <string name="error_bluetooth">Bluetooth Error</string>
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
   <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
+  <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>
@@ -181,6 +184,7 @@
   <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
   <string name="fluid_help_select_state">Select Dew or Bubble</string>
   <string name="fluid_help_clarification"><b>Dew Point</b> is used to calculate Superheat (low side, in vapor).\n\n<b>Bubble Point</b> is used to calculate Subcool (high side, in liquid).\n\nThis affects measurements of <u>blended refrigerants</u>, since these points are usually not the same.</string>
+  <string name="fluid_manager">Fluid Manager</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>

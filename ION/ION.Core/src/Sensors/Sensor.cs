@@ -392,6 +392,10 @@
     /// </remarks>
     /// <param name="unit">Unit.</param>
     protected void ForceSetUnit(Unit unit) {
+      if (this.unit.Equals(unit)) {
+        return;
+      }
+
       if (!this.unit.IsCompatible(unit)) {
         throw new ArgumentException("Cannot set unit: " + unit + " is not compatible with " + this.unit);
       }

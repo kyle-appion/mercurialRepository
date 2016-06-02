@@ -7,12 +7,13 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
   using Android.Widget;
 
-  [Activity(Label = "PdfViewerActivity")]      
+  [Activity(Label = "PdfViewerActivity", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class PdfViewerActivity : IONActivity {
     
     /// <summary>

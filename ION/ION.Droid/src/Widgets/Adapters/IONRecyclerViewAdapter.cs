@@ -41,7 +41,6 @@
       /// </summary>
       public override void OnChanged() {
         base.OnChanged();
-        ION.Core.Util.Log.D(this, "THE ADAPTER HAS CHANGED");
         adapter.NotifyChanged();
       }
     }

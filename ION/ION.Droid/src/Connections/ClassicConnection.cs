@@ -12,6 +12,7 @@
 
   using Java.Util;
 
+  using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
@@ -137,10 +138,6 @@
     /// The output stream for the connection.
     /// </summary>
     private System.IO.Stream output;
-    /// <summary>
-    /// The timer that will request new packets periodically while connected.
-    /// </summary>
-    private System.Timers.Timer timer;
 
     public ClassicConnection(BluetoothDevice device) {
       this.device = device;
@@ -167,11 +164,10 @@
           return false;
         }
 
-        timer = new System.Timers.Timer(150);
-        timer.Elapsed += OnRequest;
-        timer.Start();
-
         connectionState = EConnectionState.Connected;
+
+        DoRequestPacket();
+
         return true;
       });
     }
@@ -180,12 +176,6 @@
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
-      if (timer != null) {
-        timer.Stop();
-        timer.Dispose();
-        timer = null;
-      }
-
       if (input != null) {
         input.Close();
         input.Dispose();
@@ -228,7 +218,7 @@
             int tries = 5;
 
             while (ret == null && tries-- > 0) {
-              var packet = RequestPacket();
+              var packet = RequestPacket().Result;
 
               ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
             }
@@ -266,11 +256,18 @@
     /// Requests a single packet from the remote device.
     /// </summary>
     /// <returns>The packet.</returns>
-    private string RequestPacket() {
-      output.Write(DPT, 0, DPT.Length);
-      output.Flush();
+    private Task<string> RequestPacket() {
+      return Task.Factory.StartNew(() => {
+        try {
+          output.Write(DPT, 0, DPT.Length);
+          output.Flush();
 
-      return input.ReadLine();
+          return input.ReadLine();
+        } catch (Exception e) {
+          Log.E(this, "Classic connection crash on write.", e);
+          return null;
+        }
+      });
     }
 
     /// <summary>
@@ -278,13 +275,21 @@
     /// </summary>
     /// <param name="obh">Obh.</param>
     /// <param name="args">Arguments.</param>
-    private void OnRequest(object obj, System.Timers.ElapsedEventArgs args) {
+    private async void DoRequestPacket() {
       if (EConnectionState.Connected == connectionState) {
-        lastPacket = System.Text.Encoding.UTF8.GetBytes(RequestPacket());
-      } else {
-        var t = obj as System.Timers.Timer;
-        if (t != null) {
-          t.Elapsed -= OnRequest;
+        var requestTask = RequestPacket();
+        if (await Task.WhenAny(requestTask, Task.Delay(TimeSpan.FromMilliseconds(250))) == requestTask) {
+          if (requestTask.Result != null) {
+            lastPacket = System.Text.Encoding.UTF8.GetBytes(requestTask.Result);
+            AppState.context.PostToMainDelayed(DoRequestPacket, TimeSpan.FromMilliseconds(100));
+          } else {
+            Log.D(this, "Classic connection failed to resolve packet. Disconnected");
+            Disconnect();
+          }
+        } else {
+          // We failed to get a packet in the timeout timespan
+          Log.D(this, "Timeout on packet read. Classic connection disconnected");
+          Disconnect();
         }
       }
     }

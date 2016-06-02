@@ -7,6 +7,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
@@ -18,7 +19,7 @@
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
 
-  [Activity(Label = "@string/report_screenshot_archive", Theme = "@style/TerminalActivityTheme")]      
+  [Activity(Label = "@string/report_screenshot_archive", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class ScreenshotArchiveActivity : IONActivity {
 
     /// <summary>

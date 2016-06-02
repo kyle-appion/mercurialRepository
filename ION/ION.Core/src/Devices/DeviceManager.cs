@@ -108,11 +108,6 @@
     List<IDevice> foundDevices { get; }
 
     /// <summary>
-    /// Queries the current states of the device manager.
-    /// </summary>
-    EDeviceManagerStates states { get; }
-
-    /// <summary>
     /// The delegate that is used to create devices.
     /// </summary>
     /// <remarks>
@@ -205,46 +200,5 @@
     /// </summary>
     /// <param name="device">Device.</param>
     void Unregister(IDevice device);
-
-    /// <summary>
-    /// Attempts to connect to the given device. 
-    /// </summary>
-    /// <param name="device"></param>
-    /// <returns>A Task that will return true when the device has connected, or
-    /// false if the connection attempt failed.</returns>
-//    Task<bool> ConnectDeviceAsync(IDevice device);
-
-    /// <summary>
-    /// Disconnects the given device from the application.
-    /// </summary>
-    /// <param name="device"></param>
-//    void DisconnectDevice(IDevice device);
   } // End IDeviceManager
-
-  /// <summary>
-  /// A factory type who is responsible for instantiating devices from 
-  /// </summary>
-  public interface IDeviceFactory {
-  } // End IDeviceFactory
-
-
-  /// <summary>
-  /// Enumerates the possible states that a DeviceManager can be in.
-  /// </summary>
-  [Flags]
-  public enum EDeviceManagerStates {
-    /// <summary>
-    /// This is a state where the device manager is uninitialized.
-    /// </summary>
-    None = 0,
-    /// <summary>
-    /// Whether or not the device manager is enabled. Enabled means that the device
-    /// manager as a hot connection to the platforms communication stack.
-    /// </summary>
-    Enabled = 1,
-    /// <summary>
-    /// Whether or not the device manager is performing a scan.
-    /// </summary>
-    Scanning = 2,
-  } // End EDeviceManagerState
 }
