@@ -49,7 +49,17 @@
     /// The last location known by the location manager.
     /// </summary>
     /// <value>The last know location.</value>
-    public ILocation lastKnownLocation { get; internal set; }
+    public ILocation lastKnownLocation {
+      get {
+        return __lastKnownLocation;
+      }
+      internal set {
+        if (value == null) {
+          value = new SimpleLocation();
+        }
+        __lastKnownLocation = value;
+      }
+    } ILocation __lastKnownLocation;
     /// <summary>
     /// Whether or not the location manager is polling locations.
     /// </summary>
@@ -74,6 +84,7 @@
 
     public AndroidLocationManager(AndroidION ion) {
       this.ion = ion;
+      lastKnownLocation = new SimpleLocation();
     }
 
     /// <summary>

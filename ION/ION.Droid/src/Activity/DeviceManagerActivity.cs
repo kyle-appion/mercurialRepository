@@ -104,13 +104,13 @@
       adapter = new DeviceManagerRecycleAdapter(ion, list);
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
-      if (Intent.ActionPick.Equals(Intent.ActionPick)) {
+      if (Intent.ActionPick.Equals(Intent.Action)) {
         adapter.onSensorReturnClicked = OnSensorReturnClicked;
       }
 
       empty.Visibility = ViewStates.Gone;
       list.Visibility = ViewStates.Visible;
-/*
+      /*
       adapter.onDatasetChanged += (adapter) => {
         Log.D(this, "The records count is: " + adapter.ItemCount);
         if (adapter.ItemCount > 0) {
@@ -121,7 +121,7 @@
           list.Visibility = ViewStates.Gone;
         }
       };
-*/
+      */
 
       list.SetAdapter(adapter);
     }

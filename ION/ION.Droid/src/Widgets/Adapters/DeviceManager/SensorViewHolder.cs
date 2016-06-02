@@ -152,8 +152,8 @@
     }
 
     public void BindTo(SensorRecord record, OnSensorReturnClicked sensorAddClickedAction = null) {
-      this.record = record;
       this.onSensorAddClickedAction = sensorAddClickedAction;
+      this.record = record;
     }
 
     public override void Unbind() {

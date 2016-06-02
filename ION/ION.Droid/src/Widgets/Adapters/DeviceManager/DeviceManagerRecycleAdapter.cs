@@ -126,7 +126,7 @@
           Resource.String.device_manager_batch_disconnected_actions, disconnected);
       allSections.Add(EDeviceState.Disconnected, disconnected);
 
-      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
+      onSensorReturnClicked = null;
     }
 
     /// <summary>
