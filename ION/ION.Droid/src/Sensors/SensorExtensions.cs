@@ -30,6 +30,8 @@
           return ion.GetString(Resource.String.measurement_pressure);
         case ESensorType.Temperature:
           return ion.GetString(Resource.String.measurement_temperature);
+        case ESensorType.Vacuum:
+          return ion.GetString(Resource.String.measurement_vacuum);
         default:
           return ion.GetString(Resource.String.measurement_unknown);
       }

@@ -233,6 +233,16 @@
               HideDrawer();
             },
           },
+
+          new NavigationIconItem() {
+            id = Resource.Id.device_manager,
+            title = GetString(Resource.String.device_manager),
+            icon = Resource.Drawable.ic_nav_devmanager,
+            hidden = false,
+            action = () => {
+              StartActivity(new Intent(this, typeof(DeviceManagerActivity)));
+            },
+          },
         },
       };
 

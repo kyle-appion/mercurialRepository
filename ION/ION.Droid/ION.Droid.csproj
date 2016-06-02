@@ -132,7 +132,6 @@
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
     <Compile Include="src\Activity\DeviceManagerActivity.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
@@ -214,6 +213,10 @@
     <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
     <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
     <Compile Include="src\Activity\DataLogging\EViewType.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceManagerRecycleAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\SensorViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceSectionViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -493,6 +496,7 @@
     <Folder Include="src\Alarms\Alerts\" />
     <Folder Include="src\Activity\DataLogging\" />
     <Folder Include="src\Widgets\Adapters\DataLogging\" />
+    <Folder Include="src\Widgets\Adapters\DeviceManager\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">

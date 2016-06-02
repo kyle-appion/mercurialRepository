@@ -196,7 +196,6 @@
           break;
         case BluetoothDevice.ActionFound:
           var device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
-          Log.D(this, "The device's name is: " + device.Name);
           if (IsAppionDevice(device) && BluetoothDeviceType.Classic == device.Type) {
             if (!__connections.ContainsKey(device.Address)) {
               var connection = new ClassicConnection(device);
@@ -220,7 +219,6 @@
     /// <returns><c>true</c> if this instance is appion device the specified device; otherwise, <c>false</c>.</returns>
     /// <param name="device">Device.</param>
     private bool IsAppionDevice(BluetoothDevice device) {
-      Log.D(this, "Checking " + device.Name);
       return device.Name == null || APPION_GAUGE.Equals(device.Name) || GaugeSerialNumber.IsValid(device.Name);
     }
 

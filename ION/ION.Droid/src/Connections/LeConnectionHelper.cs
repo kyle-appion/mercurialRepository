@@ -84,28 +84,6 @@
       return Task.FromResult(adapter.Enable());
     }
 
-/*
-    // Overridden from BaseConnectionHelper
-    public override IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
-      var device = adapter.GetRemoteDevice(address);
-
-      if (device == null) {
-        throw new ArgumentException("Create connection for " + address + " failed: no device");
-      } else if (BluetoothDeviceType.Le == device.Type) {
-        var ret = new LeConnection(context, manager, device);
-        __leConnections[address] = ret;
-        return ret;
-//        throw new ArgumentException("Create connection for " + address + " failed: device not le");
-      } else {
-        // TODO ahodder@appioninc.com: This is a test and should be removed
-        var ret = new LeConnection(context, manager, device);
-        __leConnections[address] = ret;
-        return ret;
-//        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
-      }
-    }
-*/
-
     /// <summary>
     /// Queries whether or not the connection helper can resolve the given protocol.
     /// </summary>
