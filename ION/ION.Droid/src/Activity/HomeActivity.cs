@@ -5,6 +5,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.Graphics.Drawables;
   using Android.OS;
@@ -24,7 +25,7 @@
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
 
-  [Activity(Label = "ActivityHome", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask)]      
+  [Activity(Label = "ActivityHome", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
   public class HomeActivity : IONActivity, AbsListView.IOnItemClickListener {
 
     /// <summary>
@@ -165,29 +166,23 @@
     /// Makes the analyzer the primary fragment to be viewed.
     /// </summary>
     public void DisplayAnalyzer() {
-      var ab = ActionBar;
-      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resource.Color.gray));
-      drawerToggle.lastTitle = ab.Title = GetString(Resource.String.analyzer);
-
-      GotoFragment(new AnalyzerFragment());
+      drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.analyzer);
+      GotoFragment(new AnalyzerFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resource.Color.gray));
     }
 
     /// <summary>
     /// Makes the workbench the primary fragment to be viewed.
     /// </summary>
     public void DisplayWorkbench() {
-      var ab = ActionBar;
-      ab.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
-      drawerToggle.lastTitle = ab.Title = GetString(Resource.String.workbench);
-
-      GotoFragment(new WorkbenchFragment());
+      drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.workbench);
+      GotoFragment(new WorkbenchFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
     }
 
     /// <summary>
     /// Navigates the to the given fragment.
     /// </summary>
     /// <param name="fragment">Fragment.</param>
-    private void GotoFragment(Fragment fragment) {
+    private void GotoFragment(Fragment fragment, Drawable drawable) {
       var ft = FragmentManager.BeginTransaction();
 
       ft.SetCustomAnimations(Resource.Animation.enter, Resource.Animation.exit);
@@ -201,6 +196,8 @@
       ft.Commit();
 
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
+
+      ActionBar.SetLogo(drawable);
     }
 
     /// <summary>
@@ -234,6 +231,16 @@
             action = () => {
               DisplayWorkbench();
               HideDrawer();
+            },
+          },
+
+          new NavigationIconItem() {
+            id = Resource.Id.device_manager,
+            title = GetString(Resource.String.device_manager),
+            icon = Resource.Drawable.ic_nav_devmanager,
+            hidden = false,
+            action = () => {
+              StartActivity(new Intent(this, typeof(DeviceManagerActivity)));
             },
           },
         },
@@ -326,7 +333,7 @@
             title = GetString(Resource.String.exit_ion),
             icon = Resource.Drawable.ic_nav_power,
             action = () => {
-              Shutdown();
+              RequestShutdown();
             }
           },
         },
@@ -351,6 +358,25 @@
         action();
       }
       HideDrawer();
+    }
+
+    /// <summary>
+    /// Shows a dialog verifying that the user really desires to shut down the application.
+    /// </summary>
+    private void RequestShutdown() {
+      var adb = new IONAlertDialog(this);
+      adb.SetTitle(Resource.String.request_shutdown);
+      adb.SetMessage(Resource.String.request_shutdown_message);
+      adb.SetNegativeButton(Resource.String.cancel, (o, e) => {
+        var dialog = o as Dialog;
+        dialog.Dismiss();
+      });
+      adb.SetPositiveButton(Resource.String.ok, (o, e) => {
+        var dialog = o as Dialog;
+        dialog.Dismiss();
+        Shutdown();
+      });
+      adb.Show();
     }
 
     /// <summary>

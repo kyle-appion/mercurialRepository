@@ -5,6 +5,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.Graphics.Drawables;
   using Android.Preferences;
@@ -21,7 +22,7 @@
   using ION.Droid.Fragments;
   using ION.Droid.Util;
 
-  [Activity(Label="@string/preferences")]      
+  [Activity(Label="@string/preferences", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class AppPreferenceActivity : IONPreferenceActivity {
 
 

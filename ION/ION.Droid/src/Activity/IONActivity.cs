@@ -6,10 +6,12 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.Graphics.Drawables;
   using Android.OS;
   using Android.Views;
+  using Android.Views.InputMethods;
   using Android.Widget;
 
   using ION.Core.App;
@@ -21,7 +23,6 @@
   using ION.Droid.Util;
 
   public class IONActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener {
-
     /// <summary>
     /// Queries the current running ion instance.
     /// </summary>
@@ -222,6 +223,18 @@
         ShowEnableBluetoothDialog();
       });
       adb.Show();
+    }
+
+    /// <summary>
+    /// A utility method that will forcefully close the keyboard.
+    /// </summary>
+    protected void HideKeyboard() {
+      var imm = GetSystemService(Activity.InputMethodService) as InputMethodManager;
+      var view = CurrentFocus;
+      if (CurrentFocus == null) {
+        view = new View(this);
+      }
+      imm.HideSoftInputFromWindow(view.WindowToken, 0);
     }
 
     /// <summary>

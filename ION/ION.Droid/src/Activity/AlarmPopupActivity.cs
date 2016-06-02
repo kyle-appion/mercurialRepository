@@ -7,6 +7,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
@@ -16,7 +17,7 @@
 
   using ION.Droid.Views;
 
-  [Activity(Label="@string/alarm", Theme="@style/DialogActivityTheme")]      
+  [Activity(Label="@string/alarm", Theme="@style/DialogActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class AlarmPopupActivity : IONActivity {
 
     /// <summary>
