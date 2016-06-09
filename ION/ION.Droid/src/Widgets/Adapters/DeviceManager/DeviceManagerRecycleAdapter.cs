@@ -127,6 +127,7 @@
       allSections.Add(EDeviceState.Disconnected, disconnected);
 
       onSensorReturnClicked = null;
+      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
     }
 
     /// <summary>
@@ -676,7 +677,8 @@
     }
 
     private void OnDeviceManagerEvent(DeviceManagerEvent de) {
-      lock (this) {
+      Log.D(this, "I found a deviceevent: " + de.type);
+//      lock (this) {
         if (DeviceManagerEvent.EType.DeviceEvent == de.type) {
           var et = de.deviceEvent.type;
           if (DeviceEvent.EType.ConnectionChange != et && DeviceEvent.EType.Deleted != et && DeviceEvent.EType.Found != et) {
@@ -704,7 +706,7 @@
             }
           }
         }
-      }
+ //     }
     }
 
     [Flags]
@@ -715,24 +717,6 @@
       AddAllToWorkbench = 1 << 3,
     }
   }
-/*
-  /// <summary>
-  /// A simple record that is present in the DeviceManager recycler adapter.
-  /// </summary>
-  public interface IDeviceRecord : SwipableRecyclerViewAdapter.IRecord {
-    IDevice device { get; }
-    /// <summary>
-    /// Gets a value indicating whether this <see cref="ION.Droid.Widget.Adapters.DeviceManager.IDMRecord"/> is expandable.
-    /// </summary>
-    /// <value><c>true</c> if is expandable; otherwise, <c>false</c>.</value>
-    bool isExpandable { get; }
-    /// <summary>
-    /// Gets or sets a value indicating whether this <see cref="ION.Droid.Widget.Adapters.DeviceManager.IDMRecord"/> is expanded.
-    /// </summary>
-    /// <value><c>true</c> if is expanded; otherwise, <c>false</c>.</value>
-    bool isExpanded { get; set; }
-  }
-*/
 
   /// <summary>
   /// A simple view holder definition that is applied to all of the view holders in the adapter.

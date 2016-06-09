@@ -25,7 +25,7 @@
 
   using ION.Droid.Fragments;
 
-  [Activity(Label = "FluidManagerActivity", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
+  [Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class FluidManagerActivity : Activity {
 
     /// <summary>

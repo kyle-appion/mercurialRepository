@@ -158,12 +158,16 @@
       var offset = (mixture && EState.Dew == state) ? rows : 0;
       int i = BinSearch(pressureValues, pressure.amount, 0 + offset, rows + offset);
 
-      if (i >= 0) {       
+      if (i >= 0 - 1) {       
         return TEMPERATURE.OfScalar(temperatures[i]);
       } else {
         i = ~i;
-        double magnitude = FindMagnitudeOf(pressure.amount, pressureValues[i], pressureValues[i + 1]);
-        return TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i % rows], temperatures[(i + 1) % rows]));
+        if (i >= pressureValues.Length) {
+          return TEMPERATURE.OfScalar(temperatures[i - offset]);
+        } else {
+          double magnitude = FindMagnitudeOf(pressure.amount, pressureValues[i], pressureValues[i + 1]);
+          return TEMPERATURE.OfScalar(Interpolate(magnitude, temperatures[i % rows], temperatures[(i + 1) % rows]));
+        }
       }
     }
 
@@ -186,15 +190,18 @@
       }
 
       int i = BinSearch(temperatures, temperature.amount, 0, rows);
-      ION.Core.Util.Log.D(this, "Index for temp: " + i);
+
       if (i >= 0) {
         return PRESSURE.OfScalar(pressureValues[i + offset]);
       } else {
         i = ~i;
-        double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
-        var ret = PRESSURE.OfScalar(Interpolate(magnitude, pressureValues[i + offset], pressureValues[i + 1 + offset]));
-        ION.Core.Util.Log.D(this, "Ret: " + ret);
-        return ret;
+        if (i >= temperatures.Length - 1) {
+          return PRESSURE.OfScalar(pressureValues[offset + i]);
+        } else {
+          double magnitude = FindMagnitudeOf(temperature.amount, temperatures[i], temperatures[i + 1]);
+          var ret = PRESSURE.OfScalar(Interpolate(magnitude, pressureValues[i + offset], pressureValues[i + 1 + offset]));
+          return ret;
+        }
       }
     }
       
@@ -216,7 +223,7 @@
     /// <returns></returns>
     private static int BinSearch(double[] a, double target, int first, int last) {
       if (first >= last) {
-        return ~last;
+        return ~(last - 1);
       }
 
       int mid = (first + last) / 2;

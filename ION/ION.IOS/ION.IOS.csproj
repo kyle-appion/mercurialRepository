@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,11 +37,14 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Andrew Hodder (8WUM398369)</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
     <MtouchSdkVersion>8.4</MtouchSdkVersion>
+    <CodesignProvision>27940921-5251-40aa-b8a9-1d309c873d63</CodesignProvision>
+    <IpaPackageName>
+    </IpaPackageName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -136,169 +139,495 @@
     <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\img_bgd_carbon.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\buttonBlack.9.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\buttonGold.9.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\ic_devices_on_workbench.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_battery_100.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_battery_75.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_battery_50.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_battery_25.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_battery_0.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\np_white_background_bordered.png" />
-    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\np_green_background_bordered.png" />
-    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\np_light_blue_background_bordered.png" />
-    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\np_red_background_bordered.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gauge_av760.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gauge_p300.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gauge_p500.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gauge_p800.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_menu_overflow.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\ic_nav_devmanager.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\ic_nav_workbench.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\ic_nav_supersub.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\ic_nav_ptconversion.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gauge_pt800.png" />
-    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\np_gold_background_horiz_bordered.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\ic_alarm.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default-568h%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%403x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%403x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%401x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%401x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\ic_arrow_trend_up.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\ic_arrow_trend_down.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_play.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\ic_pause.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\ic_pdf.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\ic_camera.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\ic_help.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gaugeav760.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gaugep300.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\tracker_circle.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\scroll_up.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\scroll_down.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\graph_menu.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\checked_checkbox.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\unchecked_checkbox.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon167x167.png" />
-    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\ic_excel.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_edit.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\edit-11-32.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\view-details-32.png" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\ic_plus.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\ic_graph_menu.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\ic_more_info.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\ic_job_settings.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\ic_nav_certificate.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\ic_notes.png" />
-    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text_top.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text_top.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_record_stop.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record %281%29.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\walkthrough_arrow.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\CarbonBackground.imageset\img_bgd_carbon.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonBlack.imageset\buttonBlack.9.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\buttonGold.9.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_on_workbench.imageset\ic_devices_on_workbench.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_100.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_75.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_50.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_25.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_battery_0.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add_to_workbench.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_white_background_bordered.imageset\np_white_background_bordered.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_green_background_bordered.imageset\np_green_background_bordered.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_light_blue_background_bordered.imageset\np_light_blue_background_bordered.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_red_background_bordered.imageset\np_red_background_bordered.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gauge_av760.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gauge_p300.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gauge_p500.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gauge_p800.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_menu_overflow.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_logo_appiondefault.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_device_manager.imageset\ic_nav_devmanager.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_workbench.imageset\ic_nav_workbench.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_superheat_subcool.imageset\ic_nav_supersub.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_pt_chart.imageset\ic_nav_ptconversion.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_analyzer.imageset\ic_nav_analyzer.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gauge_pt800.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\np_gold_background_horiz_bordered.imageset\np_gold_background_horiz_bordered.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_check.imageset\ic_action_accept.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_refresh.imageset\ic_refresh.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_device_add.imageset\ic_devices_add.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_lock.imageset\ic_lock.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_alarm.imageset\ic_alarm.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_splash_screen.imageset\Default-568h%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon29x29%403x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%403x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon60x60%403x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_settings.imageset\ic_settings.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bookmark.imageset\ic_bookmark.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon40x40%401x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%401x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon76x76%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\LaunchImage.launchimage\Default-568h%402x.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_up.imageset\ic_arrow_trend_up.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_trend_down.imageset\ic_arrow_trend_down.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_play.imageset\ic_play.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_pause.imageset\ic_pause.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_pdf.imageset\ic_pdf.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_camera.imageset\ic_camera.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_help.imageset\ic_help.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_connected.imageset\ic_bluetooth_connected.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_bluetooth_disconnected.imageset\ic_bluetooth_disconnected.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_compressor.imageset\ic_compressor.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_expansionchamber.imageset\ic_expansionchamber.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_download.imageset\ic_download.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_downwhite.imageset\ic_arrow_downwhite.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_upwhite.imageset\ic_arrow_upwhite.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_av760.imageset\ic_render_gaugeav760.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p300.imageset\ic_render_gaugep300.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p500.imageset\ic_render_gaugep500.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_p800.imageset\ic_render_gaugep800.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_render_gauge_pt800.imageset\ic_render_gaugep800.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_missing.imageset\ic_missing.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_tracker_circle.imageset\tracker_circle.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrollup.imageset\scroll_up.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_scrolldown.imageset\scroll_down.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph.imageset\graph_menu.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_checkbox.imageset\checked_checkbox.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_unchecked.imageset\unchecked_checkbox.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\AppIcons.appiconset\AppIcon167x167.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_bent_arrow.imageset\bent_arrow_back.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_excel.imageset\ic_excel.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_edit.imageset\ic_edit.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_edit.imageset\edit-11-32.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_small_list.imageset\view-details-32.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_plus.imageset\ic_plus.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_graph_menu.imageset\ic_graph_menu.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_more_info.imageset\ic_more_info.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_job_settings.imageset\ic_job_settings.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_certificate.imageset\ic_nav_certificate.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_notes.imageset\ic_notes.png">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_blue_plot.imageset\img_blue_plot.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_red_plot.imageset\img_red_plot.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text_top.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_stop_text_top.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_stop.imageset\ic_record_stop.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record %281%29.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\Contents.json">
+      <InProject>false</InProject>
+    </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\walkthrough_arrow.pdf">
+      <InProject>false</InProject>
+    </ImageAsset>
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />

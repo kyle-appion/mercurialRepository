@@ -25,7 +25,7 @@
   using ION.Droid.Util;
   using ION.Droid.Widgets.Adapters.Navigation;
 
-  [Activity(Label = "ActivityHome", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
+  [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
   public class HomeActivity : IONActivity, AbsListView.IOnItemClickListener {
 
     /// <summary>
