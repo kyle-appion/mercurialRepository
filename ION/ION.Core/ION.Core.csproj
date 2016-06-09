@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Connections\Connection.cs" />
     <Compile Include="src\Devices\Device.cs" />
     <Compile Include="src\Devices\DeviceManager.cs" />
     <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
@@ -170,6 +169,8 @@
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
     <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
     <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Protocols\RidgadoV4Protocol.cs" />
+    <Compile Include="src\Connections\IConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

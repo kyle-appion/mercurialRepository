@@ -115,22 +115,6 @@
       return EProtocolVersion.Classic != protocol;
     }
 
-/*
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ION.IOS.Devices.LeConnectionHelper"/> class.
-    /// </summary>
-    /// <param name="address">Address.</param>
-    /// <param name="protocolVersion">Protocol version.</param>
-    public IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
-      var peripheral = centralManager.RetrievePeripheralsWithIdentifiers(new NSUuid(address))[0];
-      if (peripheral == null) {
-        throw new Exception("Cannot create connection to " + address + ": the address is not valid");
-      }
-
-      return new IosLeConnection(centralManager, peripheral);
-    }
-*/
-
     /// <summary>
     /// Performs a scan for the given scan time. Note: the scan time is 
     /// nothing more than a hint. The connection helper does NOT necessarily need
@@ -150,7 +134,7 @@
       isScanning = true;
       cancelSource = new CancellationTokenSource();
       var options = new PeripheralScanningOptions();
-      options.AllowDuplicatesKey = true;
+      options.AllowDuplicatesKey = false;
       centralManager.ScanForPeripherals((CBUUID[])null, options);
 
       var startTime = DateTime.Now;
@@ -209,6 +193,7 @@
       }
 
       if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
+        Log.D(this, name + " is not a valid serial number");
         return;
       }
 

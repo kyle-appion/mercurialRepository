@@ -377,7 +377,6 @@
       if (device.protocol is IGaugeProtocol) {
         var gp = device.protocol as IGaugeProtocol;
         if (gp.supportsBroadcasting) {
-          Log.D(this, device.serialNumber + " " + packet.ToByteString());
           device.HandlePacket(packet);
         }
       }

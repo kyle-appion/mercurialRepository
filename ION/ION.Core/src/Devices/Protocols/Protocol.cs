@@ -14,6 +14,7 @@ namespace ION.Core.Devices.Protocols {
     V1 = 1,
     V2 = 2,
     V3 = 3,
+    V4 = 4,
   }
 
   public class Protocol {
@@ -25,6 +26,7 @@ namespace ION.Core.Devices.Protocols {
       new BleV1Protocol(),
       new BleV2Protocol(),
       new BleV3Protocol(),
+      new RidgadoV4Protocol(),
     };
 
     /// <summary>
@@ -34,8 +36,7 @@ namespace ION.Core.Devices.Protocols {
     /// <returns>The protocol from version.</returns>
     /// <param name="version">Version.</param>
     public static IGaugeProtocol FindProtocolFromVersion(EProtocolVersion version) {
-      // Could be made more efficient with a binary search if the protocol count
-      // keeps increasing.
+      // Could be made more efficient if the protocol count keeps increasing.
       foreach (IGaugeProtocol protocol in PROTOCOLS) {
         if (protocol.version == version) {
           return protocol;

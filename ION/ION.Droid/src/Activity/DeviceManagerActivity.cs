@@ -52,7 +52,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 5000;
+    private const long DEFAULT_SCAN_TIME = 20000;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -110,7 +110,7 @@
 
       empty.Visibility = ViewStates.Gone;
       list.Visibility = ViewStates.Visible;
-      /*
+
       adapter.onDatasetChanged += (adapter) => {
         Log.D(this, "The records count is: " + adapter.ItemCount);
         if (adapter.ItemCount > 0) {
@@ -121,7 +121,6 @@
           list.Visibility = ViewStates.Gone;
         }
       };
-      */
 
       list.SetAdapter(adapter);
     }

@@ -21,7 +21,7 @@
   using ION.Droid.Fragments;
   using ION.Droid.Util;
 
-  [Activity(Label = "IONPreferenceActivity", ScreenOrientation=ScreenOrientation.Portrait)]      
+  [Activity(Label = "@string/preferences", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class IONPreferenceActivity : PreferenceActivity, ISharedPreferencesOnSharedPreferenceChangeListener {
 
     /// <summary>
