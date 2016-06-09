@@ -40,8 +40,53 @@
       /// Raises the changed event.
       /// </summary>
       public override void OnChanged() {
-        base.OnChanged();
-        ION.Core.Util.Log.D(this, "THE ADAPTER HAS CHANGED");
+        adapter.NotifyChanged();
+      }
+
+      /// <summary>
+      /// Raises the item range changed event.
+      /// </summary>
+      /// <param name="positionStart">Position start.</param>
+      /// <param name="itemCount">Item count.</param>
+      public override void OnItemRangeChanged(int positionStart, int itemCount) {
+        adapter.NotifyChanged();
+      }
+
+      /// <summary>
+      /// Raises the item range changed event.
+      /// </summary>
+      /// <param name="positionStart">Position start.</param>
+      /// <param name="itemCount">Item count.</param>
+      /// <param name="payload">Payload.</param>
+      public override void OnItemRangeChanged(int positionStart, int itemCount, Java.Lang.Object payload) {
+        adapter.NotifyChanged();
+      }
+
+      /// <summary>
+      /// Raises the item range inserted event.
+      /// </summary>
+      /// <param name="positionStart">Position start.</param>
+      /// <param name="itemCount">Item count.</param>
+      public override void OnItemRangeInserted(int positionStart, int itemCount) {
+        adapter.NotifyChanged();
+      }
+
+      /// <summary>
+      /// Raises the item range moved event.
+      /// </summary>
+      /// <param name="fromPosition">From position.</param>
+      /// <param name="toPosition">To position.</param>
+      /// <param name="itemCount">Item count.</param>
+      public override void OnItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+        adapter.NotifyChanged();
+      }
+
+      /// <summary>
+      /// Raises the item range removed event.
+      /// </summary>
+      /// <param name="positionStart">Position start.</param>
+      /// <param name="itemCount">Item count.</param>
+      public override void OnItemRangeRemoved(int positionStart, int itemCount) {
         adapter.NotifyChanged();
       }
     }

@@ -80,10 +80,10 @@
     /// </summary>
     private RecyclerView.ItemDecoration swipeDecoration;
 
-    public SwipableRecyclerViewAdapter() {
+    public SwipableRecyclerViewAdapter() : base() {
       handler = new Handler();
       touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
-      swipeDecoration = new SwipeAnimationDecorator(Color.Red);
+      swipeDecoration = new SwipeAnimationDecorator(Color.Transparent);
       swipeConfirmTimeout = PENDING_ACTION_DELAY;
     }
 

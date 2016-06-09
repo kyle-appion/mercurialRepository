@@ -6,6 +6,7 @@
   using Android.App;
   using Android.Bluetooth;
   using Android.Content;
+  using Android.Content.PM;
   using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Views;
@@ -24,7 +25,7 @@
   using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
-  using ION.Droid.Widgets.Adapters;
+  using ION.Droid.Widgets.Adapters.DeviceManager;
 
   /// <summary>
   /// The enum that will provide the filters the will only show the toggled devices.
@@ -36,7 +37,7 @@
     Temperature = 1 << 1,
   }
 
-  [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme")]
+  [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
   public class DeviceManagerActivity : IONActivity {
     /// <summary>
     /// The extra key that is used to pull a masked Filter enum which is used to filter only the given devices.
@@ -51,7 +52,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 5000;
+    private const long DEFAULT_SCAN_TIME = 20000;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -68,7 +69,7 @@
     /// list layout. (HA! Friendly. Right.)
     /// </summary>
     /// <value>The adapter.</value>
-    private DeviceRecycleAdapter adapter { get; set; }
+    private DeviceManagerRecycleAdapter adapter;
     /// <summary>
     /// The filter for the activity.
     /// </summary>
@@ -100,11 +101,18 @@
         filter = EDeviceFilter.All;
       }
 
-      adapter = new DeviceRecycleAdapter(this, Intent.ActionPick.Equals(Intent.Action));
+      adapter = new DeviceManagerRecycleAdapter(ion, list);
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
-      adapter.onSensorReturnClicked += OnSensorReturnClicked;
+      if (Intent.ActionPick.Equals(Intent.Action)) {
+        adapter.onSensorReturnClicked = OnSensorReturnClicked;
+      }
+
+      empty.Visibility = ViewStates.Gone;
+      list.Visibility = ViewStates.Visible;
+
       adapter.onDatasetChanged += (adapter) => {
+        Log.D(this, "The records count is: " + adapter.ItemCount);
         if (adapter.ItemCount > 0) {
           empty.Visibility = ViewStates.Gone;
           list.Visibility = ViewStates.Visible;
@@ -132,7 +140,6 @@
       InvalidateOptionsMenu();
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
-      RefreshAdapter();
       var connectionHelper = ion.deviceManager.connectionHelper;
 
       if (connectionHelper.isEnabled) {
@@ -140,6 +147,8 @@
       } else {
         ShowBluetoothOffDialog();
       }
+
+      adapter.Reload();
     }
 
     // Overridden from Activity
@@ -151,6 +160,17 @@
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.Stop();
+    }
+
+    /// <Docs>Perform any final cleanup before an activity is destroyed.</Docs>
+    /// <summary>
+    /// Raises the destroy event.
+    /// </summary>
+    protected override void OnDestroy() {
+      base.OnDestroy();
+
+      ion.deviceManager.ForgetFoundDevices();
+      adapter.Release();
     }
 
     // Overridden from Activity
@@ -176,8 +196,6 @@
           if (dm.connectionHelper.isScanning) {
             dm.connectionHelper.Stop();
           } else {
-  //          var options = new ScanRepeatOptions(ScanRepeatOptions.REPEAT_FOREVER, TimeSpan.FromMilliseconds(10000));
-  //          dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME), options);
             dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         } else {
@@ -219,39 +237,14 @@
     }
 
     /// <summary>
-    /// Called when the adapter's content is refreshed.
-    /// </summary>
-    private void OnAdapterRefreshed() {
-      if (adapter.ItemCount <= 0) {
-        empty.Visibility = ViewStates.Visible;
-        list.Visibility = ViewStates.Gone;
-      } else {
-        empty.Visibility = ViewStates.Gone;
-        list.Visibility = ViewStates.Visible;
-      }
-    }
-
-    /// <summary>
-    /// Repopulates the device manager adapter.
-    /// </summary>
-    private void RefreshAdapter() {
-      try {
-        adapter.SetDevices(ion.deviceManager.devices);
-        adapter.NotifyDataSetChanged();
-      } catch (Exception e) {
-        ION.Core.Util.Log.D(this, "asdfasdf", e);
-      }
-    }
-
-    /// <summary>
     /// Called when the user clicks the return sensor in the adapter.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     /// <param name="position">Position.</param>
-    private void OnSensorReturnClicked(GaugeDeviceSensor sensor, int position) {
+    private void OnSensorReturnClicked(Sensor sensor) {
       var ret = new Intent();
 
-      ret.PutExtra(EXTRA_SENSOR, new GaugeDeviceSensorParcelable(sensor));
+      ret.PutExtra(EXTRA_SENSOR, sensor.ToParcelable());
 
       SetResult(Result.Ok, ret);
       Finish();
@@ -262,35 +255,8 @@
     /// </summary>
     /// <param name="e">E.</param>
     private void OnDeviceManagerEvent(DeviceManagerEvent e) {
-      switch (e.type) {
-        case DeviceManagerEvent.EType.DeviceEvent:
-          OnDeviceEvent(e.deviceEvent);
-          break;
-        default:
-          InvalidateOptionsMenu();
-          break;
-      }
-    }
-
-    /// <summary>
-    /// Called when the device manager posts a new device event.
-    /// </summary>
-    /// <param name="deviceEvent">Device event.</param>
-    private void OnDeviceEvent(DeviceEvent deviceEvent) {
-      var device = deviceEvent.device;
-
-      switch (deviceEvent.type) {
-        case DeviceEvent.EType.Found:
-          RefreshAdapter();
-          break;
-        case DeviceEvent.EType.Deleted:
-          RefreshAdapter();
-          break;
-        case DeviceEvent.EType.ConnectionChange:
-          RefreshAdapter();
-          break;
-        default:
-          break;
+      if (e.type == DeviceManagerEvent.EType.ScanStarted || e.type == DeviceManagerEvent.EType.ScanStopped) {
+        InvalidateOptionsMenu();
       }
     }
 

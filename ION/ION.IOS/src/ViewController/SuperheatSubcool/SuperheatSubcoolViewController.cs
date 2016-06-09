@@ -326,6 +326,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
 
+      editPressure.EditingDidEnd += (s, e) => {
+        if (string.IsNullOrEmpty(editPressure.Text)) {
+          pressureSensor.measurement = pressureSensor.unit.OfScalar(0);
+        }
+      };
+
       //ptChart = PTChart.New(ion, Fluid.EState.Bubble);
       //ptChart = PTChart.New(ion, initialManifold.ptChart.state);
       if (initialManifold != null) {
@@ -485,7 +491,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           calculation = calculation * -1;
         }
       }
-      labelFluidDelta.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+      labelFluidDelta.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
     }
 
     /// <summary>
@@ -549,7 +555,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
 
-      labelSatTempMeasurement.Text = temp.amount.ToString("0.00");
+      labelSatTempMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, false);
       labelSatTempUnit.Text = temp.unit.ToString();
 
       UpdateDelta();
@@ -570,9 +576,10 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
       var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
-
+/*
       labelSatTempMeasurement.Text = temp.amount.ToString("0.00");
       labelSatTempUnit.Text = temp.unit.ToString();
+*/
 
       UpdateDelta();
     }

@@ -19,6 +19,8 @@
                 android:id="@id/name"
                 android:textColor="@color/black"
                 android:textSize="@dimen/viewer_name_text_size"
+                android:singleLine="true"
+                android:hint="@string/name"
                 android:layout_weight="1"
                 android:layout_width="0px"
                 android:layout_height="wrap_content" />
@@ -69,6 +71,7 @@
                 android:id="@id/measurement"
                 android:textColor="@color/black"
                 android:includeFontPadding="false"
+                android:singleLine="true"
                 android:textStyle="bold"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"
@@ -76,35 +79,42 @@
                 android:gravity="right"
                 android:textSize="@dimen/viewer_measurement_text_size" />
         </LinearLayout>
-        <LinearLayout
-            android:orientation="horizontal"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@id/alarm"
                 android:textColor="@color/black"
                 android:text="@string/alarm"
-                android:layout_width="0px"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:singleLine="true"
                 android:textSize="@dimen/viewer_text_size" />
             <TextView
                 android:id="@id/status"
                 android:textColor="@color/black"
-                android:layout_width="0px"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:text="@string/disconnected"
+                android:singleLine="true"
                 android:gravity="center"
+                android:layout_centerInParent="true"
                 android:textSize="@dimen/viewer_text_size" />
             <TextView
                 android:id="@id/unit"
                 android:textColor="@color/black"
-                android:layout_width="0px"
+                android:text="@string/unit"
+                android:singleLine="true"
+                android:layout_gravity="center_vertical|end"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:gravity="right"
                 android:textSize="@dimen/viewer_text_size" />
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
     <LinearLayout
         android:id="@id/toggle"
@@ -117,7 +127,9 @@
             android:id="@id/device_serial_number"
             android:layout_gravity="center"
             android:hint="XXXXXXXXX"
+            android:singleLine="true"
             android:textSize="@dimen/text_size_large"
+            android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
@@ -126,6 +138,7 @@
         <ImageView
             android:id="@id/arrow"
             android:src="@drawable/ic_arrow_downwhite"
+            android:layout_weight="1"
             android:layout_gravity="end|center_vertical"
             android:layout_width="24dp"
             android:layout_height="24dp" />

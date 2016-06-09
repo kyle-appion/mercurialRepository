@@ -79,7 +79,7 @@
     /// unit list.
     /// </summary>
     public static Unit[] DEFAULT_PRESSURE_UNITS = new Unit[] {
-      Units.Pressure.PSIA,
+//      Units.Pressure.PSIA,
       Units.Pressure.PSIG,
       Units.Pressure.BAR,
       Units.Pressure.IN_HG,
@@ -123,39 +123,43 @@
 
       string ret = "";
 
-      // PRESSURE UNITS
-      if (Units.Pressure.PASCAL.Equals(unit)) {
-        ret = amount.ToString("0");
-      } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
-        if (ESensorType.Vacuum == sensorType) {
-          ret = amount.ToString("0.0000");
-        } else {
+      if (double.IsNaN(amount)) {
+        ret = "---";
+      } else {
+        // PRESSURE UNITS
+        if (Units.Pressure.PASCAL.Equals(unit)) {
           ret = amount.ToString("0");
-        }
-      } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
-        ret = amount.ToString("0.000");
-      } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
-        ret = amount.ToString("0.000");
-      } else if (Units.Pressure.PSIG.Equals(unit)) {
-        ret = amount.ToString("0.0");
-      } else if (Units.Pressure.PSIA.Equals(unit)) {
-        ret = amount.ToString("0.0000");
-      } else if (Units.Pressure.IN_HG.Equals(unit)) {
-        if (ESensorType.Vacuum == sensorType) {
+        } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
+          if (ESensorType.Vacuum == sensorType) {
+            ret = amount.ToString("0.0000");
+          } else {
+            ret = amount.ToString("0");
+          }
+        } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
           ret = amount.ToString("0.000");
-        } else {
-          ret = amount.ToString("0.00");
+        } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
+          ret = amount.ToString("0.000");
+        } else if (Units.Pressure.PSIG.Equals(unit)) {
+          ret = amount.ToString("0.0");
+        } else if (Units.Pressure.PSIA.Equals(unit)) {
+          ret = amount.ToString("0.0000");
+        } else if (Units.Pressure.IN_HG.Equals(unit)) {
+          if (ESensorType.Vacuum == sensorType) {
+            ret = amount.ToString("0.000");
+          } else {
+            ret = amount.ToString("0.00");
+          }
         }
-      }
       // VACUUM PRESSURE
       else if (Units.Vacuum.MICRON.Equals(unit)) {
-        ret = amount.ToString("###,##0");
-      } else if (Units.Vacuum.MILLITORR.Equals(unit)) {
-        ret = amount.ToString("###,##0");
-      }
+          ret = amount.ToString("###,##0");
+        } else if (Units.Vacuum.MILLITORR.Equals(unit)) {
+          ret = amount.ToString("###,##0");
+        }
       // DEFAULT
       else {
-        ret = amount.ToString("0.00");
+          ret = amount.ToString("0.00");
+        }
       }
 
       if (includeUnit) {
@@ -392,6 +396,10 @@
     /// </remarks>
     /// <param name="unit">Unit.</param>
     protected void ForceSetUnit(Unit unit) {
+      if (this.unit.Equals(unit)) {
+        return;
+      }
+
       if (!this.unit.IsCompatible(unit)) {
         throw new ArgumentException("Cannot set unit: " + unit + " is not compatible with " + this.unit);
       }

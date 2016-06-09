@@ -219,8 +219,7 @@
     /// </summary>
     private void OnAddViewer() {
       var i = new Intent(Activity, typeof(DeviceManagerActivity));
-//      i.SetAction(Intent.ActionPick);
-      StartActivityForResult(i, REQUEST_SENSOR);
+      StartActivity(i);
     }
 
     /// <summary>

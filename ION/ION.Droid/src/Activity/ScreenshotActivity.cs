@@ -8,6 +8,7 @@
 
   using Android.App;
   using Android.Content;
+  using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
   using Android.Runtime;
@@ -16,6 +17,7 @@
 
   using ION.Core.App;
   using ION.Core.IO;
+  using ION.Core.Location;
   using ION.Core.Pdf;
   using ION.Core.Report;
   using ION.Core.Util;
@@ -23,7 +25,7 @@
   using ION.Droid.Dialog;
   using ION.Droid.Views;
 
-  [Activity(Label="@string/report_screenshot", Theme="@style/TerminalActivityTheme")]      
+  [Activity(Label="@string/report_screenshot", Theme="@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class ScreenshotActivity : IONActivity {
 
     /// <summary>
@@ -83,20 +85,11 @@
       }
 
       var loc = ion.locationManager.lastKnownLocation;
-      var address = await ion.locationManager.GetAddressFromLocationAsync(loc);
-
-      addressView.Text = address.address;
-      cityView.Text = address.city;
-      if (!string.IsNullOrEmpty(address.state)) {
-        string[] states = Resources.GetStringArray(Resource.Array.us_states);
-        var index = Array.FindIndex(states, (s) => {
-          return s.Equals(address.state);
-        });
-        if (index >= 0 && index < states.Length) {
-          stateView.SetSelection(index);
-        }
+      try {
+        FillOutFieldsUsingAddress(await ion.locationManager.GetAddressFromLocationAsync(loc));
+      } catch (Exception e) {
+        Error(GetString(Resource.String.error_location_failed_to_get_address), e);
       }
-      zipView.Text = address.zip;
     }
 
     /// <Docs>The options menu in which you place your items.</Docs>
@@ -218,6 +211,25 @@
       }
 
       Finish();
+    }
+
+    /// <summary>
+    /// Fills out the appropriate fields for the activity using the given address.
+    /// </summary>
+    /// <param name="address">Address.</param>
+    private void FillOutFieldsUsingAddress(Address address) {
+      addressView.Text = address.address;
+      cityView.Text = address.city;
+      if (!string.IsNullOrEmpty(address.state)) {
+        string[] states = Resources.GetStringArray(Resource.Array.us_states);
+        var index = Array.FindIndex(states, (s) => {
+          return s.Equals(address.state);
+        });
+        if (index >= 0 && index < states.Length) {
+          stateView.SetSelection(index);
+        }
+      }
+      zipView.Text = address.zip;
     }
 
     class Result {

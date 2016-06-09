@@ -33,7 +33,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="src\Connections\Connection.cs" />
     <Compile Include="src\Devices\Device.cs" />
     <Compile Include="src\Devices\DeviceManager.cs" />
     <Compile Include="src\Devices\Protocols\BleV1Protocol.cs" />
@@ -170,6 +169,8 @@
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
     <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
     <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
+    <Compile Include="src\Devices\Protocols\RidgadoV4Protocol.cs" />
+    <Compile Include="src\Connections\IConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -197,7 +198,6 @@
     <Folder Include="src\Location\" />
     <Folder Include="src\Pdf\" />
     <Folder Include="src\Report\" />
-    <Folder Include="src\Fluids\Embedded\" />
     <Folder Include="src\Measure\Json\" />
     <Folder Include="src\Devices\Filters\" />
     <Folder Include="src\Report\DataLogs\" />
@@ -236,38 +236,26 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="src\Devices\Devices.xml" />
-    <EmbeddedResource Include="src\Fluids\Embedded\refrigerantcolors.properties">
-      <LogicalName>refrigerantcolors.properties</LogicalName>
+    <EmbeddedResource Include="src\Devices\Certificates\digital_gauge_cert.pdf">
+      <LogicalName>digital_gauge_cert.pdf</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
+      <LogicalName>UpgradeDatabase.sql</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Internal\Testing\Av760TestingProcedure.xml">
+      <LogicalName>Av760TestingProcedure.xml</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\BUTANE.fluid">
+      <LogicalName>BUTANE.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\CO2.fluid">
+      <LogicalName>CO2.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\ISOBUTAN.fluid">
+      <LogicalName>ISOBUTAN.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R11.fluid">
       <LogicalName>R11.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R12.fluid">
-      <LogicalName>R12.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R13.fluid">
-      <LogicalName>R13.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R14.fluid">
-      <LogicalName>R14.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R21.fluid">
-      <LogicalName>R21.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R22.fluid">
-      <LogicalName>R22.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R23.fluid">
-      <LogicalName>R23.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R32.fluid">
-      <LogicalName>R32.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R40.fluid">
-      <LogicalName>R40.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R41.fluid">
-      <LogicalName>R41.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R113.fluid">
       <LogicalName>R113.fluid</LogicalName>
@@ -281,14 +269,38 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R116.fluid">
       <LogicalName>R116.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R12.fluid">
+      <LogicalName>R12.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1216.fluid">
+      <LogicalName>R1216.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R123.fluid">
       <LogicalName>R123.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1233ZD.fluid">
+      <LogicalName>R1233ZD.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234YF.fluid">
+      <LogicalName>R1234YF.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1234ZE.fluid">
+      <LogicalName>R1234ZE.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R124.fluid">
       <LogicalName>R124.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R125.fluid">
       <LogicalName>R125.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R13.fluid">
+      <LogicalName>R13.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R134A.fluid">
+      <LogicalName>R134A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R14.fluid">
+      <LogicalName>R14.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R141B.fluid">
       <LogicalName>R141B.fluid</LogicalName>
@@ -305,11 +317,20 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R161.fluid">
       <LogicalName>R161.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R21.fluid">
+      <LogicalName>R21.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R218.fluid">
       <LogicalName>R218.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R22.fluid">
+      <LogicalName>R22.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R227EA.fluid">
       <LogicalName>R227EA.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R23.fluid">
+      <LogicalName>R23.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R236EA.fluid">
       <LogicalName>R236EA.fluid</LogicalName>
@@ -323,8 +344,14 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R245FA.fluid">
       <LogicalName>R245FA.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R32.fluid">
+      <LogicalName>R32.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R365MFC.fluid">
       <LogicalName>R365MFC.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R40.fluid">
+      <LogicalName>R40.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R401A.fluid">
       <LogicalName>R401A.fluid</LogicalName>
@@ -341,17 +368,11 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R402B.fluid">
       <LogicalName>R402B.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R404A.fluid">
-      <LogicalName>R404A.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R407A.fluid">
       <LogicalName>R407A.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R407B.fluid">
       <LogicalName>R407B.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R407C.fluid">
-      <LogicalName>R407C.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R407D.fluid">
       <LogicalName>R407D.fluid</LogicalName>
@@ -359,20 +380,32 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R407E.fluid">
       <LogicalName>R407E.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407F.fluid">
+      <LogicalName>R407F.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R408A.fluid">
       <LogicalName>R408A.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R409A.fluid">
       <LogicalName>R409A.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R410A.fluid">
-      <LogicalName>R410A.fluid</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\R41.fluid">
+      <LogicalName>R41.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R410B.fluid">
       <LogicalName>R410B.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R411A.fluid">
+      <LogicalName>R411A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R411B.fluid">
+      <LogicalName>R411B.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R413A.fluid">
       <LogicalName>R413A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R415A.fluid">
+      <LogicalName>R415A.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R415B.fluid">
       <LogicalName>R415B.fluid</LogicalName>
@@ -404,6 +437,9 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R423A.fluid">
       <LogicalName>R423A.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R424A.fluid">
+      <LogicalName>R424A.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R425A.fluid">
       <LogicalName>R425A.fluid</LogicalName>
     </EmbeddedResource>
@@ -416,17 +452,29 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R436A.fluid">
       <LogicalName>R436A.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R436B.fluid">
+      <LogicalName>R436B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R441A.fluid">
+      <LogicalName>R441A.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R443A.fluid">
       <LogicalName>R443A.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R500.fluid">
       <LogicalName>R500.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R501.fluid">
+      <LogicalName>R501.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R502.fluid">
+      <LogicalName>R502.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R503.fluid">
+      <LogicalName>R503.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R504.fluid">
       <LogicalName>R504.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R507A.fluid">
-      <LogicalName>R507A.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R508A.fluid">
       <LogicalName>R508A.fluid</LogicalName>
@@ -443,18 +491,6 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R512A.fluid">
       <LogicalName>R512A.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R1216.fluid">
-      <LogicalName>R1216.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R1233ZD.fluid">
-      <LogicalName>R1233ZD.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R1234YF.fluid">
-      <LogicalName>R1234YF.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R1234ZE.fluid">
-      <LogicalName>R1234ZE.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\RC318.fluid">
       <LogicalName>RC318.fluid</LogicalName>
     </EmbeddedResource>
@@ -470,26 +506,20 @@
     <EmbeddedResource Include="src\Fluids\Embedded\RE347MCC.fluid">
       <LogicalName>RE347MCC.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Devices\Certificates\digital_gauge_cert.pdf">
-      <LogicalName>digital_gauge_cert.pdf</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\refrigerantcolors.properties">
+      <LogicalName>refrigerantcolors.properties</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\BUTANE.fluid">
-      <LogicalName>BUTANE.fluid</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\R507A.fluid">
+      <LogicalName>R507A.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\CO2.fluid">
-      <LogicalName>CO2.fluid</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\R410A.fluid">
+      <LogicalName>R410A.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\ISOBUTAN.fluid">
-      <LogicalName>ISOBUTAN.fluid</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\R407C.fluid">
+      <LogicalName>R407C.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
-      <LogicalName>R134a.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
-      <LogicalName>UpgradeDatabase.sql</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Internal\Testing\Av760TestingProcedure.xml">
-      <LogicalName>Av760TestingProcedure.xml</LogicalName>
+    <EmbeddedResource Include="src\Fluids\Embedded\R404A.fluid">
+      <LogicalName>R404A.fluid</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
