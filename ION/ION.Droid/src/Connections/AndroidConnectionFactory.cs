@@ -22,25 +22,28 @@
     public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
       var adapter = bluetoothManager.Adapter;
 
+      var device = adapter.GetRemoteDevice(address);
+
+      if (device == null) {
+        throw new Exception("Cannot create connection: Failed to resolve connection's device.");
+      }
+
+
       switch (protocolVersion) {
         case EProtocolVersion.Classic:
-          return new ClassicConnection(adapter.GetRemoteDevice(address));
+          return new ClassicConnection(device);
         case EProtocolVersion.V1:
           goto case EProtocolVersion.V3;
         case EProtocolVersion.V2:
           goto case EProtocolVersion.V3;
         case EProtocolVersion.V3:
-          var device = adapter.GetRemoteDevice(address);
-          if (device == null) {
-            throw new Exception("Cannot create connection: Failed to resolve connection's device.");
-          } else {
-            return new LeConnection(context, bluetoothManager, device);
-          }
+          return new LeConnection(context, bluetoothManager, device);
+        case EProtocolVersion.V4:
+          return new RigadoLeConnection(context, bluetoothManager, device);
         default:
           throw new Exception("Cannot create connection for protocol version " + protocolVersion);
       }
     }
-    
   }
 }
 

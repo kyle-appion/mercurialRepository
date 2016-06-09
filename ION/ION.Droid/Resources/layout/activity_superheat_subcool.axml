@@ -53,8 +53,9 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_help"
             android:tint="@color/black"
-            android:layout_width="@dimen/ptchart_fluid_color_height"
-            android:layout_height="@dimen/ptchart_fluid_color_height" />
+            android:layout_gravity="center_vertical"
+            android:layout_width="35dp"
+            android:layout_height="35dp" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space

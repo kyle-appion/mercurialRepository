@@ -2,6 +2,8 @@
   
   using System;
 
+  using ION.Core.Util;
+
   /// <summary>
   /// GaugeSerialNumber is a serial number that describes everything that is
   /// necessary to determine what a particular appion gauge is. As such, every
@@ -127,7 +129,7 @@
         Parse(serial);
         return true;
       } catch (ArgumentException e) {
-//        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid GaugeDeviceSerial");
+//        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid GaugeDeviceSerial", e);
         return false;
       }
     }
@@ -143,8 +145,15 @@
       }
 
       // TODO ahodder@appioninc.com: remove this
-      if ("P516E003".Equals(serial) || "RigDfu".Equals(serial)) {
+/*
+      if ("P516E003".Equals(serial) || "RigCom".Equals(serial)) {
         return new GaugeSerialNumber(EDeviceModel.PT500, "PT8", serial, BuildManufactureDate("16", 'E'), (ushort)3);
+      }
+*/
+      if (serial.StartsWith("S8")) {
+        return new GaugeSerialNumber(EDeviceModel.PT800, "PT8", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
+      } else if (serial.StartsWith("S5")) {
+        return new GaugeSerialNumber(EDeviceModel.PT800, "PT5", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
       }
 
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate

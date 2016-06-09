@@ -71,23 +71,6 @@
       }
     }
     // Overridden from IDeviceManager
-    public EDeviceManagerStates states {
-      get {
-        EDeviceManagerStates ret = EDeviceManagerStates.None;
-
-        if (connectionHelper.isEnabled) {
-          ret |= EDeviceManagerStates.Enabled;
-        }
-
-        if (connectionHelper.isScanning) {
-          ret |= EDeviceManagerStates.Scanning;
-        }
-
-
-        return ret;
-      }
-    }
-    // Overridden from IDeviceManager
     public DeviceFactoryDelegate deviceFactoryDelegate { get; protected set; }
     // Overridden from IDeviceManager
     public IConnectionFactory connectionFactory { get; set; }
@@ -394,7 +377,6 @@
       if (device.protocol is IGaugeProtocol) {
         var gp = device.protocol as IGaugeProtocol;
         if (gp.supportsBroadcasting) {
-          Log.D(this, device.serialNumber + " " + packet.ToByteString());
           device.HandlePacket(packet);
         }
       }

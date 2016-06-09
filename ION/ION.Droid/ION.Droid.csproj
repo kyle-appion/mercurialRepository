@@ -13,9 +13,9 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidApplication>True</AndroidApplication>
-    <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
-    <TargetFrameworkVersion>v6.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -132,7 +132,6 @@
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceRecycleAdapter.cs" />
     <Compile Include="src\Activity\DeviceManagerActivity.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
@@ -153,7 +152,6 @@
     <Compile Include="src\Widgets\Adapters\FileManager\FileManagerAdapter.cs" />
     <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
     <Compile Include="src\IO\FileExtensions.cs" />
-    <Compile Include="src\Activity\PdfViewerActivity.cs" />
     <Compile Include="src\Tasks\DownloadCalibrationCertificateTask.cs" />
     <Compile Include="src\Tasks\IONTask.cs" />
     <Compile Include="src\Activity\CalibrationCertificateArchiveActivity.cs" />
@@ -186,7 +184,6 @@
     <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
     <Compile Include="src\Preferences\AppPrefs.cs" />
-    <Compile Include="src\Activity\HelpActivity.cs" />
     <Compile Include="src\Activity\AppPreferencesActivity.cs" />
     <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
@@ -215,6 +212,11 @@
     <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
     <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
     <Compile Include="src\Activity\DataLogging\EViewType.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceManagerRecycleAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\SensorViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceSectionViewHolder.cs" />
+    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
+    <Compile Include="src\Connections\RigadoLeConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -446,6 +448,9 @@
     <AndroidResource Include="Resources\layout\viewer_large.axml" />
     <AndroidResource Include="Resources\layout\fragment_new_report.axml" />
     <AndroidResource Include="Resources\layout\list_item_list_section_header.axml" />
+    <AndroidResource Include="Resources\layout\button_save.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -464,33 +469,9 @@
     <AndroidResource Include="Resources\menu\scan.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="src\App\" />
-    <Folder Include="src\IO\" />
-    <Folder Include="src\Location\" />
-    <Folder Include="src\Widgets\Adapters\" />
-    <Folder Include="Resources\drawable\" />
-    <Folder Include="src\Sensors\" />
-    <Folder Include="Resources\anim\" />
-    <Folder Include="src\Widgets\Adapters\Navigation\" />
-    <Folder Include="Resources\xml\" />
-    <Folder Include="src\Preferences\" />
     <Folder Include="Resources\values-sw320dp\" />
     <Folder Include="Resources\values-sw600dp\" />
     <Folder Include="Resources\values-sw700dp\" />
-    <Folder Include="src\Views\" />
-    <Folder Include="src\Widgets\Adapters\Workbench\" />
-    <Folder Include="src\Widgets\RecyclerViews\" />
-    <Folder Include="src\Sensors\Properties\" />
-    <Folder Include="Assets\fonts\" />
-    <Folder Include="src\Widgets\Analyzer\" />
-    <Folder Include="src\Widgets\Templates\" />
-    <Folder Include="src\Fragments\" />
-    <Folder Include="src\Widgets\Adapters\FileManager\" />
-    <Folder Include="src\Tasks\" />
-    <Folder Include="src\Alarms\" />
-    <Folder Include="src\Alarms\Alerts\" />
-    <Folder Include="src\Activity\DataLogging\" />
-    <Folder Include="src\Widgets\Adapters\DataLogging\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">

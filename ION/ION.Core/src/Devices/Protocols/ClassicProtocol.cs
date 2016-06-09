@@ -46,7 +46,7 @@
 
     public ClassicProtocol() {
       pressureUnitLookup.Add("psi", Units.Pressure.PSIG);
-      pressureUnitLookup.Add("kg/cm^2", Units.Pressure.KG_CM);
+      pressureUnitLookup.Add("kg", Units.Pressure.KG_CM);
       pressureUnitLookup.Add("bar", Units.Pressure.BAR);
       pressureUnitLookup.Add("mbar", Units.Pressure.MILLIBAR);
       pressureUnitLookup.Add("kpa", Units.Pressure.KILOPASCAL);

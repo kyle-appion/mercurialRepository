@@ -2,6 +2,7 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Text;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -20,6 +21,11 @@
   using ION.Droid.Connections;
 
   public class LeConnectionHelper : BaseConnectionHelper {
+    /// <summary>
+    /// The device name of all rigado devices.
+    /// </summary>
+    private const string RIGDFU = "RigCom";
+
     // Overridden from BaseConnectionHelper
     public override bool isEnabled {
       get {
@@ -55,6 +61,7 @@
       this.context = context;
       this.manager = manager;
       this.adapter = manager.Adapter;
+
       if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
         scanDelegate = new Api21ScanDelegate(adapter);
       } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
@@ -84,28 +91,6 @@
       return Task.FromResult(adapter.Enable());
     }
 
-/*
-    // Overridden from BaseConnectionHelper
-    public override IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
-      var device = adapter.GetRemoteDevice(address);
-
-      if (device == null) {
-        throw new ArgumentException("Create connection for " + address + " failed: no device");
-      } else if (BluetoothDeviceType.Le == device.Type) {
-        var ret = new LeConnection(context, manager, device);
-        __leConnections[address] = ret;
-        return ret;
-//        throw new ArgumentException("Create connection for " + address + " failed: device not le");
-      } else {
-        // TODO ahodder@appioninc.com: This is a test and should be removed
-        var ret = new LeConnection(context, manager, device);
-        __leConnections[address] = ret;
-        return ret;
-//        throw new ArgumentException("Create connection for " + address + " failed: can't handle device type: " + device.Type);
-      }
-    }
-*/
-
     /// <summary>
     /// Queries whether or not the connection helper can resolve the given protocol.
     /// </summary>
@@ -133,17 +118,56 @@
     private void OnDeviceFound(BluetoothDevice device, byte[] scanRecord) {
       try {
         if (!IsAppionDevice(device)) {
+          Log.D(this, "Ignoring device: " + device.Name);
           return; // Break as we don't want to deal with none Appion devices
         }
 
-        var serialNumber = GaugeSerialNumber.Parse(device.Name);
-        int pv = (int)scanRecord?[0];
-        var protocol = EProtocolVersion.V1;
-        if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
-          protocol = (EProtocolVersion)pv;
+        ISerialNumber serialNumber = GaugeSerialNumber.Parse(device.Name);
+        byte[] broadcastPacket = null;
+
+        // Parse the scan record.
+        var i = 0;
+        while (i < scanRecord.Length) {
+          var len = scanRecord[i++];
+          var type = scanRecord[i++];
+          if (type == 0xff) {
+            var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
+            if (RIGDFU.Equals(device.Name)) {
+              Log.D(this, "Resolving modern rigdao BLE device: " + device.Name);
+              var chars = Encoding.UTF8.GetString(scanRecord, 0, 8);
+              serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
+              broadcastPacket = new byte[19];
+              Array.Copy(scanRecord, 10, broadcastPacket, 0, 19);
+            } else {
+              companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
+              Log.D(this, "Resolving legacy BLE device: " + device.Name);
+              serialNumber = GaugeSerialNumber.Parse(device.Name);
+              broadcastPacket = new byte[19];
+              Array.Copy(scanRecord, 2, broadcastPacket, 0, 19);
+            }
+          }
+          Log.D(this, "Found advertisement record " + type.ToString("x2") + " with a length of " + len);
+          i += len - 2; // We already incremented for the len and type
         }
 
-        NotifyDeviceFound(serialNumber, device.Address, scanRecord, protocol);
+        EProtocolVersion protocol = EProtocolVersion.V1;
+
+        if (broadcastPacket != null) {
+          int pv = (int)broadcastPacket[0];
+          if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
+            protocol = (EProtocolVersion)pv;
+          }  
+        } else if (device.Name.Equals(RIGDFU) || serialNumber.rawSerial.StartsWith("S")) {
+          protocol = EProtocolVersion.V4;
+        }
+
+        if (broadcastPacket != null) {
+          Log.D(this, "Found device: " + serialNumber + " with the broadcast packet of: " + broadcastPacket.ToByteString());
+        } else {
+          Log.D(this, "Found device: " + serialNumber + " with a scan record of: " + scanRecord.ToByteString());
+        }
+
+        NotifyDeviceFound(serialNumber, device.Address, broadcastPacket, protocol);
       } catch (Exception e) {
         Log.E(this, "Failed to resolve found device " + device.Name, e);
       }
@@ -155,7 +179,7 @@
     /// <returns><c>true</c> if this instance is appion device the specified device; otherwise, <c>false</c>.</returns>
     /// <param name="device">Device.</param>
     private bool IsAppionDevice(BluetoothDevice device) {
-      return GaugeSerialNumber.IsValid(device.Name);
+      return RIGDFU.Equals(device.Name) || GaugeSerialNumber.IsValid(device.Name);
     }
   }
 
@@ -199,12 +223,8 @@
 
     // Overridden from BluetoothAdapter.ILeScanCallback
     public void OnLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-      Log.D(this, "Found device");
-      var payload = new byte[20];
-      Array.Copy(scanRecord, 13, payload, 0, payload.Length);
-
       if (onDeviceFound != null) {
-        onDeviceFound(device, payload);
+        onDeviceFound(device, scanRecord);
       }
     }
   }
@@ -248,8 +268,6 @@
 
     // Overridden from ScanCallback
     public override void OnScanResult(ScanCallbackType callbackType, ScanResult result) {
-      Log.D(this, "Found device");
-
       if (onDeviceFound != null) {
         onDeviceFound(result.Device, result.ScanRecord.GetBytes());
       }
