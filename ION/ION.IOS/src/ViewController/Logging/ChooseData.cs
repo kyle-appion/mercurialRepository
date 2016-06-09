@@ -84,6 +84,7 @@ namespace ION.IOS.ViewController.Logging {
       jobButton.TouchUpInside += switchJobTab;
       jobButton.TouchDown += (sender, e) => { jobButton.BackgroundColor = UIColor.White;};
       jobButton.TouchUpOutside += (sender, e) => {
+        noJobLabel.Hidden = false;
         if(!jobTable.Hidden){
           jobButton.BackgroundColor = UIColor.White;
         } else {
@@ -101,6 +102,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionButton.TouchUpInside += switchSessionTab;
       sessionButton.TouchDown += (sender, e) => { sessionButton.BackgroundColor = UIColor.White;};
       sessionButton.TouchUpOutside += (sender, e) => {
+        noJobLabel.Hidden = true;
         if(!sessionTable.Hidden){
           sessionButton.BackgroundColor = UIColor.White;
         } else {

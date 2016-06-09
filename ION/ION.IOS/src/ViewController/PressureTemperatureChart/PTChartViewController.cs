@@ -303,10 +303,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             "press ticks: " + ptSlider.pressureView.pressTicks + "\n" +
             "min pressure: " + ptSlider.pressureView.minPressure + " max pressure: " + ptSlider.pressureView.maxPressure + "\n" +
             "temperature for " + value + pressureUnit + " press: " + temperatureValue;
-        } 
-
- 
-
+        }
       };
         
       View.AddSubview(ptSlider.temperatureScroller);
