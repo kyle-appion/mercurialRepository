@@ -29,6 +29,10 @@
     /// </summary>
     private static readonly UUID READ_CHARACTERISTIC = UUID.FromString(RIGADO_UUID.Replace("****", "0003"));
     /// <summary>
+    /// The descriptor for the read characteristic.
+    /// </summary>
+    private static readonly UUID READ_CHARACTERISTIC_DESCRIPTOR = UUID.FromString("00002902-0000-1000-8000-00805f9b34fb");
+    /// <summary>
     /// The uuid that is used to identify the write characteristic for the rigado connection.
     /// </summary>
     private static readonly UUID WRITE_CHARACTERISTIC = UUID.FromString(RIGADO_UUID.Replace("****", "0002"));
@@ -153,6 +157,7 @@
     /// <param name="characteristic">Characteristic.</param>
     /// <param name="status">Status.</param>
     public override void OnCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, GattStatus status) {
+      Log.D(this, "Read");
       if (characteristic.Equals(readCharacteristic)) {
         Log.D(this, "ReadCharacteristic.Value: " + characteristic.GetValue().ToByteString());
         lastPacket = characteristic.GetValue();
@@ -169,6 +174,7 @@
     /// <param name="gatt">Gatt.</param>
     /// <param name="characteristic">Characteristic.</param>
     public override void OnCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+      Log.D(this, "Changed");
       if (characteristic.Equals(readCharacteristic)) {
         Log.D(this, "ReadCharacteristic.Value: " + characteristic.GetValue().ToByteString());
         lastPacket = characteristic.GetValue();
@@ -185,6 +191,7 @@
     public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
       switch (newState) {
         case ProfileState.Connected:
+        Log.D(this, "Discovering services");
           gatt.DiscoverServices();
           connectionState = EConnectionState.Resolving;
           break;
@@ -212,6 +219,18 @@
         if (EConnectionState.Resolving == connectionState) {
           Log.D(this, "Device successfully discovered characteristics");
           connectionState = EConnectionState.Connected;
+
+          if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
+            Log.D(this, "Failed to set read to notify");
+            Disconnect();
+          }
+
+          var descriptor = readCharacteristic.GetDescriptor(READ_CHARACTERISTIC_DESCRIPTOR);
+          var enabled = new System.Collections.Generic.List<byte>(BluetoothGattDescriptor.EnableNotificationValue);
+          if (descriptor == null || descriptor.SetValue(enabled.ToArray()) && !gatt.WriteDescriptor(descriptor)) {
+            Log.D(this, "Failed to set read to notify");
+            Disconnect();
+          }
         } else {
           Log.D(this, "Device discovered services in a wierd state: " + GetGattState());
         }
@@ -235,6 +254,7 @@
       connectionState = EConnectionState.Connecting;
 
       var start = DateTime.Now;
+      Log.D(this, "Starting connection attempt at: " + start.ToLongTimeString() + " will timeout at: " + (start + TimeSpan.FromSeconds(45)));
 
       while (!ValidateServices()) {
         if (DateTime.Now - start > connectionTimeout) {
@@ -246,12 +266,6 @@
         await Task.Delay(100);
       }
 
-      if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
-        Log.D(this, "Failed to set read to notify");
-        Disconnect();
-        return false;
-      }
-
       return true;
     }
 
@@ -259,17 +273,19 @@
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
-      Log.D(this, "Disconnecteding....");
-      if (gatt != null) {
-        gatt.Disconnect();
-        gatt.Close();
-        gatt = null;
+      lock (this) {
+        Log.D(this, "Disconnecting....");
+        if (gatt != null) {
+          gatt.Disconnect();
+          gatt.Close();
+          gatt = null;
+        }
+
+        readCharacteristic = null;
+        writeCharacteristic = null;
+
+        connectionState = EConnectionState.Disconnected;
       }
-
-      readCharacteristic = null;
-      writeCharacteristic = null;
-
-      connectionState = EConnectionState.Disconnected;
     }
 
     /// <summary>
@@ -315,4 +331,3 @@
     }
   }
 }
-

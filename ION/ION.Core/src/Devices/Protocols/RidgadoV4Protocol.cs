@@ -62,13 +62,16 @@
         var count = 17; // 19 - version and battery
         var index = 0;
         while (count >= 4) { // While the count still has another potential packet, pull the next packet.
-          var sp = new SensorPayload(r);
+          var sp = new SensorPayload(r.ReadByte());
           count -= sp.length;
-          readings[index++] = new GaugeReading() {
-            removed = sp.connected,
-            sensorType = UnitLookup.GetSensorTypeFromCode(sp.unitCode),
-            reading = sp.unit.OfScalar(sp.measurement),
-          };
+          if (sp.connected) {
+            sp.Parse(r);
+            readings[index++] = new GaugeReading() {
+              removed = sp.connected,
+              sensorType = UnitLookup.GetSensorTypeFromCode(sp.unitCode),
+              reading = sp.unit.OfScalar(sp.measurement),
+            };
+          }
         }
 
         return new GaugePacket(version, battery, readings);
@@ -121,7 +124,7 @@
       /// Queries the unit that is described by the definition byte.
       /// </summary>
       /// <value>The unit.</value>
-      public Unit unit { get { return UnitLookup.GetUnit(definitionByte & MASK_UNIT); } }
+      public Unit unit { get { return UnitLookup.GetUnit(unitCode); } }
       /// <summary>
       /// Queries whether or not a sensor is connected, according to the byte.
       /// </summary>
@@ -146,23 +149,28 @@
       /// The unit code for the sensor payload.
       /// </summary>
       /// <value>The unit code.</value>
-      public byte unitCode { get; private set; }
+      public byte unitCode { get { return (byte)(definitionByte & MASK_UNIT); } }
       /// <summary>
       /// The length of the sensor payload.
       /// </summary>
       /// <value>The length.</value>
       public int length { get { return 2 + (isShortMode ? 2 : 4 ); } }
 
-      public SensorPayload(BinaryReader reader) : this() {
-        definitionByte = reader.ReadByte();
+      public SensorPayload(byte definitionByte) : this() {
+        this.definitionByte = definitionByte;
+      }
+
+      internal void Parse(BinaryReader reader) {
         float m = 0;
         if (isShortMode) {
           m = reader.ReadInt16BE();
         } else {
           m = reader.ReadInt32BE();
         }
-        unitCode = reader.ReadByte();
-        m = m / (10 * unitCode);
+        var measOff = reader.ReadByte();
+        m = m / (10 * measOff);
+
+        measurement = m;
       }
     }
   }

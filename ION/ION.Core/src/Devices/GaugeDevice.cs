@@ -85,6 +85,7 @@
     private bool[] removedStates { get ; set; }
 
     public GaugeDevice(GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
+      Log.D(this, "Created gaugedevice {serialNumber: " + serialNumber + ", connection: " + connection + " protocol: " + protocol);
       __serialNumber = serialNumber;
       this.connection = connection;
       __protocol = protocol;
@@ -124,14 +125,20 @@
     }
 
     private void HandlePacketInternal(byte[] packet) {
+      if (packet == null) {
+        Log.D(this, "Ignoring packet for: " + serialNumber + ": null packet");
+        return;
+      }
       try {
-        if (EProtocolVersion.Classic != protocol.version && Protocol.FindProtocolFromVersion(packet[0]).version != this.protocol.version) {
+/*
+       if (EProtocolVersion.Classic != protocol.version && Protocol.FindProtocolFromVersion(packet[0])?.version != protocol.version) {
           Log.E(this, "We have to fix the protocol for " + serialNumber + ". We were protocol: " + protocol.version + " we should be protocol: " + packet[0]);
           __protocol = Protocol.FindProtocolFromVersion(packet[0]);
         }
+*/
         GaugePacket gp = __protocol.ParsePacket(packet);
 
-        if (sensorCount == gp.gaugeReadings.Length) {
+//        if (sensorCount == gp.gaugeReadings.Length) {
           int oldBattery = battery;
           battery = gp.battery;
 
@@ -163,9 +170,9 @@
           if (changed) {
             NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
           }
-        } else {
-          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
-        }
+//        } else {
+//          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
+//        }
       } catch (Exception e) {
         Log.E(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
       }
