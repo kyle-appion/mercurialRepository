@@ -27,10 +27,6 @@
     /// <param name="filename">Filename.</param>
     /// <returns>A readonly stream.</returns>
     public static Stream Load(Assembly assembly, string filename) {
-      if (filename.Equals("R134A.fluid")) {
-        filename = "R134a.fluid";
-      }        
-
       var resourceNames = assembly.GetManifestResourceNames();
       var resourcePaths = resourceNames.Where(x => x.EndsWith(filename)).ToArray();
 

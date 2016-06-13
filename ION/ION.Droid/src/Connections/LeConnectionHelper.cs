@@ -33,8 +33,6 @@
       }
     }
 
-    private Context context;
-
     /// <summary>
     /// The bluetooth manager that holds the adapter.
     /// </summary>
@@ -52,13 +50,7 @@
     /// <value>The scan delegate.</value>
     private IScanDelegate scanDelegate { get; set; }
 
-    /// <summary>
-    /// The dictionary of le connections.
-    /// </summary>
-    private Dictionary<string, LeConnection> __leConnections = new Dictionary<string, LeConnection>();
-
-    public LeConnectionHelper(Context context, BluetoothManager manager) {
-      this.context = context;
+    public LeConnectionHelper(BluetoothManager manager) {
       this.manager = manager;
       this.adapter = manager.Adapter;
 
@@ -133,11 +125,11 @@
           if (type == 0xff) {
             var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
             if (RIGDFU.Equals(device.Name)) {
-              Log.D(this, "Resolving modern rigdao BLE device: " + device.Name);
+              Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
               var chars = Encoding.UTF8.GetString(scanRecord, 0, 8);
               serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
               broadcastPacket = new byte[19];
-              Array.Copy(scanRecord, 10, broadcastPacket, 0, 19);
+              Array.Copy(scanRecord, 9, broadcastPacket, 0, 19);
             } else {
               companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
               Log.D(this, "Resolving legacy BLE device: " + device.Name);
@@ -157,7 +149,7 @@
           if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
             protocol = (EProtocolVersion)pv;
           }  
-        } else if (device.Name.Equals(RIGDFU) || serialNumber.rawSerial.StartsWith("S")) {
+        } else if (serialNumber.rawSerial.StartsWith("S")) {
           protocol = EProtocolVersion.V4;
         }
 

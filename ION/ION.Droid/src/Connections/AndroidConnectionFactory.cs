@@ -28,6 +28,7 @@
         throw new Exception("Cannot create connection: Failed to resolve connection's device.");
       }
 
+      ION.Core.Util.Log.D(this, "Device: " + device.Name + " has a protocolversion of: " + protocolVersion);
 
       switch (protocolVersion) {
         case EProtocolVersion.Classic:

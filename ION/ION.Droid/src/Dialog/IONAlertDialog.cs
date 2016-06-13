@@ -30,6 +30,8 @@ namespace ION.Droid.Dialog {
 
     private string title { get; set; }
 
+    private bool isCancelable;
+
     public IONAlertDialog(Context context) : this(context, "") {
       // Nope
     }
@@ -40,6 +42,7 @@ namespace ION.Droid.Dialog {
 
     public IONAlertDialog(Context context, string title) : base(context) {
       this.title = title;
+      SetCancelable(true);
     }
 
     /// <summary>
@@ -62,6 +65,16 @@ namespace ION.Droid.Dialog {
       return this;
     }
 
+    /// <summary>
+    /// Sets the cancelable.
+    /// </summary>
+    /// <returns>The cancelable.</returns>
+    public override AlertDialog.Builder SetCancelable(bool cancelable) {
+      base.SetCancelable(cancelable);
+      this.isCancelable = cancelable;
+      return this;
+    }
+
     // Overridden from IAlertDialog.Builder
     public override AlertDialog Create() {
       View v = LayoutInflater.From(Context).Inflate(Resource.Layout.dialog_title, null, false);
@@ -80,6 +93,7 @@ namespace ION.Droid.Dialog {
       AlertDialog ret = base.Create();
 
       closeView.SetOnClickListener(new CloseDialogAction(ret));
+      closeView.Visibility = (isCancelable) ? ViewStates.Visible : ViewStates.Gone;
 
       WindowManagerLayoutParams lp = new WindowManagerLayoutParams();
       lp.CopyFrom(ret.Window.Attributes);
