@@ -11,6 +11,8 @@ namespace ION.IOS.Connections {
   using ION.Core.Connections;
   using ION.Core.Util;
 
+	using ION.IOS.Connections;
+
   public class IosLeConnection : IConnection {
     /// <summary>
     /// The base UUID that identifies services, charactertistics and descriptors
@@ -119,9 +121,9 @@ namespace ION.IOS.Connections {
     public TimeSpan connectionTimeout { get; set; }
 
     /// <summary>
-    /// The central manager that is being used to host this connection.
+    /// The connection manager that is being used to host this connection.
     /// </summary>
-    private CBCentralManager centralManager { get; set; }
+		private LeConnectionHelper connectionHelper { get; set; }
     /// <summary>
     /// The delegate that will received discovered service events.
     /// </summary>
@@ -155,8 +157,8 @@ namespace ION.IOS.Connections {
     /// </summary>
     /// <param name="centeralManager">Centeral manager.</param>
     /// <param name="peripheral">Peripheral.</param>
-    public IosLeConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
-      this.centralManager = centralManager;
+		public IosLeConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) {
+			this.connectionHelper = connectionHelper;
       __nativeDevice = peripheral;
       name = __nativeDevice.Name;
 
@@ -192,7 +194,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
+			this.connectionHelper.onPeripheralDisconnected += OnPeripheralDisconnected;
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
@@ -203,7 +205,7 @@ namespace ION.IOS.Connections {
       __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
-      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
+      connectionHelper.onPeripheralDisconnected -= OnPeripheralDisconnected;
     }
 
     // Overridden from IConnection
@@ -221,7 +223,7 @@ namespace ION.IOS.Connections {
       options.NotifyOnDisconnection = true;
       options.NotifyOnNotification = true;
 
-      centralManager.ConnectPeripheral(__nativeDevice, options);
+			connectionHelper.centralManager.ConnectPeripheral(__nativeDevice, options);
 
       while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
         if (DateTime.Now - start > TimeSpan.FromSeconds(5)/*connectionTimeout*/) {
@@ -270,7 +272,7 @@ namespace ION.IOS.Connections {
 
     // Overridden from IConnection
     public void Disconnect() {
-      centralManager.CancelPeripheralConnection(__nativeDevice);
+			connectionHelper.centralManager.CancelPeripheralConnection(__nativeDevice);
       connectionState = EConnectionState.Disconnected;
     }
 
@@ -348,9 +350,9 @@ namespace ION.IOS.Connections {
     /// will give the connection a chance to respond to its own disconnect.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    /// <param name="args">Arguments.</param>
-    private void OnPeripheralDisconnected(object sensor, CBPeripheralErrorEventArgs args) {
-      if (args.Peripheral != null && args.Peripheral.Equals(__nativeDevice)) {
+    /// <param name="peripheral">Arguments.</param>
+		private void OnPeripheralDisconnected(object sensor, CBPeripheral peripheral) {
+      if (peripheral != null && peripheral.Equals(__nativeDevice)) {
         Disconnect();
       }
     }
