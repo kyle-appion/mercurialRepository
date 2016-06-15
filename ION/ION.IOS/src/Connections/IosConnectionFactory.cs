@@ -40,11 +40,12 @@
         throw new Exception("Cannot create connection: peripheral does not have a valid serial number.");
       }
 
+			var ion = ION.Core.App.AppState.context;
       var serialNumber = SerialNumberExtensions.ParseSerialNumber(peripheral.Name);
       if (serialNumber is BluefruitSerialNumber) {
         return new BluefruitLeConnection(centralManager, peripheral);
       } else {
-        return new IosLeConnection(centralManager, peripheral);
+				return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
       }
     }
   }

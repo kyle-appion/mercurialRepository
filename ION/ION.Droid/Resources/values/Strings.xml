@@ -12,6 +12,8 @@
   <string name="add">Add</string>
   <string name="address">Address</string>
   <string name="alarm">Alarm</string>
+	<string name="alert">Alert</string>
+	<string name="allow">Allow</string>
   <string name="available">Available</string>
   <string name="cancel">Cancel</string>
   <string name="city">City</string>
@@ -42,6 +44,7 @@
   <string name="help">Help</string>
   <string name="inactive">Inactive</string>
   <string name="library">Library</string>
+	<string name="location">Location</string>
   <string name="main">Main</string>
   <string name="measurement">Measurement</string>
   <string name="manual">Manual</string>
@@ -171,6 +174,9 @@
   <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
   <string name="error_pdf_viewer_missing">It appears that your device does not have a PDF viewer. Please install a PDF viewer to the file.</string>
+	<string name="error_start_up_request_location_for_bluetooth">As of Android 5.0, Android requires the Location permission to enable bluetooth scanning. ION HVAC/R requires bluetooth to communicate with ION compatible gauges.</string>
+	<string name="error_start_up_fail">Failed to Launch ION</string>
+	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R cannot be used. Please restart the ION HVAC/R application and authorize the application\'s use of these features.</string>
 
   <!--
   FLUIDS

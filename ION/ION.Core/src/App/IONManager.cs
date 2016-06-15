@@ -4,6 +4,12 @@ using System.Threading.Tasks;
 namespace ION.Core.App {
   public interface IIONManager : IDisposable {
     /// <summary>
+    /// Whether or not the manager is initialized.
+    /// </summary>
+    /// <value>The is initialized.</value>
+    bool isInitialized { get; }
+
+    /// <summary>
     /// Initializes the IIONManager to the given IION.
     /// </summary>
     Task<InitializationResult> InitAsync();

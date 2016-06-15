@@ -133,7 +133,7 @@
 
       previousHelper = ion.deviceManager.connectionHelper;
       var bm = (BluetoothManager)GetSystemService(BluetoothService);
-      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(this, bm), new ClassicConnectionHelper(this, bm));
+      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 

@@ -835,7 +835,6 @@
     <Compile Include="src\ViewController\Analyzer\SHSCTableCell.cs" />
     <Compile Include="src\ViewController\Analyzer\PTTableCell.cs" />
     <Compile Include="src\ViewController\Workbench\WorkbenchTableSource.cs" />
-    <Compile Include="src\ViewController\DeviceManager\DeviceTableSource.cs" />
     <Compile Include="src\ViewController\KeyboardScrollHelper.cs" />
     <Compile Include="src\ViewController\IONNavigationCell.cs" />
     <Compile Include="src\ViewController\IONNavigationCell.designer.cs">

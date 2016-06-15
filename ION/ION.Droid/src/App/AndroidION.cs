@@ -202,7 +202,7 @@
       managers.Add(fileManager = new AndroidFileManager(this));
       managers.Add(deviceManager = new BaseDeviceManager(this, 
         new AndroidConnectionFactory(this, bluetoothManager),
-        new LeConnectionHelper(this, bluetoothManager)));
+        new LeConnectionHelper(bluetoothManager)));
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));

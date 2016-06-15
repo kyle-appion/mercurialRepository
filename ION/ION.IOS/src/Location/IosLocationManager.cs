@@ -22,6 +22,8 @@
     // Overridden from ILocationManager
     public event OnLocationChanged onLocationChanged;
 
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     /// <summary>
     /// Whether or not the location manager is enabled (in a working state).
     /// </summary>
@@ -91,7 +93,7 @@
         StartAutomaticLocationPolling();
       }
 //      }
-      return new InitializationResult() { success = true };
+      return new InitializationResult() { success = __isInitialized = true };
     }
 
     // Overridden frm ILocationManager

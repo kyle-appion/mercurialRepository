@@ -14,6 +14,9 @@
   /// The manager that will allow easy interactions with how devices will log there data.
   /// </summary>
   public class DataLogManager : IIONManager {
+
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     /// <summary>
     /// Gets a value indicating whether this <see cref="ION.Core.Report.DataLogs.DataLogManager"/> is recording.
     /// </summary>
@@ -43,7 +46,7 @@
     /// </summary>
     /// <returns>The async.</returns>
     public Task<InitializationResult> InitAsync() {
-      return Task.FromResult(new InitializationResult() { success = true });
+      return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
     /// <summary>

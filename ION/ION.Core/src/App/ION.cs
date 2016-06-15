@@ -105,7 +105,7 @@
     /// The current primary workbench for the ION context.
     /// </summary>
     /// <value>The current workbench.</value>
-    Workbench currentWorkbench { get; }
+    Workbench currentWorkbench { get; set; }
 
     /// <summary>
     /// The default units for the ION instance.
@@ -140,6 +140,8 @@
     void PostToMainDelayed(Action action, TimeSpan delay);
 
     Task SaveWorkbenchAsync();
+
+    Task<Workbench> LoadWorkbenchAsync(IFile file);
 
     /// <summary>
     /// Creates a new application dump object.

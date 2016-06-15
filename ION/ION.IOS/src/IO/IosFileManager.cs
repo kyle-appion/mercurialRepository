@@ -9,9 +9,11 @@
 
   public class IosFileManager : IFileManager {
 
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     // Overridden from IFileManager
     public async Task<InitializationResult> InitAsync() {
-      return new InitializationResult() { success = true };
+      return new InitializationResult() { success = __isInitialized = true };
     }
 
     // Overridden from IFileManager

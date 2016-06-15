@@ -126,15 +126,13 @@
 //      defaultUnits = new IosUnits();
       // Order matters - Manager's with no dependencies should come first such
       // that later manager's may depend on them.
-      var centralManager = new CBCentralManager(new DispatchQueue("ION iOS Bluetooth", true));
+      var ch = new LeConnectionHelper();
 
       var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, 
-        new IosConnectionFactory(centralManager),
-        new LeConnectionHelper(centralManager)));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch.centralManager), ch));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
@@ -228,17 +226,15 @@
       currentAnalyzer = new Analyzer(ION.Core.App.AppState.context);
     }
 
-    private async Task<Workbench> LoadWorkbenchAsync(IFile file) {
-      lock (this) {
-        var wp = new WorkbenchParser();
-        try {
-          using (var stream = file.OpenForReading()) {
-            return wp.ReadFromStream(this, stream);
-          }
-        } catch (Exception e) {
-          Log.E(this, "Failed to load workbench. Creating a new one.", e);
-          return new Workbench(this);
+    public Task<Workbench> LoadWorkbenchAsync(IFile file) {
+      var wp = new WorkbenchParser();
+      try {
+        using (var stream = file.OpenForReading()) {
+					return Task.FromResult(wp.ReadFromStream(this, stream));
         }
+      } catch (Exception e) {
+        Log.E(this, "Failed to load workbench. Creating a new one.", e);
+				return Task.FromResult(new Workbench(this));
       }
     }
   } // End IosION

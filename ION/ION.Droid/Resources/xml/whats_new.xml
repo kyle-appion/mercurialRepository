@@ -3,8 +3,11 @@
   <display version="0.9.8">
     <new>Swipe to remove Viewer and Subview in Workbench.</new>
     <new>Swipe to forget device in Device Manager</new>
-    <update>Updated viewer movement actions within the workbench.</update>
-    <update>Updated Backend support throughout the entire app.</update>
+		<new>Suppory for new Android bluetooth model</new>
+		<new>Support for new Android permission model</new>
+    <update>Updated viewer movement actions within the workbench</update>
+    <update>Updated Backend support throughout the app</update>
+		<fixed>Some fluid conversion errors at the fluid's extremes</fixed>
     <fixed>Fixed lingering bluetooth bugs.</fixed>
   </display>
 </whatsnew>
