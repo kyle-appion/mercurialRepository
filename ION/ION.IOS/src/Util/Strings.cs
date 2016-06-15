@@ -124,6 +124,7 @@ namespace ION.IOS.Util {
         BROADCASTING_ACTIONS = "device_manager_broadcasting_actions".FromResources(),
         CONNECTED_ACTIONS = "device_manager_connected_actions".FromResources(),
         DISCONNECTED_ACTIONS = "device_manager_disconnected_actions".FromResources(),
+        EMPTY = "device_manager_empty".FromResources(),
         NEW_ACTIONS = "device_manager_new_actions".FromResources(),
         SCAN = "device_manager_scan".FromResources(),
         SCANNING = "device_manager_scanning".FromResources()
