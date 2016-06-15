@@ -296,6 +296,9 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R13.fluid">
       <LogicalName>R13.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
+      <LogicalName>R134a.fluid</LogicalName>
+    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R14.fluid">
       <LogicalName>R14.fluid</LogicalName>
     </EmbeddedResource>
@@ -517,9 +520,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R404A.fluid">
       <LogicalName>R404A.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
-      <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

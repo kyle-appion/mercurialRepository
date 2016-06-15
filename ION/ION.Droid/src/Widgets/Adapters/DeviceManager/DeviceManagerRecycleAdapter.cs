@@ -678,7 +678,7 @@
 
     private void OnDeviceManagerEvent(DeviceManagerEvent de) {
       Log.D(this, "I found a deviceevent: " + de.type);
-//      lock (this) {
+      lock (this) {
         if (DeviceManagerEvent.EType.DeviceEvent == de.type) {
           var et = de.deviceEvent.type;
           if (DeviceEvent.EType.ConnectionChange != et && DeviceEvent.EType.Deleted != et && DeviceEvent.EType.Found != et) {
@@ -706,7 +706,7 @@
             }
           }
         }
- //     }
+      }
     }
 
     [Flags]

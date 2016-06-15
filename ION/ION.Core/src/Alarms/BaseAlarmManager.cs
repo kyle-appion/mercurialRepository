@@ -24,6 +24,8 @@ namespace ION.Core.Alarms {
     // Overridden from IAlarmManager
     public AlarmAlertFactoryDelegate alertFactory { get; set; }
 
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     /// <summary>
     /// The counter that will increment for new alarm ids when alarms are added to the manager.
     /// </summary>
@@ -67,7 +69,7 @@ namespace ION.Core.Alarms {
     /// </summary>
     /// <returns>The async.</returns>
     public Task<InitializationResult> InitAsync() {
-      return Task.FromResult(new InitializationResult() { success = true });
+      return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
     /// <summary>

@@ -9,6 +9,7 @@
   using Android.Gms.Location;
   using Android.Locations;
   using Android.OS;
+  using Android.Support.V4.Content;
 
   using ION.Core.App;
   using ION.Core.Location;

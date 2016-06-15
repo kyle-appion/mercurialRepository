@@ -1,7 +1,6 @@
 ﻿namespace ION.IOS.Connections {
 
   using System;
-  using System.Collections.Generic;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -9,19 +8,19 @@
   using CoreFoundation;
   using Foundation;
 
-  using ION.Core.Connections;
+  using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
+  using ION.Core.IO;
   using ION.Core.Util;
 
-  using ION.IOS.Connections;
-
+  using ION.IOS.App;
 
   /// <summary>
   /// The connection helper that will perform the IOS bluetooth interactions.
   /// </summary>
-  public class LeConnectionHelper : IConnectionHelper {
+  public class LeConnectionHelper : CBCentralManagerDelegate, IConnectionHelper {
     /// <summary>
     /// The event pool that is notified when the connection helper state changes.
     /// </summary>
@@ -30,6 +29,11 @@
     /// The event pool that is nofied when the connection helper discovers a device.
     /// </summary>
     public event OnDeviceFound onDeviceFound;
+
+		/// <summary>
+		/// The event that is called when a peripheral is disconnected.
+		/// </summary>
+		public event EventHandler<CBPeripheral> onPeripheralDisconnected;
 
     /// <summary>
     /// Whether or not the connection helper's backend is enabled.
@@ -59,45 +63,112 @@
     /// The iOS bluetooth manager that will allow us to access the bluetooth module.
     /// </summary>
     /// <value>The central manager.</value>
-    private CBCentralManager centralManager;
+    public CBCentralManager centralManager { get; private set; }
     /// <summary>
     /// The object that will cancel a scan in progress.
     /// </summary>
     private CancellationTokenSource cancelSource;
 
-    public LeConnectionHelper(CBCentralManager centralManager) {
-      this.centralManager = centralManager;
-      centralManager.UpdatedState += (object sender, EventArgs e) => {
-        NotifyScanStateChanged();
-      };
-
-      centralManager.DiscoveredPeripheral += OnDiscoveredPeripheral;
-
-      centralManager.ConnectedPeripheral += (object sender, CBPeripheralEventArgs e) => {
-      };
-
-      centralManager.FailedToConnectPeripheral += (object sender, CBPeripheralErrorEventArgs e) => {
-      };
-
-      centralManager.DisconnectedPeripheral+= (object sender, CBPeripheralErrorEventArgs e) => {
-      };
-
-      centralManager.RetrievedConnectedPeripherals += (object sender, CBPeripheralsEventArgs e) => {
-      };
-
-      centralManager.WillRestoreState += (object sender, CBWillRestoreEventArgs e) => {
-      };
+    public LeConnectionHelper() {
+      var cboptions = new CBCentralInitOptions();
+      cboptions.ShowPowerAlert = false;
+			centralManager = new CBCentralManager(this, new DispatchQueue("ION iOS Bluetooth", true), cboptions);
     }
 
-    /// <summary>
-    /// Releases all resource used by the <see cref="ION.IOS.Devices.LeConnectionHelper"/> object.
-    /// </summary>
-    /// <remarks>Call <see cref="Dispose"/> when you are finished using the <see cref="ION.IOS.Devices.LeConnectionHelper"/>. The
-    /// <see cref="Dispose"/> method leaves the <see cref="ION.IOS.Devices.LeConnectionHelper"/> in an unusable state.
-    /// After calling <see cref="Dispose"/>, you must release all references to the
-    /// <see cref="ION.IOS.Devices.LeConnectionHelper"/> so the garbage collector can reclaim the memory that the
-    /// <see cref="ION.IOS.Devices.LeConnectionHelper"/> was occupying.</remarks>
-    public void Dispose() {
+    public override void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral) {
+    }
+
+    public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
+    }
+
+    public override async void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
+      Log.D(this, "Discovered Peripheral: " + peripheral.Name);
+
+      var name = peripheral.Name;
+      var adData = advertisementData;
+
+      if (name == null) {
+        Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
+        if (adData != null) {
+          var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
+          if (data != null) {
+            name = data.ToString();
+          }
+        }
+      }
+
+      if (name == null) {
+        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
+        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
+        var connection = new IosLeConnection(this, peripheral);
+        name = await connection.PullDeviceName();
+        if (name == null) {
+          Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
+          return;
+        }
+      }
+
+      if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
+        Log.D(this, name + " is not a valid serial number");
+        return;
+      }
+
+      try {
+        var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
+        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
+        byte[] broadcastPacket = null;
+        var protocol = EProtocolVersion.V1;
+        if (ourData != null) {
+          broadcastPacket = ((NSData)ourData).ToArray();
+          var bytes = new byte[20];
+          Array.Copy(broadcastPacket, 2, bytes, 0, Math.Min(broadcastPacket.Length - 2, bytes.Length));
+          broadcastPacket = bytes;
+          // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
+          var rawProtocol = (EProtocolVersion)broadcastPacket[0];
+          if (serialNumber.rawSerial.Length == 8) {
+            // TODO ahodder@appioninc.com: Finish 
+            //            protocol = EProtocolVersion.Rigado;
+          } else if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
+            protocol = rawProtocol;
+          } else {
+            protocol = EProtocolVersion.V1;
+          }
+        }
+
+        NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
+      } catch (Exception ex) {
+        Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
+      }
+    }
+
+    public override void FailedToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
+    }
+
+    public override void RetrievedConnectedPeripherals(CBCentralManager central, CBPeripheral[] peripherals) {
+    }
+
+    public override void RetrievedPeripherals(CBCentralManager central, CBPeripheral[] peripherals) {
+    }
+
+    public override async void UpdatedState(CBCentralManager central) {
+      var ion = AppState.context;
+			if (ion != null) {
+	      if (!ion.deviceManager.isInitialized) {
+	        var result = await ion.deviceManager.InitAsync();
+	        if (result.success) {
+	          var wb = await ion.LoadWorkbenchAsync(ion.fileManager.GetApplicationInternalDirectory().GetFile(IosION.FILE_WORKBENCH));
+	          if (wb != null) {
+	            ion.currentWorkbench = wb;
+	          }
+	        } else {
+	          Log.E(this, "Failed to reinitialized the device manager on bluetooth state change: " + result.errorMessage);
+	        }
+	      }
+	      NotifyScanStateChanged();
+			}
+    }
+
+    public override void WillRestoreState(CBCentralManager central, NSDictionary dict) {
     }
 
     /// <summary>
@@ -162,69 +233,6 @@
     }
 
     /// <summary>
-    /// Called when a new peripheral is found.
-    /// </summary>
-    private async void OnDiscoveredPeripheral(object sender, CBDiscoveredPeripheralEventArgs e) {
-//      Log.D(this, "Discovered Peripheral: " + e.Peripheral.Name);
-
-      var peripheral = e.Peripheral;
-      var name = peripheral.Name;
-      var adData = e.AdvertisementData;
-
-      if (name == null) {
-        Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
-        if (adData != null) {
-          var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
-          if (data != null) {
-            name = data.ToString();
-          }
-        }
-      }
-
-      if (name == null) {
-        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
-        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
-        var connection = new IosLeConnection(centralManager, peripheral);
-        name = await connection.PullDeviceName();
-        if (name == null) {
-          Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
-          return;
-        }
-      }
-
-      if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
-        Log.D(this, name + " is not a valid serial number");
-        return;
-      }
-
-      try {
-        var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
-        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];        
-        byte[] broadcastPacket = null;
-        var protocol = EProtocolVersion.V1;
-        if (ourData != null) {
-          broadcastPacket = ((NSData)ourData).ToArray();
-          var bytes = new byte[20];
-          Array.Copy(broadcastPacket, 2, bytes, 0, Math.Min(broadcastPacket.Length - 2, bytes.Length));
-          broadcastPacket = bytes;
-          // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
-          var rawProtocol = (EProtocolVersion)broadcastPacket[0];
-          if (serialNumber.rawSerial.Length == 8) {
-            // TODO ahodder@appioninc.com: Finish 
-//            protocol = EProtocolVersion.Rigado;
-          } else if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
-            protocol = rawProtocol;
-          } else {
-            protocol = EProtocolVersion.V1;
-          }
-        }
-        NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
-      } catch (Exception ex) {
-        Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
-      }
-    }
-
-    /// <summary>
     /// Notifies the OnScanStateChange event that the connection helper's state has changed.
     /// </summary>
     private void NotifyScanStateChanged() {
@@ -237,7 +245,7 @@
     /// Notifies the OnDeviceFound event that a new device has been discovered by the connection helper.
     /// </summary>
     private void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] broadcastPacket, EProtocolVersion protocol) {
-      //Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
+//      Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, broadcastPacket, protocol);
       }

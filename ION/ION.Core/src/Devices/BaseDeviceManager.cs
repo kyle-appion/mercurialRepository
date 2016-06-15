@@ -26,6 +26,8 @@
     /// </summary>
     private const string DEVICES_XML = "Devices.xml";
 
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     // Overridden form IDeviceManager
     public IDevice this[ISerialNumber serialNumber] {
       get {
@@ -126,7 +128,7 @@
       if (!connectionHelper.isEnabled) {
         if (!await connectionHelper.Enable()) {
           return new InitializationResult() {
-            success = false,
+            success = __isInitialized = false,
             errorMessage = "Failed to init device manager: failed to enable connection helper."
           };
         }
@@ -149,7 +151,7 @@
         Log.E(this, "Failed to load previous devices", e);
       }
 
-      return new InitializationResult() { success = true };
+      return new InitializationResult() { success = __isInitialized = true };
     }
 
     // Overridden from IDeviceManager

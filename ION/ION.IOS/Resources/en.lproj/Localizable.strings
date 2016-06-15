@@ -61,6 +61,7 @@ file.
 "device_manager_broadcasting_actions" = "Broadcasting Device Actions";
 "device_manager_connected_actions" = "Connected Device Actions";
 "device_manager_disconnected_actions" = "Disconnected Device Actions";
+"device_manager_empty" = "Click Scan to discover nearby ION devices";
 "device_manager_new_actions" = "New Device Actions";
 "device_manager_scan" = "Scan";
 "device_manager_scanning" = "Scanning";
