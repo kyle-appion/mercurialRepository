@@ -92,6 +92,7 @@ namespace ION.IOS.ViewController.DeviceManager {
           }
         }
       });
+      labelEmpty.Text = Strings.Device.Manager.EMPTY;
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
