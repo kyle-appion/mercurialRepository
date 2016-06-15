@@ -628,6 +628,8 @@
     <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\walkthrough_arrow.pdf">
       <InProject>false</InProject>
     </ImageAsset>
+    <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\img_button_blackclosex.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -936,6 +938,8 @@
     <Compile Include="src\ViewController\PressureTemperatureChart\PSlideView.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\TSlideView.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\PTSlideView.cs" />
+    <Compile Include="src\App\WhatsNewView.cs" />
+    <Compile Include="src\App\KeychainAccess.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -971,6 +975,8 @@
     <Folder Include="src\ViewController\JobManager\" />
     <Folder Include="src\ViewController\GaugeTesting\" />
     <Folder Include="src\ViewController\Walkthrough\" />
+    <Folder Include="Resources\Images.xcassets\img_button_blackclosex.imageset\" />
+    <Folder Include="Resources\xml\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -987,6 +993,7 @@
     <BundleResource Include="Settings.bundle\en.lproj\Root.strings" />
     <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
     <BundleResource Include="Resources\Images.xcassets\Contents.json" />
+    <BundleResource Include="Resources\xml\whats_new.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

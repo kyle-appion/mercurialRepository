@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using CoreGraphics;
 using UIKit;
 using System.IO;
-using System.IO.IsolatedStorage;
-using SQLite;
-using System.Threading.Tasks;
+//using System.IO.IsolatedStorage;
+//using SQLite;
+//using System.Threading.Tasks;
 using System.Linq;
 
 using ION.IOS.ViewController;

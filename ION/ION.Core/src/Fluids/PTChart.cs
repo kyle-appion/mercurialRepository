@@ -18,7 +18,7 @@
     /// <param name="state">State.</param>
     /// <param name="fluid">Fluid.</param>
     public static PTChart New(IION ion, Fluid.EState state) {
-      return New(ion, state, ion.fluidManager.lastUsedFluid);
+      return New(ion, state, ion.fluidManager.lastUsedFluid); 
     }
 
     /// <summary>
@@ -54,15 +54,15 @@
     /// <value>The elevation.</value>
     public Scalar elevation {
       get {
-        return ion.locationManager.lastKnownLocation.altitude;
+        return ion.locationManager.lastKnownLocation.altitude; 
       }
     }
 
-    private IION ion { get; set; }
-
+    private IION ion { get; set; } 
+		 
     private PTChart(IION ion, Fluid.EState state, Fluid fluid) {
       if (fluid == null) {
-        throw new Exception("Cannot create a PTChart with a null fluid");
+        throw new Exception("Cannot create a PTChart with a null fluid");        
       }
       this.ion = ion;
       this.state = state;

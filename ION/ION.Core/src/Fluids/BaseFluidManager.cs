@@ -154,7 +154,6 @@
       Fluid ret = null;
 
       if (__cache.ContainsKey(fluidName)) {
-        Log.D(this, "Already had that fluid yo");
         var reference = __cache[fluidName];
         if (!reference.IsAlive) {
           Log.D(this, "But it was garbage collected so removing key");
@@ -166,7 +165,6 @@
 
       if(ret != null)
         Log.D(this, "ret is currently occupied");
-        //Log.D(this, "Looking for " + fluidName);
       if (ret == null && HasFluid(fluidName)) {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));
