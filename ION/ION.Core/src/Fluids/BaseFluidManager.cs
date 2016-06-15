@@ -59,6 +59,8 @@
     // Overridden from IFluidManager
     public event OnFluidPreferenceChanged onFluidPreferenceChanged;
 
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+
     // Overridden from IFliudManager
     public Fluid lastUsedFluid { get; private set; }
 
@@ -121,11 +123,11 @@
 
         Log.D(this, "Getting fluid: " + fluidName);
         await GetFluidAsync(fluidName);
-        return new InitializationResult() { success = true };
+        return new InitializationResult() { success = __isInitialized = true };
       } catch (Exception e) {
         Log.E(this, "Failed to init " + this, e);
         return new InitializationResult() {
-          success = false,
+          success = __isInitialized = false,
           errorMessage = "Failed to initialize fluid manager: " + e.Message
         };
       }
