@@ -199,7 +199,7 @@
 
       try {
         var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
-        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
+        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];        
         byte[] broadcastPacket = null;
         var protocol = EProtocolVersion.V1;
         if (ourData != null) {
@@ -218,7 +218,6 @@
             protocol = EProtocolVersion.V1;
           }
         }
-
         NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
       } catch (Exception ex) {
         Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
@@ -238,7 +237,7 @@
     /// Notifies the OnDeviceFound event that a new device has been discovered by the connection helper.
     /// </summary>
     private void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] broadcastPacket, EProtocolVersion protocol) {
-//      Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
+      //Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, broadcastPacket, protocol);
       }

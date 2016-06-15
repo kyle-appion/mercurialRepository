@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<whatsnew>
+  <display version="1.5.2">
+    <new>Swipe to remove Viewer and Subview in Workbench.</new>
+    <new>Swipe to forget device in Device Manager</new>
+    <update>Updated viewer movement actions within the workbench.</update>
+    <update>Updated Backend support throughout the entire app.</update>
+    <fixed>Fixed lingering bluetooth bugs.</fixed>
+  </display>
+</whatsnew>

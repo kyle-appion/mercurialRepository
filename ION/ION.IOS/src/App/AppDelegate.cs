@@ -19,6 +19,7 @@
   using ION.IOS.IO;
   using ION.IOS.Util;
   using ION.IOS.ViewController;
+  using Security;
 
   // The UIApplicationDelegate for the application. This class is responsible for launching the
   // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
@@ -77,6 +78,7 @@
         NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
       }
 
+		
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -84,7 +86,29 @@
 
       // make the window visible
       Window.MakeKeyAndVisible();
-
+      
+      //************************************************************************
+		var record = KeychainAccess.ValueForKey("lastUsedVersion");		
+		
+		if(!string.IsNullOrEmpty(record)){
+			var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+		 	var latestVersion = record;
+			
+		 	if(!currentVersion.Equals(latestVersion)){
+				var window = UIApplication.SharedApplication.KeyWindow;
+			    var vc = window.RootViewController;
+			    while (vc.PresentedViewController != null) {
+			      vc = vc.PresentedViewController;
+			    }
+			    var updateView = new WhatsNewView(vc.View,vc);			    
+			    vc.View.AddSubview(updateView.infoView);
+			    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+			}
+		} else {
+			KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+		}
+      //************************************************************************
+      
       return true;
     }
 

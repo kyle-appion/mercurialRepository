@@ -91,7 +91,8 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.Source = source;
 
-      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;     
+
     }
 
     // Overridden from BaseIONViewController
@@ -99,7 +100,16 @@ namespace ION.IOS.ViewController.Workbench {
       base.ViewDidAppear(animated);
 
       tableContent.ReloadData();
-
+      
+      if(!ion.deviceManager.connectionHelper.isEnabled){
+		  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
+          bluetoothWarning.Clicked += (sender, e) => {
+            if(e.ButtonIndex.Equals(1)){
+              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+            }
+          };
+          bluetoothWarning.Show();
+	  }
 //      if (ion.dataLogManager.isRecording) {
 //        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
 //      } else {

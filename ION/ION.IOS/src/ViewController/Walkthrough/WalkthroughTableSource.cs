@@ -12,7 +12,6 @@ using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
 using ION.Core.Fluids;
 using ION.Core.Measure;
-using ION.Core.App;
 
 namespace ION.IOS.ViewController.Walkthrough {
   public class WalkthroughTableSource : UITableViewSource {
