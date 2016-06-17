@@ -34,6 +34,7 @@ namespace ION.IOS.ViewController {
   using ION.IOS.ViewController.Logging;
   using ION.IOS.ViewController.JobManager;
   using ION.IOS.ViewController.Walkthrough;
+  using ION.IOS.ViewController.RssFeed;
 
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
@@ -68,7 +69,7 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-				new Section(Strings.Report.REPORTS.ToUpper()) {
+        new Section(Strings.Report.REPORTS.ToUpper()) {
 #if DEBUG
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
@@ -286,12 +287,23 @@ namespace ION.IOS.ViewController {
     }
 
     /// <summary>
-    /// Prepares and displays an email resolver such that the user can fire
-    /// off an email to complain to appion.
+    /// Opens up a list of options for walkthroughs. They are broken up between the main
+    /// sections of the app
     /// </summary>
     private void OpenWalkthroughSections() {
       Console.WriteLine("Opening Walkthrough");
       var wvc = InflateViewController<WalkthroughMenuViewController>(BaseIONViewController.VC_WALKTHROUGH_MENU);
+
+      PresentViewControllerFromSelected(wvc);
+    }
+
+    /// <summary>
+    /// Opens up a list of options for walkthroughs. They are broken up between the main
+    /// sections of the app
+    /// </summary>
+    private void ShowRSSFeed() {
+      Console.WriteLine("Opening rss feed");
+      var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
 
       PresentViewControllerFromSelected(wvc);
     }
