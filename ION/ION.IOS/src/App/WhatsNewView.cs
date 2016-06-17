@@ -54,7 +54,7 @@ namespace ION.IOS.App {
 			contentHolder = new UIScrollView(new CGRect(0,90,infoView.Bounds.Width,infoView.Bounds.Height - 140));
 			contentHolder.Layer.CornerRadius = 5;
 			contentHolder.ClipsToBounds = true;
-			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width,contentHolder.Bounds.Height);
+			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width,1.2 * contentHolder.Bounds.Height);
 			
 			closeBottom = new UIButton(new CGRect(0,infoView.Bounds.Height - 50,infoView.Bounds.Width,50));
 			closeBottom.ClipsToBounds = true;
@@ -66,7 +66,7 @@ namespace ION.IOS.App {
 				infoView.RemoveFromSuperview();
 			};
 			
-			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width,contentHolder.Bounds.Height));
+			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width,1.2 * contentHolder.Bounds.Height));
 			content.Layer.CornerRadius = 5;
 			content.ClipsToBounds = true;
 			content.UserInteractionEnabled = false;
