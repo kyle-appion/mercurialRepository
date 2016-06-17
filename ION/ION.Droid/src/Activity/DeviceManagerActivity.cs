@@ -52,7 +52,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 20000;
+    private const long DEFAULT_SCAN_TIME = 60000;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -133,7 +133,7 @@
 
       previousHelper = ion.deviceManager.connectionHelper;
       var bm = (BluetoothManager)GetSystemService(BluetoothService);
-      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
+//      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
