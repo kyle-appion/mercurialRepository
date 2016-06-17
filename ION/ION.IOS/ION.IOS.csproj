@@ -640,6 +640,7 @@
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
+    <InterfaceDefinition Include="src\ViewController\RssFeed\RssFeedViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -939,6 +940,12 @@
     <Compile Include="src\ViewController\PressureTemperatureChart\PTSlideView.cs" />
     <Compile Include="src\App\WhatsNewView.cs" />
     <Compile Include="src\App\KeychainAccess.cs" />
+    <Compile Include="src\ViewController\RssFeed\RssFeedViewController.cs" />
+    <Compile Include="src\ViewController\RssFeed\RssFeedViewController.designer.cs">
+      <DependentUpon>RssFeedViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RssFeed\RssFeedDataSource.cs" />
+    <Compile Include="src\ViewController\RssFeed\RssFeedCell.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -976,6 +983,7 @@
     <Folder Include="src\ViewController\Walkthrough\" />
     <Folder Include="Resources\Images.xcassets\img_button_blackclosex.imageset\" />
     <Folder Include="Resources\xml\" />
+    <Folder Include="src\ViewController\RssFeed\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

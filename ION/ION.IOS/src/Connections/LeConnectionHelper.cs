@@ -245,7 +245,7 @@
     /// Notifies the OnDeviceFound event that a new device has been discovered by the connection helper.
     /// </summary>
     private void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] broadcastPacket, EProtocolVersion protocol) {
-//      Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
+     Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, broadcastPacket, protocol);
       }

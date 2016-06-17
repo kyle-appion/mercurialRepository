@@ -80,42 +80,42 @@ namespace ION.IOS.ViewController.Analyzer {
         root.navigation.ToggleMenu();
       };
       
-      var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
-      testingButton.BackgroundColor = UIColor.Gray;
-      testingButton.TouchUpInside += (sender, e) => {
-		var record = new SecRecord(SecKind.GenericPassword)
-        {
-            Account = "lastUsedVersion",
-            Label = "lastUsedVersion",
-        };
-        SecStatusCode resultCode;
-        
-        var match = SecKeyChain.QueryAsRecord(record, out resultCode);
+   //   var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
+   //   testingButton.BackgroundColor = UIColor.Gray;
+   //   testingButton.TouchUpInside += (sender, e) => {
+			//var record = new SecRecord(SecKind.GenericPassword)
+   //     {
+   //         Account = "lastUsedVersion",
+   //         Label = "lastUsedVersion",
+   //     };
+   //     SecStatusCode resultCode;
+         
+   //     var match = SecKeyChain.QueryAsRecord(record, out resultCode);
 		
-		if(resultCode == SecStatusCode.Success){
-			var removeResult = SecKeyChain.Remove(record);
-			Console.WriteLine("Result: " + removeResult);
-			if(removeResult != SecStatusCode.Success){
-				Console.WriteLine("Couldn't delete record for key");
-			} else {
-				var newRecord = new SecRecord(SecKind.GenericPassword)
-		        {
-		            Account = "lastUsedVersion",
-		            Label = "lastUsedVersion",
-		            ValueData = NSData.FromString("1.5.1", NSStringEncoding.UTF8),
-		        };
-		        var err = SecKeyChain.Add (newRecord);
-		        if(err != SecStatusCode.Success){
-					Console.WriteLine("Couldn't create new record for manual version entry");
-				} else {
-					Console.WriteLine("Created new manual version of " + newRecord.ValueData.ToString());
-					Console.WriteLine("Current app version is " + NSData.FromString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString()));
-				}
-			}
-		}
+			//	if(resultCode == SecStatusCode.Success){
+			//		var removeResult = SecKeyChain.Remove(record);
+			//		Console.WriteLine("Result: " + removeResult);
+			//		if(removeResult != SecStatusCode.Success){
+			//			Console.WriteLine("Couldn't delete record for key");
+			//		} else {
+			//			var newRecord = new SecRecord(SecKind.GenericPassword)
+			//	        {
+			//	            Account = "lastUsedVersion",
+			//	            Label = "lastUsedVersion",
+			//	            ValueData = NSData.FromString("1.5.1", NSStringEncoding.UTF8),
+			//	        };
+			//	        var err = SecKeyChain.Add (newRecord);
+			//	        if(err != SecStatusCode.Success){
+			//				Console.WriteLine("Couldn't create new record for manual version entry");
+			//			} else {
+			//				Console.WriteLine("Created new manual version of " + newRecord.ValueData.ToString());
+			//				Console.WriteLine("Current app version is " + NSData.FromString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString()));
+			//			}
+			//		}
+			//	}
 		
-	  };
-		View.AddSubview(testingButton);
+	  //};
+		//View.AddSubview(testingButton);
 //      dataRecord = new UIButton(new CGRect(0,0,35,35));
 //      dataRecord.BackgroundColor = UIColor.Clear;
 //      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};

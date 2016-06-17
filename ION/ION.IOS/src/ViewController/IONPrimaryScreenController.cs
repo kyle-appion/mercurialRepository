@@ -34,6 +34,7 @@ namespace ION.IOS.ViewController {
   using ION.IOS.ViewController.Logging;
   using ION.IOS.ViewController.JobManager;
   using ION.IOS.ViewController.Walkthrough;
+  using ION.IOS.ViewController.RssFeed;
 
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
@@ -70,8 +71,8 @@ namespace ION.IOS.ViewController {
         },
         new Section(Strings.Report.REPORTS.ToUpper()) {
 #if DEBUG
-          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+          //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
 #endif
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
@@ -226,9 +227,12 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-        .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
-          OpenWalkthroughSections();
-        })
+        //.Link("App Walkthrough",(object obj, HelpViewController ovc) => {
+        //  OpenWalkthroughSections();
+        //})
+    //    .Link("RSS Feed", (object obj, HelpViewController ovc) => {
+				//	ShowRSSFeed();
+				//})
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
         if (!MFMailComposeViewController.CanSendMail) {
           Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
@@ -254,8 +258,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
 #if DEBUG
-        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
-        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
+        //new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
+        //new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
 #endif
         null, // Screenshot Navigation
         null, // Settings navigation
@@ -284,8 +288,8 @@ namespace ION.IOS.ViewController {
     }
 
     /// <summary>
-    /// Prepares and displays an email resolver such that the user can fire
-    /// off an email to complain to appion.
+    /// Opens up a list of options for walkthroughs. They are broken up between the main
+    /// sections of the app
     /// </summary>
     private void OpenWalkthroughSections() {
       Console.WriteLine("Opening Walkthrough");
@@ -293,7 +297,18 @@ namespace ION.IOS.ViewController {
 
       PresentViewControllerFromSelected(wvc);
     }
+    
+    /// <summary>
+    /// Opens up a list of options for walkthroughs. They are broken up between the main
+    /// sections of the app
+    /// </summary>
+    private void ShowRSSFeed() {
+      Console.WriteLine("Opening rss feed");
+      var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
 
+      PresentViewControllerFromSelected(wvc);
+    }
+    
     /// <summary>
     /// Presents a new view controller using the current navigation view
     /// controller as the host.
