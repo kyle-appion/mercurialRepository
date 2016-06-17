@@ -168,7 +168,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     }
 
     private void UpdateScanState() {
-    Log.D(this, "Updating scan state");
+    //Log.D(this, "Updating scan state");
       if (ion.deviceManager.connectionHelper.isScanning) {
         NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
       } else {
