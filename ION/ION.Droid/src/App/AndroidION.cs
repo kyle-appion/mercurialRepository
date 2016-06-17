@@ -52,6 +52,11 @@
     /// </summary>
     private const int NOTIFICATION_APP_ID = 1;
 
+		/// <summary>
+		/// Occurs when the workbench is changed.
+		/// </summary>
+		public event OnWorkbenchChanged onWorkbenchChanged;
+
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
@@ -110,7 +115,17 @@
     /// The current primary workbench for the ION context.
     /// </summary>
     /// <value>The current workbench.</value>
-    public Workbench currentWorkbench { get; set; }
+    public Workbench currentWorkbench {
+			get {
+				return __workbench;
+			}
+			set {
+				__workbench = value;
+				if (onWorkbenchChanged != null) {
+					onWorkbenchChanged(value);
+				}
+			}
+		} Workbench __workbench;
 
     /// <summary>
     /// The default units for the ION instance.

@@ -68,7 +68,7 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-        new Section(Strings.Report.REPORTS.ToUpper()) {
+				new Section(Strings.Report.REPORTS.ToUpper()) {
 #if DEBUG
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
@@ -226,9 +226,11 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
+/*
         .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
           OpenWalkthroughSections();
         })
+*/
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
         if (!MFMailComposeViewController.CanSendMail) {
           Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);

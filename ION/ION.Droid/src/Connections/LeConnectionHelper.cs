@@ -25,6 +25,10 @@
     /// The device name of all rigado devices.
     /// </summary>
     private const string RIGDFU = "RigCom";
+		/// <summary>
+		///  The appion specific company code.
+		/// </summary>
+		private const int APPION_COMPANY_CODE = 0xffff;
 
     // Overridden from BaseConnectionHelper
     public override bool isEnabled {
@@ -109,12 +113,22 @@
     /// <param name="scanRecord">Scan record.</param>
     private void OnDeviceFound(BluetoothDevice device, byte[] scanRecord) {
       try {
+				ISerialNumber serialNumber = null;
+
         if (!IsAppionDevice(device)) {
-          Log.D(this, "Ignoring device: " + device.Name);
-          return; // Break as we don't want to deal with none Appion devices
+					if (scanRecord[1] == 0xff) {
+						var serialBytes = new byte[8];
+						Array.Copy(scanRecord, 4, serialBytes, 0, 8);
+						serialNumber = SerialNumberExtensions.ParseSerialNumber(Encoding.UTF8.GetString(serialBytes));
+					}
+
+					if (serialNumber == null) {
+						Log.D(this, "Ignoring device: " + device.Name + " with record: " + scanRecord.ToByteString());
+	          return; // Break as we don't want to deal with none Appion devices
+					}
         }
 
-        ISerialNumber serialNumber = GaugeSerialNumber.Parse(device.Name);
+        serialNumber = GaugeSerialNumber.Parse(device.Name);
         byte[] broadcastPacket = null;
 
         // Parse the scan record.
@@ -123,6 +137,17 @@
           var len = scanRecord[i++];
           var type = scanRecord[i++];
           if (type == 0xff) {
+						var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
+						i += 2;
+						if (companyCode == APPION_COMPANY_CODE) {
+							Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
+							var chars = Encoding.UTF8.GetString(scanRecord, 3, 11);
+							serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
+							broadcastPacket = new byte[19];
+							Array.Copy(scanRecord, 11, broadcastPacket, 0, 19);
+							;
+						}
+/*
             var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
             if (RIGDFU.Equals(device.Name)) {
               Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
@@ -137,6 +162,7 @@
               broadcastPacket = new byte[19];
               Array.Copy(scanRecord, 2, broadcastPacket, 0, 19);
             }
+*/
           }
           Log.D(this, "Found advertisement record " + type.ToString("x2") + " with a length of " + len);
           i += len - 2; // We already incremented for the len and type

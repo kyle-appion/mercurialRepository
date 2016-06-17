@@ -25,6 +25,8 @@
     /// </summary>
     public event OnLocationChanged onLocationChanged;
 
+		public bool isInitialized { get { return true; } }
+
     /// <summary>
     /// Whether or not the location manager is enabled (in a working state).
     /// </summary>

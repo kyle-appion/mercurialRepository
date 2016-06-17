@@ -86,13 +86,14 @@ namespace ION.IOS.ViewController.Workbench {
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
 
-      source = new WorkbenchTableSource(this, ion, workbench, tableContent);
+      source = new WorkbenchTableSource(this, ion, tableContent);
+			source.SetWorkbench(workbench);
       source.onAddClicked = OnRequestViewer;
 
       tableContent.Source = source;
 
-      ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;     
-
+			AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
+			ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;     
     }
 
     // Overridden from BaseIONViewController
@@ -120,7 +121,13 @@ namespace ION.IOS.ViewController.Workbench {
     // Overridden from UIViewController
     public override void ViewDidUnload() {
       ion.currentWorkbench.onWorkbenchEvent -= OnWorkbenchEvent;
+			AppState.context.onWorkbenchChanged -= this.OnWorkbenchChanged;
     }
+
+		private void OnWorkbenchChanged(Workbench workbench) {
+			source.SetWorkbench(workbench);
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+		}
 
     /// <summary>
     /// Called when the viewer source wishes to request a new viewer.
