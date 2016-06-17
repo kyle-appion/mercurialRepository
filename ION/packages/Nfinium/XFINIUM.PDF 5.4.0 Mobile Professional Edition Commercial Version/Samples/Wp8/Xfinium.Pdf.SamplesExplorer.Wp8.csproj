@@ -1,0 +1,557 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{9F9DAD40-3FBB-4D1F-BE6D-71D136333592}</ProjectGuid>
+    <ProjectTypeGuids>{C089C8C0-30E0-4E22-80C0-CE093F111A43};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Xfinium.Pdf.SamplesExplorer.Wp8</RootNamespace>
+    <AssemblyName>Xfinium.Pdf.SamplesExplorer.Wp8</AssemblyName>
+    <TargetFrameworkIdentifier>WindowsPhone</TargetFrameworkIdentifier>
+    <TargetFrameworkVersion>v8.0</TargetFrameworkVersion>
+    <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
+    <SilverlightApplication>true</SilverlightApplication>
+    <SupportedCultures>
+    </SupportedCultures>
+    <XapOutputs>true</XapOutputs>
+    <GenerateSilverlightManifest>true</GenerateSilverlightManifest>
+    <XapFilename>Xfinium.Pdf.SamplesExplorer.Wp8_$(Configuration)_$(Platform).xap</XapFilename>
+    <SilverlightManifestTemplate>Properties\AppManifest.xml</SilverlightManifestTemplate>
+    <SilverlightAppEntry>Xfinium.Pdf.SamplesExplorer.Wp8.App</SilverlightAppEntry>
+    <ValidateXaml>true</ValidateXaml>
+    <MinimumVisualStudioVersion>11.0</MinimumVisualStudioVersion>
+    <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\Release\</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Bin\ARM\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Bin\ARM\Release</OutputPath>
+    <DefineConstants>TRACE;SILVERLIGHT;WINDOWS_PHONE</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Common\Actions.cs">
+      <Link>Samples\Actions.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Annotations.cs">
+      <Link>Samples\Annotations.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Barcodes.cs">
+      <Link>Samples\Barcodes.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\BatesNumbers.cs">
+      <Link>Samples\BatesNumbers.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\ContentExtraction.cs">
+      <Link>Samples\ContentExtraction.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\ContentStream.cs">
+      <Link>Samples\ContentStream.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\DocumentAppend.cs">
+      <Link>Samples\DocumentAppend.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\DocumentIncrementalUpdate.cs">
+      <Link>Samples\DocumentIncrementalUpdate.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\DocumentPageByPageSave.cs">
+      <Link>Samples\DocumentPageByPageSave.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\DocumentProperties.cs">
+      <Link>Samples\DocumentProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\DocumentSplit.cs">
+      <Link>Samples\DocumentSplit.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Encryption.cs">
+      <Link>Samples\Encryption.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\FileAttachments.cs">
+      <Link>Samples\FileAttachments.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Fonts.cs">
+      <Link>Samples\Fonts.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\FormattedContent.cs">
+      <Link>Samples\FormattedContent.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\FormFill.cs">
+      <Link>Samples\FormFill.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\FormGenerator.cs">
+      <Link>Samples\FormGenerator.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\GrayscaleConversion.cs">
+      <Link>Samples\GrayscaleConversion.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Images.cs">
+      <Link>Samples\Images.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Measurements.cs">
+      <Link>Samples\Measurements.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\OptionalContent.cs">
+      <Link>Samples\OptionalContent.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\OptionalContentExtraction.cs">
+      <Link>Samples\OptionalContentExtraction.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Outlines.cs">
+      <Link>Samples\Outlines.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\PageImposition.cs">
+      <Link>Samples\PageImposition.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\PageObjects.cs">
+      <Link>Samples\PageObjects.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\PDFA.cs">
+      <Link>Samples\PDFA.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Portfolios.cs">
+      <Link>Samples\Portfolios.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Redaction.cs">
+      <Link>Samples\Redaction.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\RemoveReplaceImages.cs">
+      <Link>Samples\RemoveReplaceImages.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\SampleInfo.cs">
+      <Link>Samples\SampleInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\SampleOutputInfo.cs">
+      <Link>Samples\SampleOutputInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\SearchText.cs">
+      <Link>Samples\SearchText.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\SvgToPdf.cs">
+      <Link>Samples\SvgToPdf.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Text.cs">
+      <Link>Samples\Text.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\TiffToPdf.cs">
+      <Link>Samples\TiffToPdf.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Type3Fonts.cs">
+      <Link>Samples\Type3Fonts.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\VectorGraphics.cs">
+      <Link>Samples\VectorGraphics.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Watermarks.cs">
+      <Link>Samples\Watermarks.cs</Link>
+    </Compile>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LocalizedStrings.cs" />
+    <Compile Include="DetailsPage.xaml.cs">
+      <DependentUpon>DetailsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MainPage.xaml.cs">
+      <DependentUpon>MainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\AppResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SourceCodePage.xaml.cs">
+      <DependentUpon>SourceCodePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\SampleViewModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+    <Page Include="DetailsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MainPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SourceCodePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Support\airplane.u3d">
+      <Link>Support\airplane.u3d</Link>
+    </Content>
+    <Content Include="..\Support\batesnumbers_cs.html">
+      <Link>Support\batesnumbers_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\batesnumbers_vb.html">
+      <Link>Support\batesnumbers_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\content.pdf">
+      <Link>Support\content.pdf</Link>
+    </Content>
+    <Content Include="..\Support\contentstream_cs.html">
+      <Link>Support\contentstream_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\contentstream_vb.html">
+      <Link>Support\contentstream_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\encrypted.pdf">
+      <Link>Support\encrypted.pdf</Link>
+    </Content>
+    <Content Include="..\Support\formattedcontent_cs.html">
+      <Link>Support\formattedcontent_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\formattedcontent_vb.html">
+      <Link>Support\formattedcontent_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\formfill.pdf">
+      <Link>Support\formfill.pdf</Link>
+    </Content>
+    <Content Include="..\Support\grayscaleconversion_cs.html">
+      <Link>Support\grayscaleconversion_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\grayscaleconversion_vb.html">
+      <Link>Support\grayscaleconversion_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\measurements_cs.html">
+      <Link>Support\measurements_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\measurements_vb.html">
+      <Link>Support\measurements_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\optionalcontentextraction_cs.html">
+      <Link>Support\optionalcontentextraction_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\optionalcontentextraction_vb.html">
+      <Link>Support\optionalcontentextraction_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\pageobjects_cs.html">
+      <Link>Support\pageobjects_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\pageobjects_vb.html">
+      <Link>Support\pageobjects_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\pdfa_cs.html">
+      <Link>Support\pdfa_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\pdfa_vb.html">
+      <Link>Support\pdfa_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\removereplaceimages_cs.html">
+      <Link>Support\removereplaceimages_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\removereplaceimages_vb.html">
+      <Link>Support\removereplaceimages_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\rgb.icc">
+      <Link>Support\rgb.icc</Link>
+    </Content>
+    <Content Include="..\Support\sample.tif">
+      <Link>Support\sample.tif</Link>
+    </Content>
+    <Content Include="..\Support\searchtext_cs.html">
+      <Link>Support\searchtext_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\searchtext_vb.html">
+      <Link>Support\searchtext_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\svgtopdf_cs.html">
+      <Link>Support\svgtopdf_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\svgtopdf_vb.html">
+      <Link>Support\svgtopdf_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\tifftopdf_cs.html">
+      <Link>Support\tifftopdf_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\tifftopdf_vb.html">
+      <Link>Support\tifftopdf_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\tiger.svg">
+      <Link>Support\tiger.svg</Link>
+    </Content>
+    <Content Include="..\Support\type3fonts_cs.html">
+      <Link>Support\type3fonts_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\type3fonts_vb.html">
+      <Link>Support\type3fonts_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\verdana.ttf">
+      <Link>Support\verdana.ttf</Link>
+    </Content>
+    <Content Include="..\Support\pageobjects.pdf">
+      <Link>Support\pageobjects.pdf</Link>
+    </Content>
+    <None Include="Properties\AppManifest.xml" />
+    <None Include="Properties\WMAppManifest.xml">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Support\actions_cs.html">
+      <Link>Support\actions_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\actions_vb.html">
+      <Link>Support\actions_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\annotations_cs.html">
+      <Link>Support\annotations_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\annotations_vb.html">
+      <Link>Support\annotations_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\barcodes_cs.html">
+      <Link>Support\barcodes_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\barcodes_vb.html">
+      <Link>Support\barcodes_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\clock.swf">
+      <Link>Support\clock.swf</Link>
+    </Content>
+    <Content Include="..\Support\cmyk.tif">
+      <Link>Support\cmyk.tif</Link>
+    </Content>
+    <Content Include="..\Support\contentextraction_cs.html">
+      <Link>Support\contentextraction_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\contentextraction_vb.html">
+      <Link>Support\contentextraction_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\documentappend_cs.html">
+      <Link>Support\documentappend_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\documentappend_vb.html">
+      <Link>Support\documentappend_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\documentincrementalupdate_cs.html">
+      <Link>Support\documentincrementalupdate_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\documentincrementalupdate_vb.html">
+      <Link>Support\documentincrementalupdate_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\documentpagebypagesave_cs.html">
+      <Link>Support\documentpagebypagesave_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\documentpagebypagesave_vb.html">
+      <Link>Support\documentpagebypagesave_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\documentproperties_cs.html">
+      <Link>Support\documentproperties_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\documentproperties_vb.html">
+      <Link>Support\documentproperties_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\documentsplit_cs.html">
+      <Link>Support\documentsplit_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\documentsplit_vb.html">
+      <Link>Support\documentsplit_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\encryption_cs.html">
+      <Link>Support\encryption_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\encryption_vb.html">
+      <Link>Support\encryption_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\fileattachments_cs.html">
+      <Link>Support\fileattachments_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\fileattachments_vb.html">
+      <Link>Support\fileattachments_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\fonts_cs.html">
+      <Link>Support\fonts_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\fonts_vb.html">
+      <Link>Support\fonts_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\formfill_cs.html">
+      <Link>Support\formfill_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\formfill_vb.html">
+      <Link>Support\formfill_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\formgenerator_cs.html">
+      <Link>Support\formgenerator_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\formgenerator_vb.html">
+      <Link>Support\formgenerator_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\image.jpg">
+      <Link>Support\image.jpg</Link>
+    </Content>
+    <Content Include="..\Support\images_cs.html">
+      <Link>Support\images_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\images_vb.html">
+      <Link>Support\images_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\optionalcontent_cs.html">
+      <Link>Support\optionalcontent_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\optionalcontent_vb.html">
+      <Link>Support\optionalcontent_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\outlines_cs.html">
+      <Link>Support\outlines_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\outlines_vb.html">
+      <Link>Support\outlines_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\pageimposition_cs.html">
+      <Link>Support\pageimposition_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\pageimposition_vb.html">
+      <Link>Support\pageimposition_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\portfolios_cs.html">
+      <Link>Support\portfolios_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\portfolios_vb.html">
+      <Link>Support\portfolios_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\redaction_cs.html">
+      <Link>Support\redaction_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\redaction_vb.html">
+      <Link>Support\redaction_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\samples.xml">
+      <Link>Samples\samples.xml</Link>
+    </Content>
+    <Content Include="..\Support\softmask.png">
+      <Link>Support\softmask.png</Link>
+    </Content>
+    <Content Include="..\Support\stencilmask.png">
+      <Link>Support\stencilmask.png</Link>
+    </Content>
+    <Content Include="..\Support\text_cs.html">
+      <Link>Support\text_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\text_vb.html">
+      <Link>Support\text_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\vectorgraphics_cs.html">
+      <Link>Support\vectorgraphics_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\vectorgraphics_vb.html">
+      <Link>Support\vectorgraphics_vb.html</Link>
+    </Content>
+    <Content Include="..\Support\watermarks_cs.html">
+      <Link>Support\watermarks_cs.html</Link>
+    </Content>
+    <Content Include="..\Support\watermarks_vb.html">
+      <Link>Support\watermarks_vb.html</Link>
+    </Content>
+    <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\ApplicationIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Tiles\FlipCycleTileMedium.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Tiles\FlipCycleTileSmall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Tiles\IconicTileMediumLarge.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\Tiles\IconicTileSmall.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\AppResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Xfinium.Pdf.Wp8, Version=4.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Redist\Xfinium.Pdf.Wp8.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions />
+</Project>
