@@ -79,7 +79,7 @@ namespace ION.IOS.ViewController.Analyzer {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      
+/*
       var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
       testingButton.BackgroundColor = UIColor.Gray;
       testingButton.TouchUpInside += (sender, e) => {
@@ -116,6 +116,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		
 	  };
 		View.AddSubview(testingButton);
+*/
 //      dataRecord = new UIButton(new CGRect(0,0,35,35));
 //      dataRecord.BackgroundColor = UIColor.Clear;
 //      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
