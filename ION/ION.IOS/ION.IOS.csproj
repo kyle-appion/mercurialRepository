@@ -35,14 +35,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchArch>ARMv7, ARMv7s, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: Andrew Hodder (8WUM398369)</CodesignKey>
+    <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchSdkVersion>8.4</MtouchSdkVersion>
-    <CodesignProvision>27940921-5251-40aa-b8a9-1d309c873d63</CodesignProvision>
+    <MtouchSdkVersion></MtouchSdkVersion>
+    <CodesignProvision></CodesignProvision>
     <IpaPackageName>
     </IpaPackageName>
   </PropertyGroup>

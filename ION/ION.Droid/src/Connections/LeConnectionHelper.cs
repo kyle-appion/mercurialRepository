@@ -112,83 +112,71 @@
     /// <param name="device">Device.</param>
     /// <param name="scanRecord">Scan record.</param>
     private void OnDeviceFound(BluetoothDevice device, byte[] scanRecord) {
-      try {
-				ISerialNumber serialNumber = null;
+			lock (this) {
+				Log.D(this, "Working with device: " + device.Name + " @{" + device.Address + "}");
+	      try {
+					ISerialNumber serialNumber = null;
 
-        if (!IsAppionDevice(device)) {
-					if (scanRecord[1] == 0xff) {
-						var serialBytes = new byte[8];
-						Array.Copy(scanRecord, 4, serialBytes, 0, 8);
-						serialNumber = SerialNumberExtensions.ParseSerialNumber(Encoding.UTF8.GetString(serialBytes));
-					}
-
-					if (serialNumber == null) {
-						Log.D(this, "Ignoring device: " + device.Name + " with record: " + scanRecord.ToByteString());
-	          return; // Break as we don't want to deal with none Appion devices
-					}
-        }
-
-        serialNumber = GaugeSerialNumber.Parse(device.Name);
-        byte[] broadcastPacket = null;
-
-        // Parse the scan record.
-        var i = 0;
-        while (i < scanRecord.Length) {
-          var len = scanRecord[i++];
-          var type = scanRecord[i++];
-          if (type == 0xff) {
-						var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
-						i += 2;
-						if (companyCode == APPION_COMPANY_CODE) {
-							Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
-							var chars = Encoding.UTF8.GetString(scanRecord, 3, 11);
-							serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
-							broadcastPacket = new byte[19];
-							Array.Copy(scanRecord, 11, broadcastPacket, 0, 19);
-							;
+	        if (!IsAppionDevice(device)) {
+						if (scanRecord[1] == 0xff) {
+							var serialBytes = new byte[8];
+							Array.Copy(scanRecord, 4, serialBytes, 0, 8);
+							serialNumber = SerialNumberExtensions.ParseSerialNumber(Encoding.UTF8.GetString(serialBytes));
 						}
-/*
-            var companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
-            if (RIGDFU.Equals(device.Name)) {
-              Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
-              var chars = Encoding.UTF8.GetString(scanRecord, 0, 8);
-              serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
-              broadcastPacket = new byte[19];
-              Array.Copy(scanRecord, 9, broadcastPacket, 0, 19);
-            } else {
-              companyCode = (int)((scanRecord[i] << 8) & scanRecord[i + 1]);
-              Log.D(this, "Resolving legacy BLE device: " + device.Name);
-              serialNumber = GaugeSerialNumber.Parse(device.Name);
-              broadcastPacket = new byte[19];
-              Array.Copy(scanRecord, 2, broadcastPacket, 0, 19);
-            }
-*/
-          }
-          Log.D(this, "Found advertisement record " + type.ToString("x2") + " with a length of " + len);
-          i += len - 2; // We already incremented for the len and type
-        }
 
-        EProtocolVersion protocol = EProtocolVersion.V1;
+						if (serialNumber == null) {
+							Log.D(this, "Ignoring device: " + device.Name + "{" + device.Address + "} with record: " + scanRecord.ToByteString());
+		          return; // Break as we don't want to deal with none Appion devices
+						}
+					} else {
+		        serialNumber = GaugeSerialNumber.Parse(device.Name);
+					}
+	        byte[] broadcastPacket = null;
 
-        if (broadcastPacket != null) {
-          int pv = (int)broadcastPacket[0];
-          if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
-            protocol = (EProtocolVersion)pv;
-          }  
-        } else if (serialNumber.rawSerial.StartsWith("S")) {
-          protocol = EProtocolVersion.V4;
-        }
+	        // Parse the scan record.
+	        var i = 0;
+	        while (i < scanRecord.Length) {
+	          var len = scanRecord[i++];
+	          var type = scanRecord[i++];
+	          if (type == 0xff) {
+							var companyCode = (int)((scanRecord[i] << 8) | scanRecord[i + 1]);
+							Log.D(this, "Company code is: " + companyCode.ToString("x4"));
+							if (companyCode == APPION_COMPANY_CODE) {
+								Log.D(this, "Resolving modern rigado BLE device: " + device.Name);
+								var chars = Encoding.UTF8.GetString(scanRecord, i + 2, 8);
+								serialNumber = SerialNumberExtensions.ParseSerialNumber(chars);
+								broadcastPacket = new byte[19];
+								Array.Copy(scanRecord, i + 10, broadcastPacket, 0, 19);
+								;
+							}
+	          }
+	          Log.D(this, "Found advertisement record " + type.ToString("x2") + " with a length of " + len);
+	          i += len - 2; // We already incremented for the len and type
+						Log.D(this, "i is: "+ i);
+	        }
 
-        if (broadcastPacket != null) {
-          Log.D(this, "Found device: " + serialNumber + " with the broadcast packet of: " + broadcastPacket.ToByteString());
-        } else {
-          Log.D(this, "Found device: " + serialNumber + " with a scan record of: " + scanRecord.ToByteString());
-        }
+					EProtocolVersion protocol = EProtocolVersion.V1;
+	        if (broadcastPacket != null) {
+	          int pv = (int)broadcastPacket[0];
+	          if (Enum.IsDefined(typeof(EProtocolVersion), pv)) {
+	            protocol = (EProtocolVersion)pv;
+	          }  
+	        } else if (serialNumber.rawSerial.StartsWith("S")) {
+	          protocol = EProtocolVersion.V4;
+	        }
 
-        NotifyDeviceFound(serialNumber, device.Address, broadcastPacket, protocol);
-      } catch (Exception e) {
-        Log.E(this, "Failed to resolve found device " + device.Name, e);
-      }
+	        if (broadcastPacket != null) {
+	          Log.D(this, "Found device: " + serialNumber + " with the broadcast packet of: " + broadcastPacket.ToByteString());
+	        } else {
+	          Log.D(this, "Found device: " + serialNumber + " with a scan record of: " + scanRecord.ToByteString());
+	        }
+
+	        NotifyDeviceFound(serialNumber, device.Address, broadcastPacket, protocol);
+	      } catch (Exception e) {
+	        Log.E(this, "Failed to resolve found device " + device.Name, e);
+	      }
+				Log.D(this, "Finished working with device: " + device.Name + " @{" + device.Address + "}");
+			}
     }
 
     /// <summary>
