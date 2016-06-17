@@ -104,6 +104,13 @@
 				    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 				}
 			} else {
+				var window = UIApplication.SharedApplication.KeyWindow;
+		    var vc = window.RootViewController;
+		    while (vc.PresentedViewController != null) {
+		      vc = vc.PresentedViewController;
+		    }
+		    var updateView = new WhatsNewView(vc.View,vc);			    
+		    vc.View.AddSubview(updateView.infoView);
 				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 			}
       //************************************************************************
