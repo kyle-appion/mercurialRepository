@@ -21,6 +21,10 @@
   /// The connection helper that will perform the IOS bluetooth interactions.
   /// </summary>
   public class LeConnectionHelper : CBCentralManagerDelegate, IConnectionHelper {
+		/// <summary>
+		/// The company code that identifies appion bluetooth devices.
+		/// </summary>
+		private const int APPION_COMPANY_CODE = 0xffff;
     /// <summary>
     /// The event pool that is notified when the connection helper state changes.
     /// </summary>
@@ -82,47 +86,71 @@
     }
 
     public override async void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
+			var name = peripheral.Name;
+
+			var blacklist = new string[] { 
+				"Square Reader",
+				"Apple",
+				"RigDfu",
+				"iPhone",
+			};
+
+			foreach (var s in blacklist) {
+				if (name != null && name.StartsWith(s)) {
+					return;
+				}
+			}
+
       Log.D(this, "Discovered Peripheral: " + peripheral.Name);
 
-      var name = peripheral.Name;
-      var adData = advertisementData;
+			try {
+				var adData = ((NSData)advertisementData[CBAdvertisement.DataManufacturerDataKey])?.ToArray();
+				byte[] broadcastPacket = null;
+				if (adData != null) {
+					FindBroadcastPacket(adData, out broadcastPacket);
+					if (broadcastPacket != null) {
+						Log.D(this, broadcastPacket.ToByteString());
+					}
+				}
 
-      if (name == null) {
-        Log.E(this, "No name was provided for peripheral {" + peripheral.Identifier + "}. Attempting to pull from scan record.");
-        if (adData != null) {
-          var data = adData[CBAdvertisement.DataLocalNameKey] as NSString;
-          if (data != null) {
-            name = data.ToString();
-          }
-        }
-      }
+		    if (name == null) {
+					Log.D(this, "Found a device with serial: " + name + " from broadcast packet: " + broadcastPacket?.ToByteString());
+		      if (advertisementData != null) {
+		        var data = advertisementData[CBAdvertisement.DataLocalNameKey] as NSString;
+		        if (data != null) {
+		          name = data.ToString();
+		        }
+					}
+		    }
 
-      if (name == null) {
-        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
-        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
-        var connection = new IosLeConnection(this, peripheral);
-        name = await connection.PullDeviceName();
-        if (name == null) {
-          Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
-          return;
-        }
-      }
+		    if (name == null) {
+					if (broadcastPacket != null) {
+						name = System.Text.Encoding.UTF8.GetString(broadcastPacket, 4, 8);
+						Log.D(this, "Found a ridgado device with serial: " + name);
+						Array.Copy(broadcastPacket, 12, broadcastPacket, 0, 19);
+					}
+/*
+					if (name == null) {
+		        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
+		        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
+		        var connection = new IosLeConnection(this, peripheral);
+		        name = await connection.PullDeviceName();
+		        if (name == null) {
+		          Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
+		          return;
+		        }
+					}
+*/
+		    }
 
-      if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
-        Log.D(this, name + " is not a valid serial number");
-        return;
-      }
+		    if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
+		      Log.D(this, name + " is not a valid serial number");
+		      return;
+		    }
 
-      try {
         var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
-        var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
-        byte[] broadcastPacket = null;
         var protocol = EProtocolVersion.V1;
-        if (ourData != null) {
-          broadcastPacket = ((NSData)ourData).ToArray();
-          var bytes = new byte[20];
-          Array.Copy(broadcastPacket, 2, bytes, 0, Math.Min(broadcastPacket.Length - 2, bytes.Length));
-          broadcastPacket = bytes;
+        if (broadcastPacket != null) {
           // Note: This will NOT be correct for the early v4 le gauges as they did not support broadcasting.
           var rawProtocol = (EProtocolVersion)broadcastPacket[0];
           if (serialNumber.rawSerial.Length == 8) {
@@ -205,7 +233,7 @@
       isScanning = true;
       cancelSource = new CancellationTokenSource();
       var options = new PeripheralScanningOptions();
-      options.AllowDuplicatesKey = false;
+      options.AllowDuplicatesKey = true;
       centralManager.ScanForPeripherals((CBUUID[])null, options);
 
       var startTime = DateTime.Now;
@@ -232,6 +260,38 @@
       centralManager.StopScan();
     }
 
+		/// <summary>
+		/// Finds the broadcast packet that is nested in an advertisement packet.
+		/// </summary>
+		/// <returns>The broadcast packet.</returns>
+		/// <param name="advertisement">Advertisement.</param>
+		/// <param name="broadcastPacket">Broadcast packet.</param>
+		private bool FindBroadcastPacket(byte[] advertisement, out byte[] broadcastPacket) {
+			var i = 0;
+			while (i < advertisement.Length) {
+				var len = advertisement[i++];
+				var type = advertisement[i++];
+				if (type == 0xff) {
+					var companyCode = (int)((advertisement[i] << 8) | advertisement[i + 1]);
+					if (companyCode == APPION_COMPANY_CODE) {
+						var chars = System.Text.Encoding.UTF8.GetString(advertisement, i + 2, 8);
+						if (SerialNumberExtensions.IsValidSerialNumber(chars)) {
+							broadcastPacket = new byte[19];
+							Array.Copy(advertisement, i + 10, broadcastPacket, 0, 19);
+							return true;
+						} else {
+							broadcastPacket = null;
+							return false;
+						}
+					}
+				}
+				i += len - 2;
+			}
+
+			broadcastPacket = null;
+			return false;
+		}
+
     /// <summary>
     /// Notifies the OnScanStateChange event that the connection helper's state has changed.
     /// </summary>
@@ -245,7 +305,6 @@
     /// Notifies the OnDeviceFound event that a new device has been discovered by the connection helper.
     /// </summary>
     private void NotifyDeviceFound(ISerialNumber serialNumber, string address, byte[] broadcastPacket, EProtocolVersion protocol) {
-     Log.D(this, serialNumber + ": {" + broadcastPacket.AsString() + "}");
       if (onDeviceFound != null) {
         onDeviceFound(this, serialNumber, address, broadcastPacket, protocol);
       }
