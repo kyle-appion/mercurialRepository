@@ -1,4 +1,4 @@
-﻿//#if !DEBUG
+#if true
 namespace ION.IOS.Connections {
 
   using System;
@@ -98,16 +98,16 @@ namespace ION.IOS.Connections {
         }
       }
 
-      if (name == null) {
-        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
-        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
-        var connection = new IosLeConnection(this, peripheral);
-        name = await connection.PullDeviceName();
+//      if (name == null) {
+//        // Try connecting to the peripheral as a last resort to get the peripheral stuff.
+//        Log.E(this, "Failed to get peripheral name from advertisement record. Trying to connect to peripheral instead.");
+//        var connection = new IosLeConnection(this, peripheral);
+//        name = await connection.PullDeviceName();
         if (name == null) {
           Log.E(this, "Failed to resolve peripheral name. The peripheral will not be presented to the application.");
           return;
         }
-      }
+//      }
 
       if (!SerialNumberExtensions.IsValidSerialNumber(name)) {
         Log.D(this, name + " is not a valid serial number");
@@ -256,8 +256,7 @@ namespace ION.IOS.Connections {
 
 
 
-//#elsef
-#if false
+#else
 namespace ION.IOS.Connections {
 
   using System;
