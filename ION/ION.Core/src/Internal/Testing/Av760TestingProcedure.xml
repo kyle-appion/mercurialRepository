@@ -1,12 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <testProcedure sensorType="Vacuum">
   <targetPoints>
+<!--    <point unit="micron" value="760000" gradeWeight="1"/> -->
     <point unit="micron" value="500000" gradeWeight="1"/>
     <point unit="micron" value="150000" gradeWeight="1"/>
     <point unit="micron" value="50000" gradeWeight="1"/>
     <point unit="micron" value="25000" gradeWeight="1"/>
+    <point unit="micron" value="4000" gradeWeight="1"/>
+    <point unit="micron" value="2000" gradeWeight="1"/>
     <point unit="micron" value="1000" gradeWeight="1"/>
-    <point unit="micron" value="500" gradeWeight="1"/>
+    <point unit="micron" value="5000" gradeWeight="1"/>
     <point unit="micron" value="200" gradeWeight="1"/>
   </targetPoints>
 
