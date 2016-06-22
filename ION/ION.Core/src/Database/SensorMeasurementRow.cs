@@ -4,11 +4,6 @@
 
   using SQLite.Net.Attributes;
 
-	public sealed class PreserveAttribute : System.Attribute {
-		public bool AllMembers;
-		public bool Conditional;
-	}
-
   /// <summary>
   /// A simple data object that represents a sensor's measurement that is stored in the database.
   /// </summary>
