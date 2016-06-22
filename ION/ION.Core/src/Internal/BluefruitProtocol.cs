@@ -19,8 +19,6 @@
       }
     }
 
-		public 
-
 		/// <summary>
 		/// Creates the new test requirement packet that is to be sent to the test rig.
 		/// </summary>
