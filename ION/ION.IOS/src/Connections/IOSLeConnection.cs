@@ -213,6 +213,7 @@ namespace ION.IOS.Connections {
       if (EConnectionState.Disconnected != connectionState) {
         return false;
       }
+			Log.D(this, "IOSLeConnection is attempting to connect");
 
       connectionState = EConnectionState.Connecting;
 

@@ -110,10 +110,15 @@
     /// <summary>
     /// The ios central bluetooth manager that is managing this peripheral.
     /// </summary>
-    protected readonly CBCentralManager centralManager;
+//    protected readonly CBCentralManager centralManager;
 
-    public BaseIOSConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
-      this.centralManager = centralManager;
+		/// <summary>
+		/// The connection helper that created the connection.
+		/// </summary>
+		private LeConnectionHelper connectionHelper;
+
+    public BaseIOSConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) {
+			this.connectionHelper = connectionHelper;
       __nativeDevice = peripheral;
       peripheral.Delegate = this;
 
@@ -127,66 +132,77 @@
     /// <returns>The async.</returns>
     public async virtual Task<bool> ConnectAsync() {
       if (EConnectionState.Disconnected != connectionState) {
+				Log.D(this, "connection state not disconnected. Returning false");
         return false;
       }
+			try {
+				Log.D(this, "BaseIOSConnection is attempting to connect");
 
-      connectionState = EConnectionState.Connecting;
-      DateTime start = DateTime.Now;
+	      connectionState = EConnectionState.Connecting;
+	      DateTime start = DateTime.Now;
 
-      PeripheralConnectionOptions options = new PeripheralConnectionOptions();
-      options.NotifyOnConnection = true;
-      options.NotifyOnDisconnection = true;
-      options.NotifyOnNotification = true;
+	      PeripheralConnectionOptions options = new PeripheralConnectionOptions();
+	      options.NotifyOnConnection = true;
+	      options.NotifyOnDisconnection = true;
+	      options.NotifyOnNotification = true;
 
-      centralManager.DisconnectedPeripheral += OnCBPeripheralDisconnected;
-      centralManager.ConnectPeripheral(__nativeDevice, options);
+	      connectionHelper.onPeripheralDisconnected += OnCBPeripheralDisconnected;
+	      connectionHelper.centralManager.ConnectPeripheral(__nativeDevice, options);
 
-      Log.D(this, "Awaiting physical connection...");
-      while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
-        if (DateTime.Now - start > TimeSpan.FromSeconds(5)) {
-          Log.D(this, "timeout: failed to connect");
-          Disconnect();
-          return false;
-        } else {
-          await Task.Delay(50);
-        }
-      }
+	      Log.D(this, "Awaiting physical connection...");
+	      while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
+	        if (DateTime.Now - start > TimeSpan.FromSeconds(5)) {
+	          Log.D(this, "timeout: failed to connect");
+	          Disconnect();
+	          return false;
+	        } else {
+	          await Task.Delay(50);
+	        }
+	      }
 
-      await Task.Delay(100);
+	      await Task.Delay(100);
 
-      __nativeDevice.DiscoverServices((CBUUID[])null);  // DESIRED SERVICES ARRAY
+	      __nativeDevice.DiscoverServices((CBUUID[])null);  // DESIRED SERVICES ARRAY
 
-      Log.D(this, "Awaiting service discovery");
-      while (EConnectionState.Connected != connectionState && EConnectionState.Disconnected != connectionState && !AreServicesValid()) {
-        if (DateTime.Now - start > connectionTimeout) {
-          Log.D(this, "timeout: failed to validate services");
-          Disconnect();
-          return false;
-        } else {
-          await Task.Delay(50);
-        }
-      }
+	      Log.D(this, "Awaiting service discovery");
+	      while (EConnectionState.Connected != connectionState && EConnectionState.Disconnected != connectionState && !AreServicesValid()) {
+	        if (DateTime.Now - start > connectionTimeout) {
+	          Log.D(this, "timeout: failed to validate services");
+	          Disconnect();
+	          return false;
+	        } else {
+	          await Task.Delay(50);
+	        }
+	      }
 
-      if (!AreServicesValid()) {
-        Log.E(this, "Failed to validate services");
-        Disconnect();
-        return false;
-      }
+	      if (!AreServicesValid()) {
+	        Log.E(this, "Failed to validate services");
+	        Disconnect();
+	        return false;
+	      }
 
-      Log.D(this, "Connection success!");
-      OnConnected();
-      connectionState = EConnectionState.Connected;
+	      Log.D(this, "Connection success!");
+	      OnConnected();
+	      connectionState = EConnectionState.Connected;
 
-      return EConnectionState.Connected == connectionState;
+	      return EConnectionState.Connected == connectionState;
+			} catch (Exception e) {
+				Log.E(this, "Failed to connect", e);
+				Disconnect();
+				return false;
+			}
     }
 
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
+			if (connectionState == EConnectionState.Disconnected) {
+				return;
+			}
       Log.D(this, name + " disconnected");
-      centralManager.DisconnectedPeripheral -= OnCBPeripheralDisconnected;
-      centralManager.CancelPeripheralConnection(__nativeDevice);
+      connectionHelper.onPeripheralDisconnected -= OnCBPeripheralDisconnected;
+      connectionHelper.centralManager.CancelPeripheralConnection(__nativeDevice);
       connectionState = EConnectionState.Disconnected;
     }
 
@@ -244,8 +260,8 @@
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    private void OnCBPeripheralDisconnected(object sender, CBPeripheralErrorEventArgs e) {
-      if (e.Peripheral.Equals(__nativeDevice)) {
+    private void OnCBPeripheralDisconnected(object o, CBPeripheral peripheral) {
+      if (peripheral.Equals(__nativeDevice)) {
         Disconnect();
       }
     }

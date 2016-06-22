@@ -1,28 +1,29 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-
-using CoreGraphics;
-using Foundation;
-using UIKit;
-
-using DSoft.Themes.Grid;
-using DSoft.Datatypes.Enums;
-using DSoft.Datatypes.Grid.Data;
-using DSoft.Datatypes.Types;
-using DSoft.Datatypes.Formatters;
-using DSoft.UI.Grid;
-
-using ION.Core.App;
-using ION.Core.Devices;
-using ION.Core.Internal;
-using ION.Core.Internal.Testing;
-using ION.Core.IO;
-using ION.Core.Sensors;
-using ION.Core.Util;
-
 namespace ION.IOS.ViewController.GaugeTesting {
+
+	using System;
+	using System.Collections.Generic;
+	using System.Threading;
+	using System.Threading.Tasks;
+
+	using CoreGraphics;
+	using Foundation;
+	using UIKit;
+
+	using DSoft.Themes.Grid;
+	using DSoft.Datatypes.Enums;
+	using DSoft.Datatypes.Grid.Data;
+	using DSoft.Datatypes.Types;
+	using DSoft.Datatypes.Formatters;
+	using DSoft.UI.Grid;
+
+	using ION.Core.App;
+	using ION.Core.Devices;
+	using ION.Core.Internal;
+	using ION.Core.Internal.Testing;
+	using ION.Core.IO;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
+
 	public partial class InternalGaugeTestingViewController : BaseIONViewController {
 
 		//    private TestProcedure test;
@@ -108,7 +109,10 @@ namespace ION.IOS.ViewController.GaugeTesting {
 			View.Add(view);
 			Task.Factory.StartNew(test.Run)
 			    .ContinueWith((t) => {
-				view.Hide();
+				AppState.context.PostToMain(() => {
+					view.Hide();
+					Log.D(this, "Hiding overlay");
+				});
 			});
 		}
 
@@ -141,8 +145,8 @@ namespace ION.IOS.ViewController.GaugeTesting {
 			// create the activity spinner, center it horizontall and put it 5 points above center x
 			activitySpinner = new UIActivityIndicatorView(UIActivityIndicatorViewStyle.WhiteLarge);
 			activitySpinner.Frame = new CGRect (
-				centerX - (activitySpinner.Frame.Width / 2) ,
-				centerY - activitySpinner.Frame.Height - 20 ,
+				centerX - (activitySpinner.Frame.Width / 2),
+				centerY - activitySpinner.Frame.Height - 20,
 				activitySpinner.Frame.Width,
 				activitySpinner.Frame.Height);
 			activitySpinner.AutoresizingMask = UIViewAutoresizing.All;

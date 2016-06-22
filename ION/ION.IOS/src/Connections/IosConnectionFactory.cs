@@ -17,10 +17,10 @@
     /// <summary>
     /// The manager that will manager the bluetooth for the factory.
     /// </summary>
-    public CBCentralManager centralManager;
+		public LeConnectionHelper connectionHelper;
 
-    public IosConnectionFactory(CBCentralManager centralManager) {
-      this.centralManager = centralManager;
+		public IosConnectionFactory(LeConnectionHelper connectionHelper) {
+			this.connectionHelper = connectionHelper;
     }
 
     /// <summary>
@@ -31,7 +31,7 @@
     /// <param name="address">Address.</param>
     /// <param name="protocolVersion">Protocol version.</param>
     public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
-      var peripheral = centralManager.RetrievePeripheralsWithIdentifiers(new NSUuid(address))[0];
+      var peripheral = connectionHelper.centralManager.RetrievePeripheralsWithIdentifiers(new NSUuid(address))[0];
       if (peripheral == null) {
         throw new Exception("Cannot create connection to " + address + ": the address is not valid");
       }
@@ -43,7 +43,7 @@
 			var ion = ION.Core.App.AppState.context;
       var serialNumber = SerialNumberExtensions.ParseSerialNumber(peripheral.Name);
       if (serialNumber is BluefruitSerialNumber) {
-        return new BluefruitLeConnection(centralManager, peripheral);
+        return new BluefruitLeConnection(connectionHelper, peripheral);
       } else {
 				return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
       }

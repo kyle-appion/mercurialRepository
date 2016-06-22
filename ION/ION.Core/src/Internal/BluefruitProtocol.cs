@@ -1,5 +1,6 @@
 ﻿namespace ION.Core.Internal {
   
+	using System;
   using System.IO;
 
   using ION.Core.Devices.Protocols;
@@ -17,6 +18,8 @@
         return EProtocolVersion.TestBenchInternal;
       }
     }
+
+		public 
 
 		/// <summary>
 		/// Creates the new test requirement packet that is to be sent to the test rig.
@@ -75,5 +78,41 @@
 			StartNewTest = 2,
 		}
   }
+
+	[Flags]
+	public enum ERigState {
+		InputFullOpen 		= 1 << 0,
+		InputFullClosed 	= 1 << 1,
+		ExhaustFullOpen 	= 1 << 2,
+		ExhaustFullClosed	= 1 << 3,
+	}
+
+	/// <summary>
+	/// A simple packet that is transmitted from the bluefruit durning a test.
+	/// </summary>
+	public class BluefruitPacket {
+		/// <summary>
+		/// The input angle of stepper 1 in radians.
+		/// </summary>
+		public float inputAngle;
+		/// <summary>
+		/// The rotational speed of stepper 1 in radians per second.
+		/// </summary>
+		public float inputRPS;
+		/// <summary>
+		/// The exhaust angle of stepper 2 in radians.
+		/// </summary>
+		public float exhaustAngle; 
+		/// <summary>
+		/// The rotational speed of stepper 2 in radians per second.
+		/// </summary>
+		public float exhaustRPS;
+		/// <summary>
+		/// The current measurement of the vrc.
+		/// </summary>
+		public int vrc;
+		public BluefruitPacket() {
+		}
+	}
 }
 

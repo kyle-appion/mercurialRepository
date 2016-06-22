@@ -10,9 +10,9 @@
 
   public class BluefruitLeConnection : BaseIOSConnection {
 //    private static readonly CBUUID READ_SERVICE = CBUUID.FromString("ffe0");
-    private static readonly CBUUID READ_CHARACTERISTIC = CBUUID.FromString("ffe4");
+    private static readonly CBUUID READ_CHARACTERISTIC = CBUUID.FromString("ff01");
 //    private static readonly CBUUID WRITE_SERVICE = CBUUID.FromString("ffe5");
-    private static readonly CBUUID WRITE_CHARACTERISTIC = CBUUID.FromString("ffe9");
+    private static readonly CBUUID WRITE_CHARACTERISTIC = CBUUID.FromString("ff02");
 
     /// <summary>
     /// The characteristic that the connection is using to read data packets.
@@ -23,7 +23,7 @@
     /// </summary>
     private CBCharacteristic writeCharacteristic;
 
-    public BluefruitLeConnection(CBCentralManager centralManager, CBPeripheral peripheral) : base(centralManager, peripheral) {
+    public BluefruitLeConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) : base(connectionHelper, peripheral) {
     }
 
     /// <summary>
