@@ -6,9 +6,8 @@ using ION.Core.Util;
 
 namespace ION.Core.Database {
 
-  [Preserve (AllMembers = true)]
+	[Preserve (AllMembers = true)]
   public class LoggingDeviceRow : ITableRow{
-    
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

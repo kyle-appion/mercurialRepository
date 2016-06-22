@@ -171,6 +171,7 @@
     <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
     <Compile Include="src\Devices\Protocols\RidgadoV4Protocol.cs" />
     <Compile Include="src\Connections\IConnection.cs" />
+    <Compile Include="src\Database\PreseveAttribute.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

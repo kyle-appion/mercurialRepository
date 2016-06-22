@@ -7,7 +7,6 @@
   /// <summary>
   /// An aggragation of sensor measurement contained into a logical component.
   /// </summary>
-
 	[Preserve (AllMembers = true)]
   public class SessionRow : ITableRow {
     /// <summary>

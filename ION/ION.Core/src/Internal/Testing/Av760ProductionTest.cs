@@ -52,33 +52,8 @@
     /// Runs the test.
     /// </summary>
     public async void Run() {
-      var targetMicron = 760000;
-
       var conn = bluefruit.connection;
       var protocol = bluefruit.protocol as BluefruitProtocol;
-
-      foreach (var tp in procedure.targetPoints) {
-        for (;;) {
-          if (tp.target.AssertEquals(bluefruit.vrcMeasurement, 0.01)) { // If the vrc is reading a target point
-            if (onTargetPointMet != null) {
-              onTargetPointMet(tp);
-            }
-          } else {
-            if (tp.target > bluefruit.vrcMeasurement) { // If we over shot the target, move back a little.
-              if (!bluefruit.controlStepper.isMoving) {
-                conn.Write(protocol.CreateModifyTargetDegreeAngle(0.5f, BluefruitProtocol.EDirection.Close)); // Rotate slightly
-              }
-            } else { // Otherwise, we need to inch our way in.
-              if (!bluefruit.controlStepper.isMoving) {
-                conn.Write(protocol.CreateModifyTargetDegreeAngle(0.5f, BluefruitProtocol.EDirection.Open)); // Rotate slightly
-              }
-            }
-          }
-        }
-
-        await Task.Delay(TimeSpan.FromMilliseconds(500));
-
-      }
 
       // Cleanup
     }

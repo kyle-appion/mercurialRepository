@@ -44,10 +44,16 @@
     */
   } // End ION
 
+	public delegate void OnWorkbenchChanged(Workbench workbench);
+
   /// <summary>
   /// The interface that describes an ION application context.
   /// </summary>
   public interface IION : IDisposable {
+		/// <summary>
+		/// The event that is notified when the ion's workbench changes.
+		/// </summary>
+		event OnWorkbenchChanged onWorkbenchChanged;
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
