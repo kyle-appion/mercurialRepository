@@ -93,13 +93,12 @@ namespace ION.IOS.ViewController.Logging {
       spreadsheetTable.BackgroundColor = UIColor.Clear;
       spreadsheetTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       spreadsheetTable.Hidden = true;
-      spreadsheetTable.Hidden = true;
+
 
       pdfTable = new UITableView(new CGRect(0, 2 * pdfButton.Bounds.Height, showReports.Bounds.Width, 9 * cellHeight));
       pdfTable.RegisterClassForCellReuse(typeof(SpreadsheetCell),"spreadsheetCell");
       pdfTable.BackgroundColor = UIColor.Clear;
       pdfTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      pdfTable.Hidden = true;
       pdfTable.Hidden = true;
 
       showReports.AddSubview(savedHeader);

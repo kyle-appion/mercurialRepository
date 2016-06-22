@@ -70,10 +70,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS.ToUpper()) {
-#if DEBUG
-          //new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          //new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
-#endif
+
+          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
+          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
+
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
@@ -227,10 +227,10 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-        //.Link("App Walkthrough",(object obj, HelpViewController ovc) => {
-        //  OpenWalkthroughSections();
-        //})
-    //    .Link("RSS Feed", (object obj, HelpViewController ovc) => {
+    //    .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
+    //      OpenWalkthroughSections();
+    //    })
+    //    .Link("Version History", (object obj, HelpViewController ovc) => {
 				//	ShowRSSFeed();
 				//})
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
@@ -257,10 +257,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-#if DEBUG
-        //new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
-        //new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
-#endif
+        new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
+        new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation

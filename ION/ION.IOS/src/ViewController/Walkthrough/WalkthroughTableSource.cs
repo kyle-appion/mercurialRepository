@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Walkthrough {
       if (cell == null) {
         cell = new UITableViewCell(UITableViewCellStyle.Default, "walkthroughCell");
       }     
-        
+      cell.SelectionStyle = UITableViewCellSelectionStyle.None;
       cell.TextLabel.Text = walkthroughs[indexPath.Row];
       cell.TextLabel.Font = UIFont.BoldSystemFontOfSize(20);
       cell.Layer.BorderWidth = 1f;

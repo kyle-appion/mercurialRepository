@@ -5,7 +5,8 @@ using SQLite.Net.Attributes;
 using ION.Core.Util;
 
 namespace ION.Core.Database {
-  
+
+  [Preserve (AllMembers = true)]
   public class LoggingDeviceRow : ITableRow{
     
     /// <summary>

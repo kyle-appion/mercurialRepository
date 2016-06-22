@@ -49,5 +49,7 @@
 	<string>NSLocationAlwaysUsageDescription</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>CFBundleName</key>
+	<string>ION HVAC/R</string>
 </dict>
 </plist>

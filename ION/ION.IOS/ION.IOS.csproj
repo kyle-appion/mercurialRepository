@@ -37,14 +37,15 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: Andrew Hodder (8WUM398369)</CodesignKey>
+    <CodesignKey>iPhone Developer: Kyle Johnson (J39HJ2S6R6)</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
-    <MtouchSdkVersion>8.4</MtouchSdkVersion>
-    <CodesignProvision>27940921-5251-40aa-b8a9-1d309c873d63</CodesignProvision>
+    <MtouchSdkVersion></MtouchSdkVersion>
+    <CodesignProvision></CodesignProvision>
     <IpaPackageName>
     </IpaPackageName>
+    <MtouchLink>Full</MtouchLink>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -68,13 +69,14 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>true</MtouchProfiling>
-    <CodesignKey>iPhone Developer</CodesignKey>
+    <CodesignKey>iPhone Developer: Kyle Johnson (J39HJ2S6R6)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <IpaPackageName>
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
+    <MtouchLink>Full</MtouchLink>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -630,6 +632,38 @@
     </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\img_button_blackclosex.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\WorkBench2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\WorkBench3.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\WorkBench4.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\WorkBench5.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\WorkBench6.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\WorkBench7.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer5.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer6.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer7.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer8.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer9.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer10.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Analyzer1.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer2.imageset\Analyzer2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer3.imageset\Analyzer3.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer4.imageset\Analyzer4.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer5.imageset\Analyzer5.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer6.imageset\Analyzer6.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer7.imageset\Analyzer7.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer8.imageset\Analyzer8.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer9.imageset\Analyzer9.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer10.imageset\Analyzer10.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -928,8 +962,6 @@
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.designer.cs">
       <DependentUpon>WalkthroughScreenshotViewController.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\ViewController\Walkthrough\WorkBenchWalkthrough.cs" />
-    <Compile Include="src\ViewController\Walkthrough\AnalyzerWalkthrough.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\SliderView.cs" />
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
     <Compile Include="src\Connections\IosConnectionFactory.cs" />
@@ -946,6 +978,7 @@
     </Compile>
     <Compile Include="src\ViewController\RssFeed\RssFeedDataSource.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCell.cs" />
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughRecord.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -984,6 +1017,22 @@
     <Folder Include="Resources\Images.xcassets\img_button_blackclosex.imageset\" />
     <Folder Include="Resources\xml\" />
     <Folder Include="src\ViewController\RssFeed\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench5.imageset\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench6.imageset\" />
+    <Folder Include="Resources\Images.xcassets\WorkBench7.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer5.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer6.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer7.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer8.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer9.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Analyzer10.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

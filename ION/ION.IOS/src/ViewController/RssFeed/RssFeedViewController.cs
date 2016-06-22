@@ -2,37 +2,44 @@
 using System.IO;
 using System.Net;
 using System.Xml;
+using System.Text;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using Foundation;
 using CoreGraphics;
 using UIKit;
 
 namespace ION.IOS.ViewController.RssFeed {
-		public class Update {
-		  public string title;
-		  public string link;
-		  public string description;
-  	}
+
+	public class Update {
+	  public string title;
+	  public List<string> description;
+	  //public string description;
+	}
   	
 	public partial class RssFeedViewController  : BaseIONViewController {
 
-  	
 		public List<Update> feedItems;
 		public UITableView rssTable;
 		
 		public RssFeedViewController(IntPtr handle) : base(handle) {
 		}
 
-    public static bool IsReadingXML { get; set; }    
+    public static bool IsReadingXML { get; set; }
     
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
 			// Perform any additional setup after loading the view, typically from a nib.
+      AutomaticallyAdjustsScrollViewInsets = false;
+      
 			feedItems = new List<Update>();
-			rssTable = new UITableView(new CGRect(0,50,View.Bounds.Width,View.Bounds.Height - 50));
-			rssTable.RegisterClassForCellReuse(typeof(RssFeedCell),"rssFeedCell");
 			
-			BeginReadXMLStream("feed.xml");			
+			rssTable = new UITableView(new CGRect(0,45,View.Bounds.Width,View.Bounds.Height - 45));
+			rssTable.RegisterClassForCellReuse(typeof(RssFeedCell),"rssFeedCell");
+			rssTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+			
+			View.AddSubview(rssTable);
+			BeginReadXMLStream("feed.xml");
 		}
 
     public void BeginReadXMLStream(string currFileName)
@@ -44,7 +51,7 @@ namespace ION.IOS.ViewController.RssFeed {
         httpRequest.BeginGetResponse(new AsyncCallback(FinishWebRequest), httpRequest);
     }
 
-    private void FinishWebRequest(IAsyncResult result)
+    public void FinishWebRequest(IAsyncResult result)
     {
         IsReadingXML = true;
 
@@ -58,48 +65,50 @@ namespace ION.IOS.ViewController.RssFeed {
     }
 
     public void BuildItemList(Stream xmlStream)
-    {	
-    	Console.WriteLine("build item list");
-        try
+    {
+        using (XmlReader myXMLReader = XmlReader.Create((xmlStream)))
         {
-            using (XmlReader myXMLReader = XmlReader.Create((xmlStream)))
+            while (myXMLReader.Read())
             {
-            	Console.WriteLine("About to read");
-                while (myXMLReader.Read())
-                {
-                	if(myXMLReader.Name == "title"){
-                		Update item = new Update();
-
-                		var pulledTitle = myXMLReader.ReadElementContentAsString();
-                		item.title = pulledTitle;
-										Console.WriteLine(pulledTitle);
-										while(myXMLReader.Name != "link"){
-											myXMLReader.Read();
-										}										
-										var pulledLink = myXMLReader.ReadElementContentAsString();
-										item.link = pulledLink;
-										Console.WriteLine(pulledLink);
-										while(myXMLReader.Name != "description"){
-											myXMLReader.Read();
+							if(myXMLReader.NodeType == XmlNodeType.Element){
+								if(myXMLReader.Name == "title"){
+								  Update item = new Update();
+								  item.description = new List<string>();
+									var feedTitle = myXMLReader.ReadElementContentAsString();
+									item.title = feedTitle;
+									while(myXMLReader.Name != "channel"){
+										if(myXMLReader.Name == "new" || myXMLReader.Name == "updated" || myXMLReader.Name == "fixed"){
+											var entry = "•\t" + myXMLReader.ReadElementContentAsString() + "\n";
+											item.description.Add(entry);
 										}
-										
-										var pulledDescription = myXMLReader.ReadElementContentAsString();
-										item.description = pulledDescription;
-										Console.WriteLine(pulledDescription);
-										feedItems.Add(item);
+										myXMLReader.Read();
 									}
-                }
-              Console.WriteLine("Finished pulling the updates. There were " + feedItems.Count + " in total"); 
-              rssTable.Source = new RssFeedDataSource(feedItems);
-            }
-        }
-        catch {
-					Console.WriteLine("Error error will robinson");
-				}
+									feedItems.Add(item);
+								}
+								//if(myXMLReader.Name == "title"){
+								//	Update item = new Update();
+								//	var feedTitle = myXMLReader.ReadElementContentAsString();
+								//	Console.WriteLine("Title: " + feedTitle);
+								//	item.title = feedTitle;
+								//	myXMLReader.Read();
+								//	Console.WriteLine("Next element: " + myXMLReader.Name);									
+									
 
+								//	//feedItems.Add(item);
+								//}
+							}
+            }
+            InvokeOnMainThread(()=> reloadTableData());
+        }
         //Done
         IsReadingXML = false;
     }
+    
+    public void reloadTableData(){
+        rssTable.Source = new RssFeedDataSource(feedItems);
+        rssTable.ReloadData();
+		}
+		
 		public override void DidReceiveMemoryWarning() {
 			base.DidReceiveMemoryWarning();
 			// Release any cached data, images, etc that aren't in use.

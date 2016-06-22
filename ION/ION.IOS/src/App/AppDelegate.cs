@@ -113,6 +113,8 @@
 		    vc.View.AddSubview(updateView.infoView);
 				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 			}
+			//var preserveMeasurement = new SensorMeasurementRow();
+			//preserveMeasurement.frn_SID = 1;
       //************************************************************************
       
       return true;
