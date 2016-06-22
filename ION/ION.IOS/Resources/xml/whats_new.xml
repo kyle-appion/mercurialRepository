@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="1.6.0">
+    <new>Added Data Logging Feature</new>
+    <new>Added Data Log Reporting</new>
+    <new>Added Job Manager Feature</new>
+    <new>Added Pressure/Temperature Slider</new>
+  </display>
   <display version="1.5.4">
     <new>Added alarms alerts with sound and vibrations</new>
     <update>Updated workbench loadout to save subview configurations</update>
