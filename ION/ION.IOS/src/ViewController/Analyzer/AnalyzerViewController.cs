@@ -117,24 +117,24 @@ namespace ION.IOS.ViewController.Analyzer {
 	  };
 		View.AddSubview(testingButton);
 */
-//      dataRecord = new UIButton(new CGRect(0,0,35,35));
-//      dataRecord.BackgroundColor = UIColor.Clear;
-//      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
-//      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
-//      dataRecord.TouchUpInside += (sender, e) => {
-//        recordDevices();
-//      };
-//
-//      if (ion.dataLogManager.isRecording) {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//      } else {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//      }
-//
-//      var button = new UIBarButtonItem(dataRecord);
-//
-//      NavigationItem.RightBarButtonItem = button;
-//
+      dataRecord = new UIButton(new CGRect(0,0,35,35));
+      dataRecord.BackgroundColor = UIColor.Clear;
+      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
+      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
+      dataRecord.TouchUpInside += (sender, e) => {
+        recordDevices();
+      };
+
+      if (ion.dataLogManager.isRecording) {
+        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+      } else {
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+      }
+
+      var button = new UIBarButtonItem(dataRecord);
+
+      NavigationItem.RightBarButtonItem = button;
+
       Title = "Analyzer";
 
       createSensors ();
@@ -165,28 +165,28 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-//    public void recordDevices(){     
-//      var recordingMessage = "";
-//      if (ion.dataLogManager.isRecording) {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.StopRecording();
-//        recordingMessage = "Session recording has stopped";
-//      } else {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-//        recordingMessage = "Session recording has started";
-//      }
-//      showRecordingToast(recordingMessage);
-//    }
-//
-//    public async void showRecordingToast(string recordingMessage){
-//      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
-//      messageBox.Show();
-//      await Task.Delay(TimeSpan.FromSeconds(1));
-//      messageBox.DismissWithClickedButtonIndex(0, true);
-//    }
+    public void recordDevices(){     
+      var recordingMessage = "";
+      if (ion.dataLogManager.isRecording) {
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.StopRecording();
+        recordingMessage = "Session recording has stopped";
+      } else {
+        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+        recordingMessage = "Session recording has started";
+      }
+      showRecordingToast(recordingMessage);
+    }
+
+    public async void showRecordingToast(string recordingMessage){
+      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
+      messageBox.Show();
+      await Task.Delay(TimeSpan.FromSeconds(1));
+      messageBox.DismissWithClickedButtonIndex(0, true);
+    }
 
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS

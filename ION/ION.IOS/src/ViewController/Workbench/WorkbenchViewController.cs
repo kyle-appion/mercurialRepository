@@ -66,17 +66,16 @@ namespace ION.IOS.ViewController.Workbench {
       };
       button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
 
-//      recordButton = new UIButton(new CGRect(0,0,35,35));
-//      recordButton.TouchUpInside += (sender, e) => {
-//        RecordDevices();
-//      };
-//      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+      recordButton = new UIButton(new CGRect(0,0,35,35));
+      recordButton.TouchUpInside += (sender, e) => {
+        RecordDevices();
+      };
+      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 
       var barButton = new UIBarButtonItem(button);
-//      var barButton2 = new UIBarButtonItem(recordButton);
+      var barButton2 = new UIBarButtonItem(recordButton);
 
-      //NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};
-      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton};
+      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};
 
       Title = Strings.Workbench.SELF.FromResources();
 
@@ -111,11 +110,11 @@ namespace ION.IOS.ViewController.Workbench {
           };
           bluetoothWarning.Show();
 	  }
-//      if (ion.dataLogManager.isRecording) {
-//        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//      } else {
-//        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//      }
+      if (ion.dataLogManager.isRecording) {
+        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+      } else {
+        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+      }
     }
 
     // Overridden from UIViewController
@@ -172,27 +171,27 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
 
-//    private void RecordDevices(){
-//      var recordingMessage = "";
-//      if (ion.dataLogManager.isRecording) {
-//        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//        recordButton.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.StopRecording();
-//        recordingMessage = "Session recording has stopped";
-//      } else {
-//        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//        recordButton.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-//        recordingMessage = "Session recording has started";
-//      }
-//      showRecordingToast(recordingMessage);
-//    }
-//
-//    public async void showRecordingToast(string recordingMessage){
-//      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
-//      messageBox.Show();
-//      await Task.Delay(TimeSpan.FromSeconds(1));
-//      messageBox.DismissWithClickedButtonIndex(0, true);
-//    }
+    private void RecordDevices(){
+      var recordingMessage = "";
+      if (ion.dataLogManager.isRecording) {
+        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+        recordButton.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.StopRecording();
+        recordingMessage = "Session recording has stopped";
+      } else {
+        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+        recordButton.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+        recordingMessage = "Session recording has started";
+      }
+      showRecordingToast(recordingMessage);
+    }
+
+    public async void showRecordingToast(string recordingMessage){
+      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
+      messageBox.Show();
+      await Task.Delay(TimeSpan.FromSeconds(1));
+      messageBox.DismissWithClickedButtonIndex(0, true);
+    }
   }
 }
