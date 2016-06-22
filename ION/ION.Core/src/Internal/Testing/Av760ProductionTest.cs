@@ -51,9 +51,16 @@
     /// <summary>
     /// Runs the test.
     /// </summary>
-    public async void Run() {
+    public async Task Run() {
       var conn = bluefruit.connection;
       var protocol = bluefruit.protocol as BluefruitProtocol;
+
+			var now = DateTime.Now;
+
+			while (DateTime.Now - now < TimeSpan.FromSeconds(5)) {
+			}
+
+			Log.D(this, "Test complete!");
 
       // Cleanup
     }
