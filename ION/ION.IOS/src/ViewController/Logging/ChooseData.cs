@@ -211,6 +211,7 @@ namespace ION.IOS.ViewController.Logging {
     /// <param name="e">E.</param>
     public void switchSessionTab(object sender, EventArgs e){
       noJobLabel.Hidden = true;
+      jobButton.Enabled = true;
       jobButton.BackgroundColor = UIColor.LightGray;
       jobButton.Font = UIFont.SystemFontOfSize(18);
       sessionButton.BackgroundColor = UIColor.White;
@@ -311,6 +312,7 @@ namespace ION.IOS.ViewController.Logging {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
     public void switchJobTab(object sender, EventArgs e){
+    	sessionButton.Enabled = true;
       sessionButton.BackgroundColor = UIColor.LightGray;
       sessionButton.Font = UIFont.SystemFontOfSize(18);
       jobButton.BackgroundColor = UIColor.White;
@@ -364,10 +366,8 @@ namespace ION.IOS.ViewController.Logging {
       jobTable.LayoutIfNeeded();
 
       if (result.Count.Equals(0)) {
-        Console.WriteLine("There are no jobs");
         noJobLabel.Hidden = false;
       } else {
-        Console.WriteLine("There are jobs available");
         noJobLabel.Hidden = true;
       }
 
@@ -398,10 +398,8 @@ namespace ION.IOS.ViewController.Logging {
       jobTable.LayoutIfNeeded();
 
       if (result.Count.Equals(0)) {
-        Console.WriteLine("There are no jobs");
         noJobLabel.Hidden = false;
       } else {
-        Console.WriteLine("There are jobs available");
         noJobLabel.Hidden = true;
       }
 

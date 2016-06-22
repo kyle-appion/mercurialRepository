@@ -29,19 +29,19 @@ namespace ION.IOS.ViewController.JobManager {
         notesText.ResignFirstResponder();
       }));
 
-      notesHeader = new UILabel(new CGRect(.25 * notesView.Bounds.Width, .05 * notesView.Bounds.Height,.5 * notesView.Bounds.Width,.05 * notesView.Bounds.Height));
+      notesHeader = new UILabel(new CGRect(.25 * notesView.Bounds.Width, 50,.5 * notesView.Bounds.Width,.05 * notesView.Bounds.Height));
       notesHeader.AdjustsFontSizeToFitWidth = true;
       notesHeader.TextAlignment = UITextAlignment.Center;
       notesHeader.Text = "Job Notes";
 
-      saveStatus = new UILabel(new CGRect(.1 * notesView.Bounds.Width,.8 * notesView.Bounds.Height,.8 * notesView.Bounds.Width,.1 * notesView.Bounds.Height));
+      saveStatus = new UILabel(new CGRect(.1 * notesView.Bounds.Width,.8 * notesView.Bounds.Height + 50,.8 * notesView.Bounds.Width,.1 * notesView.Bounds.Height));
       saveStatus.AdjustsFontSizeToFitWidth = true;
       saveStatus.TextAlignment = UITextAlignment.Center;
       saveStatus.TextColor = UIColor.FromRGB(49, 111, 18);
       saveStatus.Text = "Notes Saved";
       saveStatus.Hidden = true;
 
-      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .1 * notesView.Bounds.Height,.9 * notesView.Bounds.Width,.6 * notesView.Bounds.Height));
+      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .1 * notesView.Bounds.Height + 50,.9 * notesView.Bounds.Width,.6 * notesView.Bounds.Height));
       notesText.Font = UIFont.SystemFontOfSize(14);
       notesText.Layer.BorderWidth = 1f;
       notesText.UserInteractionEnabled = true;
@@ -52,7 +52,7 @@ namespace ION.IOS.ViewController.JobManager {
         fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), infoQuery[0].jobName + ".xml");
       }
 
-      saveNotes = new UIButton(new CGRect(.35 * notesView.Bounds.Width, .71 * notesView.Bounds.Height, .3 * notesView.Bounds.Width, .05 * notesView.Bounds.Height));
+      saveNotes = new UIButton(new CGRect(.35 * notesView.Bounds.Width, .71 * notesView.Bounds.Height + 50, .3 * notesView.Bounds.Width, .05 * notesView.Bounds.Height));
       saveNotes.SetTitle("Save Notes", UIControlState.Normal);
       saveNotes.SetTitleColor(UIColor.Black, UIControlState.Normal);
       saveNotes.BackgroundColor = UIColor.FromRGB(255, 215, 101);

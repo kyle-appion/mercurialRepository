@@ -20,7 +20,7 @@
     /// </summary>
     private const string UPGRADE_DATABASE = "UpgradeDatabase.sql";
 
-    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized; 
 
     /// <summary>
     /// The ion context that this database is running within.

@@ -1,4 +1,4 @@
-﻿#if !DEBUG
+﻿//#if !DEBUG
 namespace ION.IOS.Connections {
 
   using System;
@@ -256,7 +256,8 @@ namespace ION.IOS.Connections {
 
 
 
-#else
+//#elsef
+#if false
 namespace ION.IOS.Connections {
 
   using System;

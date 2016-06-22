@@ -750,10 +750,11 @@ namespace ION.IOS.ViewController.Analyzer
         subviewOptionChosen(lhSensor);
       }));
 
-      addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
-        alarmRequestViewer(Sensor);
-      }));
-
+			if(!lhSensor.isManual){
+	      addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
+	        alarmRequestViewer(Sensor);
+	      }));
+			}
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.REMOVESENSOR, UIAlertActionStyle.Default, (action) => {
         RemoveDevice (Sensor, lowHighSensors);
       }));
