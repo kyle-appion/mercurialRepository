@@ -5,6 +5,7 @@
     <new>Added Data Log Reporting</new>
     <new>Added Job Manager Feature</new>
     <new>Added Pressure/Temperature Slider</new>
+    <fixed>Fixed manual sensor options for low/high areas</fixed>
   </display>
   <display version="1.5.4">
     <new>Added alarms alerts with sound and vibrations</new>
