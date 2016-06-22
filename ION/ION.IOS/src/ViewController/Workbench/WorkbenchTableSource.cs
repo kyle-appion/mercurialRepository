@@ -68,27 +68,10 @@
     /// </summary>
     private ObservableCollection<IWorkbenchSourceRecord> records = new ObservableCollection<IWorkbenchSourceRecord>();
 
-    public WorkbenchTableSource(WorkbenchViewController vc, IION ion, Workbench workbench, UITableView tableView) {
+    public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
-      this.workbench = workbench;
-      this.workbench.onWorkbenchEvent += OnManifoldEvent;
       this.tableView = tableView;
-
-      foreach (var manifold in workbench.manifolds) {
-        records.Add(new ViewerRecord() {
-          manifold = manifold,
-          expanded = true,
-        });
-
-        foreach (var sp in manifold.sensorProperties) {
-          records.Add(CreateRecordForSensorProperty(manifold, sp));
-        }
-
-        records.Add(new SpaceRecord());
-      }
-
-      records.Add(new AddRecord());
     }
 
     // Overridden from UITableViewSource
@@ -286,6 +269,32 @@
 
       return -1;
     }
+
+		/// <summary>
+		/// Sets the workbench for the source.
+		/// </summary>
+		/// <returns>The workbench.</returns>
+		public void SetWorkbench(Workbench workbench) {
+			this.workbench = workbench;
+			this.workbench.onWorkbenchEvent += OnManifoldEvent;
+			records.Clear();
+			foreach (var manifold in workbench.manifolds) {
+				records.Add(new ViewerRecord() {
+					manifold = manifold,
+					expanded = true,
+				});
+
+				foreach (var sp in manifold.sensorProperties) {
+					records.Add(CreateRecordForSensorProperty(manifold, sp));
+				}
+
+				records.Add(new SpaceRecord());
+			}
+
+			records.Add(new AddRecord());
+
+			tableView.ReloadData();
+		}
 
     /// <summary>
     /// Shows the context menu for the manifold.
@@ -503,12 +512,6 @@
 
           indices.Add(recordIndex + 1);
           records.Insert(recordIndex + 1, new SpaceRecord());
-
-/*
-          for (int i = 0; i < manifold.sensorPropertyCount; i++) {
-            indices.Add(index + i + 1);
-          }
-*/
 
           tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
           break;    

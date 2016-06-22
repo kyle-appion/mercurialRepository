@@ -33,7 +33,7 @@ namespace ION.IOS.ViewController {
     public const string VC_WALKTHROUGH_MENU = "viewControllerWalkthroughMenu";
     public const string VC_RSS_FEED = "viewControllerRSSFeed";
 
-    public const string VC_INTERNAL_TEST_BENCH = "viewControllerInternalTestBench";
+    public const string VC_INTERNAL_GAUGE_TESTING = "viewControllerInternalGaugeTesting";
 
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation
@@ -115,15 +115,6 @@ namespace ION.IOS.ViewController {
         return;
       }
 
-      /*
-//      var bar = NavigationController.NavigationBar;
-      var bar = UINavigationBar.Appearance;
-      bar.BackIndicatorImage = UIImage.FromBundle(iconName);
-      bar.BackIndicatorTransitionMaskImage = bar.BackIndicatorImage;
-      bar.TintColor = new UIColor(Colors.BLACK);
-      */
-
-
       isPopOver = popViewController;
 
       var leftContainer = new UIView();
@@ -147,11 +138,6 @@ namespace ION.IOS.ViewController {
       left.Style = UIBarButtonItemStyle.Bordered;
 
       NavigationItem.LeftBarButtonItem = left;
-      /*
-      if (popViewController) {
-        NavigationController.InteractivePopGestureRecognizer.Delegate = this;// new UIGestureRecognizerDelegate();
-      }
-      */
     }
 
     /// <summary>

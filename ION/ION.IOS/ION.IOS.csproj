@@ -37,7 +37,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Developer: Kyle Johnson (J39HJ2S6R6)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
@@ -45,7 +45,9 @@
     <CodesignProvision></CodesignProvision>
     <IpaPackageName>
     </IpaPackageName>
+    <MtouchUseLlvm>false</MtouchUseLlvm>
     <MtouchLink>Full</MtouchLink>
+    <MtouchFloat32>true</MtouchFloat32>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -69,7 +71,7 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchProfiling>true</MtouchProfiling>
-    <CodesignKey>iPhone Developer: Kyle Johnson (J39HJ2S6R6)</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <IpaPackageName>
@@ -924,10 +926,6 @@
     <Compile Include="src\ViewController\GaugeTesting\ScrollableTableCollectionView.cs" />
     <Compile Include="src\ViewController\GaugeTesting\Table.cs" />
     <Compile Include="src\ViewController\GaugeTesting\TestBenchViewController.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\InternalTestBenchViewController.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\InternalTestBenchViewController.designer.cs">
-      <DependentUpon>InternalTestBenchViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\ViewController\GaugeTesting\TableDataSet.cs" />
     <Compile Include="src\Connections\BluefruitLeConnection.cs" />
     <Compile Include="src\Connections\BaseIOSConnection.cs" />
@@ -979,6 +977,10 @@
     <Compile Include="src\ViewController\RssFeed\RssFeedDataSource.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCell.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughRecord.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.designer.cs">
+      <DependentUpon>InternalGaugeTestingViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

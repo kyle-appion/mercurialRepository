@@ -11,13 +11,8 @@
   /// This entity is a struct due to the nature of its inteded use. Many thousands of these are expected to be loaded
   /// into an array, an we will need the most efficient storage medium possible to ensure the lowest system load.
   /// </remarks>
-	public sealed class PreserveAttribute : System.Attribute {
-	    public bool AllMembers;
-	    public bool Conditional;
-	}
 	[Preserve (AllMembers = true)]
   public class SensorMeasurementRow : ITableRow {
-  	
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

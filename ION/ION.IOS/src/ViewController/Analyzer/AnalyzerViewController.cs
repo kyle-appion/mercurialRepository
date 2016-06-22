@@ -77,62 +77,64 @@ namespace ION.IOS.ViewController.Analyzer {
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
-        root.navigation.ToggleMenu(); 
+        root.navigation.ToggleMenu();
       };
-      
-  //    var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
-  //    testingButton.BackgroundColor = UIColor.Gray;
-  //    testingButton.TouchUpInside += (sender, e) => {
-		//	var record = new SecRecord(SecKind.GenericPassword)
-  //      {
-  //          Account = "lastUsedVersion",
-  //          Label = "lastUsedVersion",
-  //      };
-  //      SecStatusCode resultCode;
+/*
+      var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
+      testingButton.BackgroundColor = UIColor.Gray;
+      testingButton.TouchUpInside += (sender, e) => {
+			var record = new SecRecord(SecKind.GenericPassword)
+        {
+            Account = "lastUsedVersion",
+            Label = "lastUsedVersion",
+        };
+        SecStatusCode resultCode;
          
-  //      var match = SecKeyChain.QueryAsRecord(record, out resultCode);
+        var match = SecKeyChain.QueryAsRecord(record, out resultCode);
 		
-		//		if(resultCode == SecStatusCode.Success){
-		//			var removeResult = SecKeyChain.Remove(record);
-		//			Console.WriteLine("Result: " + removeResult);
-		//			if(removeResult != SecStatusCode.Success){
-		//				Console.WriteLine("Couldn't delete record for key");
-		//			} else {
-		//				var newRecord = new SecRecord(SecKind.GenericPassword)
-		//		        {
-		//		            Account = "lastUsedVersion",
-		//		            Label = "lastUsedVersion",
-		//		            ValueData = NSData.FromString("1.5.1", NSStringEncoding.UTF8),
-		//		        };
-		//		        var err = SecKeyChain.Add (newRecord);
-		//		        if(err != SecStatusCode.Success){
-		//					Console.WriteLine("Couldn't create new record for manual version entry");
-		//				} else {
-		//					Console.WriteLine("Created new manual version of " + newRecord.ValueData.ToString());
-		//					Console.WriteLine("Current app version is " + NSData.FromString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString()));
-		//				}
-		//			}
-		//		}		
-	 // };
-		//View.AddSubview(testingButton);
-//      dataRecord = new UIButton(new CGRect(0,0,35,35));
-//      dataRecord.BackgroundColor = UIColor.Clear;
-//      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
-//      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
-//      dataRecord.TouchUpInside += (sender, e) => {
-//        recordDevices();
-//      };
-//
-//      if (ion.dataLogManager.isRecording) {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//      } else {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//      }
-//
-//      var button = new UIBarButtonItem(dataRecord);
-//
-//      NavigationItem.RightBarButtonItem = button;
-//
+				if(resultCode == SecStatusCode.Success){
+					var removeResult = SecKeyChain.Remove(record);
+					Console.WriteLine("Result: " + removeResult);
+					if(removeResult != SecStatusCode.Success){
+						Console.WriteLine("Couldn't delete record for key");
+					} else {
+						var newRecord = new SecRecord(SecKind.GenericPassword)
+				        {
+				            Account = "lastUsedVersion",
+				            Label = "lastUsedVersion",
+				            ValueData = NSData.FromString("1.5.1", NSStringEncoding.UTF8),
+				        };
+				        var err = SecKeyChain.Add (newRecord);
+				        if(err != SecStatusCode.Success){
+							Console.WriteLine("Couldn't create new record for manual version entry");
+						} else {
+							Console.WriteLine("Created new manual version of " + newRecord.ValueData.ToString());
+							Console.WriteLine("Current app version is " + NSData.FromString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString()));
+						}
+					}
+				}
+		
+	  };
+		View.AddSubview(testingButton);
+*/
+      dataRecord = new UIButton(new CGRect(0,0,35,35));
+      dataRecord.BackgroundColor = UIColor.Clear;
+      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
+      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
+      dataRecord.TouchUpInside += (sender, e) => {
+        recordDevices();
+      };
+
+      if (ion.dataLogManager.isRecording) {
+        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+      } else {
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+      }
+
+      var button = new UIBarButtonItem(dataRecord);
+
+      NavigationItem.RightBarButtonItem = button;
+
       Title = "Analyzer";
 
       createSensors ();
@@ -163,28 +165,28 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-//    public void recordDevices(){     
-//      var recordingMessage = "";
-//      if (ion.dataLogManager.isRecording) {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.StopRecording();
-//        recordingMessage = "Session recording has stopped";
-//      } else {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-//        recordingMessage = "Session recording has started";
-//      }
-//      showRecordingToast(recordingMessage);
-//    }
-//
-//    public async void showRecordingToast(string recordingMessage){
-//      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
-//      messageBox.Show();
-//      await Task.Delay(TimeSpan.FromSeconds(1));
-//      messageBox.DismissWithClickedButtonIndex(0, true);
-//    }
+    public void recordDevices(){
+      var recordingMessage = "";
+      if (ion.dataLogManager.isRecording) {
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.StopRecording();
+        recordingMessage = "Session recording has stopped";
+      } else {
+        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+        recordingMessage = "Session recording has started";
+      }
+      showRecordingToast(recordingMessage);
+    }
+
+    public async void showRecordingToast(string recordingMessage){
+      UIAlertView messageBox = new UIAlertView(recordingMessage, null,null,null);
+      messageBox.Show();
+      await Task.Delay(TimeSpan.FromSeconds(1));
+      messageBox.DismissWithClickedButtonIndex(0, true);
+    }
 
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS

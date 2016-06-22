@@ -14,6 +14,7 @@
 
   public class AndroidFileManager : IFileManager {
 
+		public bool isInitialized { get { return true; } }
     /// <summary>
     /// The context that we will pull assets from.
     /// </summary>

@@ -52,6 +52,11 @@
       return ((NSString)version).ToString();
     }
 
+		/// <summary>
+		/// Occurs when on workbench changed.
+		/// </summary>
+		public event OnWorkbenchChanged onWorkbenchChanged;
+
     // Overridden from IION
     public string name { get { return GetDisplayName(); } }
     // Overridden from IION
@@ -80,7 +85,17 @@
     /// <value>The current analyzer.</value>
     public Analyzer currentAnalyzer { get; set; }
     // Overridden from IION
-    public Workbench currentWorkbench { get; set; }
+    public Workbench currentWorkbench {
+			get {
+				return __workbench;
+			}
+			set {
+				__workbench = value;
+				if (onWorkbenchChanged != null) {
+					onWorkbenchChanged(value);
+				}
+			}
+		} Workbench __workbench;
 
     // Overridden from IION
     public IUnits defaultUnits { get; private set; }

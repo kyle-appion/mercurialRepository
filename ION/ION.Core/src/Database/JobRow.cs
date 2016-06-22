@@ -5,7 +5,7 @@
   /// <summary>
   /// A job is an encapsulation of work performed for a po.
   /// </summary>
-  [Preserve (AllMembers = true)]
+	[Preserve (AllMembers = true)]
   public class JobRow : ITableRow {
     [Ignore]
     public int _id {get { return JID;} set { JID = value;}}
