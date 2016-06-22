@@ -70,16 +70,14 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         new Section(Strings.Report.REPORTS.ToUpper()) {
-#if DEBUG
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
-#endif
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
 #if DEBUG
         new Section("Gauge Testing".ToUpper()) {
-          new IONElement("AV760 Testing", OnAv760Clicked, UIImage.FromBundle("ic_render_gauge_av760")),
+					new IONElement("Internal Testing", InternalTesting, UIImage.FromBundle("ic_render_gauge_av760")),
         },
 #endif
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
@@ -91,8 +89,8 @@ namespace ION.IOS.ViewController {
       // Create the menu
     }
 
-    private void OnAv760Clicked() {
-      var vc = InflateViewController<InternalTestBenchViewController>(BaseIONViewController.VC_INTERNAL_TEST_BENCH);
+    private void InternalTesting() {
+      var vc = InflateViewController<InternalGaugeTestingViewController>(BaseIONViewController.VC_INTERNAL_GAUGE_TESTING);
       PresentViewControllerFromSelected(vc);
     }
 
