@@ -212,25 +212,25 @@ namespace ION.IOS.ViewController {
             onLoad();
           });
         }
-      });
+      }); 
     }
 
     /// <summary>
     /// Shows the help menu.
     /// </summary>
-    private void OnHelpClicked() {
+    private void OnHelpClicked() { 
       var vc = InflateViewController<HelpViewController>(BaseIONViewController.VC_HELP);
 
       var landing = new HelpPageBuilder(Strings.HELP)
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-    //    .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
-    //      OpenWalkthroughSections();
-    //    })
-    //    .Link("Version History", (object obj, HelpViewController ovc) => {
-				//	ShowRSSFeed();
-				//})
+        .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
+          OpenWalkthroughSections();
+        })
+        .Link("RSS Feed", (object obj, HelpViewController ovc) => {
+					ShowRSSFeed();
+				})
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
         if (!MFMailComposeViewController.CanSendMail) {
           Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
@@ -288,9 +288,7 @@ namespace ION.IOS.ViewController {
     /// sections of the app
     /// </summary>
     private void OpenWalkthroughSections() {
-      Console.WriteLine("Opening Walkthrough");
       var wvc = InflateViewController<WalkthroughMenuViewController>(BaseIONViewController.VC_WALKTHROUGH_MENU);
-
       PresentViewControllerFromSelected(wvc);
     }
 
@@ -299,9 +297,7 @@ namespace ION.IOS.ViewController {
     /// sections of the app
     /// </summary>
     private void ShowRSSFeed() {
-      Console.WriteLine("Opening rss feed");
       var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
-
       PresentViewControllerFromSelected(wvc);
     }
 

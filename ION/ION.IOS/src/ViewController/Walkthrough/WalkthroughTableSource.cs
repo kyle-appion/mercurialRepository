@@ -36,7 +36,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     }
 
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-      return .1f * tableView.Bounds.Width;
+      return .2f * tableView.Bounds.Width;
     }
 
     // Overridden from UITableViewSource
@@ -57,7 +57,6 @@ namespace ION.IOS.ViewController.Walkthrough {
 
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {      
-      Console.WriteLine("Selected row: " + walkthroughs[indexPath.Row]);
       var svc = (WalkthroughScreenshotViewController)pushVC.Storyboard.InstantiateViewController("viewControllerWalkthroughScreenshot");
       svc.sectionName = walkthroughs[indexPath.Row];
       pushVC.NavigationController.PushViewController(svc,true);
@@ -68,7 +67,7 @@ namespace ION.IOS.ViewController.Walkthrough {
       var cell = tableView.DequeueReusableCell("walkthroughCell");
       if (cell == null) {
         cell = new UITableViewCell(UITableViewCellStyle.Default, "walkthroughCell");
-      }     
+      }
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
       cell.TextLabel.Text = walkthroughs[indexPath.Row];
       cell.TextLabel.Font = UIFont.BoldSystemFontOfSize(20);

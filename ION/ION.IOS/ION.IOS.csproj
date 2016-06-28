@@ -623,9 +623,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record %281%29.pdf">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf">
-      <InProject>false</InProject>
-    </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
@@ -635,17 +632,11 @@
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\img_button_blackclosex.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\WorkBench2.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\WorkBench3.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\WorkBench4.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\WorkBench5.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\WorkBench6.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\WorkBench7.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Analyzer2.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Analyzer3.imageset\Contents.json" />
@@ -666,6 +657,36 @@
     <ImageAsset Include="Resources\Images.xcassets\Analyzer8.imageset\Analyzer8.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\Analyzer9.imageset\Analyzer9.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\Analyzer10.imageset\Analyzer10.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Analyzer1-2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\WorkBench2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\WorkBench3.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\WorkBench4.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\WorkBench5.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\WorkBench6.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\WorkBench7.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart5.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart6.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart7.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart1.imageset\PTChart1.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart2.imageset\PTChart2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart3.imageset\PTChart3.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart4.imageset\PTChart4.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart5.imageset\PTChart5.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart6.imageset\PTChart6.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\PTChart7.imageset\PTChart7.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC1.imageset\SHSC1.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC2.imageset\SHSC2.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC3.imageset\SHSC3.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\SHSC4.imageset\SHSC4.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -676,7 +697,6 @@
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
-    <InterfaceDefinition Include="src\ViewController\RssFeed\RssFeedViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -981,6 +1001,7 @@
     <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.designer.cs">
       <DependentUpon>InternalGaugeTestingViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\Walkthrough\WalkthroughCell.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1035,6 +1056,17 @@
     <Folder Include="Resources\Images.xcassets\Analyzer8.imageset\" />
     <Folder Include="Resources\Images.xcassets\Analyzer9.imageset\" />
     <Folder Include="Resources\Images.xcassets\Analyzer10.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart5.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart6.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart7.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC4.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

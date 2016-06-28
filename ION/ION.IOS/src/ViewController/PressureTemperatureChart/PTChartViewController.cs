@@ -319,10 +319,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		ptSlider.ptScroller.ScrollEnabled = true;
 	  };
 	  
-	  View.AddSubview(ptSlider.sliderLabel);
-	  View.AddSubview(ptSlider.ptScroller);
+	  //View.AddSubview(ptSlider.sliderLabel);
+	  //View.AddSubview(ptSlider.ptScroller);
 //      View.AddSubview(ptValueLabel);
-      View.AddSubview(topMark);
+      //View.AddSubview(topMark);
     }
 
     // Overridden from ViewController

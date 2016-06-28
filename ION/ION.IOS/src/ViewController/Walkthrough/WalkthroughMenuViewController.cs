@@ -21,7 +21,7 @@ namespace ION.IOS.ViewController.Walkthrough {
       sectionList.Add("Superheat/Subcool");
       sectionList.Add("Calibration Certificates");
       sectionList.Add("Screenshot Archives");
-      sectionList.Add("Settings");
+      //sectionList.Add("Settings");
 
       menuView = new WalkthroughMenuView(this,sectionList);
 
