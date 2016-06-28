@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>.\SampleOutputInfo.cs</title>
+<style type="text/css">
+body.hl	{ background-color:#ffffff; }
+pre.hl	{ color:#000000; background-color:#ffffff; font-size:10pt; font-family:'Courier New',monospace;}
+.hl.num { color:#000000; }
+.hl.esc { color:#a31515; }
+.hl.str { color:#a31515; }
+.hl.pps { color:#0000ff; }
+.hl.slc { color:#008000; }
+.hl.com { color:#008000; }
+.hl.ppc { color:#0000ff; }
+.hl.opt { color:#000000; }
+.hl.ipl { color:#a31515; }
+.hl.lin { color:#2b91af; }
+.hl.kwa { color:#0000ff; }
+.hl.kwb { color:#0000ff; }
+.hl.kwc { color:#2b91af; }
+.hl.kwd { color:#000000; }
+</style>
+</head>
+<body class="hl">
+<pre class="hl"><span class="hl kwa">using</span> System<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">;</span>
+<span class="hl kwa">using</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Core<span class="hl opt">.</span>Security<span class="hl opt">;</span>
+
+<span class="hl kwa">namespace</span> Xfinium<span class="hl opt">.</span>Pdf<span class="hl opt">.</span>Samples
+<span class="hl opt">{</span>
+    <span class="hl slc">/// &lt;summary&gt;</span>
+    <span class="hl slc">/// Represents the output of a sample.</span>
+    <span class="hl slc">/// &lt;/summary&gt;</span>
+    <span class="hl kwa">public class</span> SampleOutputInfo
+    <span class="hl opt">{</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Initializes a new &lt;see cref=&quot;SampleOutputInfo&quot;/&gt; object.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl slc">/// &lt;param name=&quot;document&quot;&gt;The document that represents the sample output&lt;/param&gt;</span>
+        <span class="hl slc">/// &lt;param name=&quot;fileName&quot;&gt;The file name of the sample output&lt;/param&gt;</span>
+        <span class="hl kwa">public</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>PdfDocument document<span class="hl opt">,</span> <span class="hl kwb">string</span> fileName<span class="hl opt">) :</span> <span class="hl kwa">this</span><span class="hl opt">(</span>document<span class="hl opt">,</span> fileName<span class="hl opt">,</span> <span class="hl kwa">null</span><span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Initializes a new &lt;see cref=&quot;SampleOutputInfo&quot;/&gt; object.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl slc">/// &lt;param name=&quot;document&quot;&gt;The document that represents the sample output&lt;/param&gt;</span>
+        <span class="hl slc">/// &lt;param name=&quot;fileName&quot;&gt;The file name of the sample output&lt;/param&gt;</span>
+        <span class="hl slc">/// &lt;param name=&quot;securityHandler&quot;&gt;Security handler for encrypting the output document&lt;/param&gt;</span>
+        <span class="hl kwa">public</span> <span class="hl kwd">SampleOutputInfo</span><span class="hl opt">(</span>PdfDocument document<span class="hl opt">,</span> <span class="hl kwb">string</span> fileName<span class="hl opt">,</span> PdfSecurityHandler securityHandler<span class="hl opt">)</span>
+        <span class="hl opt">{</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>document <span class="hl opt">=</span> document<span class="hl opt">;</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>fileName <span class="hl opt">=</span> fileName<span class="hl opt">;</span>
+            <span class="hl kwa">this</span><span class="hl opt">.</span>securityHandler <span class="hl opt">=</span> securityHandler<span class="hl opt">;</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private</span> PdfDocument document<span class="hl opt">;</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Gets or sets the document that represents the sample output.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public</span> PdfDocument Document
+        <span class="hl opt">{</span>
+            <span class="hl kwa">get</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> document<span class="hl opt">; }</span>
+            <span class="hl kwa">set</span> <span class="hl opt">{</span> document <span class="hl opt">=</span> <span class="hl kwa">value</span><span class="hl opt">; }</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private</span> <span class="hl kwb">string</span> fileName<span class="hl opt">;</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Gets or sets the file name the sample is saved to disk.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public</span> <span class="hl kwb">string</span> FileName
+        <span class="hl opt">{</span>
+            <span class="hl kwa">get</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> fileName<span class="hl opt">; }</span>
+            <span class="hl kwa">set</span> <span class="hl opt">{</span> fileName <span class="hl opt">=</span> <span class="hl kwa">value</span><span class="hl opt">; }</span>
+        <span class="hl opt">}</span>
+
+        <span class="hl kwa">private</span> PdfSecurityHandler securityHandler<span class="hl opt">;</span>
+        <span class="hl slc">/// &lt;summary&gt;</span>
+        <span class="hl slc">/// Gets or sets the security handler used to encrypt the output file.</span>
+        <span class="hl slc">/// &lt;/summary&gt;</span>
+        <span class="hl kwa">public</span> PdfSecurityHandler SecurityHandler
+        <span class="hl opt">{</span>
+            <span class="hl kwa">get</span> <span class="hl opt">{</span> <span class="hl kwa">return</span> securityHandler<span class="hl opt">; }</span>
+            <span class="hl kwa">set</span> <span class="hl opt">{</span> securityHandler <span class="hl opt">=</span> <span class="hl kwa">value</span><span class="hl opt">; }</span>
+        <span class="hl opt">}</span>
+    <span class="hl opt">}</span>
+<span class="hl opt">}</span>
+</pre>
+</body>
+</html>
+<!--HTML generated by highlight 3.22, http://www.andre-simon.de/-->

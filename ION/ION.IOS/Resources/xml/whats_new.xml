@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<whatsnew>
+	<display version="1.6.0">
+    <new>Added Data Logging Feature</new>
+    <new>Added Data Log Reporting</new>
+    <new>Added Job Manager Feature</new>
+    <new>Added Pressure/Temperature Slider</new>
+    <fixed>Fixed manual sensor options for low/high areas</fixed>
+  </display>
+  <display version="1.5.4">
+    <new>Added alarms alerts with sound and vibrations</new>
+    <update>Updated workbench loadout to save subview configurations</update>
+    <update>Updated calculations when activating or deactivating location services</update>
+    <fixed>Fixed device manager animations</fixed>
+    <fixed>Fixed general UI text</fixed>
+    <fixed>Fixed bugs with analyzer</fixed>
+    <fixed>Fixed bug when using app and bluetooth is not enabled</fixed>
+  </display>
+</whatsnew>
