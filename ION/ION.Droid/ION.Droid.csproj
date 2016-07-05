@@ -217,6 +217,7 @@
     <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceSectionViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
     <Compile Include="src\Connections\RigadoLeConnection.cs" />
+    <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

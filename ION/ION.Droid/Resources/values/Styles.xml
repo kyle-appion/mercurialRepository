@@ -8,6 +8,7 @@
     <item name="android:textColorSecondary">@color/light_gray</item>
     <item name="android:textColorTertiary">@color/white</item>
     <item name="android:buttonStyle">@style/IONButton</item>
+<!--		<item name="android:actionBarStyle">@style/IONActionBar</item> -->
   </style>
 
   <style name="TerminalActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
@@ -29,4 +30,9 @@
     <item name="android:gravity">center</item>
     <item name="android:textColor">@drawable/selector_text_blackgold</item>
   </style>
+
+	<style name="IONActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name="android:textSize">18sp</item>
+    <item name="android:logo">@drawable/ic_logo_appiondefault</item>
+	</style>
 </resources>

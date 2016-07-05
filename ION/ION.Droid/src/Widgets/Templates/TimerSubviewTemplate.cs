@@ -26,7 +26,7 @@
   ///   View            | Resource.Id.view
   ///   TextView        | Resource.Id.measurement
   /// </code>
-  public class TimerSubviewTemplate : ViewTemplate<TimerSensorProperty> {
+	public class TimerSubviewTemplate : SubviewTemplate<TimerSensorProperty> {
 
     private const int MSG_INVALIDATE = 1;
 
