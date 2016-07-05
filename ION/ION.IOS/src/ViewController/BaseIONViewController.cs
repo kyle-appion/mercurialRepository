@@ -33,7 +33,8 @@ namespace ION.IOS.ViewController {
     public const string VC_WALKTHROUGH_MENU = "viewControllerWalkthroughMenu";
     public const string VC_RSS_FEED = "viewControllerRSSFeed";
 
-    public const string VC_INTERNAL_GAUGE_TESTING = "viewControllerInternalGaugeTesting";
+		public const string VC_INTERNAL_GAUGE_TESTING = "viewControllerInternalGaugeTesting";
+		public const string VC_SAVE_INTERNAL_TEST = "viewControllerSaveInternalTest";
 
     /// <summary>
     /// The action that is called when the back button is clicked in the navigation

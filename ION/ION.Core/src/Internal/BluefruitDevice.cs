@@ -8,6 +8,7 @@
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
+	using ION.Core.Measure;
   using ION.Core.Util;
 
   public class BluefruitDevice : IDevice {
@@ -51,7 +52,13 @@
     /// The protocol that is used by the device.
     /// </summary>
     /// <value>The protocol.</value>
-    public IProtocol protocol { get; private set; }
+    public IProtocol protocol { 
+			get {
+				return blueProtocol;
+			}
+		} 
+
+		public BluefruitProtocol blueProtocol;
     /// <summary>
     /// Queries whether or not the device is connected.
     /// </summary>
@@ -71,6 +78,12 @@
       }
     }
 
+		/// <summary>
+		/// Whether or not the device is resetting.
+		/// </summary>
+		/// <value>The is resetting.</value>
+		public bool isResetting { get; private set; }
+
     /// <summary>
     /// The current degree angle of the bluefruit's stepper.
     /// </summary>
@@ -80,24 +93,33 @@
     /// <summary>
     /// The stepper representtion of the remote stepper 1.
     /// </summary>
-    public Stepper controlStepper { get; internal set; }
+		public Stepper inputStepper { get; internal set; }
 
     /// <summary>
     /// Gets or sets the exhaust stepper.
     /// </summary>
     /// <value>The exhaust stepper.</value>
     public Stepper exhaustStepper { get; internal set; }
+		public int lastVrcMeasurement { get; internal set; }
     /// <summary>
     /// The vrc micron measurement.
     /// </summary>
     /// <value>The vrc measurement.</value>
-    public float vrcMeasurement { get; internal set; }
+    public int currentVrcMeasurement {
+			get {
+				return __currentVrcMeasurement;
+			}
+			internal set {
+				lastVrcMeasurement = __currentVrcMeasurement;
+				__currentVrcMeasurement = value;
+			}
+		} int __currentVrcMeasurement;
 
 
-    public BluefruitDevice(BluefruitSerialNumber serialNumber, IConnection connection, BluefruitProtocol protcol) {
+		public BluefruitDevice(BluefruitSerialNumber serialNumber, IConnection connection, BluefruitProtocol protocol) {
       this.serialNumber = serialNumber;
       this.connection = connection;
-      this.protocol = new BluefruitProtocol();
+			blueProtocol = protocol;
       this.name = serialNumber.ToString();
 
       connection.onStateChanged += ((IConnection conn, EConnectionState state) => {
@@ -108,7 +130,7 @@
         HandlePacket(packet);
       });
 
-      controlStepper = new Stepper();
+      inputStepper = new Stepper();
       exhaustStepper = new Stepper();
     }
 
@@ -142,18 +164,23 @@
     /// <param name="packet">Packet.</param>
     public void HandlePacket(byte[] packet) {
       try {
-        packet = CharacterBytesToRawBytes(packet);
-        Log.D(this, "Packet is " + packet.ToByteString());
-        using (var reader = new BinaryReader(new MemoryStream(packet))) {
-          controlStepper.state = (Stepper.EState)reader.ReadByte();
-          controlStepper.rotation = reader.ReadSingle();
+				var bp = blueProtocol.Parse(packet);
+				isResetting = bp.isResetting;
+				if (!isResetting) {
+					inputStepper.currentAngle = Units.Angle.RADIAN.OfScalar(bp.currentInputAngle);
+					inputStepper.targetAngle = Units.Angle.RADIAN.OfScalar(bp.targetInputAngle);
+					inputStepper.rps = bp.inputRPS;
+					inputStepper.atHome = bp.inputAtHome;
+					inputStepper.atEnd = bp.inputAtEnd;
 
-          exhaustStepper.state = (Stepper.EState)reader.ReadByte();
-          exhaustStepper.rotation = reader.ReadSingle();
+					exhaustStepper.currentAngle = Units.Angle.RADIAN.OfScalar(bp.currentExhaustAngle);
+					exhaustStepper.targetAngle = Units.Angle.RADIAN.OfScalar(bp.targetExhaustAngle);
+					exhaustStepper.rps = bp.exhaustRPS;
+					exhaustStepper.atHome = bp.exhaustAtHome;
+					exhaustStepper.atEnd = bp.exhaustAtEnd;
 
-          this.vrcMeasurement = reader.ReadUInt32();
-
-        }
+					currentVrcMeasurement = bp.vrc;
+				}
 
         NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       } catch (Exception e) {
@@ -162,58 +189,15 @@
     }
 
     /// <summary>
-    /// Converts a character byte array into a raw 0 indexed byte array.
-    /// </summary>
-    /// <returns>The bytes to raw bytes.</returns>
-    /// <param name="chars">Chars.</param>
-    private byte[] CharacterBytesToRawBytes(byte[] chars) {
-      var ret = new byte[chars.Length / 2];
-
-      for (int i = 0, k = 0; i < chars.Length; i += 2, k++) {
-        byte highNibble = CharToNibble((char)chars[i]);
-        byte lowNibble = CharToNibble((char)chars[i + 1]);
-
-        if (highNibble == 0xff) {
-          throw new Exception("Could not parse high nibble: " + chars[i]);
-        }
-
-        if (lowNibble == 0xff) {
-          throw new Exception("Could not parse low nibble: " + chars[i + 1]);
-        }
-
-        ret[k] = (byte)(highNibble * 16 + lowNibble);
-      }
-
-      return ret;
-    }
-
-    /// <summary>
-    /// Reads the given character as a nibble.
-    /// </summary>
-    /// <returns>The to nibble.</returns>
-    /// <param name="ch">Ch.</param>
-    private byte CharToNibble(char ch) {
-      if (ch >= '0' && ch <= '9') {
-        return (byte)(ch - '0');
-      } else if (ch >= 'a' && ch <= 'f') {
-        return (byte)(ch - 'a');
-      } else if (ch >= 'A' && ch <= 'F') {
-        return (byte)(ch - 'A');
-      } else {
-        return 0xff;
-      }
-    }
-
-    /// <summary>
     /// Notifies the device's onStateChange delegates that it has changed.
     /// </summary>
-    private void NotifyOfDeviceEvent(DeviceEvent.EType type) {
+    private void NotifyOfDeviceEvent(DeviceEvent.EType t) {
       try {
         var ion = AppState.context;
         if (ion != null) {
           ion.PostToMain(() => {
             if (onDeviceEvent != null) {
-              onDeviceEvent(new DeviceEvent(type, this));
+              onDeviceEvent(new DeviceEvent(t, this));
             }
           });
         }
@@ -225,32 +209,39 @@
 
   public class Stepper {
     /// <summary>
-    /// The curret state of the stepper.
-    /// </summary>
-    public EState state { get; internal set; }
-    /// <summary>
     /// The current rotation of the stepper.
     /// </summary>
     /// <value>The rotation.</value>
-    public float rotation { get; internal set; }
+    public Scalar currentAngle { get; internal set; }
+		/// <summary>
+		/// The target angle of the stepper motor.
+		/// </summary>
+		/// <value>The target angle.</value>
+		public Scalar targetAngle { get; internal set; }
+		/// <summary>
+		/// The current rotations per second for the stepper.
+		/// </summary>
+		/// <value>The rps.</value>
+		public ESpeed rps { get; internal set; }
+		/// <summary>
+		/// Whether or not the start switch is pressed.
+		/// </summary>
+		/// <value>At home.</value>
+		public bool atHome { get; internal set; }
+		/// <summary>
+		/// Whether or not the end switch is pressed.
+		/// </summary>
+		/// <value>At end.</value>
+		public bool atEnd { get; internal set; }
     /// <summary>
     /// Whether or not the stepper is moving.
     /// </summary>
     /// <value><c>true</c> if is moving; otherwise, <c>false</c>.</value>
     public bool isMoving { 
       get {
-        return (state & EState.Moving) == EState.Moving;
+				return currentAngle != targetAngle;
       }
     }
-
-    /// <summary>
-    /// The enumeration of the states that the bluefruit can be in.
-    /// </summary>
-    [Flags]
-    public enum EState {
-      Home = 1,
-      Moving = 2,
-    }    
   }
 }
 

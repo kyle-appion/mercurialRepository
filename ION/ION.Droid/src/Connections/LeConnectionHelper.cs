@@ -28,7 +28,7 @@
 		/// <summary>
 		///  The appion specific company code.
 		/// </summary>
-		private const int APPION_COMPANY_CODE = 0xffff;
+		private const int APPION_COMPANY_CODE = 0x8c03;
 
     // Overridden from BaseConnectionHelper
     public override bool isEnabled {
@@ -112,7 +112,7 @@
     /// <param name="device">Device.</param>
     /// <param name="scanRecord">Scan record.</param>
     private void OnDeviceFound(BluetoothDevice device, byte[] scanRecord) {
-			lock (this) {
+//			lock (this) {
 				Log.D(this, "Working with device: " + device.Name + " @{" + device.Address + "}");
 	      try {
 					ISerialNumber serialNumber = null;
@@ -176,7 +176,7 @@
 	        Log.E(this, "Failed to resolve found device " + device.Name, e);
 	      }
 				Log.D(this, "Finished working with device: " + device.Name + " @{" + device.Address + "}");
-			}
+//			}
     }
 
     /// <summary>

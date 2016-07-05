@@ -133,8 +133,12 @@ namespace ION.IOS.Connections {
             protocol = rawProtocol;
           } else {
             protocol = EProtocolVersion.V1;
-          }
+					}
         }
+
+				if (serialNumber.rawSerial.StartsWith("S")) {
+					protocol = EProtocolVersion.V4;
+				}
 
         NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
       } catch (Exception ex) {

@@ -268,6 +268,7 @@
     public void Register(IDevice device) {
       __foundDevices.Remove(device.serialNumber);
       __knownDevices.Add(device.serialNumber, device);
+			device.onDeviceEvent += OnDeviceEvent;
     }
 
     /// <summary>
@@ -284,7 +285,6 @@
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        // TODO ahodder@appioninc.com: Debug todo that affects the program as it is running.
 #if DEBUG
         IConnection connection = null;
         if (MockConnection.MOCK_ADDRESS.Equals(connectionAddress)) {

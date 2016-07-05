@@ -16,6 +16,7 @@
 
   using ION.Core.Content;
   using ION.Core.Devices;
+	using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
@@ -261,11 +262,30 @@
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
-      if (dgs != null && !dgs.device.isConnected) {
-        ldb.AddItem(Resource.String.reconnect, () => {
-          dgs.device.connection.ConnectAsync();
-        });
-      }
+			if (dgs != null) {
+				#if DEBUG
+				ldb.AddItem("Remote Change Unit", () => {
+					var device = dgs.device;
+					var d = new ListDialogBuilder(Activity);
+					d.SetTitle("Select a Sensor");
+
+					for (int i = 0; i < device.sensorCount; i++) {
+						var sensor = device[i];
+						d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+							ShowChangeUnitDialog(sensor);
+						});
+					}
+
+					d.Show();
+				});
+				#endif
+
+				if (!dgs.device.isConnected) {
+					ldb.AddItem(Resource.String.reconnect, () => {
+						dgs.device.connection.ConnectAsync();
+					});
+				}
+			}
 
       ldb.AddItem(Resource.String.rename, () => {
         new RenameDialog(manifold.primarySensor).Show(Activity);
@@ -294,6 +314,20 @@
 
       ldb.Show();
     }
+
+		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
+			var ldb = new ListDialogBuilder(Activity);
+
+			foreach (var unit in sensor.supportedUnits) {
+				ldb.AddItem(unit.ToString(), () => {
+					var device = sensor.device;
+					var p = device.protocol as IGaugeProtocol;
+					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
+				});
+			}
+
+			ldb.Show();
+		}
 
     /// <summary>
     /// Shows the add subview dialog.

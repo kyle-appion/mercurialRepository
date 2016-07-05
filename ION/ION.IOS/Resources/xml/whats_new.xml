@@ -1,5 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="NEWEST">
+		<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
+	</display>
 	<display version="1.6.1">
     <new>Added Data Logging Feature</new>
     <new>Added Data Log Reporting</new>

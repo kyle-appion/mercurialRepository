@@ -172,6 +172,13 @@
     <Compile Include="src\Devices\Protocols\RidgadoV4Protocol.cs" />
     <Compile Include="src\Connections\IConnection.cs" />
     <Compile Include="src\Database\PreseveAttribute.cs" />
+    <Compile Include="src\StateMachine\StateEngine.cs" />
+    <Compile Include="src\StateMachine\ERetCode.cs" />
+    <Compile Include="src\Internal\MockBluefruitConnection.cs" />
+    <Compile Include="src\Internal\Testing\IAv760NistTraceExporter.cs" />
+    <Compile Include="src\Internal\Testing\CSVAv760NistTraceExporter.cs" />
+    <Compile Include="src\Internal\Testing\TestResults.cs" />
+    <Compile Include="src\IO\Exporter\Csv.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -208,6 +215,8 @@
     <Folder Include="src\Internal\" />
     <Folder Include="src\Internal\Testing\" />
     <Folder Include="src\Devices\Sorters\" />
+    <Folder Include="src\StateMachine\" />
+    <Folder Include="src\IO\Exporter\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">

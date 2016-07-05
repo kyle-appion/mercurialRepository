@@ -34,7 +34,7 @@
     /// </summary>
     /// <returns>A <see cref="System.String"/> that represents the current <see cref="ION.Core.Measure.Scalar"/>.</returns>
     public override string ToString() {
-      return amount + " " + unit;
+			return amount.ToString("#.##") + " " + unit;
     }
 
     /// <summary>
