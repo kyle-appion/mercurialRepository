@@ -123,13 +123,11 @@
             asp.unit = u;
           }).Show();
         } else if (sensorProperty is PTChartSensorProperty) {
-          var pt = ((PTChartSensorProperty)sensorProperty);
           var i = new Intent(Activity, typeof(PTChartActivity));
           i.SetAction(Intent.ActionPick);
           i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
           StartActivityForResult(i, REQUEST_SHOW_PTCHART);
         } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
-          var sp = sensorProperty as SuperheatSubcoolSensorProperty;
           var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
           i.SetAction(Intent.ActionPick);
 
@@ -156,9 +154,6 @@
           StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
         }
       };
-
-//      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
-//      itemTouchHelper.AttachToRecyclerView(list);
     }
 
     /// <Docs>Called when the Fragment is visible to the user.</Docs>
@@ -205,7 +200,8 @@
             var u = data.GetIntExtra(PTChartActivity.EXTRA_RETURN_UNIT, -1);
             if (u != -1) {
               // TODO ahodder@appioninc.com: Assign the unit.
-//              Alert("Please change the unit for the pt chart");
+							Log.E(this, "Invalid unit on activity result for ptchart");
+              Alert("Please change the unit for the pt chart");
             }
           }
           break;
