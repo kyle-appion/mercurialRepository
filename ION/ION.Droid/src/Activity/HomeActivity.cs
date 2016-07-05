@@ -93,7 +93,7 @@
 
       SetContentView(Resource.Layout.activity_home);
 
-      ActionBar.SetDisplayHomeAsUpEnabled(true);
+      ActionBar.SetDisplayHomeAsUpEnabled(false);
       ActionBar.SetHomeButtonEnabled(true);
       drawerLayout = FindViewById<DrawerLayout>(Resource.Id.main);
       drawerToggle = new DrawerToggle(this, drawerLayout);
@@ -105,7 +105,7 @@
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
       var emptyText = new TextView(this);
-      emptyText.Text = "Not items";
+      emptyText.Text = "No items added to the navigation drawer";
       drawerList.EmptyView = emptyText;
 
       var i = Intent;
