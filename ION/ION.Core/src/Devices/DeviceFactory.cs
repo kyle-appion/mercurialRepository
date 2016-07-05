@@ -214,7 +214,7 @@
     public IDevice CreateDevice (ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
       switch (deviceCode) {
         case "Bf":
-          return new BluefruitDevice(serialNumber as BluefruitSerialNumber, connection, protocol as BluefruitProtocol);
+					return new BluefruitDevice(serialNumber as BluefruitSerialNumber, connection, new BluefruitProtocol());
         default:
           throw new Exception("Cannot create device for serial number: " + serialNumber);
       }

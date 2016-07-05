@@ -6,6 +6,7 @@
   using System.Threading.Tasks;
 
   using ION.Core.App;
+	using ION.Core.Connections;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
@@ -154,6 +155,15 @@
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
+
+		/// <summary>
+		/// Creates a new device using the provided serial number, connection  and protocol. 
+		/// </summary>
+		/// <returns>The device.</returns>
+		/// <param name="serialNumber">Serial number.</param>
+		/// <param name="connection">Connection.</param>
+		/// <param name="protocol">Protocol.</param>
+//		IDevice CreateDevice(ISerialNumber serialNumber, IConnection connection, EProtocolVersion protocol);
 
     /// <summary>
     /// Queries all of the device that are of the given type.

@@ -61,7 +61,7 @@
       }
     }
 
-    private BluefruitSerialNumber(string serialNumber) {
+    public BluefruitSerialNumber(string serialNumber) {
       rawSerial = serialNumber;
     }
 

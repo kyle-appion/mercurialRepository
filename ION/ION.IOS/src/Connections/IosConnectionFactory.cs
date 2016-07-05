@@ -42,6 +42,12 @@
 
 			var ion = ION.Core.App.AppState.context;
       var serialNumber = SerialNumberExtensions.ParseSerialNumber(peripheral.Name);
+
+			if (serialNumber.rawSerial.StartsWith("S")) {
+				var h = (LeConnectionHelper)ion.deviceManager.connectionHelper;
+				return new IosRigadoConnection(h.centralManager, peripheral);
+			}
+
       if (serialNumber is BluefruitSerialNumber) {
         return new BluefruitLeConnection(connectionHelper, peripheral);
       } else {

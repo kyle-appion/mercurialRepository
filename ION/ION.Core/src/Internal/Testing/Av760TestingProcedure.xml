@@ -9,7 +9,7 @@
     <point unit="micron" value="4000" gradeWeight="1"/>
     <point unit="micron" value="2000" gradeWeight="1"/>
     <point unit="micron" value="1000" gradeWeight="1"/>
-    <point unit="micron" value="5000" gradeWeight="1"/>
+    <point unit="micron" value="500" gradeWeight="1"/>
     <point unit="micron" value="200" gradeWeight="1"/>
   </targetPoints>
 

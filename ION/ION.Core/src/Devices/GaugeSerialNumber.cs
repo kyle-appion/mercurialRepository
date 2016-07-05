@@ -153,7 +153,7 @@
       if (serial.StartsWith("S8")) {
         return new GaugeSerialNumber(EDeviceModel.PT800, "PT8", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
       } else if (serial.StartsWith("S5")) {
-        return new GaugeSerialNumber(EDeviceModel.PT800, "PT5", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
+        return new GaugeSerialNumber(EDeviceModel.PT500, "PT5", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
       }
 
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate

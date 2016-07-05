@@ -1,6 +1,7 @@
 ﻿namespace ION.Droid {
 
   using System;
+	using System.Threading;
   using System.Threading.Tasks;
 
   using Android.Bluetooth;
@@ -250,23 +251,30 @@
         return false;
       }
 
-      gatt = device.ConnectGatt(context, false, this);
-      connectionState = EConnectionState.Connecting;
+			try {
+		    gatt = device.ConnectGatt(context, false, this);
+		    connectionState = EConnectionState.Connecting;
 
-      var start = DateTime.Now;
-      Log.D(this, "Starting connection attempt at: " + start.ToLongTimeString() + " will timeout at: " + (start + TimeSpan.FromSeconds(45)));
+		    var start = DateTime.Now;
+		    Log.D(this, "Starting connection attempt at: " + start.ToLongTimeString() + " will timeout at: " + (start + TimeSpan.FromSeconds(45)));
 
-      while (!ValidateServices()) {
-        if (DateTime.Now - start > connectionTimeout) {
-          Log.D(this, "discover timeout");
-          Disconnect();
-          return false;
-        }
+				await Task.Delay(500);
 
-        await Task.Delay(100);
-      }
+		    while (!ValidateServices()) {
+					if (DateTime.Now - start > connectionTimeout || connectionState == EConnectionState.Disconnected) {
+		        Log.D(this, "discover timeout");
+		        Disconnect();
+		        return false;
+		      }
 
-      return true;
+					await Task.Delay(100);
+		    }
+    return true;
+			} catch (Exception e) {
+				Log.E(this, "Failed to connect to rigado device", e);
+				Disconnect();
+				return false;
+			}
     }
 
     /// <summary>
@@ -310,12 +318,12 @@
       return manager.GetConnectionState(device, ProfileType.Gatt);
     }
 
-
     /// <summary>
     /// Queries whether or not the device had properly discovered all of the necessary characteristics for proper use.
     /// </summary>
     /// <returns><c>true</c>, if services was validated, <c>false</c> otherwise.</returns>
-    private bool ValidateServices() { 
+    private bool ValidateServices() {
+			Log.D(this, "Validating Services on thread: " + Thread.CurrentThread.ManagedThreadId);
       if (gatt == null) {
         return false;
       }
@@ -324,6 +332,10 @@
       writeCharacteristic = null;
 
       var baseService = gatt.GetService(BASE_SERVICE);
+			if (baseService == null) {
+				return false;
+			}
+
       readCharacteristic = baseService.GetCharacteristic(READ_CHARACTERISTIC);
       writeCharacteristic = baseService.GetCharacteristic(WRITE_CHARACTERISTIC);
 

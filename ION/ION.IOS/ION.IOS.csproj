@@ -37,7 +37,7 @@
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
-    <CodesignKey>iPhone Distribution</CodesignKey>
+    <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n>
     </MtouchI18n>
@@ -79,7 +79,9 @@
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -982,6 +984,11 @@
     <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.designer.cs">
       <DependentUpon>InternalGaugeTestingViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.designer.cs">
+      <DependentUpon>SaveInternalTestViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\IOSExtensions.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

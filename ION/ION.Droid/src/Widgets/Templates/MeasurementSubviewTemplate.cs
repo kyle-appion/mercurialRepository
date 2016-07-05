@@ -70,7 +70,7 @@
       }
 
       measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, false);
-      unit.Text = item.sensor.unit.ToString();
+			unit.Text = item.modifiedMeasurement.unit.ToString();
     }
 
     /// <summary>
