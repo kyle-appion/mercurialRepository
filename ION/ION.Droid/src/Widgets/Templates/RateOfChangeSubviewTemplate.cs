@@ -25,7 +25,7 @@
   ///   View            | Resource.Id.view
   ///   TextView        | Resource.Id.measurement
   /// </code>
-  public class RateOfChangeSubviewTemplate : ViewTemplate<RateOfChangeSensorProperty> {
+	public class RateOfChangeSubviewTemplate : SubviewTemplate<RateOfChangeSensorProperty> {
     private const int MSG_INVALIDATE = 1;
 
     private BitmapCache cache;

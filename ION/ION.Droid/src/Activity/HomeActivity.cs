@@ -93,7 +93,7 @@
 
       SetContentView(Resource.Layout.activity_home);
 
-      ActionBar.SetDisplayHomeAsUpEnabled(false);
+			ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
       drawerLayout = FindViewById<DrawerLayout>(Resource.Id.main);
       drawerToggle = new DrawerToggle(this, drawerLayout);
@@ -197,7 +197,7 @@
 
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
-      ActionBar.SetLogo(drawable);
+			ActionBar.SetLogo(drawable);
     }
 
     /// <summary>

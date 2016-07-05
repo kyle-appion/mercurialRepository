@@ -24,6 +24,7 @@
 
     public override void BindTo(RateOfChangeSubviewRecord t) {
       template.Bind(t.item);
+			template.UpdateAssociation(t.manifold);
     }
 
     public override void Unbind() {

@@ -30,7 +30,7 @@
   /// swipeListener for swipping).
   /// that you assign
   /// </summary>
-  public class WorkbenchAdapter : SwipableRecyclerViewAdapter {
+	public class WorkbenchAdapter : SwipableRecyclerViewAdapter, View.IOnTouchListener {
 
     public delegate void OnManifoldClicked(Manifold manifold);
     public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
@@ -45,12 +45,6 @@
     public Workbench workbench { get; internal set; }
 
     /// <summary>
-    /// The handler that is used for some UI actions in the adapter.
-    /// </summary>
-    /// <value>The handler.</value>
-    public Handler handler { get; internal set; }
-
-    /// <summary>
     /// The current ION instance.
     /// </summary>
     /// <value>The ion.</value>
@@ -60,6 +54,10 @@
     /// </summary>
     /// <value>The cache.</value>
     private BitmapCache cache;
+		/// <summary>
+		/// The handler that is used to post delayed events to.
+		/// </summary>
+		private Handler handler;
     /// <summary>
     /// The drag decoration.
     /// </summary>
@@ -72,8 +70,8 @@
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
+			handler = new Handler();
       dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
-      handler = new Handler();
     }
 
     /// <summary>
@@ -233,6 +231,18 @@
       (holder as WorkbenchViewHolder)?.Unbind();
     }
 
+		public bool OnTouch(View view, MotionEvent e) {
+			switch (e.Action) {
+				case MotionEventActions.Up:
+					handler.PostDelayed(() => {
+						this.NotifyDataSetChanged();
+					}, 250);
+				break;
+			}
+
+			return true;
+		}
+
     /// <summary>
     /// Sets the workbench content that the adapter will display.
     /// </summary>
@@ -376,9 +386,12 @@
           var from = manifoldIndex + 1 + manifoldEvent.index;
           var to = manifoldIndex + 1 + manifoldEvent.otherIndex;
           var tmp = records[from];
+
           records[from] = records[to];
           records[to] = tmp;
+
           NotifyItemMoved(from, to);
+
           break;
       }
     }
@@ -460,10 +473,7 @@
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
           var mr = records[position] as MeasurementRecord;
-          (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
-          if (mr != null) {
-            (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
-          }
+					(holder as MeasurementSubviewViewHolder)?.BindTo(mr);
           break;
 
         case EViewType.RateOfChangeSubview:
