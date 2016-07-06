@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.GaugeTesting {
 
 	public partial class SaveInternalTestViewController : BaseIONViewController {
 
-		private const string EXPORT_EMAIL = "ahodder@appioninc.com";
+		private const string EXPORT_EMAIL = "christian@appioninc.com";
 
 		public TestResults testResults;
 
@@ -92,14 +92,14 @@ namespace ION.IOS.ViewController.GaugeTesting {
 
 				var ion = AppState.context;
 				var fm = ion.fileManager;
-				var file = fm.CreateTemporaryFile("Av760 Gauge Test Results", EFileAccessResponse.CreateIfMissing);
+				var file = fm.CreateTemporaryFile("Av760_Gauge_Test_Results.csv", EFileAccessResponse.CreateIfMissing);
 				var stream = file.OpenForWriting();
 				if (new CSVAv760NistTraceExporter().Export(stream, testResults)) {
 					if (MFMailComposeViewController.CanSendMail) {
 						var vc = new MFMailComposeViewController();
 						vc.MailComposeDelegate = new MailDelegate();
 						vc.SetSubject("New ION Gauge Test Results");
-						vc.SetMessageBody("Hello Person of Interest\n\nThis is your morning call informing you of the new gauge results. One love,\nThe world", false);
+            vc.SetMessageBody("Hello, Christian\n\nThe attached CSV is a new intial/recalibration test. Please document the attached devices. \n\nOne love,\n" + testResults.tester, false);
 						vc.SetToRecipients(new string[] { "ahodder@appioninc.com" });
 						vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/csv", file.name);
 						NavigationController.PresentViewController(vc, true, null);

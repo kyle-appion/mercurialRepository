@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.DataLogging {
+﻿namespace ION.Droid.Activity.Report {
 	
 	using System;
 

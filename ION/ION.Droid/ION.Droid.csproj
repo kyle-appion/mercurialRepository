@@ -218,8 +218,9 @@
     <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
     <Compile Include="src\Connections\RigadoLeConnection.cs" />
     <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
-    <Compile Include="src\Activity\DataLogging\NewSavedReportFragment.cs" />
-    <Compile Include="src\Activity\DataLogging\ReportActivity.cs" />
+    <Compile Include="src\Activity\Report\NewSavedReportFragment.cs" />
+    <Compile Include="src\Activity\Report\ReportActivity.cs" />
+    <Compile Include="src\Activity\Report\ExportReportFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -479,6 +480,7 @@
     <Folder Include="Resources\values-sw320dp\" />
     <Folder Include="Resources\values-sw600dp\" />
     <Folder Include="Resources\values-sw700dp\" />
+    <Folder Include="src\Activity\Report\" />
   </ItemGroup>
   <ItemGroup>
     <XamarinComponentReference Include="xamandroidsupportv4-18">

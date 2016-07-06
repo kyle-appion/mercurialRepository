@@ -928,7 +928,6 @@
     <Compile Include="src\ViewController\GaugeTesting\ITable.cs" />
     <Compile Include="src\ViewController\GaugeTesting\ScrollableTableCollectionView.cs" />
     <Compile Include="src\ViewController\GaugeTesting\Table.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\TestBenchViewController.cs" />
     <Compile Include="src\ViewController\GaugeTesting\TableDataSet.cs" />
     <Compile Include="src\Connections\BluefruitLeConnection.cs" />
     <Compile Include="src\Connections\BaseIOSConnection.cs" />

@@ -20,6 +20,7 @@
   using ION.Core.Util;
 
   using ION.Droid.Activity.DataLogging;
+	using ION.Droid.Activity.Report;
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
   using ION.Droid.Util;

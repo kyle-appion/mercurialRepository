@@ -221,7 +221,7 @@ namespace ION.IOS.ViewController.GaugeTesting {
 			viewActionSpace.AddSubview(restart);
 
 			var export = new UIButton(new CGRect(f.Width / 2, 0, f.Width / 2, f.Height));
-			export.SetTitle("Restart Test", UIControlState.Normal);
+			export.SetTitle("Export Results", UIControlState.Normal);
 			export.SetTitleColor(new UIColor(0, 0, 0, 1), UIControlState.Normal);
 			export.BackgroundColor = new UIColor(0.15f, .15f, 1, 1);
 			export.TouchUpInside += (sender, e) => {

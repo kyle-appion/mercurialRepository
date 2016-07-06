@@ -93,9 +93,6 @@
 			input.Step();
 			exhaust.Step();
 
-			Log.D(this, "At: " + input.targetAngle + " Ac: " + input.currentAngle + " vrc: " + (vrc.GetMeasurement() & 0x7ff));
-
-
 			connection.SetPacket(UpdateBluetooth());
 		}
 
@@ -175,10 +172,10 @@
 
 				if (vrc > 1000) {
 					vrc = 1000;
-					e--;
+					e -= 3;
 
 					if (e > 3) {
-						e = 3;
+						e = 1;
 					}
 				}
 			}

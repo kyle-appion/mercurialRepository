@@ -45,6 +45,24 @@
         }
       }
     }
+
+    public static string GetUnlocalizedPartNumber(this EDeviceModel deviceModel) {
+      switch (deviceModel) {
+        case EDeviceModel.P300: return "P300";
+        case EDeviceModel.P500: return "P500";
+        case EDeviceModel.P800: return "P800";
+        case EDeviceModel.PT300: return "PT300";
+        case EDeviceModel.PT500: return "PT500";
+        case EDeviceModel.PT800: return "PT800";
+        case EDeviceModel.AV760: return "AV760";
+        case EDeviceModel._3XTM: return "T3";
+        case EDeviceModel.HT: return "HT";
+        case EDeviceModel.InternalBluefruit: return "Bf";
+        default: {
+            throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
+          }
+      }
+    }
   }
 
   /// <summary>

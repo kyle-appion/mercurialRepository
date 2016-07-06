@@ -12,10 +12,23 @@
 		/// The rows that are present in the exporter.
 		/// </summary>
 		private List<Row> rows = new List<Row>();
-		/// <summary>
-		/// The current maximum width of the exporter.
-		/// </summary>
-		private int width;
+    private int width { 
+      get {
+        if (changed) {
+          __width = 0;
+          foreach (var row in rows) {
+            __width = Max(__width, row.width);
+          }
+          changed = false;
+        }
+
+        return __width;
+      }
+    } int __width;
+    /// <summary>
+    /// Whether or not the csv has changed.
+    /// </summary>
+    private bool changed;
 
 		public Csv() {
 		}
@@ -26,10 +39,7 @@
 		/// <returns>The row.</returns>
 		/// <param name="row">Row.</param>
 		public void AddRow(Row row) {
-			if (row.width > width) {
-				width = row.width;
-			}
-
+      changed = true;
 			rows.Add(row);
 		}
 
@@ -45,11 +55,14 @@
 
 					for (; i < lim; i++) {
 						s.Write(row[i]);
+            s.Write(",");
 					}
 
-					for (; i < width; i++) {
-						s.Write("");
+          for (; i < Max(width, row.width); i++) {
+						s.Write(",");
 					}
+
+          s.WriteLine();
 				}
 			}
 
@@ -128,6 +141,7 @@
 				if (value == null) {
 					value = "";
 				}
+        ION.Core.Util.Log.D(this, "Adding value " + value);
 				cols.Add(value);
 				return this;
 			}

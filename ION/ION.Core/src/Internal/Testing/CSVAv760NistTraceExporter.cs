@@ -26,10 +26,22 @@
 
 			csv.AddRow(new Csv.Row().AddCol(DOCUMENT_HEADER));
 
+      var header = new Csv.Row();
+      csv.AddRow(header);
+      header.AddCol("Part Number").AddCol("Serial Number").AddCol("Test Date").AddCol("Tester").AddCol("Instrument Model").AddCol("Instrument Serial Number").AddCol("Accuracy").AddCol("Calibration Date");
+
+      foreach (var j in results.test.targetPoints) {
+        header.AddCol("Calibration Point " + j.target);
+        header.AddCol("Calibration Error");
+      }
+      header.AddCol("Total Points Failed").AddCol("Overall Grade");
+
 			foreach (var sensor in results.results.Keys) {
 				var row = new Csv.Row();
+        csv.AddRow(row);
 				// The columns are as follows:
-				// SensorSerial, TestDate, Tester, InstrumentModel, InstrumentSerialNumber, Accuracy, CalibrationDate, | PointTarget, PointResult, PointUnits, PointError, ... | PointsFailed, Overall Grade
+				// PartNumber, SensorSerial, TestDate, Tester, InstrumentModel, InstrumentSerialNumber, Accuracy, CalibrationDate, | PointResult, PointError, ... | PointsFailed, Overall Grade
+        row.AddCol(sensor.device.serialNumber.deviceModel.GetUnlocalizedPartNumber()); // Part Number
 				row.AddCol(sensor.device.serialNumber.ToString());		// Sensor Serial
 				row.AddCol(results.testDate);													// Test Date
 				row.AddCol(results.tester);														// Tester
@@ -48,12 +60,10 @@
 				// Target points
 				for (int i = 0; i < res.Length; i++) {
 					var tp = results.test.targetPoints[i];
-					var err = (float)(1 - res[i] - tp.target.amount);
+          var err = Math.Abs(1 - (res[i] / (float)tp.target.amount));
 
-					row.AddCol(tp.target.ToString());										// Point Target
 					row.AddCol(res[i].ToString());											// Point Result		
-					row.AddCol(tp.target.unit.ToString());							// Point Unit
-					row.AddCol(err.ToString("P"));											// Point Error
+          row.AddCol((err * 100).ToString("#.00") + "%");			// Point Error
 
 					highestError = Math.Max(err, highestError);
 					if (!results.test.GetGradeForError(err).passable) {
