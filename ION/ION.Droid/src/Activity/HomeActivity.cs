@@ -280,7 +280,8 @@
             title = GetString(Resource.String.report_data_logging),
             icon = Android.Resource.Drawable.StatSysDataBluetooth,
             action = () => {
-              StartActivity(typeof(DataLoggingReportActivity));
+							StartActivity(typeof(ReportActivity));
+//              StartActivity(typeof(DataLoggingReportActivity));
             }
           },
 #endif
