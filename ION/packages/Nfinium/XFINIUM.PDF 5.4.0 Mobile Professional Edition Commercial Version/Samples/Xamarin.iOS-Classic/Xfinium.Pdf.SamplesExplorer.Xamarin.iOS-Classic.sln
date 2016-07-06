@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xfinium.Pdf.SamplesExplorer.Xamarin.iOS-Classic", "Xfinium.Pdf.SamplesExplorer.Xamarin.iOS-Classic.csproj", "{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+		Ad-Hoc|iPhone = Ad-Hoc|iPhone
+		AppStore|iPhone = AppStore|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Ad-Hoc|iPhone.ActiveCfg = Ad-Hoc|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Ad-Hoc|iPhone.Build.0 = Ad-Hoc|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.AppStore|iPhone.ActiveCfg = AppStore|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.AppStore|iPhone.Build.0 = AppStore|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|Any CPU.Build.0 = Debug|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|iPhone.Build.0 = Debug|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|Any CPU.Build.0 = Release|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|iPhone.ActiveCfg = Release|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|iPhone.Build.0 = Release|iPhone
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{FBA4ED6C-6901-4C93-A835-4097B7A8E9B0}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Xfinium.Pdf.SamplesExplorer.Xamarin.iOS.csproj
+	EndGlobalSection
+EndGlobal
