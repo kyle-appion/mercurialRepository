@@ -152,6 +152,7 @@ file.
 
 /* WORKBENCH */
 "workbench" = "Workbench";
+"workbench_add" = "Add to Workbench";
 "workbench_add_all" = "Add all to Workbench";
 "workbench_remove" = "Remove From Workbench";
 "workbench_select_viewer_action" = "Select a viewer action";
