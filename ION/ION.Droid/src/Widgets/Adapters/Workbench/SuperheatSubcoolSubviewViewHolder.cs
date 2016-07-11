@@ -6,6 +6,7 @@
 
   using ION.Core.Sensors.Properties;
 
+  using ION.Droid.Widgets.RecyclerViews;
   using ION.Droid.Widgets.Templates;
 
   class SuperheatSubcoolSubviewRecord : SensorPropertyRecord<SuperheatSubcoolSensorProperty> {
@@ -13,14 +14,14 @@
     }
   }
 
-  class SuperheatSubcoolSubviewViewHolder : WorkbenchViewHolder<SuperheatSubcoolSubviewRecord> {
+  class SuperheatSubcoolSubviewViewHolder : SwipableViewHolder<SuperheatSubcoolSubviewRecord> {
     private SuperheatSubcoolSubviewTemplate template;
 
     public SuperheatSubcoolSubviewViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       template = new SuperheatSubcoolSubviewTemplate(view);
     }
 
-    public override void BindTo(SuperheatSubcoolSubviewRecord t) {
+    public override void OnBindTo() {
       template.Bind(t.item);
 			template.UpdateAssociation(t.manifold);
     }

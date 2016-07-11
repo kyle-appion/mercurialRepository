@@ -8,6 +8,7 @@
   using ION.Core.Sensors.Properties;
 
   using ION.Droid.Util;
+  using ION.Droid.Widgets.RecyclerViews;
   using ION.Droid.Widgets.Templates;
 
   class MeasurementRecord : SensorPropertyRecord<ISensorProperty> {
@@ -15,14 +16,14 @@
     }
   }
 
-  class MeasurementSubviewViewHolder : WorkbenchViewHolder<MeasurementRecord> {
+  class MeasurementSubviewViewHolder : SwipableViewHolder<MeasurementRecord> {
     private MeasurementSubviewTemplate template;
 
     public MeasurementSubviewViewHolder(ViewGroup parent, int viewResource, BitmapCache cache) : base(parent, viewResource) {
       template = new MeasurementSubviewTemplate(view, cache);
     }
 
-    public override void BindTo(MeasurementRecord t) {
+    public override void OnBindTo() {
       template.Bind(t.item);
 			template.UpdateAssociation(t.manifold);
     }

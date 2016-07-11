@@ -10,6 +10,7 @@
   <string name="actions">Actions</string>
   <string name="active">Active</string>
   <string name="add">Add</string>
+	<string name="add_selected">Add Selected</string>
   <string name="address">Address</string>
   <string name="alarm">Alarm</string>
 	<string name="alert">Alert</string>
@@ -65,6 +66,7 @@
   <string name="record">Record</string>
   <string name="reenable">Re-enable</string>
   <string name="remove">Remove</string>
+	<string name="remove_selected">Remove Selected</string>
   <string name="rename">Rename</string>
   <string name="reports">Reports</string>
   <string name="request_shutdown">Shutdown ION</string>
@@ -200,6 +202,29 @@
   <string name="fluid_sh">Superheat</string>
   <string name="fluid_sh_sc">SH / SC</string>
   <string name="fluid_sh_abrv">SH</string>
+
+	<!--
+	JOBS
+	-->
+	<string name="job">Job</string>
+	<string name="job_adding_sessions">Adding sessions to job...</string>
+	<string name="job_available_sessions">Available Sessions</string>
+	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
+	<string name="job_current_sessions">Current Sessions</string>
+	<string name="job_customer_no">Customer #</string>
+	<string name="job_dispatch_no">Dispatch #</string>
+	<string name="job_error_failed_to_save">Failed to save job.</string>
+	<string name="job_info">Job Info</string>
+	<string name="job_loading">Loading the job...</string>
+  <string name="job_name">Job Name</string>
+	<string name="job_notes">Job Notes</string>
+	<string name="job_removing_sessions">Removing sessions from job...</string>
+	<string name="job_saved">Job Saved</string>
+	<string name="job_sessions">Job Sessions</string>
+	<string name="job_settings">Job Settings</string>
+	<string name="job_purchase_no">Purchase Order #</string>
+
+	<string name="jobs_loading">Loading all of the saved jobs.</string>
   
   <!--
   MANIFOLD

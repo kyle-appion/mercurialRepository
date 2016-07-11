@@ -6,6 +6,7 @@
 
   using ION.Core.Sensors.Properties;
 
+  using ION.Droid.Widgets.RecyclerViews;
   using ION.Droid.Widgets.Templates;
 
   class PTChartSubviewRecord : SensorPropertyRecord<PTChartSensorProperty> {
@@ -13,14 +14,14 @@
     }
   }
 
-  class PTChartSubviewViewHolder : WorkbenchViewHolder<PTChartSubviewRecord> {
+  class PTChartSubviewViewHolder : SwipableViewHolder<PTChartSubviewRecord> {
     private PTChartSubviewTemplate template;
 
     public PTChartSubviewViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
       template = new PTChartSubviewTemplate(view);
     }
 
-    public override void BindTo(PTChartSubviewRecord t) {
+    public override void OnBindTo() {
       template.Bind(t.item);
 			template.UpdateAssociation(t.manifold);
     }

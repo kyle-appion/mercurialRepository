@@ -38,6 +38,11 @@
     /// <value>The dispatch number.</value>
     public string dispatchNumber { get; set; }
     /// <summary>
+    /// Gets or sets the notes.
+    /// </summary>
+    /// <value>The notes.</value>
+    public string notes { get; set; }
+    /// <summary>
     /// Serves as a hash function for a <see cref="ION.Core.Database.JobRow"/> object.
     /// </summary>
     /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>

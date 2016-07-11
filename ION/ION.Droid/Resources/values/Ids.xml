@@ -21,7 +21,9 @@
   <item name="content2" type="id"/>
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
+	<item name="customer_no" type="id"/>
   <item name="date" type="id"/>
+	<item name="dispatch_no" type="id"/>
   <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
@@ -33,6 +35,7 @@
   <item name="graph" type="id"/>
   <item name="help" type="id"/>
   <item name="icon" type="id"/>
+	<item name="job" type="id"/>
   <item name="left" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
@@ -48,11 +51,14 @@
   <item name="ok_done" type="id"/>
   <item name="options" type="id"/>
   <item name="play" type="id"/>
+	<item name="plus" type="id"/>
   <item name="preferred" type="id"/>
   <item name="pressure" type="id"/>
+	<item name="purchase_no" type="id"/>
   <item name="record" type="id"/>
   <item name="reenable" type="id"/>
   <item name="right" type="id"/>
+	<item name="remove" type="id"/>
   <item name="save" type="id"/>
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>

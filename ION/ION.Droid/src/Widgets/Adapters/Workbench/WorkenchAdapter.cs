@@ -138,9 +138,8 @@
       } else {
         switch ((EViewType)viewType) {
           case EViewType.Footer:
-            (holder as FooterViewHolder)?.BindTo(record as FooterRecord);
+            (holder as FooterViewHolder).record = record;
             break;
-
           case EViewType.Manifold:
             var template = (holder as ManifoldViewHolder).template;
             holder.button.Text = holder.button.Context.GetString(Resource.String.remove);
@@ -148,7 +147,7 @@
             var vr = records[position] as ManifoldRecord;
 
             if (vr != null) {
-              (holder as ManifoldViewHolder)?.BindTo(vr);
+              (holder as ManifoldViewHolder).record = vr;
             }
 
             holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
@@ -170,18 +169,14 @@
               }
               template.MarkAsExpanded(IsManifoldExpanded(vr.item));
             }
-
             break;
-
           case EViewType.Space:
             var sr = records[position] as SpaceRecord;
 
             if (sr != null) {
-              (holder as SpaceViewHolder)?.BindTo(sr);  
+              (holder as SpaceViewHolder).record = sr;
             }
-
             break;
-
           default:
             throw new Exception("Unknown view type: " + viewType);
         }
@@ -228,7 +223,7 @@
     public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
       base.OnViewDetachedFromWindow(holder);
 
-      (holder as WorkbenchViewHolder)?.Unbind();
+      (holder as SwipableViewHolder)?.Unbind();
     }
 
 		public bool OnTouch(View view, MotionEvent e) {
@@ -473,27 +468,27 @@
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
           var mr = records[position] as MeasurementRecord;
-					(holder as MeasurementSubviewViewHolder)?.BindTo(mr);
+          (holder as MeasurementSubviewViewHolder).record = mr;
           break;
 
         case EViewType.RateOfChangeSubview:
           var rr = record as RateOfChangeSubviewRecord;
-          (holder as RateOfChangeSubviewViewHolder)?.BindTo(rr);
+          (holder as RateOfChangeSubviewViewHolder).record = rr;
           break;
 
         case EViewType.TimerSubview:
           var tr = record as TimerSubviewRecord;
-          (holder as TimerSubviewViewHolder)?.BindTo(tr);
+          (holder as TimerSubviewViewHolder).record = tr;
           break;
 
         case EViewType.PTChartSubview:
           var pr = record as PTChartSubviewRecord;
-          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
+          (holder as PTChartSubviewViewHolder).record = pr;
           break;
 
         case EViewType.SuperheatSubcoolSubview:
           var shr = record as SuperheatSubcoolSubviewRecord;
-          (holder as SuperheatSubcoolSubviewViewHolder)?.BindTo(shr);
+          (holder as SuperheatSubcoolSubviewViewHolder).record = shr;
           break;
       }
 
@@ -636,53 +631,13 @@
     }
   }
 
-  abstract class WorkbenchViewHolder : SwipableViewHolder {
-    public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
-    }
-
-    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
-    }
-
-    public abstract void BindTo(SwipableRecyclerViewAdapter.IRecord t);
-    public abstract void Unbind();
-  }
-
-  abstract class WorkbenchViewHolder<T> : WorkbenchViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
-    public WorkbenchViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
-    }
-
-    public WorkbenchViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(parent, viewResource, useSwipeParent) {
-    }
-
-    public override void BindTo(SwipableRecyclerViewAdapter.IRecord t) {
-      BindTo((T)t);
-    }
-
-    public abstract void BindTo(T t);
-  }
-
-  class SpaceViewHolder : WorkbenchViewHolder<SpaceRecord> {
+  class SpaceViewHolder : SwipableViewHolder<SpaceRecord> {
 
     public SpaceViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource, false) {
     }
-
-    /// <summary>
-    /// Binds to.
-    /// </summary>
-    /// <param name="t">T.</param>
-    public override void BindTo(SpaceRecord t) {
-    }
-
-    /// <summary>
-    /// Unbind this instance.
-    /// </summary>
-    public override void Unbind() {
-    }
   }
 
-  class FooterViewHolder : WorkbenchViewHolder<FooterRecord> {
-    public FooterRecord record;
-
+  class FooterViewHolder : SwipableViewHolder<FooterRecord> {
     private View add;
     private TextView text;
 
@@ -692,19 +647,13 @@
     }
 
     // Overridden from WorkbenchViewHolder
-    public override void BindTo(FooterRecord record) {
-      this.record = record;
-
+    public override void OnBindTo() {
       var c = ItemView.Context;
       text.Text = c.GetString(Resource.String.workbench_add_viewer);
 
       add.SetOnClickListener(new ViewClickAction((view) => {
-        record.onClick();
+        t.onClick();
       }));
-    }
-
-    // Overridden from WorkbenchViewHolder
-    public override void Unbind() {
     }
   }
 }
