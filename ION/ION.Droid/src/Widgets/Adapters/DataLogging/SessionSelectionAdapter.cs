@@ -13,7 +13,7 @@
   using ION.Core.Util;
 
   using ION.Droid.Views;
-  using ION.Droid.Widgets.Adapters;
+  using ION.Droid.Widgets.RecyclerViews;
 
   /// <summary>
   /// The adapter that will list sessions.

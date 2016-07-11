@@ -3,18 +3,14 @@
   using System;
   using System.Collections.Generic;
 
-  using Android.Content;
   using Android.Graphics;
-  using Android.Graphics.Drawables;
   using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Support.V7.Widget.Helper;
-  using Android.Util;
   using Android.Views;
   using Android.Widget;
 
   using ION.Droid.Views;
-  using ION.Droid.Widgets.Adapters;
 
   /// <summary>
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
@@ -22,9 +18,19 @@
   /// </summary>
   public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter {
     /// <summary>
+    /// The delegate that will handle item clicks.
+    /// </summary>
+    public delegate void OnItemClicked(SwipableRecyclerViewAdapter adapter, int position);
+
+    /// <summary>
     /// The number of milliseconds that will ellapse before the swiped row will return.
     /// </summary>
     private const long PENDING_ACTION_DELAY = 2500;
+
+    /// <summary>
+    /// Occurs when an item is clicked.
+    /// </summary>
+    public event OnItemClicked onItemClicked;
 
     /// <summary>
     /// The number of records that are present in the adapter.
@@ -96,6 +102,9 @@
       this.recyclerView = recyclerView;
       touchHelperDecoration.AttachToRecyclerView(recyclerView);
       recyclerView.AddItemDecoration(swipeDecoration);
+      if (recyclerView.GetLayoutManager() == null) {
+        recyclerView.SetLayoutManager(new LinearLayoutManager(recyclerView.Context));
+      }
     }
 
     /// <summary>
@@ -114,7 +123,15 @@
     /// <param name="parent">Parent.</param>
     /// <param name="viewType">View type.</param>
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
-      return OnCreateSwipableViewHolder(parent, viewType);
+      var ret = OnCreateSwipableViewHolder(parent, viewType);
+
+      ret.ItemView.Click += (sender, e) => {
+        if (onItemClicked != null) {
+          onItemClicked(this, ret.AdapterPosition);
+        }
+      };
+
+      return ret;
     }
 
     /// <summary>
@@ -155,7 +172,7 @@
     /// <summary>
     /// Queries the record at the given index.
     /// </summary>
-    /// <returns>The <see cref="ION.Droid.Widgets.RecyclerViews.SwipableRecyclerViewAdapter+IRecord"/>.</returns>
+    /// <returns>The <see cref="SwipableRecyclerViewAdapter+IRecord"/>.</returns>
     /// <param name="index">Index.</param>
     public IRecord GetRecordAt(int index) {
       if (index >= 0 && index < records.Count) {
@@ -178,7 +195,13 @@
     /// <param name="record">Record.</param>
     /// <param name="vh">Vh.</param>
     /// <param name="position">Position.</param>
-    public abstract void OnBindViewHolder(IRecord record, SwipableViewHolder vh, int position);
+    public virtual void OnBindViewHolder(IRecord record, SwipableViewHolder vh, int position) {
+      vh.record = record;
+    }
+
+		public override int GetItemViewType(int position) {
+			return (int)records[position].viewType;
+		}
 
     /// <summary>
     /// Queries whether or not the given view holder is swipeable.
@@ -248,6 +271,27 @@
   /// </summary>
   public class SwipableViewHolder : RecyclerView.ViewHolder {
     /// <summary>
+    /// The record that is associated to the view holder.
+    /// </summary>
+    /// <value>The record.</value>
+    public SwipableRecyclerViewAdapter.IRecord record {
+      get {
+        return __record;
+      }
+      set {
+        if (__record != null) {
+          Unbind();
+        }
+
+        __record = value;
+
+        if (__record != null) {
+          OnBindTo();
+        }
+      }
+    } protected SwipableRecyclerViewAdapter.IRecord __record;
+
+    /// <summary>
     /// The inflated content view.
     /// </summary>
     protected View view;
@@ -260,14 +304,10 @@
     /// </summary>
     internal Button button;
 
-    private bool usesSwipeLayout;
+    private bool useSwipeLayout;
 
-
-    public SwipableViewHolder(ViewGroup parent, int viewResource) : this(parent, viewResource, true) {
-    }
-
-    public SwipableViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent) : base(BuildContentView(parent, viewResource, useSwipeParent)) {
-      this.usesSwipeLayout = useSwipeParent;
+    public SwipableViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent=true) : base(BuildContentView(parent, viewResource, useSwipeParent)) {
+      useSwipeLayout = useSwipeParent;
       if (useSwipeParent) {
         content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
         view = LayoutInflater.From(parent.Context).Inflate(viewResource, content, true);
@@ -275,15 +315,21 @@
       }
     }
 
+    public virtual void OnBindTo() {
+    }
+
+    public virtual void Unbind() {
+    }
+
     public void RevealButton() {
-      if (usesSwipeLayout) {
+      if (useSwipeLayout) {
         content.Visibility = ViewStates.Invisible;
         button.Visibility = ViewStates.Visible;
       }
     }
 
     public void HideButton() {
-      if (usesSwipeLayout) {
+      if (useSwipeLayout) {
         content.Visibility = ViewStates.Visible;
         button.Visibility = ViewStates.Invisible;
       }
@@ -295,6 +341,21 @@
       } else {
         return LayoutInflater.From(parent.Context).Inflate(viewResource, parent, false);
       }
+    }
+  }
+
+  public class SwipableViewHolder<T> : SwipableViewHolder where T : SwipableRecyclerViewAdapter.IRecord {
+    /// <summary>
+    /// The type converted record.
+    /// </summary>
+    /// <value>The t.</value>
+    public T t {
+      get {
+        return (T)record;
+      }
+    }
+
+    public SwipableViewHolder(ViewGroup parent, int viewResource, bool useSwipeParent=true) : base(parent, viewResource, useSwipeParent) {
     }
   }
 }

@@ -23,10 +23,12 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
-  using ION.Droid.Devices;
-  using ION.Droid.Dialog;
-  using ION.Droid.Sensors;
-  using ION.Droid.Views;
+  // Using ION.Droid
+  using DeviceManager;
+  using Devices;
+  using Dialog;
+  using Sensors;
+  using Views;
 
   [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_supersub", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class SuperheatSubcoolActivity : IONActivity {

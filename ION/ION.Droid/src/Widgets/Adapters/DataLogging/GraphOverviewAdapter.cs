@@ -16,7 +16,7 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
-  using ION.Droid.Widgets.Adapters;
+  using ION.Droid.Widgets.RecyclerViews;
 
   public class GraphOverviewAdapter : IONRecyclerViewAdapter {
     /// <summary>

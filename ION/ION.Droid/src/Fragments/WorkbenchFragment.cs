@@ -21,12 +21,14 @@
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
-  using ION.Droid.Activity;
-  using ION.Droid.Dialog;
-  using ION.Droid.Sensors;
-  using ION.Droid.Views;
-  using ION.Droid.Widgets.Adapters.Workbench;
-  using ION.Droid.Widgets.RecyclerViews;
+  // Using ION.Droid
+  using Activity;
+  using Activity.DeviceManager;
+  using Dialog;
+  using Sensors;
+  using Views;
+  using Widgets.Adapters.Workbench;
+  using Widgets.RecyclerViews;
 
   public class WorkbenchFragment : IONFragment {
 

@@ -14,13 +14,42 @@
   using ION.Core.IO;
   using ION.Core.Util;
 
+
+  public class DatabaseEvent {
+    public EAction action;
+    public Type table;
+    public long id;
+
+    public DatabaseEvent(EAction action, Type table, long id) {
+      this.action = action;
+      this.table = table;
+      this.id = id;
+    }
+
+    public enum EAction {
+      Inserted,
+      Deleted,
+      Modified,
+    }
+  }
+
   public class IONDatabase : SQLiteConnection, IIONManager {
+    /// <summary>
+    /// The delegate that is used when a database event is created.
+    /// </summary>
+    public delegate void OnDatabaseEvent(IONDatabase database, DatabaseEvent de);
+
     /// <summary>
     /// The file/resource name that is used to upgrade the database.
     /// </summary>
     private const string UPGRADE_DATABASE = "UpgradeDatabase.sql";
 
-    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized; 
+    /// <summary>
+    /// The event pool that is used to notify listeners of database events.
+    /// </summary>
+    public event OnDatabaseEvent onDatabaseEvent;
+
+    public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 
     /// <summary>
     /// The ion context that this database is running within.
@@ -52,8 +81,23 @@
     /// <returns>The for async.</returns>
     /// <param name="id">Identifier.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
-    public Task<T> QueryForAsync<T>(long id) where T : class, ITableRow {
-      return Task.FromResult(Table<T>().Where(x => x._id == id).First());
+    public async Task<T> QueryForAsync<T>(long id) where T : class, ITableRow {
+			// TODO ahodder@appioninc.com: I can't figure this out. The table always comes back null for the job. So, instead
+			// of blasting my brains out over my moderately clean keyboard, I have decided to use a cheap, inefficient trick...
+			// brute force.
+/*
+      var table = Table<T>();
+      var i = table.Where(x => x._id == id);
+      var j = i.First();
+      return Task.FromResult(j);
+*/
+			foreach (var t in await QueryForAllAsync<T>()) {
+				if (t._id == id) {
+					return t;
+				}
+			}
+
+			return null;
     }
 
     /// <summary>
@@ -86,8 +130,10 @@
         int affected = 0;
         if (t._id > 0) {
           affected = Update(t);
+          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
         } else {
           affected = Insert(t);
+          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
         }
 
         if (affected > 0) {
@@ -117,6 +163,7 @@
 
         if (affected > 0) {
           Commit();
+          NotifyOfEvent(DatabaseEvent.EAction.Deleted, t);
           return Task.FromResult(true);
         } else {
           throw new Exception("Did not modify the database");
@@ -139,6 +186,14 @@
       } catch (Exception e) {
         Log.E(this, "Failed to upgrade database.", e);
       }
+    }
+
+    private void NotifyOfEvent(DatabaseEvent.EAction action, ITableRow row) {
+			ion.PostToMain(() => {
+	      if (onDatabaseEvent != null) {
+	        onDatabaseEvent(this, new DatabaseEvent(action, row.GetType(), row._id));
+	      }
+			});
     }
   }
 }

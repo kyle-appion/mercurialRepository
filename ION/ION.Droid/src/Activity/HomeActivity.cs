@@ -19,12 +19,14 @@
   using ION.Core.App;
   using ION.Core.Util;
 
-  using ION.Droid.Activity.DataLogging;
-	using ION.Droid.Activity.Report;
-  using ION.Droid.Dialog;
-  using ION.Droid.Fragments;
-  using ION.Droid.Util;
-  using ION.Droid.Widgets.Adapters.Navigation;
+  // ION.Droid
+  using DeviceManager;
+  using DataLogging;
+  using Job;
+	using Report;
+  using Dialog;
+  using Fragments;
+  using Widgets.Adapters.Navigation;
 
   [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
   public class HomeActivity : IONActivity, AbsListView.IOnItemClickListener {
@@ -275,6 +277,14 @@
         id = Resource.Id.reports,
         title = GetString(Resource.String.reports),
         items = new NavigationItem[] {
+          new NavigationIconItem() {
+            id = Resource.Id.job,
+            title = GetString(Resource.String.job_settings),
+            icon = Resource.Drawable.ic_document,
+            action = () => {
+              StartActivity(typeof(JobActivity));
+            }
+          },
 #if DEBUG
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,

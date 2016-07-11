@@ -287,7 +287,7 @@
     /// </summary>
     /// <param name="message">Message.</param>
     public void Alert(string message) {
-      Toast.MakeText(this, message, ToastLength.Short).Show();
+      Toast.MakeText(this, message, ToastLength.Long).Show();
     }
 
     /// <summary>

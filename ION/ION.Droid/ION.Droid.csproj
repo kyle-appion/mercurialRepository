@@ -65,41 +65,50 @@
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android.Export" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
     </Reference>
     <Reference Include="OxyPlot.Xamarin.Android">
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.Android.Support.v13">
-      <HintPath>..\packages\Xamarin.Android.Support.v13.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v4">
-      <HintPath>..\packages\Xamarin.Android.Support.v4.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
-      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Basement">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Base">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Maps">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Location">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.1\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v7.CardView">
       <HintPath>..\packages\Xamarin.Android.Support.v7.CardView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.CardView.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v13">
+      <HintPath>..\packages\Xamarin.Android.Support.v13.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v4">
+      <HintPath>..\packages\Xamarin.Android.Support.v4.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.23.4.0\lib\MonoAndroid403\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Design">
+      <HintPath>..\packages\Xamarin.Android.Support.Design.23.4.0\lib\MonoAndroid43\Xamarin.Android.Support.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Location">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -132,14 +141,11 @@
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
     <Compile Include="src\Connections\LeConnectionHelper.cs" />
-    <Compile Include="src\Activity\DeviceManagerActivity.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
     <Compile Include="src\Dialog\UnitDialog.cs" />
     <Compile Include="src\Sensors\Properties\SensorPropertyExtensions.cs" />
-    <Compile Include="src\Widgets\Adapters\IONRecyclerViewAdapter.cs" />
     <Compile Include="src\Widgets\Analyzer\AnalyzerView.cs" />
-    <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
     <Compile Include="src\Widgets\Templates\ManifoldViewTemplate.cs" />
     <Compile Include="src\Widgets\Analyzer\SensorMount.cs" />
     <Compile Include="src\Fragments\IONFragment.cs" />
@@ -212,15 +218,32 @@
     <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
     <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
     <Compile Include="src\Activity\DataLogging\EViewType.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceManagerRecycleAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceManager\SensorViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceSectionViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
     <Compile Include="src\Connections\RigadoLeConnection.cs" />
     <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
     <Compile Include="src\Activity\Report\NewSavedReportFragment.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
     <Compile Include="src\Activity\Report\ExportReportFragment.cs" />
+    <Compile Include="src\Activity\Report\JobAdapter.cs" />
+    <Compile Include="src\Activity\Report\JobRecord.cs" />
+    <Compile Include="src\Activity\Report\SessionRecord.cs" />
+    <Compile Include="src\Activity\Report\EViewType.cs" />
+    <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
+    <Compile Include="src\Activity\Report\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Job\JobActivity.cs" />
+    <Compile Include="src\Activity\DeviceManager\DeviceManagerActivity.cs" />
+    <Compile Include="src\Activity\DeviceManager\DeviceManagerRecycleAdapter.cs" />
+    <Compile Include="src\Activity\DeviceManager\DeviceSectionViewHolder.cs" />
+    <Compile Include="src\Activity\DeviceManager\DeviceViewHolder.cs" />
+    <Compile Include="src\Activity\DeviceManager\SensorViewHolder.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\IONRecyclerViewAdapter.cs" />
+    <Compile Include="src\Activity\Job\EditJobActivity.cs" />
+    <Compile Include="src\Activity\Job\EditJobFragment.cs" />
+    <Compile Include="src\Activity\Job\EditJobSessionsFragment.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\JobAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -455,10 +478,19 @@
       <SubType>AndroidResource</SubType>
     </AndroidResource>
     <AndroidResource Include="Resources\layout\fragment_report_new_saved.axml" />
-    <AndroidResource Include="Resources\layout\paged_view_session_selection_by_job.axml" />
-    <AndroidResource Include="Resources\layout\paged_view_session_selection_by_date.axml" />
     <AndroidResource Include="Resources\drawable\shape_rounded_title_green.xml" />
     <AndroidResource Include="Resources\layout\activity_report.axml" />
+    <AndroidResource Include="Resources\drawable\shape_rounded_content_white.xml" />
+    <AndroidResource Include="Resources\layout\activity_job.axml" />
+    <AndroidResource Include="Resources\drawable\shape_rounded_white.xml" />
+    <AndroidResource Include="Resources\layout\list_item_job_row.axml" />
+    <AndroidResource Include="Resources\menu\plus.xml" />
+    <AndroidResource Include="Resources\layout\button_plus.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\activity_edit_job.axml" />
+    <AndroidResource Include="Resources\layout\fragment_edit_job.axml" />
+    <AndroidResource Include="Resources\layout\fragment_edit_job_sessions.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -467,6 +499,7 @@
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets')" />
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
@@ -481,28 +514,9 @@
     <Folder Include="Resources\values-sw600dp\" />
     <Folder Include="Resources\values-sw700dp\" />
     <Folder Include="src\Activity\Report\" />
-  </ItemGroup>
-  <ItemGroup>
-    <XamarinComponentReference Include="xamandroidsupportv4-18">
-      <Version>23.0.1.3</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="xamandroidsupportv13-18">
-      <Version>23.0.1.3</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="xamandroidsupportv7appcompat">
-      <Version>22.2.0.0</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="googleplayservices-location">
-      <Version>27.0.0.0</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
-    <XamarinComponentReference Include="oxyplot">
-      <Version>2015.1.744</Version>
-      <Visible>False</Visible>
-    </XamarinComponentReference>
+    <Folder Include="src\Activity\Job\" />
+    <Folder Include="src\Activity\DeviceManager\" />
+    <Folder Include="src\Widgets\Adapters\Job\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

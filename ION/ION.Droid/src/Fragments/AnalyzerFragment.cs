@@ -14,11 +14,13 @@
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
-  using ION.Droid.Activity;
-  using ION.Droid.Dialog;
-  using ION.Droid.Sensors;
-  using ION.Droid.Widgets;
-  using ION.Droid.Widgets.Analyzer;
+  // Using ION.Droid
+  using Activity;
+  using Activity.DeviceManager;
+  using Dialog;
+  using Sensors;
+  using Widgets;
+  using Widgets.Analyzer;
 
   public class AnalyzerFragment : IONFragment {
 
