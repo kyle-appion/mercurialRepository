@@ -1,40 +1,43 @@
 namespace ION.IOS.ViewController {
-  
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Threading;
-  using System.Threading.Tasks;
 
-  using Foundation;
-  using MessageUI;
-  using MonoTouch.Dialog;
-  using UIKit;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Threading;
+	using System.Threading.Tasks;
 
-  using FlyoutNavigation;
+	using Foundation;
+	using MessageUI;
+	using MonoTouch.Dialog;
+	using UIKit;
 
-  using ION.Core.App;
-  using ION.Core.Devices;
-  using ION.Core.Devices.Certificates;
-  using ION.Core.IO;
-  using ION.Core.Util;
+	using FlyoutNavigation;
 
-  using ION.IOS.App;
-  using ION.IOS.Net;
-  using ION.IOS.UI;
-  using ION.IOS.Util;
-  using ION.IOS.ViewController.Analyzer;
-  using ION.IOS.ViewController.FileManager;
-  using ION.IOS.ViewController.Help;
-  using ION.IOS.ViewController.GaugeTesting;
-  using ION.IOS.ViewController.PressureTemperatureChart;
-  using ION.IOS.ViewController.Settings;
-  using ION.IOS.ViewController.SuperheatSubcool;
-  using ION.IOS.ViewController.Workbench;
-  using ION.IOS.ViewController.Logging;
-  using ION.IOS.ViewController.JobManager;
-  using ION.IOS.ViewController.Walkthrough;
-  using ION.IOS.ViewController.RssFeed;
+	using ION.Core.App;
+	using ION.Core.Devices;
+	using ION.Core.Devices.Certificates;
+	using ION.Core.IO;
+	using ION.Core.Util;
+
+	using ION.IOS.App;
+	using ION.IOS.Net;
+	using ION.IOS.UI;
+	using ION.IOS.Util;
+	using ION.IOS.ViewController.Analyzer;
+	using ION.IOS.ViewController.FileManager;
+	using ION.IOS.ViewController.Help;
+	using ION.IOS.ViewController.GaugeTesting;
+	using ION.IOS.ViewController.PressureTemperatureChart;
+	using ION.IOS.ViewController.Settings;
+	using ION.IOS.ViewController.SuperheatSubcool;
+	using ION.IOS.ViewController.Workbench;
+	using ION.IOS.ViewController.Logging;
+	using ION.IOS.ViewController.JobManager;
+	using ION.IOS.ViewController.Walkthrough;
+	using ION.IOS.ViewController.RssFeed;
+	using System.Net;
+	using System.Text;
+	using Newtonsoft.Json.Linq;
 
 	public partial class IONPrimaryScreenController : UIViewController {
     /// <summary>
@@ -225,19 +228,30 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-        .Link("App Walkthrough",(object obj, HelpViewController ovc) => {
-          OpenWalkthroughSections();
-        })
-        .Link("RSS Feed", (object obj, HelpViewController ovc) => {
-					ShowRSSFeed();
-				})
+    		//.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    		//OpenWalkthroughSections();
+    		//})
+    		//.Link("RSS Feed", (object obj, HelpViewController ovc) => {
+				//	ShowRSSFeed();
+				//})
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
-        if (!MFMailComposeViewController.CanSendMail) {
-          Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
-        } else {
-          DoSendAppionFeedback();
-        }
-      }).Build();
+	        if (!MFMailComposeViewController.CanSendMail) {
+	          Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
+	        } else {
+	          DoSendAppionFeedback();
+	        }
+      	})
+#if DEBUG 
+    //.Link("Practice", (object obj, HelpViewController ovc) => {
+    ////var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
+    ////webStuff.RegisterUser("Kyle Johnson",1);
+    ////webStuff.RegisterAccount("Brick by Brick");
+    ////var sesh = new List<int>(){1,2,3};
+		////webStuff.getSession(sesh);
+		////webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
+		//})
+#endif
+				.Build();
 
       vc.page = landing;
 
@@ -288,7 +302,7 @@ namespace ION.IOS.ViewController {
     /// sections of the app
     /// </summary>
     private void OpenWalkthroughSections() {
-      var wvc = InflateViewController<WalkthroughMenuViewController>(BaseIONViewController.VC_WALKTHROUGH_MENU);
+      var wvc = InflateViewController<WalkthroughScreenshotViewController>(BaseIONViewController.VC_WALKTHROUGH_MENU);
       PresentViewControllerFromSelected(wvc);
     }
 

@@ -259,9 +259,12 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
      // ptValueLabel.Lines = 0;
 
       var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1, 310, 1,128 + 20));
-      topMark.BackgroundColor = UIColor.Black;
-
-      ptSlider = new SliderView(View,ptChart, pressureUnit, temperatureUnit, temperatureSensor, entryMode);
+      topMark.BackgroundColor = UIColor.Black; 
+				if(temperatureSensor == null){
+					temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+				}
+      	ptSlider = new SliderView(View,ptChart, pressureUnit, temperatureUnit, temperatureSensor, entryMode);
+      	
       temperatureSensor.measurement = ptSlider.ptView.minTemperature.unit.OfScalar(ptSlider.ptView.minTemperature.amount);
       editTemperature.Text = temperatureSensor.measurement.amount.ToString("N");
 		  var manualEdit = false;
@@ -319,10 +322,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		ptSlider.ptScroller.ScrollEnabled = true;
 	  };
 	  
-	  //View.AddSubview(ptSlider.sliderLabel);
-	  //View.AddSubview(ptSlider.ptScroller);
+	  View.AddSubview(ptSlider.sliderLabel);
+	  View.AddSubview(ptSlider.ptScroller);
 //      View.AddSubview(ptValueLabel);
-      //View.AddSubview(topMark);
+      View.AddSubview(topMark);
     }
 
     // Overridden from ViewController
