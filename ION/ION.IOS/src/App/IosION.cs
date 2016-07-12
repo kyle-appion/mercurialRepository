@@ -5,7 +5,6 @@
   using System.IO;
   using System.Threading.Tasks;
 
-  using CoreBluetooth;
   using CoreFoundation;
   using Foundation;
 
@@ -17,6 +16,7 @@
   using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Fluids;
+	using ION.Core.Internal;
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
@@ -25,7 +25,6 @@
   using ION.Core.Sensors;
   using ION.Core.Util;
 
-  using ION.IOS;
   using ION.IOS.Alarms.Alerts;
   using ION.IOS.IO;
   using ION.IOS.Location;
@@ -65,7 +64,7 @@
     // Overridden from IION
     public IONDatabase database { get; set; }
     // Overridden from IION
-    public ION.Core.IO.IFileManager fileManager { get; set; }
+    public IFileManager fileManager { get; set; }
     // Overridden from IION
     public IDeviceManager deviceManager { get; set; }
     // Overridden from IION
@@ -130,24 +129,17 @@
     /// The list of managers that are present in the ion context.
     /// </summary>
     private readonly List<IIONManager> managers = new List<IIONManager>();
-    /// <summary>
-    /// The native ios application settings dictionary.
-    /// </summary>
-//    private NSDictionary settings { get; set; }
 
     public IosION() {
-      settings = new AppSettings();
-      // Load up the application settings
-//      defaultUnits = new IosUnits();
       // Order matters - Manager's with no dependencies should come first such
       // that later manager's may depend on them.
       var ch = new LeConnectionHelper();
 
-      var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
+      var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch.centralManager), ch));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
@@ -215,7 +207,7 @@
     /// Initializes the ION instance.
     /// </summary>
     public async Task Init() {
-      var settings = new AppSettings();
+      settings = new AppSettings();
       defaultUnits = new IosUnits(settings);
 
 
@@ -225,6 +217,10 @@
           Log.D(this, "Initializing " + im.GetType().Name);
           await im.InitAsync();
         }
+
+#if DEBUG
+				deviceManager.Register(new BluefruitDevice(new BluefruitSerialNumber("MockTestStation"), new MockBluefruitConnection(), new BluefruitProtocol()));
+#endif
 
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
@@ -238,7 +234,7 @@
       } catch (Exception e) {
         Log.E(this, "Failed to init ION", e);
       }
-      currentAnalyzer = new Analyzer(ION.Core.App.AppState.context);
+      currentAnalyzer = new Analyzer(AppState.context);
     }
 
     public Task<Workbench> LoadWorkbenchAsync(IFile file) {

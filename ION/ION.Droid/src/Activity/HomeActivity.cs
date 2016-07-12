@@ -93,7 +93,7 @@
 
       SetContentView(Resource.Layout.activity_home);
 
-      ActionBar.SetDisplayHomeAsUpEnabled(true);
+			ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
       drawerLayout = FindViewById<DrawerLayout>(Resource.Id.main);
       drawerToggle = new DrawerToggle(this, drawerLayout);
@@ -105,7 +105,7 @@
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
       var emptyText = new TextView(this);
-      emptyText.Text = "Not items";
+      emptyText.Text = "No items added to the navigation drawer";
       drawerList.EmptyView = emptyText;
 
       var i = Intent;
@@ -197,7 +197,7 @@
 
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
-      ActionBar.SetLogo(drawable);
+			ActionBar.SetLogo(drawable);
     }
 
     /// <summary>
@@ -280,7 +280,8 @@
             title = GetString(Resource.String.report_data_logging),
             icon = Android.Resource.Drawable.StatSysDataBluetooth,
             action = () => {
-              StartActivity(typeof(DataLoggingReportActivity));
+							StartActivity(typeof(ReportActivity));
+//              StartActivity(typeof(DataLoggingReportActivity));
             }
           },
 #endif

@@ -231,12 +231,27 @@
       return ret;
     }
 
+		/// <summary>
+		/// Queries the index of the sensor or -1 if the sensor is not in the gauge.
+		/// </summary>
+		/// <returns>The of sensor.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public int IndexOfSensor(GaugeDeviceSensor sensor) {
+			for (int i = 0; i < sensorCount; i++) {
+				if (sensors[i].Equals(sensor)) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
     /// <summary>
     /// Queries whether or not the device has a sensor of the given type.
     /// </summary>
     /// <returns><c>true</c> if this instance hash sensor of type the specified sensorType; otherwise, <c>false</c>.</returns>
     /// <param name="sensorType">Sensor type.</param>
-    public bool HashSensorOfType(ESensorType sensorType) {
+		public bool HasSensorOfType(ESensorType sensorType) {
       foreach (var sensor in sensors) {
         if (sensorType == sensor.type) {
           return true;

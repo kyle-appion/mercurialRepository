@@ -46,22 +46,6 @@ namespace ION.IOS.App {
         LoadDefaults();
       }
       Initialize();
-
-      /*
-      var tmp = new NSDictionary(NSBundle.MainBundle.PathForResource(bundlePath, null));
-      settingsBundle = new NSDictionary();
-
-      var preferences = tmp[KEY_PREFERENCE_SPECIFIERS] as NSArray;
-
-      foreach (var item in NSArray.FromArray<NSDictionary>(preferences)) {
-        var key = (NSString)item[KEY_KEY];
-        if (key == null) {
-          continue;
-        }
-
-        settingsBundle[key] = item;
-      }
-      */
     }
 
     /// <summary>
@@ -164,10 +148,58 @@ namespace ION.IOS.App {
   }
 
   public class DefaultUnits {
-    public int length { get; set; }
-    public int pressure { get; set; }
-    public int temperature { get; set; }
-    public int vacuum { get; set; }
+    public int length {
+			get {
+				return __length;
+			}
+			set {
+				if (value == 0) {
+					value = 21;
+				}
+
+				__length = value;
+			}
+		} int __length = 21;
+
+    public int pressure {
+			get {
+				return __pressure;
+			}
+			set {
+				if (value == 0) {
+					value = 7;
+				}
+
+				__pressure = value;
+			}
+		} int __pressure = 7;
+
+    public int temperature {
+			get {
+				return __temperature;
+			}
+			set {
+				if (value  == 0) {
+					value = 18;
+				}
+
+				__temperature = value;
+			} 
+		} int __temperature = 18;
+
+
+    public int vacuum {
+			get {
+				return __vacuum;
+			}
+			set {
+				if (value == 0) {
+					value = 39;
+				}
+
+				__vacuum = value;
+			}
+		} int __vacuum = 39;
   }
 
   public class Alarm {

@@ -14,12 +14,28 @@ namespace ION.IOS.ViewController.GaugeTesting
 	{
 		[Outlet]
 		DSoft.UI.Grid.DSGridView gridView { get; set; }
+
+		[Outlet]
+		UIKit.UITextView textViewStatus { get; set; }
+
+		[Outlet]
+		UIKit.UIView viewActionSpace { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
 			if (gridView != null) {
 				gridView.Dispose ();
 				gridView = null;
+			}
+
+			if (textViewStatus != null) {
+				textViewStatus.Dispose ();
+				textViewStatus = null;
+			}
+
+			if (viewActionSpace != null) {
+				viewActionSpace.Dispose ();
+				viewActionSpace = null;
 			}
 		}
 	}

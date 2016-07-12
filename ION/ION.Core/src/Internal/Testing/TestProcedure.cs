@@ -16,6 +16,25 @@
     /// The type of sensor that is test by this procedure.
     /// </summary>
     public ESensorType sensorType;
+		/// <summary>
+		/// Returns the number of target points that are present in the test procedure.
+		/// </summary>
+		/// <value>The count.</value>
+		public int count { 
+			get {
+				return targetPoints.Count;
+			}
+		}
+
+		/// <summary>
+		/// Gets the <see cref="T:ION.Core.Internal.Testing.TestProcedure"/> at the specified index.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		public TargetPoint this[int index] {
+			get {
+				return targetPoints[index];
+			}
+		}
     /// <summary>
     /// The points that all tested gauges are tested against.
     /// </summary>
@@ -31,6 +50,21 @@
       this.targetPoints = targetPoints;
       this.grades = grades;
     }
+
+		/// <summary>
+		/// Gets the expected grade for the given percent error.
+		/// </summary>
+		/// <returns>The grade for error.</returns>
+		/// <param name="error">Error.</param>
+		public Grade GetGradeForError(float error) {
+			foreach (var g in grades) {
+				if (error <= g.errorBand) {
+					return g;
+				}
+			}
+
+			return new Grade(1, "F", false);
+		}
 
     /// <summary>
     /// The representation of a target point that a device is to hit within a test procedure.

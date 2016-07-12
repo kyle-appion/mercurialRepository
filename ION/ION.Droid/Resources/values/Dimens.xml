@@ -84,12 +84,14 @@
   <!--
   Viewer dimensions
   -->
+	<!-- The width of the gold association line. -->
+	<dimen name="viewer_association_width">12dp</dimen>
   <!-- The height of the battery icon. -->
   <dimen name="viewer_battery_icon_height">24dp</dimen>
   <!-- The width of the battery icon. -->
   <dimen name="viewer_battery_icon_width">48dp</dimen>
   <!-- The width and hieght of the connection icon in the viewer's header. -->
-  <dimen name="viewer_connection_icon_size">48dp</dimen>
+  <dimen name="viewer_connection_icon_size">32dp</dimen>
   <!-- The width and height of the device icon in the viewer's content. -->
   <dimen name="viewer_device_icon_size">64dp</dimen>
   <!-- The width and height of the alarm icon in the viewer's footer. -->
@@ -99,9 +101,9 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large">48dp</dimen>
+  <dimen name="viewer_subview_large">36dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large_icon_size">36dp</dimen>
+  <dimen name="viewer_subview_large_icon_size">32dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
   <dimen name="viewer_text_size">24sp</dimen>
 </resources>
