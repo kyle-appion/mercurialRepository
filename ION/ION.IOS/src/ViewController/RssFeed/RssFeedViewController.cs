@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.RssFeed {
 		public UITableView rssTable;
 		public UIActivityIndicatorView loadingFeed;
 		public UIRefreshControl refreshFeed;
-		public const string FEEDURL = "feed2.xml";
+		public const string FEEDURL = "http://www.buildtechhere.com/RSS/feed.xml";
 		
 		public RssFeedViewController(IntPtr handle) : base(handle) {
 		}
@@ -53,14 +53,14 @@ namespace ION.IOS.ViewController.RssFeed {
 			rssTable = new UITableView(new CGRect(0,45,View.Bounds.Width,View.Bounds.Height - 45));
 			rssTable.RegisterClassForCellReuse(typeof(RssFeedCell),"rssFeedCell");
 			rssTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+			rssTable.AlwaysBounceVertical = true;
 			
 			refreshFeed = new UIRefreshControl();
       refreshFeed.ValueChanged += (sender, e) => {
       		feedItems = new List<Update>();
        		loadingFeed.StartAnimating();
-          BeginReadXMLStream("feed2.xml");
+          BeginReadXMLStream();
       };
-      
       rssTable.InsertSubview(refreshFeed,0);
       rssTable.SendSubviewToBack(refreshFeed);
 			
@@ -69,21 +69,29 @@ namespace ION.IOS.ViewController.RssFeed {
 			View.BringSubviewToFront(loadingFeed);
 			
 			loadingFeed.StartAnimating();
-			BeginReadXMLStream("feed2.xml");
-		}
+			BeginReadXMLStream();
 
-    public void BeginReadXMLStream(string currFileName)
+		}
+		/// <summary>
+		/// Begins the read XMLS stream for entire rss feed.
+		/// </summary>
+		/// <returns>The read XMLS tream.</returns>
+    public void BeginReadXMLStream()
     {
         IsReadingXML = true;
 
-        string ImagesRootFolder = "http://www.buildtechhere.com/RSS/";
-        HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(ImagesRootFolder + currFileName);
+        HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(FEEDURL);
         httpRequest.BeginGetResponse(new AsyncCallback(FinishWebRequest), httpRequest);
     }
 
+    /// <summary>
+    /// Finishs the web request for entire rss feed
+    /// </summary>
+    /// <returns>The web request.</returns>
+    /// <param name="result">Result.</param>
     public void FinishWebRequest(IAsyncResult result)
     {
-        IsReadingXML = true;
+        IsReadingXML = true; 
 
         HttpWebResponse httpResponse = (result.AsyncState as HttpWebRequest).EndGetResponse(result) as HttpWebResponse;
 
@@ -94,30 +102,17 @@ namespace ION.IOS.ViewController.RssFeed {
         }
     }
 
+    /// <summary>
+    /// build feed for all feed items
+    /// </summary>
+    /// <returns>The item list.</returns>
+    /// <param name="xmlStream">Xml stream.</param>
     public void BuildItemList(Stream xmlStream) 
     {
         using (XmlReader myXMLReader = XmlReader.Create((xmlStream)))
         {
-
             while (myXMLReader.Read())
             {
-							//if(myXMLReader.NodeType == XmlNodeType.Element){
-								//if(myXMLReader.Name == "title"){
-								//  Update item = new Update();
-								//  item.description = new List<string>();
-								//	var feedTitle = myXMLReader.ReadElementContentAsString();
-								//	item.title = feedTitle;
-								//	while(myXMLReader.Name != "channel"){
-								//		if(myXMLReader.Name == "new" || myXMLReader.Name == "updated" || myXMLReader.Name == "fixed"){
-								//			var entry = "•\t" + myXMLReader.ReadElementContentAsString() + "\n";
-								//			item.description.Add(entry);
-								//		}
-								//		myXMLReader.Read();
-								//	}
-								//	feedItems.Add(item);
-								//}
-							//}
-
 							while(myXMLReader.Name != "title"){
 								myXMLReader.Read();
 							}

@@ -12,7 +12,6 @@ namespace ION.IOS.ViewController.RssFeed {
     nfloat cellHeight;
     
 		public RssFeedDataSource(List<Update> feedItems) {
-			Console.WriteLine("In table source with " + feedItems.Count + " feeds");
 			tableItems = feedItems;
 		}
 		
@@ -79,8 +78,9 @@ namespace ION.IOS.ViewController.RssFeed {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
-      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].title);
-      UIApplication.SharedApplication.OpenUrl(new NSUrl(tableItems[indexPath.Row].link));
+    	if(!String.IsNullOrEmpty(tableItems[indexPath.Row].link)){
+      	UIApplication.SharedApplication.OpenUrl(new NSUrl(tableItems[indexPath.Row].link));
+      }
     } 
 	}
 }

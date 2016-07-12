@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     public string sectionName;
     public int sectionIndex = 1;
 
-    public override void ViewDidLoad() {
+    public override void ViewDidLoad() { 
       base.ViewDidLoad();
 
       pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 50 , .7 * View.Bounds.Width, .6 * View.Bounds.Height));
@@ -29,43 +29,11 @@ namespace ION.IOS.ViewController.Walkthrough {
 			explanation = new UILabel(new CGRect(.05 * View.Bounds.Width, .6 * View.Bounds.Height + 50,.9 * View.Bounds.Width, .25 * View.Bounds.Height - 50));
       explanation.AdjustsFontSizeToFitWidth = true;
       explanation.Lines = 0;
-      
-      if (sectionName == "WorkBench") {
-      	Console.WriteLine("WorkBench");
-	      walkthrough = new WorkBenchWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("WorkBench1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-      } else if (sectionName == "Analyzer"){
-      	Console.WriteLine("Analyzer");
-	      walkthrough = new AnalyzerWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("Analyzer1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} else if (sectionName == "PT Chart"){
-				Console.WriteLine("PT Chart");
-	      walkthrough = new PTChartWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("PTChart1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} else if (sectionName == "Superheat/Subcool"){
-				Console.WriteLine("SH/SC");
-	      walkthrough = new SuperheatSubcoolWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("SHSC1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} else if (sectionName == "Calibration Certificates"){
-				Console.WriteLine("Calibration");
-	      walkthrough = new CalibrationCertWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("Cert1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} else if (sectionName == "Screenshot Archives"){
-				Console.WriteLine("Screenshot");
-	      walkthrough = new ScreenshotArchiveWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("Archives1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} else if (sectionName == "Settings"){
-				Console.WriteLine("Settings");
-	      walkthrough = new AnalyzerWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("Analyzer1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-			} 
+      Console.WriteLine("Device dimensions: " + View.Bounds);
+
+      walkthrough = new IntroductoryWalkthrough(View, explanation,pictureView, nextPicture);
+      pictureView.Image = UIImage.FromBundle("Intro1");
+      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
       
       nextPicture.SetTitle("Next", UIControlState.Normal);
       nextPicture.SetTitleColor(UIColor.Black, UIControlState.Normal); 
