@@ -69,6 +69,8 @@
         adapter.RestoreManifoldExpansionState();
       }
       isSaved = false;
+
+			recyclerView.GetAdapter().NotifyDataSetChanged();
     }
 
     /// <summary>

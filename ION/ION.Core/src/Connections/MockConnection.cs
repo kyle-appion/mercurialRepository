@@ -24,11 +24,18 @@
     /// Queries the current state of the connection.
     /// </summary>
     /// <value>The state of the connection.</value>
-    public EConnectionState connectionState {
-      get {
-        return EConnectionState.Disconnected;
-      }
-    }
+		public EConnectionState connectionState {
+			get {
+				return __connectionState;
+			}
+			protected set {
+				var oldState = __connectionState;
+				__connectionState = value;
+				if (onStateChanged != null) {
+					onStateChanged(this, oldState);
+				}
+			}
+		} EConnectionState __connectionState;
     /// <summary>
     /// Queries whether or not the connection is connected.
     /// </summary>
@@ -36,7 +43,7 @@
     /// <c>false</c>
     public bool isConnected {
       get {
-        return false;
+				return connectionState == EConnectionState.Connected;
       }
     }
     /// <summary>
@@ -44,11 +51,7 @@
     /// device's serial number.
     /// </summary>
     /// <value>The name.</value>
-    public string name {
-      get {
-        return MOCK_ADDRESS;
-      }
-    }
+		public string name { get; protected set; }
     /// <summary>
     /// Queries the unique address of the connection.
     /// </summary>
@@ -71,7 +74,17 @@
     /// Queries the last packet that the connection received.
     /// </summary>
     /// <value>The last packet.</value>
-    public byte[] lastPacket { get; private set; }
+    public byte[] lastPacket {
+			get {
+				return __lastPacket;
+			}
+			protected set {
+				__lastPacket = value;
+				if (onDataReceived != null) {
+					onDataReceived(this, __lastPacket);
+				}
+			}
+		} byte[] __lastPacket;
     /// <summary>
     /// The last time that connection was seen- either through packet resolution or a scan.
     /// </summary>
@@ -88,25 +101,33 @@
     /// <value>The connection timeout.</value>
     public TimeSpan connectionTimeout { get; set; }
 
+		public MockConnection() : this(MOCK_ADDRESS) {
+		}
+
+		public MockConnection(string name) {
+			this.name = name;
+			connectionState = EConnectionState.Disconnected;
+		}
+
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    public Task<bool> ConnectAsync() {
-      return Task.FromResult(false);
-    }
+		public virtual Task<bool> ConnectAsync() {
+			return Task.FromResult(false);
+		}
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-    public void Disconnect() {
-    }
+		public virtual void Disconnect() {
+		}
     /// <summary>
     /// Writes the given packet out to the remote terminus.
     /// </summary>
     /// <returns></returns>
     /// <param name="packet">Packet.</param>
-    public bool Write(byte[] packet) {
-      return false;
-    }
+		public virtual bool Write(byte[] packet) {
+			return false;
+		}
   }
 }
 

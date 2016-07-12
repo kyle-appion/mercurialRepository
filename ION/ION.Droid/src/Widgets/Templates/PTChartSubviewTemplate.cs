@@ -22,7 +22,7 @@
   ///   View          | Resource.Id.view
   ///   TextView      | Resource.Id.measurement
   /// </code>
-  public class PTChartSubviewTemplate : ViewTemplate<PTChartSensorProperty> {
+  public class PTChartSubviewTemplate : SubviewTemplate<PTChartSensorProperty> {
     private TextView title;
     private TextView fluid;
     private View divider;

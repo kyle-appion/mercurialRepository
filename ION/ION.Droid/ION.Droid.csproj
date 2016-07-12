@@ -217,6 +217,9 @@
     <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceSectionViewHolder.cs" />
     <Compile Include="src\Widgets\Adapters\DeviceManager\DeviceViewHolder.cs" />
     <Compile Include="src\Connections\RigadoLeConnection.cs" />
+    <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
+    <Compile Include="src\Activity\DataLogging\NewSavedReportFragment.cs" />
+    <Compile Include="src\Activity\DataLogging\ReportActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -446,11 +449,15 @@
     <AndroidResource Include="Resources\drawable\ic_scroll.png" />
     <AndroidResource Include="Resources\values\Styleable.xml" />
     <AndroidResource Include="Resources\layout\viewer_large.axml" />
-    <AndroidResource Include="Resources\layout\fragment_new_report.axml" />
     <AndroidResource Include="Resources\layout\list_item_list_section_header.axml" />
     <AndroidResource Include="Resources\layout\button_save.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
+    <AndroidResource Include="Resources\layout\fragment_report_new_saved.axml" />
+    <AndroidResource Include="Resources\layout\paged_view_session_selection_by_job.axml" />
+    <AndroidResource Include="Resources\layout\paged_view_session_selection_by_date.axml" />
+    <AndroidResource Include="Resources\drawable\shape_rounded_title_green.xml" />
+    <AndroidResource Include="Resources\layout\activity_report.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

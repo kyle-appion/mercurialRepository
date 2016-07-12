@@ -22,7 +22,7 @@
   ///   View          | Resource.Id.view
   ///   TextView      | Resource.Id.measurement
   /// </code>
-  public class SuperheatSubcoolSubviewTemplate : ViewTemplate<SuperheatSubcoolSensorProperty> {
+	public class SuperheatSubcoolSubviewTemplate : SubviewTemplate<SuperheatSubcoolSensorProperty> {
     private TextView title;
     private TextView fluid;
     private View divider;

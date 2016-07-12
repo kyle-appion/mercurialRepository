@@ -9,6 +9,7 @@
   using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Devices;
+	using ION.Core.Util;
 
   using ION.Droid.Devices;
   using ION.Droid.Util;
@@ -191,12 +192,14 @@
 
     private void InvalidateBattery(GaugeDevice device) {
       if (battery == null) {
+				Log.E(this, "The battery view is null. Cannot invalidate the view");
         return;
       }
 
       if (device != null) {
         var bat = device.battery;
         if (device.isConnected) {
+					battery.Visibility = ViewStates.Visible;
           if (bat >= 100) {
             battery.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_battery_horiz_100));
           } else if (bat >= 75) {

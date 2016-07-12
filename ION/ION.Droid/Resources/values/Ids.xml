@@ -7,6 +7,7 @@
   <item name="address" type="id"/>
   <item name="alarm" type="id"/>
   <item name="arrow" type="id"/>
+	<item name="association" type="id"/>
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
   <item name="card" type="id"/>

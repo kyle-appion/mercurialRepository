@@ -24,7 +24,7 @@
   ///   View            | Resource.Id.view
   ///   TextView        | Resource.Id.measurement
   /// </code>
-  public class MeasurementSubviewTemplate : ViewTemplate<ISensorProperty> {
+	public class MeasurementSubviewTemplate : SubviewTemplate<ISensorProperty> {
     private BitmapCache cache { get; set; }
     private TextView title { get; set; }
     private ImageView icon { get; set; }
@@ -70,7 +70,7 @@
       }
 
       measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, false);
-      unit.Text = item.sensor.unit.ToString();
+			unit.Text = item.modifiedMeasurement.unit.ToString();
     }
 
     /// <summary>

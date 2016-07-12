@@ -22,6 +22,7 @@
 
     public override void BindTo(SuperheatSubcoolSubviewRecord t) {
       template.Bind(t.item);
+			template.UpdateAssociation(t.manifold);
     }
 
     public override void Unbind() {

@@ -11,6 +11,7 @@
   using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Devices;
+	using ION.Core.Devices.Protocols;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
@@ -318,6 +319,19 @@
             sensor.device.connection.ConnectAsync();
           }));
         }
+#if DEBUG
+				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
+					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
+					var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
+					for (int i = 0; i < device.sensorCount; i++) {
+						var s = device[i];
+						d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
+							ShowChangeUnitDialog(s);
+						}));
+					}
+					vc.PresentViewController(d, true, null);
+				}));
+#endif
       }
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
@@ -369,6 +383,20 @@
       vc.PresentViewController(dialog, true, null);
     }
 
+		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
+			var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
+			foreach (var unit in sensor.supportedUnits) {
+				d.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (e) => {
+					var device = sensor.device;
+					var p = device.protocol as IGaugeProtocol;
+					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
+				}));
+			}
+
+			var window = UIApplication.SharedApplication.KeyWindow;
+			var vc = window.RootViewController;
+			vc.PresentViewController(d, true, null);
+		}
 
     /// <summary>
     /// Throw-away 

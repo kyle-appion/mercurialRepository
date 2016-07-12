@@ -426,12 +426,16 @@
       }
       var total = deviceManager.devices.Count;
 
+			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_logo_appiondefault);
+
+
       var note = new NotificationCompat.Builder(this)
-        .SetSmallIcon(Resource.Drawable.ic_logo_appiondefault_small)
-        .SetContentTitle(GetString(Resource.String.app_name))
-        .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
-        .SetContentIntent(pi)
-        .SetOngoing(true);
+			                                 .SetLargeIcon(bitmap)
+			                                 .SetSmallIcon(Resource.Drawable.ic_nav_analyzer)
+															         .SetContentTitle(GetString(Resource.String.app_name))
+															         .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
+															         .SetContentIntent(pi)
+															         .SetOngoing(true);
 
       var nm = GetSystemService(NotificationService) as NotificationManager;
       nm.Notify(NOTIFICATION_APP_ID, note.Build());

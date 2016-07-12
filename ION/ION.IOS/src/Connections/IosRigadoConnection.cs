@@ -16,23 +16,15 @@
     /// The base UUID that identifies services, charactertistics and descriptors
     /// within the BluetoothGatt API.
     /// </summary>
-    private const string BASE_UUID = "6e40****-b5a3-f393-e0a9-e50e24dcca9e";
+		private const string BASE_UUID = "6e40****-b5a3-f393-e0a9-e50e24dcca9e";
     /// <summary>
     /// The Rx characteristic.
     /// </summary>
-    private static readonly ServiceCharacteristicPair READ_CHARACTERISTIC = new ServiceCharacteristicPair("0001", "0003");
+		private static readonly CBUUID READ_CHARACTERISTIC = CBUUID.FromString("6e400003-b5a3-f393-e0a9-e50e24dcca9e");
     /// <summary>
     /// The Tx characteristic.
     /// </summary>
-    private static readonly ServiceCharacteristicPair WRITE_CHARACTERISTIC = new ServiceCharacteristicPair("0001", "0002");
-    /// <summary>
-    /// The characteristic for the name.
-    /// </summary>
-//    private static readonly ServiceCharacteristicPair NAME_CHARACTERISTIC = new ServiceCharacteristicPair("ff90", "ff91");
-    /// <summary>
-    /// The services to fetch on scan.
-    /// </summary>
-    private static readonly CBUUID[] DESIRED_SERVICES = new CBUUID[] { READ_CHARACTERISTIC.service, WRITE_CHARACTERISTIC.service, /*NAME_CHARACTERISTIC.service*/ };
+		private static readonly CBUUID WRITE_CHARACTERISTIC = CBUUID.FromString("6e400002-b5a3-f393-e0a9-e50e24dcca9e");
 
     /// <summary>
     /// A utility method used to create the UUIDs necessary for use of the
@@ -329,18 +321,16 @@
           // Apparently services can be null after discovery?
           foreach (CBCharacteristic characteristic in service.Characteristics) {
             Log.D(this, "Characteristic: " + characteristic.UUID);
-            if (READ_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
+            if (READ_CHARACTERISTIC.Equals(characteristic.UUID)) {
               readCharacteristic = characteristic;
-            } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
+            } else if (WRITE_CHARACTERISTIC.Equals(characteristic.UUID)) {
               writeCharacteristic = characteristic;
-//            } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
-//              nameCharacteristic = characteristic;
             }
           }
         }
       }
 
-      return readCharacteristic != null && writeCharacteristic != null && nameCharacteristic != null;
+			return readCharacteristic != null && writeCharacteristic != null;
     }
 
     /// <summary>
@@ -352,16 +342,6 @@
     private void OnPeripheralDisconnected(object sensor, CBPeripheralErrorEventArgs args) {
       if (args.Peripheral.Equals(__nativeDevice)) {
         Disconnect();
-      }
-    }
-
-    internal class ServiceCharacteristicPair {
-      public CBUUID service { get; set; }
-      public CBUUID characteristic { get; set; }
-
-      public ServiceCharacteristicPair(string service, string characteristic) {
-        this.service = CBUUID.FromString(service);
-        this.characteristic = CBUUID.FromString(characteristic);
       }
     }
   }

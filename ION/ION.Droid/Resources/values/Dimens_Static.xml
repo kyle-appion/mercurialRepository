@@ -42,11 +42,11 @@
   <!-- The text size for medium text. This is generally content text. -->
   <dimen name="text_size_medium">14sp</dimen>
   <!-- The text size for large text. This is generally header text. -->
-  <dimen name="text_size_large">18sp</dimen>
+  <dimen name="text_size_large">16sp</dimen>
   <!-- The text size for a very large text. This is generally header text. -->
   <dimen name="text_size_xlarge">20sp</dimen>
   <!-- The text size for very large text. This is generally title text. -->
-  <dimen name="text_size_title">30sp</dimen>
+  <dimen name="text_size_title">24sp</dimen>
 
   <!--
   Navigation Drawer Dimensions

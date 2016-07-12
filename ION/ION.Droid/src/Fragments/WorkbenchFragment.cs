@@ -16,6 +16,7 @@
 
   using ION.Core.Content;
   using ION.Core.Devices;
+	using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
@@ -122,13 +123,11 @@
             asp.unit = u;
           }).Show();
         } else if (sensorProperty is PTChartSensorProperty) {
-          var pt = ((PTChartSensorProperty)sensorProperty);
           var i = new Intent(Activity, typeof(PTChartActivity));
           i.SetAction(Intent.ActionPick);
           i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
           StartActivityForResult(i, REQUEST_SHOW_PTCHART);
         } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
-          var sp = sensorProperty as SuperheatSubcoolSensorProperty;
           var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
           i.SetAction(Intent.ActionPick);
 
@@ -155,9 +154,6 @@
           StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
         }
       };
-
-//      itemTouchHelper = new ItemTouchHelper(new SimpleItemTouchHelperCallback(adapter));
-//      itemTouchHelper.AttachToRecyclerView(list);
     }
 
     /// <Docs>Called when the Fragment is visible to the user.</Docs>
@@ -204,7 +200,8 @@
             var u = data.GetIntExtra(PTChartActivity.EXTRA_RETURN_UNIT, -1);
             if (u != -1) {
               // TODO ahodder@appioninc.com: Assign the unit.
-//              Alert("Please change the unit for the pt chart");
+							Log.E(this, "Invalid unit on activity result for ptchart");
+              Alert("Please change the unit for the pt chart");
             }
           }
           break;
@@ -261,11 +258,30 @@
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
-      if (dgs != null && !dgs.device.isConnected) {
-        ldb.AddItem(Resource.String.reconnect, () => {
-          dgs.device.connection.ConnectAsync();
-        });
-      }
+			if (dgs != null) {
+				#if DEBUG
+				ldb.AddItem("Remote Change Unit", () => {
+					var device = dgs.device;
+					var d = new ListDialogBuilder(Activity);
+					d.SetTitle("Select a Sensor");
+
+					for (int i = 0; i < device.sensorCount; i++) {
+						var sensor = device[i];
+						d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+							ShowChangeUnitDialog(sensor);
+						});
+					}
+
+					d.Show();
+				});
+				#endif
+
+				if (!dgs.device.isConnected) {
+					ldb.AddItem(Resource.String.reconnect, () => {
+						dgs.device.connection.ConnectAsync();
+					});
+				}
+			}
 
       ldb.AddItem(Resource.String.rename, () => {
         new RenameDialog(manifold.primarySensor).Show(Activity);
@@ -294,6 +310,20 @@
 
       ldb.Show();
     }
+
+		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
+			var ldb = new ListDialogBuilder(Activity);
+
+			foreach (var unit in sensor.supportedUnits) {
+				ldb.AddItem(unit.ToString(), () => {
+					var device = sensor.device;
+					var p = device.protocol as IGaugeProtocol;
+					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
+				});
+			}
+
+			ldb.Show();
+		}
 
     /// <summary>
     /// Shows the add subview dialog.

@@ -44,17 +44,13 @@ namespace ION.IOS.ViewController.DeviceManager {
         return __displayFilter;
       }
       set {
-        if (value == null) {
-          value = new YesFilter<Sensor>();
-        }
-
         __displayFilter = value;
 
         if (deviceSource != null) {
           deviceSource.sensorFilter = __displayFilter;
         }
       }
-    } IFilter<Sensor> __displayFilter = new YesFilter<Sensor>();
+		} IFilter<Sensor> __displayFilter = null;
 
     /// <summary>
     /// The ion context for this view controller.

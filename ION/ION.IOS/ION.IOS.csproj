@@ -45,11 +45,10 @@
     <CodesignProvision></CodesignProvision>
     <IpaPackageName>
     </IpaPackageName>
-    <MtouchUseLlvm>false</MtouchUseLlvm>
+    <MtouchUseLlvm>true</MtouchUseLlvm>
     <MtouchLink>Full</MtouchLink>
     <MtouchFloat32>true</MtouchFloat32>
-    <OnDemandResourcesInitialInstallTags>Analyzer,Workbench,PTChart,SHSC</OnDemandResourcesInitialInstallTags>
-    <OnDemandResourcesPrefetchOrder>Analyzer,Workbench,PTChart,SHSC</OnDemandResourcesPrefetchOrder>
+    <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>full</DebugType>
@@ -954,6 +953,11 @@
     <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.designer.cs">
       <DependentUpon>InternalGaugeTestingViewController.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.cs" />
+    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.designer.cs">
+      <DependentUpon>SaveInternalTestViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\IOSExtensions.cs" />
     <Compile Include="src\ViewController\WebServices\SessionPayload.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCheck.cs" />
   </ItemGroup>
