@@ -212,8 +212,33 @@ namespace ION.IOS.ViewController.WebServices {
 			//} else if (isregistered == "false"){
 			//	Console.WriteLine("Couldn't create new account because " + registeredValue);
 			//}	
+	}
+	
+	public async void UploadAnalyzerLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		var Analyzer = ion.currentAnalyzer;
+		
+		foreach(var sensor in Analyzer.sensorList){
+			Console.WriteLine();
 		}
 	}
+	
+	public async void UploadWorkbenchLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+	}
+	
+	public async void DownloadAnalyzerLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+	}
+	
+	public async void DownloadWorkbenchLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+	}
+}
+
 
 	[Preserve(AllMembers = true)]
 	public class sessionData{
