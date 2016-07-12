@@ -221,20 +221,20 @@ namespace ION.IOS.ViewController {
     /// <summary>
     /// Shows the help menu.
     /// </summary>
-    private void OnHelpClicked() { 
+    private void OnHelpClicked() {
       var vc = InflateViewController<HelpViewController>(BaseIONViewController.VC_HELP);
 
       var landing = new HelpPageBuilder(Strings.HELP)
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-    		//.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
-    		//OpenWalkthroughSections();
-    		//})
-    		//.Link("RSS Feed", (object obj, HelpViewController ovc) => {
-				//	ShowRSSFeed();
-				//})
-        .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
+    		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    			OpenWalkthroughSections();
+    		})
+    		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
+				ShowRSSFeed();
+			})
+        	.Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
 	        if (!MFMailComposeViewController.CanSendMail) {
 	          Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
 	        } else {
@@ -242,16 +242,16 @@ namespace ION.IOS.ViewController {
 	        }
       	})
 #if DEBUG 
-    //.Link("Practice", (object obj, HelpViewController ovc) => {
-    ////var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
-    ////webStuff.RegisterUser("Kyle Johnson",1);
-    ////webStuff.RegisterAccount("Brick by Brick");
-    ////var sesh = new List<int>(){1,2,3};
-		////webStuff.getSession(sesh);
-		////webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
-		//})
+	    .Link("Practice", (object obj, HelpViewController ovc) => {
+	    	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
+	    	//webStuff.RegisterUser("Kyle Johnson",1);
+	    	//webStuff.RegisterAccount("Brick by Brick");
+	    	var sesh = new List<int>(){1,2,3};
+			webStuff.getSession(sesh);
+			//webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
+		})
 #endif
-				.Build();
+		.Build();
 
       vc.page = landing;
 

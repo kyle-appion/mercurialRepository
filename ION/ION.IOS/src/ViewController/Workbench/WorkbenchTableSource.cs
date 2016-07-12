@@ -133,14 +133,14 @@
           switch (fr.pt.sensor.type) {
             case ESensorType.Pressure:
               ptvc.tUnitChanged += (changedUnit) => {
-                Log.D(this, "Changing unit to " + changedUnit);
+                //Log.D(this, "Changing unit to " + changedUnit);
                 fr.pt.unit = changedUnit;
                 tableView.ReloadData();
               };
               break;
             case ESensorType.Temperature:
               ptvc.pUnitChanged += (changedUnit) => {
-                Log.D(this, "Changing unit to " + changedUnit);
+                //Log.D(this, "Changing unit to " + changedUnit);
                 fr.pt.unit = changedUnit;
                 tableView.ReloadData();
               };
