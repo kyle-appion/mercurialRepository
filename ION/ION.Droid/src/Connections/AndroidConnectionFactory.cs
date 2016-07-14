@@ -40,7 +40,7 @@
         case EProtocolVersion.V3:
           return new LeConnection(context, bluetoothManager, device);
         case EProtocolVersion.V4:
-          return new RigadoLeConnection(context, bluetoothManager, device);
+          return new RigadoConnection(context, bluetoothManager, device);
         default:
           throw new Exception("Cannot create connection for protocol version " + protocolVersion);
       }

@@ -14,39 +14,27 @@
 	using Core.Connections;
 	using Core.Util;
 
-
-	public class LeConnection : BluetoothGattCallback, IConnection, Handler.ICallback {
+	public class RigadoConnection : BluetoothGattCallback, IConnection, Handler.ICallback {
 		/// <summary>
-		/// A utility method used to create the UUIDs necessary for use for the
-		/// bluetooth api.
+		/// The UUID that is used to identify services and characteristics within the ridago BLE connection.
 		/// </summary>
-		/// <param name="content">Content.</param>
-		private static UUID Inflate(string content) {
-			return UUID.FromString(BASE_UUID.Replace("****", content));
-		}
-
+		private const string RIGADO_UUID = "6E40****-B5A3-F393-E0A9-E50E24DCCA9E";
 		/// <summary>
-		/// The base uuid that identifies services, characteristics and descriptors
-		/// within the bluetooth gatt api.
+		/// The uuid that is used to identify the read service for the rigado connection.
 		/// </summary>
-		private const string BASE_UUID = "0000****-0000-1000-8000-00805f9b34fb";
+		private static readonly UUID BASE_SERVICE = UUID.FromString(RIGADO_UUID.Replace("****", "0001"));
 		/// <summary>
-		/// The UUID for the read service.
+		/// The uuid that is used to identify the read characterstistic for the rigado connection.
 		/// </summary>
-		private static readonly UUID READ_SERVICE = Inflate("ffe0");
+		private static readonly UUID READ_CHARACTERISTIC = UUID.FromString(RIGADO_UUID.Replace("****", "0003"));
 		/// <summary>
-		/// The UUID for the read characteristic.
+		/// The descriptor for the read characteristic.
 		/// </summary>
-		private static readonly UUID READ_CHARACTERISTIC = Inflate("ffe4");
+		private static readonly UUID READ_CHARACTERISTIC_DESCRIPTOR = UUID.FromString("00002902-0000-1000-8000-00805f9b34fb");
 		/// <summary>
-		/// The UUID for the write service.
+		/// The uuid that is used to identify the write characteristic for the rigado connection.
 		/// </summary>
-		private static readonly UUID WRITE_SERVICE = Inflate("ffe5");
-		/// <summary>
-		/// The UUID for the write characteristic.
-		/// </summary>
-		/// <param name="content">Content.</param>
-		private static readonly UUID WRITE_CHARACTERISTIC = Inflate("ffe9");
+		private static readonly UUID WRITE_CHARACTERISTIC = UUID.FromString(RIGADO_UUID.Replace("****", "0002"));
 		/// <summary>
 		/// The default time that is allowed for a rigado connection attempt.
 		/// </summary>
@@ -123,6 +111,10 @@
 		/// </summary>
 		private BluetoothGattCharacteristic readCharacteristic;
 		/// <summary>
+		/// The descriptor of the read characterisitic. This is necessary to set notify.
+		/// </summary>
+		private BluetoothGattDescriptor readCharacteristicDescriptor;
+		/// <summary>
 		/// The characteristic that is used to write to the bluetooth device.
 		/// </summary>
 		private BluetoothGattCharacteristic writeCharacteristic;
@@ -135,7 +127,7 @@
 		/// </summary>
 		private HandlerThread thread;
 
-		public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
+		public RigadoConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
 			this.context = context;
 			this.manager = manager;
 			this.device = device;
@@ -208,7 +200,6 @@
 		}
 
 		public void Disconnect() {
-			Log.D(this, "Calling disconnect from:\n" + new System.Diagnostics.StackTrace().ToString());
 			DestroyHandler();
 
 			if (gatt != null) {
@@ -238,9 +229,9 @@
 			switch (msg.What) {
 				case MSG_TIMEOUT:
 					Disconnect();
-				return true;
+					return true;
 				default:
-				return false;
+					return false;
 			}
 		}
 
@@ -259,15 +250,15 @@
 		public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
 			switch (newState) {
 				case ProfileState.Connected:
-				break;
+					break;
 				case ProfileState.Connecting:
-				break;
+					break;
 				case ProfileState.Disconnected:
 					Disconnect();
-				break;
+					break;
 				case ProfileState.Disconnecting:
 					Disconnect();
-				break;
+					break;
 			}
 		}
 
@@ -275,6 +266,18 @@
 			if (ValidateServices()) {
 				if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
 					Log.E(this, "Failed to set rigado read characteristic to notify");
+					Disconnect();
+					return;
+				}
+
+				if (!readCharacteristicDescriptor.SetValue(new List<byte>(BluetoothGattDescriptor.EnableNotificationValue).ToArray())) {
+					Log.E(this, "Failed to set notification to read descriptor");
+					Disconnect();
+					return;
+				}
+
+				if (!gatt.WriteDescriptor(readCharacteristicDescriptor)) {
+					Log.E(this, "Failed to write read notification descriptor");
 					Disconnect();
 					return;
 				}
@@ -326,17 +329,18 @@
 			readCharacteristic = null;
 			writeCharacteristic = null;
 
-			var readService = gatt.GetService(READ_SERVICE);
-			if (readService != null) {
-				readCharacteristic = readService.GetCharacteristic(READ_CHARACTERISTIC);
+			var baseService = gatt.GetService(BASE_SERVICE);
+			if (baseService != null) {
+				readCharacteristic = baseService.GetCharacteristic(READ_CHARACTERISTIC);
+
+				if (readCharacteristic != null) {
+					readCharacteristicDescriptor = readCharacteristic.GetDescriptor(READ_CHARACTERISTIC_DESCRIPTOR);
+				}
+
+				writeCharacteristic = baseService.GetCharacteristic(WRITE_CHARACTERISTIC);
 			}
 
-			var writeService = gatt.GetService(WRITE_SERVICE);
-			if (writeService != null) {
-				writeCharacteristic = writeService.GetCharacteristic(WRITE_CHARACTERISTIC);
-			}
-
-			return readCharacteristic != null && writeCharacteristic != null;
+			return readCharacteristic != null && readCharacteristicDescriptor != null && writeCharacteristic != null;
 		}
 	}
 }

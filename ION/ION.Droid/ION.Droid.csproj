@@ -118,7 +118,6 @@
     <Compile Include="src\Dialog\ListDialogBuilder.cs" />
     <Compile Include="src\Util\BitmapCache.cs" />
     <Compile Include="src\Util\LogPrinter.cs" />
-    <Compile Include="src\Connections\LeConnection.cs" />
     <Compile Include="src\App\AndroidION.cs" />
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />
@@ -218,17 +217,11 @@
     <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
     <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
     <Compile Include="src\Activity\DataLogging\EViewType.cs" />
-    <Compile Include="src\Connections\RigadoLeConnection.cs" />
     <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
     <Compile Include="src\Activity\Report\NewSavedReportFragment.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
     <Compile Include="src\Activity\Report\ExportReportFragment.cs" />
-    <Compile Include="src\Activity\Report\JobAdapter.cs" />
-    <Compile Include="src\Activity\Report\JobRecord.cs" />
-    <Compile Include="src\Activity\Report\SessionRecord.cs" />
-    <Compile Include="src\Activity\Report\EViewType.cs" />
     <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
-    <Compile Include="src\Activity\Report\SessionAdapter.cs" />
     <Compile Include="src\Activity\Job\JobActivity.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceManagerActivity.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceManagerRecycleAdapter.cs" />
@@ -244,6 +237,11 @@
     <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
     <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
+    <Compile Include="src\Activity\Report\ByJobFragment.cs" />
+    <Compile Include="src\Activity\Report\BySessionFragment.cs" />
+    <Compile Include="src\Activity\Report\GraphReportFragment.cs" />
+    <Compile Include="src\Connections\RigadoConnection.cs" />
+    <Compile Include="src\Connections\LeConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -491,6 +489,11 @@
     <AndroidResource Include="Resources\layout\activity_edit_job.axml" />
     <AndroidResource Include="Resources\layout\fragment_edit_job.axml" />
     <AndroidResource Include="Resources\layout\fragment_edit_job_sessions.axml" />
+    <AndroidResource Include="Resources\layout\fragment_by_job.axml" />
+    <AndroidResource Include="Resources\layout\fragment_by_session.axml" />
+    <AndroidResource Include="Resources\layout\fragment_report_spreadsheet.axml" />
+    <AndroidResource Include="Resources\layout\fragment_report_pdf.axml" />
+    <AndroidResource Include="Resources\layout\fragment_report_graph.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
