@@ -1,5 +1,4 @@
 ﻿namespace ION.Droid.Activity.Report {
-
 	using System;
 
 	using Android.App;
@@ -22,7 +21,7 @@
 		/// <summary>
 		/// The fragment that is responsible for displaying and selecting new and saved reports.
 		/// </summary>
-		private NewSavedReportFragment newSaved;
+//		private NewSavedReportFragment newSaved;
 		/// <summary>
 		/// The fragment that is responsible for exporting reports.
 		/// </summary>
@@ -45,7 +44,7 @@
 		/// </summary>
 		/// <returns>The new saved fragment.</returns>
 		private void ShowNewSavedFragment() {
-			GotoFragment(new NewSavedReportFragment());
+//			GotoFragment(new NewSavedReportFragment());
 		}
 
 		/// <summary>

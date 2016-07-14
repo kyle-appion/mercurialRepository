@@ -1,4 +1,6 @@
 ﻿namespace ION.Droid.Activity.Report {
+
+/*
 	
 	using System;
   using System.Collections.Generic;
@@ -12,8 +14,10 @@
   using ION.Core.App;
   using ION.Core.Database;
 
-  using ION.Droid.Fragments;
-  using ION.Droid.Widgets.RecyclerViews;
+	// Using ION.Droid
+  using Fragments;
+	using Widgets.Adapters.Job;
+  using Widgets.RecyclerViews;
 
 	/// <summary>
 	/// The fragment that is responsible for displaying the views related to selecting reports to graph and export or view.
@@ -85,8 +89,8 @@
         newJob = content.FindViewById(Resource.Id.button);
         emptySessions = content.FindViewById(Resource.Id.empty);
 
-        jobAdapter = new JobAdapter();
-        sessionAdapter = new SessionAdapter();
+        jobAdapter = new JobAdapter(ion);
+        sessionAdapter = new SessionAdapter(ion);
 
         SwitchToByJob();
       }
@@ -160,17 +164,18 @@
         this.content = content;
 
         list = content.FindViewById<RecyclerView>(Resource.Id.list);
-/*
-        content.FindViewById(Resource.Id.NULL).Click += (sender, e) => {
-        };
-        content.FindViewById(Resource.Id.report_by_date).Click += (sender, e) => {
-        };
-*/
+
+//        content.FindViewById(Resource.Id.NULL).Click += (sender, e) => {
+//        };
+//        content.FindViewById(Resource.Id.report_by_date).Click += (sender, e) => {
+//        };
 
         emptySpreadsheets = content.FindViewById(Resource.Id.button);
         emptyPdfs = content.FindViewById(Resource.Id.empty);
       }
     }
 	}
+
+*/
 }
 

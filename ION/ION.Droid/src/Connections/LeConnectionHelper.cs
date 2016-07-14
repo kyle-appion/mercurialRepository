@@ -58,6 +58,9 @@
       this.manager = manager;
       this.adapter = manager.Adapter;
 
+			scanDelegate = new Api18ScanDelegate(adapter);
+
+/*
       if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
         scanDelegate = new Api21ScanDelegate(adapter);
       } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
@@ -67,6 +70,7 @@
         // No good, the user's device cannot support le connections.
         throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
       }
+*/
     }
 
     // Overridden from BaseConnectionHelper
