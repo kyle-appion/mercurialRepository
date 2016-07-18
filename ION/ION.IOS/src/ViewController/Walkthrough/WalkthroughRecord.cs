@@ -132,10 +132,13 @@ namespace ION.IOS.ViewController.Walkthrough {
   				explainWorkbenchDeviceOptions();
         	break;
       	case 9:
-					screenshot.Image = UIImage.FromBundle("Intro4");
-
+      		arrowImage.Hidden = true;
+      		arrowButton.Hidden = true;
+			screenshot.Image = UIImage.FromBundle("Intro4");
         	break;
         default:
+          arrowImage.Hidden = true;
+      	  arrowButton.Hidden = true;
           currentStep = 9;
           screenshot.Image = UIImage.FromBundle("Intro4");          
           break;

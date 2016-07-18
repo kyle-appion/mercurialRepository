@@ -892,6 +892,7 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 
         if(!existingConnection){
+          sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier);
           sensorList.Add(sensor);
           area.currentSensor = sensor;
           area.sactionView.currentSensor = sensor;

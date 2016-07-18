@@ -633,18 +633,18 @@
     <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro2x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro21x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro22x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro31x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro32x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro4WB.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro41x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro42x.png" />
-    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4.png" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4.jpg" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1029,6 +1029,7 @@
     <Folder Include="Resources\Images.xcassets\Intro1.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro2.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
   </ItemGroup>
   <ItemGroup />
