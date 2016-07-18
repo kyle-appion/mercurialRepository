@@ -892,6 +892,7 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 
         if(!existingConnection){
+          sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier);
           sensorList.Add(sensor);
           area.currentSensor = sensor;
           area.sactionView.currentSensor = sensor;
@@ -1151,13 +1152,13 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public override void ViewDidAppear(bool animated) {
-//      if (ion.dataLogManager.isRecording) {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//      } else {
-//        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-//        dataRecord.BackgroundColor = UIColor.Clear;
-//      }
+      if (ion.dataLogManager.isRecording) {
+        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+      } else {
+        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+        dataRecord.BackgroundColor = UIColor.Clear;
+      }
     }
 	}
 }

@@ -79,9 +79,7 @@
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
-    <MtouchLink>SdkOnly</MtouchLink>
-    <DeviceSpecificBuild>true</DeviceSpecificBuild>
-    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
+    <MtouchLink>Full</MtouchLink>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -617,9 +615,6 @@
     <ImageAsset Include="Resources\Images.xcassets\img_burgundy_plot.imageset\img_burgundy_plot.pdf">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\Contents.json">
-      <InProject>false</InProject>
-    </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record_text_top.pdf">
       <InProject>false</InProject>
     </ImageAsset>
@@ -632,9 +627,6 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_record.imageset\ic_record %281%29.pdf">
       <InProject>false</InProject>
     </ImageAsset>
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench1.imageset\WorkBench1.pdf">
-      <InProject>false</InProject>
-    </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\walkthrough_arrow.imageset\Contents.json">
       <InProject>false</InProject>
     </ImageAsset>
@@ -643,38 +635,22 @@
     </ImageAsset>
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\img_button_blackclosex.imageset\img_button_blackclosex.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench2.imageset\WorkBench2.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench3.imageset\WorkBench3.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench4.imageset\WorkBench4.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench5.imageset\WorkBench5.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench6.imageset\WorkBench6.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\WorkBench7.imageset\WorkBench7.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer2.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer3.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer4.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer5.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer6.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer7.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer8.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer9.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer10.imageset\Contents.json" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer1.imageset\Analyzer1.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer2.imageset\Analyzer2.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer3.imageset\Analyzer3.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer4.imageset\Analyzer4.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer5.imageset\Analyzer5.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer6.imageset\Analyzer6.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer7.imageset\Analyzer7.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer8.imageset\Analyzer8.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer9.imageset\Analyzer9.pdf" />
-    <ImageAsset Include="Resources\Images.xcassets\Analyzer10.imageset\Analyzer10.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro1.imageset\Intro1.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro2.imageset\Intro2.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro3.imageset\Intro3.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 1x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 2x.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4.jpg" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -685,7 +661,6 @@
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
-    <InterfaceDefinition Include="src\ViewController\RssFeed\RssFeedViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -958,12 +933,6 @@
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
     <Compile Include="src\App\AppDelegate.cs" />
     <Compile Include="src\Connections\IosRigadoConnection.cs" />
-    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuViewController.cs" />
-    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuViewController.designer.cs">
-      <DependentUpon>WalkthroughMenuViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\Walkthrough\WalkthroughMenuView.cs" />
-    <Compile Include="src\ViewController\Walkthrough\WalkthroughTableSource.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.designer.cs">
       <DependentUpon>WalkthroughScreenshotViewController.cs</DependentUpon>
@@ -994,6 +963,8 @@
       <DependentUpon>SaveInternalTestViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\IOSExtensions.cs" />
+    <Compile Include="src\ViewController\WebServices\SessionPayload.cs" />
+    <Compile Include="src\ViewController\RssFeed\RssFeedCheck.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1047,6 +1018,23 @@
     <Folder Include="Resources\Images.xcassets\Analyzer8.imageset\" />
     <Folder Include="Resources\Images.xcassets\Analyzer9.imageset\" />
     <Folder Include="Resources\Images.xcassets\Analyzer10.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart5.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart6.imageset\" />
+    <Folder Include="Resources\Images.xcassets\PTChart7.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\SHSC4.imageset\" />
+    <Folder Include="src\ViewController\WebServices\" />
+    <Folder Include="Resources\Images.xcassets\Intro1.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Intro2.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Intro3.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

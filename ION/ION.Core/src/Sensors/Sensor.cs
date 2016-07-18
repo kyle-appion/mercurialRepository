@@ -326,6 +326,12 @@
         __supportedUnits = value;
       }
     } Unit[] __supportedUnits;
+    
+    /// <summary>
+    /// Gets or sets the index of a sensor's location in the analyzer.
+    /// </summary>
+    /// <value>The analyzer slot.</value>
+    public int analyzerSlot { get; set; }
 
     /// <summary>
     /// Creates a new sensor.

@@ -41,7 +41,7 @@
         var link = item as LinkHelpItem;
 
         var cell = tableView.DequeueReusableCell(CELL_LINK) as LinkCell;
-
+				cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.UpdateFrom(link);
 
         return cell;
@@ -49,7 +49,7 @@
         var info = item as InfoHelpItem;
 
         var cell = tableView.DequeueReusableCell(CELL_INFO) as InfoCell;
-
+				cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.UpdateFrom(info);
 
         return cell;

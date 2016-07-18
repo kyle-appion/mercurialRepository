@@ -40,13 +40,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public PTSlideView(PTChart chart, UIScrollView scrollView, Unit pUnit, Unit tUnit, Sensor sensor) {
       ion = AppState.context;
       pressureSensor = sensor;
-	  lookup = pUnit;
-	  tempLookup = tUnit;
-	  ptChart = chart;
+		  lookup = pUnit;
+		  tempLookup = tUnit;
+		  ptChart = chart;
 
-	  minPressure = setPressureStart(lookup);
-	  minTemperature = new Scalar();
-	  minTemperature = chart.GetTemperature(new Scalar(pUnit,minPressure),pressureSensor.isRelative).ConvertTo(tUnit);
+		  minPressure = setPressureStart(lookup);
+		  minTemperature = new Scalar();
+		  if(pUnit == null){Console.WriteLine("punit is null");}
+		  if(pressureSensor == null){Console.WriteLine("Pressure sensor null");}
+		  minTemperature = chart.GetTemperature(new Scalar(pUnit,minPressure),pressureSensor.isRelative).ConvertTo(tUnit);
 
       sViewWidth = scrollView.Bounds.Width;
       sViewHeight = scrollView.Bounds.Height;

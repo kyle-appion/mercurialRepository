@@ -238,7 +238,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       InitTemperatureWidgets();
 
       ClearPressureInput();
-      ClearTemperatureInput();
+      ClearTemperatureInput(); 
 
       temperatureSensor = new ManualSensor(ESensorType.Temperature, true);
 
@@ -253,76 +253,81 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
         }
       }
-
-     // var ptValueLabel = new UILabel(new CGRect(.05 * View.Bounds.Width, 450, .9 * View.Bounds.Width, .2 * View.Bounds.Height));
-	    //ptValueLabel.AdjustsFontSizeToFitWidth = true;
-     // ptValueLabel.Lines = 0;
-
-      var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1, 310, 1,128 + 20));
-      topMark.BackgroundColor = UIColor.Black;
-
-      ptSlider = new SliderView(View,ptChart, pressureUnit, temperatureUnit, temperatureSensor, entryMode);
-      temperatureSensor.measurement = ptSlider.ptView.minTemperature.unit.OfScalar(ptSlider.ptView.minTemperature.amount);
-      editTemperature.Text = temperatureSensor.measurement.amount.ToString("N");
-		  var manualEdit = false;
+	 var manualEdit = false;
+	 var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1, 310, 1,128 + 20));
+	 if(initialManifold == null){	      
+	      topMark.BackgroundColor = UIColor.Black; 
+		  if(temperatureSensor == null){
+			temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+		  }
+	      ptSlider = new SliderView(View,ptChart, pressureUnit, temperatureUnit, temperatureSensor, entryMode);
+	
+	      temperatureSensor.measurement = ptSlider.ptView.minTemperature.unit.OfScalar(ptSlider.ptView.minTemperature.amount);
+	
+	      editTemperature.Text = temperatureSensor.measurement.amount.ToString("N");
+		  
 		  ptSlider.ptScroller.Scrolled += (sender, e) => {
-	  	if(!(pressureSensor is GaugeDeviceSensor) && !(temperatureSensor is GaugeDeviceSensor) & manualEdit == false){
-			if(temperatureSensor == null){
-			 	temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+		  	if(!(pressureSensor is GaugeDeviceSensor) && !(temperatureSensor is GaugeDeviceSensor) & manualEdit == false){
+				if(temperatureSensor == null){
+				 	temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+				}
+				setTemperatureValueFromSlider();
 			}
-
-			setTemperatureValueFromSlider();
-				
-			//ptValueLabel.Text = "temp Offset: " + ptSlider.ptScroller.ContentOffset.X + "\n" +
-			//		"looking at temp: "+ value.ToString("N") + "\n" +
-			//		"temp ticks: " + ptSlider.ptView.tempTicks + "\n" +
-			//		"press ticks: " + ptSlider.ptView.pressTicks + "\n" +
-			//		"min temp: " + ptSlider.ptView.minTemperature.amount.ToString("N") + " max temp: " + ptSlider.ptView.maxTemperature.ToString("N") + "\n";
+		  };
+	  }	  
+	  editPressure.Started += (sender, e) => {
+		manualEdit = true;
+		if(ptSlider != null){
+			ptSlider.ptScroller.ScrollEnabled = false;
 		}
 	  };
 	  
-	  editPressure.Started += (sender, e) => {
-			manualEdit = true;
-			ptSlider.ptScroller.ScrollEnabled = false;
-	  };
-	  
 	  editPressure.EditingChanged += (sender, e) => {
-			var valid = 0.0;
-			double.TryParse(editPressure.Text, out valid);
-
+		var valid = 0.0;
+		double.TryParse(editPressure.Text, out valid);
+		if(ptSlider != null){
 			if(valid >= ptSlider.ptView.minPressure && valid <= ptSlider.ptView.maxPressure.amount){
 				var tempForPressure = ptChart.GetTemperature(new Scalar(pressureUnit,valid),pressureSensor.isRelative).ConvertTo(temperatureUnit).amount;
 				var manualOffset = (tempForPressure - ptSlider.ptView.minTemperature.amount) * ptSlider.ptView.tempTicks;
 				ptSlider.ptScroller.SetContentOffset(new CGPoint(manualOffset,0),false);
 			}
+		}
 	  };
 	  
 	  editPressure.Ended += (sender, e) => {
 		manualEdit = false;
-		ptSlider.ptScroller.ScrollEnabled = true;
+		if(ptSlider != null){
+			ptSlider.ptScroller.ScrollEnabled = true;
+		}
 	  };
 	  
 	  editTemperature.Started += (sender, e) => {
 		manualEdit = true;
-		ptSlider.ptScroller.ScrollEnabled = false;
+		if(ptSlider != null){
+				ptSlider.ptScroller.ScrollEnabled = false;
+		}
 	  };
 	  
 	  editTemperature.EditingChanged += (sender, e) => {
 		var valid = 0.0;
 		double.TryParse(editTemperature.Text, out valid);
-		var manualOffset = (valid - ptSlider.ptView.minTemperature.amount) * ptSlider.ptView.tempTicks;
-		ptSlider.ptScroller.SetContentOffset(new CGPoint(manualOffset,0),false);
+		if(ptSlider != null){
+			var manualOffset = (valid - ptSlider.ptView.minTemperature.amount) * ptSlider.ptView.tempTicks;
+			ptSlider.ptScroller.SetContentOffset(new CGPoint(manualOffset,0),false);
+		}
 	  };
 	  
 	  editTemperature.Ended += (sender, e) => {
 		manualEdit = false;
-		ptSlider.ptScroller.ScrollEnabled = true;
+		if(ptSlider != null){
+			ptSlider.ptScroller.ScrollEnabled = true;
+		}
 	  };
-	  
-	  View.AddSubview(ptSlider.sliderLabel);
-	  View.AddSubview(ptSlider.ptScroller);
-//      View.AddSubview(ptValueLabel);
-      View.AddSubview(topMark);
+	  if(ptSlider != null){
+		  View.AddSubview(ptSlider.sliderLabel);
+		  View.AddSubview(ptSlider.ptScroller);
+	      View.AddSubview(topMark);
+      }
     }
 
     // Overridden from ViewController
@@ -391,11 +396,15 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		  }
 
 		  if(pressureSensor != null && pressureSensor is GaugeDeviceSensor){
+		  	if(ptSlider != null){
 				ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
 				ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
+			}
 		  } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
+		  	if(ptSlider != null){
 				ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
 				ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
+			}
 		  } else {
 				recalculateSlider(pressureUnit,temperatureUnit);
 		  }
@@ -420,13 +429,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		}
 
 	    if(pressureSensor != null && pressureSensor is GaugeDeviceSensor){
-	  	  ptSlider.Chart = ptChart;
-	  	  ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
-		  ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
+	      if(ptSlider != null){
+		  	  ptSlider.Chart = ptChart;
+		  	  ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
+			  ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
+		  }
 	    } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
-	  	  ptSlider.Chart = ptChart;
-	  	  ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
-		  ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
+	      if(ptSlider != null){
+		  	  ptSlider.Chart = ptChart;
+		  	  ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
+			  ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
+		  }
 	    } else {
 		  recalculateSlider(pressureUnit,temperatureUnit);
 	    }
@@ -447,8 +460,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             pressureUnit = sensor.unit;
             pressureSensor = sensor;
-			ptSlider.ptScroller.ScrollEnabled = false;
-			ptSlider.setOffsetFromSensorMeasurement(sensor);
+            if(ptSlider != null){
+				ptSlider.ptScroller.ScrollEnabled = false;
+				ptSlider.setOffsetFromSensorMeasurement(sensor);
+			}
             InvalidateViewController();
           };
           NavigationController.PushViewController(dm, true);
@@ -469,7 +484,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           pressureSensor = null;
           ClearPressureInput();
           ClearTemperatureInput();
-		  ptSlider.ptScroller.ScrollEnabled = true;
+          if(ptSlider != null){
+		  	ptSlider.ptScroller.ScrollEnabled = true;
+		  }
         }
         InvalidateViewController();
       }));
@@ -496,7 +513,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var supportedUnits = pressureSensor != null ? pressureSensor.supportedUnits : SensorUtils.DEFAULT_PRESSURE_UNITS;
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, supportedUnits, (obj, unit) => { 
             pressureUnit = unit;
-            ptSlider.ptView.lookup = unit;
+            if(ptSlider != null){
+            	ptSlider.ptView.lookup = unit;
+            }
             if(pressureSensor != null){
               entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
             } else {
@@ -506,7 +525,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		              entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
             }
             SetPressureMeasurementFromEditText();
-						recalculateSlider(ptSlider.ptView.lookup,temperatureUnit);
+            if(ptSlider != null){
+				recalculateSlider(ptSlider.ptView.lookup,temperatureUnit);
+			}
           });
           PresentViewController(dialog, true, null);
         }
@@ -525,8 +546,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           dm.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
             temperatureUnit = sensor.unit;
             temperatureSensor = sensor;
-			ptSlider.ptScroller.ScrollEnabled = false;
-			ptSlider.setOffsetFromSensorMeasurement(sensor);
+            if(ptSlider != null){
+				ptSlider.ptScroller.ScrollEnabled = false;
+				ptSlider.setOffsetFromSensorMeasurement(sensor);
+			}
             InvalidateViewController();
           };
           NavigationController.PushViewController(dm, true);
@@ -538,7 +561,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           temperatureSensor = null;
           ClearPressureInput();
           ClearTemperatureInput();
-		 ptSlider.ptScroller.ScrollEnabled = true;
+          if(ptSlider != null){
+		 	ptSlider.ptScroller.ScrollEnabled = true;
+		  }
         }
         InvalidateViewController();
       }));
@@ -562,14 +587,18 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           var supportedUnits = temperatureSensor != null ? temperatureSensor.supportedUnits : SensorUtils.DEFAULT_TEMPERATURE_UNITS;
           var dialog = CommonDialogs.CreateUnitPicker(Strings.Measure.PICK_UNIT, supportedUnits, (obj, unit) => {
             temperatureUnit = unit;
-            ptSlider.ptView.tempLookup = unit;
+            if(ptSlider != null){
+            	ptSlider.ptView.tempLookup = unit;
+            }
             if(pressureSensor != null){
               entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
             } else {
               entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
             }
             SetTemperatureMeasurementFromEditText();
-			recalculateSlider(pressureUnit,ptSlider.ptView.tempLookup);
+            if(ptSlider != null){
+				recalculateSlider(pressureUnit,ptSlider.ptView.tempLookup);
+			}
           });
           PresentViewController(dialog, true, null);
         }
@@ -577,6 +606,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
     
 	private async void recalculateSlider(Unit pUnit, Unit tUnit){
+		if(ptSlider == null){
+			return;
+		}
 		await Task.Delay (TimeSpan.FromMilliseconds (1));
 		ptSlider.ptView.resetData(ptChart,pUnit,tUnit);
 		await Task.Delay(TimeSpan.FromMilliseconds(2));
@@ -766,17 +798,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// then it sets the edit text and calls the method to calculate the temperature equivalent
     /// </summary>
     private double setTemperatureValueFromSlider(){
-			if (ptSlider.ptScroller.ContentOffset.X <= 0) {
-				return ptSlider.ptView.setPressureStart(pressureUnit);
-			} else if (ptSlider.ptScroller.ContentOffset.X >= ptSlider.ptView.measurementWidth){
-				return ptSlider.ptView.maxTemperature;
-			}
-			else {
-				var temperatureValue = ptSlider.ptScroller.ContentOffset.X / ptSlider.ptView.tempTicks + ptSlider.ptView.minTemperature.amount;
-				editTemperature.Text = temperatureValue.ToString ("N");
-				SetTemperatureMeasurementFromEditText ();
-				return temperatureValue;
-			}
+		if (ptSlider.ptScroller.ContentOffset.X <= 0) {
+			return ptSlider.ptView.setPressureStart(pressureUnit);
+		} else if (ptSlider.ptScroller.ContentOffset.X >= ptSlider.ptView.measurementWidth){
+			return ptSlider.ptView.maxTemperature;
+		}
+		else {
+			var temperatureValue = ptSlider.ptScroller.ContentOffset.X / ptSlider.ptView.tempTicks + ptSlider.ptView.minTemperature.amount;
+			editTemperature.Text = temperatureValue.ToString ("N");
+			SetTemperatureMeasurementFromEditText ();
+			return temperatureValue;
+		}
     }
 
     public void DeltaOnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation){

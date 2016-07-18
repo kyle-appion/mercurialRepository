@@ -18,32 +18,25 @@ namespace ION.IOS.ViewController.Walkthrough {
     public string sectionName;
     public int sectionIndex = 1;
 
-    public override void ViewDidLoad() {
+    public override void ViewDidLoad() { 
       base.ViewDidLoad();
 
-      pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, .1 * View.Bounds.Height, .7 * View.Bounds.Width, .55 * View.Bounds.Height));
+      pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 50 , .7 * View.Bounds.Width, .6 * View.Bounds.Height));
 			
-			nextPicture = new UIButton(new CGRect(.6 * View.Bounds.Width, .8 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
-      lastPicture = new UIButton(new CGRect(.1 * View.Bounds.Width, .8 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
+			nextPicture = new UIButton(new CGRect(.6 * View.Bounds.Width, .85 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
+      lastPicture = new UIButton(new CGRect(.1 * View.Bounds.Width, .85 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
       
-			explanation = new UILabel(new CGRect(.05 * View.Bounds.Width, .6 * View.Bounds.Height,.9 * View.Bounds.Width, .2 * View.Bounds.Height ));
+			explanation = new UILabel(new CGRect(.05 * View.Bounds.Width, .6 * View.Bounds.Height + 50,.9 * View.Bounds.Width, .25 * View.Bounds.Height - 50));
       explanation.AdjustsFontSizeToFitWidth = true;
       explanation.Lines = 0;
-      
-      if (sectionName == "WorkBench") {
-        Console.WriteLine("Chose WorkBench walkthrough");
-	      walkthrough = new WorkBenchWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("WorkBench1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
-      } else if (sectionName == "Analyzer"){
-        Console.WriteLine("Chose Analyzer walkthrough");
-	      walkthrough = new AnalyzerWalkthrough(View, explanation,pictureView, nextPicture);
-	      pictureView.Image = UIImage.FromBundle("Analyzer1");
-	      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";				
-			}
+      Console.WriteLine("Device dimensions: " + View.Bounds);
+
+      walkthrough = new IntroductoryWalkthrough(View, explanation,pictureView, nextPicture);
+      pictureView.Image = UIImage.FromBundle("Intro1");
+      explanation.Text = "This is the app menu button. You can press this to access any other section of the app.";
       
       nextPicture.SetTitle("Next", UIControlState.Normal);
-      nextPicture.SetTitleColor(UIColor.Black, UIControlState.Normal);
+      nextPicture.SetTitleColor(UIColor.Black, UIControlState.Normal); 
       nextPicture.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       nextPicture.Layer.BorderWidth = 1f;
       nextPicture.TouchDown += (sender, e) => {nextPicture.BackgroundColor = UIColor.Blue;};
@@ -72,6 +65,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     }
 
     public override void DidReceiveMemoryWarning() {
+    	Console.WriteLine("So Much Memory!!");
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.
     }

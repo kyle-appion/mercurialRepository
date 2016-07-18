@@ -46,12 +46,11 @@ namespace ION.IOS.ViewController.RssFeed {
       if (cell == null)
         cell = new UITableViewCell(UITableViewCellStyle.Default, "rssFeedCell") as RssFeedCell;
         
-    	//cellHeight = tableItems[indexPath.Row].description.Count * 40;
     	cellHeight = 280;
       cell.makeCellData(tableItems[indexPath.Row],cellHeight, tableView);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
-      return cell;            
+      return cell;
     }
 
     public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
@@ -79,8 +78,10 @@ namespace ION.IOS.ViewController.RssFeed {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
-      Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].title);
-    }
+    	if(!String.IsNullOrEmpty(tableItems[indexPath.Row].link)){
+      	UIApplication.SharedApplication.OpenUrl(new NSUrl(tableItems[indexPath.Row].link));
+      }
+    } 
 	}
 }
 
