@@ -152,91 +152,150 @@ namespace ION.IOS.ViewController.WebServices {
     /// <returns>post response</returns>
     public async void RegisterAccount(string accountName){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
-			
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-			var data = new System.Collections.Specialized.NameValueCollection();
+		WebClient wc = new WebClient(); 
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
 
-			data.Add("registerAccount","newaccount");
-			data.Add("accountName",accountName);
-			
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var isregistered = response.GetValue("registered").ToString();
-			var registeredValue = response.GetValue("accountID").ToString();
-			if(isregistered == "true"){
-				Console.WriteLine("Created a new account with id: " + registeredValue);
-			} else if (isregistered == "false"){
-				Console.WriteLine("Couldn't create new account because " + registeredValue);
-			}	
-		}
+		data.Add("registerAccount","newaccount");
+		data.Add("accountName",accountName);
+		
+		//initiate the post request and get the request result in a byte array 
+		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		
+		//get the string conversion for the byte array
+		var textResponse = Encoding.UTF8.GetString(result);
+		Console.WriteLine(textResponse);
+		//parse the text string into a json object to be deserialized
+		JObject response = JObject.Parse(textResponse);
+		var isregistered = response.GetValue("registered").ToString();
+		var registeredValue = response.GetValue("accountID").ToString();
+		if(isregistered == "true"){
+			Console.WriteLine("Created a new account with id: " + registeredValue);
+		} else if (isregistered == "false"){
+			Console.WriteLine("Couldn't create new account because " + registeredValue);
+		}	
+	}
     /// <summary>
     /// Working with sending and recieving data between companies and employees
     /// </summary>
     /// <returns>post response</returns>
     public async void DownloadSessions(int accountID, int userID, string startDate, string endDate){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
-			
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-			var data = new System.Collections.Specialized.NameValueCollection();
+		WebClient wc = new WebClient(); 
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
 
-			data.Add("downloadSession","getData");
-			data.Add("accountID", accountID.ToString());
-			data.Add("userID", userID.ToString());
-			data.Add("sessionStart", startDate);
-			data.Add("sessionEnd", endDate);
-			
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			//JObject response = JObject.Parse(textResponse);
-			//var isregistered = response.GetValue("registered").ToString();
-			//var registeredValue = response.GetValue("accountID").ToString();
-			//if(isregistered == "true"){
-			//	Console.WriteLine("Created a new account with id: " + registeredValue);
-			//} else if (isregistered == "false"){
-			//	Console.WriteLine("Couldn't create new account because " + registeredValue);
-			//}	
+		data.Add("downloadSession","getData");
+		data.Add("accountID", accountID.ToString());
+		data.Add("userID", userID.ToString());
+		data.Add("sessionStart", startDate);
+		data.Add("sessionEnd", endDate);
+		
+		//initiate the post request and get the request result in a byte array 
+		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		
+		//get the string conversion for the byte array
+		var textResponse = Encoding.UTF8.GetString(result);
+		Console.WriteLine(textResponse);
+		//parse the text string into a json object to be deserialized
+		//JObject response = JObject.Parse(textResponse);
+		//var isregistered = response.GetValue("registered").ToString();
+		//var registeredValue = response.GetValue("accountID").ToString();
+		//if(isregistered == "true"){
+		//	Console.WriteLine("Created a new account with id: " + registeredValue);
+		//} else if (isregistered == "false"){
+		//	Console.WriteLine("Couldn't create new account because " + registeredValue);
+		//}	
 	}
 	
 	public async void UploadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		var Analyzer = ion.currentAnalyzer;
+		var uploadAnalyzer = ion.currentAnalyzer;
 		
-		foreach(var sensor in Analyzer.sensorList){
-			Console.WriteLine();
+		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
+			Console.WriteLine("Analyzer is setup and ready");
+			foreach(var sensor in uploadAnalyzer.sensorList){
+				Console.WriteLine("Sending sensor from analyzer slot "+ sensor.analyzerSlot);
+			}
+		} else {
+			Console.WriteLine("Analyzer List isn't available yet");
 		}
 	}
 	
 	public async void UploadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
+		WebClient wc = new WebClient(); 
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+
+		data.Add("uploadWorkbench","data");
+		data.Add("accountName","MINE");
+		
+		//initiate the post request and get the request result in a byte array 
+		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		
+		//get the string conversion for the byte array
+		var textResponse = Encoding.UTF8.GetString(result);
+		Console.WriteLine(textResponse);		
+		//var uploadWorkbench = ion.currentWorkbench;
+		//if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
+		//	Console.WriteLine("Workbench is setup and ready");
+		//	foreach(var manifold in uploadWorkbench.manifolds){
+		//		Console.WriteLine("Sending workbench manifold " + manifold.primarySensor.name);
+		//	}
+		//} else {
+		//	Console.WriteLine("Workbench List isn't available yet");
+		//}
 	}
 	
 	public async void DownloadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		WebClient wc = new WebClient(); 
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+
+		data.Add("downloadAnalyzerLayout","manager");
+		data.Add("accountID","1");
+		data.Add("userID","1");
 		
 	}
 	
 	public async void DownloadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		WebClient wc = new WebClient();
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+
+		data.Add("downloadAnalyzerLayout","manager");
+		data.Add("accountID","1");
+		data.Add("userID","1");
+	}
+	
+	public async void DeleteAnalyzerLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
 	}
+
+	public async void DeleteWorkbenchLayout(){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+	} 
 }
 
 

@@ -246,9 +246,11 @@ namespace ION.IOS.ViewController {
 	    	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
 	    	//webStuff.RegisterUser("Kyle Johnson",1);
 	    	//webStuff.RegisterAccount("Brick by Brick");
-	    	var sesh = new List<int>(){1,2,3};
-			webStuff.getSession(sesh);
+	    	//var sesh = new List<int>(){1,2,3};
+			//webStuff.getSession(sesh);
 			//webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
+			//webStuff.UploadAnalyzerLayout();
+			webStuff.UploadWorkbenchLayout();
 		})
 #endif
 		.Build();

@@ -238,7 +238,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       InitTemperatureWidgets();
 
       ClearPressureInput();
-      ClearTemperatureInput();
+      ClearTemperatureInput(); 
 
       temperatureSensor = new ManualSensor(ESensorType.Temperature, true);
 
@@ -276,10 +276,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		  };
 	  }	  
 	  editPressure.Started += (sender, e) => {
-			manualEdit = true;
-			if(ptSlider != null){
-				ptSlider.ptScroller.ScrollEnabled = false;
-			}
+		manualEdit = true;
+		if(ptSlider != null){
+			ptSlider.ptScroller.ScrollEnabled = false;
+		}
 	  };
 	  
 	  editPressure.EditingChanged += (sender, e) => {
