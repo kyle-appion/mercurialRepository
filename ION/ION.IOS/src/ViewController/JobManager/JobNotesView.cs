@@ -64,7 +64,6 @@ namespace ION.IOS.ViewController.JobManager {
         notesText.ResignFirstResponder();
 
         updateNotes(frnJID);
-        Console.WriteLine("Updated Notes");
         using (XmlReader reader = XmlReader.Create(fileDir))
         {
           while (reader.Read())

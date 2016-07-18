@@ -534,10 +534,10 @@
     /// </summary>
     /// <param name="actions">Actions.</param>
     /// <param name="title">Title.</param>
-    /// <param name="section">Section.</param>
+    /// <param name="section">Section.</param> 
     private Action BuildBatchOptionsDialog (Actions actions, string title, Section section) {
       return () => {
-        var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.ActionSheet);
+        var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.Alert);
 
         foreach (var s in shownSections) {
           Log.D(this, "Section name: " + s.name);

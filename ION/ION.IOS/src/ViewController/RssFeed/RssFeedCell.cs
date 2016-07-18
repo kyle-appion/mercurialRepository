@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using CoreGraphics;
 using UIKit;
 using Foundation;
@@ -15,24 +16,27 @@ namespace ION.IOS.ViewController.RssFeed {
 		} 
 		
 		public void makeCellData(Update feedInfo, nfloat cellHeight, UITableView table){
-			Console.WriteLine("Making cell with height: " + cellHeight);
+			var culture = CultureInfo.CreateSpecificCulture("en-US");
+			var style = DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal;
+			var feedDate = DateTime.Parse(feedInfo.pubDate,culture,style);
+			
 			header = new UILabel(new CGRect(0,0, table.Bounds.Width,30));
-			header.Text = "Update " + feedInfo.title;
+			header.Lines = 0;
+			header.Text = feedInfo.title + "\n" + feedDate.ToLocalTime();
 			header.BackgroundColor = UIColor.Clear;
 			header.AdjustsFontSizeToFitWidth = true;
 			header.TextAlignment = UITextAlignment.Center;
 			
 			content = new UITextView(new CGRect(0,30,table.Bounds.Width,cellHeight - 30));
-			foreach(var sub in feedInfo.description){
-				content.Text += sub + "\n";
-			//NSError error = null;
-   //   var htmlString = new NSAttributedString (
-			//	NSData.FromString(feedInfo.description),
-			//	new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
-			//	ref error
-			//);
-			//content.AttributedText = htmlString;				
-			}
+			content.Font = UIFont.SystemFontOfSize(30f);
+			
+			NSError error = null;
+      var htmlString = new NSAttributedString (
+				NSData.FromString("<div style=\"font-size: 150%\">" +feedInfo.description+"</div>"),
+				new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
+				ref error
+			);
+			content.AttributedText = htmlString;
 
 			content.UserInteractionEnabled = false;
 			

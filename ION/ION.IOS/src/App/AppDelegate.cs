@@ -86,7 +86,7 @@
       // make the window visible
       Window.MakeKeyAndVisible();
       
-      //************************************************************************
+      //*********CHECK APP VERSION!!!!!
 			var record = KeychainAccess.ValueForKey("lastUsedVersion");		
 			
 			if(!string.IsNullOrEmpty(record)){
@@ -103,7 +103,7 @@
 				    vc.View.AddSubview(updateView.infoView);
 				    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 				}
-			} else {
+			} else { 
 				var window = UIApplication.SharedApplication.KeyWindow;
 		    var vc = window.RootViewController;
 		    while (vc.PresentedViewController != null) {
@@ -113,10 +113,20 @@
 		    vc.View.AddSubview(updateView.infoView);
 				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 			}
-			//var preserveMeasurement = new SensorMeasurementRow();
-			//preserveMeasurement.frn_SID = 1;
       //************************************************************************
 
+			//**********CHECK RSS FEED UPDATES!!!!!!!!
+        string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");
+				
+        if (string.IsNullOrEmpty(lastDate)){
+            var feedPull = new ViewController.RssFeed.RssFeedCheck();
+            feedPull.BeginReadXMLStreamSingle();
+        }
+        else if (DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()){
+            var feedPull = new ViewController.RssFeed.RssFeedCheck();
+            feedPull.BeginReadXMLStreamSingle();
+				}   
+			//************************************************************************
       return true;
     }
 
