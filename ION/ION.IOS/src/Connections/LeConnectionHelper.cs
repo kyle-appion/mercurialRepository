@@ -80,9 +80,12 @@ namespace ION.IOS.Connections {
     }
 
     public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
+			if (onPeripheralDisconnected != null) {
+				onPeripheralDisconnected(this, peripheral);
+			}
     }
 
-    public override async void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
+    public override void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
       Log.D(this, "Discovered Peripheral: " + peripheral.Name);
 
       var name = peripheral.Name;

@@ -87,7 +87,8 @@
       Window.MakeKeyAndVisible();
       
       //*********CHECK APP VERSION!!!!!
-			var record = KeychainAccess.ValueForKey("lastUsedVersion");		
+//			var record = KeychainAccess.ValueForKey("lastUsedVersion");		
+			var record = NSUserDefaults.StandardUserDefaults.StringForKey("lastUsedVersion");
 			
 			if(!string.IsNullOrEmpty(record)){
 				var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
@@ -101,7 +102,8 @@
 				    }
 				    var updateView = new WhatsNewView(vc.View,vc);			    
 				    vc.View.AddSubview(updateView.infoView);
-				    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+//				    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+					NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
 				}
 			} else { 
 				var window = UIApplication.SharedApplication.KeyWindow;
@@ -111,7 +113,8 @@
 		    	}
 		    	var updateView = new WhatsNewView(vc.View,vc);			    
 		    	vc.View.AddSubview(updateView.infoView);
-				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+//				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+				NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
 			}
       //************************************************************************
 

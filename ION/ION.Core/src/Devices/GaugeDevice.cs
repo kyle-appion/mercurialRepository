@@ -19,6 +19,8 @@
     /// </summary>
     private static readonly TimeSpan TIMEOUT_NEARBY = TimeSpan.FromMilliseconds(5000);
 
+		private static readonly TimeSpan MAX_UPDATE_DELAY = TimeSpan.FromSeconds(5);
+
     // Overridden from IDevice
     public event OnDeviceEvent onDeviceEvent;
     // Overridden from IDevice
@@ -84,6 +86,8 @@
     /// <value>The removed states.</value>
     private bool[] removedStates { get ; set; }
 
+		private DateTime lastNotify;
+
     public GaugeDevice(GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
       Log.D(this, "Created gaugedevice {serialNumber: " + serialNumber + ", connection: " + connection + " protocol: " + protocol);
       __serialNumber = serialNumber;
@@ -101,6 +105,8 @@
       connection.onDataReceived += ((IConnection conn, byte[] packet) => {
         HandlePacket(packet);
       });
+
+			lastNotify = DateTime.Now;
     }
 
     // Overridden from IDevice
@@ -138,45 +144,43 @@
 */
         GaugePacket gp = __protocol.ParsePacket(packet);
 
-//        if (sensorCount == gp.gaugeReadings.Length) {
-          int oldBattery = battery;
-          battery = gp.battery;
+        int oldBattery = battery;
+        battery = gp.battery;
+				Log.D(this, "THE GAUGE'S BATTERY IS: " + battery);
 
-          var changed = oldBattery != battery;
+        var changed = oldBattery != battery;
 
-          for (int i = 0; i < sensorCount; i++) {
-            var reading = gp.gaugeReadings[i];
-            var sensor = this[i];
+        for (int i = 0; i < sensorCount; i++) {
+          var reading = gp.gaugeReadings[i];
+          var sensor = this[i];
 
-            if (reading.sensorType != sensor.type) {
-              throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-                this[i].type + " is not valid with received type " + reading.sensorType);
-            }
-
-            if (sensor.measurement != gp.gaugeReadings[i].reading) {
-              sensor.SetMeasurement(gp.gaugeReadings[i].reading);
-              changed = true;
-            }
-
-            sensor.removed = reading.removed;
-            var removedChanged = sensor.removed != removedStates[i];
-            removedStates[i] = sensor.removed;
-
-            if (removedChanged) {
-              sensor.NotifySensorStateChanged();
-            }
+          if (reading.sensorType != sensor.type) {
+            throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
+              this[i].type + " is not valid with received type " + reading.sensorType);
           }
 
-          if (changed) {
-            NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
+          if (sensor.measurement != gp.gaugeReadings[i].reading) {
+            sensor.SetMeasurement(gp.gaugeReadings[i].reading);
+            changed = true;
           }
-//        } else {
-//          throw new ArgumentException("Failed to resolve packet: Expected " + sensorCount + " sensor data input, received: " + gp.gaugeReadings.Length);
-//        }
+
+          sensor.removed = reading.removed;
+          var removedChanged = sensor.removed != removedStates[i];
+          removedStates[i] = sensor.removed;
+
+          if (removedChanged) {
+            sensor.NotifySensorStateChanged();
+          }
+        }
+
+				if (changed || DateTime.Now - lastNotify > MAX_UPDATE_DELAY) {
+          NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
+					lastNotify = DateTime.Now;
+        }
       } catch (Exception e) {
         Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
-
     }
 
     /// <summary>

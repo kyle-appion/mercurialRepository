@@ -48,9 +48,13 @@ namespace ION.IOS.ViewController.ScreenshotReport {
         PresentViewController(savingDialog, true, null);
 
         var result = await CommitScreenshotReport();
-        savingDialog.RemoveFromParentViewController();
+
+				savingDialog.DismissViewController(true, null);
+
+				await Task.Delay(500);
+
+				// TODO ahodder@appioninc.com: We need to switch on the error, some errors are not title errors.
         if (result.success) {
-          Log.D(this, "Dismissed view controller");
           ION.Core.App.AppState.context.PostToMain(() => NavigationController.DismissViewControllerAsync(true) );
           closer();
         } else {
@@ -86,48 +90,50 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     /// Commits the current state of the screenshot report to a file.
     /// </summary>
     private Task<Result> CommitScreenshotReport() {
-      return Task.Factory.StartNew(() => {
-        var report = new ScreenshotReport();
-        ///save date in original format for localization later
-        //report.created = date;
-        report.title = Strings.Report.SCREENSHOT_TITLE;
-        report.subtitle = reportTitle.value;
-        report.notes = notes.value;
-        report.screenshot = image.AsPNG().ToArray();
-
-        if (report.subtitle == null || report.subtitle.Equals("")) {
-          return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
-        }
-
-        /// adding an extra spot to manually add the localized date
-        /// return here for possible raw data storage for different
-        /// exporting formats
-        var data = new string[items.Count + 1, 2];
-        data[0,0] = Strings.DATE;
-        data[0,1] = date.ToLocalTime().ToShortDateString();
-
-        for (int i = 1; i <= items.Count; i++) {
-          var item = items[i - 1];
-          data[i, 0] = item.header;
-          data[i, 1] = item.value;
-        }
-
-        report.tableData = data;
-
-        try {
-          var dir = AppState.context.screenshotReportFolder;
-          var file = dir.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
-          using (var stream = file.OpenForWriting()) {
-            ScreenshotReportPdfExporter.Export(report, stream);
-          }
-        } catch (Exception e) {
-          // TODO ahodder@appioninc.com: this needs a user-friendly dialog that will post on catch
-          Log.E(this, "Failed to export pdf", e);
-        }
-
-        return new Result();
-      });
+      return Task.Factory.StartNew(SaveScreenshot);
     }
+
+		private Result SaveScreenshot() {
+			var report = new ScreenshotReport();
+			///save date in original format for localization later
+			//report.created = date;
+			report.title = Strings.Report.SCREENSHOT_TITLE;
+			report.subtitle = reportTitle.value;
+			report.notes = notes.value;
+			report.screenshot = image.AsPNG().ToArray();
+
+			if (report.subtitle == null || report.subtitle.Equals("")) {
+				return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
+			}
+
+			/// adding an extra spot to manually add the localized date
+			/// return here for possible raw data storage for different
+			/// exporting formats
+			var data = new string[items.Count + 1, 2];
+			data[0,0] = Strings.DATE;
+			data[0,1] = date.ToLocalTime().ToShortDateString();
+
+			for (int i = 1; i <= items.Count; i++) {
+				var item = items[i - 1];
+				data[i, 0] = item.header;
+				data[i, 1] = item.value;
+			}
+
+			report.tableData = data;
+
+			try {
+				var dir = AppState.context.screenshotReportFolder;
+				var file = dir.GetFile(report.subtitle + ".pdf", EFileAccessResponse.CreateIfMissing);
+				using (var stream = file.OpenForWriting()) {
+					ScreenshotReportPdfExporter.Export(report, stream);
+				}
+			} catch (Exception e) {
+				// TODO ahodder@appioninc.com: this needs a user-friendly dialog that will post on catch
+				Log.E(this, "Failed to export pdf", e);
+			}
+
+			return new Result();
+		}
 	}
 
   internal class Result {

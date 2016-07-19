@@ -97,18 +97,13 @@ namespace ION.IOS.ViewController.Workbench {
         labelTitle.Text = Strings.Fluid.PT;
       }
 
-      var meas = sensorProperty.sensor.measurement;
-      var chart = sensorProperty.manifold.ptChart;
+
       switch (sensorProperty.sensor.type) {
         case ESensorType.Pressure:
-          var temp = chart.GetTemperature(meas);
-          temp = temp.ConvertTo(ion.defaultUnits.temperature);
-          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, true);
+					labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, sensorProperty.modifiedMeasurement, true);
           break;
         case ESensorType.Temperature:
-          var press = chart.GetPressure(meas);
-          press = press.ConvertTo(ion.defaultUnits.pressure); 
-          labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, press, true);
+					labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, sensorProperty.modifiedMeasurement, true);
           break;
       }
     }
@@ -149,12 +144,12 @@ namespace ION.IOS.ViewController.Workbench {
       if (sensorProperty.pressureSensor == null || sensorProperty.temperatureSensor == null) {
         labelMeasurement.Text = Strings.Workbench.Viewer.SHSC_SETUP;        
       } else {
-        var meas = sensorProperty.modifiedMeasurement;
+				var meas = sensorProperty.temperatureDelta;
         if (ptchart.fluid.mixture) {
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
         } else {
           if (meas < 0) {
-						meas = new Scalar(meas.unit, meas.amount * -1);
+						meas = meas * -1;
           }
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
         }

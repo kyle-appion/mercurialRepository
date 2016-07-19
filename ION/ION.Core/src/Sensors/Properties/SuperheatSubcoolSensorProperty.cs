@@ -1,17 +1,22 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Content;
-using ION.Core.Content.Properties;
-using ION.Core.Fluids;
-using ION.Core.Measure;
+	using System;
 
-namespace ION.Core.Sensors.Properties {
+	using ION.Core.App;
+	using ION.Core.Content;
+	using ION.Core.Content.Properties;
+	using ION.Core.Fluids;
+	using ION.Core.Measure;
   public class SuperheatSubcoolSensorProperty : AbstractManifoldSensorProperty {
 
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
       get {
-				return manifold.ptChart.GetTemperature(pressureSensor) + temperatureDelta;
+				if (isValid) {
+					return temperatureDelta.unit.OfScalar(temperatureDelta.magnitude);
+				} else {
+					return AppState.context.defaultUnits.temperature.OfScalar(0);
+				}
       }
     }
 
@@ -56,9 +61,15 @@ namespace ION.Core.Sensors.Properties {
 
 		public ScalarSpan temperatureDelta {
 			get {
-				return manifold.ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
+				if (isValid) {
+					return manifold.ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
+				} else {
+					return AppState.context.defaultUnits.temperature.OfSpan(0);
+				}
 			}
 		}
+
+		public bool isValid { get { return pressureSensor != null || temperatureSensor != null; } } 
 
     public SuperheatSubcoolSensorProperty(Manifold manifold) : base(manifold) {
       bool isValid = IsSensorValid(manifold.primarySensor) &&

@@ -169,12 +169,21 @@
 
       private set {
         if (__secondarySensor != null) {
+					var s = __secondarySensor as GaugeDeviceSensor;
+					if (s != null) {
+						s.device.onDeviceEvent -= OnDeviceEvent;
+					}
           __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
         }
 
         __secondarySensor = value;
 
         if (__secondarySensor != null) {
+					var s = __secondarySensor as GaugeDeviceSensor;
+					if (s != null) {
+						s.device.onDeviceEvent += OnDeviceEvent;
+					}
+
           __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
         }
@@ -230,6 +239,11 @@
     public Manifold(Sensor primarySensor) {
       this.primarySensor = primarySensor;
       this.primarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+
+			var s = primarySensor as GaugeDeviceSensor;
+			if (s != null) {
+				s.device.onDeviceEvent += OnDeviceEvent;
+			}
     }
 
     /// <summary>
@@ -246,6 +260,11 @@
       if (__secondarySensor != null) {
         __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
       }
+
+			var s = primarySensor as GaugeDeviceSensor;
+			if (s != null) {
+				s.device.onDeviceEvent -= OnDeviceEvent;
+			}
     }
 
     /// <summary>
@@ -357,6 +376,30 @@
 
       return false;
     }
+
+		/// <summary>
+		/// Returns the manifold's sensor property of the given type if it is present.
+		/// </summary>
+		/// <returns>The sensor property of type.</returns>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public T GetSensorPropertyOfType<T>() where T : ISensorProperty {
+			foreach (var prop in sensorProperties) {
+				if (prop.GetType().Equals(typeof(T))) {
+					return (T)prop;
+				}
+			}
+
+			return default(T);
+		}
+
+		/// <summary>
+		/// Called when a device throws a device event.
+		/// </summary>
+		/// <returns>The device event.</returns>
+		/// <param name="de">De.</param>
+		private void OnDeviceEvent(DeviceEvent de) {
+			NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+		}
 
     /// <summary>
     /// Called when a manifold's sensor's reading changes.

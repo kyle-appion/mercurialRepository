@@ -17,6 +17,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
+	using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
   using ION.IOS.Devices;
@@ -133,6 +134,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         } else {
           if (entryMode != null) {
             entryMode = new SensorEntryMode(this, temperatureSensor, pressureUnit, ptChart, editTemperature, editPressure);
+						UpdateManifoldUnit();
           }
         }
       }
@@ -157,6 +159,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         } else {
           if (entryMode != null) {
             entryMode = new SensorEntryMode(this,pressureSensor, temperatureUnit, ptChart, editPressure, editTemperature);
+						UpdateManifoldUnit();
           }
         }
       }
@@ -361,18 +364,40 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       }
     }
     
-    public override void ViewWillUnload()
-	{
-		base.ViewWillUnload();
-		entryMode = null;
-		ptSlider = null;
-		pressureSensor = null;
-		temperatureSensor = null;
-		ptChart = null;
-		initialManifold = null;
-		temperatureUnit = null;
-		pressureUnit = null;
-	}
+    public override void ViewWillUnload() {
+			base.ViewWillUnload();
+			entryMode = null;
+			ptSlider = null;
+			pressureSensor = null;
+			temperatureSensor = null;
+			ptChart = null;
+			initialManifold = null;
+			temperatureUnit = null;
+			pressureUnit = null;
+		}
+
+		/// <summary>
+		/// Attempts to update the pt chart sensor property unit.
+		/// </summary>
+		/// <returns>The manifold unit.</returns>
+		private void UpdateManifoldUnit() {
+			if (initialManifold == null) {
+				return;
+			}
+
+			var prop = initialManifold.GetSensorPropertyOfType<PTChartSensorProperty>();
+			if (prop != null) {
+				switch (initialManifold.primarySensor.type) {
+					case ESensorType.Pressure:
+						prop.unit = this.temperatureUnit;
+						break;
+					case ESensorType.Temperature:
+						prop.unit = this.pressureUnit;
+						break;
+				}
+			}
+
+		}
 
     /// <summary>
     /// Initializes the states and event handlers the for ptchart widgets
