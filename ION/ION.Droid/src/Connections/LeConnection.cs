@@ -156,14 +156,14 @@
 			try {
 				var start = DateTime.Now;
 
-				if (gatt == null) {
+//				if (gatt == null) {
 					gatt = device.ConnectGatt(context, false, this);
-				} else {
-					if (!gatt.Connect()) {
-						Disconnect();
-						return false;
-					}
-				}
+//				} else {
+//					if (!gatt.Connect()) {
+//						Disconnect();
+//						return false;
+//					}
+//				}
 
 				if (gatt == null) {
 					connectionState = EConnectionState.Disconnected;
@@ -208,11 +208,11 @@
 		}
 
 		public void Disconnect() {
-			Log.D(this, "Calling disconnect from:\n" + new System.Diagnostics.StackTrace().ToString());
 			DestroyHandler();
 
 			if (gatt != null) {
 				gatt.Disconnect();
+				gatt.Close();
 			}
 
 			readCharacteristic = null;
