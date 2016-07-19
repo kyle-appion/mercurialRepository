@@ -13,20 +13,20 @@ namespace ION.IOS.ViewController.Walkthrough {
     public UIButton nextPicture;
     public UIButton lastPicture;
     public UILabel explanation;
-		public IWalkthrough walkthrough;
+	public IWalkthrough walkthrough;
 
     public string sectionName;
     public int sectionIndex = 1;
 
-    public override void ViewDidLoad() { 
+    public override void ViewDidLoad() {
       base.ViewDidLoad();
 
       pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 50 , .7 * View.Bounds.Width, .6 * View.Bounds.Height));
 			
-			nextPicture = new UIButton(new CGRect(.6 * View.Bounds.Width, .85 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
+	  nextPicture = new UIButton(new CGRect(.6 * View.Bounds.Width, .85 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
       lastPicture = new UIButton(new CGRect(.1 * View.Bounds.Width, .85 * View.Bounds.Height,.3 * View.Bounds.Width,.1 * View.Bounds.Height));
       
-			explanation = new UILabel(new CGRect(.05 * View.Bounds.Width, .6 * View.Bounds.Height + 50,.9 * View.Bounds.Width, .25 * View.Bounds.Height - 50));
+	  explanation = new UILabel(new CGRect(.05 * View.Bounds.Width, .6 * View.Bounds.Height + 50,.9 * View.Bounds.Width, .25 * View.Bounds.Height - 50));
       explanation.AdjustsFontSizeToFitWidth = true;
       explanation.Lines = 0;
       Console.WriteLine("Device dimensions: " + View.Bounds);

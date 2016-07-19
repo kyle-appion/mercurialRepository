@@ -78,7 +78,7 @@ namespace ION.IOS.ViewController.WebServices {
 		public async void UploadSession(string url, string json, bool isJson = true)
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient(); 
+			WebClient wc = new WebClient();
 			wc.Proxy = null;
 			
 			//Create the data package to send for the post request
@@ -239,14 +239,14 @@ namespace ION.IOS.ViewController.WebServices {
 		var data = new System.Collections.Specialized.NameValueCollection();
 
 		data.Add("uploadWorkbench","data");
-		data.Add("accountName","MINE");
+		data.Add("userID","1");
 		
 		//initiate the post request and get the request result in a byte array 
 		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
 		
 		//get the string conversion for the byte array
 		var textResponse = Encoding.UTF8.GetString(result);
-		Console.WriteLine(textResponse);		
+		Console.WriteLine(textResponse);
 		//var uploadWorkbench = ion.currentWorkbench;
 		//if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
 		//	Console.WriteLine("Workbench is setup and ready");
@@ -267,10 +267,14 @@ namespace ION.IOS.ViewController.WebServices {
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 
-		data.Add("downloadAnalyzerLayout","manager");
-		data.Add("accountID","1");
+		data.Add("downloadAnalyzer","manager");
 		data.Add("userID","1");
 		
+		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		
+		var textResponse = Encoding.UTF8.GetString(result);
+		
+		Console.WriteLine(textResponse);
 	}
 	
 	public async void DownloadWorkbenchLayout(){
@@ -293,8 +297,7 @@ namespace ION.IOS.ViewController.WebServices {
 	}
 
 	public async void DeleteWorkbenchLayout(){
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		
+		await Task.Delay(TimeSpan.FromMilliseconds(1));		
 	} 
 }
 
