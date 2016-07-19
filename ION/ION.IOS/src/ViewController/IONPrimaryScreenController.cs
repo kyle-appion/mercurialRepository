@@ -228,12 +228,14 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
+#if DEBUG 
     		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
     			OpenWalkthroughSections();
     		})
     		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
 				ShowRSSFeed();
 			})
+#endif
         	.Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
 	        if (!MFMailComposeViewController.CanSendMail) {
 	          Toast.New(View, Strings.Errors.CANNOT_SEND_FEEBACK);
@@ -243,14 +245,15 @@ namespace ION.IOS.ViewController {
       	})
 #if DEBUG 
 	    .Link("Practice", (object obj, HelpViewController ovc) => {
-	    	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
+	    	//var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
 	    	//webStuff.RegisterUser("Kyle Johnson",1);
 	    	//webStuff.RegisterAccount("Brick by Brick");
 	    	//var sesh = new List<int>(){1,2,3};
 			//webStuff.getSession(sesh);
 			//webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
 			//webStuff.UploadAnalyzerLayout();
-			webStuff.UploadWorkbenchLayout();
+			//webStuff.UploadWorkbenchLayout();
+			//webStuff.DownloadAnalyzerLayout();
 		})
 #endif
 		.Build();
