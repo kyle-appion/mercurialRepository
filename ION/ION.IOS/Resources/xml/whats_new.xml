@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="NEWEST">
-		<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
-	</display>
-	<display version="1.6.1">
+  <display version="1.6.2">
+	<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
+	<fixed>Fixed PT Slider affecting PT Chart subview values</fixed>
+	<fixed>Fixed Device Manager connection menu for device sections on Ipad</fixed>
+  </display>
+  <display version="1.6.1">
     <new>Added Data Logging Feature</new>
     <new>Added Data Log Reporting</new>
     <new>Added Job Manager Feature</new>

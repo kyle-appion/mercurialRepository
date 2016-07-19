@@ -105,17 +105,18 @@
 				}
 			} else { 
 				var window = UIApplication.SharedApplication.KeyWindow;
-		    var vc = window.RootViewController;
-		    while (vc.PresentedViewController != null) {
-		      vc = vc.PresentedViewController;
-		    }
-		    var updateView = new WhatsNewView(vc.View,vc);			    
-		    vc.View.AddSubview(updateView.infoView);
+		    	var vc = window.RootViewController;
+		    	while (vc.PresentedViewController != null) {
+		     	 vc = vc.PresentedViewController;
+		    	}
+		    	var updateView = new WhatsNewView(vc.View,vc);			    
+		    	vc.View.AddSubview(updateView.infoView);
 				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 			}
       //************************************************************************
 
 			//**********CHECK RSS FEED UPDATES!!!!!!!!
+			/*
         string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");
 				
         if (string.IsNullOrEmpty(lastDate)){
@@ -125,7 +126,8 @@
         else if (DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()){
             var feedPull = new ViewController.RssFeed.RssFeedCheck();
             feedPull.BeginReadXMLStreamSingle();
-				}   
+		}
+		*/  
 			//************************************************************************
       return true;
     }
