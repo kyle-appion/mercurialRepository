@@ -69,7 +69,7 @@
     protected override List<ISerialNumber> DoInBackground(List<ISerialNumber> parameters) {
       var ret = new List<ISerialNumber>();
 
-      var task = new RequestCalibrationCertificates(ion, parameters.ToArray()).sRequest();
+      var task = new RequestCalibrationCertificates(ion, parameters.ToArray()).Request();
       task.Wait();
 
       foreach (var cr in task.Result) {

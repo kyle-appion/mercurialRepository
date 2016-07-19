@@ -154,7 +154,7 @@ namespace ION.IOS.ViewController.Workbench {
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
         } else {
           if (meas < 0) {
-            meas = meas * -1;
+						meas = new Scalar(meas.unit, meas.amount * -1);
           }
           labelMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, meas, true);
         }

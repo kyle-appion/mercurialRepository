@@ -73,7 +73,9 @@
     /// <param name="menu">Menu.</param>
     public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
       inflater.Inflate(Resource.Menu.screenshot, menu);
+#if DEBUG
       inflater.Inflate(Resource.Menu.record, menu);
+#endif
 
       var ss = menu.FindItem(Resource.Id.screenshot);
       var icon = ss.Icon;

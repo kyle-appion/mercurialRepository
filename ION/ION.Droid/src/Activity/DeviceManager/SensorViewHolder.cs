@@ -86,7 +86,7 @@
           onSensorAddClickedAction(record.sensor);
         }
       }));
-
+/*
       workbench.SetOnClickListener(new ViewClickAction((v) => {
         var w = ion.currentWorkbench;
         if (w.ContainsSensor(record.sensor)) {
@@ -149,6 +149,7 @@
           Invalidate();
         }
       }));
+*/
     }
 
     public void BindTo(SensorRecord record, OnSensorReturnClicked sensorAddClickedAction = null) {
@@ -173,18 +174,18 @@
 
       if (ion.currentWorkbench.ContainsSensor(record.sensor)) {
         workbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_workbench));
-        workbench.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
+//        workbench.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
       } else {
-        workbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_workbench));
-        workbench.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
+				workbench.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_nav_workbench));
+//        workbench.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
       }
 
       if (ion.currentAnalyzer.HasSensor(record.sensor)) {
         analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_on_analyzer));
-        analyzer.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
+//        analyzer.SetBackgroundResource(Resource.Drawable.np_square_black_border_white_background);
       } else {
-        analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add_to_analyzer));
-        analyzer.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
+				analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_nav_analyzer));
+//        analyzer.SetBackgroundResource(Resource.Drawable.img_button_up_gold);
       }
     }
 
