@@ -26,28 +26,33 @@
 
   public class DeviceSectionViewHolder : DMViewHolder {
 
-    private DeviceSectionRecord record;
+		private DeviceSectionRecord deviceRecord;
     private TextView counter { get; set; }
     private TextView title { get; set; }
+		private ImageView icon { get; set; }
 
     public DeviceSectionViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_device_manager_group) {
       counter = view.FindViewById<TextView>(Resource.Id.counter);
       title = view.FindViewById<TextView>(Resource.Id.title);
+			icon = view.FindViewById<ImageView>(Resource.Id.icon);
     }
 
     public void BindTo(DeviceSectionRecord record) {
-      this.record = record;
+      deviceRecord = record;
+			icon.SetOnClickListener(new ViewClickAction((view) => {
+				record.section.actions();
+			}));
       Invalidate();
     }
 
     public override void Unbind() {
-      record = null;
+      deviceRecord = null;
     }
 
     public void Invalidate() {
-      view.SetBackgroundColor(new Android.Graphics.Color(view.Context.Resources.GetColor(record.section.color)));
-      counter.Text = "" + record.section.devices.Count;
-      title.SetText(record.section.name);
+      view.SetBackgroundColor(new Android.Graphics.Color(view.Context.Resources.GetColor(deviceRecord.section.color)));
+      counter.Text = "" + deviceRecord.section.devices.Count;
+      title.SetText(deviceRecord.section.name);
     }
   }
 }

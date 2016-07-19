@@ -25,6 +25,40 @@ namespace ION.IOS.App {
 		
 		public WhatsNewView(UIView parentView, UIViewController parentVC)
 		{
+
+			var updateSize = 0.0;
+
+			FileStream stream = new FileStream("./xml/whats_new.xml",FileMode.Open,FileAccess.Read);			
+
+			var sb = new StringBuilder();
+			var whatsNew = ION.Core.Content.WhatsNew.ParseWithException(stream);
+			foreach (var wn in whatsNew) {
+				updateSize += .55;
+				sb.Append("<h2>").Append(" Version " + wn.versionCode).Append("</h2>");
+
+				sb.Append("<b><h"+headingSize+">").Append(" NEW").Append("</h"+headingSize+"></b>");
+				foreach (var n in wn.whatsNew) {
+					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(n).Append("</p>");
+				}
+
+				sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b>");
+				foreach (var u in wn.whatsUpdated) {
+					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(u).Append("</p>");
+				}
+
+				sb.Append("<b><h"+headingSize+">").Append(" FIXED").Append("</h"+headingSize+"></b>");
+				foreach (var f in wn.whatsFixed) {
+					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(f).Append("</p>");
+				}
+			}
+
+			NSError error = null;
+			var htmlString = new NSAttributedString (
+				NSData.FromString(sb.ToString()),
+				new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
+				ref error
+			);
+
 			infoView = new UIView(new CGRect(.025 * parentView.Bounds.Width, 80, .95 * parentView.Bounds.Width, .85 * parentView.Bounds.Height));
 			infoView.Layer.CornerRadius = 5;
 			infoView.ClipsToBounds = true;
@@ -54,7 +88,7 @@ namespace ION.IOS.App {
 			contentHolder = new UIScrollView(new CGRect(0,90,infoView.Bounds.Width,infoView.Bounds.Height - 140));
 			contentHolder.Layer.CornerRadius = 5;
 			contentHolder.ClipsToBounds = true;
-			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width,1.2 * contentHolder.Bounds.Height);
+			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width, updateSize * contentHolder.Bounds.Height);
 			
 			closeBottom = new UIButton(new CGRect(0,infoView.Bounds.Height - 50,infoView.Bounds.Width,50));
 			closeBottom.ClipsToBounds = true;
@@ -66,7 +100,7 @@ namespace ION.IOS.App {
 				infoView.RemoveFromSuperview();
 			};
 			
-			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width,1.2 * contentHolder.Bounds.Height));
+			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width, updateSize * contentHolder.Bounds.Height));
 			content.Layer.CornerRadius = 5;
 			content.ClipsToBounds = true;
 			content.UserInteractionEnabled = false;
@@ -80,35 +114,6 @@ namespace ION.IOS.App {
 				fontSize = 15;
 			}
 			
-		FileStream stream = new FileStream("./xml/whats_new.xml",FileMode.Open,FileAccess.Read);			
-			
-		var sb = new StringBuilder();
-		var whatsNew = ION.Core.Content.WhatsNew.ParseWithException(stream);
-      foreach (var wn in whatsNew) {
-        sb.Append("<h2>").Append(" Version " + wn.versionCode).Append("</h2>");
-
-        sb.Append("<b><h"+headingSize+">").Append(" NEW").Append("</h"+headingSize+"></b>");
-        foreach (var n in wn.whatsNew) {
-          sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(n).Append("</p>");
-        }
-
-        sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b>");
-        foreach (var u in wn.whatsUpdated) {
-          sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(u).Append("</p>");
-        }
-
-        sb.Append("<b><h"+headingSize+">").Append(" FIXED").Append("</h"+headingSize+"></b>");
-        foreach (var f in wn.whatsFixed) {
-          sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(f).Append("</p>");
-        }
-      }
-
-      NSError error = null;
-      var htmlString = new NSAttributedString (
-				NSData.FromString(sb.ToString()),
-				new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
-				ref error
-			);
       content.AttributedText = htmlString;
 			
 			contentHolder.AddSubview(content);

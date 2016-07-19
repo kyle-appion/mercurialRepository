@@ -150,7 +150,8 @@
     /// <param name="index">Index.</param>
     /// <param name="record">Record.</param>
     public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
-      return record is DeviceRecord;
+      var ret = record is DeviceRecord;
+			return ret;
     }
 
     /// <summary>
@@ -214,6 +215,7 @@
       }
       switch ((EViewType)GetItemViewType(position)) {
         case EViewType.IDevice:
+					vh.button.Text = recyclerView.Context.GetString(Resource.String.remove);
           var dr = record as DeviceRecord;
           (vh as DeviceViewHolder)?.BindTo(dr);
           dm.clickAction = () => {
@@ -319,25 +321,27 @@
       var size = SizeOfRecord(record);
       section.devices.Remove(device);
 
-      Log.D(this, "Removing record of size: " + size);
-      records.RemoveRange(deviceIndex, size);
-      if (animate) {
-        NotifyItemRangeRemoved(deviceIndex, size);
-      }
+			if (deviceIndex != -1) {
+	      Log.D(this, "Removing record of size: " + size);
+	      records.RemoveRange(deviceIndex, size);
+	      if (animate) {
+	        NotifyItemRangeRemoved(deviceIndex, size);
+	      }
 
-      if (shownSections.Contains(section) && section.devices.Count <= 0) {
-        shownSections.Remove(section);
-        records.RemoveAt(sectionIndex);
-        if (animate) {
-          NotifyItemRemoved(sectionIndex);
-        }
-      } else {
-        NotifyItemChanged(sectionIndex);
-      }
+	      if (shownSections.Contains(section) && section.devices.Count <= 0) {
+	        shownSections.Remove(section);
+	        records.RemoveAt(sectionIndex);
+	        if (animate) {
+	          NotifyItemRemoved(sectionIndex);
+	        }
+	      } else {
+	        NotifyItemChanged(sectionIndex);
+	      }
 
-      if (device == expandedDevice) {
-        expandedDevice = null;
-      }
+	      if (device == expandedDevice) {
+	        expandedDevice = null;
+	      }
+			}
     }
 
     /// <summary>
@@ -605,6 +609,8 @@
         dialog.Dismiss();
         ForgetDevices(devices);
       });
+
+			adb.Show();
     }
 
     /// <summary>
@@ -613,6 +619,7 @@
     /// <param name="devices">Devices.</param>
     private void ForgetDevices(IEnumerable<IDevice> devices) {
       foreach (var d in devices) {
+/*
         var index = IndexOfDevice(d);
         int count = 2;
 
@@ -625,6 +632,7 @@
 
         records.RemoveRange(index, count);
         NotifyItemRangeRemoved(index, count);
+*/
         ion.deviceManager.DeleteDevice(d.serialNumber);
       }
     }
