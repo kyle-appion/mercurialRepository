@@ -1,54 +1,38 @@
-﻿namespace ION.TestFixtures.Measure {
-
-  using System;
-  using System.IO;
-  using System.Runtime.Serialization;
-  using System.Xml;
+﻿namespace Measurement {
 
   using NUnit.Framework;
 
-  using ION.Core.Measure;
+  using Measure;
 
-  // TODO ahodder@appioninc.com: Finish implementing the tests
   [TestFixture]
-  public class TestScalar {
-    private static readonly Unit KEL = Units.Temperature.KELVIN;
-    private static readonly Unit FAH = Units.Temperature.FAHRENHEIT;
-
-    private static readonly double EPSILON = 0.01;
-    private void AssertEquals(double expected, double received) {
-      Assert.AreEqual(expected, received, EPSILON);
+  public class TestScalar : BaseTest {
+    [Test]
+    public void TestScalarAddition() {
+      var c = Units.Temperature.CELSIUS.OfScalar(50);
+      var f = Units.Temperature.FAHRENHEIT.OfSpan(5);
+      AssertEquals(52.777777, (c + f).magnitude); 
     }
 
     [Test]
-    public void TestScalarTransitionalAddition() {
-      AssertEquals(54.33, (FAH.OfScalar(10) + KEL.OfScalar(280)).amount);
+    public void TestScalarSubtraction() {
+      var k = Units.Temperature.KELVIN.OfScalar(300);
+      var f = Units.Temperature.FAHRENHEIT.OfSpan(16);
+      AssertEquals(291.11111, (k - f).magnitude);
     }
 
     [Test]
-    public void TestScalarTransitionalSubtraction() {
-      AssertEquals(39.072, (KEL.OfScalar(300) - FAH.OfScalar(10)).amount);
+    public void TestScalarMultiplication() {
+      var f = Units.Temperature.FAHRENHEIT.OfScalar(45);
+      var k = Units.Temperature.KELVIN.OfSpan(10);
+      AssertEquals(810.0, (f * k).magnitude);
     }
 
     [Test]
-    public void TestScalarTransitionalMultiplication() {
-      AssertEquals(2581.5, (KEL.OfScalar(10) * FAH.OfScalar(5)).amount);
-    }
-
-    [Test]
-    public void TestScalarSerialization() {
-      Scalar scalar = KEL.OfScalar(1337);
-
-      var ds = new DataContractSerializer(typeof(Scalar));
-      var stream = new MemoryStream();
-      using (XmlDictionaryWriter w = XmlDictionaryWriter.CreateBinaryWriter(stream))
-        ds.WriteObject(w, scalar);
-    
-/*
-      Scalar inflated = null;
-      using (XmlDictionaryReader r = XmlDictionaryReader.CreateBinaryReader(stream, XmlDictionaryReaderQuotas.Max))
-        inflated = (Scalar)ds.ReadObject(r);
-*/
+    public void TestScalarDivision() {
+      var k = Units.Temperature.KELVIN.OfScalar(210);
+      var f = Units.Temperature.FAHRENHEIT.OfSpan(6);
+      AssertEquals(63, (k / f).magnitude);
     }
   }
 }
+

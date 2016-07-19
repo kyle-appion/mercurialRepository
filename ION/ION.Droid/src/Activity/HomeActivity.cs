@@ -236,7 +236,7 @@
               HideDrawer();
             },
           },
-
+/*
           new NavigationIconItem() {
             id = Resource.Id.device_manager,
             title = GetString(Resource.String.device_manager),
@@ -246,6 +246,7 @@
               StartActivity(new Intent(this, typeof(DeviceManagerActivity)));
             },
           },
+*/
         },
       };
 
@@ -277,6 +278,7 @@
         id = Resource.Id.reports,
         title = GetString(Resource.String.reports),
         items = new NavigationItem[] {
+#if DEBUG
           new NavigationIconItem() {
             id = Resource.Id.job,
             title = GetString(Resource.String.job_settings),
@@ -285,7 +287,6 @@
               StartActivity(typeof(JobActivity));
             }
           },
-#if DEBUG
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
             title = GetString(Resource.String.report_data_logging),

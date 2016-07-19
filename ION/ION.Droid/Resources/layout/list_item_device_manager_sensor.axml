@@ -44,19 +44,19 @@
     </LinearLayout>
     <ImageView
         android:id="@id/workbench"
+        android:background="@drawable/np_square_black_border_white_background"
         android:layout_width="@dimen/device_manager_sensor_icon_size"
         android:layout_height="@dimen/device_manager_sensor_icon_size"
-        android:background="@drawable/img_button_up_gold"
         android:src="@drawable/ic_devices_add_to_workbench"
-        android:padding="1dp"
+        android:padding="5dp"
         android:scaleType="fitCenter" />
     <ImageView
         android:id="@id/analyzer"
+        android:background="@drawable/np_square_black_border_white_background"
         android:layout_width="@dimen/device_manager_sensor_icon_size"
         android:layout_height="@dimen/device_manager_sensor_icon_size"
-        android:background="@drawable/img_button_up_gold"
         android:src="@drawable/ic_devices_add_to_analyzer"
-        android:padding="1dp"
+        android:padding="5dp"
         android:scaleType="fitCenter" />
     <ImageButton
         android:id="@id/add"

@@ -1,6 +1,6 @@
-﻿using System;
-
-namespace ION.Core.Measure {
+﻿namespace ION.Core.Measure {
+  
+  using System;
 
   /// <summary>
   /// The enumeration of the types of measurements that the ION application is currently,

@@ -224,13 +224,13 @@ namespace ION.IOS.ViewController.Analyzer
     private async void DoUpdateRocCell() {
 
       var meas = roc.modifiedMeasurement;
-      var abs = meas.Abs();
+			var abs = Math.Abs(meas.amount);
       var range = (roc.sensor.maxMeasurement - roc.sensor.minMeasurement) / 10;
 
-      if (abs > range) {
+			if (abs > range.magnitude) {
         rocReading.Text = ">" + SensorUtils.ToFormattedString(roc.sensor.type, range, false) + "/min";
       } else {
-        rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, abs, false) + "/min";
+				rocReading.Text = SensorUtils.ToFormattedString(roc.sensor.type, meas.unit.OfScalar(abs), false) + "/min";
       }
 
       if (roc.isStable) {
@@ -363,29 +363,29 @@ namespace ION.IOS.ViewController.Analyzer
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
-          ptAmount = calculation.amount;
+          ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
-          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+					shReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         } else if (manifold.primarySensor.type == ESensorType.Temperature && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
           var shname = manifold.ptChart.fluid.name;
           shFluidType.BackgroundColor = CGExtensions.FromARGB8888(ion.fluidManager.GetFluidColor(shname));
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.secondarySensor.measurement, manifold.primarySensor.measurement, manifold.secondarySensor.isRelative);
-          ptAmount = calculation.amount;
+					ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
-          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+					shReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         } else {
           manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
           var calculation = manifold.ptChart.CalculateSystemTemperatureDelta(manifold.primarySensor.measurement, manifold.secondarySensor.measurement, manifold.primarySensor.isRelative);
-          ptAmount = calculation.amount;
+					ptAmount = calculation.magnitude;
           if (!manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
-          shReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+					shReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         }
       } else {
         shReading.Text = Util.Strings.Analyzer.SETUP;

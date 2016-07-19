@@ -16,10 +16,10 @@
     /// </remarks>
     /// <returns>The pressure from elevation.</returns>
     /// <param name="elevation">Elevation.</param>
-    public static Scalar AtmosphericPressureFromElevation(Scalar elevation) {
+    public static ScalarSpan AtmosphericPressureFromElevation(Scalar elevation) {
       var meters = elevation.ConvertTo(Units.Length.METER);
       var pascals = 101325 * Math.Pow(1 - (2.25577 * Math.Pow(10, -5) * meters.amount), 5.25588); 
-      return Units.Pressure.PASCAL.OfScalar(pascals);
+      return Units.Pressure.PASCAL.OfSpan(pascals);
     }
 
     /// <summary>

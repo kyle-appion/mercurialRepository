@@ -68,14 +68,14 @@
         measurement.Text = c.GetString(Resource.String.stable);
         icon.Visibility = ViewStates.Invisible;
       } else {
-        var mod = item.modifiedMeasurement;
+				var mod = item.modifiedMeasurement.amount;
 
-        var dmax = item.sensor.maxMeasurement / 10;
+				var dmax = item.sensor.maxMeasurement.amount / 10;
 
-        if (mod.Abs() >= dmax) {
-          measurement.Text = ">" + (int)dmax.amount;
+				if (System.Math.Abs(mod) >= dmax) {
+          measurement.Text = ">" + (int)dmax;
         } else { 
-          measurement.Text = "" + (int)mod.amount;
+          measurement.Text = "" + (int)mod;
         }
 
         icon.Visibility = ViewStates.Visible;

@@ -478,7 +478,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             throw new Exception("Cannot update delta for state: " + ptChart.state);
         }
       } else {
-        if (calculation.AssertEquals(0, 0.01)) {
+				if (System.Math.Abs(calculation.magnitude) < 0.1) {
           labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);
           labelFluidState.Text = Strings.Fluid.SATURATED;
         } else if (calculation > 0) {
