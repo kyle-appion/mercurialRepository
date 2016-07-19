@@ -171,6 +171,14 @@
             }
           }
           break;
+
+				case REQUEST_SHOW_SUPERHEAT_SUBCOOL:
+					if (data != null) {
+						if (data.HasExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR)) {
+							
+						}
+					}
+					break;
         default:
           base.OnActivityResult(requestCode, resultCode, data);
           break;
