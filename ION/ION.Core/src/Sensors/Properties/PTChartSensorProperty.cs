@@ -4,12 +4,13 @@ using ION.Core.Content;
 using ION.Core.Content.Properties;
 using ION.Core.Fluids;
 using ION.Core.Measure;
+using ION.Core.App;
 
 namespace ION.Core.Sensors.Properties {
   public class PTChartSensorProperty : AbstractManifoldSensorProperty {
 
     // Overriden from AbstractSensorProperty
-    public override ION.Core.Measure.Scalar modifiedMeasurement {
+    public override Scalar modifiedMeasurement {
       get {
         // The else is asserted to be valid by the check in the constructor.
         if (sensor.type == ESensorType.Pressure) {
@@ -23,7 +24,16 @@ namespace ION.Core.Sensors.Properties {
     /// <summary>
     /// The opposing unit that the ptsensor property will use for calculated measurements.
     /// </summary>
-    public Unit unit;
+		public Unit unit {
+			get {
+				return __unit;
+			}
+			set {
+				ION.Core.Util.Log.D(this, "Setting unit to: " + value);
+				__unit = value;
+				NotifyChanged();
+			}
+		} Unit __unit;
 
     public PTChartSensorProperty(Manifold manifold) : base(manifold) {
       if (!IsSensorValid(manifold.primarySensor)) {
@@ -31,16 +41,16 @@ namespace ION.Core.Sensors.Properties {
       }
 
       if (manifold.secondarySensor != null) {
-        unit = manifold.secondarySensor.unit;
+        __unit = manifold.secondarySensor.unit;
       } else {
-        switch (manifold.primarySensor.type) {
-          case ESensorType.Pressure:
-            unit = ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(ESensorType.Temperature);
-            break;
-          case ESensorType.Temperature:
-            unit = ION.Core.App.AppState.context.defaultUnits.DefaultUnitFor(ESensorType.Pressure);
-            break;
-        }
+				switch (sensor.type) {
+					case ESensorType.Pressure:
+						__unit = AppState.context.defaultUnits.temperature;
+					break;
+					case ESensorType.Temperature:
+						__unit = AppState.context.defaultUnits.pressure;
+					break;
+				}
       }
     }
 

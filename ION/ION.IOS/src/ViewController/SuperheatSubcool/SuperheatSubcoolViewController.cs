@@ -248,7 +248,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       viewPressureTouchArea.AddGestureRecognizer(new UILongPressGestureRecognizer(() => {
         if (!pressureSensorLocked) {
-          //pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           pressureSensor = null;
           buttonPressureUnit.Enabled = false;
           ClearPressureInput();
@@ -280,7 +279,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           buttonPressureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdatePressure: invalid string " + editPressure.Text, e);
-//          ClearPressureInput();
         }
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
@@ -321,7 +319,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           buttonTemperatureUnit.Enabled = true;
         } catch (Exception e) {
           Log.E(this, "Failed to UpdateTemperature: invalid string " + editTemperature.Text + ".", e);
-//          ClearTemperatureInput();
         }
         UpdateDelta();
       }, UIControlEvent.EditingChanged);
@@ -332,8 +329,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         }
       };
 
-      //ptChart = PTChart.New(ion, Fluid.EState.Bubble);
-      //ptChart = PTChart.New(ion, initialManifold.ptChart.state);
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
         var sensor = initialManifold.primarySensor;
@@ -529,6 +524,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           if (temperatureSensor != null && temperatureSensor.isEditable) {
             temperatureSensor.unit = temperatureUnit;
           }
+					OnPressureSensorChanged(pressureSensor);
           buttonTemperatureUnit.SetTitle(unit + "", UIControlState.Normal);
         });
 

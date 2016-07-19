@@ -80,6 +80,7 @@ namespace ION.IOS.ViewController.Workbench {
         }
       });
       AddGestureRecognizer(tapper);
+			lastBatteryLevel = -1;
     }
 
     // Overridden from UITableViewCell
@@ -181,8 +182,8 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the battery icon. -1 will hide the image.
     /// </summary>
     /// <param name="percent">Percent.</param>
-    private async void UpdateBatteryIcon(int percent) {
-      if (lastBatteryLevel == percent) {
+    private void UpdateBatteryIcon(int percent) {
+      if (lastBatteryLevel == percent && percent != -1 && lastBatteryLevel != -1) {
         return;
       }
 
