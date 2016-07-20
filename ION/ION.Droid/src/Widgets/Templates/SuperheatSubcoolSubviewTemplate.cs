@@ -85,11 +85,13 @@
             measurement.Text = SensorUtils.ToFormattedString(ESensorType.Pressure, item.modifiedMeasurement);
             break;
         }
+
+				unit.Text = item.temperatureSensor.unit.ToString();
       } else {
         measurement.Text = parentView.Context.GetString(Resource.String.fluid_setup);
       }
 
-      unit.Text = item.sensor.unit.ToString();
+//      unit.Text = item.sensor.unit.ToString();
     }
 
     /// <summary>

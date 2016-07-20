@@ -209,32 +209,12 @@
 			} else if (sensorProperty is PTChartSensorProperty) {
 				var i = new Intent(Activity, typeof(PTChartActivity));
 				i.SetAction(Intent.ActionPick);
-				i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
+				i.PutExtra(PTChartActivity.EXTRA_WORKBENCH_MANIFOLD, workbench.IndexOf(manifold));
 				StartActivityForResult(i, REQUEST_SHOW_PTCHART);
 			} else if (sensorProperty is SuperheatSubcoolSensorProperty) {
 				var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
 				i.SetAction(Intent.ActionPick);
-
-				switch (sensor.type) {
-					case ESensorType.Pressure:
-						i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
-						if (manifold.secondarySensor != null) {
-							i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
-						}
-					break;
-					case ESensorType.Temperature:
-						i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
-						if (manifold.secondarySensor != null) {
-							i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
-						}
-					break;
-					default:
-						var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
-						Log.E(this, msg);
-						Alert(msg);
-					break;
-				}
-
+				i.PutExtra(SuperheatSubcoolActivity.EXTRA_WORKBENCH_MANIFOLD, workbench.IndexOf(manifold));
 				StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
 			}
 		}

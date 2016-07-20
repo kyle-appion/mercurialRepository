@@ -2,7 +2,6 @@
 
   using System;
 
-  using CoreBluetooth;
   using Foundation;
 
   using ION.Core.Connections;
@@ -10,8 +9,6 @@
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
   using ION.Core.Internal;
-
-  using ION.IOS.Connections;
 
   public class IosConnectionFactory : IConnectionFactory {
     /// <summary>
@@ -45,7 +42,7 @@
 
 			if (serialNumber.rawSerial.StartsWith("S")) {
 				var h = (LeConnectionHelper)ion.deviceManager.connectionHelper;
-				return new IosRigadoConnection(h.centralManager, peripheral);
+				return new IosRigadoConnection(h, peripheral);
 			}
 
       if (serialNumber is BluefruitSerialNumber) {

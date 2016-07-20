@@ -11,8 +11,6 @@ namespace ION.IOS.Connections {
   using ION.Core.Connections;
   using ION.Core.Util;
 
-	using ION.IOS.Connections;
-
   public class IosLeConnection : IConnection {
     /// <summary>
     /// The base UUID that identifies services, charactertistics and descriptors
@@ -31,10 +29,6 @@ namespace ION.IOS.Connections {
     /// The characteristic for the name.
     /// </summary>
     private static readonly ServiceCharacteristicPair NAME_CHARACTERISTIC = new ServiceCharacteristicPair("ff90", "ff91");
-    /// <summary>
-    /// The services to fetch on scan.
-    /// </summary>
-    private static readonly CBUUID[] DESIRED_SERVICES = new CBUUID[] { READ_CHARACTERISTIC.service, WRITE_CHARACTERISTIC.service, NAME_CHARACTERISTIC.service };
 
     /// <summary>
     /// A utility method used to create the UUIDs necessary for use of the
