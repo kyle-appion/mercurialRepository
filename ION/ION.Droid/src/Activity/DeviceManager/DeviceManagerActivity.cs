@@ -159,6 +159,8 @@
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.Stop();
+
+			ion.deviceManager.ForgetFoundDevices();
     }
 
     /// <Docs>Perform any final cleanup before an activity is destroyed.</Docs>

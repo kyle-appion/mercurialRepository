@@ -261,13 +261,17 @@
       lowSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
       highSideManifoldView = li.Inflate(Resource.Layout.analyzer_manifold_viewer, this, false);
 
-      lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache, Resource.Drawable.xml_low_side_background, OnSensorPropertyClick);
+      lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache,
+			                                                           Resource.String.analyzer_drag_to_set_low,
+			                                                           Resource.Drawable.xml_low_side_background, OnSensorPropertyClick);
       lowSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, lowSideManifoldTemplate, Analyzer.ESide.Low));
       lowSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         NotifyManifoldClicked(Analyzer.ESide.Low);
       }));
 
-      highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache, Resource.Drawable.xml_high_side_background, OnSensorPropertyClick);
+      highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache,
+			                                                            Resource.String.analyzer_drag_to_set_high,
+			                                                            Resource.Drawable.xml_high_side_background, OnSensorPropertyClick);
       highSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, highSideManifoldTemplate, Analyzer.ESide.High));
       highSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         NotifyManifoldClicked(Analyzer.ESide.High);
@@ -719,6 +723,10 @@
 
       AddView(lowSideManifoldView, new LayoutParams(LayoutParams.LOW_SIDE_VIEWER));
       AddView(highSideManifoldView, new LayoutParams(LayoutParams.HIGH_SIDE_VIEWER));
+/*
+			lowSideManifoldTemplate.Bind(analyzer.lowSideManifold);
+			highSideManifoldTemplate.Bind(analyzer.highSideManifold);
+*/
     }
 
     /// <summary>
@@ -1079,22 +1087,20 @@
       public TextView empty { get; private set; }
       public View content { get; private set; }
 
-      public TextView serialNumber { get; private set; }
       public RecyclerView subviews { get; private set; }
 
       private int background;
       private SubviewAdapter adapter;
 
-      public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int background, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
+      public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int emptyText, int background, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
         this.list = list;
         this.background = background;
 
         list = view.FindViewById<RecyclerView>(Resource.Id.list);
         empty = view.FindViewById<TextView>(Resource.Id.empty);
+				empty.SetText(emptyText);
         content = view.FindViewById(Resource.Id.content);
 
-
-        serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
         subviews = view.FindViewById<RecyclerView>(Resource.Id.list);
 
         adapter = new SubviewAdapter(cache);
@@ -1114,7 +1120,7 @@
       protected override void OnBind(Manifold manifold) {
         if (manifold == null) {
           empty.Visibility = ViewStates.Visible;
-          content.Visibility = ViewStates.Invisible;
+					content.Visibility = ViewStates.Invisible;
           serialNumber.SetBackgroundResource(Resource.Drawable.xml_white_bordered_background);
           adapter.manifold = null;
         } else {
@@ -1125,15 +1131,13 @@
           empty.Visibility = ViewStates.Invisible;
           content.Visibility = ViewStates.Visible;
           serialNumber.SetBackgroundResource(background);
-
-          var s = manifold.primarySensor as GaugeDeviceSensor;
-          if (s != null) {
-            serialNumber.Text = s.device.serialNumber + "'s Subviews";
-          } else {
-            serialNumber.Text = manifold.primarySensor.name + "'s Subviews";
-          }
         }
       }
+
+			protected override void OnUnbind() {
+				base.OnUnbind();
+				adapter.manifold = null;
+			}
     }
   }
 }

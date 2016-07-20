@@ -109,7 +109,7 @@
       title.Id = Resource.Id.title;
       title.Gravity = GravityFlags.CenterHorizontal;
       title.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_upper_white);
-      title.SetPadding(10, 10, 10, 10);
+      title.SetPadding(10, 10, 10, 0);
       title.SetTextColor(gray);
         title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
@@ -119,10 +119,11 @@
 
       measurement = new TextView(context);
       measurement.SetBackgroundResource(Resource.Drawable.np_rounded_square_middle);
-      measurement.SetPadding(10, 10, 10, 10);
+      measurement.SetPadding(10, 0, 10, 0);
       measurement.Id = Resource.Id.measurement;
       measurement.SetTextColor(gray);
       measurement.Gravity = GravityFlags.Right;
+//			measurement.SetTextSize(Android.Util.ComplexUnitType.Dip, context.Resources.GetDimension(Resource.Dimension.text_size_large));
       measurement.SetSingleLine(true);
       measurement.Ellipsize = TextUtils.TruncateAt.End;
       measurement.SetIncludeFontPadding(false);
@@ -131,7 +132,7 @@
 
       unit = new TextView(context);
       unit.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_lower_white);
-      unit.SetPadding(10, 10, 10, 10);
+      unit.SetPadding(10, 0, 10, 10);
       unit.Id = Resource.Id.unit;
       unit.SetTextColor(gray);
       unit.Gravity = GravityFlags.Right;

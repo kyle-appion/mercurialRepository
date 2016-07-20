@@ -174,6 +174,7 @@
         foreach (var device in foundDevices) {
           device.Dispose();
           Unregister(device);
+					device.onDeviceEvent -= OnDeviceEvent;
         }
       }
     }
@@ -276,9 +277,8 @@
     /// </summary>
     /// <param name="device">Device.</param>
     public void Unregister(IDevice device) {
-      __foundDevices.Remove(device.serialNumber);
+			__foundDevices[device.serialNumber] = device;
       __knownDevices.Remove(device.serialNumber);
-      device.onDeviceEvent -= OnDeviceEvent;
     }
 
     private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
