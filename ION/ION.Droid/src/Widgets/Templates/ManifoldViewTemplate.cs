@@ -51,8 +51,6 @@
 
     public ProgressBar progress { get; private set; }
 
-    public Manifold manifold { get; private set; }
-
     private int lastBattery;
     
     public ManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
@@ -82,9 +80,7 @@
     /// </summary>
     /// <param name="t">T.</param>
     protected override void OnBind(Manifold t) {
-      manifold = t;
-
-      manifold.onManifoldEvent += OnManifoldEvent;
+      item.onManifoldEvent += OnManifoldEvent;
 
       Invalidate();
     }
@@ -93,8 +89,8 @@
     /// Informs the view template that it should unbind itself from its data source.
     /// </summary>
     protected override void OnUnbind() {
-      if (manifold != null) {
-        manifold.onManifoldEvent -= OnManifoldEvent;
+      if (item != null) {
+        item.onManifoldEvent -= OnManifoldEvent;
       }
     }
 
@@ -102,12 +98,12 @@
     /// Invalidates the view within the template.
     /// </summary>
     public override void Invalidate() {
-      if (manifold == null) {
+      if (item == null) {
         // TODO ahodder@appioninc.com: Implement a real invalidate for a null manifold.
         return;
       }
       var c = parentView.Context;
-      var s = manifold.primarySensor;
+      var s = item.primarySensor;
 
       measurement.Text = s.ToFormattedString(false);
       unit.Text = s.unit.ToString();
@@ -169,15 +165,20 @@
         icon.Visibility = ViewStates.Visible;
       } else {
         title.Text = s.type.GetSensorTypeName() + ": " + s.name;
-        if (serialNumber != null) {
-          serialNumber.Text = s.name;
-        }
 
         status.Visibility = ViewStates.Invisible;
         connection.Visibility = ViewStates.Invisible;
         icon.Visibility = ViewStates.Invisible;
         progress.Visibility = ViewStates.Invisible;
       }
+
+			if (serialNumber != null) {
+				if (gds != null) {
+					serialNumber.Text = gds.device.name + "'s Subviews";
+				} else {
+					serialNumber.Text = item.primarySensor.name + "'s Subviews";
+				}
+			}
 
       InvalidateBattery(d);
     }
@@ -215,8 +216,6 @@
           battery.Visibility = ViewStates.Invisible;
           lastBattery = -1;
         }
-
-//        battery.Visibility = ViewStates.Visible;
       } else {
         battery.Visibility = ViewStates.Invisible;
       }
@@ -236,7 +235,6 @@
         default:
           throw new Exception("Cannot handle manifold event: " + manifoldEvent.type);
       }
-      Invalidate();
     }
   }
 }

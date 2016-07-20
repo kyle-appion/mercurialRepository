@@ -44,7 +44,6 @@
 
         records.Clear();
 
-
         if (__manifold != null) {
           __manifold.onManifoldEvent += OnManifoldEvent;
           RefreshRecords();

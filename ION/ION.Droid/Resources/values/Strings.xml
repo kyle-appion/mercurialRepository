@@ -114,6 +114,8 @@
   <string name="analyzer_complete_swap">Complete Swap?</string>
   <string name="analyzer_create_editable_pressure">Create Editable Pressure Entry</string>
   <string name="analyzer_create_editable_temperature">Create Editable Temperature Entry</string>
+	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
+	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
   <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
@@ -288,15 +290,15 @@
 	<!--
 	PTCHART
 	-->
-	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid manifold</string>
-	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get manifold</string>
+	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid Viewer</string>
+	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
 
 	<!--
 	SUPERHEAT / SUBCOOL
 	-->
-	<string name="shsc_error_failed_to_update_manifold">Failed to update manifold</string>
-	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid manifold</string>
-	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get manifold</string>
+	<string name="shsc_error_failed_to_update_manifold">Failed to update Viewer</string>
+	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid Viewer</string>
+	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get Viewer</string>
 
   <!--
   WORKBENCH

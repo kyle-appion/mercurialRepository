@@ -620,14 +620,14 @@
       switch (sensor.type) {
         case ESensorType.Pressure:
           var temp = ptChart.GetTemperature(sensor.measurement).ConvertTo(temperatureUnit);
-          SetTemperatureInputQuietly(temp.amount + "");
-          SetPressureInputQuietly(sensor.measurement.amount + "");
+					SetTemperatureInputQuietly(temp.amount.ToString("#.##") + "");
+					SetPressureInputQuietly(sensor.measurement.amount.ToString("#.##") + "");
           break;
 
         case ESensorType.Temperature:
           var press = ptChart.GetPressure(sensor.measurement).ConvertTo(pressureUnit);
-          SetPressureInputQuietly(press.amount + "");
-          SetTemperatureInputQuietly(sensor.measurement.amount + "");
+					SetPressureInputQuietly(press.amount.ToString("#.##") + "");
+					SetTemperatureInputQuietly(sensor.measurement.amount.ToString("#.##") + "");
           break;
       }
     }

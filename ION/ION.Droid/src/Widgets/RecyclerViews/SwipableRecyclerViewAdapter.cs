@@ -157,8 +157,11 @@
           if (action != null) {
             action();
           }
-          handler.RemoveCallbacks(pendingActions[record]);
-          pendingActions.Remove(record);
+					if (pendingActions.ContainsKey(record)) {
+          	handler.RemoveCallbacks(pendingActions[record]);
+						pendingActions.Remove(record);
+
+					}
           NotifyItemChanged(position);
         }));
       } else {

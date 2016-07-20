@@ -179,6 +179,11 @@
       }
     }
 
+		public override void OnResume() {
+			base.OnResume();
+			this.analyzerView.analyzer = analyzer;
+		}
+
     /// <summary>
     /// Creates an encoded sensor mount request value.
     /// </summary>

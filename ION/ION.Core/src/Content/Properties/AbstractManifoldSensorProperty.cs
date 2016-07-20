@@ -43,13 +43,13 @@ namespace ION.Core.Content.Properties {
     
     public AbstractManifoldSensorProperty(Manifold manifold) {
       this.manifold = manifold;
-      manifold.onManifoldChanged += OnManifoldChanged;
+      manifold.onManifoldEvent += OnManifoldEvent;
       App.AppState.context.locationManager.onLocationChanged += OnLocationChanged;
     }
 
     // Overridden from ISensorProperty
     public virtual void Dispose() {
-      manifold.onManifoldChanged -= OnManifoldChanged;
+      manifold.onManifoldEvent -= OnManifoldEvent;
 
       App.AppState.context.locationManager.onLocationChanged -= OnLocationChanged;
     }
@@ -77,7 +77,7 @@ namespace ION.Core.Content.Properties {
     /// The delegate that is called when the property's manifold changes.
     /// </summary>
     /// <param name="manifold">Manifold.</param>
-    private void OnManifoldChanged(Manifold manifold) {
+    private void OnManifoldEvent(ManifoldEvent me) {
       NotifyChanged();
     }
   }

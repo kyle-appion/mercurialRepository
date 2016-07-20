@@ -122,10 +122,6 @@
 		/// The handler that is responsible for synchronizing and orchestrating connection events.
 		/// </summary>
 		private Handler handler;
-		/// <summary>
-		/// The thread that the handler is running on.
-		/// </summary>
-		private HandlerThread thread;
 
 		public RigadoConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
 			this.context = context;
@@ -134,75 +130,33 @@
 			connectionState = EConnectionState.Disconnected;
 			connectionTimeout = DEFAULT_TIMEOUT;
 			lastSeen = DateTime.FromFileTimeUtc(0);
+			handler = new Handler(this);
 		}
 
-		public async Task<bool> ConnectAsync() {
+		public Task<bool> ConnectAsync() {
 			lock (this) {
 				if (connectionState != EConnectionState.Disconnected || !manager.Adapter.IsEnabled) {
-					return false;
+					return Task.FromResult(false);
 				} else {
 					connectionState = EConnectionState.Connecting;
 				}
 			}
 
-			try {
-				var start = DateTime.Now;
+			var start = DateTime.Now;
 
-				if (gatt == null) {
-					gatt = device.ConnectGatt(context, false, this);
-				} else {
-					if (!gatt.Connect()) {
-						Disconnect();
-						return false;
-					}
-				}
+			gatt = device.ConnectGatt(context, false, this);
 
-				if (gatt == null) {
-					connectionState = EConnectionState.Disconnected;
-					return false;
-				}
-
-				await Task.Delay(1000);
-
-				while (manager.GetConnectionState(device, ProfileType.Gatt) != ProfileState.Connected) {
-					if (DateTime.Now - start > connectionTimeout) {
-						break;
-					} else {
-						await Task.Delay(1000);
-					}
-				}
-
-				if (manager.GetConnectionState(device, ProfileType.Gatt) != ProfileState.Connected) {
-					Disconnect();
-					return false;
-				}
-
-				CreateHandler();
-				lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
-
-				if (!gatt.DiscoverServices()) {
-					Disconnect();
-					return false;
-				}
-
-				connectionState = EConnectionState.Resolving;
-
-				var delay = (int)Math.Max((connectionTimeout - (DateTime.Now - start)).TotalMilliseconds, 0);
-
-				handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, delay, 0), delay);
-
-				return true;
-			} catch (Exception e) {
-				Log.E(this, "Failed to connect " + name + " to remove device", e);
-				Disconnect();
-				return false;
+			if (gatt == null) {
+				connectionState = EConnectionState.Disconnected;
+				return Task.FromResult(false);
+			} else {
+				return Task.FromResult(true);
 			}
 		}
 
 		public void Disconnect() {
-			DestroyHandler();
-
 			if (gatt != null) {
+				gatt.Close();
 				gatt.Disconnect();
 			}
 
@@ -228,6 +182,7 @@
 		public bool HandleMessage(Message msg) {
 			switch (msg.What) {
 				case MSG_TIMEOUT:
+					Log.E(this, "Service discovery timed out for: " + device.Name);
 					Disconnect();
 					return true;
 				default:
@@ -248,8 +203,19 @@
 		}
 
 		public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
+			Log.D(this, "The Rigado device is in state: " + newState);
 			switch (newState) {
 				case ProfileState.Connected:
+					connectionState = EConnectionState.Resolving;
+					lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
+
+					if (!gatt.DiscoverServices()) {
+						Log.E(this, "Failed to start service discovery for: " + device.Name);
+						Disconnect();
+					} else {
+						connectionState = EConnectionState.Resolving;
+						handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, 0, 0), (long)connectionTimeout.TotalMilliseconds);
+					}
 					break;
 				case ProfileState.Connecting:
 					break;
@@ -289,31 +255,6 @@
 				connectionState = EConnectionState.Resolving;
 				gatt.DiscoverServices();
 			}
-		}
-
-		/// <summary>
-		/// Creates and starts a new handler and thread.
-		/// </summary>
-		/// <returns>The handler.</returns>
-		private void CreateHandler() {
-			thread = new HandlerThread("ION Device Thread: " + device.Address);
-			thread.Start();
-			handler = new Handler(thread.Looper, this);
-		}
-
-		/// <summary>
-		/// Stops and destroys the handler and its thread. After this call, no further events may be posted to the handler.
-		/// </summary>
-		/// <returns>The handler.</returns>
-		private bool DestroyHandler() {
-			if (thread != null) {
-				return thread.Quit();
-			}
-
-			thread = null;
-			handler = null;
-
-			return true;
 		}
 
 		/// <summary>

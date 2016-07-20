@@ -89,7 +89,6 @@
 		private DateTime lastNotify;
 
     public GaugeDevice(GaugeSerialNumber serialNumber, IConnection connection, IGaugeProtocol protocol) {
-      Log.D(this, "Created gaugedevice {serialNumber: " + serialNumber + ", connection: " + connection + " protocol: " + protocol);
       __serialNumber = serialNumber;
       this.connection = connection;
       __protocol = protocol;
@@ -132,7 +131,6 @@
 
     private void HandlePacketInternal(byte[] packet) {
       if (packet == null) {
-        Log.D(this, "Ignoring packet for: " + serialNumber + ": null packet");
         return;
       }
       try {
@@ -146,7 +144,6 @@
 
         int oldBattery = battery;
         battery = gp.battery;
-				Log.D(this, "THE GAUGE'S BATTERY IS: " + battery);
 
         var changed = oldBattery != battery;
 
