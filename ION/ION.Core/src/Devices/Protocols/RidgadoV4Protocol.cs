@@ -1,4 +1,5 @@
-﻿namespace ION.Core.Devices.Protocols {
+﻿using System.Collections.Generic;
+namespace ION.Core.Devices.Protocols {
 
   using System;
 
@@ -56,25 +57,22 @@
         var version = (EProtocolVersion)r.ReadByte();
         var battery = (int)r.ReadByte();
 
-        var readings = new GaugeReading[4];
+				var readings = new List<GaugeReading>();
 
         // According to the rigado protocol specification, the packet length should be no more than 19 bytes. 
         var count = 17; // 19 - version and battery
-        var index = 0;
-        while (count >= 4) { // While the count still has another potential packet, pull the next packet.
-          var sp = new SensorPayload(r.ReadByte());
+				SensorPayload sp;
+				while (count >= (sp = new SensorPayload(r.ReadByte())).length) { // While the count still has another potential packet, pull the next packet.
           count -= sp.length;
-          if (sp.connected) {
-            sp.Parse(r);
-            readings[index++] = new GaugeReading() {
-              removed = sp.connected,
-              sensorType = UnitLookup.GetSensorTypeFromCode(sp.unitCode),
-              reading = sp.unit.OfScalar(sp.measurement),
-            };
-          }
+          sp.Parse(r);
+					readings.Add(new GaugeReading() {
+            removed = sp.connected,
+            sensorType = UnitLookup.GetSensorTypeFromCode(sp.unitCode),
+            reading = sp.unit.OfScalar(sp.measurement),
+					});
         }
 
-        return new GaugePacket(version, battery, readings);
+				return new GaugePacket(version, battery, readings.ToArray());
       }
     }
 

@@ -285,6 +285,19 @@
   <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
 
+	<!--
+	PTCHART
+	-->
+	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid manifold</string>
+	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get manifold</string>
+
+	<!--
+	SUPERHEAT / SUBCOOL
+	-->
+	<string name="shsc_error_failed_to_update_manifold">Failed to update manifold</string>
+	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid manifold</string>
+	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get manifold</string>
+
   <!--
   WORKBENCH
   -->

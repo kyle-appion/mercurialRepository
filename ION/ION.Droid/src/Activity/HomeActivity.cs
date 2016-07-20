@@ -416,7 +416,6 @@
       public override void OnDrawerOpened(View drawerView) {
         base.OnDrawerOpened(drawerView);
         lastTitle = activity.ActionBar.Title;
-//        activity.ActionBar.Title = activity.GetString(Resource.String.navigation);
       }
 
       // Overridden from ActionBarDrawerToggle

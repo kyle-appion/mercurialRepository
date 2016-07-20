@@ -9,19 +9,16 @@
   using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
-  using Android.Runtime;
   using Android.Text;
   using Android.Views;
   using Android.Widget;
 
   using Java.Lang;
 
-  using ION.Core.App;
+	using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   // Using ION.Droid
   using DeviceManager;
@@ -32,6 +29,15 @@
 
   [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_supersub", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class SuperheatSubcoolActivity : IONActivity {
+
+		/// <summary>
+		/// Determines whether or not the given sensor is valid for the superheat subcool calculator.
+		/// </summary>
+		/// <returns>The sensor valid.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public static bool IsSensorValid(Sensor sensor) {
+			return sensor == null || sensor.type == ESensorType.Pressure || sensor.type == ESensorType.Temperature;
+		}
 
     /// <summary>
     /// The extra that is used to get whether or not the fluid is locked in the activity.
@@ -63,6 +69,16 @@
     /// temperature sensor is also provided in the intent.
     /// </summary>
     public const string EXTRA_TEMPERATURE_LOCKED = "ION.Droid.Activity.extra.TEMPERATURE_LOCKED";
+		/// <summary>
+		/// The extra that is used if you with to pass a workbench manifold instead of individual sensors to the activity.
+		/// This extra is paired with the index that the manifold is located at within the current app's workbench.
+		/// </summary>
+		public const string EXTRA_WORKBENCH_MANIFOLD = "ION.Droid.Activity.extra.WORKBENCH_MANIFOLD";
+		/// <summary>
+		/// The extra that is used if you with to pass a analyzer manifold instead of individual sensors to the activity.
+		/// This extra is paired with the index that the Analyzer.ESide that the manifold came from within the analyzer.
+		/// </summary>
+		public const string EXTRA_ANALYZER_MANIFOLD = "ION.Droid.Activity.extra.ANALYZER_MANIFOLD";
 
     /// <summary>
     /// The value that indicates that an activity action/result was for the selection of a fluid.
@@ -320,6 +336,11 @@
       }
     } bool __isTemperatureLocked;
 
+		/// <summary>
+		/// The initial manifold that the activity started with.
+		/// </summary>
+		private Manifold initialManifold;
+
     /// <summary>
     /// Raises the create event.
     /// </summary>
@@ -391,23 +412,49 @@
         ptChart = PTChart.New(ion, Fluid.EState.Dew);
       }
 
-      isPressureLocked = false;
-      if (Intent.HasExtra(EXTRA_PRESSURE_SENSOR)) {
-        var sp = Intent.GetParcelableExtra(EXTRA_PRESSURE_SENSOR) as SensorParcelable;
-        if (sp != null) {
-          pressureSensor = sp.Get(ion);
-          isPressureLocked = Intent.GetBooleanExtra(EXTRA_PRESSURE_LOCKED, false);
-        }
-      }
+			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
+				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
+				if (index == -1) {
+					Alert(Resource.String.shsc_error_no_workbench);
+					SetResult(Result.Canceled);
+					Finish();
+					return;
+				} else {
+					var manifold = ion.currentWorkbench[index];
+					InitFromManifold(manifold);
+				}
+			} else if (Intent.HasExtra(EXTRA_ANALYZER_MANIFOLD)) {
+				var index = Intent.GetIntExtra(EXTRA_ANALYZER_MANIFOLD, -1);
+				var side = (Analyzer.ESide)index;
 
-      isTemperatureLocked = false;
-      if (Intent.HasExtra(EXTRA_TEMPERATURE_SENSOR)) {
-        var sp = Intent.GetParcelableExtra(EXTRA_TEMPERATURE_SENSOR) as SensorParcelable;
-        if (sp != null) {
-          temperatureSensor = sp.Get(ion);
-          isTemperatureLocked = Intent.GetBooleanExtra(EXTRA_TEMPERATURE_LOCKED, false);
-        }
-      }
+				if (index == -1) {
+					Alert(Resource.String.shsc_error_no_workbench);
+					SetResult(Result.Canceled);
+					Finish();
+					return;
+				} else {
+					var manifold = ion.currentAnalyzer.GetManifoldFromSide(side);
+					InitFromManifold(manifold);
+				}
+			} else {
+	      isPressureLocked = false;
+	      if (Intent.HasExtra(EXTRA_PRESSURE_SENSOR)) {
+	        var sp = Intent.GetParcelableExtra(EXTRA_PRESSURE_SENSOR) as SensorParcelable;
+	        if (sp != null) {
+	          pressureSensor = sp.Get(ion);
+	          isPressureLocked = Intent.GetBooleanExtra(EXTRA_PRESSURE_LOCKED, false);
+	        }
+	      }
+
+	      isTemperatureLocked = false;
+	      if (Intent.HasExtra(EXTRA_TEMPERATURE_SENSOR)) {
+	        var sp = Intent.GetParcelableExtra(EXTRA_TEMPERATURE_SENSOR) as SensorParcelable;
+	        if (sp != null) {
+	          temperatureSensor = sp.Get(ion);
+	          isTemperatureLocked = Intent.GetBooleanExtra(EXTRA_TEMPERATURE_LOCKED, false);
+	        }
+	      }
+			}
 
       UpdateCalculationMeasurements();
     }
@@ -502,19 +549,70 @@
       }
     }
 
+		/// <summary>
+		/// Initializes the activity using the given manifold.
+		/// </summary>
+		/// <returns>The from manifold.</returns>
+		/// <param name="manifold">Manifold.</param>
+		private void InitFromManifold(Manifold manifold) {
+			if (!IsSensorValid(manifold.primarySensor) || !IsSensorValid(manifold.secondarySensor)) {
+				Error(GetString(Resource.String.shsc_error_invalid_manifold));
+				SetResult(Result.Canceled);
+				Finish();
+				return;	
+			}
+
+			switch (manifold.primarySensor.type) {
+				case ESensorType.Pressure:
+					isPressureLocked = true;
+					isTemperatureLocked = false;
+					pressureSensor = manifold.primarySensor;
+					temperatureSensor = manifold.secondarySensor;
+					break;
+				case ESensorType.Temperature:
+					isPressureLocked = false;
+					isTemperatureLocked = true;
+					temperatureSensor = manifold.primarySensor;
+					pressureSensor = manifold.secondarySensor;
+					break;
+			}
+
+			initialManifold = manifold;
+		}
+
     /// <summary>
     /// Returns from the activity with a fully packed intent describing the state of the activity upon completion.
     /// </summary>
     private void ReturnWithResult() {
-      var ret = new Intent();
+			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD) || Intent.HasExtra(EXTRA_ANALYZER_MANIFOLD)) {
 
-      ret.PutExtra(EXTRA_FLUID_NAME, ptChart.fluid.name);
-      ret.PutExtra(EXTRA_FLUID_STATE, (int)ptChart.state);
-      ret.PutExtra(EXTRA_PRESSURE_SENSOR, pressureSensor.ToParcelable());
-      ret.PutExtra(EXTRA_TEMPERATURE_SENSOR, temperatureSensor.ToParcelable());
+				initialManifold.ptChart = ptChart;
+				switch (initialManifold.primarySensor.type) {
+					case ESensorType.Pressure:
+						if (!initialManifold.SetSecondarySensor(temperatureSensor)) {
+							Error(GetString(Resource.String.shsc_error_failed_to_update_manifold));
+						}
+						break;
+					case ESensorType.Temperature:
+						if (!initialManifold.SetSecondarySensor(temperatureSensor)) {
+							Error(GetString(Resource.String.shsc_error_failed_to_update_manifold));
+						}
+						break;
+				}
 
-      SetResult(Result.Ok, ret);
-      Finish();
+				SetResult(Result.Ok);
+			} else {
+	      var ret = new Intent();
+
+	      ret.PutExtra(EXTRA_FLUID_NAME, ptChart.fluid.name);
+	      ret.PutExtra(EXTRA_FLUID_STATE, (int)ptChart.state);
+	      ret.PutExtra(EXTRA_PRESSURE_SENSOR, pressureSensor.ToParcelable());
+	      ret.PutExtra(EXTRA_TEMPERATURE_SENSOR, temperatureSensor.ToParcelable());
+
+	      SetResult(Result.Ok, ret);
+			}
+
+			Finish();
     }
 
     /// <summary>

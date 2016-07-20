@@ -1,27 +1,22 @@
 ﻿namespace ION.Droid.Activity {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-
   using Android.App;
   using Android.Content;
   using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
-  using Android.Runtime;
   using Android.Text;
   using Android.Views;
   using Android.Widget;
 
   using Java.Lang;
 
-  using ION.Core.App;
+	using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
+	using ION.Core.Sensors.Properties;
 
   // Using ION.Droid
   using DeviceManager;
@@ -32,6 +27,15 @@
 
   [Activity(Label = "@string/ptchart", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class PTChartActivity : IONActivity {
+		/// <summary>
+		/// Determines whether or not the given sensor is valid for the superheat subcool calculator.
+		/// </summary>
+		/// <returns>The sensor valid.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public static bool IsSensorValid(Sensor sensor) {
+			return sensor == null || sensor.type == ESensorType.Pressure || sensor.type == ESensorType.Temperature;
+		}
+
     /// <summary>
     /// The extra that is used to attach a sensor paload to the activity.
     /// </summary>
@@ -40,6 +44,16 @@
     /// The extra that will return the secondary unit for the pt chart.
     /// </summary>
     public const string EXTRA_RETURN_UNIT = "ION.Droid.Activity.extra.RETURN_UNIT";
+		/// <summary>
+		/// The extra that is used if you with to pass a workbench manifold instead of individual sensors to the activity.
+		/// This extra is paired with the index that the manifold is located at within the current app's workbench.
+		/// </summary>
+		public const string EXTRA_WORKBENCH_MANIFOLD = "ION.Droid.Activity.extra.WORKBENCH_MANIFOLD";
+		/// <summary>
+		/// The extra that is used if you with to pass a analyzer manifold instead of individual sensors to the activity.
+		/// This extra is paired with the index that the Analyzer.ESide that the manifold came from within the analyzer.
+		/// </summary>
+		public const string EXTRA_ANALYZER_MANIFOLD = "ION.Droid.Activity.extra.ANALYZER_MANIFOLD";
 
     /// <summary>
     /// The value that indicates that an activity action/result was for the selection of a fluid.
@@ -177,6 +191,11 @@
     /// </summary>
     /// <value>The temperature text watcher.</value>
     private Watcher temperatureTextWatcher { get; set; }
+
+		/// <summary>
+		/// The initial manifold that the activity started with.
+		/// </summary>
+		private Manifold initialManifold;
 
     /// <summary>
     /// Whether or not the activity has locked the sensors.
@@ -317,27 +336,50 @@
 
       ptChart = PTChart.New(ion, Fluid.EState.Bubble);
 
-      if (Intent.HasExtra(EXTRA_SENSOR)) {
+			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
+				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
+				if (index == -1) {
+					Alert(Resource.String.ptchart_error_no_manifold);
+					SetResult(Result.Canceled);
+					Finish();
+					return;
+				} else {
+					var manifold = ion.currentWorkbench[index];
+					InitFromManifold(manifold);
+				}
+			} else if (Intent.HasExtra(EXTRA_ANALYZER_MANIFOLD)) {
+				var index = Intent.GetIntExtra(EXTRA_ANALYZER_MANIFOLD, -1);
+				var side = (Analyzer.ESide)index;
+
+				if (index == -1) {
+					Alert(Resource.String.ptchart_error_no_manifold);
+					SetResult(Result.Canceled);
+					Finish();
+					return;
+				} else {
+					var manifold = ion.currentAnalyzer.GetManifoldFromSide(side);
+					InitFromManifold(manifold);
+				}
+			} else if (Intent.HasExtra(EXTRA_SENSOR)) {
         var sp = (SensorParcelable)Intent.GetParcelableExtra(EXTRA_SENSOR);
-        var sensor = sp.Get(ion);
-        if (ESensorType.Pressure == sensor?.type || ESensorType.Temperature == sensor?.type) {
-          this.sensor = sensor;
+				var s = sp.Get(ion);
+        if (ESensorType.Pressure == s?.type || ESensorType.Temperature == s?.type) {
+          this.sensor = s;
           sensorLocked = true;
         } else {
-          Error("Cannot start PTChartActivity. Expected a pressure/temperature sensor, received: " + sensor?.type);
+          Error("Cannot start PTChartActivity. Expected a pressure/temperature sensor, received: " + s?.type);
           SetResult(Result.Canceled);
           Finish();
         }
       } else {
         sensorLocked = false;
       }
-
-      ;
     }
 
     // Overridden from IONActivity
     protected override void OnResume() {
       base.OnResume();
+			Refresh();
     }
 
     // Overridden from Activity
@@ -385,6 +427,68 @@
       }
     }
 
+		/// <summary>
+		/// Initializes the activity using the given manifold.
+		/// </summary>
+		/// <returns>The from manifold.</returns>
+		/// <param name="manifold">Manifold.</param>
+		private void InitFromManifold(Manifold manifold) {
+			if (!IsSensorValid(manifold.primarySensor)) {
+				Error(GetString(Resource.String.ptchart_error_invalid_manifold));
+				SetResult(Result.Canceled);
+				Finish();
+				return;	
+			}
+
+			switch (manifold.primarySensor.type) {
+				case ESensorType.Pressure:
+					sensor = manifold.primarySensor;
+					pressureUnit = manifold.primarySensor.unit;
+					if (manifold.secondarySensor?.type == ESensorType.Temperature) {
+						temperatureUnit = manifold.secondarySensor.unit;
+					} else {
+						var sp = manifold.GetSensorPropertyOfType<PTChartSensorProperty>();
+						if (sp != null) {
+							temperatureUnit = sp.unit;
+						}
+					}
+				break;
+				case ESensorType.Temperature:
+					sensor = manifold.primarySensor;
+					temperatureUnit = manifold.primarySensor.unit;
+					if (manifold.secondarySensor?.type == ESensorType.Pressure) {
+						pressureUnit = manifold.secondarySensor.unit;
+					} else {
+						var sp = manifold.GetSensorPropertyOfType<PTChartSensorProperty>();
+						if (sp != null) {
+							temperatureUnit = sp.unit;
+						}
+					}
+				break;
+			}
+
+			initialManifold = manifold;
+		}
+
+		private void UpdateManifold(Unit unit) {
+			try {
+				if (initialManifold == null) {
+					return;
+				}
+
+				if (initialManifold.secondarySensor != null && initialManifold.secondarySensor.unit.IsCompatible(unit)) {
+					initialManifold.secondarySensor.unit = unit;
+				}
+
+				var ptchart = initialManifold.GetSensorPropertyOfType<PTChartSensorProperty>();
+				if (ptchart != null) {
+					ptchart.unit = unit;
+				}
+			} catch (Exception e) {
+				ION.Core.Util.Log.E(this, "Failed to update manifold", e);
+			}
+		}
+
     /// <summary>
     /// Initializes the pressure widgets for the activity.
     /// </summary>
@@ -403,7 +507,6 @@
           if (!"".Equals(text) && sensor == null) {
             var amount = double.Parse(text);
             var temp = ptChart.GetTemperature(pressureUnit.OfScalar(amount)).ConvertTo(temperatureUnit);
-//            SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
             SetTemperatureInputQuietly(temp.amount + "");
           } else {
             ClearInput();
@@ -436,6 +539,9 @@
       pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (sensor == null || ESensorType.Temperature == sensor.type) {
           UnitDialog.Create(this, SensorUtils.DEFAULT_PRESSURE_UNITS, (obj, unit) => {
+						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Temperature) {
+							UpdateManifold(unit);
+						}
             pressureUnit = unit;
             Refresh();
           }).Show();
@@ -463,12 +569,11 @@
           if (!"".Equals(text)) {
             var amount = double.Parse(text);
             var press = ptChart.GetPressure(temperatureUnit.OfScalar(amount)).ConvertTo(pressureUnit);
-//            SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
             SetPressureInputQuietly(press.amount + "");
           } else {
             ClearInput();
           }
-        } catch (System.Exception e) {
+        } catch (Exception e) {
         }
       });
 
@@ -496,6 +601,9 @@
       temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (sensor == null || ESensorType.Pressure == sensor.type) {
           UnitDialog.Create(this, SensorUtils.DEFAULT_TEMPERATURE_UNITS, (obj, unit) => {
+						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Pressure) {
+							UpdateManifold(unit);
+						}
             temperatureUnit = unit;
             Refresh();
           }).Show();
@@ -514,20 +622,12 @@
           var temp = ptChart.GetTemperature(sensor.measurement).ConvertTo(temperatureUnit);
           SetTemperatureInputQuietly(temp.amount + "");
           SetPressureInputQuietly(sensor.measurement.amount + "");
-/*
-          SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temp));
-          SetPressureInputQuietly(sensor.ToFormattedString());
-*/
           break;
 
         case ESensorType.Temperature:
           var press = ptChart.GetPressure(sensor.measurement).ConvertTo(pressureUnit);
           SetPressureInputQuietly(press.amount + "");
           SetTemperatureInputQuietly(sensor.measurement.amount + "");
-/*
-          SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, press));
-          SetTemperatureInputQuietly(sensor.ToFormattedString());
-*/
           break;
       }
     }

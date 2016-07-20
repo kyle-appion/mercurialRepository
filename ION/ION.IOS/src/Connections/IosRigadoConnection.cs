@@ -1,10 +1,8 @@
-﻿namespace ION.IOS {
+﻿namespace ION.IOS.Connections {
 
   using System;
-  using System.Threading;
   using System.Threading.Tasks;
 
-  using AudioToolbox;
   using CoreBluetooth;
   using Foundation;
 
@@ -113,7 +111,7 @@
     /// <summary>
     /// The central manager that is being used to host this connection.
     /// </summary>
-    private CBCentralManager centralManager { get; set; }
+    private LeConnectionHelper connectionHelper { get; set; }
     /// <summary>
     /// The delegate that will received discovered service events.
     /// </summary>
@@ -147,8 +145,8 @@
     /// </summary>
     /// <param name="centeralManager">Centeral manager.</param>
     /// <param name="peripheral">Peripheral.</param>
-    public IosRigadoConnection(CBCentralManager centralManager, CBPeripheral peripheral) {
-      this.centralManager = centralManager;
+    public IosRigadoConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) {
+			this.connectionHelper = connectionHelper;
       __nativeDevice = peripheral;
       name = __nativeDevice.Name;
 
@@ -182,7 +180,8 @@
       __nativeDevice.DiscoveredService += onServiceDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue += onCharacteristicChangedDelegate;
       __nativeDevice.DiscoveredCharacteristic += onCharacteristicDiscoveredDelegate;
-      //      centralManager.DisconnectedPeripheral += OnPeripheralDisconnected;
+			connectionHelper.onPeripheralDisconnected += OnPeripheralDisconnected;
+
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
@@ -193,7 +192,7 @@
       __nativeDevice.DiscoveredService -= onServiceDiscoveredDelegate;
       __nativeDevice.DiscoveredCharacteristic -= onCharacteristicDiscoveredDelegate;
       __nativeDevice.UpdatedCharacterteristicValue -= onCharacteristicChangedDelegate;
-      //      centralManager.DisconnectedPeripheral -= OnPeripheralDisconnected;
+			connectionHelper.onPeripheralDisconnected -= OnPeripheralDisconnected;
     }
 
     // Overridden from IConnection
@@ -211,7 +210,7 @@
       options.NotifyOnDisconnection = true;
       options.NotifyOnNotification = true;
 
-      centralManager.ConnectPeripheral(__nativeDevice, options);
+			connectionHelper.centralManager.ConnectPeripheral(__nativeDevice, options);
 
       while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
         if (DateTime.Now - start > TimeSpan.FromSeconds(5)/*connectionTimeout*/) {
@@ -260,7 +259,7 @@
 
     // Overridden from IConnection
     public void Disconnect() {
-      centralManager.CancelPeripheralConnection(__nativeDevice);
+      connectionHelper.centralManager.CancelPeripheralConnection(__nativeDevice);
       connectionState = EConnectionState.Disconnected;
     }
 
@@ -339,8 +338,8 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     /// <param name="args">Arguments.</param>
-    private void OnPeripheralDisconnected(object sensor, CBPeripheralErrorEventArgs args) {
-      if (args.Peripheral.Equals(__nativeDevice)) {
+    private void OnPeripheralDisconnected(object sensor, CBPeripheral peripheral) {
+      if (peripheral.Equals(__nativeDevice)) {
         Disconnect();
       }
     }
