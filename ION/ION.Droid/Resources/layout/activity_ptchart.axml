@@ -191,4 +191,11 @@
             android:layout_width="@dimen/ptchart_unit_width"
             android:layout_height="match_parent" />
     </LinearLayout>
+    <Space
+        android:layout_height="10dp"
+        android:layout_width="wrap_content" />
+    <ION.Droid.Widgets.FluidSliderView
+        android:id="@id/ptchart"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
 </LinearLayout>
