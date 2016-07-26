@@ -24,6 +24,7 @@
   using Dialog;
   using Sensors;
   using Views;
+	using Widgets;
 
   [Activity(Label = "@string/ptchart", Icon = "@drawable/ic_nav_ptconversion", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class PTChartActivity : IONActivity {
@@ -179,6 +180,10 @@
     /// </summary>
     /// <value>The temperature clear.</value>
     private Button temperatureClearView { get; set; }
+		/// <summary>
+		/// The slider view.
+		/// </summary>
+		private FluidSliderView slider;
 
 
     /// <summary>
@@ -327,6 +332,22 @@
         });
         ldb.Show();
       }));
+
+			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
+			slider.onScroll += (slider, pressure, temperature) => {
+				this.SetPressureInputQuietly(pressure.ToString());
+				this.SetTemperatureInputQuietly(temperature.ToString());
+/*
+				switch (sensor.type) {
+					case ESensorType.Pressure:
+						sensor.measurement = pressure;
+						break;
+					case ESensorType.Temperature:
+						sensor.measurement = temperature;
+						break;
+				}
+*/
+			};
 
       pressureUnit = ion.defaultUnits.pressure;
       temperatureUnit = ion.defaultUnits.temperature;

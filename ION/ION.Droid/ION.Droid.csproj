@@ -34,7 +34,7 @@
     <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>full</DebugType>
+    <DebugType></DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -46,6 +46,7 @@
     <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
+    <AndroidKeyStore></AndroidKeyStore>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -242,6 +243,7 @@
     <Compile Include="src\Activity\Report\GraphReportFragment.cs" />
     <Compile Include="src\Connections\RigadoConnection.cs" />
     <Compile Include="src\Connections\LeConnection.cs" />
+    <Compile Include="src\Widgets\FluidSliderView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
