@@ -79,7 +79,8 @@
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
-    <MtouchLink>Full</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
