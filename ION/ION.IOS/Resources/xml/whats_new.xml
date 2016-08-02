@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<whatsnew>
+  <display version="1.6.2">
+		<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
+		<fixed>Fixed PT Slider affecting PT Chart subview values</fixed>
+		<fixed>Fixed Device Manager connection menu for device sections on Ipad</fixed>
+		<fixed>Fixed backend math.</fixed>
+		<fixed>Fixed PTChart Subview unit not updating when changed when in PTChart</fixed>
+		<fixed>Fixed Manifolds showing incorrect battery icon</fixed>
+		<fixed>Fixed Superheat / Subcool saturated temperature unit not changing</fixed> 
+  </display>
+  <display version="1.6.1">
+    <new>Added Data Logging Feature</new>
+    <new>Added Data Log Reporting</new>
+    <new>Added Job Manager Feature</new>
+    <new>Added Pressure/Temperature Slider</new>
+    <fixed>Fixed manual sensor options for low/high areas</fixed>
+  </display>
+  <display version="1.5.4">
+    <new>Added alarms alerts with sound and vibrations</new>
+    <update>Updated workbench loadout to save subview configurations</update>
+    <update>Updated calculations when activating or deactivating location services</update>
+    <fixed>Fixed device manager animations</fixed>
+    <fixed>Fixed general UI text</fixed>
+    <fixed>Fixed bugs with analyzer</fixed>
+    <fixed>Fixed bug when using app and bluetooth is not enabled</fixed>
+  </display>
+</whatsnew>

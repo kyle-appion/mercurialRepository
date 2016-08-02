@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<PreferenceScreen
+
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:ion="http://schemas.android.com/apk/res-auto"
+  android:title="@string/help">
+
+  <Preference
+    android:key="@string/pkey_send_feedback"
+    android:title="@string/preferences_send_feedback"/>
+
+  <Preference
+    android:key="@string/pkey_youtube"
+    android:title="@string/preferences_videos">
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:data="http://www.appioninc.com/media/videos.html"/>
+  </Preference>
+
+  <PreferenceScreen
+    android:title="@string/preferences_about_ion">
+    <Preference
+      android:key="@string/pkey_app_version"
+      android:title="@string/preferences_app_version"
+      android:summary="%s"/>
+  </PreferenceScreen>
+
+</PreferenceScreen>

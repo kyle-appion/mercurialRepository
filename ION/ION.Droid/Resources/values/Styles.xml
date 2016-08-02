@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<resources>
+  <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:windowBackground">@drawable/img_bgd_carbon</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:textColorPrimary">@color/black</item>
+    <item name="android:textColorSecondary">@color/black</item>
+    <item name="android:textColorTertiary">@color/black</item>
+    <item name="android:buttonStyle">@style/IONButton</item>
+<!--		<item name="android:actionBarStyle">@style/IONActionBar</item> -->
+  </style>
+
+  <style name="TerminalActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:textColorSecondary">@color/light_gray</item>
+    <item name="android:textColorTertiary">@color/light_gray</item>
+    <item name="android:buttonStyle">@style/IONButton</item>
+  </style>
+
+  <style name="DialogActivityTheme" parent="android:style/Theme.Holo.Light.Dialog">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:buttonStyle">@style/IONButton</item>    
+  </style>
+
+  <style name="IONButton" parent="android:Widget.Button">
+    <item name="android:background">@drawable/selector_button_gold_black</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@drawable/selector_text_blackgold</item>
+  </style>
+
+	<style name="IONActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    <item name="android:textSize">18sp</item>
+    <item name="android:logo">@drawable/ic_logo_appiondefault</item>
+	</style>
+
+	<style name="IONTextInputLayout" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="android:textColorHint">@color/gray</item>
+		<item name="android:textSize">@dimen/text_size_large</item>
+		<item name="colorAccent">@color/red</item>
+		<item name="colorControlNormal">@color/green</item>
+		<item name="colorControlActivated">@color/blue</item>
+		<item name="colorControlHighlight">@color/black</item>
+	</style>
+</resources>
