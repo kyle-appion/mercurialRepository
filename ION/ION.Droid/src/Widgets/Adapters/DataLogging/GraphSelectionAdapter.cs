@@ -180,7 +180,7 @@
     public void BindTo(IION ion, GraphRecord record, DateTime start, DateTime end) {
       this.record = record;
 
-      var sn = ion.database.Table<DeviceRow>().Where(dr => dr.serialNumber == record.logs.deviceId).First().serialNumber;
+      var sn = ion.database.Table<DeviceRow>().Where(dr => dr.serialNumber == record.logs.deviceSerialNumber).First().serialNumber;
       var serial = SerialNumberExtensions.ParseSerialNumber(sn);
       // TODO ahodder@appioninc.com: Broken. We should no assert that this is a gauge device
       var device = ion.deviceManager[serial] as GaugeDevice;
@@ -193,7 +193,6 @@
       var model = new PlotModel() {
         Padding = new OxyThickness(0),
       };
-//      model.PlotMargins = new OxyThickness(-5, -5, -5, -5); // -5
 
       var xAxis = new DateTimeAxis() {
         Position = AxisPosition.Bottom,

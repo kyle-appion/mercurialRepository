@@ -1,4 +1,6 @@
-﻿namespace ION.Core.Pdf {
+﻿/*
+
+namespace ION.Core.Pdf {
 
   using System;
   using System.Collections.Generic;
@@ -137,41 +139,6 @@
         l.Height = bounds.URY - l.Y;
         g.DrawString(report.notes, NewAppearance(content), l);
       }
-
-      /*
-      var yoffset = 0.0;
-      var xoffset = 0.0;
-
-      for (int c = 0; c < table.length; c++) {
-        var col = table[c];
-
-        if (c > 0) {
-          xoffset += col.columnWidth;
-        }
-
-        var layout = NewLayout();
-        layout.Width = col.columnWidth;
-        layout.Y = bounds.LLY;
-        layout.X = bounds.LLX + xoffset;
-
-        for (int r = 0; r < col.length; r++) {
-          g.DrawString(col[r], col.appearance, layout);
-          layout.Y += col.rowHeight;
-          if (layout.Y > yoffset) {
-            yoffset = layout.Y;
-          }
-        }
-      }
-
-      var looks = NewAppearance(content);
-      var l = NewLayout();
-      l.X = bounds.LLX;
-      l.Y = yoffset;
-      l.Width = bounds.Width;
-      l.Height = bounds.Height - (bounds.LLY - yoffset);
-
-      g.DrawString(report.notes, looks, l);
-*/
     }
 
     /// <summary>
@@ -296,6 +263,6 @@
       return ret;
     }
   }
-    
 }
 
+*/

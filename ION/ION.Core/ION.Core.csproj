@@ -147,7 +147,6 @@
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
     <Compile Include="src\Connections\MockConnection.cs" />
-    <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
@@ -179,6 +178,8 @@
     <Compile Include="src\Measure\ScalarSpan.cs" />
     <Compile Include="src\Measure\Unit.cs" />
     <Compile Include="src\Measure\Units.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\Report\DataLogs\Exporters\DataLogReportPdfExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -217,6 +218,7 @@
     <Folder Include="src\StateMachine\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Measure\" />
+    <Folder Include="src\Report\DataLogs\Exporters\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
@@ -224,9 +226,6 @@
     </Reference>
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
-    </Reference>
-    <Reference Include="SpreadsheetLight">
-      <HintPath>..\packages\SpreadsheetLight.3.4.4\lib\SpreadsheetLight.dll</HintPath>
     </Reference>
     <Reference Include="nunit.core">
       <HintPath>..\packages\NUnitTestAdapter.2.0.0\lib\nunit.core.dll</HintPath>

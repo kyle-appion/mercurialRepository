@@ -120,7 +120,7 @@
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
 
-      SetContentView(Resource.Layout.activity_data_logging_report);
+//      SetContentView(Resource.Layout.activity_data_logging_report);
 
       newSavedCard = FindViewById<CardView>(Resource.Id.report_pick);
       selectionCard = FindViewById<CardView>(Resource.Id.report_selection);

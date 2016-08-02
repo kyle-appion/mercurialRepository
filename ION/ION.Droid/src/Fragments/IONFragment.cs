@@ -19,6 +19,7 @@
   using ION.Core.Util;
 
   using ION.Droid.Activity;
+	using ION.Droid.App;
   using ION.Droid.Util;
 
   public class IONFragment : Fragment {
@@ -27,7 +28,7 @@
     /// The ion context for the fragment.
     /// </summary>
     /// <value>The ion.</value>
-    public IION ion { get { return AppState.context; } }
+		public AndroidION ion { get { return (AndroidION)AppState.context; } }
 
     /// <summary>
     /// The bitmap cache that will store common bitmaps.
@@ -231,7 +232,10 @@
         }
         item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPlay, Resource.Color.light_gray));
       } else {
-        if (!await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(5))) {
+				var interval = ion.preferences.reports.DataLoggingInterval;
+				Log.D(this, "Starting record with an interval of: " + interval.ToString());
+
+				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
         item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPause, Resource.Color.light_gray));

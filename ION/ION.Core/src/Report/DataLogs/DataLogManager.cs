@@ -151,18 +151,14 @@
             .AsEnumerable();
 
           var count = query.Count();
+
           var logs = new SensorLog[count];
           int i = 0;
           foreach (var smr in query) {
             logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
           }
 
-          dsl.Add(new DeviceSensorLogs() {
-            deviceId = row.serialNumber,
-            logs = logs,
-            index = row.sensorIndex,
-//            unitCode = row.unitCode,
-          });
+					dsl.Add(new DeviceSensorLogs(row.serialNumber, row.sensorIndex, logs));
         }
         var tmp = dsl.ToArray();
 

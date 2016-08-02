@@ -28,4 +28,6 @@
   <string name="pkey_unit_pressure">unit_pressure</string>
   <string name="pkey_unit_temperature">unit_temperature</string>
   <string name="pkey_unit_vacuum">unit_vacuum</string>
+
+	<string name="pkey_reporting_data_log_interval">reporting_data_log_interval</string>
 </resources>

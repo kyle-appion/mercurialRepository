@@ -140,7 +140,7 @@
     public void BindTo(IION ion, OverviewRecord record) {
       this.record = record;
 
-      var ussn = ion.database.Table<DeviceRow>().Where(dr => dr.serialNumber == record.logs.deviceId).First().serialNumber;
+      var ussn = ion.database.Table<DeviceRow>().Where(dr => dr.serialNumber == record.logs.deviceSerialNumber).First().serialNumber;
       var sn = SerialNumberExtensions.ParseSerialNumber(ussn);
 
       serial.Text = sn.ToString();

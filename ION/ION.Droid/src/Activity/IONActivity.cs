@@ -55,60 +55,6 @@
         .RegisterOnSharedPreferenceChangeListener(this);
     }
 
-/*
-
-    /// <Docs>The options menu in which you place your items.</Docs>
-    /// <returns>To be added.</returns>
-    /// <summary>
-    /// Raises the create options menu event.
-    /// </summary>
-    /// <param name="menu">Menu.</param>
-    public override bool OnCreateOptionsMenu(IMenu menu) {
-      var ret = base.OnCreateOptionsMenu(menu);
-
-      MenuInflater.Inflate(Resource.Menu.screenshot, menu);
-      var ss = menu.FindItem(Resource.Id.screenshot);
-      var icon = ss.Icon;
-      icon.Mutate().SetColorFilter(GetColor(Resource.Color.gray), PorterDuff.Mode.SrcIn);
-      ss.SetIcon(icon);
-
-      return true;
-    }
-
-    /// <Docs>The options menu as last shown or first initialized by
-    ///  onCreateOptionsMenu().</Docs>
-    /// <summary>
-    /// Raises the prepare options menu event.
-    /// </summary>
-    /// <param name="menu">Menu.</param>
-    public override bool OnPrepareOptionsMenu(IMenu menu) {
-      base.OnPrepareOptionsMenu(menu);
-
-      menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));
-
-
-      return true;
-    }
-
-    /// <Docs>The panel that the menu is in.</Docs>
-    /// <summary>
-    /// Raises the menu item selected event.
-    /// </summary>
-    /// <param name="featureId">Feature identifier.</param>
-    /// <param name="item">Item.</param>
-    public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
-      switch (item.ItemId) {
-        case Resource.Id.screenshot:
-          CaptureScreenToBitmap();
-          return true;
-        default:
-          return base.OnMenuItemSelected(featureId, item);
-      }
-    }
-
-*/
-
-
     /// <summary>
     /// Builds and returned a gray colored drawable.
     /// </summary>

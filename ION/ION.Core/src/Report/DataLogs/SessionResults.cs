@@ -11,6 +11,10 @@
     /// </summary>
     /// <value><c>true</c> if complete; otherwise, <c>false</c>.</value>
     public bool complete { get; internal set; }
+		/// <summary>
+		/// The session id that the session results represents.
+		/// </summary>
+		/// <value>The session identifier.</value>
     public int sessionId { get; internal set; }
     /// <summary>
     /// The array of device sensor logs that make up the session.
@@ -27,6 +31,21 @@
     /// </summary>
     /// <value>The end time.</value>
     public DateTime endTime { get; internal set; }
+		/// <summary>
+		/// Whether or not the session results is empty.
+		/// </summary>
+		/// <value>The is empty.</value>
+		public bool isEmpty {
+			get {
+				foreach (var dsl in deviceSensorLogs) {
+					if (dsl.logs.Length > 0) {
+						return true;
+					}
+				}
+
+				return false;
+			}
+		}
 
     /// <summary>
     /// Returns a subset of this session result that will fit within the given date range.
@@ -42,7 +61,8 @@
       }
 
       return new SessionResults() {
-        complete = this.complete,
+        complete = false,
+				sessionId = this.sessionId,
         deviceSensorLogs = dsl,
         startTime = this.startTime,
         endTime = this.endTime,

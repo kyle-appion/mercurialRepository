@@ -65,12 +65,6 @@
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Android.Export" />
-    <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
-    </Reference>
-    <Reference Include="OxyPlot.Xamarin.Android">
-      <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v7.CardView">
       <HintPath>..\packages\Xamarin.Android.Support.v7.CardView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.CardView.dll</HintPath>
     </Reference>
@@ -109,6 +103,15 @@
     </Reference>
     <Reference Include="Xamarin.Android.Support.v13">
       <HintPath>..\packages\Xamarin.Android.Support.v13.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.2015.1.744-alpha\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot.Xamarin.Android">
+      <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -198,13 +201,11 @@
     <Compile Include="src\Connections\ClassicConnection.cs" />
     <Compile Include="src\Activity\DataLogging\NewReportFragment.cs" />
     <Compile Include="src\Activity\DataLogging\DataLoggingReportActivity.cs" />
-    <Compile Include="src\Views\ViewExtensions.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
-    <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
@@ -239,9 +240,18 @@
     <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
     <Compile Include="src\Activity\Report\ByJobFragment.cs" />
     <Compile Include="src\Activity\Report\BySessionFragment.cs" />
-    <Compile Include="src\Activity\Report\GraphReportFragment.cs" />
     <Compile Include="src\Connections\RigadoConnection.cs" />
     <Compile Include="src\Connections\LeConnection.cs" />
+    <Compile Include="src\Widgets\RootFragmentLayout.cs" />
+    <Compile Include="src\Activity\Report\Delegates.cs" />
+    <Compile Include="src\Activity\Report\GraphReportSessionsActivity.cs" />
+    <Compile Include="src\Activity\Report\GraphRecord.cs" />
+    <Compile Include="src\Activity\Report\EViewType.cs" />
+    <Compile Include="src\Activity\Report\GraphRecordAdapter.cs" />
+    <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\Activity\Report\DateIndexLookup.cs" />
+    <Compile Include="src\Report\DataLoggingExcelReportExporter.cs" />
+    <Compile Include="src\Report\DataLogReportTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -453,7 +463,7 @@
     <AndroidResource Include="Resources\layout\analyzer_dialog_viewer.axml" />
     <AndroidResource Include="Resources\drawable\ic_logo_appiondefault_small.png" />
     <AndroidResource Include="Resources\menu\record.xml" />
-    <AndroidResource Include="Resources\layout\activity_data_logging_report.axml" />
+    <AndroidResource Include="Resources\layout\fragment_data_logging_report.axml" />
     <AndroidResource Include="Resources\values\integers.xml" />
     <AndroidResource Include="Resources\anim\card_flip_left_in.xml" />
     <AndroidResource Include="Resources\anim\card_flip_left_out.xml" />
@@ -493,7 +503,12 @@
     <AndroidResource Include="Resources\layout\fragment_by_session.axml" />
     <AndroidResource Include="Resources\layout\fragment_report_spreadsheet.axml" />
     <AndroidResource Include="Resources\layout\fragment_report_pdf.axml" />
-    <AndroidResource Include="Resources\layout\fragment_report_graph.axml" />
+    <AndroidResource Include="Resources\anim\enter_left.xml" />
+    <AndroidResource Include="Resources\anim\exit_left.xml" />
+    <AndroidResource Include="Resources\anim\exit_right.xml" />
+    <AndroidResource Include="Resources\anim\enter_right.xml" />
+    <AndroidResource Include="Resources\layout\activity_graph_report_sessions.axml" />
+    <AndroidResource Include="Resources\drawable\ic_slider.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -521,9 +536,20 @@
     <Folder Include="src\Activity\Job\" />
     <Folder Include="src\Activity\DeviceManager\" />
     <Folder Include="src\Widgets\Adapters\Job\" />
+    <Folder Include="src\Report\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
     <AndroidAsset Include="Assets\fonts\RobotoCondensed.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="oxyplot">
+      <Version>2015.1.744</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+    <XamarinComponentReference Include="FlexCel">
+      <Version>6.8.0</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
   </ItemGroup>
 </Project>

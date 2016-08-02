@@ -112,6 +112,7 @@
         }
 
         var inserted = db.InsertAll(rows, true);
+				Log.D(this, "Inserting: " + inserted + " rows");
       } catch (Exception e) {
         Log.E(this, "Failed to resolve timer callback", e);
       }
