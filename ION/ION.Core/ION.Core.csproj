@@ -179,7 +179,6 @@
     <Compile Include="src\Measure\Unit.cs" />
     <Compile Include="src\Measure\Units.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
-    <Compile Include="src\Report\DataLogs\Exporters\DataLogReportPdfExporter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

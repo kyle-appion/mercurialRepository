@@ -39,11 +39,11 @@
 			get {
 				foreach (var dsl in deviceSensorLogs) {
 					if (dsl.logs.Length > 0) {
-						return true;
+						return false;
 					}
 				}
 
-				return false;
+				return true;
 			}
 		}
 

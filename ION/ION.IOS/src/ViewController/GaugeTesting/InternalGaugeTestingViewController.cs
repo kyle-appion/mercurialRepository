@@ -53,21 +53,23 @@ namespace ION.IOS.ViewController.GaugeTesting {
 		/// </summary>
 		/// <returns>The content.</returns>
 		private void UpdateTableContent() {
-			for (int col = 1; col <= test.test.count; col++) {
-				for (int row = 1; row <= test.sensors.Count; row++) {
-					var c = col - 1;
-					var r = row - 1;
-					var tp = test.test.targetPoints[c];
-					var val = test.results[test.sensors[r]][c];
-					if (val == 0) {
-						table.SetValue(r, "" + tp.target.amount, "N/A");
-					} else {
-						table.SetValue(r, "" + tp.target.amount, val.ToString("#"));
-					} 
+			if (test != null) {
+				for (int col = 1; col <= test.test.count; col++) {
+					for (int row = 1; row <= test.sensors.Count; row++) {
+						var c = col - 1;
+						var r = row - 1;
+						var tp = test.test.targetPoints[c];
+						var val = test.results[test.sensors[r]][c];
+						if (val == 0) {
+							table.SetValue(r, "" + tp.target.amount, "N/A");
+						} else {
+							table.SetValue(r, "" + tp.target.amount, val.ToString("#"));
+						} 
+					}
 				}
-			}
 
-			gridView.ReloadData();
+				gridView.ReloadData();
+			}
 		}
 
 		/// <summary>
@@ -248,7 +250,13 @@ namespace ION.IOS.ViewController.GaugeTesting {
 		}
 
 		private void OnDeviceEvent(DeviceEvent e) {
+			if (test == null) {
+				return;
+			}
 			AppState.context.PostToMain(() => {
+				if (test == null) {
+					return;
+				}
 				var sb = new StringBuilder();
 				sb.Append(string.Format("{0,15}:  {1}\n", "VRC", test.bluefruit.currentVrcMeasurement));
 				sb.Append(string.Format("{0,15}:  {1}\n", "State", test.sm.currentState.Method.Name));

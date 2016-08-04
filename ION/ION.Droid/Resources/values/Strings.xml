@@ -23,6 +23,7 @@
   <string name="connect_all">Connect All</string>
   <string name="connected">Connected</string>
   <string name="date">Date</string>
+	<string name="deselect_all">Deselect All</string>
   <string name="disabled">Disabled</string>
   <string name="disconnect">Disconnect</string>
   <string name="disconnect_all">Disconnect All</string>
@@ -49,6 +50,7 @@
   <string name="library">Library</string>
 	<string name="loading">Loading...</string>
 	<string name="location">Location</string>
+  <string name="long_range_mode">Long-Range Mode</string>
   <string name="main">Main</string>
   <string name="measurement">Measurement</string>
   <string name="manual">Manual</string>
@@ -62,6 +64,7 @@
   <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
+	<string name="pdf">PDF</string>
   <string name="pick_time">Pick Time</string>
   <string name="pick_unit">Pick Unit</string>
   <string name="please_wait">Please Wait</string>
@@ -80,7 +83,9 @@
   <string name="scan">Scan</string>
   <string name="scanning">Scanning</string>
   <string name="screenshot">Screenshot</string>
+	<string name="select_all">Select All</string>
   <string name="settings">Settings</string>
+	<string name="spreadsheet">Spreadsheet</string>
   <string name="stable">Stable</string>
   <string name="state">State</string>
   <string name="text">Text</string>
@@ -163,7 +168,6 @@
   <string name="device_serial_number">Serial Number</string>
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
-  <string name="long_range_mode">Long-Range Mode</string>
 
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
@@ -182,7 +186,8 @@
   <string name="error_invalid_number_entry">Please enter a real number</string>
   <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
-  <string name="error_pdf_viewer_missing">It appears that your device does not have a PDF viewer. Please install a PDF viewer to the file.</string>
+  <string name="error_pdf_viewer_missing">It appears that your device does not have an application capable of viewing PDF files. Please install a PDF application to view the file.</string>
+  <string name="error_excel_viewer_missing">It appears that your device does not have an application capable of viewing Excel files. Please install a Excel application to view the file.</string>
 	<string name="error_start_up_request_location_for_bluetooth">As of Android 5.0, Android requires the Location permission to enable bluetooth scanning. ION HVAC/R requires bluetooth to communicate with ION compatible gauges.</string>
 	<string name="error_start_up_fail">Failed to Launch ION</string>
 	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R cannot be used. Please restart the ION HVAC/R application and authorize the application\'s use of these features.</string>
@@ -225,6 +230,7 @@
 	<string name="job_loading">Loading the job...</string>
   <string name="job_name">Job Name</string>
 	<string name="job_notes">Job Notes</string>
+	<string name="job_options">Job Options</string>
 	<string name="job_removing_sessions">Removing sessions from job...</string>
 	<string name="job_saved">Job Saved</string>
 	<string name="job_sessions">Job Sessions</string>
@@ -263,6 +269,7 @@
   <string name="report_certificates_downloading">Downloading Certificates</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
+	<string name="report_choose_export_format">Choose an Export Format</string>
   <string name="report_data_logging">Reporting</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
@@ -282,6 +289,7 @@
   <string name="report_new">New Report</string>
   <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
 	<string name="report_no_sessions_exist">No sessions exist. Click the record button in the Workbench or Analyzer to start recording a new session"</string>
+	<string name="report_no_spreadsheets_exist">No spreadsheet reports exist</string>
   <string name="report_saved">Saved Reports</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>

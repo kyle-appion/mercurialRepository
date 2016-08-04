@@ -25,7 +25,7 @@
     /// <summary>
     /// The fragment that handle the file management.
     /// </summary>
-    private FileManagerFragment fragment;
+    private FileViewerFragment fragment;
     /// <summary>
     /// Raises the create event.
     /// </summary>
@@ -38,10 +38,10 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-      fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
+      fragment = FragmentManager.FindFragmentById<FileViewerFragment>(Resource.Id.content);
       fragment.folder = ion.screenshotReportFolder;
-      fragment.onFileClicked += OnFileClicked;
-      fragment.onFolderClicked += OnFolderClicked;
+      fragment.onFileClicked = OnFileClicked;
+      fragment.onFolderClicked = OnFolderClicked;
     }
 
     /// <Docs>The panel that the menu is in.</Docs>
@@ -81,6 +81,7 @@
             dialog.Dismiss();
           }
         });
+				adb.Show();
       }
     }
 

@@ -4,27 +4,6 @@
     android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:id="@id/report_new"
-            android:text="@string/report_new"
-            android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/padding" />
-        <Button
-            android:id="@id/report_saved"
-            android:text="@string/report_saved"
-            android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="@dimen/padding" />
-    </LinearLayout>
     <Space
         android:layout_height="10dp"
         android:layout_width="wrap_content" />
@@ -37,15 +16,17 @@
             android:background="@drawable/shape_rounded_title_green"
             android:text="@string/report_session_selection"
             android:gravity="center"
-            android:id="@id/report_session_selection"
+            android:id="@id/text"
             android:textColor="@color/black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <LinearLayout
+            android:background="@color/white"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <Button
+                android:background="@drawable/tab_indicator_ab_ion_action_bar"
                 android:id="@id/tab_1"
                 android:text="@string/report_by_job"
                 android:textColor="@color/black"
@@ -54,6 +35,7 @@
                 android:layout_weight="1"
                 android:padding="@dimen/padding" />
             <Button
+                android:background="@drawable/tab_indicator_ab_ion_action_bar"
                 android:id="@id/tab_2"
                 android:text="@string/report_by_date"
                 android:textColor="@color/black"

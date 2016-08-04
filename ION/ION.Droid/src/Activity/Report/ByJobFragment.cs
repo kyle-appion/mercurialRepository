@@ -14,12 +14,13 @@
 	using ION.Core.Database;
 
 	// Using ION.Droid
+	using Dialog;
 	using Job;
 	using Fragments;
 	using Widgets.RecyclerViews;
 
 	public class ByJobFragment : IONFragment {
-		public event OnSessionChecked onSessionChecked;
+		public OnSessionChecked onSessionChecked;
 
 		public List<int> sessions { private get; set; }
 
@@ -44,6 +45,7 @@
 			base.OnActivityCreated(savedInstanceState);
 
 			adapter = new JobAdapter();
+			adapter.onJobHeaderClicked = OnJobClicked;
 			adapter.onItemClicked += (adapter, position) => {
 				switch ((EViewType)adapter.GetItemViewType(position)) {
 					case EViewType.Job:
@@ -63,6 +65,46 @@
 			base.OnResume();
 
 			LoadAsync();
+		}
+
+		private void OnJobClicked(JobRow row) {
+			var ldb = new ListDialogBuilder(Activity);
+			ldb.SetTitle(Resource.String.job_options);
+
+			ldb.AddItem(Resource.String.job_info, () => {
+				var i = new Intent(Activity, typeof(EditJobActivity));
+				i.PutExtra(EditJobActivity.EXTRA_JOB_ID, row._id);
+				StartActivity(i);
+			});
+
+			ldb.AddItem(Resource.String.select_all, () => {
+				var record = adapter.FindJobRecord(row._id);
+
+				foreach (var r in record.sessions) {
+					r.isChecked = true;
+					NotifySessionChecked(r);
+				}
+
+				adapter.RefreshJob(record);
+			});
+
+			ldb.AddItem(Resource.String.deselect_all, () => {
+				var record = adapter.FindJobRecord(row._id);
+
+				foreach (var r in record.sessions) {
+					r.isChecked = false;
+					NotifySessionChecked(r);
+				}
+
+				adapter.RefreshJob(record);
+			});
+
+			ldb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+				var d = sender as Dialog;
+				d.Dismiss();
+			});
+
+			ldb.Show();
 		}
 
 		private void NotifySessionChecked(SessionRecord record) {
@@ -137,7 +179,7 @@
 			private TextView text;
 			private CheckBox check;
 
-			public SessionViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+			public SessionViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_session) {
 				text = view.FindViewById<TextView>(Resource.Id.name);
 				check = view.FindViewById<CheckBox>(Resource.Id.check);
 			}
@@ -161,22 +203,22 @@
 			/// </summary>
 			public JobRow row { get; private set; }
 
-			public IEnumerable<SessionRecord> sessions;
+			public List<SessionRecord> sessions;
 
 			public JobRecord(JobRow row) {
 				this.row = row;
 			}
 		}
 
-		public class JobViewHolder : SwipableViewHolder<JobRecord> {
+		private class JobViewHolder : SwipableViewHolder<JobRecord> {
 			private TextView name;
 			private View options;
 
-			public JobViewHolder(ViewGroup parent, int resource) : base(parent, resource) {
+			public JobViewHolder(ViewGroup parent, JobAdapter adapter) : base(parent, Resource.Layout.list_item_job) {
 				this.name = view.FindViewById<TextView>(Resource.Id.name);  
 				this.options = view.FindViewById(Resource.Id.icon);
 				options.Click += (sender, e) => {
-					Toast.MakeText(parent.Context, "Complete me", ToastLength.Short).Show();
+					adapter.NotifyJobHeaderClicked(t.row);
 				};
 			}
 
@@ -186,18 +228,18 @@
 		}
 
 		private class JobAdapter : SwipableRecyclerViewAdapter {
+			public OnJobHeaderClicked onJobHeaderClicked;
+
 			public override long GetItemId(int position) {
 				return records[position].viewType;
 			}
 
-			public override SwipableViewHolder OnCreateSwipableViewHolder(Android.Views.ViewGroup parent, int viewType) {
-				var li = LayoutInflater.From(parent.Context);
-
+			public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
 				switch ((EViewType)viewType) {
 					case EViewType.Job:
-						return new JobViewHolder(parent, Resource.Layout.list_item_job);
+						return new JobViewHolder(parent, this);
 					case EViewType.Session:
-						return new SessionViewHolder(parent, Resource.Layout.list_item_session);
+						return new SessionViewHolder(parent);
 					default:
 						throw new Exception("Cannot create view holder for " + (EViewType)viewType);
 				}
@@ -215,6 +257,12 @@
 				return null;
 			}
 
+			public void NotifyJobHeaderClicked(JobRow job) {
+				if (onJobHeaderClicked != null) {
+					onJobHeaderClicked(job);
+				}
+			}
+
 			/// <summary>
 			/// Sets the jobs content for the adapter.
 			/// </summary>
@@ -229,6 +277,22 @@
 				}
 
 				NotifyDataSetChanged();
+			}
+
+			public JobRecord FindJobRecord(int id) {
+				foreach (var r in records) {
+					var jr = r as JobRecord;
+
+					if (jr != null && jr.row._id == id) {
+						return jr;
+					}
+				}
+
+				return null;
+			}
+
+			public void RefreshJob(JobRecord record) {
+				NotifyItemRangeChanged(records.IndexOf(record), 1 + record.sessions.Count);
 			}
 		}
 	}

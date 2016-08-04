@@ -134,9 +134,15 @@
         return;
       }
       try {
-       if (EProtocolVersion.Classic != protocol.version && Protocol.FindProtocolFromVersion(packet[0])?.version != protocol.version) {
+				var p = Protocol.FindProtocolFromVersion(packet[0]);
+				if (p == null) {
+					Log.D(this, serialNumber + " failed to determine packet protocol.");
+					return;
+				}
+
+				if (protocol.version != EProtocolVersion.Classic && p.version != protocol.version) {
           Log.E(this, "We have to fix the protocol for " + serialNumber + ". We were protocol: " + protocol.version + " we should be protocol: " + packet[0]);
-          __protocol = Protocol.FindProtocolFromVersion(packet[0]);
+					__protocol = p;
         }
 
 				GaugePacket gp = __protocol.ParsePacket(packet);
@@ -176,7 +182,7 @@
 					lastNotify = DateTime.Now;
         }
       } catch (Exception e) {
-//        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

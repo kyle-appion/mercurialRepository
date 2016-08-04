@@ -100,7 +100,7 @@ namespace ION.IOS.ViewController.GaugeTesting {
 						vc.MailComposeDelegate = new MailDelegate();
 						vc.SetSubject("New ION Gauge Test Results");
             vc.SetMessageBody("Hello, Christian\n\nThe attached CSV is a new intial/recalibration test. Please document the attached devices. \n\nOne love,\n" + testResults.tester, false);
-						vc.SetToRecipients(new string[] { "ahodder@appioninc.com" });
+						vc.SetToRecipients(new string[] { EXPORT_EMAIL });
 						vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/csv", file.name);
 						NavigationController.PresentViewController(vc, true, null);
 					} else {
