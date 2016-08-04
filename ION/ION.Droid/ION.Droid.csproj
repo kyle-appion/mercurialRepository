@@ -198,8 +198,6 @@
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
     <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
     <Compile Include="src\Connections\ClassicConnection.cs" />
-    <Compile Include="src\Activity\DataLogging\NewReportFragment.cs" />
-    <Compile Include="src\Activity\DataLogging\DataLoggingReportActivity.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
@@ -213,10 +211,6 @@
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
-    <Compile Include="src\Activity\DataLogging\ReportSessionListAdapter.cs" />
-    <Compile Include="src\Activity\DataLogging\ReportJobListAdapter.cs" />
-    <Compile Include="src\Activity\DataLogging\SessionRecord.cs" />
-    <Compile Include="src\Activity\DataLogging\EViewType.cs" />
     <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
     <Compile Include="src\Activity\Report\ExportReportFragment.cs" />
