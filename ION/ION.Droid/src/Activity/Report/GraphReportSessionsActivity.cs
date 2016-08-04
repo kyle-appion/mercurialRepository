@@ -1,8 +1,10 @@
-﻿namespace ION.Droid.Activity.Report {
+﻿using ION.Droid.Dialog;
+namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
 	using System.Linq;
+	using System.IO;
 	using System.Threading.Tasks;
 
 	using Android.App;
@@ -20,9 +22,11 @@
 
 	using ION.Core.Database;
 	using ION.Core.Devices;
+	using ION.Core.IO;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Util;
 
+	using ION.Droid.Report;
 	using ION.Droid.Util;
 
 	[Activity(Label="GRAPH REPORT SESSIONS", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
@@ -32,6 +36,10 @@
 		/// activity's session list.
 		/// </summary>
 		public const string EXTRA_SESSIONS = "ION.Droid.extra.SESSIONS";
+
+		private const string FILE_NAME = "DataLogReport";
+		private const string EXCEL_EXT = ".xlsx";
+		private const string PDF_EXT = ".pdf";
 
 		/// <summary>
 		/// The text view that will show the date range of the graph.
@@ -265,7 +273,89 @@
 		private void Export() {
 			var results = adapter.GatherSelectedLogs(leftOverlay.width / (float)leftOverlay.plotWidth,
 			                                         1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
-			;
+			
+			var dialog = new ListDialogBuilder(this);
+			dialog.SetTitle(Resource.String.report_choose_export_format);
+
+			dialog.AddItem(Resource.String.spreadsheet, () => {
+				ExportExcel(results);
+			});
+
+			dialog.AddItem(Resource.String.pdf, () => {
+				ExportPdf(results);
+			});
+
+			dialog.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+				var d = sender as Dialog;
+				d.Dismiss();
+			});
+
+			dialog.Show();
+		}
+
+		private async Task ExportExcel(List<SessionResults> results) {
+			var dialog = new ProgressDialog(this);
+			dialog.SetTitle(Resource.String.please_wait);
+			dialog.SetMessage(GetString(Resource.String.saving));
+			dialog.Show();
+
+			var task = Task.Factory.StartNew(() => {
+				try {
+					var dateString = DateTime.Now.ToFullShortString();
+					dateString = dateString.Replace('\\', '-'); 
+					dateString = dateString.Replace('/', '-');
+
+					var folder = ion.dataLogReportFolder;
+					var file = folder.GetFile(FILE_NAME + "_" + dateString + EXCEL_EXT, EFileAccessResponse.ReplaceIfExists);
+
+					var success = new DataLogExcelReportExporter().Export(ion, this, file.fullPath, results);
+
+					if (success) {
+						Log.D(this, "Succeeded in exporting the results");
+					} else {
+						Log.D(this, "Failed to export the results.");
+					}
+				} catch (Exception e) {
+					Log.E(this, "Failed to export report", e);
+				}
+			});
+
+			await task;
+
+			dialog.Dismiss();
+		}
+
+		private async Task ExportPdf(List<SessionResults> results) {
+			var dialog = new ProgressDialog(this);
+			dialog.SetTitle(Resource.String.please_wait);
+			dialog.SetMessage(GetString(Resource.String.saving));
+			dialog.Show();
+
+			var task = Task.Factory.StartNew(() => {
+				try {
+					var dateString = DateTime.Now.ToFullShortString();
+					dateString = dateString.Replace('\\', '-'); 
+					dateString = dateString.Replace('/', '-');
+					var filename = FILE_NAME + "_" + dateString + PDF_EXT;
+
+					var folder = ion.dataLogReportFolder;
+					var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
+
+					var success = new DataLogPdfReportExporter().Export(ion, this, file.fullPath, results);
+
+					if (success) {
+						Log.D(this, "Succeeded in exporting the results");
+					} else {
+						Log.D(this, "Failed to export the results.");
+					}
+				} catch (Exception e) {
+					Log.E(this, "Failed to export report", e);
+				}
+			});
+
+			await task;
+
+			dialog.Dismiss();
 		}
 	}
 

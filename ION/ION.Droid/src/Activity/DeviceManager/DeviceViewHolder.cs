@@ -109,9 +109,6 @@
       icon.SetImageBitmap(cache.GetBitmap(device.GetDeviceIcon()));
       type.Text = device.GetDeviceProductName();
       var nameString = device.name;
-#if DEBUG
-      nameString += " {Pv: " + device.protocol.version + "}"; 
-#endif
       name.Text = device.name;
       if (record.isExpanded) {
         arrow.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_downblack));
