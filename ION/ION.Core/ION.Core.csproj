@@ -45,12 +45,6 @@
     <Compile Include="src\IO\IFile.cs" />
     <Compile Include="src\IO\Preferences\IPreferences.cs" />
     <Compile Include="src\IO\Preferences\BasePreferences.cs" />
-    <Compile Include="src\Measure\Converter.cs" />
-    <Compile Include="src\Measure\Dimension.cs" />
-    <Compile Include="src\Measure\Quantity.cs" />
-    <Compile Include="src\Measure\Scalar.cs" />
-    <Compile Include="src\Measure\Unit.cs" />
-    <Compile Include="src\Measure\Units.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Util\Log.cs" />
@@ -116,7 +110,6 @@
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
-    <Compile Include="src\Measure\Json\UnitJsonConverter.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificateExporter.cs" />
     <Compile Include="src\Location\PlaceholderLocationManager.cs" />
     <Compile Include="src\Location\SimpleLocation.cs" />
@@ -179,6 +172,13 @@
     <Compile Include="src\Internal\Testing\CSVAv760NistTraceExporter.cs" />
     <Compile Include="src\Internal\Testing\TestResults.cs" />
     <Compile Include="src\IO\Exporter\Csv.cs" />
+    <Compile Include="src\Measure\Converter.cs" />
+    <Compile Include="src\Measure\Dimension.cs" />
+    <Compile Include="src\Measure\Quantity.cs" />
+    <Compile Include="src\Measure\Scalar.cs" />
+    <Compile Include="src\Measure\ScalarSpan.cs" />
+    <Compile Include="src\Measure\Unit.cs" />
+    <Compile Include="src\Measure\Units.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -206,7 +206,6 @@
     <Folder Include="src\Location\" />
     <Folder Include="src\Pdf\" />
     <Folder Include="src\Report\" />
-    <Folder Include="src\Measure\Json\" />
     <Folder Include="src\Devices\Filters\" />
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
@@ -217,6 +216,7 @@
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\StateMachine\" />
     <Folder Include="src\IO\Exporter\" />
+    <Folder Include="src\Measure\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">

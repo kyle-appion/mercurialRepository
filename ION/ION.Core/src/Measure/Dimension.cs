@@ -1,7 +1,7 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Measure {
 
-namespace ION.Core.Measure {
+  using System;
+
 
   /// <summary>
   /// This class represens the dimension of an unit. Two units u1 and u2 are

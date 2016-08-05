@@ -492,12 +492,12 @@
           break;
       }
 
-      holder.ItemView.Click += (sender, e) => {
+			holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
         var manifold = FindManifoldAtIndex(position);
         if (manifold != null && onSensorPropertyClicked != null) {
           onSensorPropertyClicked(manifold, record.sensorProperty);
         }
-      };
+			}));
     }
 
     /// <summary>

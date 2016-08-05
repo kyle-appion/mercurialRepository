@@ -19,7 +19,14 @@ namespace ION.IOS.ViewController.WebServices {
 	public class SessionPayload {
 		public string message;
 		public IION ion;
-		public const string url = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		
+		public const string uploadSessionUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
+		public const string registerAccountUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string uploadAnalyzerUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string uploadWorkbenchUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string downloadAnalyzerUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string downloadWorkbenchUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
 		
 		public SessionPayload() {
 			ion = AppState.context;
@@ -72,10 +79,10 @@ namespace ION.IOS.ViewController.WebServices {
 			
 			jsonPayload += "}";
 			
-			UploadSession(url,jsonPayload,true);
+			UploadSession(jsonPayload,true);
 		}
 		
-		public async void UploadSession(string url, string json, bool isJson = true)
+		public async void UploadSession(string json, bool isJson = true)
 		{
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			WebClient wc = new WebClient();
@@ -90,7 +97,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("accountID","1");
 			
 			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(url,data);
+			byte[] result = wc.UploadValues(uploadSessionUrl,data);
 			
 			//get the string conversion for the byte array
 			var textResponse = Encoding.UTF8.GetString(result);
@@ -117,7 +124,7 @@ namespace ION.IOS.ViewController.WebServices {
     /// Working with sending and recieving data between companies and employees
     /// </summary>
     /// <returns>post response</returns>
-    public async void RegisterUser(string userName, int account){
+    public async void RegisterUser(string userName, string password, string displayName, string email){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
 			WebClient wc = new WebClient(); 
 			wc.Proxy = null;
@@ -127,11 +134,13 @@ namespace ION.IOS.ViewController.WebServices {
 			var data = new System.Collections.Specialized.NameValueCollection();
 
 			data.Add("registerUser","newuser");
-			data.Add("accountID",account.ToString());
 			data.Add("uname",userName);
+			data.Add("usrpword",password);
+			data.Add("usrEmail",email);
+			data.Add("displayName",displayName);
 			
 			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+			byte[] result = wc.UploadValues(registerUserUrl,data);
 			
 			//get the string conversion for the byte array
 			var textResponse = Encoding.UTF8.GetString(result);
@@ -163,7 +172,7 @@ namespace ION.IOS.ViewController.WebServices {
 		data.Add("accountName",accountName);
 		
 		//initiate the post request and get the request result in a byte array 
-		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		byte[] result = wc.UploadValues(registerAccountUrl,data);
 		
 		//get the string conversion for the byte array
 		var textResponse = Encoding.UTF8.GetString(result);
@@ -211,18 +220,46 @@ namespace ION.IOS.ViewController.WebServices {
 		//	Console.WriteLine("Created a new account with id: " + registeredValue);
 		//} else if (isregistered == "false"){
 		//	Console.WriteLine("Couldn't create new account because " + registeredValue);
-		//}	
+		//}
 	}
 	
 	public async void UploadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
+
+		WebClient wc = new WebClient(); 
+		wc.Proxy = null;
+		
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+		
+		data.Add("uploadSession","sendData");
+		data.Add("accountID", "1");
+
 		
 		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
-			Console.WriteLine("Analyzer is setup and ready");
-			foreach(var sensor in uploadAnalyzer.sensorList){
-				Console.WriteLine("Sending sensor from analyzer slot "+ sensor.analyzerSlot);
+			var layoutJson = "{";
+			var count = 1;                                                                    
+			foreach(var sensor in uploadAnalyzer.sensorList){			 	
+				var position = Array.IndexOf(uploadAnalyzer.sensorPositions,sensor.analyzerSlot);
+			 	layoutJson += "\""+sensor.name+"\":{\"position\":\""+position+"\",\"measurement\":\""+sensor.measurement.amount+"\",\"unit\":\""+sensor.unit.ToString()+"\"}";
+				if(count < uploadAnalyzer.sensorList.Count){
+					layoutJson += ",";
+				}
+				count++;
 			}
+			layoutJson += "}";
+			data.Add("layoutJson",layoutJson);
+			//initiate the post request and get the request result in a byte array
+			//byte[] result = wc.UploadValues(uploadAnalyzerUrl,data);
+			
+			////get the string conversion for the byte array
+			//var textResponse = Encoding.UTF8.GetString(result);
+			//Console.WriteLine(textResponse);
+			
+			
+			Console.WriteLine(layoutJson);
 		} else {
 			Console.WriteLine("Analyzer List isn't available yet");
 		}
@@ -241,21 +278,30 @@ namespace ION.IOS.ViewController.WebServices {
 		data.Add("uploadWorkbench","data");
 		data.Add("userID","1");
 		
-		//initiate the post request and get the request result in a byte array 
-		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
-		
-		//get the string conversion for the byte array
-		var textResponse = Encoding.UTF8.GetString(result);
-		Console.WriteLine(textResponse);
-		//var uploadWorkbench = ion.currentWorkbench;
-		//if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
-		//	Console.WriteLine("Workbench is setup and ready");
-		//	foreach(var manifold in uploadWorkbench.manifolds){
-		//		Console.WriteLine("Sending workbench manifold " + manifold.primarySensor.name);
-		//	}
-		//} else {
-		//	Console.WriteLine("Workbench List isn't available yet");
-		//}
+		var uploadWorkbench = ion.currentWorkbench;
+		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
+			var layoutJson = "{";
+			var count = 1;  
+			foreach(var manifold in uploadWorkbench.manifolds){
+				layoutJson += "\""+manifold.primarySensor.name+"\":{\"measurement\":\""+manifold.primarySensor.measurement.amount+"\",\"unit\":\""+manifold.primarySensor.unit.ToString()+"\"}";
+				if(count < uploadWorkbench.manifolds.Count){
+					layoutJson += ",";
+				}
+				count++;			
+			}
+			layoutJson += "}";
+			data.Add("layoutJson",layoutJson);
+			
+			Console.WriteLine(layoutJson);
+			////initiate the post request and get the request result in a byte array 
+			//byte[] result = wc.UploadValues(uploadWorkbenchUrl,data);
+			
+			////get the string conversion for the byte array
+			//var textResponse = Encoding.UTF8.GetString(result);
+			//Console.WriteLine(textResponse);
+		} else {
+			Console.WriteLine("Workbench List isn't available yet");
+		}
 	}
 	
 	public async void DownloadAnalyzerLayout(){

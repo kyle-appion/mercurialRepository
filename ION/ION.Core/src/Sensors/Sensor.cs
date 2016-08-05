@@ -169,6 +169,58 @@
       return ret;
     }
 
+		public static string ToFormattedString(ESensorType sensorType, ScalarSpan measurement, bool includeUnit = false) {
+			var unit = measurement.unit;
+			var amount = measurement.magnitude;
+
+			string ret = "";
+
+			if (double.IsNaN(amount)) {
+				ret = "---";
+			} else {
+				// PRESSURE UNITS
+				if (Units.Pressure.PASCAL.Equals(unit)) {
+					ret = amount.ToString("0");
+				} else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
+					if (ESensorType.Vacuum == sensorType) {
+						ret = amount.ToString("0.0000");
+					} else {
+						ret = amount.ToString("0");
+					}
+				} else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
+					ret = amount.ToString("0.000");
+				} else if (Units.Pressure.MILLIBAR.Equals(unit)) {
+					ret = amount.ToString("0.000");
+				} else if (Units.Pressure.PSIG.Equals(unit)) {
+					ret = amount.ToString("0.0");
+				} else if (Units.Pressure.PSIA.Equals(unit)) {
+					ret = amount.ToString("0.0000");
+				} else if (Units.Pressure.IN_HG.Equals(unit)) {
+					if (ESensorType.Vacuum == sensorType) {
+						ret = amount.ToString("0.000");
+					} else {
+						ret = amount.ToString("0.00");
+					}
+				}
+				// VACUUM PRESSURE
+				else if (Units.Vacuum.MICRON.Equals(unit)) {
+					ret = amount.ToString("###,##0");
+				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
+					ret = amount.ToString("###,##0");
+				}
+				// DEFAULT
+				else {
+					ret = amount.ToString("0.00");
+				}
+			}
+
+			if (includeUnit) {
+				ret += " " + unit.ToString();
+			}
+
+			return ret;
+		}
+
     /// <summary>
     /// Determines whether or not the given unit is valid with the provided sensor type.
     /// </summary>

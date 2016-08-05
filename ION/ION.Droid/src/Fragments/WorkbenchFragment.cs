@@ -112,50 +112,6 @@
       adapter = new WorkbenchAdapter(ion, Resources);
       adapter.SetWorkbench(ion.currentWorkbench, OnAddViewer);
       list.SetAdapter(adapter);
-      adapter.onManifoldClicked += (manifold) => {
-        ShowManifoldContextDialog(manifold);
-      };
-
-      adapter.onSensorPropertyClicked += (manifold, sensorProperty) => {
-        var sensor = sensorProperty.sensor;
-
-        if (sensorProperty is AlternateUnitSensorProperty) {
-          var asp = sensorProperty as AlternateUnitSensorProperty;
-          UnitDialog.Create(Activity, sensor.supportedUnits, (obj, u) => {
-            asp.unit = u;
-          }).Show();
-        } else if (sensorProperty is PTChartSensorProperty) {
-          var i = new Intent(Activity, typeof(PTChartActivity));
-          i.SetAction(Intent.ActionPick);
-          i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
-          StartActivityForResult(i, REQUEST_SHOW_PTCHART);
-        } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
-          var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
-          i.SetAction(Intent.ActionPick);
-
-          switch (sensor.type) {
-            case ESensorType.Pressure:
-              i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
-              if (manifold.secondarySensor != null) {
-                i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
-              }
-              break;
-            case ESensorType.Temperature:
-              i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
-              if (manifold.secondarySensor != null) {
-                i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
-              }
-              break;
-            default:
-              var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
-              Log.E(this, msg);
-              Alert(msg);
-              break;
-          }
-
-          StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
-        }
-      };
     }
 
     /// <Docs>Called when the Fragment is visible to the user.</Docs>
@@ -163,9 +119,17 @@
     /// Raises the start event.
     /// </summary>
     public override void OnResume() {
-      base.OnStart();
+      base.OnResume();
       adapter.NotifyDataSetChanged();
+			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
+			adapter.onManifoldClicked += OnManifoldClicked;
     }
+
+		public override void OnPause() {
+			base.OnPause();
+			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
+			adapter.onManifoldClicked -= OnManifoldClicked;
+		}
 
     /// <Docs>Called when the fragment is no longer in use.</Docs>
     /// <summary>
@@ -213,13 +177,59 @@
       }
     }
 
+		private void OnManifoldClicked(Manifold manifold) {
+			ShowManifoldContextDialog(manifold);
+		}
+
     /// <summary>
     /// Called when the adapter's footer is called.
     /// </summary>
     private void OnAddViewer() {
       var i = new Intent(Activity, typeof(DeviceManagerActivity));
-      StartActivity(i);
+			i.SetAction(Intent.ActionPick);
+			StartActivityForResult(i, REQUEST_SENSOR);
     }
+
+		private void OnOnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty) {
+			var sensor = sensorProperty.sensor;
+
+			if (sensorProperty is AlternateUnitSensorProperty) {
+				var asp = sensorProperty as AlternateUnitSensorProperty;
+				UnitDialog.Create(Activity, sensor.supportedUnits, (obj, u) => {
+					asp.unit = u;
+				}).Show();
+			} else if (sensorProperty is PTChartSensorProperty) {
+				var i = new Intent(Activity, typeof(PTChartActivity));
+				i.SetAction(Intent.ActionPick);
+				i.PutExtra(PTChartActivity.EXTRA_SENSOR, sensor.ToParcelable());
+				StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+			} else if (sensorProperty is SuperheatSubcoolSensorProperty) {
+				var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
+				i.SetAction(Intent.ActionPick);
+
+				switch (sensor.type) {
+					case ESensorType.Pressure:
+						i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+						if (manifold.secondarySensor != null) {
+							i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+						}
+					break;
+					case ESensorType.Temperature:
+						i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
+						if (manifold.secondarySensor != null) {
+							i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
+						}
+					break;
+					default:
+						var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
+						Log.E(this, msg);
+						Alert(msg);
+					break;
+				}
+
+				StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
+			}
+		}
 
     /// <summary>
     /// Called when a manifold event is thrown by the manifold.
@@ -261,7 +271,7 @@
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
 			if (dgs != null) {
-				#if DEBUG
+#if DEBUG
 				ldb.AddItem("Remote Change Unit", () => {
 					var device = dgs.device;
 					var d = new ListDialogBuilder(Activity);
@@ -276,7 +286,7 @@
 
 					d.Show();
 				});
-				#endif
+#endif
 
 				if (!dgs.device.isConnected) {
 					ldb.AddItem(Resource.String.reconnect, () => {

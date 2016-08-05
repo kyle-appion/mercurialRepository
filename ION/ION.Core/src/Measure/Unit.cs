@@ -1,18 +1,7 @@
-﻿// C# runtime
-using System;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Measure {
 
+  using System;
 
-namespace ION.Core.Measure {
-
-  [DataContract(Name="Unit")]
-  [KnownType(typeof(BaseUnit))]
-  [KnownType(typeof(DerivedUnit))]
-  [KnownType(typeof(CompoundUnit))]
-  [KnownType(typeof(AlternateUnit))]
-  [KnownType(typeof(NamedUnit))]
-  [KnownType(typeof(ProductUnit))]
-  [KnownType(typeof(TransformedUnit))]
   public abstract class Unit {
     /// <summary>
     /// The units that is indicative of a unit of magnitude one.
@@ -23,7 +12,6 @@ namespace ION.Core.Measure {
     /// Returns the quantity that the unit is representative of.
     /// </summary>
     public Quantity quantity { get { return __quantity; } }
-    [DataMember(Name="quantity")]
     private Quantity __quantity;
 
     /// <summary>
@@ -98,6 +86,15 @@ namespace ION.Core.Measure {
     /// <param name="magnitude">The magnitude of the created Scalar.</param>
     public Scalar OfScalar(double magnitude) {
       return new Scalar(this, magnitude);
+    }
+
+    /// <summary>
+    /// Creates a new scalar span that will represents a "distance" magnitude for this unit.
+    /// </summary>
+    /// <returns>The span.</returns>
+    /// <param name="magnitude">Magnitude.</param>
+    public ScalarSpan OfSpan(double magnitude) {
+      return new ScalarSpan(this, magnitude);
     }
 
     /// <summary>
@@ -363,7 +360,7 @@ namespace ION.Core.Measure {
         Unit u = productUnit.GetUnit(i);
         UnitConverter converter = TransformOf(u);
 
-        if (!converter.IsLinear()) {
+        if (!converter.isLinear) {
           throw new ArithmeticException("Cannot convert: " + unit + " is non-linear.");
         }
 
@@ -391,13 +388,11 @@ namespace ION.Core.Measure {
   /// created. BaseUnit is the root of all other units and for all other units,
   /// a BaseUnit is the standard unit.
   /// </summary>
-  [DataContract(Name="BaseUnit")]
   public sealed class BaseUnit : Unit {
     /// <summary>
     /// The symbol that identifies this unit.
     /// </summary>
     public string symbol { get { return __symbol; } }
-    [DataMember(Name="symbol")]
     private string __symbol;
 
     public override Unit standardUnit { get { return this; } }
@@ -429,31 +424,24 @@ namespace ION.Core.Measure {
   /// A Marker extension that marks a unit as having been derived
   /// from another.
   /// </summary>
-  [DataContract(Name="DerivedUnit")]
   public abstract class DerivedUnit : Unit {
     protected DerivedUnit(Quantity quantity) : base(quantity) {
     }
   }
 
-  [DataContract(Name="CompoundUnit")]
   public class CompoundUnit : DerivedUnit {
-    public override Unit standardUnit { get { return __lower.standardUnit; } }
+    public override Unit standardUnit { get { return lower.standardUnit; } }
 
-    public Unit higher { get { return __higher; } }
-    [DataMember(Name="higher")]
-    private Unit __higher;
-
-    public Unit lower { get { return __lower; } }
-    [DataMember(Name="lower")]
-    private Unit __lower;
+    public Unit higher { get; private set; }
+    public Unit lower { get; private set; }
 
     internal CompoundUnit(Unit high, Unit low) : base(high.quantity) {
       if (!high.standardUnit.Equals(low.standardUnit)) {
         throw new ArithmeticException("Cannot build unit: " + high + " and " + low + " must share a standard unit.");
       }
 
-      __higher = high;
-      __lower = low;
+      higher = high;
+      lower = low;
     }
 
     public override UnitConverter ToStandardUnit() {
@@ -480,21 +468,16 @@ namespace ION.Core.Measure {
   /// unit type. For example, if you were to create the unit bits-per-second, you would
   /// create a new alternate unit encapsulating the unit bits / time.second.
   /// </summary>
-  [DataContract(Name="AlternateUnit")]
   public sealed class AlternateUnit : DerivedUnit {
     public override Unit standardUnit { get { return this; } }
 
-    public Unit parent { get { return __parent; } }
-    [DataMember(Name="parent")]
-    private Unit __parent;
+    public Unit parent { get; private set; }
 
-    public string symbol { get { return __symbol; } }
-    [DataMember(Name="symbol")]
-    private string __symbol;
+    public string symbol { get; private set; }
 
     public AlternateUnit(Quantity quantity, Unit parent, string symbol) : base(quantity) {
-      __parent = parent;
-      __symbol = symbol;
+      this.parent = parent;
+      this.symbol = symbol;
     }
 
     public override UnitConverter ToStandardUnit() {
@@ -502,35 +485,30 @@ namespace ION.Core.Measure {
     }
 
     public override int GetHashCode() {
-      return __symbol.GetHashCode();
+      return symbol.GetHashCode();
     }
 
     public override bool Equals(object other) {
       if (this == other) {
         return true;
       } else if (other is AlternateUnit) {
-        return ((AlternateUnit)other).__symbol.Equals(__symbol);
+        return ((AlternateUnit)other).symbol.Equals(symbol);
       } else {
         return false;
       }
     }
   }
 
-  [DataContract(Name="NamedUnit")]
   public class NamedUnit : DerivedUnit {
     public override Unit standardUnit { get { return parent.standardUnit; } }
 
-    public Unit parent { get { return __parent; } }
-    [DataMember(Name="parent")]
-    private Unit __parent;
+    public Unit parent { get; private set; }
 
-    public string symbol { get { return __symbol; } }
-    [DataMember(Name="symbol")]
-    private string __symbol;
+    public string symbol { get; private set; }
 
     public NamedUnit(Unit parent, string symbol) : base(parent.quantity) {
-      __parent = parent;
-      __symbol = symbol;
+      this.parent = parent;
+      this.symbol = symbol;
     }
 
     public override UnitConverter ToStandardUnit() {
@@ -553,7 +531,6 @@ namespace ION.Core.Measure {
     }
   }
 
-  [DataContract(Name="ProductUnit")]
   public sealed class ProductUnit : DerivedUnit {
     public override Unit standardUnit {
       get {
@@ -563,8 +540,8 @@ namespace ION.Core.Measure {
 
         Unit ret = Unit.ONE;
 
-        for (int i = 0; i < __elements.Length; i++) {
-          Element e = __elements[i];
+        for (int i = 0; i < elements.Length; i++) {
+          Element e = elements[i];
           Unit u = e.unit.standardUnit;
           u = u.Pow(e.pow);
           u = u.Root(e.root);
@@ -579,24 +556,23 @@ namespace ION.Core.Measure {
     /// Queries the number of units in this product unit.
     /// </summary>
     /// <value>The unit count.</value>
-    public int unitCount { get { return __elements.Length; } }
+    public int unitCount { get { return elements.Length; } }
 
     // The elements that compose this product unit.
-    [DataMember(Name="elements")]
-    private Element[] __elements;
+    private Element[] elements;
     // The hash code cache, so we don't keep recalculating the code.
     private int __hashCode;
 
     public ProductUnit() : base(Quantity.Dimensionless) {
-      __elements = new Element[0];
+      elements = new Element[0];
     }
 
     private ProductUnit(Quantity quantity, Element[] elements) : base(quantity) {
-      __elements = elements;
+      this.elements = elements;
     }
 
     public ProductUnit(ProductUnit other) : base(other.quantity) {
-      __elements = other.__elements;
+      elements = other.elements;
     }
 
     /// <summary>
@@ -605,7 +581,7 @@ namespace ION.Core.Measure {
     /// <returns>The unit.</returns>
     /// <param name="index">The index of the unit to fetch.</param>
     public Unit GetUnit(int index) {
-      return __elements[index].unit;
+      return elements[index].unit;
     }
 
     /// <summary>
@@ -614,7 +590,7 @@ namespace ION.Core.Measure {
     /// <returns>The unit pow.</returns>
     /// <param name="index">The index of the pow to fetch.</param>
     public int GetUnitPow(int index) {
-      return __elements[index].pow;
+      return elements[index].pow;
     }
 
     /// <summary>
@@ -623,7 +599,7 @@ namespace ION.Core.Measure {
     /// <returns>The unit root.</returns>
     /// <param name="index">The index of the root to fetch.</param>
     public int GetUnitRoot(int index) {
-      return __elements[index].root;
+      return elements[index].root;
     }
 
     public override UnitConverter ToStandardUnit() {
@@ -633,11 +609,11 @@ namespace ION.Core.Measure {
         return ret;
       }
 
-      for (int i = 0; i < __elements.Length; i++) {
-        Element e = __elements[i];
+      for (int i = 0; i < elements.Length; i++) {
+        Element e = elements[i];
         UnitConverter uc = e.unit.ToStandardUnit();
 
-        if (!uc.IsLinear()) {
+        if (!uc.isLinear) {
           throw new ArithmeticException("Cannot convert: " + e.unit + " is not linear");
         }
 
@@ -667,8 +643,8 @@ namespace ION.Core.Measure {
     /// </summary>
     /// <returns><c>true</c> if this instance has only standard unit; otherwise, <c>false</c>.</returns>
     private bool HasOnlyStandardUnit() {
-      for (int i = 0; i < __elements.Length; i++) {
-        if (!__elements[i].unit.IsStandardUnit()) {
+      for (int i = 0; i < elements.Length; i++) {
+        if (!elements[i].unit.IsStandardUnit()) {
           return false;
         }
       }
@@ -681,8 +657,8 @@ namespace ION.Core.Measure {
       }
 
       int code = 0;
-      for (int i = 0; i < __elements.Length; i++) {
-        code += __elements[i].unit.GetHashCode() * (__elements[i].pow * 3 - __elements[i].root * 2);
+      for (int i = 0; i < elements.Length; i++) {
+        code += elements[i].unit.GetHashCode() * (elements[i].pow * 3 - elements[i].root * 2);
       }
       __hashCode = code;
 
@@ -694,10 +670,10 @@ namespace ION.Core.Measure {
         return true;
       } else if (other is ProductUnit) {
         ProductUnit p = (ProductUnit)other;
-        Element[] e = p.__elements;
-        if (__elements.Length == e.Length) {
-          for (int i = 0; i < __elements.Length; i++) {
-            if (!__elements[i].Equals(p.__elements[i])) {
+        Element[] e = p.elements;
+        if (elements.Length == e.Length) {
+          for (int i = 0; i < elements.Length; i++) {
+            if (!elements[i].Equals(p.elements[i])) {
               return false;
             }
           }
@@ -741,7 +717,7 @@ namespace ION.Core.Measure {
         int pow = p1 * r2 + p2 * r1;
         int root = r1 * r2;
         if (pow != 0) {
-          int gcd = Gcd(System.Math.Abs(pow), root);
+          int gcd = Gcd(Math.Abs(pow), root);
           result[index++] = new Element(unit, pow / gcd, root / gcd);
         }
       }
@@ -788,14 +764,14 @@ namespace ION.Core.Measure {
     public static Unit GetProductInstance(Unit left, Unit right) {
       Element[] leftElements;
       if (left is ProductUnit) {
-        leftElements = ((ProductUnit)left).__elements;
+        leftElements = ((ProductUnit)left).elements;
       } else {
         leftElements = new Element[] { new Element(left, 1, 1) };
       }
 
       Element[] rightElements;
       if (right is ProductUnit) {
-        rightElements = ((ProductUnit)right).__elements;
+        rightElements = ((ProductUnit)right).elements;
       } else {
         rightElements = new Element[] { new Element(left, 1, 1) };
       }
@@ -817,14 +793,14 @@ namespace ION.Core.Measure {
     public static Unit GetQuotientInstance(Unit left, Unit right) {
       Element[] leftElements;
       if (left is ProductUnit) {
-        leftElements = ((ProductUnit)left).__elements;
+        leftElements = ((ProductUnit)left).elements;
       } else {
         leftElements = new Element[] { new Element(left, 1, 1) };
       }
 
       Element[] rightElements;
       if (right is ProductUnit) {
-        Element[] es = ((ProductUnit)right).__elements;
+        Element[] es = ((ProductUnit)right).elements;
         rightElements = new Element[es.Length];
         for (int i = 0; i < es.Length; i++) {
           Element e = es[i];
@@ -846,10 +822,10 @@ namespace ION.Core.Measure {
     public static Unit GetPowInstance(Unit unit, int n) {
       Element[] elms;
       if (unit is ProductUnit) {
-        Element[] e = ((ProductUnit)unit).__elements;
+        Element[] e = ((ProductUnit)unit).elements;
         elms = new Element[e.Length];
         for (int i = 0; i < e.Length; i++) {
-          int gcd = Gcd(System.Math.Abs(e[i].pow * n), e[i].root);
+          int gcd = Gcd(Math.Abs(e[i].pow * n), e[i].root);
           elms[i] = new Element(e[i].unit, e[i].pow * n / gcd, e[i].root / gcd);
         }
       } else {
@@ -867,10 +843,10 @@ namespace ION.Core.Measure {
     public static Unit GetRootInstance(Unit unit, int n) {
       Element[] elms;
       if (unit is ProductUnit) {
-        Element[] e = ((ProductUnit) unit).__elements;
+        Element[] e = ((ProductUnit) unit).elements;
         elms = new Element[e.Length];
         for (int i = 0; i < e.Length; i++) {
-          int gcd = Gcd(System.Math.Abs(e[i].pow), e[i].root * n);
+          int gcd = Gcd(Math.Abs(e[i].pow), e[i].root * n);
           elms[i] = new Element(e[i].unit, e[i].pow / gcd, e[i].root * n / gcd);
         }
       } else {
@@ -902,24 +878,15 @@ namespace ION.Core.Measure {
       }
     }
 
-    [DataContract(Name="Element")]
     internal struct Element {
-      public Unit unit { get { return __unit; } }
-      [DataMember(Name="unit")]
-      private readonly Unit __unit;
-
-      public int pow { get { return __pow; } }
-      [DataMember(Name="pow")]
-      private readonly int __pow;
-
-      public int root { get { return __root; } }
-      [DataMember(Name="root")]
-      private readonly int __root;
+      public Unit unit { get; private set; }
+      public int pow { get; private set; }
+      public int root { get; private set; }
 
        internal Element(Unit unit, int pow, int root) {
-        __unit = unit;
-        __pow = pow;
-        __root = root;
+        this.unit = unit;
+        this.pow = pow;
+        this.root = root;
       }
 
       public override bool Equals(object other) {
@@ -937,25 +904,18 @@ namespace ION.Core.Measure {
     }
   }
 
-  [DataContract(Name="TransformedUnit")]
   public class TransformedUnit : DerivedUnit {
-    public override Unit standardUnit { get { return __parent.standardUnit; } }
-
-    public Unit parent { get { return __parent; } }
-    [DataMember(Name="parent")]
-    private Unit __parent;
-
-    public UnitConverter toParent { get { return __toParent; } }
-    [DataMember(Name="toParent")]
-    private UnitConverter __toParent;
+    public override Unit standardUnit { get { return parent.standardUnit; } }
+    public Unit parent { get; private set; }
+    public UnitConverter toParent { get; private set; }
 
     internal TransformedUnit(Quantity quantity, Unit parentUnit, UnitConverter converter) : base(quantity) {
-      __parent = parentUnit;
-      __toParent = converter;
+      this.parent = parentUnit;
+      this.toParent = converter;
     }
 
     public override UnitConverter ToStandardUnit() {
-      return __parent.ToStandardUnit().Concatenate(__toParent);
+      return parent.ToStandardUnit().Concatenate(toParent);
     }
 
     public override int GetHashCode() {

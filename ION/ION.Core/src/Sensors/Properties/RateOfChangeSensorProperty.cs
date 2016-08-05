@@ -22,7 +22,7 @@ namespace ION.Core.Sensors.Properties {
 
         var ret = roc.change.unit.OfScalar(roc.change.amount * 60000 / roc.rate.TotalMilliseconds);
 
-        if (ret.Abs().amount <= 0.001) {
+				if (System.Math.Abs(ret.amount) <= 0.001) {
           ret = tracker.baseUnit.OfScalar(0);
         }
 
@@ -43,7 +43,7 @@ namespace ION.Core.Sensors.Properties {
     /// <value><c>true</c> if is stable; otherwise, <c>false</c>.</value>
     public bool isStable {
       get {
-        return tracker.rateOfChange.change.Abs() <= stabilityScale.ConvertTo(tracker.baseUnit).amount;
+				return System.Math.Abs(tracker.rateOfChange.change.amount) <= stabilityScale.ConvertTo(tracker.baseUnit).amount;
       }
     }
 

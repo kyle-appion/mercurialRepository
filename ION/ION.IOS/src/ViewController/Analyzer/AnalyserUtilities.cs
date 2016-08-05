@@ -822,15 +822,19 @@ namespace ION.IOS.ViewController.Analyzer
 		/// </summary>
 		/// <param name="touchPoint">LOCATION OF SUBVIEW WHEN FINGER WAS REMOVED</param>
 		/// <param name="position">WHICH SUBVIEW WAS MOVING</param>
-    public static void sensorSwap(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View){
+    public static void sensorSwap(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View,ION.Core.Content.Analyzer currentAnalyzer){
 			int start = analyzerSensors.areaList.IndexOf(position);
 			int swap = 0;
       bool removeLH = false;
+      //var ion = AppState.context;
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
         swap = analyzerSensors.areaList[0];
         analyzerSensors.areaList[0] = position;
         analyzerSensors.areaList[start] = swap;
+
+        currentAnalyzer.sensorPositions[0] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start > 3) {          
           swap = 0;
           removeLH = true;
@@ -839,6 +843,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[1];
         analyzerSensors.areaList[1] = position;
         analyzerSensors.areaList[start] = swap;
+
+        currentAnalyzer.sensorPositions[1] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start > 3) {
           swap = 1;
           removeLH = true;
@@ -847,6 +854,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[2];
         analyzerSensors.areaList[2] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[2] = position;
+        currentAnalyzer.sensorPositions[start] = swap;				
         if (start > 3) {
           swap = 2;
           removeLH = true;
@@ -855,6 +865,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[3];
         analyzerSensors.areaList[3] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[3] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start > 3) {
           swap = 3;
           removeLH = true;
@@ -863,6 +876,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[4];
         analyzerSensors.areaList[4] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[4] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start < 4) {
           swap = 4;
           removeLH = true;
@@ -871,6 +887,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[5];
         analyzerSensors.areaList[5] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[5] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start < 4) {
           swap = 5;
           removeLH = true;
@@ -879,6 +898,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[6];
         analyzerSensors.areaList[6] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[6] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start < 4) {
           swap = 6;
           removeLH = true;
@@ -887,6 +909,9 @@ namespace ION.IOS.ViewController.Analyzer
         swap = analyzerSensors.areaList[7];
         analyzerSensors.areaList[7] = position;
         analyzerSensors.areaList[start] = swap;
+
+       	currentAnalyzer.sensorPositions[7] = position;
+        currentAnalyzer.sensorPositions[start] = swap;
         if (start < 4) {
           swap = 7;
           removeLH = true;
@@ -900,20 +925,44 @@ namespace ION.IOS.ViewController.Analyzer
 
 				if (analyzerSensors.areaList [i] == 1) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
+					if(analyzerSensors.snapArea1.currentSensor != null){
+						analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 2) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
+					if(analyzerSensors.snapArea2.currentSensor != null){
+						analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 3) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
+					if(analyzerSensors.snapArea3.currentSensor != null){
+						analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 4) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
+					if(analyzerSensors.snapArea4.currentSensor != null){
+						analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 5) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
+					if(analyzerSensors.snapArea5.currentSensor != null){
+						analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 6) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
+					if(analyzerSensors.snapArea6.currentSensor != null){
+						analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 7) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
+					if(analyzerSensors.snapArea7.currentSensor != null){
+						analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
+					}
 				} else if (analyzerSensors.areaList [i] == 8) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
+					if(analyzerSensors.snapArea8.currentSensor != null){
+						analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
+					}
 				}
 			}
       if (removeLH) {
@@ -1309,7 +1358,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="position">Position.</param>
     /// <param name="touchPoint">Touch point.</param>
     /// <param name="View">View.</param>
-    public static void LHSwapCheck(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View){
+    public static void LHSwapCheck(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View, ION.Core.Content.Analyzer currentAnalyzer){
       int start = analyzerSensors.areaList.IndexOf(position);
       int swap = 0;
       bool removeLH = false;
@@ -1360,29 +1409,29 @@ namespace ION.IOS.ViewController.Analyzer
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           Console.WriteLine("low and high areas are swapping with the low area being the start");
-          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
+          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           Console.WriteLine("low and high areas are swapping with the high area being the start");
-          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
+          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
           Console.WriteLine("low or high area is starting a swap with a sensor not of the opposite peer");
-          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View);
+          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
           Console.WriteLine("low or high area is a swapie with a sensor not of the opposite peer");
-          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View, analyzerSensors.viewList[swap]);
+          LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, analyzerSensors.viewList[swap]);
         } else {
           bool foundAssociation = false;
           foreach (var item in analyzerSensors.viewList){
 
             if (item.lowArea.attachedSensor != null) {
               if (item.lowArea.attachedSensor.currentSensor != null && (item.lowArea.attachedSensor.currentSensor == analyzerSensors.viewList[start].currentSensor || item.lowArea.attachedSensor.currentSensor == analyzerSensors.viewList[swap].currentSensor)) {
-                LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View, item);
+                LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, item);
                 foundAssociation = true;
               } else if (item.lowArea.attachedSensor.manualSensor != null && (item.lowArea.attachedSensor.manualSensor == analyzerSensors.viewList[start].manualSensor || item.lowArea.attachedSensor.manualSensor == analyzerSensors.viewList[swap].manualSensor)){
-                LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View, item);
+                LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, item);
                 foundAssociation = true;
               }
             }
@@ -1390,11 +1439,11 @@ namespace ION.IOS.ViewController.Analyzer
           if (foundAssociation) {
             return;
           } else {
-            sensorSwap(analyzerSensors, lowHighSensors, position, touchPoint, View);
+            sensorSwap(analyzerSensors, lowHighSensors, position, touchPoint, View, currentAnalyzer);
           }
         }
       } else {
-        sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
+        sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View, currentAnalyzer);
       }
     }
     /// <summary>
@@ -1405,7 +1454,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="position">Position.</param>
     /// <param name="touchPoint">Touch point.</param>
     /// <param name="View">View.</param>
-    public static void LHSwapAlert(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View, sensor item = null){
+    public static void LHSwapAlert(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View, ION.Core.Content.Analyzer currentAnalyzer, sensor item = null){
       var window = UIApplication.SharedApplication.KeyWindow;
       var vc = window.RootViewController;
       while (vc.PresentedViewController != null) {
@@ -1433,7 +1482,7 @@ namespace ION.IOS.ViewController.Analyzer
           item.lowArea.attachedSensor = null;
           item.highArea.attachedSensor = null;
         }
-        sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View);
+        sensorSwap (analyzerSensors, lowHighSensors, position, touchPoint, View, currentAnalyzer);
       }));
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {
         confirmLayout(analyzerSensors, View);
