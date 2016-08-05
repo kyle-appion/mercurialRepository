@@ -15,7 +15,7 @@
 
 	public class GraphRecordAdapter : SwipableRecyclerViewAdapter {
 		
-		private DateIndexLookup dil;
+		public DateIndexLookup dil;
 		private List<SessionResults> sessionResults;
 
 		public GraphRecordAdapter() {
@@ -61,7 +61,28 @@
 		/// <param name="percent">Percent.</param>
 		public DateTime FindDateTimeFromSelection(float percent) {
 			var index = (int)(percent * (dil.dateSpan - 1));
-			var ret = dil.DateFromIndex(index);
+			if (index >= dil.dateSpan) {
+				return DateTime.FromFileTime(0);
+			} else {
+				var ret = dil.DateFromIndex(index);
+				return ret;
+			}
+		}
+
+		/// <summary>
+		/// Queries a list of dates within the DateIndexLookup that are before the given date.
+		/// </summary>
+		/// <returns>The dates preceding.</returns>
+		/// <param name="date">Date.</param>
+		public List<DateTime> GetDatesInRange(DateTime first, DateTime last) {
+			var fi = dil.IndexOfDate(first);
+			var li = dil.IndexOfDate(last);
+
+			var ret = new List<DateTime>();
+
+			for (int i = fi; i < li; i++) {
+				ret.Add(dil.DateFromIndex(i));
+			}
 
 			return ret;
 		}

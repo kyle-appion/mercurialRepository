@@ -103,7 +103,7 @@
                 <EditText
                     android:id="@id/edit"
                     android:inputType="numberDecimal|numberSigned"
-                    android:hint="@string/measurement_pressure"
+                    android:hint="@string/pressure"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <Button
@@ -115,7 +115,7 @@
                     android:layout_gravity="right|center_vertical" />
             </FrameLayout>
             <TextView
-                android:text="@string/measurement_pressure"
+                android:text="@string/pressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -170,7 +170,7 @@
                 <EditText
                     android:id="@id/edit"
                     android:inputType="numberDecimal|numberSigned"
-                    android:hint="@string/measurement_temperature"
+                    android:hint="@string/temperature"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
                 <Button
@@ -182,7 +182,7 @@
                     android:layout_gravity="right|center_vertical" />
             </FrameLayout>
             <TextView
-                android:text="@string/measurement_temperature"
+                android:text="@string/temperature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

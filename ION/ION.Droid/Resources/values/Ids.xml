@@ -8,6 +8,7 @@
   <item name="alarm" type="id"/>
   <item name="arrow" type="id"/>
 	<item name="association" type="id"/>
+	<item name="average" type="id"/>
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
   <item name="card" type="id"/>
@@ -29,18 +30,21 @@
   <item name="edit" type="id"/>
   <item name="empty" type="id"/>
   <item name="end" type="id"/>
+	<item name="end_times" type="id"/>
   <item name="exit" type="id"/>
 	<item name="export" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
   <item name="graph" type="id"/>
   <item name="help" type="id"/>
+	<item name="highest" type="id"/>
   <item name="icon" type="id"/>
 	<item name="job" type="id"/>
   <item name="left" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
   <item name="loading" type="id"/>
+	<item name="lowest" type="id"/>
   <item name="next" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
@@ -66,6 +70,7 @@
   <item name="screenshot" type="id"/>
   <item name="settings" type="id"/>
   <item name="start" type="id"/>
+	<item name="start_times" type="id"/>
   <item name="state" type="id"/>
   <item name="status" type="id"/>
 	<item name="tab_1" type="id"/>

@@ -1,5 +1,4 @@
-﻿using ION.Droid.Dialog;
-namespace ION.Droid.Activity.Report {
+﻿namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
@@ -7,6 +6,7 @@ namespace ION.Droid.Activity.Report {
 	using System.IO;
 	using System.Threading.Tasks;
 
+	using Android.Animation;
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
@@ -26,10 +26,12 @@ namespace ION.Droid.Activity.Report {
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Util;
 
+	using ION.Droid.Dialog;
 	using ION.Droid.Report;
 	using ION.Droid.Util;
+	using ION.Droid.Views;
 
-	[Activity(Label="GRAPH REPORT SESSIONS", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/report_select_export_data", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
 	public class GraphReportSessionsActivity : IONActivity {
 		/// <summary>
 		/// The extra that will retrieve an integer array from the starting Intent. This list is what is used to populate the
@@ -41,6 +43,18 @@ namespace ION.Droid.Activity.Report {
 		private const string EXCEL_EXT = ".xlsx";
 		private const string PDF_EXT = ".pdf";
 
+		/// <summary>
+		/// The view that will display the content of the activity.
+		/// </summary>
+		private View content;
+		/// <summary>
+		/// The container view that will hold all of the graphing views.
+		/// </summary>
+		private View graphView;
+		/// <summary>
+		/// The container view that will hold all of the settins views.
+		/// </summary>
+		private View settingsView;
 		/// <summary>
 		/// The text view that will show the date range of the graph.
 		/// </summary>
@@ -57,19 +71,23 @@ namespace ION.Droid.Activity.Report {
 		/// <summary>
 		/// The adapter that will shown the logs graphs.
 		/// </summary>
-		private GraphRecordAdapter adapter;
+		private GraphRecordAdapter graphAdapter;
 		/// <summary>
-		/// The center x of the left slider.
+		/// The adapter that will list the overview of the graphs.
 		/// </summary>
-		private float leftX;
+		private OverviewAdapter overviewAdapter;
+		/// <summary>
+		/// The adapter that will list the available start times.
+		/// </summary>
+		private ArrayAdapter<string> startTimesAdapter;
+		/// <summary>
+		/// The adapter that will list the available end times.
+		/// </summary>
+		private ArrayAdapter<string> endTimesAdapter;
 		/// <summary>
 		/// The drawable that shows the ignored content of the left selection.
 		/// </summary>
 		private SelectionDrawable leftOverlay;
-		/// <summary>
-		/// The center x of the right slider.
-		/// </summary>
-		private float rightX;
 		/// <summary>
 		/// The drawable that shows the ignored content of the right selection.
 		/// </summary>
@@ -100,6 +118,10 @@ namespace ION.Droid.Activity.Report {
 				return;
 			}
 
+			content = FindViewById(Resource.Id.content);
+			graphView = FindViewById(Resource.Id.graph);
+			settingsView = FindViewById(Resource.Id.settings);
+
 			FindViewById(Resource.Id.reset).Click += (sender, e) => {
 				Reset();
 			};
@@ -108,11 +130,29 @@ namespace ION.Droid.Activity.Report {
 				Export();
 			};
 
-			leftX = rightX = -1;
-
 			sessions = new List<int>(Intent.GetIntArrayExtra(EXTRA_SESSIONS));
 
 			InitializeGraphViews();
+			InitOptionsViews();
+
+			var startSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
+			var endSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
+
+			startSpinner.ItemSelected += (sender, e) => {
+				var pos = e.Position;
+				var len = (float)graphAdapter.dil.dateSpan;
+				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
+
+				InvalidateGraphViews();
+			};
+
+			endSpinner.ItemSelected += (sender, e) => {
+				var len = (float)graphAdapter.dil.dateSpan;
+				var pos = len - e.Position;
+				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
+
+				InvalidateGraphViews();
+			};
 		}
 
 		protected override void OnResume() {
@@ -122,6 +162,17 @@ namespace ION.Droid.Activity.Report {
 			RefreshGraphList();
 		}
 
+		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
+			switch (item.ItemId) {
+				case Android.Resource.Id.Home:
+					SetResult(Result.Canceled);
+					Finish();
+				return true;
+				default:
+				return base.OnMenuItemSelected(featureId, item);
+			}
+		}
+
 		private void InitializeGraphViews() {
 			dateRangeView = FindViewById<TextView>(Resource.Id.date);
 			showSettingsView = FindViewById(Resource.Id.settings);
@@ -129,9 +180,15 @@ namespace ION.Droid.Activity.Report {
 
 			var left = FindViewById(Resource.Id.left);
 			var right = FindViewById(Resource.Id.right);
+			var container = FindViewById(Resource.Id.view);
 
-			adapter = new GraphRecordAdapter();
-			graphList.SetAdapter(adapter);
+			var icon = graphView.FindViewById(Resource.Id.icon);
+			icon.SetOnClickListener(new ViewClickAction((view) => {
+				AnimateToOptionsView();
+			}));
+
+			graphAdapter = new GraphRecordAdapter();
+			graphList.SetAdapter(graphAdapter);
 
 			var green = new Color(0xa0, 0xa0, 0xa0, 0xa0);
 			leftOverlay = new SelectionDrawable(SelectionDrawable.EAlign.Left, green, 0);
@@ -144,19 +201,24 @@ namespace ION.Droid.Activity.Report {
 			left.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:
-						var x = e.Event.RawX;
+						var r = new Rect();
+						container.GetGlobalVisibleRect(r);
 
-						if (x < rect.Left) {
-							x = rect.Left;
-						} else if (x > (rightX - right.Width)) {
-							x = rightX - right.Width;
+						// ModifiedStart is the actual position where the graph starts relative to the tabs "view" container.
+						var modifiedStart = rect.Left - r.Left;
+
+						var x = e.Event.RawX;
+						var dw = left.Width / 2 + right.Width / 2;
+
+						if (x < modifiedStart) {
+							x = modifiedStart;
+						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - dw) {
+							x = modifiedStart + rect.Width() - rightOverlay.width - dw;
 						}
 
-						leftX = x;
-						left.SetX(leftX - left.Width);
+						leftOverlay.width = (int)(x - modifiedStart);
+						left.SetX(x - left.Width / 2);
 
-						leftOverlay.width = (int)(x - rect.Left);
-						Log.D(this, "Left: " + leftOverlay.width);
 						graphList.Invalidate();
 						UpdateGraphSelectionDatesFromMeasurements();
 						break;
@@ -168,19 +230,25 @@ namespace ION.Droid.Activity.Report {
 			right.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:
-						var x = e.Event.RawX;
+						var r = new Rect();
+						container.GetGlobalVisibleRect(r);
 
-						if (x < leftX + left.Width) {
-							x = leftX + left.Width;
-						} else if (x > rect.Left + rect.Width()) {
-							x = rect.Left + rect.Width();
+						// ModifiedStart is the actual position where the graph starts relative to the tabs "view" container.
+						var modifiedStart = rect.Left - r.Left;
+
+						var x = e.Event.RawX;
+						var dw = left.Width / 2 + right.Width / 2;
+
+						if (x < modifiedStart + leftOverlay.width + dw) {
+							x = modifiedStart + leftOverlay.width + dw;
+						} else if (x > modifiedStart + rect.Width()) {
+							x = modifiedStart + rect.Width();
 						}
 
-						rightX = x;
-						right.SetX(rightX - right.Width);
+						rightOverlay.width = (int)(modifiedStart + rect.Width() - x);
 
-						rightOverlay.width = (int)(rect.Left + rect.Width() - x);
-						Log.D(this, "Right: " + rightOverlay.width);
+						right.SetX(x - right.Width / 2);
+
 						graphList.Invalidate();
 						UpdateGraphSelectionDatesFromMeasurements();
 						break;
@@ -190,9 +258,73 @@ namespace ION.Droid.Activity.Report {
 			};
 		}
 
+		private void InitOptionsViews() {
+			var icon = settingsView.FindViewById(Resource.Id.icon);
+			icon.SetOnClickListener(new ViewClickAction((view) => {
+				AnimateToGraphView();
+			}));
+
+			overviewAdapter = new OverviewAdapter();
+
+			var list = settingsView.FindViewById<RecyclerView>(Resource.Id.list);
+			list.SetAdapter(overviewAdapter);
+		}
+
+		private void AnimateToOptionsView() {
+			FlipView(content, Resource.Id.graph, Resource.Id.settings);
+
+		}
+
+		private void AnimateToGraphView() {
+			FlipView(content, Resource.Id.settings, Resource.Id.graph);
+		}
+
+		/// <summary>
+		/// Flips a view, hiding one view and revealing another as the flip finished.
+		/// </summary>
+		/// <param name="view">View.</param>
+		/// <param name="hideId">Hide identifier.</param>
+		/// <param name="revealId">Reveal identifier.</param>
+		private void FlipView(View view, int hideId, int revealId) {
+			var fo = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_out);
+			var fi = AnimatorInflater.LoadAnimator(this, Resource.Animation.card_flip_left_in);
+			var fadeOut = AnimatorInflater.LoadAnimator(this, Resource.Animation.fade_out);
+			var fadeIn = AnimatorInflater.LoadAnimator(this, Resource.Animation.fade_in);
+
+			var hideView = view.FindViewById(hideId);
+			var revealView = view.FindViewById(revealId);
+
+			fo.SetTarget(view);
+			fi.SetTarget(view);
+			fadeOut.SetTarget(hideView);
+			fadeIn.SetTarget(revealView);
+
+			var animOut = new AnimatorSet();
+			animOut.Play(fo);
+			animOut.SetDuration(350);
+			animOut.AnimationEnd += (obj, args) => {
+				hideView.Visibility = ViewStates.Gone;
+				revealView.Visibility = ViewStates.Visible;
+			};
+
+			var animIn = new AnimatorSet();
+			animIn.Play(fi);
+			animIn.SetDuration(350);
+
+			var animationSet = new AnimatorSet();
+			animationSet.AnimationEnd += (obj, args) => {
+				hideView.Visibility = ViewStates.Gone;
+				revealView.Visibility = ViewStates.Visible;
+			};
+			animationSet.Play(animOut)
+			            .Before(animIn);
+			animationSet.Start();
+		}
+
 		private async void InvalidateGraphViews() {
 			var left = FindViewById(Resource.Id.left);
 			var right = FindViewById(Resource.Id.right);
+			var container = FindViewById(Resource.Id.view);
 
 			var tries = 0;
 			var row = graphList.FindViewHolderForAdapterPosition(0)?.ItemView;
@@ -210,30 +342,62 @@ namespace ION.Droid.Activity.Report {
 			rect = new Rect();
 			plot.GetGlobalVisibleRect(rect);
 
+			var r = new Rect();
+			container.GetGlobalVisibleRect(r);
+
+			// ModifiedStart is the actual position where the graph starts relative to the tabs "view" container.
+			var modifiedStart = rect.Left - r.Left;
+
 			leftOverlay.plotWidth = rect.Width();
 			rightOverlay.plotWidth = rect.Width();
 
-			if (leftX == -1) {
-				leftX = rect.Left;
-			}
-
-			if (rightX == -1) {
-				rightX = rect.Left + rect.Width();
-			}
-
-			left.SetX(leftX - left.Width);
-			right.SetX(rightX - right.Width);
+			left.SetX(modifiedStart + leftOverlay.width - left.Width / 2);
+			right.SetX(modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
 
 			graphList.Invalidate();
 			UpdateGraphSelectionDatesFromMeasurements();
 		}
 
 		private void UpdateGraphSelectionDatesFromMeasurements() {
-			var start = adapter.FindDateTimeFromSelection(leftOverlay.width / (float)leftOverlay.plotWidth);
-			var end = adapter.FindDateTimeFromSelection(1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
+			var start = graphAdapter.FindDateTimeFromSelection(leftOverlay.width / (float)leftOverlay.plotWidth);
+			var end = graphAdapter.FindDateTimeFromSelection(1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
 
-			dateRangeView.Text = start.ToShortDateString() + " " + start.ToLongTimeString() + "\n" + 
-				end.ToShortDateString() + " " + end.ToLongTimeString();
+			dateRangeView.Text = GetString(Resource.String.start) + ": " + start.ToShortDateString() + " " + start.ToLongTimeString() + "\n" + 
+				GetString(Resource.String.finish) + ": " + end.ToShortDateString() + " " + end.ToLongTimeString();
+
+			var startSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
+			var endSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
+			var date = settingsView.FindViewById(Resource.Id.date);
+
+			var startDates = graphAdapter.GetDatesInRange(graphAdapter.dil.DateFromIndex(0), end);
+			var endDates = graphAdapter.GetDatesInRange(start, graphAdapter.dil.DateFromIndex(graphAdapter.dil.dateSpan - 1));
+
+			// TODO ahodder@appioninc.com: finish
+			if (startDates.Count > 0 && endDates.Count > 0) {
+				date.Visibility = ViewStates.Gone;
+/*
+				startTimesAdapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(startDates).ToArray());
+				endTimesAdapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(endDates).ToArray());
+
+				startSpinner.Adapter = startTimesAdapter;
+				endSpinner.Adapter = endTimesAdapter;
+
+				startSpinner.SetSelection(startDates.Count - 1);
+				endSpinner.SetSelection(0);
+*/
+			} else {
+				date.Visibility = ViewStates.Gone;
+			}
+		}
+
+		private List<string> DatesToStrings(List<DateTime> dates) {
+			var ret = new List<string>();
+
+			foreach (var date in dates) {
+				ret.Add(date.ToShortDateString() + " " + date.ToLongTimeString());
+			}
+
+			return ret;
 		}
 
 		private async Task RefreshGraphList() {
@@ -254,16 +418,14 @@ namespace ION.Droid.Activity.Report {
 				}
 			}
 
-			adapter.SetRecords(ion, sessionResults);
+			graphAdapter.SetRecords(ion, sessionResults);
+			overviewAdapter.SetLogs(ion, sessionResults);
 
 			dialog.Dismiss();
 			InvalidateGraphViews();
 		}
 
 		private void Reset() {
-			leftX = -1;
-			rightX = -1;
-
 			leftOverlay.width = 0;
 			rightOverlay.width = 0;
 
@@ -271,7 +433,7 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void Export() {
-			var results = adapter.GatherSelectedLogs(leftOverlay.width / (float)leftOverlay.plotWidth,
+			var results = graphAdapter.GatherSelectedLogs(leftOverlay.width / (float)leftOverlay.plotWidth,
 			                                         1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
 			
 			var dialog = new ListDialogBuilder(this);
