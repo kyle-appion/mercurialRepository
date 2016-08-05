@@ -70,32 +70,32 @@
         return;
       } 
 
-      var viewRect = FindBoundsInViewController(activeView, vc);
+      //var viewRect = FindBoundsInViewController(activeView, vc);
 
-      if((keyboardRect.Y - keyboardRect.Height) < (vc.View.Bounds.Bottom - keyboardRect.Height) ){
-        return;
-      }
+      //if((keyboardRect.Y - keyboardRect.Height) < (vc.View.Bounds.Bottom - keyboardRect.Height) ){
+      //  return;
+      //}
 
-      if (vc.View.Bounds.Bottom.Equals(keyboardRect.Y)) {
-        if (viewRect.Bottom < (keyboardRect.Y - keyboardRect.Height)) {
-          return;
-        }
-      }
-      else if (viewRect.Bottom < keyboardRect.Y) {
-        PerformScroll(-totalScrolled);
-        return;
-      }
+      //if (vc.View.Bounds.Bottom.Equals(keyboardRect.Y)) {
+      //  if (viewRect.Bottom < (keyboardRect.Y - keyboardRect.Height)) {
+      //    return;
+      //  }
+      //}
+      //else if (viewRect.Bottom < keyboardRect.Y) {
+      //  PerformScroll(-totalScrolled);
+      //  return;
+      //}
 
-      var scrollAmount = viewRect.Bottom - keyboardRect.Height;
+      //var scrollAmount = viewRect.Bottom - keyboardRect.Height;
 
-      if((totalScrolled + scrollAmount) > keyboardRect.Height){
-        scrollAmount = keyboardRect.Height - totalScrolled;
-      }
+      //if((totalScrolled + scrollAmount) > keyboardRect.Height){
+      //  scrollAmount = keyboardRect.Height - totalScrolled;
+      //}
 
-      if (scrollAmount > 0) {
-        PerformScroll(scrollAmount);
-        scrolled = true;
-      }
+      //if (scrollAmount > 0) {
+      //  PerformScroll(scrollAmount);
+      //  scrolled = true;
+      //}
     }
 
     /// <summary>

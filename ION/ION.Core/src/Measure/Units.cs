@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.Core.Measure {
 
+  using System;
+  using System.Collections.Generic;
 
-namespace ION.Core.Measure {
 
   public class Units {
     /// <summary>

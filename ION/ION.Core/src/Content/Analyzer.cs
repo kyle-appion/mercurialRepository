@@ -224,7 +224,7 @@
     private Sensor[] sensors;
 
     public List<Sensor> sensorList;
-
+		public int [] sensorPositions = {1,2,3,4,5,6,7,8};
     /// <summary>
     /// Creates a new analyzer.
     /// </summary>

@@ -32,6 +32,8 @@ namespace ION.IOS.ViewController {
     public const string VC_EDIT_JOB = "viewControllerEditJob";
     public const string VC_WALKTHROUGH_MENU = "viewControllerWalkthroughScreenshot";
     public const string VC_RSS_FEED = "viewControllerRSSFeed";
+    public const string VC_REMOTE_VIEWING = "viewControllerRemoteAccess";
+    public const string VC_REMOTE_DEVICE_MANAGER = "viewControllerRemoteDeviceManager";
 
 		public const string VC_INTERNAL_GAUGE_TESTING = "viewControllerInternalGaugeTesting";
 		public const string VC_SAVE_INTERNAL_TEST = "viewControllerSaveInternalTest";

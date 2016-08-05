@@ -7,10 +7,10 @@
 using Foundation;
 using System.CodeDom.Compiler;
 
-namespace ION.IOS.ViewController.DeviceManager
+namespace ION.IOS.ViewController.RemoteDeviceManager
 {
-	[Register ("DeviceSectionHeaderTableCell")]
-	partial class DeviceSectionHeaderTableCell
+	[Register ("RemoteDeviceSectionHeaderTableCell")]
+	partial class RemoteDeviceSectionHeaderTableCell
 	{
 		[Outlet]
 		UIKit.UIButton buttonOptions { get; set; }

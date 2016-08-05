@@ -53,7 +53,6 @@
     <Compile Include="src\Sensors\TestSensorUtils.cs" />
     <Compile Include="Test.cs" />
     <Compile Include="src\Measure\TestPressureUnits.cs" />
-    <Compile Include="src\Measure\TestScalar.cs" />
     <Compile Include="src\Measure\TestTemperatureUnits.cs" />
     <Compile Include="src\Devices\TestGaugeType.cs" />
     <Compile Include="src\Devices\TestSerialNumber.cs" />
@@ -65,6 +64,10 @@
     <Compile Include="src\Fluid\TestPTChart.cs" />
     <Compile Include="src\App\MockION.cs" />
     <Compile Include="src\Connections\MockConnectionHelper.cs" />
+    <Compile Include="src\Measure\BaseTest.cs" />
+    <Compile Include="src\Measure\TestPressure.cs" />
+    <Compile Include="src\Measure\TestTemperature.cs" />
+    <Compile Include="src\Measure\TestScalar.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />

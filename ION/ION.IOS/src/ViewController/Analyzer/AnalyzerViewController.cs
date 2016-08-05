@@ -52,6 +52,8 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <value>The Analyzer.</value>
     private ION.Core.Content.Analyzer analyzer { get; set; }
+    
+    public bool remoteMode = false;
 
     static bool UserInterfaceIdiomIsPhone {
       get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
@@ -70,71 +72,56 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView = new ManualView(View);
       analyzerSensors = new sensorGroup(View, this);
       InitNavigationBar("ic_nav_analyzer", false);
-      ion = AppState.context;
-      sensorList = new List<Sensor>();
-      analyzer = ion.currentAnalyzer;
-      analyzer.sensorList = sensorList;
+      ion = AppState.context;      
+
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-/*
-      var testingButton = new UIButton(new CGRect(.5 * View.Bounds.Width - 20, .2 * View.Bounds.Height,40, 40));
-      testingButton.BackgroundColor = UIColor.Gray;
-      testingButton.TouchUpInside += (sender, e) => {
-			var record = new SecRecord(SecKind.GenericPassword)
-        {
-            Account = "lastUsedVersion",
-            Label = "lastUsedVersion",
-        };
-        SecStatusCode resultCode;
-         
-        var match = SecKeyChain.QueryAsRecord(record, out resultCode);
-		
-				if(resultCode == SecStatusCode.Success){
-					var removeResult = SecKeyChain.Remove(record);
-					Console.WriteLine("Result: " + removeResult);
-					if(removeResult != SecStatusCode.Success){
-						Console.WriteLine("Couldn't delete record for key");
-					} else {
-						var newRecord = new SecRecord(SecKind.GenericPassword)
-				        {
-				            Account = "lastUsedVersion",
-				            Label = "lastUsedVersion",
-				            ValueData = NSData.FromString("1.5.1", NSStringEncoding.UTF8),
-				        };
-				        var err = SecKeyChain.Add (newRecord);
-				        if(err != SecStatusCode.Success){
-							Console.WriteLine("Couldn't create new record for manual version entry");
-						} else {
-							Console.WriteLine("Created new manual version of " + newRecord.ValueData.ToString());
-							Console.WriteLine("Current app version is " + NSData.FromString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString()));
-						}
-					}
-				}
-		
-	  };
-		View.AddSubview(testingButton);
-*/
-      dataRecord = new UIButton(new CGRect(0,0,35,35));
-      dataRecord.BackgroundColor = UIColor.Clear;
-      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
-      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
-      dataRecord.TouchUpInside += (sender, e) => {
-        recordDevices();
-      };
+     
+      if(remoteMode){
+ 
+      	analyzer = new ION.Core.Content.Analyzer(ion);
+      	
+	      sensorList = new List<Sensor>();
+	      analyzer.sensorList = sensorList;
 
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
       } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-      }
 
-      var button = new UIBarButtonItem(dataRecord);
+				analyzer = ion.currentAnalyzer;
+				
+				if(analyzer.sensorList == null){
 
-      NavigationItem.RightBarButtonItem = button;
+		      sensorList = new List<Sensor>();
+		      analyzer.sensorList = sensorList;
 
+				} else {
+
+					sensorList = ion.currentAnalyzer.sensorList;
+					analyzer.sensorList = sensorList;
+
+				}
+				
+	      dataRecord = new UIButton(new CGRect(0,0,35,35));
+	      dataRecord.BackgroundColor = UIColor.Clear;
+	      dataRecord.TouchDown += (sender, e) => {dataRecord.BackgroundColor = UIColor.LightGray;};
+	      dataRecord.TouchUpOutside += (sender, e) => {dataRecord.BackgroundColor = UIColor.Black;};
+	      dataRecord.TouchUpInside += (sender, e) => {
+	        recordDevices();
+	      };
+	
+	      if (ion.dataLogManager.isRecording) {
+	        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+	      } else {
+	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+	      }
+	
+	      var button = new UIBarButtonItem(dataRecord);
+	
+	      NavigationItem.RightBarButtonItem = button;				
+			}
+			
       Title = "Analyzer";
 
       createSensors ();
@@ -157,6 +144,8 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.mtextValue.ResignFirstResponder();
         this.View.SendSubviewToBack (mentryView.mView);
       };
+      
+      layoutAnalyzer();
     }
 
     /// <summary>
@@ -244,8 +233,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (pressedArea.availableView.Hidden) {
         ///IF SENSOR IS ACTIVE SET THAT SENSOR'S INFO IN THE POPUP
         pressedArea.sactionView.pdeviceName.Text = pressedArea.topLabel.Text;
-//        var amount = Convert.ToDecimal(pressedArea.middleLabel.Text);
-        Console.WriteLine("setting sactionview measurement value: "+ pressedArea.middleLabel.Text);
+
         pressedArea.sactionView.pgaugeValue.Text = pressedArea.middleLabel.Text;
 
         pressedArea.sactionView.pvalueType.Text = pressedArea.bottomLabel.Text;
@@ -799,7 +787,7 @@ namespace ION.IOS.ViewController.Analyzer {
           AnalyserUtilities.updateLowHighArea(Sensor.panGesture.LocationInView(View), Sensor, lowHighSensors, sensorGroup, View);
 
           ////FIGURE OUT WHERE TO SNAP THE SUBVIEW BASED ON IT'S LOCATION AND IDENTIFIER
-          AnalyserUtilities.LHSwapCheck(sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View);
+          AnalyserUtilities.LHSwapCheck(sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View, analyzer);
           //AnalyserUtilities.sensorSwap (sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View);
         } else if (Sensor.panGesture.State == UIGestureRecognizerState.Failed) {
           Console.WriteLine ("Touch has failed to be recognized for "+Sensor.snapArea.AccessibilityIdentifier+" area");
@@ -879,72 +867,10 @@ namespace ION.IOS.ViewController.Analyzer {
     /// Called to inflate the device manager viewcontroller and allow BT connections for single sensors
     /// </summary>
     private void OnRequestViewer(sensor area) {
-      bool existingConnection = false;
+     
       var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-        foreach(sensor item in analyzerSensors.viewList){
-          //if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
-          if(item.currentSensor != null && item.currentSensor == sensor){
-            existingConnection = true;
-            //Console.WriteLine("Totes found an existing sensor associated");
-            break;
-          } 
-        }
-
-        if(!existingConnection){
-          sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier);
-          sensorList.Add(sensor);
-          area.currentSensor = sensor;
-          area.sactionView.currentSensor = sensor;
-          area.lowArea.currentSensor = sensor;
-          area.highArea.currentSensor = sensor;
-          area.deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(area.currentSensor.device.serialNumber.deviceModel);
-          area.connectionImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
-          area.snapArea.BackgroundColor = UIColor.White;
-          area.availableView.Hidden = true;
-          area.snapArea.AddGestureRecognizer(area.panGesture);
-          area.topLabel.Text = " " + sensor.device.name;
-          area.topLabel.Hidden = false;
-          if(sensor.unit != Units.Vacuum.MICRON){
-            area.middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
-          } else {
-            area.middleLabel.Text = sensor.measurement.amount + " ";
-          }
-          area.middleLabel.Hidden = false;
-          area.bottomLabel.Text = sensor.measurement.unit.ToString();
-          area.bottomLabel.Hidden = false;
-          area.addIcon.Hidden = true;
-          area.isManual = false;
-          area.lowArea.manifold = new Manifold(sensor);
-          area.highArea.manifold = new Manifold(sensor);
-
-          if(sensor.type == ESensorType.Pressure || sensor.type == ESensorType.Temperature){
-            //Console.WriteLine(sensor.type.ToString() + " sensor given so making ptChart");
-            area.lowArea.manifold.ptChart = PTChart.New(area.lowArea.ion, Fluid.EState.Dew);
-            area.highArea.manifold.ptChart = PTChart.New(area.highArea.ion, Fluid.EState.Dew);
-          }else{
-            //Console.WriteLine(sensor.type.ToString() + " sensor given so hiding the buttons allowing pt/scsh changes");
-            area.lowArea.changeFluid.Hidden = true;
-            area.lowArea.changePTFluid.Hidden = true;
-            area.highArea.changeFluid.Hidden = true;
-            area.highArea.changePTFluid.Hidden = true;
-          }
-
-          area.highArea.LabelTop.Text = " " + sensor.device.name;
-          area.lowArea.LabelTop.Text = " " + sensor.device.name;
-          area.lowArea.LabelMiddle.Text = area.middleLabel.Text;
-          area.lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
-          area.lowArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
-          area.lowArea.DeviceImage.Image = area.deviceImage.Image;
-          area.lowArea.isManual = false;
-
-          area.highArea.LabelTop.Text = " " + sensor.device.name;
-          area.highArea.LabelMiddle.Text = area.middleLabel.Text;
-          area.highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
-          area.highArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
-          area.highArea.DeviceImage.Image = area.deviceImage.Image;
-          area.highArea.isManual = false;
-        }
+					addDeviceSensor(area,sensor);
       };
       NavigationController.PushViewController(sb, true);
     }
@@ -952,11 +878,91 @@ namespace ION.IOS.ViewController.Analyzer {
     /// Called to inflate the device manager viewcontroller and allow BT connections for single sensors
     /// </summary>
     private void lhOnRequestViewer(lowHighSensor area) {
-      bool existingConnection = false;
-      int start, stop;
+
       var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
       sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-        
+        addLHDeviceSensor(area,sensor);
+      };
+      NavigationController.PushViewController(sb, true);
+    }
+    
+    public void addDeviceSensor(sensor area, GaugeDeviceSensor sensor){
+  		bool existingConnection = false;
+      foreach(sensor item in analyzerSensors.viewList){
+        //if(item.currentSensor != null && item.currentSensor.device.serialNumber == sensor.device.serialNumber){
+        if(item.currentSensor != null && item.currentSensor == sensor){
+          existingConnection = true;
+          //Console.WriteLine("Totes found an existing sensor associated");
+          break;
+        } 
+      }
+
+      if(!existingConnection){
+        sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier) - 1;
+        if(sensorList == null){
+					Console.WriteLine("trying to add to a null list");
+				}
+				if(!sensorList.Contains(sensor)){
+					Console.WriteLine("adding sensor to sensor list");
+        	sensorList.Add(sensor);
+        }
+        area.currentSensor = sensor;
+        area.sactionView.currentSensor = sensor;
+        area.lowArea.currentSensor = sensor;
+        area.highArea.currentSensor = sensor;
+        area.deviceImage.Image = Devices.DeviceUtil.GetUIImageFromDeviceModel(area.currentSensor.device.serialNumber.deviceModel);
+        area.connectionImage.Image = UIImage.FromBundle("ic_bluetooth_connected");
+        area.snapArea.BackgroundColor = UIColor.White;
+        area.availableView.Hidden = true;
+        area.snapArea.AddGestureRecognizer(area.panGesture);
+        area.topLabel.Text = " " + sensor.device.name;
+        area.topLabel.Hidden = false;
+        if(sensor.unit != Units.Vacuum.MICRON){
+          area.middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
+        } else {
+          area.middleLabel.Text = sensor.measurement.amount + " ";
+        }
+        area.middleLabel.Hidden = false;
+        area.bottomLabel.Text = sensor.measurement.unit.ToString();
+        area.bottomLabel.Hidden = false;
+        area.addIcon.Hidden = true;
+        area.isManual = false;
+        area.lowArea.manifold = new Manifold(sensor);
+        area.highArea.manifold = new Manifold(sensor);
+
+        if(sensor.type == ESensorType.Pressure || sensor.type == ESensorType.Temperature){
+          //Console.WriteLine(sensor.type.ToString() + " sensor given so making ptChart");
+          area.lowArea.manifold.ptChart = PTChart.New(area.lowArea.ion, Fluid.EState.Dew);
+          area.highArea.manifold.ptChart = PTChart.New(area.highArea.ion, Fluid.EState.Dew);
+        }else{
+          //Console.WriteLine(sensor.type.ToString() + " sensor given so hiding the buttons allowing pt/scsh changes");
+          area.lowArea.changeFluid.Hidden = true;
+          area.lowArea.changePTFluid.Hidden = true;
+          area.highArea.changeFluid.Hidden = true;
+          area.highArea.changePTFluid.Hidden = true;
+        }
+
+        area.highArea.LabelTop.Text = " " + sensor.device.name;
+        area.lowArea.LabelTop.Text = " " + sensor.device.name;
+        area.lowArea.LabelMiddle.Text = area.middleLabel.Text;
+        area.lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
+        area.lowArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
+        area.lowArea.DeviceImage.Image = area.deviceImage.Image;
+        area.lowArea.isManual = false;
+
+        area.highArea.LabelTop.Text = " " + sensor.device.name;
+        area.highArea.LabelMiddle.Text = area.middleLabel.Text;
+        area.highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + "   ";
+        area.highArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
+        area.highArea.DeviceImage.Image = area.deviceImage.Image;
+        area.highArea.isManual = false;
+      }
+		}
+    
+    public void addLHDeviceSensor(lowHighSensor area, GaugeDeviceSensor sensor){
+      bool existingConnection = false;
+      int start, stop;
+      
         if(area.snapArea.AccessibilityIdentifier == "low"){
           start = 0;
           stop = 4;
@@ -1132,10 +1138,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
           }
         }
-
-      };
-      NavigationController.PushViewController(sb, true);
-    }
+		}
 
     private void alarmRequestViewer(actionPopup area) {
       var alarm = InflateViewController<SensorAlarmViewController>(VC_SENSOR_ALARMS);
@@ -1150,15 +1153,25 @@ namespace ION.IOS.ViewController.Analyzer {
 
       PresentViewController (fullPopup, true, null);
     }
+    /// <summary>
+    /// sets up the analyzer based off of user layout
+    /// </summary>
+    public void layoutAnalyzer(){
+			for(int i = 0; i < analyzer.sensorList.Count; i++){
+				addDeviceSensor(analyzerSensors.viewList[analyzer.sensorList[i].analyzerSlot],(GaugeDeviceSensor)analyzer.sensorList[i]);
+			}
+		}
 
     public override void ViewDidAppear(bool animated) {
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-      } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-      }
+	    if(!remoteMode){
+	      if (ion.dataLogManager.isRecording) {
+	        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+	        dataRecord.BackgroundColor = UIColor.Clear;
+	      } else {
+	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+	        dataRecord.BackgroundColor = UIColor.Clear;
+	      }
+	    }
     }
 	}
 }

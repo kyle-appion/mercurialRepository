@@ -70,14 +70,14 @@ namespace ION.IOS.ViewController.Analyzer {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
-          tempReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         } else {
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
           if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
-          tempReading.Text = calculation.amount.ToString("N") + calculation.unit.ToString();
+					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         }
       } else {
         tempReading.Text = Util.Strings.Analyzer.SETUP;

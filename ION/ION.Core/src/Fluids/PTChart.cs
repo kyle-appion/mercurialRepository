@@ -137,7 +137,7 @@
     /// <param name="pressure">Pressure.</param>
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Scalar CalculateSystemTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative = true) {
+    public ScalarSpan CalculateSystemTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative = true) {
       if (fluid.mixture) {
         switch (state) {
           case Fluid.EState.Bubble: // Subcool
@@ -163,7 +163,7 @@
     /// <param name="pressure">Pressure.</param>
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Scalar CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
+    public ScalarSpan CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
       var oldPress = pressure;
 
       if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
@@ -185,7 +185,7 @@
     /// <param name="pressure">Pressure.</param>
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    public Scalar CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
+    public ScalarSpan CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
       if (isRelative || pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
