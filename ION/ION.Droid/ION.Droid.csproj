@@ -198,10 +198,7 @@
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
     <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
     <Compile Include="src\Connections\ClassicConnection.cs" />
-    <Compile Include="src\Widgets\Adapters\DataLogging\SessionSelectionAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\DataLogging\GraphSelectionAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
-    <Compile Include="src\Widgets\Adapters\DataLogging\GraphOverviewAdapter.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
@@ -213,7 +210,6 @@
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
     <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
-    <Compile Include="src\Activity\Report\ExportReportFragment.cs" />
     <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
     <Compile Include="src\Activity\Job\JobActivity.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceManagerActivity.cs" />
@@ -246,6 +242,9 @@
     <Compile Include="src\Report\DataLogReportTable.cs" />
     <Compile Include="src\Report\DataLogPdfReportExporter.cs" />
     <Compile Include="src\Fragments\FileExtensionFilter.cs" />
+    <Compile Include="src\Activity\Report\SensorOverviewRecord.cs" />
+    <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
+    <Compile Include="src\Activity\Report\SensorExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -613,6 +612,7 @@
     <AndroidResource Include="Resources\drawable\selectable_background_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\spinner_background_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\tab_indicator_ab_ion_action_bar.xml" />
+    <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

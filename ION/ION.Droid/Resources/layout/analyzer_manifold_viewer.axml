@@ -103,7 +103,7 @@
                 <TextView
                     android:id="@id/unit"
                     android:textColor="@color/black"
-                    android:text="@string/measurement_mass"
+                    android:text="@string/mass"
                     android:layout_width="0px"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

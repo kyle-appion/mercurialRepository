@@ -42,6 +42,16 @@
 
 			// The format that is used to render the content cells.
 			var contentFormat = file.GetDefaultFormat;
+/*
+			contentFormat.Borders.Bottom.Style = TFlxBorderStyle.Medium;
+			contentFormat.Borders.Bottom.Color = TUIColor.FromArgb(171, 171, 171);
+			contentFormat.Borders.Top.Style = TFlxBorderStyle.Medium;
+			contentFormat.Borders.Top.Color = TUIColor.FromArgb(171, 171, 171);
+			contentFormat.Borders.Left.Style = TFlxBorderStyle.Medium;
+			contentFormat.Borders.Left.Color = TUIColor.FromArgb(171, 171, 171);
+			contentFormat.Borders.Right.Style = TFlxBorderStyle.Medium;
+			contentFormat.Borders.Right.Color = TUIColor.FromArgb(171, 171, 171);
+*/
 			contentFormat.VAlignment = TVFlxAlignment.top;
 			contentFormat.HAlignment = THFlxAlignment.center;
 
@@ -49,21 +59,23 @@
 			var borderFormat = file.GetDefaultFormat;
 			borderFormat.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
 			borderFormat.Borders.Bottom.Style = TFlxBorderStyle.Medium;
+/*
 			borderFormat.Borders.Top.Style = TFlxBorderStyle.Thin;
 			borderFormat.Borders.Top.Color = TUIColor.FromArgb(171, 171, 171);
 			borderFormat.Borders.Left.Style = TFlxBorderStyle.Thin;
 			borderFormat.Borders.Left.Color = TUIColor.FromArgb(171, 171, 171);
 			borderFormat.Borders.Right.Style = TFlxBorderStyle.Thin;
 			borderFormat.Borders.Right.Color = TUIColor.FromArgb(171, 171, 171);
+*/
 			borderFormat.VAlignment = TVFlxAlignment.top;
 			borderFormat.HAlignment = THFlxAlignment.center;
 
 			// The order that the formats are added to the file is the 1-based index that is passed to SetCellValue as the cell
 			// format.
 
-			file.AddFormat(headerFormat);		// 1
-			file.AddFormat(contentFormat);	// 2
-			file.AddFormat(borderFormat);		// 3
+			file.AddFormat(headerFormat);   // 1
+			file.AddFormat(contentFormat);  // 2
+			file.AddFormat(borderFormat);   // 3
 		}
 
 		public bool Export(IION ion, Context context, string filepath, List<SessionResults> sessionResults) {
@@ -72,27 +84,29 @@
 
 				var masterDates = new List<DateTime>();
 				var sessionBreaks = new HashSet<DateTime>();
-				var measurements = new List<Measurements>();
+				var measurements = new Dictionary<string, Measurements>();
 
 				foreach (var sr in sessionResults) {
 					foreach (var dsl in sr.deviceSensorLogs) {
 						var sensor = GetSensor(ion, dsl.deviceSerialNumber, dsl.index);
 
-						var m = new Measurements() {
-							sensor = sensor,
-							serialNumber = dsl.deviceSerialNumber,
-							sensorIndex = dsl.index,
-						};
+						Measurements m;
+
+						if (!measurements.TryGetValue(dsl.deviceSerialNumber, out m)) {
+							m = new Measurements() {
+								sensor = sensor,
+								serialNumber = dsl.deviceSerialNumber,
+								sensorIndex = dsl.index,
+							};
+							measurements[dsl.deviceSerialNumber] = m;
+						}
 
 						foreach (var sl in dsl.logs) {
 							unsortedMasterDates.Add(sl.recordedDate);
 							m.measurements[sl.recordedDate] = sl.measurement;
 						}
-
-						measurements.Add(m);
+						sessionBreaks.Add(dsl.end);
 					}
-
-					sessionBreaks.Add(sr.endTime);
 				}
 
 				masterDates.AddRange(unsortedMasterDates);
@@ -100,20 +114,23 @@
 
 				// Draw header
 				file.SetCellValue(1, 1, "" + context.GetString(Resource.String.time), 1);
-				for (int i = 0; i < measurements.Count; i++) {
-					file.SetCellValue(1, 2 + i, "" + GetHeaderStringFromSensor(ion, measurements[i].sensor), 1);
+				var i = 0;
+				foreach (var key in measurements.Keys) {
+					file.SetCellValue(1, 2 + i++, "" + GetHeaderStringFromSensor(ion, measurements[key].sensor), 1);
 				}
 
 				// Draw the master dates list to the file.
-				for (int i = 0; i < masterDates.Count; i++) {
+				for (i = 0; i < masterDates.Count; i++) {
 					var date = masterDates[i];
-					file.SetCellValue(2 + i, 1, date.ToShortDateString() + " " + date.ToLongTimeString(), 2);
+					var format = sessionBreaks.Contains(date) ? 3 : 2;
+					file.SetCellValue(2 + i, 1, date.ToShortDateString() + " " + date.ToLongTimeString(), format);
 				}
 
 				// Draw the content for the measurements.
-				for (int x = 0; x < measurements.Count; x++) {
+				var x =0;
+				foreach (var key in measurements.Keys) {
 					for (int y = 0; y < masterDates.Count; y++) {
-						var m = measurements[x];
+						var m = measurements[key];
 						var su = m.sensor.unit.standardUnit;
 						var dt = masterDates[y];
 						if (m.measurements.ContainsKey(dt)) {
@@ -123,6 +140,8 @@
 							Log.D(this, "X: " + x + " Y: " + y + " value: " + scalar);
 						}
 					}
+
+					x++;
 				}
 
 				file.Save(filepath);
@@ -170,7 +189,7 @@
 			if (serialNumber.deviceModel == EDeviceModel.P500) {
 				return serialNumber + " (" + Units.Pressure.IN_HG + "/" + Units.Pressure.PSIG + ")";
 			} else {
-				return serialNumber + " (" + ion.defaultUnits.DefaultUnitFor(sensor.type) + ")";					
+				return serialNumber + " (" + ion.defaultUnits.DefaultUnitFor(sensor.type) + ")";
 			}
 		}
 

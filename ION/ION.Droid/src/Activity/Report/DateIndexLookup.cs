@@ -60,6 +60,18 @@
 		public DateTime DateFromIndex(int index) {
 			return dates[index];
 		}
+
+		public List<DateTime> Subset(int startIndex, int count) {
+			var ret = new List<DateTime>();
+
+			var cnt = Math.Min(dates.Count, startIndex + count);
+
+			for (int i = startIndex; i < cnt; i++) {
+				ret.Add(dates[i]);
+			}
+
+			return ret;
+		}
 	}
 }
 

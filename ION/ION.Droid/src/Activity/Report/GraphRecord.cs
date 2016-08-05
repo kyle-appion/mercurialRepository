@@ -18,6 +18,7 @@
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Util;
 
+	using ION.Droid.Sensors;
 	using ION.Droid.Util;
 	using ION.Droid.Widgets.RecyclerViews;
 
@@ -41,16 +42,18 @@
 
 			foreach (var s in pointSeries) {
 				var series = new LineSeries {
-					StrokeThickness = 3,
+					StrokeThickness = 1,
 					MarkerType = MarkerType.Circle,
-					MarkerSize = 4,
-					MarkerStroke = OxyColors.Black,
-					MarkerStrokeThickness = 1,
+					MarkerSize = 0,
+					MarkerStroke = OxyColors.Transparent,
+					MarkerStrokeThickness = 0,
 				};
 
 				for (var i = 0; i < s.length; i++) {
 					series.Points.Add(new DataPoint(dil.IndexOfDate(s.times[i]), s.measurements[i]));
 				}
+
+				Log.D(this, "Series has: " + series.Points.Count + " points");
 
 				list.Add(series);
 			}
@@ -92,13 +95,11 @@
 		private PlotView plot;
 		private TextView title;
 		private CheckBox check;
-		private TextView serialNumber;
 
 		public GraphViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
 			plot = view.FindViewById<PlotView>(Resource.Id.graph);
 			title = view.FindViewById<TextView>(Resource.Id.name);
 			check = view.FindViewById<CheckBox>(Resource.Id.check);
-			serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
 		}
 
 		public override void OnBindTo() {
@@ -106,13 +107,19 @@
 			var serial = t.sensor.device.serialNumber;
 
 			check.Checked = t.isChecked;
-			serialNumber.Text = serial.ToString();
 
 			var sensor = t.sensor;
 			var u = sensor.unit.standardUnit;
 
+			foreach (var series in t.series) {
+				var c = t.sensor.GetChartColor(view.Context);
+
+				series.Color = OxyColor.FromUInt32((uint)c.ToArgb());
+			}
+
 			var model = new PlotModel() {
 				Title = serial.ToString(),
+				Subtitle = sensor.type.GetTypeString(),
 				Padding = new OxyThickness(0),
 			};
 
@@ -121,24 +128,24 @@
 			var xAxis = new LinearAxis() {
 				Position = AxisPosition.Bottom,
 				Minimum = 0,
-				Maximum = indices,
+				Maximum = indices - 1,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
-				MinimumPadding = 0,
-				MaximumPadding = 0,
+				MinimumPadding = 3,
+				MaximumPadding = 3,
 			};
 
 			var standardUnit = t.sensor.unit.standardUnit;
 			var yAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = t.sensor.minMeasurement.ConvertTo(standardUnit).amount - 15,
+				Minimum = t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
 				Maximum = t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
-				MinimumPadding = 0, 
-				MaximumPadding = 0,
+				MinimumPadding = 3, 
+				MaximumPadding = 3,
 			};
 
 			var plots = new List<LineSeries>();
@@ -154,7 +161,7 @@
 			}
 			model.Background = OxyColors.Transparent;
 			model.DefaultFontSize = 0;
-			model.PlotAreaBorderThickness = new OxyThickness(5, 5, 5, 5);
+			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 
 			plot.Model = model;
 		}
