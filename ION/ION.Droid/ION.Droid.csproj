@@ -230,6 +230,7 @@
     <Compile Include="src\Activity\Report\BySessionFragment.cs" />
     <Compile Include="src\Connections\RigadoConnection.cs" />
     <Compile Include="src\Connections\LeConnection.cs" />
+    <Compile Include="src\Widgets\FluidSliderView.cs" />
     <Compile Include="src\Widgets\RootFragmentLayout.cs" />
     <Compile Include="src\Activity\Report\Delegates.cs" />
     <Compile Include="src\Activity\Report\GraphReportSessionsActivity.cs" />
