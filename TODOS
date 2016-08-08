@@ -1,13 +1,18 @@
 TODOS
 
+CORE
+  UnitLookup
+    * Using Unitlookup to find the code of a pressure kPa returns the vacuum kPa
+      unit code. This is easily replicated by Adding a manual sensor to the
+      analyzer, setting its unit to kPa and adding and alarm to it.
+
 IOS
   Device Manager
     * Fix the connection spinner.
     * Let the user cancel a connection attempt (related to the spinner)
-    * Fix the issue that newly found devices refresh the list and reorganize it
     * Fix the issue that connecting to a device marks all other devices (known
       or not) as disconnected
-      
+
 
 
 ANDROID
@@ -15,20 +20,6 @@ ANDROID
     * Clearing the cache destroys the application (ie. the application will not
       start). This appears to be because the cache contained important non-apk
       dlls that are necessary for the c# runtime.
-
-  DeviceManager
-    * Weird glitch were items (clicked at the right time) will swap order.
-      (ie. Connect a device, and expand it as it connects will result in the
-      devices sensors above the device).
-
-  Workbench Fragment
-     * workbench doesn't update contents when fragment changes
-
-    - Manifold
-      * manifold needs subview bar with linked label
-      * manifold needs link divider from header and content
-      * manifold and subviews need to be removable
-      * add secondary (linked) sensor subview
 
   Screenshot Activity
     * Allow screenshot to expand
