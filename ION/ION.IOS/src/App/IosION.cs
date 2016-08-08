@@ -217,11 +217,13 @@
           Log.D(this, "Initializing " + im.GetType().Name);
           await im.InitAsync();
         }
+
 /*
 #if DEBUG
 				deviceManager.Register(new BluefruitDevice(new BluefruitSerialNumber("MockTestStation"), new MockBluefruitConnection(), new BluefruitProtocol()));
 #endif
 */
+
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
           var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);

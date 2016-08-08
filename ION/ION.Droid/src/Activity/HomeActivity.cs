@@ -20,8 +20,6 @@
   using ION.Core.Util;
 
   // ION.Droid
-  using DeviceManager;
-  using DataLogging;
   using Job;
 	using Report;
   using Dialog;

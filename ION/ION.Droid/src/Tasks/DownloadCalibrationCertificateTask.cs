@@ -69,29 +69,35 @@
     protected override List<ISerialNumber> DoInBackground(List<ISerialNumber> parameters) {
       var ret = new List<ISerialNumber>();
 
-      var task = new RequestCalibrationCertificates(ion, parameters.ToArray()).Request();
-      task.Wait();
+			try {
+	      var task = new RequestCalibrationCertificates(ion, parameters.ToArray()).Request();
+	      task.Wait();
 
-      foreach (var cr in task.Result) {
-        Log.D(this, "Resolving result: " + cr.serialNumber);
-        if (cr.success) {
-          var file = ion.calibrationCertificateFolder.GetFile(cr.serialNumber + " Certification.pdf", EFileAccessResponse.ReplaceIfExists);
+	      foreach (var cr in task.Result) {
+	        Log.D(this, "Resolving result: " + cr.serialNumber);
+	        if (cr.success) {
+	          var file = ion.calibrationCertificateFolder.GetFile(cr.serialNumber + " Certification.pdf", EFileAccessResponse.ReplaceIfExists);
 
-          try {
-            using (var s = file.OpenForWriting()) {
-              GaugeDeviceCertificatePdfExporter.Export(ion, cr.certificate, s);
-            }
-          } catch (Exception e) {
-            Log.E(this, "Failed to export calibration pdf for " + cr.serialNumber, e);
-            file.Delete();
-            ret.Add(cr.serialNumber);
-          }
-        } else {
-          ret.Add(cr.serialNumber);
-        }
-      }
+	          try {
+	            using (var s = file.OpenForWriting()) {
+	              GaugeDeviceCertificatePdfExporter.Export(ion, cr.certificate, s);
+	            }
+	          } catch (Exception e) {
+	            Log.E(this, "Failed to export calibration pdf for " + cr.serialNumber, e);
+	            file.Delete();
+	            ret.Add(cr.serialNumber);
+	          }
+	        } else {
+	          ret.Add(cr.serialNumber);
+	        }
+	      }
 
-      return ret;
+	      return ret;
+			} catch (Exception e) {
+				Log.E(this, "Failed to request calibration certificates.");
+				// TODO ahodder@appioninc.com: Build a list of the affect serial numbers.
+				return parameters;
+			}
     }
 
     /// <Docs>To be added.</Docs>
@@ -106,12 +112,12 @@
 
       var sb = new StringBuilder();
 
-      if (result.Count >= 0) {
+      if (result.Count > 0) {
         for (int i = 0; i < result.Count - 1; i++) {
           sb.Append(result[i].ToString()).Append(", ");
         }
         sb.Append(result[result.Count - 1]);
-      }
+			}
 
       var d = new IONAlertDialog(context, Resource.String.download_error);
       d.SetMessage(string.Format(context.GetString(Resource.String.report_certificates_error_download_fails_1sarg, sb.ToString())));

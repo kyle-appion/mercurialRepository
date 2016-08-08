@@ -164,6 +164,19 @@
       }
     }
 
+		/// <summary>
+		/// Queries the folder where data logs are placed.
+		/// </summary>
+		/// <value>The data log report folder.</value>
+		public IFolder dataLogReportFolder {
+			get {
+				var f = fileManager.GetApplicationExternalDirectory();
+				f = f.GetFolder("reports", EFileAccessResponse.CreateIfMissing);
+				f = f.GetFolder("dataLogs", EFileAccessResponse.CreateIfMissing);
+				return f;
+			}
+		}
+
     /// <summary>
     /// The wrapped preferences for the application.
     /// </summary>

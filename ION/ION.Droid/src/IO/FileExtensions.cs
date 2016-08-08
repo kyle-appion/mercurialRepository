@@ -6,6 +6,7 @@
   /// This class continas extension methods for files.
   /// </summary>
   public static class FileExtensions {
+		public const string EXT_EXCEL = ".xlsx";
     public const string EXT_PDF = ".pdf";
 
     /// <summary>
@@ -14,7 +15,9 @@
     /// <returns>The icon.</returns>
     /// <param name="file">File.</param>
     public static int GetIcon(this IFile file) {
-      switch (file.extension) {
+			switch (file.extension.ToLower()) {
+				case EXT_EXCEL:
+				return Resource.Drawable.ic_spreadsheet;
         case EXT_PDF:
           return Resource.Drawable.ic_pdf;
         default:

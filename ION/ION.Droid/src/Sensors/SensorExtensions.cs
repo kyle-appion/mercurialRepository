@@ -21,19 +21,19 @@
       var ion = (AndroidION)AppState.context;
       switch (sensorType) {
         case ESensorType.Humidity:
-          return ion.GetString(Resource.String.measurement_humidity);
+          return ion.GetString(Resource.String.humidity);
         case ESensorType.Length:
-          return ion.GetString(Resource.String.measurement_length);
+          return ion.GetString(Resource.String.length);
         case ESensorType.Mass:
-          return ion.GetString(Resource.String.measurement_mass);
+          return ion.GetString(Resource.String.mass);
         case ESensorType.Pressure:
-          return ion.GetString(Resource.String.measurement_pressure);
+          return ion.GetString(Resource.String.pressure);
         case ESensorType.Temperature:
-          return ion.GetString(Resource.String.measurement_temperature);
+          return ion.GetString(Resource.String.temperature);
         case ESensorType.Vacuum:
-          return ion.GetString(Resource.String.measurement_vacuum);
+          return ion.GetString(Resource.String.vacuum);
         default:
-          return ion.GetString(Resource.String.measurement_unknown);
+          return ion.GetString(Resource.String.unknown);
       }
     }
 

@@ -32,6 +32,11 @@
     /// </summary>
     /// <value>The units.</value>
     public UnitPreferences units { get; private set; }
+		/// <summary>
+		/// The report preferences.
+		/// </summary>
+		/// <value>The reports.</value>
+		public ReportPreferences reports { get; private set; }
 
     /// <summary>
     /// The ion instance as a context.
@@ -100,6 +105,7 @@
       alarm = new AlarmPreferences(ion, prefs);
       location = new LocationPreferences(ion, prefs);
       units = new UnitPreferences(ion, prefs);
+			reports =  new ReportPreferences(ion, prefs);
     }
   }
 
@@ -122,6 +128,35 @@
       this.ion = ion;
       this.prefs = prefs;
     }
+
+		/// <summary>
+		/// Queries the preference string with the given key. If the preference doesn't exist or can't be retrieved, we will
+		/// return fallback.
+		/// </summary>
+		/// <returns>The string.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="fallback">Fallback.</param>
+		public string GetString(int key, string fallback) {
+			return prefs.GetString(ion.GetString(key), fallback);
+		}
+
+		/// <summary>
+		/// Queries an integer from a string preference. If the preference doesn't exist or can't be retrieved, we will
+		/// return fallback.
+		/// </summary>
+		/// <returns>The int from string.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="fallback">Fallback.</param>
+		public int GetIntFromString(int key, int fallback) {
+			var str = GetString(key, fallback + "");
+
+			try {
+				return int.Parse(str);
+			} catch (Exception e) {
+				Log.E(this, "Failed to retrieve int from string preference: " + ion.GetString(key), e);
+	      return fallback;
+			}
+		}
   }
 
   /// <summary>
@@ -271,7 +306,7 @@
 
         return ret;
       } catch (Exception e) {
-        Log.E(this, "Failed to retrieve unit for key: " + key);
+        Log.E(this, "Failed to retrieve unit for key: " + key, e);
         AssertUnitSet(preferenceKey, backup.quantity, backup);
         return backup;
       }
@@ -299,5 +334,21 @@
       }
     }
   }
+
+	public class ReportPreferences : BasePreferences {
+		public TimeSpan DataLoggingInterval {
+			get {
+				return TimeSpan.FromSeconds(GetIntFromString(Resource.String.pkey_reporting_data_log_interval, 60));
+			}
+/*
+			set {
+				SetStringFromInt((int)value.TotalMilliseconds);
+			}
+*/
+		}
+
+		public ReportPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+		}
+	}
 }
 

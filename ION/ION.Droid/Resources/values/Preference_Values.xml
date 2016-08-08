@@ -42,6 +42,10 @@
   <string name="preferences_units_vacuum">Default Vacuum Unit</string>
   <string name="preferences_units_vacuum_title">Select a new default vacuum</string>
 
+	<string name="preferences_reporting">Reporting Preferences</string>
+	<string name="preferences_reporting_data_log_interval">Data Logging Interval</string>
+	<string name="preferences_reporting_data_log_interval_title">Select the data logging interval</string>
+
   <!--
   INTEGERS
   -->
@@ -49,6 +53,8 @@
   <integer name="preferences_units_pressure_default">7</integer>
   <integer name="preferences_units_temperature_default">18</integer>
   <integer name="preferences_units_vacuum_default">39</integer>
+
+	<integer name="preferences_reporting_data_log_interval_default">60</integer>
 
   <!--
   DEFAULT UNITS
@@ -131,4 +137,27 @@
     <item>40</item>
     <item>41</item>
   </string-array>
+
+	<!-- Data Log Reporting Intervals -->
+	<string-array name="preferences_reporting_data_log_interval_entries">
+		<item>1 second</item>
+		<item>30 seconds</item>
+		<item>1 minute</item>
+		<item>5 minutes</item>
+		<item>10 minutes</item>
+		<item>15 minutes</item>
+		<item>30 minutes</item>
+		<item>60 minutes</item>
+	</string-array>
+	
+	<string-array name="preferences_reporting_data_log_interval_values">
+		<item>1</item>
+		<item>30</item>
+		<item>60</item>
+		<item>300</item>
+		<item>600</item>
+		<item>900</item>
+		<item>1800</item>
+		<item>3600</item>
+	</string-array>
 </resources>

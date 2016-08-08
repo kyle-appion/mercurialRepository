@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Widgets.Adapters.Job {
+﻿using System.Linq;
+namespace ION.Droid.Widgets.Adapters.Job {
   
   using System;
 
@@ -39,7 +40,11 @@
 
     public override void OnBindTo() {
       var ellapsed = t.row.sessionEnd - t.row.sessionStart;
-      text.Text = t.row.sessionStart.ToLongDateString() + " " + ellapsed.TotalMinutes.ToString("#.0");
+			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionData(t.row._id).Result;
+			var dateString = t.row.sessionStart.ToShortDateString() + " " + t.row.sessionStart.ToShortTimeString();
+			dateString = dateString + " " + ellapsed.TotalMinutes.ToString("0.0") + " # Records: " + g.deviceSensorLogs.Length;
+
+			text.Text = dateString;
 			check.Checked = t.isChecked;
     }
   }

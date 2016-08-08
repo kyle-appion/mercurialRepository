@@ -28,7 +28,7 @@
     /// <summary>
     /// The fragment that will allow the user to navigate the calibration certificate directory.
     /// </summary>
-    private FileManagerFragment fragment;
+    private FileViewerFragment fragment;
 
     /// <summary>
     /// Raises the create event.
@@ -43,7 +43,7 @@
       ActionBar.SetHomeButtonEnabled(true);
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_certificates, Resource.Color.gray));
 
-      fragment = FragmentManager.FindFragmentById<FileManagerFragment>(Resource.Id.content);
+      fragment = FragmentManager.FindFragmentById<FileViewerFragment>(Resource.Id.content);
       fragment.folder = ion.calibrationCertificateFolder;
       fragment.onFileClicked += OnFileClicked;
       fragment.onFolderClicked += OnFolderClicked;
