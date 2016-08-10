@@ -643,6 +643,10 @@
     <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 1x.jpg" />
     <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4 2x.jpg" />
     <ImageAsset Include="Resources\Images.xcassets\Intro4.imageset\Intro4.jpg" />
+    <ImageAsset Include="Resources\Images.xcassets\blank_checkbox.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\blank_checkbox.imageset\blank_checkbox.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\filled_checkbox.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -957,6 +961,30 @@
     <Compile Include="src\IOSExtensions.cs" />
     <Compile Include="src\ViewController\WebServices\SessionPayload.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCheck.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerViewController.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerViewController.designer.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteSystemViewController.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteSystemViewController.designer.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerTableSource.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceSectionHeaderTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceSectionHeaderTableCell.designer.cs">
+      <DependentUpon>RemoteDeviceSectionHeaderTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceTableCell.designer.cs">
+      <DependentUpon>RemoteDeviceTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RemoteAccess\RemoteSensorTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteSensorTableCell.designer.cs">
+      <DependentUpon>RemoteSensorTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RemoteAccess\remoteSelectionView.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteIosConnectionFactory.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteIosLeConnection.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteLeConnectionHelper.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteIosION.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteLoginView.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteIosLocationManager.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1027,6 +1055,8 @@
     <Folder Include="Resources\Images.xcassets\Intro3.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
+    <Folder Include="Resources\Images.xcassets\blank_checkbox.imageset\" />
+    <Folder Include="Resources\Images.xcassets\filled_checkbox.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -1044,6 +1074,8 @@
     <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
     <BundleResource Include="Resources\Images.xcassets\Contents.json" />
     <BundleResource Include="Resources\xml\whats_new.xml" />
+    <BundleResource Include="Resources\.DS_Store" />
+    <BundleResource Include="Resources\src\.DS_Store" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

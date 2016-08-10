@@ -1,39 +1,40 @@
-﻿namespace ION.IOS.App {
+﻿namespace ION.IOS.ViewController.RemoteAccess {
 
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Threading.Tasks;
 
-  using CoreFoundation;
-  using Foundation;
+	using CoreFoundation;
+	using Foundation;
 
-  using ION.Core.Alarms;
-  using ION.Core.Alarms.Alerts;
-  using ION.Core.App;
-  using ION.Core.Content;
-  using ION.Core.Content.Parsers;
-  using ION.Core.Database;
-  using ION.Core.Devices;
-  using ION.Core.Fluids;
+	using ION.Core.Alarms;
+	using ION.Core.Alarms.Alerts;
+	using ION.Core.App;
+	using ION.Core.Content;
+	using ION.Core.Content.Parsers;
+	using ION.Core.Database;
+	using ION.Core.Devices;
+	using ION.Core.Fluids;
 	using ION.Core.Internal;
-  using ION.Core.IO;
-  using ION.Core.Location;
-  using ION.Core.Measure;
-  using ION.Core.Report.DataLogs;
-  using ION.Core.Pdf;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
+	using ION.Core.IO;
+	using ION.Core.Location;
+	using ION.Core.Measure;
+	using ION.Core.Report.DataLogs;
+	using ION.Core.Pdf;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
 
-  using ION.IOS.Alarms.Alerts;
-  using ION.IOS.IO;
-  using ION.IOS.Location;
-  using ION.IOS.Connections;
+	using ION.IOS.Alarms.Alerts;
+	using ION.IOS.IO;
+	using ION.IOS.Location;
+	using ION.IOS.Connections;
+	using ION.IOS.App;
 
-  /// <summary>
-  /// The iOS ION implementation.
-  /// </summary>
-  public class IosION : IION {
+	/// <summary>
+	/// The iOS ION implementation.
+	/// </summary>
+	public class RemoteIosION : IION {
     /// <summary>
     /// The file name for the primary workbench.
     /// </summary>
@@ -130,24 +131,23 @@
     /// </summary>
     private readonly List<IIONManager> managers = new List<IIONManager>();
 
-    public IosION() {
+    public RemoteIosION() {
       // Order matters - Manager's with no dependencies should come first such
       // that later manager's may depend on them.
-      var ch = new LeConnectionHelper();
+      var ch = new RemoteLeConnectionHelper();
 
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
-
-      managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
+      //managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
-      managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch));
+      managers.Add(locationManager = new RemoteIosLocationManager(this));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new RemoteIosConnectionFactory(ch), ch));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
-      alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
-        return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
-      };
+      //alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
+      //  return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
+      //};
       managers.Add(fluidManager = new BaseFluidManager(this));
-      currentAnalyzer = new Analyzer(this);
+      fluidManager.InitAsync();
     }
 
     // Overridden from IION
@@ -178,22 +178,23 @@
     }
 
     // Overridden from IION
+    // DON'T NEED TO SAVE THE REMOTE WORKBENCH
     public Task SaveWorkbenchAsync() {
       return Task.Factory.StartNew(() => {
-        lock (this) {
-          Log.D(this, "Saving workbench");
-          var internalDir = fileManager.GetApplicationInternalDirectory();
-          var file = internalDir.GetFile(FILE_WORKBENCH, EFileAccessResponse.CreateIfMissing);
-          var wp = new WorkbenchParser();
-          try {
-            using (var stream = file.OpenForWriting()) {
-              wp.WriteToStream(this, currentWorkbench, stream);
-            }
-            Log.D(this, "Workbench saved!");
-          } catch (Exception e) {
-            Log.E(this, "Failed to write workbench to file", e);
-          }
-        }
+        //lock (this) {
+        //  Log.D(this, "Saving workbench");
+        //  var internalDir = fileManager.GetApplicationInternalDirectory();
+        //  var file = internalDir.GetFile(FILE_WORKBENCH, EFileAccessResponse.CreateIfMissing);
+        //  var wp = new WorkbenchParser();
+        //  try {
+        //    using (var stream = file.OpenForWriting()) {
+        //      wp.WriteToStream(this, currentWorkbench, stream);
+        //    }
+        //    Log.D(this, "Workbench saved!");
+        //  } catch (Exception e) {
+        //    Log.E(this, "Failed to write workbench to file", e);
+        //  }
+        //}
       });
     }
 
@@ -219,13 +220,11 @@
           Log.D(this, "Initializing " + im.GetType().Name);
           await im.InitAsync();
         }
-
 /*
 #if DEBUG
 				deviceManager.Register(new BluefruitDevice(new BluefruitSerialNumber("MockTestStation"), new MockBluefruitConnection(), new BluefruitProtocol()));
 #endif
 */
-
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
           var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);

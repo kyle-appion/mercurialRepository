@@ -87,9 +87,9 @@
       Window.MakeKeyAndVisible();
       
       //*********CHECK APP VERSION!!!!!
-//			var record = KeychainAccess.ValueForKey("lastUsedVersion");		
+//			var record = KeychainAccess.ValueForKey("lastUsedVersion");
 			var record = NSUserDefaults.StandardUserDefaults.StringForKey("lastUsedVersion");
-			
+
 			if(!string.IsNullOrEmpty(record)){
 				var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
 			 	var latestVersion = record;
