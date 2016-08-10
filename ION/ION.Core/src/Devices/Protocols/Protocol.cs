@@ -58,6 +58,8 @@ namespace ION.Core.Devices.Protocols {
           return FindProtocolFromVersion(EProtocolVersion.V2);
         case 3: 
           return FindProtocolFromVersion(EProtocolVersion.V3);
+				case 4:
+					return FindProtocolFromVersion(EProtocolVersion.V4);
         default:
           return null;
       }
