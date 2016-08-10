@@ -163,6 +163,12 @@ namespace ION.Droid.Activity.Report {
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
 			tab2Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+
+			if (checkedSessions.Count == 0) {
+				graphButtonButton.Visibility = ViewStates.Invisible;
+			} else {
+				graphButtonButton.Visibility = ViewStates.Visible;
+			}
 		}
 
 		private void ShowBySessionFragment() {
@@ -173,6 +179,12 @@ namespace ION.Droid.Activity.Report {
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
 			tab2Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+
+			if (checkedSessions.Count == 0) {
+				graphButtonButton.Visibility = ViewStates.Invisible;
+			} else {
+				graphButtonButton.Visibility = ViewStates.Visible;
+			}
 		}
 
 		/// <summary>
@@ -207,6 +219,8 @@ namespace ION.Droid.Activity.Report {
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
 			tab2Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+
+			graphButtonButton.Visibility = ViewStates.Invisible;
 		}
 
 		/// <summary>
@@ -241,6 +255,8 @@ namespace ION.Droid.Activity.Report {
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
 			tab2Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+
+			graphButtonButton.Visibility = ViewStates.Invisible;
 		}
 
 		/// <summary>

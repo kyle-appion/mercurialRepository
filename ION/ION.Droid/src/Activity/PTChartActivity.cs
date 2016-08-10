@@ -395,6 +395,11 @@
       } else {
         sensorLocked = false;
       }
+
+
+#if !DEBUG
+			slider.Visibility = ViewStates.Gone;
+#endif
     }
 
     // Overridden from IONActivity
