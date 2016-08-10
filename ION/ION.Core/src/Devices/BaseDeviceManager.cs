@@ -143,6 +143,7 @@
       }
 
       try {
+      	
         var devices = await ion.database.QueryForAllDevicesAsync();
         foreach (IDevice device in devices) {
           Register(device);

@@ -1,32 +1,33 @@
 namespace ION.IOS.ViewController.Workbench {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
 
-  using CoreGraphics;
-  using Foundation;
-  using UIKit;
+	using CoreGraphics;
+	using Foundation;
+	using UIKit;
 
-  using ION.Core.App;
-  using ION.Core.Content;
-  using ION.Core.Content.Parsers;
-  using ION.Core.Devices;
-  using ION.Core.IO;
-  using ION.Core.Measure;
-  using ION.Core.Pdf;
-  using ION.Core.Report;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
+	using ION.Core.App;
+	using ION.Core.Content;
+	using ION.Core.Content.Parsers;
+	using ION.Core.Devices;
+	using ION.Core.IO;
+	using ION.Core.Measure;
+	using ION.Core.Pdf;
+	using ION.Core.Report;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
 
-  using ION.IOS.Devices;
-  using ION.IOS.Sensors;
-  using ION.IOS.UI;
-  using ION.IOS.Util;
-  using ION.IOS.ViewController.DeviceManager;
-  using ION.IOS.ViewController.ScreenshotReport;
+	using ION.IOS.Devices;
+	using ION.IOS.Sensors;
+	using ION.IOS.UI;
+	using ION.IOS.Util;
+	using ION.IOS.ViewController.DeviceManager;
+	using ION.IOS.ViewController.ScreenshotReport;
+	using ION.IOS.ViewController.RemoteDeviceManager;
 
-  public partial class WorkbenchViewController : BaseIONViewController {
+	public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -44,6 +45,8 @@ namespace ION.IOS.ViewController.Workbench {
     private WorkbenchTableSource source { get; set; }
 
     public UIButton recordButton;
+    
+    public bool remoteMode = false;
 
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
@@ -58,29 +61,35 @@ namespace ION.IOS.ViewController.Workbench {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      AutomaticallyAdjustsScrollViewInsets = false; 
-
-      var button = new UIButton(new CGRect(0, 0, 31, 30));
-      button.TouchUpInside += (obj, args) => {
-        TakeScreenshot();
-      };
-      button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
-
-      recordButton = new UIButton(new CGRect(0,0,35,35));
-      recordButton.TouchUpInside += (sender, e) => {
-        RecordDevices();
-      };
-      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-
-      var barButton = new UIBarButtonItem(button);
-      var barButton2 = new UIBarButtonItem(recordButton);
-
-      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};
+      AutomaticallyAdjustsScrollViewInsets = false;
 
       Title = Strings.Workbench.SELF.FromResources();
 
       ion = AppState.context;
-      workbench = ion.currentWorkbench;
+      
+			if(remoteMode){
+				workbench = new Workbench(ion);
+				ion.currentWorkbench = workbench;
+			} else {
+	      var button = new UIButton(new CGRect(0, 0, 31, 30));
+	      button.TouchUpInside += (obj, args) => {
+	        TakeScreenshot();
+	      };
+	      button.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
+	
+	      recordButton = new UIButton(new CGRect(0,0,35,35));
+	      recordButton.TouchUpInside += (sender, e) => {
+	        RecordDevices();
+	      };
+	      recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+	
+	      var barButton = new UIBarButtonItem(button);
+	      var barButton2 = new UIBarButtonItem(recordButton);
+	
+	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};			
+
+				workbench = ion.currentWorkbench;
+			}
 
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
@@ -92,7 +101,10 @@ namespace ION.IOS.ViewController.Workbench {
       tableContent.Source = source;
 
 			AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
-			ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;     
+			if(ion.currentWorkbench == null){
+				Console.WriteLine("workbench for ion isn't created for some reason");
+			}
+			ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
     }
 
     // Overridden from BaseIONViewController
@@ -102,19 +114,21 @@ namespace ION.IOS.ViewController.Workbench {
       tableContent.ReloadData();
       
       if(!ion.deviceManager.connectionHelper.isEnabled){
-		  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
-          bluetoothWarning.Clicked += (sender, e) => {
-            if(e.ButtonIndex.Equals(1)){
-              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-            }
-          };
-          bluetoothWarning.Show();
-	  }
-      if (ion.dataLogManager.isRecording) {
-        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-      } else {
-        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-      }
+			  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
+	          bluetoothWarning.Clicked += (sender, e) => {
+	            if(e.ButtonIndex.Equals(1)){
+	              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+	            }
+	          };
+	          bluetoothWarning.Show();
+	  	}
+	  	if(!remoteMode){
+	      if (ion.dataLogManager.isRecording) {
+	        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+	      } else {
+	        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+	      }
+	    }
     }
 
     // Overridden from UIViewController
@@ -132,19 +146,28 @@ namespace ION.IOS.ViewController.Workbench {
     /// Called when the viewer source wishes to request a new viewer.
     /// </summary>
     private void OnRequestViewer() {
-      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
-      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-        Log.D(this,"Adding device to workbench");
-        workbench.AddSensor(sensor);
-      };
-      NavigationController.PushViewController(sb, true);
+    	if(!remoteMode){
+	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
+	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+	        Log.D(this,"Adding device to workbench");
+	        workbench.AddSensor(sensor);
+	      };
+	      NavigationController.PushViewController(sb, true);
+      } else {
+	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
+	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
+	        Log.D(this,"Adding device to workbench");
+	        workbench.AddSensor(sensor);
+	      };
+	      NavigationController.PushViewController(sb, true);
+			}
     }
 
     /// <summary>
     /// Called when the backing workbench throws a new event.
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
-    private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {      
+    private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           goto case WorkbenchEvent.EType.Swapped;

@@ -31,6 +31,7 @@ namespace ION.IOS.ViewController.JobManager {
       saveButton.TouchDown += (sender, e) => {saveButton.BackgroundColor = UIColor.Blue;};
       saveButton.TouchUpOutside += (sender, e) => {saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
       saveButton.TouchUpInside += (sender, e) => {
+      	
         saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 
         if(editView.jobName.Text.Length.Equals(0)){
@@ -54,16 +55,23 @@ namespace ION.IOS.ViewController.JobManager {
             editView.confirmLabel.Text = "Job Name Already Exists";
           }
         } else {
-          var previousName = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", frnJID);
-          var fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), previousName[0].jobName + ".xml");
-          if(System.IO.File.Exists(fileDir)){
-            var newFileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), editView.jobName.Text + ".xml");
-            System.IO.File.Copy(fileDir,newFileDir);
-            System.IO.File.Delete(fileDir);
-          }
+          var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 
-          ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
-          this.NavigationController.PopViewController(true);
+          if(jobCheck.Count == 0 || jobCheck[0].JID == frnJID){
+	          var previousName = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", frnJID);
+	          var fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), previousName[0].jobName + ".xml");
+	          if(System.IO.File.Exists(fileDir) && ((editView.jobName.Text+".xml") != (previousName[0].jobName + ".xml"))){
+	            var newFileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), editView.jobName.Text + ".xml");
+	            System.IO.File.Copy(fileDir,newFileDir,true);
+	            System.IO.File.Delete(fileDir);
+						}	
+						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
+            editView.confirmLabel.TextColor = UIColor.Green;
+            editView.confirmLabel.Text = "Job Updated";	          
+          } else {
+            editView.confirmLabel.TextColor = UIColor.Red;
+            editView.confirmLabel.Text = "Job Name Already Exists";
+          }
         }
 
         editView.confirmLabel.Hidden = false;

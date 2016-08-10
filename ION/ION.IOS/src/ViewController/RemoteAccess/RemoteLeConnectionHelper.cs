@@ -1,5 +1,5 @@
-#if true
-namespace ION.IOS.Connections {
+﻿#if true
+namespace ION.IOS.ViewController.RemoteAccess {
 
   using System;
   using System.Threading;
@@ -21,7 +21,7 @@ namespace ION.IOS.Connections {
   /// <summary>
   /// The connection helper that will perform the IOS bluetooth interactions.
   /// </summary>
-  public class LeConnectionHelper : CBCentralManagerDelegate, IConnectionHelper {
+  public class RemoteLeConnectionHelper : CBCentralManagerDelegate, IConnectionHelper {
     /// <summary>
     /// The event pool that is notified when the connection helper state changes.
     /// </summary>
@@ -70,7 +70,7 @@ namespace ION.IOS.Connections {
     /// </summary>
     private CancellationTokenSource cancelSource;
 
-    public LeConnectionHelper() {
+    public RemoteLeConnectionHelper() {
       var cboptions = new CBCentralInitOptions();
       cboptions.ShowPowerAlert = false;
 			centralManager = new CBCentralManager(this, new DispatchQueue("ION iOS Bluetooth", true), cboptions);
@@ -80,12 +80,9 @@ namespace ION.IOS.Connections {
     }
 
     public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
-			if (onPeripheralDisconnected != null) {
-				onPeripheralDisconnected(this, peripheral);
-			}
     }
 
-    public override void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
+    public override async void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
       Log.D(this, "Discovered Peripheral: " + peripheral.Name);
 
       var name = peripheral.Name;
@@ -117,7 +114,7 @@ namespace ION.IOS.Connections {
         return;
       }
 
-      try {
+      //try {
         var serialNumber = SerialNumberExtensions.ParseSerialNumber(name);
         var ourData = adData[CBAdvertisement.DataManufacturerDataKey];
         byte[] broadcastPacket = null;
@@ -144,9 +141,9 @@ namespace ION.IOS.Connections {
 				}
 
         NotifyDeviceFound(serialNumber, peripheral.Identifier.AsString(), broadcastPacket, protocol);
-      } catch (Exception ex) {
-        Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
-      }
+      //} catch (Exception ex) {
+      //  Log.E(this, "Failed to resolve newly found peripheral: " + name, ex);
+      //}
     }
 
     public override void FailedToConnectPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {

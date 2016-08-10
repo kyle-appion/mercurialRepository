@@ -320,17 +320,17 @@
           }));
         }
 #if DEBUG
-				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
-					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
-					var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
-					for (int i = 0; i < device.sensorCount; i++) {
-						var s = device[i];
-						d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
-							ShowChangeUnitDialog(s);
-						}));
-					}
-					vc.PresentViewController(d, true, null);
-				}));
+				//dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
+				//	var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
+				//	var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
+				//	for (int i = 0; i < device.sensorCount; i++) {
+				//		var s = device[i];
+				//		d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
+				//			ShowChangeUnitDialog(s);
+				//		}));
+				//	}
+				//	vc.PresentViewController(d, true, null);
+				//}));
 #endif
       }
 
