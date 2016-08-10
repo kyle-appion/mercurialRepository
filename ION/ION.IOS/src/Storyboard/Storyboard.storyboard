@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="10117" systemVersion="15A4310" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="120">
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -1523,7 +1524,7 @@
                                             <outlet property="viewDivider" destination="5fu-4L-RKj" id="lPX-W0-S4M"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellDevice" rowHeight="53" id="yDb-40-uXW" userLabel="cellDevice" customClass="DeviceTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellDevice" rowHeight="53" id="yDb-40-uXW" userLabel="cellDevice" customClass="RemoteDeviceTableCell">
                                         <rect key="frame" x="0.0" y="97.5" width="568" height="53"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="yDb-40-uXW" id="h90-w3-2o5">
@@ -1651,7 +1652,7 @@
                                             <outlet property="labelSerialNumber" destination="v0a-8g-2Y2" id="A8D-cM-vU5"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSensor" rowHeight="48" id="asH-Rw-Egn" userLabel="cellSensor" customClass="SensorTableCell">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="cellSensor" rowHeight="48" id="asH-Rw-Egn" userLabel="cellSensor" customClass="RemoteSensorTableCell">
                                         <rect key="frame" x="0.0" y="171.5" width="568" height="48"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="asH-Rw-Egn" id="LzT-Gh-3bM">

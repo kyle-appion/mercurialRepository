@@ -93,7 +93,7 @@
       connected.actions = BuildBatchOptionsDialog(Actions.AddAllToWorkbench,Strings.Device.Manager.AVAILABLE_ACTIONS, connected);
       //connected.actions = BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
       //  Strings.Device.Manager.CONNECTED_ACTIONS, connected);
-      allSections.Add(EDeviceState.Connected, connected);
+      //allSections.Add(EDeviceState.Connected, connected);
 
       //var broadcasting = new Section(EDeviceState.Broadcasting, Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE);
       //broadcasting.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.AddAllToWorkbench,
@@ -104,10 +104,10 @@
       //@new.actions = BuildBatchOptionsDialog(Actions.ConnectAll, Strings.Device.Manager.NEW_ACTIONS, @new);
       //allSections.Add(EDeviceState.New, @new);
 
-      //var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
-      //@avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
-      //  Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
-      //allSections.Add(EDeviceState.Available, avail);
+      var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
+      @avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
+        Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
+      allSections.Add(EDeviceState.Available, avail);
 
       //var disconnected = new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
       //disconnected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
@@ -346,7 +346,7 @@
       } else if (record is SensorRecord) {
         var r = record as SensorRecord;
 
-        var cell = tableView.DequeueReusableCell(CELL_SENSOR) as SensorTableCell;
+        var cell = tableView.DequeueReusableCell(CELL_SENSOR) as RemoteSensorTableCell;
         cell.UpdateTo(r, () => {
           if (onSensorAddClicked != null) {
             if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {

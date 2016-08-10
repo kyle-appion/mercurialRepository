@@ -136,6 +136,7 @@
       var ch = new LeConnectionHelper();
 
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
+
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new IosLocationManager(this));
@@ -146,6 +147,7 @@
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
       };
       managers.Add(fluidManager = new BaseFluidManager(this));
+      currentAnalyzer = new Analyzer(this);
     }
 
     // Overridden from IION
