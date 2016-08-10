@@ -1,6 +1,8 @@
 ﻿namespace ION.Core.Devices {
   
   using System;
+	using SQLite.Net;
+  using System.IO;
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
@@ -19,10 +21,10 @@
     public static async Task<List<IDevice>> QueryForAllDevicesAsync(this IONDatabase db) {
       var ret = new List<IDevice>();
 
-      var devices = await db.QueryForAllAsync<DeviceRow>();
-      foreach (var d in devices) {
-        ret.Add(await db.ReconstructDevice(d));
-      }
+	      var devices = await db.QueryForAllAsync<DeviceRow>();
+	      foreach (var d in devices) {
+	        ret.Add(await db.ReconstructDevice(d));
+	      }
 
       return ret;
     }

@@ -52,7 +52,7 @@ namespace ION.IOS.Connections {
     /// <value><c>true</c> if is scanning; otherwise, <c>false</c>.</value>
     public bool isScanning { 
       get {
-        return __isScanning; 
+        return __isScanning;
       }
       set {
         __isScanning = value;

@@ -40,7 +40,7 @@
     }
   }
 
-	public partial class RemoteDeviceTableCell : SWTableViewCell, IReleasable {
+	public partial class RemoteDeviceTableCell : UITableViewCell, IReleasable {
 		public UIButton buttonConnect;
 		public UIImageView imageDeviceIcon;
 		public UILabel labelDeviceType;

@@ -34,7 +34,7 @@
     }
   }
 
-	public partial class SensorTableCell : UITableViewCell, IReleasable {
+	public partial class RemoteSensorTableCell : UITableViewCell, IReleasable {
 		/// <summary>
 		///  cell height is 48 for sensor table cell
 		/// </summary>
@@ -68,7 +68,7 @@
       }
     } SensorRecord __record;
 
-		public SensorTableCell (IntPtr handle) : base (handle) {
+		public RemoteSensorTableCell (IntPtr handle) : base (handle) {
 		}
 
     // Overridden from UITableViewCell
