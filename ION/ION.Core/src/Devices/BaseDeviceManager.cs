@@ -286,16 +286,8 @@
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-#if DEBUG
-        IConnection connection = null;
-        if (MockConnection.MOCK_ADDRESS.Equals(connectionAddress)) {
-          connection = new MockConnection();
-        } else {
-          connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
-        }
-#else
         var connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
-#endif
+
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
         if (protocol == null) {
           protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
