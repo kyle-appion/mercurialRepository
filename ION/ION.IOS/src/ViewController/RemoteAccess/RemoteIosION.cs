@@ -136,18 +136,12 @@
       // that later manager's may depend on them.
       var ch = new RemoteLeConnectionHelper();
 
-      var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
-      //managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
       managers.Add(fileManager = new IosFileManager());
       managers.Add(locationManager = new RemoteIosLocationManager(this));
       managers.Add(deviceManager = new BaseDeviceManager(this, new RemoteIosConnectionFactory(ch), ch));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
-      //alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
-      //  return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
-      //};
       managers.Add(fluidManager = new BaseFluidManager(this));
-      fluidManager.InitAsync();
     }
 
     // Overridden from IION
@@ -220,11 +214,7 @@
           Log.D(this, "Initializing " + im.GetType().Name);
           await im.InitAsync();
         }
-/*
-#if DEBUG
-				deviceManager.Register(new BluefruitDevice(new BluefruitSerialNumber("MockTestStation"), new MockBluefruitConnection(), new BluefruitProtocol()));
-#endif
-*/
+
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {
           var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);

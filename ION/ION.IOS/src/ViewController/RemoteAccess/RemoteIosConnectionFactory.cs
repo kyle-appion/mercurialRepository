@@ -45,7 +45,7 @@
 
 			if (serialNumber.rawSerial.StartsWith("S")) {
 				var h = (LeConnectionHelper)ion.deviceManager.connectionHelper;
-				return new IosRigadoConnection(h.centralManager, peripheral);
+				return new IosRigadoConnection(h, peripheral);
 			}
 
 			return new RemoteIosLeConnection(ion.deviceManager.connectionHelper as RemoteLeConnectionHelper, peripheral);

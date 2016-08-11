@@ -152,6 +152,8 @@
 
     // Overridden from IION
     public void Dispose() {
+			managers.Reverse();
+
       foreach (var m in managers) {
         try {
           m.Dispose();
@@ -219,12 +221,6 @@
           Log.D(this, "Initializing " + im.GetType().Name);
           await im.InitAsync();
         }
-
-/*
-#if DEBUG
-				deviceManager.Register(new BluefruitDevice(new BluefruitSerialNumber("MockTestStation"), new MockBluefruitConnection(), new BluefruitProtocol()));
-#endif
-*/
 
         var internalDir = fileManager.GetApplicationInternalDirectory();
         if (internalDir.ContainsFile(FILE_WORKBENCH)) {

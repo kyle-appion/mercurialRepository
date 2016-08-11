@@ -31,11 +31,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenu.Layer.BorderWidth = 1f;
 			remoteMenu.TouchDown += (sender, e) => {remoteMenu.BackgroundColor = UIColor.Blue;};
 			remoteMenu.TouchUpOutside += (sender, e) => {remoteMenu.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			remoteMenu.TouchUpInside += (sender, e) => {
+			remoteMenu.TouchUpInside += async (sender, e) => {
 				remoteMenu.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				Console.WriteLine("pressed remote menu");
 				AppState.context.Dispose();
-				AppState.context = new RemoteIosION();
+				var remoteIon = new RemoteIosION();
+				await remoteIon.Init();
+				AppState.context = ion;
         rootVC.setRemoteMenu();
 			};
 			
@@ -48,11 +50,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			fullMenu.TouchDown += (sender, e) => {fullMenu.BackgroundColor = UIColor.Blue;};
 			fullMenu.TouchUpOutside += (sender, e) => {fullMenu.BackgroundColor = UIColor.FromRGB(255, 215, 101);};			
-			fullMenu.TouchUpInside += (sender, e) => {
+			fullMenu.TouchUpInside += async (sender, e) => {
 				fullMenu.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				Console.WriteLine("original menu pressed");
 				AppState.context.Dispose();
-				AppState.context = new IosION();
+				var newIon = new IosION();
+				await newIon.Init();
+				AppState.context = newIon;
 				rootVC.setMainMenu();
 			};
 			selectionView.AddSubview(remoteMenu);
