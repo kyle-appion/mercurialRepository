@@ -154,6 +154,9 @@
     /// </summary>
     /// <returns>The application dump.</returns>
     IAppDump CreateApplicationDump();
+    
+    Task setRemoteDeviceManager();
+    Task setOriginalDeviceManager();
   } // End IION
 
   /// <summary>

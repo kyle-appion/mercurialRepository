@@ -89,8 +89,12 @@
       this.ion = ion;
       this.vc = vc;
       this.tableView = tableView;
-      var connected = new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
-      connected.actions = BuildBatchOptionsDialog(Actions.AddAllToWorkbench,Strings.Device.Manager.AVAILABLE_ACTIONS, connected);
+      tableView.RegisterClassForCellReuse(typeof(RemoteDeviceSectionHeaderTableCell),CELL_HEADER);
+      tableView.RegisterClassForCellReuse(typeof(RemoteDeviceTableCell),CELL_DEVICE);
+      tableView.RegisterClassForCellReuse(typeof(SpaceRecord),CELL_SPACE);
+      tableView.RegisterClassForCellReuse(typeof(RemoteSensorTableCell),CELL_SENSOR);
+      //var connected = new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
+      //connected.actions = BuildBatchOptionsDialog(Actions.AddAllToWorkbench,Strings.Device.Manager.AVAILABLE_ACTIONS, connected);
       //connected.actions = BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
       //  Strings.Device.Manager.CONNECTED_ACTIONS, connected);
       //allSections.Add(EDeviceState.Connected, connected);
@@ -105,7 +109,7 @@
       //allSections.Add(EDeviceState.New, @new);
 
       var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
-      @avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
+      @avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll,
         Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
       allSections.Add(EDeviceState.Available, avail);
 
@@ -162,7 +166,8 @@
     /// <param name="tableView">Table view.</param>
     /// <param name="indexPath">Index path.</param>
     public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
-      return shownSections[(int)indexPath.Section].records[indexPath.Row] is DeviceRecord;
+      //return shownSections[(int)indexPath.Section].records[indexPath.Row] is DeviceRecord;
+      return false;
     }
 
     /// <summary>
@@ -202,6 +207,7 @@
     /// <param name="tableView">Table view.</param>
     /// <param name="indexPath">Index path.</param>
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {
+    	Log.D(this,"clicked row " + indexPath.Row + " in section " + indexPath.Section);
       var section = shownSections[(int)indexPath.Section];
       var record = section.records[(int)indexPath.Row];
 
@@ -213,7 +219,7 @@
         var r = record as DeviceRecord;
 
         if (r.isExpanded) {
-          DoCollapse(indexPath);    
+          DoCollapse(indexPath);
         } else {
           DoExpand(indexPath);
         }
@@ -270,7 +276,7 @@
     /// <param name="tableView">Table view.</param>
     /// <param name="section">Section.</param>
     public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-      return 48;
+      return 48; 
     }
 
     /// <summary>
@@ -303,7 +309,13 @@
     /// <param name="section">Section.</param>
     public override UIView GetViewForHeader(UITableView tableView, nint sectionIndex) {
       var section = shownSections[(int)sectionIndex];
+
       var cell = tableView.DequeueReusableCell(CELL_HEADER) as RemoteDeviceSectionHeaderTableCell;
+      
+      if(cell == null){
+				cell = new UITableViewCell(UITableViewCellStyle.Default, CELL_HEADER) as RemoteDeviceSectionHeaderTableCell; 
+			}
+      
       section.cell = cell;
 
       var w = tableView.Frame.Size.Width;
@@ -332,7 +344,14 @@
         var r = record as DeviceRecord;
 
         var cell = tableView.DequeueReusableCell(CELL_DEVICE) as RemoteDeviceTableCell;
-        cell.UpdateTo(ion, r);
+        
+	     	if(cell == null){
+					cell = new UITableViewCell(UITableViewCellStyle.Default, CELL_DEVICE) as RemoteDeviceTableCell; 
+			 	}
+			 	Log.D(this, "Table view width is " + tableView.Bounds.Width + " and cell height is " + cell.Bounds.Height);
+			 	cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+			
+        cell.UpdateTo(ion, r, tableView.Bounds.Width);
         cell.BackgroundColor = UIColor.Clear;
 
         return cell;
@@ -347,7 +366,14 @@
         var r = record as SensorRecord;
 
         var cell = tableView.DequeueReusableCell(CELL_SENSOR) as RemoteSensorTableCell;
-        cell.UpdateTo(r, () => {
+        
+        if(cell == null){
+					cell = new UITableViewCell(UITableViewCellStyle.Default, CELL_SENSOR) as RemoteSensorTableCell; 
+				}
+				
+				cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+				
+        cell.UpdateTo(r, tableView.Bounds.Width, () => {
           if (onSensorAddClicked != null) {
             if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {
               r.sensor.device.connection.ConnectAsync();
@@ -359,7 +385,13 @@
         return cell;
       } else if (record is SpaceRecord) {
         var cell = tableView.DequeueReusableCell(CELL_SPACE);
-
+        
+	     	if(cell == null){
+					cell = new UITableViewCell(UITableViewCellStyle.Default, CELL_SPACE) as SpaceRecord; 
+			 	}
+			 	
+			 	cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+			 	
         cell.BackgroundColor = UIColor.Clear;
 
         return cell;
@@ -371,14 +403,14 @@
     /// <summary>
     /// Reloads the content of the source. Note: this is a full reload that does not perform an pretty animations.
     /// </summary>
-    public void Reload() {
+    public void Reload() {     
       shownSections.Clear();
 
       foreach (var device in ion.deviceManager.devices) {
-        //var state = device.GetDeviceState();
+        var state = EDeviceState.Available;
 
-        //var section = allSections[state];
-        var section = allSections[EDeviceState.Connected];
+        var section = allSections[state];
+        
         if (AllowsDevice(device)) {
           var i = 0;
           section.AddDevice(device, out i);
@@ -409,7 +441,7 @@
           }
 
           var device = de.deviceEvent.device;
-          var state = device.GetDeviceState();
+          var state = EDeviceState.Available;
           var section = allSections[state];
 
           if (deviceToSection.ContainsKey(device)) {
@@ -670,7 +702,10 @@
     bool isExpanded { get; set; }
   }
 
-  public class SpaceRecord : IRecord {
+  public class SpaceRecord : UITableViewCell, IRecord {
+		public SpaceRecord (IntPtr handle) {
+		}
+		public SpaceRecord(){}
     public EViewType viewType { get { return EViewType.Space; } }
     public bool isExpandable {
       get {
@@ -747,7 +782,7 @@
     /// <param name="device">Device.</param>
     /// <param name="index">Index.</param>
     public bool AddDevice(IDevice device, out int index) {
-      //      Log.D(this, "Adding device: " + device + "{" + ((GaugeDevice)device).serialNumber + "}");
+      //Log.D(this, "Adding device: " + device + "{" + ((GaugeDevice)device).serialNumber + "}");
       if (HasDevice(device)) {
         index = -1;
         Log.E(this, "Not adding device: the device {" + device.serialNumber + "} is already present in the section {" + state + "}.");
@@ -930,20 +965,7 @@
     /// <returns>The device state.</returns>
     /// <param name="device">Device.</param>
     public static EDeviceState GetDeviceState(this IDevice device) {
-      var ion = AppState.context;
-      var connectionState = device.connection.connectionState;
-
-      if (EConnectionState.Connected == connectionState) {
-        return EDeviceState.Connected;
-      } else if (EConnectionState.Broadcasting == connectionState) {
-        return EDeviceState.Broadcasting;
-      } else if (!ion.deviceManager.IsDeviceKnown(device)) {
-        return EDeviceState.New;
-      } else if ((ion.deviceManager.IsDeviceKnown(device) && device.isNearby) || EConnectionState.Connecting == connectionState) {
         return EDeviceState.Available;
-      } else {
-        return EDeviceState.Disconnected;
-      }
     }
   }
 }

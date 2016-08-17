@@ -1,24 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
-using Foundation;
 using CoreGraphics;
 using UIKit;
 
 using ION.Core.App;
-using ION.IOS.Util;
-
-using ION.IOS.ViewController.Analyzer;
-using ION.IOS.ViewController.PressureTemperatureChart;
-using ION.IOS.ViewController.Settings;
-using ION.IOS.ViewController.SuperheatSubcool;
-using ION.IOS.ViewController.Workbench;
-using ION.IOS.ViewController.Logging;
-using ION.IOS.ViewController.JobManager;
-using MonoTouch.Dialog;
-using ION.IOS.ViewController.Help;
-using ION.IOS.ViewController.Walkthrough;
-using ION.IOS.ViewController.RssFeed;
 using ION.IOS.App;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -45,7 +31,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       var checkLogin = KeychainAccess.ValueForKey("stayLogged");
       var loginUsrId = KeychainAccess.ValueForKey("userID");
       
-      var button  = new UIButton(new CGRect(0, 0, 70, 40));
+      var button  = new UIButton(new CGRect(0, 0, 70, 30));
 			button.SetTitle("Log Out", UIControlState.Normal);
 			button.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			button.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -66,6 +52,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				View.AddSubview(remoteView.selectionView);
 				this.NavigationItem.RightBarButtonItem = logOut;
 				remoteView.remoteMenu.TouchDown += (sender, e) => {remoteView.remoteMenu.BackgroundColor = UIColor.Blue;};
+				
 			}	
 		}
 
@@ -132,7 +119,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			} else {
 				loginView.loadingLogin.StopAnimating();
 				var failMessage = response.GetValue("message").ToString();
-				Console.WriteLine("Unable to login because: " + failMessage);
+				Console.WriteLine("Unable to log in" + failMessage);
 			}
 					
 		}
@@ -147,6 +134,16 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				View.WillRemoveSubview(remoteView.selectionView);
 	      loginView.submitButton.TouchUpInside += credentialsCheck;
 	      this.NavigationItem.RightBarButtonItem = null;
+		}
+		
+		public override void ViewWillAppear(bool animated) {
+			base.ViewWillAppear(animated);
+			var loggedIn = KeychainAccess.ValueForKey("userID");
+			if(!string.IsNullOrEmpty(loggedIn)){
+				if(remoteView != null){
+					remoteView.GetAccessList();
+				}
+			}			
 		}
     
 		public override void DidReceiveMemoryWarning() {

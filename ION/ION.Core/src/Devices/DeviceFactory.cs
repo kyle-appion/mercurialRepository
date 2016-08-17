@@ -270,7 +270,7 @@
       if (!(protocol is IGaugeProtocol)) {
         throw new ArgumentException("Cannot create device: expected an IGaugeProtocol, received: " + protocol.GetType().Name);
       }
-
+			
       var ret = new GaugeDevice(serialNumber as GaugeSerialNumber, connection, protocol as IGaugeProtocol);
       var s = new List<GaugeDeviceSensor>();
 

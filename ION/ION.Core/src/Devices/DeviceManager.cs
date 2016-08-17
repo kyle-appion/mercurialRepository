@@ -109,14 +109,6 @@
     List<IDevice> foundDevices { get; }
 
     /// <summary>
-    /// The delegate that is used to create devices.
-    /// </summary>
-    /// <remarks>
-    /// Note: the device manager will NOT register devices that are created by this factory.
-    /// </remarks>
-    /// <value>The device factory delegate.</value>
-    DeviceFactoryDelegate deviceFactoryDelegate { get; }
-    /// <summary>
     /// The factory that is responsible for creating new connections.
     /// </summary>
     /// <value>The connection factory.</value>
@@ -128,7 +120,7 @@
     IConnectionHelper connectionHelper { get; set; }
 
     DeviceFactory __deviceFactory { get; }
-
+    
     /// <summary>
     /// Requests that the device manager enable its communication backend.
     /// </summary>

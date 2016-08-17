@@ -979,12 +979,22 @@
       <DependentUpon>RemoteSensorTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\remoteSelectionView.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosConnectionFactory.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosLeConnection.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteLeConnectionHelper.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosION.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteLoginView.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosLocationManager.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteAccessTableSource.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteAccessTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteAccessTableCell.designer.cs">
+      <DependentUpon>RemoteAccessTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestManager.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestViewController.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestViewController.designer.cs">
+      <DependentUpon>AccessRequestViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestTableCell.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestTableCell.designer.cs">
+      <DependentUpon>AccessRequestTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\AccessRequest\AccessRequestTableSource.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1057,6 +1067,7 @@
     <Folder Include="Resources\Images.xcassets\Intro4.imageset\" />
     <Folder Include="Resources\Images.xcassets\blank_checkbox.imageset\" />
     <Folder Include="Resources\Images.xcassets\filled_checkbox.imageset\" />
+    <Folder Include="src\ViewController\AccessRequest\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

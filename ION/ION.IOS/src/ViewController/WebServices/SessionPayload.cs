@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using ION.Core.App;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.WebServices {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -20,17 +21,19 @@ namespace ION.IOS.ViewController.WebServices {
 		public string message;
 		public IION ion;
 		
-		public const string uploadSessionUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
+		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
 		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
-		public const string registerAccountUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
-		public const string uploadAnalyzerUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
-		public const string uploadWorkbenchUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
-		public const string downloadAnalyzerUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
-		public const string downloadWorkbenchUrl = "http://www.buildtechhere.com/DLog/StoreSession.php";
+		public const string registerAccountUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerAccount.php";
+		public const string uploadAnalyzerUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadAnalyzer.php";
+		public const string uploadWorkbenchUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadWorkbench.php";
+		public const string downloadAnalyzerUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadAnalyzer.php";
+		public const string downloadWorkbenchUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadWorkbench.php";
+		public const string submitCodeUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/submitAccessCode.php";
 		
 		public SessionPayload() {
 			ion = AppState.context;
-
+			
 			/************create a new session payload
 			var package = new ION.IOS.ViewController.WebServices.SessionPayload();
 			*********************/
@@ -47,7 +50,7 @@ namespace ION.IOS.ViewController.WebServices {
 			var sessionResult = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM SessionRow WHERE SID in (" + string.Join(",",paramList.ToArray()) + ") ORDER BY SID ASC");
 			var totalSessions = sessionResult.Count;
 			var count = 1;
-			
+
 			string jsonPayload = "{";
 			
 			foreach (var session in sessionResult){
@@ -87,14 +90,13 @@ namespace ION.IOS.ViewController.WebServices {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			WebClient wc = new WebClient();
 			wc.Proxy = null;
-			
+			var userID = KeychainAccess.ValueForKey("userID");
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
 			var data = new System.Collections.Specialized.NameValueCollection();
 			data.Add("uploadSession","true");
 			data.Add("sessionData",json);
-			data.Add("userID","1");
-			data.Add("accountID","1");
+			data.Add("userID",userID);
 			
 			//initiate the post request and get the request result in a byte array 
 			byte[] result = wc.UploadValues(uploadSessionUrl,data);
@@ -125,14 +127,14 @@ namespace ION.IOS.ViewController.WebServices {
     /// </summary>
     /// <returns>post response</returns>
     public async void RegisterUser(string userName, string password, string displayName, string email){
-    	await Task.Delay(TimeSpan.FromMilliseconds(1));
+    	await Task.Delay(TimeSpan.FromMilliseconds(1)); 
 			WebClient wc = new WebClient(); 
 			wc.Proxy = null;
 			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
 			var data = new System.Collections.Specialized.NameValueCollection();
-
+	
 			data.Add("registerUser","newuser");
 			data.Add("uname",userName);
 			data.Add("usrpword",password);
@@ -195,19 +197,18 @@ namespace ION.IOS.ViewController.WebServices {
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
 		WebClient wc = new WebClient(); 
 		wc.Proxy = null;
-		
+
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 
 		data.Add("downloadSession","getData");
-		data.Add("accountID", accountID.ToString());
 		data.Add("userID", userID.ToString());
 		data.Add("sessionStart", startDate);
 		data.Add("sessionEnd", endDate);
 		
 		//initiate the post request and get the request result in a byte array 
-		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		byte[] result = wc.UploadValues(downloadSessionUrl,data);
 		
 		//get the string conversion for the byte array
 		var textResponse = Encoding.UTF8.GetString(result);
@@ -229,14 +230,13 @@ namespace ION.IOS.ViewController.WebServices {
 
 		WebClient wc = new WebClient(); 
 		wc.Proxy = null;
-		
+		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 		
 		data.Add("uploadSession","sendData");
-		data.Add("accountID", "1");
-
+		data.Add("userID", userID);
 		
 		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
 			var layoutJson = "{";
@@ -250,7 +250,7 @@ namespace ION.IOS.ViewController.WebServices {
 				count++;
 			}
 			layoutJson += "}";
-			data.Add("layoutJson",layoutJson);
+			data.Add("devices",layoutJson);
 			//initiate the post request and get the request result in a byte array
 			//byte[] result = wc.UploadValues(uploadAnalyzerUrl,data);
 			
@@ -270,13 +270,13 @@ namespace ION.IOS.ViewController.WebServices {
 		
 		WebClient wc = new WebClient(); 
 		wc.Proxy = null;
-		
+		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 
 		data.Add("uploadWorkbench","data");
-		data.Add("userID","1");
+		data.Add("userID",userID);
 		
 		var uploadWorkbench = ion.currentWorkbench;
 		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
@@ -290,7 +290,7 @@ namespace ION.IOS.ViewController.WebServices {
 				count++;			
 			}
 			layoutJson += "}";
-			data.Add("layoutJson",layoutJson);
+			data.Add("devices",layoutJson);
 			
 			Console.WriteLine(layoutJson);
 			////initiate the post request and get the request result in a byte array 
@@ -308,15 +308,15 @@ namespace ION.IOS.ViewController.WebServices {
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		WebClient wc = new WebClient(); 
 		wc.Proxy = null;
-		
+		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 
 		data.Add("downloadAnalyzer","manager");
-		data.Add("userID","1");
+		data.Add("userID",userID);
 		
-		byte[] result = wc.UploadValues("http://www.buildtechhere.com/DLog/StoreSession.php",data);
+		byte[] result = wc.UploadValues(downloadAnalyzerUrl,data);
 		
 		var textResponse = Encoding.UTF8.GetString(result);
 		
@@ -327,14 +327,19 @@ namespace ION.IOS.ViewController.WebServices {
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		WebClient wc = new WebClient();
 		wc.Proxy = null;
-		
+		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
 		var data = new System.Collections.Specialized.NameValueCollection();
 
-		data.Add("downloadAnalyzerLayout","manager");
-		data.Add("accountID","1");
-		data.Add("userID","1");
+		data.Add("downloadWorkbench","manager");
+		data.Add("userID",userID);
+		
+		byte[] result = wc.UploadValues(downloadWorkbenchUrl,data);
+		
+		var textResponse = Encoding.UTF8.GetString(result);
+		
+		Console.WriteLine(textResponse);
 	}
 	
 	public async void DeleteAnalyzerLayout(){
@@ -344,7 +349,12 @@ namespace ION.IOS.ViewController.WebServices {
 
 	public async void DeleteWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));		
-	} 
+	}
+	
+	public async void submitAccessCode(string codeText){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+	}
 }
 
 

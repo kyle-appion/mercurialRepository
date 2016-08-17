@@ -14,11 +14,11 @@ namespace ION.IOS.ViewController.Analyzer {
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      //UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
+
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //UILabel cellReading = new UILabel(new CGRect(30,30,121,30));
+
       cellReading = new UILabel(new CGRect(.2 * tableRect.Width, .5 * lhSensor.cellHeight, .8 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //UIButton cellButton = new UIButton(new CGRect(0,30,30,30));
+
       cellButton = new UIButton(new CGRect(0, .5 * lhSensor.cellHeight, .2 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader.Text = Util.Strings.Analyzer.HOLD.ToUpper();

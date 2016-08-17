@@ -1,7 +1,7 @@
 ﻿namespace ION.IOS.ViewController.RemoteDeviceManager {
 
   using System;
-
+	using CoreGraphics;
   using Foundation;
   using UIKit;
 
@@ -41,6 +41,7 @@
   }
 
 	public partial class RemoteDeviceTableCell : UITableViewCell, IReleasable {
+		public UIView viewBackground;
 		public UIButton buttonConnect;
 		public UIImageView imageDeviceIcon;
 		public UILabel labelDeviceType;
@@ -68,32 +69,16 @@
 
         if (__record != null) {
           __record.device.onDeviceEvent += OnDeviceEvent;
-          UpdateLabels();
-          UpdateActivityViews();
+          if(imageDeviceIcon != null){
+	          UpdateLabels();
+	          UpdateActivityViews();
+          }
         }
       }
     } DeviceRecord __record;
     
-		public RemoteDeviceTableCell (IntPtr handle) : base (handle) {
+		public RemoteDeviceTableCell (IntPtr handle) {
 		}
-
-    // Overridden from UITableViewCell
-    public override void AwakeFromNib() {
-      base.AwakeFromNib();
-
-      buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
-      buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
-      buttonConnect.TouchUpInside += (object sender, EventArgs e) => {
-        if (record != null) {
-          // TODO ahodder@appioninc.com: Unify this connection process.
-          if (EConnectionState.Disconnected == record.device.connection.connectionState) {
-            record.device.connection.ConnectAsync();
-          } else {
-            record.device.connection.Disconnect();
-          }
-        }
-      };
-    }
 
     // Overridden from UITableViewCell
     public override void PrepareForReuse() {
@@ -111,16 +96,50 @@
 
     // Overridden from IReleasable
     public void Release() {
-      record = null;
+      record = null; 
     }
 
     /// <summary>
     /// Updates the device table cell to the given device.
     /// </summary>
     /// <param name="device">Device.</param>
-    public void UpdateTo(IION ion, DeviceRecord record) {
+    public void UpdateTo(IION ion, DeviceRecord record, double cellWidth) {
       this.ion = ion;
       this.record = record;
+      this.BackgroundColor = UIColor.White;
+      this.Layer.BorderWidth = 1f;
+      
+      var cellHeight = 48;
+      Log.D(this, "Cell width is " + this.Bounds.Width + " and should be " + cellWidth + ". Height is " + this.Bounds.Height + " and should be 48");
+      viewBackground = new UIView(new CGRect(0,0,cellWidth, cellHeight));
+      viewBackground.BackgroundColor = UIColor.White;
+      
+			buttonConnect = new UIButton(new CGRect(cellWidth - cellHeight,0, cellHeight, cellHeight));
+      buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
+      buttonConnect.TouchUpInside += (object sender, EventArgs e) => {
+        if (record != null) {
+          // TODO ahodder@appioninc.com: Unify this connection process.
+          if (EConnectionState.Disconnected == record.device.connection.connectionState) {
+            record.device.connection.ConnectAsync();
+          } else {
+            record.device.connection.Disconnect();
+          }
+        }
+      };
+      imageDeviceIcon = new UIImageView(new CGRect(0,0,cellHeight,cellHeight));
+
+      labelDeviceType = new UILabel(new CGRect(cellHeight, 0, cellWidth - cellHeight, .5 * cellHeight));
+      labelDeviceName = new UILabel(new CGRect(cellHeight, .5 * cellHeight, cellWidth - cellHeight, .5 * cellHeight));
+      
+      activityConnectStatus = new UIActivityIndicatorView(new CGRect(cellWidth - cellHeight, 0, cellHeight, cellHeight));
+      
+      viewBackground.AddSubview(buttonConnect);
+      viewBackground.AddSubview(imageDeviceIcon);
+      viewBackground.AddSubview(labelDeviceName);
+      viewBackground.AddSubview(labelDeviceType);
+      viewBackground.AddSubview(activityConnectStatus);
+      this.AddSubview(viewBackground);
 
       UpdateLabels();
       UpdateActivityViews();
@@ -141,7 +160,7 @@
     }
 
     private void UpdateLabels() {
-      var device = record.device;
+      var device = record.device;      
 
       imageDeviceIcon.Image = DeviceUtil.GetUIImageFromDeviceModel(device.serialNumber.deviceModel);
       labelDeviceType.Text = device.serialNumber.deviceModel.GetTypeString();
