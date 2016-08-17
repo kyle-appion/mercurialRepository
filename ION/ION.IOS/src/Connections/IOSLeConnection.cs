@@ -167,9 +167,7 @@ namespace ION.IOS.Connections {
           if (ValidateServices()) {
             connectionState = EConnectionState.Connected;
           } else {
-#if DEBUG
             Log.E(this, "Failed to resolve characteristics");
-#endif
           }
         }
       };

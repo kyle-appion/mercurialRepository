@@ -9,7 +9,6 @@
   using ION.Core.Devices.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Internal;
 
   using ION.IOS.Connections;
 

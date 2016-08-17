@@ -305,7 +305,7 @@ namespace ION.IOS.ViewController.Logging {
 
           var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
           //Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex + " for device: " + measurementCount[0].serialNumber);
-          var df = ion.deviceManager.__deviceFactory;
+          var df = ion.deviceManager.deviceFactory;
           var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.serialNumber)) as GaugeDeviceDefinition;
           activeDevice.type = tempD.sensorDefinitions[measurementCount[0].sensorIndex].sensorType.ToString();
 

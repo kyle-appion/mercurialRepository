@@ -155,6 +155,7 @@
 		}
 
 		public void Disconnect() {
+			Log.D(this, "RIGADO DISCONNECT CALLED");
 			if (gatt != null) {
 				gatt.Close();
 				gatt.Disconnect();
