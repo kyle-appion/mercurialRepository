@@ -54,30 +54,7 @@
         Log.E(this, "Failed to initialize ion.", e);
         Environment.Exit(1);
       }
-
-      var list = new System.Collections.Generic.List<ION.Core.Devices.ISerialNumber>();
-      foreach (var device in ion.deviceManager.devices) {
-        list.Add(device.serialNumber);
-      }
-//      new ION.IOS.Net.RequestCalibrationCertificatesTask(ion, list.ToArray()).Request();
-      ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
-      ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
-      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
-      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
-
-      if (ion.settings.screen.leaveOn) {        
-        UIApplication.SharedApplication.IdleTimerDisabled = true;
-      }
-      if (ion.settings.location.useGeoLocation) {
-        ion.locationManager.StartAutomaticLocationPolling();
-      } else {
-        ion.locationManager.StopAutomaticLocationPolling();
-      }
-
-      if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
-        NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
-      }
-		
+      
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -160,10 +137,8 @@
     public override void WillEnterForeground(UIApplication application) {
       // Called as part of the transiton from background to active state.
       // Here you can undo many of the changes made on entering the background.
-      ion.settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
-      ion.settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
-      ion.settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
-      ion.settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
+			var ion = AppState.context as IosION;
+			ion.InitSettings();
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {

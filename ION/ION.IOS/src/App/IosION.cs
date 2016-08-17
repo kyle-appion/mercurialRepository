@@ -7,6 +7,7 @@
 
   using CoreFoundation;
   using Foundation;
+	using UIKit;
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
@@ -16,7 +17,6 @@
   using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Fluids;
-	using ION.Core.Internal;
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Measure;
@@ -62,22 +62,127 @@
     public string version { get { return GetVersion(); } }
 
     // Overridden from IION
-    public IONDatabase database { get; set; }
+    public IONDatabase database { 
+			get {
+				return __database;
+			}
+			set {
+				if (__database != null) {
+					managers.Remove(__database);
+				}
+
+				__database = value;
+
+				if (__database != null) {
+					managers.Add(__database);
+				}
+			}
+		} private IONDatabase __database;
     // Overridden from IION
-    public IFileManager fileManager { get; set; }
+    public IFileManager fileManager {
+			get {
+				return __fileManager;
+			}
+			set {
+				if (__fileManager != null) {
+					managers.Remove(__fileManager);
+				}
+
+				__fileManager = value;
+
+				if (__fileManager != null) {
+					managers.Add(__fileManager);
+				}
+			}
+		} private IFileManager __fileManager;
     // Overridden from IION
-    public IDeviceManager deviceManager { get; set; }
+    public IDeviceManager deviceManager { 
+			get {
+				return __deviceManager;
+			}
+			set {
+				if (__deviceManager != null) {
+					managers.Remove(__deviceManager);
+				}
+
+				__deviceManager = value;
+
+				if (__deviceManager != null) {
+					managers.Add(__deviceManager);
+				}
+			}
+		} private IDeviceManager __deviceManager;
     // Overridden from IION
-    public IAlarmManager alarmManager { get; set; }
+    public IAlarmManager alarmManager { 
+			get {
+				return __alarmManager;
+			}
+			set {
+				if (__alarmManager != null) {
+					managers.Remove(__alarmManager);
+				}
+
+				__alarmManager = value;
+
+				if (__alarmManager != null) {
+					managers.Add(__alarmManager);
+				}
+			}
+		} private IAlarmManager __alarmManager;
     // Overridden from IION
-    public IFluidManager fluidManager { get; set; }
+    public IFluidManager fluidManager { 
+			get {
+				return __fluidManager;
+			}
+			set {
+				if (__fluidManager != null) {
+					managers.Remove(__fluidManager);
+				}
+
+				__fluidManager = value;
+
+				if (__fluidManager != null) {
+					managers.Add(__fluidManager);
+				}
+			}
+		} private IFluidManager __fluidManager;
     // Overridden from IION
-    public ILocationManager locationManager { get; set; }
+    public ILocationManager locationManager {
+			get {
+				return __locationManager;
+			}
+			set {
+				if (__locationManager != null) {
+					managers.Remove(__locationManager);
+				}
+
+				__locationManager = value;
+
+				if (__locationManager != null) {
+					managers.Add(__locationManager);
+				}
+			}
+		} private ILocationManager __locationManager;
     /// <summary>
     /// Queries the data log manager that is responsible for storing sensor data.
     /// </summary>
     /// <value>The data log manager.</value>
-    public DataLogManager dataLogManager { get; set; }
+    public DataLogManager dataLogManager { 
+			get {
+				return __dataLogManager;
+			}
+			set {
+				if (__dataLogManager != null) {
+					managers.Remove(__dataLogManager);
+				}
+
+				__dataLogManager = value;
+
+				if (__dataLogManager != null) {
+					managers.Add(__dataLogManager);
+				}
+			}
+		} private DataLogManager __dataLogManager;
     /// <summary>
     /// The current primary analyzer for the ion context.
     /// </summary>
@@ -137,16 +242,16 @@
 
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
 
-      managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this));
-      managers.Add(fileManager = new IosFileManager());
-      managers.Add(locationManager = new IosLocationManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch));
-      managers.Add(alarmManager = new BaseAlarmManager(this));
-      managers.Add(dataLogManager = new DataLogManager(this));
+      database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this);
+      fileManager = new IosFileManager();
+      locationManager = new IosLocationManager(this);
+      deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch);
+      alarmManager = new BaseAlarmManager(this);
+      dataLogManager = new DataLogManager(this);
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
         return new CompoundAlarmAlert(alarm, new PopupWindowAlarmAlert(alarm), new VibrateAlarmAlert(alarm, this), new SoundAlarmAlert(alarm, this));
       };
-      managers.Add(fluidManager = new BaseFluidManager(this));
+      fluidManager = new BaseFluidManager(this);
       currentAnalyzer = new Analyzer(this);
     }
 
@@ -216,28 +321,30 @@
 
 
       try {
-        Log.D(this, "Starting ION init");
-        foreach (var im in managers) {
-          Log.D(this, "Initializing " + im.GetType().Name);
-          await im.InitAsync();
-        }
+				Log.D(this, "Starting ION init");
+				foreach (var im in managers) {
+					Log.D(this, "Initializing " + im.GetType().Name);
+					await im.InitAsync();
+				}
 
-        var internalDir = fileManager.GetApplicationInternalDirectory();
-        if (internalDir.ContainsFile(FILE_WORKBENCH)) {
-          var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);
-          currentWorkbench = await LoadWorkbenchAsync(workbenchFile);
-        } else {
-          currentWorkbench = new Workbench(this);
-        }
+				InitSettings();
 
-        Log.D(this, "Ending ION init");
-      } catch (Exception e) {
+				var internalDir = fileManager.GetApplicationInternalDirectory();
+				if (internalDir.ContainsFile(FILE_WORKBENCH)) {
+					var workbenchFile = internalDir.GetFile(FILE_WORKBENCH);
+					currentWorkbench = await LoadWorkbenchAsync(workbenchFile);
+				} else {
+					currentWorkbench = new Workbench(this);
+				}
+
+				Log.D(this, "Ending ION init");
+			} catch (Exception e) {
         Log.E(this, "Failed to init ION", e);
       }
       currentAnalyzer = new Analyzer(AppState.context);
     }
 
-    public Task<Workbench> LoadWorkbenchAsync(IFile file) {
+		public Task<Workbench> LoadWorkbenchAsync(IFile file) {
       var wp = new WorkbenchParser();
       try {
         using (var stream = file.OpenForReading()) {
@@ -248,6 +355,27 @@
 				return Task.FromResult(new Workbench(this));
       }
     }
+
+		public void InitSettings() {
+			settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
+			settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+			settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+			settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
+
+			if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
+				NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
+			}
+
+			if (settings.screen.leaveOn) {        
+				UIApplication.SharedApplication.IdleTimerDisabled = true;
+			}
+
+			if (settings.location.useGeoLocation) {
+				locationManager.StartAutomaticLocationPolling();
+			} else {
+				locationManager.StopAutomaticLocationPolling();
+			}
+		}
   } // End IosION
 
   internal class IosUnits : IUnits {

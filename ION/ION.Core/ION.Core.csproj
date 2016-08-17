@@ -48,7 +48,6 @@
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\Util\Log.cs" />
-    <Compile Include="src\Util\ByteUtils.cs" />
     <Compile Include="src\App\ION.cs" />
     <Compile Include="src\App\Viewer.cs" />
     <Compile Include="src\IO\IFileManager.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
     <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
     <Compile Include="src\Security\Obfuscation.cs" />
-    <Compile Include="src\Util\StringExtensions.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificate.cs" />
     <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
     <Compile Include="src\Location\ILocationManager.cs" />
@@ -152,12 +150,6 @@
     <Compile Include="src\Content\WhatsNew.cs" />
     <Compile Include="src\Devices\Connections\IConnectionFactory.cs" />
     <Compile Include="src\Devices\Connections\IConnectionHelper.cs" />
-    <Compile Include="src\Internal\Testing\Av760ProductionTest.cs" />
-    <Compile Include="src\Internal\Testing\TestProcedure.cs" />
-    <Compile Include="src\Internal\Testing\XmlTestProcedureParser.cs" />
-    <Compile Include="src\Internal\BluefruitSerialNumber.cs" />
-    <Compile Include="src\Internal\BluefruitDevice.cs" />
-    <Compile Include="src\Internal\BluefruitProtocol.cs" />
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
     <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
     <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
@@ -166,10 +158,6 @@
     <Compile Include="src\Database\PreseveAttribute.cs" />
     <Compile Include="src\StateMachine\StateEngine.cs" />
     <Compile Include="src\StateMachine\ERetCode.cs" />
-    <Compile Include="src\Internal\MockBluefruitConnection.cs" />
-    <Compile Include="src\Internal\Testing\IAv760NistTraceExporter.cs" />
-    <Compile Include="src\Internal\Testing\CSVAv760NistTraceExporter.cs" />
-    <Compile Include="src\Internal\Testing\TestResults.cs" />
     <Compile Include="src\IO\Exporter\Csv.cs" />
     <Compile Include="src\Measure\Converter.cs" />
     <Compile Include="src\Measure\Dimension.cs" />
@@ -178,7 +166,10 @@
     <Compile Include="src\Measure\ScalarSpan.cs" />
     <Compile Include="src\Measure\Unit.cs" />
     <Compile Include="src\Measure\Units.cs" />
-    <Compile Include="src\Util\DateTimeExtensions.cs" />
+    <Compile Include="src\NumberExtensions.cs" />
+    <Compile Include="src\DateTimeExtensions.cs" />
+    <Compile Include="src\StringExtensions.cs" />
+    <Compile Include="src\ByteExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -210,9 +201,6 @@
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
     <Folder Include="src\Database\Deprecated\" />
-    <Folder Include="src\Excel\" />
-    <Folder Include="src\Internal\" />
-    <Folder Include="src\Internal\Testing\" />
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\StateMachine\" />
     <Folder Include="src\IO\Exporter\" />
@@ -249,9 +237,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
       <LogicalName>UpgradeDatabase.sql</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Internal\Testing\Av760TestingProcedure.xml">
-      <LogicalName>Av760TestingProcedure.xml</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\BUTANE.fluid">
       <LogicalName>BUTANE.fluid</LogicalName>

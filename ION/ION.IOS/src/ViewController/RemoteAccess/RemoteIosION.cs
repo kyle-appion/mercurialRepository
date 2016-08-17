@@ -16,7 +16,6 @@
 	using ION.Core.Database;
 	using ION.Core.Devices;
 	using ION.Core.Fluids;
-	using ION.Core.Internal;
 	using ION.Core.IO;
 	using ION.Core.Location;
 	using ION.Core.Measure;

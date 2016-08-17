@@ -11,8 +11,6 @@
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Internal;
-  using ION.Core.Internal.Testing;
   using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Util;
@@ -69,9 +67,6 @@
           if (GAUGE_DEVICE.Equals(element.Name.LocalName)) {
             var def = ParseGaugeDeviceDefinition(element);
             defs.Add(def.deviceCode, def);
-          } else if (INTERNAL_DEVICE.Equals(element.Name.LocalName)) {
-            var def = ParseInternalDeviceDefinition(element);
-            defs.Add(def.deviceCode, def);
           }
         }
 
@@ -79,16 +74,6 @@
       } catch (Exception e) {
         throw new IOException("Failed to create DeviceFactory from stream", e);
       }
-    }
-
-    /// <summary>
-    /// Parses out an internal device definition.
-    /// </summary>
-    /// <param name="element">Element.</param>
-    private static InternalDeviceDefinition ParseInternalDeviceDefinition(XElement element) {
-      return new InternalDeviceDefinition() {
-        deviceCode = element.Attribute(DEVICE_CODE).Value,
-      };
     }
 
     /// <summary>
@@ -182,43 +167,6 @@
     /// <param name="connection">Connection.</param>
     /// <param name="protocol">Protocol.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, IConnection connection, IProtocol protocol);
-  }
-
-  /// <summary>
-  /// A simple device definition that is used to create internal devices.
-  /// </summary>
-  public class InternalDeviceDefinition : IDeviceDefinition {
-    /// <summary>
-    /// The type of device this definition is describing.
-    /// </summary>
-    /// <value>The type of the device.</value>
-    public EDeviceType deviceType { 
-      get {
-        return EDeviceType.InternalInterface;
-      }
-    }
-    /// <summary>
-    /// The device code that is used by the serial number to identify the device.
-    /// </summary>
-    /// <value>The device code.</value>
-    public string deviceCode { get; internal set; }
-
-    /// <summary>
-    /// Creates an IDevice from this device definition.
-    /// </summary>
-    /// <returns>The device.</returns>
-    /// <exception cref="ArgumentException">If the IDevice could not be created with the given arguments.</exception>
-    /// <param name="serialNumber">Serial number.</param>
-    /// <param name="connection">Connection.</param>
-    /// <param name="protocol">Protocol.</param>
-    public IDevice CreateDevice (ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
-      switch (deviceCode) {
-        case "Bf":
-					return new BluefruitDevice(serialNumber as BluefruitSerialNumber, connection, new BluefruitProtocol());
-        default:
-          throw new Exception("Cannot create device for serial number: " + serialNumber);
-      }
-    }
   }
 
   /// <summary>
