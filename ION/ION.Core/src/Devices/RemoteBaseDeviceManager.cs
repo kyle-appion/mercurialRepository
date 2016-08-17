@@ -1,23 +1,27 @@
 ﻿namespace ION.Core.Devices {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
+	using System.Net.Http;
+	using Newtonsoft.Json.Linq;
+	using Newtonsoft.Json;
+	
+	using ION.Core.App;
+	using ION.Core.Connections;
+	using ION.Core.Database;
+	using ION.Core.Devices.Connections;
+	using ION.Core.Devices.Protocols;
+	using ION.Core.IO;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
 
-  using ION.Core.App;
-  using ION.Core.Connections;
-  using ION.Core.Database;
-  using ION.Core.Devices.Connections;
-  using ION.Core.Devices.Protocols;
-  using ION.Core.IO;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
 
-  /// <summary>
-  /// Provides a standard implementation for the device manager. This device manager
-  /// is meant to be as useful to as many platforms as possible.
-  /// </summary>
-  public class BaseDeviceManager : IDeviceManager {
+	/// <summary>
+	/// Provides a standard implementation for the device manager. This device manager
+	/// is meant to be as useful to as many platforms as possible.
+	/// </summary>
+	public class RemoteBaseDeviceManager : IDeviceManager {
     // Overridden from IDeviceManager
     public event OnDeviceManagerEvent onDeviceManagerEvent;
 
@@ -54,7 +58,7 @@
         ret.AddRange(__foundDevices.Values);
 
         return ret;
-      }
+      }      
     }
     // Overridden from IDeviceManager
     public List<IDevice> knownDevices {
@@ -101,6 +105,8 @@
     /// </summary>
     /// <value>The ion.</value>
     private IION ion { get; set; }
+    
+    public BaseDeviceManager storedDeviceManager;
 
     /// <summary>
     /// The dictionary of all the devices that are known (persisted) by the device manager.
@@ -113,43 +119,43 @@
     /// <summary>
     /// The factory that is used to create devices.
     /// </summary>
-    public DeviceFactory deviceFactory { get; internal set; }
+    public DeviceFactory __deviceFactory { get; internal set; }
 
-    public BaseDeviceManager(IION ion, IConnectionFactory connectionFactory, IConnectionHelper connectionHelper) {
+    public RemoteBaseDeviceManager(IION ion) {
       this.ion = ion;
-      this.connectionFactory = connectionFactory;
-      this.connectionHelper = connectionHelper;
+
+      GetRemoteDevices();
     }
 
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
-    	Log.D(this,"regular device factory init");
-      if (!connectionHelper.isEnabled) {
-        if (!await connectionHelper.Enable()) {
-          return new InitializationResult() {
-            success = __isInitialized = false,
-            errorMessage = "Failed to init device manager: failed to enable connection helper."
-          };
-        }
-      }
 
-      deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
-      if (deviceFactory == null) {
+      //if (!connectionHelper.isEnabled) {
+      //  if (!await connectionHelper.Enable()) {
+      //    return new InitializationResult() {
+      //      success = __isInitialized = false,
+      //      errorMessage = "Failed to init device manager: failed to enable connection helper."
+      //    };
+      //  }
+      //}
+
+      __deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
+
+      if (__deviceFactory == null) {
         return new InitializationResult() {
           success = false,
           errorMessage = "Failed to init device manager: could not load device's database."
         };
       }
-
-      try {
+      //try {
       	
-        var devices = await ion.database.QueryForAllDevicesAsync();
-        foreach (IDevice device in devices) {
-          Register(device);
-        } 
-      } catch (Exception e) {
-        Log.E(this, "Failed to load previous devices", e);
-      }
+      //  var devices = await ion.database.QueryForAllDevicesAsync();
+      //  foreach (IDevice device in devices) {
+      //    Register(device);
+      //  } 
+      //} catch (Exception e) {
+      //  Log.E(this, "Failed to load previous devices", e);
+      //}
 
       return new InitializationResult() { success = __isInitialized = true };
     }
@@ -170,23 +176,24 @@
 
     // Overridden from IDeviceManager
     public void ForgetFoundDevices() {
-      lock (this) {
-        foreach (var device in foundDevices) {
-          device.Dispose();
-          Unregister(device);
-					device.onDeviceEvent -= OnDeviceEvent;
-        }
-      }
+     // lock (this) {
+     //   foreach (var device in foundDevices) {
+     //     device.Dispose();
+     //     Unregister(device);
+					//device.onDeviceEvent -= OnDeviceEvent;
+     //   }
+     // }
     }
 
     // Overridden from IDeviceManager
-    public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
-      var ret = CreateDeviceInternal(serialNumber, connectionAddress, protocolVersion);
+    public IDevice CreateDevice(ISerialNumber serialNumber, EProtocolVersion protocolVersion) {
+      var ret = CreateDeviceInternal(serialNumber, protocolVersion);
       // The register proved superfluous. Consider merging this functions with the internal one.
-//      Register(ret);
+			// Register(ret);
       return ret;
     }
 
+		public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol){return null;}
     /// <summary>
     /// Queries all of the device that are of the given type.
     /// </summary>
@@ -281,27 +288,27 @@
       __knownDevices.Remove(device.serialNumber);
     }
 
-    private IDevice CreateDeviceInternal(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
+    private IDevice CreateDeviceInternal(ISerialNumber serialNumber,EProtocolVersion protocolVersion) {
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        var connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
-
+        var connection = new MockConnection();
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
-        if (protocol == null) {
-          protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
-        }
-        var definition = deviceFactory.GetDeviceDefinition(serialNumber);
+
+        var definition = __deviceFactory.GetDeviceDefinition(serialNumber);
+
         ret = definition.CreateDevice(serialNumber, connection, protocol);
+				
         ret.onDeviceEvent += OnDeviceEvent;
-      } else {
-        if (!ret.connection.address.Equals(connectionAddress)) {
-          var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
-            ret.connection.address + " but a new device creation request was made for address " + connectionAddress;
-          Log.C(this, msg);
-          throw new Exception(msg);
-        }
       }
+		//	else {
+    //    if (!ret.connection.address.Equals(connectionAddress)) {
+    //      var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
+    //        ret.connection.address + " but a new device creation request was made for address " + connectionAddress;
+    //      Log.C(this, msg);
+    //      throw new Exception(msg);
+    //    }
+    //  }
 
       if (ret == null) {
         var msg = BuildErrorHeader(serialNumber, protocolVersion) +
@@ -364,7 +371,7 @@
       var device = this[serialNumber];
 
       if (device == null) {
-        device = CreateDeviceInternal(serialNumber, address, protocol);
+        device = CreateDeviceInternal(serialNumber, EProtocolVersion.V4);
         __foundDevices[serialNumber] = device;
       }
 
@@ -406,11 +413,11 @@
     /// </summary>
     /// <param name="connectionHelper">Connection helper.</param>
     private void OnScanStateChanged(IConnectionHelper connectionHelper) {
-      if (connectionHelper.isScanning) {
-        NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStarted);
-      } else {
-        NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStopped);
-      }
+      //if (connectionHelper.isScanning) {
+      //  NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStarted);
+      //} else {
+      //  NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStopped);
+      //}
     }
 
     /// <summary>
@@ -422,6 +429,48 @@
     private string BuildErrorHeader(ISerialNumber serialNumber, EProtocolVersion protocol) {
       return "Failed to create device from serial number: " + serialNumber + ", Protocol: " + protocol;
     }
+    
+    public async Task GetRemoteDevices(){
+   	await InitAsync();
+   	
+     var deviceUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadWorkbench.php";
+
+     var content = new FormUrlEncodedContent(new[]
+      {
+          new KeyValuePair<string, string>("downloadWorkbench", "manager"),
+          new KeyValuePair<string, string>("userID","1"),
+      });
+  
+      HttpClient wc = new HttpClient();
+      var result = await wc.PostAsync(deviceUrl,content);
+
+			if(result.IsSuccessStatusCode){
+				var textResponse = await result.Content.ReadAsStringAsync();
+
+				JObject response = JObject.Parse(textResponse);
+				var manifolds = response.GetValue("devices");
+				foreach(var device in manifolds){							
+					var deserializedToken = JsonConvert.DeserializeObject<deviceData>(device.ToString());
+					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
+					var manualDevice = CreateDevice(iserial,EProtocolVersion.V4);
+					__knownDevices.Add(iserial,manualDevice); 
+				}
+				Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);				
+			} else {
+				Log.D("RemoteBaseDeviceManager","Error retrieving device list");
+			}
+		}
+	[Preserve(AllMembers = true)]
+	public class deviceData{
+		public deviceData(){}
+		//public int SID;
+		[JsonProperty("serialNumber")]
+		public string serialNumber { get; set; }
+		[JsonProperty("amount")]
+		public string amount { get; set; }
+		[JsonProperty("unit")]
+		public string unit;
+	}
   }
 }
 

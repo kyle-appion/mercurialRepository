@@ -275,8 +275,13 @@ namespace ION.IOS.Util {
         TIMER_DESC = "workbench_subview_timer_desc".FromResources(),
         SECONDARY = "workbench_subview_linked_desc".FromResources()
         ;
-      }
+      }      
     } // End Strings.Workbench
+    public static class AccessManager{
+			public static readonly string
+			SELF = "access_manager".FromResources()
+			;
+		} // End Strings.AccessManager
   } // End Strings
 
   /// <summary>

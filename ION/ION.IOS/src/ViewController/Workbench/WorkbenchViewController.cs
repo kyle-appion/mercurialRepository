@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Workbench {
       
 			if(remoteMode){
 				workbench = new Workbench(ion);
-				ion.currentWorkbench = workbench;
+				//ion.currentWorkbench = workbench;
 			} else {
 	      var button = new UIButton(new CGRect(0, 0, 31, 30));
 	      button.TouchUpInside += (obj, args) => {
@@ -100,11 +100,16 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.Source = source;
 
+			//AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
+			//if(ion.currentWorkbench == null){
+			//	Console.WriteLine("workbench for ion isn't created for some reason");
+			//}
+			//ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
 			AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
-			if(ion.currentWorkbench == null){
+			if(workbench == null){
 				Console.WriteLine("workbench for ion isn't created for some reason");
 			}
-			ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
     }
 
     // Overridden from BaseIONViewController

@@ -62,7 +62,7 @@
     public string version { get { return GetVersion(); } }
 
     // Overridden from IION
-    public IONDatabase database { 
+    public IONDatabase database {
 			get {
 				return __database;
 			}
@@ -96,7 +96,7 @@
 			}
 		} private IFileManager __fileManager;
     // Overridden from IION
-    public IDeviceManager deviceManager { 
+    public IDeviceManager deviceManager {
 			get {
 				return __deviceManager;
 			}
@@ -113,7 +113,7 @@
 			}
 		} private IDeviceManager __deviceManager;
     // Overridden from IION
-    public IAlarmManager alarmManager { 
+    public IAlarmManager alarmManager {
 			get {
 				return __alarmManager;
 			}
@@ -130,7 +130,7 @@
 			}
 		} private IAlarmManager __alarmManager;
     // Overridden from IION
-    public IFluidManager fluidManager { 
+    public IFluidManager fluidManager {
 			get {
 				return __fluidManager;
 			}
@@ -167,7 +167,7 @@
     /// Queries the data log manager that is responsible for storing sensor data.
     /// </summary>
     /// <value>The data log manager.</value>
-    public DataLogManager dataLogManager { 
+    public DataLogManager dataLogManager {
 			get {
 				return __dataLogManager;
 			}
@@ -303,7 +303,6 @@
         }
       });
     }
-
     /// <summary>
     /// Creates a new application dump object.
     /// </summary>
@@ -366,7 +365,53 @@
 				NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
 			}
 
-			if (settings.screen.leaveOn) {        
+			if (settings.screen.leaveOn) {
+				UIApplication.SharedApplication.IdleTimerDisabled = true;
+			}
+
+			if (settings.location.useGeoLocation) {
+				locationManager.StartAutomaticLocationPolling();
+			} else {
+				locationManager.StopAutomaticLocationPolling();
+			}
+		}
+    /// <summary>
+    /// Creates a Device Manager that will deal only with the remote devices another user has uploaded
+    /// </summary>
+    /// <returns>The remote device manager.</returns>
+    public Task setRemoteDeviceManager(){
+      return Task.Factory.StartNew(() => {
+      	var remoteDManager = new RemoteBaseDeviceManager(this);
+				remoteDManager.storedDeviceManager = (BaseDeviceManager)deviceManager;
+				deviceManager = remoteDManager;
+				deviceManager.connectionFactory = remoteDManager.storedDeviceManager.connectionFactory;
+				deviceManager.connectionHelper = remoteDManager.storedDeviceManager.connectionHelper;
+      });
+		}
+
+    /// <summary>
+    /// Creates a Device Manager that will deal only with the remote devices another user has uploaded
+    /// </summary>
+    /// <returns>The remote device manager.</returns>
+    public Task setOriginalDeviceManager(){
+      return Task.Factory.StartNew(() => {
+      	var remoteDManager = (RemoteBaseDeviceManager)this.deviceManager;
+				deviceManager = remoteDManager.storedDeviceManager;
+      });
+		}
+
+
+		public void InitSettings() {
+			settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
+			settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
+			settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
+			settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
+
+			if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
+				NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
+			}
+
+			if (settings.screen.leaveOn) {
 				UIApplication.SharedApplication.IdleTimerDisabled = true;
 			}
 

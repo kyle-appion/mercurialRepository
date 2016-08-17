@@ -38,6 +38,7 @@
 		/// <summary>
 		///  cell height is 48 for sensor table cell
 		/// </summary>
+		public UIView viewBackground;
 		public UIButton buttonAdd;
 		public UILabel labelType;
 		public UILabel labelMeasurement;
@@ -71,22 +72,7 @@
 		public RemoteSensorTableCell (IntPtr handle) : base (handle) {
 		}
 
-    // Overridden from UITableViewCell
-    public override void AwakeFromNib() {
-      base.AwakeFromNib();
-      buttonAdd = new UIButton(new CGRect(.8 * this.Bounds.Width,0,48,48));
-      labelType = new UILabel(new CGRect(0,0,.8 * this.Bounds.Width,.5 * this.Bounds.Height));
-      labelMeasurement = new UILabel(new CGRect(0,.5 * this.Bounds.Height, .8 * this.Bounds.Width, .5 * this.Bounds.Height));
-      
 
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
-      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
-      buttonAdd.TouchUpInside += (object sender, EventArgs e) => {
-        if (onAddClicked != null) {
-          onAddClicked();
-        }
-      };
-    }
 
     // Overridden from IReleasable
     public void Release() {
@@ -98,12 +84,37 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     /// <param name="addClickedResponder">Add clicked responder.</param>
-    public void UpdateTo(SensorRecord record, Action addClickedResponder = null) {
+    public void UpdateTo(SensorRecord record, double cellWidth, Action addClickedResponder = null) {
       this.record = record;
+      var cellHeight = 48;
+      this.BackgroundColor = UIColor.Clear;
 
+      viewBackground = new UIView(new CGRect(0,0,cellWidth,cellHeight));
+      viewBackground.BackgroundColor = UIColor.Clear;
+      
+      buttonAdd = new UIButton(new CGRect(cellWidth - cellHeight,0,cellHeight,cellHeight));
+      labelType = new UILabel(new CGRect(cellHeight,0,cellWidth - cellHeight,.5 * cellHeight));
+      labelType.BackgroundColor = UIColor.White;
+      labelMeasurement = new UILabel(new CGRect(cellHeight,.5 * cellHeight, cellWidth - cellHeight, .5 * cellHeight));
+      labelMeasurement.BackgroundColor = UIColor.White;
+      
+
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
+      buttonAdd.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
+      buttonAdd.SetImage(UIImage.FromBundle("ic_device_add"), UIControlState.Normal);
+      buttonAdd.TouchUpInside += (object sender, EventArgs e) => {
+        if (onAddClicked != null) {
+          onAddClicked();
+        }
+      };
       onAddClicked = addClickedResponder;
 
-      OnSensorUpdated(record.sensor);
+      OnSensorUpdated(record.sensor);      
+
+      viewBackground.Add(labelType);
+      viewBackground.Add(labelMeasurement);
+      viewBackground.Add(buttonAdd);
+      this.AddSubview(viewBackground);
     }
 
     private void OnSensorUpdated(Sensor sensor) {
@@ -112,6 +123,7 @@
 
       if (sensor is GaugeDeviceSensor) {
         var ds = sensor as GaugeDeviceSensor;
+        //labelMeasurement.Text = ds.measurement.ToString();
         if (!ds.device.isConnected || ds.removed) {
           labelMeasurement.Text = "---";
         }

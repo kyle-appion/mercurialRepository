@@ -11,48 +11,10 @@ namespace ION.IOS.ViewController.RemoteDeviceManager
 {
 	[Register ("RemoteDeviceSectionHeaderTableCell")]
 	partial class RemoteDeviceSectionHeaderTableCell
-	{
-		[Outlet]
-		UIKit.UIButton buttonOptions { get; set; }
-
-		[Outlet]
-		UIKit.UILabel labelCounter { get; set; }
-
-		[Outlet]
-		UIKit.UILabel labelTitle { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewBackground { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewDivider { get; set; }
-		
+	{		
 		void ReleaseDesignerOutlets ()
 		{
-			if (buttonOptions != null) {
-				buttonOptions.Dispose ();
-				buttonOptions = null;
-			}
 
-			if (labelCounter != null) {
-				labelCounter.Dispose ();
-				labelCounter = null;
-			}
-
-			if (labelTitle != null) {
-				labelTitle.Dispose ();
-				labelTitle = null;
-			}
-
-			if (viewBackground != null) {
-				viewBackground.Dispose ();
-				viewBackground = null;
-			}
-
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
-			}
 		}
 	}
 }

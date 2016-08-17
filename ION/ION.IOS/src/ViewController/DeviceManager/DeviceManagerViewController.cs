@@ -80,23 +80,23 @@ namespace ION.IOS.ViewController.DeviceManager {
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, async delegate {
-      if(!ion.deviceManager.connectionHelper.isEnabled){
-		  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
-	      bluetoothWarning.Clicked += (sender, e) => {
-	        if(e.ButtonIndex.Equals(1)){
-	          UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-	        }
-	      };
-	      bluetoothWarning.Show();
-	  } else {
-		  if (ion.deviceManager.connectionHelper.isScanning) {
-		    ion.deviceManager.connectionHelper.Stop();
-		  } else {
-		    if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
-		      Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+	      if(!ion.deviceManager.connectionHelper.isEnabled){
+			  	UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
+		      bluetoothWarning.Clicked += (sender, e) => {
+		        if(e.ButtonIndex.Equals(1)){
+		          UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+		        }
+		      };
+		      bluetoothWarning.Show();
+			  } else {
+				  if (ion.deviceManager.connectionHelper.isScanning) {
+				    ion.deviceManager.connectionHelper.Stop();
+				  } else {
+				    if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+				      Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+				    }
+				  }
 		    }
-		  }
-        }
       });
       labelEmpty.Text = Strings.Device.Manager.EMPTY;
 

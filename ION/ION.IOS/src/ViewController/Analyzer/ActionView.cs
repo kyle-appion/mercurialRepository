@@ -8,7 +8,25 @@ using System.Threading.Tasks;
 namespace ION.IOS.ViewController.Analyzer {
 
   public class ActionView {
-
+    public UIView aView;
+    public UIView connectionColor;
+    public UIButton pcloseButton;
+    public UIButton pactionButton;
+    public UIImageView pconnection;
+    public UIButton conDisButton;
+    public UIImageView pdeviceImage;
+    public UIImageView pbatteryImage;
+    public UILabel pdeviceName;
+    public UILabel pgaugeValue;
+    public UILabel pvalueType;
+    public UILabel pconnectionStatus;
+    public UILabel pLowHigh;
+    public UILabel pdisplayLink;
+    UIView abuttonBorder;
+    UIView abuttonBorder2;
+    UIView abuttonBorder3;
+    public UIActivityIndicatorView activityConnectStatus;
+    
     public ActionView(UIView mainView) {
       aView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
       connectionColor = new UIView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
@@ -19,6 +37,7 @@ namespace ION.IOS.ViewController.Analyzer {
       pactionButton = new UIButton(new CGRect(.5 * aView.Bounds.Width,.8 * aView.Bounds.Height,.5 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pconnection = new UIImageView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       activityConnectStatus = new UIActivityIndicatorView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
+      activityConnectStatus.HidesWhenStopped = true;
       conDisButton = new UIButton(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       conDisButton.Layer.CornerRadius = 8;
@@ -110,42 +129,7 @@ namespace ION.IOS.ViewController.Analyzer {
       }
     } GaugeDeviceSensor __currentSensor;
 
-    //public UIView aView = new UIView(new CGRect(20,100,280,195));
-    public UIView aView;
-    //public UIView connectionColor = new UIView(new CGRect(243, 7, 29, 35));
-    public UIView connectionColor;
-    //public UIButton pcloseButton = new UIButton(new CGRect(0, 156, 141, 39));
-    public UIButton pcloseButton;
-    //public UIButton pactionButton = new UIButton(new CGRect(140,156,140, 39));
-    public UIButton pactionButton;
-    //public UIImageView pconnection = new UIImageView(new CGRect(243, 7, 29, 35));
-    public UIImageView pconnection;
-    //public UIImageView pconnection = new UIImageView(new CGRect(243, 7, 29, 35));
-    public UIButton conDisButton;
-    //public UIImageView pdeviceImage = new UIImageView(new CGRect(0,60,60,60));
-    public UIImageView pdeviceImage;
-    //public UIImageView pbatteryImage = new UIImageView(new CGRect(172,14,63,21));
-    public UIImageView pbatteryImage;
-    //public UILabel pdeviceName = new UILabel(new CGRect(8, 7, 122, 21));
-    public UILabel pdeviceName;
-    //public UILabel pgaugeValue = new UILabel(new CGRect(82,36,190,68));
-    public UILabel pgaugeValue;
-    //public UILabel pvalueType = new UILabel(new CGRect(191,112,81,21));
-    public UILabel pvalueType;
-    //public UILabel pconnectionStatus = new UILabel(new CGRect(82,112,100,21));
-    public UILabel pconnectionStatus;
-    //public UILabel pLowHigh = new UILabel(new CGRect(204,133,75,21));
-    public UILabel pLowHigh;
-    //public UILabel pdisplayLink = new UILabel(new CGRect(0,133,196,21));
-    public UILabel pdisplayLink;
-    //UIView abuttonBorder = new UIView(new CGRect(0, 156, 281 ,1));
-    UIView abuttonBorder;
-    //UIView abuttonBorder2 = new UIView(new CGRect(141,156,1,39));
-    UIView abuttonBorder2;
-    //UIView abuttonBorder3 = new UIView(new CGRect(5,42, 270, 1));
-    UIView abuttonBorder3;
-    //UIActivityIndicatorView activityConnectStatus = new UIActivityIndicatorView(new CGRect(243, 7, 29, 35));
-    public UIActivityIndicatorView activityConnectStatus;
+
     public async void gaugeUpdating(Sensor sensor){
       if (currentSensor.device.isConnected) {
         pconnection.Image = UIImage.FromBundle("ic_bluetooth_connected");
