@@ -902,10 +902,6 @@
     <Compile Include="src\ViewController\Logging\PreviewOutputInfo.cs" />
     <Compile Include="src\ViewController\Logging\PDFViewDataSource.cs" />
     <Compile Include="src\ViewController\Logging\QLPreviewItemExtensions.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\ITable.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\ScrollableTableCollectionView.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\Table.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\TableDataSet.cs" />
     <Compile Include="src\Connections\BluefruitLeConnection.cs" />
     <Compile Include="src\Connections\BaseIOSConnection.cs" />
     <Compile Include="src\ViewController\DeviceManager\DeviceManagerTableSource.cs" />
@@ -950,14 +946,6 @@
     <Compile Include="src\ViewController\RssFeed\RssFeedDataSource.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCell.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughRecord.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\InternalGaugeTestingViewController.designer.cs">
-      <DependentUpon>InternalGaugeTestingViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.cs" />
-    <Compile Include="src\ViewController\GaugeTesting\SaveInternalTestViewController.designer.cs">
-      <DependentUpon>SaveInternalTestViewController.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\IOSExtensions.cs" />
     <Compile Include="src\ViewController\WebServices\SessionPayload.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCheck.cs" />
@@ -1027,7 +1015,6 @@
     <Folder Include="src\ViewController\Help\" />
     <Folder Include="src\ViewController\Logging\" />
     <Folder Include="src\ViewController\JobManager\" />
-    <Folder Include="src\ViewController\GaugeTesting\" />
     <Folder Include="src\ViewController\Walkthrough\" />
     <Folder Include="Resources\Images.xcassets\img_button_blackclosex.imageset\" />
     <Folder Include="Resources\xml\" />

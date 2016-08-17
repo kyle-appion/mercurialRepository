@@ -66,7 +66,7 @@ namespace ION.Core.Devices.Protocols {
           count -= sp.length;
           sp.Parse(r);
 					readings.Add(new GaugeReading() {
-            removed = sp.connected,
+            removed = !sp.connected,
             sensorType = UnitLookup.GetSensorTypeFromCode(sp.unitCode),
             reading = sp.unit.OfScalar(sp.measurement),
 					});
@@ -166,7 +166,9 @@ namespace ION.Core.Devices.Protocols {
           m = reader.ReadInt32BE();
         }
         var measOff = reader.ReadByte();
-        m = m / (10 * measOff);
+				if (measOff != 0) {
+					m = m / (10 * measOff);
+				}
 
         measurement = m;
       }

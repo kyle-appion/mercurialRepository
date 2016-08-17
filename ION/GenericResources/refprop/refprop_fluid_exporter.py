@@ -90,10 +90,10 @@ def run():
 
     for fluid in fluids:
         tries = 0;
-        if convert_fluid(fluid, OUT_PATH):
+        if not convert_fluid(fluid, OUT_PATH):
             failures.append(fluid)
 
-    print 'Failed to create the following fluids'
+    print '\n\nFailed to create the following fluids\n'
     for fluid in failures:
         print fluid
 

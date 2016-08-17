@@ -113,7 +113,7 @@
     /// <summary>
     /// The factory that is used to create devices.
     /// </summary>
-    public DeviceFactory __deviceFactory { get; internal set; }
+    public DeviceFactory deviceFactory { get; internal set; }
 
     public BaseDeviceManager(IION ion, IConnectionFactory connectionFactory, IConnectionHelper connectionHelper) {
       this.ion = ion;
@@ -133,8 +133,8 @@
         }
       }
 
-      __deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
-      if (__deviceFactory == null) {
+      deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
+      if (deviceFactory == null) {
         return new InitializationResult() {
           success = false,
           errorMessage = "Failed to init device manager: could not load device's database."
@@ -291,7 +291,7 @@
         if (protocol == null) {
           protocol = Protocol.FindProtocolFromVersion(EProtocolVersion.V1);
         }
-        var definition = __deviceFactory.GetDeviceDefinition(serialNumber);
+        var definition = deviceFactory.GetDeviceDefinition(serialNumber);
         ret = definition.CreateDevice(serialNumber, connection, protocol);
         ret.onDeviceEvent += OnDeviceEvent;
       } else {

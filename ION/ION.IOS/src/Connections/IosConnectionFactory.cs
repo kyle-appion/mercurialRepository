@@ -8,7 +8,6 @@
   using ION.Core.Devices.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Internal;
 
   public class IosConnectionFactory : IConnectionFactory {
     /// <summary>
@@ -45,11 +44,7 @@
 				return new IosRigadoConnection(h, peripheral);
 			}
 
-      if (serialNumber is BluefruitSerialNumber) {
-        return new BluefruitLeConnection(connectionHelper, peripheral);
-      } else {
-				return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
-      }
+			return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
     }
   }
 }

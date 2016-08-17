@@ -12,7 +12,6 @@
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
-  using ION.Core.Internal;
   using ION.Core.Sensors;
   using ION.Core.Util;
 
