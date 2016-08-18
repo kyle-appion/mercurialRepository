@@ -35,7 +35,8 @@ namespace ION.IOS.ViewController {
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController.RssFeed;
   using ION.IOS.ViewController.RemoteAccess;
-
+  using ION.IOS.ViewController.AccessRequest;
+  
 	using System.Net;
 	using System.Text;
 	using Newtonsoft.Json.Linq;
@@ -73,17 +74,16 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
+        new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				} ,
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         },
-#if DEBUG
-        new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				} ,
-#endif
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
@@ -275,11 +275,12 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates
         null, // Screenshot Navigation
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         null, // Settings navigation
         null, // Help Navigation
       };
@@ -292,30 +293,10 @@ namespace ION.IOS.ViewController {
     /// Order in array is the same as the menu order in the app
     /// </summary>
     /// <returns>The view controllers.</returns>
-    private UIViewController[] BuildRemoteViewControllers() {
+    private void BuildRemoteViewControllers() {    	
 			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
 			remoteWb.remoteMode = true;
-			var remoteAz = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
-			remoteAz.remoteMode = true;
-			var ptVC = InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
-			var shscVC = InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
-      
-			var ret = new UINavigationController[] {
-        new UINavigationController(remoteWb),
-        new UINavigationController(remoteAz),
-        new UINavigationController(ptVC),
-        new UINavigationController(shscVC),
-        null, // Job Manager
-        null, // Logging
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        null, // Calibration Certificates
-        null, // Screenshot Navigation
-        null, // ss navigation
-				null, // Settings navigation
-        null, // Help Navigation
-      };
-
-      return ret;
+			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -395,28 +376,32 @@ namespace ION.IOS.ViewController {
         }
 			);
 			navigation.NavigationRoot.Add(
+				new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+				}
+			);	
+			navigation.NavigationRoot.Add(
 				new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         }
-			);
-#if DEBUG
-			navigation.NavigationRoot.Add(
-				new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				}
-			);			
-#endif
+			);		
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         }
 			);
+			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
+			remoteWb.remoteMode = false;
+			var remoteJM = InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER);
+			var remoteL = InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING);
+			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
 
-      navigation.ViewControllers = BuildViewControllers();
+			navigation.ViewControllers[5] = new UINavigationController(remoteJM);
+			navigation.ViewControllers[6] = new UINavigationController(remoteL);
 		}
 		/// <summary>
 		/// Changes the navigation menu when entering remote viewing mode
@@ -424,34 +409,32 @@ namespace ION.IOS.ViewController {
 		/// <returns>The new menu.</returns>
 		
 		public void setRemoteMenu(){
-			var window = UIApplication.SharedApplication.KeyWindow;
-      var rootVC = window.RootViewController as IONPrimaryScreenController;
-
-			rootVC.navigation.NavigationRoot.Clear();
-			rootVC.navigation.NavigationRoot.Add(
+			navigation.NavigationRoot.Clear();
+			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
 	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
 	          new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
 	        }
 			);
-			rootVC.navigation.NavigationRoot.Add(
+			navigation.NavigationRoot.Add(
 	         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
 	          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
 	          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
 	        }
 			);
-			rootVC.navigation.NavigationRoot.Add(
+			navigation.NavigationRoot.Add(
+				new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+				}
+			);
+			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
 	          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
 	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
 	        }
 			);
-			rootVC.navigation.NavigationRoot.Add(
-				new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				}
-			);
-			rootVC.navigation.ViewControllers = BuildRemoteViewControllers();      
+
+			BuildRemoteViewControllers();
 		}
 	}
 

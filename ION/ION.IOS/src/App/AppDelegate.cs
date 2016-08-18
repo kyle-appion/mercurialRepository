@@ -173,6 +173,8 @@
         if(ion.dataLogManager.isRecording){
           var done = ion.dataLogManager.StopRecording().Result;
         }
+        var stopWebServices = new ION.IOS.ViewController.WebServices.SessionPayload();
+				var noWeb = stopWebServices.updateOnlineStatus("0", null);
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {
