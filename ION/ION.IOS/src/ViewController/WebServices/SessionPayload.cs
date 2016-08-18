@@ -9,6 +9,9 @@ using ION.Core.App;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using ION.IOS.App;
+using UIKit;
+using ION.IOS.ViewController.RemoteAccess;
+using ION.IOS.ViewController.AccessRequest;
 
 namespace ION.IOS.ViewController.WebServices {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -18,7 +21,6 @@ namespace ION.IOS.ViewController.WebServices {
 	}
 
 	public class SessionPayload {
-		public string message;
 		public IION ion;
 		
 		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
@@ -30,7 +32,12 @@ namespace ION.IOS.ViewController.WebServices {
 		public const string downloadAnalyzerUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadAnalyzer.php";
 		public const string downloadWorkbenchUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadWorkbench.php";
 		public const string submitCodeUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/submitAccessCode.php";
-		
+		public const string confirmAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/confirmAccess.php";
+		public const string retrieveAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/retrieveAccess.php";
+		public const string createAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/requestAccess.php";
+		public const string getRequestsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/getRequests.php";
+		public const string changeOnlineUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/changeOnlineStatus.php";
+	
 		public SessionPayload() {
 			ion = AppState.context;
 			
@@ -38,7 +45,10 @@ namespace ION.IOS.ViewController.WebServices {
 			var package = new ION.IOS.ViewController.WebServices.SessionPayload();
 			*********************/
 		}
-		
+		/// <summary>
+		/// Packages the session information for any session chosen by the user to be uploaded
+		/// </summary>
+		/// <param name="sessionList">Session list.</param>
 		public void getSession(List<int> sessionList){
 			
 		  var paramList = new List<string>();
@@ -84,9 +94,12 @@ namespace ION.IOS.ViewController.WebServices {
 			
 			UploadSession(jsonPayload,true);
 		}
-		
-		public async void UploadSession(string json, bool isJson = true)
-		{
+		/// <summary>
+		/// Uploads a session chosen by the user
+		/// </summary>
+		/// <param name="json">Json.</param>
+		/// <param name="isJson">If set to <c>true</c> is json.</param>
+		public async void UploadSession(string json, bool isJson = true){
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			WebClient wc = new WebClient();
 			wc.Proxy = null;
@@ -97,33 +110,42 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("uploadSession","true");
 			data.Add("sessionData",json);
 			data.Add("userID",userID);
-			
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(uploadSessionUrl,data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			//JObject response = JObject.Parse(textResponse);
-			
-			//List<sessionData> deserializedSessions = new List<sessionData>();
-			
-			////Go through each token in the json object and serialize the data for each session
-			////to be added to the list of deserialized sessions
-			//for(int i = 1; i <= response.Count; i++){
-			//	var token = "session"+i;
-			//	try{
-			//		var jsonToken = response.GetValue(token).ToString();
-			//		var deserializedToken = JsonConvert.DeserializeObject<sessionData>(jsonToken);
-			//		deserializedSessions.Add(deserializedToken);
-			//	} catch (Exception e){ 
-			//		Console.WriteLine("Exception: " + e);
-			//	}
-			//}
+			try{		
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(uploadSessionUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				//JObject response = JObject.Parse(textResponse);
+				
+				//List<sessionData> deserializedSessions = new List<sessionData>();
+				
+				////Go through each token in the json object and serialize the data for each session
+				////to be added to the list of deserialized sessions
+				//for(int i = 1; i <= response.Count; i++){
+				//	var token = "session"+i;
+				//	try{
+				//		var jsonToken = response.GetValue(token).ToString();
+				//		var deserializedToken = JsonConvert.DeserializeObject<sessionData>(jsonToken);
+				//		deserializedSessions.Add(deserializedToken);
+				//	} catch (Exception e){ 
+				//		Console.WriteLine("Exception: " + e);
+				//	}
+				//}
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Session Upload", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 		}
     /// <summary>
-    /// Working with sending and recieving data between companies and employees
+    /// Allows the user to register themselves for remote viewing
     /// </summary>
     /// <returns>post response</returns>
     public async void RegisterUser(string userName, string password, string displayName, string email){
@@ -140,90 +162,120 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("usrpword",password);
 			data.Add("usrEmail",email);
 			data.Add("displayName",displayName);
-			
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(registerUserUrl,data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var isregistered = response.GetValue("registered").ToString();
-			var registeredValue = response.GetValue("userID").ToString();
-			if(isregistered == "true"){
-				Console.WriteLine("Created a new user with id: " + registeredValue);
-			} else if (isregistered == "false"){
-				Console.WriteLine("Couldn't create new user because " + registeredValue);
-			}			
+			try{			
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(registerUserUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var isregistered = response.GetValue("registered").ToString();
+				var registeredValue = response.GetValue("userID").ToString();
+				if(isregistered == "true"){
+					Console.WriteLine("Created a new user with id: " + registeredValue);
+				} else if (isregistered == "false"){
+					Console.WriteLine("Couldn't create new user because " + registeredValue);
+				}			
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("User Registration", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}		
 		}
     /// <summary>
-    /// Working with sending and recieving data between companies and employees
+    /// Allows the user to register an account(NOT USED CURRENTLY-EVERY USER IS AN "ACCOUNT")
+    /// but hey why not have it ready just in case
     /// </summary>
     /// <returns>post response</returns>
     public async void RegisterAccount(string accountName){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-		WebClient wc = new WebClient(); 
-		wc.Proxy = null;
-		
-		//Create the data package to send for the post request
-		//Key value pair for post variable check
-		var data = new System.Collections.Specialized.NameValueCollection();
-
-		data.Add("registerAccount","newaccount");
-		data.Add("accountName",accountName);
-		
-		//initiate the post request and get the request result in a byte array 
-		byte[] result = wc.UploadValues(registerAccountUrl,data);
-		
-		//get the string conversion for the byte array
-		var textResponse = Encoding.UTF8.GetString(result);
-		Console.WriteLine(textResponse);
-		//parse the text string into a json object to be deserialized
-		JObject response = JObject.Parse(textResponse);
-		var isregistered = response.GetValue("registered").ToString();
-		var registeredValue = response.GetValue("accountID").ToString();
-		if(isregistered == "true"){
-			Console.WriteLine("Created a new account with id: " + registeredValue);
-		} else if (isregistered == "false"){
-			Console.WriteLine("Couldn't create new account because " + registeredValue);
-		}	
-	}
+			WebClient wc = new WebClient(); 
+			wc.Proxy = null;
+			
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+			var data = new System.Collections.Specialized.NameValueCollection();
+	
+			data.Add("registerAccount","newaccount");
+			data.Add("accountName",accountName);
+			try{		
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(registerAccountUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var isregistered = response.GetValue("registered").ToString();
+				var registeredValue = response.GetValue("accountID").ToString();
+				if(isregistered == "true"){
+					Console.WriteLine("Created a new account with id: " + registeredValue);
+				} else if (isregistered == "false"){
+					Console.WriteLine("Couldn't create new account because " + registeredValue);
+				}
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+	  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Account Registration", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
+		}
     /// <summary>
-    /// Working with sending and recieving data between companies and employees
+    /// Downloads the session(s) for a supplied user id that fall between a start and end date
     /// </summary>
     /// <returns>post response</returns>
     public async void DownloadSessions(int accountID, int userID, string startDate, string endDate){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-		WebClient wc = new WebClient(); 
-		wc.Proxy = null;
-
-		//Create the data package to send for the post request
-		//Key value pair for post variable check
-		var data = new System.Collections.Specialized.NameValueCollection();
-
-		data.Add("downloadSession","getData");
-		data.Add("userID", userID.ToString());
-		data.Add("sessionStart", startDate);
-		data.Add("sessionEnd", endDate);
-		
-		//initiate the post request and get the request result in a byte array 
-		byte[] result = wc.UploadValues(downloadSessionUrl,data);
-		
-		//get the string conversion for the byte array
-		var textResponse = Encoding.UTF8.GetString(result);
-		Console.WriteLine(textResponse);
-		//parse the text string into a json object to be deserialized
-		//JObject response = JObject.Parse(textResponse);
-		//var isregistered = response.GetValue("registered").ToString();
-		//var registeredValue = response.GetValue("accountID").ToString();
-		//if(isregistered == "true"){
-		//	Console.WriteLine("Created a new account with id: " + registeredValue);
-		//} else if (isregistered == "false"){
-		//	Console.WriteLine("Couldn't create new account because " + registeredValue);
-		//}
-	}
+			WebClient wc = new WebClient(); 
+			wc.Proxy = null;
 	
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+			var data = new System.Collections.Specialized.NameValueCollection();
+	
+			data.Add("downloadSession","getData");
+			data.Add("userID", userID.ToString());
+			data.Add("sessionStart", startDate);
+			data.Add("sessionEnd", endDate);
+			try{
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(downloadSessionUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				//JObject response = JObject.Parse(textResponse);
+				//var isregistered = response.GetValue("registered").ToString();
+				//var registeredValue = response.GetValue("accountID").ToString();
+				//if(isregistered == "true"){
+				//	Console.WriteLine("Created a new account with id: " + registeredValue);
+				//} else if (isregistered == "false"){
+				//	Console.WriteLine("Couldn't create new account because " + registeredValue);
+				//}
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Access Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}				
+	}
+	/// <summary>
+	/// Uploads the analyzer setup for the user
+	/// </summary>	
 	public async void UploadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
@@ -251,20 +303,33 @@ namespace ION.IOS.ViewController.WebServices {
 			}
 			layoutJson += "}";
 			data.Add("devices",layoutJson);
-			//initiate the post request and get the request result in a byte array
-			//byte[] result = wc.UploadValues(uploadAnalyzerUrl,data);
 			
-			////get the string conversion for the byte array
-			//var textResponse = Encoding.UTF8.GetString(result);
-			//Console.WriteLine(textResponse);
-			
-			
-			Console.WriteLine(layoutJson);
+			try{
+				//initiate the post request and get the request result in a byte array
+				//byte[] result = wc.UploadValues(uploadAnalyzerUrl,data);
+				
+				////get the string conversion for the byte array
+				//var textResponse = Encoding.UTF8.GetString(result);
+				//Console.WriteLine(textResponse);
+				
+				
+				Console.WriteLine(layoutJson);
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Layout Upload", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}			
 		} else {
 			Console.WriteLine("Analyzer List isn't available yet");
 		}
 	}
-	
+	/// <summary>
+	/// Uploads the workbench setup for the user
+	/// </summary>	
 	public async void UploadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
@@ -293,17 +358,29 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("devices",layoutJson);
 			
 			Console.WriteLine(layoutJson);
-			////initiate the post request and get the request result in a byte array 
-			//byte[] result = wc.UploadValues(uploadWorkbenchUrl,data);
-			
-			////get the string conversion for the byte array
-			//var textResponse = Encoding.UTF8.GetString(result);
-			//Console.WriteLine(textResponse);
+			try{
+				////initiate the post request and get the request result in a byte array 
+				//byte[] result = wc.UploadValues(uploadWorkbenchUrl,data);
+				
+				////get the string conversion for the byte array
+				//var textResponse = Encoding.UTF8.GetString(result);
+				//Console.WriteLine(textResponse);
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Access Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 		} else {
 			Console.WriteLine("Workbench List isn't available yet");
 		}
 	}
-	
+	/// <summary>
+	/// Downloads the analyzer setup for a supplied user id
+	/// </summary>	
 	public async void DownloadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		WebClient wc = new WebClient(); 
@@ -316,13 +393,25 @@ namespace ION.IOS.ViewController.WebServices {
 		data.Add("downloadAnalyzer","manager");
 		data.Add("userID",userID);
 		
-		byte[] result = wc.UploadValues(downloadAnalyzerUrl,data);
-		
-		var textResponse = Encoding.UTF8.GetString(result);
-		
-		Console.WriteLine(textResponse);
+		try{
+			byte[] result = wc.UploadValues(downloadAnalyzerUrl,data);
+			
+			var textResponse = Encoding.UTF8.GetString(result);
+			
+			Console.WriteLine(textResponse);
+		} catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			
+			var alert = UIAlertController.Create ("Analyzer Layout", "Couldn't pull latest layout. Trying again.", UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		}			
 	}
-	
+	/// <summary>
+	/// Downloads the workbench setup for a supplied user id
+	/// </summary>
 	public async void DownloadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		WebClient wc = new WebClient();
@@ -334,12 +423,21 @@ namespace ION.IOS.ViewController.WebServices {
 
 		data.Add("downloadWorkbench","manager");
 		data.Add("userID",userID);
-		
-		byte[] result = wc.UploadValues(downloadWorkbenchUrl,data);
-		
-		var textResponse = Encoding.UTF8.GetString(result);
-		
-		Console.WriteLine(textResponse);
+		try{
+			byte[] result = wc.UploadValues(downloadWorkbenchUrl,data);
+			
+			var textResponse = Encoding.UTF8.GetString(result);
+			
+			Console.WriteLine(textResponse);
+		} catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			
+			var alert = UIAlertController.Create ("Workbench Layou", "Couldn't pull latest layout. Trying again.", UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		}			
 	}
 	
 	public async void DeleteAnalyzerLayout(){
@@ -350,10 +448,261 @@ namespace ION.IOS.ViewController.WebServices {
 	public async void DeleteWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));		
 	}
-	
-	public async void submitAccessCode(string codeText){
+	/// <summary>
+	/// Queries for everyone a user has viewing access for
+	/// </summary>
+	/// <returns>A list of ids associated the user</returns>
+	/// <param name="accessList">Access list.</param>
+	public async Task GetAccessList(List<accessData> onlineList,List<accessData> offlineList){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+      WebClient wc = new WebClient();
+      wc.Proxy = null;
+
+       var userID = KeychainAccess.ValueForKey("userID");
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+			var data = new System.Collections.Specialized.NameValueCollection();
+			data.Add("retrieveAccess","users");
+			data.Add("userID",userID);
+ 			try{
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(retrieveAccessUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var retrieved = response.GetValue("success");
+				if(retrieved.ToString() == "true"){
+					var users = response.GetValue("users");			
+					foreach(var user in users){
+						var deserializedToken = JsonConvert.DeserializeObject<accessData>(user.ToString());
+						if(deserializedToken.online == 1){
+							onlineList.Add(deserializedToken);
+						} else {
+							offlineList.Add(deserializedToken);
+						}
+					}
+				} else {
+					var window = UIApplication.SharedApplication.KeyWindow;
+      		var rootVC = window.RootViewController as IONPrimaryScreenController;
+					var errorMessage = response.GetValue("message");
+					
+					var alert = UIAlertController.Create ("User List", errorMessage.ToString(), UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Access List", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}		
+	}
+	/// <summary>
+	/// Generates a random access code that will associate users to one another for viewing
+	/// </summary>
+	/// <returns>The access code.</returns>
+	/// <param name="pendingUsers">Pending users.</param>
+	public async Task GenerateAccessCode(List<requestData> pendingUsers){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
+		WebClient wc = new WebClient();
+		wc.Proxy = null;
+		
+		var userID = KeychainAccess.ValueForKey("userID");
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+		data.Add("createAccess","true");
+		data.Add("userID", userID);
+		data.Add("permanent","1");
+		
+		try{
+			//initiate the post request and get the request result in a byte array 
+			byte[] result = wc.UploadValues(createAccessUrl,data);
+			
+			//get the string conversion for the byte array
+			var textResponse = Encoding.UTF8.GetString(result);
+			Console.WriteLine(textResponse);
+			//parse the text string into a json object to be deserialized
+			JObject response = JObject.Parse(textResponse);
+			var success = response.GetValue("success");
+			
+			if(success.ToString() == "true"){
+				var newCode = response.GetValue("message").ToString();
+				pendingUsers.Add(new requestData(){displayName = "Pending",id = 0, accessCode = newCode});
+			} else {
+					var window = UIApplication.SharedApplication.KeyWindow;
+      		var rootVC = window.RootViewController as IONPrimaryScreenController;
+					var errorMessage = response.GetValue("message");
+					
+					var alert = UIAlertController.Create ("Access Code", errorMessage.ToString(), UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);				
+			}
+		} catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			
+			var alert = UIAlertController.Create ("Access Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		}
+	}	
+	/// <summary>
+	/// Submits the access code a user enters to update viewing access associated with the code
+	/// </summary>
+	/// <param name="codeText">Code text.</param>
+	public async Task submitAccessCode(string codeText){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));			
+		
+		WebClient wc = new WebClient();
+		wc.Proxy = null;
+
+		var window = UIApplication.SharedApplication.KeyWindow;
+		var rootVC = window.RootViewController as IONPrimaryScreenController;
+		
+		var userID = KeychainAccess.ValueForKey("userID");
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+		data.Add("confirmCode","true");
+		data.Add("userID", userID);
+		data.Add("accessCode", codeText);
+		
+		try{
+			//initiate the post request and get the request result in a byte array 
+			byte[] result = wc.UploadValues(confirmAccessUrl,data);
+
+			//get the string conversion for the byte array
+			var textResponse = Encoding.UTF8.GetString(result);
+			Console.WriteLine(textResponse);
+			//parse the text string into a json object to be deserialized
+			JObject response = JObject.Parse(textResponse);
+			var responseMessage = response.GetValue("message").ToString();
+			
+			var alert = UIAlertController.Create ("Confirm Code", responseMessage, UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			
+		} catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);				
+			var alert = UIAlertController.Create ("Confirm Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		}
+	}
+	/// <summary>
+	/// Queries for all the open requests a user has
+	/// </summary>
+	/// <returns>A list of request codes and their claimed status</returns>
+	/// <param name="pendingUsers">Pending users.</param>
+	public async Task getAllRequests(List<requestData> pendingUsers){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		
+		WebClient wc = new WebClient();
+		wc.Proxy = null;
+		var userID = KeychainAccess.ValueForKey("userID");
+		Console.WriteLine("Getting all request for id " + userID);
+		//Create the data package to send for the post request
+		//Key value pair for post variable check
+		var data = new System.Collections.Specialized.NameValueCollection();
+		data.Add("getRequests","true");
+		data.Add("userID", userID);
+
+		try{
+			//initiate the post request and get the request result in a byte array 
+			byte[] result = wc.UploadValues(getRequestsUrl,data);
+			
+			//get the string conversion for the byte array
+			var textResponse = Encoding.UTF8.GetString(result);
+			Console.WriteLine(textResponse);
+			//parse the text string into a json object to be deserialized
+			JObject response = JObject.Parse(textResponse);
+			var success = response.GetValue("success");
+
+			if(success.ToString() == "true"){
+				var users = response.GetValue("users");
+				
+				foreach(var user in users){
+					var deserializedToken = JsonConvert.DeserializeObject<requestData>(user.ToString());
+					pendingUsers.Add(deserializedToken);
+				}		
+			} else {
+				var errorMessage = response.GetValue("message").ToString();
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Access Requests", errorMessage, UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);	
+			}
+		} catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			
+			var alert = UIAlertController.Create ("Access Requests", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		}				
+	}
+	
+	public async Task<bool> updateOnlineStatus(string status, IONPrimaryScreenController rootVC){
+
+		return await Task.Factory.StartNew(() => {
+			
+			WebClient wc = new WebClient();
+			wc.Proxy = null;
+			var userID = KeychainAccess.ValueForKey("userID");
+			Console.WriteLine("Getting all request for id " + userID);
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+			var data = new System.Collections.Specialized.NameValueCollection();
+			data.Add("changeStatus","true");
+			data.Add("userID", userID);
+			data.Add("status",status); 			
+	
+			try{
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(changeOnlineUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success");
+	
+				if(success.ToString() == "true"){
+					return true;
+				} else {
+					if(rootVC != null){
+						var errorMessage = response.GetValue("message").ToString();
+						
+						var alert = UIAlertController.Create ("Online Status", errorMessage, UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					}
+					return false;
+				}			
+	
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				if(rootVC != null){				
+					var alert = UIAlertController.Create ("Online Status", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
+				return false;
+			}			
+		});			
 	}
 }
 

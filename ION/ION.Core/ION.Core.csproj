@@ -166,7 +166,6 @@
     <Compile Include="src\Measure\ScalarSpan.cs" />
     <Compile Include="src\Measure\Unit.cs" />
     <Compile Include="src\Measure\Units.cs" />
-    <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Devices\RemoteBaseDeviceManager.cs" />
     <Compile Include="src\NumberExtensions.cs" />
     <Compile Include="src\DateTimeExtensions.cs" />

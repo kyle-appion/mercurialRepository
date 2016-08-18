@@ -25,13 +25,14 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public UITableView pendingTable;
 		public List<requestData> pendingUsers;
 		public UIActivityIndicatorView loadingRequests;
-		public const string getRequestsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/getRequests.php";
-		public const string createAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/requestAccess.php";
+		public SessionPayload webActivities;
 		
-		public AccessRequestManager(UIView parentView) {
+		public AccessRequestManager(UIView parentView, SessionPayload webServices) {
+			webActivities = webServices;
 			var viewTap = new UITapGestureRecognizer(() => {
 				submitCodeField.ResignFirstResponder();
 			});
+			
 			viewTap.CancelsTouchesInView = false;
 			accessView = new UIView(new CGRect(0,50, parentView.Bounds.Width, parentView.Bounds.Height - 50));
 			accessView.BackgroundColor = UIColor.White;
@@ -80,7 +81,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			pendingTable.RegisterClassForCellReuse(typeof(AccessRequestTableCell),"accessCell");
 			pendingTable.AllowsSelection = true;
 						
-			requestButton = new UIButton(new CGRect(.05 * accessView.Bounds.Width, .85 * accessView.Bounds.Height, .9 * accessView.Bounds.Width, .1 * accessView.Bounds.Height));
+			requestButton = new UIButton(new CGRect(.05 * accessView.Bounds.Width, .86 * accessView.Bounds.Height, .9 * accessView.Bounds.Width, .1 * accessView.Bounds.Height));
 			requestButton.SetTitle("Generate Permanent Access Code", UIControlState.Normal);
 			requestButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			requestButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -109,15 +110,22 @@ namespace ION.IOS.ViewController.AccessRequest {
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public void submitCode(object sender, EventArgs e){
-			//var submission = new SessionPayload();
-			var codeText = submitCodeField.Text;
-			Console.WriteLine("Submitting Code: " + codeText);
-			//submission.submitAccessCode(codeText);
+		public async void submitCode(object sender, EventArgs e){
+			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
+				await webActivities.submitAccessCode(submitCodeField.Text);
+				submitCodeField.Text = "";
+			} else {
+				var window = UIApplication.SharedApplication.KeyWindow;
+				var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Confirm Code", "Code entered does not match the required length", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 		}
 	
     /// <summary>
-    /// Post to the server and get the list of pending requests for the user
+    /// Post to the server and get the list of open requests for the user
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
@@ -125,82 +133,32 @@ namespace ION.IOS.ViewController.AccessRequest {
 			refreshButton.Enabled = false;
 			loadingRequests.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			
-			WebClient wc = new WebClient();
-			wc.Proxy = null;
-			var userID = KeychainAccess.ValueForKey("userID");
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-			var data = new System.Collections.Specialized.NameValueCollection();
-			data.Add("getRequests","true");
-			data.Add("userID", userID);
 			pendingUsers = new List<requestData>();
-
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(getRequestsUrl,data);
+			await webActivities.getAllRequests(pendingUsers);
 			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var success = response.GetValue("success");
-
-			if(success.ToString() == "true"){
-				var users = response.GetValue("users");
-				
-				foreach(var user in users){
-					var deserializedToken = JsonConvert.DeserializeObject<requestData>(user.ToString());
-					pendingUsers.Add(deserializedToken);
-				}		
-		
-				pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
-				pendingTable.ReloadData();
-			} else {
-
-			}
+			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
+			pendingTable.ReloadData();
+			
 			loadingRequests.StopAnimating();
-			refreshButton.Enabled = true;				
+			refreshButton.Enabled = true;
 		}
-
+		/// <summary>
+		/// Generates an access code for the user up to 5.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
 		public async void GenerateAccessCode(object sender, EventArgs e){
 			loadingRequests.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			
-			WebClient wc = new WebClient();
-			wc.Proxy = null;
-			
-			var userID = KeychainAccess.ValueForKey("userID");
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-			var data = new System.Collections.Specialized.NameValueCollection();
-			data.Add("createAccess","true");
-			data.Add("userID", userID);
-			
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(createAccessUrl,data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var success = response.GetValue("success");
-			
-			if(success.ToString() == "true"){
-				var newCode = response.GetValue("message").ToString();
-				pendingUsers.Add(new requestData(){displayName = "Pending",id = 0, accessCode = newCode});
-				pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
-				pendingTable.ReloadData();
-			} else {
-					var window = UIApplication.SharedApplication.KeyWindow;
-      		var rootVC = window.RootViewController as IONPrimaryScreenController;
-					var errorMessage = response.GetValue("message");
-					
-					var alert = UIAlertController.Create ("Access Code", errorMessage.ToString(), UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);				
+			if(pendingUsers == null){
+				pendingUsers = new List<requestData>();
 			}
+			
+			await webActivities.GenerateAccessCode(pendingUsers);
+			
+			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
+			pendingTable.ReloadData();			
 			loadingRequests.StopAnimating();
 		}	
 	}

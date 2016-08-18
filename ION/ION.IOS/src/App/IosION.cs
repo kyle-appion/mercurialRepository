@@ -354,32 +354,13 @@
 				return Task.FromResult(new Workbench(this));
       }
     }
-
-		public void InitSettings() {
-			settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
-			settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
-			settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
-			settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
-
-			if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
-				NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
-			}
-
-			if (settings.screen.leaveOn) {
-				UIApplication.SharedApplication.IdleTimerDisabled = true;
-			}
-
-			if (settings.location.useGeoLocation) {
-				locationManager.StartAutomaticLocationPolling();
-			} else {
-				locationManager.StopAutomaticLocationPolling();
-			}
-		}
+    
     /// <summary>
     /// Creates a Device Manager that will deal only with the remote devices another user has uploaded
     /// </summary>
     /// <returns>The remote device manager.</returns>
     public Task setRemoteDeviceManager(){
+    	Console.WriteLine("Setting remote device manager");
       return Task.Factory.StartNew(() => {
       	var remoteDManager = new RemoteBaseDeviceManager(this);
 				remoteDManager.storedDeviceManager = (BaseDeviceManager)deviceManager;
@@ -394,8 +375,9 @@
     /// </summary>
     /// <returns>The remote device manager.</returns>
     public Task setOriginalDeviceManager(){
+    	Console.WriteLine("Returning to normal device manager");
       return Task.Factory.StartNew(() => {
-      	var remoteDManager = (RemoteBaseDeviceManager)this.deviceManager;
+      	var remoteDManager = (RemoteBaseDeviceManager)deviceManager;
 				deviceManager = remoteDManager.storedDeviceManager;
       });
 		}

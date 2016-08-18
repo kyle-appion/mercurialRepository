@@ -12,7 +12,7 @@
 		<new>Added gauge location icons to the device manager</new>
 		<update>Updated application notification icon</update>
 		<fixed>Fixed backend measurements</fixed>
-		<fixed>Fixed PTChart and Superheat / Subcool subiew data exchange issue</fixed>
+		<fixed>Fixed PTChart and Superheat / Subcool subview data exchange issue</fixed>
 		<fixed>Fixed default units causing gauges not to load</fixed>
 	</display>
   <display version="0.9.8">

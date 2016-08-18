@@ -101,7 +101,8 @@
     /// </summary>
     /// <value>The data log manager.</value>
     DataLogManager dataLogManager { get; }
-
+		
+		
     /// <summary>
     /// The current primary analyzer for the ion context.
     /// </summary>

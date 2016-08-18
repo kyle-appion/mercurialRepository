@@ -22,9 +22,9 @@ namespace ION.IOS.ViewController.AccessRequest
 
 		//string cellIdentifier;
 		List<requestData> tableItems;
-		UIView parentView;
 		public nfloat cellHeight;
 		public const string deleteRequestUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/deleteAccess.php";
+		public const string confirmAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/confirmAccess.php";
 
 		public AccessRequestTableSource (List<requestData> items,double cHeight){
 			tableItems = items;
@@ -96,6 +96,15 @@ namespace ION.IOS.ViewController.AccessRequest
 				Console.WriteLine("request id: " + tableItems[indexPath.Row] + " access code: " + tableItems[indexPath.Row].accessCode);
 				if(tableItems[indexPath.Row].id != 0){
 					Console.WriteLine("Needs final confirmation for this click!");
+					var window = UIApplication.SharedApplication.KeyWindow;
+	    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+					
+					var alert = UIAlertController.Create ("Confirm Access", "Do you want to grant this user access to view your data?", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {
+          	ConfirmRequestAccess(tableView,indexPath);
+        	}));
+					alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 				}
 		}
 		
@@ -111,32 +120,83 @@ namespace ION.IOS.ViewController.AccessRequest
 			data.Add("deleteRequest","true");
 			data.Add("userID", userID);
 			data.Add("accessCode", tableItems[indexPath.Row].accessCode);
+			try{
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(deleteRequestUrl,data);
+				
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success");
+				
+				var window = UIApplication.SharedApplication.KeyWindow;
+	  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				var responseMessage = response.GetValue("message");
+				
+				if(success.ToString() == "false"){
+					var alert = UIAlertController.Create ("Delete Request", responseMessage.ToString(), UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					tableItems.Add(new requestData(){displayName = tableItems[indexPath.Row].displayName, id = tableItems[indexPath.Row].id, accessCode = tableItems[indexPath.Row].accessCode});
+					tableView.ReloadData();
+				}
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);
+				var window = UIApplication.SharedApplication.KeyWindow;
+    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				var alert = UIAlertController.Create ("Delete Request", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
+		}
+		
+		public async Task ConfirmRequestAccess(UITableView tableView, Foundation.NSIndexPath indexPath){
+			await Task.Delay(TimeSpan.FromMilliseconds(1));
+			WebClient wc = new WebClient();
+			wc.Proxy = null;
 
-			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(deleteRequestUrl,data);
-			
-			//get the string conversion for the byte array
-			var textResponse = Encoding.UTF8.GetString(result);
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var success = response.GetValue("success");
-			
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
-			var responseMessage = response.GetValue("message");
 			
-			if(success.ToString() == "true"){
-				var alert = UIAlertController.Create ("Delete Request", responseMessage.ToString(), UIAlertControllerStyle.Alert);
+			var userID = KeychainAccess.ValueForKey("userID");
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+			var data = new System.Collections.Specialized.NameValueCollection();
+			data.Add("confirmAccess","true");
+			data.Add("userID", userID);
+			data.Add("accessCode", tableItems[indexPath.Row].accessCode);
+			data.Add("accessID", tableItems[indexPath.Row].id.ToString());
+			
+			try{
+				//initiate the post request and get the request result in a byte array 
+				byte[] result = wc.UploadValues(confirmAccessUrl,data);
+
+				//get the string conversion for the byte array
+				var textResponse = Encoding.UTF8.GetString(result);
+				Console.WriteLine("response: " + textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success").ToString();
+				if(success == "true" || success == "duplicate"){
+					tableItems.Remove(tableItems[indexPath.Row]);
+					tableView.ReloadData();
+				}				
+				
+				var responseMessage = response.GetValue("message").ToString();
+				
+				var alert = UIAlertController.Create ("Confirm Access", responseMessage, UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-			} else {					
-				var alert = UIAlertController.Create ("Delete Request", responseMessage.ToString(), UIAlertControllerStyle.Alert);
+				
+			} catch (Exception exception){
+				Console.WriteLine("Exception: " + exception);				
+				var alert = UIAlertController.Create ("Confirm Access", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				tableItems.Add(new requestData(){displayName = tableItems[indexPath.Row].displayName, id = tableItems[indexPath.Row].id, accessCode = tableItems[indexPath.Row].accessCode});
-				tableView.ReloadData();
-			}				
+			}
 		}
 	}
 }
