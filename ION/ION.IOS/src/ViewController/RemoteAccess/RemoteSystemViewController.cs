@@ -19,7 +19,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public IION ion;
 		public UIBarButtonItem logOut;
 		public SessionPayload webServices;
-		
+		WebClient wc;
 		public RemoteSystemViewController(IntPtr handle) : base(handle) {
 		}
 
@@ -31,6 +31,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
         root.navigation.ToggleMenu();
       };
       ion = AppState.context;
+			wc = new WebClient(); 
+			wc.Proxy = null;
+			
       webServices = new SessionPayload();
       var checkLogin = KeychainAccess.ValueForKey("stayLogged");
       var loginUsrId = KeychainAccess.ValueForKey("userID");
@@ -76,8 +79,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				return; 
 			}
 
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
+
 			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check

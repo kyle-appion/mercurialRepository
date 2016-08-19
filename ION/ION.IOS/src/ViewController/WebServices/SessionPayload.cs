@@ -22,7 +22,7 @@ namespace ION.IOS.ViewController.WebServices {
 
 	public class SessionPayload {
 		public IION ion;
-		
+		WebClient webClient;
 		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
 		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
 		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
@@ -40,7 +40,8 @@ namespace ION.IOS.ViewController.WebServices {
 	
 		public SessionPayload() {
 			ion = AppState.context;
-			
+			webClient = new WebClient();
+			webClient.Proxy = null;
 			/************create a new session payload
 			var package = new ION.IOS.ViewController.WebServices.SessionPayload();
 			*********************/
@@ -101,8 +102,7 @@ namespace ION.IOS.ViewController.WebServices {
 		/// <param name="isJson">If set to <c>true</c> is json.</param>
 		public async void UploadSession(string json, bool isJson = true){
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient();
-			wc.Proxy = null;
+
 			var userID = KeychainAccess.ValueForKey("userID");
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -112,7 +112,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("userID",userID);
 			try{		
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(uploadSessionUrl,data);
+				byte[] result = webClient.UploadValues(uploadSessionUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
@@ -150,8 +150,6 @@ namespace ION.IOS.ViewController.WebServices {
     /// <returns>post response</returns>
     public async void RegisterUser(string userName, string password, string displayName, string email){
     	await Task.Delay(TimeSpan.FromMilliseconds(1)); 
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
 			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -164,7 +162,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("displayName",displayName);
 			try{			
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(registerUserUrl,data);
+				byte[] result = webClient.UploadValues(registerUserUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
@@ -195,8 +193,6 @@ namespace ION.IOS.ViewController.WebServices {
     /// <returns>post response</returns>
     public async void RegisterAccount(string accountName){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
 			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -206,7 +202,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("accountName",accountName);
 			try{		
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(registerAccountUrl,data);
+				byte[] result = webClient.UploadValues(registerAccountUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
@@ -236,8 +232,6 @@ namespace ION.IOS.ViewController.WebServices {
     /// <returns>post response</returns>
     public async void DownloadSessions(int accountID, int userID, string startDate, string endDate){
     	await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient(); 
-			wc.Proxy = null;
 	
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -249,7 +243,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("sessionEnd", endDate);
 			try{
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(downloadSessionUrl,data);
+				byte[] result = webClient.UploadValues(downloadSessionUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
@@ -280,8 +274,6 @@ namespace ION.IOS.ViewController.WebServices {
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
 
-		WebClient wc = new WebClient(); 
-		wc.Proxy = null;
 		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
@@ -306,7 +298,7 @@ namespace ION.IOS.ViewController.WebServices {
 			
 			try{
 				//initiate the post request and get the request result in a byte array
-				//byte[] result = wc.UploadValues(uploadAnalyzerUrl,data);
+				//byte[] result = webClient.UploadValues(uploadAnalyzerUrl,data);
 				
 				////get the string conversion for the byte array
 				//var textResponse = Encoding.UTF8.GetString(result);
@@ -333,8 +325,6 @@ namespace ION.IOS.ViewController.WebServices {
 	public async void UploadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
-		WebClient wc = new WebClient(); 
-		wc.Proxy = null;
 		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
@@ -360,7 +350,7 @@ namespace ION.IOS.ViewController.WebServices {
 			Console.WriteLine(layoutJson);
 			try{
 				////initiate the post request and get the request result in a byte array 
-				//byte[] result = wc.UploadValues(uploadWorkbenchUrl,data);
+				//byte[] result = webClient.UploadValues(uploadWorkbenchUrl,data);
 				
 				////get the string conversion for the byte array
 				//var textResponse = Encoding.UTF8.GetString(result);
@@ -383,8 +373,7 @@ namespace ION.IOS.ViewController.WebServices {
 	/// </summary>	
 	public async void DownloadAnalyzerLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		WebClient wc = new WebClient(); 
-		wc.Proxy = null;
+
 		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
@@ -394,7 +383,7 @@ namespace ION.IOS.ViewController.WebServices {
 		data.Add("userID",userID);
 		
 		try{
-			byte[] result = wc.UploadValues(downloadAnalyzerUrl,data);
+			byte[] result = webClient.UploadValues(downloadAnalyzerUrl,data);
 			
 			var textResponse = Encoding.UTF8.GetString(result);
 			
@@ -414,8 +403,7 @@ namespace ION.IOS.ViewController.WebServices {
 	/// </summary>
 	public async void DownloadWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		WebClient wc = new WebClient();
-		wc.Proxy = null;
+
 		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
@@ -424,7 +412,7 @@ namespace ION.IOS.ViewController.WebServices {
 		data.Add("downloadWorkbench","manager");
 		data.Add("userID",userID);
 		try{
-			byte[] result = wc.UploadValues(downloadWorkbenchUrl,data);
+			byte[] result = webClient.UploadValues(downloadWorkbenchUrl,data);
 			
 			var textResponse = Encoding.UTF8.GetString(result);
 			
@@ -455,8 +443,6 @@ namespace ION.IOS.ViewController.WebServices {
 	/// <param name="accessList">Access list.</param>
 	public async Task GetAccessList(List<accessData> onlineList,List<accessData> offlineList){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-      WebClient wc = new WebClient();
-      wc.Proxy = null;
 
        var userID = KeychainAccess.ValueForKey("userID");
 			//Create the data package to send for the post request
@@ -466,7 +452,7 @@ namespace ION.IOS.ViewController.WebServices {
 			data.Add("userID",userID);
  			try{
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(retrieveAccessUrl,data);
+				byte[] result = webClient.UploadValues(retrieveAccessUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
@@ -511,9 +497,6 @@ namespace ION.IOS.ViewController.WebServices {
 	public async Task GenerateAccessCode(List<requestData> pendingUsers){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		
-		WebClient wc = new WebClient();
-		wc.Proxy = null;
-		
 		var userID = KeychainAccess.ValueForKey("userID");
 		//Create the data package to send for the post request
 		//Key value pair for post variable check
@@ -524,7 +507,7 @@ namespace ION.IOS.ViewController.WebServices {
 		
 		try{
 			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(createAccessUrl,data);
+			byte[] result = webClient.UploadValues(createAccessUrl,data);
 			
 			//get the string conversion for the byte array
 			var textResponse = Encoding.UTF8.GetString(result);
@@ -561,9 +544,6 @@ namespace ION.IOS.ViewController.WebServices {
 	/// <param name="codeText">Code text.</param>
 	public async Task submitAccessCode(string codeText){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));			
-		
-		WebClient wc = new WebClient();
-		wc.Proxy = null;
 
 		var window = UIApplication.SharedApplication.KeyWindow;
 		var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -578,7 +558,7 @@ namespace ION.IOS.ViewController.WebServices {
 		
 		try{
 			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(confirmAccessUrl,data);
+			byte[] result = webClient.UploadValues(confirmAccessUrl,data);
 
 			//get the string conversion for the byte array
 			var textResponse = Encoding.UTF8.GetString(result);
@@ -605,9 +585,7 @@ namespace ION.IOS.ViewController.WebServices {
 	/// <param name="pendingUsers">Pending users.</param>
 	public async Task getAllRequests(List<requestData> pendingUsers){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		
-		WebClient wc = new WebClient();
-		wc.Proxy = null;
+
 		var userID = KeychainAccess.ValueForKey("userID");
 		Console.WriteLine("Getting all request for id " + userID);
 		//Create the data package to send for the post request
@@ -618,7 +596,7 @@ namespace ION.IOS.ViewController.WebServices {
 
 		try{
 			//initiate the post request and get the request result in a byte array 
-			byte[] result = wc.UploadValues(getRequestsUrl,data);
+			byte[] result = webClient.UploadValues(getRequestsUrl,data);
 			
 			//get the string conversion for the byte array
 			var textResponse = Encoding.UTF8.GetString(result);
@@ -657,9 +635,7 @@ namespace ION.IOS.ViewController.WebServices {
 	public async Task<bool> updateOnlineStatus(string status, IONPrimaryScreenController rootVC){
 
 		return await Task.Factory.StartNew(() => {
-			
-			WebClient wc = new WebClient();
-			wc.Proxy = null;
+
 			var userID = KeychainAccess.ValueForKey("userID");
 			Console.WriteLine("Getting all request for id " + userID);
 			//Create the data package to send for the post request
@@ -671,7 +647,7 @@ namespace ION.IOS.ViewController.WebServices {
 	
 			try{
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(changeOnlineUrl,data);
+				byte[] result = webClient.UploadValues(changeOnlineUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
