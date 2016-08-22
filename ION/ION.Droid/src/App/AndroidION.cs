@@ -6,34 +6,28 @@
   using System.Threading.Tasks;
 
   using Android.App;
-  using Android.Bluetooth;
+	using Android.Bluetooth;
   using Android.Content;
   using Android.Content.PM;
   using Android.OS;
-  using Android.Preferences;
   using Android.Support.V4.App;
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
   using ION.Core.App;
-  using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Content.Parsers;
   using ION.Core.Database;
   using ION.Core.Devices;
-  using ION.Core.Devices.Protocols;
   using ION.Core.Fluids;
   using ION.Core.IO;
   using ION.Core.Location;
-  using ION.Core.Measure;
   using ION.Core.Report.DataLogs;
-  using ION.Core.Sensors;
   using ION.Core.Util;
 
   using ION.Droid.Alarms.Alerts;
   using ION.Droid.Activity;
   using ION.Droid.Connections;
-  using ION.Droid.Devices;
   using ION.Droid.Location;
   using ION.Droid.Preferences;
 
@@ -193,7 +187,7 @@
     /// The android specfic message pump.
     /// </summary>
     /// <value>The handler.</value>
-    private Android.OS.Handler handler { get; set; }
+    private Handler handler { get; set; }
 
     /// <summary>
     /// The whole aggragation of the managers present within the ion context.
@@ -223,14 +217,18 @@
       this.handler = new Android.OS.Handler();
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
       var discard = preferences.appVersion; // Sets the current application version.
-      var bluetoothManager = (BluetoothManager)GetSystemService(Context.BluetoothService);
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
       managers.Add(fileManager = new AndroidFileManager(this));
-      managers.Add(deviceManager = new BaseDeviceManager(this, 
-        new AndroidConnectionFactory(this, bluetoothManager),
-        new LeConnectionHelper(bluetoothManager)));
+      managers.Add(deviceManager = new BaseDeviceManager(this, new AndroidConnectionFactory(this), new AndroidConnectionHelper(this)));
+
+// This is the last test of broadcasting performed on 22 Aug 2016
+/*
+managers.Add(deviceManager = new BaseDeviceManager(this,
+                           new AndroidConnectionFactory(this),
+                           new AndroidBroadcastHelper(this, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(7.5))));
+*/
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
@@ -253,15 +251,6 @@
           return;
         }
       }
-
-/*
-#if DEBUG
-      if (preferences.firstLaunch) {
-        Log.D(this, "Creating debug data logs.");
-        CreateDebugDataLogs(3);
-      }
-#endif
-*/
 
       deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 

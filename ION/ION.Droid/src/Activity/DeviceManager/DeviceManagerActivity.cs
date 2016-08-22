@@ -132,7 +132,6 @@
 
       previousHelper = ion.deviceManager.connectionHelper;
       var bm = (BluetoothManager)GetSystemService(BluetoothService);
-//      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -141,8 +140,8 @@
 
       var connectionHelper = ion.deviceManager.connectionHelper;
 
-      if (connectionHelper.isEnabled) {
-        ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+			if (bm.Adapter.IsEnabled) {
+        ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
       } else {
         ShowBluetoothOffDialog();
       }
@@ -158,7 +157,7 @@
       ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
-      ion.deviceManager.connectionHelper.Stop();
+      ion.deviceManager.connectionHelper.StopScan();
 
 			ion.deviceManager.ForgetFoundDevices();
     }
@@ -191,13 +190,14 @@
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
+				var manager = (BluetoothManager)GetSystemService(BluetoothService);
         var dm = ion.deviceManager;
 
-        if (dm.connectionHelper.isEnabled) {
+				if (manager.Adapter.IsEnabled) {
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         } else {
           ShowBluetoothOffDialog();
@@ -226,9 +226,9 @@
           var dm = ion.deviceManager;
 
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
 
           return true;

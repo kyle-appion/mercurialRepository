@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Connections {
+﻿/*
+namespace ION.Droid.Connections {
 
   using System;
   using System.Collections.Generic;
@@ -60,17 +61,17 @@
 
 			scanDelegate = new Api18ScanDelegate(adapter);
 
-/*
-      if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-        scanDelegate = new Api21ScanDelegate(adapter);
-      } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
-        scanDelegate = new Api18ScanDelegate(adapter);
-      } else {
-        // TODO ahodder@appioninc.com: Catch and display user message
-        // No good, the user's device cannot support le connections.
-        throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
-      }
-*/
+//
+//      if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
+//        scanDelegate = new Api21ScanDelegate(adapter);
+//      } else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
+//        scanDelegate = new Api18ScanDelegate(adapter);
+//      } else {
+//        // TODO ahodder@appioninc.com: Catch and display user message
+//        // No good, the user's device cannot support le connections.
+//        throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
+//      }
+//
     }
 
     // Overridden from BaseConnectionHelper
@@ -285,3 +286,4 @@
   }
 }
 
+*/
