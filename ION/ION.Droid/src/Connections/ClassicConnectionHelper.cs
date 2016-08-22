@@ -1,4 +1,6 @@
-﻿namespace ION.Core.Connections {
+﻿/*
+
+namespace ION.Core.Connections {
 
   using System;
   using System.Collections.Generic;
@@ -222,17 +224,6 @@
       return device.Name == null || APPION_GAUGE.Equals(device.Name) || GaugeSerialNumber.IsValid(device.Name);
     }
 
-/*
-    /// <summary>
-    /// Creates the connection for the given address.
-    /// </summary>
-    /// <returns>The connection for.</returns>
-    /// <param name="identifier">Address.</param>
-    /// <param name="address">Address.</param>
-    public IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion) {
-      return new ClassicConnection(adapter.GetRemoteDevice(address));
-    }
-*/
   }
 
   class ClassicReceiver : BroadcastReceiver {
@@ -259,3 +250,4 @@
   }
 }
 
+*/

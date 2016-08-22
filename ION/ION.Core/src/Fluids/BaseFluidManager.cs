@@ -113,6 +113,8 @@
           }
         }
 
+				preferredFluids.Sort(new AlphabeticalStringComparer());
+
         var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, DEFAULT_FLUID);
         if (fluidName == null) {
           var fluidNames = GetAvailableFluidNames();
@@ -141,12 +143,15 @@
     // Overridden from IFluidManager
     public List<string> GetAvailableFluidNames() {
       var ret = new List<string>();
+
       foreach (var filename in EmbeddedResource.GetResourcesOfExtension(EXT_FLUID)) {
         if (!FLUID_COLORS_FILE.Equals(filename)) {
           var fluidName = Regex.Replace(filename, "\\" + EXT_FLUID, "");
           ret.Add(fluidName);
         }
-      }
+			}
+
+			ret.Sort(new AlphabeticalStringComparer());
 
       return ret;
     }

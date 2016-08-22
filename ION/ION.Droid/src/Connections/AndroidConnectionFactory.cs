@@ -14,9 +14,8 @@
     private Context context;
     private BluetoothManager bluetoothManager;
 
-    public AndroidConnectionFactory(Context context, BluetoothManager bm) { 
-      this.context = context;
-      this.bluetoothManager = bm;
+    public AndroidConnectionFactory(Context context) { 
+			this.bluetoothManager = (BluetoothManager)context.GetSystemService(Context.BluetoothService);
     }
     
     public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
@@ -34,10 +33,6 @@
         case EProtocolVersion.Classic:
           return new ClassicConnection(device);
         case EProtocolVersion.V1:
-          goto case EProtocolVersion.V3;
-        case EProtocolVersion.V2:
-          goto case EProtocolVersion.V3;
-        case EProtocolVersion.V3:
           return new LeConnection(context, bluetoothManager, device);
         case EProtocolVersion.V4:
           return new RigadoConnection(context, bluetoothManager, device);

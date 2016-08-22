@@ -204,7 +204,6 @@
     <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
     <Compile Include="src\Dialog\WhatsNewDialog.cs" />
-    <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
@@ -246,6 +245,13 @@
     <Compile Include="src\Activity\Report\SensorOverviewRecord.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
+    <Compile Include="src\Connections\AndroidConnectionHelper.cs" />
+    <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
+    <Compile Include="src\Connections\AndroidBroadcastHelper.cs" />
+    <Compile Include="src\Connections\IScanDelegate.cs" />
+    <Compile Include="src\Connections\Api18ScanDelegate.cs" />
+    <Compile Include="src\Connections\ConnectionDelegates.cs" />
+    <Compile Include="src\Connections\Api21ScanDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
