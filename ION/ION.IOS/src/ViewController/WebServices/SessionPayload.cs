@@ -22,7 +22,7 @@ namespace ION.IOS.ViewController.WebServices {
 
 	public class SessionPayload {
 		public IION ion;
-		WebClient webClient;
+		public WebClient webClient;
 		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
 		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
 		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";

@@ -10,6 +10,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using ION.Core.App;
+using ION.IOS.ViewController.WebServices;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
@@ -19,12 +20,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
     nfloat cellHeight;
 		IION ion;
     ObservableCollection<int> selectedUser;
+    WebClient webServices;
     public const string deleteUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/deleteAccess.php";
     
-		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<int> selected) {
+		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<int> selected, WebClient webClient) {
 			tableItems = accessItems;
 			selectedUser = selected;
 			ion = AppState.context;
+			webServices = webClient;
 			tableItems.Sort((x, y) => x.displayName.CompareTo(y.displayName));
 		}
 		
@@ -113,8 +116,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
     
 		public async Task DeleteUserAccess(UITableView tableView, Foundation.NSIndexPath indexPath){
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			WebClient wc = new WebClient();
-			wc.Proxy = null;
 			
 			var userID = KeychainAccess.ValueForKey("userID");
 			//Create the data package to send for the post request
@@ -125,7 +126,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			data.Add("accessID", tableItems[indexPath.Row].id.ToString());
 			try{
 				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(deleteUserUrl,data);
+				byte[] result = webServices.UploadValues(deleteUserUrl,data);
 				
 				//get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);

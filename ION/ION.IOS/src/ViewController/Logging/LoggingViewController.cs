@@ -34,6 +34,7 @@ namespace ION.IOS.ViewController.Logging {
   }
 
   public partial class LoggingViewController : BaseIONViewController {
+  	public UIView holderView;
     public ChooseReporting reportingSection;
     public ChooseData dataSection;
     public ChooseSaved savedReportsSection;
@@ -50,7 +51,8 @@ namespace ION.IOS.ViewController.Logging {
       base.ViewDidLoad();
       // Perform any additional setup after loading the view, typically from a nib.
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
-
+			holderView = new UIView(new CGRect(0,50,this.View.Bounds.Width,this.View.Bounds.Height - 50));
+			holderView.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       InitNavigationBar("ic_graph_menu", false);
       AutomaticallyAdjustsScrollViewInsets = false;
       backAction = () => {
@@ -61,28 +63,29 @@ namespace ION.IOS.ViewController.Logging {
       selectedSessions = new ObservableCollection<int>();
       ChosenDates.allTimes = new Dictionary<string,int> ();
       ion = AppState.context;
+      this.View.AddSubview(holderView);
       SetupLoggingUI();
     }
     /// <summary>
     /// Creates the job and session views and adds their views/subviews to the mainview
     /// </summary>
     public void SetupLoggingUI(){
-      reportingSection = new ChooseReporting(View);
+      reportingSection = new ChooseReporting(holderView);
       reportingSection.savedReports.TouchUpInside += loadSavedReports;
       reportingSection.newReport.TouchUpInside += showDataSection;
 
-      dataSection = new ChooseData(View,selectedSessions,this);
+      dataSection = new ChooseData(holderView,selectedSessions,this);
       dataSection.showGraphButton.TouchUpInside += showGraphSection;
 
-      savedReportsSection = new ChooseSaved(View);
+      savedReportsSection = new ChooseSaved(holderView);
 
-      graphingSection = new ChooseGraphing(View, dataSection);
+      graphingSection = new ChooseGraphing(holderView, dataSection);
 
-      View.AddSubview(reportingSection.reportType);
-      View.AddSubview(dataSection.DataType);
-      View.AddSubview(savedReportsSection.showReports);
-      View.AddSubview(graphingSection.graphingType);
-      View.AddSubview(dataSection.showGraphButton);
+      holderView.AddSubview(reportingSection.reportType);
+      holderView.AddSubview(dataSection.DataType);
+      holderView.AddSubview(savedReportsSection.showReports);
+      holderView.AddSubview(graphingSection.graphingType);
+      holderView.AddSubview(dataSection.showGraphButton);
     }
      /// <summary>
      /// Loads the saved reports.
@@ -94,7 +97,8 @@ namespace ION.IOS.ViewController.Logging {
       View.BringSubviewToFront(reportingSection.reportType);
       reportingSection.newReport.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
-        () =>{          
+        () =>{
+					dataSection.sessionHeader.Hidden = true;       
           dataSection.jobButton.Hidden = true;
           dataSection.sessionButton.Hidden = true;
           dataSection.showGraphButton.Hidden = true;
@@ -108,7 +112,7 @@ namespace ION.IOS.ViewController.Logging {
           }
           dataSection.showGraphButton.Enabled = false;
           dataSection.showGraphButton.Alpha = .6f;
-          dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+          dataSection.DataType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .09 * holderView.Bounds.Height);
         }, 
         () => {
           dataSection.DataType.Hidden = true;
@@ -133,7 +137,7 @@ namespace ION.IOS.ViewController.Logging {
           savedReportsSection.pdfButton.Hidden = true;
           savedReportsSection.middleBorder.Hidden = true;
           savedReportsSection.bottomBorder.Hidden = true;
-          savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .05 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+          savedReportsSection.showReports.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .09 * holderView.Bounds.Height);
         }, 
         () => {
           savedReportsSection.showReports.Hidden = true;
@@ -146,7 +150,7 @@ namespace ION.IOS.ViewController.Logging {
     public void resizeReportingSectionLarger(){
       UIView.Animate(.5,0, UIViewAnimationOptions.CurveEaseInOut,
         () =>{
-          reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
+          reportingSection.reportType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .15 * holderView.Bounds.Height);
         },
         () => {
           reportingSection.newReport.Hidden = false;
@@ -161,7 +165,7 @@ namespace ION.IOS.ViewController.Logging {
       List<string> pdfs = new List<string>();
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
         savedReportsSection.showReports.Hidden = false;
-        savedReportsSection.showReports.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .75 * View.Bounds.Height);
+        savedReportsSection.showReports.Frame = new CGRect(.01 * holderView.Bounds.Width, .15 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .75 * holderView.Bounds.Height);
       },
         () => {
           savedReportsSection.spreadsheetTable.Hidden = false;
@@ -198,8 +202,8 @@ namespace ION.IOS.ViewController.Logging {
       dataSection.DataType.Hidden = false;
       reportingSection.reportType.Hidden = false;
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 20, .98 * View.Bounds.Width, .15 * View.Bounds.Height);
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, .15 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
+        reportingSection.reportType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .15 * holderView.Bounds.Height);
+        dataSection.DataType.Frame = new CGRect(.01 * holderView.Bounds.Width, .12 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .75 * holderView.Bounds.Height);
         dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 1f;
       },
@@ -243,14 +247,14 @@ namespace ION.IOS.ViewController.Logging {
       reportingSection.savedReports.Hidden = true;
       //////resize reporting choice off screen
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
-        reportingSection.reportType.Frame = new CGRect(.01 * View.Bounds.Width, 0, .98 * View.Bounds.Width, 0);
+        reportingSection.reportType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, 0);
       }, 
         () => {     
           reportingSection.reportType.Hidden = true;
         }); 
       
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {        
-        dataSection.DataType.Frame = new CGRect(.01 * View.Bounds.Width, 15, .98 * View.Bounds.Width, .1 * View.Bounds.Height);
+        dataSection.DataType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .09 * holderView.Bounds.Height);
         dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 0;
       },
@@ -268,14 +272,14 @@ namespace ION.IOS.ViewController.Logging {
         activityLoadingGraphs = null;
       }
 
-      activityLoadingGraphs = new UIActivityIndicatorView(new CGRect(0, .14 * View.Bounds.Height, View.Bounds.Width,.83 * View.Bounds.Height));
+      activityLoadingGraphs = new UIActivityIndicatorView(new CGRect(0, 0, holderView.Bounds.Width, holderView.Bounds.Height));
       activityLoadingGraphs.Alpha = .4f;
       activityLoadingGraphs.Layer.CornerRadius = 8;
       activityLoadingGraphs.BackgroundColor = UIColor.DarkGray;
 
-      View.AddSubview(activityLoadingGraphs);
-      View.BringSubviewToFront(activityLoadingGraphs);
-
+			holderView.AddSubview(activityLoadingGraphs);
+			holderView.BringSubviewToFront(activityLoadingGraphs);
+			
       ChosenDates.includeList = new List<string> ();
       ChosenDates.allTimes = new Dictionary<string,int> ();
       ChosenDates.allIndexes = new Dictionary<int,string> ();
@@ -331,7 +335,7 @@ namespace ION.IOS.ViewController.Logging {
       if (extraPlots == 0) {
         extraPlots = 1;
       }
-      Console.WriteLine("Extra plots: " + extraPlots);
+      //Console.WriteLine("Extra plots: " + extraPlots);
       var indexes = 0;
       var breakPoint = 0;
 
@@ -345,22 +349,22 @@ namespace ION.IOS.ViewController.Logging {
           indexes = indexes + 1;
         }
       }
-      Console.WriteLine("added all times to master lists");
+      //Console.WriteLine("added all times to master lists");
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         activityLoadingGraphs.StartAnimating();
         graphingSection.graphingType.Hidden = false;
-        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .14 * View.Bounds.Height + 20, .98 * View.Bounds.Width, .7 * View.Bounds.Height);
+        graphingSection.graphingType.Frame = new CGRect(.01 * holderView.Bounds.Width, .12 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .72 * holderView.Bounds.Height);
       },
       () => {
-          graphingSection.graphingView = new GraphingView(graphingSection.graphingType,this, tempResults,selectedSessions);
+          graphingSection.graphingView = new GraphingView(graphingSection.graphingType,this.root, tempResults,selectedSessions);
           graphingSection.legendView = new LegendView(graphingSection.graphingType,tempResults,this);
           graphingSection.graphingType.AddSubview (graphingSection.graphingView.gView);
           graphingSection.graphingType.AddSubview (graphingSection.legendView.lView);
           graphingSection.graphingType.SendSubviewToBack (graphingSection.legendView.lView);
           if(holderList.Count > 0){
             graphingSection.SetupSettingsButtons(graphingSection.graphingType,activityLoadingGraphs);
-            View.AddSubview(graphingSection.graphingView.resetButton);
-            View.AddSubview(graphingSection.graphingView.exportGraph);
+            holderView.AddSubview(graphingSection.graphingView.resetButton);
+            holderView.AddSubview(graphingSection.graphingView.exportGraph);
           } else {
             activityLoadingGraphs.StopAnimating();
           }
@@ -395,7 +399,7 @@ namespace ION.IOS.ViewController.Logging {
 
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         dataSection.step2.Hidden = true;
-        graphingSection.graphingType.Frame = new CGRect(.01 * View.Bounds.Width, .04 * View.Bounds.Height, .98 * View.Bounds.Width, .08 * View.Bounds.Height);
+        graphingSection.graphingType.Frame = new CGRect(.01 * holderView.Bounds.Width, .02 * holderView.Bounds.Height, .98 * holderView.Bounds.Width, .08 * holderView.Bounds.Height);
       }, 
       () => {
           graphingSection.graphingType.Hidden = true;

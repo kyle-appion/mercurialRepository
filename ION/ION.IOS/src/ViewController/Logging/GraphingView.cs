@@ -46,7 +46,7 @@ namespace ION.IOS.ViewController.Logging
 		public UIView leftTrackerView;
 		public UIView rightTrackerView;
 
-    public UIViewController mainVC;
+    public IONPrimaryScreenController mainVC;
 
 		public UIButton menuButton;
 		public UIButton resetButton;
@@ -76,7 +76,7 @@ namespace ION.IOS.ViewController.Logging
 		public List<deviceReadings> selectedData;
 		public double dateMultiplier;
 
-    public GraphingView (UIView mainView, UIViewController viewController, List<deviceReadings> pressuresTemperatures,ObservableCollection<int> sessions)
+    public GraphingView (UIView mainView, IONPrimaryScreenController viewController, List<deviceReadings> pressuresTemperatures,ObservableCollection<int> sessions)
 		{			
 			selectedData = pressuresTemperatures;
       mainVC = viewController;
@@ -344,11 +344,11 @@ namespace ION.IOS.ViewController.Logging
 		/// </summary>
     public void createButtons(ObservableCollection<int> sessions){
       var deviceCount = ChosenDates.includeList.Count;
-      resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .89 * mainVC.View.Bounds.Height, .25 * gView.Bounds.Width, .08 * gView.Bounds.Height));
+      resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height, .3 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;
 			resetButton.SetTitle ("Reset", UIControlState.Normal);
       resetButton.Font = UIFont.ItalicSystemFontOfSize(22);
-			resetButton.Layer.CornerRadius = 8;
+			resetButton.Layer.CornerRadius = 5f;
 
 			resetButton.TouchUpInside += (sender, e) => {
         ChosenDates.subLeft = ChosenDates.earliest;
@@ -376,10 +376,10 @@ namespace ION.IOS.ViewController.Logging
 			resetButton.TouchDown += (sender, e) => {resetButton.BackgroundColor = UIColor.Blue;};
       resetButton.TouchUpOutside += (sender, e) => {resetButton.BackgroundColor = UIColor.Red;};
 
-      exportGraph = new UIButton (new CGRect (.7 * gView.Bounds.Width, .89 * mainVC.View.Bounds.Height,.25 * gView.Bounds.Width,.08 * gView.Bounds.Height));
+      exportGraph = new UIButton (new CGRect (.65 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height,.3 * gView.Bounds.Width,.08 * gView.Bounds.Height));
       exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
 			exportGraph.SetTitle ("Export", UIControlState.Normal); 
-			exportGraph.Layer.CornerRadius = 8; 
+			exportGraph.Layer.CornerRadius = 5f; 
 
 			exportGraph.TouchUpInside += (sender, e) => {
         exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
@@ -524,9 +524,10 @@ namespace ION.IOS.ViewController.Logging
           }
         }
 
-        var certInfo = ion.database.Query<LoggingDeviceRow>("SELECT nistDate, name  FROM LoggingDeviceRow WHERE serialNumber = ? ORDER BY nistDate DESC LIMIT 1", package.serialNumber);
+        var certInfo = ion.database.Query<LoggingDeviceRow>("SELECT nistDate, name  FROM LoggingDeviceRow WHERE serialNumber = ? LIMIT 1", package.serialNumber);
 
         if (certInfo.Count > 0) {
+        	Console.WriteLine("Pulled device: " + certInfo[0].name + " with nist date: " + certInfo[0].nistDate);
           package.nistDate = certInfo[0].nistDate;
           package.name = certInfo[0].name;
         }
@@ -680,7 +681,7 @@ namespace ION.IOS.ViewController.Logging
       QLPreviewItemBundle prevItem = new QLPreviewItemBundle (fileName, dir);     
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
-      mainVC.NavigationController.PushViewController (previewController, true);
+      mainVC.navigation.PresentViewController (previewController, true, null);
     }
 
     public void sendSpreadsheetEmail(object sender, EventArgs e){
@@ -724,6 +725,7 @@ namespace ION.IOS.ViewController.Logging
       TFlxFormat centerText = xls.GetDefaultFormat; //2
       centerText.VAlignment = TVFlxAlignment.top;
       centerText.HAlignment = THFlxAlignment.center;
+      centerText.ShrinkToFit = true;
       xls.AddFormat(centerText);
 
       TFlxFormat borderColor = xls.GetDefaultFormat; //3
@@ -749,13 +751,14 @@ namespace ION.IOS.ViewController.Logging
       foreach (var device in dataList) {
         xls.SetCellValue(deviceCellIndex, headerStartIndex, device.serialNumber, 2);
         xls.SetCellValue(deviceCellIndex, headerStartIndex + 1, device.name, 2);
-        if (device.nistDate == "") {
+        if (string.IsNullOrEmpty(device.nistDate) || device.nistDate.Length > 10) {
           xls.SetCellValue(deviceCellIndex, headerStartIndex + 2, "N/A", 2);
         } else {
           xls.SetCellValue(deviceCellIndex, headerStartIndex + 2, device.nistDate, 2);        
-        }
+        }        
         deviceCellIndex++;
       }
+      
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, headerStartIndex + 1, deviceCellIndex, headerStartIndex + 2);
       xls.SetCellValue(deviceCellIndex, headerStartIndex, "Report Created", 1);
@@ -767,7 +770,11 @@ namespace ION.IOS.ViewController.Logging
       xls.MergeCells(deviceCellIndex, headerStartIndex, deviceCellIndex, headerStartIndex + 2);
       xls.SetCellValue(deviceCellIndex, headerStartIndex, ChosenDates.subLeft + " - " + ChosenDates.subRight, 2);
       deviceCellIndex+= 2;
-
+      
+			xls.AutofitCol(3,false,1.1);
+			xls.AutofitCol(4,false,1.1);
+			xls.AutofitCol(5,false,1.1);
+			
       TXlsNamedRange Range;
       string RangeName;
       RangeName = TXlsNamedRange.GetInternalName(InternalNameRange.Print_Titles);
@@ -880,7 +887,7 @@ namespace ION.IOS.ViewController.Logging
       QLPreviewItemBundle prevItem = new QLPreviewItemBundle (fileName, dir);
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
-      mainVC.NavigationController.PushViewController (previewController, true);
+      mainVC.navigation.PresentViewController (previewController, true, null);
     }
       
     /*

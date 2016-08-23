@@ -67,11 +67,17 @@ namespace ION.IOS.ViewController.Analyzer {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
+      viewAnalyzerContainer.Bounds = View.Bounds;      
+			viewAnalyzerContainer.BackgroundColor = UIColor.Clear;
+			Console.WriteLine(": " + View.Bounds);
+		
       arvc = this;
-      lowHighSensors = new LowHighArea (View, this);
-      mentryView = new ManualView(View);
-      analyzerSensors = new sensorGroup(View, this);
-      InitNavigationBar("ic_nav_analyzer", false);
+      
+      lowHighSensors = new LowHighArea (viewAnalyzerContainer, this);
+      mentryView = new ManualView(viewAnalyzerContainer);
+      analyzerSensors = new sensorGroup(viewAnalyzerContainer, this);
+      
+      InitNavigationBar("ic_nav_analyzer", false); 
       ion = AppState.context;      
 
       AutomaticallyAdjustsScrollViewInsets = false;
@@ -92,15 +98,11 @@ namespace ION.IOS.ViewController.Analyzer {
 				analyzer = ion.currentAnalyzer;
 				
 				if(analyzer.sensorList == null){
-
 		      sensorList = new List<Sensor>();
 		      analyzer.sensorList = sensorList;
-
 				} else {
-
 					sensorList = ion.currentAnalyzer.sensorList;
 					analyzer.sensorList = sensorList;
-
 				}
 				
 	      dataRecord = new UIButton(new CGRect(0,0,35,35));
@@ -142,7 +144,7 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.mbuttonText.Text = start.pressures[0];
         mentryView.textValidation.Hidden = true;
         mentryView.mtextValue.ResignFirstResponder();
-        this.View.SendSubviewToBack (mentryView.mView);
+        viewAnalyzerContainer.SendSubviewToBack (mentryView.mView);
       };
       
       layoutAnalyzer();
@@ -180,36 +182,32 @@ namespace ION.IOS.ViewController.Analyzer {
     /// <summary>
     /// CREATE ALL SENSOR SUBVIEW STARTING POSITIONS AND CENTER POINTS
     /// </summary>
-    void createSensors ()
+    void createSensors () 
     {
-      AnalyserUtilities.CreateSnapArea(analyzerSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea1, "1", analyzerSensors.snapRect1, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea2, "2", analyzerSensors.snapRect2, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea3, "3", analyzerSensors.snapRect3, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea4, "4", analyzerSensors.snapRect4, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea5, "5", analyzerSensors.snapRect5, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea6, "6", analyzerSensors.snapRect6, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, View);
-      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, View);
-
-      //UIImageView compressor = new UIImageView(new CGRect(.462 * View.Bounds.Width,.161 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height));
-      //UIImageView expansion = new UIImageView(new CGRect(.462 * View.Bounds.Width,.503 * View.Bounds.Height,.078 * View.Bounds.Width,.047 * View.Bounds.Height ));
+      AnalyserUtilities.CreateSnapArea(analyzerSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea1, "1", analyzerSensors.snapRect1, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea2, "2", analyzerSensors.snapRect2, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea3, "3", analyzerSensors.snapRect3, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea4, "4", analyzerSensors.snapRect4, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea5, "5", analyzerSensors.snapRect5, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea6, "6", analyzerSensors.snapRect6, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
       if (UserInterfaceIdiomIsPhone) {
-        compressor = new UIImageView(new CGRect(.46 * View.Bounds.Width, .093 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
-        expansion = new UIImageView(new CGRect(.46 * View.Bounds.Width,.435 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
+        compressor = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width, .023 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width,.365 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height));
       } else {
-        compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width, .093 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
-        expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width,.435 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
+        compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width, .025 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width,.36 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
       }
       compressor.Image = UIImage.FromBundle("ic_compressor");
       expansion.Image = UIImage.FromBundle("ic_expansionchamber");
 
-      View.AddSubview(compressor);
-      View.AddSubview(expansion);
+			viewAnalyzerContainer.AddSubview(compressor); 
+			viewAnalyzerContainer.AddSubview(expansion);
 
-      AnalyserUtilities.CreateLowHighArea (lowHighSensors, View);
-      AnalyserUtilities.AddHighLowArea (lowHighSensors, View);
-      AnalyserUtilities.CreateManualViews(mentryView, View);
+      AnalyserUtilities.AddHighLowArea (lowHighSensors, viewAnalyzerContainer);
+      AnalyserUtilities.CreateManualViews(mentryView, viewAnalyzerContainer);
 
       AddSensorGestures (analyzerSensors, analyzerSensors.snapArea1, analyzerSensors.animator, analyzerSensors.snap);
       AddSensorGestures (analyzerSensors, analyzerSensors.snapArea2, analyzerSensors.animator, analyzerSensors.snap);
@@ -294,7 +292,8 @@ namespace ION.IOS.ViewController.Analyzer {
         }
         ///SHOW POPUP
         pressedArea.sactionView.aView.Hidden = false;
-        View.BringSubviewToFront (pressedArea.sactionView.aView);
+        //View.BringSubviewToFront (pressedArea.sactionView.aView);
+        viewAnalyzerContainer.BringSubviewToFront (pressedArea.sactionView.aView);
 
         pressedArea.sactionView.pcloseButton.TouchUpInside += delegate {
           pressedArea.sactionView.aView.Hidden = true;
@@ -339,7 +338,8 @@ namespace ION.IOS.ViewController.Analyzer {
           start.isManual = pressedArea.isManual;
 
           mentryView.mdoneButton.TouchUpInside += handleManualPopup;
-          View.BringSubviewToFront(mentryView.mView);
+          //View.BringSubviewToFront(mentryView.mView);
+          viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
           mentryView.mView.Hidden = false;
         }));
 
@@ -589,7 +589,8 @@ namespace ION.IOS.ViewController.Analyzer {
             mentryView.mView.AccessibilityIdentifier = "Pressure";
 
             mentryView.mdoneButton.TouchUpInside += handleManualLHPopup;
-            View.BringSubviewToFront(mentryView.mView);
+            //View.BringSubviewToFront(mentryView.mView);
+            viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
             mentryView.mView.Hidden = false;
           }
         }));
@@ -674,12 +675,14 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
-            View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+            //View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+            viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
           } else {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
-            View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+            //View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+            viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
           }
 
           analyzerSensors.viewList[i].lowArea.isManual = true;
@@ -750,7 +753,8 @@ namespace ION.IOS.ViewController.Analyzer {
 
       Sensor.panGesture = new UIPanGestureRecognizer (() => {
         if (Sensor.panGesture.State == UIGestureRecognizerState.Began) {
-          View.BringSubviewToFront(Sensor.snapArea);
+          //View.BringSubviewToFront(Sensor.snapArea);
+          viewAnalyzerContainer.BringSubviewToFront(Sensor.snapArea);
         }
         if ((Sensor.panGesture.State == UIGestureRecognizerState.Began || Sensor.panGesture.State == UIGestureRecognizerState.Changed) && (Sensor.panGesture.NumberOfTouches == 1)) {
 
@@ -758,7 +762,8 @@ namespace ION.IOS.ViewController.Analyzer {
           if (snap != null)
             animator.RemoveBehavior (snap);
 
-          var p0 = Sensor.panGesture.LocationInView (View);
+          //var p0 = Sensor.panGesture.LocationInView (View);
+          var p0 = Sensor.panGesture.LocationInView (viewAnalyzerContainer);
 
           if (dx == 0) {
             dx = p0.X - Sensor.snapArea.Center.X;
@@ -777,18 +782,21 @@ namespace ION.IOS.ViewController.Analyzer {
 
 
         } else if (Sensor.panGesture.State == UIGestureRecognizerState.Ended) {
-          View.SendSubviewToBack(Sensor.snapArea);
+          //View.SendSubviewToBack(Sensor.snapArea);
+          viewAnalyzerContainer.SendSubviewToBack(Sensor.snapArea);
           // reset offsets when dragging ends so that they will be recalculated for next touch and drag that occurs
           dx = 0;
           dy = 0;
 
           /// CHECK IF SENSOR WAS DROPPED IN LOW OR HIGH SECTION
 
-          AnalyserUtilities.updateLowHighArea(Sensor.panGesture.LocationInView(View), Sensor, lowHighSensors, sensorGroup, View);
+          //AnalyserUtilities.updateLowHighArea(Sensor.panGesture.LocationInView(View), Sensor, lowHighSensors, sensorGroup, View);
+          AnalyserUtilities.updateLowHighArea(Sensor.panGesture.LocationInView(viewAnalyzerContainer), Sensor, lowHighSensors, sensorGroup, viewAnalyzerContainer);
 
           ////FIGURE OUT WHERE TO SNAP THE SUBVIEW BASED ON IT'S LOCATION AND IDENTIFIER
-          AnalyserUtilities.LHSwapCheck(sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View, analyzer);
-          //AnalyserUtilities.sensorSwap (sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View);
+          //AnalyserUtilities.LHSwapCheck(sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (View), View, analyzer);
+          AnalyserUtilities.LHSwapCheck(sensorGroup, lowHighSensors, Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier), Sensor.panGesture.LocationInView (viewAnalyzerContainer), View, analyzer);
+
         } else if (Sensor.panGesture.State == UIGestureRecognizerState.Failed) {
           Console.WriteLine ("Touch has failed to be recognized for "+Sensor.snapArea.AccessibilityIdentifier+" area");
         }
@@ -983,7 +991,8 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
               lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
-              View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+              //View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+              viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             } else {
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
@@ -993,7 +1002,8 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
               lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
-              View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+              //View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+              viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
             }
             existingConnection = true;
             break;
@@ -1073,7 +1083,8 @@ namespace ION.IOS.ViewController.Analyzer {
                 analyzerSensors.viewList[i].lowArea.Connection.Hidden = false;
                 analyzerSensors.viewList[i].lowArea.headingDivider.Hidden = false;
                 analyzerSensors.viewList[i].lowArea.subviewHide.Hidden = false;
-                View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+                //View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
+                viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
                 analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
               } else {
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
@@ -1082,7 +1093,8 @@ namespace ION.IOS.ViewController.Analyzer {
                 analyzerSensors.viewList[i].highArea.Connection.Hidden = false;
                 analyzerSensors.viewList[i].highArea.headingDivider.Hidden = false;
                 analyzerSensors.viewList[i].highArea.subviewHide.Hidden = false;
-                View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+                //View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
+                viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
                 analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               }
 
@@ -1146,7 +1158,7 @@ namespace ION.IOS.ViewController.Analyzer {
       NavigationController.PushViewController(alarm, true);
     }
 
-    void showFullAlert(){
+    void showFullAlert(){ 
       UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.NOSPACE, UIAlertControllerStyle.Alert);
 
       fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            

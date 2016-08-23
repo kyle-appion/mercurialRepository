@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseData checkData;
 
     public ChooseGraphing(UIView mainView, ChooseData dataSection) {
-      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .04 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
+      graphingType = new UIView(new CGRect(.01 * mainView.Bounds.Width, 0, .98 * mainView.Bounds.Width, .08 * mainView.Bounds.Height));
       graphingType.BackgroundColor = UIColor.White;
       graphingType.Layer.BorderColor = UIColor.Black.CGColor;
       graphingType.Layer.BorderWidth = 1f;

@@ -14,20 +14,12 @@ namespace ION.IOS.ViewController.Analyzer
 	{
 		[Outlet]
 		UIKit.UIView viewAnalyzerContainer { get; set; }
-
-		[Outlet]
-		UIKit.UIView viewReadoutContainer { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
 			if (viewAnalyzerContainer != null) {
 				viewAnalyzerContainer.Dispose ();
 				viewAnalyzerContainer = null;
-			}
-
-			if (viewReadoutContainer != null) {
-				viewReadoutContainer.Dispose ();
-				viewReadoutContainer = null;
 			}
 		}
 	}

@@ -9,13 +9,6 @@ namespace ION.IOS.ViewController.Analyzer
 {
   public class sensor
 	{
-    public sensor (UIView mainView, AnalyzerViewController ViewController)
-		{
-      //lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
-      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .505 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.707 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.3 * mainView.Bounds.Height), ViewController);
-      //highArea = new lowHighSensor (new CGRect (.515 * mainView.Bounds.Width, .572 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.515 * mainView.Bounds.Width,.771 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.214 * mainView.Bounds.Height), ViewController);
-      highArea = new lowHighSensor (new CGRect (.507 * mainView.Bounds.Width, .505 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.507 * mainView.Bounds.Width,.707 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.3 * mainView.Bounds.Height), ViewController);
-    }
 		public UIView snapArea;
     public UIView availableView;
     public ActionView sactionView;
@@ -54,13 +47,17 @@ namespace ION.IOS.ViewController.Analyzer
     } ManualSensor __manualSensor;
        
     public bool isManual = false;
+    
+    public sensor (UIView mainView, AnalyzerViewController ViewController)
+		{
+      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.27 * mainView.Bounds.Height), ViewController);
+      highArea = new lowHighSensor (new CGRect (.507 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.507 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.27 * mainView.Bounds.Height), ViewController);
+		}
 
     public void gaugeUpdating(Sensor sensor){
       if (sensor.unit != ION.Core.Measure.Units.Vacuum.MICRON) {
-        Console.WriteLine("Not Micron");
         middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
       } else {
-        Console.WriteLine("Definitely micron");
         middleLabel.Text = sensor.measurement.amount.ToString();
       }
       bottomLabel.Text = sensor.measurement.unit.ToString();

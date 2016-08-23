@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.JobManager {
 
       if (!pushed) {
         InitNavigationBar("ic_job_settings", false);
-        backAction = () => {
+        backAction = () => { 
           root.navigation.ToggleMenu();
         };
       }
@@ -53,7 +53,6 @@ namespace ION.IOS.ViewController.JobManager {
         jobList.Add(id.JID);
       }
       manageJobs = new ManageJobView(View,jobList,this);
-
       View.AddSubview(manageJobs.mjView);
     }
 

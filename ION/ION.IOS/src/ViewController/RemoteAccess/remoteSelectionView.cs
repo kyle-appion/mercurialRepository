@@ -71,7 +71,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			remoteMenuButton.Enabled = false;
 			remoteMenuButton.Alpha = .6f;
-			remoteMenuButton.Layer.CornerRadius = 5f;
+			remoteMenuButton.Layer.CornerRadius = 5f; 
 			remoteMenuButton.Layer.BorderWidth = 1f;
 			remoteMenuButton.TouchDown += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.Blue;};
 			remoteMenuButton.TouchUpOutside += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
@@ -137,10 +137,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
 			await webActivities.GetAccessList(onlineUsers, offlineUsers);
 			
-			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser);
+			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webActivities.webClient);
 			onlineTable.ReloadData();
 
-			offlineTable.Source = new RemoteAccessTableSource(offlineUsers, null);
+			offlineTable.Source = new RemoteAccessTableSource(offlineUsers, null, webActivities.webClient);
 			offlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();

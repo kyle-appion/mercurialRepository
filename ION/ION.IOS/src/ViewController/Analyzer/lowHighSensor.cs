@@ -119,9 +119,11 @@ namespace ION.IOS.ViewController.Analyzer
 		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController)
 		{
 			snapArea = new UIView (areaRect);
+			this.areaRect = areaRect;
       cellHeight = .521f * snapArea.Bounds.Height;
       subviewTable = new UITableView (tblRect);
       subviewTable.Bounces = false;
+
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
       LabelMiddle = new UILabel (new CGRect(.1 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));

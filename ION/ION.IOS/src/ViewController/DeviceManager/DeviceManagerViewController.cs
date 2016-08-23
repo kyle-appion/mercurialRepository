@@ -67,6 +67,9 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <value><c>true</c> if allow refresh; otherwise, <c>false</c>.</value>
     private bool allowRefresh { get; set; }
+    
+    public UIBarButtonItem scanButton;
+    public UIBarButtonItem scanningButton;
 
 		public DeviceManagerViewController (IntPtr handle) : base (handle) {
       ion = AppState.context;
@@ -79,25 +82,47 @@ namespace ION.IOS.ViewController.DeviceManager {
       InitNavigationBar("ic_nav_device_manager", true);
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, async delegate {
-	      if(!ion.deviceManager.connectionHelper.isEnabled){
-			  	UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
-		      bluetoothWarning.Clicked += (sender, e) => {
-		        if(e.ButtonIndex.Equals(1)){
-		          UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-		        }
-		      };
-		      bluetoothWarning.Show();
-			  } else {
-				  if (ion.deviceManager.connectionHelper.isScanning) {
-				    ion.deviceManager.connectionHelper.Stop();
-				  } else {
-				    if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
-				      Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
-				    }
-				  }
-		    }
-      });
+      var button  = new UIButton(new CGRect(0, 0, 80, 40));
+			button.SetTitle("Scan", UIControlState.Normal);
+			button.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			button.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
+			button.BackgroundColor = UIColor.Clear;
+			button.TouchUpInside += (sender, e) => {
+				scanDuties();
+			};
+			scanButton = new UIBarButtonItem(button);
+			
+      var button2  = new UIButton(new CGRect(0, 0, 80, 40));
+			button2.SetTitle("Scan", UIControlState.Normal);
+			button2.SetTitleColor(UIColor.Black, UIControlState.Normal);
+			button2.HorizontalAlignment = UIControlContentHorizontalAlignment.Right;
+			button2.BackgroundColor = UIColor.Clear;
+			button2.TouchUpInside += (sender, e) => {
+				scanDuties();
+			};
+			scanningButton = new UIBarButtonItem(button2);
+
+			NavigationItem.RightBarButtonItem = scanButton;
+     // NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, async delegate {
+	    //  if(!ion.deviceManager.connectionHelper.isEnabled){
+			  //	UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
+		   //   bluetoothWarning.Clicked += (sender, e) => {
+		   //     if(e.ButtonIndex.Equals(1)){
+		   //       UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+		   //     }
+		   //   };
+		   //   bluetoothWarning.Show();
+			  //} else {
+				 // if (ion.deviceManager.connectionHelper.isScanning) {
+				 //   ion.deviceManager.connectionHelper.Stop();
+				 // } else {
+				 //   if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+				 //     Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+				 //   }
+				 // }
+		   // }
+     // });
+
       labelEmpty.Text = Strings.Device.Manager.EMPTY;
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;	
@@ -115,7 +140,25 @@ namespace ION.IOS.ViewController.DeviceManager {
         return false;
       };
     }
-
+		public async void scanDuties(){
+      if(!ion.deviceManager.connectionHelper.isEnabled){
+		  	UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
+	      bluetoothWarning.Clicked += (sender, e) => {
+	        if(e.ButtonIndex.Equals(1)){
+	          UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+	        }
+	      };
+	      bluetoothWarning.Show();
+		  } else {
+			  if (ion.deviceManager.connectionHelper.isScanning) {
+			    ion.deviceManager.connectionHelper.Stop();
+			  } else {
+			    if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+			      Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
+			    }
+			  }
+	    }	
+		}
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
       allowRefresh = true;
@@ -166,9 +209,11 @@ namespace ION.IOS.ViewController.DeviceManager {
     private void UpdateScanState() {
     //Log.D(this, "Updating scan state");
       if (ion.deviceManager.connectionHelper.isScanning) {
-        NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
+        //NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCANNING.FromResources();
+        NavigationItem.RightBarButtonItem = scanningButton;
       } else {
-        NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
+        //NavigationItem.RightBarButtonItem.Title = Strings.Device.Manager.SCAN.FromResources();
+        NavigationItem.RightBarButtonItem = scanButton;
       }
     }
 	} // End DeviceManagerViewController
