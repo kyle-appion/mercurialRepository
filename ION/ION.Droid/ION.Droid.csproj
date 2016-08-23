@@ -252,6 +252,7 @@
     <Compile Include="src\Connections\Api18ScanDelegate.cs" />
     <Compile Include="src\Connections\ConnectionDelegates.cs" />
     <Compile Include="src\Connections\Api21ScanDelegate.cs" />
+    <Compile Include="src\Widgets\Analyzer\AnalyzerManifoldViewTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

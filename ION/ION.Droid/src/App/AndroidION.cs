@@ -6,7 +6,6 @@
   using System.Threading.Tasks;
 
   using Android.App;
-	using Android.Bluetooth;
   using Android.Content;
   using Android.Content.PM;
   using Android.OS;
@@ -41,6 +40,10 @@
     /// The file name for the primary workbench.
     /// </summary>
     public const string FILE_WORKBENCH = "primaryWorkbench.workbench";
+		/// <summary>
+		/// The file name for the primary workbench.
+		/// </summary>
+		public const string FILE_ANALYZER = "primaryAnalyzer.analyzer";
     /// <summary>
     /// The id of that application's notification.
     /// </summary>
@@ -269,6 +272,21 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
         currentWorkbench = new Workbench(this);
       }
 
+			try {
+				Analyzer a = null;
+				var internalDir = fileManager.GetApplicationInternalDirectory();
+				if (internalDir.ContainsFile(FILE_ANALYZER)) {
+					var file = internalDir.GetFile(FILE_ANALYZER);
+					a = await LoadAnalyzerAsync(file);
+				} else {
+					a = new Analyzer(this);
+				}
+				currentAnalyzer = a;
+			} catch (Exception e) {
+				Log.E(this, "Failed to load analyzer", e);
+				currentAnalyzer = new Analyzer(this);
+			}
+
       if (currentWorkbench == null) {
         currentWorkbench = new Workbench(this);
       }
@@ -276,8 +294,6 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
       if (currentAnalyzer == null) {
         currentAnalyzer = new Analyzer(this);
       }
-
-      // TODO Save/load analyzer.
 
       UpdateNotification();
 
@@ -294,8 +310,11 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
     /// <summary>
     /// Raises the destroy event.
     /// </summary>
-    public override void OnDestroy() {
+    public override async void OnDestroy() {
       base.OnDestroy();
+
+			await SaveWorkbenchAsync();
+			await SaveAnalyzerAsync();
 
       initialized = false;
 
@@ -385,6 +404,23 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
       });
     }
 
+		public Task SaveAnalyzerAsync() {
+			return Task.Factory.StartNew(() => {
+				lock (this) {
+					var internalDir = fileManager.GetApplicationInternalDirectory();
+					var file = internalDir.GetFile(FILE_ANALYZER, EFileAccessResponse.CreateIfMissing);
+					var ap = new AnalyzerParser();
+					try {
+						using (var s = file.OpenForWriting()) {
+							ap.WriteToStream(this, currentAnalyzer, s);
+						}
+					} catch (Exception e) {
+						Log.E(this, "Failed to write analyzer to file", e);
+					}
+				}
+			});
+		}
+
     /// <summary>
     /// Creates a new application dump object.
     /// </summary>
@@ -411,6 +447,20 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
         }
       }
     }
+
+		public Task<Analyzer> LoadAnalyzerAsync(IFile file) {
+			lock (this) {
+				var ap = new AnalyzerParser();
+				try {
+					using (var s = file.OpenForReading()) {
+						return Task.FromResult(ap.ReadFromStream(this, s));
+					}
+				} catch (Exception e) {
+					Log.E(this, "Failed to load analyzer. Defaulting to a new one.", e);
+					return Task.FromResult(new Analyzer(this));
+				}
+			}
+		}
 
     /// <summary>
     /// Updates (creating if necessary the application's notification.
