@@ -20,13 +20,23 @@ namespace ION.IOS.App {
 		public UIButton closeBottom;
 		private int fontSize;
 		private int headingSize;
-		
+    static bool UserInterfaceIdiomIsPhone {
+      get { return UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone; }
+    }		
 	
 		
 		public WhatsNewView(UIView parentView, UIViewController parentVC)
 		{
 
 			var updateSize = 0.0;
+			if(UserInterfaceIdiomIsPhone){
+				headingSize = 3;
+				fontSize = 14;
+			} else {
+				headingSize = 2;
+				fontSize = 20;
+			}
+			var itemCount = 0;
 
 			FileStream stream = new FileStream("./xml/whats_new.xml",FileMode.Open,FileAccess.Read);			
 
@@ -36,21 +46,35 @@ namespace ION.IOS.App {
 				updateSize += .55;
 				sb.Append("<h2>").Append(" Version " + wn.versionCode).Append("</h2>");
 
-				sb.Append("<b><h"+headingSize+">").Append(" NEW").Append("</h"+headingSize+"></b>");
-				foreach (var n in wn.whatsNew) {
-					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(n).Append("</p>");
+				if(wn.whatsNew.Count > 0){
+					sb.Append("<b><h"+headingSize+">").Append(" NEW").Append("</h"+headingSize+"></b>");
+					foreach (var n in wn.whatsNew) {
+						sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(n).Append("</p>");
+						itemCount++;
+					}
+					sb.Append("</br>");
 				}
+				if(wn.whatsUpdated.Count > 0){
+					sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b><");
+					foreach (var u in wn.whatsUpdated) {
+						sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(u).Append("</p>");
+						itemCount++;
+					}
+					sb.Append("</br>");
 
-				sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b>");
-				foreach (var u in wn.whatsUpdated) {
-					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(u).Append("</p>");
 				}
+				if(wn.whatsFixed.Count > 0){
+					sb.Append("<b><h"+headingSize+">").Append(" FIXED").Append("</h"+headingSize+"></b>");
+					foreach (var f in wn.whatsFixed) {
+						sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(f).Append("</p>");
+						itemCount++;
+					}
+					sb.Append("</br>");
 
-				sb.Append("<b><h"+headingSize+">").Append(" FIXED").Append("</h"+headingSize+"></b>");
-				foreach (var f in wn.whatsFixed) {
-					sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(f).Append("</p>");
 				}
 			}
+			
+			Console.WriteLine("there were " + itemCount + " new things updated");
 
 			NSError error = null;
 			var htmlString = new NSAttributedString (
@@ -85,7 +109,7 @@ namespace ION.IOS.App {
 				infoView.RemoveFromSuperview();
 			};
 			
-			contentHolder = new UIScrollView(new CGRect(0,90,infoView.Bounds.Width,infoView.Bounds.Height - 140));
+			contentHolder = new UIScrollView(new CGRect(0,90,infoView.Bounds.Width,itemCount * 105));
 			contentHolder.Layer.CornerRadius = 5;
 			contentHolder.ClipsToBounds = true;
 			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width, updateSize * contentHolder.Bounds.Height);
@@ -120,8 +144,9 @@ namespace ION.IOS.App {
 			infoView.AddSubview(viewHeader);
 			infoView.AddSubview(closeCorner);
 			infoView.BringSubviewToFront(closeCorner);
-			infoView.AddSubview(closeBottom);
 			infoView.AddSubview(contentHolder);
+			infoView.AddSubview(closeBottom);
+			infoView.BringSubviewToFront(closeBottom);
 		}
 	}
 }
