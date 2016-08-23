@@ -1184,6 +1184,7 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
 	    }
+	    viewAnalyzerContainer.SetNeedsDisplay();
     }
 	}
 }

@@ -12,23 +12,29 @@ namespace ION.IOS.ViewController.Analyzer
 	{
 		CGPath leftPath;
 		CGPath rightPath;
+		public CGRect deviceRect;
 
 		public DrawAnalyserView (){}
 		public DrawAnalyserView(IntPtr handle) : base(handle) {}
 			
 		public override void Draw (CGRect rect)
-		{
-			Console.WriteLine("Analyzer draw thing was called");
+		{			
+			if(deviceRect.Width == 0){
+				deviceRect = rect;
+			}
+			rect = deviceRect;
+		
 			base.Draw (rect);
 
+			Console.WriteLine("Analyzer draw thing was called. Working with bounds " + rect);
+			Console.WriteLine("Reference rect " + deviceRect);
+
+			
 			if(rect.Height < 550){
-				Console.WriteLine("Small phone");
 				smallDraw(rect);
 			} else if (rect.Height < 900){
-				Console.WriteLine("medium phone");
 				mediumDraw(rect);
 			} else {
-				Console.WriteLine("ipad");
 				largeDraw(rect);
 			}
 		}
@@ -343,7 +349,6 @@ namespace ION.IOS.ViewController.Analyzer
 			gctx.SetLineCap (CGLineCap.Round);
 
 			//create geometry
-      //based on 320 x 568 iphone
 			leftPath = new CGPath ();
 			rightPath = new CGPath ();
 			///MIDDLE -> LEFT
@@ -354,46 +359,46 @@ namespace ION.IOS.ViewController.Analyzer
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint[] {
         new CGPoint (.062 * rect.Width, .05 * rect.Height),
-        new CGPoint (.062 * rect.Width, .15 * rect.Height)
+        new CGPoint (.062 * rect.Width, .165 * rect.Height)
 			});
 			///LEFT -> RIGHT
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.062 * rect.Width, .15 * rect.Height),
-        new CGPoint (.281 * rect.Width, .15 * rect.Height)
+        new CGPoint (.062 * rect.Width, .165 * rect.Height),
+        new CGPoint (.281 * rect.Width, .165 * rect.Height)
 			});
 			///RIGHT -> DOWN
 			leftPath.AddLines (new CGPoint[] {
-        new CGPoint (.281 * rect.Width, .16 * rect.Height),
-        new CGPoint (.281 * rect.Width, .197 * rect.Height)
+        new CGPoint (.281 * rect.Width, .165 * rect.Height),
+        new CGPoint (.281 * rect.Width, .206 * rect.Height)
 			});
 			///RIGHT -> LEFT
 			leftPath.AddLines (new CGPoint[] {
-        new CGPoint (.281 * rect.Width, .197 * rect.Height),
-        new CGPoint (.062 * rect.Width, .197 * rect.Height)
+        new CGPoint (.281 * rect.Width, .206 * rect.Height),
+        new CGPoint (.062 * rect.Width, .206 * rect.Height)
 			});
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.062 * rect.Width, .197 * rect.Height),
-        new CGPoint (.062 * rect.Width, .24 * rect.Height)
+        new CGPoint (.062 * rect.Width, .206 * rect.Height),
+        new CGPoint (.062 * rect.Width, .249 * rect.Height)
 			});
 			///LEFT -> RIGHT
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.062 * rect.Width, .24 * rect.Height),
-        new CGPoint (.281 * rect.Width, .24 * rect.Height)
+        new CGPoint (.062 * rect.Width, .249 * rect.Height),
+        new CGPoint (.281 * rect.Width, .249 * rect.Height)
 			});
 			///RIGHT -> DOWN
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.281 * rect.Width, .24 * rect.Height),
-        new CGPoint (.281 * rect.Width, .287 * rect.Height)
+        new CGPoint (.281 * rect.Width, .249 * rect.Height),
+        new CGPoint (.281 * rect.Width, .296 * rect.Height)
 			});
 			///RIGHT -> LEFT
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.281 * rect.Width, .287 * rect.Height),
-        new CGPoint (.062 * rect.Width, .287 * rect.Height)
+        new CGPoint (.281 * rect.Width, .296 * rect.Height),
+        new CGPoint (.062 * rect.Width, .296 * rect.Height)
 			});
 			///LEFT -> DOWN
 			leftPath.AddLines (new CGPoint [] {
-        new CGPoint (.062 * rect.Width, .287 * rect.Height),
+        new CGPoint (.062 * rect.Width, .296 * rect.Height),
         new CGPoint (.062 * rect.Width, .41 * rect.Height)
 			});
 			///LEFT -> MIDDLE
@@ -415,38 +420,38 @@ namespace ION.IOS.ViewController.Analyzer
 			});
 			rightPath.AddLines (new CGPoint [] {
         new CGPoint (.937 * rect.Width, .05 * rect.Height),
-        new CGPoint (.937 * rect.Width, .15 * rect.Height)
+        new CGPoint (.937 * rect.Width, .165 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {
-        new CGPoint (.937 * rect.Width, .15 * rect.Height),
-        new CGPoint (.718 * rect.Width, .15 * rect.Height)
+        new CGPoint (.937 * rect.Width, .165 * rect.Height),
+        new CGPoint (.718 * rect.Width, .165 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {
-        new CGPoint (.718 * rect.Width, .15 * rect.Height),
-        new CGPoint (.718 * rect.Width, .197 * rect.Height)
+        new CGPoint (.718 * rect.Width, .165 * rect.Height),
+        new CGPoint (.718 * rect.Width, .206 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint[] {
-        new CGPoint (.718 * rect.Width, .197 * rect.Height),
-        new CGPoint (.937 * rect.Width, .197 * rect.Height)
+        new CGPoint (.718 * rect.Width, .206 * rect.Height),
+        new CGPoint (.937 * rect.Width, .206 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {
-        new CGPoint (.937 * rect.Width, .197 * rect.Height),
-        new CGPoint (.937 * rect.Width, .24 * rect.Height)
+        new CGPoint (.937 * rect.Width, .206 * rect.Height),
+        new CGPoint (.937 * rect.Width, .249 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {
-        new CGPoint (.937 * rect.Width, .24 * rect.Height),
-        new CGPoint (.718 * rect.Width, .24 * rect.Height)
+        new CGPoint (.937 * rect.Width, .249 * rect.Height),
+        new CGPoint (.718 * rect.Width, .249 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {  
-        new CGPoint (.718 * rect.Width, .24 * rect.Height),     
-        new CGPoint (.718 * rect.Width, .287 * rect.Height)
+        new CGPoint (.718 * rect.Width, .249 * rect.Height),     
+        new CGPoint (.718 * rect.Width, .296 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {       
-        new CGPoint (.718 * rect.Width, .287 * rect.Height),       
-        new CGPoint (.937 * rect.Width, .287 * rect.Height)
+        new CGPoint (.718 * rect.Width, .296 * rect.Height),       
+        new CGPoint (.937 * rect.Width, .296 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {       
-        new CGPoint (.937 * rect.Width, .287 * rect.Height),       
+        new CGPoint (.937 * rect.Width, .296 * rect.Height),       
         new CGPoint (.937 * rect.Width, .41 * rect.Height)
 			});
 			rightPath.AddLines (new CGPoint [] {        
