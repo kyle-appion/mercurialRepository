@@ -74,10 +74,12 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-        new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				} ,
+#if DEBUG
+    //    new Section("Remote Viewing".ToUpper()){
+				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				//} ,
+#endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
@@ -229,9 +231,9 @@ namespace ION.IOS.ViewController {
     		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
     			OpenWalkthroughSections();
     		} )
-    		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
-					ShowRSSFeed();
-				} )
+    //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
+				//	ShowRSSFeed();
+				//} )
 #endif
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
 	        if (!MFMailComposeViewController.CanSendMail) {
@@ -241,21 +243,21 @@ namespace ION.IOS.ViewController {
 	        }
       	} )
 #if DEBUG 
-	    	.Link("Practice", (object obj, HelpViewController ovc) => {
-		    	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
+	    	//.Link("Practice", (object obj, HelpViewController ovc) => {
+		    //	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
 		    	//webStuff.RegisterUser("kdizzle","thisWord","Kai Yole","tiringtrio@ymail.com");
 		    	//webStuff.RegisterAccount("Brick by Brick");
 		    	//var sesh = new List<int>(){1,2,3};
 				  //webStuff.getSession(sesh);
 				  //webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
-				  webStuff.UploadAnalyzerLayout();
+				  //webStuff.UploadAnalyzerLayout();
 				  //webStuff.UploadWorkbenchLayout();
 				  //webStuff.DownloadAnalyzerLayout();
 				  //webStuff.DownloadWorkbenchLayout();
 				  //webStuff.CheckConnection();
 				  //webStuff.createAccess();
 				  //webStuff.confirmCode();
-				} )
+				//} )
 #endif
 		.Build();
 
@@ -275,8 +277,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+        //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates
@@ -329,10 +331,10 @@ namespace ION.IOS.ViewController {
     /// Opens up a list of options for walkthroughs. They are broken up between the main
     /// sections of the app
     /// </summary>
-    private void ShowRSSFeed() {
-      var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
-      PresentViewControllerFromSelected(wvc);
-    }
+    //private void ShowRSSFeed() {
+    //  var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
+    //  PresentViewControllerFromSelected(wvc);
+    //}
 
     /// <summary>
     /// Presents a new view controller using the current navigation view

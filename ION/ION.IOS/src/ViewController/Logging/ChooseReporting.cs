@@ -13,12 +13,12 @@ namespace ION.IOS.ViewController.Logging {
     public UITapGestureRecognizer resize;
     
     public ChooseReporting(UIView mainView) {
-      reportType = new UIView(new CGRect(.01 * mainView.Bounds.Width, 20, .98 * mainView.Bounds.Width, .15 * mainView.Bounds.Height));
+      reportType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .02 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .15 * mainView.Bounds.Height));
       reportType.BackgroundColor = UIColor.Clear;
       reportType.Layer.BorderColor = UIColor.Black.CGColor;
       reportType.Layer.CornerRadius = 8;
 
-      newReport = new UIButton(new CGRect(0,.3 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
+      newReport = new UIButton(new CGRect(0,.1 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
       newReport.Enabled = false;
       newReport.SetTitle("New Report", UIControlState.Normal);
       newReport.BackgroundColor = UIColor.FromRGB(95,212,48);
@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.Logging {
       newReport.Layer.CornerRadius = 5;
       newReport.Layer.BorderWidth = 2f;
 
-      savedReports = new UIButton(new CGRect(.5 * reportType.Bounds.Width,.3 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
+      savedReports = new UIButton(new CGRect(.5 * reportType.Bounds.Width,.1 * reportType.Bounds.Height,.5 * reportType.Bounds.Width, .5 * reportType.Bounds.Height));
       savedReports.SetTitle("Saved Reports", UIControlState.Normal);
       savedReports.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       savedReports.SetTitleColor(UIColor.Black, UIControlState.Normal);

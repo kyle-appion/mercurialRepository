@@ -36,23 +36,15 @@ namespace ION.IOS.ViewController.Analyzer
 		public static void CreateSnapArea(sensorGroup analyzerSensors, UIView View){
 			////CREATE STATIC SENSOR LOCATIONS
 			/// LEFT SIDE 
-      //analyzerSensors.snapRect1 = new CGRect (.031 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      analyzerSensors.snapRect1 = new CGRect (.028 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      //analyzerSensors.snapRect2 = new CGRect(.031 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect2 = new CGRect(.028 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      //analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      //analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect1 = new CGRect (.024 * View.Bounds.Width, .012 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      analyzerSensors.snapRect2 = new CGRect(.024 * View.Bounds.Width, .304 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect3 = new CGRect(.25 * View.Bounds.Width, .012 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect4 = new CGRect(.25 * View.Bounds.Width, .304 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 			/// RIGHT SIDE
-      //analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
-      //analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      //analyzerSensors.snapRect7 = new CGRect(.765 * View.Bounds.Width, .156 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect7 = new CGRect(.769 * View.Bounds.Width, .085 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      //analyzerSensors.snapRect8 = new CGRect(.765 * View.Bounds.Width, .438 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
-      analyzerSensors.snapRect8 = new CGRect(.769 * View.Bounds.Width, .371 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect5 = new CGRect (.546 * View.Bounds.Width, .012 * View.Bounds.Height, .203 * View.Bounds.Width, .114 * View.Bounds.Height);
+      analyzerSensors.snapRect6 = new CGRect(.546 * View.Bounds.Width, .304 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect7 = new CGRect(.769 * View.Bounds.Width, .012 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
+      analyzerSensors.snapRect8 = new CGRect(.769 * View.Bounds.Width, .304 * View.Bounds.Height, .203 * View.Bounds.Width,.114 * View.Bounds.Height);
 
 			////CREATE CONSTANT POINT OF ORIGIN FOR EACH AREA
 			/// LEFT SIDE
@@ -87,7 +79,7 @@ namespace ION.IOS.ViewController.Analyzer
       mentryView.mView.Hidden = true;
       mentryView.mView.Layer.CornerRadius = 5;
       mentryView.mView.Layer.BorderWidth = 1f;
-      mentryView.mView.Layer.BorderColor = UIColor.LightGray.CGColor;
+      mentryView.mView.Layer.BorderColor = UIColor.LightGray.CGColor; 
       mentryView.popupText.Text = Util.Strings.Analyzer.CREATEMANUAL;
       mentryView.popupText.TextAlignment = UITextAlignment.Center;
       mentryView.popupText.AdjustsFontSizeToFitWidth = true;
@@ -175,7 +167,7 @@ namespace ION.IOS.ViewController.Analyzer
       Sensor.sactionView = new ActionView(mainView);
       Sensor.sactionView.aView.Layer.CornerRadius = 5;
       CreateActionViews(Sensor.sactionView);
-      Sensor.addIcon = new UIImageView(new CGRect(.107 * Sensor.snapArea.Bounds.Width,.107 * Sensor.snapArea.Bounds.Height,.769 * Sensor.snapArea.Bounds.Width,.769 * Sensor.snapArea.Bounds.Height));
+      Sensor.addIcon = new UIImageView(new CGRect(.107 * Sensor.snapArea.Bounds.Width,.107 * Sensor.snapArea.Bounds.Height,.786 * Sensor.snapArea.Bounds.Width,.786 * Sensor.snapArea.Bounds.Height));
       Sensor.addIcon.Image = UIImage.FromBundle("ic_device_add");
       Sensor.addIcon.BackgroundColor = UIColor.Clear;
       Sensor.snapArea.Layer.CornerRadius = 5;
@@ -186,7 +178,6 @@ namespace ION.IOS.ViewController.Analyzer
       Sensor.snapArea.AddSubview(Sensor.addIcon);
       Sensor.snapArea.BringSubviewToFront(Sensor.addIcon);
 
-      CreateLowHighArea(Sensor,  mainView);
       AddHighLowArea(Sensor.lowArea, Sensor.highArea, mainView);
       applyLowHighGestures(Sensor.lowArea, Sensor.highArea, lowHighSensors, Sensor);
       CreateSubviewLayout (Sensor.snapArea, Sensor.topLabel, Sensor.tLabelBottom, Sensor.middleLabel, Sensor.bottomLabel);
@@ -686,34 +677,6 @@ namespace ION.IOS.ViewController.Analyzer
       else if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier)
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
 		}
-		/// <summary>
-		/// Calculates the position for the Low and High subviews
-		/// </summary>
-		/// <param name="lowHighSensors">Low high sensors.</param>
-		/// <param name="View">View.</param>
-		public static void CreateLowHighArea(LowHighArea lowHighSensors, UIView View){
-			////CREATE ANALYSER HIGH AND LOW AREAS
-
-      //lowHighSensors.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      lowHighSensors.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .48 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-
-      //lowHighSensors.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      lowHighSensors.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .48 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-		}
-    /// <summary>
-    /// Calculates the position for the Low and High subviews
-    /// </summary>
-    /// <param name="lowHighSensors">Low high sensors.</param>
-    /// <param name="View">View.</param>
-    public static void CreateLowHighArea(sensor Sensor, UIView View){      
-      ////CREATE ANALYSER HIGH AND LOW AREAS
-
-      //Sensor.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      Sensor.lowArea.areaRect = new CGRect(.028 * View.Bounds.Width, .4 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-
-      //Sensor.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .561 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-      Sensor.highArea.areaRect = new CGRect (.512 * View.Bounds.Width, .4 * View.Bounds.Height, .465 * View.Bounds.Width, .202 * View.Bounds.Height);
-    }
 
     public static void applyLowHighGestures(lowHighSensor lowArea, lowHighSensor highArea, LowHighArea lowHighSensors, sensor Sensor){
       lowArea.shortPress = new UITapGestureRecognizer (() => {

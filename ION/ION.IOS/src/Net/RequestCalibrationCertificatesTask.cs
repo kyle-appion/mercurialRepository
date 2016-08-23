@@ -150,12 +150,14 @@
               var settings = new JsonSerializerSettings();
               settings.MissingMemberHandling = MissingMemberHandling.Ignore;
               var response = JsonConvert.DeserializeObject<CalibrationCertificateResponse>(s.Value.ToString());//, settings);
+              Log.D(this, "Nist date is " + response.calDate);
               if (response.errorCode != null) {
                 Log.E(this, "Failed to get calibration certificate for: " + response.serialNumber + "{" + response.errorCode + "}");
                 ret.Add(new CalibrationCertificateRequestResult(GaugeSerialNumber.Parse(s.Name)));
               } else {
                 ret.Add(new CalibrationCertificateRequestResult(response.ToCalibrationCertificate()));
-                var existing = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?", response.serialNumber);                  
+                var existing = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?", response.serialNumber);
+
                 if(existing.Count.Equals(0)){
                   Log.D(this,"Creating new entry for device: " + response.serialNumber + " with a calibration date of: " + response.calDate);
                   var addDevice = new ION.Core.Database.LoggingDeviceRow(){serialNumber = response.serialNumber, nistDate = response.calDate};

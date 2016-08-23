@@ -656,7 +656,7 @@
     <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
-    <InterfaceDefinition Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
+    <InterfaceDefinition Include="Resources\src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

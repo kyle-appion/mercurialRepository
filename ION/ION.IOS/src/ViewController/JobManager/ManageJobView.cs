@@ -17,19 +17,18 @@ namespace ION.IOS.ViewController.JobManager {
     public ManageJobView(UIView parentView,List<int> jobID, JobViewController manageVC) {
       ion = AppState.context;
 
-      mjView = new UIView(new CGRect(.01 * parentView.Bounds.Width,50, .98 * parentView.Bounds.Width, .88 * parentView.Bounds.Height));
+      mjView = new UIView(new CGRect(.01 * parentView.Bounds.Width, 60, .98 * parentView.Bounds.Width,  parentView.Bounds.Height - 100));
       mjView.BackgroundColor = UIColor.White;
       mjView.Layer.CornerRadius = 5;
-      mjView.ClipsToBounds = true;     
+      mjView.ClipsToBounds = true;
 
-      currentJobs = new UITableView(new CGRect(0,0,mjView.Bounds.Width,mjView.Bounds.Height));
+      currentJobs = new UITableView(new CGRect(0,0,mjView.Bounds.Width,mjView.Bounds.Height - 20));
       currentJobs.RegisterClassForCellReuse(typeof(CreatedJobCell), "createdJobCell");
       currentJobs.ClipsToBounds = true;
       currentJobs.ContentInset = UIEdgeInsets.Zero;
       currentJobs.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       currentJobs.Source = new CreatedJobSource(jobID,manageVC);
       currentJobs.ReloadData();
-      currentJobs.LayoutIfNeeded();
 
       jobRefresh = new UIRefreshControl();
       jobRefresh.ValueChanged += (sender, e) => {

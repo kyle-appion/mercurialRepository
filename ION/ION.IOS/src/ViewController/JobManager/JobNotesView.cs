@@ -51,6 +51,9 @@ namespace ION.IOS.ViewController.JobManager {
       notesText.UserInteractionEnabled = true;
       notesText.Editable = true;
       notesText.InputAccessoryView = accessoryView;
+      notesText.AutocorrectionType = UITextAutocorrectionType.No;
+      notesText.AutocapitalizationType = UITextAutocapitalizationType.None;
+      notesText.SpellCheckingType = UITextSpellCheckingType.No;
 
       var infoQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT jobName FROM JobRow WHERE JID = ?", frnJID);
       if (infoQuery.Count > 0) {

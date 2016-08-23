@@ -81,6 +81,9 @@ namespace ION.IOS.ViewController.Logging {
       QLPreviewItemBundle prevItem = new QLPreviewItemBundle (name, fileList[indexPath.Row]);
       QLPreviewController previewController = new QLPreviewController ();
       previewController.DataSource = new PreviewControllerDS (prevItem);
+      //TODO set pushed view controller back buttons to actual buttons to avoid
+      //blacked out button issue
+			//previewController.NavigationItem.BackBarButtonItem = an actual button;
       LoggingViewController.NavigationController.PushViewController (previewController, true);
     }
 

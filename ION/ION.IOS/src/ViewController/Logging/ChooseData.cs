@@ -43,7 +43,7 @@ namespace ION.IOS.ViewController.Logging {
 
     public ChooseData(UIView mainView, ObservableCollection<int> selected, LoggingViewController vc) {
       parentVC = vc;
-      DataType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .15 * mainView.Bounds.Height + 20, .98 * mainView.Bounds.Width, .7 * mainView.Bounds.Height));
+      DataType = new UIView(new CGRect(.01 * mainView.Bounds.Width, .12 * mainView.Bounds.Height, .98 * mainView.Bounds.Width, .75 * mainView.Bounds.Height));
       DataType.BackgroundColor = UIColor.White;
       DataType.Layer.BorderColor = UIColor.Black.CGColor;
       DataType.Layer.BorderWidth = 1f;
@@ -54,7 +54,7 @@ namespace ION.IOS.ViewController.Logging {
       selectedSessions.CollectionChanged += checkForSelected;
       cellHeight = .07f * mainView.Bounds.Height;
 
-      step2 = new UILabel(new CGRect(0,20,DataType.Bounds.Width, .07 * mainView.Bounds.Height));
+      step2 = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .09 * mainView.Bounds.Height));
       step2.BackgroundColor = UIColor.FromRGB(95,212,48);
       step2.ClipsToBounds = true;
       step2.Layer.BorderWidth = 1f;
@@ -65,7 +65,7 @@ namespace ION.IOS.ViewController.Logging {
       step2.AdjustsFontSizeToFitWidth = true;
       step2.Hidden = true;
 
-      backArrow = new UIImageView(new CGRect(.15 * DataType.Bounds.Width,.015 * mainView.Bounds.Height,.1 * step2.Bounds.Width, .05 * mainView.Bounds.Height));
+      backArrow = new UIImageView(new CGRect(.15 * DataType.Bounds.Width, .25 * step2.Bounds.Height,.1 * step2.Bounds.Width, .5 * step2.Bounds.Height));
       backArrow.Image = UIImage.FromBundle("img_bent_arrow");
       step2.AddSubview(backArrow);
 
@@ -131,19 +131,20 @@ namespace ION.IOS.ViewController.Logging {
 
       showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
       showGraphButton.Layer.BorderColor = UIColor.Black.CGColor;
-      showGraphButton.Layer.BorderWidth = 1f;
+      showGraphButton.Layer.BorderWidth = 2f;
       showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       showGraphButton.SetTitle("Graph Selection", UIControlState.Normal);
       showGraphButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       showGraphButton.Enabled = false;
       showGraphButton.Alpha = .6f;
+      showGraphButton.ClipsToBounds = true;
 
       ///user feedback for button press
       showGraphButton.TouchUpInside += (sender, e) => { showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
       showGraphButton.TouchDown += (sender, e) => { showGraphButton.BackgroundColor = UIColor.Blue;};
       showGraphButton.TouchUpOutside += (sender, e) => { showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
-      sessionTable = new UITableView(new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight));
+      sessionTable = new UITableView(new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 9 * cellHeight));
       sessionTable.RegisterClassForCellReuse(typeof(SessionCell),"sessionCell");
       sessionTable.BackgroundColor = UIColor.Clear;
       sessionTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -159,7 +160,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.InsertSubview(refreshSessions,0);
       sessionTable.SendSubviewToBack(refreshSessions);
 
-      jobTable = new UITableView(new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight));
+      jobTable = new UITableView(new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 9 * cellHeight));
       jobTable.RegisterClassForCellReuse(typeof(JobCell),"jobCell");
       jobTable.BackgroundColor = UIColor.Clear;
       jobTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -271,7 +272,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.ReloadData();
       sessionTable.LayoutIfNeeded();
 
-      await Task.Delay(TimeSpan.FromSeconds(1));
+      await Task.Delay(TimeSpan.FromSeconds(.5));
       activityLoadingTables.StopAnimating();
       sessionButton.Enabled = true;
       refreshSessions.EndRefreshing();
@@ -371,7 +372,7 @@ namespace ION.IOS.ViewController.Logging {
         noJobLabel.Hidden = true;
       }
 
-      await Task.Delay(TimeSpan.FromSeconds(1));
+      await Task.Delay(TimeSpan.FromSeconds(.5));
       activityLoadingTables.StopAnimating();
       refreshJobs.EndRefreshing();
       jobButton.Enabled = true;
