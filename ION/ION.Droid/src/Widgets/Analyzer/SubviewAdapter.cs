@@ -1,29 +1,18 @@
 ﻿namespace ION.Droid.Widgets.Analyzer {
   
   using System;
-  using System.Collections.Generic;
 
-  using Android.App;
-  using Android.Content;
-  using Android.Content.Res;
-  using Android.OS;
-  using Android.Support.V7.Widget;
-  using Android.Support.V7.Widget.Helper;
   using Android.Views;
-  using Android.Widget;
 
-  using ION.Core.App;
   using ION.Core.Content;
-  using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
+	using ION.Core.Util;
 
   using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
-  using ION.Droid.Widgets.Templates;
 
-  public class SubviewAdapter : RecyclerView.Adapter {
+  public class SubviewAdapter : SwipableRecyclerViewAdapter {
     public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
 
     public event OnSensorPropertyClicked onSensorPropertyClicked;
@@ -45,29 +34,16 @@
         records.Clear();
 
         if (__manifold != null) {
+					RefreshRecords();
           __manifold.onManifoldEvent += OnManifoldEvent;
-          RefreshRecords();
         }
       }
     } Manifold __manifold;
 
     /// <summary>
-    /// Gets the item count.
-    /// </summary>
-    /// <value>The item count.</value>
-    public override int ItemCount {
-      get {
-        return records.Count;
-      }
-    }
-    /// <summary>
     /// The bitmap cache that will contain all the flyweight bitmaps for the adapter's views.
     /// </summary>
     private BitmapCache cache;
-    /// <summary>
-    /// The list of records that will map to the subviews within the manifold.
-    /// </summary>
-    private List<IRecord> records = new List<IRecord>();
 
     public SubviewAdapter(BitmapCache cache) {
       this.cache = cache;
@@ -88,20 +64,18 @@
     /// </summary>
     /// <param name="parent">Parent.</param>
     /// <param name="viewType">View type.</param>
-    public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
-      var li = LayoutInflater.From(parent.Context);
-
+		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
-          return new MeasurementSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_small, parent, false), cache);
+          return new MeasurementSubviewViewHolder(parent, cache);
         case EViewType.PTChartSubview:
-          return new PTChartSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_small, parent, false));
+          return new PTChartSubviewViewHolder(parent);
         case EViewType.SuperheatSubcoolSubview:
-          return new SuperheatSubcoolSubviewViewHolder(li.Inflate(Resource.Layout.subview_fluid_small, parent, false));
+				return new SuperheatSubcoolSubviewViewHolder(parent);
         case EViewType.TimerSubview:
-          return new TimerSubviewViewHolder(li.Inflate(Resource.Layout.subview_timer_small, parent, false), cache);
+          return new TimerSubviewViewHolder(parent, cache);
         case EViewType.RateOfChangeSubview:
-          return new RateOfChangeSubviewViewHolder(li.Inflate(Resource.Layout.subview_measurement_small, parent, false), cache);
+          return new RateOfChangeSubviewViewHolder(parent, cache);
         default:
           throw new Exception("Unknown view type: " + viewType);
       }
@@ -112,47 +86,57 @@
     /// </summary>
     /// <param name="holder">Holder.</param>
     /// <param name="position">Position.</param>
-    public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public override void OnBindViewHolder(IRecord record, SwipableViewHolder holder, int position) {
       var viewType = GetItemViewType(position);
-      var record = records[position] as SensorPropertyRecord;
+			var r = record as SensorPropertyRecord;
+			holder.button.SetText(Resource.String.remove);
 
       switch ((EViewType)viewType) {
         case EViewType.MeasurementSubview:
           var mr = records[position] as MeasurementRecord;
-          (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
-          if (mr != null) {
-            (holder as MeasurementSubviewViewHolder)?.BindTo(mr);
-          }
+					(holder as MeasurementSubviewViewHolder).record = mr;
           break;
 
         case EViewType.RateOfChangeSubview:
-          var rr = record as RateOfChangeSubviewRecord;
-          (holder as RateOfChangeSubviewViewHolder)?.BindTo(rr);
+          var rr = r as RateOfChangeSubviewRecord;
+					(holder as RateOfChangeSubviewViewHolder).record = rr;
           break;
 
         case EViewType.TimerSubview:
-          var tr = record as TimerSubviewRecord;
-          (holder as TimerSubviewViewHolder)?.BindTo(tr);
+          var tr = r as TimerSubviewRecord;
+					(holder as TimerSubviewViewHolder).record = tr;
           break;
 
         case EViewType.PTChartSubview:
-          var pr = record as PTChartSubviewRecord;
-          (holder as PTChartSubviewViewHolder)?.BindTo(pr);
+          var pr = r as PTChartSubviewRecord;
+					(holder as PTChartSubviewViewHolder).record = pr;
           break;
 
         case EViewType.SuperheatSubcoolSubview:
-          var shr = record as SuperheatSubcoolSubviewRecord;
-          (holder as SuperheatSubcoolSubviewViewHolder)?.BindTo(shr);
+          var shr = r as SuperheatSubcoolSubviewRecord;
+					(holder as SuperheatSubcoolSubviewViewHolder).record = shr;
           break;
       }
 
       holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
         var sp = records[position];
         if (sp != null && onSensorPropertyClicked != null) {
-          onSensorPropertyClicked(manifold, record.sensorProperty);
+          onSensorPropertyClicked(manifold, r.sensorProperty);
         }
       }));
     }
+
+		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+			return true;
+		}
+
+		public override Action GetViewHolderSwipeAction(int index) {
+			Log.D(this, "Before we returned an action, we had: " + manifold.sensorPropertyCount);
+			return () => {
+				manifold.RemoveSensorPropertyAt(index);
+				Log.D(this, "The number of subviews in the manifold after remove: " + manifold.sensorPropertyCount);
+			};
+		}
 
     /// <summary>
     /// Raises the view detached from window event.
@@ -161,7 +145,7 @@
     public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
       base.OnViewDetachedFromWindow(holder);
 
-      (holder as SubviewAdapterViewHolder)?.Unbind();
+      (holder as SwipableViewHolder)?.Unbind();
     }
 
     /// <summary>
@@ -192,7 +176,7 @@
           break;
         case ManifoldEvent.EType.SensorPropertyRemoved:
           records.RemoveAt(me.index);
-          NotifyItemRangeRemoved(me.index, 1);
+					this.NotifyItemRemoved(me.index);
           break;
         case ManifoldEvent.EType.SensorPropertySwapped:
           break;
@@ -227,16 +211,12 @@
     TimerSubview,
   }
 
-  interface IRecord {
-    EViewType viewType { get; }
-  }
-
-  class SensorPropertyRecord : IRecord {
-    public EViewType viewType { get; private set; }
+	class SensorPropertyRecord : SwipableRecyclerViewAdapter.IRecord {
+		public int viewType { get { return (int)__viewType; } } EViewType __viewType;
     public ISensorProperty sensorProperty { get; private set; }
 
     public SensorPropertyRecord(EViewType viewType, ISensorProperty sensorProperty) {
-      this.viewType = viewType;
+			__viewType = viewType;
       this.sensorProperty = sensorProperty;
     }
   }
@@ -247,25 +227,6 @@
     public SensorPropertyRecord(EViewType viewType, T item) : base(viewType, item) {
       this.item = item;
     }
-  }
-
-  abstract class SubviewAdapterViewHolder : RecyclerView.ViewHolder {
-    public SubviewAdapterViewHolder(View view) : base(view) {
-    }
-
-    public abstract void BindTo(IRecord t);
-    public abstract void Unbind();
-  }
-
-  abstract class SubviewAdapterViewHolder<T> : SubviewAdapterViewHolder where T : IRecord {
-    public SubviewAdapterViewHolder(View view) : base(view) {
-    }
-
-    public override void BindTo(IRecord t) {
-      BindTo((T)t);
-    }
-
-    public abstract void BindTo(T t);
   }
 }
 
