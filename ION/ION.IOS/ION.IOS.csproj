@@ -1074,6 +1074,7 @@
     <BundleResource Include="Resources\xml\whats_new.xml" />
     <BundleResource Include="Resources\.DS_Store" />
     <BundleResource Include="Resources\src\.DS_Store" />
+    <BundleResource Include="Resources\xml\VersionUpdateLog.txt" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
