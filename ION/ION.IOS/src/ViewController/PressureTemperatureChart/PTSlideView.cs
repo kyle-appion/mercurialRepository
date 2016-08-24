@@ -73,11 +73,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		
       minPressure = setPressureStart(lookup);
 	  //minPressure = ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup).amount;
-	  maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup);
+	  	maxPressure = ptChart.fluid.GetMaximumPressure(ptChart.state).ConvertTo(lookup);
       maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure,ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup);
 
       minTemperature = ptChart.GetTemperature(new Scalar(lookup,minPressure), pressureSensor.isRelative).ConvertTo(tempLookup);
-	  maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount;
+	  	maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount;
 
 //	  Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
    // Console.WriteLine ("min pressure: " + minPressure);

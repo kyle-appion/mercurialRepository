@@ -46,7 +46,7 @@
     <IpaPackageName>
     </IpaPackageName>
     <MtouchUseLlvm>false</MtouchUseLlvm>
-    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchLink>Full</MtouchLink>
     <MtouchFloat32>false</MtouchFloat32>
     <OptimizePNGs>false</OptimizePNGs>
   </PropertyGroup>
@@ -79,7 +79,7 @@
     </IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
-    <MtouchLink>SdkOnly</MtouchLink>
+    <MtouchLink>Full</MtouchLink>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
   <ItemGroup>
@@ -653,9 +653,7 @@
     <InterfaceDefinition Include="Resources\View.xib" />
     <InterfaceDefinition Include="src\Storyboard\Storyboard.storyboard" />
     <InterfaceDefinition Include="src\Storyboard\IONNavigationCell.xib" />
-    <InterfaceDefinition Include="src\ViewController\JobManager\JobViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
-    <InterfaceDefinition Include="src\ViewController\JobManager\JobEditViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
   </ItemGroup>
   <ItemGroup>
