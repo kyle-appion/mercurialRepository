@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
 	<display version="0.9.11">
+		<new>The analyzer is now saved across app instances</new>
 		<update>Improved new gauge bluetooth performance</update>
-		<update>Applied an alphabetical sort to refrigerant list</update>>
+		<update>Applied an alphabetical sort to refrigerant list</update>
+		<fixed>Analyzer subview bugs</fixed>
 	</display>
 	<display version="0.9.10">
 		<new>Added Data Logging</new>
