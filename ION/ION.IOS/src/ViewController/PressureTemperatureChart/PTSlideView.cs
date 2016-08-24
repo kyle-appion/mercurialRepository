@@ -12,14 +12,14 @@ using ION.Core.Sensors;
 namespace ION.IOS.ViewController.PressureTemperatureChart {
   public class PTSlideView : UIView{
 
-	CGPath pressurePath;
+		CGPath pressurePath;
     CGPath temperaturePath;
     PTChart ptChart;
     public Unit lookup;
     public Unit tempLookup;
     Sensor pressureSensor;
-	public Scalar maxPressure;
-	public Scalar minTemperature;
+		public Scalar maxPressure;
+		public Scalar minTemperature;
     public double maxTemperature;
     double sViewWidth;
     double sViewHeight;
@@ -32,8 +32,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public int secondMeasurements;
     public int middleMeasurements;
     public double startGap;
-	public double pressTicks;
-	public double tempTicks;
+		public double pressTicks;
+		public double tempTicks;
     public double measurementWidth;
     IION ion;
 
@@ -79,14 +79,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       minTemperature = ptChart.GetTemperature(new Scalar(lookup,minPressure), pressureSensor.isRelative).ConvertTo(tempLookup);
 	  	maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount;
 
-//	  Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
-   // Console.WriteLine ("min pressure: " + minPressure);
-   // Console.WriteLine ("max pressure: " + maxPressure.amount);
-	  //Console.WriteLine ("min temperature: " + minTemperature);
-//	  Console.WriteLine ("fluid min temperature: " + ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup));
-//	  Console.WriteLine ("min pressure for min temperature" + ptChart.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
-//	  Console.WriteLine ("min pressure for fluid min temperature: " + ptChart.GetPressure(new Scalar(tempLookup,ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup).amount),pressureSensor.isRelative).ConvertTo(lookup));
-//    Console.WriteLine ("max temperature: " + maxTemperature);
+		  //Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
+	   // Console.WriteLine ("min pressure: " + minPressure);
+	   // Console.WriteLine ("max pressure: " + maxPressure.amount);
+		  //Console.WriteLine ("min temperature: " + minTemperature);
+		  //Console.WriteLine ("fluid min temperature: " + ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup));
+		  //Console.WriteLine ("min pressure for min temperature" + ptChart.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
+		  //Console.WriteLine ("min pressure for fluid min temperature: " + ptChart.GetPressure(new Scalar(tempLookup,ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup).amount),pressureSensor.isRelative).ConvertTo(lookup));
+	   // Console.WriteLine ("max temperature: " + maxTemperature);
 
       startGap = sViewWidth / 2.0;
       measurementWidth = this.Frame.Width - sViewWidth;
