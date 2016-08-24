@@ -205,8 +205,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         }
       }
     } SensorEntryMode __entryMode;
-    
-    private UILabel debugOutput;
 
     public PTChartViewController (IntPtr handle) : base (handle) {
     }
@@ -228,10 +226,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           root.navigation.ToggleMenu();
         };
       }
-			debugOutput = new UILabel(new CGRect(0,448,View.Bounds.Width, View.Bounds.Height - 448));
-			debugOutput.Lines = 0;
-			debugOutput.AdjustsFontSizeToFitWidth = true;
-			View.AddSubview(debugOutput);
+
       ion = AppState.context;
 
       ion.locationManager.onLocationChanged += DeltaOnLocationChanged;
@@ -829,24 +824,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     /// then it sets the edit text and calls the method to calculate the temperature equivalent
     /// </summary>
     private double setTemperatureValueFromSlider(){
-    	var debugString = "Slider offset: " + ptSlider.ptScroller.ContentOffset.X + "\n";
-			debugString += "Max width: " + ptSlider.ptView.measurementWidth + "\n";
-
 			if (ptSlider.ptScroller.ContentOffset.X <= 0) {
-				debugOutput.Text = debugString;
 				return ptSlider.ptView.setPressureStart(pressureUnit);
 			} else if (ptSlider.ptScroller.ContentOffset.X >= ptSlider.ptView.measurementWidth){
-				debugOutput.Text = debugString;
 				return ptSlider.ptView.maxTemperature;
 			} else {
-				debugString += "TempTicks: " + ptSlider.ptView.tempTicks + "\n";
 				var temperatureValue = ptSlider.ptScroller.ContentOffset.X / ptSlider.ptView.tempTicks + ptSlider.ptView.minTemperature.amount;
 				editTemperature.Text = temperatureValue.ToString ("N");
 				SetTemperatureMeasurementFromEditText ();
-				debugOutput.Text = debugString;
 				return temperatureValue;
-			}
-			
+			}			
     }
 
     public void DeltaOnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation){

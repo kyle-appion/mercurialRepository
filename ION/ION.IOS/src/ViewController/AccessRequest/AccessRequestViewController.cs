@@ -109,6 +109,11 @@ namespace ION.IOS.ViewController.AccessRequest {
 				this.NavigationItem.RightBarButtonItem.Enabled = true;
 			}			
 		}
+		
+		public void uploadTimer(){
+
+		}
+		
 		public override void DidReceiveMemoryWarning() {
 			base.DidReceiveMemoryWarning();
 			// Release any cached data, images, etc that aren't in use.

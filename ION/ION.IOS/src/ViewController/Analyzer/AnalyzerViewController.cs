@@ -69,7 +69,6 @@ namespace ION.IOS.ViewController.Analyzer {
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       viewAnalyzerContainer.Bounds = View.Bounds;      
 			viewAnalyzerContainer.BackgroundColor = UIColor.Clear;
-			Console.WriteLine(": " + View.Bounds);
 		
       arvc = this;
       
@@ -911,7 +910,6 @@ namespace ION.IOS.ViewController.Analyzer {
 					Console.WriteLine("trying to add to a null list");
 				}
 				if(!sensorList.Contains(sensor)){
-					Console.WriteLine("adding sensor to sensor list");
         	sensorList.Add(sensor);
         }
         area.currentSensor = sensor;
@@ -1014,7 +1012,6 @@ namespace ION.IOS.ViewController.Analyzer {
           for(int i = start; i < stop; i ++){
             if(!analyzerSensors.viewList[i].availableView.Hidden){
               if(!sensorList.Contains(sensor)){
-                Console.WriteLine("LH Area added a sensor");
                 sensorList.Add(sensor);
               }
               analyzerSensors.viewList[i].currentSensor = sensor;
