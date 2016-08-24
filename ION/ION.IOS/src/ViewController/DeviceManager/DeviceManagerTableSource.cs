@@ -562,16 +562,8 @@
               case Actions.ForgetAll:
                 dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET_ALL, UIAlertActionStyle.Default, async (action) => {
                   foreach (var device in section.devices) {
-                  	/******************************/
-                  	var deviceState = device.GetDeviceState();
-                  	var deviceSection = allSections[deviceState];
-                  	var deviceIndex = 0;
-                  	var deviceRemoved = 0;
-                  	deviceSection.RemoveDevice(device,out deviceIndex, out deviceRemoved);
-                  	
-                  	//var foundSection = allSections[edevi]
-                  	/******************************/
                     await ion.deviceManager.DeleteDevice(device.serialNumber);
+                    Reload();
                   }
                 }));
                 break;
