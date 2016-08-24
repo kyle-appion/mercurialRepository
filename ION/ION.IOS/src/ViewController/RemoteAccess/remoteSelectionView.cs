@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Foundation;
 using CoreGraphics;
 using UIKit;
-using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
 using ION.Core.App;
-using ION.IOS.App;
 using ION.IOS.ViewController.WebServices;
 
 namespace ION.IOS.ViewController.RemoteAccess {

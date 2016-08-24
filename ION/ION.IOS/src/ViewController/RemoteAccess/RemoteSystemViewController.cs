@@ -8,7 +8,6 @@ using ION.Core.App;
 using ION.IOS.App;
 using Newtonsoft.Json.Linq;
 using System.Text;
-using System.Collections.ObjectModel;
 using ION.IOS.ViewController.WebServices;
 
 namespace ION.IOS.ViewController.RemoteAccess {

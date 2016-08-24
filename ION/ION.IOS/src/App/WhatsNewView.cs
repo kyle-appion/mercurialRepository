@@ -29,9 +29,11 @@ namespace ION.IOS.App {
 		{
 
 			var updateSize = 0.0;
+			var contentMultiplier = 105;
 			if(UserInterfaceIdiomIsPhone){
 				headingSize = 3;
 				fontSize = 14;
+				contentMultiplier = 80; 
 			} else {
 				headingSize = 2;
 				fontSize = 20;
@@ -61,7 +63,6 @@ namespace ION.IOS.App {
 						itemCount++;
 					}
 					sb.Append("</br>");
-
 				}
 				if(wn.whatsFixed.Count > 0){
 					sb.Append("<b><h"+headingSize+">").Append(" FIXED").Append("</h"+headingSize+"></b>");
@@ -70,11 +71,8 @@ namespace ION.IOS.App {
 						itemCount++;
 					}
 					sb.Append("</br>");
-
 				}
 			}
-			
-			Console.WriteLine("there were " + itemCount + " new things updated");
 
 			NSError error = null;
 			var htmlString = new NSAttributedString (
@@ -82,14 +80,14 @@ namespace ION.IOS.App {
 				new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
 				ref error
 			);
-
-			infoView = new UIView(new CGRect(.025 * parentView.Bounds.Width, 80, .95 * parentView.Bounds.Width, .85 * parentView.Bounds.Height));
+			
+			infoView = new UIView(new CGRect(.025 * parentView.Bounds.Width, .12 * parentView.Bounds.Height, .95 * parentView.Bounds.Width, .8 * parentView.Bounds.Height));
 			infoView.Layer.CornerRadius = 5;
 			infoView.ClipsToBounds = true;
 			infoView.BackgroundColor = UIColor.White;
 			infoView.Layer.BorderWidth = 1f;
-			
-			viewHeader = new UILabel(new CGRect(0,0,infoView.Bounds.Width, 90));
+
+			viewHeader = new UILabel(new CGRect(0,0,infoView.Bounds.Width,.12 * parentView.Bounds.Height));
 			viewHeader.Lines = 0;
 			viewHeader.BackgroundColor = UIColor.FromRGB(9,211,255);
 			viewHeader.ClipsToBounds = true;
@@ -102,29 +100,30 @@ namespace ION.IOS.App {
 			viewHeader.Layer.MasksToBounds = false;
 			viewHeader.Text = " New This Version";
 			
-			closeCorner = new UIButton(new CGRect(viewHeader.Bounds.Width - 45,25,35,35));
+			closeCorner = new UIButton(new CGRect(viewHeader.Bounds.Width - .5 * viewHeader.Bounds.Height,.25 * viewHeader.Bounds.Height,.5 * viewHeader.Bounds.Height,.5 * viewHeader.Bounds.Height));
 			closeCorner.SetImage(UIImage.FromBundle("img_button_blackclosex"),UIControlState.Normal);
 			closeCorner.BackgroundColor = UIColor.Clear;
-			closeCorner.TouchUpInside += (sender, e) => {
+			closeCorner.TouchUpInside += (sender, e) => { 
 				infoView.RemoveFromSuperview();
 			};
 			
-			contentHolder = new UIScrollView(new CGRect(0,90,infoView.Bounds.Width,itemCount * 105));
+			contentHolder = new UIScrollView(new CGRect(0,.12 * parentView.Bounds.Height,infoView.Bounds.Width,infoView.Bounds.Height));
 			contentHolder.Layer.CornerRadius = 5;
 			contentHolder.ClipsToBounds = true;
-			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width, updateSize * contentHolder.Bounds.Height);
+			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width, itemCount * contentMultiplier);
 			
-			closeBottom = new UIButton(new CGRect(0,infoView.Bounds.Height - 50,infoView.Bounds.Width,50));
+			closeBottom = new UIButton(new CGRect(0,infoView.Bounds.Height - .07 * parentView.Bounds.Height,infoView.Bounds.Width,.07 * parentView.Bounds.Height));
 			closeBottom.ClipsToBounds = true;
+			closeBottom.BackgroundColor = UIColor.White;
 			closeBottom.SetTitle("Close",UIControlState.Normal);
 			closeBottom.SetTitleColor(UIColor.Black,UIControlState.Normal);
 			closeBottom.Layer.BorderWidth = 1f;
-			closeBottom.Layer.BorderColor = UIColor.LightGray.CGColor;
+			closeBottom.Layer.BorderColor = UIColor.LightGray.CGColor; 
 			closeBottom.TouchUpInside += (sender, e) => {
 				infoView.RemoveFromSuperview();
 			};
 			
-			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width, updateSize * contentHolder.Bounds.Height));
+			content = new UITextView(new CGRect(0,0,contentHolder.Bounds.Width, itemCount * contentMultiplier));
 			content.Layer.CornerRadius = 5;
 			content.ClipsToBounds = true;
 			content.UserInteractionEnabled = false;
@@ -138,7 +137,7 @@ namespace ION.IOS.App {
 				fontSize = 15;
 			}
 			
-      content.AttributedText = htmlString;
+      content.AttributedText = htmlString; 
 			
 			contentHolder.AddSubview(content);
 			infoView.AddSubview(viewHeader);

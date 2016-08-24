@@ -1,16 +1,10 @@
 ﻿using System;
-using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Net;
-using Foundation;
 using CoreGraphics;
 using UIKit;
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-using ION.IOS.App;
 using ION.IOS.ViewController.WebServices;
 
 namespace ION.IOS.ViewController.AccessRequest {

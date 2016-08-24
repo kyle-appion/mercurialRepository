@@ -228,9 +228,9 @@ namespace ION.IOS.ViewController {
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
 #if DEBUG 
-    		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
-    			OpenWalkthroughSections();
-    		} )
+    		//.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    		//	OpenWalkthroughSections();
+    		//} )
     //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
 				//	ShowRSSFeed();
 				//} )
