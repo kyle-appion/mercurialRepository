@@ -168,6 +168,8 @@
 					device.onDeviceEvent -= OnDeviceEvent;
         }
       }
+
+			__foundDevices.Clear();
     }
 
     // Overridden from IDeviceManager
