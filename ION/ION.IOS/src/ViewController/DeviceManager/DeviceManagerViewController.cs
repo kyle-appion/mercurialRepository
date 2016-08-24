@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// <summary>
     /// The delegate that is used to pass a sensor back from the device manager.
     /// </summary>
-    public delegate void OnSensorReturn(GaugeDeviceSensor sensor);
+    public delegate void OnSensorReturn(GaugeDeviceSensor sensor); 
 
     /// <summary>
     /// The action that will be fired when the user selects a sensor for returning 
