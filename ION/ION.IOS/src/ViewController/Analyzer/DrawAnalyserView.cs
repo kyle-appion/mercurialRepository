@@ -25,10 +25,6 @@ namespace ION.IOS.ViewController.Analyzer
 			rect = deviceRect;
 		
 			base.Draw (rect);
-
-			Console.WriteLine("Analyzer draw thing was called. Working with bounds " + rect);
-			Console.WriteLine("Reference rect " + deviceRect);
-
 			
 			if(rect.Height < 550){
 				smallDraw(rect);
