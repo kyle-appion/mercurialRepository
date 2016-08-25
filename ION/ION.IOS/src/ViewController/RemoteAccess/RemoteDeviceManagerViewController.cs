@@ -80,7 +80,7 @@
       InitNavigationBar("ic_nav_device_manager", true);
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       NavigationItem.Title = Strings.Device.Manager.SELF.FromResources();
-      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, async delegate {
+      NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.Device.Manager.SCAN.FromResources(), UIBarButtonItemStyle.Plain, delegate {
       if(!ion.deviceManager.connectionHelper.isEnabled){
 		  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to discover peripherals", null,"Close","Settings");
 	      bluetoothWarning.Clicked += (sender, e) => {
@@ -91,9 +91,9 @@
 	      bluetoothWarning.Show();
 	  } else {
 		  if (ion.deviceManager.connectionHelper.isScanning) {
-		    ion.deviceManager.connectionHelper.Stop();
+		    ion.deviceManager.connectionHelper.StopScan();
 		  } else {
-		    if (!await ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
+		    if (!ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME))) {
 		      Toast.New(View, Strings.Errors.SCAN_INIT_FAIL);
 		    }
 		  }
@@ -120,14 +120,14 @@
     public override void ViewWillAppear(bool animated) {
       base.ViewWillAppear(animated);
       allowRefresh = true;
-      ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+      ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
       deviceSource.Reload();
     }
 
     public override void ViewWillDisappear(bool animated) {
       base.ViewWillDisappear(animated);
       allowRefresh = false;
-      ion.deviceManager.connectionHelper.Stop();
+      ion.deviceManager.connectionHelper.StopScan();
       deviceSource.Release();
       ion.deviceManager.ForgetFoundDevices();
     }

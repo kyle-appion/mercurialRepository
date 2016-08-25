@@ -476,7 +476,6 @@
     <AndroidResource Include="Resources\layout\list_item_data_log_overview.axml" />
     <AndroidResource Include="Resources\layout\dialog_date_time.axml" />
     <AndroidResource Include="Resources\layout\list_item_ion_recycler_view_holder.axml" />
-    <AndroidResource Include="Resources\xml\whats_new.xml" />
     <AndroidResource Include="Resources\layout\dialog_whats_new.axml" />
     <AndroidResource Include="Resources\drawable\ic_nav_certificates.png" />
     <AndroidResource Include="Resources\drawable\ic_scroll.png" />
@@ -621,6 +620,7 @@
     <AndroidResource Include="Resources\drawable\spinner_background_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\tab_indicator_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
+    <AndroidResource Include="Resources\xml\whats_new.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

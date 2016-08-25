@@ -125,7 +125,7 @@ namespace ION.IOS.Connections {
           if (serialNumber.rawSerial.Length == 8) {
             // TODO ahodder@appioninc.com: Finish 
             //            protocol = EProtocolVersion.Rigado;
-          } else if (EProtocolVersion.V1 == rawProtocol || EProtocolVersion.V2 == rawProtocol || EProtocolVersion.V3 == rawProtocol) {
+					} else if (EProtocolVersion.V1 == rawProtocol) {
             protocol = rawProtocol;
           } else {
             protocol = EProtocolVersion.V1;
@@ -175,7 +175,7 @@ namespace ION.IOS.Connections {
 		protected override void Dispose(bool disposing) {
 			base.Dispose(disposing);
 
-			Stop();
+			StopScan();
 			centralManager.Dispose();
 		}
 
@@ -205,24 +205,26 @@ namespace ION.IOS.Connections {
     /// <param name="scanTime">Scan time.</param>
     /// <returns>True if the scan was started, false otherwise. False may
     /// be returned if the connection helper is currently scanning.</returns>
-    public async Task<bool> Scan(TimeSpan scanTime) {
-      if (isScanning) {
-        return true;
-      }
+    public bool StartScan(TimeSpan scanTime) {
+			Task.Factory.StartNew(async () => {
+	      if (isScanning) {
+	        return;
+	      }
 
-      isScanning = true;
-      cancelSource = new CancellationTokenSource();
-      var options = new PeripheralScanningOptions();
-      options.AllowDuplicatesKey = false;
-      centralManager.ScanForPeripherals((CBUUID[])null, options);
+	      isScanning = true;
+	      cancelSource = new CancellationTokenSource();
+	      var options = new PeripheralScanningOptions();
+	      options.AllowDuplicatesKey = false;
+	      centralManager.ScanForPeripherals((CBUUID[])null, options);
 
-      var startTime = DateTime.Now;
+	      var startTime = DateTime.Now;
 
-      while (!cancelSource.Token.IsCancellationRequested && DateTime.Now - startTime < scanTime) {
-        await Task.Delay(50);
-      }
+	      while (!cancelSource.Token.IsCancellationRequested && DateTime.Now - startTime < scanTime) {
+	        await Task.Delay(50);
+	      }
 
-      isScanning = false;
+	      isScanning = false;
+			});
 
       return true;
     }
@@ -232,7 +234,7 @@ namespace ION.IOS.Connections {
     /// scan will NOT repeat after this call. A call to Reset must be made
     /// to reactive the scanner.
     /// </summary>
-    public void Stop() {
+    public void StopScan() {
       if (cancelSource != null) {
         cancelSource.Cancel();
       }

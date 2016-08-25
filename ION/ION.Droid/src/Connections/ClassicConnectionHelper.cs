@@ -1,6 +1,4 @@
-﻿/*
-
-namespace ION.Core.Connections {
+﻿namespace ION.Core.Connections {
 
   using System;
   using System.Collections.Generic;
@@ -100,27 +98,10 @@ namespace ION.Core.Connections {
     }
 
     /// <summary>
-    /// Enables the connection helper's backend.
-    /// </summary>
-    public async Task<bool> Enable() {
-      if (!isEnabled) {
-        adapter.Enable();
-
-        var start = DateTime.Now;
-
-        while (DateTime.Now - start < TimeSpan.FromMilliseconds(15000)) {
-          await Task.Delay(100);
-        }
-      }
-
-      return isEnabled;
-    }
-
-    /// <summary>
     /// Platform code for starting a scan.
     /// </summary>
     /// <returns>The scan async.</returns>
-    public async Task<bool> Scan(TimeSpan scanTime) {
+    public bool StartScan(TimeSpan scanTime) {
       var filter = new IntentFilter();
       filter.AddAction(BluetoothAdapter.ActionDiscoveryFinished);
       filter.AddAction(BluetoothDevice.ActionFound);
@@ -130,18 +111,12 @@ namespace ION.Core.Connections {
         return false;
       }
 
-      await Task.Delay(500);
-
-      while (adapter.IsDiscovering) {
-        await Task.Delay(500);
-      }
-
       return true;
     }
     /// <summary>
     /// Platform code for stopping a scan.
     /// </summary>
-    public void Stop() {
+    public void StopScan() {
       try {
         context.UnregisterReceiver(receiver);
       } catch (Exception e) {
@@ -160,7 +135,7 @@ namespace ION.Core.Connections {
     /// <see cref="ION.Droid.Connections.ClassicConnectionHelper"/> so the garbage collector can reclaim the memory that
     /// the <see cref="ION.Droid.Connections.ClassicConnectionHelper"/> was occupying.</remarks>
     public void Dispose() {
-      Stop();
+      StopScan();
     }
 
     /// <summary>
@@ -194,7 +169,7 @@ namespace ION.Core.Connections {
 
       switch (intent.Action) {
         case BluetoothAdapter.ActionDiscoveryFinished:
-          Stop();
+          StopScan();
           break;
         case BluetoothDevice.ActionFound:
           var device = (BluetoothDevice)intent.GetParcelableExtra(BluetoothDevice.ExtraDevice);
@@ -249,5 +224,3 @@ namespace ION.Core.Connections {
     }
   }
 }
-
-*/

@@ -25,16 +25,20 @@
 
 				// Write the low side manifold
 				if (analyzer.lowSideManifold != null) {
-					writer.Write(true);
-					ManifoldParser.WriteManifold(ion, analyzer.lowSideManifold, writer);
+					if (!(analyzer.lowSideManifold.primarySensor is ManualSensor)) {
+						writer.Write(true);
+						ManifoldParser.WriteManifold(ion, analyzer.lowSideManifold, writer);						
+					}
 				} else {
 					writer.Write(false);
 				}
 
 				// Write the high side manifold
 				if (analyzer.highSideManifold != null) {
-					writer.Write(true);
-					ManifoldParser.WriteManifold(ion, analyzer.highSideManifold, writer);
+					if (!(analyzer.highSideManifold.primarySensor is ManualSensor)) {
+						writer.Write(true);
+						ManifoldParser.WriteManifold(ion, analyzer.highSideManifold, writer);
+					}
 				} else {
 					writer.Write(false);
 				}

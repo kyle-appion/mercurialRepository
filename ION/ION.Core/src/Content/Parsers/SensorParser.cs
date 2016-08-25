@@ -108,14 +108,14 @@
 				writer.Write(sensor.measurement.amount);
 				// Write the minimum measurement of the sensor
 				if (sensor.minMeasurement.unit == null) {
-					writer.Write(0);
+					writer.Write((byte)0);
 				} else {
 					writer.Write((byte)UnitLookup.GetCode(sensor.minMeasurement.unit));
 					writer.Write(sensor.minMeasurement.amount);
 				}
 				// Write the maximum measurement of the sensor
 				if (sensor.maxMeasurement.unit == null) {
-					writer.Write(0);
+					writer.Write((byte)0);
 				} else {
 					writer.Write((byte)UnitLookup.GetCode(sensor.maxMeasurement.unit));
 					writer.Write(sensor.maxMeasurement.amount);

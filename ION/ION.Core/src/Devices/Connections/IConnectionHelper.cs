@@ -37,6 +37,11 @@
     /// </summary>
     event OnDeviceFound onDeviceFound;
 
+		/// <summary>
+		/// Queries whether or not the adapter is enabled.
+		/// </summary>
+		/// <value><c>true</c> if is enabled; otherwise, <c>false</c>.</value>
+		bool isEnabled { get; }
     /// <summary>
     /// Whether or not the connection helper is currently scanning.
     /// </summary>

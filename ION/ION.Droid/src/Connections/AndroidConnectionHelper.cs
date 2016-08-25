@@ -26,6 +26,8 @@
 
 		public event OnDeviceFound onDeviceFound;
 
+		public bool isEnabled { get { return manager.Adapter.IsEnabled; } }
+
 		public bool isScanning { 
 			get {
 				return __isScanning;
