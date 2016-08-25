@@ -3,8 +3,10 @@
 	<display version="0.9.11">
 		<new>The analyzer is now saved across app instances</new>
 		<update>Improved new gauge bluetooth performance</update>
-		<update>Applied an alphabetical sort to refrigerant list</update>
-		<fixed>Analyzer subview bugs</fixed>
+		<update>Updated refrigerant list sorting</update>
+		<fixed>Fixed issue where bluetooth devices wouldn't communicate</fixed>
+		<fixed>Fixed Analyzer subview bugs</fixed>
+		<fixed>Fixed Analyzer rendering bugs</fixed>
 	</display>
 	<display version="0.9.10">
 		<new>Added Data Logging</new>

@@ -133,6 +133,7 @@
     public RemoteIosION() {
       // Order matters - Manager's with no dependencies should come first such
       // that later manager's may depend on them.
+/*
       var ch = new RemoteLeConnectionHelper();
 
       managers.Add(fileManager = new IosFileManager());
@@ -141,6 +142,7 @@
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));
       managers.Add(fluidManager = new BaseFluidManager(this));
+*/
     }
 
     // Overridden from IION

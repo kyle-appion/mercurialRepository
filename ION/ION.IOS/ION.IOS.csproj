@@ -967,9 +967,6 @@
       <DependentUpon>RemoteSensorTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\remoteSelectionView.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosConnectionFactory.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteIosLeConnection.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteLeConnectionHelper.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteIosION.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteLoginView.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteIosLocationManager.cs" />
