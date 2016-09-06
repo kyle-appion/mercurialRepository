@@ -93,15 +93,13 @@ namespace ION.IOS.ViewController.Analyzer {
 	      analyzer.sensorList = sensorList;
 
       } else {
-
 				analyzer = ion.currentAnalyzer;
 				
 				if(analyzer.sensorList == null){
 		      sensorList = new List<Sensor>();
 		      analyzer.sensorList = sensorList;
-				} else {
-					sensorList = ion.currentAnalyzer.sensorList;
-					analyzer.sensorList = sensorList;
+				} else {					
+					analyzer.sensorList = ion.currentAnalyzer.sensorList;;
 				}
 				
 	      dataRecord = new UIButton(new CGRect(0,0,35,35));
@@ -907,7 +905,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if(!existingConnection){
         sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier) - 1;
         if(sensorList == null){
-					Console.WriteLine("trying to add to a null list");
+					sensorList = new List<Sensor>();
 				}
 				if(!sensorList.Contains(sensor)){
         	sensorList.Add(sensor);

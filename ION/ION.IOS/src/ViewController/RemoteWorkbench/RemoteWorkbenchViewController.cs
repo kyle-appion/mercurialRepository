@@ -1,4 +1,4 @@
-namespace ION.IOS.ViewController.Workbench {
+﻿namespace ION.IOS.ViewController.RemoteAccess {
 
 	using System;
 	using System.Collections.Generic;
@@ -26,11 +26,8 @@ namespace ION.IOS.ViewController.Workbench {
 	using ION.IOS.ViewController.DeviceManager;
 	using ION.IOS.ViewController.ScreenshotReport;
 	using ION.IOS.ViewController.RemoteDeviceManager;
-	using AudioToolbox;
-	using ION.IOS.App;
-	using ION.Core.Net;
 
-	public partial class WorkbenchViewController : BaseIONViewController {
+	public partial class RemoteWorkbenchViewController : BaseIONViewController {
     /// <summary>
     /// The current ion context.
     /// </summary>
@@ -45,13 +42,13 @@ namespace ION.IOS.ViewController.Workbench {
     /// The source that will provide Viewer views to the table view.
     /// </summary>
     /// <value>The source.</value>
-    private WorkbenchTableSource source { get; set; }
-
+    private RemoteWorkbenchTableSource source { get; set; }
+		public UITableView tableContent;
     public UIButton recordButton;
-		public WebPayload webServices;    
+    
     public bool remoteMode = false;
-		public bool isViewing = false;
-    public WorkbenchViewController (IntPtr handle) : base (handle) {
+
+    public RemoteWorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
     }
 
@@ -69,15 +66,13 @@ namespace ION.IOS.ViewController.Workbench {
       Title = Strings.Workbench.SELF.FromResources();
 
       ion = AppState.context;
-			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-      webServices = appDelegate.webServices;
+      
  			
      
 			if(remoteMode){
 				workbench = new Workbench(ion);
-				isViewing = true;
-				pullUserLayouts();
-
+				//workbench.storedWorkbench = ion.currentWorkbench;
+				//ion.currentWorkbench = workbench;
 			} else {
 	      var button = new UIButton(new CGRect(0, 0, 31, 30));
 	      button.TouchUpInside += (obj, args) => {
@@ -101,7 +96,7 @@ namespace ION.IOS.ViewController.Workbench {
       tableContent.AllowsSelection = true;
       tableContent.ContentInset = new UIEdgeInsets(0, 0, 0, 0);
 
-      source = new WorkbenchTableSource(this, ion, tableContent);
+      source = new RemoteWorkbenchTableSource(this, ion, tableContent);
 			source.SetWorkbench(workbench);
       source.onAddClicked = OnRequestViewer;
 
@@ -228,52 +223,6 @@ namespace ION.IOS.ViewController.Workbench {
       await Task.Delay(TimeSpan.FromSeconds(1));
       messageBox.DismissWithClickedButtonIndex(0, true);
     }
-    
-		public async void pullUserLayouts(){
-			var startedViewing = DateTime.Now;
-			while(isViewing){
-			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
-			 	SystemSound newSound = new SystemSound (1005);
 
-				if(timeDifference < 30){
-					var loggedUser = KeychainAccess.ValueForKey("userID");
-					if(!string.IsNullOrEmpty(loggedUser)){
-						await webServices.DownloadLayouts(workbench);
-						await Task.Delay(TimeSpan.FromSeconds(8));
-					} else {
-						isViewing = false;
-					}
-				} else {
-					isViewing = false;					
-					
-					var window = UIApplication.SharedApplication.KeyWindow;
-		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-					
-					var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-						isViewing = true;
-						pullUserLayouts();
-						newSound.Close();
-					}));
-					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {newSound.Close();}));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					AbsentRemoteTurnoff(alert);	
-
-					newSound.PlaySystemSound();
-					await Task.Delay(TimeSpan.FromSeconds(2));
-					newSound.Close();				
-				}
-			}
-		}    
-
-		public async void AbsentRemoteTurnoff(UIAlertController alert){
-			await Task.Delay(TimeSpan.FromSeconds(15));
-			
-			alert.DismissViewController(false,null);
-			if(!isViewing){
-				Console.WriteLine("dismissed alert and user didn't choose to continue");
-				workbench = ion.currentWorkbench;
-			}
-		}
   }
 }

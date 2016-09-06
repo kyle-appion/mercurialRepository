@@ -169,6 +169,12 @@
     /// </summary>
     /// <value>The sensors per side.</value>
     public int sensorsPerSide { get; private set; }
+    
+    /// <summary>
+    /// Gets or sets the remote analyzer.
+    /// </summary>
+    /// <value>The remote analyzer.</value>
+    public Analyzer storedAnalyzer {get; set;}
 
     /// <summary>
     /// The manifold that will represent the fore front low side sensors. Null indicates no manifold is present.

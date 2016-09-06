@@ -122,6 +122,11 @@
     /// The backing list of manifolds for the workbench.
     /// </summary>
     public readonly List<Manifold> manifolds = new List<Manifold>();
+    
+    /// <summary>
+    /// Will store the original workbench instance for transitioning between remote viewing mode
+    /// </summary>
+    public  Workbench storedWorkbench;
 
     public Workbench(IION ion) {
       this.ion = ion;
@@ -232,7 +237,7 @@
     /// Clears the workbench of all manifolds.
     /// </summary>
     public void Clear() {
-      foreach (Manifold m in manifolds) {
+      foreach (Manifold m in manifolds.ToArray()) {
         Remove(m);
       }
     }
@@ -258,6 +263,26 @@
       return false;
     }
 
+		public int GetDeviceIndex(ISerialNumber serialNumber){
+      if (serialNumber != null) {
+        for(int i = 0; i < manifolds.Count; i++) {
+          var p = manifolds[i].primarySensor as GaugeDeviceSensor;
+          var s = manifolds[i].secondarySensor as GaugeDeviceSensor; 
+					
+					if(p != null){
+	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial){
+							return i;
+						};
+					}
+					if(s != null){
+	          if(serialNumber.rawSerial == s.device.serialNumber.rawSerial){
+							return i;
+						};
+					}
+        }
+      }
+			return 99;
+		}
     /// <summary>
     /// Queries whether or not the workbench contains the given sensor as a primary
     /// sensor to a manifold that exists within the workbench.

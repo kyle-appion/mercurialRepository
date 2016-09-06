@@ -10,7 +10,7 @@ using System.Net;
 using System.Text;
 using Newtonsoft.Json.Linq;
 using ION.Core.App;
-using ION.IOS.ViewController.WebServices;
+
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
@@ -65,7 +65,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
     	cellHeight = 50;
     	
     	cell.Layer.BorderWidth = 1f;
-      cell.makeCellData(cellHeight, tableItems[indexPath.Row]);
+      cell.makeCellData(tableView.Bounds.Width,cellHeight, tableItems[indexPath.Row]);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
       
       if(selectedUser != null && selectedUser.Contains(tableItems[indexPath.Row].id)){

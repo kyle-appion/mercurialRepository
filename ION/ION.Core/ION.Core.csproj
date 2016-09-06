@@ -171,6 +171,7 @@
     <Compile Include="src\DateTimeExtensions.cs" />
     <Compile Include="src\StringExtensions.cs" />
     <Compile Include="src\ByteExtensions.cs" />
+    <Compile Include="src\Connections\RemoteConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

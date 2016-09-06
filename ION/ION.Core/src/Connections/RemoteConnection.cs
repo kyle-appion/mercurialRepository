@@ -6,13 +6,13 @@
   /// <summary>
   /// A connection that does not do anything.
   /// </summary>
-  public class MockConnection : IConnection {
+  public class RemoteConnection : IConnection {
     /// <summary>
     /// The address that is used to identify a mock address.
     /// </summary>
     public const string MOCK_ADDRESS = "MOCK_ADDRESS";
     /// <summary>
-    /// Initializes a new instance of the <see cref="ION.Core.Connections.MockConnection"/> class.
+    /// Initializes a new instance of the <see cref="ION.Core.Connections.RemoteConnection"/> class.
     /// </summary>
     public event OnConnectionStateChanged onStateChanged;
     /// <summary>
@@ -101,25 +101,32 @@
     /// <value>The connection timeout.</value>
     public TimeSpan connectionTimeout { get; set; }
 
-		public MockConnection() : this(MOCK_ADDRESS) {
+		public RemoteConnection() : this(MOCK_ADDRESS) {
 		}
 
-		public MockConnection(string name) {
+		public RemoteConnection(string name) {
 			this.name = name;
 			connectionState = EConnectionState.Disconnected;
 		}
-
+		public RemoteConnection(string name, EConnectionState state) {
+			this.name = name;
+			connectionState = state;
+		}
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
 		public virtual Task<bool> ConnectAsync() {
 			return Task.FromResult(false);
 		}
-
+		
+		public virtual void Connect(){
+			connectionState = EConnectionState.Connected;
+		}
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
 		public virtual void Disconnect() {
+			connectionState = EConnectionState.Disconnected;
 		}
     /// <summary>
     /// Writes the given packet out to the remote terminus.

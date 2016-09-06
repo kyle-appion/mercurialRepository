@@ -16,10 +16,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public RemoteAccessTableCell() {
 		
 		} 		
-		public void makeCellData(double cellHeight, accessData user){
-			header = new UILabel(new CGRect(0,0,this.Bounds.Width, cellHeight));
+		public void makeCellData(double cellWidth,double cellHeight, accessData user){
+			header = new UILabel(new CGRect(0,0,cellWidth, cellHeight));
 			header.TextAlignment = UITextAlignment.Center;
 			header.Text = user.displayName;
+	
 			this.AddSubview(header);
 		}
 		

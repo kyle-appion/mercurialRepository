@@ -5,7 +5,8 @@ using CoreGraphics;
 using UIKit;
 
 using Newtonsoft.Json;
-using ION.IOS.ViewController.WebServices;
+using ION.Core.Net;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.AccessRequest {
 	public class AccessRequestManager {
@@ -19,16 +20,18 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public UITableView pendingTable;
 		public List<requestData> pendingUsers;
 		public UIActivityIndicatorView loadingRequests;
-		public SessionPayload webActivities;
+		public WebPayload webServices;
 		
-		public AccessRequestManager(UIView parentView, SessionPayload webServices) {
-			webActivities = webServices;
+		public AccessRequestManager(UIView parentView, WebPayload webServices) {		
+			
+      this.webServices = webServices;
+
 			var viewTap = new UITapGestureRecognizer(() => {
 				submitCodeField.ResignFirstResponder();
 			});
 			
 			viewTap.CancelsTouchesInView = false;
-			accessView = new UIView(new CGRect(0,50, parentView.Bounds.Width, parentView.Bounds.Height - 50));
+			accessView = new UIView(new CGRect(0,0, parentView.Bounds.Width, parentView.Bounds.Height - 50));
 			accessView.BackgroundColor = UIColor.White;
 			accessView.AddGestureRecognizer(viewTap);
 		
@@ -106,7 +109,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 		/// <param name="e">E.</param>
 		public async void submitCode(object sender, EventArgs e){
 			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
-				await webActivities.submitAccessCode(submitCodeField.Text);
+				await webServices.submitAccessCode(submitCodeField.Text);
 				submitCodeField.Text = "";
 			} else {
 				var window = UIApplication.SharedApplication.KeyWindow;
@@ -128,7 +131,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			loadingRequests.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			pendingUsers = new List<requestData>();
-			await webActivities.getAllRequests(pendingUsers);
+			await webServices.getAllRequests(pendingUsers);
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();
@@ -149,14 +152,14 @@ namespace ION.IOS.ViewController.AccessRequest {
 				pendingUsers = new List<requestData>();
 			}
 			
-			await webActivities.GenerateAccessCode(pendingUsers);
+			await webServices.GenerateAccessCode(pendingUsers);
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();			
 			loadingRequests.StopAnimating();
 		}	
 	}
-		[WebServices.Preserve(AllMembers = true)]
+		[Foundation.Preserve(AllMembers = true)]
 		public class requestData{
 			public requestData(){}
 			[JsonProperty("display")]

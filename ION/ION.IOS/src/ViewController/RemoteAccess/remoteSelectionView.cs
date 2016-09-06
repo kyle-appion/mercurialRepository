@@ -7,7 +7,10 @@ using UIKit;
 using Newtonsoft.Json;
 
 using ION.Core.App;
-using ION.IOS.ViewController.WebServices;
+using ION.Core.Net;
+using Foundation;
+using ION.IOS.App;
+using AudioToolbox;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public class remoteSelectionView {
@@ -23,16 +26,17 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public ObservableCollection<int> selectedUser;
 		public UIActivityIndicatorView loadingUsers;
 		public IION ion;
-		public SessionPayload webActivities;
+		public WebPayload webServices;
 		public bool isViewing = false;
 		
-		public remoteSelectionView(UIView parentView, IION ion, SessionPayload webServices) {
+		public remoteSelectionView(UIView parentView, IION ion, WebPayload webServices) {
 			this.ion = ion;
-			webActivities = webServices;
+
+      this.webServices = webServices;
 			// Perform any additional setup after loading the view, typically from a nib.
 			selectedUser = new ObservableCollection<int>();
 			selectedUser.CollectionChanged += checkForSelected;
-			selectionView = new UIView(new CGRect(0,40,parentView.Bounds.Width, parentView.Bounds.Height - 40));
+			selectionView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			selectionView.BackgroundColor = UIColor.White;
 			
 			var window = UIApplication.SharedApplication.KeyWindow;
@@ -60,7 +64,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       offlineTable.Layer.BorderWidth = 1f;
       offlineTable.RegisterClassForCellReuse(typeof(RemoteAccessTableCell),"remoteAccessCell");
   
-			remoteMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .86 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
+			remoteMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .87 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
 			remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			remoteMenuButton.SetTitle("Remote Mode", UIControlState.Normal);
 			remoteMenuButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
@@ -72,23 +76,27 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpOutside += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-				remoteMenuButton.Hidden = true;
-				fullMenuButton.Hidden = false;
 
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
-				//var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+				var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 
-				//if(!string.IsNullOrEmpty(viewing)){				
-				//	await ion.setRemoteDeviceManager();
-    //    	rootVC.setRemoteMenu();
-    //    } else {        	
-				//	var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
-				//	alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				//	rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				//}
+				if(!string.IsNullOrEmpty(viewing)){
+					remoteMenuButton.Hidden = true;
+					fullMenuButton.Hidden = false;
+					onlineTable.UserInteractionEnabled = false;
+					isViewing = true;
+					//pullUserLayouts();
+
+					await ion.setRemoteDeviceManager(); 
+        	rootVC.setRemoteMenu();
+        } else {        	
+					var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
 			};
 			
-			fullMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .86 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
+			fullMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .87 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
 			fullMenuButton.Layer.CornerRadius = 5f;
 			fullMenuButton.Layer.BorderWidth = 1f;
 			fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -99,13 +107,20 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			fullMenuButton.TouchUpOutside += (sender, e) => {fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};			
 			fullMenuButton.TouchUpInside += async (sender, e) => {			
 				fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+				
 				fullMenuButton.Hidden = true;
 				remoteMenuButton.Hidden = false;
-
+				onlineTable.UserInteractionEnabled = true;
+				isViewing = false;
+				
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
-				//NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
-				//await ion.setOriginalDeviceManager();
-				//rootVC.setMainMenu();
+				
+				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+				selectedUser.Clear();
+				onlineTable.ReloadData();
+				
+				await ion.setOriginalDeviceManager();
+				rootVC.setMainMenu();
 			};
 			
 			loadingUsers = new UIActivityIndicatorView(new CGRect(0, 0, parentView.Bounds.Width, parentView.Bounds.Height));
@@ -130,12 +145,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			onlineUsers = new List<accessData>();
 			offlineUsers = new List<accessData>();
 
-			await webActivities.GetAccessList(onlineUsers, offlineUsers);
+			await webServices.GetAccessList(onlineUsers, offlineUsers);
 			
-			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webActivities.webClient);
+			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webServices.webClient);
 			onlineTable.ReloadData();
 
-			offlineTable.Source = new RemoteAccessTableSource(offlineUsers, null, webActivities.webClient);
+			offlineTable.Source = new RemoteAccessTableSource(offlineUsers, null, webServices.webClient);
 			offlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();
@@ -149,9 +164,57 @@ namespace ION.IOS.ViewController.RemoteAccess {
         remoteMenuButton.Enabled = false;
         remoteMenuButton.Alpha = .6f;
       }
-    }		
+    }
+
+		//public async void pullUserLayouts(){
+		//	var startedViewing = DateTime.Now;
+		//	while(isViewing){
+		//	  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
+		//	 	SystemSound newSound = new SystemSound (1005);
+
+		//		if(timeDifference < 30){
+		//			var loggedUser = KeychainAccess.ValueForKey("userID");
+		//			if(!string.IsNullOrEmpty(loggedUser)){
+		//				await webServices.DownloadLayouts();
+		//				await Task.Delay(TimeSpan.FromSeconds(8));
+		//			} else {
+		//				isViewing = false;
+		//			}
+		//		} else {
+		//			isViewing = false;					
+					
+		//			var window = UIApplication.SharedApplication.KeyWindow;
+		//  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+					
+		//			var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
+		//			alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
+		//				isViewing = true;
+		//				pullUserLayouts();
+		//				newSound.Close();
+		//			}));
+		//			alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {newSound.Close();}));
+		//			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+		//			AbsentRemoteTurnoff(alert);	
+
+		//			newSound.PlaySystemSound();
+		//			await Task.Delay(TimeSpan.FromSeconds(2));
+		//			newSound.Close();				
+		//		}
+		//	}
+		//}
+		
+		//public async void AbsentRemoteTurnoff(UIAlertController alert){
+		//	await Task.Delay(TimeSpan.FromSeconds(15));
+			
+		//	alert.DismissViewController(false,null);
+		//	if(!isViewing){
+		//		Console.WriteLine("dismissed alert and user didn't choose to continue");
+		//	}
+		//}	
+	
 	}
-	[WebServices.Preserve(AllMembers = true)]
+	
+	[Foundation.Preserve(AllMembers = true)]
 	public class accessData{
 		public accessData(){}
 		[JsonProperty("display")]
