@@ -406,12 +406,14 @@
       shownSections.Clear();
 
       foreach (var device in ion.deviceManager.devices) {
-        var state = EDeviceState.Available;
+        var availableState = EDeviceState.Available;
 
-        var section = allSections[state];
+				var gauge = device as GaugeDevice;
+        var section = allSections[availableState];
         
-        if (AllowsDevice(device)) {
+        if (AllowsDevice(device) && gauge.connection.connectionState == EConnectionState.Connected) {
           var i = 0;
+          
           section.AddDevice(device, out i);
           deviceToSection[device] = section;
         }

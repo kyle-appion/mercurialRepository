@@ -11,6 +11,7 @@
   using SQLite.Net.Interop;
 
   using ION.Core.App;
+  using ION.Core.Net;
   using ION.Core.Database;
   using ION.Core.Fluids;
   using ION.Core.Util;
@@ -34,6 +35,11 @@
     /// </summary>
     /// <value>The ion.</value>
     public IosION ion { get; private set; }
+    
+    /// <summary>
+    /// handles all the web requests for the app
+    /// </summary>
+    public WebPayload webServices;
 
     public bool intervalWarning = false;
 
@@ -47,6 +53,7 @@
         TextColor = new UIColor(Colors.BLACK),
       });
 
+
       AppState.context = ion = new IosION();
       try {
         ion.Init().Wait();
@@ -54,6 +61,7 @@
         Log.E(this, "Failed to initialize ion.", e);
         Environment.Exit(1);
       }
+      webServices = new WebPayload();
       
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
@@ -145,7 +153,6 @@
           UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"Close","Return to Settings");
           loggingWarning.Clicked += (sender, e) => {
             if(e.ButtonIndex.Equals(1)){
-              Console.WriteLine("Return to settings");
               UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
             }
           };
@@ -173,8 +180,8 @@
         if(ion.dataLogManager.isRecording){
           var done = ion.dataLogManager.StopRecording().Result;
         }
-        var stopWebServices = new ION.IOS.ViewController.WebServices.SessionPayload();
-				var noWeb = stopWebServices.updateOnlineStatus("0", null);
+
+				var noWeb = webServices.updateOnlineStatus("0", null);
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {

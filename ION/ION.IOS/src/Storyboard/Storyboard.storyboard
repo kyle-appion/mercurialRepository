@@ -1123,7 +1123,7 @@
                             <imageView userInteractionEnabled="NO" contentMode="redraw" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="CarbonBackground" translatesAutoresizingMaskIntoConstraints="NO" id="Z2l-Hf-TZm" userLabel="imageBackground">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click Scan do discover nearby ION devices." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJN-wK-FQX" userLabel="labelEmpty">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No Connected ION devices found." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dJN-wK-FQX" userLabel="labelEmpty">
                                 <rect key="frame" x="16" y="14" width="568" height="572"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -1991,8 +1991,23 @@
                     <view key="view" contentMode="scaleToFill" id="HNM-Zr-Z1C">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Ul-wZ-2qh">
+                                <rect key="frame" x="5" y="23" width="590" height="557"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="9Ul-wZ-2qh" firstAttribute="top" secondItem="iEh-wD-R2R" secondAttribute="bottom" constant="3" id="7I4-mY-SbU"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="9Ul-wZ-2qh" secondAttribute="trailing" constant="-15" id="And-ML-WoM"/>
+                            <constraint firstItem="ifr-xX-swn" firstAttribute="top" secondItem="9Ul-wZ-2qh" secondAttribute="bottom" constant="20" id="WtS-nx-HJK"/>
+                            <constraint firstItem="9Ul-wZ-2qh" firstAttribute="leading" secondItem="HNM-Zr-Z1C" secondAttribute="leadingMargin" constant="-15" id="Ziq-B9-4tK"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="remoteHolderView" destination="9Ul-wZ-2qh" id="d7V-Qn-hLk"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kto-Ax-xb0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -2009,8 +2024,23 @@
                     <view key="view" contentMode="scaleToFill" id="vIT-A4-9Eh">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PAN-ac-yIK">
+                                <rect key="frame" x="5" y="23" width="590" height="557"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="PAN-ac-yIK" secondAttribute="trailing" constant="-15" id="46f-dq-gKI"/>
+                            <constraint firstItem="PAN-ac-yIK" firstAttribute="leading" secondItem="vIT-A4-9Eh" secondAttribute="leadingMargin" constant="-15" id="6x0-Tc-Bey"/>
+                            <constraint firstItem="PAN-ac-yIK" firstAttribute="top" secondItem="jkZ-1q-Yip" secondAttribute="bottom" constant="3" id="OcN-uT-lcC"/>
+                            <constraint firstItem="CJR-KG-3Ou" firstAttribute="top" secondItem="PAN-ac-yIK" secondAttribute="bottom" constant="20" id="h2P-5J-crm"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="accessHolderView" destination="PAN-ac-yIK" id="y1m-sh-OB7"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7uf-4L-4o5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

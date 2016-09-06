@@ -360,9 +360,20 @@
     /// </summary>
     /// <returns>The remote device manager.</returns>
     public Task setRemoteDeviceManager(){
-    	Console.WriteLine("Setting remote device manager");
+    	Log.D(this, "Setting remote Device Manager");
       return Task.Factory.StartNew(() => {
-      	var remoteDManager = new RemoteBaseDeviceManager(this);
+      	///create a new analyzer manager for the remote session chosen and store the original analyzer for restoring
+      	var remoteAnalyzer = new Analyzer(this);
+      	remoteAnalyzer.storedAnalyzer = currentAnalyzer;
+      	currentAnalyzer = remoteAnalyzer;
+      	
+      	///create a new workbench manager for the remote session chosen and store the original workbench for restoring
+      	//var remoteWorkbench = new Workbench(this);
+      	//remoteWorkbench.storedWorkbench = currentWorkbench;
+      	//currentWorkbench = remoteWorkbench;
+      	
+      	///create a new remotebasedevicemanager for the remote session chosen and store the original basedevicemanager for restoring
+      	var remoteDManager = new RemoteBaseDeviceManager(this, NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"));
 				remoteDManager.storedDeviceManager = (BaseDeviceManager)deviceManager;
 				deviceManager = remoteDManager;
 				deviceManager.connectionFactory = remoteDManager.storedDeviceManager.connectionFactory;
@@ -375,8 +386,14 @@
     /// </summary>
     /// <returns>The remote device manager.</returns>
     public Task setOriginalDeviceManager(){
-    	Console.WriteLine("Returning to normal device manager");
       return Task.Factory.StartNew(() => {
+      	///restore analyzer to the user's analyzer after ending remote viewing
+      	var remoteAnalyzer = currentAnalyzer;
+      	currentAnalyzer = remoteAnalyzer.storedAnalyzer;
+      	///restore workbench to the user's workbench after ending remote viewing
+      	//var remoteWorkbench = currentWorkbench;
+      	//currentWorkbench = remoteWorkbench.storedWorkbench;
+      	///restore basedevicemanager to user's basedevicemanager after ending remote viewing
       	var remoteDManager = (RemoteBaseDeviceManager)deviceManager;
 				deviceManager = remoteDManager.storedDeviceManager;
       });

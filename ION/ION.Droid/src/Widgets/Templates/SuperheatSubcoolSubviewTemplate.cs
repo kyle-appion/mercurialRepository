@@ -55,10 +55,10 @@
       if (pt.fluid.mixture) {
         switch (pt.state) {
           case Fluid.EState.Bubble:
-            title.Text = GetString(Resource.String.fluid_sh_abrv);
+            title.Text = GetString(Resource.String.fluid_sc_abrv);
             break;
           case Fluid.EState.Dew:
-            title.Text = GetString(Resource.String.fluid_sc_abrv);
+            title.Text = GetString(Resource.String.fluid_sh_abrv);
             break;
         }
       } else {

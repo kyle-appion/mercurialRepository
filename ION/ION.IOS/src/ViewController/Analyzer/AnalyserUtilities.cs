@@ -885,46 +885,53 @@ namespace ION.IOS.ViewController.Analyzer
 			////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
 			analyzerSensors.viewList = new List<sensor> ();
 			for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
-
 				if (analyzerSensors.areaList [i] == 1) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
 					if(analyzerSensors.snapArea1.currentSensor != null){
 						analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea1 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 2) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
 					if(analyzerSensors.snapArea2.currentSensor != null){
 						analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea2 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 3) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
 					if(analyzerSensors.snapArea3.currentSensor != null){
 						analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea3 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 4) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
 					if(analyzerSensors.snapArea4.currentSensor != null){
 						analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea4 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 5) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
 					if(analyzerSensors.snapArea5.currentSensor != null){
 						analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea5 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 6) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
 					if(analyzerSensors.snapArea6.currentSensor != null){
 						analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea6 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 7) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
 					if(analyzerSensors.snapArea7.currentSensor != null){
 						analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea7 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 8) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
 					if(analyzerSensors.snapArea8.currentSensor != null){
 						analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
+						Console.WriteLine("AnalyzerUtilities.cs - set snapArea8 = " + i);
 					}
 				}
 			}

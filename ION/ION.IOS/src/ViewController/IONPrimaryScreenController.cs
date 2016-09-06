@@ -75,10 +75,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
 #if DEBUG
-    //    new Section("Remote Viewing".ToUpper()){
-				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				//} ,
+        new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				} ,
 #endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -242,23 +242,6 @@ namespace ION.IOS.ViewController {
 	          DoSendAppionFeedback();
 	        }
       	} )
-#if DEBUG 
-	    	//.Link("Practice", (object obj, HelpViewController ovc) => {
-		    //	var webStuff = new ION.IOS.ViewController.WebServices.SessionPayload();
-		    	//webStuff.RegisterUser("kdizzle","thisWord","Kai Yole","tiringtrio@ymail.com");
-		    	//webStuff.RegisterAccount("Brick by Brick");
-		    	//var sesh = new List<int>(){1,2,3};
-				  //webStuff.getSession(sesh);
-				  //webStuff.DownloadSessions(1,1,"6/30/2016 9:00:00 AM","6/30/2016 10:00:00 AM");
-				  //webStuff.UploadAnalyzerLayout();
-				  //webStuff.UploadWorkbenchLayout();
-				  //webStuff.DownloadAnalyzerLayout();
-				  //webStuff.DownloadWorkbenchLayout();
-				  //webStuff.CheckConnection();
-				  //webStuff.createAccess();
-				  //webStuff.confirmCode();
-				//} )
-#endif
 		.Build();
 
       vc.page = landing;
@@ -277,8 +260,10 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-        //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+#if DEBUG
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+#endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates
@@ -299,6 +284,11 @@ namespace ION.IOS.ViewController {
 			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
 			remoteWb.remoteMode = true;
 			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
+			navigation.ViewControllers[5] = null;
+			navigation.ViewControllers[6] = null;
+			navigation.ViewControllers[7] = null;
+			navigation.ViewControllers[8] = null;
+			navigation.ViewControllers[9] = null;
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -380,6 +370,7 @@ namespace ION.IOS.ViewController {
 			navigation.NavigationRoot.Add(
 				new Section("Remote Viewing".ToUpper()){
 					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
 				}
 			);	
 			navigation.NavigationRoot.Add(
@@ -398,12 +389,15 @@ namespace ION.IOS.ViewController {
 			);
 			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
 			remoteWb.remoteMode = false;
+			var remoteAM = InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER);
 			var remoteJM = InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER);
 			var remoteL = InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING);
+
 			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
 
-			navigation.ViewControllers[5] = new UINavigationController(remoteJM);
-			navigation.ViewControllers[6] = new UINavigationController(remoteL);
+			navigation.ViewControllers[5] = new UINavigationController(remoteAM);
+			navigation.ViewControllers[6] = new UINavigationController(remoteJM);
+			navigation.ViewControllers[7] = new UINavigationController(remoteL);
 		}
 		/// <summary>
 		/// Changes the navigation menu when entering remote viewing mode

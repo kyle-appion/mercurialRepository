@@ -3,7 +3,9 @@ using UIKit;
 using CoreGraphics;
 using ION.IOS.Util;
 using ION.IOS.App;
-using ION.IOS.ViewController.WebServices;
+using ION.Core.Net;
+using System.Threading.Tasks;
+using AudioToolbox;
 
 namespace ION.IOS.ViewController.AccessRequest {
 	public partial class AccessRequestViewController : BaseIONViewController {
@@ -11,107 +13,152 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public AccessRequestViewController(IntPtr handle) : base(handle) {		
 		}
 		public AccessRequestManager requestManager;
+		public AccessSettings settingsManager;
 		public UILabel loggedOutLabel;
-		public UIBarButtonItem online;
-		public UIBarButtonItem offline;
-		public SessionPayload webServices;
+		public UIBarButtonItem settingsButton;
+		public WebPayload webServices; 
 		public bool uploading = false;
 		
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
-			// Perform any additional setup after loading the view, typically from a nib.
-      InitNavigationBar("ic_nav_workbench", false);
+			View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
+      InitNavigationBar("ic_nav_workbench", false); 
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      View.BackgroundColor = UIColor.White;
+
       NavigationItem.Title = Strings.AccessManager.SELF.FromResources();
       
-      webServices = new SessionPayload();
+			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
+      webServices = appDelegate.webServices;
       
-      var button  = new UIButton(new CGRect(0, 0, 80, 30));
-			button.SetTitle("Online", UIControlState.Normal);
-			button.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			button.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			button.Layer.BorderWidth = 1f;
-			button.TouchDown += (sender, e) => {button.BackgroundColor = UIColor.Blue;};
-			button.TouchUpOutside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			button.TouchUpInside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			button.TouchUpInside += SwitchOffline;
-			online = new UIBarButtonItem(button);
+      var button  = new UIButton(new CGRect(0, 0, 40, 40));
+			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);
+			button.TouchUpInside += SetupAccessView;
+			settingsButton = new UIBarButtonItem(button);			
 			
-      var button2  = new UIButton(new CGRect(0, 0, 80, 30));
-			button2.SetTitle("Offline", UIControlState.Normal);
-			button2.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			button2.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			button2.Layer.BorderWidth = 1f;
-			button2.TouchDown += (sender, e) => {button.BackgroundColor = UIColor.Blue;};
-			button2.TouchUpOutside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			button2.TouchUpInside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			button2.TouchUpInside += SwitchOnline;
-			offline = new UIBarButtonItem(button2);
-			
-      this.NavigationItem.RightBarButtonItem = offline;
+      this.NavigationItem.RightBarButtonItem = settingsButton;
       
       loggedOutLabel = new UILabel(new CGRect(0,0,View.Bounds.Width, View.Bounds.Height));
       loggedOutLabel.TextAlignment = UITextAlignment.Center;
       loggedOutLabel.Text = "Must Log In To Use Manager";
       loggedOutLabel.Lines = 0;
-      loggedOutLabel.Hidden = true; 
+      loggedOutLabel.Hidden = true;
+      accessHolderView.Bounds = View.Bounds;
       
-  		requestManager = new AccessRequestManager(View,webServices);				
-    
+  		requestManager = new AccessRequestManager(accessHolderView,webServices);				
+    	settingsManager = new AccessSettings(accessHolderView);
+    	settingsManager.onlineButton.TouchUpInside += (sender, e) => {
+				uploadTimer();
+			};
+    	
 			if(string.IsNullOrEmpty(KeychainAccess.ValueForKey("userID"))){
 				requestManager.accessView.Hidden = true;
 				this.NavigationItem.RightBarButtonItem = null;
 			}
-			View.AddSubview(requestManager.accessView);			
-			View.AddSubview(loggedOutLabel);
-		}
-
-		public async void SwitchOnline(object sender, EventArgs e){								
-				uploading = true;
-				var window = UIApplication.SharedApplication.KeyWindow;
-				var rootVC = window.RootViewController as IONPrimaryScreenController;
-			
-				bool response = await webServices.updateOnlineStatus("1",rootVC);
-				if(response){
-					this.NavigationItem.RightBarButtonItem = online;
-				}
+			accessHolderView.AddSubview(requestManager.accessView);
+			accessHolderView.AddSubview(settingsManager.settingsView);			
+			accessHolderView.AddSubview(loggedOutLabel);
 		}
 		
-		public async void SwitchOffline(object sender, EventArgs e){
-				uploading = false;
-				var window = UIApplication.SharedApplication.KeyWindow;
-				var rootVC = window.RootViewController as IONPrimaryScreenController;
-				
-				bool response = await webServices.updateOnlineStatus("0",rootVC);
-				if(response){
-					this.NavigationItem.RightBarButtonItem = offline;
-				}
+		public void SetupAccessView(object sender, EventArgs e){								
+			if(settingsManager.settingsView.Hidden){
+        UIView.Transition(
+          fromView:requestManager.accessView,
+          toView:settingsManager.settingsView,
+          duration:.5,
+          options: UIViewAnimationOptions.TransitionFlipFromRight,
+          completion: () => {
+          	requestManager.accessView.Hidden = true;
+          	settingsManager.settingsView.Hidden = false;
+            accessHolderView.SendSubviewToBack(requestManager.accessView);
+            accessHolderView.BringSubviewToFront(settingsManager.settingsView);
+          }
+        );
+			}	else {
+        UIView.Transition(
+          fromView:settingsManager.settingsView,
+          toView:requestManager.accessView,
+          duration:.5,
+          options: UIViewAnimationOptions.TransitionFlipFromRight,
+          completion: () => {
+          	settingsManager.settingsView.Hidden = true;
+          	requestManager.accessView.Hidden = false;
+            accessHolderView.SendSubviewToBack(settingsManager.settingsView);
+            accessHolderView.BringSubviewToFront(requestManager.accessView);
+          }
+        );
+			}
 		}
 		
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
-			if(uploading){
-				this.NavigationItem.RightBarButtonItem = online;
-			} else {
-				this.NavigationItem.RightBarButtonItem = offline;
-			}
 			
 			if(string.IsNullOrEmpty(KeychainAccess.ValueForKey("userID"))){
 				requestManager.accessView.Hidden = true;
 				loggedOutLabel.Hidden = false;
-				this.NavigationItem.RightBarButtonItem.Enabled = false;
 			} else {
 				requestManager.accessView.Hidden = false;
 				loggedOutLabel.Hidden = true;
-				this.NavigationItem.RightBarButtonItem.Enabled = true;
-			}			
+			}
 		}
 		
-		public void uploadTimer(){
+		public async void uploadTimer(){
+			await webServices.updateOnlineStatus("1",null);
+			settingsManager.onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			var startedViewing = DateTime.Now;
+			if(!uploading){
+				uploading = true;
+				settingsManager.onlineButton.SetTitle("Stop Uploading", UIControlState.Normal);
+			} else {
+				uploading = false;
+				settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
+			}
+			while(uploading){
+			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
+			 	SystemSound newSound = new SystemSound (1005);
+				if(timeDifference < 30){
+					var loggedUser = KeychainAccess.ValueForKey("userID");
+					if(!string.IsNullOrEmpty(loggedUser)){
+						if(!webServices.webClient.IsBusy){					
+							await webServices.uploadSystemLayout();
+							await Task.Delay(TimeSpan.FromSeconds(8));
+						} else {
+							await Task.Delay(TimeSpan.FromSeconds(1));
+						}
+					} else {
+						uploading = false;
+					}
+				} else {
+					uploading = false;
+					settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
+					var window = UIApplication.SharedApplication.KeyWindow;
+		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+					
+					var alert = UIAlertController.Create ("Uploading Layout", "Are you still uploading your layout?", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
+						uploadTimer();
+						newSound.Close();
+					}));
+					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {
+						newSound.Close();
+					}));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					AbsentRemoteTurnoff(alert);
 
+					newSound.PlaySystemSound();
+					await Task.Delay(TimeSpan.FromSeconds(2));
+					newSound.Close();
+				}
+			}
+		}
+		
+		public async void AbsentRemoteTurnoff(UIAlertController alert){
+			await Task.Delay(TimeSpan.FromSeconds(15));
+			alert.DismissViewController(false,null);
+			if(!uploading){
+				Console.WriteLine("dismissed alert and user didn't choose to continue uploading");
+			}
 		}
 		
 		public override void DidReceiveMemoryWarning() {

@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\RequestCalibrationCertificates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\WebPayload.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

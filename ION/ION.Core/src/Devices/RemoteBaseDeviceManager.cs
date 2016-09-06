@@ -120,9 +120,15 @@
     /// The factory that is used to create devices.
     /// </summary>
     public DeviceFactory deviceFactory { get; internal set; }
+    
+    /// <summary>
+    /// The user ID that will be used for pulling layouts
+    /// </summary>
+    public string userID;
 
-    public RemoteBaseDeviceManager(IION ion) {
+    public RemoteBaseDeviceManager(IION ion, string ID) {
       this.ion = ion;
+			userID = ID;
 
       GetRemoteDevices();
     }
@@ -176,18 +182,18 @@
 
     // Overridden from IDeviceManager
     public void ForgetFoundDevices() {
-     // lock (this) {
-     //   foreach (var device in foundDevices) {
-     //     device.Dispose();
-     //     Unregister(device);
-					//device.onDeviceEvent -= OnDeviceEvent;
-     //   }
-     // }
+      lock (this) {
+        foreach (var device in knownDevices) {
+          device.Dispose();
+          Unregister(device);
+					device.onDeviceEvent -= OnDeviceEvent;
+        }
+      }
     }
 
     // Overridden from IDeviceManager
-    public IDevice CreateDevice(ISerialNumber serialNumber, EProtocolVersion protocolVersion) {
-      var ret = CreateDeviceInternal(serialNumber, protocolVersion);
+    public IDevice CreateDevice(ISerialNumber serialNumber, EProtocolVersion protocolVersion, bool connected) {
+      var ret = CreateDeviceInternal(serialNumber, protocolVersion,connected);
       // The register proved superfluous. Consider merging this functions with the internal one.
 			// Register(ret);
       return ret;
@@ -274,9 +280,10 @@
     /// </summary>
     /// <param name="device">Device.</param>
     public void Register(IDevice device) {
-      __foundDevices.Remove(device.serialNumber);
-      __knownDevices.Add(device.serialNumber, device);
-			device.onDeviceEvent += OnDeviceEvent;
+			if(!__knownDevices.ContainsValue(device)){
+	      __knownDevices.Add(device.serialNumber, device);
+				device.onDeviceEvent += OnDeviceEvent;
+			}
     }
 
     /// <summary>
@@ -284,15 +291,19 @@
     /// </summary>
     /// <param name="device">Device.</param>
     public void Unregister(IDevice device) {
-			__foundDevices[device.serialNumber] = device;
       __knownDevices.Remove(device.serialNumber);
     }
 
-    private IDevice CreateDeviceInternal(ISerialNumber serialNumber,EProtocolVersion protocolVersion) {
+    private IDevice CreateDeviceInternal(ISerialNumber serialNumber,EProtocolVersion protocolVersion, bool connected) {
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        var connection = new MockConnection();
+      	var connectionState = EConnectionState.Disconnected;
+      	if(connected){
+					connectionState = EConnectionState.Connected;
+				}
+        var connection = new RemoteConnection(serialNumber.rawSerial,connectionState);
+        
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
 
         var definition = deviceFactory.GetDeviceDefinition(serialNumber);
@@ -316,7 +327,7 @@
         Log.C(this, msg);
         throw new Exception(msg);
       }
-
+			//ret.isConnected = connected;
       return ret;
     }
 
@@ -371,7 +382,7 @@
       var device = this[serialNumber];
 
       if (device == null) {
-        device = CreateDeviceInternal(serialNumber, EProtocolVersion.V4);
+        device = CreateDeviceInternal(serialNumber, EProtocolVersion.V4,false);
         __foundDevices[serialNumber] = device;
       }
 
@@ -431,46 +442,55 @@
     }
     
     public async Task GetRemoteDevices(){
-   	await InitAsync();
-   	
-     var deviceUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadWorkbench.php";
+   		await InitAsync();
 
-     var content = new FormUrlEncodedContent(new[]
-      {
-          new KeyValuePair<string, string>("downloadWorkbench", "manager"),
-          new KeyValuePair<string, string>("userID","1"),
-      });
+     	var deviceUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadLayouts.php";
+			try{
+	     var content = new FormUrlEncodedContent(new[]
+	      {
+	          new KeyValuePair<string, string>("downloadLayouts", "manager"),
+	          new KeyValuePair<string, string>("userID",userID),
+	      });
   
-      HttpClient wc = new HttpClient();
-      var result = await wc.PostAsync(deviceUrl,content);
-
-			if(result.IsSuccessStatusCode){
-				var textResponse = await result.Content.ReadAsStringAsync();
-
-				JObject response = JObject.Parse(textResponse);
-				var manifolds = response.GetValue("devices");
-				foreach(var device in manifolds){							
-					var deserializedToken = JsonConvert.DeserializeObject<deviceData>(device.ToString());
-					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
-					var manualDevice = CreateDevice(iserial,EProtocolVersion.V4);
-					__knownDevices.Add(iserial,manualDevice); 
+	      HttpClient wc = new HttpClient();
+	      var result = await wc.PostAsync(deviceUrl,content);
+	
+				if(result.IsSuccessStatusCode){
+					var textResponse = await result.Content.ReadAsStringAsync();
+					Log.D(this, textResponse);
+					JObject response = JObject.Parse(textResponse);
+					var manifolds = response.GetValue("known");
+					foreach(var device in manifolds){							
+						var deserializedToken = JsonConvert.DeserializeObject<deviceData>(device.ToString());
+						var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
+						var manualDevice = CreateDevice(iserial,EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
+						
+						manualDevice.sensors[0].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
+						
+						__knownDevices.Add(iserial,manualDevice); 
+					}
+					Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);
+				} else {
+					Log.D("RemoteBaseDeviceManager","Error retrieving device list");
 				}
-				Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);				
-			} else {
-				Log.D("RemoteBaseDeviceManager","Error retrieving device list");
+			}catch (Exception e){
+				Log.D(this, "Exception: " + e);
 			}
 		}
-	[Preserve(AllMembers = true)]
-	public class deviceData{
-		public deviceData(){}
-		//public int SID;
-		[JsonProperty("serialNumber")]
-		public string serialNumber { get; set; }
-		[JsonProperty("amount")]
-		public string amount { get; set; }
-		[JsonProperty("unit")]
-		public string unit;
-	}
+		
+		[Preserve(AllMembers = true)]
+		public class deviceData{
+			public deviceData(){}
+			//public int SID;
+			[JsonProperty("serial")]
+			public string serialNumber { get; set; }
+			[JsonProperty("amount")]
+			public double measurement { get; set; }
+			[JsonProperty("unit")]
+			public int unit;
+			[JsonProperty("on")]
+			public int connected { get; set; }
+		}
   }
 }
 

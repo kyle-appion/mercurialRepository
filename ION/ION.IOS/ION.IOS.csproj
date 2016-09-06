@@ -1,5 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
@@ -25,8 +24,7 @@
     <MtouchProfiling>true</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <MtouchI18n>
-    </MtouchI18n>
+    <MtouchI18n></MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>full</DebugType>
@@ -39,12 +37,10 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution</CodesignKey>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <MtouchI18n>
-    </MtouchI18n>
+    <MtouchI18n></MtouchI18n>
     <MtouchSdkVersion></MtouchSdkVersion>
     <CodesignProvision></CodesignProvision>
-    <IpaPackageName>
-    </IpaPackageName>
+    <IpaPackageName></IpaPackageName>
     <MtouchUseLlvm>false</MtouchUseLlvm>
     <MtouchLink>Full</MtouchLink>
     <MtouchFloat32>false</MtouchFloat32>
@@ -75,8 +71,7 @@
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <MtouchUseRefCounting>true</MtouchUseRefCounting>
-    <IpaPackageName>
-    </IpaPackageName>
+    <IpaPackageName></IpaPackageName>
     <MtouchFastDev>true</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
     <MtouchLink>Full</MtouchLink>
@@ -134,6 +129,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -943,21 +939,9 @@
     <Compile Include="src\ViewController\RssFeed\RssFeedCell.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughRecord.cs" />
     <Compile Include="src\IOSExtensions.cs" />
-    <Compile Include="src\ViewController\WebServices\SessionPayload.cs" />
     <Compile Include="src\ViewController\RssFeed\RssFeedCheck.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerViewController.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerViewController.designer.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteSystemViewController.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteSystemViewController.designer.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceManagerTableSource.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceSectionHeaderTableCell.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceSectionHeaderTableCell.designer.cs">
-      <DependentUpon>RemoteDeviceSectionHeaderTableCell.cs</DependentUpon>
-    </Compile>
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceTableCell.cs" />
-    <Compile Include="src\ViewController\RemoteAccess\RemoteDeviceTableCell.designer.cs">
-      <DependentUpon>RemoteDeviceTableCell.cs</DependentUpon>
-    </Compile>
     <Compile Include="src\ViewController\RemoteAccess\RemoteSensorTableCell.cs" />
     <Compile Include="src\ViewController\RemoteAccess\RemoteSensorTableCell.designer.cs">
       <DependentUpon>RemoteSensorTableCell.cs</DependentUpon>
@@ -979,6 +963,25 @@
       <DependentUpon>AccessRequestTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\AccessRequest\AccessRequestTableSource.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteUserRegistration.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\RemoteUserProfileView.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessSettings.cs" />
+    <Compile Include="src\ViewController\RemoteWorkbench\RemoteWorkbenchViewController.cs" />
+    <Compile Include="src\ViewController\RemoteWorkbench\RemoteWorkbenchViewController.designer.cs">
+      <DependentUpon>RemoteWorkbenchViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RemoteWorkbench\RemoteWorkbenchTableSource.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerTableSource.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerViewController.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceManagerViewController.designer.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceTableCell.designer.cs">
+      <DependentUpon>RemoteDeviceTableCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceSectionHeaderTableCell.cs" />
+    <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceSectionHeaderTableCell.designer.cs">
+      <DependentUpon>RemoteDeviceSectionHeaderTableCell.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1042,7 +1045,6 @@
     <Folder Include="Resources\Images.xcassets\SHSC2.imageset\" />
     <Folder Include="Resources\Images.xcassets\SHSC3.imageset\" />
     <Folder Include="Resources\Images.xcassets\SHSC4.imageset\" />
-    <Folder Include="src\ViewController\WebServices\" />
     <Folder Include="Resources\Images.xcassets\Intro1.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro2.imageset\" />
     <Folder Include="Resources\Images.xcassets\Intro3.imageset\" />
@@ -1051,6 +1053,8 @@
     <Folder Include="Resources\Images.xcassets\blank_checkbox.imageset\" />
     <Folder Include="Resources\Images.xcassets\filled_checkbox.imageset\" />
     <Folder Include="src\ViewController\AccessRequest\" />
+    <Folder Include="src\ViewController\RemoteWorkbench\" />
+    <Folder Include="src\ViewController\RemoteDeviceManager\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

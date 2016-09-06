@@ -437,14 +437,29 @@
     /// compatible with the sensor's unit.
     /// </remarks>
     /// <param name="value">Value.</param>
-    protected void ForceSetMeasurement(Scalar value) {
+    public void ForceSetMeasurement(Scalar value) {
       if (!value.unit.IsCompatible(unit)) {
         throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
       }
       __measurement = value;
       NotifySensorStateChanged();
     }
-
+    /// <summary>
+    /// Forces the measurement of the remote sensor to be set to the given value. This bypasses the connection
+    /// helper and allows setting manual sensor values. SHOULD NOT BE USED FOR NORMAL GAUGE OPERATIONS
+    /// </summary>
+    /// <remarks>
+    /// This operation will throw an exception if the scalar is not
+    /// compatible with the sensor's unit.
+    /// </remarks>
+    /// <param name="value">Value.</param>
+		public void RemoteForceSetMeasurement(Scalar value){
+      if (!value.unit.IsCompatible(unit)) {
+        throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
+      }
+      __measurement = value;
+      NotifySensorStateChanged();
+		}
     /// <summary>
     /// Forces the unit of the sensor to be set.
     /// </summary>
@@ -453,7 +468,7 @@
     /// with the sensor's previous unit.
     /// </remarks>
     /// <param name="unit">Unit.</param>
-    protected void ForceSetUnit(Unit unit) {
+    public void ForceSetUnit(Unit unit) {
       if (this.unit.Equals(unit)) {
         return;
       }

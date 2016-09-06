@@ -3,10 +3,9 @@
 using Foundation;
 using CoreGraphics;
 using UIKit;
-using System.Text;
 
-using ION.IOS.App;
 using ION.IOS.ViewController.JobManager;
+using ION.Core.Net;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public class RemoteLoginView {
@@ -17,10 +16,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UITextField password;
 		public UIButton submitButton;
 		public UIButton checkboxButton;
+		public UIButton recoveryButton;
 		public UIActivityIndicatorView loadingLogin;
 		public bool checkMark = false;	
+		public WebPayload webServices;
 		
-		public RemoteLoginView(UIView parentView) {
+		public RemoteLoginView(UIView parentView, WebPayload webServices) {
+			this.webServices = webServices;
 			loginView = new UIView(new CGRect(0,0, parentView.Bounds.Width, parentView.Bounds.Height));
 			loginView.BackgroundColor = UIColor.White;
 			loginView.AddGestureRecognizer(new UITapGestureRecognizer(() => {
@@ -31,7 +33,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loginHeaderImage = new UIImageView(new CGRect(.25 * loginView.Bounds.Width, .1 * loginView.Bounds.Height, .5 * loginView.Bounds.Width, .2 * loginView.Bounds.Height));
 			loginHeaderImage.Image = UIImage.FromBundle("ic_missing");
 			
-			userName = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .35 * parentView.Bounds.Height,.8 * parentView.Bounds.Width, .06 * parentView.Bounds.Height));
+			userName = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .35 * parentView.Bounds.Height,.8 * parentView.Bounds.Width, .07 * parentView.Bounds.Height));
 			userName.Placeholder = "username";
 			userName.TextAlignment = UITextAlignment.Center;
 			userName.Layer.CornerRadius = 5f;
@@ -45,7 +47,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				return false;
 			};
 			
-			password = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .45 * parentView.Bounds.Height, .8 * parentView.Bounds.Width, .06 * parentView.Bounds.Height));
+			password = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .45 * parentView.Bounds.Height, .8 * parentView.Bounds.Width, .07 * parentView.Bounds.Height));
 			password.Placeholder = "password";
 			password.TextAlignment = UITextAlignment.Center;
 			password.Layer.CornerRadius = 5f;
@@ -87,7 +89,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			submitButton.TouchUpInside += (sender, e) => {
 				password.ResignFirstResponder();
 				userName.ResignFirstResponder();
-			};			
+			};
+			var underlineAttr = new UIStringAttributes { UnderlineStyle = NSUnderlineStyle.Single, ForegroundColor = UIColor.Blue };
+			
+			recoveryButton = new UIButton(new CGRect(.8 * loginView.Bounds.Width, .9 * loginView.Bounds.Height, .18 * loginView.Bounds.Width, .1 * loginView.Bounds.Height));
+			recoveryButton.Font = UIFont.ItalicSystemFontOfSize(15f);
+			recoveryButton.SetAttributedTitle(new NSAttributedString("Account Recovery", underlineAttr), UIControlState.Normal);
+			recoveryButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			recoveryButton.TouchUpInside += recoverAccount;
 			
 			loginView.AddSubview(loginHeaderImage);
 			loginView.AddSubview(userName);
@@ -95,7 +104,28 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loginView.AddSubview(checkboxButton);
 			loginView.AddSubview(saveLoginLabel);
 			loginView.AddSubview(submitButton);
+			loginView.AddSubview(recoveryButton);
 		}
+		/// <summary>
+		/// Recovers the account.
+		/// </summary>
+		/// <param name="sender">Sender.</param>
+		/// <param name="e">E.</param>
+		public void recoverAccount(object sender, EventArgs e){
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+
+			var alert = UIAlertController.Create ("Account Recovery", "Please enter your email", UIAlertControllerStyle.Alert);
+			alert.AddTextField(textField => {});
+			
+			alert.AddAction (UIAlertAction.Create ("Recover", UIAlertActionStyle.Default, (action)=>{
+				if(!string.IsNullOrEmpty(alert.TextFields[0].Text)){					
+					webServices.resetPassword(alert.TextFields[0].Text);
+				}		
+			}));
+			alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);	
+		}	
 	}
 }
 
