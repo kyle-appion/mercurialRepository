@@ -40,17 +40,18 @@ namespace ION.IOS.ViewController.RemoteAccess {
             
       var button  = new UIButton(new CGRect(0, 0, 40, 40));
 			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);
+			button.BackgroundColor = UIColor.Clear;
 			button.TouchUpInside += flipAccountViews;
 			settingsButton = new UIBarButtonItem(button);		
 
      var button2  = new UIButton(new CGRect(0, 0, 70, 30));
 			button2.SetTitle("Register", UIControlState.Normal);
 			button2.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			button2.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			button2.Layer.BorderWidth = 1f;
+			button2.BackgroundColor = UIColor.Clear;
+			//button2.Layer.BorderWidth = 1f;
 			button2.TouchDown += (sender, e) => {button.BackgroundColor = UIColor.Blue;};
-			button2.TouchUpOutside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-			button2.TouchUpInside += (sender, e) => {button.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
+			button2.TouchUpOutside += (sender, e) => {button.BackgroundColor = UIColor.Clear;};
+			button2.TouchUpInside += (sender, e) => {button.BackgroundColor = UIColor.Clear;};
 			button2.TouchUpInside += (sender, e) => {userRegistrationSetup();};
 			register = new UIBarButtonItem(button2); 
      
@@ -87,7 +88,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		public async void LogOutUser(object sender, EventArgs e){
-
 			await webServices.updateOnlineStatus("0",null);
 			
 			KeychainAccess.SetValueForKey("no", "stayLogged");
@@ -206,7 +206,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					loginView.loadingLogin.StopAnimating();
 					loginView.loginView.RemoveFromSuperview();
 					loginView = null;
-					this.NavigationItem.RightBarButtonItem = settingsButton;					
+					this.NavigationItem.RightBarButtonItem = settingsButton;
 				} else {
 					loginView.loadingLogin.StopAnimating();
 					var failMessage = response.GetValue("message").ToString();
@@ -285,19 +285,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				loginView.password.Text = registerView.password.Text;			
 				registerView.regView.RemoveFromSuperview();
 				registerView = null;
-			} else {			
-				var alert = UIAlertController.Create ("User Registration", "Username already taken", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				rootVC.PresentViewController (alert, animated: true, completionHandler: null);				
-			}			
+				this.NavigationItem.RightBarButtonItem = register;
+			}
 		}
 		
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
 			var loggedIn = KeychainAccess.ValueForKey("userID");
 			if(!string.IsNullOrEmpty(loggedIn)){
-				if(remoteView != null){
-					//remoteView.selectedUser.Clear();
+				if(remoteView != null && remoteView.fullMenuButton.Hidden){
 					remoteView.GetAccessList();
 				}
 			}			

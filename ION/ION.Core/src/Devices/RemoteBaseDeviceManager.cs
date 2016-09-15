@@ -136,15 +136,6 @@
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
 
-      //if (!connectionHelper.isEnabled) {
-      //  if (!await connectionHelper.Enable()) {
-      //    return new InitializationResult() {
-      //      success = __isInitialized = false,
-      //      errorMessage = "Failed to init device manager: failed to enable connection helper."
-      //    };
-      //  }
-      //}
-
       deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
 
       if (deviceFactory == null) {
@@ -153,15 +144,6 @@
           errorMessage = "Failed to init device manager: could not load device's database."
         };
       }
-      //try {
-      	
-      //  var devices = await ion.database.QueryForAllDevicesAsync();
-      //  foreach (IDevice device in devices) {
-      //    Register(device);
-      //  } 
-      //} catch (Exception e) {
-      //  Log.E(this, "Failed to load previous devices", e);
-      //}
 
       return new InitializationResult() { success = __isInitialized = true };
     }
@@ -312,14 +294,6 @@
 				
         ret.onDeviceEvent += OnDeviceEvent;
       }
-		//	else {
-    //    if (!ret.connection.address.Equals(connectionAddress)) {
-    //      var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
-    //        ret.connection.address + " but a new device creation request was made for address " + connectionAddress;
-    //      Log.C(this, msg);
-    //      throw new Exception(msg);
-    //    }
-    //  }
 
       if (ret == null) {
         var msg = BuildErrorHeader(serialNumber, protocolVersion) +
@@ -410,9 +384,6 @@
             Register(device);
           }
 
-          if (device.isConnected) {
-            await SaveDevice(device);
-          }
           break;
       }
 
@@ -465,8 +436,9 @@
 						var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
 						var manualDevice = CreateDevice(iserial,EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
 						
-						manualDevice.sensors[0].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
-						
+						for(int i = 0; i < deserializedToken.sensors.Length;i++){
+							manualDevice.sensors[i].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
+						}						
 						__knownDevices.Add(iserial,manualDevice); 
 					}
 					Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);
@@ -481,15 +453,23 @@
 		[Preserve(AllMembers = true)]
 		public class deviceData{
 			public deviceData(){}
-			//public int SID;
-			[JsonProperty("serial")]
+			[JsonProperty("sn")]
 			public string serialNumber { get; set; }
-			[JsonProperty("amount")]
-			public double measurement { get; set; }
-			[JsonProperty("unit")]
-			public int unit;
+			[JsonProperty("sa")]
+			public sensorData[] sensors { get; set; }
 			[JsonProperty("on")]
-			public int connected { get; set; }
+			public int connected { get; set; }	
+		}	
+		
+		[Preserve(AllMembers = true)]
+		public class sensorData {
+			public sensorData(){}
+			[JsonProperty("sv")]
+			public double measurement { get; set; }
+			[JsonProperty("su")]
+			public int unit { get; set; }
+			[JsonProperty("si")]
+			public int sensorIndex { get; set; }
 		}
   }
 }

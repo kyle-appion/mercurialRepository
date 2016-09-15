@@ -286,6 +286,10 @@
         Log.E(this, "FAILED TO POST DEVICE EVENT TO MAIN THREAD!!!!", e);
       }
     }
+    
+    public void SetBatteryRemoteDevice(int level){
+			battery = level;
+		}
   }
 }
 

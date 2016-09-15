@@ -103,16 +103,17 @@ namespace ION.IOS.ViewController.AccessRequest {
 			}
 		}
 		
-		public async void uploadTimer(){
-			await webServices.updateOnlineStatus("1",null);
+		public async void uploadTimer(){			
 			settingsManager.onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			var startedViewing = DateTime.Now;
 			if(!uploading){
 				uploading = true;
 				settingsManager.onlineButton.SetTitle("Stop Uploading", UIControlState.Normal);
+				await webServices.updateOnlineStatus("1",null);
 			} else {
 				uploading = false;
 				settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
+				await webServices.updateOnlineStatus("0",null);
 			}
 			while(uploading){
 			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
@@ -122,9 +123,9 @@ namespace ION.IOS.ViewController.AccessRequest {
 					if(!string.IsNullOrEmpty(loggedUser)){
 						if(!webServices.webClient.IsBusy){					
 							await webServices.uploadSystemLayout();
-							await Task.Delay(TimeSpan.FromSeconds(8));
+							await Task.Delay(TimeSpan.FromMilliseconds(1500));
 						} else {
-							await Task.Delay(TimeSpan.FromSeconds(1));
+							await Task.Delay(TimeSpan.FromMilliseconds(500)); 
 						}
 					} else {
 						uploading = false;
@@ -140,8 +141,9 @@ namespace ION.IOS.ViewController.AccessRequest {
 						uploadTimer();
 						newSound.Close();
 					}));
-					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {
+					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, async (action) => {
 						newSound.Close();
+						await webServices.updateOnlineStatus("0", null);
 					}));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 					AbsentRemoteTurnoff(alert);
@@ -158,6 +160,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			alert.DismissViewController(false,null);
 			if(!uploading){
 				Console.WriteLine("dismissed alert and user didn't choose to continue uploading");
+				await webServices.updateOnlineStatus("0",null);
 			}
 		}
 		

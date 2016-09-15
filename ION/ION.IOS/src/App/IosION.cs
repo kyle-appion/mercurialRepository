@@ -340,7 +340,6 @@
 			} catch (Exception e) {
         Log.E(this, "Failed to init ION", e);
       }
-      currentAnalyzer = new Analyzer(AppState.context);
     }
 
 		public Task<Workbench> LoadWorkbenchAsync(IFile file) {
@@ -366,11 +365,6 @@
       	var remoteAnalyzer = new Analyzer(this);
       	remoteAnalyzer.storedAnalyzer = currentAnalyzer;
       	currentAnalyzer = remoteAnalyzer;
-      	
-      	///create a new workbench manager for the remote session chosen and store the original workbench for restoring
-      	//var remoteWorkbench = new Workbench(this);
-      	//remoteWorkbench.storedWorkbench = currentWorkbench;
-      	//currentWorkbench = remoteWorkbench;
       	
       	///create a new remotebasedevicemanager for the remote session chosen and store the original basedevicemanager for restoring
       	var remoteDManager = new RemoteBaseDeviceManager(this, NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"));

@@ -107,7 +107,7 @@
     /// The current primary analyzer for the ion context.
     /// </summary>
     /// <value>The current analyzer.</value>
-    Analyzer currentAnalyzer { get; }
+    Analyzer currentAnalyzer { get; set; }
     /// <summary>
     /// The current primary workbench for the ION context.
     /// </summary>

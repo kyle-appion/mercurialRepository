@@ -17,6 +17,8 @@ using ION.IOS.ViewController;
 using ION.Core.Sensors;
 using ION.Core.Content;
 using ION.Core.Connections;
+using ION.Core.Sensors.Properties;
+using ION.Core.Fluids;
 
 namespace ION.Core.Net {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -28,7 +30,9 @@ namespace ION.Core.Net {
 	public class WebPayload {
 		public IION ion;
 		public WebClient webClient;
-		HttpClient client;
+		HttpClient client;  
+		public bool remoteViewing = false;
+		public bool downloading = false;
 		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
 		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
 		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
@@ -80,8 +84,8 @@ namespace ION.Core.Net {
 					foreach(var entry in measurementResult){
 						jsonPayload += "{\"measurement\":\""+entry.measurement + "\",";
 						jsonPayload += "\"recorded\":\"" +entry.recordedDate.ToLocalTime().ToString() + "\",";
-						jsonPayload += "\"sensorIndex\":\"" +entry.sensorIndex + "\",";
-						jsonPayload += "\"serialNumber\":\"" +entry.serialNumber + "\"}";
+						jsonPayload += "\"sindex\":\"" +entry.sensorIndex + "\",";
+						jsonPayload += "\"sn\":\"" +entry.serialNumber + "\"}";
 						if(count2 < measurementResult.Count){ 
 							jsonPayload += ",";
 						}
@@ -181,10 +185,13 @@ namespace ION.Core.Net {
 				//parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var isregistered = response.GetValue("success").ToString();
-
+				var message = response.GetValue("message").ToString();
 				if(isregistered == "true"){
 					return true;
 				} else {
+					var alert = UIAlertController.Create ("User Registration", message, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);					
 					return false;
 				}		
 			} catch (Exception exception){
@@ -264,7 +271,16 @@ namespace ION.Core.Net {
 					layoutJson += ",";
 				}
 	  		var gDevice = device as GaugeDevice;
-				layoutJson += "{\"serial\":\""+gDevice.serialNumber + "\",\"amount\":\"" + gDevice.sensors[0].measurement.amount + "\",\"unit\":\""+UnitLookup.GetCode(gDevice.sensors[0].unit)+"\", \"on\":\""+Convert.ToInt32(device.isConnected)+"\"}";
+				layoutJson += "{\"sn\":\""+gDevice.serialNumber + "\",\"sa\":[";
+				var sensorCounter = 1;
+				for(int s = 0; s < gDevice.sensors.Length;s++){ 
+					layoutJson += "{\"sv\":\""+gDevice.sensors[s].measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(gDevice.sensors[s].unit)+"\",\"si\":\""+gDevice.sensors[0].index+"\"}";
+					if(sensorCounter < gDevice.sensorCount){
+						layoutJson += ",";
+					}
+					sensorCounter++;
+				}				
+				layoutJson += "], \"on\":\""+Convert.ToInt32(device.isConnected)+"\",\"bat\":\""+gDevice.battery+"\"}";
 				connectedCount++;
 			}
 		}
@@ -273,23 +289,36 @@ namespace ION.Core.Net {
 		layoutJson += "\"alyzer\":[";
 		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){			
 			var count = 1;                                                                    
-			foreach(var sensor in uploadAnalyzer.sensorList){			 	
+			foreach(var sensor in uploadAnalyzer.sensorList){
 				var position = sensor.analyzerSlot;
-			 	layoutJson += "{\"serial\":\""+sensor.name+"\",\"slot\":\""+position+"\",\"amount\":\""+sensor.measurement.amount+"\",\"unit\":\""+UnitLookup.GetCode(sensor.unit)+"\"}";
+			 	layoutJson += "{\"sn\":\""+sensor.name+"\",\"sl\":\""+position+"\",\"sv\":\""+sensor.measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(sensor.unit)+"\",\"sa\":\""+sensor.analyzerArea+"\"}";
 				if(count < uploadAnalyzer.sensorList.Count){
 					layoutJson += ",";
 				}
-				count++; 
+				count++;
 			}		
 		}		
-		layoutJson += "],";
+		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"high\":\""+uploadAnalyzer.highAccessibility+"\"},";
 		///Package the workbench layout
 		layoutJson += "\"workB\" : [";
 		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
 
 			var count = 1;  
 			foreach(var manifold in uploadWorkbench.manifolds){
-				layoutJson += "{\"serial\":\""+manifold.primarySensor.name+"\",\"amount\":\""+manifold.primarySensor.measurement.amount+"\",\"unit\":\""+UnitLookup.GetCode(manifold.primarySensor.unit)+"\",}";
+				layoutJson += "{\"sn\":\""+manifold.primarySensor.name+"\",";
+				layoutJson += "\"amount\":\""+manifold.primarySensor.measurement.amount+"\",\"unit\":\""+UnitLookup.GetCode(manifold.primarySensor.unit)+"\",";
+
+				layoutJson += "\"sub\":[";
+				var subcount = 1;
+				foreach(var sub in manifold.sensorProperties){  
+					var sensorEnum = GetSensorPropertyEnum(sub);
+					layoutJson += sensorEnum;
+					if(subcount < manifold.sensorProperties.Count){
+						layoutJson += ",";
+					}
+					subcount++;
+				}
+				layoutJson += "]}";
 				if(count < uploadWorkbench.manifolds.Count){
 					layoutJson += ",";
 				}
@@ -311,8 +340,7 @@ namespace ION.Core.Net {
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 			var textReponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textReponse);
-			//Console.WriteLine("uploaded layout for userID " + userID + " as " + layoutJson);		
+			Console.WriteLine(textReponse);		
 		} catch (Exception exception){
 			Console.WriteLine(exception);
 		}
@@ -324,18 +352,20 @@ namespace ION.Core.Net {
 	/// <returns>The layouts.</returns>
 	public async Task DownloadLayouts(Workbench workbench){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		ion = AppState.context;
-		
+
+		var activeManifolds = new List<string>();
+		var activeAnalyzerSensors = new List<string>();
 		var userID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 
 		try{
 			var remoteDManager = ion.deviceManager as RemoteBaseDeviceManager;
+			var remoteAnalyzer = ion.currentAnalyzer;
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
       var formContent = new FormUrlEncodedContent(new[]
           {
               new KeyValuePair<string, string>("downloadLayouts", "manager"),          		
-              new KeyValuePair<string, string>("userID", userID), 
+              new KeyValuePair<string, string>("userID", userID),
           });
           
 			//////initiate the post request and get the request result
@@ -346,71 +376,223 @@ namespace ION.Core.Net {
 			JObject response = JObject.Parse(textResponse);
 			var retrieved = response.GetValue("success"); 
 			if(retrieved == null){
+			
 				var dManager = response.GetValue("known");
-				Console.WriteLine("CONNECTED DEVICES");
-
+				///create and update the device manager devices
 				foreach (var con in dManager) {
-
 					var deserializedToken = JsonConvert.DeserializeObject<connectedData>(con.ToString());
 					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
 					var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected));
+
 					if(remoteDManager.knownDevices.Contains(manualDevice)){
-							var updateConnection = remoteDManager[iserial].connection as RemoteConnection;						
+							var updateConnection = remoteDManager[iserial].connection as RemoteConnection;
+							var gDevice = remoteDManager[iserial] as GaugeDevice;
+							gDevice.SetBatteryRemoteDevice(deserializedToken.battery);
 						if(Convert.ToBoolean(deserializedToken.connected)){							
 							updateConnection.Connect();
 						} else {
 							updateConnection.Disconnect();
-						}				
+						}
 					} else {
 						var newDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
-						newDevice.sensors[0].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
-	
-						remoteDManager.Register(newDevice);
-					}
-
-					Console.WriteLine(deserializedToken.serialNumber + " - " + deserializedToken.measurement + " - " + deserializedToken.unit); 
-				} 
+						newDevice.SetBatteryRemoteDevice(deserializedToken.battery);
+						for(int i = 0; i < deserializedToken.sensors.Length;i++){
+							newDevice.sensors[i].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
+						}
+						remoteDManager.Register(newDevice);  
+					} 
+				}
 
 				var aManager = response.GetValue("alyzer");
-				Console.WriteLine("ANALYZER");
-				foreach (var con in aManager) { 
+				var sensorOrder = response.GetValue("setup");
+				var aLowHigh = response.GetValue("LH");
+				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
+				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());
+				foreach (var con in aManager) {
 					var deserializedToken = JsonConvert.DeserializeObject<analyzerSetup>(con.ToString());
-					Console.WriteLine(deserializedToken.serialNumber + " - " + deserializedToken.position + " - " + deserializedToken.measurement + " - " + deserializedToken.unit);
-				}
-				var wManager = response.GetValue("workB");
-				Console.WriteLine("WORKBENCH");
-				
-				foreach(var con in wManager){
-						var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
-						var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
-					var wbconnected = false;
-					foreach(var idevice in remoteDManager.knownDevices){
-						if(idevice.serialNumber.rawSerial == iserial.rawSerial){
-							if(idevice.isConnected){
-								wbconnected = true;
+
+					foreach(var device in remoteDManager.knownDevices){
+						var gDevice = device as GaugeDevice;
+						if(gDevice.serialNumber.rawSerial == deserializedToken.serialNumber){
+							activeAnalyzerSensors.Add(deserializedToken.serialNumber+UnitLookup.GetSensorTypeFromCode(deserializedToken.unit));
+							if(remoteAnalyzer.sensorList.Contains(gDevice.sensors[0]) && gDevice.sensors[0].type == UnitLookup.GetSensorTypeFromCode(deserializedToken.unit)){
+								gDevice.sensors[0].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
+							} else if (gDevice.sensors.Length > 1 && remoteAnalyzer.sensorList.Contains(gDevice.sensors[1]) && gDevice.sensors[1].type == UnitLookup.GetSensorTypeFromCode(deserializedToken.unit)){
+								gDevice.sensors[1].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
+							} else {
+								if(gDevice.serialNumber.rawSerial == deserializedToken.serialNumber){
+									if(UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Pressure ||UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Vacuum){
+										gDevice.sensors[0].analyzerSlot = deserializedToken.position;
+										gDevice.sensors[0].analyzerArea = deserializedToken.area;
+										remoteAnalyzer.sensorList.Add(gDevice.sensors[0]);
+									}
+									else {
+										gDevice.sensors[1].analyzerSlot = deserializedToken.position;
+										gDevice.sensors[1].analyzerArea = deserializedToken.area;
+										remoteAnalyzer.sensorList.Add(gDevice.sensors[1]);   
+									}								
+								}							
 							}
 							break;
-						}
-					}					
-					var manualDevice = remoteDManager.CreateDevice(iserial,ION.Core.Devices.Protocols.EProtocolVersion.V4, wbconnected) as GaugeDevice;
-					
-					var existing = workbench.GetDeviceIndex(manualDevice.serialNumber);
+ 						} 						
+					}
+					 
+					remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
+					remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
+					remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;
+
+					//var previous = remoteAnalyzer.sensorPositions.IndexOf(deserializedToken.area);
+					//var swapper = remoteAnalyzer.sensorPositions[deserializedToken.position];
+					////Console.WriteLine("Moving area " + deserializedToken.area + " from spot " + previous + " to spot " + deserializedToken.position + " where area " + swapper + " currently lives");
+					//remoteAnalyzer.sensorPositions[previous] = swapper;
+					//remoteAnalyzer.sensorPositions[deserializedToken.position] = deserializedToken.area;					
+				}
+
+				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
+					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
+						remoteAnalyzer.sensorList.Remove(aSensor);
+						Console.WriteLine("Removed a sensor from analyzer list");
+					}
+				}
+			
+				var wManager = response.GetValue("workB");				
+				foreach(var con in wManager){
+					var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
+					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
+					var wbconnected = false;
+					activeManifolds.Add(deserializedToken.serialNumber+UnitLookup.GetSensorTypeFromCode(deserializedToken.unit));
+
+					var existing = workbench.GetDeviceIndex(iserial,deserializedToken.unit);
 
 					if(existing != 99){
-							var updateManifold = workbench.manifolds[existing];							
-							updateManifold.primarySensor.RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
+						var updateManifold = workbench.manifolds[existing];
+						updateManifold.primarySensor.RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
+						/// add any sensor properties that a remote user has added only if they don't exist already
+						foreach(var sub in deserializedToken.subviews){
+							switch(sub){
+								case 1:
+									if(!updateManifold.HasSensorPropertyOfType(typeof(PTChartSensorProperty))){									
+										updateManifold.AddSensorProperty(new PTChartSensorProperty(updateManifold));
+									}
+									break;
+								case 2:
+									if(!updateManifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty))){
+										updateManifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(updateManifold));
+									}
+									break;
+								case 3:
+									if (!updateManifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
+										updateManifold.AddSensorProperty(new MinSensorProperty(updateManifold.primarySensor));
+									}
+									break;
+								case 4:
+									if (!updateManifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
+										updateManifold.AddSensorProperty(new MaxSensorProperty(updateManifold.primarySensor));
+									}
+									break;
+								case 5:
+									if (!updateManifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
+										updateManifold.AddSensorProperty(new HoldSensorProperty(updateManifold.primarySensor));
+									}
+									break;
+								case 6:
+									if (!updateManifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
+										updateManifold.AddSensorProperty(new RateOfChangeSensorProperty(updateManifold.primarySensor));
+									}
+									break;
+								case 7:
+									if (!updateManifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
+										updateManifold.AddSensorProperty(new TimerSensorProperty(updateManifold.primarySensor));
+									}
+									break;
+								case 8:
+						      if (updateManifold.secondarySensor != null) {
+						        if (!updateManifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+						            updateManifold.AddSensorProperty(new SecondarySensorProperty(updateManifold));
+						        }
+						      }
+									break;
+								default:
+									Console.WriteLine("Unknown....");
+									break;
+							}
+						}
+						///Remove any subviews a remote user has removed
+						foreach(var sp in updateManifold.sensorProperties.ToArray()){
+							var propertyIndex = GetSensorPropertyEnum(sp);
+							var exists = Array.IndexOf(deserializedToken.subviews,propertyIndex); 
+							if(exists == -1){
+								updateManifold.RemoveSensorProperty(sp);
+							}
+						}
 					} else {
-						var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[0]);	
-						workbench.Add(manualManifold);
+						foreach(var idevice in remoteDManager.knownDevices){
+							if(idevice.serialNumber.rawSerial == iserial.rawSerial){
+								if(idevice.isConnected){
+									wbconnected = true;
+								}
+								break;
+							}
+						}
+						///manifold has been added by the remote user but doesn't exist for viewing user so create it and add it's sensor properties
+						var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, wbconnected) as GaugeDevice;
+
+						if(ESensorType.Pressure == UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) || ESensorType.Vacuum == UnitLookup.GetSensorTypeFromCode(deserializedToken.unit)){
+							var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[0]);
+							manualManifold.ptChart = PTChart.New(AppState.context,Fluid.EState.Dew);
+							workbench.Add(manualManifold);
+							SetupNewManifoldProperties(manualManifold,deserializedToken);							
+						} else {   
+							var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[1]);							
+							manualManifold.ptChart = PTChart.New(AppState.context,Fluid.EState.Dew);
+							workbench.Add(manualManifold);
+							SetupNewManifoldProperties(manualManifold,deserializedToken);
+						}
+					}					
+				}
+
+				foreach(var manifold in workbench.manifolds.ToArray()){
+					if(!activeManifolds.Contains(manifold.primarySensor.name+manifold.primarySensor.type)){
+						workbench.Remove(manifold);
 					}
-					Console.WriteLine(deserializedToken.serialNumber + " - " + deserializedToken.measurement + " - " + deserializedToken.unit);
 				}
 			}
 		} catch (Exception exception){
 			Console.WriteLine("Exception: " + exception);
 		}
 	}
-	
+
+	public async void SetupNewManifoldProperties(Manifold manualManifold, workbenchSetup deserializedToken){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+		foreach(var sub in deserializedToken.subviews){
+			switch(sub){
+				case 1:
+					manualManifold.AddSensorProperty(new PTChartSensorProperty(manualManifold));
+					break;
+				case 2:				
+					manualManifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manualManifold));
+					break;
+				case 3:
+					manualManifold.AddSensorProperty(new MinSensorProperty(manualManifold.primarySensor));
+					break;
+				case 4:						
+					manualManifold.AddSensorProperty(new MaxSensorProperty(manualManifold.primarySensor));
+					break;
+				case 5:							
+					manualManifold.AddSensorProperty(new HoldSensorProperty(manualManifold.primarySensor));
+					break;
+				case 6:								
+					manualManifold.AddSensorProperty(new RateOfChangeSensorProperty(manualManifold.primarySensor));
+					break;
+				case 7:								
+					manualManifold.AddSensorProperty(new TimerSensorProperty(manualManifold.primarySensor));
+					break;
+				case 8:							
+					manualManifold.AddSensorProperty(new SecondarySensorProperty(manualManifold));
+					break;
+			}
+		}
+	}	
 	/// <summary>
 	/// Queries for everyone a user has viewing access for
 	/// </summary>
@@ -856,6 +1038,29 @@ namespace ION.Core.Net {
 	public async void DeleteWorkbenchLayout(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));		
 	}
+	
+	public int GetSensorPropertyEnum(ISensorProperty type){
+		var property = type.GetType();
+		
+		if(typeof(PTChartSensorProperty).Equals(property)){
+			return 1;
+		} else if (typeof(SuperheatSubcoolSensorProperty).Equals(property)){
+			return 2;
+		} else if (typeof(MinSensorProperty).Equals(property)){
+			return 3;
+		} else if (typeof(MaxSensorProperty).Equals(property)){
+			return 4;
+		} else if (typeof(HoldSensorProperty).Equals(property)){
+			return 5;
+		} else if (typeof(RateOfChangeSensorProperty).Equals(property)){
+			return 6;
+		} else if (typeof(TimerSensorProperty).Equals(property)){
+			return 7;
+		} else {
+			return 8;
+		}	
+	}
+	
 }
 
 
@@ -886,38 +1091,68 @@ namespace ION.Core.Net {
 	
 	[Preserve(AllMembers = true)]
 	public class connectedData {
-		[JsonProperty("serial")]
+		[JsonProperty("sn")]
 		public string serialNumber { get; set; }
-		[JsonProperty("amount")]
-		public double measurement { get; set; }
-		[JsonProperty("unit")]
-		public int unit { get; set; }
+		[JsonProperty("sa")]
+		public sensorData[] sensors { get; set; }
 		[JsonProperty("on")]
-		public int connected { get; set; }	
+		public int connected { get; set; }
+		[JsonProperty("bat")]
+		public int battery { get; set; }		
 	}	
-		
+	
+	[Preserve(AllMembers = true)]
+	public class sensorData {
+		public sensorData(){}
+		[JsonProperty("sv")]
+		public double measurement { get; set; }
+		[JsonProperty("su")]
+		public int unit { get; set; }
+		[JsonProperty("si")]
+		public int sensorIndex { get; set; }
+	}	
+	
 	[Preserve(AllMembers = true)]
 	public class analyzerSetup {
 		public analyzerSetup(){}
-		[JsonProperty("serial")]
+		[JsonProperty("sn")]
 		public string serialNumber { get; set; }
-		[JsonProperty("slot")]
+		[JsonProperty("sl")]
 		public int position { get; set; }
-		[JsonProperty("amount")]
+		[JsonProperty("sv")]
 		public double measurement { get; set; }
-		[JsonProperty("unit")]
+		[JsonProperty("su")]
 		public int unit { get; set; }
+		[JsonProperty("sa")]
+		public int area { get; set; }		
 	}
 	
 	[Preserve(AllMembers = true)]
 	public class workbenchSetup {
 		public workbenchSetup(){}
-		[JsonProperty("serial")]
+		[JsonProperty("sn")]
 		public string serialNumber { get; set; }
 		[JsonProperty("amount")]
 		public double measurement { get; set; }
 		[JsonProperty("unit")]
 		public int unit { get; set; }
+		[JsonProperty("sub")]
+		public int [] subviews {get;set;}
 	}
+	
+	[Preserve(AllMembers = true)]
+	public class analyzerPositions {
+		public analyzerPositions(){}
+		[JsonProperty("positions")]
+		public int [] sensorPositions {get;set;}
+	}
+	[Preserve(AllMembers = true)]
+	public class analyzerLowHigh {
+		public analyzerLowHigh(){}
+		[JsonProperty("low")]
+		public string lowAccessibility {get;set;}
+		[JsonProperty("high")]
+		public string highAccessibility {get;set;}
+	}		
 }
 

@@ -1,17 +1,18 @@
 ﻿namespace ION.Core.Content {
 
-  using System;
-  using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
-  using ION.Core.App;
-  using ION.Core.Fluids;
-  using ION.Core.Sensors;
-  using ION.Core.Content.Properties;
+	using ION.Core.App;
+	using ION.Core.Fluids;
+	using ION.Core.Sensors;
+	using ION.Core.Content.Properties;
+	using System.Collections.ObjectModel;
 
-  /// <summary>
-  /// A collection of data pertaining to a state change within the analyzer.
-  /// </summary>
-  public class AnalyzerEvent {
+	/// <summary>
+	/// A collection of data pertaining to a state change within the analyzer.
+	/// </summary>
+	public class AnalyzerEvent {
     /// <summary>
     /// The type of this event.
     /// </summary>
@@ -230,7 +231,9 @@
     private Sensor[] sensors;
 
     public List<Sensor> sensorList;
-		public int [] sensorPositions = {1,2,3,4,5,6,7,8};
+		public List<int> sensorPositions = new List<int>(){1,2,3,4,5,6,7,8};
+		public string lowAccessibility ="low";
+		public string highAccessibility ="high";
     /// <summary>
     /// Creates a new analyzer.
     /// </summary>
@@ -243,6 +246,7 @@
       this.ion = ion;
       this.sensorsPerSide = sensorsPerSide;
       sensors = new Sensor[sensorsPerSide * 2];
+      sensorList = new List<Sensor>();
     }
 
     /// <summary>

@@ -587,7 +587,7 @@
       var indices = new List<int>();
       ViewerRecord vr;
       int index;
-
+			
       switch (e.type) {
         case ManifoldEvent.EType.Invalidated:
           if (recordIndex > 0) {

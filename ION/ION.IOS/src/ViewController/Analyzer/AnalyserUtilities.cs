@@ -22,12 +22,14 @@ using ION.Core.App;
 
 using ION.IOS.ViewController.Alarms;
 using ION.IOS.Util;
+using System.Collections.ObjectModel;
 
 namespace ION.IOS.ViewController.Analyzer
 {
 	class AnalyserUtilities 
 	{
     public static IONPrimaryScreenController root { get; set; }
+    public static IION ion = AppState.context;
 		/// <summary>
 		/// Calculates the locations and snap points for sensor subviews
 		/// </summary>
@@ -517,7 +519,7 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <param name="middleLabel">LOW/HIGH TOP LABEL</param>
 		/// <param name="bottomLabel">LOW/HIGH TOP LABEL</param>
 		/// <param name="removeView">ATTACHED SENSOR TOP LABEL</param>
-		public static void RemoveDevice(sensor removeSensor, LowHighArea lowHighSensors){      
+		public static void RemoveDevice(sensor removeSensor, LowHighArea lowHighSensors){
       removeSensor.topLabel.BackgroundColor = UIColor.Clear;
       removeSensor.topLabel.TextColor = UIColor.Black;
       removeSensor.tLabelBottom.Hidden = true;
@@ -566,13 +568,114 @@ namespace ION.IOS.ViewController.Analyzer
         removeSensor.highArea.manifold.ptChart = PTChart.New(removeSensor.highArea.ion, Fluid.EState.Dew);
       }
 
-      if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier)
+      if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
-      else if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier)
+        ion.currentAnalyzer.lowAccessibility = "low";
+      }
+      else if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-
+				ion.currentAnalyzer.highAccessibility = "high";
+			}
       Console.WriteLine("Low side identifier after LH removal: " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       Console.WriteLine("High side identifier after LH removal: " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
+		}
+		
+		/// <summary>
+		/// Removes 
+		/// </summary>
+		public static void RemoveRemoteDevice(sensor removeSensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors){
+      removeSensor.snapArea.RemoveGestureRecognizer (removeSensor.holdGesture);
+      removeSensor.snapArea.RemoveGestureRecognizer(removeSensor.panGesture);
+      removeSensor.snapArea.BackgroundColor = UIColor.Clear;
+      removeSensor.availableView.Hidden = false;
+      removeSensor.sactionView.aView.Hidden = true;
+      removeSensor.addIcon.Hidden = false;
+      removeSensor.topLabel.Hidden = true;
+      removeSensor.topLabel.BackgroundColor = UIColor.Clear;
+      removeSensor.topLabel.TextColor = UIColor.Black;
+      removeSensor.tLabelBottom.Hidden = true;
+      removeSensor.middleLabel.Hidden = true;
+      removeSensor.bottomLabel.Hidden = true;
+      removeSensor.topLabel.Text = "Press ";
+      removeSensor.middleLabel.Text = "0.00";
+      removeSensor.bottomLabel.Text = "";
+      //not sure if removing should disconnect the device.....
+      if (removeSensor.isManual.Equals(false)) {
+        removeSensor.currentSensor.onSensorStateChangedEvent -= removeSensor.gaugeUpdating;
+        removeSensor.sactionView.currentSensor.onSensorStateChangedEvent -= removeSensor.sactionView.gaugeUpdating;
+        removeSensor.lowArea.currentSensor.onSensorStateChangedEvent -= removeSensor.lowArea.gaugeUpdating;
+        removeSensor.highArea.currentSensor.onSensorStateChangedEvent -= removeSensor.lowArea.gaugeUpdating;
+
+        removeSensor.lowArea.manifold.Dispose();
+        removeSensor.highArea.manifold.Dispose();
+        removeSensor.currentSensor = null;
+        removeSensor.sactionView.currentSensor = null;
+        removeSensor.lowArea.currentSensor = null;
+        removeSensor.highArea.currentSensor = null;
+      }
+      removeSensor.isManual = false;
+      removeSensor.lowArea.snapArea.Hidden = true;
+      removeSensor.lowArea.isManual = false;
+      removeSensor.lowArea.max = 0;
+      removeSensor.lowArea.min = 0;
+      removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+      removeSensor.lowArea.subviewTable.Source = null;
+      removeSensor.lowArea.subviewTable.ReloadData ();
+      removeSensor.lowArea.subviewTable.Hidden = true;
+      removeSensor.lowArea.tableSubviews = new List<string> ();
+
+      removeSensor.highArea.snapArea.Hidden = true;
+      removeSensor.highArea.isManual = false;
+      removeSensor.highArea.max = 0;
+      removeSensor.highArea.min = 0;
+      removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
+      removeSensor.highArea.subviewTable.Source = null;
+      removeSensor.highArea.subviewTable.ReloadData ();
+      removeSensor.highArea.subviewTable.Hidden = true;
+      removeSensor.highArea.tableSubviews = new List<string> ();
+
+      if (removeSensor.lowArea.attachedSensor != null) {
+        removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+       	removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Black;     
+        removeSensor.lowArea.attachedSensor.tLabelBottom.Hidden = true;
+        removeSensor.lowArea.attachedSensor = null;
+
+        removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+        removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Black;     
+        removeSensor.highArea.attachedSensor.tLabelBottom.Hidden = true;
+        removeSensor.highArea.attachedSensor = null;
+      } else {
+        for (int i = 0; i < 8; i++) {
+          if (analyzerSensors.viewList[i].lowArea.attachedSensor != null && analyzerSensors.viewList[i].lowArea.attachedSensor == removeSensor) {
+            analyzerSensors.viewList[i].lowArea.attachedSensor = null;
+            analyzerSensors.viewList[i].highArea.attachedSensor = null;
+
+            if (analyzerSensors.viewList[i].currentSensor != null) {
+              analyzerSensors.viewList[i].lowArea.manifold = new Manifold(analyzerSensors.viewList[i].currentSensor);
+              analyzerSensors.viewList[i].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
+              analyzerSensors.viewList[i].highArea.manifold = new Manifold(analyzerSensors.viewList[i].currentSensor);
+              analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
+            } else if (analyzerSensors.viewList[i].manualSensor != null) {
+              analyzerSensors.viewList[i].lowArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
+              analyzerSensors.viewList[i].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
+              analyzerSensors.viewList[i].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
+
+              analyzerSensors.viewList[i].highArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
+              analyzerSensors.viewList[i].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
+              analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
+            }
+          }
+        }
+      } 
+
+      if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
+        lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+        ion.currentAnalyzer.lowAccessibility = "low";
+      }
+      else if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
+        lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+				ion.currentAnalyzer.highAccessibility = "high";
+			}
 		}
 		/// <summary>
 		/// WHAT TODO WHEN THEY WANT TO REMOVE A SINGLE SENSOR
@@ -672,10 +775,14 @@ namespace ION.IOS.ViewController.Analyzer
         }
       } 
 
-      if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier)
+      if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
-      else if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier)
+        ion.currentAnalyzer.lowAccessibility = "low";
+      }
+      else if (Sensor.pressedSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+        ion.currentAnalyzer.highAccessibility = "high";
+      }
 		}
 
     public static void applyLowHighGestures(lowHighSensor lowArea, lowHighSensor highArea, LowHighArea lowHighSensors, sensor Sensor){
@@ -889,58 +996,53 @@ namespace ION.IOS.ViewController.Analyzer
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
 					if(analyzerSensors.snapArea1.currentSensor != null){
 						analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea1 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 2) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
 					if(analyzerSensors.snapArea2.currentSensor != null){
 						analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea2 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 3) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
 					if(analyzerSensors.snapArea3.currentSensor != null){
 						analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea3 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 4) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
 					if(analyzerSensors.snapArea4.currentSensor != null){
 						analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea4 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 5) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
 					if(analyzerSensors.snapArea5.currentSensor != null){
 						analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea5 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 6) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
 					if(analyzerSensors.snapArea6.currentSensor != null){
 						analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea6 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 7) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
 					if(analyzerSensors.snapArea7.currentSensor != null){
 						analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea7 = " + i);
 					}
 				} else if (analyzerSensors.areaList [i] == 8) {
 					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
 					if(analyzerSensors.snapArea8.currentSensor != null){
 						analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
-						Console.WriteLine("AnalyzerUtilities.cs - set snapArea8 = " + i);
 					}
 				}
 			}
       if (removeLH) {
+      	Console.WriteLine("Removelh");
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+            Console.WriteLine("low area is equal to start "+analyzerSensors.viewList[start].currentSensor.name+"and high area is equal to swap"+analyzerSensors.viewList[swap].currentSensor.name);
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
+          ion.currentAnalyzer.highAccessibility = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
           View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.snapArea);
           if (!analyzerSensors.viewList[start].isManual) {
             if(analyzerSensors.viewList[start].currentSensor.device.isConnected){
@@ -1030,6 +1132,7 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
           lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
+          ion.currentAnalyzer.lowAccessibility = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
           View.BringSubviewToFront(analyzerSensors.viewList[swap].lowArea.snapArea);
 
           analyzerSensors.viewList[swap].lowArea.snapArea.Hidden = false;
@@ -1077,6 +1180,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
+                   Console.WriteLine("high area is equal to start "+analyzerSensors.viewList[start].currentSensor.name+"and low area is equal to swap"+analyzerSensors.viewList[swap].currentSensor.name);
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
 
@@ -1102,7 +1206,7 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
           lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
-
+					ion.currentAnalyzer.lowAccessibility = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
           analyzerSensors.viewList[start].lowArea.snapArea.Hidden = false;
           analyzerSensors.viewList[start].lowArea.tableSubviews = analyzerSensors.viewList[start].highArea.tableSubviews;
           analyzerSensors.viewList[start].lowArea.subviewTable.Source = new AnalyzerTableSource(analyzerSensors.viewList[start].lowArea.tableSubviews,analyzerSensors.viewList[start].lowArea);
@@ -1172,6 +1276,7 @@ namespace ION.IOS.ViewController.Analyzer
             }
           }
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
+          ion.currentAnalyzer.highAccessibility = analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier;
           View.BringSubviewToFront(analyzerSensors.viewList[swap].highArea.snapArea);
 
           analyzerSensors.viewList[swap].highArea.snapArea.Hidden = false;
@@ -1219,6 +1324,7 @@ namespace ION.IOS.ViewController.Analyzer
           }
 
         } else {
+        	Console.WriteLine("neither");
           analyzerSensors.viewList[start].lowArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].highArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Clear;
@@ -1227,9 +1333,11 @@ namespace ION.IOS.ViewController.Analyzer
 
           if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+            ion.currentAnalyzer.lowAccessibility = "low";
           }
           if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+            ion.currentAnalyzer.highAccessibility = "high";
           }
 
           analyzerSensors.viewList[start].lowArea.subviewTable.Source = null;
@@ -1301,9 +1409,11 @@ namespace ION.IOS.ViewController.Analyzer
 
           if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+            ion.currentAnalyzer.lowAccessibility = "low";
           }
           if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+            ion.currentAnalyzer.highAccessibility = "high";
           }
 
           analyzerSensors.viewList[swap].lowArea.subviewTable.Source = null;
@@ -1378,19 +1488,19 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeLH) {
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("low and high areas are swapping with the low area being the start");
+          //Console.WriteLine("low and high areas are swapping with the low area being the start");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("low and high areas are swapping with the high area being the start");
+          //Console.WriteLine("low and high areas are swapping with the high area being the start");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("low or high area is starting a swap with a sensor not of the opposite peer");
+          //Console.WriteLine("low or high area is starting a swap with a sensor not of the opposite peer");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          Console.WriteLine("low or high area is a swapie with a sensor not of the opposite peer");
+          //Console.WriteLine("low or high area is a swapie with a sensor not of the opposite peer");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, analyzerSensors.viewList[swap]);
         } else {
           bool foundAssociation = false;
@@ -1468,44 +1578,53 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="analyzerSensors">Analyzer sensors.</param>
     /// <param name="View">View.</param>
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
+    	var analyzer = AppState.context.currentAnalyzer;
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
-        if (analyzerSensors.areaList [i] == 1) {
+        //if (analyzerSensors.areaList [i] == 1) {
+        if (analyzer.sensorPositions [i] == 1) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea1.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList [i] == 2) {
+        //} else if (analyzerSensors.areaList [i] == 2) {
+        } else if (analyzer.sensorPositions [i] == 2) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea2.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList [i] == 3) {
+        //} else if (analyzerSensors.areaList [i] == 3) {
+        } else if (analyzer.sensorPositions [i] == 3) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea3.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList[i] == 4) {
+        //} else if (analyzerSensors.areaList[i] == 4) {
+        } else if (analyzer.sensorPositions[i] == 4) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea4.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList[i] == 5) {
+        //} else if (analyzerSensors.areaList[i] == 5) {
+        } else if (analyzer.sensorPositions[i] == 5) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea5.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList[i] == 6) {
+        //} else if (analyzerSensors.areaList[i] == 6) {
+        } else if (analyzer.sensorPositions[i] == 6) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea6.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList[i] == 7) {
+        //} else if (analyzerSensors.areaList[i] == 7) {
+        } else if (analyzer.sensorPositions[i] == 7) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea7.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        } else if (analyzerSensors.areaList[i] == 8) {
+        //} else if (analyzerSensors.areaList[i] == 8) {
+        } else if (analyzer.sensorPositions[i] == 8) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea8.snapArea.Center = analyzerSensors.locationList[i];
@@ -1851,7 +1970,9 @@ namespace ION.IOS.ViewController.Analyzer
                 var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"low",View);
                 if (goOn) {                
                   lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+                  ion.currentAnalyzer.lowAccessibility = Sensor.snapArea.AccessibilityIdentifier;
                   lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+                  ion.currentAnalyzer.highAccessibility = "high";
                   View.BringSubviewToFront(Sensor.lowArea.snapArea);
                   Sensor.topLabel.BackgroundColor = UIColor.Blue;
                   Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
@@ -1934,6 +2055,7 @@ namespace ION.IOS.ViewController.Analyzer
             Sensor.lowArea.snapArea.Hidden = false;
             Sensor.highArea.snapArea.Hidden = true;
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+            ion.currentAnalyzer.lowAccessibility = Sensor.snapArea.AccessibilityIdentifier;
             return;
 					}
 
@@ -1977,7 +2099,9 @@ namespace ION.IOS.ViewController.Analyzer
                 var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"high",View);
                 if (goOn) {
                   lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+                  ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
                   lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+                  ion.currentAnalyzer.lowAccessibility = "low";
                   View.BringSubviewToFront(Sensor.highArea.snapArea);
                   Sensor.topLabel.BackgroundColor = UIColor.Red;
                   Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
@@ -2060,6 +2184,7 @@ namespace ION.IOS.ViewController.Analyzer
             Sensor.highArea.snapArea.Hidden = false;
             Sensor.lowArea.snapArea.Hidden = true;
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+            ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
             return;
 					}
 
@@ -2074,6 +2199,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 		public static bool orderSensors(sensorGroup analyzerSensors, int viewLocation ,string side, UIView View){
 			bool available = false;
+			var currentAnalyzer = AppState.context.currentAnalyzer;
 			if (side == "low") {
 				if (viewLocation != 0 && viewLocation != 1 && viewLocation != 2 && viewLocation != 3) {					
 					if (!analyzerSensors.viewList [0].availableView.Hidden) {
@@ -2081,24 +2207,32 @@ namespace ION.IOS.ViewController.Analyzer
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [0] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[0] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;						
 						available = true;
           } else if (!analyzerSensors.viewList [1].availableView.Hidden) {
 						int end = analyzerSensors.areaList [1];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [1] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[1] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
           } else if (!analyzerSensors.viewList [2].availableView.Hidden) {
 						int end = analyzerSensors.areaList [2];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [2] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[2] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
           } else if (!analyzerSensors.viewList [3].availableView.Hidden) {
 						int end = analyzerSensors.areaList [3];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [3] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[3] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
 					} 
 				} else {
@@ -2112,24 +2246,32 @@ namespace ION.IOS.ViewController.Analyzer
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [4] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[4] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;						
 						available = true;
           } else if (!analyzerSensors.viewList [5].availableView.Hidden) {
 						int end = analyzerSensors.areaList [5];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [5] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[5] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
           } else if (!analyzerSensors.viewList [6].availableView.Hidden) {
 						int end = analyzerSensors.areaList [6];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [6] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[6] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
           } else if (!analyzerSensors.viewList [7].availableView.Hidden) {
 						int end = analyzerSensors.areaList [7];
 						int start = analyzerSensors.areaList [viewLocation];
 						analyzerSensors.areaList [7] = start;
 						analyzerSensors.areaList [viewLocation] = end;
+		       	currentAnalyzer.sensorPositions[7] = start;
+		        currentAnalyzer.sensorPositions[viewLocation] = end;
 						available = true;
 					}
 				} else {
@@ -2377,6 +2519,7 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.lowArea.snapArea.Hidden = false;
         Sensor.highArea.snapArea.Hidden = true;
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+        ion.currentAnalyzer.lowAccessibility = Sensor.snapArea.AccessibilityIdentifier;
         Console.WriteLine("Occupied Low side given unattached sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The high side is currently identified with sensor " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
       }
@@ -2436,6 +2579,7 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.highArea.snapArea.Hidden = false;
         Sensor.lowArea.snapArea.Hidden = true;
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+        ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
         Console.WriteLine("Occupied High side given unattached sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       }
@@ -2495,7 +2639,9 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.lowArea.snapArea.Hidden = false;
         Sensor.highArea.snapArea.Hidden = true;
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+        ion.currentAnalyzer.lowAccessibility = Sensor.snapArea.AccessibilityIdentifier;
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+        ion.currentAnalyzer.highAccessibility = "high";
         Console.WriteLine("Occupied Low side given High side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The high side is currently identified with sensor " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
       } 
@@ -2555,7 +2701,9 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.highArea.snapArea.Hidden = false;
         Sensor.lowArea.snapArea.Hidden = true;
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
+        ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+        ion.currentAnalyzer.lowAccessibility = "low";
         Console.WriteLine("Occupied High side given Low side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The Low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       }

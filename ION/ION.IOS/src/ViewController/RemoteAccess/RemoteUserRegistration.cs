@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       }));
 	
 			
-			signupLabel = new UILabel(new CGRect(0,0,regView.Bounds.Width, .09 * regView.Bounds.Height));
+			signupLabel = new UILabel(new CGRect(0,0,regView.Bounds.Width, .1 * regView.Bounds.Height));
 			signupLabel.Font = UIFont.BoldSystemFontOfSize(20f);
 			signupLabel.Text = "Register";
 			signupLabel.TextAlignment = UITextAlignment.Center;
@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			signupLabel.AdjustsFontSizeToFitWidth = true;
 			signupLabel.ClipsToBounds = true;
       
-      cancelbutton = new UIButton(new CGRect(regView.Bounds.Width - .1 * regView.Bounds.Width, .02 * regView.Bounds.Height ,.09 * regView.Bounds.Width,.09 * regView.Bounds.Width));
+      cancelbutton = new UIButton(new CGRect(regView.Bounds.Width - .1 * regView.Bounds.Width, .015 * regView.Bounds.Height ,.09 * regView.Bounds.Width,.09 * regView.Bounds.Width));
       cancelbutton.SetImage(UIImage.FromBundle("img_button_blackclosex"),UIControlState.Normal);
 
       userName = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.14 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){

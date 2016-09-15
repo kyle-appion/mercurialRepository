@@ -263,19 +263,19 @@
       return false;
     }
 
-		public int GetDeviceIndex(ISerialNumber serialNumber){
+		public int GetDeviceIndex(ISerialNumber serialNumber, int unitCode){
       if (serialNumber != null) {
         for(int i = 0; i < manifolds.Count; i++) {
           var p = manifolds[i].primarySensor as GaugeDeviceSensor;
           var s = manifolds[i].secondarySensor as GaugeDeviceSensor; 
 					
 					if(p != null){
-	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial){
+	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial && p.type == UnitLookup.GetSensorTypeFromCode(unitCode)){
 							return i;
 						};
 					}
 					if(s != null){
-	          if(serialNumber.rawSerial == s.device.serialNumber.rawSerial){
+	          if(serialNumber.rawSerial == s.device.serialNumber.rawSerial && s.type ==  UnitLookup.GetSensorTypeFromCode(unitCode)){
 							return i;
 						};
 					}
