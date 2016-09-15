@@ -50,7 +50,7 @@ namespace ION.IOS.ViewController.Workbench {
     public UIButton recordButton;
 		public WebPayload webServices;    
     public bool remoteMode = false;
-		public bool isViewing = false;
+
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
     }
@@ -74,10 +74,11 @@ namespace ION.IOS.ViewController.Workbench {
  			
      
 			if(remoteMode){
-				workbench = new Workbench(ion);
-				isViewing = true;
-				pullUserLayouts();
-
+				if(webServices.downloading){
+					Console.WriteLine("Already started downloading from analyzer");
+				}			
+				workbench = new Workbench(ion);				
+				pullUserLayouts(appDelegate);
 			} else {
 	      var button = new UIButton(new CGRect(0, 0, 31, 30));
 	      button.TouchUpInside += (obj, args) => {
@@ -187,7 +188,6 @@ namespace ION.IOS.ViewController.Workbench {
           goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Swapped:
           ion.SaveWorkbenchAsync();
-
           break;
       }
     }
@@ -229,50 +229,50 @@ namespace ION.IOS.ViewController.Workbench {
       messageBox.DismissWithClickedButtonIndex(0, true);
     }
     
-		public async void pullUserLayouts(){
+		public async void pullUserLayouts(AppDelegate appDelegate){
+			webServices.downloading = true;
 			var startedViewing = DateTime.Now;
-			while(isViewing){
+			while(appDelegate.webServices.remoteViewing){
 			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
-			 	SystemSound newSound = new SystemSound (1005);
 
 				if(timeDifference < 30){
 					var loggedUser = KeychainAccess.ValueForKey("userID");
 					if(!string.IsNullOrEmpty(loggedUser)){
 						await webServices.DownloadLayouts(workbench);
-						await Task.Delay(TimeSpan.FromSeconds(8));
+						await Task.Delay(TimeSpan.FromSeconds(1));
 					} else {
-						isViewing = false;
+						appDelegate.webServices.remoteViewing = false;
 					}
 				} else {
-					isViewing = false;					
+					SystemSound newSound = new SystemSound (1005);
+					appDelegate.webServices.remoteViewing = false;					
 					
 					var window = UIApplication.SharedApplication.KeyWindow;
 		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
 					
 					var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-						isViewing = true;
-						pullUserLayouts();
+						appDelegate.webServices.remoteViewing = true;
+						pullUserLayouts(appDelegate);
 						newSound.Close();
 					}));
 					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {newSound.Close();}));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					AbsentRemoteTurnoff(alert);	
+					AbsentRemoteTurnoff(alert, appDelegate);	
 
 					newSound.PlaySystemSound();
 					await Task.Delay(TimeSpan.FromSeconds(2));
 					newSound.Close();				
 				}
 			}
-		}    
+		}
 
-		public async void AbsentRemoteTurnoff(UIAlertController alert){
+		public async void AbsentRemoteTurnoff(UIAlertController alert, AppDelegate appDelegate){
 			await Task.Delay(TimeSpan.FromSeconds(15));
 			
 			alert.DismissViewController(false,null);
-			if(!isViewing){
+			if(!appDelegate.webServices.remoteViewing){
 				Console.WriteLine("dismissed alert and user didn't choose to continue");
-				workbench = ion.currentWorkbench;
 			}
 		}
   }

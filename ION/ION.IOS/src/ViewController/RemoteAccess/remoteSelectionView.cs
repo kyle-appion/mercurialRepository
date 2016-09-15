@@ -27,10 +27,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIActivityIndicatorView loadingUsers;
 		public IION ion;
 		public WebPayload webServices;
-		public bool isViewing = false;
 		
 		public remoteSelectionView(UIView parentView, IION ion, WebPayload webServices) {
-			this.ion = ion;
+			this.ion = ion; 
 
       this.webServices = webServices;
 			// Perform any additional setup after loading the view, typically from a nib.
@@ -84,9 +83,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					remoteMenuButton.Hidden = true;
 					fullMenuButton.Hidden = false;
 					onlineTable.UserInteractionEnabled = false;
-					isViewing = true;
-					//pullUserLayouts();
-
+					webServices.remoteViewing = true;
+					
 					await ion.setRemoteDeviceManager(); 
         	rootVC.setRemoteMenu();
         } else {        	
@@ -111,7 +109,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				fullMenuButton.Hidden = true;
 				remoteMenuButton.Hidden = false;
 				onlineTable.UserInteractionEnabled = true;
-				isViewing = false;
+				webServices.remoteViewing = false;
 				
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				
@@ -164,54 +162,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
         remoteMenuButton.Enabled = false;
         remoteMenuButton.Alpha = .6f;
       }
-    }
-
-		//public async void pullUserLayouts(){
-		//	var startedViewing = DateTime.Now;
-		//	while(isViewing){
-		//	  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
-		//	 	SystemSound newSound = new SystemSound (1005);
-
-		//		if(timeDifference < 30){
-		//			var loggedUser = KeychainAccess.ValueForKey("userID");
-		//			if(!string.IsNullOrEmpty(loggedUser)){
-		//				await webServices.DownloadLayouts();
-		//				await Task.Delay(TimeSpan.FromSeconds(8));
-		//			} else {
-		//				isViewing = false;
-		//			}
-		//		} else {
-		//			isViewing = false;					
-					
-		//			var window = UIApplication.SharedApplication.KeyWindow;
-		//  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-					
-		//			var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
-		//			alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-		//				isViewing = true;
-		//				pullUserLayouts();
-		//				newSound.Close();
-		//			}));
-		//			alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {newSound.Close();}));
-		//			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-		//			AbsentRemoteTurnoff(alert);	
-
-		//			newSound.PlaySystemSound();
-		//			await Task.Delay(TimeSpan.FromSeconds(2));
-		//			newSound.Close();				
-		//		}
-		//	}
-		//}
-		
-		//public async void AbsentRemoteTurnoff(UIAlertController alert){
-		//	await Task.Delay(TimeSpan.FromSeconds(15));
-			
-		//	alert.DismissViewController(false,null);
-		//	if(!isViewing){
-		//		Console.WriteLine("dismissed alert and user didn't choose to continue");
-		//	}
-		//}	
-	
+    }	
 	}
 	
 	[Foundation.Preserve(AllMembers = true)]

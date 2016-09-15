@@ -92,13 +92,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			};
 			var underlineAttr = new UIStringAttributes { UnderlineStyle = NSUnderlineStyle.Single, ForegroundColor = UIColor.Blue };
 			
-			recoveryButton = new UIButton(new CGRect(.8 * loginView.Bounds.Width, .9 * loginView.Bounds.Height, .18 * loginView.Bounds.Width, .1 * loginView.Bounds.Height));
+			recoveryButton = new UIButton(new CGRect(.05 * loginView.Bounds.Width, .9 * loginView.Bounds.Height, .4 * loginView.Bounds.Width, .1 * loginView.Bounds.Height));
 			recoveryButton.Font = UIFont.ItalicSystemFontOfSize(15f);
 			recoveryButton.SetAttributedTitle(new NSAttributedString("Account Recovery", underlineAttr), UIControlState.Normal);
 			recoveryButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			recoveryButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
 			recoveryButton.TouchUpInside += recoverAccount;
 			
-			loginView.AddSubview(loginHeaderImage);
+			loginView.AddSubview(loginHeaderImage);   
 			loginView.AddSubview(userName);
 			loginView.AddSubview(password);
 			loginView.AddSubview(checkboxButton);

@@ -408,7 +408,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         var sb = InflateViewController<FluidManagerViewController>(VC_FLUID_MANAGER);
         sb.onFluidSelectedDelegate = (Fluid fluid) => {
           ptChart = PTChart.New(ion, ptChart.state, fluid);
-		  		ptSlider.Chart = ptChart;
+          if(ptSlider != null){
+		  			ptSlider.Chart = ptChart;
+		  		}
           if (pressureSensor is GaugeDeviceSensor) {
             entryMode = new SensorEntryMode(this,pressureSensor, temperatureUnit, ptChart, editPressure, editTemperature);
           } else if (temperatureSensor is GaugeDeviceSensor){
@@ -427,7 +429,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 					ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
 					}
 		  } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
-		  		if(ptSlider != null){
+		  	if(ptSlider != null){
 					ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
 					ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
 				}
@@ -623,8 +625,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             }
             SetTemperatureMeasurementFromEditText();
             if(ptSlider != null){
-				recalculateSlider(pressureUnit,ptSlider.ptView.tempLookup);
-			}
+							recalculateSlider(pressureUnit,ptSlider.ptView.tempLookup);
+						}
           });
           PresentViewController(dialog, true, null);
         }

@@ -283,7 +283,11 @@ namespace ION.IOS.ViewController {
     private void BuildRemoteViewControllers() {    	
 			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
 			remoteWb.remoteMode = true;
+			var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
+			remoteAn.remoteMode = true;
+			
 			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
+			navigation.ViewControllers[1] = new UINavigationController(remoteAn);
 			navigation.ViewControllers[5] = null;
 			navigation.ViewControllers[6] = null;
 			navigation.ViewControllers[7] = null;
@@ -389,11 +393,15 @@ namespace ION.IOS.ViewController {
 			);
 			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
 			remoteWb.remoteMode = false;
+			var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
+			remoteAn.remoteMode = false;
+			
 			var remoteAM = InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER);
 			var remoteJM = InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER);
 			var remoteL = InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING);
 
 			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
+			navigation.ViewControllers[1] = new UINavigationController(remoteAn);
 
 			navigation.ViewControllers[5] = new UINavigationController(remoteAM);
 			navigation.ViewControllers[6] = new UINavigationController(remoteJM);
