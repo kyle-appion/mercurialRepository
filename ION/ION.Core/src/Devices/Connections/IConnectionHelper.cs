@@ -37,32 +37,16 @@
     /// </summary>
     event OnDeviceFound onDeviceFound;
 
-    /// <summary>
-    /// Whether or not the connection helper's backend is enabled.
-    /// </summary>
-    /// <value><c>true</c> if is enabled; otherwise, <c>false</c>.</value>
-    bool isEnabled { get; }
+		/// <summary>
+		/// Queries whether or not the adapter is enabled.
+		/// </summary>
+		/// <value><c>true</c> if is enabled; otherwise, <c>false</c>.</value>
+		bool isEnabled { get; }
     /// <summary>
     /// Whether or not the connection helper is currently scanning.
     /// </summary>
     bool isScanning { get; }
 
-    /// <summary>
-    /// Enables the connection helper's backend.
-    /// </summary>
-    Task<bool> Enable();
-    /// <summary>
-    /// Queries whether or not the connection helper can resolve the given protocol.
-    /// </summary>
-    /// <returns><c>true</c> if this instance can resole protocol the specified protocol; otherwise, <c>false</c>.</returns>
-    /// <param name="protocol">Protocol.</param>
-    bool CanResolveProtocol(EProtocolVersion protocol);
-    /// <summary>
-    /// Creates the connection for the given address.
-    /// </summary>
-    /// <returns>The connection for.</returns>
-    /// <param name="identifier">Address.</param>
-//    IConnection CreateConnectionFor(string address, EProtocolVersion protocolVersion);
     /// <summary>
     /// Performs a scan for the given scan time. Note: the scan time is 
     /// nothing more than a hint. The connection helper does NOT necessarily need
@@ -74,13 +58,13 @@
     /// <param name="scanTime">Scan time.</param>
     /// <returns>True if the scan was started, false otherwise. False may
     /// be returned if the connection helper is currently scanning.</returns>
-    Task<bool> Scan(TimeSpan scanTime);
+    bool StartScan(TimeSpan scanTime);
     /// <summary>
     /// Stops a scan regardless of whether or not it is in progress. The
     /// scan will NOT repeat after this call. A call to Reset must be made
     /// to reactive the scanner.
     /// </summary>
-    void Stop();
+    void StopScan();
   } // End IScanMode
 }
 

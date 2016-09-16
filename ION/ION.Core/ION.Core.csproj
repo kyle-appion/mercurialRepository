@@ -58,9 +58,7 @@
     <Compile Include="src\Content\Workbench.cs" />
     <Compile Include="src\Database\IONDatabase.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
-    <Compile Include="src\Devices\Protocols\BleV3Protocol.cs" />
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
-    <Compile Include="src\Devices\Protocols\BleV2Protocol.cs" />
     <Compile Include="src\IO\Properties.cs" />
     <Compile Include="src\Util\IReleasable.cs" />
     <Compile Include="src\IO\IParser.cs" />
@@ -89,7 +87,6 @@
     <Compile Include="src\Sensors\Alarms\SensorAlarm.cs" />
     <Compile Include="src\Sensors\Serialization\DefaultSensorJsonConverter.cs" />
     <Compile Include="src\IO\ISerializer.cs" />
-    <Compile Include="src\Content\Serialization\ManifoldJsonConverter.cs" />
     <Compile Include="src\Devices\GaugeDevice.cs" />
     <Compile Include="src\Devices\BaseDeviceManager.cs" />
     <Compile Include="src\Devices\DeviceFactory.cs" />
@@ -126,7 +123,6 @@
     <Compile Include="src\App\Constants.cs" />
     <Compile Include="src\Report\DataLoggingReport.cs" />
     <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />
-    <Compile Include="src\Devices\Connections\ConnectionHelperCollection.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
     <Compile Include="src\Database\ITableRow.cs" />
     <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
@@ -171,6 +167,9 @@
     <Compile Include="src\DateTimeExtensions.cs" />
     <Compile Include="src\StringExtensions.cs" />
     <Compile Include="src\ByteExtensions.cs" />
+    <Compile Include="src\Util\AlphabeticalStringComparer.cs" />
+    <Compile Include="src\Content\Parsers\AnalyzerParser.cs" />
+    <Compile Include="src\Content\Parsers\SensorParser.cs" />
     <Compile Include="src\Connections\RemoteConnection.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -190,7 +189,6 @@
     <Folder Include="src\Alarms\Alerts\" />
     <Folder Include="src\Sensors\Alarms\" />
     <Folder Include="src\Sensors\Serialization\" />
-    <Folder Include="src\Content\Serialization\" />
     <Folder Include="src\Devices\Connections\" />
     <Folder Include="src\Content\Properties\" />
     <Folder Include="src\Security\" />

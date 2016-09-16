@@ -8,6 +8,7 @@
   using ION.Core.Sensors.Properties;
 
   using ION.Droid.Util;
+	using ION.Droid.Widgets.RecyclerViews;
   using ION.Droid.Widgets.Templates;
 
   class TimerSubviewRecord : SensorPropertyRecord<TimerSensorProperty> {
@@ -15,14 +16,14 @@
     }
   }
 
-  class TimerSubviewViewHolder : SubviewAdapterViewHolder<TimerSubviewRecord> {
+  class TimerSubviewViewHolder : SwipableViewHolder<TimerSubviewRecord> {
     private TimerSubviewTemplate template;
 
-    public TimerSubviewViewHolder(View view, BitmapCache cache) : base(view) {
+		public TimerSubviewViewHolder(ViewGroup parent, BitmapCache cache) : base(parent, Resource.Layout.subview_timer_small) {
       template = new TimerSubviewTemplate(view, cache);
     }
 
-    public override void BindTo(TimerSubviewRecord t) {
+		public override void OnBindTo() {
       template.Bind(t.item);
     }
 

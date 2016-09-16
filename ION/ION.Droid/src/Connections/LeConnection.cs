@@ -51,11 +51,19 @@
 		/// The default time that is allowed for a rigado connection attempt.
 		/// </summary>
 		private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
+		/// <summary>
+		/// The delay from a disconnecto to a reconnect attempt.
+		/// </summary>
+		private const long RECONNECT_DELAY = 3000;
 
 		/// <summary>
 		/// The message that is used when a connection of other attempt 
 		/// </summary>
 		private const int MSG_TIMEOUT = -1;
+		/// <summary>
+		/// The message that is used when a connection needs to append a reconnect attempt.
+		/// </summary>
+		private const int MSG_RECONNECT = 1;
 
 		public event OnConnectionStateChanged onStateChanged;
 
@@ -163,6 +171,8 @@
 		}
 
 		public void Disconnect() {
+			handler.RemoveMessages(MSG_RECONNECT);
+
 			if (gatt != null) {
 				gatt.Disconnect();
 				gatt.Close();
@@ -191,9 +201,12 @@
 			switch (msg.What) {
 				case MSG_TIMEOUT:
 					Disconnect();
-				return true;
+					return true;
+				case MSG_RECONNECT:
+					ConnectAsync();
+					return true;
 				default:
-				return false;
+					return false;
 			}
 		}
 
@@ -227,10 +240,10 @@
 				case ProfileState.Connecting:
 				break;
 				case ProfileState.Disconnected:
-					Disconnect();
+					DoUnexpectedDisconnect();
 				break;
 				case ProfileState.Disconnecting:
-					Disconnect();
+					DoUnexpectedDisconnect();
 				break;
 			}
 		}
@@ -248,6 +261,21 @@
 				Log.D(this, "Failed to discover services. Trying again...");
 				connectionState = EConnectionState.Resolving;
 				gatt.DiscoverServices();
+			}
+		}
+
+		/// <summary>
+		/// Attempts to heal a connection on an unexpected disconnect.
+		/// </summary>
+		private void DoUnexpectedDisconnect() {
+			if (connectionState == EConnectionState.Disconnected) {
+				return;
+			}
+
+			Disconnect();
+
+			if (!handler.HasMessages(MSG_RECONNECT)) {
+				handler.SendEmptyMessageDelayed(MSG_RECONNECT, RECONNECT_DELAY);
 			}
 		}
 

@@ -5162,11 +5162,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0600ee
 			public const int ptchart = 2131099886;
 			
-			// aapt resource value: 0x7f06016d
-			public const int ptchart_error_invalid_manifold = 2131100013;
-			
 			// aapt resource value: 0x7f06016e
-			public const int ptchart_error_no_manifold = 2131100014;
+			public const int ptchart_error_invalid_manifold = 2131100014;
+			
+			// aapt resource value: 0x7f06016f
+			public const int ptchart_error_no_manifold = 2131100015;
 			
 			// aapt resource value: 0x7f0600b3
 			public const int reconnect = 2131099827;
@@ -5288,23 +5288,26 @@ namespace ION.Droid
 			// aapt resource value: 0x7f060166
 			public const int report_screenshot_error_screenshot_missing = 2131100006;
 			
-			// aapt resource value: 0x7f060169
-			public const int report_select_end_time = 2131100009;
-			
 			// aapt resource value: 0x7f060167
-			public const int report_select_export_data = 2131100007;
-			
-			// aapt resource value: 0x7f060168
-			public const int report_select_start_time = 2131100008;
+			public const int report_screenshot_saved = 2131100007;
 			
 			// aapt resource value: 0x7f06016a
-			public const int report_selection = 2131100010;
+			public const int report_select_end_time = 2131100010;
+			
+			// aapt resource value: 0x7f060168
+			public const int report_select_export_data = 2131100008;
+			
+			// aapt resource value: 0x7f060169
+			public const int report_select_start_time = 2131100009;
 			
 			// aapt resource value: 0x7f06016b
-			public const int report_session_selection = 2131100011;
+			public const int report_selection = 2131100011;
 			
 			// aapt resource value: 0x7f06016c
-			public const int report_sessions = 2131100012;
+			public const int report_session_selection = 2131100012;
+			
+			// aapt resource value: 0x7f06016d
+			public const int report_sessions = 2131100013;
 			
 			// aapt resource value: 0x7f0600b9
 			public const int reports = 2131099833;
@@ -5342,14 +5345,14 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0600ef
 			public const int shsc = 2131099887;
 			
-			// aapt resource value: 0x7f06016f
-			public const int shsc_error_failed_to_update_manifold = 2131100015;
-			
 			// aapt resource value: 0x7f060170
-			public const int shsc_error_invalid_manifold = 2131100016;
+			public const int shsc_error_failed_to_update_manifold = 2131100016;
 			
 			// aapt resource value: 0x7f060171
-			public const int shsc_error_no_workbench = 2131100017;
+			public const int shsc_error_invalid_manifold = 2131100017;
+			
+			// aapt resource value: 0x7f060172
+			public const int shsc_error_no_workbench = 2131100018;
 			
 			// aapt resource value: 0x7f0600c4
 			public const int spreadsheet = 2131099844;
@@ -5396,68 +5399,68 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0600ce
 			public const int whats_new_in = 2131099854;
 			
-			// aapt resource value: 0x7f060172
-			public const int workbench = 2131100018;
-			
-			// aapt resource value: 0x7f060176
-			public const int workbench_add_viewer = 2131100022;
+			// aapt resource value: 0x7f060173
+			public const int workbench = 2131100019;
 			
 			// aapt resource value: 0x7f060177
-			public const int workbench_add_viewer_sub = 2131100023;
-			
-			// aapt resource value: 0x7f060175
-			public const int workbench_added_sensor = 2131100021;
+			public const int workbench_add_viewer = 2131100023;
 			
 			// aapt resource value: 0x7f060178
-			public const int workbench_alt = 2131100024;
+			public const int workbench_add_viewer_sub = 2131100024;
+			
+			// aapt resource value: 0x7f060176
+			public const int workbench_added_sensor = 2131100022;
 			
 			// aapt resource value: 0x7f060179
-			public const int workbench_alt_abrv = 2131100025;
+			public const int workbench_alt = 2131100025;
 			
 			// aapt resource value: 0x7f06017a
-			public const int workbench_hold = 2131100026;
+			public const int workbench_alt_abrv = 2131100026;
 			
 			// aapt resource value: 0x7f06017b
-			public const int workbench_hold_abrv = 2131100027;
+			public const int workbench_hold = 2131100027;
 			
 			// aapt resource value: 0x7f06017c
-			public const int workbench_max = 2131100028;
+			public const int workbench_hold_abrv = 2131100028;
 			
 			// aapt resource value: 0x7f06017d
-			public const int workbench_max_abrv = 2131100029;
+			public const int workbench_max = 2131100029;
 			
 			// aapt resource value: 0x7f06017e
-			public const int workbench_min = 2131100030;
+			public const int workbench_max_abrv = 2131100030;
 			
 			// aapt resource value: 0x7f06017f
-			public const int workbench_min_abrv = 2131100031;
-			
-			// aapt resource value: 0x7f060182
-			public const int workbench_ptchart = 2131100034;
-			
-			// aapt resource value: 0x7f060173
-			public const int workbench_remove = 2131100019;
-			
-			// aapt resource value: 0x7f060174
-			public const int workbench_remove_sensor = 2131100020;
-			
-			// aapt resource value: 0x7f060183
-			public const int workbench_roc = 2131100035;
-			
-			// aapt resource value: 0x7f060184
-			public const int workbench_roc_abrv = 2131100036;
-			
-			// aapt resource value: 0x7f060185
-			public const int workbench_shsc = 2131100037;
-			
-			// aapt resource value: 0x7f060186
-			public const int workbench_shsc_abrv = 2131100038;
+			public const int workbench_min = 2131100031;
 			
 			// aapt resource value: 0x7f060180
-			public const int workbench_timer = 2131100032;
+			public const int workbench_min_abrv = 2131100032;
+			
+			// aapt resource value: 0x7f060183
+			public const int workbench_ptchart = 2131100035;
+			
+			// aapt resource value: 0x7f060174
+			public const int workbench_remove = 2131100020;
+			
+			// aapt resource value: 0x7f060175
+			public const int workbench_remove_sensor = 2131100021;
+			
+			// aapt resource value: 0x7f060184
+			public const int workbench_roc = 2131100036;
+			
+			// aapt resource value: 0x7f060185
+			public const int workbench_roc_abrv = 2131100037;
+			
+			// aapt resource value: 0x7f060186
+			public const int workbench_shsc = 2131100038;
+			
+			// aapt resource value: 0x7f060187
+			public const int workbench_shsc_abrv = 2131100039;
 			
 			// aapt resource value: 0x7f060181
-			public const int workbench_timer_abrv = 2131100033;
+			public const int workbench_timer = 2131100033;
+			
+			// aapt resource value: 0x7f060182
+			public const int workbench_timer_abrv = 2131100034;
 			
 			// aapt resource value: 0x7f0600cf
 			public const int zip = 2131099855;

@@ -46,12 +46,14 @@
     public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions) {
       // Initialize the application state.
       // Set Navigation Bar preferences
+/*
       var nb = UINavigationBar.Appearance;
       nb.BarTintColor = new UIColor(Colors.LIGHT_GRAY);
       nb.TintColor = new UIColor(Colors.BLACK);
       nb.SetTitleTextAttributes(new UITextAttributes() {
         TextColor = new UIColor(Colors.BLACK),
       });
+*/
 
 
       AppState.context = ion = new IosION();

@@ -23,7 +23,6 @@
   using Widgets.Analyzer;
 
   public class AnalyzerFragment : IONFragment {
-
     /// <summary>
     /// The mask that is used to check request values.
     /// </summary>
@@ -132,37 +131,6 @@
 					if (!analyzer.HasSensor(manifold.secondarySensor) && manifold.secondarySensor != null) {
 						analyzer.AddSensorToSide(side, manifold.secondarySensor);
 					}
-					/*
-          var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
-          var manifold = analyzer.GetManifoldFromSide(side);
-
-          if (manifold != null) {
-            var psp = data.GetParcelableExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR) as SensorParcelable;
-            var ps = psp.Get(ion);
-
-            var tsp = data.GetParcelableExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR) as SensorParcelable;
-            var ts = tsp.Get(ion);
-
-            switch (manifold.primarySensor.type) {
-              case ESensorType.Pressure:
-                manifold.SetSecondarySensor(ts);
-                if (!analyzer.HasSensor(ts)) {
-                  analyzer.AddSensorToSide(side, ts);
-                }
-                break;
-
-              case ESensorType.Temperature:
-                manifold.SetSecondarySensor(ps);
-                if (!analyzer.HasSensor(ps)) {
-                  analyzer.AddSensorToSide(side, ps);
-                }
-                break;
-            }
-          } else {
-            // TODO ahodder@appioninc.com: Localize this error message.
-            Error("Failed to resolve return data from the superheat/subool activity.");
-          }
-          */
           break;
 
         case REQUEST_MANIFOLD_ON_SIDE:
@@ -182,6 +150,12 @@
 		public override void OnResume() {
 			base.OnResume();
 			this.analyzerView.analyzer = analyzer;
+			this.analyzer.onAnalyzerEvent += OnAnalyzerEvent;
+		}
+
+		public override void OnPause() {
+			base.OnPause();
+			this.analyzer.onAnalyzerEvent -= OnAnalyzerEvent;
 		}
 
     /// <summary>
@@ -347,6 +321,8 @@
     /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
     /// </summary>
     private void AddAllSubviews(Manifold manifold) {
+			Log.D(this, "Before manifold added all subviews, we had: " + manifold.sensorPropertyCount);
+
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
       }
@@ -380,6 +356,8 @@
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         }
       }
+
+			Log.D(this, "Now we have: " + manifold.sensorPropertyCount);
     }
 
     /// <summary>
@@ -433,6 +411,26 @@
       });
       ldb.Show();
     }
+
+		private void OnAnalyzerEvent(AnalyzerEvent ae) {
+			switch (ae.type) {
+				case AnalyzerEvent.EType.Added:
+					ion.SaveAnalyzerAsync();
+					break;
+				case AnalyzerEvent.EType.ManifoldAdded:
+					ion.SaveAnalyzerAsync();
+					break;
+				case AnalyzerEvent.EType.ManifoldRemoved:
+					ion.SaveAnalyzerAsync();
+					break;
+				case AnalyzerEvent.EType.Removed:
+					ion.SaveAnalyzerAsync();
+					break;
+				case AnalyzerEvent.EType.Swapped:
+					ion.SaveAnalyzerAsync();
+					break;
+			}
+		}
 
     /// <summary>
     /// Called when a sensor mount is clicked in the analyzer.
@@ -548,28 +546,13 @@
       i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
       i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_STATE, (int)analyzer.SideAsFluidState(side));
 
-
       switch (sensor.type) {
         case ESensorType.Pressure:
 					i.PutExtra(SuperheatSubcoolActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-/*
-          i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, sensor.ToParcelable());
-          i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_LOCKED, true);
-          if (manifold.secondarySensor != null) {
-            i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, manifold.secondarySensor.ToParcelable());
-          }
-*/
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
         case ESensorType.Temperature:
 					i.PutExtra(SuperheatSubcoolActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-/*
-          i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_SENSOR, sensor.ToParcelable());
-          i.PutExtra(SuperheatSubcoolActivity.EXTRA_TEMPERATURE_LOCKED, true);
-          if (manifold.secondarySensor != null) {
-            i.PutExtra(SuperheatSubcoolActivity.EXTRA_PRESSURE_SENSOR, manifold.secondarySensor.ToParcelable());
-          }
-*/	
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
         default:
