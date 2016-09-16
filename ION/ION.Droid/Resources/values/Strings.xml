@@ -303,6 +303,7 @@
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+	<string name="report_screenshot_saved">Saved Screenshot Report</string>
 	<string name="report_select_export_data">Select Export Data</string>
 	<string name="report_select_start_time">Select start time for the graph</string>
 	<string name="report_select_end_time">Select end time for the graph</string>
