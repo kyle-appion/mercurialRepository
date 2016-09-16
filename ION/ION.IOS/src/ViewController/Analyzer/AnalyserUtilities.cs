@@ -574,7 +574,7 @@ namespace ION.IOS.ViewController.Analyzer
       }
       else if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-				ion.currentAnalyzer.highAccessibility = "high";
+        ion.currentAnalyzer.highAccessibility = "high";
 			}
       Console.WriteLine("Low side identifier after LH removal: " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       Console.WriteLine("High side identifier after LH removal: " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
@@ -1035,10 +1035,8 @@ namespace ION.IOS.ViewController.Analyzer
 				}
 			}
       if (removeLH) {
-      	Console.WriteLine("Removelh");
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
-            lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-            Console.WriteLine("low area is equal to start "+analyzerSensors.viewList[start].currentSensor.name+"and high area is equal to swap"+analyzerSensors.viewList[swap].currentSensor.name);
+            lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {         
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
@@ -1180,7 +1178,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-                   Console.WriteLine("high area is equal to start "+analyzerSensors.viewList[start].currentSensor.name+"and low area is equal to swap"+analyzerSensors.viewList[swap].currentSensor.name);
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
 
@@ -1324,7 +1321,6 @@ namespace ION.IOS.ViewController.Analyzer
           }
 
         } else {
-        	Console.WriteLine("neither");
           analyzerSensors.viewList[start].lowArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].highArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Clear;
@@ -2742,6 +2738,20 @@ namespace ION.IOS.ViewController.Analyzer
       }));
       vc.PresentViewController(textAlert, true, null);
     }
+    /// <summary>
+    /// Remotes the Low or high manifold association for a remote sensor update
+    /// </summary>
+    /// <param name="attachSensor">Attach sensor.</param>
+		public static void RemoteLHAssociation(sensor attachSensor){
+		
+		
+			attachSensor.lowArea.snapArea.Hidden = true;
+			attachSensor.lowArea.tableSubviews = new List<string>();
+			attachSensor.lowArea.subviewTable.ReloadData();
+			attachSensor.highArea.snapArea.Hidden = true;
+			attachSensor.highArea.tableSubviews = new List<string>();
+			attachSensor.highArea.subviewTable.ReloadData();			
+		}
 	}
 }
 

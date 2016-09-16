@@ -339,6 +339,7 @@ namespace ION.Core.Net {
           
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
+
 			var textReponse = await feedback.Content.ReadAsStringAsync();
 			Console.WriteLine(textReponse);		
 		} catch (Exception exception){
@@ -439,19 +440,13 @@ namespace ION.Core.Net {
 					 
 					remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 					remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
-					remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;
-
-					//var previous = remoteAnalyzer.sensorPositions.IndexOf(deserializedToken.area);
-					//var swapper = remoteAnalyzer.sensorPositions[deserializedToken.position];
-					////Console.WriteLine("Moving area " + deserializedToken.area + " from spot " + previous + " to spot " + deserializedToken.position + " where area " + swapper + " currently lives");
-					//remoteAnalyzer.sensorPositions[previous] = swapper;
-					//remoteAnalyzer.sensorPositions[deserializedToken.position] = deserializedToken.area;					
+					remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;					
 				}
 
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
-						Console.WriteLine("Removed a sensor from analyzer list");
+						Console.WriteLine("Removed a sensor from analyzer list");     
 					}
 				}
 			

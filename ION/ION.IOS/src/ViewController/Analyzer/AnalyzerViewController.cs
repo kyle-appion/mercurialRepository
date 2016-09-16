@@ -1196,39 +1196,59 @@ namespace ION.IOS.ViewController.Analyzer {
 				for(int a = 0; a < analyzerSensors.viewList.Count; a++){
 					if(analyzerSensors.viewList[a].currentSensor != null && !analyzer.sensorList.Contains(analyzerSensors.viewList[a].currentSensor)){						
 						AnalyserUtilities.RemoveRemoteDevice(analyzerSensors.viewList[a],lowHighSensors,analyzerSensors);
-					}
-
-					if(analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier == analyzer.lowAccessibility){
-						Console.WriteLine("Low side "+analyzer.lowAccessibility+" matches sensor " + analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier);
-						if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier){
-							foreach(var removeSensor in analyzerSensors.viewList){
-								if(removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
-									Console.WriteLine("Removing low side attachments. ls iden: " +lowHighSensors.lowArea.snapArea.AccessibilityIdentifier + " sensor iden: " + removeSensor.snapArea.AccessibilityIdentifier);
-									AnalyserUtilities.RemoveDevice(removeSensor,lowHighSensors);
-									break;
+					}    
+					if(analyzer.lowAccessibility != "low"){
+						if(analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier == analyzer.lowAccessibility){
+							Console.WriteLine("Low side "+analyzer.lowAccessibility+" matches sensor " + analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier);
+							if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier){
+								foreach(var removeSensor in analyzerSensors.viewList){
+									if(removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
+										Console.WriteLine("Removing low side attachments to reattach new. ls iden: " +lowHighSensors.lowArea.snapArea.AccessibilityIdentifier + " sensor iden: " + removeSensor.snapArea.AccessibilityIdentifier);
+										AnalyserUtilities.RemoveDevice(removeSensor,lowHighSensors);
+										break;
+									}
 								}
+								addLHDeviceSensor(lowHighSensors.lowArea,analyzerSensors.viewList[a].currentSensor);
+								Console.WriteLine("Added a low side association to sensor "+ analyzerSensors.viewList[a].currentSensor.name);
+							}						
+						}
+					} else {
+						foreach(var clearSensor in analyzerSensors.viewList){
+							if(!clearSensor.lowArea.snapArea.Hidden){
+								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "high";
+								AnalyserUtilities.RemoteLHAssociation(clearSensor);
+								break;
 							}
-							addLHDeviceSensor(lowHighSensors.lowArea,analyzerSensors.viewList[a].currentSensor);
-						}						
+						}
 					}
-					
-					if(analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier == analyzer.highAccessibility){
-						Console.WriteLine("High side matches sensor " + analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier);
-						if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier){
-							foreach(var removeSensor in analyzerSensors.viewList){
-								if(removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
-									Console.WriteLine("Removing high side attachments. ls iden: " +lowHighSensors.lowArea.snapArea.AccessibilityIdentifier + " sensor iden: " + removeSensor.snapArea.AccessibilityIdentifier);
-									AnalyserUtilities.RemoveDevice(removeSensor,lowHighSensors);
-									break;
-								}
-							}							
-							addLHDeviceSensor(lowHighSensors.highArea,analyzerSensors.viewList[a].currentSensor);
-						}		
+					if(analyzer.highAccessibility != "high"){
+						if(analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier == analyzer.highAccessibility){
+							Console.WriteLine("High side matches sensor " + analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier);
+							if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != analyzerSensors.viewList[a].snapArea.AccessibilityIdentifier){
+								foreach(var removeSensor in analyzerSensors.viewList){
+									if(removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
+										Console.WriteLine("Removing high side attachments to reattach new. ls iden: " +lowHighSensors.lowArea.snapArea.AccessibilityIdentifier + " sensor iden: " + removeSensor.snapArea.AccessibilityIdentifier);
+										AnalyserUtilities.RemoveDevice(removeSensor,lowHighSensors);
+										break;
+									}
+								}							
+								addLHDeviceSensor(lowHighSensors.highArea,analyzerSensors.viewList[a].currentSensor);
+								Console.WriteLine("Added a High side association to sensor "+ analyzerSensors.viewList[a].currentSensor.name);
+							}		
+						}
+					} else {
+						foreach(var clearSensor in analyzerSensors.viewList){
+							if(!clearSensor.highArea.snapArea.Hidden){
+								lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+								AnalyserUtilities.RemoteLHAssociation(clearSensor);
+								break;
+							}
+						}
 					}
 				}
 			}
 		}   
-
+		
     public override void ViewDidAppear(bool animated) {
 	    if(!remoteMode){
 	      if (ion.dataLogManager.isRecording) {
