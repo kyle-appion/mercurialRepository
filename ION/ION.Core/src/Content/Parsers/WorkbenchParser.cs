@@ -1,11 +1,12 @@
-﻿using System;
-using System.IO;
+﻿namespace ION.Core.Content.Parsers {
 
-using ION.Core.App;
-using ION.Core.IO;
-using ION.Core.Util;
+	using System;
+	using System.IO;
 
-namespace ION.Core.Content.Parsers {
+	using ION.Core.App;
+	using ION.Core.IO;
+	using ION.Core.Util;
+
   public class WorkbenchParser : IParser<Workbench> {
     // Overridden from IParser
     public int version { get { return 1; } }
@@ -13,14 +14,14 @@ namespace ION.Core.Content.Parsers {
     // Overridden from IParser
     public void WriteToStream(IION ion, Workbench workbench, Stream stream) {
       try {
-        var mp = new ManifoldParser();
         using (var writer = new BinaryWriter(stream)) {
           // Persist the version of the parser
           writer.Write(version);
           // Write how many manifolds are present in the workbench
           writer.Write(workbench.count);
+					// Write all of the manifolds to the stream
           for (int i = 0; i < workbench.count; i++) {
-            mp.WriteToStream(ion, workbench[i], stream);
+						ManifoldParser.WriteManifold(ion, workbench[i], writer);
           }
         }
       } catch (Exception e) {
@@ -31,16 +32,12 @@ namespace ION.Core.Content.Parsers {
     // Overridden form IParser
     public Workbench ReadFromStream(IION ion, Stream stream) {
       try {
-        var mp = new ManifoldParser();
-
         using (var reader = new BinaryReader(stream)) {
-          var version = reader.ReadInt32();
+          var v = reader.ReadInt32();
 
-          // TODO ahodder@appioninc.com: Implement version checking
-          // Throw or delegate on version difference
-          if (this.version != version) { 
-            throw new IOException("Cannot read workbench from stream: expected version " + this.version + " receved " + version);
-          }
+					if (version != v) {
+						throw new IOException("Cannot read workbench from stream: expected version " + version + " received " + v);
+					}
 
           // Read the number of manifold that were stored
           var len = reader.ReadInt32();
@@ -48,7 +45,7 @@ namespace ION.Core.Content.Parsers {
           var ret = new Workbench(ion);
 
           for (int i = 0; i < len; i++) {
-            var manifold = mp.ReadFromStream(ion, stream);
+						var manifold = ManifoldParser.ReadManifold(ion, reader);
             if (manifold != null) {
               try {
                 ret.Add(manifold);

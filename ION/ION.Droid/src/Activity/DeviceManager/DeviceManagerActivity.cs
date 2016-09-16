@@ -2,6 +2,7 @@
 
   using System;
   using System.Collections.Generic;
+	using System.Threading.Tasks;
 
   using Android.App;
   using Android.Bluetooth;
@@ -51,7 +52,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 60000;
+    private const long DEFAULT_SCAN_TIME = 7500;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -132,7 +133,6 @@
 
       previousHelper = ion.deviceManager.connectionHelper;
       var bm = (BluetoothManager)GetSystemService(BluetoothService);
-//      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -141,8 +141,8 @@
 
       var connectionHelper = ion.deviceManager.connectionHelper;
 
-      if (connectionHelper.isEnabled) {
-        ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+			if (bm.Adapter.IsEnabled) {
+        ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
       } else {
         ShowBluetoothOffDialog();
       }
@@ -158,7 +158,7 @@
       ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
-      ion.deviceManager.connectionHelper.Stop();
+      ion.deviceManager.connectionHelper.StopScan();
 
 			ion.deviceManager.ForgetFoundDevices();
     }
@@ -184,20 +184,22 @@
     }
 
     // Overridden from Activity
-    public override bool OnPrepareOptionsMenu(Android.Views.IMenu menu) {
+    public override bool OnPrepareOptionsMenu(IMenu menu) {
       base.OnPrepareOptionsMenu(menu);
 
       var scan = menu.FindItem(Resource.Id.scan);
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
+				var manager = (BluetoothManager)GetSystemService(BluetoothService);
+
         var dm = ion.deviceManager;
 
-        if (dm.connectionHelper.isEnabled) {
+				if (manager.Adapter.IsEnabled) {
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         } else {
           ShowBluetoothOffDialog();
@@ -222,15 +224,16 @@
           SetResult(Result.Canceled);
           Finish();
           return true;
+/*
         case Resource.Id.scan:
           var dm = ion.deviceManager;
 
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
-
+*/
           return true;
         default:
           return base.OnMenuItemSelected(featureId, item);

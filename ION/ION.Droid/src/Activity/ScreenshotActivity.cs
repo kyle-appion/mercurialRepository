@@ -197,7 +197,7 @@
       pd.Dismiss();
 
       if (result.success) {
-        Alert("SUCCESS");
+				Alert(Resource.String.report_screenshot_saved);
       } else {
         var err = new IONAlertDialog(this, "ERROR");
         err.SetMessage(result.errorReason);

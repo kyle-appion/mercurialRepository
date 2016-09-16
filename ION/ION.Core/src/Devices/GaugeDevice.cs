@@ -134,17 +134,6 @@
         return;
       }
       try {
-				var p = Protocol.FindProtocolFromVersion(packet[0]);
-				if (p == null) {
-					Log.D(this, serialNumber + " failed to determine packet protocol.");
-					return;
-				}
-
-				if (protocol.version != EProtocolVersion.Classic && p.version != protocol.version) {
-          Log.E(this, "We have to fix the protocol for " + serialNumber + ". We were protocol: " + protocol.version + " we should be protocol: " + packet[0]);
-					__protocol = p;
-        }
-
 				GaugePacket gp = __protocol.ParsePacket(packet);
 
         int oldBattery = battery;

@@ -5,8 +5,8 @@
   using System.Threading.Tasks;
 
   using Android.App;
+	using Android.Bluetooth;
   using Android.Content;
-  using Android.Content.PM;
   using Android.Graphics;
   using Android.Graphics.Drawables;
   using Android.OS;
@@ -165,7 +165,6 @@
         adb.SetPositiveButton(Resource.String.enable_bluetooth, (obj, e) => {
         var dialog = obj as Dialog;
         dialog.Dismiss();
-        ion.deviceManager.connectionHelper.Enable();
         ShowEnableBluetoothDialog();
       });
       adb.Show();
@@ -175,7 +174,7 @@
     /// A utility method that will forcefully close the keyboard.
     /// </summary>
     protected void HideKeyboard() {
-      var imm = GetSystemService(Activity.InputMethodService) as InputMethodManager;
+      var imm = GetSystemService(InputMethodService) as InputMethodManager;
       var view = CurrentFocus;
       if (CurrentFocus == null) {
         view = new View(this);
@@ -187,6 +186,7 @@
     /// Shows an async progress dialog that will show until the bluetooth adapter is enabled or the operation times out.
     /// </summary>
     private async void ShowEnableBluetoothDialog() {
+			var bm = (BluetoothManager)GetSystemService(BluetoothService);
       var pd = new ProgressDialog(this);
       pd.SetTitle(Resource.String.please_wait);
       pd.SetMessage(GetString(Resource.String.enabling_bluetooth));
@@ -200,7 +200,7 @@
         await Task.Delay(50);
       }
 
-      if (!ion.deviceManager.connectionHelper.isEnabled) {
+      if (!bm.Adapter.IsEnabled) {
         Alert(Resource.String.error_bluetooth_enable_fail);
       }
 

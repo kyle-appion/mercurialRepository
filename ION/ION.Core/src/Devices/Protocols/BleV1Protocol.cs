@@ -31,10 +31,9 @@
           throw new ArgumentException("Cannot parse: bad packet size {" + len + "}");
         }
 
-        var v = (EProtocolVersion)((int)r.ReadByte());
+        var v = r.ReadByte();
 
-        if (v != this.version) {
-          Log.D(this, "V: " + v + " version: " + version);
+        if (v != 1 && v != 2) {
           throw new ArgumentException("Cannot parse: invalid version code");
         }
 
@@ -67,7 +66,7 @@
           readings.Add(gr);
         }
 
-        return new GaugePacket(v, battery, readings.ToArray());
+        return new GaugePacket(version, battery, readings.ToArray());
       }
     }
 

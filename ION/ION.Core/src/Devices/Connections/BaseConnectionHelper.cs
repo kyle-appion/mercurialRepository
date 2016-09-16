@@ -1,5 +1,7 @@
-﻿namespace ION.Core.Devices.Connections {
-  using System;
+﻿/*
+
+namespace ION.Core.Devices.Connections {
+	using System;
   using System.Threading;
   using System.Threading.Tasks;
 
@@ -156,3 +158,4 @@
   }
 }
 
+*/

@@ -76,6 +76,7 @@
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
     public AnalyzerEvent(ManifoldEvent manifoldEvent) {
+			this.type = EType.ManifoldEvent;
       this.manifoldEvent = manifoldEvent;
     }
 

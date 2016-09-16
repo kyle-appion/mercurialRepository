@@ -9,11 +9,8 @@ namespace ION.Core.Devices.Protocols {
   /// An enumeration of the supported protocols.
   /// </summary>
   public enum EProtocolVersion {
-    TestBenchInternal = -1,
     Classic = 0,
     V1 = 1,
-    V2 = 2,
-    V3 = 3,
     V4 = 4,
   }
 
@@ -24,8 +21,6 @@ namespace ION.Core.Devices.Protocols {
     private static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {
       new ClassicProtocol(),
       new BleV1Protocol(),
-      new BleV2Protocol(),
-      new BleV3Protocol(),
       new RidgadoV4Protocol(),
     };
 
@@ -48,16 +43,14 @@ namespace ION.Core.Devices.Protocols {
 
     public static IGaugeProtocol FindProtocolFromVersion(int version) {
       switch (version) {
-        case -2: 
-          return FindProtocolFromVersion(EProtocolVersion.TestBenchInternal);
         case -1: 
           return FindProtocolFromVersion(EProtocolVersion.Classic);
         case 1: 
           return FindProtocolFromVersion(EProtocolVersion.V1);
-        case 2: 
-          return FindProtocolFromVersion(EProtocolVersion.V2);
-        case 3: 
-          return FindProtocolFromVersion(EProtocolVersion.V3);
+        case 2: // These are prevalent
+          return FindProtocolFromVersion(EProtocolVersion.V1);
+        case 3: // Note: These never left the warehouse
+          return FindProtocolFromVersion(EProtocolVersion.V1);
 				case 4:
 					return FindProtocolFromVersion(EProtocolVersion.V4);
         default:
