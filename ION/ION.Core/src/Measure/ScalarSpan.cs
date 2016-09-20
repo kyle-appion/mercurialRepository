@@ -1,4 +1,5 @@
-﻿namespace ION.Core.Measure {
+﻿using System;
+namespace ION.Core.Measure {
 
   using Measure;
 
@@ -29,7 +30,7 @@
     }
 
 		public override string ToString() {
-			return magnitude.ToString("#.##") + " " + unit.ToString();
+			return magnitude.ToString("0.##") + " " + unit.ToString();
 		}
 
     /// <summary>
@@ -45,44 +46,104 @@
       return new ScalarSpan(unit, converter.Derivative().Convert(magnitude));
     }
 
+		public bool IsCompatable(Unit otherUnit) {
+			return unit.IsCompatible(otherUnit);
+		}
+
+		private void ThrowIfNotCompatable(Unit otherUnit) {
+			if (!IsCompatable(otherUnit)) {
+				throw new ArgumentException(unit + " is not compatable with " + otherUnit);
+			}
+		}
+
 		public ScalarSpan Abs() {
 			return new ScalarSpan(unit, System.Math.Abs(magnitude));
+		}
+
+		public static ScalarSpan operator +(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span + addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
 		}
 
 		public static ScalarSpan operator +(ScalarSpan span, double addend) {
 			return new ScalarSpan(span.unit, span.magnitude + addend);
 		}
 
+		public static ScalarSpan operator -(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span - addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
+		}
+
 		public static ScalarSpan operator -(ScalarSpan span, double subtrahend) {
 			return new ScalarSpan(span.unit, span.magnitude - subtrahend);
+		}
+
+		public static ScalarSpan operator *(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span * addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
 		}
 
 		public static ScalarSpan operator *(ScalarSpan span, double multiplier) {
 			return new ScalarSpan(span.unit, span.magnitude * multiplier);
 		}
 
+		public static ScalarSpan operator /(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span / addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
+		}
+
 		public static ScalarSpan operator /(ScalarSpan span, double divisor) {
 			return new ScalarSpan(span.unit, span.magnitude / divisor);
+		}
+
+		public static bool operator >(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span > addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
 		}
 
 		public static bool operator >(ScalarSpan o1, double o2) {
 			return o1.magnitude > o2;
 		}
 
+		public static bool operator >=(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span >= addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
+		}
+
 		public static bool operator >=(ScalarSpan o1, double o2) {
 			return o1.magnitude >= o2;
+		}
+
+		public static bool operator <(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span < addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
 		}
 
 		public static bool operator <(ScalarSpan o1, double o2) {
 			return o1.magnitude < o2;
 		}
 
+		public static bool operator <=(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span <= addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
+		}
+
 		public static bool operator <=(ScalarSpan o1, double o2) {
 			return o1.magnitude <= o2;
 		}
 
+		public static bool operator !=(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span != addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
+		}
+
 		public static bool operator !=(ScalarSpan o1, double o2) {
 			return !(o1 == o2);
+		}
+
+		public static bool operator ==(ScalarSpan span, ScalarSpan addend) {
+			span.ThrowIfNotCompatable(addend.unit);
+			return span == addend.unit.GetConverterTo(span.unit).Convert(addend.magnitude);
 		}
 
 		public static bool operator ==(ScalarSpan o1, double o2) {

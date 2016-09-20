@@ -298,6 +298,16 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
       UpdateNotification();
 
       initialized = true;
+
+/*
+// TODO ahodder@appioninc.com: Remove
+			var ar = new GoogleMapsAltitudeRetriever();
+			if (ar.IsNetworkAvailable(this)) {
+				var result = ar.FetchAltitudeFromLatitudeLongitude(39.74, -104.98);
+			} else {
+				Log.E(this, "Cannot fetch elevation: network is not available");
+			}
+*/
     }
 
     /// <Docs>Called by the system to notify a Service that it is no longer used and is being removed.</Docs>
@@ -419,6 +429,15 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
 					}
 				}
 			});
+		}
+
+		// TODO ahodder@appioninc.com: Implement?
+		public Task setRemoteDeviceManager() {
+			return null;
+		}
+
+		public Task setOriginalDeviceManager() {
+			return null;
 		}
 
     /// <summary>

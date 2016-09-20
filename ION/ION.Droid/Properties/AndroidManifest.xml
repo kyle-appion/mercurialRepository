@@ -3,6 +3,7 @@
 	<uses-sdk android:minSdkVersion="18" android:targetSdkVersion="23" />
 	<uses-feature android:name="android.hardware.bluetooth" android:required="true" />
 	<uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+	<uses-feature android:name="android.hardware.location.gps" android:required="false" />
 	<application android:label="ION HVAC/R" android:debuggable="false" android:allowBackup="true" android:largeHeap="true" android:icon="@drawable/ic_logo_appiondefault_small" />
 	<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 	<uses-permission android:name="android.permission.BLUETOOTH_PRIVILEGED" />

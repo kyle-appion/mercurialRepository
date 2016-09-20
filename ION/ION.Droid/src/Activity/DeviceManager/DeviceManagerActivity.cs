@@ -2,7 +2,6 @@
 
   using System;
   using System.Collections.Generic;
-	using System.Threading.Tasks;
 
   using Android.App;
   using Android.Bluetooth;
@@ -13,8 +12,6 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.App;
-  using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
@@ -22,8 +19,6 @@
   using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
-  using ION.Droid.App;
-  using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
@@ -112,7 +107,6 @@
       list.Visibility = ViewStates.Visible;
 
       adapter.onDatasetChanged += (adapter) => {
-        Log.D(this, "The records count is: " + adapter.ItemCount);
         if (adapter.ItemCount > 0) {
           empty.Visibility = ViewStates.Gone;
           list.Visibility = ViewStates.Visible;
@@ -159,8 +153,6 @@
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       ion.deviceManager.connectionHelper.StopScan();
-
-			ion.deviceManager.ForgetFoundDevices();
     }
 
     /// <Docs>Perform any final cleanup before an activity is destroyed.</Docs>
@@ -175,7 +167,7 @@
     }
 
     // Overridden from Activity
-    public override bool OnCreateOptionsMenu(Android.Views.IMenu menu) {
+    public override bool OnCreateOptionsMenu(IMenu menu) {
       base.OnCreateOptionsMenu(menu);
 
       MenuInflater.Inflate(Resource.Menu.scan, menu);
@@ -234,7 +226,6 @@
             dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
 */
-          return true;
         default:
           return base.OnMenuItemSelected(featureId, item);
       }
@@ -244,7 +235,6 @@
     /// Called when the user clicks the return sensor in the adapter.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    /// <param name="position">Position.</param>
     private void OnSensorReturnClicked(Sensor sensor) {
       var ret = new Intent();
 
@@ -300,9 +290,9 @@
     /// Builds a filter that will restrict the sensors that are shown by the adapter.
     /// </summary>
     /// <returns>The sensor filter.</returns>
-    /// <param name="filter">Filter.</param>
-    private IFilter<Sensor> BuildSensorFilter(EDeviceFilter filter) {
-      if (EDeviceFilter.All == filter) {
+    /// <param name="deviceFilter">Filter.</param>
+		private IFilter<Sensor> BuildSensorFilter(EDeviceFilter deviceFilter) {
+      if (EDeviceFilter.All == deviceFilter) {
         return new YesFilter<Sensor>();
       }
 
@@ -311,7 +301,7 @@
       for (int i = 0; i < 32; i++) {
         var flag = (EDeviceFilter)(1 << i);
 
-        if ((filter & flag) != flag) {
+        if ((deviceFilter & flag) != flag) {
           continue;
         }
 

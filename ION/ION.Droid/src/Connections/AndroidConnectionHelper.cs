@@ -22,6 +22,15 @@
 		/// </summary>
 		private const int APPION_COMPANY_CODE = 0x8c03;
 
+		/// <summary>
+		/// The delay between scan actions in milliseconds.
+		/// </summary>
+		private const long RADIO_DELAY = 500;
+		/// <summary>
+		/// How long a classic scan is in milliseconds.
+		/// </summary>
+		private const long CLASSIC_SCAN_TIME = 12 * 1000;
+
 		public event OnScanStateChanged onScanStateChanged;
 
 		public event OnDeviceFound onDeviceFound;
@@ -41,6 +50,10 @@
 		} bool __isScanning;
 
 		/// <summary>
+		/// The context that is driving the connection helper.
+		/// </summary>
+		private Context context;
+		/// <summary>
 		/// The bluetooth manager that the connection helper is using to start scans.
 		/// </summary>
 		private BluetoothManager manager;
@@ -49,24 +62,32 @@
 		/// </summary>
 		private Handler handler;
 		/// <summary>
-		/// The delegate that is used to start scanning.
+		/// The delegate that is used to scan for le.
 		/// </summary>
 		/// <param name="context">Context.</param>
-		private IScanDelegate scanDelegate;
+		private IScanDelegate leScanDelegate;
+		/// <summary>
+		/// The delegate that is used to scan for classic devices.
+		/// </summary>
+		/// <param name="context">Context.</param>
+		private IScanDelegate classicScanDelegate;
 
 		public AndroidConnectionHelper(Context context) {
+			this.context = context;
 			manager = (BluetoothManager)context.GetSystemService(Context.BluetoothService);
 			handler = new Handler();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-				scanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
 			} else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
-				scanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
 			} else {
 				// TODO ahodder@appioninc.com: Catch and display user message
 				// No good, the user's device cannot support le connections.
 				throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
 			}
+
+			classicScanDelegate = new ClassicScanDelegate(context, manager.Adapter, NotifyDeviceFound);
 		}
 
 		public void Dispose() {
@@ -78,24 +99,38 @@
 				return false;
 			}
 
-			var ret = scanDelegate.StartScan();
+			var ret = leScanDelegate.StartScan();
 
-			isScanning = ret;
+			if (ret) {
+				isScanning = ret;
 
-			handler.PostDelayed(() => {
-				StopScan();
-			}, (long)scanTime.TotalMilliseconds);
+				var stl = (long)scanTime.TotalMilliseconds;
+
+				handler.PostDelayed(() => {
+					leScanDelegate.StopScan();
+				}, stl);
+
+				handler.PostDelayed(() => {
+					classicScanDelegate.StartScan();
+				}, stl + RADIO_DELAY);
+
+				handler.PostDelayed(() => {
+					StopScan();
+				}, stl + RADIO_DELAY + CLASSIC_SCAN_TIME);
+			}
 
 			return ret;
 		}
 
 		public void StopScan() {
-			scanDelegate.StopScan();
+			leScanDelegate.StopScan();
+			classicScanDelegate.StopScan();
 			isScanning = false;
 		}
 
 		private void NotifyDeviceFound(BluetoothDevice device, byte[] scanRecord) {
 			ISerialNumber serialNumber = null;
+
 			if (!DiscoverSerialNumber(device, scanRecord, out serialNumber)) {
 				return; // The device is not ours. Discard it.
 			}
@@ -119,7 +154,11 @@
 		/// <returns><c>true</c> if this instance is appion device the specified device; otherwise, <c>false</c>.</returns>
 		/// <param name="device">Device.</param>
 		private bool DiscoverSerialNumber(BluetoothDevice device, byte[] scanRecord, out ISerialNumber serialNumber) {
-			if (SerialNumberExtensions.IsValidSerialNumber(device.Name)) {
+			if (device.Type == BluetoothDeviceType.Classic) {
+				var cc = new ClassicConnection(device);
+				serialNumber = cc.ResolveSerialNumber();
+				return serialNumber != null;
+			} else if (SerialNumberExtensions.IsValidSerialNumber(device.Name)) {
 				serialNumber = SerialNumberExtensions.ParseSerialNumber(device.Name);
 				return true;
 			} else if (RIGDFU.Equals(device.Name)) {
@@ -150,6 +189,10 @@
 		/// <returns>The scan record for payload.</returns>
 		/// <param name="scanRecord">Scan record.</param>
 		private byte[] ParseBroadcastPayloadFromScanRecord(byte[] scanRecord) {
+			if (scanRecord == null) {
+				return null;
+			}
+
 			byte[] ret = null;
 
 			var i = 0;
@@ -181,6 +224,8 @@
 			} else {
 				if (serialNumber.rawSerial.StartsWith("S")) {
 					return EProtocolVersion.V4;
+				} else if (device.Type == BluetoothDeviceType.Classic) {
+					return EProtocolVersion.Classic;
 				} else {
 					return EProtocolVersion.V1;
 				}

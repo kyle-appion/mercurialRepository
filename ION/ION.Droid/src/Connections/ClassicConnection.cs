@@ -98,7 +98,6 @@
       }
       set {
         __lastPacket = value;
-        Log.D(this, "Last Packet: " + System.Text.UTF8Encoding.UTF8.GetString(value));
         lastSeen = DateTime.Now;
 
         if (onDataReceived != null) {
@@ -210,29 +209,27 @@
     /// Attempts to resolve the serial number of the connection.
     /// </summary>
     /// <returns>The serial number.</returns>
-    public Task<GaugeSerialNumber> ResolveSerialNumber() {
-      return Task.Factory.StartNew(() => {
-        try {
-          if (ConnectInternal()) {
-            GaugeSerialNumber ret = null;
-            int tries = 5;
+    public GaugeSerialNumber ResolveSerialNumber() {
+      try {
+        if (ConnectInternal()) {
+          GaugeSerialNumber ret = null;
+          int tries = 5;
 
-            while (ret == null && tries-- > 0) {
-              var packet = RequestPacket().Result;
+          while (ret == null && tries-- > 0) {
+            var packet = RequestPacket().Result;
 
-              ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
-            }
-
-            return ret;
-          } else {
-            Log.E(this, "Failed to resolve serial number: failed to connect.");
-            return null;
+            ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
           }
-        } finally {
-          Log.D(this, "Disconnecting serial number");
-          Disconnect();
+
+          return ret;
+        } else {
+          Log.E(this, "Failed to resolve serial number: failed to connect.");
+          return null;
         }
-      });
+      } finally {
+        Log.D(this, "Disconnecting serial number");
+        Disconnect();
+      }
     }
 
     /// <summary>

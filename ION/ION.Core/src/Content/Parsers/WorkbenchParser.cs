@@ -9,7 +9,7 @@
 
   public class WorkbenchParser : IParser<Workbench> {
     // Overridden from IParser
-    public int version { get { return 1; } }
+    public int version { get { return 2; } }
 
     // Overridden from IParser
     public void WriteToStream(IION ion, Workbench workbench, Stream stream) {
