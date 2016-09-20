@@ -253,6 +253,8 @@
     <Compile Include="src\Connections\ConnectionDelegates.cs" />
     <Compile Include="src\Connections\Api21ScanDelegate.cs" />
     <Compile Include="src\Widgets\Analyzer\AnalyzerManifoldViewTemplate.cs" />
+    <Compile Include="src\App\LocationResolverService.cs" />
+    <Compile Include="src\Connections\ClassicScanDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

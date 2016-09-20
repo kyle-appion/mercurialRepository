@@ -111,7 +111,6 @@ Global
 		Policies = $0
 		$0.TextStylePolicy = $6
 		$6.FileWidth = 120
-		$6.TabsToSpaces = False
 		$6.inheritsSet = Mono
 		$6.inheritsScope = text/plain
 		$6.scope = text/plain

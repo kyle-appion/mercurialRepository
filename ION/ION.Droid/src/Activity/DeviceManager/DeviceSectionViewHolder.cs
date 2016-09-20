@@ -51,7 +51,7 @@
 
     public void Invalidate() {
       view.SetBackgroundColor(new Android.Graphics.Color(view.Context.Resources.GetColor(deviceRecord.section.color)));
-      counter.Text = "" + deviceRecord.section.devices.Count;
+      counter.Text = "" + deviceRecord.section.count;
       title.SetText(deviceRecord.section.name);
     }
   }

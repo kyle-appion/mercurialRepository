@@ -71,7 +71,6 @@
     public GaugePacket ParsePacket(byte[] packetIn) {
       var packet = System.Text.Encoding.UTF8.GetString(packetIn, 0, packetIn.Length);
       packet = packet.Trim();
-      Log.D(this, "Line is: " + packet);
 
       var tokens = packet.Split(new char[] { ' ' });
 

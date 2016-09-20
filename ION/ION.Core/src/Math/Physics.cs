@@ -8,6 +8,7 @@
   /// A collection of functions that compute physics calculations.
   /// </summary>
   public static class Physics {
+		public static ScalarSpan PRESSURE_AT_SEA_LEVEL = Units.Pressure.PSIA.OfSpan(14.6959488);
     /// <summary>
     /// Queries the atmospheric pressure at a given elevation.
     /// </summary>
@@ -21,6 +22,20 @@
       var pascals = 101325 * Math.Pow(1 - (2.25577 * Math.Pow(10, -5) * meters.amount), 5.25588); 
       return Units.Pressure.PASCAL.OfSpan(pascals);
     }
+
+		/// <summary>
+		/// Queries the pressure that is adjusted for the given elevation.
+		/// For example: if the given pressure is 20 psig and the elevation is 5000 ft, then the absolute pressure is
+		/// actually, 17.5 psia. At 5000 ft, the "pressure lose" from elevation is approximately 2.5 psi. Thus, we will need
+		/// to subtract that psi from the gauge pressure to convert to absolute. 
+		/// </summary>
+		/// <returns>The pressure adjusted for elevation.</returns>
+		/// <param name="gaugePressure">Gauge pressure.</param>
+		/// <param name="elevation">Elevation.</param>
+		public static Scalar GetGaugePressureAdjustedForElevation(Scalar gaugePressure, Scalar elevation) {
+			var adjusted = PRESSURE_AT_SEA_LEVEL - AtmosphericPressureFromElevation(elevation);
+			return gaugePressure + adjusted;
+		}
 
     /// <summary>
     /// Converts the given relative pressure to an absolute pressure.

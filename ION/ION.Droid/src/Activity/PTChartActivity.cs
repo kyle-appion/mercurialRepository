@@ -325,7 +325,7 @@
       helpView = FindViewById<ImageButton>(Resource.Id.help);
       helpView.SetOnClickListener(new ViewClickAction((v) => {
         var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
-        ldb.SetMessage(Resource.String.fluid_help_clarification);
+        ldb.SetMessage(Resource.String.fluid_help_mixture_clarification);
         ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
           var dialog = obj as Android.App.Dialog;
           dialog.Dismiss();

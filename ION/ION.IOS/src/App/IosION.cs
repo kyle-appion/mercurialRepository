@@ -194,10 +194,13 @@
 				return __workbench;
 			}
 			set {
-				__workbench = value;
-				if (onWorkbenchChanged != null) {
-					onWorkbenchChanged(value);
+				if (value == null) {
+					value = new Workbench(this);
 				}
+
+				__workbench = value;
+
+				onWorkbenchChanged(value);
 			}
 		} Workbench __workbench;
 

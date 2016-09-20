@@ -206,6 +206,7 @@
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Measure\" />
     <Folder Include="src\Report\DataLogs\Exporters\" />
+    <Folder Include="src\Net\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Xfinium.Pdf.Pcl">
