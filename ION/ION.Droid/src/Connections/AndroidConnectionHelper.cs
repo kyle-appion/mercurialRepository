@@ -12,6 +12,8 @@
 	using ION.Core.Devices.Protocols;
 	using ION.Core.Util;
 
+	using ION.Droid.App;
+
 	public class AndroidConnectionHelper : IConnectionHelper {
 		/// <summary>
 		/// The device name of all rigado devices.
@@ -52,7 +54,7 @@
 		/// <summary>
 		/// The context that is driving the connection helper.
 		/// </summary>
-		private Context context;
+		private AndroidION ion;
 		/// <summary>
 		/// The bluetooth manager that the connection helper is using to start scans.
 		/// </summary>
@@ -72,9 +74,8 @@
 		/// <param name="context">Context.</param>
 		private IScanDelegate classicScanDelegate;
 
-		public AndroidConnectionHelper(Context context) {
-			this.context = context;
-			manager = (BluetoothManager)context.GetSystemService(Context.BluetoothService);
+		public AndroidConnectionHelper(AndroidION ion) {
+			manager = (BluetoothManager)ion.GetSystemService(Context.BluetoothService);
 			handler = new Handler();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
@@ -87,7 +88,7 @@
 				throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
 			}
 
-			classicScanDelegate = new ClassicScanDelegate(context, manager.Adapter, NotifyDeviceFound);
+			classicScanDelegate = new ClassicScanDelegate(ion, manager.Adapter, NotifyClassicDeviceFound);
 		}
 
 		public void Dispose() {
@@ -123,9 +124,17 @@
 		}
 
 		public void StopScan() {
+			handler.RemoveCallbacksAndMessages(null);
+
 			leScanDelegate.StopScan();
 			classicScanDelegate.StopScan();
 			isScanning = false;
+		}
+
+		private void NotifyClassicDeviceFound(ISerialNumber serialNumber, BluetoothDevice device) {
+			handler.Post(() => {
+				onDeviceFound(this, serialNumber, device.Address, null, EProtocolVersion.Classic);
+			});
 		}
 
 		private void NotifyDeviceFound(BluetoothDevice device, byte[] scanRecord) {
@@ -154,11 +163,7 @@
 		/// <returns><c>true</c> if this instance is appion device the specified device; otherwise, <c>false</c>.</returns>
 		/// <param name="device">Device.</param>
 		private bool DiscoverSerialNumber(BluetoothDevice device, byte[] scanRecord, out ISerialNumber serialNumber) {
-			if (device.Type == BluetoothDeviceType.Classic) {
-				var cc = new ClassicConnection(device);
-				serialNumber = cc.ResolveSerialNumber();
-				return serialNumber != null;
-			} else if (SerialNumberExtensions.IsValidSerialNumber(device.Name)) {
+			if (SerialNumberExtensions.IsValidSerialNumber(device.Name)) {
 				serialNumber = SerialNumberExtensions.ParseSerialNumber(device.Name);
 				return true;
 			} else if (RIGDFU.Equals(device.Name)) {
