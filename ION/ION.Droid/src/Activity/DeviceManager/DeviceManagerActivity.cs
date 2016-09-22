@@ -125,21 +125,23 @@
     protected override void OnResume() {
       base.OnResume();
 
-      previousHelper = ion.deviceManager.connectionHelper;
-      var bm = (BluetoothManager)GetSystemService(BluetoothService);
+			previousHelper = ion.deviceManager.connectionHelper;
+			var bm = (BluetoothManager)GetSystemService(BluetoothService);
 
-      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
+			ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
-      InvalidateOptionsMenu();
-      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
+			InvalidateOptionsMenu();
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
-      var connectionHelper = ion.deviceManager.connectionHelper;
+			var connectionHelper = ion.deviceManager.connectionHelper;
 
 			if (bm.Adapter.IsEnabled) {
-        ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-      } else {
-        ShowBluetoothOffDialog();
-      }
+				if (!ion.deviceManager.connectionHelper.isScanning) {
+					ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+				}
+			} else {
+				ShowBluetoothOffDialog();
+			}
 
       adapter.Reload();
     }

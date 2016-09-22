@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="main.android.appioninc.ionviewer" android:installLocation="auto" android:versionCode="113" android:versionName="0.9.11">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="main.android.appioninc.ionviewer" android:installLocation="auto" android:versionCode="115" android:versionName="0.9.13">
 	<uses-sdk android:minSdkVersion="18" android:targetSdkVersion="23" />
 	<uses-feature android:name="android.hardware.bluetooth" android:required="true" />
 	<uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />

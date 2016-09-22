@@ -114,7 +114,7 @@
     /// Queries the native connection object that this connection is wrapping.
     /// </summary>
     /// <value>The native device.</value>
-    public object nativeDevice { get { return device as BluetoothDevice; } }
+    public object nativeDevice { get { return device; } }
     /// <summary>
     /// The timeout that is applied when connecting to the remote terminal.
     /// </summary>
@@ -158,10 +158,14 @@
 
         connectionState = EConnectionState.Connecting;
 
-        if (!ConnectInternal()) {
-          Disconnect();
-          return false;
-        }
+				if (!ConnectInternal()) {
+					Task.Delay(5000).Wait();
+
+					if (!ConnectInternal()) {
+	          Disconnect();
+	          return false;
+	        }
+				}
 
         connectionState = EConnectionState.Connected;
 
@@ -175,6 +179,7 @@
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
+			Log.D(this, "Disconnected");
       if (input != null) {
         input.Close();
         input.Dispose();
@@ -209,27 +214,29 @@
     /// Attempts to resolve the serial number of the connection.
     /// </summary>
     /// <returns>The serial number.</returns>
-    public GaugeSerialNumber ResolveSerialNumber() {
-      try {
-        if (ConnectInternal()) {
-          GaugeSerialNumber ret = null;
-          int tries = 5;
+    public static Task<GaugeSerialNumber> ResolveSerialNumber(BluetoothDevice device) {
+			return Task.Factory.StartNew(() => {
+				var connection = new ClassicConnection(device);
+	      try {
+	        if (connection.ConnectInternal()) {
+	          GaugeSerialNumber ret = null;
+	          int tries = 5;
 
-          while (ret == null && tries-- > 0) {
-            var packet = RequestPacket().Result;
+	          while (ret == null && tries-- > 0) {
+	            var packet = connection.RequestPacket().Result;
 
-            ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
-          }
+	            ClassicProtocol.ParseSerialNumber(System.Text.Encoding.UTF8.GetBytes(packet), out ret);
+	          }
 
-          return ret;
-        } else {
-          Log.E(this, "Failed to resolve serial number: failed to connect.");
-          return null;
-        }
-      } finally {
-        Log.D(this, "Disconnecting serial number");
-        Disconnect();
-      }
+	          return ret;
+	        } else {
+	          Log.E(connection, "Failed to resolve serial number: failed to connect.");
+	          return null;
+	        }
+	      } finally {
+	        connection.Disconnect();
+	      }
+			});
     }
 
     /// <summary>
@@ -237,6 +244,7 @@
     /// </summary>
     /// <returns>The to socket.</returns>
     private bool ConnectInternal() {
+			Disconnect();
       try {
         socket = device.CreateInsecureRfcommSocketToServiceRecord(SPP);
         socket.Connect();
@@ -259,7 +267,9 @@
           output.Write(DPT, 0, DPT.Length);
           output.Flush();
 
-          return input.ReadLine();
+          var ret = input.ReadLine();
+					Log.D(this, "Ret: " + ret);
+					return ret;
         } catch (Exception e) {
           Log.E(this, "Classic connection crash on write.", e);
           return null;
@@ -275,7 +285,7 @@
     private async void DoRequestPacket() {
       if (EConnectionState.Connected == connectionState) {
         var requestTask = RequestPacket();
-        if (await Task.WhenAny(requestTask, Task.Delay(TimeSpan.FromMilliseconds(250))) == requestTask) {
+        if (await Task.WhenAny(requestTask, Task.Delay(TimeSpan.FromMilliseconds(5000))) == requestTask) {
           if (requestTask.Result != null) {
             lastPacket = System.Text.Encoding.UTF8.GetBytes(requestTask.Result);
             AppState.context.PostToMainDelayed(DoRequestPacket, TimeSpan.FromMilliseconds(100));

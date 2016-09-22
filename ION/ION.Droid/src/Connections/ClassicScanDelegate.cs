@@ -2,12 +2,15 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Threading.Tasks;
 
 	using Android.Bluetooth;
 	using Android.Content;
 	using Android.OS;
 
 	using ION.Core.Util;
+
+	using ION.Droid.App;
 
 	/// <summary>
 	/// Classic scan delegate.
@@ -18,15 +21,17 @@
 		/// </summary>
 		private const string APPION_GAUGE = "APPION Gauge";
 
-		private Context context;
+		private AndroidION ion;
 		private BluetoothAdapter adapter;
-		private InternalDeviceFound deviceFound;
+		private InternalClassicDeviceFound deviceFound;
 		private Handler handler;
+		private bool isBroadcastRegistered;
 
 		private List<BluetoothDevice> pendingDevices = new List<BluetoothDevice>();
 
-		public ClassicScanDelegate(Context context, BluetoothAdapter adapter, InternalDeviceFound internalDeviceFound) {
-			this.context = context;
+
+		public ClassicScanDelegate(AndroidION ion, BluetoothAdapter adapter, InternalClassicDeviceFound internalDeviceFound) {
+			this.ion = ion;
 			this.adapter = adapter;
 			this.deviceFound = internalDeviceFound;
 			this.handler = new Handler();
@@ -38,7 +43,12 @@
 				var filter = new IntentFilter();
 				filter.AddAction(BluetoothDevice.ActionFound);
 
-				context.RegisterReceiver(this, filter);
+				lock (this) {
+					if (!isBroadcastRegistered) {
+						ion.RegisterReceiver(this, filter);
+						isBroadcastRegistered = true;
+					}
+				}
 
 				handler.PostDelayed(() => {
 					StopScan();
@@ -48,20 +58,45 @@
 			return ret;
 		}
 
-		public void StopScan() {
+		public async void StopScan() {
 			try {
-				context.UnregisterReceiver(this);
+				lock (this) {
+					if (isBroadcastRegistered) {
+						ion.UnregisterReceiver(this);
+						isBroadcastRegistered = false;
+					}
+				}
 			} catch (Exception e) {
 				Log.E(this, "Calling unregister too many times", e);
 			}
 			adapter.CancelDiscovery();
 
-			foreach (var device in pendingDevices) {
-				deviceFound(device, null);
+			var pd = new HashSet<BluetoothDevice>(pendingDevices);
+			pendingDevices.Clear();
+
+			foreach (var device in pd) {
+				var serial = await ClassicConnection.ResolveSerialNumber(device);
+				Log.D(this, "Found serial number: " + serial);
+				if (serial != null) {
+					deviceFound(serial, device);
+				}
 			}
 		}
 
-		public override void OnReceive(Context context, Intent intent) {
+		private bool IsDeviceKnown(BluetoothDevice device) {
+			Log.D(this, "Looking for: " + device);
+			foreach (var idevice in ion.deviceManager.devices) {
+				var bd = idevice.connection.nativeDevice as BluetoothDevice;
+				Log.D(this, "Looking at: " + bd);
+				if (device.Equals(bd)) {
+					return true;
+				}
+			}
+
+	    return false;
+		}
+
+		public override async void OnReceive(Context context, Intent intent) {
 			var action = intent.Action;
 
 			switch (action) {
@@ -70,16 +105,9 @@
 					var device = intent.GetParcelableExtra(BluetoothDevice.ExtraDevice) as BluetoothDevice;
 					Log.D(this, "Device name: " + device.Name);
 
-					if (APPION_GAUGE.Equals(device.Name)) {
+					if ((device.Name == null || APPION_GAUGE.Equals(device.Name)) && !IsDeviceKnown(device)) {
 						pendingDevices.Add(device);
 					}
-/*
-					if (device != null) {
-						deviceFound(device, null);
-					} else {
-						Log.D(this, "Failed to resolve device: not a bluetooth device");
-					}
-*/
 					break;
 			}
 		}
