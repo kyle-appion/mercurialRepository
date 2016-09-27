@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--
+                                      ATTENTION! ATTENTION! ATTENTION!
+
+  DO NOT TRANSLATE THIS FILE! ALL STRINGS PRESENTED WITHIN THIS FILE ARE CRITICAL TO APPLICATION OPERATION IN THE FORM
+  THAT THEY ARE GIVEN. ANY CHANGE TO THESE STRINGS WILL BREAK A FEATURE WITHIN THE APPLICATION.
+  -->
+
+  <!--
+  The keys that are used for preferences. These should almost never change once set.
+  -->
+  <string name="pkey_app_version">app_version</string>
+  <string name="pkey_first_launch">first_launch"</string>
+  <string name="pkey_send_feedback">send_feedback</string>
+  <string name="pkey_whats_new">whats_new</string>
+  <string name="pkey_youtube">youtube</string>
+
+
+  <string name="pkey_alarm_vibrate">alarm_vibrate</string>
+  <string name="pkey_alarm_sound">alarm_sound</string>
+
+  <string name="pkey_location_elevation">location_elevation</string>
+  <string name="pkey_location_gps">location_gps</string>
+  <string name="pkey_location_gps_error">location_gps_error</string>
+
+  <string name="pkey_unit_length">unit_length</string>
+  <string name="pkey_unit_pressure">unit_pressure</string>
+  <string name="pkey_unit_temperature">unit_temperature</string>
+  <string name="pkey_unit_vacuum">unit_vacuum</string>
+
+	<string name="pkey_reporting_data_log_interval">reporting_data_log_interval</string>
+</resources>
