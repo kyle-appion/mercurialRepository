@@ -140,7 +140,8 @@
           Commit();
           return Task.FromResult(true);
         } else {
-          throw new Exception("Did not modify the database");
+          Log.E(this, "Did not save to database");
+          return Task.FromResult(false);
         }
       } catch (Exception e) {
         Log.E(this, "Failed to save the item: " + t + " to the database", e);
@@ -166,7 +167,8 @@
           NotifyOfEvent(DatabaseEvent.EAction.Deleted, t);
           return Task.FromResult(true);
         } else {
-          throw new Exception("Did not modify the database");
+          Log.E(this, "Did not modify the database");
+          return Task.FromResult(false);
         }
       } catch (Exception e) {
         Log.E(this, "Failed to delete the item: " + t + " to the database", e);

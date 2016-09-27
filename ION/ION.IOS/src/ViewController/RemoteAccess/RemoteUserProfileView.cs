@@ -12,18 +12,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIButton logoutButton;
 		public UIButton changePassButton;
 		public UIButton changeEmailButton;
-		public UIButton changeDisplayButton;
 		public UILabel settingsHeader;
 		public UILabel usernameLabel;
 		public UILabel passwordLabel;
-		public UILabel displayNameLabel;
 		public UILabel emailLabel;
 		public UITextField passwordField;
 		public UITextField emailField;
-		public UITextField dNameField;
 		public WebPayload webServices;
 		
-		public RemoteUserProfileView(UIView parentView, string uName, string dName, string uEmail, WebPayload webServices) {
+		public RemoteUserProfileView(UIView parentView, string dName, string uEmail, WebPayload webServices) {
 			this.webServices = webServices;
 			
 			var viewTap = new UITapGestureRecognizer(() => {
@@ -41,7 +38,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			settingsHeader.Font = UIFont.BoldSystemFontOfSize(20f);
 			
 			usernameLabel = new UILabel(new CGRect(.05 * profileView.Bounds.Width, .1 * profileView.Bounds.Height,.9 * profileView.Bounds.Width,.09 * profileView.Bounds.Height));
-			usernameLabel.Text = "Username: " + uName;
+			usernameLabel.Text = "Display Name: " + dName;
 			usernameLabel.TextAlignment = UITextAlignment.Left;
 			usernameLabel.AdjustsFontSizeToFitWidth = true;
 			usernameLabel.Font = UIFont.BoldSystemFontOfSize(20f);			
@@ -65,33 +62,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			changePassButton.Layer.BorderWidth = 1f;
 			changePassButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			
-			displayNameLabel = new UILabel(new CGRect(.05 * profileView.Bounds.Width, .34 * profileView.Bounds.Height, .9 * profileView.Bounds.Width, .05 * profileView.Bounds.Height));
-			displayNameLabel.Text = "Display Name";
-			displayNameLabel.TextAlignment = UITextAlignment.Left;
-			displayNameLabel.BackgroundColor = UIColor.White;
-			
-			dNameField = new UITextField(new CGRect(.05 * profileView.Bounds.Width, .4 * profileView.Bounds.Height, .6 * profileView.Bounds.Width, .09 * profileView.Bounds.Height));
-			dNameField.Layer.BorderWidth = 1f;
-			dNameField.Layer.CornerRadius = 5f;
-			dNameField.Text = dName;
-			dNameField.AdjustsFontSizeToFitWidth = true;
-			dNameField.TextAlignment = UITextAlignment.Center;
-			dNameField.AutocorrectionType = UITextAutocorrectionType.No;
-			dNameField.AutocapitalizationType = UITextAutocapitalizationType.None;
-			
-			changeDisplayButton = new UIButton(new CGRect(.67 * profileView.Bounds.Width, .41 * profileView.Bounds.Height, .3 * profileView.Bounds.Width, .07 * profileView.Bounds.Height));
-			changeDisplayButton.SetTitle("Update", UIControlState.Normal);
-			changeDisplayButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			changeDisplayButton.Layer.CornerRadius = 5f;
-			changeDisplayButton.Layer.BorderWidth = 1f;
-			changeDisplayButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			
-			emailLabel = new UILabel(new CGRect(.05 * profileView.Bounds.Width, .5 * profileView.Bounds.Height, .9 * profileView.Bounds.Width, .05 * profileView.Bounds.Height));
+			emailLabel = new UILabel(new CGRect(.05 * profileView.Bounds.Width, .34 * profileView.Bounds.Height, .9 * profileView.Bounds.Width, .05 * profileView.Bounds.Height));
 			emailLabel.Text = "Email";
 			emailLabel.TextAlignment = UITextAlignment.Left;
 			emailLabel.BackgroundColor = UIColor.White;
 			
-			emailField = new UITextField(new CGRect(.05 * profileView.Bounds.Width, .56 * profileView.Bounds.Height, .6 * profileView.Bounds.Width, .09 * profileView.Bounds.Height));
+			emailField = new UITextField(new CGRect(.05 * profileView.Bounds.Width, .4 * profileView.Bounds.Height, .6 * profileView.Bounds.Width, .09 * profileView.Bounds.Height));
 			emailField.Layer.BorderWidth = 1f;
 			emailField.Layer.CornerRadius = 5f;
 			emailField.Text = uEmail;
@@ -100,7 +76,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			emailField.AutocorrectionType = UITextAutocorrectionType.No;
 			emailField.AutocapitalizationType = UITextAutocapitalizationType.None;
 			
-			changeEmailButton = new UIButton(new CGRect(.67 * profileView.Bounds.Width, .57 * profileView.Bounds.Height, .3 * profileView.Bounds.Width, .07 * profileView.Bounds.Height));
+			changeEmailButton = new UIButton(new CGRect(.67 * profileView.Bounds.Width, .35 * profileView.Bounds.Height, .3 * profileView.Bounds.Width, .07 * profileView.Bounds.Height));
 			changeEmailButton.SetTitle("Update", UIControlState.Normal);
 			changeEmailButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			changeEmailButton.Layer.CornerRadius = 5f;
@@ -113,8 +89,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			logoutButton.Layer.BorderWidth = 1f;
 			logoutButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 
-			changePassButton.TouchUpInside += UpdatePassword;	
-			changeDisplayButton.TouchUpInside += UpdateDisplay;	
+			changePassButton.TouchUpInside += UpdatePassword;		
 			changeEmailButton.TouchUpInside += UpdateEmail;	
 		
 			profileView.AddSubview(settingsHeader);
@@ -122,9 +97,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			profileView.AddSubview(passwordLabel);
 			profileView.AddSubview(passwordField);
 			profileView.AddSubview(changePassButton);
-			profileView.AddSubview(displayNameLabel);
-			profileView.AddSubview(dNameField);
-			profileView.AddSubview(changeDisplayButton);
 			profileView.AddSubview(emailLabel);
 			profileView.AddSubview(emailField);
 			profileView.AddSubview(changeEmailButton);
@@ -144,19 +116,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			}
 			passwordField.Text = "";
 		}
-		
-		public async void UpdateDisplay(object sender, EventArgs e){
-			await Task.Delay(TimeSpan.FromMilliseconds(1));
-			
-			if(string.IsNullOrEmpty(dNameField.Text)){
-				dNameField.BackgroundColor = UIColor.Red;
-				dNameField.Alpha = .6f;
-			} else {
-				dNameField.BackgroundColor = UIColor.White;
-				dNameField.Alpha = 1f;
-				webServices.updateDisplayName(dNameField.Text, dNameField);
-			}			
-		}	
 		
 		public async void UpdateEmail(object sender, EventArgs e){
 			await Task.Delay(TimeSpan.FromMilliseconds(1));

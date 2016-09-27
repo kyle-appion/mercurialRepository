@@ -80,6 +80,7 @@ namespace ION.IOS.ViewController.Analyzer
     private bool isUpdating { get; set; }
     public bool isManual;
     public bool isLinked;
+    public string location;
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
 

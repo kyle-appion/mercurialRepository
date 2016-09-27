@@ -72,6 +72,7 @@ namespace ION.IOS.ViewController.Logging
 		public int topCell;
 		public int bottomCell;
     public string fileName;
+    public int fallOff = 0;
 
 		public List<deviceReadings> selectedData;
 		public double dateMultiplier;
@@ -185,12 +186,12 @@ namespace ION.IOS.ViewController.Logging
 			lTrackerDrag = new UIPanGestureRecognizer (() => {
 				var xPlot = leftTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
 				if(lTrackerDrag.State == UIGestureRecognizerState.Changed){
-          var index = (int)xPlot/(int)dateMultiplier;
+          var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
           subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
-				}
+				}   
 				if(lTrackerDrag.LocationInView(mainView).X > (.1 * mainView.Bounds.Width) && lTrackerDrag.LocationInView(mainView).X < (.75 * mainView.Bounds.Width)){
 					if(rightTrackerCircle.Center.X - 15 > lTrackerDrag.LocationInView(mainView).X){
 						leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lTrackerDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width), trackerHeight);
@@ -217,7 +218,7 @@ namespace ION.IOS.ViewController.Logging
       lViewDrag = new UIPanGestureRecognizer (() => {
         var xPlot = leftTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
         if(lViewDrag.State == UIGestureRecognizerState.Changed){
-          var index = (int)xPlot/(int)dateMultiplier;
+          var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subLeft = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
@@ -260,12 +261,11 @@ namespace ION.IOS.ViewController.Logging
 			var trackerRect = rightTrackerCircle.Center;
 			trackerRect.X = rightTrackerView.Center.X - (.5f * rightTrackerView.Bounds.Width);
 			rightTrackerCircle.Center = trackerRect;
-
+			
 			rTrackerDrag = new UIPanGestureRecognizer (() => {
 				var xPlot = rightTrackerCircle.Center.X - (.1 * mainView.Bounds.Width);
 				if(rTrackerDrag.State == UIGestureRecognizerState.Changed){          
-          var index = (int)xPlot/(int)dateMultiplier;
-          Console.WriteLine("Using index: " + index);
+          var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subRight = DateTime.Parse(ChosenDates.allIndexes[index]);
           }
@@ -297,8 +297,7 @@ namespace ION.IOS.ViewController.Logging
       rViewDrag = new UIPanGestureRecognizer (() => {
         var xPlot = rViewDrag.LocationInView(mainView).X - (.1 * mainView.Bounds.Width);
         if(rViewDrag.State == UIGestureRecognizerState.Changed){          
-          var index = (int)xPlot/(int)dateMultiplier;
-          Console.WriteLine("Using index: " + index);
+          var index = (int)(xPlot/dateMultiplier);
           if(ChosenDates.allIndexes.ContainsKey(index)){
             ChosenDates.subRight = DateTime.Parse(ChosenDates.allIndexes[index]);
           }

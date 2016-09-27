@@ -44,27 +44,16 @@
 			labelTitle = new UILabel(new CGRect(cellHeight,0,this.Bounds.Width - (2 * cellHeight),cellHeight));
 			labelTitle.BackgroundColor = UIColor.Clear;
 			labelTitle.Font = UIFont.SystemFontOfSize(24f);
-			labelTitle.Layer.BorderWidth = 1f;			      
-
-      buttonOptions.TouchUpInside += (object sender, EventArgs e) => {
-        if (optionsClicked != null) {
-          optionsClicked();
-        }
-      };    
+			labelTitle.Layer.BorderWidth = 1f;			         
     
-      viewBackground.BackgroundColor = UIColor.FromRGB(255,255,0);
+      viewBackground.BackgroundColor = new UIColor(section.color);
 
       labelCounter.Text = "" + section.devices.Count;
       labelTitle.Text = " " + section.name;
-      var image = UIImage.FromBundle("ic_more_info");
-      image = image.ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
-      this.buttonOptions.SetImage(image, UIControlState.Normal);
-      buttonOptions.TintColor = UIColor.White;
-      this.optionsClicked = optionsClicked;
       
       viewBackground.AddSubview(labelCounter);
       viewBackground.AddSubview(labelTitle);
-      viewBackground.AddSubview(buttonOptions);      
+      viewBackground.AddSubview(buttonOptions);
       this.AddSubview(viewBackground);
     }
 	}

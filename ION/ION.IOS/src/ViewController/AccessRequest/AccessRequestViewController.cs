@@ -6,6 +6,7 @@ using ION.IOS.App;
 using ION.Core.Net;
 using System.Threading.Tasks;
 using AudioToolbox;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.AccessRequest {
 	public partial class AccessRequestViewController : BaseIONViewController {
@@ -17,7 +18,8 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public UILabel loggedOutLabel;
 		public UIBarButtonItem settingsButton;
 		public WebPayload webServices; 
-		public bool uploading = false;
+		public IosION ion;
+		public DateTime startedViewing;
 		
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
@@ -26,11 +28,10 @@ namespace ION.IOS.ViewController.AccessRequest {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-
+			ion = AppState.context as IosION;
       NavigationItem.Title = Strings.AccessManager.SELF.FromResources();
       
-			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-      webServices = appDelegate.webServices;
+      webServices = ion.webServices;
       
       var button  = new UIButton(new CGRect(0, 0, 40, 40));
 			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);
@@ -105,17 +106,17 @@ namespace ION.IOS.ViewController.AccessRequest {
 		
 		public async void uploadTimer(){			
 			settingsManager.onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			var startedViewing = DateTime.Now;
-			if(!uploading){
-				uploading = true;
+			startedViewing = DateTime.Now;
+			if(!webServices.uploading){
+				webServices.uploading = true;
 				settingsManager.onlineButton.SetTitle("Stop Uploading", UIControlState.Normal);
-				await webServices.updateOnlineStatus("1",null);
+				await webServices.updateOnlineStatus("1");
 			} else {
-				uploading = false;
+				webServices.uploading = false;
 				settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
-				await webServices.updateOnlineStatus("0",null);
+				await webServices.updateOnlineStatus("0");
 			}
-			while(uploading){
+			while(webServices.uploading){
 			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 			 	SystemSound newSound = new SystemSound (1005);
 				if(timeDifference < 30){
@@ -128,10 +129,10 @@ namespace ION.IOS.ViewController.AccessRequest {
 							await Task.Delay(TimeSpan.FromMilliseconds(500)); 
 						}
 					} else {
-						uploading = false;
+						webServices.uploading = false;
 					}
 				} else {
-					uploading = false;
+					webServices.uploading = false;
 					settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
 					var window = UIApplication.SharedApplication.KeyWindow;
 		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -143,7 +144,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 					}));
 					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, async (action) => {
 						newSound.Close();
-						await webServices.updateOnlineStatus("0", null);
+						await webServices.updateOnlineStatus("0");
 					}));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 					AbsentRemoteTurnoff(alert);
@@ -158,9 +159,9 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public async void AbsentRemoteTurnoff(UIAlertController alert){
 			await Task.Delay(TimeSpan.FromSeconds(15));
 			alert.DismissViewController(false,null);
-			if(!uploading){
+			if(!webServices.uploading){
 				Console.WriteLine("dismissed alert and user didn't choose to continue uploading");
-				await webServices.updateOnlineStatus("0",null);
+				await webServices.updateOnlineStatus("0");
 			}
 		}
 		

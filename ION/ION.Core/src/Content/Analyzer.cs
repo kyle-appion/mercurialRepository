@@ -232,6 +232,8 @@
 
     public List<Sensor> sensorList;
 		public List<int> sensorPositions = new List<int>(){1,2,3,4,5,6,7,8};
+		public List<string> lowSubviews = new List<string>();
+		public List<string> highSubviews = new List<string>();
 		public string lowAccessibility ="low";
 		public string highAccessibility ="high";
     /// <summary>

@@ -27,11 +27,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIActivityIndicatorView loadingUsers;
 		public IION ion;
 		public WebPayload webServices;
+
 		
 		public remoteSelectionView(UIView parentView, IION ion, WebPayload webServices) {
 			this.ion = ion; 
 
       this.webServices = webServices;
+      webServices.timedOut += timeOutAlert;
 			// Perform any additional setup after loading the view, typically from a nib.
 			selectedUser = new ObservableCollection<int>();
 			selectedUser.CollectionChanged += checkForSelected;
@@ -75,7 +77,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpOutside += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-
+				Console.WriteLine("clicked to start remote");
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 
@@ -87,7 +89,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					
 					await ion.setRemoteDeviceManager(); 
         	rootVC.setRemoteMenu();
-        } else {        	
+					webServices.downloading = true;
+					startDownloading();
+        } else {
 					var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
@@ -98,7 +102,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			fullMenuButton.Layer.CornerRadius = 5f;
 			fullMenuButton.Layer.BorderWidth = 1f;
 			fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			fullMenuButton.SetTitle("Normal Mode",UIControlState.Normal);
+			fullMenuButton.SetTitle("Local Mode",UIControlState.Normal);
 			fullMenuButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			fullMenuButton.Hidden = true;
 			fullMenuButton.TouchDown += (sender, e) => {fullMenuButton.BackgroundColor = UIColor.Blue;};
@@ -110,7 +114,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				remoteMenuButton.Hidden = false;
 				onlineTable.UserInteractionEnabled = true;
 				webServices.remoteViewing = false;
-				
+				webServices.downloading = false;
+				webServices.paused = null;
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
@@ -162,7 +167,46 @@ namespace ION.IOS.ViewController.RemoteAccess {
         remoteMenuButton.Enabled = false;
         remoteMenuButton.Alpha = .6f;
       }
-    }	
+    }
+    
+		public async void timeOutAlert(bool timeout){
+				var window = UIApplication.SharedApplication.KeyWindow;
+	  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+	  		
+				SystemSound sound = new SystemSound(1005);
+				var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
+					webServices.downloading = true;
+					sound.Close();
+					webServices.StartLayoutDownload();
+				}));
+				alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {sound.Close();}));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				AbsentRemoteTurnoff(alert);
+				
+				sound.PlaySystemSound();
+				await Task.Delay(TimeSpan.FromSeconds(2));
+				sound.Close();
+		}
+		public void startDownloading(){
+			webServices.StartLayoutDownload();
+			webServices.paused += pauseRemote;
+		}
+		public void pauseRemote(bool paused){
+			if(paused == false){
+				Console.WriteLine("Should be starting the download now");
+				webServices.StartLayoutDownload();
+			}
+		}
+	
+		public async void AbsentRemoteTurnoff(UIAlertController alert){
+			await Task.Delay(TimeSpan.FromSeconds(15));
+			
+			alert.DismissViewController(false,null);
+			if(!webServices.remoteViewing){
+				Console.WriteLine("dismissed alert and user didn't choose to continue");
+			}
+		}
 	}
 	
 	[Foundation.Preserve(AllMembers = true)]

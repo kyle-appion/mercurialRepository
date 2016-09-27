@@ -17,7 +17,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public RemoteLoginView loginView;
 		public RemoteUserRegistration registerView;
 		public const string loginUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/applogin.php";
-		public IION ion;
+		public IosION ion;
 		public UIBarButtonItem settingsButton;
 		public UIBarButtonItem register;
 		WebPayload webServices;
@@ -32,11 +32,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      ion = AppState.context;
+      ion = AppState.context as IosION;
 			wc = new WebClient(); 
 			wc.Proxy = null;
-			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-      webServices = appDelegate.webServices;
+
+      webServices = ion.webServices;
             
       var button  = new UIButton(new CGRect(0, 0, 40, 40));
 			button.SetImage(UIImage.FromBundle("ic_settings"),UIControlState.Normal);
@@ -75,7 +75,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       } else {
       	remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
 				remoteHolderView.AddSubview(remoteView.selectionView);
-				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userName"), KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
+				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 				remoteHolderView.AddSubview(profileView.profileView);
 				this.NavigationItem.RightBarButtonItem = settingsButton;
 				profileView.logoutButton.TouchUpInside += LogOutUser;
@@ -88,7 +88,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		public async void LogOutUser(object sender, EventArgs e){
-			await webServices.updateOnlineStatus("0",null);
+			await webServices.updateOnlineStatus("0");
 			
 			KeychainAccess.SetValueForKey("no", "stayLogged");
 			KeychainAccess.SetValueForKey("","userID");
@@ -199,7 +199,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					
 					remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
 					remoteHolderView.AddSubview(remoteView.selectionView);
-					profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userName"), KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
+					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 					profileView.logoutButton.TouchUpInside += LogOutUser;
 					
 					remoteHolderView.AddSubview(profileView.profileView);
@@ -266,14 +266,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
   		
-			if(string.IsNullOrEmpty(registerView.userName.Text) || string.IsNullOrEmpty(registerView.password.Text) || string.IsNullOrEmpty(registerView.displayName.Text) || string.IsNullOrEmpty(registerView.email.Text)){
+			if(string.IsNullOrEmpty(registerView.firstName.Text) || string.IsNullOrEmpty(registerView.password.Text) || string.IsNullOrEmpty(registerView.lastName.Text) || string.IsNullOrEmpty(registerView.email.Text)){
 				var alert = UIAlertController.Create ("User Registration", "Please enter a value for each field", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 				
 				return;
 			}
-			var registered = await webServices.RegisterUser(registerView.userName.Text,registerView.password.Text,registerView.displayName.Text,registerView.email.Text);
+			var registered = await webServices.RegisterUser(registerView.firstName.Text,registerView.password.Text,registerView.lastName.Text,registerView.email.Text);
 
     					
 			if(registered){			
@@ -281,7 +281,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 				
-				loginView.userName.Text = registerView.userName.Text;
+				loginView.userName.Text = registerView.email.Text;
 				loginView.password.Text = registerView.password.Text;			
 				registerView.regView.RemoveFromSuperview();
 				registerView = null;
@@ -296,7 +296,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				if(remoteView != null && remoteView.fullMenuButton.Hidden){
 					remoteView.GetAccessList();
 				}
-			}			
+				if(!webServices.remoteViewing && remoteView != null){
+					remoteView.fullMenuButton.Hidden = true;
+					remoteView.remoteMenuButton.Hidden = false;
+				}
+			}
 		}
     
 		public override void DidReceiveMemoryWarning() {

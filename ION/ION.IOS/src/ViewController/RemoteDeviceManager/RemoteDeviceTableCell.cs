@@ -46,7 +46,7 @@
 		public UIImageView imageDeviceIcon;
 		public UILabel labelDeviceType;
 		public UILabel labelDeviceName;
-		public UIActivityIndicatorView activityConnectStatus;
+
     /// <summary>
     /// The ion context. Necessary to properly connect a device.
     /// </summary>
@@ -110,35 +110,22 @@
       this.Layer.BorderWidth = 1f;
       
       var cellHeight = 48;
-      Log.D(this, "Cell width is " + this.Bounds.Width + " and should be " + cellWidth + ". Height is " + this.Bounds.Height + " and should be 48");
       viewBackground = new UIView(new CGRect(0,0,cellWidth, cellHeight));
       viewBackground.BackgroundColor = UIColor.White;
       
 			buttonConnect = new UIButton(new CGRect(cellWidth - cellHeight,0, cellHeight, cellHeight));
       buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonGold").AsNinePatch(), UIControlState.Normal);
       buttonConnect.SetBackgroundImage(UIImage.FromBundle("ButtonBlack").AsNinePatch(), UIControlState.Selected);
-      buttonConnect.TouchUpInside += (object sender, EventArgs e) => {
-        if (record != null) {
-          // TODO ahodder@appioninc.com: Unify this connection process.
-          if (EConnectionState.Disconnected == record.device.connection.connectionState) {
-            record.device.connection.ConnectAsync();
-          } else {
-            record.device.connection.Disconnect();
-          }
-        }
-      };
+
       imageDeviceIcon = new UIImageView(new CGRect(0,0,cellHeight,cellHeight));
 
       labelDeviceType = new UILabel(new CGRect(cellHeight, 0, cellWidth - cellHeight, .5 * cellHeight));
       labelDeviceName = new UILabel(new CGRect(cellHeight, .5 * cellHeight, cellWidth - cellHeight, .5 * cellHeight));
-      
-      activityConnectStatus = new UIActivityIndicatorView(new CGRect(cellWidth - cellHeight, 0, cellHeight, cellHeight));
-      
+
       viewBackground.AddSubview(buttonConnect);
       viewBackground.AddSubview(imageDeviceIcon);
       viewBackground.AddSubview(labelDeviceName);
       viewBackground.AddSubview(labelDeviceType);
-      viewBackground.AddSubview(activityConnectStatus);
       this.AddSubview(viewBackground);
 
       UpdateLabels();
@@ -173,14 +160,12 @@
 
       if (EConnectionState.Connecting == state) {
         buttonConnect.SetImage(null, UIControlState.Normal);
-        activityConnectStatus.Hidden = false;
       } else {
         if (device.isConnected) {
           buttonConnect.SetImage(UIImage.FromBundle("ic_bluetooth_connected"), UIControlState.Normal);
         } else {
           buttonConnect.SetImage(UIImage.FromBundle("ic_bluetooth_disconnected"), UIControlState.Normal);
         }
-        activityConnectStatus.Hidden = true;
       }
     }
 	}

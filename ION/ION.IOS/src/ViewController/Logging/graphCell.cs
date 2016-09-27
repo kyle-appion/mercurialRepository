@@ -42,7 +42,6 @@ namespace ION.IOS.ViewController.Logging
 				Model = CreatePlotModel(trackerHeight, parentView),
         BackgroundColor = UIColor.Clear,
 			};
-
 			deviceName = new UILabel (new CGRect (0,.92 * cellHeight,.3 * cellWidth,.25 * cellHeight));
       deviceName.Text = cellData.serialNumber;
 			deviceName.AdjustsFontSizeToFitWidth = true;
@@ -178,7 +177,7 @@ namespace ION.IOS.ViewController.Logging
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
           var series = new LineSeries {
             MarkerType = MarkerType.Circle,
-            MarkerSize = 1,
+            MarkerSize = .5,
             MarkerStroke = color,
             MarkerFill = color,
             LineStyle = LineStyle.Solid,

@@ -1,39 +1,40 @@
 ﻿namespace ION.IOS.App {
 
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Threading.Tasks;
 
-  using CoreFoundation;
-  using Foundation;
+	using CoreFoundation;
+	using Foundation;
 	using UIKit;
 
-  using ION.Core.Alarms;
-  using ION.Core.Alarms.Alerts;
-  using ION.Core.App;
-  using ION.Core.Content;
-  using ION.Core.Content.Parsers;
-  using ION.Core.Database;
-  using ION.Core.Devices;
-  using ION.Core.Fluids;
-  using ION.Core.IO;
-  using ION.Core.Location;
-  using ION.Core.Measure;
-  using ION.Core.Report.DataLogs;
-  using ION.Core.Pdf;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
+	using ION.Core.Alarms;
+	using ION.Core.Alarms.Alerts;
+	using ION.Core.App;
+	using ION.Core.Content;
+	using ION.Core.Content.Parsers;
+	using ION.Core.Database;
+	using ION.Core.Devices;
+	using ION.Core.Fluids;
+	using ION.Core.IO;
+	using ION.Core.Location;
+	using ION.Core.Measure;
+	using ION.Core.Report.DataLogs;
+	using ION.Core.Pdf;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
 
-  using ION.IOS.Alarms.Alerts;
-  using ION.IOS.IO;
-  using ION.IOS.Location;
-  using ION.IOS.Connections;
+	using ION.IOS.Alarms.Alerts;
+	using ION.IOS.IO;
+	using ION.IOS.Location;
+	using ION.IOS.Connections;
+	using ION.Core.Net;
 
-  /// <summary>
-  /// The iOS ION implementation.
-  /// </summary>
-  public class IosION : IION {
+	/// <summary>
+	/// The iOS ION implementation.
+	/// </summary>
+	public class IosION : IION {
     /// <summary>
     /// The file name for the primary workbench.
     /// </summary>
@@ -229,7 +230,11 @@
     /// </summary>
     /// <value>The settings.</value>
     public AppSettings settings { get; private set; }
-
+		/// <summary>
+		/// Handles all the Amazon Web Service calls
+		/// </summary>
+		/// <value>The web services.</value>
+		public WebPayload webServices { get; set; }
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>
@@ -365,6 +370,11 @@
       	var remoteAnalyzer = new Analyzer(this);
       	remoteAnalyzer.storedAnalyzer = currentAnalyzer;
       	currentAnalyzer = remoteAnalyzer;
+      	
+      	///create a new workbench manager for the remote session chosen and store the original workbench for restoring
+      	//var remoteWorkbench = new Workbench(this);
+      	//remoteWorkbench.storedWorkbench = currentWorkbench;
+      	//currentWorkbench = remoteWorkbench;
       	
       	///create a new remotebasedevicemanager for the remote session chosen and store the original basedevicemanager for restoring
       	var remoteDManager = new RemoteBaseDeviceManager(this, NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"));

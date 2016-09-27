@@ -31,6 +31,8 @@ namespace ION.IOS.ViewController.Logging {
     public static List<string> includeList;
     public static Dictionary<string,int> allTimes;
     public static Dictionary<int,string> allIndexes;
+    public static int extraPlots;
+    public static int breakPoints;
   }
 
   public partial class LoggingViewController : BaseIONViewController {
@@ -294,7 +296,8 @@ namespace ION.IOS.ViewController.Logging {
       var tempResults = new List<deviceReadings>();
       var holderList = new List<string>();
       var sessionBreaks = new string[graphResult.Count];
-
+			Console.WriteLine("There are " + graphResult.Count + " session breaks");
+			ChosenDates.breakPoints = graphResult.Count;
       for(int s = 0; s < graphResult.Count; s++){
         var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber, sensorIndex FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
         //Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
@@ -325,17 +328,18 @@ namespace ION.IOS.ViewController.Logging {
         }
         if (holderList.Count > 0) {
           sessionBreaks[s] = holderList[holderList.Count - 1];
+          //Console.WriteLine("Added a session break @ " + holderList[holderList.Count - 1]);
         }
       }
       holderList.OrderBy(x => x);
 
-      var extraPlots = holderList.Count;
+      ChosenDates.extraPlots = holderList.Count;
 
-      extraPlots = (extraPlots + (int)(extraPlots * .05)) - holderList.Count;
-      if (extraPlots == 0) {
-        extraPlots = 1;
+      ChosenDates.extraPlots = (ChosenDates.extraPlots + (int)(ChosenDates.extraPlots * .05)) - holderList.Count;
+      if (ChosenDates.extraPlots == 0) {
+        ChosenDates.extraPlots = 1;
       }
-      //Console.WriteLine("Extra plots: " + extraPlots);
+      //Console.WriteLine("Extra plots: " + ChosenDates.extraPlots);
       var indexes = 0;
       var breakPoint = 0;
 
@@ -343,12 +347,14 @@ namespace ION.IOS.ViewController.Logging {
         ChosenDates.allTimes.Add(time, indexes);
         ChosenDates.allIndexes.Add(indexes, time);
         if (sessionBreaks[breakPoint].Equals(time)) {
-          indexes = indexes + extraPlots;
+        	//Console.WriteLine("hit a breakpoint at time " + time);
+          indexes = indexes + ChosenDates.extraPlots;
           breakPoint = breakPoint + 1;
         } else {
           indexes = indexes + 1;
-        }
+        }   
       }
+      //Console.WriteLine("There are " + (indexes - ChosenDates.extraPlots )+ " total");
       //Console.WriteLine("added all times to master lists");
       UIView.Animate(.5, 0, UIViewAnimationOptions.CurveEaseInOut, () => {
         activityLoadingGraphs.StartAnimating();

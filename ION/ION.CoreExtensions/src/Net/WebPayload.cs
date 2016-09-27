@@ -26,13 +26,32 @@ namespace ION.Core.Net {
 	    public bool AllMembers;
 	    public bool Conditional;
 	}
-
+	public delegate void webTimeoutEvent(bool timeout);
+	public delegate void webPauseEvent(bool paused);
 	public class WebPayload {
 		public IION ion;
 		public WebClient webClient;
 		HttpClient client;  
 		public bool remoteViewing = false;
-		public bool downloading = false;
+		public bool uploading = false;
+		public bool downloading 
+		{
+			get{
+				return __downloading;
+			} 
+			set{
+				__downloading = value;
+				if(paused != null){
+					if(value == false){
+						paused(true);
+					} else {
+						paused(false);
+					}
+				}
+			}
+		} bool __downloading;
+		
+		public DateTime startedViewing;   
 		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
 		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
 		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
@@ -46,7 +65,9 @@ namespace ION.Core.Net {
 		public const string downloadLayoutsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadLayouts.php";
 		public const string forgotAccountUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/forgotUserPass.php";
 		public const string updateAccountUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/updateAccount.php";
-	
+		public webTimeoutEvent timedOut;
+		public webPauseEvent paused;
+		
 		public WebPayload() {
 			ion = AppState.context;
 			webClient = new WebClient();
@@ -159,7 +180,7 @@ namespace ION.Core.Net {
     /// Allows the user to register themselves for remote viewing
     /// </summary>
     /// <returns>post response</returns>
-    public async Task<bool> RegisterUser(string userName, string password, string displayName, string email){
+    public async Task<bool> RegisterUser(string firstName, string password, string lastName, string email){
     	await Task.Delay(TimeSpan.FromMilliseconds(1)); 
     	
 			var window = UIApplication.SharedApplication.KeyWindow;
@@ -171,10 +192,10 @@ namespace ION.Core.Net {
 	      var formContent = new FormUrlEncodedContent(new[]
 	          {
 	              new KeyValuePair<string, string>("registerUser", "newuser"),          		
-	              new KeyValuePair<string, string>("uname", userName), 
+	              new KeyValuePair<string, string>("fname", firstName), 
 	              new KeyValuePair<string, string>("usrpword", password), 
 	              new KeyValuePair<string, string>("usrEmail", email), 
-	              new KeyValuePair<string, string>("displayName", displayName), 
+	              new KeyValuePair<string, string>("lname", lastName), 
 	          });
 	          
 				//////initiate the post request and get the request result
@@ -302,7 +323,6 @@ namespace ION.Core.Net {
 		///Package the workbench layout
 		layoutJson += "\"workB\" : [";
 		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
-
 			var count = 1;  
 			foreach(var manifold in uploadWorkbench.manifolds){
 				layoutJson += "{\"sn\":\""+manifold.primarySensor.name+"\",";
@@ -310,7 +330,7 @@ namespace ION.Core.Net {
 
 				layoutJson += "\"sub\":[";
 				var subcount = 1;
-				foreach(var sub in manifold.sensorProperties){  
+				foreach(var sub in manifold.sensorProperties){
 					var sensorEnum = GetSensorPropertyEnum(sub);
 					layoutJson += sensorEnum;
 					if(subcount < manifold.sensorProperties.Count){
@@ -322,8 +342,8 @@ namespace ION.Core.Net {
 				if(count < uploadWorkbench.manifolds.Count){
 					layoutJson += ",";
 				}
-				count++;			
-			}					
+				count++;
+			}
 		}
 		layoutJson += "]}";
 
@@ -332,16 +352,16 @@ namespace ION.Core.Net {
 			//Key value pair for post variable check
       var formContent = new FormUrlEncodedContent(new[]
           {
-              new KeyValuePair<string, string>("uploadLayouts", "manager"),          		
-              new KeyValuePair<string, string>("layoutJson", layoutJson), 
-              new KeyValuePair<string, string>("userID", userID), 
+              new KeyValuePair<string, string>("uploadLayouts", "manager"),
+              new KeyValuePair<string, string>("layoutJson", layoutJson),
+              new KeyValuePair<string, string>("userID", userID),
           });
           
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 
 			var textReponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textReponse);		
+			Console.WriteLine(textReponse);
 		} catch (Exception exception){
 			Console.WriteLine(exception);
 		}
@@ -351,16 +371,18 @@ namespace ION.Core.Net {
 	/// to update the workbench,analyzer, and device manager
 	/// </summary>
 	/// <returns>The layouts.</returns>
-	public async Task DownloadLayouts(Workbench workbench){
+	//public async Task DownloadLayouts(Workbench workbench){
+	public async Task DownloadLayouts(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
-
+		var workbench = ion.currentWorkbench.storedWorkbench;
+		var remoteAnalyzer = ion.currentAnalyzer;
 		var activeManifolds = new List<string>();
 		var activeAnalyzerSensors = new List<string>();
 		var userID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
-
+		
 		try{
 			var remoteDManager = ion.deviceManager as RemoteBaseDeviceManager;
-			var remoteAnalyzer = ion.currentAnalyzer;
+			
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
       var formContent = new FormUrlEncodedContent(new[]
@@ -422,7 +444,7 @@ namespace ION.Core.Net {
 								gDevice.sensors[1].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
 							} else {
 								if(gDevice.serialNumber.rawSerial == deserializedToken.serialNumber){
-									if(UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Pressure ||UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Vacuum){
+									if(UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Pressure || UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Vacuum){
 										gDevice.sensors[0].analyzerSlot = deserializedToken.position;
 										gDevice.sensors[0].analyzerArea = deserializedToken.area;
 										remoteAnalyzer.sensorList.Add(gDevice.sensors[0]);
@@ -437,12 +459,10 @@ namespace ION.Core.Net {
 							break;
  						} 						
 					}
-					 
-					remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
-					remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
-					remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;					
 				}
-
+				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
+				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
+				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;			
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
@@ -793,12 +813,11 @@ namespace ION.Core.Net {
 	/// <returns>The online status.</returns>
 	/// <param name="status">Status.</param>
 	/// <param name="rootVC">Root vc.</param>
-	public async Task<bool> updateOnlineStatus(string status, IONPrimaryScreenController rootVC){
+	public async Task<bool> updateOnlineStatus(string status){
 
 		return await Task.Factory.StartNew(() => {
 
 			var userID = KeychainAccess.ValueForKey("userID");
-			Console.WriteLine("Getting all request for id " + userID);
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
 			var data = new System.Collections.Specialized.NameValueCollection();
@@ -820,23 +839,11 @@ namespace ION.Core.Net {
 				if(success.ToString() == "true"){
 					return true;
 				} else {
-					if(rootVC != null){
-						var errorMessage = response.GetValue("message").ToString();
-						
-						var alert = UIAlertController.Create ("Online Status", errorMessage, UIAlertControllerStyle.Alert);
-						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					}
 					return false;
 				}			
 	
 			} catch (Exception exception){
 				Console.WriteLine("Exception: " + exception);
-				//if(rootVC != null){				
-				//	var alert = UIAlertController.Create ("Online Status", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
-				//	alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				//	rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				//}
 				return false;
 			}			
 		});			
@@ -980,58 +987,28 @@ namespace ION.Core.Net {
 	}
 	
 	/// <summary>
-	/// Updates the display name.
+	/// Kicks off the download process for remote viewing and manages it based on if a user quits or not
 	/// </summary>
-	/// <param name="newDName">New DN ame.</param>
-	public async void updateDisplayName(string newDName, UITextField dField){
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		var userID = KeychainAccess.ValueForKey("userID");
-		try{
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-      var formContent = new FormUrlEncodedContent(new[]
-          {
-              new KeyValuePair<string, string>("updateDisplay", "new"),          		
-              new KeyValuePair<string, string>("newDisplay", newDName), 
-              new KeyValuePair<string, string>("userID", userID) 
-          });
-          
-			//////initiate the post request and get the request result
-			var feedback = await client.PostAsync(updateAccountUrl,formContent);
+	public async void StartLayoutDownload(){
+		startedViewing = DateTime.Now;
+		while(downloading){
+		  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 
-			var textResponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textResponse);
-			//parse the text string into a json object to be deserialized
-			JObject response = JObject.Parse(textResponse);
-			var success = response.GetValue("success").ToString();
-			if(success == "true"){
-				dField.Text = newDName;
+			if(timeDifference < 30){
+				var loggedUser = KeychainAccess.ValueForKey("userID");
+				if(!string.IsNullOrEmpty(loggedUser)){
+					await DownloadLayouts();
+					await Task.Delay(TimeSpan.FromSeconds(1));
+				} else {
+					downloading = false;
+				}
+			} else {
+				downloading = false;
+				if(timedOut != null){
+					timedOut(true);
+				}
 			}
-			var errorMessage = response.GetValue("message").ToString();
-			var window = UIApplication.SharedApplication.KeyWindow;
-  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-			
-			var alert = UIAlertController.Create ("Account Update", errorMessage, UIAlertControllerStyle.Alert);
-			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-
-		} catch (Exception exception){
-			Console.WriteLine("Exception: " + exception);
-			var window = UIApplication.SharedApplication.KeyWindow;
-  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-			
-			var alert = UIAlertController.Create ("Account Update", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
-			alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-			rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-		}			
-	}	
-	public async void DeleteAnalyzerLayout(){
-		await Task.Delay(TimeSpan.FromMilliseconds(1));
-		
-	}
-
-	public async void DeleteWorkbenchLayout(){
-		await Task.Delay(TimeSpan.FromMilliseconds(1));		
+		}
 	}
 	
 	public int GetSensorPropertyEnum(ISensorProperty type){
@@ -1056,6 +1033,44 @@ namespace ION.Core.Net {
 		}	
 	}
 	
+	public int GetSensorSubviewCode(string property){
+		if(property == "Pressure"){
+			return 1;
+		} else if (property == "Superheat"){
+			return 2;
+		} else if (property == "Minimum"){
+			return 3;
+		} else if (property == "Maximum"){
+			return 4;
+		} else if (property == "Hold"){
+			return 5;
+		} else if (property == "Rate"){
+			return 6;
+		} else if (property == "Alternate"){
+			return 7;
+		} else {
+			return 8;
+		}
+	}
+	public string GetSensorCodeSubview(int subviewCode){
+		if(subviewCode == 1){
+			return "Pressure";
+		} else if (subviewCode == 2){
+			return "Superheat";
+		} else if (subviewCode == 3){
+			return "Minimum";
+		} else if (subviewCode == 4){
+			return "Maximum";
+		} else if (subviewCode == 5){
+			return "Hold";
+		} else if (subviewCode == 6){
+			return "Rate";
+		} else if (subviewCode == 7){
+			return "Alternate";
+		} else {
+			return "Linked";
+		}
+	}	
 }
 
 

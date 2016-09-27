@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loginHeaderImage.Image = UIImage.FromBundle("ic_missing");
 			
 			userName = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .35 * parentView.Bounds.Height,.8 * parentView.Bounds.Width, .07 * parentView.Bounds.Height));
-			userName.Placeholder = "username";
+			userName.Placeholder = "email";
 			userName.TextAlignment = UITextAlignment.Center;
 			userName.Layer.CornerRadius = 5f;
 			userName.Font = UIFont.FromName("Helvetica", 25f);

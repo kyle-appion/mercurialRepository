@@ -29,6 +29,7 @@ namespace ION.IOS.ViewController.Workbench {
 	using AudioToolbox;
 	using ION.IOS.App;
 	using ION.Core.Net;
+	using ION.IOS.Viewcontroller.RemoteAccess;
 
 	public partial class WorkbenchViewController : BaseIONViewController {
     /// <summary>
@@ -50,7 +51,8 @@ namespace ION.IOS.ViewController.Workbench {
     public UIButton recordButton;
 		public WebPayload webServices;    
     public bool remoteMode = false;
-
+    public UIScrollView remoteBlocker;
+		RemoteControls remoteControl;
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
     }
@@ -68,17 +70,55 @@ namespace ION.IOS.ViewController.Workbench {
 
       Title = Strings.Workbench.SELF.FromResources();
 
-      ion = AppState.context;
-			var appDelegate = (AppDelegate)UIApplication.SharedApplication.Delegate;
-      webServices = appDelegate.webServices;
- 			
-     
+      ion = AppState.context; 			
+     	var webIon = ion as IosION;
+     	webServices = webIon.webServices;
+
 			if(remoteMode){
-				if(webServices.downloading){
-					Console.WriteLine("Already started downloading from analyzer");
-				}			
-				workbench = new Workbench(ion);				
-				pullUserLayouts(appDelegate);
+				workbench = new Workbench(ion);
+				ion.currentWorkbench.storedWorkbench = workbench;
+				tableContent.Bounces = false;
+				
+				remoteBlocker = new UIScrollView(new CGRect(0,45,View.Bounds.Width,.82 * View.Bounds.Height));
+				remoteBlocker.BackgroundColor = UIColor.Clear;
+				remoteBlocker.ContentSize = tableContent.ContentSize;
+				remoteBlocker.Bounces = false;
+				remoteBlocker.ShowsVerticalScrollIndicator = false;
+				
+				var remoteButton = new UIButton(new CGRect(0,0,65,35));
+				remoteButton.SetTitle("Remote", UIControlState.Normal);
+				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+				remoteButton.TouchUpInside += (sender, e) =>{
+					pauseRemote(false);
+					webServices.downloading = true;
+					remoteBlocker.Hidden = false;
+					this.NavigationItem.RightBarButtonItem = null;
+				};   
+				
+				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
+				
+				remoteControl = new RemoteControls(.88f * View.Bounds.Height,View.Bounds.Width, .1f * View.Bounds.Height);
+				remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
+					disconnectRemoteMode();
+				};
+				
+				remoteControl.editButton.TouchUpInside += (sender, e) => {
+					pauseRemote(true);
+					webServices.downloading = false;
+					remoteBlocker.Hidden = true;
+					this.NavigationItem.RightBarButtonItem = button;
+				};
+				
+				remoteBlocker.Scrolled += (sender, e) => {
+					tableContent.SetContentOffset(remoteBlocker.ContentOffset,false);		
+				};
+				
+				webServices.paused += pauseRemote;
+				View.AddSubview(remoteBlocker);
+				View.AddSubview(remoteControl.controlView);
+				View.BringSubviewToFront(remoteControl.controlView);
+				workbench.onWorkbenchEvent += updateBlockerHeight;
+				initializeBlockerHeight();
 			} else {
 	      var button = new UIButton(new CGRect(0, 0, 31, 30));
 	      button.TouchUpInside += (obj, args) => {
@@ -97,6 +137,7 @@ namespace ION.IOS.ViewController.Workbench {
 	
 	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{barButton,barButton2};		
 				workbench = ion.currentWorkbench;		
+				tableContent.Bounces = true;
 			}
 			
       tableContent.AllowsSelection = true;
@@ -108,17 +149,12 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.Source = source;
 
-			//AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
-			//if(ion.currentWorkbench == null){
-			//	Console.WriteLine("workbench for ion isn't created for some reason");
-			//}
-			//ion.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
 			AppState.context.onWorkbenchChanged += this.OnWorkbenchChanged;
 			if(workbench == null){
 				Console.WriteLine("workbench for ion isn't created for some reason");
 			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
-    }
+    }    
 
     // Overridden from BaseIONViewController
     public override void ViewDidAppear(bool animated) {
@@ -141,7 +177,13 @@ namespace ION.IOS.ViewController.Workbench {
 	      } else {
 	        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	      }
-	    }
+	    } else {
+				if(webServices.downloading){
+		 			remoteControl.controlView.Hidden = false;
+				} else {
+				 	remoteControl.controlView.Hidden = true;
+				}
+			}
     }
 
     // Overridden from UIViewController
@@ -169,7 +211,6 @@ namespace ION.IOS.ViewController.Workbench {
       } else {
 	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        Log.D(this,"Adding device to workbench");
 	        workbench.AddSensor(sensor);
 	      };
 	      NavigationController.PushViewController(sb, true);
@@ -181,6 +222,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     private async void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+    	await Task.Delay(TimeSpan.FromMilliseconds(1));
       switch (workbenchEvent.type) {
         case WorkbenchEvent.EType.Added:
           goto case WorkbenchEvent.EType.Swapped;
@@ -188,6 +230,9 @@ namespace ION.IOS.ViewController.Workbench {
           goto case WorkbenchEvent.EType.Swapped;
         case WorkbenchEvent.EType.Swapped:
           ion.SaveWorkbenchAsync();
+          if(remoteMode){
+          	initializeBlockerHeight();
+          }
           break;
       }
     }
@@ -229,51 +274,51 @@ namespace ION.IOS.ViewController.Workbench {
       messageBox.DismissWithClickedButtonIndex(0, true);
     }
     
-		public async void pullUserLayouts(AppDelegate appDelegate){
-			webServices.downloading = true;
-			var startedViewing = DateTime.Now;
-			while(appDelegate.webServices.remoteViewing){
-			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
-
-				if(timeDifference < 30){
-					var loggedUser = KeychainAccess.ValueForKey("userID");
-					if(!string.IsNullOrEmpty(loggedUser)){
-						await webServices.DownloadLayouts(workbench);
-						await Task.Delay(TimeSpan.FromSeconds(1));
-					} else {
-						appDelegate.webServices.remoteViewing = false;
-					}
-				} else {
-					SystemSound newSound = new SystemSound (1005);
-					appDelegate.webServices.remoteViewing = false;					
-					
-					var window = UIApplication.SharedApplication.KeyWindow;
-		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-					
-					var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-						appDelegate.webServices.remoteViewing = true;
-						pullUserLayouts(appDelegate);
-						newSound.Close();
-					}));
-					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {newSound.Close();}));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					AbsentRemoteTurnoff(alert, appDelegate);	
-
-					newSound.PlaySystemSound();
-					await Task.Delay(TimeSpan.FromSeconds(2));
-					newSound.Close();				
+		public void pauseRemote(bool paused){		
+			if(paused == true){
+		 		remoteControl.controlView.Hidden = true;
+		 		tableContent.ReloadData();
+			} else {
+				remoteControl.controlView.Hidden = false;
+		 		tableContent.ReloadData();
+				initializeBlockerHeight();
+			}
+		}
+		
+		/// <summary>
+		/// TableView is not updating it's content size in a way that allows it to 
+		/// be used as a height for the scrollview. Using a timed event that grabs it 
+		/// every second to confirm the height.
+		/// </summary>
+		/// <param name="workbenchEvent">Workbench event.</param>
+		public void updateBlockerHeight(WorkbenchEvent workbenchEvent){	
+			if(workbenchEvent.type == WorkbenchEvent.EType.ManifoldEvent){
+				if(workbenchEvent.manifoldEvent.type == ManifoldEvent.EType.SensorPropertyAdded || workbenchEvent.manifoldEvent.type == ManifoldEvent.EType.SensorPropertyRemoved){
+					//Console.WriteLine("Added or removed a sensor property");
+					initializeBlockerHeight();
 				}
 			}
 		}
+		
+		public async void initializeBlockerHeight(){
+      Console.WriteLine("table content size is " + tableContent.ContentSize);		
+			await Task.Delay(TimeSpan.FromMilliseconds(1000));
+      //Console.WriteLine("setting remote blocker content size to " + tableContent.ContentSize);
+			tableContent.LayoutSubviews();
+			remoteBlocker.ContentSize = new CGSize(tableContent.ContentSize.Width,tableContent.ContentSize.Height - 68);
+		}
 
-		public async void AbsentRemoteTurnoff(UIAlertController alert, AppDelegate appDelegate){
-			await Task.Delay(TimeSpan.FromSeconds(15));
+		public async void disconnectRemoteMode(){    
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var rootVC = window.RootViewController as IONPrimaryScreenController;
+      
+		 	remoteControl.controlView.Hidden = true;
+		 	webServices.downloading = false;
+		 	webServices.remoteViewing = false;
+			webServices.paused = null;
 			
-			alert.DismissViewController(false,null);
-			if(!appDelegate.webServices.remoteViewing){
-				Console.WriteLine("dismissed alert and user didn't choose to continue");
-			}
+			await ion.setOriginalDeviceManager();
+			rootVC.setMainMenu();
 		}
   }
 }

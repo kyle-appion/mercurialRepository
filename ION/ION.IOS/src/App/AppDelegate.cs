@@ -35,11 +35,6 @@
     /// </summary>
     /// <value>The ion.</value>
     public IosION ion { get; private set; }
-    
-    /// <summary>
-    /// handles all the web requests for the app
-    /// </summary>
-    public WebPayload webServices;
 
     public bool intervalWarning = false;
 
@@ -61,8 +56,7 @@
         Log.E(this, "Failed to initialize ion.", e);
         Environment.Exit(1);
       }
-      webServices = new WebPayload();
-      
+      ion.webServices = new WebPayload();
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -181,7 +175,7 @@
           var done = ion.dataLogManager.StopRecording().Result;
         }
 
-				var noWeb = webServices.updateOnlineStatus("0", null);
+			  ion.webServices.updateOnlineStatus("0");
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {

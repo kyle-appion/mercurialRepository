@@ -982,6 +982,7 @@
     <Compile Include="src\ViewController\RemoteDeviceManager\RemoteDeviceSectionHeaderTableCell.designer.cs">
       <DependentUpon>RemoteDeviceSectionHeaderTableCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\RemoteAccess\RemoteControls.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

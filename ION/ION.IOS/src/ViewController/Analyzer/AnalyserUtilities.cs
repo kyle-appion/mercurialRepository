@@ -23,6 +23,7 @@ using ION.Core.App;
 using ION.IOS.ViewController.Alarms;
 using ION.IOS.Util;
 using System.Collections.ObjectModel;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -584,6 +585,7 @@ namespace ION.IOS.ViewController.Analyzer
 		/// Removes 
 		/// </summary>
 		public static void RemoveRemoteDevice(sensor removeSensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors){
+			Console.WriteLine("Removing Device: " + removeSensor.currentSensor.name);
       removeSensor.snapArea.RemoveGestureRecognizer (removeSensor.holdGesture);
       removeSensor.snapArea.RemoveGestureRecognizer(removeSensor.panGesture);
       removeSensor.snapArea.BackgroundColor = UIColor.Clear;
@@ -870,8 +872,10 @@ namespace ION.IOS.ViewController.Analyzer
             ////set linked sensor to always be first in the table
             if(splits[0].Equals("Linked")){
               pressedArea.tableSubviews.Insert(0,splits[0]);
+							ion.currentAnalyzer.lowSubviews.Insert(0,splits[0]);
             } else {
               pressedArea.tableSubviews.Add(splits[0]);
+							ion.currentAnalyzer.lowSubviews.Add(splits[0]);
             }
 
             pressedArea.subviewTable.Source = new AnalyzerTableSource(pressedArea.tableSubviews, pressedArea);
@@ -893,9 +897,15 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <param name="touchPoint">LOCATION OF SUBVIEW WHEN FINGER WAS REMOVED</param>
 		/// <param name="position">WHICH SUBVIEW WAS MOVING</param>
     public static void sensorSwap(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View,ION.Core.Content.Analyzer currentAnalyzer){
+    	Console.WriteLine("analyserUtilities sensorSWap called");
 			int start = analyzerSensors.areaList.IndexOf(position);
 			int swap = 0;
       bool removeLH = false;
+      Console.WriteLine("layout started");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
+			Console.WriteLine(Environment.NewLine);
       //var ion = AppState.context;
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
@@ -988,7 +998,11 @@ namespace ION.IOS.ViewController.Analyzer
         }
 			}
       confirmLayout(analyzerSensors, View);
-
+      Console.WriteLine("layout ended");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
+			Console.WriteLine(Environment.NewLine);
 			////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
 			analyzerSensors.viewList = new List<sensor> ();
 			for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
@@ -1041,6 +1055,7 @@ namespace ION.IOS.ViewController.Analyzer
           analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
           ion.currentAnalyzer.highAccessibility = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
+          Console.WriteLine("In utilities sensorSwap and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
           View.BringSubviewToFront(analyzerSensors.viewList[start].highArea.snapArea);
           if (!analyzerSensors.viewList[start].isManual) {
             if(analyzerSensors.viewList[start].currentSensor.device.isConnected){
@@ -1575,12 +1590,13 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="View">View.</param>
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
     	var analyzer = AppState.context.currentAnalyzer;
+			Console.WriteLine(Environment.NewLine);
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
         //if (analyzerSensors.areaList [i] == 1) {
         if (analyzer.sensorPositions [i] == 1) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
-            () =>{ 
+            () =>{
               analyzerSensors.snapArea1.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
         //} else if (analyzerSensors.areaList [i] == 2) {
@@ -2096,6 +2112,7 @@ namespace ION.IOS.ViewController.Analyzer
                 if (goOn) {
                   lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
                   ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
+          				Console.WriteLine("In utilities update lowhigh and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
                   lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
                   ion.currentAnalyzer.lowAccessibility = "low";
                   View.BringSubviewToFront(Sensor.highArea.snapArea);
@@ -2181,6 +2198,7 @@ namespace ION.IOS.ViewController.Analyzer
             Sensor.lowArea.snapArea.Hidden = true;
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
             ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
+          	Console.WriteLine("In utilities update lowhigh second area and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
             return;
 					}
 
@@ -2576,6 +2594,7 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.lowArea.snapArea.Hidden = true;
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
         ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
+        Console.WriteLine("In utilities replace high unattached and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
         Console.WriteLine("Occupied High side given unattached sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The low side is currently identified with sensor " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
       }
@@ -2698,6 +2717,7 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.lowArea.snapArea.Hidden = true;
         lowHighSensors.highArea.snapArea.AccessibilityIdentifier = Sensor.snapArea.AccessibilityIdentifier;
         ion.currentAnalyzer.highAccessibility = Sensor.snapArea.AccessibilityIdentifier;
+        Console.WriteLine("In utilities replace high attached and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
         lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
         ion.currentAnalyzer.lowAccessibility = "low";
         Console.WriteLine("Occupied High side given Low side sensor with identifier " + Sensor.snapArea.AccessibilityIdentifier + ":" + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
@@ -2739,18 +2759,40 @@ namespace ION.IOS.ViewController.Analyzer
       vc.PresentViewController(textAlert, true, null);
     }
     /// <summary>
-    /// Remotes the Low or high manifold association for a remote sensor update
+    /// Removes the Low or high manifold association for a remote sensor update
     /// </summary>
     /// <param name="attachSensor">Attach sensor.</param>
-		public static void RemoteLHAssociation(sensor attachSensor){
-		
+		public static void RemoveLHAssociation(sensor attachSensor){
+			Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
+			attachSensor.topLabel.BackgroundColor = UIColor.Clear;
+			attachSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
+			attachSensor.topLabel.TextColor = UIColor.Black;
 		
 			attachSensor.lowArea.snapArea.Hidden = true;
 			attachSensor.lowArea.tableSubviews = new List<string>();
 			attachSensor.lowArea.subviewTable.ReloadData();
 			attachSensor.highArea.snapArea.Hidden = true;
 			attachSensor.highArea.tableSubviews = new List<string>();
-			attachSensor.highArea.subviewTable.ReloadData();			
+			attachSensor.highArea.subviewTable.ReloadData();
+		}
+		
+		/// <summary>
+		/// Shows the low/high area for the active sensor
+		/// </summary>
+		public static void addLHSensorAssociation(string LHArea, sensor activeSensor){
+			if(LHArea == "low"){
+				activeSensor.topLabel.BackgroundColor = UIColor.Blue;
+				activeSensor.topLabel.TextColor = UIColor.White;
+				activeSensor.tLabelBottom.BackgroundColor = UIColor.Blue;
+				activeSensor.lowArea.snapArea.Hidden = false;
+				activeSensor.highArea.snapArea.Hidden = true;
+			}else {
+				activeSensor.topLabel.BackgroundColor = UIColor.Red;
+				activeSensor.topLabel.TextColor = UIColor.White;
+				activeSensor.tLabelBottom.BackgroundColor = UIColor.Red;
+				activeSensor.highArea.snapArea.Hidden = false;				
+				activeSensor.lowArea.snapArea.Hidden = true;				
+			}
 		}
 	}
 }

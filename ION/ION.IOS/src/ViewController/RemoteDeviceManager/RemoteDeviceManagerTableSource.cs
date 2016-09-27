@@ -92,11 +92,11 @@
       tableView.RegisterClassForCellReuse(typeof(RemoteDeviceTableCell),CELL_DEVICE);
       tableView.RegisterClassForCellReuse(typeof(SpaceRecord),CELL_SPACE);
       tableView.RegisterClassForCellReuse(typeof(RemoteSensorTableCell),CELL_SENSOR);
-      //var connected = new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
-      //connected.actions = BuildBatchOptionsDialog(Actions.AddAllToWorkbench,Strings.Device.Manager.AVAILABLE_ACTIONS, connected);
-      //connected.actions = BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
-      //  Strings.Device.Manager.CONNECTED_ACTIONS, connected);
-      //allSections.Add(EDeviceState.Connected, connected);
+      var connected = new Section(EDeviceState.Connected, Strings.Device.CONNECTED.FromResources(), Colors.GREEN);
+      connected.actions = BuildBatchOptionsDialog(Actions.AddAllToWorkbench,Strings.Device.Manager.AVAILABLE_ACTIONS, connected);
+      connected.actions = BuildBatchOptionsDialog(Actions.DisconnectAll | Actions.ForgetAll | Actions.AddAllToWorkbench,
+        Strings.Device.Manager.CONNECTED_ACTIONS, connected);
+      allSections.Add(EDeviceState.Connected, connected);
 
       //var broadcasting = new Section(EDeviceState.Broadcasting, Strings.Device.LONG_RANGE.FromResources(), Colors.LIGHT_BLUE);
       //broadcasting.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.AddAllToWorkbench,
@@ -107,15 +107,15 @@
       //@new.actions = BuildBatchOptionsDialog(Actions.ConnectAll, Strings.Device.Manager.NEW_ACTIONS, @new);
       //allSections.Add(EDeviceState.New, @new);
 
-      var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
-      @avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll,
-        Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
-      allSections.Add(EDeviceState.Available, avail);
+      //var avail = new Section(EDeviceState.Available, Strings.Device.AVAILABLE.FromResources(), Colors.YELLOW);
+      //@avail.actions = BuildBatchOptionsDialog(Actions.ConnectAll,
+      //  Strings.Device.Manager.AVAILABLE_ACTIONS, avail);
+      //allSections.Add(EDeviceState.Available, avail);
 
-      //var disconnected = new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
-      //disconnected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
-      //  Strings.Device.Manager.DISCONNECTED_ACTIONS, disconnected);
-      //allSections.Add(EDeviceState.Disconnected, disconnected);
+      var disconnected = new Section(EDeviceState.Disconnected, Strings.Device.DISCONNECTED.FromResources(), Colors.RED);
+      disconnected.actions = BuildBatchOptionsDialog(Actions.ConnectAll | Actions.ForgetAll,
+        Strings.Device.Manager.DISCONNECTED_ACTIONS, disconnected);
+      allSections.Add(EDeviceState.Disconnected, disconnected);
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
     }
@@ -338,7 +338,6 @@
     /// <param name="indexPath">Index path.</param>
     public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath) {
       var record = shownSections[indexPath.Section].records[indexPath.Row];
-
       if (record is DeviceRecord) {
         var r = record as DeviceRecord;
 
@@ -347,7 +346,6 @@
 	     	if(cell == null){
 					cell = new UITableViewCell(UITableViewCellStyle.Default, CELL_DEVICE) as RemoteDeviceTableCell; 
 			 	}
-			 	Log.D(this, "Table view width is " + tableView.Bounds.Width + " and cell height is " + cell.Bounds.Height);
 			 	cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			
         cell.UpdateTo(ion, r, tableView.Bounds.Width);
@@ -404,21 +402,20 @@
     /// </summary>
     public void Reload() {     
       shownSections.Clear();
-
-      foreach (var device in ion.deviceManager.devices) {
-        var availableState = EDeviceState.Available;
-
+      //foreach (var device in ion.deviceManager.devices) {
+      foreach (var device in ion.deviceManager.knownDevices) {
+        var availableState = device.GetDeviceState();
+		
 				var gauge = device as GaugeDevice;
         var section = allSections[availableState];
-        
-        if (AllowsDevice(device) && gauge.connection.connectionState == EConnectionState.Connected) {
+        //if (AllowsDevice(device) && gauge.connection.connectionState == EConnectionState.Connected) {
+        if (AllowsDevice(device)) {
           var i = 0;
           
           section.AddDevice(device, out i);
           deviceToSection[device] = section;
         }
       }
-
       foreach (var section in allSections.Values) {
         if (section.records.Count > 0) {
           shownSections.Add(section);
@@ -442,9 +439,9 @@
           }
 
           var device = de.deviceEvent.device;
-          var state = EDeviceState.Available;
-          var section = allSections[state];
 
+          var state = device.GetDeviceState();
+          var section = allSections[state];
           if (deviceToSection.ContainsKey(device)) {
             var oldSection = deviceToSection[device];
             if (oldSection != section) {
@@ -574,55 +571,55 @@
     /// <param name="section">Section.</param> 
     private Action BuildBatchOptionsDialog (Actions actions, string title, Section section) {
       return () => {
-        var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.Alert);
+        //var dialog = UIAlertController.Create(title, "", UIAlertControllerStyle.Alert);
 
-        foreach (var s in shownSections) {
-          Log.D(this, "Section name: " + s.name);
-        }
+        //foreach (var s in shownSections) {
+        //  Log.D(this, "Section name: " + s.name);
+        //}
 
-        for (int i = 1; i <= 32; i++) {
-          if ((i & (int)actions) == i) {
-            switch ((Actions)i) {
-              case Actions.ConnectAll:
-                dialog.AddAction(UIAlertAction.Create(Strings.Device.CONNECT_ALL, UIAlertActionStyle.Default, (action) => {
-                  foreach (var device in section.devices) {
-                    device.connection.ConnectAsync();
-                  }
-                }));
-                break;
-              case Actions.DisconnectAll:
-                dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT_ALL, UIAlertActionStyle.Default, (action) => {
-                  foreach (var device in section.devices) {
-                    device.connection.Disconnect();
-                  }
-                }));
-                break;
-              case Actions.ForgetAll:
-                dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET_ALL, UIAlertActionStyle.Default, (action) => {
-                  foreach (var device in section.devices) {
-                    ion.deviceManager.DeleteDevice(device.serialNumber);
-                  }
-                }));
-                break;
-              case Actions.AddAllToWorkbench:
-                dialog.AddAction(UIAlertAction.Create(Strings.Workbench.ADD_ALL_TO_WORKBENCH, UIAlertActionStyle.Default, (action) => {
-                  foreach (var device in section.devices) {
-                    var gd = device as GaugeDevice;
-                    if (gd != null) {
-                      foreach (var sensor in gd.sensors) {
-                        ion.currentWorkbench.AddSensor(sensor);
-                      }
-                    }
-                  }
-                }));
-                break;
-            }
-          }
-        }
+        //for (int i = 1; i <= 32; i++) {
+          //if ((i & (int)actions) == i) {
+            //switch ((Actions)i) {
+              //case Actions.ConnectAll:
+              //  dialog.AddAction(UIAlertAction.Create(Strings.Device.CONNECT_ALL, UIAlertActionStyle.Default, (action) => {
+              //    foreach (var device in section.devices) {
+              //      device.connection.ConnectAsync();
+              //    }
+              //  }));
+              //  break;
+              //case Actions.DisconnectAll:
+              //  dialog.AddAction(UIAlertAction.Create(Strings.Device.DISCONNECT_ALL, UIAlertActionStyle.Default, (action) => {
+              //    foreach (var device in section.devices) {
+              //      device.connection.Disconnect();
+              //    }
+              //  }));
+              //  break;
+              //case Actions.ForgetAll:
+              //  dialog.AddAction(UIAlertAction.Create(Strings.Device.FORGET_ALL, UIAlertActionStyle.Default, (action) => {
+              //    foreach (var device in section.devices) {
+              //      ion.deviceManager.DeleteDevice(device.serialNumber);
+              //    }
+              //  }));
+              //  break;
+              //case Actions.AddAllToWorkbench:
+              //  dialog.AddAction(UIAlertAction.Create(Strings.Workbench.ADD_ALL_TO_WORKBENCH, UIAlertActionStyle.Default, (action) => {
+              //    foreach (var device in section.devices) {
+              //      var gd = device as GaugeDevice;
+              //      if (gd != null) {
+              //        foreach (var sensor in gd.sensors) {
+              //          ion.currentWorkbench.AddSensor(sensor);
+              //        }
+              //      }
+              //    }
+              //  }));
+              //  break;
+            //}
+          //}
+        //}
 
-        dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+        //dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 
-        dialog.Show();
+        //dialog.Show();
       };
     }
 
@@ -966,7 +963,13 @@
     /// <returns>The device state.</returns>
     /// <param name="device">Device.</param>
     public static EDeviceState GetDeviceState(this IDevice device) {
-        return EDeviceState.Available;
+      var connectionState = device.connection.connectionState;
+
+      if (EConnectionState.Connected == connectionState) {
+        return EDeviceState.Connected;
+      } else {
+				return EDeviceState.Disconnected;
+			}
     }
   }
 }

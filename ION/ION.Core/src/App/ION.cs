@@ -1,27 +1,27 @@
 ﻿namespace ION.Core.App {
 
-  using System;
-  using System.Threading.Tasks;
+	using System;
+	using System.Threading.Tasks;
 
-  using Newtonsoft.Json.Linq;
+	using Newtonsoft.Json.Linq;
 
-  using ION.Core.Alarms;
-  using ION.Core.Content;
-  using ION.Core.Database;
-  using ION.Core.Devices;
-  using ION.Core.Fluids;
-  using ION.Core.IO;
-  using ION.Core.Location;
-  using ION.Core.Measure;
-  using ION.Core.Report.DataLogs;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
+	using ION.Core.Alarms;
+	using ION.Core.Content;
+	using ION.Core.Database;
+	using ION.Core.Devices;
+	using ION.Core.Fluids;
+	using ION.Core.IO;
+	using ION.Core.Location;
+	using ION.Core.Measure;
+	using ION.Core.Report.DataLogs;
+	using ION.Core.Sensors;
+	using ION.Core.Util;
 
-  /// <summary>
-  /// A utility class that will retain the ION context. We do this because
-  /// interfaces can't have static properties. 
-  /// </summary>
-  public static class AppState {
+	/// <summary>
+	/// A utility class that will retain the ION context. We do this because
+	/// interfaces can't have static properties. 
+	/// </summary>
+	public static class AppState {
     /// <summary>
     /// The current app state. If the current app state has not been set,
     /// then we will throw an exception when the property is fetched.

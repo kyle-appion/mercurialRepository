@@ -35,7 +35,7 @@ namespace ION.IOS.ViewController {
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController.RssFeed;
   using ION.IOS.ViewController.RemoteAccess;
-  using ION.IOS.ViewController.AccessRequest;
+  using ION.IOS.ViewController.AccessRequest;   
   
 	using System.Net;
 	using System.Text;
@@ -75,10 +75,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
 #if DEBUG
-    //    new Section("Remote Viewing".ToUpper()){
-				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				//} ,
+        new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				} ,
 #endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -255,14 +255,14 @@ namespace ION.IOS.ViewController {
     /// </summary>
     /// <returns>The view controllers.</returns>
     private UIViewController[] BuildViewControllers() {
-      var ret = new UINavigationController[] {
+      var ret = new UINavigationController[] {   
         new UINavigationController(InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH)),
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
 #if DEBUG
-        //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
 #endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
@@ -273,26 +273,28 @@ namespace ION.IOS.ViewController {
       };
 
       return ret;
-    }
+    }    
 
     /// <summary>
     /// Constructs and initialized the view controllers that are used in the application.
     /// Order in array is the same as the menu order in the app
     /// </summary>
     /// <returns>The view controllers.</returns>
-    private void BuildRemoteViewControllers() {    	
-			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
-			remoteWb.remoteMode = true;
-			var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
-			remoteAn.remoteMode = true;
-			
-			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-			navigation.ViewControllers[1] = new UINavigationController(remoteAn);
-			navigation.ViewControllers[5] = null;
-			navigation.ViewControllers[6] = null;
-			navigation.ViewControllers[7] = null;
-			navigation.ViewControllers[8] = null;
-			navigation.ViewControllers[9] = null;
+    //private void BuildRemoteViewControllers() {
+    private void BuildRemoteViewControllers() {
+
+				var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
+				remoteWb.remoteMode = true;
+				var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
+				remoteAn.remoteMode = true;
+				
+				navigation.ViewControllers[0] = new UINavigationController(remoteWb);
+				navigation.ViewControllers[1] = new UINavigationController(remoteAn);
+				navigation.ViewControllers[5] = null;
+				navigation.ViewControllers[6] = null;
+				navigation.ViewControllers[7] = null;
+				navigation.ViewControllers[8] = null;
+				navigation.ViewControllers[9] = null;
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -371,12 +373,12 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         }
 			);
-			//navigation.NavigationRoot.Add(
-			//	new Section("Remote Viewing".ToUpper()){
-			//		new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-			//		new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-			//	}
-			//);	
+			navigation.NavigationRoot.Add(
+				new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				}
+			);	
 			navigation.NavigationRoot.Add(
 				new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -391,21 +393,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         }
 			);
-			var remoteWb = InflateViewController<WorkbenchViewController>(BaseIONViewController.VC_WORKBENCH);
-			remoteWb.remoteMode = false;
-			var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
-			remoteAn.remoteMode = false;
-			
-			var remoteAM = InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER);
-			var remoteJM = InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER);
-			var remoteL = InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING);
 
-			navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-			navigation.ViewControllers[1] = new UINavigationController(remoteAn);
-
-			navigation.ViewControllers[5] = new UINavigationController(remoteAM);
-			navigation.ViewControllers[6] = new UINavigationController(remoteJM);
-			navigation.ViewControllers[7] = new UINavigationController(remoteL);
+			navigation.ViewControllers = BuildViewControllers();
 		}
 		/// <summary>
 		/// Changes the navigation menu when entering remote viewing mode

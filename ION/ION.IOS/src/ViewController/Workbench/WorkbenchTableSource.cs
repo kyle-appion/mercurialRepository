@@ -19,6 +19,7 @@
   using ION.Core.Util;
 
   using ION.IOS.Util;
+  using ION.IOS.App;
   using ION.IOS.ViewController.Alarms;
   using ION.IOS.ViewController.PressureTemperatureChart;
   using ION.IOS.ViewController.SuperheatSubcool;
@@ -72,7 +73,7 @@
     public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
-      this.tableView = tableView;
+      this.tableView = tableView;		
     }
 
     // Overridden from UITableViewSource
@@ -192,6 +193,12 @@
           }
         });
         cell.Layer.CornerRadius = 5;
+        var webIon = ion as IosION;
+        if(webIon.webServices.downloading){       
+					cell.Hidden = true;
+				} else {
+					cell.Hidden = false;
+				}
         return cell;
       } else if (record is ViewerRecord) {
         var viewer = record as ViewerRecord;
