@@ -114,7 +114,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				remoteButton.SetTitle("Remote", UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteButton.TouchUpInside += (sender, e) =>{
-					analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
+					analyzer.sensorPositions = new List<int>(analyzer.revertPositions);
 					pauseRemote(false);
 					webServices.downloading = true;
 					blockerView.Hidden = false;
@@ -141,7 +141,6 @@ namespace ION.IOS.ViewController.Analyzer {
 				};				
 				
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
-	   		
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
       	webServices.paused += pauseRemote;
@@ -700,6 +699,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
             analyzer.highAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+            analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews;
             //View.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
             viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
           } else {
@@ -707,6 +707,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
             analyzer.lowAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+            analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
             //View.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
           }
@@ -1027,6 +1028,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
               lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzer.lowAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             } else {
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
@@ -1038,6 +1040,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
               lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzer.highAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
             }
             existingConnection = true;
@@ -1119,6 +1122,7 @@ namespace ION.IOS.ViewController.Analyzer {
                 viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
                 analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
                 analyzer.lowAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+                analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               } else {
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
                 analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
@@ -1129,6 +1133,7 @@ namespace ION.IOS.ViewController.Analyzer {
                 viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
                 analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               	analyzer.highAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              	analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews;
               }
 
               if(sensor != null && sensor.device.isConnected.Equals(true)){
@@ -1209,8 +1214,9 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public async void refreshSensorLayout(){
-			await Task.Delay(TimeSpan.FromMilliseconds(1500));
-			while(webServices.downloading){			
+			await Task.Delay(TimeSpan.FromMilliseconds(1000));
+			while(webServices.downloading){
+				//analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
 				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);				
 				layoutAnalyzer();
 		
@@ -1257,7 +1263,7 @@ namespace ION.IOS.ViewController.Analyzer {
 						}
 					}
 				}
-				await Task.Delay(TimeSpan.FromMilliseconds(1500));
+				await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			}
 		}
 		

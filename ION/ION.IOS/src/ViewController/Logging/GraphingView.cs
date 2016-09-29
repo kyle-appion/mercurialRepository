@@ -100,7 +100,7 @@ namespace ION.IOS.ViewController.Logging
         }
       }
       getEarliestAndLatest();
-      Console.WriteLine("Got earliest and latest");
+
 			gView = new UIView (new CGRect (0,0, mainView.Bounds.Width, mainView.Bounds.Height));
 			gView.BackgroundColor = UIColor.White;
 			gView.Layer.CornerRadius = 8;
@@ -342,6 +342,7 @@ namespace ION.IOS.ViewController.Logging
 		/// Creates the buttons to navigate and manipulate the graph and its included data
 		/// </summary>
     public void createButtons(ObservableCollection<int> sessions){
+    	Console.WriteLine("Creating graph buttons");
       var deviceCount = ChosenDates.includeList.Count;
       resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height, .3 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;

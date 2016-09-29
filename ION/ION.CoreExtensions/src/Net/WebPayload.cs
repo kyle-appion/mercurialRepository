@@ -318,8 +318,29 @@ namespace ION.Core.Net {
 				}
 				count++;
 			}		
-		}		
-		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"high\":\""+uploadAnalyzer.highAccessibility+"\"},";
+		}
+		//layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"high\":\""+uploadAnalyzer.highAccessibility+"\"},";
+		
+		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"lsub\":[";
+		//Console.Write("Low subs: ");
+		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){		
+			layoutJson += "\""+uploadAnalyzer.lowSubviews[s]+"\"";
+			if(s < uploadAnalyzer.lowSubviews.Count - 1){
+				layoutJson += ",";
+			}
+		}
+		//Console.WriteLine(Environment.NewLine);	
+		layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"hsub\":[";
+		//Console.Write("High subs: ");
+		for(int s = 0; s < uploadAnalyzer.highSubviews.Count;s++){			
+			layoutJson += "\""+uploadAnalyzer.highSubviews[s]+"\"";
+			if(s < uploadAnalyzer.highSubviews.Count - 1){
+				layoutJson += ",";
+			}
+		}
+		//Console.WriteLine(Environment.NewLine);
+		layoutJson += "]},";
+		
 		///Package the workbench layout
 		layoutJson += "\"workB\" : [";
 		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
@@ -371,7 +392,6 @@ namespace ION.Core.Net {
 	/// to update the workbench,analyzer, and device manager
 	/// </summary>
 	/// <returns>The layouts.</returns>
-	//public async Task DownloadLayouts(Workbench workbench){
 	public async Task DownloadLayouts(){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var workbench = ion.currentWorkbench.storedWorkbench;
@@ -461,6 +481,7 @@ namespace ION.Core.Net {
 					}
 				}
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
+				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
 				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;			
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
@@ -1163,6 +1184,10 @@ namespace ION.Core.Net {
 		public string lowAccessibility {get;set;}
 		[JsonProperty("high")]
 		public string highAccessibility {get;set;}
+		[JsonProperty("lsub")]
+		public string[] lowSubviews {get;set;}
+		[JsonProperty("hsub")]
+		public string[] highSubviews {get;set;}
 	}		
 }
 
