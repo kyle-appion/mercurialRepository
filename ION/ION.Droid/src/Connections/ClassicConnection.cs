@@ -2,23 +2,19 @@
 
   using System;
   using System.IO;
-  using System.Threading;
   using System.Threading.Tasks;
-  using System.Timers;
 
   using Android.Bluetooth;
-  using Android.Content;
-  using Android.Media;
+	using Android.OS;
 
   using Java.Util;
 
-  using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
   using ION.Core.Util;
 
-  public class ClassicConnection : IConnection {
+	public class ClassicConnection : Java.Lang.Object, IConnection, Handler.ICallback {
     /// <summary>
     /// The bytes that make up the request packet.
     /// </summary>
@@ -27,6 +23,11 @@
     /// The profile id that we are using for bluetooth communications.
     /// </summary>
     private static UUID SPP = UUID.FromString("00001101-0000-1000-8000-00805F9B34FB");
+
+		private const int RECONNECT_DELAY = 750;
+
+		private const int MSG_REQUEST_PACKET = 1;
+		private const int MSG_RECONNECT = 2;
 
     /// <summary>
     /// The event registry that will be notified when the connection's state changes.
@@ -137,10 +138,15 @@
     /// The output stream for the connection.
     /// </summary>
     private System.IO.Stream output;
+		/// <summary>
+		/// The handler that the connection will place its pending connection actions to.
+		/// </summary>
+		private Handler handler;
 
     public ClassicConnection(BluetoothDevice device) {
       this.device = device;
       connectionTimeout = TimeSpan.FromSeconds(45);
+			handler = new Handler(Looper.MainLooper, this);
     }
 
     /// <summary>
@@ -179,6 +185,8 @@
     /// Disconnects the connection from the remote terminus.
     /// </summary>
     public void Disconnect() {
+			handler.RemoveCallbacksAndMessages(null);
+
 			Log.D(this, "Disconnected");
       if (input != null) {
         input.Close();
@@ -239,6 +247,19 @@
 			});
     }
 
+		public bool HandleMessage(Message msg) {
+			switch (msg.What) {
+				case MSG_REQUEST_PACKET:
+					DoRequestPacket();
+					return true;
+				case MSG_RECONNECT:
+					ConnectAsync();
+					return true;
+			}
+
+			return false;
+		}
+
     /// <summary>
     /// Connects to the device's bluetooth socket.
     /// </summary>
@@ -280,18 +301,23 @@
     /// <summary>
     /// Performs a timer event that will request a new packet.
     /// </summary>
-    /// <param name="obh">Obh.</param>
-    /// <param name="args">Arguments.</param>
     private async void DoRequestPacket() {
       if (EConnectionState.Connected == connectionState) {
         var requestTask = RequestPacket();
         if (await Task.WhenAny(requestTask, Task.Delay(TimeSpan.FromMilliseconds(5000))) == requestTask) {
+					handler.SendMessageDelayed(handler.ObtainMessage(MSG_REQUEST_PACKET), 100);
           if (requestTask.Result != null) {
             lastPacket = System.Text.Encoding.UTF8.GetBytes(requestTask.Result);
-            AppState.context.PostToMainDelayed(DoRequestPacket, TimeSpan.FromMilliseconds(100));
-          } else {
-            Log.D(this, "Classic connection failed to resolve packet. Disconnected");
-            Disconnect();
+					} else {
+						if (requestTask.IsFaulted) {
+							if (socket.IsConnected) {
+								Log.D(this, "Classic connection failed to resolve packet. Disconnecting");
+								Disconnect();
+							} else {
+								Disconnect();
+								handler.SendEmptyMessageDelayed(MSG_RECONNECT, 750);
+							}
+						}
           }
         } else {
           // We failed to get a packet in the timeout timespan

@@ -160,11 +160,6 @@
       }
     }
 
-
-
-
-
-
 		private class FileAdapter : SwipableRecyclerViewAdapter {
 			/// <summary>
 			/// The event handler that is used to notify listeners of when a file row is clicked.
@@ -222,7 +217,9 @@
 
 				switch ((EViewType)viewType) {
 					case EViewType.File:
-						return new FileHolder(parent, this, cache);
+						var ret = new FileHolder(parent, this, cache);
+						ret.button.SetText(Resource.String.delete);
+						return ret;
 					case EViewType.Folder:
 						return new FolderHolder(parent, this, cache);
 					default:
@@ -231,8 +228,7 @@
 			}
 
 			public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
-//				return record.viewType == (int)EViewType.File;
-				return false;
+				return record.viewType == (int)EViewType.File;
 			}
 
 			public override Action GetViewHolderSwipeAction(int index) {
@@ -241,6 +237,8 @@
 						case EViewType.File:
 							var fileRecord = (FileRecord)records[index];
 							fileRecord.file.Delete();
+							records.RemoveAt(index);
+							NotifyItemRemoved(index);
 							break;
 					}
 				};
