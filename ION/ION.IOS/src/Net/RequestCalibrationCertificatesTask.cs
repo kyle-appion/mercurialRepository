@@ -149,6 +149,7 @@
             try {
               var settings = new JsonSerializerSettings();
               settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+              Log.D(this, "about to send request " + s.Value.ToString());
               var response = JsonConvert.DeserializeObject<CalibrationCertificateResponse>(s.Value.ToString());//, settings);
               Log.D(this, "Nist date is " + response.calDate);
               if (response.errorCode != null) {

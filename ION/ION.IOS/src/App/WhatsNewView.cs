@@ -33,7 +33,7 @@ namespace ION.IOS.App {
 			if(UserInterfaceIdiomIsPhone){
 				headingSize = 3;
 				fontSize = 14;
-				contentMultiplier = 80; 
+				contentMultiplier = 85; 
 			} else {
 				headingSize = 2;
 				fontSize = 20;
@@ -57,7 +57,7 @@ namespace ION.IOS.App {
 					sb.Append("</br>");
 				}
 				if(wn.whatsUpdated.Count > 0){
-					sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b><");
+					sb.Append("<b><h"+headingSize+">").Append(" UPDATED").Append("</h"+headingSize+"></b>");
 					foreach (var u in wn.whatsUpdated) {
 						sb.Append("<p style='font-size:"+fontSize+"px'> •\t").Append(u).Append("</p>");
 						itemCount++;
