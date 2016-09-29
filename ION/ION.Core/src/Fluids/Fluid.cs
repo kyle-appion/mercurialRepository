@@ -143,7 +143,7 @@
     /// </summary>
     /// <param name="pressure">The absolute pressure to match to an expected temperature.</param>
     /// <returns></returns>
-    public Scalar GetTemperatureFromPressure(EState state, Scalar pressure) {
+    public Scalar GetTemperatureFromAbsolutePressure(EState state, Scalar pressure) {
       pressure = pressure.ConvertTo(PRESSURE);
       Scalar pmin = GetMinimumPressure(state), pmax = GetMaximumPressure(state);
 

@@ -178,7 +178,7 @@
               var connection = new ClassicConnection(device);
               __connections.Add(device.Address, connection);
 
-              var serialNumber = connection.ResolveSerialNumber();
+              var serialNumber = await ClassicConnection.ResolveSerialNumber(device);
               if (serialNumber != null) {
                 NotifyDeviceFound(serialNumber, device.Address, null, EProtocolVersion.Classic);
               } else {

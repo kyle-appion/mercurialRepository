@@ -95,7 +95,7 @@
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
 
-      return fluid.GetTemperatureFromPressure(state, pressure);
+      return fluid.GetTemperatureFromAbsolutePressure(state, pressure);
     }
 
     /// <summary>

@@ -2,13 +2,8 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
 
 	using Android.App;
-	using Android.Content;
-	using Android.OS;
-	using Android.Runtime;
 	using Android.Views;
 	using Android.Widget;
 
@@ -16,25 +11,42 @@
 	using ION.Core.Database;
 	using ION.Core.Util;
 
+	using Dialog;
 	using ION.Droid.Widgets.RecyclerViews;
 
 	public class SessionAdapter : SwipableRecyclerViewAdapter {
 
+		private IION ion;
+		/// <summary>
+		/// The job row that the sessions adapter is with regard to. Meaning, if a session is added to a job, this is the
+		/// job that the sessions will be added to.
+		/// </summary>
+		/// <value>The job row.</value>
 		public JobRow jobRow {
 			get {
 				return __jobRow;
 			}
-
 			set {
 				__jobRow = value;
+				foreach (var record in records) {
+					var sr = record as SessionRecord;
+					if (sr != null) {
+						sr.job = value;
+					}
+				}
 				NotifyDataSetChanged();
 			}
 		} JobRow __jobRow;
 
-		private IION ion;
+		/// <summary>
+		/// Whether or not the adapter will allow a session record to be deleted.
+		/// </summary>
+		/// <value><c>true</c> if allow deleting; otherwise, <c>false</c>.</value>
+		public bool allowDeleting { get; set; }
 
 		public SessionAdapter(IION ion) {
 			this.ion = ion;
+			allowDeleting = true;
 		}
 
 		public override void OnAttachedToRecyclerView(Android.Support.V7.Widget.RecyclerView recyclerView) {
@@ -52,18 +64,81 @@
 		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Session:
-					return new SessionViewHolder(parent, Resource.Layout.list_item_session);
+					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session);
+					ret.button.SetText(Resource.String.delete);
+					return ret;
 				default:
 					throw new Exception("Cannot create view for " + (EViewType)viewType);
 			}
 		}
 
 		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
-			return false;
-		}
+			if (allowDeleting) {
+				if ((EViewType)record.viewType == EViewType.Session) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		} 
 
 		public override Action GetViewHolderSwipeAction(int index) {
-			return null;
+			var record = records[index];
+			if ((EViewType)record.viewType == EViewType.Session) {
+				return () => {
+					RequestDeleteSession(record as SessionRecord);
+				};
+			} else {
+				return null;
+			}
+		}
+
+		private void RequestDeleteSession(SessionRecord record) {
+			var context = recyclerView.Context;
+			var adb = new IONAlertDialog(context);
+			adb.SetTitle(Resource.String.report_delete_session);
+			adb.SetMessage(Resource.String.report_delete_session_message);
+
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+				var d = sender as Dialog;
+				if (d != null) {
+					d.Cancel();
+				}
+			});
+			adb.SetPositiveButton(Resource.String.delete, async (sender, e) => {
+				var pd = new ProgressDialog(context);
+				pd.SetTitle(Resource.String.please_wait);
+				pd.SetMessage(context.GetString(Resource.String.deleting));
+				pd.Indeterminate = true;
+				pd.Show();
+
+				// First we have to delete all the records
+				var ion = AppState.context;
+				var database = AppState.context.database;
+
+				try {
+					database.BeginTransaction();
+
+					var results = database.Table<SensorMeasurementRow>().Delete(smr => smr.frn_SID == record.row._id);
+					Log.D(this, "Deleted " + results + " sensor measurement rows");
+					database.Commit();
+
+					Log.D(this, "Deleted session: " + record.row._id + " = " + await AppState.context.database.DeleteAsync<SessionRow>(record.row));
+					var index = records.IndexOf(record);
+					records.RemoveAt(index);
+					NotifyItemRemoved(index);
+				} catch (Exception ex) {
+					Log.E(this, "Failed to delete records", ex);
+					database.Rollback();
+					Toast.MakeText(context, Resource.String.error_failed_to_delete, ToastLength.Short).Show();
+				} finally {
+					pd.Dismiss();
+				}
+			});
+
+			adb.Show();
 		}
 
 		public int IndexOfSession(SessionRow session) {
@@ -93,7 +168,10 @@
 		public void SetSessions(IEnumerable<SessionRecord> sessions) {
 			records.Clear();
 
-			records.AddRange(sessions);
+			foreach (var session in sessions) {
+				session.job = jobRow;
+				records.Add(session);
+			}
 
 			NotifyDataSetChanged();
 		}
