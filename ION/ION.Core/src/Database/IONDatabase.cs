@@ -140,8 +140,20 @@
           Commit();
           return Task.FromResult(true);
         } else {
-          Log.E(this, "Did not save to database");
-          return Task.FromResult(false);
+        	try{
+		        if (t._id > 0) {
+		          affected = Update(t);
+		          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
+		        } else {
+		          affected = Insert(t);
+		          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
+		        }
+					} catch (Exception e){
+						Log.E(this, "Issue trying to store session data the second go around");
+          	return Task.FromResult(false);
+					}
+          Log.E(this, "Retried to store session info");
+          return Task.FromResult(true);
         }
       } catch (Exception e) {
         Log.E(this, "Failed to save the item: " + t + " to the database", e);

@@ -66,6 +66,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
+
       if (tableItems[indexPath.Row].Contains("Maximum")) {
         var cell = tableView.DequeueReusableCell("Maximum") as maximumTableCell;
         if (cell == null) {

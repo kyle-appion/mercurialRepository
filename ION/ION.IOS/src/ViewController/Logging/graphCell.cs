@@ -32,8 +32,10 @@ namespace ION.IOS.ViewController.Logging
     public void setupGraph(deviceReadings startData, List<deviceReadings> totalData, double cellWidth, double cellHeight, double trackerHeight, UIView parentView, UITableView tableView)
 		{
       cellData = startData;
+ 
       var combineName = cellData.serialNumber + "/" + cellData.type;
       allData = totalData;
+
 			graphTable = tableView;
       this.BackgroundColor = UIColor.Clear;
 			this.Layer.BorderWidth = 1f;
