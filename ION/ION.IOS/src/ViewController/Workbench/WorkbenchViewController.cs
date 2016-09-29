@@ -232,7 +232,7 @@ namespace ION.IOS.ViewController.Workbench {
           ion.SaveWorkbenchAsync();
           if(remoteMode){
           	initializeBlockerHeight();
-          }
+          }  
           break;
       }
     }
