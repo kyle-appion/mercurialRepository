@@ -215,6 +215,8 @@
 				var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
 				i.SetAction(Intent.ActionPick);
 				i.PutExtra(SuperheatSubcoolActivity.EXTRA_WORKBENCH_MANIFOLD, workbench.IndexOf(manifold));
+				i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
+				i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_STATE, (int)manifold.ptChart.state);
 				StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
 			}
 		}

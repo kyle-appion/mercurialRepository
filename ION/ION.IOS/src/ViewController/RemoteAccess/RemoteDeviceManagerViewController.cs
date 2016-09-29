@@ -1,4 +1,4 @@
-namespace ION.IOS.ViewController.DeviceManager {
+﻿namespace ION.IOS.ViewController.RemoteDeviceManager {
 
   using System;
   using System.Collections.Generic;
@@ -19,8 +19,9 @@ namespace ION.IOS.ViewController.DeviceManager {
 
   using ION.IOS.UI;
   using ION.IOS.Util;
+  using ION.IOS.ViewController.DeviceManager;
 
-	public partial class DeviceManagerViewController : BaseIONViewController {
+	public partial class RemoteDeviceManagerViewController : BaseIONViewController {
     /// <summary>
     /// The time in milliseconds that the view controller will perform a scan for.
     /// </summary>
@@ -61,14 +62,14 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// The device source for our device table.
     /// </summary>
     /// <value>The device source.</value>
-    private DeviceManagerTableSource deviceSource { get; set; }
+    private RemoteDeviceManagerTableSource deviceSource { get; set; }
     /// <summary>
     /// Whether or not the view controller is allowing a refresh to be preformed.
     /// </summary>
     /// <value><c>true</c> if allow refresh; otherwise, <c>false</c>.</value>
     private bool allowRefresh { get; set; }
 
-		public DeviceManagerViewController (IntPtr handle) : base (handle) {
+		public RemoteDeviceManagerViewController (IntPtr handle) : base (handle) {
       ion = AppState.context;
 		}
 
@@ -98,14 +99,13 @@ namespace ION.IOS.ViewController.DeviceManager {
 		  }
         }
       });
-
       labelEmpty.Text = Strings.Device.Manager.EMPTY;
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;	
 		if(ion.deviceManager.connectionHelper.isEnabled){
 		      UpdateScanState();
 		}
-      tableContent.Source = deviceSource = new DeviceManagerTableSource(ion, this, tableContent);
+      tableContent.Source = deviceSource = new RemoteDeviceManagerTableSource(ion, this, tableContent);
       deviceSource.sensorFilter = displayFilter;
       deviceSource.onSensorAddClicked = (GaugeDeviceSensor sensor, NSIndexPath indexPath) => {
         if (onSensorReturnDelegate != null) {

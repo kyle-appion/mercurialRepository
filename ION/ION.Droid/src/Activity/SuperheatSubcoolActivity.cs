@@ -1,8 +1,6 @@
 ﻿namespace ION.Droid.Activity {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
+	using System;
 
   using Android.App;
   using Android.Content;
@@ -19,6 +17,7 @@
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
+	using ION.Core.Util;
 
   // Using ION.Droid
   using DeviceManager;
@@ -224,10 +223,8 @@
         fluidNameView.Text = name;
         if (__ptChart.fluid.mixture) {
           fluidPhaseToggleView.Visibility = ViewStates.Visible;
-          helpView.Visibility = ViewStates.Visible;
         } else {
           fluidPhaseToggleView.Visibility = ViewStates.Invisible;
-          helpView.Visibility = ViewStates.Invisible;
         }
         fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
         UpdateCalculationMeasurements();
@@ -373,7 +370,11 @@
       helpView = FindViewById<ImageButton>(Resource.Id.help);
       helpView.SetOnClickListener(new ViewClickAction((v) => {
         var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
-        ldb.SetMessage(Resource.String.fluid_help_clarification);
+				if (this.ptChart.fluid.mixture) {
+        	ldb.SetMessage(Resource.String.fluid_help_mixture_clarification);
+				} else {
+					ldb.SetMessage(Resource.String.fluid_help_pure_clarification);
+				}
         ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
           var dialog = obj as Android.App.Dialog;
           dialog.Dismiss();
@@ -406,6 +407,7 @@
         var fluid = await ion.fluidManager.GetFluidAsync(name);
 
         var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
+				Log.D(this, "State: " + state);
 
         ptChart = PTChart.New(ion, state, fluid);
       } else {
@@ -633,7 +635,7 @@
           if (!"".Equals(text)) {
             pressureSensor.measurement = pressureSensor.unit.OfScalar(double.Parse(text));
           }
-        } catch (System.Exception e) {
+        } catch (System.Exception) {
         }
       });
 
@@ -702,7 +704,7 @@
           if (!"".Equals(text)) {
             temperatureSensor.measurement = temperatureSensor.unit.OfScalar(double.Parse(text));
           }
-        } catch (System.Exception e) {
+        } catch (System.Exception) {
         }
       });
 
@@ -793,11 +795,11 @@
       switch (ptChart.state) {
         case Fluid.EState.Bubble:
           fluidStateTextView.Text = GetString(Resource.String.fluid_sc);
-          fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.red)));
+          fluidStateTextView.SetBackgroundColor(new Color(GetColor(Resource.Color.red)));
           break;
         case Fluid.EState.Dew:
           fluidStateTextView.Text = GetString(Resource.String.fluid_sh);
-          fluidStateTextView.SetBackgroundColor(new Android.Graphics.Color(GetColor(Resource.Color.blue)));
+          fluidStateTextView.SetBackgroundColor(new Color(GetColor(Resource.Color.blue)));
           break;
       }
     }

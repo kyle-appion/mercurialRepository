@@ -1,5 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="0.9.12">
+		<update>Cleaned up various UI elements</update>
+		<fixed>Fixed Various button interactions</fixed>
+		<fixed>Fixed SH/SC calculation issues</fixed>
+	</display>
+	<display version="0.9.11">
+		<new>The analyzer is now saved across app instances</new>
+		<update>Improved new gauge bluetooth performance</update>
+		<update>Updated refrigerant list sorting</update>
+		<fixed>Fixed issue where bluetooth devices wouldn't communicate</fixed>
+		<fixed>Fixed Analyzer subview bugs</fixed>
+		<fixed>Fixed Analyzer rendering bugs</fixed>
+	</display>
 	<display version="0.9.10">
 		<new>Added Data Logging</new>
 		<new>Added basic Job Manager</new>

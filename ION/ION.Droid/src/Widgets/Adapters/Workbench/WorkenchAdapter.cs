@@ -98,8 +98,6 @@
 
     // Overridden from RecyclerView.Adapter
     public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
-      var li = LayoutInflater.From(parent.Context);
-
       switch ((EViewType)viewType) {
         case EViewType.Footer:
           return new FooterViewHolder(parent, Resource.Layout.list_item_add);

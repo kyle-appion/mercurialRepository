@@ -8,6 +8,7 @@
   using ION.Core.Sensors.Properties;
 
   using ION.Droid.Util;
+	using ION.Droid.Widgets.RecyclerViews;
   using ION.Droid.Widgets.Templates;
 
   class RateOfChangeSubviewRecord : SensorPropertyRecord<RateOfChangeSensorProperty> {
@@ -15,14 +16,14 @@
     }
   }
 
-  class RateOfChangeSubviewViewHolder : SubviewAdapterViewHolder<RateOfChangeSubviewRecord> {
+  class RateOfChangeSubviewViewHolder : SwipableViewHolder<RateOfChangeSubviewRecord> {
     private RateOfChangeSubviewTemplate template;
 
-    public RateOfChangeSubviewViewHolder(View view, BitmapCache cache) : base(view) {
+		public RateOfChangeSubviewViewHolder(ViewGroup parent, BitmapCache cache) : base(parent, Resource.Layout.subview_measurement_small) {
       template = new RateOfChangeSubviewTemplate(view, cache);
     }
 
-    public override void BindTo(RateOfChangeSubviewRecord t) {
+    public override void OnBindTo() {
       template.Bind(t.item);
     }
 

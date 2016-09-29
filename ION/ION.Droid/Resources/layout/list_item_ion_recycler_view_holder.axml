@@ -16,5 +16,4 @@
         android:layout_height="match_parent"
         android:textSize="@dimen/text_size_large"
         android:textColor="@color/black" />
-<!--style="@android:style/Widget.Material.Light.Button.Borderless" -->
 </RelativeLayout>

@@ -13,6 +13,10 @@ namespace ION.Core.Util {
     /// <returns>The byte string.</returns>
     /// <param name="bytes">Bytes.</param>
     public static string ToByteString(this byte[] bytes) {
+			if (bytes == null) {
+				return "";
+			}
+
       char[] c = new char[bytes.Length * 5];
       int b;
       for (int i = 0; i < bytes.Length; i++) {

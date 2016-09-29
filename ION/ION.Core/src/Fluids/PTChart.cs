@@ -164,11 +164,15 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public ScalarSpan CalculateSuperheat(Scalar pressure, Scalar temperature, bool isRelative = true) {
-      var oldPress = pressure;
-
+			if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
+				// If the pressure is relative, then calculate the difference from sea level.
+				var newPressure = Physics.GetGaugePressureAdjustedForElevation(pressure, Units.Length.FOOT.OfScalar(5000));
+			} 
+/*
       if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
+*/
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
       return temperature - saturatedTemperature;
@@ -186,9 +190,15 @@
     /// <param name="temperature">Temperature.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
     public ScalarSpan CalculateSubcool(Scalar pressure, Scalar temperature, bool isRelative = true) {
-      if (isRelative || pressure.unit.Equals(Units.Pressure.PSIA)) {
+			if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
+				// If the pressure is relative, then calculate the difference from sea level.
+				var newPressure = Physics.GetGaugePressureAdjustedForElevation(pressure, Units.Length.FOOT.OfScalar(5000));
+			} 
+/*
+      if (isRelative && !pressure.unit.Equals(Units.Pressure.PSIA)) {
         pressure = Physics.ConvertRelativePressureToAbsolute(pressure, elevation);
       }
+*/
 
       Scalar saturatedTemperature = GetTemperature(pressure).ConvertTo(temperature.unit);
       return saturatedTemperature - temperature;

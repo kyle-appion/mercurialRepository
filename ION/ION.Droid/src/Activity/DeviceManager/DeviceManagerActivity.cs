@@ -12,8 +12,6 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.App;
-  using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
@@ -21,8 +19,6 @@
   using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
-  using ION.Droid.App;
-  using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
@@ -51,7 +47,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 60000;
+    private const long DEFAULT_SCAN_TIME = 7500;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -111,7 +107,6 @@
       list.Visibility = ViewStates.Visible;
 
       adapter.onDatasetChanged += (adapter) => {
-        Log.D(this, "The records count is: " + adapter.ItemCount);
         if (adapter.ItemCount > 0) {
           empty.Visibility = ViewStates.Gone;
           list.Visibility = ViewStates.Visible;
@@ -132,7 +127,6 @@
 
       previousHelper = ion.deviceManager.connectionHelper;
       var bm = (BluetoothManager)GetSystemService(BluetoothService);
-//      ion.deviceManager.connectionHelper = new ConnectionHelperCollection(new LeConnectionHelper(bm), new ClassicConnectionHelper(this, bm));
 
       ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -141,8 +135,8 @@
 
       var connectionHelper = ion.deviceManager.connectionHelper;
 
-      if (connectionHelper.isEnabled) {
-        ion.deviceManager.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+			if (bm.Adapter.IsEnabled) {
+        ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
       } else {
         ShowBluetoothOffDialog();
       }
@@ -158,9 +152,7 @@
       ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
-      ion.deviceManager.connectionHelper.Stop();
-
-			ion.deviceManager.ForgetFoundDevices();
+      ion.deviceManager.connectionHelper.StopScan();
     }
 
     /// <Docs>Perform any final cleanup before an activity is destroyed.</Docs>
@@ -175,7 +167,7 @@
     }
 
     // Overridden from Activity
-    public override bool OnCreateOptionsMenu(Android.Views.IMenu menu) {
+    public override bool OnCreateOptionsMenu(IMenu menu) {
       base.OnCreateOptionsMenu(menu);
 
       MenuInflater.Inflate(Resource.Menu.scan, menu);
@@ -184,20 +176,22 @@
     }
 
     // Overridden from Activity
-    public override bool OnPrepareOptionsMenu(Android.Views.IMenu menu) {
+    public override bool OnPrepareOptionsMenu(IMenu menu) {
       base.OnPrepareOptionsMenu(menu);
 
       var scan = menu.FindItem(Resource.Id.scan);
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
+				var manager = (BluetoothManager)GetSystemService(BluetoothService);
+
         var dm = ion.deviceManager;
 
-        if (dm.connectionHelper.isEnabled) {
+				if (manager.Adapter.IsEnabled) {
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
         } else {
           ShowBluetoothOffDialog();
@@ -222,16 +216,16 @@
           SetResult(Result.Canceled);
           Finish();
           return true;
+/*
         case Resource.Id.scan:
           var dm = ion.deviceManager;
 
           if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.Stop();
+            dm.connectionHelper.StopScan();
           } else {
-            dm.connectionHelper.Scan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
           }
-
-          return true;
+*/
         default:
           return base.OnMenuItemSelected(featureId, item);
       }
@@ -241,7 +235,6 @@
     /// Called when the user clicks the return sensor in the adapter.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    /// <param name="position">Position.</param>
     private void OnSensorReturnClicked(Sensor sensor) {
       var ret = new Intent();
 
@@ -297,9 +290,9 @@
     /// Builds a filter that will restrict the sensors that are shown by the adapter.
     /// </summary>
     /// <returns>The sensor filter.</returns>
-    /// <param name="filter">Filter.</param>
-    private IFilter<Sensor> BuildSensorFilter(EDeviceFilter filter) {
-      if (EDeviceFilter.All == filter) {
+    /// <param name="deviceFilter">Filter.</param>
+		private IFilter<Sensor> BuildSensorFilter(EDeviceFilter deviceFilter) {
+      if (EDeviceFilter.All == deviceFilter) {
         return new YesFilter<Sensor>();
       }
 
@@ -308,7 +301,7 @@
       for (int i = 0; i < 32; i++) {
         var flag = (EDeviceFilter)(1 << i);
 
-        if ((filter & flag) != flag) {
+        if ((deviceFilter & flag) != flag) {
           continue;
         }
 
