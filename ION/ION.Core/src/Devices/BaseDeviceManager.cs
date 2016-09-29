@@ -5,7 +5,6 @@
   using System.Threading.Tasks;
 
   using ION.Core.App;
-  using ION.Core.Connections;
   using ION.Core.Database;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
@@ -73,6 +72,8 @@
       }
     }
     // Overridden from IDeviceManager
+    public DeviceFactoryDelegate deviceFactoryDelegate { get; protected set; }
+    // Overridden from IDeviceManager
     public IConnectionFactory connectionFactory { get; set; }
     // Overridden from IDeviceManager
     public IConnectionHelper connectionHelper {
@@ -123,16 +124,6 @@
 
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
-    	Log.D(this,"regular device factory init");
-      if (!connectionHelper.isEnabled) {
-        if (!await connectionHelper.Enable()) {
-          return new InitializationResult() {
-            success = __isInitialized = false,
-            errorMessage = "Failed to init device manager: failed to enable connection helper."
-          };
-        }
-      }
-
       deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
       if (deviceFactory == null) {
         return new InitializationResult() {
@@ -177,6 +168,8 @@
 					device.onDeviceEvent -= OnDeviceEvent;
         }
       }
+
+			__foundDevices.Clear();
     }
 
     // Overridden from IDeviceManager
@@ -318,8 +311,6 @@
     /// thread.
     /// </summary>
     /// <param name="type">Type.</param>
-    /// <param name="dtype">Dtype.</param>
-    /// <param name="device">Device.</param>
     private void NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType type) {
       NotifyOfDeviceManagerEvent(new DeviceManagerEvent(type, this));
     }
@@ -338,8 +329,6 @@
     /// Posts a new DeviceManagerEvent of type DeviceEvent to the onDeviceManager handler. This is posted
     /// to the main thread.
     /// </summary>
-    /// <param name="type">Type.</param>
-    /// <param name="device">Device.</param>
     private void NotifyOfDeviceEvent(DeviceEvent deviceEvent) {
       NotifyOfDeviceManagerEvent(new DeviceManagerEvent(this, deviceEvent));
     }
@@ -359,7 +348,6 @@
     /// <summary>
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
-    /// <param name="device">Device.</param>
     private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
       var device = this[serialNumber];
 

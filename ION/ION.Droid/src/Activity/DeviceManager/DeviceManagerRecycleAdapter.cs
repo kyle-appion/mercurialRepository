@@ -4,18 +4,13 @@
   using System.Collections.Generic;
 
   using Android.App;
-  using Android.Content;
-  using Android.Content.Res;
-  using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Views;
-  using Android.Widget;
 
   using ION.Core.App;
   using ION.Core.Connections;
-  using ION.Core.Content;
   using ION.Core.Devices;
-  using ION.Core.Devices.Filters;
+	using ION.Core.Devices.Sorters;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
   using ION.Core.Util;
@@ -245,6 +240,9 @@
     /// Reloads the content of the adapter. Note: this is a full reload that does not perform pretty animations.
     /// </summary>
     public void Reload() {
+			foreach (var section in allSections.Values) {
+				section.ClearDevices();
+			}
       records.Clear();
       shownSections.Clear();
 
@@ -273,8 +271,8 @@
         return;
       }
 
-      section.devices.Add(device);
-      section.devices.Sort(new ION.Core.Devices.Sorters.DeviceSerialNumberSorter());
+			section.AddDevice(device);
+      section.Sort(new DeviceSerialNumberSorter());
 
       var sectionIndex = IndexOfSection(section);
 
@@ -319,7 +317,7 @@
       var deviceIndex = IndexOfDevice(device);
       var record = RecordForDevice(device);
       var size = SizeOfRecord(record);
-      section.devices.Remove(device);
+      section.RemoveDevice(device);
 
 			if (deviceIndex != -1) {
 	      Log.D(this, "Removing record of size: " + size);
@@ -328,7 +326,7 @@
 	        NotifyItemRangeRemoved(deviceIndex, size);
 	      }
 
-	      if (shownSections.Contains(section) && section.devices.Count <= 0) {
+	      if (shownSections.Contains(section) && section.count <= 0) {
 	        shownSections.Remove(section);
 	        records.RemoveAt(sectionIndex);
 	        if (animate) {
@@ -460,7 +458,7 @@
     private int FindInsertionIndexForDevice(Section section, IDevice device) {
       var ret = IndexOfSection(section) + 1;
 
-      foreach (var d in section.devices) {
+			foreach (var d in section.GetDevices()) {
         if (d == device) {
           return ret;
         } else {
@@ -498,7 +496,7 @@
       var ret = 1;
 
       var sectionIndex = IndexOfSection(section);
-      foreach (var device in section.devices) {
+			foreach (var device in section.GetDevices()) {
         ret += SizeOfRecord(RecordForDevice(device));
       }
 
@@ -548,7 +546,7 @@
             switch ((EActions)i) {
               case EActions.ConnectAll:
                 ldb.AddItem(Resource.String.connect_all, () => {
-                  foreach (var device in section.devices) {
+									foreach (var device in section.GetDevices()) {
                     device.connection.ConnectAsync();
                   }
                 });
@@ -556,7 +554,7 @@
 
               case EActions.DisconnectAll:
                 ldb.AddItem(Resource.String.disconnect_all, () => {
-                  foreach (var device in section.devices) {
+									foreach (var device in section.GetDevices()) {
                     device.connection.Disconnect();
                   }
                 });
@@ -564,13 +562,13 @@
 
               case EActions.ForgetAll:
                 ldb.AddItem(Resource.String.forget_all, () => {
-                  ShowRequestForgetDevices(section.devices);
+									ShowRequestForgetDevices(section.GetDevices());
                 });
                 break;
 
               case EActions.AddAllToWorkbench:
                 ldb.AddItem(Resource.String.device_manager_add_all_to_workbench, () => {
-                  foreach (var device in section.devices) {
+									foreach (var device in section.GetDevices()) {
                     var gd = device as GaugeDevice;
                     if (gd != null) {
                       foreach (var sensor in gd.sensors) {
@@ -619,20 +617,6 @@
     /// <param name="devices">Devices.</param>
     private void ForgetDevices(IEnumerable<IDevice> devices) {
       foreach (var d in devices) {
-/*
-        var index = IndexOfDevice(d);
-        int count = 2;
-
-        if (expandedDevice == d) {
-          var gd = d as GaugeDevice;
-          if (gd != null) {
-            count += gd.sensorCount;
-          }
-        }
-
-        records.RemoveRange(index, count);
-        NotifyItemRangeRemoved(index, count);
-*/
         ion.deviceManager.DeleteDevice(d.serialNumber);
       }
     }
@@ -817,17 +801,39 @@
     /// <summary>
     /// The list of devices that are present in the section. This is used simply to maintain a sorted devices list.
     /// </summary>
-    public List<IDevice> devices = new List<IDevice>();
+    private List<IDevice> devices = new List<IDevice>();
     /// <summary>
     /// The actions that are allowed for the section.
     /// </summary>
     public Action actions;
+
+		public int count { get { 
+				Log.D(this, "State: " + state + " has a count of: " + devices.Count);
+				return devices.Count; } }
 
     public Section(EDeviceState state, int name, int color) {
       this.state = state;
       this.name = name;
       this.color = color;
     }
+
+		public void ClearDevices() {
+			devices.Clear();
+		}
+
+		public List<IDevice> GetDevices() {
+			return devices;
+		}
+
+		public void AddDevice(IDevice device) {
+			if (!HasDevice(device)) {
+				devices.Add(device);
+			}
+		}
+
+		public void RemoveDevice(IDevice device) {
+			devices.Remove(device);
+		}
 
     /// <summary>
     /// Queries whether or not the table manager source has the given device.
@@ -837,6 +843,10 @@
     public bool HasDevice(IDevice device) {
       return devices.Contains(device);
     }
+
+		public void Sort(IComparer<IDevice> comparer) {
+			devices.Sort();
+		}
   }
 
   /// <summary>

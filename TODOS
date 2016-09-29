@@ -37,3 +37,15 @@ ANDROID
 
   Calibration Certificate Activity
     * add empty list TextView
+
+  Workbench
+    * Changing fluids isn't reflected in subview when back or arrow is clicked. Ok done works for superheat and subcool
+
+  Alarm
+    * Alarm save button doesn't work
+
+  Device Manager
+    * Collapse arrow doesn't update
+
+
+  * Out of memory when reconnect goes into a weird loop

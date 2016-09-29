@@ -209,8 +209,9 @@
   <string name="fluid_failed_to_load">Failed to load fluid</string>
   <string name="fluid_empty_library">The ION application failed to load any refrigerants. Please contact Appion for more details.</string>
   <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
-  <string name="fluid_help_select_state">Select Dew or Bubble</string>
-  <string name="fluid_help_clarification"><b>Dew Point</b> is used to calculate Superheat (low side, in vapor).\n\n<b>Bubble Point</b> is used to calculate Subcool (high side, in liquid).\n\nThis affects measurements of <u>blended refrigerants</u>, since these points are usually not the same.</string>
+  <string name="fluid_help_mixture_clarification"><b>Dew Point</b> is used to calculate Superheat (low side, in vapor).\n\n<b>Bubble Point</b> is used to calculate Subcool (high side, in liquid).\n\nThis affects measurements of <u>blended refrigerants</u>, since these points are usually not the same.</string>
+  <string name="fluid_help_pure_clarification">For single component refrigerants (ie. R22), the saturation temperature is the same for both the dew and bubble point.</string>
+  <string name="fluid_help_select_state">Dew vs Bubble</string>
   <string name="fluid_manager">Fluid Manager</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
@@ -303,6 +304,7 @@
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+	<string name="report_screenshot_saved">Saved Screenshot Report</string>
 	<string name="report_select_export_data">Select Export Data</string>
 	<string name="report_select_start_time">Select start time for the graph</string>
 	<string name="report_select_end_time">Select end time for the graph</string>

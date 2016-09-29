@@ -62,20 +62,26 @@
         foreach (var wn in whatsNew) {
           sb.Append("<h2>").Append(wn.versionCode).Append("</h2>");
 
-          sb.Append("<br><b>").Append(context.GetString(Resource.String._new)).Append("</b><br>");
-          foreach (var n in wn.whatsNew) {
-            sb.Append("•\t").Append(n).Append("<br>");
-          }
+					if (wn.whatsNew.Count > 0) {
+	          sb.Append("<br><b>").Append(context.GetString(Resource.String._new)).Append("</b><br>");
+	          foreach (var n in wn.whatsNew) {
+	            sb.Append("•\t").Append(n).Append("<br>");
+	          }
+					}
 
-          sb.Append("<br><b>").Append(context.GetString(Resource.String.updated)).Append("</b><br>");
-          foreach (var u in wn.whatsUpdated) {
-            sb.Append("•\t").Append(u).Append("<br>");
-          }
+					if (wn.whatsUpdated.Count > 0) {
+	          sb.Append("<br><b>").Append(context.GetString(Resource.String.updated)).Append("</b><br>");
+	          foreach (var u in wn.whatsUpdated) {
+	            sb.Append("•\t").Append(u).Append("<br>");
+	          }
+					}
 
-          sb.Append("<br><b>").Append(context.GetString(Resource.String._fixed)).Append("</b><br>");
-          foreach (var f in wn.whatsFixed) {
-            sb.Append("•\t").Append(f).Append("<br>");
-          }
+					if (wn.whatsFixed.Count > 0) {
+	          sb.Append("<br><b>").Append(context.GetString(Resource.String._fixed)).Append("</b><br>");
+	          foreach (var f in wn.whatsFixed) {
+	            sb.Append("•\t").Append(f).Append("<br>");
+	          }
+					}
         }
 
         handler.Post(() => {
