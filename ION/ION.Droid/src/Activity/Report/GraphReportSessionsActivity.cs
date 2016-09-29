@@ -153,6 +153,10 @@
 
 				InvalidateGraphViews();
 			};
+
+			var empty = FindViewById(Resource.Id.empty);
+			empty.Visibility = ViewStates.Gone;
+			content.Visibility = ViewStates.Visible;
 		}
 
 		protected override void OnResume() {
@@ -411,7 +415,7 @@
 
 			foreach (var id in sessions) {
 				try {
-					var sessionData = await ion.dataLogManager.QuerySessionData(id);
+					var sessionData = await ion.dataLogManager.QuerySessionDataAsync(id);
 					sessionResults.Add(sessionData);
 				} catch (Exception e) {
 					Log.E(this, "Failed to query session data", e);
@@ -423,6 +427,15 @@
 
 			dialog.Dismiss();
 			InvalidateGraphViews();
+
+			var empty = FindViewById(Resource.Id.empty);
+			if (graphAdapter.ItemCount <= 0) {
+				empty.Visibility = ViewStates.Visible;
+				content.Visibility = ViewStates.Gone;
+			} else {
+				empty.Visibility = ViewStates.Gone;
+				content.Visibility = ViewStates.Visible;
+			}
 		}
 
 		private void Reset() {

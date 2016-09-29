@@ -151,7 +151,10 @@
 			ion.PostToMain(() => {
 				progress.Dismiss();
 				currentAdapter.SetSessions(current);
+				currentAdapter.jobRow = job;
+
 				availableAdapter.SetSessions(available);
+				availableAdapter.jobRow = job;
 				UpdateButtons();
 			});
 

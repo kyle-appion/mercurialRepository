@@ -24,6 +24,8 @@
   <string name="connect_all">Connect All</string>
   <string name="connected">Connected</string>
   <string name="date">Date</string>
+  <string name="delete">Delete</string>
+  <string name="deleting">Deleting</string>
 	<string name="deselect_all">Deselect All</string>
   <string name="disabled">Disabled</string>
   <string name="disconnect">Disconnect</string>
@@ -188,6 +190,7 @@
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
   <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
+  <string name="error_failed_to_delete">Failed to Delete</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>
@@ -232,6 +235,8 @@
 	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
 	<string name="job_current_sessions">Current Sessions</string>
 	<string name="job_customer_no">Customer #</string>
+	<string name="job_delete">Really delete job?</string>
+	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
 	<string name="job_dispatch_no">Dispatch #</string>
 	<string name="job_error_failed_to_save">Failed to save job.</string>
 	<string name="job_info">Job Info</string>
@@ -279,6 +284,7 @@
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
 	<string name="report_choose_export_format">Choose an Export Format</string>
   <string name="report_data_logging">Reporting</string>
+  <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
   <string name="report_data_logging_highest_measurement">Highest Measurement</string>
@@ -289,6 +295,8 @@
   <string name="report_data_logging_step_1">Step 1</string>
   <string name="report_data_logging_step_2">Step 2</string>
   <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_delete_session">Really delete session?</string>
+  <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
 	<string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
   <string name="report_graph">Graph</string>
 	<string name="report_graph_selection">Graph Selection</string>

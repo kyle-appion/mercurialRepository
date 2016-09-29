@@ -132,7 +132,7 @@
     /// </summary>
     /// <returns>The session data.</returns>
     /// <param name="session">Session.</param>
-    public Task<SessionResults> QuerySessionData(int sessionId) {
+    public Task<SessionResults> QuerySessionDataAsync(int sessionId) {
       return Task.Factory.StartNew(() => {
         var db = ion.database;
 
