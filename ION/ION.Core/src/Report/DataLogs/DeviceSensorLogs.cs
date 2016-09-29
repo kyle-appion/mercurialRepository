@@ -69,8 +69,10 @@
 			}
 
       var l = logs.Length;
-			var low = 0;
-//      var low = FindTime(st, 0, l - 1);
+//			var low = 0;
+
+			// UNCOMMENTED
+      var low = FindTime(st, 0, l - 1);
       var high = FindTime(et, 0, l - 1);
 
 			if (low < 0 || high < 0) {

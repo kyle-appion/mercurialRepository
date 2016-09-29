@@ -71,7 +71,7 @@
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
+                android:singleLine="false"
                 android:hint="@string/notes" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>

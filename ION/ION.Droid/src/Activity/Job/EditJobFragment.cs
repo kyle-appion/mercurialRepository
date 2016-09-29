@@ -13,6 +13,7 @@
   using Android.Runtime;
   using Android.Util;
   using Android.Views;
+	using Android.Views.InputMethods;
   using Android.Widget;
 
   // Using ION
@@ -56,6 +57,11 @@
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
     }
+
+		public override void OnPause() {
+			base.OnPause();
+			HideKeyboard();
+		}
 
     public void Present(JobRow job) {
       name.Text = job.jobName;

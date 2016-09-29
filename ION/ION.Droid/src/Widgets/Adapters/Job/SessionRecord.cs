@@ -18,6 +18,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
     public int viewType { get { return (int)EViewType.Session; } }
 
     public SessionRow row { get; private set; }
+		public JobRow job { get; set; }
 
     public bool isChecked { get; set; }
 
@@ -40,9 +41,16 @@ namespace ION.Droid.Widgets.Adapters.Job {
 
     public override void OnBindTo() {
       var ellapsed = t.row.sessionEnd - t.row.sessionStart;
-			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionData(t.row._id).Result;
+			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
 			var dateString = t.row.sessionStart.ToShortDateString() + " " + t.row.sessionStart.ToShortTimeString();
 			dateString = dateString + " " + ellapsed.TotalMinutes.ToString("0.0") + " # Records: " + g.deviceSensorLogs.Length;
+
+			ION.Core.Util.Log.D(this, "frn_jid: " + t.row.frn_JID + " job.id: " + t.job?._id);
+			if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
+				text.SetTextColor(text.Context.Resources.GetColor(Resource.Color.black));
+			} else {
+				text.SetTextColor(text.Context.Resources.GetColor(Resource.Color.red));
+			}
 
 			text.Text = dateString;
 			check.Checked = t.isChecked;
