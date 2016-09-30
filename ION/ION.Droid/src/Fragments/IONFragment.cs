@@ -83,9 +83,9 @@
 
 			var r = menu.FindItem(Resource.Id.record);
 			if (ion.dataLogManager.isRecording) {
-				r.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPause, Resource.Color.light_gray));
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_pause, Resource.Color.light_gray));
 			} else {
-				r.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPlay, Resource.Color.light_gray));
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_play, Resource.Color.light_gray));
 			}
 
 
@@ -250,7 +250,7 @@
         if (!await ion.dataLogManager.StopRecording()) {
           Log.D(this, "Failed to stop recording");
         }
-        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPlay, Resource.Color.light_gray));
+        item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_play, Resource.Color.light_gray));
       } else {
 				var interval = ion.preferences.reports.DataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
@@ -258,7 +258,7 @@
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
-        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPause, Resource.Color.light_gray));
+        item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_pause, Resource.Color.light_gray));
       }
     }
 
