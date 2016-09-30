@@ -144,7 +144,6 @@
 
         using (var stream = new StreamReader(res.GetResponseStream())) {
           var result = stream.ReadToEnd();
-          Log.D(this, "Raw result: " + result);
           var obj = JObject.Parse(result);
 
           foreach (var s in obj.Properties()) {
@@ -181,12 +180,14 @@
         snsa[i] = serialNumbers[i].ToString();
       }
 
-      var asString = JsonConvert.SerializeObject(new CalibrationCertificateRequest() {
-        sourceName = ion.name,
-        sourceVersion = ion.version,
-        sourceFlags = FLAGS_NONE,
-        serials = snsa
-      }, Formatting.None);
+			var t = new CalibrationCertificateRequest() {
+				sourceName = ion.name,
+				sourceVersion = ion.version,
+				sourceFlags = FLAGS_NONE,
+				serials = snsa
+			};
+
+      var asString = JsonConvert.SerializeObject(t, Formatting.Indented);
 
       var ret = asString.ToBytes();
       ret = OBFUSCATOR.Obfuscate(ret, GENERAL_OBFUSCATION_KEY);

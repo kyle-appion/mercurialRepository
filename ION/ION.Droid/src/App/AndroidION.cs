@@ -58,7 +58,7 @@
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
     /// <value>The name.</value>
-    public string name { get { return PackageName; } }
+		public string name { get { return GetString(Resource.String.app_name); } }
     /// <summary>
     /// Queries the full version of the ion instance.
     /// </summary>

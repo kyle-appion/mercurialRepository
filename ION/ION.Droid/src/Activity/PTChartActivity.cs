@@ -522,8 +522,10 @@
 				try {
 					if (!"".Equals(text) && sensor == null) {
 						var amount = double.Parse(text);
-						var temp = ptChart.GetTemperature(pressureUnit.OfScalar(amount)).ConvertTo(temperatureUnit);
+						var ps = pressureUnit.OfScalar(amount);
+						var temp = ptChart.GetTemperature(ps).ConvertTo(temperatureUnit);
 						SetTemperatureInputQuietly(temp.amount.ToString("#.##"));
+						slider.ScrollToPressure(ps, false);
 					} else {
 						ClearInput();
 					}
@@ -543,6 +545,7 @@
 			pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!sensorLocked) {
 					sensor = null;
+					slider.ScrollToPressure(pressureUnit.OfScalar(0), true);
 				}
 			}));
 
@@ -583,8 +586,10 @@
 				try {
 					if (!"".Equals(text)) {
 						var amount = double.Parse(text);
-						var press = ptChart.GetPressure(temperatureUnit.OfScalar(amount)).ConvertTo(pressureUnit);
+						var ts = temperatureUnit.OfScalar(amount);
+						var press = ptChart.GetPressure(ts).ConvertTo(pressureUnit);
 						SetPressureInputQuietly(press.amount.ToString("#.##"));
+						slider.ScrollToTemperature(ts, false);
 					} else {
 						ClearInput();
 					}
@@ -604,6 +609,7 @@
 			temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!sensorLocked) {
 					sensor = null;
+					slider.ScrollToTemperature(temperatureUnit.OfScalar(0), true);
 				}
 			}));
 
@@ -656,10 +662,8 @@
 				OnSensorChanged(sensor);
 				pressureEntryView.Enabled = false;
 				temperatureEntryView.Enabled = false;
-				slider.Visibility = ViewStates.Gone;
+				slider.Visibility = ViewStates.Invisible;
 			} else {
-				slider.isTouchLocked = false;
-//				slider.ScrollToTemperature(temperatureUnit.OfScalar(0), true);
 				slider.Visibility = ViewStates.Visible;
 				pressureEntryView.Enabled = true;
 				temperatureEntryView.Enabled = true;
