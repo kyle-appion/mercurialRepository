@@ -18,7 +18,6 @@ using ION.Core.Measure;
 using ION.Core.App;
 using ION.Core.Net;
 using ION.IOS.ViewController.RemoteDeviceManager;
-using System.Collections.ObjectModel;
 using ION.IOS.Viewcontroller.RemoteAccess;
 
 namespace ION.IOS.ViewController.Analyzer { 
@@ -1216,7 +1215,6 @@ namespace ION.IOS.ViewController.Analyzer {
 		public async void refreshSensorLayout(){
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			while(webServices.downloading){
-				//analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
 				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);				
 				layoutAnalyzer();
 		
@@ -1234,7 +1232,8 @@ namespace ION.IOS.ViewController.Analyzer {
 						}
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.lowAccessibility));
-					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);    
+					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);
+					confirmSubviews(analyzerSensors.viewList[newIndex],"low");   
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.lowArea.snapArea.Hidden){
@@ -1254,6 +1253,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.highAccessibility));
 					AnalyserUtilities.addLHSensorAssociation("high",analyzerSensors.viewList[newIndex]);
+					confirmSubviews(analyzerSensors.viewList[newIndex]);
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.highArea.snapArea.Hidden){
@@ -1287,7 +1287,20 @@ namespace ION.IOS.ViewController.Analyzer {
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
-		}	
+		}
+		
+		public void confirmSubviews(sensor updateSensor, string section = "false"){
+			if(section == "low"){
+				foreach(var sub in analyzer.lowSubviews){
+					if(updateSensor.lowArea.tableSubviews.Contains(sub)){
+
+					}
+				}
+			} else {
+
+			}
+		
+		}
 		
     public override void ViewDidAppear(bool animated) {
 	    if(!remoteMode){

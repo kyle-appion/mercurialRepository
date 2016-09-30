@@ -2847,6 +2847,7 @@ namespace ION.IOS.ViewController.Analyzer
 				activeSensor.tLabelBottom.BackgroundColor = UIColor.Blue;
 				activeSensor.lowArea.snapArea.Hidden = false;
 				activeSensor.highArea.snapArea.Hidden = true;
+				
 			}else {
 				activeSensor.topLabel.BackgroundColor = UIColor.Red;
 				activeSensor.topLabel.TextColor = UIColor.White;

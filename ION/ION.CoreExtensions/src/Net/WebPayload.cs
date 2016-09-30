@@ -1,6 +1,4 @@
-﻿/*
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
@@ -485,7 +483,9 @@ namespace ION.Core.Net {
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
+				remoteAnalyzer.lowSubviews = new List<string>(deserializedLowHigh.lowSubviews);
 				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;			
+				remoteAnalyzer.highSubviews = new List<string>(deserializedLowHigh.highSubviews);
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
@@ -1193,4 +1193,3 @@ namespace ION.Core.Net {
 	}		
 }
 
-*/

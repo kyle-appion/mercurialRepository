@@ -1,23 +1,24 @@
 ﻿namespace ION.IOS.Net {
 
-  using System;
-  using System.Collections.Generic;
-  using System.IO;
-  using System.Net;
-  using System.Linq;
-  using System.Threading;
-  using System.Threading.Tasks;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Net;
+	using System.Linq;
+	using System.Threading;
+	using System.Threading.Tasks;
 
-  using Newtonsoft.Json;
-  using Newtonsoft.Json.Linq;
+	using Newtonsoft.Json;
+	using Newtonsoft.Json.Linq;
 
-  using ION.Core.App;
-  using ION.Core.Devices;
-  using ION.Core.Devices.Certificates;
-  using ION.Core.Security;
-  using ION.Core.Util;
+	using ION.Core.App;
+	using ION.Core.Devices;
+	using ION.Core.Devices.Certificates;
+	using ION.Core.Security;
+	using ION.Core.Util;
+	using Foundation;
 
-  public class RequestCalibrationCertificatesTask {
+	public class RequestCalibrationCertificatesTask {
     private const int FLAGS_NONE = 0;
     private const int FLAGS_DEBUG = 1;
 
@@ -149,7 +150,6 @@
             try {
               var settings = new JsonSerializerSettings();
               settings.MissingMemberHandling = MissingMemberHandling.Ignore;
-              Log.D(this, "about to send request " + s.Value.ToString());
               var response = JsonConvert.DeserializeObject<CalibrationCertificateResponse>(s.Value.ToString());//, settings);
               Log.D(this, "Nist date is " + response.calDate);
               if (response.errorCode != null) {
@@ -235,6 +235,7 @@
   /// <summary>
   /// The data structure that represents a calibration certificate request.
   /// </summary>
+ 	[Preserve (AllMembers = true)]
   internal class CalibrationCertificateRequest {
     [JsonProperty("source_name")]
     public string sourceName { get; set; }
@@ -250,6 +251,7 @@
   /// The data structure that represents a response from the appion server
   /// containing a calibration certificate request.
   /// </summary>
+ 	[Preserve (AllMembers = true)]
   internal class CalibrationCertificateResponse {
     [JsonProperty("errorCode")]
     public string errorCode { get; set; }
@@ -304,7 +306,7 @@
       return ret;
     }
   }
-
+ 	[Preserve (AllMembers = true)]	
   internal class PerformanceData {
     [JsonProperty("calibrationStandard")]
     public List<string> standardValues { get; set; }
@@ -318,6 +320,7 @@
     public List<string> gaugeUnits { get; set; }
   }
 
+ 	[Preserve (AllMembers = true)]
   internal class CalibrationStandardDevice {
     [JsonProperty("transducerModel")]
     public string transducerModel { get; set; }

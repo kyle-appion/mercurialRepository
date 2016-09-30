@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.6.1">
+	<display version="1.7.0">
     <update>Updated graphing subsection selection precision</update>
     <update>Updated various state checks to improve performance</update>
     <fixed>Fixed analyzer subview arrow in certain cases where all subviews were removed</fixed>
+    <fixed>Fixed calibration certificate download issue</fixed>
   </display>
 </whatsnew>
