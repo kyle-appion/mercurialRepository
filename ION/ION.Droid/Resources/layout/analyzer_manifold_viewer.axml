@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <FrameLayout
+        android:background="@drawable/xml_analyzer_viewer_background"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+        <TextView
+            android:id="@id/empty"
+            android:gravity="center"
+            android:textSize="@dimen/text_size_xlarge"
+            android:textColor="@color/light_gray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <LinearLayout
+            android:id="@id/content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@id/title"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@id/name"
+                    android:lines="2"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/analyzer_viewer_text_size"
+                    android:layout_weight="1"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content" />
+            <!--
+                <ImageView
+                    android:id="@id/battery"
+                    android:visibility="visible"
+                    android:src="@drawable/ic_battery_horiz_100"
+                    android:layout_width="@dimen/analyzer_battery_icon_width"
+                    android:layout_height="@dimen/analyzer_battery_icon_height" />
+-->
+                <FrameLayout
+                    android:layout_width="@dimen/analyzer_icon_size"
+                    android:layout_height="@dimen/analyzer_icon_size">
+                    <ImageView
+                        android:id="@id/connection"
+                        android:visibility="visible"
+                        android:src="@drawable/ic_bluetooth_disconnected"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <ProgressBar
+                        android:id="@id/progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:indeterminate="true" />
+                </FrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@id/content"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:id="@id/icon"
+                    android:layout_width="@dimen/analyzer_device_icon_size"
+                    android:layout_height="@dimen/analyzer_device_icon_size"
+                    android:src="@drawable/ic_logo_appiondefault" />
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="0px"
+                    android:gravity="right"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                    <TextView
+                        android:id="@id/measurement"
+                        android:textColor="@color/black"
+                        android:includeFontPadding="false"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:textSize="@dimen/analyzer_viewer_measurement_text_size" />
+                    <TextView
+                        android:id="@id/unit"
+                        android:textColor="@color/black"
+                        android:text="@string/mass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:textSize="@dimen/analyzer_viewer_text_size" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@id/footer"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@id/alarm"
+                    android:textColor="@color/black"
+                    android:visibility="gone"
+                    android:text="@string/alarm"
+                    android:layout_width="0px"
+                    android:layout_height="0px"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/analyzer_viewer_text_size" />
+                <TextView
+                    android:id="@id/status"
+                    android:text="@string/disconnected"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textSize="@dimen/analyzer_viewer_text_size" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+    <TextView
+        android:id="@id/device_serial_number"
+        android:textColor="@color/white"
+        android:textSize="@dimen/analyzer_viewer_text_size"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/xml_white_bordered_background" />
+    <android.support.v7.widget.RecyclerView
+        android:id="@id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
