@@ -1,19 +1,10 @@
 ﻿namespace ION.Droid.Activity.Job {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
   using System.Threading.Tasks;
 
-  using Android.App;
-  using Android.Content;
   using Android.OS;
   using Android.Support.Design.Widget;
-  using Android.Runtime;
-  using Android.Util;
   using Android.Views;
-	using Android.Views.InputMethods;
   using Android.Widget;
 
   // Using ION

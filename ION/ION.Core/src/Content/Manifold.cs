@@ -100,6 +100,10 @@
       /// Used when a sensor property is removed from the manifold.
       /// </summary>
       SensorPropertyRemoved,
+			/// <summary>
+			/// Used when the sensor property list is cleared.
+			/// </summary>
+			SensorPropertyCleared,
       /// <summary>
       /// Used when two sensor properties are swapped within the manifold.
       /// </summary>
@@ -376,6 +380,14 @@
 
       return false;
     }
+
+		/// <summary>
+		/// Removes all of the sensor properties that are attached to this manifold.
+		/// </summary>
+		public void ClearSensorProperties() {
+			sensorProperties.Clear();
+			NotifyOfEvent(ManifoldEvent.EType.SensorPropertyCleared);
+		}
 
 		/// <summary>
 		/// Returns the manifold's sensor property of the given type if it is present.

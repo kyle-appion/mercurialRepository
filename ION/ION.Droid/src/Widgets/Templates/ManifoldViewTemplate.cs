@@ -80,10 +80,11 @@
     /// </summary>
     /// <param name="t">T.</param>
     protected override void OnBind(Manifold t) {
+			OnUnbind();
       item.onManifoldEvent += OnManifoldEvent;
 
       Invalidate();
-    }
+		}
 
     /// <summary>
     /// Informs the view template that it should unbind itself from its data source.

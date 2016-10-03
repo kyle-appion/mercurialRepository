@@ -64,6 +64,7 @@
       if (Permission.Granted != ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.AccessFineLocation)) {
         var adb = new IONAlertDialog(this);
         adb.SetTitle(Resource.String.alert);
+				adb.SetCancelable(false);
         adb.SetMessage(Resource.String.error_start_up_request_location_for_bluetooth);
         adb.SetPositiveButton(Resource.String.allow, (sender, e) => {
           var d = sender as Dialog;

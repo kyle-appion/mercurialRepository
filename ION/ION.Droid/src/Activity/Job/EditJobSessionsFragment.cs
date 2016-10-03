@@ -166,6 +166,9 @@
 			var ret = new List<SessionRow>();
 
 			foreach (var r in rows) {
+				if (r._id == ion.dataLogManager.currentSessionId) {
+					continue;
+				}
 				ret.Add(r);
 			}
 
@@ -178,6 +181,9 @@
 			var ret = new List<SessionRow>();
 
 			foreach (var r in rows) {
+				if (r._id == ion.dataLogManager.currentSessionId) {
+					continue;
+				}
 				ret.Add(r);
 			}
 

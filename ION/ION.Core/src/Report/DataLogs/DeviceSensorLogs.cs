@@ -38,16 +38,16 @@
 			this.deviceSerialNumber = serialNumber;
 			this.index = index;
 			this.logs = new SensorLog[0];
-			this.start = start;
-			this.end = end;
+			this.start = start.ToLocalTime();
+			this.end = end.ToLocalTime();
 		}
 
 		public DeviceSensorLogs(string serialNumber, int index, SensorLog[] logs) {
 			this.deviceSerialNumber = serialNumber;
 			this.index = index;
 			this.logs = logs;
-			this.start = logs[0].recordedDate;
-			this.end = logs[logs.Length - 1].recordedDate;
+			this.start = logs[0].recordedDate.ToLocalTime();
+			this.end = logs[logs.Length - 1].recordedDate.ToLocalTime();
 		}
 
     /// <summary>

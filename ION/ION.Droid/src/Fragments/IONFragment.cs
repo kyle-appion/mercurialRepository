@@ -251,6 +251,7 @@
           Log.D(this, "Failed to stop recording");
         }
         item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_play, Resource.Color.light_gray));
+				Alert(Resource.String.report_recording_stopped);
       } else {
 				var interval = ion.preferences.reports.DataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
@@ -259,6 +260,7 @@
           Log.D(this, "Failed to begin recording");
         }
         item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_pause, Resource.Color.light_gray));
+				Alert(Resource.String.report_recording_started);
       }
     }
 

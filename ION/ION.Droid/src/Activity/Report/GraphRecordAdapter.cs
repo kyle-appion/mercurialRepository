@@ -61,9 +61,7 @@
 		/// <param name="percent">Percent.</param>
 		public DateTime FindDateTimeFromSelection(float percent) {
 			var index = (int)(percent * (dil.dateSpan - 1));
-			Log.D(this, "%: " + percent + " index: " + index);
 			if (index >= dil.dateSpan) {
-				Log.D(this, "index: >= dil.dateSpan");
 				return DateTime.FromFileTime(0);
 			} else {
 				var ret = dil.DateFromIndex(index);
@@ -75,7 +73,6 @@
 		/// Queries a list of dates within the DateIndexLookup that are before the given date.
 		/// </summary>
 		/// <returns>The dates preceding.</returns>
-		/// <param name="date">Date.</param>
 		public List<DateTime> GetDatesInRange(DateTime first, DateTime last) {
 			var fi = dil.IndexOfDate(first);
 			var li = dil.IndexOfDate(last);

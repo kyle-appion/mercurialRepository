@@ -79,8 +79,8 @@
 
         var sensors = new HashSet<GaugeDeviceSensor>();
 
-        if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
-          foreach (var s in ion.currentAnalyzer.sensorList) {
+				if (ion.currentAnalyzer != null) {
+					foreach (var s in ion.currentAnalyzer.GetSensors()) {
             var gds = s as GaugeDeviceSensor;
             if (gds != null && gds.device.isConnected) {
               sensors.Add(gds);
@@ -106,6 +106,7 @@
             db.Insert(newDevice);
           }
         }
+
         foreach (var gds in sensors) {
           // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
           rows.Add(await CreateSensorMeasurement(db, gds, now));
