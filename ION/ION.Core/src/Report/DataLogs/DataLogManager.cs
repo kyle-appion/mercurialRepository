@@ -166,7 +166,7 @@
 
 					dsl.Add(new DeviceSensorLogs(row.serialNumber, row.sensorIndex, logs));
         }
-        var tmp = dsl.ToArray();
+				var tmp = dsl;
 
         var start = DateTime.Now;
         var end = DateTime.FromFileTime(0);

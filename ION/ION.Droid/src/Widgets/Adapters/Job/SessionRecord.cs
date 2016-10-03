@@ -43,7 +43,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
       var ellapsed = t.row.sessionEnd - t.row.sessionStart;
 			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
 			var dateString = t.row.sessionStart.ToLocalTime().ToShortDateString() + " " + t.row.sessionStart.ToLocalTime().ToShortTimeString();
-			dateString = dateString + " " + ellapsed.TotalMinutes.ToString("0.0") + " # Records: " + g.deviceSensorLogs.Length;
+			dateString = dateString + " " + ellapsed.TotalMinutes.ToString("0.0") + " # Records: " + g.deviceSensorLogs.Count;
 
 			ION.Core.Util.Log.D(this, "frn_jid: " + t.row.frn_JID + " job.id: " + t.job?._id);
 			if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
