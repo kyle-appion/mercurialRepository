@@ -118,6 +118,12 @@
 			plot = view.FindViewById<PlotView>(Resource.Id.graph);
 			title = view.FindViewById<TextView>(Resource.Id.name);
 			check = view.FindViewById<CheckBox>(Resource.Id.check);
+
+			check.CheckedChange += (sender, e) => {
+				if (t != null) {
+					t.isChecked = e.IsChecked;
+				}
+			};
 		}
 
 		public override void OnBindTo() {

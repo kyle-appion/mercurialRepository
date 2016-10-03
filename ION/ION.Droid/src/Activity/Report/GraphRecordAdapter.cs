@@ -25,7 +25,7 @@
 		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Graph:
-				return new GraphViewHolder(parent, Resource.Layout.list_item_data_log_graph);
+					return new GraphViewHolder(parent, Resource.Layout.list_item_data_log_graph);
 				default:
 					throw new Exception("Cannot create view for: " + (EViewType)viewType);
 			}
@@ -48,28 +48,11 @@
 			foreach (var sr in sessionResults) {
 				var nsr = sr.SubSet(startTime, endTime);
 				if (!nsr.isEmpty) {
-					ret.Add(nsr);
-				}
-			}
-
-			return ret;
-
-/*
-			var ret = new List<SessionResults>();
-
-			var startTime = FindDateTimeFromSelection(leftPercent);
-			var endTime = FindDateTimeFromSelection(rightPercent);
-
-			var srs = new List<SessionResults>();
-
-			foreach (var sr in sessionResults) {
-				var nsr = sr.SubSet(startTime, endTime);
-
-				if (!nsr.isEmpty) {
 					var ion = AppState.context;
 					var sensors = GetCheckedSensors();
 
-					foreach (var dsl in sr.deviceSensorLogs) {
+					for (int i = sr.deviceSensorLogs.Count - 1; i >= 0; i--) {
+						var dsl = sr.deviceSensorLogs[i];
 						// Find the gauge device sensor.
 						if (!SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
 							Log.E(this, "Failed to parse serial number: " + dsl.deviceSerialNumber);
@@ -84,15 +67,18 @@
 						}
 						var sensor = device[dsl.index];
 
-						if (sensors.Contains(sensor)) {
-							srs.Add(nsr);
+						if (!sensors.Contains(sensor)) {
+							sr.deviceSensorLogs.RemoveAt(i);
 						}
+					}
+
+					if (sr.deviceSensorLogs.Count > 0) {
+						ret.Add(sr);
 					}
 				}
 			}
 
 			return ret;
-*/
 		}
 
 		/// <summary>
