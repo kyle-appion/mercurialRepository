@@ -2,8 +2,6 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.IO;
 	using System.Threading.Tasks;
 
 	using Android.Animation;
@@ -13,15 +11,12 @@
 	using Android.Graphics;
 	using Android.Graphics.Drawables;
 	using Android.OS;
-	using Android.Runtime;
 	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
 
 	using OxyPlot.Xamarin.Android;
 
-	using ION.Core.Database;
-	using ION.Core.Devices;
 	using ION.Core.IO;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Util;

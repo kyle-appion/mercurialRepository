@@ -8,6 +8,7 @@
 	using ION.Core.App;
 	using ION.Core.Devices;
 	using ION.Core.Report.DataLogs;
+	using ION.Core.Sensors;
 	using ION.Core.Util;
 
 	using ION.Droid.Util;
@@ -52,6 +53,46 @@
 			}
 
 			return ret;
+
+/*
+			var ret = new List<SessionResults>();
+
+			var startTime = FindDateTimeFromSelection(leftPercent);
+			var endTime = FindDateTimeFromSelection(rightPercent);
+
+			var srs = new List<SessionResults>();
+
+			foreach (var sr in sessionResults) {
+				var nsr = sr.SubSet(startTime, endTime);
+
+				if (!nsr.isEmpty) {
+					var ion = AppState.context;
+					var sensors = GetCheckedSensors();
+
+					foreach (var dsl in sr.deviceSensorLogs) {
+						// Find the gauge device sensor.
+						if (!SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
+							Log.E(this, "Failed to parse serial number: " + dsl.deviceSerialNumber);
+							continue;
+						}
+
+						var sn = SerialNumberExtensions.ParseSerialNumber(dsl.deviceSerialNumber);
+						var device = ion.deviceManager[sn] as GaugeDevice;
+						if (device == null) {
+							Log.E(this, "Failed to find gauge device: " + sn);
+							continue;
+						}
+						var sensor = device[dsl.index];
+
+						if (sensors.Contains(sensor)) {
+							srs.Add(nsr);
+						}
+					}
+				}
+			}
+
+			return ret;
+*/
 		}
 
 		/// <summary>
@@ -79,27 +120,25 @@
 
 			var ret = new List<DateTime>();
 
-			for (int i = fi; i < li; i++) {
+			for (int i = fi; i <= li; i++) {
 				ret.Add(dil.DateFromIndex(i));
 			}
 
 			return ret;
 		}
 
-/*
-		public List<DeviceSensorLogs> GetCheckedLogs() {
-			var ret = new List<DeviceSensorLogs>();
+		public List<Sensor> GetCheckedSensors() {
+			var ret = new List<Sensor>();
 
-			foreach (var r in records) {
-				var gr = r as GraphRecord;
+			foreach (var record in records) {
+				var gr = record as GraphRecord;
 				if (gr != null && gr.isChecked) {
-					ret.Add(gr.logs);
+					ret.Add(gr.sensor);
 				}
 			}
 
 			return ret;
 		}
-*/
 
 		public void SetRecords(IION ion, List<SessionResults> sessionResults) {
 			// Because we want to pad out empty time spans, and show dates in a non-linear fashion, we must map the dates to

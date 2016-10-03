@@ -227,7 +227,8 @@
 			if (broadcastPayload != null && broadcastPayload[0] == 4) {
 				return EProtocolVersion.V4;
 			} else {
-				if (serialNumber.rawSerial.StartsWith("S")) {
+				// TODO ahodder@appioninc.com: We need a better way to determine a device's protocol.
+				if (serialNumber.rawSerial.StartsWith("S") || serialNumber.rawSerial.StartsWith("T")) {
 					return EProtocolVersion.V4;
 				} else if (device.Type == BluetoothDeviceType.Classic) {
 					return EProtocolVersion.Classic;
