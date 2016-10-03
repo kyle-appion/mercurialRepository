@@ -83,9 +83,9 @@
 
 			var r = menu.FindItem(Resource.Id.record);
 			if (ion.dataLogManager.isRecording) {
-				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_pause, Resource.Color.light_gray));
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
 			} else {
-				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_play, Resource.Color.light_gray));
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
 			}
 
 
@@ -250,7 +250,7 @@
         if (!await ion.dataLogManager.StopRecording()) {
           Log.D(this, "Failed to stop recording");
         }
-        item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_play, Resource.Color.light_gray));
+				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
 				Alert(Resource.String.report_recording_stopped);
       } else {
 				var interval = ion.preferences.reports.DataLoggingInterval;
@@ -259,7 +259,7 @@
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
-        item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_action_pause, Resource.Color.light_gray));
+				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
 				Alert(Resource.String.report_recording_started);
       }
     }

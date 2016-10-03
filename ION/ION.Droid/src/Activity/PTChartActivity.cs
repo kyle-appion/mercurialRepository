@@ -96,7 +96,6 @@
 					OnSensorChanged(sensor);
 				} else {
 					slider.ScrollToPressure(pressureUnit.OfScalar(ptChart.fluid.GetMedianPressure(ptChart.state)), true);
-//					ClearInput();
 				}
 			}
 		} PTChart __ptChart;

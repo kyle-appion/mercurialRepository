@@ -626,6 +626,8 @@
     <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
     <AndroidResource Include="Resources\xml\whats_new.xml" />
     <AndroidResource Include="Resources\xml\whats_new_history.xml" />
+    <AndroidResource Include="Resources\drawable\ic_record.png" />
+    <AndroidResource Include="Resources\drawable\ic_stop.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

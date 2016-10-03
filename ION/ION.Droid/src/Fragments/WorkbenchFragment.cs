@@ -105,7 +105,7 @@
       AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
 
       if (workbench == null) {
-        workbench = ion.currentWorkbench;
+				workbench = ion.currentWorkbench = new Workbench(ion);
       }
       workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
