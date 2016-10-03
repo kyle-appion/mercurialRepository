@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
@@ -256,6 +256,7 @@
     <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
     <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
+    <Compile Include="src\Views\ClearFocusListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -624,6 +625,7 @@
     <AndroidResource Include="Resources\drawable\tab_indicator_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
     <AndroidResource Include="Resources\xml\whats_new.xml" />
+    <AndroidResource Include="Resources\xml\whats_new_history.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

@@ -19,7 +19,7 @@
 		public RecyclerView subviews { get; private set; }
 
 		private int background;
-		private SubviewAdapter adapter;
+		public SubviewAdapter adapter;
 
 		public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int emptyText, int background, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
 			this.list = list;
@@ -67,6 +67,7 @@
 		protected override void OnUnbind() {
 			base.OnUnbind();
 			adapter.manifold = null;
+			adapter.RefreshRecords();
 		}
 	}
 }

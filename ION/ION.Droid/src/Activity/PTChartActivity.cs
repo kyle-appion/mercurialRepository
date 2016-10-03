@@ -95,7 +95,8 @@
 				if (sensor != null) {
 					OnSensorChanged(sensor);
 				} else {
-					ClearInput();
+					slider.ScrollToPressure(pressureUnit.OfScalar(ptChart.fluid.GetMedianPressure(ptChart.state)), true);
+//					ClearInput();
 				}
 			}
 		} PTChart __ptChart;
@@ -337,9 +338,19 @@
 			}));
 
 			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
-			slider.onScroll += (slider, pressure, temperature) => {
-				SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
-				SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+			slider.onScroll += (slider, touching, pressure, temperature) => {
+				if (touching) {
+					SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
+					SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+				} else {
+					if (!pressureEntryView.HasFocus) {
+						SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
+					}
+
+					if (!temperatureEntryView.HasFocus) {
+						SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+					}
+				}
 			};
 
 			pressureUnit = ion.defaultUnits.pressure;
@@ -347,6 +358,8 @@
 
 			InitPressureWidgets();
 			InitTemperatureWidgets();
+			var contentView = FindViewById(Resource.Id.content);
+			contentView.SetOnTouchListener(new ClearFocusListener(pressureEntryView, temperatureEntryView));
 
 			ptChart = PTChart.New(ion, Fluid.EState.Bubble);
 
@@ -442,6 +455,13 @@
 
 			Refresh();
 		}
+/*
+		public override bool DispatchTouchEvent(MotionEvent ev) {
+			pressureEntryView.ClearFocus();
+			temperatureEntryView.ClearFocus();
+			return base.DispatchTouchEvent(ev);
+		}
+*/
 
 		/// <summary>
 		/// Initializes the activity using the given manifold.
@@ -517,6 +537,9 @@
 			pressureEntryView = pressureView.FindViewById<EditText>(Resource.Id.edit);
 			pressureUnitView = pressureView.FindViewById<Button>(Resource.Id.unit);
 			pressureClearView = pressureView.FindViewById<Button>(Resource.Id.clear);
+
+			pressureView.SetOnTouchListener(new ClearFocusListener(pressureEntryView));
+
 			pressureTextWatcher = new Watcher((editable) => {
 				var text = editable.ToString();
 				try {
@@ -560,7 +583,22 @@
 						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Temperature) {
 							UpdateManifold(unit);
 						}
+
+						var text = pressureEntryView.Text;
+						var oldUnit = pressureUnit;
 						pressureUnit = unit;
+
+						try {
+							if (!"".Equals(text) && sensor == null) {
+								var amount = double.Parse(text);
+								var ps = oldUnit.OfScalar(amount).ConvertTo(pressureUnit);
+								SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, ps));
+							} else {
+								ClearInput();
+							}
+						} catch (System.Exception) {
+						}
+
 						Refresh();
 					}).Show();
 				}
@@ -581,19 +619,20 @@
 			temperatureUnitView = temperatureView.FindViewById<Button>(Resource.Id.unit);
 			temperatureClearView = temperatureView.FindViewById<Button>(Resource.Id.clear);
 
+			temperatureView.SetOnTouchListener(new ClearFocusListener(temperatureEntryView));
+
 			temperatureTextWatcher = new Watcher((editable) => {
 				var text = editable.ToString();
-				try {
-					if (!"".Equals(text)) {
-						var amount = double.Parse(text);
+				if (!"".Equals(text)) {
+					double amount = 0;
+					if (double.TryParse(text, out amount)) {
 						var ts = temperatureUnit.OfScalar(amount);
 						var press = ptChart.GetPressure(ts).ConvertTo(pressureUnit);
 						SetPressureInputQuietly(press.amount.ToString("#.##"));
 						slider.ScrollToTemperature(ts, false);
-					} else {
-						ClearInput();
 					}
-				} catch (Exception) {
+				} else {
+					ClearInput();
 				}
 			});
 
@@ -624,7 +663,22 @@
 						if (initialManifold != null && initialManifold.primarySensor.type == ESensorType.Pressure) {
 							UpdateManifold(unit);
 						}
+
+						var text = temperatureEntryView.Text;
+						var oldUnit = temperatureUnit;
 						temperatureUnit = unit;
+
+						try {
+							if (!"".Equals(text) && sensor == null) {
+								var amount = double.Parse(text);
+								var ts = oldUnit.OfScalar(amount).ConvertTo(temperatureUnit);
+								SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, ts));
+							} else {
+								ClearInput();
+							}
+						} catch (System.Exception) {
+						}
+
 						Refresh();
 					}).Show();
 				}
@@ -689,7 +743,6 @@
 		/// </summary>
 		/// <param name="text">Text.</param>
 		private void SetPressureInputQuietly(string text) {
-			ION.Core.Util.Log.D(this, "Setting pressure input to: '" + text + "'");
 			pressureEntryView.RemoveTextChangedListener(pressureTextWatcher);
 
 			pressureEntryView.Text = text;
@@ -702,7 +755,6 @@
 		/// </summary>
 		/// <param name="text">Text.</param>
 		private void SetTemperatureInputQuietly(string text) {
-			ION.Core.Util.Log.D(this, "Setting temperature input to: '" + text + "'");
 			temperatureEntryView.RemoveTextChangedListener(temperatureTextWatcher);
 
 			temperatureEntryView.Text = text;

@@ -124,9 +124,12 @@
     /// <returns>The async.</returns>
     /// <param name="t">T.</param>
     public Task<bool> SaveAsync<T>(T t) where T : ITableRow {
-      BeginTransaction();
+			bool startedTransaction = false;
 
       try {
+				BeginTransaction();
+				startedTransaction = true;
+
         int affected = 0;
         if (t._id > 0) {
           affected = Update(t);
@@ -140,7 +143,7 @@
           Commit();
           return Task.FromResult(true);
         } else {
-        	try{
+        	try {
 		        if (t._id > 0) {
 		          affected = Update(t);
 		          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
@@ -157,7 +160,9 @@
         }
       } catch (Exception e) {
         Log.E(this, "Failed to save the item: " + t + " to the database", e);
-        Rollback();
+				if (startedTransaction) {
+        	Rollback();
+				}
         return Task.FromResult(false);
       }
     }
@@ -169,9 +174,11 @@
     /// <param name="t">T.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public Task<bool> DeleteAsync<T>(T t) where T : ITableRow {
-      BeginTransaction();
+			bool startedTransaction = false;
 
       try {
+				BeginTransaction();
+				startedTransaction = true;
         var affected = Delete(t);
 
         if (affected > 0) {
@@ -184,7 +191,9 @@
         }
       } catch (Exception e) {
         Log.E(this, "Failed to delete the item: " + t + " to the database", e);
-        Rollback();
+				if (startedTransaction) {
+        	Rollback();
+				}
         return Task.FromResult(false);
       }
     }

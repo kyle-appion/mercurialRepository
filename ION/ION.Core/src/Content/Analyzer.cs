@@ -6,8 +6,7 @@
 	using ION.Core.App;
 	using ION.Core.Fluids;
 	using ION.Core.Sensors;
-	using ION.Core.Content.Properties;
-	using System.Collections.ObjectModel;
+	using ION.Core.Util;
 
 	/// <summary>
 	/// A collection of data pertaining to a state change within the analyzer.
@@ -166,6 +165,16 @@
         return sensors.Length;
       }
     }
+
+		/// <summary>
+		/// Queries the number of sensors that are in the analyzer.
+		/// </summary>
+		/// <value>The count.</value>
+		public int count {
+			get {
+				return GetSensorsInSideCount(ESide.Low) + GetSensorsInSideCount(ESide.High);
+			}
+		}
     /// <summary>
     /// The number of sensors that the analyzer supports per side.
     /// </summary>
@@ -258,15 +267,23 @@
     /// </summary>
     /// <returns>The sensors.</returns>
     public List<Sensor> GetSensors() {
-      var ret = new List<Sensor>();
+			// TODO ahodder@appioninc: This is a hack that accomodates both android and ios for the split in how analyzer works
+			// Because the compiler would not recognize the build commands __IOS__ and __ANDROID__, we had to do an even more
+			// stupid work around: Check for content.
+			var ret = new List<Sensor>();
 
-      for (int i = 0; i < sensors.Length; i++) {
-        if (sensors[i] != null) {
-          ret.Add(sensors[i]);
-        }
-      }
+			if (count > 0) {
+				foreach (var sensor in sensors) {
+					ret.Add(sensor);
+				}
 
-      return ret;
+				Log.D(this, "The platform is android. Returning: " + ret.Count + " sensors");
+			} else if (sensorList.Count > 0) {
+				ret.AddRange(sensors);
+				Log.D(this, "The platform is ios. Returning: " + ret.Count + " sensors");
+			}
+
+			return ret;
     }
 
     /// <summary>
@@ -358,8 +375,8 @@
       var i = (ESide.Low == side) ? 0 : sensorsPerSide;
 
       var ret = 0;
-      for (; i < sensorsPerSide; i++) {
-        if (this[i] != null) {
+			for (int j = 0; j < sensorsPerSide; j++) {
+        if (sensors[i++] != null) {
           ret++;
         }
       }

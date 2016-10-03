@@ -151,12 +151,14 @@
     /// <summary>
     /// Refreshes the records that are contained within the adapter.
     /// </summary>
-    private void RefreshRecords() {
+    public void RefreshRecords() {
       records.Clear();
 
-      foreach (var sp in manifold.sensorProperties) {
-        records.Add(CreateRecordFor(sp));
-      }
+			if (manifold != null) {
+	      foreach (var sp in manifold.sensorProperties) {
+	        records.Add(CreateRecordFor(sp));
+	      }
+			}
 
       NotifyDataSetChanged();
     }
@@ -176,10 +178,14 @@
           break;
         case ManifoldEvent.EType.SensorPropertyRemoved:
           records.RemoveAt(me.index);
-					this.NotifyItemRemoved(me.index);
+					NotifyItemRemoved(me.index);
           break;
         case ManifoldEvent.EType.SensorPropertySwapped:
           break;
+				case ManifoldEvent.EType.SensorPropertyCleared:
+					records.Clear();
+					NotifyDataSetChanged();
+					break;
       }
     }
 
