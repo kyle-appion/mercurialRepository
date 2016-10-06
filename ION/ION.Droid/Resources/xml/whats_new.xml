@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.17">
+	<display version="0.9.18">
+		<updated>Updated rate of change algorithm</updated>
+		<fixed>Fixed corner-case bugs in Analyzer</fixed>
 		<fixed>Fixed alarm activity not responding to save clicks</fixed>
 		<fixed>Fixed some bugs in preferences and preference handling</fixed>
 		<fixed>Fixed various performance and graphical bugs</fixed>
