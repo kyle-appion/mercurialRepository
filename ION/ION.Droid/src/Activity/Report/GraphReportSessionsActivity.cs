@@ -62,6 +62,14 @@
 		/// The recycler view that will list the graphing components.
 		/// </summary>
 		private RecyclerView graphList;
+		/// <summary>
+		/// The spinner that will display the start dates.
+		/// </summary>
+		private Spinner startDateSpinner;
+		/// <summary>
+		/// The spinner that will display the end dates.
+		/// </summary>
+		private Spinner endDateSpinner;
 
 		/// <summary>
 		/// The adapter that will shown the logs graphs.
@@ -74,11 +82,11 @@
 		/// <summary>
 		/// The adapter that will list the available start times.
 		/// </summary>
-		private ArrayAdapter<string> startTimesAdapter;
+		private DateTimeAdapter startTimesAdapter;
 		/// <summary>
 		/// The adapter that will list the available end times.
 		/// </summary>
-		private ArrayAdapter<string> endTimesAdapter;
+		private DateTimeAdapter endTimesAdapter;
 		/// <summary>
 		/// The drawable that shows the ignored content of the left selection.
 		/// </summary>
@@ -96,7 +104,6 @@
 		/// The sessions that the activity is graphing.
 		/// </summary>
 		private List<int> sessions;
-
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
@@ -130,10 +137,10 @@
 			InitializeGraphViews();
 			InitOptionsViews();
 
-			var startSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
-			var endSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
+			startDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
+			endDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 
-			startSpinner.ItemSelected += (sender, e) => {
+			startDateSpinner.ItemSelected += (sender, e) => {
 				var pos = e.Position;
 				var len = (float)graphAdapter.dil.dateSpan;
 				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
@@ -141,7 +148,7 @@
 				InvalidateGraphViews();
 			};
 
-			endSpinner.ItemSelected += (sender, e) => {
+			endDateSpinner.ItemSelected += (sender, e) => {
 				var len = (float)graphAdapter.dil.dateSpan;
 				var pos = len - e.Position;
 				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
@@ -219,7 +226,7 @@
 						left.SetX(x - left.Width / 2);
 
 						graphList.Invalidate();
-						UpdateGraphSelectionDatesFromMeasurements();
+						UpdateDates();
 						break;
 					case MotionEventActions.Up:
 						break;
@@ -249,7 +256,7 @@
 						right.SetX(x - right.Width / 2);
 
 						graphList.Invalidate();
-						UpdateGraphSelectionDatesFromMeasurements();
+						UpdateDates();
 						break;
 					case MotionEventActions.Up:
 						break;
@@ -354,49 +361,36 @@
 			right.SetX(modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
 
 			graphList.Invalidate();
-			UpdateGraphSelectionDatesFromMeasurements();
+
+
+			UpdateDates();
 		}
 
-		private void UpdateGraphSelectionDatesFromMeasurements() {
-			var start = graphAdapter.FindDateTimeFromSelection(leftOverlay.width / (float)leftOverlay.plotWidth);
-			var end = graphAdapter.FindDateTimeFromSelection(1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
+		/// <summary>
+		/// Updates the adapter content and the settings view.
+		/// </summary>
+		/// <param name="startDate">Start date.</param>
+		/// <param name="endDate">End date.</param>
+		private void UpdateDates() {
+			var startDate = graphAdapter.FindDateTimeFromSelection(leftOverlay.width / (float)leftOverlay.plotWidth);
+			var endDate = graphAdapter.FindDateTimeFromSelection(1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
 
-			dateRangeView.Text = GetString(Resource.String.start) + ": " + start.ToShortDateString() + " " + start.ToLongTimeString() + "\n" + 
-				GetString(Resource.String.finish) + ": " + end.ToShortDateString() + " " + end.ToLongTimeString();
+			dateRangeView.Text = GetString(Resource.String.start) + ": " + startDate.ToShortDateString() + " " + startDate.ToLongTimeString() + "\n" + 
+				GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
 
-			var startSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
-			var endSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 			var date = settingsView.FindViewById(Resource.Id.date);
+			date.Visibility = ViewStates.Gone;
+			
+			var startIndex = graphAdapter.IndexOfDateTime(startDate);
+			var endIndex = graphAdapter.IndexOfDateTime(endDate);
 
-			var startDates = graphAdapter.GetDatesInRange(graphAdapter.dil.DateFromIndex(0), end);
-			var endDates = graphAdapter.GetDatesInRange(start, graphAdapter.dil.DateFromIndex(graphAdapter.dil.dateSpan - 1));
+			var startDates = graphAdapter.GetDatesInRange(0, endIndex);
+			var endDates = graphAdapter.GetDatesInRange(startIndex, graphAdapter.dil.dateSpan - 1);
 
-			// TODO ahodder@appioninc.com: finish
-			if (startDates.Count > 0 && endDates.Count > 0) {
-				date.Visibility = ViewStates.Gone;
-/*
-				startTimesAdapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(startDates).ToArray());
-				endTimesAdapter = new ArrayAdapter<string>(this, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(endDates).ToArray());
+			startTimesAdapter = new DateTimeAdapter(this, startDates);
+			endTimesAdapter = new DateTimeAdapter(this, endDates);
 
-				startSpinner.Adapter = startTimesAdapter;
-				endSpinner.Adapter = endTimesAdapter;
-
-				startSpinner.SetSelection(startDates.Count - 1);
-				endSpinner.SetSelection(0);
-*/
-			} else {
-				date.Visibility = ViewStates.Gone;
-			}
-		}
-
-		private List<string> DatesToStrings(List<DateTime> dates) {
-			var ret = new List<string>();
-
-			foreach (var date in dates) {
-				ret.Add(date.ToShortDateString() + " " + date.ToLongTimeString());
-			}
-
-			return ret;
+//			this.startTimesAdapter = new ArrayAdapter<string>(DatesToStr
 		}
 
 		private async Task RefreshGraphList() {
@@ -624,6 +618,24 @@
 		public enum EAlign {
 			Left,
 			Right,
+		}
+	}
+
+	class DateTimeAdapter : ArrayAdapter<string> {
+		public List<DateTime> dates;
+
+		public DateTimeAdapter(Context context, List<DateTime> dates) : base(context, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(dates)) {
+			this.dates = dates;
+		}
+
+		private static List<string> DatesToStrings(List<DateTime> dates) {
+			var ret = new List<string>();
+
+			foreach (var date in dates) {
+				ret.Add(date.ToShortDateString() + " " + date.ToLongTimeString());
+			}
+
+			return ret;
 		}
 	}
 }

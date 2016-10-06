@@ -138,6 +138,10 @@
 		/// The handler that is responsible for synchronizing and orchestrating connection events.
 		/// </summary>
 		private Handler handler;
+		/// <summary>
+		/// The number of attempted reconnects that the handler has performed.
+		/// </summary>
+		private int reconnectAttempts;
 
 		public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
 			this.context = context;
@@ -147,6 +151,7 @@
 			connectionTimeout = DEFAULT_TIMEOUT;
 			lastSeen = DateTime.FromFileTimeUtc(0);
 			handler = new Handler(this);
+			reconnectAttempts = 0;
 		}
 
 		public Task<bool> ConnectAsync() {
@@ -203,7 +208,12 @@
 					Disconnect();
 					return true;
 				case MSG_RECONNECT:
-					ConnectAsync();
+					if (reconnectAttempts < 2) {
+						ConnectAsync();
+					} else {
+						Log.D(this, "Failed to reconnect too many times. Stopping");
+						reconnectAttempts = 0;
+					}
 					return true;
 				default:
 					return false;
@@ -233,6 +243,7 @@
 						Log.E(this, "Failed to start service discovery for: " + device.Name);
 						Disconnect();
 					} else {
+						reconnectAttempts = 0;
 						connectionState = EConnectionState.Resolving;
 						handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, 0, 0), (long)connectionTimeout.TotalMilliseconds);
 					}
@@ -275,6 +286,7 @@
 			Disconnect();
 
 			if (!handler.HasMessages(MSG_RECONNECT)) {
+				reconnectAttempts++;
 				handler.SendEmptyMessageDelayed(MSG_RECONNECT, RECONNECT_DELAY);
 			}
 		}

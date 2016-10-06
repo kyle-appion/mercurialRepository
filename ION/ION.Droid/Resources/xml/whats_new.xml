@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.16">
-		<fixed>Various performance and graphical bugs</fixed>
+	<display version="0.9.17">
+		<fixed>Fixed alarm activity not responding to save clicks</fixed>
+		<fixed>Fixed some bugs in preferences and preference handling</fixed>
+		<fixed>Fixed various performance and graphical bugs</fixed>
 	</display>
 </whatsnew>

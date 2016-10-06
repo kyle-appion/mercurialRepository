@@ -105,8 +105,13 @@
       AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
 
       if (workbench == null) {
-				workbench = ion.currentWorkbench = new Workbench(ion);
+				workbench = ion.currentWorkbench;
       }
+
+			if (workbench == null) {
+				workbench = ion.currentWorkbench = new Workbench(ion);
+				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
+			}
       workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
       adapter = new WorkbenchAdapter(ion, Resources);

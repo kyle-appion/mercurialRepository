@@ -55,6 +55,11 @@
         .RegisterOnSharedPreferenceChangeListener(this);
     }
 
+		protected override void OnResume() {
+			base.OnResume();
+			SetWakeLock(ion.preferences.isWakeLocked);
+		}
+
     /// <summary>
     /// Builds and returned a gray colored drawable.
     /// </summary>
@@ -213,6 +218,7 @@
     /// </summary>
     /// <param name="locked">If set to <c>true</c> locked.</param>
     protected void SetWakeLock(bool locked) {
+			Log.D(this, "Setting wake lock: " + locked);
       if (locked) {
         Window.AddFlags(WindowManagerFlags.KeepScreenOn);
       } else {

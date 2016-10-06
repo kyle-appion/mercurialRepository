@@ -194,7 +194,6 @@
 
     private void InvalidateBattery(GaugeDevice device) {
       if (battery == null) {
-				Log.E(this, "The battery view is null. Cannot invalidate the view");
         return;
       }
 

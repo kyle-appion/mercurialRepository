@@ -1,7 +1,5 @@
 ﻿namespace ION.Core {
 
-	using System;
-
 	public static class NumberExtensions {
 
 		/// <summary>
@@ -12,7 +10,7 @@
 		/// <param name="second">Second.</param>
 		/// <param name="epsilon">Epsilon.</param>
 		public static bool DEquals(this double first, double second, double epsilon=0.0005) {
-			return first - second < epsilon || first - second > -epsilon;
+			return System.Math.Abs(first - second) < epsilon;
 		}
 
 		/// <summary>
@@ -23,7 +21,7 @@
 		/// <param name="second">Second.</param>
 		/// <param name="epsilon">Epsilon.</param>
 		public static bool DEquals(this float first, float second, double epsilon=0.0005) {
-			return first - second < epsilon || first - second > -epsilon;
+			return DEquals(first, second, epsilon);
 		}
 	}
 }

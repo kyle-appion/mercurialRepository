@@ -1,12 +1,8 @@
 ﻿namespace ION.Droid.Widgets.Analyzer {
 
-  using System;
-
   using Android.App;
   using Android.Content;
   using Android.Graphics;
-  using Android.Support.V7.Widget;
-  using Android.Text;
   using Android.Util;
   using Android.Views;
   using Android.Views.Animations;
@@ -14,15 +10,12 @@
 
   using ION.Core.App;
   using ION.Core.Content;
-  using ION.Core.Devices;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   using ION.Droid.Dialog;
   using ION.Droid.Util;
   using ION.Droid.Views;
-  using ION.Droid.Widgets.Templates;
 
   /// <summary>
   /// This view is the primary display widget for an analyzer data structure.

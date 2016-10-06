@@ -171,6 +171,7 @@
     <Compile Include="src\Content\Parsers\AnalyzerParser.cs" />
     <Compile Include="src\Content\Parsers\SensorParser.cs" />
     <Compile Include="src\Connections\RemoteConnection.cs" />
+    <Compile Include="src\Measure\RateOfChange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

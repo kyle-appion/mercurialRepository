@@ -139,10 +139,12 @@
   <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
   <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
   <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
-  <string name="analyzer_side_full_1sarg">Cannot add sensor to %1$s side: the side is full.</string>
+  <string name="analyzer_set_viewer_failed">Failed to change the viewer.</string>
+  <string name="analyzer_side_full_1sarg">Cannot add sensor to {0} side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
   <string name="analyzer_side_low">Low Side</string>
   <string name="analyzer_side_high">High Side</string>
+	<string name="analyzer_swap_failed">Failed to swap sensors</string>
 
   <!--
   CALCULATORS

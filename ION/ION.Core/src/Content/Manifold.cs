@@ -277,7 +277,7 @@
     /// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
     /// <param name="sensor">Sensor.</param>
     public bool ContainsSensor(Sensor sensor) {
-      return primarySensor == sensor || secondarySensor == sensor;
+			return (primarySensor != null && primarySensor.Equals(sensor)) || (secondarySensor != null && secondarySensor.Equals(sensor));
     }
 
     /// <summary>
