@@ -18,7 +18,6 @@
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
-  using ION.Droid.Dialog;
   using ION.Droid.Fragments;
   using ION.Droid.Util;
 
@@ -31,7 +30,7 @@
       base.OnCreate(bundle);
 
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_settings, Resource.Color.gray));
-      this.PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
+      PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
       AddPreferencesFromResource(Resource.Xml.preferences_application);
 
 

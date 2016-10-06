@@ -723,6 +723,30 @@
       return true;
     }
 
+		/// <summary>
+		/// Attempts to remove the given sensor from the manifold on the given side of the analyzer.
+		/// </summary>
+		/// <returns><c>true</c>, if sensor from manifold was removed (or the manifold was null), <c>false</c> otherwise.</returns>
+		/// <param name="side">Side.</param>
+		/// <param name="sensor">Sensor.</param>
+		public bool RemoveSensorFromManifold(ESide side, Sensor sensor) {
+			var manifold = GetManifoldFromSide(side);
+			if (manifold == null) {
+				return true;
+			}
+			if (manifold.primarySensor.Equals(sensor)) {
+				RemoveManifold(side);
+				return true;
+			} else if (manifold.secondarySensor != null) {
+				if (manifold.secondarySensor.Equals(sensor)) {
+					RemoveSensorFromManifold(side, sensor);
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
+
     /// <summary>
     /// Queries the fluid state based on the side of the analyzer.
     /// </summary>

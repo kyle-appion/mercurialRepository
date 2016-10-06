@@ -82,6 +82,15 @@
 		}
 
 		/// <summary>
+		/// Queries the index of the given date.
+		/// </summary>
+		/// <returns>The of date time.</returns>
+		/// <param name="date">Date.</param>
+		public int IndexOfDateTime(DateTime date) {
+			return dil.IndexOfDate(date);
+		}
+
+		/// <summary>
 		/// Finds the date time
 		/// </summary>
 		/// <returns>The date time from selection.</returns>
@@ -104,9 +113,19 @@
 			var fi = dil.IndexOfDate(first);
 			var li = dil.IndexOfDate(last);
 
+			return GetDatesInRange(fi, li);
+		}
+
+		/// <summary>
+		/// Queries the dates that are inclussively between startIndex and endIndex.
+		/// </summary>
+		/// <returns>The dates in range.</returns>
+		/// <param name="startIndex">Start index.</param>
+		/// <param name="endIndex">End index.</param>
+		public List<DateTime> GetDatesInRange(int startIndex, int endIndex) {
 			var ret = new List<DateTime>();
 
-			for (int i = fi; i <= li; i++) {
+			for (int i = startIndex; i <= endIndex; i++) {
 				ret.Add(dil.DateFromIndex(i));
 			}
 

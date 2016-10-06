@@ -99,6 +99,21 @@
       }
     }
 
+		/// <summary>
+		/// Queries whether or not the wake lock is set in preferences.
+		/// </summary>
+		/// <value><c>true</c> if is wake locked; otherwise, <c>false</c>.</value>
+		public bool isWakeLocked {
+			get {
+				return prefs.GetBoolean(ion.GetString(Resource.String.pkey_wake_lock), true);
+			}
+			set {
+				var e = prefs.Edit();
+				e.PutBoolean(ion.GetString(Resource.String.pkey_wake_lock), value);
+				e.Commit();
+			}
+		}
+
     public AppPrefs(AndroidION ion, ISharedPreferences prefs) {
       this.ion = ion;
       this.prefs = prefs;
