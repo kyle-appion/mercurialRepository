@@ -70,6 +70,14 @@
       } else {
 				var mod = item.modifiedMeasurement.amount;
 
+				if (mod < 0) {
+					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+				} else {
+					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
+				}
+
+				mod = Math.Abs(mod);
+
 				var dmax = item.sensor.maxMeasurement.amount / 10;
 
 				if (System.Math.Abs(mod) >= dmax) {
@@ -79,11 +87,6 @@
         }
 
         icon.Visibility = ViewStates.Visible;
-        if (mod < 0) {
-          icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
-        } else {
-          icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
-        }
       }
     }
 

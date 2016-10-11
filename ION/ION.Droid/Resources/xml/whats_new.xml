@@ -6,5 +6,6 @@
 		<fixed>Fixed alarm activity not responding to save clicks</fixed>
 		<fixed>Fixed some bugs in preferences and preference handling</fixed>
 		<fixed>Fixed various performance and graphical bugs</fixed>
+		<fixed>Fixed invalid bluetooth adapter state bug when in device manager</fixed>
 	</display>
 </whatsnew>
