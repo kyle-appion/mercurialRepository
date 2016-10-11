@@ -257,6 +257,8 @@
     <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
     <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
+    <Compile Include="src\Widgets\Templates\SecondarySensorSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

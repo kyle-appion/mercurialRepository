@@ -344,6 +344,17 @@
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
 
+			if (manifold.secondarySensor != null) {
+				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+					var t = manifold.secondarySensor.type;
+					var type = t.GetTypeString();
+					var abrv = t.GetTypeAbreviationString();
+					ldb.AddItem(String.Format(GetString(Resource.String.workbench_linked_sensor_2sarg), type, abrv), () => {
+						manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+					});
+				}
+			}
+
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {
           manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
