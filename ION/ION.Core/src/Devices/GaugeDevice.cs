@@ -141,8 +141,6 @@
 
         var changed = oldBattery != battery;
 
-
-
         for (int i = 0; i < sensorCount; i++) {
           var reading = gp.gaugeReadings[i];
           var sensor = this[i];
