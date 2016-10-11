@@ -47,7 +47,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 7500;
+    private const long DEFAULT_SCAN_TIME = 10000;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.

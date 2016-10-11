@@ -8,7 +8,7 @@
   public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
     private const long MAX_PLOT_LIFE = 60 * 1000;
-		private const long STABILITY_TIME = 5 * 1000;
+		private const long STABILITY_TIME = 10 * 1000;
 
     /// <summary>
     /// The measurement of the rate of change property. Getting this property will
@@ -21,7 +21,7 @@
     public override Scalar modifiedMeasurement {
       get {
 				tracker.AddPoint(sensor.measurement);
-        var ret =tracker.rateOfChange.ConvertTo(sensor.unit);
+        var ret = tracker.rateOfChange.ConvertTo(sensor.unit);
 				ION.Core.Util.Log.D(this, "Ret: " + ret);
 				return ret;
       }

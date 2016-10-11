@@ -6,19 +6,24 @@
 	internal class Api21ScanDelegate : ScanCallback, IScanDelegate {
 		private BluetoothAdapter adapter;
 		private InternalDeviceFound deviceFound;
+		private bool isScanning;
 
 		public Api21ScanDelegate(BluetoothAdapter adapter, InternalDeviceFound internalDeviceFound) {
 			this.adapter = adapter;
 			deviceFound = internalDeviceFound;
+			isScanning = false;
 		}
 
 		public bool StartScan() {
 			adapter.BluetoothLeScanner.StartScan(this);
+			isScanning = true;
 			return true;
 		}
 
 		public void StopScan() {
-			adapter.BluetoothLeScanner.StopScan(this);
+			if (isScanning) {
+				adapter.BluetoothLeScanner.StopScan(this);
+			}
 		}
 
 		public override void OnBatchScanResults(System.Collections.Generic.IList<ScanResult> results) {
