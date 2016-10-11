@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.19">
+	<display version="0.9.20">
 		<update>Updated rate of change algorithm</update>
 		<fixed>Fixed corner-case bugs in Analyzer</fixed>
 		<fixed>Fixed alarm activity not responding to save clicks</fixed>
