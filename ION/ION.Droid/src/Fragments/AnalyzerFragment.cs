@@ -258,6 +258,17 @@
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
 
+			if (manifold.secondarySensor != null) {
+				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+					var t = manifold.secondarySensor.type;
+					var type = t.GetTypeString();
+					var abrv = t.GetTypeAbreviationString();
+					ldb.AddItem(String.Format(GetString(Resource.String.workbench_linked_sensor_2sarg), type, abrv), () => {
+						manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+					});
+				}
+			}
+
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {
           manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
@@ -321,8 +332,6 @@
     /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
     /// </summary>
     private void AddAllSubviews(Manifold manifold) {
-			Log.D(this, "Before manifold added all subviews, we had: " + manifold.sensorPropertyCount);
-
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
       }
@@ -493,7 +502,6 @@
           asp.unit = u;
         }).Show();
       } else if (sensorProperty is PTChartSensorProperty) {
-        var pt = ((PTChartSensorProperty)sensorProperty);
         var i = new Intent(Activity, typeof(PTChartActivity));
         i.SetAction(Intent.ActionPick);
 				Analyzer.ESide side;
@@ -539,7 +547,6 @@
       }
 
       var sensor = sensorProperty.sensor;
-      var sp = sensorProperty as SuperheatSubcoolSensorProperty;
       var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
       i.SetAction(Intent.ActionPick);
       i.PutExtra(SuperheatSubcoolActivity.EXTRA_LOCK_FLUID, true);

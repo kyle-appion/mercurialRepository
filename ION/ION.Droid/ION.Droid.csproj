@@ -259,6 +259,7 @@
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Widgets\Templates\SecondarySensorSubviewTemplate.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

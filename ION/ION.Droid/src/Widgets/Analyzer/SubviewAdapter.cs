@@ -71,7 +71,9 @@
         case EViewType.PTChartSubview:
           return new PTChartSubviewViewHolder(parent);
         case EViewType.SuperheatSubcoolSubview:
-				return new SuperheatSubcoolSubviewViewHolder(parent);
+					return new SuperheatSubcoolSubviewViewHolder(parent);
+				case EViewType.SecondarySensorSubview:
+					return new SecondarySensorSubviewViewHolder(parent);
         case EViewType.TimerSubview:
           return new TimerSubviewViewHolder(parent, cache);
         case EViewType.RateOfChangeSubview:
@@ -116,6 +118,11 @@
           var shr = r as SuperheatSubcoolSubviewRecord;
 					(holder as SuperheatSubcoolSubviewViewHolder).record = shr;
           break;
+
+				case EViewType.SecondarySensorSubview:
+					var ssr = r as SecondarySensorSubviewRecord;
+					(holder as SecondarySensorSubviewViewHolder).record = ssr;
+					break;
       }
 
       holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
@@ -199,6 +206,8 @@
         return new PTChartSubviewRecord(sp as PTChartSensorProperty);
       } else if (sp is SuperheatSubcoolSensorProperty) {
         return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
+			} else if (sp is SecondarySensorProperty) {
+				return new SecondarySensorSubviewRecord(sp as SecondarySensorProperty);
       } else if (sp is TimerSensorProperty) {
         return new TimerSubviewRecord(sp as TimerSensorProperty);
       } else if (sp is RateOfChangeSensorProperty) {
@@ -214,6 +223,7 @@
     RateOfChangeSubview,
     PTChartSubview,
     SuperheatSubcoolSubview,
+		SecondarySensorSubview,
     TimerSubview,
   }
 
