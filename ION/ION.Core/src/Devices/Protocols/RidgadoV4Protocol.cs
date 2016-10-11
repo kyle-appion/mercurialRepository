@@ -170,7 +170,7 @@ namespace ION.Core.Devices.Protocols {
         }
         var measOff = reader.ReadByte();
 				if (measOff != 0) {
-					m = m / (10 * measOff);
+					m = m / (float)Math.Pow(10, measOff);
 				}
 
         measurement = m;
