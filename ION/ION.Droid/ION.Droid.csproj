@@ -22,7 +22,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <DefineConstants>DEBUG;__ANDROID__</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidLinkMode>None</AndroidLinkMode>
@@ -32,6 +32,7 @@
     <AndroidSigningStorePass>B62zHJZfAZkPRVy:6n4Y</AndroidSigningStorePass>
     <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
+    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -220,11 +221,6 @@
     <Compile Include="src\Activity\Job\EditJobActivity.cs" />
     <Compile Include="src\Activity\Job\EditJobFragment.cs" />
     <Compile Include="src\Activity\Job\EditJobSessionsFragment.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
     <Compile Include="src\Activity\Report\ByJobFragment.cs" />
     <Compile Include="src\Activity\Report\BySessionFragment.cs" />
     <Compile Include="src\Connections\RigadoConnection.cs" />
@@ -255,6 +251,15 @@
     <Compile Include="src\Widgets\Analyzer\AnalyzerManifoldViewTemplate.cs" />
     <Compile Include="src\App\LocationResolverService.cs" />
     <Compile Include="src\Connections\ClassicScanDelegate.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\JobAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
+    <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
+    <Compile Include="src\Views\ClearFocusListener.cs" />
+    <Compile Include="src\Widgets\Templates\SecondarySensorSubviewTemplate.cs" />
+    <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
+    <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -623,6 +628,9 @@
     <AndroidResource Include="Resources\drawable\tab_indicator_ab_ion_action_bar.xml" />
     <AndroidResource Include="Resources\drawable\ic_line_chart.png" />
     <AndroidResource Include="Resources\xml\whats_new.xml" />
+    <AndroidResource Include="Resources\xml\whats_new_history.xml" />
+    <AndroidResource Include="Resources\drawable\ic_record.png" />
+    <AndroidResource Include="Resources\drawable\ic_stop.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

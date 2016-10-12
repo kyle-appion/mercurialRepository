@@ -5,7 +5,7 @@
 
   <SwitchPreference
     android:title="@string/preferences_display_wakelock"
-    android:key="@string/preferences_display_wakelock"
+    android:key="@string/pkey_wake_lock"
     android:defaultValue="true"
     android:summaryOn="@string/preferences_display_wakelock_on"
     android:summaryOff="@string/preferences_display_wakelock_off"/>

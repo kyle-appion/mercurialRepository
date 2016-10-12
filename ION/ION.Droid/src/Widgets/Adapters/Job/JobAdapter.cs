@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Widgets.Adapters.Job {
+﻿using ION.Droid.Dialog;
+namespace ION.Droid.Widgets.Adapters.Job {
 
   using System;
   using System.Collections.Generic;
@@ -39,11 +40,16 @@
     }
 
     public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+			var context = parent.Context;
       switch ((EViewType)viewType) {
         case EViewType.Job:
-          return new JobViewHolder(parent, Resource.Layout.list_item_job_row);
+					var jobret = new JobViewHolder(parent, Resource.Layout.list_item_job_row);
+					jobret.button.SetText(Resource.String.delete);
+					return jobret;
         default:
-          throw new Exception("Cannot create view for " + (EViewType)viewType);
+					// TODO ahodder@appioninc.com: This needs to return a template empty object
+					Log.E(this, "Failed to create view for: " + (EViewType)viewType);
+					return null;
       }
     }
 
@@ -53,10 +59,29 @@
 
     public override Action GetViewHolderSwipeAction(int index) {
       return () => {
-        var job = ((JobRecord)records[index]).row;
-        Log.D(this, "Deleted job: " + job._id + " = " + AppState.context.database.DeleteAsync<JobRow>(job));
+				var jobRecord = records[index] as JobRecord;
+				RequestDeleteJob(jobRecord);
       };
     }
+
+		public void RequestDeleteJob(JobRecord record) {
+			var context = recyclerView.Context;
+			var adb = new IONAlertDialog(context);
+			adb.SetTitle(Resource.String.job_delete);
+			adb.SetMessage(Resource.String.job_delete_message);
+
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+				var d = sender as Dialog;
+				if (d != null) {
+					d.Cancel();
+				}
+			});
+			adb.SetPositiveButton(Resource.String.delete, (sender, e) => {
+				Log.D(this, "Deleted job: " + record.row._id + " = " + AppState.context.database.DeleteAsync<JobRow>(record.row));
+			});
+
+			adb.Show();
+		}
 
     public int IndexOfJob(JobRow job) {
       for (int i = 0; i < this.ItemCount; i++) {

@@ -65,6 +65,9 @@
 
 			var records = new List<SessionRecord>();
 			foreach (var s in await ion.database.QueryForAllAsync<SessionRow>()) {
+				if (s._id == ion.dataLogManager.currentSessionId) {
+					continue;
+				}
 				var sessionRecord = new SessionRecord(s);
 				if (sessions != null) {
 					sessionRecord.isChecked = sessions.Contains(s._id);

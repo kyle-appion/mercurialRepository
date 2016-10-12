@@ -198,6 +198,7 @@
         serials = snsa
       }, Formatting.None);
 
+			Log.D(this, asString);
       var ret = asString.ToBytes();
       ret = OBFUSCATOR.Obfuscate(ret, GENERAL_OBFUSCATION_KEY);
       return ret;

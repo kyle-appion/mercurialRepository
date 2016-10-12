@@ -23,6 +23,10 @@
   using ION.Droid.Util;
 
   public class IONActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener {
+		/// <summary>
+		/// The request code that is used when the app requests to enable bluetooth.
+		/// </summary>
+		public const int REQUEST_BLUETOOTH_ENABLE = -1;
     /// <summary>
     /// Queries the current running ion instance.
     /// </summary>
@@ -54,6 +58,26 @@
       GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Append)
         .RegisterOnSharedPreferenceChangeListener(this);
     }
+
+		protected override void OnResume() {
+			base.OnResume();
+			SetWakeLock(ion.preferences.isWakeLocked);
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
+			switch (requestCode) {
+				case REQUEST_BLUETOOTH_ENABLE:
+					if (resultCode == Result.Ok) {
+						this.Alert("UNSAFE Enabled bluetooth OK");
+					} else {
+						this.Alert("UNSAGE Failed to enable bluetooth");
+					}
+					break;
+				default:
+					base.OnActivityResult(requestCode, resultCode, data);
+					break;
+			}
+		}
 
     /// <summary>
     /// Builds and returned a gray colored drawable.
@@ -185,26 +209,9 @@
     /// <summary>
     /// Shows an async progress dialog that will show until the bluetooth adapter is enabled or the operation times out.
     /// </summary>
-    private async void ShowEnableBluetoothDialog() {
-			var bm = (BluetoothManager)GetSystemService(BluetoothService);
-      var pd = new ProgressDialog(this);
-      pd.SetTitle(Resource.String.please_wait);
-      pd.SetMessage(GetString(Resource.String.enabling_bluetooth));
-      pd.Indeterminate = true;
-      pd.SetCanceledOnTouchOutside(false);
-      pd.Show();
-
-      var start = DateTime.Now;
-      var timeout = TimeSpan.FromSeconds(8);
-      while (DateTime.Now - start < timeout) {
-        await Task.Delay(50);
-      }
-
-      if (!bm.Adapter.IsEnabled) {
-        Alert(Resource.String.error_bluetooth_enable_fail);
-      }
-
-      pd.Dismiss();
+    private void ShowEnableBluetoothDialog() {
+			var intent = new Intent(BluetoothAdapter.ActionRequestEnable);
+			StartActivityForResult(intent, REQUEST_BLUETOOTH_ENABLE);
     }
 
     /// <summary>
@@ -213,6 +220,7 @@
     /// </summary>
     /// <param name="locked">If set to <c>true</c> locked.</param>
     protected void SetWakeLock(bool locked) {
+			Log.D(this, "Setting wake lock: " + locked);
       if (locked) {
         Window.AddFlags(WindowManagerFlags.KeepScreenOn);
       } else {

@@ -64,6 +64,9 @@ namespace ION.Core.Devices.Protocols {
 				SensorPayload sp;
 				while (count >= (sp = new SensorPayload(r.ReadByte())).length) { // While the count still has another potential packet, pull the next packet.
           count -= sp.length;
+					if (sp.unitCode == 0) {
+						continue;
+					}
           sp.Parse(r);
 					readings.Add(new GaugeReading() {
             removed = !sp.connected,
@@ -167,7 +170,7 @@ namespace ION.Core.Devices.Protocols {
         }
         var measOff = reader.ReadByte();
 				if (measOff != 0) {
-					m = m / (10 * measOff);
+					m = m / (float)Math.Pow(10, measOff);
 				}
 
         measurement = m;

@@ -32,6 +32,12 @@
     /// </summary>
     private IION ion;
 
+		/// <summary>
+		/// Queries the current recording session id or 0 if not recording.
+		/// </summary>
+		/// <value>The current session identifier.</value>
+		public int currentSessionId { get { return isRecording ? currentSession.session._id : 0; } }
+
     /// <summary>
     /// The current logging session. If null, then the application is not currently logging.
     /// </summary>
@@ -132,7 +138,7 @@
     /// </summary>
     /// <returns>The session data.</returns>
     /// <param name="session">Session.</param>
-    public Task<SessionResults> QuerySessionData(int sessionId) {
+    public Task<SessionResults> QuerySessionDataAsync(int sessionId) {
       return Task.Factory.StartNew(() => {
         var db = ion.database;
 
@@ -155,12 +161,12 @@
           var logs = new SensorLog[count];
           int i = 0;
           foreach (var smr in query) {
-            logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
+						logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
           }
 
 					dsl.Add(new DeviceSensorLogs(row.serialNumber, row.sensorIndex, logs));
         }
-        var tmp = dsl.ToArray();
+				var tmp = dsl;
 
         var start = DateTime.Now;
         var end = DateTime.FromFileTime(0);

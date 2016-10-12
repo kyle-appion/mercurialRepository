@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Report.DataLogs {
 
   using System;
+	using System.Collections.Generic;
 
   /// <summary>
   /// The class that holds the results of a session.
@@ -20,7 +21,7 @@
     /// The array of device sensor logs that make up the session.
     /// </summary>
     /// <value>The start time.</value>
-    public DeviceSensorLogs[] deviceSensorLogs { get; internal set; }
+    public List<DeviceSensorLogs> deviceSensorLogs { get; internal set; }
     /// <summary>
     /// The time that the session started.
     /// </summary>
@@ -54,9 +55,9 @@
     /// <param name="startTime">Start time.</param>
     /// <param name="endTime">End time.</param>
     public SessionResults SubSet(DateTime startTime, DateTime endTime) {
-      var dsl = new DeviceSensorLogs[deviceSensorLogs.Length];
+			var dsl = new List<DeviceSensorLogs>(deviceSensorLogs);
 
-      for (int i = 0; i < deviceSensorLogs.Length; i++) {
+      for (int i = 0; i < deviceSensorLogs.Count; i++) {
         dsl[i] = deviceSensorLogs[i].SubSet(startTime, endTime);
       }
 

@@ -47,7 +47,7 @@
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
-    private const long DEFAULT_SCAN_TIME = 7500;
+    private const long DEFAULT_SCAN_TIME = 10000;
 
     /// <summary>
     /// The view that will display all of the devices for the activity.
@@ -125,21 +125,23 @@
     protected override void OnResume() {
       base.OnResume();
 
-      previousHelper = ion.deviceManager.connectionHelper;
-      var bm = (BluetoothManager)GetSystemService(BluetoothService);
+			previousHelper = ion.deviceManager.connectionHelper;
+			var bm = (BluetoothManager)GetSystemService(BluetoothService);
 
-      ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
+			ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
-      InvalidateOptionsMenu();
-      ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
+			InvalidateOptionsMenu();
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
-      var connectionHelper = ion.deviceManager.connectionHelper;
+			var connectionHelper = ion.deviceManager.connectionHelper;
 
 			if (bm.Adapter.IsEnabled) {
-        ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-      } else {
-        ShowBluetoothOffDialog();
-      }
+				if (!ion.deviceManager.connectionHelper.isScanning) {
+					ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+				}
+			} else {
+				ShowBluetoothOffDialog();
+			}
 
       adapter.Reload();
     }

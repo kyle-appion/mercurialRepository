@@ -13,6 +13,7 @@
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
+	using Android.Views.InputMethods;
   using Android.Widget;
 
   using ION.Core.App;
@@ -66,6 +67,10 @@
       }
     }
 
+		public override void OnResume() {
+			base.OnResume();
+		}
+
     /// <Docs>The options menu in which you place your items.</Docs>
     /// <returns>To be added.</returns>
     /// <summary>
@@ -74,9 +79,15 @@
     /// <param name="menu">Menu.</param>
     public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
       inflater.Inflate(Resource.Menu.screenshot, menu);
-#if DEBUG
       inflater.Inflate(Resource.Menu.record, menu);
-#endif
+
+			var r = menu.FindItem(Resource.Id.record);
+			if (ion.dataLogManager.isRecording) {
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
+			} else {
+				r.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
+			}
+
 
       var ss = menu.FindItem(Resource.Id.screenshot);
       var icon = ss.Icon;
@@ -94,9 +105,7 @@
       base.OnPrepareOptionsMenu(menu);
 
       menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));
-#if DEBUG
-      menu.FindItem(Resource.Id.record).SetVisible(HasFlags(EFlags.StartRecording));
-#endif
+			menu.FindItem(Resource.Id.record).SetVisible(HasFlags(EFlags.StartRecording));
     }
 
     /// <Docs>The menu item that was selected.</Docs>
@@ -118,7 +127,6 @@
           return true;
         case Resource.Id.record:
           ToggleRecordingSession(item);
-          Alert("Record clicked");
           return true;
         default:
           return base.OnOptionsItemSelected(item);
@@ -144,6 +152,18 @@
     public Color GetColor(int colorRes) {
       return new Color(Resources.GetColor(colorRes));
     }
+
+		/// <summary>
+		/// A utility method that will forcefully close the keyboard.
+		/// </summary>
+		public void HideKeyboard() {
+			var imm = Activity.GetSystemService(Activity.InputMethodService) as InputMethodManager;
+			var view = Activity.CurrentFocus;
+			if (Activity.CurrentFocus == null) {
+				view = new View(Activity);
+			}
+			imm.HideSoftInputFromWindow(view.WindowToken, 0);
+		}
 
     /// <summary>
     /// Sets the activity's flags.
@@ -230,7 +250,8 @@
         if (!await ion.dataLogManager.StopRecording()) {
           Log.D(this, "Failed to stop recording");
         }
-        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPlay, Resource.Color.light_gray));
+				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
+				Alert(Resource.String.report_recording_stopped);
       } else {
 				var interval = ion.preferences.reports.DataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
@@ -238,7 +259,8 @@
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
-        item.SetIcon(GetColoredDrawable(Android.Resource.Drawable.IcMediaPause, Resource.Color.light_gray));
+				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
+				Alert(Resource.String.report_recording_started);
       }
     }
 

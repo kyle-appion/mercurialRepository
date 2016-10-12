@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Measure;
+	using System;
 
-namespace ION.Core.Sensors.Properties {
+	using ION.Core.Measure;
+
+
   public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
-    private const long MAX_PLOT_LIFE = 1 * 1000;
+    private const long MAX_PLOT_LIFE = 60 * 1000;
+		private const long STABILITY_TIME = 10 * 1000;
 
     /// <summary>
     /// The measurement of the rate of change property. Getting this property will
@@ -18,24 +20,19 @@ namespace ION.Core.Sensors.Properties {
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
       get {
-        var roc = tracker.rateOfChange;
-
-        var ret = roc.change.unit.OfScalar(roc.change.amount * 60000 / roc.rate.TotalMilliseconds);
-
-				if (System.Math.Abs(ret.amount) <= 0.001) {
-          ret = tracker.baseUnit.OfScalar(0);
-        }
-
-        return ret.ConvertTo(sensor.unit);
-      }
-      protected set {
-        NotifyChanged();
+				tracker.AddPoint(sensor.measurement);
+        var ret = tracker.rateOfChange.ConvertTo(sensor.unit);
+				ION.Core.Util.Log.D(this, "Ret: " + ret);
+				return ret;
       }
     }
 
-    public RateOfChange tracker { get; private set; }
+		/// <summary>
+		/// The tracker
+		/// </summary>
+		/// <value>The tracker.</value>
+		public RateOfChange tracker { get; private set; }
 
-    public Scalar stabilityScale { get; set; }
     /// <summary>
     /// Whether or not the rate of change property is currently stable (not
     /// substantially fluctuating).
@@ -43,14 +40,12 @@ namespace ION.Core.Sensors.Properties {
     /// <value><c>true</c> if is stable; otherwise, <c>false</c>.</value>
     public bool isStable {
       get {
-				return System.Math.Abs(tracker.rateOfChange.change.amount) <= stabilityScale.ConvertTo(tracker.baseUnit).amount;
+				return tracker.rateOfChange.amount.DEquals(0);//!tracker.HasChangedIn(TimeSpan.FromMilliseconds(STABILITY_TIME));
       }
     }
 
     public RateOfChangeSensorProperty(Sensor sensor) : base(sensor) {
-      tracker = new RateOfChange(sensor.unit.standardUnit);
-      tracker.window = TimeSpan.FromMilliseconds(MAX_PLOT_LIFE);
-      stabilityScale = sensor.unit.standardUnit.OfScalar(0.001);
+			tracker = new RateOfChange(sensor.unit.standardUnit, TimeSpan.FromMilliseconds(STABILITY_TIME), TimeSpan.FromMilliseconds(MAX_PLOT_LIFE));
     }
 
     // Overridden from AbstractSensorProperty
@@ -65,10 +60,12 @@ namespace ION.Core.Sensors.Properties {
     /// Called when the sensor property changes.
     /// </summary>
     protected override void OnSensorChanged() {
-      tracker.Add(sensor.measurement);
+      tracker.AddPoint(sensor.measurement);
     }
   }
 
+
+/*
   public class RateOfChange {
     private static TimeSpan DELAY = TimeSpan.FromMilliseconds(500);
 
@@ -196,4 +193,6 @@ namespace ION.Core.Sensors.Properties {
       return this;
     }
   }
+
+*/
 }

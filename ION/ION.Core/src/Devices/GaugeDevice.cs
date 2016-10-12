@@ -141,8 +141,6 @@
 
         var changed = oldBattery != battery;
 
-
-
         for (int i = 0; i < sensorCount; i++) {
           var reading = gp.gaugeReadings[i];
           var sensor = this[i];
@@ -171,7 +169,7 @@
 					lastNotify = DateTime.Now;
         }
       } catch (Exception e) {
-        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+//        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

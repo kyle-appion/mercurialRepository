@@ -108,6 +108,7 @@
             db.Insert(newDevice);
           }
         }
+
         foreach (var gds in sensors) {
           // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
           rows.Add(await CreateSensorMeasurement(db, gds, now));
@@ -130,13 +131,13 @@
 
       var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
+
       ret.serialNumber = sensor.device.serialNumber.ToString();
 
       ret.frn_SID = session.SID;
       ret.sensorIndex = sensor.index;
       ret.recordedDate = date;
       ret.measurement = meas.amount;
-			Log.D(this, "Converted logging measurement from " + sensor.measurement + " to " + ret.measurement + " with sensor index " + ret.sensorIndex);
 
       return ret;
     }

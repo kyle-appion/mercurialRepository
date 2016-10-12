@@ -80,10 +80,11 @@
     /// </summary>
     /// <param name="t">T.</param>
     protected override void OnBind(Manifold t) {
+			OnUnbind();
       item.onManifoldEvent += OnManifoldEvent;
 
       Invalidate();
-    }
+		}
 
     /// <summary>
     /// Informs the view template that it should unbind itself from its data source.
@@ -193,7 +194,6 @@
 
     private void InvalidateBattery(GaugeDevice device) {
       if (battery == null) {
-				Log.E(this, "The battery view is null. Cannot invalidate the view");
         return;
       }
 

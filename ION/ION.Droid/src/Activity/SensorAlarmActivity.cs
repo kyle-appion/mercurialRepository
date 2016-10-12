@@ -43,6 +43,8 @@
       base.OnCreate(savedInstanceState);
       SetContentView(Resource.Layout.activity_sensor_alarm);
 
+			ActionBar.SetDisplayHomeAsUpEnabled(true);
+
       if (Intent.HasExtra(EXTRA_SENSOR)) {
         var sp = Intent.GetParcelableExtra(EXTRA_SENSOR) as SensorParcelable;
         sensor = sp.Get(ion);
@@ -67,6 +69,10 @@
 
       MenuInflater.Inflate(Resource.Menu.save, menu);
 
+			menu.FindItem(Resource.Id.save).ActionView.Click += (sender, e) => {
+				SaveAndFinish();
+			};
+
       return true;
     }
 
@@ -79,9 +85,7 @@
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
         case Resource.Id.save:
-          lowAlarm.Commit();
-          highAlarm.Commit();
-          Finish();
+					SaveAndFinish();
           return true;
         case Android.Resource.Id.Home:
           SetResult(Result.Canceled);
@@ -91,6 +95,15 @@
           return base.OnMenuItemSelected(featureId, item);          
       }
     }
+
+		/// <summary>
+		/// Saves and finishes the alarm activity
+		/// </summary>
+		private void SaveAndFinish() {
+			lowAlarm.Commit();
+			highAlarm.Commit();
+			Finish();
+		}
 
     /// <summary>
     /// Creates a new low sensor alarm.

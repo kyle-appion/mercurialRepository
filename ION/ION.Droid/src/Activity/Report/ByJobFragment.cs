@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Activity.Report {
+﻿using System.Linq;
+namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
@@ -11,7 +12,9 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using ION.Core.App;
 	using ION.Core.Database;
+	using ION.Core.Util;
 
 	// Using ION.Droid
 	using Dialog;
@@ -186,7 +189,7 @@
 
 			public override void OnBindTo() {
 				var ellapsed = t.row.sessionEnd - t.row.sessionStart;
-				text.Text = t.row.sessionStart.ToLongDateString() + " " + ellapsed.TotalMinutes.ToString("#.0");
+				text.Text = t.row.sessionStart.ToLongDateString() + " " + ellapsed.TotalMinutes.ToString("#.0") + " mins";
 
 				check.Checked = t.isChecked;
 			}
@@ -239,7 +242,9 @@
 					case EViewType.Job:
 						return new JobViewHolder(parent, this);
 					case EViewType.Session:
-						return new SessionViewHolder(parent);
+						var sessionret = new SessionViewHolder(parent);
+						sessionret.button.SetText(Resource.String.delete);
+						return sessionret;	
 					default:
 						throw new Exception("Cannot create view holder for " + (EViewType)viewType);
 				}

@@ -253,6 +253,13 @@ Unit Strings
 -->
   </GaugeDevice>
 
+  <GaugeDevice deviceCode="T1">
+  	<GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="100" maxUnit="celsius" relative="true">
+  		<SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+		</GaugeDeviceSensor>
+	</GaugeDevice>
+
   <GaugeDevice deviceCode="T3">
     <GaugeDeviceSensor type="temperature" removable="True" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
       <SupportedUnit>fahrenheit</SupportedUnit>

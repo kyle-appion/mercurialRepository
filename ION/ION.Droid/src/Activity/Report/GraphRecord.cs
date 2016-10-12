@@ -29,6 +29,9 @@
 		public DateIndexLookup dil { get; private set; }
 		public PointSeries[] pointSeries { get; private set; }
 
+		public double min { get; private set; }
+		public double max { get; private set; }
+
 		public LineSeries[] series { get; private set; }
 		public bool isChecked { get; set; }
 		
@@ -36,12 +39,12 @@
 			this.sensor = sensor;
 			this.dil = dil;
 			this.pointSeries = pointSeries;
-			isChecked = false;
+			isChecked = true;
 
 			var list = new List<LineSeries>();
 
 			foreach (var s in pointSeries) {
-				var series = new LineSeries {
+				var lineSeries = new LineSeries {
 					StrokeThickness = 1,
 					MarkerType = MarkerType.Circle,
 					MarkerSize = 0,
@@ -49,13 +52,28 @@
 					MarkerStrokeThickness = 0,
 				};
 
+				min = double.MaxValue;
+				max = double.MinValue;
+
 				for (var i = 0; i < s.length; i++) {
-					series.Points.Add(new DataPoint(dil.IndexOfDate(s.times[i]), s.measurements[i]));
+					var meas = s.measurements[i];
+					lineSeries.Points.Add(new DataPoint(dil.IndexOfDate(s.times[i]), meas));
+					if (min > meas) {
+						min = meas;
+					}
+
+					if (max < meas) {
+						max = meas;
+					}
 				}
 
-				Log.D(this, "Series has: " + series.Points.Count + " points");
+				var span = sensor.maxMeasurement.ConvertTo(sensor.unit.standardUnit).amount * 0.05;
+				min -= span;
+				max += span;
 
-				list.Add(series);
+				Log.D(this, "Series has: " + lineSeries.Points.Count + " points");
+
+				list.Add(lineSeries);
 			}
 
 			series = list.ToArray();
@@ -100,6 +118,12 @@
 			plot = view.FindViewById<PlotView>(Resource.Id.graph);
 			title = view.FindViewById<TextView>(Resource.Id.name);
 			check = view.FindViewById<CheckBox>(Resource.Id.check);
+
+			check.CheckedChange += (sender, e) => {
+				if (t != null) {
+					t.isChecked = e.IsChecked;
+				}
+			};
 		}
 
 		public override void OnBindTo() {
@@ -139,8 +163,8 @@
 			var standardUnit = t.sensor.unit.standardUnit;
 			var yAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
-				Maximum = t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
+				Minimum = t.min,//t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
+				Maximum = t.max,//t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,

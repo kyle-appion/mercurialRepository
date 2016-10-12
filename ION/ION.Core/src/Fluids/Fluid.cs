@@ -137,13 +137,23 @@
       }
     }
 
+		/// <summary>
+		/// Queries the median pressure for the state.
+		/// </summary>
+		/// <returns>The median pressure.</returns>
+		/// <param name="state">State.</param>
+		public double GetMedianPressure(EState state) {
+			var index = (state == EState.Dew) ? rows : 0;
+			return index + rows / 2;
+		}
+
     /// <summary>
     /// Queries the expected temperature of the fluid at the given bubble point 
     /// pressure.
     /// </summary>
     /// <param name="pressure">The absolute pressure to match to an expected temperature.</param>
     /// <returns></returns>
-    public Scalar GetTemperatureFromPressure(EState state, Scalar pressure) {
+    public Scalar GetTemperatureFromAbsolutePressure(EState state, Scalar pressure) {
       pressure = pressure.ConvertTo(PRESSURE);
       Scalar pmin = GetMinimumPressure(state), pmax = GetMaximumPressure(state);
 
