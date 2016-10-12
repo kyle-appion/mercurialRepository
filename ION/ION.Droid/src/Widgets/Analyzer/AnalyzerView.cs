@@ -600,6 +600,44 @@
      *      do nothing
      */
     private void SetManifoldSensor(Analyzer.ESide destSide, Sensor sensor) {
+/*
+			// This method is called when the user drops a sensor on either the high or low viewer.
+
+			// The sensor that is being dropped can come from either side, so we need to check if it is on the same side
+			if (analyzer.IsSensorOnSide(sensor, destSide)) {
+			} else {
+				// The sensor is not on the destination side.
+				// We will need to check for a few things before we can commit the sensor to the manifold.
+				// First, is the sensor on the analyzer at all
+				if (analyzer.HasSensor(sensor)) {
+					// The sensor is in the analyzer.
+					// We will need to check if it is already attached to a manifold.
+					if (analyzer.IsSensorAttachedToManifold(sensor)) {
+						// The sensor is already attached to a manifold.
+						// We know that we are trying to move the sensor across sides and drop it into a manifold. This will break
+						// the sensor's old manifold in some way: we are either losing the secondary sensor (which means that we can
+						// lose subview data) or we lose the primary sensor (which will nuke the entire manifold).
+						// So, we will need to ask the users permission to commit the swap.
+						RequestPermissionToSetManifold(Resource.String.analyzer_commit_title, Resource.String.analyzer_commit_message, () => {
+							// The action that will occur if permission is granted
+							// Here we will remove the sensor form the old manifold and attempt to add or clobber the dest manifold
+						});
+					} else {
+						// The sensor is not attached to a manifold.
+						// We can just attempt to add or clobber the dest manifold
+						if (destManifold == EMPTY) {
+							// We can just add without permission
+							// TODO ahodder@appioninc.com: remove the sensor from the other side and add it to the new side
+							// TODO ahodder@appioninc.com: create a new manifold on destside with the sensor
+						} else {
+						}
+					}
+				}
+			}
+*/
+
+			// The shit below is the legacy crap
+
       var manifold = analyzer.GetManifoldFromSide(destSide);
 
       Analyzer.ESide sensorSide;

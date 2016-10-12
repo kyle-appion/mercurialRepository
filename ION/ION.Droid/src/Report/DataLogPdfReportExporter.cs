@@ -14,6 +14,7 @@
 	using ION.Core.Devices;
 	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
+	using ION.Core.Sensors;
 	using ION.Core.Util;
 
 	using ION.Droid.App;
@@ -134,7 +135,7 @@
 						if (m.measurements.ContainsKey(dt)) {
 							var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.defaultUnits.DefaultUnitFor(m.sensor.type));
 							var format = sessionBreaks.Contains(dt) ? 3 : 2;
-							file.SetCellValue(2 + y, 2 + x, "" + scalar.amount, format);
+							file.SetCellValue(2 + y, 2 + x, "" + SensorUtils.ToFormattedString(m.sensor.type, scalar), format);
 							Log.D(this, "X: " + x + " Y: " + y + " value: " + scalar);
 						}
 					}

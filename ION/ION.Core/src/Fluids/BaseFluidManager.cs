@@ -145,6 +145,7 @@
       var ret = new List<string>();
 
       foreach (var filename in EmbeddedResource.GetResourcesOfExtension(EXT_FLUID)) {
+				Log.D(this, "Fluid: " + filename);
         if (!FLUID_COLORS_FILE.Equals(filename)) {
           var fluidName = Regex.Replace(filename, "\\" + EXT_FLUID, "");
           ret.Add(fluidName);
