@@ -60,16 +60,28 @@ namespace ION.IOS.ViewController.Workbench
 
       if (record.manifold.secondarySensor != null) {
         labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
+        if(record.manifold.secondarySensor.type == ESensorType.Temperature){
+					labelTitle.Text = "TEMP";
+				} else {
+					labelTitle.Text = "PRESS";
+				}
       } else {
         labelMeasurement.Text = "Not Linked";
+				labelTitle.Text = "Linked";
       }
     }
 
     public void manifoldUpdating(ManifoldEvent Event){
       if (record.manifold.secondarySensor != null) {
         labelMeasurement.Text = record.manifold.secondarySensor.measurement.amount.ToString("N") + " " + record.manifold.secondarySensor.unit;
+        if(record.manifold.secondarySensor.type == ESensorType.Temperature){
+					labelTitle.Text = "TEMP";
+				} else {
+					labelTitle.Text = "PRESS";
+				}
       } else {
         labelMeasurement.Text = "Not Linked";
+        labelTitle.Text = "Linked";
       }
 	  }
   }

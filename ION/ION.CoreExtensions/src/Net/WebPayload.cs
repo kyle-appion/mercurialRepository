@@ -19,6 +19,7 @@ using ION.Core.Content;
 using ION.Core.Connections;
 using ION.Core.Sensors.Properties;
 using ION.Core.Fluids;
+using System.Collections.ObjectModel;
 
 namespace ION.Core.Net {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -52,19 +53,19 @@ namespace ION.Core.Net {
 		} bool __downloading;
 		
 		public DateTime startedViewing;   
-		public const string uploadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadSession.php";
-		public const string downloadSessionUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadSession.php";
-		public const string registerUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/registerUser.php";
-		public const string submitCodeUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/submitAccessCode.php";
-		public const string confirmAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/confirmAccess.php";
-		public const string retrieveAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/retrieveAccess.php";
-		public const string createAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/requestAccess.php";
-		public const string getRequestsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/getRequests.php";
-		public const string changeOnlineUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/changeOnlineStatus.php";
-		public const string uploadLayoutsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/uploadLayouts.php";
-		public const string downloadLayoutsUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadLayouts.php";
-		public const string forgotAccountUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/forgotUserPass.php";
-		public const string updateAccountUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/updateAccount.php";
+		public const string uploadSessionUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/uploadSession.php";
+		public const string downloadSessionUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/downloadSession.php";
+		public const string registerUserUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/registerUser.php";
+		public const string submitCodeUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/submitAccessCode.php";
+		public const string confirmAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/confirmAccess.php";
+		public const string retrieveAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/retrieveAccess.php";
+		public const string createAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/requestAccess.php";
+		public const string getRequestsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/getRequests.php";
+		public const string changeOnlineUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/changeOnlineStatus.php";
+		public const string uploadLayoutsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/uploadLayouts.php";
+		public const string downloadLayoutsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/downloadLayouts.php";
+		public const string forgotAccountUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/forgotUserPass.php";
+		public const string updateAccountUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/updateAccount.php";
 		public webTimeoutEvent timedOut;
 		public webPauseEvent paused;
 		
@@ -79,7 +80,7 @@ namespace ION.Core.Net {
 		/// Packages the session information for any session chosen by the user to be uploaded
 		/// </summary>
 		/// <param name="sessionList">Session list.</param>
-		public void getSession(List<int> sessionList){
+		public void getSession(ObservableCollection<int> sessionList){
 			
 		  var paramList = new List<string>();
 
@@ -91,20 +92,20 @@ namespace ION.Core.Net {
 			var totalSessions = sessionResult.Count;
 			var count = 1;
 
-			string jsonPayload = "{";
+			string jsonPayload = "{";    
 			
 			foreach (var session in sessionResult){
 				var measurementResult = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT MID,serialNumber, sensorIndex, recordedDate, measurement FROM SensorMeasurementRow where frn_SID = ? ORDER BY recordedDate ASC",session.SID);
 				
 				jsonPayload += "\"session"+count+"\":{";
-				jsonPayload += "\"start\":\""+session.sessionStart.ToLocalTime()+"\",";
-				jsonPayload += "\"end\":\""+session.sessionEnd.ToLocalTime()+"\",";
+				jsonPayload += "\"start\":\""+session.sessionStart.ToLocalTime().ToString("yy-MM-dd HH:mm:ss")+"\",";
+				jsonPayload += "\"end\":\""+session.sessionEnd.ToLocalTime().ToString("yy-MM-dd HH:mm:ss")+"\",";
 				jsonPayload += "\"measurements\":[";
 				var count2 = 1;
 				if(measurementResult.Count > 0){					
 					foreach(var entry in measurementResult){
 						jsonPayload += "{\"measurement\":\""+entry.measurement + "\",";
-						jsonPayload += "\"recorded\":\"" +entry.recordedDate.ToLocalTime().ToString() + "\",";
+						jsonPayload += "\"recorded\":\"" +entry.recordedDate.ToLocalTime().ToString("yy-MM-dd HH:mm:ss") + "\",";
 						jsonPayload += "\"sindex\":\"" +entry.sensorIndex + "\",";
 						jsonPayload += "\"sn\":\"" +entry.serialNumber + "\"}";
 						if(count2 < measurementResult.Count){ 

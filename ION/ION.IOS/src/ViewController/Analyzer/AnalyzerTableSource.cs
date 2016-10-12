@@ -130,7 +130,7 @@ namespace ION.IOS.ViewController.Analyzer
 
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-        cell.Layer.CornerRadius = 5;
+        //cell.Layer.CornerRadius = 5;
         return cell;
       }else {
         var cell = tableView.DequeueReusableCell("Alternate") as altTableCell;

@@ -59,12 +59,6 @@ namespace ION.IOS.ViewController.Workbench {
           }
         }
       };
-
-      button.TouchUpInside += (object sender, EventArgs e) => {
-        if (onClick != null) {
-          onClick();
-        }
-      };
     }
 
     // Overridden from UITableViewCell

@@ -25,8 +25,12 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader = new UILabel(new CGRect(0, 0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
       //secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
       secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
-
-      cellHeader.Text = "Linked";
+			
+			if(lhSensor.currentSensor.type == ESensorType.Temperature){
+				cellHeader.Text = "Linked PRESS";
+			} else {
+				cellHeader.Text = "Linked TEMP";
+			}
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
       cellHeader.Font = UIFont.FromName("Helvetica-Bold", 21f);

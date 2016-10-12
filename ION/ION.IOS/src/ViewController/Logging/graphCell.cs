@@ -103,7 +103,6 @@ namespace ION.IOS.ViewController.Logging
 			var highValue = -9999.9; 
 
       var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
-
       if (cellData.type.Equals("Temperature")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
       } else if (cellData.type.Equals("Vacuum")) {

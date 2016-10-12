@@ -33,6 +33,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static UIButton dataRecord;
     public static UIImageView compressor;
     public static UIImageView expansion;
+    public UILabel remoteTitle;
     public RemoteControls remoteControl;
 
     private IosION ion;
@@ -63,9 +64,10 @@ namespace ION.IOS.ViewController.Analyzer {
 		
       arvc = this;
       
-      lowHighSensors = new LowHighArea (viewAnalyzerContainer, this);
+      analyzerSensors = new sensorGroup(viewAnalyzerContainer, this);      
+      lowHighSensors = new LowHighArea (viewAnalyzerContainer, this, analyzerSensors);
+
       mentryView = new ManualView(viewAnalyzerContainer);
-      analyzerSensors = new sensorGroup(viewAnalyzerContainer, this);
       
       InitNavigationBar("ic_nav_analyzer", false); 
       ion = AppState.context as IosION;      
@@ -79,8 +81,21 @@ namespace ION.IOS.ViewController.Analyzer {
      
 			analyzer = ion.currentAnalyzer;
 			
-      Title = "Analyzer";
-
+			if(remoteMode){
+				remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
+				remoteTitle.BackgroundColor = UIColor.Clear;
+				remoteTitle.Lines = 2;
+				remoteTitle.Font = UIFont.BoldSystemFontOfSize(14f);
+				remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
+				remoteTitle.TextAlignment = UITextAlignment.Center;
+				remoteTitle.TextColor = UIColor.Black;
+				remoteTitle.Text = "Analyzer\nRemote Viewing";
+				
+				this.NavigationItem.TitleView = remoteTitle;				
+			} else {
+	      Title = "Analyzer";
+			}
+      
       createSensors ();
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
@@ -105,47 +120,61 @@ namespace ION.IOS.ViewController.Analyzer {
       viewAnalyzerContainer.SendSubviewToBack(lowHighSensors.highArea.snapArea);
       
       if(remoteMode){
-				UIView blockerView = new UIView(new CGRect(0,40,viewAnalyzerContainer.Bounds.Width,.8 * viewAnalyzerContainer.Bounds.Height));
+      	var totalSize = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).Size;
+				totalSize /= 1024;
+				totalSize /= 1024;
+				var freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
+				freeSpace /= 1024;
+				freeSpace /= 1024;
+				
+				Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
+			
+				UIView blockerView = new UIView(new CGRect(0,0,viewAnalyzerContainer.Bounds.Width,viewAnalyzerContainer.Bounds.Height));
 				blockerView.BackgroundColor = UIColor.Clear;
-    		blockerView.ExclusiveTouch = true;
 
 				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle("Remote", UIControlState.Normal);
+				remoteButton.SetTitle("Options", UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteButton.TouchUpInside += (sender, e) =>{
-					analyzer.sensorPositions = new List<int>(analyzer.revertPositions);
-					pauseRemote(false);
-					webServices.downloading = true;
-					blockerView.Hidden = false;
-					blockerView.ExclusiveTouch = true;
-					this.NavigationItem.RightBarButtonItem = null;
+					if(remoteControl.controlView.Hidden){
+						remoteControl.controlView.Hidden = false;
+					} else {
+						remoteControl.controlView.Hidden = true;
+					}
 				};
 				
 				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
-   		
-	   		remoteControl = new RemoteControls(.8f * viewAnalyzerContainer.Bounds.Height,viewAnalyzerContainer.Bounds.Width, .1f * viewAnalyzerContainer.Bounds.Height);
+				this.NavigationItem.RightBarButtonItem = button;
+				this.NavigationController.NavigationBar.BarTintColor = UIColor.Red;
+
+	   		remoteControl = new RemoteControls(0,viewAnalyzerContainer);
+	   		remoteControl.controlView.ExclusiveTouch = true;
 	   		remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
 	   			blockerView.Hidden = true;
-	   			blockerView.ExclusiveTouch = false;
 					disconnectRemoteMode();
 				};
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
-					Console.WriteLine("Clicked edit button");
-					pauseRemote(true);
+					remoteTitle.Text = "Analyzer\nRemote Editing";
 					webServices.downloading = false;
 					blockerView.Hidden = true;
-					blockerView.ExclusiveTouch = false;
-					this.NavigationItem.RightBarButtonItem = button;					
-				};				
-				
+				};
+
+				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
+					remoteTitle.Text = "Analyzer\nRemote Viewing";
+					pauseRemote(false);
+					webServices.downloading = true;
+					blockerView.Hidden = false;					
+				};
+			
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
       	webServices.paused += pauseRemote;
-      	View.AddSubview(blockerView);
-      	View.BringSubviewToFront(blockerView);
-      } else {				
+      	viewAnalyzerContainer.AddSubview(blockerView);
+      	viewAnalyzerContainer.BringSubviewToFront(blockerView);
+      	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
+      } else {
 				if(analyzer.sensorList == null){
 		      var sensorList = new List<Sensor>();
 		      analyzer.sensorList = sensorList;
@@ -166,10 +195,10 @@ namespace ION.IOS.ViewController.Analyzer {
 	      }
 	
 	      var button = new UIBarButtonItem(dataRecord);
-	
+
 	      NavigationItem.RightBarButtonItem = button;
 				layoutAnalyzer();				
-			}      
+			}
     }
 
     /// <summary>
@@ -1000,6 +1029,31 @@ namespace ION.IOS.ViewController.Analyzer {
         area.highArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
         area.highArea.DeviceImage.Image = area.deviceImage.Image;
         area.highArea.isManual = false;
+        ///Check for low high association for newly added sensor and alert for incorrect placement/setup
+    //    if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
+				//	var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier));
+				//	var checkSensor = analyzerSensors.viewList[checkIndex];
+				//	if(checkSensor.lowArea.manifold.secondarySensor != null){
+				//		if(checkSensor.lowArea.manifold.secondarySensor == sensor){
+				//			checkSensor.lowArea.attachedSensor = area;
+				//			area.topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+				//			area.tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+				//			area.topLabel.TextColor = UIColor.White;
+				//		}
+				//	}
+				//}
+				//if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
+				//	var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier));
+				//	var checkSensor = analyzerSensors.viewList[checkIndex];
+				//	if(checkSensor.highArea.manifold.secondarySensor != null){
+				//		if(checkSensor.highArea.manifold.secondarySensor == sensor){
+				//			checkSensor.highArea.attachedSensor = area;
+				//			area.topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+				//			area.tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+				//			area.topLabel.TextColor = UIColor.White;
+				//		}
+				//	}
+				//}
       }
 		}
     
@@ -1030,6 +1084,9 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             } else {
+            	if(lowHighSensors.lowArea.attachedSensor != null && lowHighSensors.lowArea.attachedSensor.currentSensor != null && lowHighSensors.lowArea.attachedSensor.currentSensor == sensor){
+								return;
+							}
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
               analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
@@ -1047,7 +1104,7 @@ namespace ION.IOS.ViewController.Analyzer {
           }
         }
 
-        if(!existingConnection){
+        if(!existingConnection){        	
           for(int i = start; i < stop; i ++){
             if(!analyzerSensors.viewList[i].availableView.Hidden){
               if(!analyzer.sensorList.Contains(sensor)){
@@ -1156,7 +1213,29 @@ namespace ION.IOS.ViewController.Analyzer {
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;
                 analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;
               }
-
+			        ///Check for low high association for newly added sensor
+			        if(lowHighSensors.lowArea.attachedSensor != null){
+								var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier));
+								var checkSensor = analyzerSensors.viewList[checkIndex];
+								if(checkSensor.lowArea.attachedSensor.currentSensor != null){
+									if(checkSensor.lowArea.attachedSensor.currentSensor == sensor){
+										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
+									}
+								}
+							}
+							if(lowHighSensors.highArea.attachedSensor != null){
+								var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier));
+								var checkSensor = analyzerSensors.viewList[checkIndex];
+								if(checkSensor.highArea.attachedSensor.currentSensor != null){
+									if(checkSensor.highArea.attachedSensor.currentSensor == sensor){
+										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
+									}
+								}
+							} 
               break;
             }
           }
@@ -1186,7 +1265,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
           }
-        }
+        }       
 		}
 
     private void alarmRequestViewer(actionPopup area) {
@@ -1268,13 +1347,10 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public void pauseRemote(bool paused){
-			if(paused == true){
-		 		remoteControl.controlView.Hidden = true;
-			} else {
-				remoteControl.controlView.Hidden = false;
+			if(paused == false){
 				refreshSensorLayout();
 			}
-		}	
+		}
 	
 		public async void disconnectRemoteMode(){
       var window = UIApplication.SharedApplication.KeyWindow;
@@ -1289,17 +1365,43 @@ namespace ION.IOS.ViewController.Analyzer {
 			rootVC.setMainMenu();
 		}
 		
-		public void confirmSubviews(sensor updateSensor, string section = "false"){
+		public void confirmSubviews(sensor updateSensor, string section = "high"){
+			Console.WriteLine(section);
 			if(section == "low"){
-				foreach(var sub in analyzer.lowSubviews){
-					if(updateSensor.lowArea.tableSubviews.Contains(sub)){
-
+				foreach(var existing in analyzer.lowSubviews){
+					if(!updateSensor.lowArea.tableSubviews.Contains(existing)){
+						Console.WriteLine("Added subview " + existing);
+						updateSensor.lowArea.tableSubviews.Add(existing);
+						updateSensor.lowArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.lowArea.tableSubviews, updateSensor.lowArea);
+						updateSensor.lowArea.subviewTable.Hidden = false;
+						updateSensor.lowArea.subviewTable.ReloadData();
+					}
+				}
+				foreach(var removal in updateSensor.lowArea.tableSubviews.ToArray()){
+					if(!analyzer.lowSubviews.Contains(removal)){
+						Console.WriteLine("Removed " + removal);
+						updateSensor.lowArea.tableSubviews.Remove(removal);
+						updateSensor.lowArea.subviewTable.ReloadData();
 					}
 				}
 			} else {
-
+				foreach(var existing in analyzer.highSubviews){
+					if(!updateSensor.highArea.tableSubviews.Contains(existing)){
+						Console.WriteLine("Added subview " + existing);
+						updateSensor.highArea.tableSubviews.Add(existing);
+						updateSensor.highArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.highArea.tableSubviews, updateSensor.highArea);
+						updateSensor.highArea.subviewTable.Hidden = false;
+						updateSensor.highArea.subviewTable.ReloadData();
+					}
+				}
+				foreach(var removal in updateSensor.highArea.tableSubviews.ToArray()){
+					if(!analyzer.highSubviews.Contains(removal)){
+						Console.WriteLine("Removed " + removal);
+						updateSensor.highArea.tableSubviews.Remove(removal);
+						updateSensor.highArea.subviewTable.ReloadData();
+					}
+				}
 			}
-		
 		}
 		
     public override void ViewDidAppear(bool animated) {
@@ -1311,7 +1413,13 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
-	    } 
+	    } else {
+				if(webServices.downloading){
+					remoteTitle.Text = "Analyzer\nRemote Viewing";
+				} else {
+					remoteTitle.Text = "Analyzer\nRemote Editing";
+				}
+			}
 	    viewAnalyzerContainer.SetNeedsDisplay();
     }
 	}

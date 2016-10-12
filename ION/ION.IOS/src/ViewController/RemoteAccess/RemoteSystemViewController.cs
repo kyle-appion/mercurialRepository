@@ -16,7 +16,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public RemoteUserProfileView profileView;
 		public RemoteLoginView loginView;
 		public RemoteUserRegistration registerView;
-		public const string loginUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/applogin.php";
+		public const string loginUserUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/applogin.php";
 		public IosION ion;
 		public UIBarButtonItem settingsButton;
 		public UIBarButtonItem register;

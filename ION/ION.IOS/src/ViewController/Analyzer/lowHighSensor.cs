@@ -68,7 +68,6 @@ namespace ION.IOS.ViewController.Analyzer
     private AnalyzerViewController __analyzerviewcontroller;
     public Unit tUnit;
     public Unit pUnit;
-    public sensor attachedSensor;
     public UIActivityIndicatorView activityConnectStatus;
     public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
@@ -83,7 +82,15 @@ namespace ION.IOS.ViewController.Analyzer
     public string location;
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
-
+    public List<sensor> sensorList;
+    public LowHighArea lharea;
+		public sensor attachedSensor{
+      get { return __attachedSensor;}
+      set { 
+						__attachedSensor = value;						
+					}
+    } sensor __attachedSensor;
+    
     public GaugeDeviceSensor currentSensor{
 
       get { return __currentSensor;}
@@ -117,8 +124,9 @@ namespace ION.IOS.ViewController.Analyzer
       }
     } Manifold __manifold;
 
-		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController)
+		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController, List<sensor> viewList)
 		{
+			sensorList = viewList;
 			snapArea = new UIView (areaRect);
 			this.areaRect = areaRect;
       cellHeight = .521f * snapArea.Bounds.Height;
@@ -126,7 +134,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.Bounces = false;
 
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
-      LabelMiddle = new UILabel (new CGRect(.1 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
+      LabelMiddle = new UILabel (new CGRect(.214 * areaRect.Width, .217 * areaRect.Height, .686 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
       LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       LabelSubview.ClipsToBounds = true;
@@ -331,7 +339,57 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
       var manifold = Event.manifold;
+      Console.WriteLine(Event.type);
+			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
 
+			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
+			 //var compareSensor = __manifold.secondarySensor;
+				//Console.WriteLine("Removed secondary sensor is " +compareSensor.name + " " + compareSensor.type);
+				//Console.WriteLine("This sensor is " +currentSensor.name + " " + currentSensor.type);
+				//if(currentSensor != compareSensor && attachedSensor != null){
+				//	foreach(var slot in sensorList){
+				//		if(slot.currentSensor != null){
+				//			Console.WriteLine("Looking at sensor " + slot.currentSensor.name + " " + slot.currentSensor.type);
+				//			if(slot.currentSensor == compareSensor){
+				//				Console.WriteLine("matches to the secondary sensor");
+				//				slot.topLabel.BackgroundColor = UIColor.Clear;
+				//				slot.tLabelBottom.BackgroundColor = UIColor.Clear;
+				//				slot.topLabel.TextColor = UIColor.Black;	
+				//			}
+				//			if(slot.currentSensor == currentSensor){
+				//				Console.WriteLine("found the owner of this lowhighsensor");
+				//				slot.lowArea.attachedSensor = null;
+				//				slot.highArea.attachedSensor = null;
+				//			}
+				//		}					
+				//	}
+				//}	else if(currentSensor == compareSensor){
+				// 	compareSensor = __manifold.primarySensor;
+				//	Console.WriteLine("this is a temperature high low and the primary sensor was changed to pressure "  + compareSensor.name + " " + compareSensor.type);
+				//	foreach(var slot in sensorList){
+				//		if(slot.currentSensor != null){
+				//			Console.WriteLine("Looking at sensor " + slot.currentSensor.name + " " + slot.currentSensor.type);
+				//			if(slot.currentSensor == compareSensor){
+				//				Console.WriteLine("matches to the secondary sensor");
+				//				slot.topLabel.BackgroundColor = UIColor.Clear;
+				//				slot.tLabelBottom.BackgroundColor = UIColor.Clear;
+				//				slot.topLabel.TextColor = UIColor.Black;
+				//				__manifold = new Manifold(currentSensor);
+				//				__manifold.SetSecondarySensor(new ManualSensor(ESensorType.Pressure));
+				//				__manifold.ptChart = PTChart.New(ion,Fluid.EState.Dew);
+				//				manifold = __manifold;
+				//			}
+				//			if(slot.currentSensor == currentSensor){
+				//				Console.WriteLine("found the owner of this lowhighsensor " + currentSensor.name + " " + currentSensor.type);
+				//				slot.lowArea.attachedSensor = null;
+				//				slot.highArea.attachedSensor = null;
+				//			}
+				//		}					
+				//	}
+				//} 
+			}
+			subviewTable.ReloadData();					
+			
       updateSHSCCell(manifold);
 
       updatePTCell(manifold);
@@ -512,7 +570,7 @@ namespace ION.IOS.ViewController.Analyzer
         updateSHSCCell(__manifold);
         updatePTCell(__manifold);
       }
-    }
+    }    
 	}
 }
 

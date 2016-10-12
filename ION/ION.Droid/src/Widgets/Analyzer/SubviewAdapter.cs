@@ -167,6 +167,10 @@
     /// <param name="me">Me.</param>
     private void OnManifoldEvent(ManifoldEvent me) {
       switch (me.type) {
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	goto case ManifoldEvent.EType.Invalidated;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
+        	goto case ManifoldEvent.EType.Invalidated;
         case ManifoldEvent.EType.Invalidated:
           RefreshRecords();
           break;
