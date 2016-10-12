@@ -90,7 +90,8 @@ namespace ION.Core.Devices.Protocols {
     /// <returns></returns>
     // Overridden from IGaugeProtocol
     public override byte[] CreateSetUnitCommand(int sensorIndex, Sensors.ESensorType sensorType, Unit unit) {
-      return new byte[] { 0x02, (byte)UnitLookup.GetCode(unit), (byte)sensorIndex };
+      var ret = new byte[] { 0x02, (byte)UnitLookup.GetCode(unit), (byte)sensorIndex };
+			return ret;
     }
 
     /// <summary>

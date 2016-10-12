@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.20">
+	<display version="0.9.21">
 		<update>Updated rate of change algorithm</update>
+		<update>Updated refrigerant library</update>
 		<fixed>Fixed corner-case bugs in Analyzer</fixed>
 		<fixed>Fixed alarm activity not responding to save clicks</fixed>
 		<fixed>Fixed some bugs in preferences and preference handling</fixed>

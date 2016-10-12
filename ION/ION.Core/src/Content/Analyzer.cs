@@ -20,7 +20,6 @@
     /// <summary>
     /// The side of the analyzer that the event was thrown from.
     /// </summary>
-    /// <param name="type">Type.</param>
     public Analyzer.ESide side { get; private set; }
     /// <summary>
     /// The index that is used for almost all sensor events. In the case of a swap event, this is the first sensor.
@@ -51,7 +50,6 @@
     /// <summary>
     /// Creates a new Swap analyzer event.
     /// </summary>
-    /// <param name="type">Type.</param>
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     public AnalyzerEvent(int first, int second) {
@@ -421,6 +419,21 @@
       return GetSideOfIndex(IndexOfSensor(sensor), out side);
     }
 
+		/// <summary>
+		/// Queries whether or not the sensor is on the given side of the analyzer.
+		/// </summary>
+		/// <returns><c>true</c>, if sensor on side was ised, <c>false</c> otherwise.</returns>
+		/// <param name="sensor">Sensor.</param>
+		/// <param name="side">Side.</param>
+		public bool IsSensorOnSide(Sensor sensor, ESide side) {
+			if (!HasSensor(sensor)) {
+				return false;
+			}
+
+			ESide actual;
+			return GetSideOfSensor(sensor, out actual) && actual == side;
+		}
+
     /// <summary>
     /// Queries the side of the given index. If the index is not a valid index within the analyzer, we will return null
     /// and set side to ESide.Low. 
@@ -450,7 +463,6 @@
     /// <param name="sensor">Sensor.</param>
     public bool PutSensor(int index, Sensor sensor, bool force=false) {
       if (HasSensor(sensor) && !force) {
-        ION.Core.Util.Log.D(this, "Ignoring putting the sensor.");
         return false;
       }
 
