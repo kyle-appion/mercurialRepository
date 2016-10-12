@@ -275,8 +275,7 @@
       var reports = new NavigationCategory() {
         id = Resource.Id.reports,
         title = GetString(Resource.String.reports),
-        items = new NavigationItem[] {
-#if DEBUG
+				items = new NavigationItem[] {
           new NavigationIconItem() {
             id = Resource.Id.job,
             title = GetString(Resource.String.job_settings),
@@ -294,7 +293,6 @@
 //              StartActivity(typeof(DataLoggingReportActivity));
             }
           },
-#endif
           new NavigationIconItem() {
             id = Resource.Id.report_screenshot_archive,
             title = GetString(Resource.String.report_screenshot_archive),

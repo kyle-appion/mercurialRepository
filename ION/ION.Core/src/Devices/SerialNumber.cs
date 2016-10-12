@@ -15,6 +15,7 @@
     PT800,
     AV760,
     _3XTM, // I kind of hate how greg names products some times
+		_1XTM,
     HT,
   }
 
@@ -38,6 +39,7 @@
         case EDeviceModel.PT800: return "PT8";
         case EDeviceModel.AV760: return "V7";
         case EDeviceModel._3XTM: return "T3";
+				case EDeviceModel._1XTM: return "T1";
         case EDeviceModel.HT: return "HT";
         case EDeviceModel.InternalBluefruit: return "Bf";
       default: {
@@ -56,6 +58,7 @@
         case EDeviceModel.PT800: return "PT800";
         case EDeviceModel.AV760: return "AV760";
         case EDeviceModel._3XTM: return "T3";
+				case EDeviceModel._1XTM: return "T1";
         case EDeviceModel.HT: return "HT";
         case EDeviceModel.InternalBluefruit: return "Bf";
         default: {

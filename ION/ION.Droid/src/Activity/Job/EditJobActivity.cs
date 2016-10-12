@@ -115,6 +115,7 @@
         case 1:
           info.SetColor(new Color(GetColor(Resource.Color.gray)));
           sessions.SetColor(new Color(GetColor(Resource.Color.black)));
+					HideKeyboard();
           break;
       }
     }

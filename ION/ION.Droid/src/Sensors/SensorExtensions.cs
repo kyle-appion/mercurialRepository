@@ -37,6 +37,31 @@
       }
     }
 
+		/// <summary>
+		/// Queries the localized user friendly abreviation string representation of a sensor type.
+		/// </summary>
+		/// <returns>The type abreviation string.</returns>
+		/// <param name="sensorType">Sensor type.</param>
+		public static string GetTypeAbreviationString(this ESensorType sensorType) {
+			var ion = (AndroidION)AppState.context;
+			switch (sensorType) {
+				case ESensorType.Humidity:
+					return ion.GetString(Resource.String.humidity_short);
+				case ESensorType.Length:
+					return ion.GetString(Resource.String.length_short);
+				case ESensorType.Mass:
+					return ion.GetString(Resource.String.mass_short);
+				case ESensorType.Pressure:
+					return ion.GetString(Resource.String.pressure_short);
+				case ESensorType.Temperature:
+					return ion.GetString(Resource.String.temperature_short);
+				case ESensorType.Vacuum:
+					return ion.GetString(Resource.String.vacuum_short);
+				default:
+					return ion.GetString(Resource.String.unknown);
+			}
+		}
+
     /// <summary>
     /// Converts the sensor to a sensor parcelable
     /// </summary>

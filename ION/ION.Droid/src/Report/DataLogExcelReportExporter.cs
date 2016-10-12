@@ -127,7 +127,7 @@
 				}
 
 				// Draw the content for the measurements.
-				var x =0;
+				var x = 0;
 				foreach (var key in measurements.Keys) {
 					for (int y = 0; y < masterDates.Count; y++) {
 						var m = measurements[key];
@@ -143,6 +143,14 @@
 
 					x++;
 				}
+
+				// Autofit
+				file.AutofitCol(1, x + 1, false, 1.1);
+/*
+				for (int col = 1; col < 2 + x; col++) {
+					file.AutofitCol(col, false, 1.1);
+				}
+*/
 
 				file.Save(filepath);
 				file.Save(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "A Lovely Filename.xlsx"));

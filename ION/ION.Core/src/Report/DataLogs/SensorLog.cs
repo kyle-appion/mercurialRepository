@@ -13,7 +13,7 @@
 
     public SensorLog(double measurement, DateTime recordedDate) {
       this.measurement = measurement;
-      this.recordedDate = recordedDate;
+			this.recordedDate = recordedDate.ToLocalTime();
     }
   }
 }

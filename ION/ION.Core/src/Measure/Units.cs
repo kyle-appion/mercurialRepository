@@ -81,6 +81,10 @@
       public static readonly Unit SECOND = Time.SECOND;
     }
 
+		public static class Dimensionless {
+			public static readonly Unit NONE = Base(Quantity.Dimensionless, "");
+		}
+
     public static class Angle {
       public static readonly Unit RADIAN = Base(Quantity.Angle, "rad");
       public static readonly Unit DEGREE = Named(RADIAN.Mul(System.Math.PI).Div(180), "°");

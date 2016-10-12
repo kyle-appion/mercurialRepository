@@ -2,10 +2,7 @@
 
   using System;
   using System.Collections.Generic;
-  using System.Threading.Tasks;
 
-  using Android.App;
-  using Android.Content;
   using Android.Content.Res;
   using Android.OS;
   using Android.Support.V7.Widget;
@@ -111,6 +108,8 @@
           return new PTChartSubviewViewHolder(parent, Resource.Layout.subview_fluid_large);
         case EViewType.SuperheatSubcoolSubview:
           return new SuperheatSubcoolSubviewViewHolder(parent, Resource.Layout.subview_fluid_large);
+				case EViewType.SecondarySensorSubview:
+					return new SecondarySensorSubviewViewHolder(parent, Resource.Layout.subview_measurement_large);
         case EViewType.TimerSubview:
           return new TimerSubviewViewHolder(parent, Resource.Layout.subview_timer_large, cache);
         case EViewType.RateOfChangeSubview:
@@ -492,6 +491,11 @@
           var shr = record as SuperheatSubcoolSubviewRecord;
           (holder as SuperheatSubcoolSubviewViewHolder).record = shr;
           break;
+
+				case EViewType.SecondarySensorSubview:
+					var ssr = record as SecondarySensorSubviewRecord;
+					(holder as SecondarySensorSubviewViewHolder).record = ssr;
+					break;
       }
 
 			holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
@@ -559,6 +563,8 @@
         ret = new TimerSubviewRecord(sp as TimerSensorProperty);
       } else if (sp is RateOfChangeSensorProperty) {
         ret = new RateOfChangeSubviewRecord(sp as RateOfChangeSensorProperty);
+			} else if (sp is SecondarySensorProperty) {
+				ret = new SecondarySensorSubviewRecord(sp as SecondarySensorProperty);
       } else {
         ret = new MeasurementRecord(sp);
       }
@@ -579,6 +585,7 @@
     RateOfChangeSubview,
     PTChartSubview,
     SuperheatSubcoolSubview,
+		SecondarySensorSubview,
     TimerSubview,
   }
 

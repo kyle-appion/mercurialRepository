@@ -21,7 +21,6 @@
 	using ION.Core.Location;
 	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
-	using ION.Core.Pdf;
 	using ION.Core.Sensors;
 	using ION.Core.Util;
 

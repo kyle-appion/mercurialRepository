@@ -71,7 +71,9 @@
         case EViewType.PTChartSubview:
           return new PTChartSubviewViewHolder(parent);
         case EViewType.SuperheatSubcoolSubview:
-				return new SuperheatSubcoolSubviewViewHolder(parent);
+					return new SuperheatSubcoolSubviewViewHolder(parent);
+				case EViewType.SecondarySensorSubview:
+					return new SecondarySensorSubviewViewHolder(parent);
         case EViewType.TimerSubview:
           return new TimerSubviewViewHolder(parent, cache);
         case EViewType.RateOfChangeSubview:
@@ -116,6 +118,11 @@
           var shr = r as SuperheatSubcoolSubviewRecord;
 					(holder as SuperheatSubcoolSubviewViewHolder).record = shr;
           break;
+
+				case EViewType.SecondarySensorSubview:
+					var ssr = r as SecondarySensorSubviewRecord;
+					(holder as SecondarySensorSubviewViewHolder).record = ssr;
+					break;
       }
 
       holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
@@ -151,12 +158,14 @@
     /// <summary>
     /// Refreshes the records that are contained within the adapter.
     /// </summary>
-    private void RefreshRecords() {
+    public void RefreshRecords() {
       records.Clear();
 
-      foreach (var sp in manifold.sensorProperties) {
-        records.Add(CreateRecordFor(sp));
-      }
+			if (manifold != null) {
+	      foreach (var sp in manifold.sensorProperties) {
+	        records.Add(CreateRecordFor(sp));
+	      }
+			}
 
       NotifyDataSetChanged();
     }
@@ -180,10 +189,14 @@
           break;
         case ManifoldEvent.EType.SensorPropertyRemoved:
           records.RemoveAt(me.index);
-					this.NotifyItemRemoved(me.index);
+					NotifyItemRemoved(me.index);
           break;
         case ManifoldEvent.EType.SensorPropertySwapped:
           break;
+				case ManifoldEvent.EType.SensorPropertyCleared:
+					records.Clear();
+					NotifyDataSetChanged();
+					break;
       }
     }
 
@@ -197,6 +210,8 @@
         return new PTChartSubviewRecord(sp as PTChartSensorProperty);
       } else if (sp is SuperheatSubcoolSensorProperty) {
         return new SuperheatSubcoolSubviewRecord(sp as SuperheatSubcoolSensorProperty);
+			} else if (sp is SecondarySensorProperty) {
+				return new SecondarySensorSubviewRecord(sp as SecondarySensorProperty);
       } else if (sp is TimerSensorProperty) {
         return new TimerSubviewRecord(sp as TimerSensorProperty);
       } else if (sp is RateOfChangeSensorProperty) {
@@ -212,6 +227,7 @@
     RateOfChangeSubview,
     PTChartSubview,
     SuperheatSubcoolSubview,
+		SecondarySensorSubview,
     TimerSubview,
   }
 

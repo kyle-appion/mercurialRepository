@@ -1,15 +1,7 @@
-﻿using System;
-using System.IO;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.App;
-using ION.Core.Devices;
-using ION.Core.IO;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Util;
+	using ION.Core.Measure;
 
-namespace ION.Core.Sensors.Properties {
   /// <summary>
   /// A common implementation of a sensor property that will allow for quick
   /// implementation for a sensor property and provides common utility methods.
@@ -73,7 +65,7 @@ namespace ION.Core.Sensors.Properties {
     }
 
     // Overridden from ISensorProperty
-    public void Dispose() {
+    public virtual void Dispose() {
       sensor.onSensorStateChangedEvent -= SensorChangeEvent;
     }
 

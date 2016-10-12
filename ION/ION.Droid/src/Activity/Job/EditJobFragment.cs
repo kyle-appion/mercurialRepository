@@ -1,17 +1,9 @@
 ﻿namespace ION.Droid.Activity.Job {
 
-  using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
   using System.Threading.Tasks;
 
-  using Android.App;
-  using Android.Content;
   using Android.OS;
   using Android.Support.Design.Widget;
-  using Android.Runtime;
-  using Android.Util;
   using Android.Views;
   using Android.Widget;
 
@@ -56,6 +48,11 @@
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
     }
+
+		public override void OnPause() {
+			base.OnPause();
+			HideKeyboard();
+		}
 
     public void Present(JobRow job) {
       name.Text = job.jobName;

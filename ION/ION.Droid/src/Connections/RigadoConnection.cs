@@ -39,11 +39,19 @@
 		/// The default time that is allowed for a rigado connection attempt.
 		/// </summary>
 		private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
+		/// <summary>
+		/// The delay from a disconnecto to a reconnect attempt.
+		/// </summary>
+		private const long RECONNECT_DELAY = 3000;
 
 		/// <summary>
 		/// The message that is used when a connection of other attempt 
 		/// </summary>
 		private const int MSG_TIMEOUT = -1;
+		/// <summary>
+		/// The message that is used when a connection needs to append a reconnect attempt.
+		/// </summary>
+		private const int MSG_RECONNECT = 1;
 
 		public event OnConnectionStateChanged onStateChanged;
 
@@ -122,6 +130,10 @@
 		/// The handler that is responsible for synchronizing and orchestrating connection events.
 		/// </summary>
 		private Handler handler;
+		/// <summary>
+		/// The number of attempted reconnects that the handler has performed.
+		/// </summary>
+		private int reconnectAttempts;
 
 		public RigadoConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
 			this.context = context;
@@ -131,6 +143,7 @@
 			connectionTimeout = DEFAULT_TIMEOUT;
 			lastSeen = DateTime.FromFileTimeUtc(0);
 			handler = new Handler(this);
+			reconnectAttempts = 0;
 		}
 
 		public Task<bool> ConnectAsync() {
@@ -186,6 +199,14 @@
 					Log.E(this, "Service discovery timed out for: " + device.Name);
 					Disconnect();
 					return true;
+				case MSG_RECONNECT:
+					if (reconnectAttempts < 2) {	
+						ConnectAsync();
+					} else {
+						Log.D(this, "Failed to reconnect too many times. Stopping");
+						reconnectAttempts = 0;
+					}
+					return true;
 				default:
 					return false;
 			}
@@ -214,6 +235,7 @@
 						Log.E(this, "Failed to start service discovery for: " + device.Name);
 						Disconnect();
 					} else {
+						reconnectAttempts = 0;
 						connectionState = EConnectionState.Resolving;
 						handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, 0, 0), (long)connectionTimeout.TotalMilliseconds);
 					}
@@ -221,10 +243,10 @@
 				case ProfileState.Connecting:
 					break;
 				case ProfileState.Disconnected:
-					Disconnect();
+					DoUnexpectedDisconnect();
 					break;
 				case ProfileState.Disconnecting:
-					Disconnect();
+					DoUnexpectedDisconnect();
 					break;
 			}
 		}
@@ -255,6 +277,22 @@
 				Log.D(this, "Failed to discover services. Trying again...");
 				connectionState = EConnectionState.Resolving;
 				gatt.DiscoverServices();
+			}
+		}
+
+		/// <summary>
+		/// Attempts to heal a connection on an unexpected disconnect.
+		/// </summary>
+		private void DoUnexpectedDisconnect() {
+			if (connectionState == EConnectionState.Disconnected) {
+				return;
+			}
+
+			Disconnect();
+
+			if (!handler.HasMessages(MSG_RECONNECT)) {
+				reconnectAttempts++;
+				handler.SendEmptyMessageDelayed(MSG_RECONNECT, RECONNECT_DELAY);
 			}
 		}
 

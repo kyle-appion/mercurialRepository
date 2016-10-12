@@ -186,7 +186,9 @@ namespace ION.IOS.ViewController {
           serials.Add(device.serialNumber);
         }
 
-        var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
+				Log.D(this, Arrays.AsString<ISerialNumber>(serials.ToArray()));
+				var task = new ION.Core.Net.RequestCalibrationCertificates(ion, serials.ToArray());
+//        var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
         task.tokenSource = source;
 
         foreach (var result in task.Request().Result) {
