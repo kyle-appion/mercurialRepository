@@ -9,14 +9,14 @@ namespace ION.IOS.ViewController.Analyzer
 	{
     public sensorGroup (UIView mainView, AnalyzerViewController ViewController)
 		{
-      snapArea1 = new sensor(mainView, ViewController);
-      snapArea2 = new sensor(mainView, ViewController);
-      snapArea3 = new sensor(mainView, ViewController);
-      snapArea4 = new sensor(mainView, ViewController);
-      snapArea5 = new sensor(mainView, ViewController);
-      snapArea6 = new sensor(mainView, ViewController);
-      snapArea7 = new sensor(mainView, ViewController);
-      snapArea8 = new sensor(mainView, ViewController);
+      snapArea1 = new sensor(mainView, ViewController, viewList);
+      snapArea2 = new sensor(mainView, ViewController, viewList);
+      snapArea3 = new sensor(mainView, ViewController, viewList);
+      snapArea4 = new sensor(mainView, ViewController, viewList);
+      snapArea5 = new sensor(mainView, ViewController, viewList);
+      snapArea6 = new sensor(mainView, ViewController, viewList);
+      snapArea7 = new sensor(mainView, ViewController, viewList);
+      snapArea8 = new sensor(mainView, ViewController, viewList);
 		}
 
 		public sensor snapArea1;

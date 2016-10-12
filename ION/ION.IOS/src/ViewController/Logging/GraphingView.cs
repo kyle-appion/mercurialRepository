@@ -21,6 +21,7 @@ using OxyPlot.Xamarin.iOS;
 using FlexCel.Core;
 using FlexCel.Render;
 using FlexCel.XlsAdapter;
+using ION.Core.Devices;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -31,6 +32,7 @@ namespace ION.IOS.ViewController.Logging
     public string nistDate;
     public int frnJID;
     public int SID;
+    public int sensorIndex;
 		public List<double> readings;
 		public List<DateTime> times;
 	}
@@ -84,14 +86,16 @@ namespace ION.IOS.ViewController.Logging
 			topCell = 0;
 
       foreach (var device in selectedData) {
-        var combineName = device.serialNumber + "/" + device.type;
+        //var combineName = device.serialNumber + "/" + device.type;
+        var combineName = device.serialNumber + "/" + device.sensorIndex;
         if (!ChosenDates.includeList.Contains(combineName)) {
           ChosenDates.includeList.Add(combineName);
         }
       }
 
       for(int i = 0; i < ChosenDates.includeList.Count;i++){
-        var compareName = selectedData[i].serialNumber + "/" + selectedData[i].type;
+        //var compareName = selectedData[i].serialNumber + "/" + selectedData[i].type;
+        var compareName = selectedData[i].serialNumber + "/" + selectedData[i].sensorIndex;
         while(compareName != ChosenDates.includeList[i]){          
           var tmpMove = selectedData[i];
           selectedData.RemoveAt(i);
@@ -492,6 +496,7 @@ namespace ION.IOS.ViewController.Logging
     /// <param name="sessions">Sessions.</param>
     /// <param name="sessionBreaks">Session breaks.</param>
     public List<deviceReadings> categorizeData(ObservableCollection<int> sessions, List<string> sessionBreaks){
+    	Console.WriteLine("CategorizeData called");
       var ion = AppState.context;
       var deviceList = new List<deviceReadings>();
 
@@ -516,13 +521,11 @@ namespace ION.IOS.ViewController.Logging
         var splits = included.Split('/');
         var sIndex = 0;
         package.serialNumber = splits[0];
-        package.type = splits[1];
-
-        if(splits[0].StartsWith("PT")){
-          if (splits[1] == "Temperature") {
-            sIndex = 1;
-          }
-        }
+        package.sensorIndex = Convert.ToInt32(splits[1]);
+        var iserial = SerialNumberExtensions.ParseSerialNumber(package.serialNumber);
+        var gDevice = ion.deviceManager.deviceFactory.GetDeviceDefinition(iserial) as GaugeDeviceDefinition;
+        package.type = gDevice[package.sensorIndex].sensorType.ToString();
+				sIndex = package.sensorIndex;
 
         var certInfo = ion.database.Query<LoggingDeviceRow>("SELECT nistDate, name  FROM LoggingDeviceRow WHERE serialNumber = ? LIMIT 1", package.serialNumber);
 
@@ -534,7 +537,7 @@ namespace ION.IOS.ViewController.Logging
 
         var timesReadings = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate, measurement FROM SensorMeasurementRow WHERE serialNumber = ? and sensorIndex = ?  AND recordedDate BETWEEN ? AND ? ORDER BY recordedDate ASC",package.serialNumber,sIndex,ChosenDates.subLeft, ChosenDates.subRight);
 
-        foreach (var MID in timesReadings) {          
+        foreach (var MID in timesReadings) {
           package.times.Add(MID.recordedDate.ToLocalTime());
           package.readings.Add(MID.measurement);
         }
@@ -611,7 +614,7 @@ namespace ION.IOS.ViewController.Logging
         var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
 
         if (dataList[i - 2].type.Equals("Temperature")) {
-          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");           
         } else if (dataList[i - 2].type.Equals("Vacuum")) {
           defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
         }

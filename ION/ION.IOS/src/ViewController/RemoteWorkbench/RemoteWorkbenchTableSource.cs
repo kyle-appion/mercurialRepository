@@ -590,6 +590,10 @@
       int index;
 
       switch (e.type) {
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	goto case ManifoldEvent.EType.Invalidated;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
+        	goto case ManifoldEvent.EType.Invalidated;
         case ManifoldEvent.EType.Invalidated:
           if (recordIndex > 0) {
             vr = records[recordIndex] as ViewerRecord;

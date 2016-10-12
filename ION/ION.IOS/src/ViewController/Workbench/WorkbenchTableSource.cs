@@ -125,6 +125,7 @@
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {
       var record = records[indexPath.Row];
+    	Console.WriteLine("Clicked row " + indexPath.Row+ ". Record is a " + record.viewType);
 
       if (record is FluidRecord) {
         var fr = record as FluidRecord;
@@ -155,6 +156,22 @@
           vc.NavigationController.PushViewController(shvc, true);
         }
       }
+      if (record is MeasurementRecord){
+				var property = ((MeasurementRecord)record).sensorProperty as AlternateUnitSensorProperty;
+				if(property != null){
+					var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
+					
+					var unitList = property.sensor.supportedUnits;
+					
+					foreach(var unit in unitList){
+	          dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {
+	            property.unit = unit;
+	          }));
+					}
+ 					dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+					vc.PresentViewController(dialog, false, null);
+				}
+			}
     }
 
     // Overridden from UITableViewSource
@@ -250,7 +267,7 @@
 
         cell.UpdateTo(sr,tableView.Bounds.Width);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-        cell.Layer.CornerRadius = 5;
+        //cell.Layer.CornerRadius = 5;
         return cell;
       }else {
         throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
@@ -327,17 +344,19 @@
           }));
         }
 #if DEBUG
-				//dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
-				//	var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
-				//	var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
-				//	for (int i = 0; i < device.sensorCount; i++) {
-				//		var s = device[i];
-				//		d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
-				//			ShowChangeUnitDialog(s);
-				//		}));
-				//	}
-				//	vc.PresentViewController(d, true, null);
-				//}));
+				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
+					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
+					var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
+					for (int i = 0; i < device.sensorCount; i++) {
+						var s = device[i];
+						//d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
+						d.AddAction(UIAlertAction.Create(s.type.ToString(), UIAlertActionStyle.Default, (e) => {
+							ShowChangeUnitDialog(s);
+						}));
+					}
+					d.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,null));
+					vc.PresentViewController(d, true, null);
+				}));
 #endif
       }
 
@@ -399,7 +418,7 @@
 					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 				}));
 			}
-
+			d.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,null));
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var vc = window.RootViewController;
 			vc.PresentViewController(d, true, null);
@@ -484,13 +503,12 @@
         });
       }
 
-      /*
+      
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
         });
-      }
-      */
+      }      
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
@@ -596,6 +614,10 @@
       int index;
 			
       switch (e.type) {
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	goto case ManifoldEvent.EType.Invalidated;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
+        	goto case ManifoldEvent.EType.Invalidated;
         case ManifoldEvent.EType.Invalidated:
           if (recordIndex > 0) {
             vr = records[recordIndex] as ViewerRecord;
@@ -642,8 +664,12 @@
         return new FluidRecord(manifold, sensorProperty);
       } else if (sensorProperty is SecondarySensorProperty){
         return new SecondarySensorRecord(manifold, sensorProperty as SecondarySensorProperty);
+      } else if (sensorProperty is AlternateUnitSensorProperty){
+      	return new MeasurementRecord(manifold, sensorProperty as AlternateUnitSensorProperty);
       } else {
-        throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
+        //throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
+        Log.E(this, "Sensor property chosen that hasn't been implemented yet");
+        return null;
       }
     }
 

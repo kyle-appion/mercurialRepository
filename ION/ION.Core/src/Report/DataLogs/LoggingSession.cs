@@ -79,6 +79,8 @@
 
         var sensors = new HashSet<GaugeDeviceSensor>();
 
+
+				//// pull ios sensorlist items
         if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
           foreach (var s in ion.currentAnalyzer.sensorList) {
             var gds = s as GaugeDeviceSensor;
@@ -128,13 +130,13 @@
 
       var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
-
       ret.serialNumber = sensor.device.serialNumber.ToString();
 
       ret.frn_SID = session.SID;
       ret.sensorIndex = sensor.index;
       ret.recordedDate = date;
       ret.measurement = meas.amount;
+			Log.D(this, "Converted logging measurement from " + sensor.measurement + " to " + ret.measurement + " with sensor index " + ret.sensorIndex);
 
       return ret;
     }

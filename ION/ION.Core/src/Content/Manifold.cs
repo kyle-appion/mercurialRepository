@@ -86,11 +86,11 @@
       /// Used when a secondary sensor is added to the manifold. Note: is a secondary sensor
       /// already existed, the a SecondarySensorRemoved event will be thrown before this.
       /// </summary>
-//      SecondarySensorAdded,
+      SecondarySensorAdded,
       /// <summary>
       /// Used when the manifold's secondary sensor is removed.
       /// </summary>
-//      SecondarySensorRemoved,
+      SecondarySensorRemoved,
 
       /// <summary>
       /// Used when a sensor property is added to the manifold.
@@ -174,6 +174,7 @@
 						s.device.onDeviceEvent -= OnDeviceEvent;
 					}
           __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+          NotifyOfEvent(ManifoldEvent.EType.SecondarySensorRemoved);
         }
 
         __secondarySensor = value;
@@ -186,9 +187,10 @@
 
           __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
+          NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
         }
 
-        NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+        //NotifyOfEvent(ManifoldEvent.EType.Invalidated);
       }
     } Sensor __secondarySensor;
 

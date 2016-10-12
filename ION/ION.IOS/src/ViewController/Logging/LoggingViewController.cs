@@ -309,8 +309,9 @@ namespace ION.IOS.ViewController.Logging {
           activeDevice.SID = graphResult[s].SID;
           activeDevice.frnJID = graphResult[s].frn_JID;
           activeDevice.serialNumber = deviceCount[m].serialNumber;
-
-          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
+					activeDevice.sensorIndex = deviceCount[m].sensorIndex;
+					
+         var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
           //Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex + " for device: " + measurementCount[0].serialNumber);
           var df = ion.deviceManager.deviceFactory;
           var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.serialNumber)) as GaugeDeviceDefinition;
@@ -325,7 +326,7 @@ namespace ION.IOS.ViewController.Logging {
             activeDevice.readings.Add(measurement);
           }
           tempResults.Add(activeDevice);
-          Console.WriteLine("Added package for serial " + activeDevice.serialNumber);
+          //Console.WriteLine("Added package for serial " + activeDevice.serialNumber);
         }
         if (holderList.Count > 0) {
           sessionBreaks[s] = holderList[holderList.Count - 1]; 

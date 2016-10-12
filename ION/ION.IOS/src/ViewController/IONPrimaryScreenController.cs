@@ -227,10 +227,11 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
+    		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    			OpenWalkthroughSections();
+    		} )
 #if DEBUG 
-    		//.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
-    		//	OpenWalkthroughSections();
-    		//} )
+
     //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
 				//	ShowRSSFeed();
 				//} )
@@ -272,7 +273,7 @@ namespace ION.IOS.ViewController {
         null, // Help Navigation
       };
 
-      return ret;
+      return ret;  
     }    
 
     /// <summary>
@@ -301,7 +302,7 @@ namespace ION.IOS.ViewController {
     /// off an email to complain to appion.
     /// </summary>
     private void DoSendAppionFeedback() {
-      var vc = new MFMailComposeViewController();
+      var vc = new MFMailComposeViewController();     
       vc.MailComposeDelegate = new MailDelegate();
       vc.SetSubject("ION App Feedback");
       vc.SetMessageBody("Hello,\n\n", false);
@@ -312,7 +313,7 @@ namespace ION.IOS.ViewController {
       vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/json", file.name);
 
       navigation.PresentViewController(vc, true, null);
-    }
+    }          
 
     /// <summary>
     /// Opens up a list of options for walkthroughs. They are broken up between the main
