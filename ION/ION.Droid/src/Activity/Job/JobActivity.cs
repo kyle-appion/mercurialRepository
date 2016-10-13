@@ -21,7 +21,7 @@
 	using Widgets.Adapters.Job;
   using Widgets.RecyclerViews;
 
-  [Activity(Label = "JobActivity", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+  [Activity(Label = "@string/jobs_saved", Icon="@drawable/ic_job", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
   public class JobActivity : IONActivity {
 
     private const int REQUEST_CREATE_JOB = 1;
@@ -41,6 +41,8 @@
 
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_job, Resource.Color.gray));
+
 
       list = FindViewById<RecyclerView>(Resource.Id.list);
       adapter = new JobAdapter(ion);

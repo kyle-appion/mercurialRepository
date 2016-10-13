@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.App {
+﻿using Java.IO;
+namespace ION.Droid.App {
 
   using System;
   using System.Collections.Generic;
@@ -221,9 +222,10 @@
       preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
       var discard = preferences.appVersion; // Sets the current application version.
 
+			managers.Add(fileManager = new AndroidFileManager(this));
+
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
-      managers.Add(fileManager = new AndroidFileManager(this));
       managers.Add(deviceManager = new BaseDeviceManager(this, new AndroidConnectionFactory(this), new AndroidConnectionHelper(this)));
 
 // This is the last test of broadcasting performed on 22 Aug 2016
@@ -342,6 +344,10 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
 
       var nm = GetSystemService(NotificationService) as NotificationManager;
       nm.Cancel(NOTIFICATION_APP_ID);
+
+#if DEBUG
+			ExportDatabaseToSdCard();
+#endif
     }
 
     /// <summary>
@@ -478,6 +484,30 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
 					Log.E(this, "Failed to load analyzer. Defaulting to a new one.", e);
 					return Task.FromResult(new Analyzer(this));
 				}
+			}
+		}
+
+		private void ExportDatabaseToSdCard() {
+			Log.D(this, "Exporting database");
+			try {
+				var backup = new Java.IO.File(GetExternalFilesDir("").AbsolutePath, "ION_External.database");
+				var original = new Java.IO.File(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
+
+				Log.D(this, "Backup: " + backup.AbsolutePath);
+
+				if (original.Exists()) {
+					var fis = new FileInputStream(original);
+					var fos = new FileOutputStream(backup);
+
+					Log.D(this, "Transfered: " + fos.Channel.TransferFrom(fis.Channel, 0, fis.Channel.Size()) + " bytes");
+					fis.Close();
+					fos.Flush();
+					fos.Close();
+
+					Log.D(this, "Successfully exported the sd card.");
+				}
+			} catch (Exception e) {
+				Log.E(this, "Failed to export database to SD card", e);
 			}
 		}
 

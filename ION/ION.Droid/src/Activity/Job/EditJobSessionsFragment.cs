@@ -90,6 +90,17 @@
 			base.OnActivityCreated(savedInstanceState);
 
 			currentAdapter = new SessionAdapter(ion);
+			currentAdapter.onSessionRowChecked += (sender, e) => {
+				var sr = e;
+
+				if (sr != null) {
+					sr.isChecked = !sr.isChecked;
+				}
+
+				currentAdapter.NotifyItemChanged(currentAdapter.IndexOfSession(sr.row));
+
+				UpdateButtons();
+			};
 			currentAdapter.onItemClicked += (adapter, position) => {
 				var sr = currentAdapter.GetRecordAt(position) as SessionRecord;
 
@@ -103,6 +114,17 @@
 			};
 
 			availableAdapter = new SessionAdapter(ion);
+			availableAdapter.onSessionRowChecked += (sender, e) => {
+				var sr = e;
+
+				if (sr != null) {
+					sr.isChecked = !sr.isChecked;
+				}
+
+				availableAdapter.NotifyItemChanged(availableAdapter.IndexOfSession(e.row));
+
+				UpdateButtons();
+			};
 			availableAdapter.onItemClicked += (adapter, position) => {
 				var sr = availableAdapter.GetRecordAt(position) as SessionRecord;
 

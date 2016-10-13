@@ -152,6 +152,7 @@
         foreach (var row in res) {
           var query = db.Table<SensorMeasurementRow>()
             .Where(smr => smr.serialNumber == row.serialNumber)
+            .Where(smr => smr.sensorIndex == row.sensorIndex)
             .Where(smr => smr.frn_SID == sessionId)
             .OrderBy(s => s.recordedDate)
             .AsEnumerable();
@@ -166,6 +167,7 @@
 
 					dsl.Add(new DeviceSensorLogs(row.serialNumber, row.sensorIndex, logs));
         }
+
 				var tmp = dsl;
 
         var start = DateTime.Now;
