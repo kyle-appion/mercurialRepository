@@ -279,7 +279,7 @@
           new NavigationIconItem() {
             id = Resource.Id.job,
             title = GetString(Resource.String.job_settings),
-            icon = Resource.Drawable.ic_document,
+						icon = Resource.Drawable.ic_job,
             action = () => {
               StartActivity(typeof(JobActivity));
             }
@@ -287,10 +287,9 @@
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
             title = GetString(Resource.String.report_data_logging),
-            icon = Android.Resource.Drawable.StatSysDataBluetooth,
+						icon = Resource.Drawable.ic_nav_reporting,
             action = () => {
 							StartActivity(typeof(ReportActivity));
-//              StartActivity(typeof(DataLoggingReportActivity));
             }
           },
           new NavigationIconItem() {

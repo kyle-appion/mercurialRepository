@@ -16,6 +16,8 @@
 
 	public class SessionAdapter : SwipableRecyclerViewAdapter {
 
+		public event EventHandler<SessionRecord> onSessionRowChecked;
+
 		private IION ion;
 		/// <summary>
 		/// The job row that the sessions adapter is with regard to. Meaning, if a session is added to a job, this is the
@@ -64,7 +66,11 @@
 		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Session:
-					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session);
+					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
+						if (onSessionRowChecked != null) {
+							onSessionRowChecked(this, sr);
+						}
+					});
 					ret.button.SetText(Resource.String.delete);
 					return ret;
 				default:

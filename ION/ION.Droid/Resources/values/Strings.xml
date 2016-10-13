@@ -244,6 +244,7 @@
 	<string name="job_delete">Really delete job?</string>
 	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
 	<string name="job_dispatch_no">Dispatch #</string>
+	<string name="job_edit">Edit Job</string>
 	<string name="job_error_failed_to_save">Failed to save job.</string>
 	<string name="job_info">Job Info</string>
 	<string name="job_loading">Loading the job...</string>
@@ -257,6 +258,7 @@
 	<string name="job_purchase_no">Purchase Order #</string>
 
 	<string name="jobs_loading">Loading all of the saved jobs.</string>
+	<string name="jobs_saved">Saved Jobs</string>
   
   <!--
   MANIFOLD
@@ -347,6 +349,14 @@
 	<string name="shsc_error_failed_to_update_manifold">Failed to update Viewer</string>
 	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid Viewer</string>
 	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get Viewer</string>
+
+	<!--
+	TIME
+	-->
+	<string name="time_days_abrv">days</string>
+	<string name="time_hours_abrv">hrs</string>
+	<string name="time_minutes_abrv">mins</string>
+	<string name="time_seconds_abrv">secs</string>
 
   <!--
   WORKBENCH

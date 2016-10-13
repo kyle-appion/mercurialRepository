@@ -1,5 +1,4 @@
-﻿using ION.Droid.Dialog;
-namespace ION.Droid.Activity.Report {
+﻿namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
@@ -14,18 +13,24 @@ namespace ION.Droid.Activity.Report {
 	using ION.Core.Database;
 
 	using ION.Droid.Activity;
+	using ION.Droid.Dialog;
 	using ION.Droid.Fragments;
 	using ION.Droid.Views;
 
 	/// <summary>
 	/// The activity that will walk a user through viewing and selecting reports for export.
 	/// </summary>
-	[Activity(Label="@string/reports", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
 	public class ReportActivity : IONActivity {
+
+		public const string EXTRA_SHOW_SAVED_SPREADSHEETS = "ION.Droid.Activity.Report.extra.SHOW_SAVED_SPREADSHEETS";
+		public const string EXTRA_SHOW_SAVED_PDF = "ION.Droid.Activity.Report.extra.SHOW_SAVED_PDF";
 
 
 		private const string MIME_EXCEL = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 		private const string MIME_PDF = "application/pdf";
+
+		private const int REQUEST_EXPORT = 1;
 
 		/// <summary>
 		/// The current active fragment.
@@ -40,11 +45,11 @@ namespace ION.Droid.Activity.Report {
 		/// <summary>
 		/// The button that will show the new report fragments.
 		/// </summary>
-		private Button newReportButton;
+		private ActionBar.Tab newReportTab;
 		/// <summary>
 		/// The button that will show the saved report fragments.
 		/// </summary>
-		private Button savedReportButton;
+		private ActionBar.Tab savedReportsTab;
 
 		/// <summary>
 		/// The button that will show the jobs fragment.
@@ -69,6 +74,7 @@ namespace ION.Droid.Activity.Report {
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetHomeButtonEnabled(true);
 			ActionBar.NavigationMode = ActionBarNavigationMode.Tabs;
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_reporting, Resource.Color.gray));
 
 			header = FindViewById<TextView>(Resource.Id.text);
 
@@ -88,16 +94,16 @@ namespace ION.Droid.Activity.Report {
 			graphButtonButton.Click += (sender, e) => {
 				var i = new Intent(this, typeof(GraphReportSessionsActivity));
 				i.PutExtra(GraphReportSessionsActivity.EXTRA_SESSIONS, checkedSessions.ToArray());
-				StartActivity(i);
+				StartActivityForResult(i, REQUEST_EXPORT);
 			};
 
-			var newReportTab = ActionBar.NewTab();
+			newReportTab = ActionBar.NewTab();
 			newReportTab.SetText(Resource.String.report_new);
 			newReportTab.TabSelected += (sender, e) => {
 				PrepareNewReportFragments();
 			};
 
-			var savedReportsTab = ActionBar.NewTab();
+			savedReportsTab = ActionBar.NewTab();
 			savedReportsTab.SetText(Resource.String.report_saved);
 			savedReportsTab.TabSelected += (sender, e) => {
 				PrepareShowReportsFragments();
@@ -107,6 +113,24 @@ namespace ION.Droid.Activity.Report {
 			ActionBar.AddTab(savedReportsTab);
 
 			PrepareNewReportFragments();
+		}
+
+		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
+			switch (requestCode) {
+				case REQUEST_EXPORT:
+					if (data != null) {
+						if (data.GetBooleanExtra(EXTRA_SHOW_SAVED_SPREADSHEETS, false)) {
+							ShowSpreadsheetFragment();
+						} else if (data.GetBooleanExtra(EXTRA_SHOW_SAVED_PDF, false)) {
+							ShowPDFFragment();
+						}
+					}
+					break;
+				default:
+					base.OnActivityResult(requestCode, resultCode, data);
+					break;
+			}
+			base.OnActivityResult(requestCode, resultCode, data);
 		}
 
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
@@ -156,6 +180,7 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void ShowByJobFragment() {
+			newReportTab.Select();
 			var frag = new ByJobFragment();
 			frag.sessions = checkedSessions;
 			frag.onSessionChecked += OnSessionChecked;
@@ -172,6 +197,7 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void ShowBySessionFragment() {
+			newReportTab.Select();
 			var frag = new BySessionFragment();
 			frag.sessions = checkedSessions;
 			frag.onSessionChecked += OnSessionChecked;
@@ -192,6 +218,7 @@ namespace ION.Droid.Activity.Report {
 		/// </summary>
 		/// <returns>The new saved fragment.</returns>
 		private void ShowSpreadsheetFragment() {
+			savedReportsTab.Select();
 			var frag = new FileViewerFragment();
 			frag.folder = ion.dataLogReportFolder;
 			frag.filter = new FileExtensionFilter(true, new string[] { ".xlsx" });
@@ -228,6 +255,7 @@ namespace ION.Droid.Activity.Report {
 		/// </summary>
 		/// <returns>The export fragment.</returns>
 		private void ShowPDFFragment() {
+			savedReportsTab.Select();
 			var frag = new FileViewerFragment();
 			frag.folder = ion.dataLogReportFolder;
 			frag.filter = new FileExtensionFilter(true, new string[] { ".pdf" });

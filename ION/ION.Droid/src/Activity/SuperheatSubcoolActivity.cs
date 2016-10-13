@@ -230,10 +230,6 @@
         UpdateCalculationMeasurements();
       }
     } PTChart __ptChart;
-    /// <summary>
-    /// Whether or not the fluid is locked by request.
-    /// </summary>
-    private bool isFluidLocked;
 
     /// <summary>
     /// The sensor that will hold / provide the pressure measurements for calculation.
@@ -359,12 +355,10 @@
       __temperatureSensor.onSensorStateChangedEvent += OnTemperatureSensorChanged;
 
       FindViewById(Resource.Id.fluid).SetOnClickListener(new ViewClickAction((view) => {
-        if (!isFluidLocked) {
-          var i = new Intent(this, typeof(FluidManagerActivity));
-          i.SetAction(Intent.ActionPick);
-          i.PutExtra(FluidManagerActivity.EXTRA_SELECTED, ion.fluidManager.lastUsedFluid.name);
-          StartActivityForResult(i, REQUEST_FLUID);
-        }
+        var i = new Intent(this, typeof(FluidManagerActivity));
+        i.SetAction(Intent.ActionPick);
+        i.PutExtra(FluidManagerActivity.EXTRA_SELECTED, ion.fluidManager.lastUsedFluid.name);
+        StartActivityForResult(i, REQUEST_FLUID);
       }));
 
       helpView = FindViewById<ImageButton>(Resource.Id.help);
@@ -400,8 +394,6 @@
       pressureSensor.unit = ion.defaultUnits.pressure;
       temperatureSensor.unit = ion.defaultUnits.temperature;
 
-      isFluidLocked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
-      fluidPhaseToggleView.Enabled = !isFluidLocked;
       if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
         var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
         var fluid = await ion.fluidManager.GetFluidAsync(name);

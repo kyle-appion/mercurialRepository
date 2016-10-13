@@ -347,8 +347,12 @@
 			minPressure = (float)smp.ConvertTo(pressureUnit).amount;
 			maxPressure = (float)f.GetMaximumPressure(state).ConvertTo(pressureUnit).amount;
 
-			minTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(smp, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
-			maxTemperature = (float)f.GetMaximumTemperature().ConvertTo(temperatureUnit).amount;
+			try {
+				minTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(smp, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
+				maxTemperature = (float)f.GetMaximumTemperature().ConvertTo(temperatureUnit).amount;
+			} catch (Exception e) {
+				Log.E(this, "Failed to perform unit conversion", e);
+			}
 
 			Invalidate();
 		}

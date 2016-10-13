@@ -92,6 +92,10 @@
 					helpView.Visibility = ViewStates.Invisible;
 				}
 				fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
+
+				if (initialManifold != null) {
+					initialManifold.ptChart = __ptChart;
+				}
 				if (sensor != null) {
 					OnSensorChanged(sensor);
 				} else {
