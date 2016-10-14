@@ -382,11 +382,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 							initialManifold.SetSecondarySensor(temperatureSensor);
 						}
           } else if (ESensorType.Temperature == type) {
-          	if(initialManifold.secondarySensor != null && !initialManifold.secondarySensor.Equals(pressureSensor)){
+          	//if(initialManifold.secondarySensor != null && !initialManifold.secondarySensor.Equals(pressureSensor)){
             	initialManifold.SetSecondarySensor(pressureSensor);
-           	} else {
-							initialManifold.SetSecondarySensor(pressureSensor);
-						}
+           	//}
           } else {
             ION.Core.Util.Log.E(this, "Failed to update manifold: invalid primary sensor type " + type);
           }

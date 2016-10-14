@@ -343,7 +343,6 @@
             sensor.device.connection.ConnectAsync();
           }));
         }
-#if DEBUG
 				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
 					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
 					var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
@@ -357,7 +356,6 @@
 					d.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,null));
 					vc.PresentViewController(d, true, null);
 				}));
-#endif
       }
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {

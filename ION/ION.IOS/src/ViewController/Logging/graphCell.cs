@@ -33,7 +33,7 @@ namespace ION.IOS.ViewController.Logging
 		{
       cellData = startData;
  
-      var combineName = cellData.serialNumber + "/" + cellData.type;
+      var combineName = cellData.serialNumber + "/" + cellData.sensorIndex;
       allData = totalData;
 
 			graphTable = tableView;
