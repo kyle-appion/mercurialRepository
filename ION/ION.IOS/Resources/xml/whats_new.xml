@@ -1,10 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.7.2">
-		<new>Added an introductory walkthrough in help menu</new>
-    <update>Updated graphing subsection selection precision</update>
-    <update>Updated various state checks to improve performance</update>
-    <fixed>Fixed analyzer subview arrow in certain cases where all subviews were removed</fixed>
-    <fixed>Fixed calibration certificate download issue</fixed>
+	<display version="1.8.2">		
+		<update>Updated analyzer sensor linking</update>
+		<update>Updated spreadsheets to show precision for whole numbers</update>
+    <fixed>Fixed reporting not showing devices as selected</fixed>
   </display>
 </whatsnew>

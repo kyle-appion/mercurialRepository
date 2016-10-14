@@ -594,8 +594,30 @@ namespace ION.IOS.ViewController.Logging
       borderColor.Borders.Right.Color = TUIColor.FromArgb(171, 171, 171);
       borderColor.VAlignment = TVFlxAlignment.top;
       borderColor.HAlignment = THFlxAlignment.center;
-      xls.AddFormat(borderColor);     
+      xls.AddFormat(borderColor); 
 
+      TFlxFormat measurementNormal = xls.GetDefaultFormat; //4
+      measurementNormal.VAlignment = TVFlxAlignment.top;
+      measurementNormal.HAlignment = THFlxAlignment.center;
+      measurementNormal.Format = "#,##0.00";
+      xls.AddFormat(measurementNormal);
+    
+      TFlxFormat measurementBorder = xls.GetDefaultFormat; //5
+      measurementBorder.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
+      measurementBorder.Borders.Bottom.Style = TFlxBorderStyle.Medium;
+      measurementBorder.Borders.Top.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Top.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.Borders.Left.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Left.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.Borders.Right.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Right.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.VAlignment = TVFlxAlignment.top;
+      measurementBorder.HAlignment = THFlxAlignment.center;
+      measurementBorder.Format = "#,##0.00";
+      xls.AddFormat(measurementBorder);
+      
+
+      
       xls.SetCellValue(1, 1, " ", 1);
       xls.SetCellValue(2, 1, " ", 1);
       xls.SetCellValue(3, 1, "Time",2);
@@ -640,11 +662,13 @@ namespace ION.IOS.ViewController.Logging
               var workingValue = standardUnit.OfScalar(dataList[i - 2].readings[compareIndex]);
               var finalValue = workingValue.ConvertTo(lookup);
               var formatValue = finalValue.amount.ToString("N");
-
+              
               if (sessionBreaks.Contains(dataList[i - 2].times[compareIndex].ToString())) {
-                xls.SetCellValue(rowIndex, i, Convert.ToDouble(formatValue), 3);
+                //xls.SetCellValue(rowIndex, i, Convert.ToDecimal(formatValue),5);
+                xls.SetCellValue(rowIndex, i, formatValue,5);
               } else {
-                xls.SetCellValue(rowIndex, i, Convert.ToDouble(formatValue), 2);
+                //xls.SetCellValue(rowIndex, i, Convert.ToDecimal(formatValue),4);
+                xls.SetCellValue(rowIndex, i,formatValue,4);
               }
               compareIndex++;
             } else {
@@ -738,6 +762,26 @@ namespace ION.IOS.ViewController.Logging
       borderColor.HAlignment = THFlxAlignment.center;
       xls.AddFormat(borderColor);
 
+      TFlxFormat measurementNormal = xls.GetDefaultFormat; //4
+      measurementNormal.VAlignment = TVFlxAlignment.top;
+      measurementNormal.HAlignment = THFlxAlignment.center;
+      measurementNormal.Format = "#,##0.00";
+      xls.AddFormat(measurementNormal);
+    
+      TFlxFormat measurementBorder = xls.GetDefaultFormat; //5
+      measurementBorder.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
+      measurementBorder.Borders.Bottom.Style = TFlxBorderStyle.Medium;
+      measurementBorder.Borders.Top.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Top.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.Borders.Left.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Left.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.Borders.Right.Style = TFlxBorderStyle.Thin;
+      measurementBorder.Borders.Right.Color = TUIColor.FromArgb(171, 171, 171);
+      measurementBorder.VAlignment = TVFlxAlignment.top;
+      measurementBorder.HAlignment = THFlxAlignment.center;
+      measurementBorder.Format = "#,##0.00";
+      xls.AddFormat(measurementBorder);
+      
       var headerStartIndex = 3;
 
       if (dataList.Count > 3) {
@@ -757,8 +801,8 @@ namespace ION.IOS.ViewController.Logging
         if (string.IsNullOrEmpty(device.nistDate) || device.nistDate.Length > 10) {
           xls.SetCellValue(deviceCellIndex, headerStartIndex + 2, "N/A", 2);
         } else {
-          xls.SetCellValue(deviceCellIndex, headerStartIndex + 2, device.nistDate, 2);        
-        }        
+          xls.SetCellValue(deviceCellIndex, headerStartIndex + 2, device.nistDate, 2);
+        }
         deviceCellIndex++;
       }
       
@@ -838,9 +882,9 @@ namespace ION.IOS.ViewController.Logging
               var formatValue = finalValue.amount.ToString("N");
 
               if (sessionBreaks.Contains(dataList[i - 2].times[compareIndex].ToString())) {
-                xls.SetCellValue(rowIndex, i, Convert.ToDouble(formatValue), 3);
+                xls.SetCellValue(rowIndex, i, Convert.ToDecimal(formatValue), 5);
               } else {
-                xls.SetCellValue(rowIndex, i, Convert.ToDouble(formatValue), 2);
+                xls.SetCellValue(rowIndex, i, Convert.ToDecimal(formatValue), 4);
               }
               compareIndex++;
             } else {

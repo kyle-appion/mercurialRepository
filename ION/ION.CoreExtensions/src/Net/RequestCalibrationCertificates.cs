@@ -226,6 +226,7 @@
   /// <summary>
   /// The data structure that represents a calibration certificate request.
   /// </summary>
+  [Preserve (AllMembers = true)]
   internal class CalibrationCertificateRequest {
     [JsonProperty("source_name")]
     public string sourceName { get; set; }
@@ -241,7 +242,8 @@
   /// The data structure that represents a response from the appion server
   /// containing a calibration certificate request.
   /// </summary>
-  internal class CalibrationCertificateResponse {
+  [Preserve (AllMembers = true)]
+	internal class CalibrationCertificateResponse {
     [JsonProperty("errorCode")]
     public string errorCode { get; set; }
     [JsonProperty("certifiedBy")]
@@ -295,7 +297,7 @@
       return ret;
     }
   }
-
+	[Preserve (AllMembers = true)]
   internal class PerformanceData {
     [JsonProperty("calibrationStandard")]
     public List<string> standardValues { get; set; }
@@ -308,7 +310,7 @@
     [JsonProperty("calibrationUnit")]
     public List<string> gaugeUnits { get; set; }
   }
-
+	[Preserve (AllMembers = true)]
   internal class CalibrationStandardDevice {
     [JsonProperty("transducerModel")]
     public string transducerModel { get; set; }

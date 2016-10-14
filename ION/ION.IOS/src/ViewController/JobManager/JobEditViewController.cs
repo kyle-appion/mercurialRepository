@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.JobManager {
 						}	
 						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
             editView.confirmLabel.TextColor = UIColor.Green;
-            editView.confirmLabel.Text = "Job Updated";	          
+            editView.confirmLabel.Text = "Job Updated";
           } else {
             editView.confirmLabel.TextColor = UIColor.Red;
             editView.confirmLabel.Text = "Job Name Already Exists";
@@ -135,8 +135,9 @@ namespace ION.IOS.ViewController.JobManager {
             break;
         }
       };
-
+      
       View.AddSubview(tabManager);
+      View.BringSubviewToFront(tabManager);
       View.AddSubview(editView.editView);
       View.AddSubview(associateView.sessionView);
       View.AddSubview(notesView.notesView);

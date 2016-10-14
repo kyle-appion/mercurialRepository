@@ -377,17 +377,17 @@ namespace ION.IOS.ViewController.Analyzer {
         addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.CREATEMANUAL, UIAlertActionStyle.Default, (action) => {
           start = new manualEntry();
           start.pressedSensor = pressedArea;
-          start.addPan = pressedArea.panGesture;
+          start.addPan = pressedArea.panGesture; 
           start.pressedView = pressedArea.snapArea;
           start.availableView = pressedArea.availableView;
           start.addLong = pressedArea.holdGesture;
-          start.addPan = pressedArea.panGesture;
           start.topLabel = pressedArea.topLabel;
           start.middleLabel = pressedArea.middleLabel;
           start.bottomLabel = pressedArea.bottomLabel;
           start.addIcon = pressedArea.addIcon;
           start.isManual = pressedArea.isManual;
-
+					mentryView.isManual = false;
+					mentryView.mdoneButton.TouchUpInside -= handleManualLHPopup;
           mentryView.mdoneButton.TouchUpInside += handleManualPopup;
           //View.BringSubviewToFront(mentryView.mView);
           viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
@@ -424,7 +424,9 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.textValidation.Hidden = false;
         return;
       }
-
+			if(start.addPan == null){
+				Console.WriteLine("Pan gesture is null");
+			}
 
       start.pressedView.AddGestureRecognizer (start.addPan);
       start.availableView.Hidden = true;
@@ -595,11 +597,13 @@ namespace ION.IOS.ViewController.Analyzer {
         mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
         mentryView.mbuttonText.Text = start.pressures[0];
       }));
-      dtypeAlert.AddAction (UIAlertAction.Create ("Temperature", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.TEMPERATURE, UIControlState.Normal);
-        mentryView.dtypeButton.AccessibilityIdentifier = "Temperature";
-        mentryView.mbuttonText.Text = start.temperatures[0];
-      }));
+      if(!mentryView.isManual){
+	      dtypeAlert.AddAction (UIAlertAction.Create ("Temperature", UIAlertActionStyle.Default, (action) => {
+	        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.TEMPERATURE, UIControlState.Normal);
+	        mentryView.dtypeButton.AccessibilityIdentifier = "Temperature";
+	        mentryView.mbuttonText.Text = start.temperatures[0];
+	      }));
+      }
       dtypeAlert.AddAction (UIAlertAction.Create ("Vacuum", UIAlertActionStyle.Default, (action) => {
         mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.VACUUM, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Vacuum";
@@ -622,6 +626,7 @@ namespace ION.IOS.ViewController.Analyzer {
           if(!AnalyserUtilities.freeSpot(analyzerSensors,removeSensor,lowHighArea.snapArea.AccessibilityIdentifier)){
             showFullAlert();
           } else {
+          	Console.WriteLine("Low high pressed");
             lhOnRequestViewer(lowHighArea);
           }
         }));
@@ -638,7 +643,8 @@ namespace ION.IOS.ViewController.Analyzer {
             start.bottomLabel = lowHighArea.LabelBottom;
             start.subviewLabel = lowHighArea.LabelSubview;
             mentryView.mView.AccessibilityIdentifier = "Pressure";
-
+            mentryView.isManual = true;
+						mentryView.mdoneButton.TouchUpInside -= handleManualPopup;
             mentryView.mdoneButton.TouchUpInside += handleManualLHPopup;
             //View.BringSubviewToFront(mentryView.mView);
             viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
@@ -684,7 +690,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
       for (int i = begin; i < end; i++) {
         if (!analyzerSensors.viewList[i].availableView.Hidden) {
-          var foundSensor = analyzerSensors.viewList[i];
           analyzerSensors.viewList[i].addIcon.Hidden = true;
           analyzerSensors.viewList[i].availableView.Hidden = true;
           analyzerSensors.viewList[i].snapArea.BackgroundColor = UIColor.White;
@@ -721,7 +726,7 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;          
           analyzerSensors.viewList[i].highArea.Connection.Hidden = true;
           analyzerSensors.viewList[i].highArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
-
+					Console.WriteLine("Handlemanuallhpopup about to low high associate");
           if (begin == 4) {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
@@ -951,13 +956,25 @@ namespace ION.IOS.ViewController.Analyzer {
 			if(!remoteMode){
 	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        addLHDeviceSensor(area,sensor);
+	      	if(sensor.type == ESensorType.Temperature){
+						UIAlertController tempAlert = UIAlertController.Create ("Setup", "Pressure must be defined first for proper viewer display", UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel,null));
+						this.PresentViewController(tempAlert,true,null);
+					}else {
+	        	addLHDeviceSensor(area,sensor);
+	        }
 	      };
 	      NavigationController.PushViewController(sb, true);
 	    } else {
 	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        addLHDeviceSensor(area,sensor);
+	      	if(sensor.type == ESensorType.Temperature){
+						UIAlertController tempAlert = UIAlertController.Create ("Setup", "Pressure must be defined first for proper viewer display", UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel,null));
+						this.PresentViewController(tempAlert,true,null);
+					}else {
+	        	addLHDeviceSensor(area,sensor);
+	        }
 	      };
 	      NavigationController.PushViewController(sb, true);
 			}
@@ -1420,7 +1437,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					remoteTitle.Text = "Analyzer\nRemote Editing";
 				}
 			}
-	    viewAnalyzerContainer.SetNeedsDisplay();
+	    //viewAnalyzerContainer.SetNeedsDisplay();
     }
 	}
 }
