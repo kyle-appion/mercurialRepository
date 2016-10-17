@@ -19,7 +19,9 @@ namespace ION.Droid.Activity.Report {
 	using OxyPlot.Xamarin.Android;
 
 	using ION.Core.IO;
+	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
+	using ION.Core.Sensors;
 	using ION.Core.Util;
 
 	using ION.Droid.Dialog;
@@ -63,6 +65,19 @@ namespace ION.Droid.Activity.Report {
 		/// The recycler view that will list the graphing components.
 		/// </summary>
 		private RecyclerView graphList;
+
+		/// <summary>
+		/// The button that is used to select the pressure unit for the reports.
+		/// </summary>
+		private Button pressureUnitButton;
+		/// <summary>
+		/// The button taht is used to select the temperature unit for the reports.
+		/// </summary>
+		private Button temperatureUnitButton;
+		/// <summary>
+		/// The button that is used to select the vacuum unit for the reports.
+		/// </summary>
+		private Button vacuumUnitButton;
 		/// <summary>
 		/// The spinner that will display the start dates.
 		/// </summary>
@@ -267,6 +282,37 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void InitOptionsViews() {
+			var table = FindViewById(Resource.Id.table);
+			var pressure = table.FindViewById(Resource.Id.pressure);
+			var temperature = table.FindViewById(Resource.Id.temperature);
+			var vacuum = table.FindViewById(Resource.Id.vacuum);
+
+			pressureUnitButton = pressure.FindViewById<Button>(Resource.Id.unit);
+			temperatureUnitButton = temperature.FindViewById<Button>(Resource.Id.unit);
+			vacuumUnitButton = vacuum.FindViewById<Button>(Resource.Id.unit);
+
+			pressureUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_PRESSURE_UNITS, (sender, e) => {
+					SetPressureReportUnit(e);
+				}).Show();
+			}));
+
+			temperatureUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_TEMPERATURE_UNITS, (sender, e) => {
+					SetTemperatureReportUnit(e);
+				}).Show();
+			}));
+
+			vacuumUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_VACUUM_UNITS, (sender, e) => {
+					SetVacuumReportUnit(e);
+				}).Show();
+			}));
+
+			SetPressureReportUnit(ion.preferences.units.pressure);
+			SetTemperatureReportUnit(ion.preferences.units.temperature);
+			SetVacuumReportUnit(ion.preferences.units.vacuum);
+
 			var icon = settingsView.FindViewById(Resource.Id.icon);
 			icon.SetOnClickListener(new ViewClickAction((view) => {
 				AnimateToGraphView();
@@ -276,6 +322,33 @@ namespace ION.Droid.Activity.Report {
 
 			var list = settingsView.FindViewById<RecyclerView>(Resource.Id.list);
 			list.SetAdapter(overviewAdapter);
+		}
+
+		private void SetPressureReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.pressure)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				pressureUnitButton.Text = unit.ToString();
+				ion.preferences.units.pressure = unit;
+			}
+		}
+
+		private void SetTemperatureReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.temperature)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				temperatureUnitButton.Text = unit.ToString();
+				ion.preferences.units.temperature = unit;
+			}
+		}
+
+		private void SetVacuumReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.vacuum)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				vacuumUnitButton.Text = unit.ToString();
+				ion.preferences.units.vacuum = unit;
+			}
 		}
 
 		private void AnimateToOptionsView() {

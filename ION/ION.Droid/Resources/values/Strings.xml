@@ -202,6 +202,7 @@
   <string name="error_failed_to_delete">Failed to Delete</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
+  <string name="error_failed_to_set_unit">Failed to set unit</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>
   <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>

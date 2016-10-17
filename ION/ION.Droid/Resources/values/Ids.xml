@@ -58,7 +58,6 @@
   <item name="play" type="id"/>
 	<item name="plus" type="id"/>
   <item name="preferred" type="id"/>
-  <item name="pressure" type="id"/>
 	<item name="purchase_no" type="id"/>
   <item name="record" type="id"/>
   <item name="reenable" type="id"/>
@@ -75,7 +74,7 @@
   <item name="status" type="id"/>
 	<item name="tab_1" type="id"/>
 	<item name="tab_2" type="id"/>
-  <item name="temperature" type="id"/>
+	<item name="table" type="id"/>
   <item name="text" type="id"/>
   <item name="time" type="id"/>
   <item name="title" type="id"/>
@@ -126,6 +125,15 @@
   -->
   <item name="drawer" type="id"/>
   <item name="drawer_list" type="id"/>
+
+
+	<!--
+	MEASUREMENTS
+	-->
+	<item name="pressure" type="id"/>
+	<item name="temperature" type="id"/>
+	<item name="vacuum" type="id"/>
+	
 
   <!--
   REPORTS
