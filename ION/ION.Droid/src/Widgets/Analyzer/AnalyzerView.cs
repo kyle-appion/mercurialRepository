@@ -5,6 +5,7 @@
   using Android.App;
   using Android.Content;
   using Android.Graphics;
+	using Android.OS;
   using Android.Util;
   using Android.Views;
   using Android.Views.Animations;
@@ -504,6 +505,7 @@
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     public void SwapSensorMounts(int first, int second) {
+			ION.Core.Util.Log.D(this, "SWAPPING SENSOR MOUNTS: {" + first + ", " + second + "}");
       if (analyzer.CanSensorsSwapSafely(first, second)) {
         AnimateSensorMountSwap(first, second);
       } else {
@@ -962,13 +964,14 @@
 
           case DragAction.Drop:
             ION.Core.Util.Log.D(this, "Drag Dropped");
-            analyzer.draggedView.Visibility = ViewStates.Visible;
             var lp = v.LayoutParameters as LayoutParams;
 
-            if (lp != null) {
-              ION.Core.Util.Log.D(this, "SensorMounts Swapping");
+						if (lp != null && analyzer.draggedView != null) {
+							ION.Core.Util.Log.D(this, "SensorMounts Swapping");
+							analyzer.draggedView.Visibility = ViewStates.Visible;
 							analyzer.SwapSensorMounts(dragState.index, lp.index);
               dropped = true;
+							analyzer.draggedView = null;
               return true;
             } else {
               ION.Core.Util.Log.D(this, "SensorMounts NOT Swapping");
@@ -978,7 +981,9 @@
           case DragAction.Ended:
             ION.Core.Util.Log.D(this, "Drag Ended");
             if (!dropped) {
-              analyzer.RefreshContent();
+							
+
+ //             analyzer.RefreshContent();
             }
             return true;
 
@@ -992,15 +997,17 @@
     /// <summary>
     /// The listener that will respond to the sensor mount being dragged.
     /// </summary>
-    private class ManifoldDragListener : Java.Lang.Object, IOnDragListener {
+		private class ManifoldDragListener : Java.Lang.Object, IOnDragListener {
       private AnalyzerView analyzer;
       private AnalyzerManifoldViewTemplate template;
       private Analyzer.ESide side;
+			private Handler handler;
 
       public ManifoldDragListener(AnalyzerView analyzer, AnalyzerManifoldViewTemplate template, Analyzer.ESide side) {
         this.analyzer = analyzer;
         this.template = template;
         this.side = side;
+				handler = new Handler();
       }
 
       /// <summary>
@@ -1034,6 +1041,9 @@
 
           case DragAction.Ended:
             ION.Core.Util.Log.D(this, "Drag Ended");
+						handler.PostDelayed(() => {
+							analyzer.RefreshContent();
+						}, ANIMATION_DURATION);
             return true;
 
           default:
