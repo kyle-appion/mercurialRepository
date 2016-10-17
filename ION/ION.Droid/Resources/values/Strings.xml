@@ -40,7 +40,6 @@
   <string name="enabled">Enabled</string>
 	<string name="end">End</string>
   <string name="enter_number">Enter a number</string>
-  <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="exit_ion">Exit ION</string>
 	<string name="export">Export</string>
@@ -129,7 +128,6 @@
   ANALYZER
   -->
   <string name="analyzer">System Analyzer</string>
-  <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
   <string name="analyzer_added_to_high">Added Sensor to High Side in the System Analyzer</string>
   <string name="analyzer_added_to_low">Added Sensor to Low Side in the System Analyzer</string>
@@ -139,16 +137,20 @@
 	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
 	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
   <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
-  <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
-  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
+  <string name="analyzer_replace_manifold_sensor">Completing the desired action will change (or remove) one or more viewers and their subviews. Would you like to continue?</string>
+  <string name="analyzer_require_pressure_primary">Pressure must be defined for proper viewer display</string>
+  <string name="analyzer_sensor_already_in_viewer">The sensor is already added to this viewer</string>
+  <string name="analyzer_sensor_incompatible_with_manifold">Cannot link sensor to Viewer: the sensor is not compatible with the Viewer.</string>
   <string name="analyzer_set_viewer_failed">Failed to change the viewer.</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to {0} side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
   <string name="analyzer_side_low">Low Side</string>
   <string name="analyzer_side_high">High Side</string>
 	<string name="analyzer_swap_failed">Failed to swap sensors</string>
+	<string name="analyzer_swap_linked_manifolds">Would you like to swap the linked measurements? Your subviews will remain intact.</string>
 
   <!--
   CALCULATORS
@@ -192,6 +194,7 @@
   <!--
   ERRORS, GENERAL
   -->
+  <string name="error">Error</string>
   <string name="error_bluetooth">Bluetooth Error</string>
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
   <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
@@ -207,6 +210,7 @@
 	<string name="error_start_up_request_location_for_bluetooth">As of Android 5.0, Android requires the Location permission to enable bluetooth scanning. ION HVAC/R requires bluetooth to communicate with ION compatible gauges.</string>
 	<string name="error_start_up_fail">Failed to Launch ION</string>
 	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R cannot be used. Please restart the ION HVAC/R application and authorize the application\'s use of these features.</string>
+	<string name="errror_unknown">An unknown error occured.</string>
 
   <!--
   FLUIDS

@@ -1,5 +1,7 @@
 ﻿namespace ION.Droid.Widgets.Analyzer {
 
+	using System;
+
   using Android.App;
   using Android.Content;
   using Android.Graphics;
@@ -438,7 +440,7 @@
     /// <param name="bottom">Bottom position, relative to parent</param>
     /// <remarks>Called from layout when this view should
     ///  assign a size and position to each of its children.
-    /// 
+    ///
     ///  Derived classes with children should override
     ///  this method and call layout on each of
     ///  their children.</remarks>
@@ -502,22 +504,12 @@
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     public void SwapSensorMounts(int first, int second) {
-      ION.Core.Util.Log.D(this, "Swapping sensor mounts");
       if (analyzer.CanSensorsSwapSafely(first, second)) {
         AnimateSensorMountSwap(first, second);
       } else {
-        var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_complete_swap));
-        adb.SetMessage(Context.GetString(Resource.String.analyzer_replace_primary_sensor));
-        adb.SetNegativeButton(Resource.String.cancel, (obj, args) => {
-          var dialog = obj as Dialog;
-          dialog.Dismiss();
-        });
-
-        adb.SetPositiveButton(Resource.String.ok, (obj, args) => {
-          AnimateSensorMountSwap(first, second);
-        });
-
-        adb.Show();
+				IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+					AnimateSensorMountSwap(first, second);
+				});
       }
     }
 
@@ -563,161 +555,117 @@
     /// </summary>
     /// <param name="side">Side of the analyzer to add the sensor.</param>
     /// <param name="sensor">The sensor to set the manifold's primary sensor to.</param>
-    /*
-     *    if the sensor is not on the analyzer
-     *      if the analyzer accepts the sensor as an add
-     *        set the manifold sensor to the given sensor
-     *    
-     *    else if the sensor is on the same side as the manifold in the analyzer
-     *      if the manifold is empty
-     *        set the manifold's sensor to the given sensor
-     *      else
-     *        if the manifold accepts the sensor as a secondary sensor
-     *          set the manifold's secondary sensor to the given sensor
-     *        else
-     *          display a dialog to the user requesting permission to clobber the manifold
-     *          if the user accepts the intent
-     *            set the manifold's primary sensor to the given sensor
-     *          else
-     *            do nothing
-     * 
-     *    else if the sensor is not on the same side as the manifold in the analyzer
-     *      if the destination manifold is empty
-     *        if the analyzer accepts a sensor add to the given side
-     *          remove the sensor from the old side
-     *          add the sensor to the new side
-     *          set the manifold to the given sensor
-     *        else 
-     *          display side full error message
-     *      else
-     *        if the manifold accepts the given sensor as a secondary
-     *          set the manifold's secondary sensor to the given sensor
-     *        else if the user accepts clobbering a manifold
-     *          set the manifold's sensor to the given sensor
-     *        else
-     *          do nothing
-     *    else
-     *      do nothing
-     */
-    private void SetManifoldSensor(Analyzer.ESide destSide, Sensor sensor) {
-/*
-			// This method is called when the user drops a sensor on either the high or low viewer.
+		private void SetManifoldSensor(Analyzer.ESide destSide, Sensor sensor) {
+			Analyzer.ESide startSide = Analyzer.ESide.Low;
+			// Attempt to get the analyzer side that the sensor is on.
+			if (analyzer.HasSensor(sensor) && !analyzer.GetSideOfSensor(sensor, out startSide)) {
+				ION.Core.Util.Log.E(this, "Failed to get side of sensor in AnalyzerView#SetManifoldSensor(Analyzer.ESide, Sensor)");
+				Toast.MakeText(Context, Resource.String.errror_unknown, ToastLength.Long).Show();
+				// The sensor was awkwardly present in the analyzer, but we couldn't find it anywhere. Lets remove it just to
+				// be safe.
+				if (!analyzer.RemoveSensor(sensor)) {
+					// TODO ahodder@appioninc.com: This should never happen. If it does, we need to discover why.
+					ION.Core.Util.Log.E(this, "Failed to remove ghost sensor from analyzer.");
+				}
+			}
 
-			// The sensor that is being dropped can come from either side, so we need to check if it is on the same side
-			if (analyzer.IsSensorOnSide(sensor, destSide)) {
+			if (startSide == destSide) {
+				CheckSameSideSetManifold(destSide, sensor);
 			} else {
-				// The sensor is not on the destination side.
-				// We will need to check for a few things before we can commit the sensor to the manifold.
-				// First, is the sensor on the analyzer at all
-				if (analyzer.HasSensor(sensor)) {
-					// The sensor is in the analyzer.
-					// We will need to check if it is already attached to a manifold.
-					if (analyzer.IsSensorAttachedToManifold(sensor)) {
-						// The sensor is already attached to a manifold.
-						// We know that we are trying to move the sensor across sides and drop it into a manifold. This will break
-						// the sensor's old manifold in some way: we are either losing the secondary sensor (which means that we can
-						// lose subview data) or we lose the primary sensor (which will nuke the entire manifold).
-						// So, we will need to ask the users permission to commit the swap.
-						RequestPermissionToSetManifold(Resource.String.analyzer_commit_title, Resource.String.analyzer_commit_message, () => {
-							// The action that will occur if permission is granted
-							// Here we will remove the sensor form the old manifold and attempt to add or clobber the dest manifold
+				CheckOppositeSideSetManifold(destSide, sensor);
+			}
+		}
+
+		private void CheckSameSideSetManifold(Analyzer.ESide destSide, Sensor sensor) {
+			var manifold = analyzer.GetManifoldFromSide(destSide);
+
+			if (manifold == null) {
+				if (sensor.type == ESensorType.Temperature) {
+					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
+				} else {
+					analyzer.SetManifold(destSide, sensor);
+				}
+			} else {
+				if (manifold.ContainsSensor(sensor)) {
+					// The sensor was dragged into its own manifold.
+					Toast.MakeText(Context, Resource.String.analyzer_sensor_already_in_viewer, ToastLength.Long).Show();
+				} else if (manifold.secondarySensor == null) {
+					if (manifold.WillAcceptSecondarySensor(sensor)) {
+						manifold.SetSecondarySensor(sensor);
+					} else {
+						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+							analyzer.SetManifold(destSide, sensor);
+						});
+					}
+				} else {
+					if (manifold.WillAcceptSecondarySensor(sensor)) {
+						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+							manifold.SetSecondarySensor(sensor);
 						});
 					} else {
-						// The sensor is not attached to a manifold.
-						// We can just attempt to add or clobber the dest manifold
-						if (destManifold == EMPTY) {
-							// We can just add without permission
-							// TODO ahodder@appioninc.com: remove the sensor from the other side and add it to the new side
-							// TODO ahodder@appioninc.com: create a new manifold on destside with the sensor
-						} else {
-						}
+						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+							analyzer.SetManifold(destSide, sensor);
+						});
 					}
 				}
 			}
-*/
+		}
 
-			// The shit below is the legacy crap
+		private void CheckOppositeSideSetManifold(Analyzer.ESide destSide, Sensor sensor) {
+			var destManifold = analyzer.GetManifoldFromSide(destSide);
+			var curManifold = analyzer.GetManifoldFromSide(destSide.Opposite());
 
-      var manifold = analyzer.GetManifoldFromSide(destSide);
+			// Not matter the outcome, a sensor is moving into the dest side. If the side can't support the new sensor, then
+			// we have to error out.
+			if (analyzer.IsSideFull(destSide)) {
+				// TODO ahodder@appioninc.com: Localize
+				var msg = string.Format(Context.GetString(Resource.String.analyzer_side_full_1sarg), destSide);
+				Toast.MakeText(Context, msg, ToastLength.Long).Show();
+				return;
+			}
 
-      Analyzer.ESide sensorSide;
-      analyzer.GetSideOfSensor(sensor, out sensorSide);
-
-      if (!analyzer.HasSensor(sensor)) {
-        // If the analyzer does not have the given sensor, walk through the steps to ensure a proper add.
-        if (analyzer.CanAddSensorToSide(destSide)) {
-          if (manifold == null) {
-            analyzer.AddSensorToSide(destSide, sensor);
-            analyzer.SetManifold(destSide, sensor);
-          } else {
-            // The sensor does not exist in the analyzer, but is wishing to replace an existing manifold.
-            RequestClobberManifold(destSide, sensor);
-          }
+			if (destManifold == null) {
+				if (sensor.type == ESensorType.Temperature) {
+					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
+				} else if (analyzer.IsSensorAttachedToManifold(sensor)) {
+					IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+						var si = analyzer.IndexOfSensor(sensor);
+						var di = analyzer.NextEmptySensorIndex(destSide);
+						AnimateSensorMountSwap(si, di);
+						curManifold.SetSecondarySensor(null);
+						analyzer.SetManifold(destSide, sensor);
+					});
+				} else {
+					// The sensor is free to move into the new side.
+					var si = analyzer.IndexOfSensor(sensor);
+					var di = analyzer.NextEmptySensorIndex(destSide);
+					AnimateSensorMountSwap(si, di);
+					analyzer.SetManifold(destSide, sensor);
+				}
+			} else {
+        if (destManifold.ContainsSensor(sensor)) {
+          Toast.MakeText(Context, Resource.String.analyzer_sensor_already_in_viewer, ToastLength.Long).Show();
+        } else if (destManifold.WillAcceptSecondarySensor(sensor)) {
+          IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_swap_linked_manifolds, () => {
+            var si = analyzer.IndexOfSensor(sensor);
+            var di = analyzer.NextEmptySensorIndex(destSide);
+            AnimateSensorMountSwap(si, di);
+            destManifold.SetSecondarySensor(sensor);
+          });
         } else {
-          var rawStr = Context.GetString(Resource.String.analyzer_side_full_1sarg);
-          Toast.MakeText(Context, string.Format(rawStr, destSide.ToString()), ToastLength.Long).Show();
-        }
-        // End !analyzer.HasSensor(sensor)
-      } else {
-        if (sensorSide != destSide) {
-          if (manifold == null && analyzer.CanAddSensorToSide(destSide)) {
-            analyzer.RemoveSensor(sensor);
-            analyzer.AddSensorToSide(destSide, sensor);
-            analyzer.SetManifold(destSide, sensor);
+          if (sensor.type == ESensorType.Temperature) {
+            Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
           } else {
-            // The sensor is not on the correct side. We will need to request the user's permission to move stuff around.
-            RequestClobberManifold(destSide, sensor);
-          }
-        } else {
-          // The sensor is on the same saide as the manifold.
-          if (manifold == null) {
-            analyzer.SetManifold(destSide, sensor);
-          } else {
-            if (manifold.primarySensor != sensor) {
-              if (manifold.WillAcceptSecondarySensor(sensor)) {
-                manifold.SetSecondarySensor(sensor);
-              } else {
-                RequestClobberManifold(destSide, sensor);
-              }
-            }
+            IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_swap_linked_manifolds, () => {
+              var si = analyzer.IndexOfSensor(sensor);
+							var di = analyzer.NextEmptySensorIndex(destSide);
+							AnimateSensorMountSwap(si, di);
+							analyzer.SetManifold(destSide, sensor);
+            });
           }
         }
-      }
-    }
-
-    /// <summary>
-    /// Request user permission to complete the maniflold sensor set. This is done when one or both of the analyzer's
-    /// manifold will lose state due to the set.
-    /// </summary>
-    /// <param name="side">Side.</param>
-    /// <param name="sensor">Sensor.</param>
-    private void RequestClobberManifold(Analyzer.ESide side, Sensor sensor) {
-      var adb = new IONAlertDialog(Context, Context.GetString(Resource.String.analyzer_action_breaks_manifold));
-      adb.SetMessage(Resource.String.analyzer_replace_primary_sensor);
-
-      adb.SetNegativeButton(Context.GetString(Resource.String.cancel), (obj, args) => {
-        var dialog = obj as Dialog;
-        if (dialog != null) {
-          dialog.Dismiss();
-        }
-      });
-
-      adb.SetPositiveButton(Context.GetString(Resource.String.ok), (obj, args) => {
-        var dialog = obj as Dialog;
-        if (dialog != null) {
-          dialog.Dismiss();
-        }
-
-        Analyzer.ESide sensorSide;
-        analyzer.GetSideOfSensor(sensor, out sensorSide);
-
-        analyzer.RemoveSensor(sensor);
-        analyzer.AddSensorToSide(side, sensor);
-        analyzer.SetManifold(side, sensor);
-      });
-
-      adb.Show();
-    }
+			}
+		}
 
     /// <summary>
     /// Refreshes the content views of the analyzer view.
@@ -761,7 +709,7 @@
     /// <param name="view">View.</param>
     /// <param name="rect">Rect.</param>
     private void LayoutViewToRect(View view, RectF rect) {
-      view.Layout((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom);          
+      view.Layout((int)rect.Left, (int)rect.Top, (int)rect.Right, (int)rect.Bottom);
     }
 
     /// <summary>
@@ -893,7 +841,7 @@
           RefreshContent();
           break;
         case AnalyzerEvent.EType.ManifoldAdded:
-          goto case AnalyzerEvent.EType.ManifoldRemoved;          
+          goto case AnalyzerEvent.EType.ManifoldRemoved;
         case AnalyzerEvent.EType.ManifoldRemoved:
           switch (analyzerEvent.side) {
             case Analyzer.ESide.Low:
@@ -1008,7 +956,7 @@
           case DragAction.Exited:
             ION.Core.Util.Log.D(this, "Drag Exited");
             return true;
-            
+
           case DragAction.Location:
             return true;
 
@@ -1019,7 +967,7 @@
 
             if (lp != null) {
               ION.Core.Util.Log.D(this, "SensorMounts Swapping");
-              analyzer.SwapSensorMounts(dragState.index, lp.index);
+							analyzer.SwapSensorMounts(dragState.index, lp.index);
               dropped = true;
               return true;
             } else {
@@ -1109,4 +1057,3 @@
     }
   }
 }
-

@@ -180,6 +180,9 @@
           __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
         }
 
+				__secondarySensor = null;
+				NotifyOfEvent(ManifoldEvent.EType.SecondarySensorRemoved);
+
         __secondarySensor = value;
 
         if (__secondarySensor != null) {
@@ -192,7 +195,7 @@
           OnManifoldSensorChanged(__secondarySensor);
         }
 
-        NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+				NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
       }
     } Sensor __secondarySensor;
 
@@ -428,6 +431,7 @@
     /// <param name="type">Type.</param>
     /// <param name="index">Index.</param>
     private void NotifyOfEvent(ManifoldEvent.EType type, int index = -1, int otherIndex = -1) {
+			Log.D(this, "Manifold: " + GetHashCode() + " is notifying of event");
       // TODO ahodder@appioninc.com: Delete this: deprecated.
       if (onManifoldChanged != null) {
         onManifoldChanged(this);

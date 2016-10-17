@@ -264,56 +264,63 @@
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     public void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-      var manifold = workbenchEvent.manifold;
-      int startIndex = IndexOfManifold(manifold);
-      int manifoldSensorPropertyCount = manifold.sensorPropertyCount;
+			try {
+	      var manifold = workbenchEvent.manifold;
+	      int startIndex = IndexOfManifold(manifold);
+	      int manifoldSensorPropertyCount = manifold.sensorPropertyCount;
 
-      switch (workbenchEvent.type) {
-        case WorkbenchEvent.EType.Added:
-          if (startIndex < 0) {
-            var i = records.Count - 1;
-            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
-            records.Insert(i + 1, new SpaceRecord());
-            NotifyItemRangeInserted(i, 2);
-          } else {
-            records.Insert(startIndex, new SpaceRecord());
-            records.Insert(startIndex, new ManifoldRecord(manifold));
-            NotifyItemRangeInserted(startIndex, 2);
-          }
-          break;
-        case WorkbenchEvent.EType.ManifoldEvent:
-          OnManifoldEvent(workbenchEvent.manifoldEvent);
-          break;
-        case WorkbenchEvent.EType.Removed:
-          if (startIndex >= 0) {
-            records.RemoveAt(startIndex);
-            for (int i = 0; i < manifoldSensorPropertyCount; i++) {
-              records.RemoveAt(startIndex);
-            }
-            var count = 1 + manifoldSensorPropertyCount;
-            if (records[startIndex] is SpaceRecord) {
-              records.RemoveAt(startIndex);
-              count++;
-            }
-            NotifyItemRangeRemoved(startIndex, count);
-          }
-          break;
-        case WorkbenchEvent.EType.Swapped:
-          var sm = workbench[workbenchEvent.otherIndex];
-          var secondIndex = IndexOfManifold(sm);
-          var offset = manifoldSensorPropertyCount + 1;
+	      switch (workbenchEvent.type) {
+	        case WorkbenchEvent.EType.Added:
+	          if (startIndex < 0) {
+	            var i = records.Count - 1;
+	            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
+	            records.Insert(i + 1, new SpaceRecord());
+	            NotifyItemRangeInserted(i, 2);
+	          } else {
+	            records.Insert(startIndex, new SpaceRecord());
+	            records.Insert(startIndex, new ManifoldRecord(manifold));
+	            NotifyItemRangeInserted(startIndex, 2);
+	          }
+	          break;
+	        case WorkbenchEvent.EType.ManifoldEvent:
+	          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	          break;
+	        case WorkbenchEvent.EType.Removed:
+	          if (startIndex >= 0) {
+	            records.RemoveAt(startIndex);
+	            for (int i = 0; i < manifoldSensorPropertyCount; i++) {
+	              records.RemoveAt(startIndex);
+	            }
+	            var count = 1 + manifoldSensorPropertyCount;
+	            if (records[startIndex] is SpaceRecord) {
+	              records.RemoveAt(startIndex);
+	              count++;
+	            }
+	            NotifyItemRangeRemoved(startIndex, count);
+	          }
+	          break;
+	        case WorkbenchEvent.EType.Swapped:
+	          var sm = workbench[workbenchEvent.otherIndex];
+	          var secondIndex = IndexOfManifold(sm);
+	          var offset = manifoldSensorPropertyCount + 1;
 
-          var tmp = records[startIndex];
-          records[startIndex] = records[secondIndex];
-          records[secondIndex] = tmp;
-          NotifyItemMoved(startIndex, secondIndex);
+	          var tmp = records[startIndex];
+	          records[startIndex] = records[secondIndex];
+	          records[secondIndex] = tmp;
+	          NotifyItemMoved(startIndex, secondIndex);
 
-          break;
-        default:
-          throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
-      }
+	          break;
+	        default:
+	          throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
+	      }
+			} catch (Exception e) {
+				NotifyDataSetChanged();
+				Log.E(this, "Index exception occured while trying to remove stuff from the workbench", e);
+#if DEBUG
+				Toast.MakeText(recyclerView.Context, "AN AMAZING ERROR OCCURED", ToastLength.Long).Show();
+#endif
+			}
     }
-
     /// <summary>
     /// Pushes a new manifold expanssion state, effectively saving whether or not a manifold is expanded.
     /// </summary>

@@ -6,6 +6,7 @@
   using Android.Content;
   using Android.OS;
   using Android.Views;
+	using Android.Widget;
 
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -129,10 +130,21 @@
 					var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
 					var manifold = analyzer.GetManifoldFromSide(side);
 
-					if (!analyzer.HasSensor(manifold.secondarySensor) && manifold.secondarySensor != null) {
+					if (analyzer.HasSensor(manifold.secondarySensor)) {
+						if (analyzer.IsSideFull(side)) {
+							Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_side_full_1sarg), side), ToastLength.Long).Show();
+							manifold.SetSecondarySensor(null);
+						} else {
+							if (!analyzer.IsSensorOnSide(manifold.secondarySensor, side)) {
+								var si = analyzer.IndexOfSensor(manifold.secondarySensor);
+								var di = analyzer.NextEmptySensorIndex(side);
+								analyzerView.SwapSensorMounts(di, si);
+							}
+						}
+					} else {
 						analyzer.AddSensorToSide(side, manifold.secondarySensor);
 					}
-          break;
+					break;
 
         case REQUEST_MANIFOLD_ON_SIDE:
           var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
@@ -223,7 +235,7 @@
         new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
-			if (dgs.device.isConnected) {
+			if (dgs != null && dgs.device.isConnected) {
 				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
 					var device = dgs.device;
 
@@ -275,18 +287,14 @@
 			foreach (var unit in sensor.supportedUnits) {
 				if (!unit.Equals(sensor.unit)) {
 					ldb.AddItem(unit.ToString(), () => {
-						DoThings(sensor, unit);
+						var device = sensor.device;
+						var p = device.protocol as IGaugeProtocol;
+						device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 					});
 				}
 			}
 
 			ldb.Show();
-		}
-
-		private void DoThings(GaugeDeviceSensor sensor, Unit unit) {
-			var device = sensor.device;
-			var p = device.protocol as IGaugeProtocol;
-			device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 		}
 
     /// <summary>
@@ -448,6 +456,7 @@
       ldb.SetTitle(Resource.String.analyzer_add_from);
       ldb.AddItem(Resource.String.device_manager, () => {
         var i = new Intent(Activity, typeof(DeviceManagerActivity));
+				i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)(EDeviceFilter.All & (~EDeviceFilter.Temperature)));
         i.SetAction(Intent.ActionPick);
         StartActivityForResult(i, this.EncodeManifoldSideRequest(side));
       });
@@ -456,11 +465,13 @@
           TrySetManifold(side, sensor);
         }).Show();
       });
+/*
       ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
         new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
           TrySetManifold(side, sensor);
         }).Show();
       });
+*/
       ldb.Show();
     }
 
