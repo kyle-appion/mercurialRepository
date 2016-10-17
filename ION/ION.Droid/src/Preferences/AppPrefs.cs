@@ -252,7 +252,7 @@
         return AssertUnitGet(Resource.String.pkey_unit_length, Units.Length.FOOT);
       }
       set {
-        AssertUnitSet(Resource.String.pkey_unit_length, Quantity.Length, Units.Length.FOOT);
+        AssertUnitSet(Resource.String.pkey_unit_length, Quantity.Length, value);
       }
     }
 
@@ -262,7 +262,7 @@
         return AssertUnitGet(Resource.String.pkey_unit_pressure, Units.Pressure.PSIG);
       }
       set {
-        AssertUnitSet(Resource.String.pkey_unit_pressure, Quantity.Pressure, Units.Pressure.PSIG);
+        AssertUnitSet(Resource.String.pkey_unit_pressure, Quantity.Pressure, value);
       }
     }
 
@@ -272,7 +272,7 @@
         return AssertUnitGet(Resource.String.pkey_unit_temperature, Units.Temperature.FAHRENHEIT);
       }
       set {
-        AssertUnitSet(Resource.String.pkey_unit_temperature, Quantity.Temperature, Units.Temperature.FAHRENHEIT);
+        AssertUnitSet(Resource.String.pkey_unit_temperature, Quantity.Temperature, value);
       }
     }
 
@@ -282,7 +282,7 @@
         return AssertUnitGet(Resource.String.pkey_unit_vacuum, Units.Vacuum.MICRON);
       }
       set {
-        AssertUnitSet(Resource.String.pkey_unit_vacuum, Quantity.Vacuum, Units.Vacuum.MICRON);
+        AssertUnitSet(Resource.String.pkey_unit_vacuum, Quantity.Vacuum, value);
       }
     }
 

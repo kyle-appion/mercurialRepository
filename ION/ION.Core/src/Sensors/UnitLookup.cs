@@ -226,6 +226,8 @@ namespace ION.Core.Sensors {
       Add(0x25, Units.Vacuum.IN_HG);
       Add(0x26, Units.Vacuum.PSIA);
       Add(0x27, Units.Vacuum.MICRON);
+			Add(0x28, Units.Vacuum.TORR);
+			Add(0x29, Units.Vacuum.MILLITORR);
     }
   }
 }
