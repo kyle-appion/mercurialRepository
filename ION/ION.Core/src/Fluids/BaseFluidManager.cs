@@ -98,7 +98,7 @@
     // Overridden from IFluidManager
     public async Task<InitializationResult> InitAsync() {
       try {
-        var names = GetAvailableFluidNames();
+//        var names = GetAvailableFluidNames();
         var dir = ion.fileManager.GetApplicationInternalDirectory();
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
         var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
@@ -123,7 +123,6 @@
           }
         }
 
-        Log.D(this, "Getting fluid: " + fluidName);
         await GetFluidAsync(fluidName);
         return new InitializationResult() { success = __isInitialized = true };
       } catch (Exception e) {
@@ -145,7 +144,6 @@
       var ret = new List<string>();
 
       foreach (var filename in EmbeddedResource.GetResourcesOfExtension(EXT_FLUID)) {
-				Log.D(this, "Fluid: " + filename);
         if (!FLUID_COLORS_FILE.Equals(filename)) {
           var fluidName = Regex.Replace(filename, "\\" + EXT_FLUID, "");
           ret.Add(fluidName);
@@ -171,8 +169,6 @@
         }
       }
 
-      if(ret != null)
-        Log.D(this, "ret is currently occupied");
       if (ret == null && HasFluid(fluidName)) {
         ret = await LoadFluidAsync(fluidName);
         __cache.Add(fluidName, new WeakReference(ret));

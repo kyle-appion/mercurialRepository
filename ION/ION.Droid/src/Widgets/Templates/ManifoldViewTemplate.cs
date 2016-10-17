@@ -233,7 +233,8 @@
           Invalidate();
           break;
         default:
-          throw new Exception("Cannot handle manifold event: " + manifoldEvent.type);
+          Log.E(this, "Cannot handle manifold event: " + manifoldEvent.type);
+					break;
       }
     }
   }

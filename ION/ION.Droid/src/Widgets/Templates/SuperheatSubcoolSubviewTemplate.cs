@@ -89,9 +89,8 @@
 				unit.Text = item.temperatureSensor.unit.ToString();
       } else {
         measurement.Text = parentView.Context.GetString(Resource.String.fluid_setup);
+				unit.Text = "";
       }
-
-//      unit.Text = item.sensor.unit.ToString();
     }
 
     /// <summary>

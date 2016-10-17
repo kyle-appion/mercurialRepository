@@ -212,7 +212,7 @@ namespace ION.Droid.App {
 
       Log.D(this, "Creating the AndroidION");
       if (AppState.context != null) {
-        Log.D(this, "A previous service was discovered to be running. Killing it");
+        Log.E(this, "A previous service was discovered to be running. Killing it");
         AppState.context.Dispose();
         AppState.context = null;
       }
