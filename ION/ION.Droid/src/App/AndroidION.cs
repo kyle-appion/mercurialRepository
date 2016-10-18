@@ -34,10 +34,6 @@ namespace ION.Droid.App {
   [Service]
   public class AndroidION : Service, IION {
     /// <summary>
-    /// The name of the general ion preferences.
-    /// </summary>
-    public const string PREFERENCES_GENERAL = "ion.preferences";
-    /// <summary>
     /// The file name for the primary workbench.
     /// </summary>
     public const string FILE_WORKBENCH = "primaryWorkbench.workbench";
@@ -179,7 +175,7 @@ namespace ION.Droid.App {
     /// The wrapped preferences for the application.
     /// </summary>
     /// <value>The preferences.</value>
-    public AppPrefs preferences { get; private set; }
+		public AppPrefs preferences { get { return AppPrefs.Get(this); } }
 
     /// <summary>
     /// Whether or not the context is initialized.
@@ -219,8 +215,7 @@ namespace ION.Droid.App {
 
       AppState.context = this;
       this.handler = new Android.OS.Handler();
-      preferences = new AppPrefs(this, GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Private));
-      var discard = preferences.appVersion; // Sets the current application version.
+      var _ = preferences.appVersion; // Sets the current application version.
 
 			managers.Add(fileManager = new AndroidFileManager(this));
 

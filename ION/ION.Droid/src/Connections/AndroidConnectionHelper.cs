@@ -5,7 +5,9 @@
 
 	using Android.Bluetooth;
 	using Android.Content;
+	using Android.Content.PM;
 	using Android.OS;
+	using Android.Support.V4.Content;
 
 	using ION.Core.Devices;
 	using ION.Core.Devices.Connections;
@@ -79,7 +81,11 @@
 			handler = new Handler();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-				leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+					leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				} else {
+					Log.D(this, "This user is used the 4.3 bluetooth api due to rejected permissions");
+				}
 			} else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
 				leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
 			} else {

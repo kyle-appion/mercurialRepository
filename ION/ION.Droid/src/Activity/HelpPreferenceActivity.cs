@@ -1,28 +1,21 @@
 ﻿namespace ION.Droid.Activity {
 
   using System;
-  using System.Collections.Generic;
   using System.IO;
-  using System.Linq;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
-  using Android.Net;
   using Android.OS;
   using Android.Preferences;
-  using Android.Runtime;
-  using Android.Views;
-  using Android.Widget;
 
   using Newtonsoft.Json;
 
   using ION.Core.App;
-  using ION.Core.IO;
   using ION.Core.Util;
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
+	using ION.Droid.Preferences;
   using ION.Droid.Views;
 
   [Activity(Label="@string/help")]      
@@ -32,7 +25,7 @@
 
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_help, Resource.Color.gray));
 
-      PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
+      PreferenceManager.SharedPreferencesName = AppPrefs.PREFERENCES_GENERAL;
       AddPreferencesFromResource(Resource.Xml.preferences_help);
 
       FindPreference(GetString(Resource.String.pkey_send_feedback)).OnPreferenceClickListener = this;
