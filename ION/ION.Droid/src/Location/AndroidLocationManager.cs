@@ -4,11 +4,13 @@
   using System.Threading.Tasks;
 
   using Android.Content;
+	using Android.Content.PM;
   using Android.Gms.Common;
   using Android.Gms.Common.Apis;
   using Android.Gms.Location;
   using Android.Locations;
   using Android.OS;
+	using Android.Support.V4.App;
   using Android.Support.V4.Content;
 
   using ION.Core.App;
@@ -19,7 +21,8 @@
   using ION.Droid.App;
 
   public class AndroidLocationManager : Java.Lang.Object, ILocationManager, GoogleApiClient.IConnectionCallbacks,
-  GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener, ISharedPreferencesOnSharedPreferenceChangeListener {
+  GoogleApiClient.IOnConnectionFailedListener, Android.Gms.Location.ILocationListener,
+	ISharedPreferencesOnSharedPreferenceChangeListener {
     /// <summary>
     /// The event that will be notified when the location manager's location changes.
     /// </summary>
@@ -112,22 +115,27 @@
     /// </summary>
     /// <returns>The async.</returns>
     public async Task<InitializationResult> InitAsync() {
-      if (IsGooglePlayServicesInstalled()) {
-        client = InitGooglePlayServices();
-        client.Connect();
-        while (client.IsConnecting && !client.IsConnected) {
-          await Task.Delay(50);
-        }
-        if (client.IsConnected) {
-          StartAutomaticLocationPolling();
-        }
-      }
-      altitudeProvider = new GpsAltitudeProvider(ion.GetSystemService(Context.LocationService) as LocationManager);
-      altitudeProvider.onAltitudeEvent += (ap, e) => {
-        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
-      };
+			if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+	      if (IsGooglePlayServicesInstalled()) {
+	        client = InitGooglePlayServices();
+	        client.Connect();
+	        while (client.IsConnecting && !client.IsConnected) {
+	          await Task.Delay(50);
+	        }
+	        if (client.IsConnected) {
+	          StartAutomaticLocationPolling();
+	        }
+	      }
+	      altitudeProvider = new GpsAltitudeProvider(ion.GetSystemService(Context.LocationService) as LocationManager);
+	      altitudeProvider.onAltitudeEvent += (ap, e) => {
+	        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+	      };
+			} else {
+				Log.E(this, "The user denied the location permission. We will not allow the location to update.");
+				ion.preferences.location.allowsGps = false;
+			}
 
-      ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
+			ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
 
       return new InitializationResult() {
         success = true,
@@ -156,7 +164,9 @@
     /// </summary>
     public void StopAutomaticLocationPolling() {
       Log.D(this, "Stopping automatic location polling");
-      LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
+			if (client != null) {
+      	LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
+			}
       isPolling = false;
     }
 
@@ -241,6 +251,7 @@
     public async void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
       if (ion.GetString(Resource.String.pkey_location_gps).Equals(key)) {
         if (prefs.GetBoolean(key, false)) {
+					ion.preferences.location.askForPermissions = true;
           await InitAsync();
         } else {
           StopAutomaticLocationPolling();

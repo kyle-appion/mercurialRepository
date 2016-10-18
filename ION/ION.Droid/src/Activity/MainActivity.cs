@@ -1,26 +1,21 @@
-﻿namespace ION.Droid.Activity {
+﻿using ION.Droid.Preferences;
+namespace ION.Droid.Activity {
   
   using System;
-  using System.Collections.Generic;
   using System.Threading.Tasks;
 
   using Android.App;
   using Android.Content;
   using Android.Content.PM;
-  using Android.Graphics;
   using Android.OS;
   using Android.Support.V4.App;
   using Android.Support.V4.Content;
-  using Android.Views;
-  using Android.Widget;
 
   using ION.Core.App;
   using ION.Core.Util;
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
-  using ION.Droid.Util;
-  using ION.Droid.Widgets.Adapters.Navigation;
 
   /// <summary>
   /// The activity that is responsible for launching the ION app state.
@@ -41,7 +36,12 @@
       SetContentView(Resource.Layout.activity_main);
       Log.printer = new LogPrinter();
 
-      EnsurePermissions();
+			var prefs = AppPrefs.Get(this);
+			if (prefs.location.askForPermissions || prefs.location.allowsGps) {
+      	EnsurePermissions();
+			} else {
+				Task.Factory.StartNew(InitApplication);
+			}
 		}
 
     public void OnRequestPermissionsResult(int requestCode, String[] permissions, Permission[] grantResults) {
@@ -50,7 +50,8 @@
           if (grantResults[0] == Permission.Granted) {
             EnsurePermissions();
           } else {
-            ShowMissingPermissionsDialog(GetString(Resource.String.location));
+						Task.Factory.StartNew(InitApplication);
+//            ShowMissingPermissionsDialog(GetString(Resource.String.location));
           }
         } break;
       }
@@ -71,10 +72,11 @@
           d.Dismiss();
           ActivityCompat.RequestPermissions(this, new string[] { Android.Manifest.Permission.AccessFineLocation }, REQUEST_LOCATION_PERMISSIONS);
         });
-        adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+        adb.SetNegativeButton(Resource.String.deny, (sender, e) => {
           var d = sender as Dialog;
           d.Dismiss();
-          ShowMissingPermissionsDialog(GetString(Resource.String.location));
+//          ShowMissingPermissionsDialog(GetString(Resource.String.location));
+					Task.Factory.StartNew(InitApplication);
         });
 
         adb.Show();
@@ -83,7 +85,7 @@
         Task.Factory.StartNew(InitApplication);
       }
     }
-
+/*
     /// <summary>
     /// Shows a dialog to the user explaining that the application cannot start due to missing permissions.
     /// </summary>
@@ -101,6 +103,7 @@
       });
       adb.Show();
     }
+*/
 
     /// <summary>
     /// Initializes the application context.

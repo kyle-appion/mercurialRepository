@@ -16,6 +16,19 @@
   /// A simple class that is used to access the android applications preferences.
   /// </summary>
   public class AppPrefs {
+		/// <summary>
+		/// The name of the general ion preferences.
+		/// </summary>
+		public const string PREFERENCES_GENERAL = "ion.preferences";
+
+		private static AppPrefs PREFS;
+		public static AppPrefs Get(Context context) {
+			if (PREFS == null) {
+				PREFS = new AppPrefs(context, context.GetSharedPreferences(PREFERENCES_GENERAL, FileCreationMode.Private));
+			}
+
+			return PREFS;
+		}
 
     /// <summary>
     /// The alarm preferences.
@@ -39,10 +52,10 @@
 		public ReportPreferences reports { get; private set; }
 
     /// <summary>
-    /// The ion instance as a context.
+    /// The android context that is used to get the preferences.
     /// </summary>
     /// <value>The ion.</value>
-    public AndroidION ion { get; private set; }
+		public Context context { get; private set; }
     /// <summary>
     /// The application's preferences.
     /// </summary>
@@ -55,12 +68,12 @@
     /// <value>The app version.</value>
     public string appVersion {
       get {
-        return prefs.GetString(ion.GetString(Resource.String.pkey_app_version), null);
+        return prefs.GetString(context.GetString(Resource.String.pkey_app_version), null);
       }
 
       set {
         var e = prefs.Edit();
-        e.PutString(ion.GetString(Resource.String.pkey_app_version), value);
+        e.PutString(context.GetString(Resource.String.pkey_app_version), value);
         e.Commit();
       }
     }
@@ -71,11 +84,11 @@
     /// <value><c>true</c> if first launch; otherwise, <c>false</c>.</value>
     public bool firstLaunch {
       get {
-        var ret = prefs.GetBoolean(ion.GetString(Resource.String.pkey_first_launch), true);        
+        var ret = prefs.GetBoolean(context.GetString(Resource.String.pkey_first_launch), true);        
 
         if (ret) {
           var e = prefs.Edit();
-          e.PutBoolean(ion.GetString(Resource.String.pkey_first_launch), false);
+          e.PutBoolean(context.GetString(Resource.String.pkey_first_launch), false);
           e.Commit();
         }
 
@@ -89,12 +102,12 @@
     /// <value><c>true</c> if show whats new; otherwise, <c>false</c>.</value>
     public bool showWhatsNew {
       get {
-        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_whats_new), true);
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_whats_new), true);
       }
 
       set {
         var e = prefs.Edit();
-        e.PutBoolean(ion.GetString(Resource.String.pkey_whats_new), value);
+        e.PutBoolean(context.GetString(Resource.String.pkey_whats_new), value);
         e.Commit();
       }
     }
@@ -105,22 +118,22 @@
 		/// <value><c>true</c> if is wake locked; otherwise, <c>false</c>.</value>
 		public bool isWakeLocked {
 			get {
-				return prefs.GetBoolean(ion.GetString(Resource.String.pkey_wake_lock), true);
+				return prefs.GetBoolean(context.GetString(Resource.String.pkey_wake_lock), true);
 			}
 			set {
 				var e = prefs.Edit();
-				e.PutBoolean(ion.GetString(Resource.String.pkey_wake_lock), value);
+				e.PutBoolean(context.GetString(Resource.String.pkey_wake_lock), value);
 				e.Commit();
 			}
 		}
 
-    public AppPrefs(AndroidION ion, ISharedPreferences prefs) {
-      this.ion = ion;
+		public AppPrefs(Context context, ISharedPreferences prefs) {
+      this.context = context;
       this.prefs = prefs;
-      alarm = new AlarmPreferences(ion, prefs);
-      location = new LocationPreferences(ion, prefs);
-      units = new UnitPreferences(ion, prefs);
-			reports =  new ReportPreferences(ion, prefs);
+      alarm = new AlarmPreferences(context, prefs);
+      location = new LocationPreferences(context, prefs);
+      units = new UnitPreferences(context, prefs);
+			reports =  new ReportPreferences(context, prefs);
     }
   }
 
@@ -132,15 +145,15 @@
     /// The ion instance as a context.
     /// </summary>
     /// <value>The ion.</value>
-    public AndroidION ion { get; private set; }
+		public Context context { get; private set; }
     /// <summary>
     /// The application's preferences.
     /// </summary>
     /// <value>The prefs.</value>
     public ISharedPreferences prefs { get; set; }
 
-    protected BasePreferences(AndroidION ion, ISharedPreferences prefs) {
-      this.ion = ion;
+		protected BasePreferences(Context context, ISharedPreferences prefs) {
+      this.context = context;
       this.prefs = prefs;
     }
 
@@ -152,7 +165,7 @@
 		/// <param name="key">Key.</param>
 		/// <param name="fallback">Fallback.</param>
 		public string GetString(int key, string fallback) {
-			return prefs.GetString(ion.GetString(key), fallback);
+			return prefs.GetString(context.GetString(key), fallback);
 		}
 
 		/// <summary>
@@ -168,7 +181,7 @@
 			try {
 				return int.Parse(str);
 			} catch (Exception e) {
-				Log.E(this, "Failed to retrieve int from string preference: " + ion.GetString(key), e);
+				Log.E(this, "Failed to retrieve int from string preference: " + context.GetString(key), e);
 	      return fallback;
 			}
 		}
@@ -184,7 +197,7 @@
     /// <value><c>true</c> if allows vibrate; otherwise, <c>false</c>.</value>
     public bool allowsVibrate {
       get {
-        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_alarm_vibrate), true);
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_alarm_vibrate), true);
       }
     }
 
@@ -194,11 +207,11 @@
     /// <value><c>true</c> if allows sounds; otherwise, <c>false</c>.</value>
     public bool allowsSounds {
       get {
-        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_alarm_sound), true);
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_alarm_sound), true);
       }
     }
 
-    public AlarmPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+		public AlarmPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
     }
   }
 
@@ -209,12 +222,12 @@
     /// <value><c>true</c> if allows gps; otherwise, <c>false</c>.</value>
     public bool allowsGps {
       get {
-        return prefs.GetBoolean(ion.GetString(Resource.String.pkey_location_gps), false);
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_location_gps), false);
       }
       set {
         var e = prefs.Edit();
 
-        e.PutBoolean(ion.GetString(Resource.String.pkey_location_gps), value);
+        e.PutBoolean(context.GetString(Resource.String.pkey_location_gps), value);
 
         e.Commit();
       }
@@ -226,19 +239,36 @@
     /// <value>The custom elevation.</value>
     public double customElevation {
       get {
-        return prefs.GetFloat(ion.GetString(Resource.String.pkey_location_elevation), 0.0f);
+        return prefs.GetFloat(context.GetString(Resource.String.pkey_location_elevation), 0.0f);
       }
 
       set {
         var e = prefs.Edit();
 
-        e.PutFloat(ion.GetString(Resource.String.pkey_location_elevation), (float)value);
+        e.PutFloat(context.GetString(Resource.String.pkey_location_elevation), (float)value);
 
         e.Commit();
       }
     }
 
-    public LocationPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+		/// <summary>
+		/// Whether or not the application should ask for the user's location permission.
+		/// </summary>
+		/// <value><c>true</c> if ask for permissions; otherwise, <c>false</c>.</value>
+		public bool askForPermissions {
+			get {
+				return prefs.GetBoolean(context.GetString(Resource.String.pkey_location_ask_for_permissions), true);
+			}
+			set {
+				var e = prefs.Edit();
+
+				e.PutBoolean(context.GetString(Resource.String.pkey_location_ask_for_permissions), value);
+
+				e.Commit();
+			}
+		}
+
+		public LocationPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
     }
   }
 
@@ -286,7 +316,7 @@
       }
     }
 
-    public UnitPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+		public UnitPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
     }
 
     public Unit DefaultUnitFor(ESensorType sensorType) {
@@ -312,7 +342,7 @@
     /// <param name="preferenceKey">Preference key.</param>
     /// <param name="backup">Backup.</param>
     private Unit AssertUnitGet(int preferenceKey, Unit backup) {
-      var key = ion.GetString(preferenceKey);
+      var key = context.GetString(preferenceKey);
 
       try {
         var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
@@ -333,7 +363,7 @@
     /// <returns>The unit set.</returns>
     /// <param name="prefernceKey">Prefernce key.</param>
     private void AssertUnitSet(int preferenceKey, Quantity quantity, Unit unit) {
-      var key = ion.GetString(preferenceKey);
+      var key = context.GetString(preferenceKey);
       try {
         if (quantity != unit.quantity) {
           throw new ArgumentException("Unit: " + unit + " is not compatible with quantity + " + quantity);
@@ -362,7 +392,7 @@
 */
 		}
 
-		public ReportPreferences(AndroidION ion, ISharedPreferences prefs) : base(ion, prefs) {
+		public ReportPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
 		}
 	}
 }

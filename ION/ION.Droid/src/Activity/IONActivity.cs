@@ -55,8 +55,7 @@
       base.OnCreate(state);
 
       cache = new BitmapCache(Resources);
-      GetSharedPreferences(AndroidION.PREFERENCES_GENERAL, FileCreationMode.Append)
-        .RegisterOnSharedPreferenceChangeListener(this);
+			ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
     }
 
 		protected override void OnResume() {
