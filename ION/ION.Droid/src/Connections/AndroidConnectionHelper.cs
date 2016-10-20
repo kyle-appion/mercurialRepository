@@ -82,11 +82,14 @@
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
 				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+					Log.D(this, "This user is using the 5.0 bluetooth api");
 					leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
 				} else {
-					Log.D(this, "This user is used the 4.3 bluetooth api due to rejected permissions");
+					Log.D(this, "This user is using the 4.3 bluetooth api due to rejected permissions");
+					leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
 				}
 			} else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
+				Log.D(this, "This user is using the 4.3 bluetooth api due to versioning");
 				leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
 			} else {
 				// TODO ahodder@appioninc.com: Catch and display user message

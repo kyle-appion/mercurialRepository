@@ -3,15 +3,13 @@
   using System;
   using System.Collections.Generic;
   using System.Text;
-
-  using Newtonsoft.Json;
-  using Newtonsoft.Json.Linq;
+	using System.Threading.Tasks;
 
   using Android.App;
   using Android.Content;
-  using Android.OS;
 
   using ION.Core.App;
+	using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Devices.Certificates;
   using ION.Core.IO;
@@ -77,7 +75,7 @@
 	        Log.D(this, "Resolving result: " + cr.serialNumber);
 	        if (cr.success) {
 	          var file = ion.calibrationCertificateFolder.GetFile(cr.serialNumber + " Certification.pdf", EFileAccessResponse.ReplaceIfExists);
-
+						UpdateLastNistDate(cr.certificate).Wait();
 	          try {
 	            using (var s = file.OpenForWriting()) {
 	              GaugeDeviceCertificatePdfExporter.Export(ion, cr.certificate, s);
@@ -94,11 +92,33 @@
 
 	      return ret;
 			} catch (Exception e) {
-				Log.E(this, "Failed to request calibration certificates.");
+				Log.E(this, "Failed to request calibration certificates.", e);
 				// TODO ahodder@appioninc.com: Build a list of the affect serial numbers.
 				return parameters;
 			}
     }
+
+		/// <summary>
+		/// Stores the cert calibration date into the database so it can be used in reporting.
+		/// </summary>
+		/// <param name="cert">Cert.</param>
+		private async Task<bool> UpdateLastNistDate(GaugeDeviceCalibrationCertificate cert) {
+			var table = ion.database.Table<LoggingDeviceRow>();
+
+			var row = table.Where(ldr => ldr.serialNumber == cert.testSerialNumber.ToString()).FirstOrDefault();
+			if (row == null) {
+				// The logging device row does not exist in the database for the given serial number. We will need to add it
+				row = new LoggingDeviceRow() {
+					serialNumber = cert.testSerialNumber.ToString(),
+					nistDate = cert.lastTestCalibrationDate.ToShortDateString(),
+				};
+				return await ion.database.SaveAsync<LoggingDeviceRow>(row);
+			} else {
+				// The logging device row exists in the database. Pull it and update the date.
+				row.nistDate = cert.lastTestCalibrationDate.ToShortDateString();
+				return await ion.database.SaveAsync<LoggingDeviceRow>(row);
+			}
+		}
 
     /// <Docs>To be added.</Docs>
     /// <remarks>To be added.</remarks>

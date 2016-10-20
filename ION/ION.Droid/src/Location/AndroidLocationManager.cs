@@ -148,15 +148,19 @@
     /// <returns>true</returns>
     /// <c>false</c>
     public bool StartAutomaticLocationPolling() {
-      Log.D(this, "Startings automatic location polling");
-      request = new LocationRequest();
-      request.SetFastestInterval(500);
-      request.SetInterval(3000);
-      request.SetNumUpdates(60);
-      request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
-      LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
-      isPolling = true;
-      return true;
+			if (ion.preferences.location.allowsGps) {
+	      Log.D(this, "Startings automatic location polling");
+	      request = new LocationRequest();
+	      request.SetFastestInterval(500);
+	      request.SetInterval(3000);
+	      request.SetNumUpdates(60);
+	      request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
+	      LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
+	      isPolling = true;
+	      return true;
+			} else {
+				return false;
+			}
     }
 
     /// <summary>
