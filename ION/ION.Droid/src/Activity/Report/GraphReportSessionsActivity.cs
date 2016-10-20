@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-namespace ION.Droid.Activity.Report {
+﻿namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
@@ -510,18 +509,15 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void Export() {
-			var results = graphAdapter.GatherSelectedLogs(leftOverlay.width / (float)leftOverlay.plotWidth,
-			                                         1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
-			
 			var dialog = new ListDialogBuilder(this);
 			dialog.SetTitle(Resource.String.report_choose_export_format);
 
 			dialog.AddItem(Resource.String.spreadsheet, () => {
-				ExportExcel(results);
+				ExportExcel();
 			});
 
 			dialog.AddItem(Resource.String.pdf, () => {
-				ExportPdf(results);
+				ExportPdf();
 			});
 
 			dialog.SetNegativeButton(Resource.String.cancel, (sender, e) => {
@@ -532,7 +528,7 @@ namespace ION.Droid.Activity.Report {
 			dialog.Show();
 		}
 
-		private async Task ExportExcel(List<SessionResults> results) {
+		private async Task ExportExcel() {
 			var dialog = new ProgressDialog(this);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.saving));
@@ -540,6 +536,14 @@ namespace ION.Droid.Activity.Report {
 
 			var task = Task.Factory.StartNew(() => {
 				try {
+					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
+					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
+					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
+
+					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
+					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 
 					dateString = dateString.Replace('/', '-');
@@ -547,9 +551,7 @@ namespace ION.Droid.Activity.Report {
 					var folder = ion.dataLogReportFolder;
 					var file = folder.GetFile(FILE_NAME + "_" + dateString + EXCEL_EXT, EFileAccessResponse.ReplaceIfExists);
 
-					var success = new DataLogExcelReportExporter().Export(ion, this, file.fullPath, results);
-
-					if (success) {
+					if (DataLogExcelReportExporter.Export(this, ion, file.fullPath, dlr)) {
 						Log.D(this, "Succeeded in exporting the results");
 					} else {
 						Log.D(this, "Failed to export the results.");
@@ -569,7 +571,7 @@ namespace ION.Droid.Activity.Report {
 			dialog.Dismiss();
 		}
 
-		private async Task ExportPdf(List<SessionResults> results) {
+		private async Task ExportPdf() {
 			var dialog = new ProgressDialog(this);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.saving));
@@ -577,6 +579,14 @@ namespace ION.Droid.Activity.Report {
 
 			var task = Task.Factory.StartNew(() => {
 				try {
+					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
+					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
+					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
+
+					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
+					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 
 					dateString = dateString.Replace('/', '-');
@@ -585,7 +595,7 @@ namespace ION.Droid.Activity.Report {
 					var folder = ion.dataLogReportFolder;
 					var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
 
-					var success = new DataLogPdfReportExporter().Export(ion, this, file.fullPath, results);
+					var success = DataLogPdfReportExporter.Export(this, ion, file.fullPath, dlr);
 
 					if (success) {
 						Log.D(this, "Succeeded in exporting the results");

@@ -2,6 +2,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.IO;
 
 	using Android.Content;
@@ -11,6 +12,7 @@
 	using FlexCel.XlsAdapter;
 
 	using ION.Core.App;
+	using ION.Core.Database;
 	using ION.Core.Devices;
 	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
@@ -22,14 +24,44 @@
 
 	public class DataLogPdfReportExporter {
 
+		private const int SHEET_COUNT = 2;
+		private const int SHEET_SESSION_RESULTS = 1;
+		private const int SHEET_JOB_INFO = 2;
+
+		/// <summary>
+		/// The android context needed for writing the file.
+		/// </summary>
+		private Context context;
+		/// <summary>
+		/// The ion instance that is driving the background for the exporter.
+		/// </summary>
+		private IION ion;
+		/// <summary>
+		/// The filepath that we are exporting to.
+		/// </summary>
+		private string filepath;
+		/// <summary>
+		/// The report that we are exporting.
+		/// </summary>
+		private DataLogReport dlr;
 		/// <summary>
 		/// The excel file that we will write the data to.
 		/// </summary>
 		private XlsFile file;
 
-		public DataLogPdfReportExporter() {
+		private int formatHeader;
+		private int formatContent;
+		private int formatBorder;
+
+		public DataLogPdfReportExporter(Context context, IION ion, string filepath, DataLogReport dlr) {
+			this.context = context;
+			this.ion = ion;
+			this.filepath = filepath;
+			this.dlr = dlr;
+
 			file = new XlsFile(1, TExcelFileFormat.v2013, true);
 			file.AllowOverwritingFiles = true;
+			file.PrintScale = 100 - (dlr.devices.Count * 10);
 
 			// The format that is used to render the header cells.
 			var headerFormat = file.GetDefaultFormat;
@@ -58,10 +90,6 @@
 			var borderFormat = file.GetDefaultFormat;
 			borderFormat.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
 			borderFormat.Borders.Bottom.Style = TFlxBorderStyle.Medium;
-/*
-			borderFormat.Borders.Top.Style = TFlxBorderStyle.Thin;
-			borderFormat.Borders.Top.Color = TUIColor.FromArgb(171, 171, 171);
-*/
 			borderFormat.Borders.Left.Style = TFlxBorderStyle.Thin;
 			borderFormat.Borders.Left.Color = TUIColor.FromArgb(171, 171, 171);
 			borderFormat.Borders.Right.Style = TFlxBorderStyle.Thin;
@@ -72,85 +100,20 @@
 			// The order that the formats are added to the file is the 1-based index that is passed to SetCellValue as the cell
 			// format.
 
-			file.AddFormat(headerFormat);   // 1
-			file.AddFormat(contentFormat);  // 2
-			file.AddFormat(borderFormat);   // 3
+			formatHeader = file.AddFormat(headerFormat);   // 1
+			formatContent = file.AddFormat(contentFormat);  // 2
+			formatBorder = file.AddFormat(borderFormat);   // 3
 		}
 
-		public bool Export(AndroidION ion, Context context, string filepath, List<SessionResults> sessionResults) {
+		public bool Commit() {
 			try {
-				var unsortedMasterDates = new HashSet<DateTime>();
-
-				var masterDates = new List<DateTime>();
-				var sessionBreaks = new HashSet<DateTime>();
-				var measurements = new Dictionary<string, Measurements>();
-
-				foreach (var sr in sessionResults) {
-					foreach (var dsl in sr.deviceSensorLogs) {
-						var sensor = GetSensor(ion, dsl.deviceSerialNumber, dsl.index);
-
-						Measurements m;
-
-						if (!measurements.TryGetValue(dsl.deviceSerialNumber, out m)) {
-							m = new Measurements() {
-								sensor = sensor,
-								serialNumber = dsl.deviceSerialNumber,
-								sensorIndex = dsl.index,
-							};
-							measurements[dsl.deviceSerialNumber] = m;
-						}
-
-						foreach (var sl in dsl.logs) {
-							unsortedMasterDates.Add(sl.recordedDate);
-							m.measurements[sl.recordedDate] = sl.measurement;
-						}
-						sessionBreaks.Add(dsl.end);
-					}
-				}
-
-				masterDates.AddRange(unsortedMasterDates);
-				masterDates.Sort();
-
-				// Draw header
-				file.SetCellValue(1, 1, "" + context.GetString(Resource.String.time), 1);
-				var i = 0;
-				foreach (var key in measurements.Keys) {
-					file.SetCellValue(1, 2 + i++, "" + GetHeaderStringFromSensor(ion, measurements[key].sensor), 1);
-				}
-
-				// Draw the master dates list to the file.
-				for (i = 0; i < masterDates.Count; i++) {
-					var date = masterDates[i];
-					var format = sessionBreaks.Contains(date) ? 3 : 2;
-					file.SetCellValue(2 + i, 1, date.ToShortDateString() + " " + date.ToLongTimeString(), format);
-				}
-
-				// Draw the content for the measurements.
-				var x =0;
-				foreach (var key in measurements.Keys) {
-					for (int y = 0; y < masterDates.Count; y++) {
-						var m = measurements[key];
-						var su = m.sensor.unit.standardUnit;
-						var dt = masterDates[y];
-						if (m.measurements.ContainsKey(dt)) {
-							var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.defaultUnits.DefaultUnitFor(m.sensor.type));
-							var format = sessionBreaks.Contains(dt) ? 3 : 2;
-							file.SetCellValue(2 + y, 2 + x, "" + SensorUtils.ToFormattedString(m.sensor.type, scalar), format);
-							Log.D(this, "X: " + x + " Y: " + y + " value: " + scalar);
-						}
-					}
-
-					x++;
-				}
-
-				for (int j = 0; j <= measurements.Count; j++) {
-					file.AutofitCol(1 + j, false, 1.0);
-				}
+				var endy = RenderJobAndDevicesDetails(1);
+				RenderSessionResults(endy + 1);
 
 				using (var pdf = new FlexCelPdfExport(file, true)) {
 					pdf.GetFontData += (sender, e) => {
 						var ms = new MemoryStream(1024 * 64);
-						var stream = ion.Assets.Open("fonts/RobotoCondensed.ttf");
+						var stream = context.Assets.Open("fonts/RobotoCondensed.ttf");
 
 						var buffer = new byte[1024];
 						var read = -1;
@@ -169,6 +132,162 @@
 				Log.E(this, "Failed to export data log to excel.", e);
 				return false;
 			}
+		}
+
+		private int RenderJobAndDevicesDetails(int starty) {
+			// We will render the device details first
+			var curRow = starty;
+
+			// Write the block title
+			file.SetCellValue(curRow, 2, context.GetString(Resource.String.report_devices_used), formatContent);
+			// Move to the next row
+			curRow++; 
+
+			// Render the block headers
+			file.SetCellValue(curRow, 1, context.GetString(Resource.String.device_serial_number), formatHeader);
+			file.SetCellValue(curRow, 2, context.GetString(Resource.String.name), formatHeader);
+			file.SetCellValue(curRow, 3, context.GetString(Resource.String.report_nist_date), formatHeader);
+			// Move to the next row
+			curRow++; 
+
+			// Render the device details
+			for (int i = 0; i < dlr.devices.Count; i++) {
+				var device = dlr.devices[i];
+
+				var sn = device.serialNumber.ToString();
+				var ldr = ion.database.Table<LoggingDeviceRow>().Where(r => r.serialNumber.Equals(sn)).FirstOrDefault();
+				string date = "N/A";
+				DateTime dt;
+				if (!DateTime.TryParse(ldr.nistDate, out dt)) {
+					Log.D(this, "Failed to parse date time: '" + ldr.nistDate + "'");
+				}
+
+				file.SetCellValue(curRow, 1, device.serialNumber.ToString(), formatContent);
+				file.SetCellValue(curRow, 2, device.name, formatContent);
+				file.SetCellValue(curRow, 3, date, formatContent);
+				// Move to the next row
+				curRow++; 
+			}
+
+			// Add an row for padding
+			curRow++; 
+
+			// Add the footer
+			file.SetCellValue(curRow, 1, context.GetString(Resource.String.report_created), formatHeader);
+			file.SetCellValue(curRow, 2, DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString(), formatContent);
+
+			// Move to the next row
+			curRow++;
+
+			// Add the dates created
+			file.SetCellValue(curRow, 1, "", formatHeader);
+			file.SetCellValue(curRow, 2, context.GetString(Resource.String.report_dates), formatHeader);
+			file.SetCellValue(curRow, 3, "", formatHeader);
+
+			// Move to the next row
+			curRow++; 
+
+			file.SetCellValue(curRow, 2, dlr.start.ToFullShortString() + " - " + dlr.end.ToFullShortString(), formatContent);
+
+
+			// Render the jobs details
+
+			if (dlr.jobs.Count <= 0) {
+				file.SetCellValue(starty + 1, 5, context.GetString(Resource.String.report_spans_no_jobs), formatHeader);
+			} else if (dlr.jobs.Count == 1) {
+				file.SetCellValue(1, 5, context.GetString(Resource.String.report_job_details), formatContent);
+				var job = dlr.jobs.First();
+
+				file.SetCellValue(starty + 1, 6, context.GetString(Resource.String.report_job_details), formatHeader);
+				file.SetCellValue(starty + 2, 5, context.GetString(Resource.String.job_name), formatHeader);
+				file.SetCellValue(starty + 3, 5, context.GetString(Resource.String.job_customer_no), formatHeader);
+				file.SetCellValue(starty + 4, 5, context.GetString(Resource.String.job_dispatch_no), formatHeader);
+				file.SetCellValue(starty + 5, 5, context.GetString(Resource.String.job_purchase_no), formatHeader);
+
+				file.SetCellValue(starty + 2, 5, job.jobName, formatContent);
+				file.SetCellValue(starty + 3, 5, job.customerNumber, formatContent);
+				file.SetCellValue(starty + 4, 5, job.dispatchNumber, formatContent);
+				file.SetCellValue(starty + 5, 5, job.poNumber, formatContent);
+			} else {
+				file.SetCellValue(starty + 1, 5, context.GetString(Resource.String.report_spans_multiple_jobs), formatHeader);
+			}
+
+			// Autofit
+			file.AutofitCol(1, 6, false, 1.1);
+
+			return curRow < 6 ? 6 : curRow;
+		}
+
+		/// <summary>
+		/// Renders the session results to a new sheet in the excel.
+		/// </summary>
+		private void RenderSessionResults(int starty) {
+			var unsortedMasterDates = new HashSet<DateTime>();
+
+			var masterDates = new List<DateTime>();
+			var sessionBreaks = new HashSet<DateTime>();
+			var measurements = new Dictionary<string, Measurements>();
+
+			foreach (var sr in dlr.sessionResults) {
+				foreach (var dsl in sr.deviceSensorLogs) {
+					var sensor = GetSensor(ion, dsl.deviceSerialNumber, dsl.index);
+
+					Measurements m;
+
+					if (!measurements.TryGetValue(dsl.deviceSerialNumber, out m)) {
+						m = new Measurements() {
+							sensor = sensor,
+							serialNumber = dsl.deviceSerialNumber,
+							sensorIndex = dsl.index,
+						};
+						measurements[dsl.deviceSerialNumber] = m;
+					}
+
+					foreach (var sl in dsl.logs) {
+						unsortedMasterDates.Add(sl.recordedDate);
+						m.measurements[sl.recordedDate] = sl.measurement;
+					}
+					sessionBreaks.Add(dsl.end);
+				}
+			}
+
+			masterDates.AddRange(unsortedMasterDates);
+			masterDates.Sort();
+
+			// Draw header
+			file.SetCellValue(starty + 1, 1, "" + context.GetString(Resource.String.time), 1);
+			var i = 0;
+			foreach (var key in measurements.Keys) {
+				file.SetCellValue(starty + 1, 2 + i++, "" + GetHeaderStringFromSensor(ion, measurements[key].sensor), 1);
+			}
+
+			// Draw the master dates list to the file.
+			for (i = 0; i < masterDates.Count; i++) {
+				var date = masterDates[i];
+				var format = sessionBreaks.Contains(date) ? 3 : 2;
+				file.SetCellValue(starty + 2 + i, 1, date.ToShortDateString() + " " + date.ToLongTimeString(), format);
+			}
+
+			// Draw the content for the measurements.
+			var x = 0;
+			foreach (var key in measurements.Keys) {
+				for (int y = 0; y < masterDates.Count; y++) {
+					var m = measurements[key];
+					var su = m.sensor.unit.standardUnit;
+					var dt = masterDates[y];
+					if (m.measurements.ContainsKey(dt)) {
+						var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.defaultUnits.DefaultUnitFor(m.sensor.type));
+						var format = sessionBreaks.Contains(dt) ? 3 : 2;
+						file.SetCellValue(starty + 2 + y, 2 + x, "" + SensorUtils.ToFormattedString(m.sensor.type, scalar), format);
+						Log.D(this, "X: " + x + " Y: " + y + " value: " + scalar);
+					}
+				}
+
+				x++;
+			}
+
+			// Autofit
+			file.AutofitCol(1, x + 1, false, 1.1);
 		}
 
 		/// <summary>
@@ -210,6 +329,9 @@
 			}
 		}
 
+		public static bool Export(Context context, IION ion, string filepath, DataLogReport dlr) {
+			return new DataLogPdfReportExporter(context, ion, filepath, dlr).Commit();
+		}
 
 		private class Measurements {
 			public GaugeDeviceSensor sensor;
