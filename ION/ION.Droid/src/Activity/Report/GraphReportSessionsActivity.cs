@@ -180,7 +180,6 @@
 		protected override void OnResume() {
 			base.OnResume();
 
-			InvalidateGraphViews();
 			RefreshGraphList();
 		}
 
@@ -239,7 +238,7 @@
 						}
 
 						leftOverlay.width = (int)(x - modifiedStart);
-						left.SetX(x - left.Width / 2);
+						left.SetX(x);
 
 						graphList.Invalidate();
 						UpdateDates();
@@ -269,7 +268,7 @@
 
 						rightOverlay.width = (int)(modifiedStart + rect.Width() - x);
 
-						right.SetX(x - right.Width / 2);
+						right.SetX(x - right.Width);
 
 						graphList.Invalidate();
 						UpdateDates();
@@ -431,8 +430,11 @@
 			leftOverlay.plotWidth = rect.Width();
 			rightOverlay.plotWidth = rect.Width();
 
-			left.SetX(modifiedStart + leftOverlay.width - left.Width / 2);
-			right.SetX(modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
+			var leftx = Math.Max(modifiedStart, modifiedStart + leftOverlay.width - left.Width / 2);
+			var rightx = Math.Min(modifiedStart + rect.Width() - right.Width, modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
+
+			left.SetX(leftx);
+			right.SetX(rightx);
 
 			graphList.Invalidate();
 

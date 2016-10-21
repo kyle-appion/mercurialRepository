@@ -637,6 +637,8 @@
     <AndroidResource Include="Resources\drawable\ic_job.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_reporting.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />
+    <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
+    <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
