@@ -5,6 +5,7 @@ using Foundation;
 using CoreGraphics;
 
 using ION.Core.App;
+using System.Threading.Tasks;
 
 namespace ION.IOS.ViewController.JobManager {
   public partial class JobEditViewController : BaseIONViewController {
@@ -82,11 +83,25 @@ namespace ION.IOS.ViewController.JobManager {
       var button = new UIBarButtonItem(saveButton);
 
       NavigationItem.RightBarButtonItem = button;
-      tabManager = new UITabBar(new CGRect(0,View.Bounds.Height - 70, View.Bounds.Width,60));
+      
+      Console.WriteLine("holder view bounds start " + jobViewHolder.Bounds);
 
-      editView = new EditJobView(View,frnJID);
-      associateView = new JobSessionView(View,tabManager,UIApplication.SharedApplication.StatusBarFrame.Size.Height * 2,frnJID);
-      notesView = new JobNotesView(View, frnJID);
+      setupLayout();
+    }
+
+		public async void setupLayout(){
+			await Task.Delay(TimeSpan.FromMilliseconds(2));
+			Console.WriteLine("Holder dimensions " + jobViewHolder.Bounds);
+			if(jobViewHolder.Bounds.Height != View.Bounds.Height){
+				var changeBounds = jobViewHolder.Bounds;
+				changeBounds.Height = View.Bounds.Height - 60;
+				jobViewHolder.Bounds = changeBounds;
+			}
+      tabManager = new UITabBar(new CGRect(0,jobViewHolder.Bounds.Height - 50, jobViewHolder.Bounds.Width,60));
+
+      editView = new EditJobView(jobViewHolder,frnJID);
+      associateView = new JobSessionView(jobViewHolder,frnJID);
+      notesView = new JobNotesView(jobViewHolder, frnJID);
 
       var infoTab = new UITabBarItem();
       infoTab.Tag = 0;
@@ -133,16 +148,18 @@ namespace ION.IOS.ViewController.JobManager {
             associateView.sessionView.Hidden = true;
             notesView.notesView.Hidden = false;
             break;
-        }
+        }   
       };
       
-      View.AddSubview(tabManager);
-      View.BringSubviewToFront(tabManager);
-      View.AddSubview(editView.editView);
-      View.AddSubview(associateView.sessionView);
-      View.AddSubview(notesView.notesView);
-    }
+      jobViewHolder.AddSubview(tabManager);
+      jobViewHolder.AddSubview(editView.editView);
+      jobViewHolder.AddSubview(associateView.sessionView);
+      jobViewHolder.AddSubview(notesView.notesView);			
+		}
+		public override void ViewDidAppear(bool animated) {
+			base.ViewDidAppear(animated);
 
+		}
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.

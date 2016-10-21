@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.JobManager {
 
     public int frnJID;
 
-    public JobSessionView(UIView parentView, UITabBar tabBar, nfloat navHeight ,int JID = 0) {
+    public JobSessionView(UIView parentView,int JID = 0) {
       ion = AppState.context;
       frnJID = JID;
       addList = new List<int>();
@@ -35,7 +35,7 @@ namespace ION.IOS.ViewController.JobManager {
       var queryAll = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd, frn_JID FROM SessionRow WHERE frn_JID <> ? OR frn_JID IS NULL",frnJID);
       var queryAttached = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM SessionRow WHERE frn_JID = ?", frnJID);
 
-      sessionView = new UIView(new CGRect(0,navHeight,parentView.Bounds.Width,parentView.Bounds.Height - (tabBar.Bounds.Height + navHeight)));
+      sessionView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height - 70));
       sessionView.Hidden = true;
 
       sessionDivider = new UILabel(new CGRect(0,.415 * sessionView.Bounds.Height,sessionView.Bounds.Width,5));

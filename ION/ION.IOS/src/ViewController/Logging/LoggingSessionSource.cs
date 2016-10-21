@@ -57,7 +57,7 @@ namespace ION.IOS.ViewController.Logging {
         cell = new SessionCell();
     
       cell.makeCellData(tableItems[indexPath.Row].SID, tableItems[indexPath.Row].start, tableItems[indexPath.Row].finish, tableView, cellHeight);
-      cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+      cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
 
       if(usingSessions.Contains(tableItems[indexPath.Row].SID)){
         cell.Accessory = UITableViewCellAccessory.Checkmark;

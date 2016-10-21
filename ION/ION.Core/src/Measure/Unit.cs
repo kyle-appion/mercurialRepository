@@ -492,7 +492,9 @@
       if (this == other) {
         return true;
       } else if (other is AlternateUnit) {
-        return ((AlternateUnit)other).symbol.Equals(symbol);
+        //return ((AlternateUnit)other).symbol.Equals(symbol);
+        var bu = other as AlternateUnit;
+        return quantity == bu.quantity && symbol.Equals(bu.symbol);
       } else {
         return false;
       }

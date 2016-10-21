@@ -41,10 +41,6 @@ namespace ION.IOS.ViewController.Analyzer
       return .521f * tableSensors.snapArea.Bounds.Height;
     }
 
-    public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
-      return true;
-    }
-
     public override void CommitEditingStyle (UITableView tableView, UITableViewCellEditingStyle editingStyle, Foundation.NSIndexPath indexPath)
     {
       switch (editingStyle) {
@@ -58,6 +54,12 @@ namespace ION.IOS.ViewController.Analyzer
           // delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
           break;
+				case UITableViewCellEditingStyle.Insert:
+					//---- create a new item and add it to our underlying data
+					//tableItems [indexPath.Section].Insert (indexPath.Row, new TableItem ("(inserted)"));
+					//---- insert a new row in the table
+					tableView.InsertRows (new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
+					break;
         case UITableViewCellEditingStyle.None:
           Console.WriteLine ("CommitEditingStyle:None called");
           break;
@@ -66,7 +68,7 @@ namespace ION.IOS.ViewController.Analyzer
 
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
-
+		
       if (tableItems[indexPath.Row].Contains("Maximum")) {
         var cell = tableView.DequeueReusableCell("Maximum") as maximumTableCell;
         if (cell == null) {
@@ -140,15 +142,31 @@ namespace ION.IOS.ViewController.Analyzer
         cell.makeEvents(tableSensors,tableView.Bounds);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.CornerRadius = 5;
+
         return cell;
       }
 			
 		}
-
+		
+    public override bool CanEditRow(UITableView tableView, NSIndexPath indexPath) {
+      return true;
+    }
+    
     public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
       return true;
     }
 
+		public override UITableViewCellEditingStyle EditingStyleForRow (UITableView tableView, NSIndexPath indexPath)
+		{
+			// WARNING: SPECIAL HANDLING HERE FOR THE SECOND ROW
+			// ALSO MEANS SWIPE-TO-DELETE DOESN'T WORK ON THAT ROW
+			if (indexPath.Section == 0 && indexPath.Row == 1) {
+				return UITableViewCellEditingStyle.Insert;
+			} else {
+				return UITableViewCellEditingStyle.Delete;
+			}
+		}
+		
     public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
       var item = tableItems[sourceIndexPath.Row];
       var deleteAt = sourceIndexPath.Row;

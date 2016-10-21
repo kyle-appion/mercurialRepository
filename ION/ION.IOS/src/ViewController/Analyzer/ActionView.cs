@@ -29,18 +29,23 @@ namespace ION.IOS.ViewController.Analyzer {
     
     public ActionView(UIView mainView) {
       aView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
-      connectionColor = new UIView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
+      aView.ClipsToBounds = true;
+      
+      connectionColor = new UIView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));      
       connectionColor.Layer.BorderColor = UIColor.Black.CGColor;
       connectionColor.Layer.BorderWidth = 1f;
       connectionColor.Layer.CornerRadius = 8;
+      
       pcloseButton = new UIButton(new CGRect(0, .8 * aView.Bounds.Height, .503 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pactionButton = new UIButton(new CGRect(.5 * aView.Bounds.Width,.8 * aView.Bounds.Height,.5 * aView.Bounds.Width, .2 * aView.Bounds.Height));
       pconnection = new UIImageView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       activityConnectStatus = new UIActivityIndicatorView(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       activityConnectStatus.HidesWhenStopped = true;
+      
       conDisButton = new UIButton(new CGRect(.867 * aView.Bounds.Width, .035 * aView.Bounds.Height, .103 * aView.Bounds.Width, .179 * aView.Bounds.Height));
       conDisButton.BackgroundColor = UIColor.Clear;
       conDisButton.Layer.CornerRadius = 8;
+      
       pdeviceImage = new UIImageView(new CGRect(0, .215 * aView.Bounds.Height, .214 * aView.Bounds.Width, .214 * aView.Bounds.Width));
       pbatteryImage = new UIImageView(new CGRect(.614 * aView.Bounds.Width, .071 * aView.Bounds.Height, .203 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pdeviceName = new UILabel(new CGRect(.028 * aView.Bounds.Width, .035 * aView.Bounds.Height, .435 * aView.Bounds.Width, .107 *aView.Bounds.Height));
@@ -49,6 +54,7 @@ namespace ION.IOS.ViewController.Analyzer {
       pconnectionStatus = new UILabel(new CGRect(.292 * aView.Bounds.Width, .574 * aView.Bounds.Height, .357 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pLowHigh = new UILabel(new CGRect(.728 * aView.Bounds.Width, .682 * aView.Bounds.Height, .267 * aView.Bounds.Width,.107 * aView.Bounds.Height));
       pdisplayLink = new UILabel(new CGRect(0, .682 * aView.Bounds.Height, .7 * aView.Bounds.Width,.107 * aView.Bounds.Height));
+      
       abuttonBorder = new UIView(new CGRect(0, .8 * aView.Bounds.Height, aView.Bounds.Width ,1));
       abuttonBorder.BackgroundColor = UIColor.LightGray;
       abuttonBorder2 = new UIView(new CGRect(.5 * aView.Bounds.Width, .8 * aView.Bounds.Height, 1, .2 * aView.Bounds.Height));

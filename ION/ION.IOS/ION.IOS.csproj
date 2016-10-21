@@ -644,6 +644,12 @@
     <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\blank_checkbox.imageset\blank_checkbox.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\filled_checkbox.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_left_tracker.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_right_tracker.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_left_tracker.imageset\ic_left_tracker.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_right_tracker.imageset\ic_right_tracker.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_warning_triangle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_warning_triangle.imageset\ic_warning_triangle.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1057,6 +1063,9 @@
     <Folder Include="src\ViewController\AccessRequest\" />
     <Folder Include="src\ViewController\RemoteWorkbench\" />
     <Folder Include="src\ViewController\RemoteDeviceManager\" />
+    <Folder Include="Resources\Images.xcassets\ic_left_tracker.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_right_tracker.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_warning_triangle.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -112,7 +112,7 @@
     /// <param name="tokenSource">Token source.</param>
     public async Task<List<CalibrationCertificateRequestResult>> Request() {
       started = true;
-
+			Log.D(this, "Inside Request()");
       try {
         var ct = tokenSource.Token;
         var ret = new List<CalibrationCertificateRequestResult>();
