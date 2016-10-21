@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.24">
+	<display version="0.9.23">
 		<update>Updated rate of change algorithm</update>
 		<update>Updated refrigerant library</update>
 		<update>Updated permission requesting for bluetooth</update>
