@@ -3,6 +3,8 @@
 	<display version="0.9.24">
 		<update>Updated rate of change algorithm</update>
 		<update>Updated refrigerant library</update>
+		<update>Updated permission requesting for bluetooth</update>
+		<fixed>Fixed notification icon color on some devices</fixed>
 		<fixed>Fixed corner-case bugs in Analyzer</fixed>
 		<fixed>Fixed alarm activity not responding to save clicks</fixed>
 		<fixed>Fixed some bugs in preferences and preference handling</fixed>
