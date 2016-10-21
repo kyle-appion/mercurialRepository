@@ -23,6 +23,31 @@
      this.adapter = adapter;
     }
 
+		public override void OnSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+			base.OnSelectedChanged(viewHolder, actionState);
+			if (actionState == ItemTouchHelper.ActionStateDrag) {
+				if (viewHolder.ItemViewType == (int)EViewType.Manifold) {
+					adapter.SaveManifoldExpansionState();
+					isSaved = true;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Clears the view.
+		/// </summary>
+		/// <param name="recyclerView">Recycler view.</param>
+		/// <param name="viewHolder">View holder.</param>
+		public override void ClearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+			base.ClearView(recyclerView, viewHolder);
+
+			if (isSaved) {
+				adapter.RestoreManifoldExpansionState();
+			}
+			isSaved = false;
+		}
+
+
     /// <summary>
     /// Raises the move event.
     /// </summary>
@@ -32,13 +57,6 @@
     public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
       var sourceRecord = adapter.GetRecordAt(viewHolder.AdapterPosition);
       var targetRecord = adapter.GetRecordAt(target.AdapterPosition);
-
-      if (sourceRecord is ManifoldRecord) {
-        if (!isSaved) {
-          adapter.SaveManifoldExpansionState();
-          isSaved = true;
-        }
-      }
 
       if (sourceRecord is ManifoldRecord && targetRecord is ManifoldRecord) {
         return PerformManifoldMove(recyclerView, sourceRecord as ManifoldRecord, targetRecord as ManifoldRecord);
@@ -55,22 +73,6 @@
     /// <param name="viewHolder">View holder.</param>
     /// <param name="direction">Direction.</param>
     public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-    }
-
-    /// <summary>
-    /// Clears the view.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
-    /// <param name="viewHolder">View holder.</param>
-    public override void ClearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-      base.ClearView(recyclerView, viewHolder);
-      Log.D(this, "Clearing");
-      if (isSaved) {
-        adapter.RestoreManifoldExpansionState();
-      }
-      isSaved = false;
-
-			recyclerView.GetAdapter().NotifyDataSetChanged();
     }
 
     /// <summary>

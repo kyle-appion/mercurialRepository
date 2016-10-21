@@ -522,12 +522,13 @@ managers.Add(deviceManager = new BaseDeviceManager(this,
       }
       var total = deviceManager.devices.Count;
 
-			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_logo_appiondefault);
-
+			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_nav_analyzer);
+			var ic = Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop ? Resource.Drawable.ic_nav_analyzer_white : Resource.Drawable.ic_nav_analyzer;
 
       var note = new NotificationCompat.Builder(this)
+			                                 .SetColor(Resource.Color.gold)
 			                                 .SetLargeIcon(bitmap)
-			                                 .SetSmallIcon(Resource.Drawable.ic_nav_analyzer)
+			                                 .SetSmallIcon(ic)
 															         .SetContentTitle(GetString(Resource.String.app_name))
 															         .SetContentText(string.Format(GetString(Resource.String.devices_connected_2arg), connected, total))
 															         .SetContentIntent(pi)

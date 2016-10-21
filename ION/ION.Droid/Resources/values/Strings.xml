@@ -209,9 +209,9 @@
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
   <string name="error_pdf_viewer_missing">It appears that your device does not have an application capable of viewing PDF files. Please install a PDF application to view the file.</string>
   <string name="error_excel_viewer_missing">It appears that your device does not have an application capable of viewing Excel files. Please install a Excel application to view the file.</string>
-	<string name="error_start_up_request_location_for_bluetooth">As of Android 5.0, Android requires the Location permission to enable advanced bluetooth operations. The ION HVAC/R app would like to use these advanced features to enhance bluetooth performace. \n\nWould you like to give ION HVAC/R the Location permission? \n\nDenying the permission will still allow you to use the app and make connections with your gauges.</string>
+	<string name="error_start_up_request_location_for_bluetooth">As of Android 6.0, Android requires the Location permission to enable bluetooth scanning operations in the ION HVAC/R app. \n\nWould you like to give ION HVAC/R the Location permission? \n\nDenying the permission will prevent the application from scanning and finding your gauges.</string>
 	<string name="error_start_up_fail">Failed to Launch ION</string>
-	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R cannot be used. Please restart the ION HVAC/R application and authorize the application\'s use of these features.</string>
+	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R app cannot be used. Please authorize the application\'s use of these features to use the app.</string>
 	<string name="errror_unknown">An unknown error occured.</string>
 
   <!--

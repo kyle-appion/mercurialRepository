@@ -36,9 +36,8 @@ namespace ION.Droid.Activity {
       SetContentView(Resource.Layout.activity_main);
       Log.printer = new LogPrinter();
 
-			var prefs = AppPrefs.Get(this);
-			if (prefs.location.askForPermissions || prefs.location.allowsGps) {
-      	EnsurePermissions();
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
+				EnsurePermissions();
 			} else {
 				Task.Factory.StartNew(InitApplication);
 			}
@@ -50,8 +49,7 @@ namespace ION.Droid.Activity {
           if (grantResults[0] == Permission.Granted) {
             EnsurePermissions();
           } else {
-						Task.Factory.StartNew(InitApplication);
-//            ShowMissingPermissionsDialog(GetString(Resource.String.location));
+            ShowMissingPermissionsDialog(GetString(Resource.String.location));
           }
         } break;
       }
@@ -75,8 +73,7 @@ namespace ION.Droid.Activity {
         adb.SetNegativeButton(Resource.String.deny, (sender, e) => {
           var d = sender as Dialog;
           d.Dismiss();
-//          ShowMissingPermissionsDialog(GetString(Resource.String.location));
-					Task.Factory.StartNew(InitApplication);
+          ShowMissingPermissionsDialog(GetString(Resource.String.location));
         });
 
         adb.Show();
@@ -85,7 +82,7 @@ namespace ION.Droid.Activity {
         Task.Factory.StartNew(InitApplication);
       }
     }
-/*
+
     /// <summary>
     /// Shows a dialog to the user explaining that the application cannot start due to missing permissions.
     /// </summary>
@@ -103,7 +100,6 @@ namespace ION.Droid.Activity {
       });
       adb.Show();
     }
-*/
 
     /// <summary>
     /// Initializes the application context.
