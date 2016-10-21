@@ -4,7 +4,6 @@
   using System.Collections.Generic;
 
   using Android.Content.Res;
-  using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Support.V7.Widget.Helper;
   using Android.Views;
@@ -12,14 +11,12 @@
 
   using ION.Core.App;
   using ION.Core.Content;
-  using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
   using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
-  using ION.Droid.Widgets.Templates;
 
   /// <summary>
   /// The adapter that will provide the views for use in the workbench fragment. After creating the adapter, if you want

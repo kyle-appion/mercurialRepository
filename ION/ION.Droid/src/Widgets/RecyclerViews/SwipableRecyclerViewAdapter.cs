@@ -185,6 +185,15 @@
       }
     }
 
+		/// <summary>
+		/// Queries the index of the given record.
+		/// </summary>
+		/// <returns>The of record.</returns>
+		/// <param name="record">Record.</param>
+		public int IndexOfRecord(IRecord record) {
+			return records.IndexOf(record);
+		}
+
     /// <summary>
     /// Called when the adapter needs a new view holder.
     /// </summary>
