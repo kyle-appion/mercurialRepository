@@ -63,14 +63,16 @@
                 android:layout_height="30dp">
                 <ImageView
                     android:id="@id/left"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_slider" />
+                    android:scaleType="fitStart"
+                    android:layout_width="45dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drag_arrow_left" />
                 <ImageView
                     android:id="@id/right"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:src="@drawable/ic_slider" />
+                    android:scaleType="fitEnd"
+                    android:layout_width="45dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_drag_arrow_right" />
             </AbsoluteLayout>
         </LinearLayout>
     <!-- The settings part of the fragment. -->
