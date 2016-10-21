@@ -97,20 +97,7 @@
 					sr.isChecked = !sr.isChecked;
 				}
 
-				currentAdapter.NotifyItemChanged(currentAdapter.IndexOfSession(sr.row));
-
-				UpdateButtons();
-			};
-			currentAdapter.onItemClicked += (adapter, position) => {
-				var sr = currentAdapter.GetRecordAt(position) as SessionRecord;
-
-				if (sr != null) {
-					sr.isChecked = !sr.isChecked;
-				}
-
-				currentAdapter.NotifyItemChanged(position);
-
-				UpdateButtons();
+					UpdateButtons();
 			};
 
 			availableAdapter = new SessionAdapter(ion);
@@ -121,20 +108,7 @@
 					sr.isChecked = !sr.isChecked;
 				}
 
-				availableAdapter.NotifyItemChanged(availableAdapter.IndexOfSession(e.row));
-
-				UpdateButtons();
-			};
-			availableAdapter.onItemClicked += (adapter, position) => {
-				var sr = availableAdapter.GetRecordAt(position) as SessionRecord;
-
-				if (sr != null) {
-					sr.isChecked = !sr.isChecked;
-				}
-
-				availableAdapter.NotifyItemChanged(position);
-
-				UpdateButtons();
+					UpdateButtons();
 			};
 
 			currentList.SetAdapter(currentAdapter);
