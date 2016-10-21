@@ -195,6 +195,10 @@
     /// </summary>
     /// <value>The calculation text view.</value>
     private TextView calculationTextView { get; set; }
+		/// <summary>
+		/// The view that will indicate a warning that the calculation is not to be explicitly trusted or accepted.
+		/// </summary>
+		private View warning;
 
     /// <summary>
     /// The text watcher that will watch the pressure entry's text.
@@ -387,6 +391,7 @@
         }
       }));
 
+			warning = FindViewById(Resource.Id.warning);
       InitPressureWidgets();
       InitSaturatedTemperatureWidgets();
       InitTemperatureWidgets();
@@ -770,6 +775,12 @@
 
       var calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
         temperatureSensor.measurement, pressureSensor.isRelative).ConvertTo(tu);
+
+			if (calculation.magnitude < 0) {
+				warning.Visibility = ViewStates.Visible;
+			} else {
+				warning.Visibility = ViewStates.Gone;
+			}
 
       if (!ptChart.fluid.mixture) {
         if (calculation < 0) {
