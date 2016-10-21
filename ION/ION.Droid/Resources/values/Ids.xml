@@ -85,6 +85,7 @@
   <item name="version" type="id"/>
   <item name="view" type="id"/>
   <item name="viewpager" type="id"/>
+  <item name="warning" type="id"/>
   <item name="zip" type="id"/>
 
   <!--

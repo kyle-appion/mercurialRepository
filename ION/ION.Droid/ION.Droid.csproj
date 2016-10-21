@@ -406,7 +406,6 @@
     <AndroidResource Include="Resources\layout\activity_main.axml" />
     <AndroidResource Include="Resources\layout\fragment_workbench.axml" />
     <AndroidResource Include="Resources\anim\blink_slow.xml" />
-    <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\layout\activity_home.axml" />
     <AndroidResource Include="Resources\layout\navigation_category.axml" />
     <AndroidResource Include="Resources\layout\navigation_icon_item.axml" />
@@ -639,6 +638,7 @@
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
+    <AndroidResource Include="Resources\values\Ids.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
