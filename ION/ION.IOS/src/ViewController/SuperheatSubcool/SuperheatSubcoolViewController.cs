@@ -479,6 +479,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           default:
             throw new Exception("Cannot update delta for state: " + ptChart.state);
         }
+        if(calculation.magnitude < 0){
+					imageNegativeWarning.Hidden = false;
+					View.BringSubviewToFront(imageNegativeWarning);
+				} else {
+					imageNegativeWarning.Hidden = true;
+					View.BringSubviewToFront(imageNegativeWarning);
+				}
       } else {
 				if (System.Math.Abs(calculation.magnitude) < 0.1) {
           labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);

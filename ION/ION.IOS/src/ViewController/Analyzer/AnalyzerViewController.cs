@@ -19,6 +19,7 @@ using ION.Core.App;
 using ION.Core.Net;
 using ION.IOS.ViewController.RemoteDeviceManager;
 using ION.IOS.Viewcontroller.RemoteAccess;
+using ION.Core.Database;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -35,6 +36,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static UIImageView expansion;
     public UILabel remoteTitle;
     public RemoteControls remoteControl;
+    public UITapGestureRecognizer outsideTap;
 
     private IosION ion;
     public WebPayload webServices;
@@ -197,8 +199,59 @@ namespace ION.IOS.ViewController.Analyzer {
 	      var button = new UIBarButtonItem(dataRecord);
 
 	      NavigationItem.RightBarButtonItem = button;
-				layoutAnalyzer();				
+				layoutAnalyzer();
 			}
+			/*
+			var dbButton = new UIButton(new CGRect(.3 * viewAnalyzerContainer.Bounds.Width,.3 * viewAnalyzerContainer.Bounds.Height,.3 * viewAnalyzerContainer.Bounds.Width, .1 * viewAnalyzerContainer.Bounds.Height));
+			dbButton.BackgroundColor = UIColor.White;
+			dbButton.Layer.BorderWidth = 1f;
+			
+			dbButton.TouchUpInside+= (sender, e) => {
+				var sessions = ion.database.Query<SessionRow>("SELECT SID, frn_JID, sessionStart, sessionEnd FROM SessionRow ORDER BY SID");
+        foreach (var MID in sessions) {
+					Console.WriteLine("Session : " + MID.SID + " JID " + MID.frn_JID + " start: " + MID.sessionStart +  " end: " + MID.sessionEnd);
+        }
+				
+				try{
+					DateTime startPoint = DateTime.UtcNow.ToLocalTime();
+	        var session = new SessionRow() {
+	          frn_JID = 0,
+	          sessionStart = startPoint,
+	          sessionEnd = startPoint.AddMinutes(120),
+	        };
+	        var SID = ion.database.SaveAsync<SessionRow>(session).Result;
+	        Console.WriteLine("Inserted session with id " + SID);
+
+					var rows = new List<SensorMeasurementRow>();				
+					for(int i = 0; i < 120; i++){
+						var date = startPoint.AddMinutes(i);
+			      var ret = new SensorMeasurementRow();    
+						
+						if(i > 69 && i < 74){
+				      ret.serialNumber = "P314J0169";		
+				      ret.frn_SID = session.SID;
+				      ret.sensorIndex = 0;
+				      ret.recordedDate = date;
+				      ret.measurement = 1068687.3804;
+						} else {
+				      ret.serialNumber = "P314J0169";		
+				      ret.frn_SID = session.SID;
+				      ret.sensorIndex = 0;
+				      ret.recordedDate = date;
+				      ret.measurement = 1103161.1669;
+				    }
+	
+						rows.Add(ret);				
+					}
+					var inserted = ion.database.InsertAll(rows, true);
+					Console.WriteLine("Inserted all the rows " + inserted);
+				} catch (Exception except){
+					Console.WriteLine("data failed " + except);
+				}
+			};
+			viewAnalyzerContainer.AddSubview(dbButton);
+			viewAnalyzerContainer.BringSubviewToFront(dbButton);
+			*/
     }
 
     /// <summary>
@@ -362,6 +415,12 @@ namespace ION.IOS.ViewController.Analyzer {
 
         ///SHOW ACTIONSHEET FOR SENSOR OPTIONS
         pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;
+        
+        outsideTap = new UITapGestureRecognizer(() => {
+					pressedArea.sactionView.aView.Hidden = true;
+					viewAnalyzerContainer.RemoveGestureRecognizer(outsideTap);
+				});
+        viewAnalyzerContainer.AddGestureRecognizer(outsideTap);
       } 
       else {
 

@@ -4,5 +4,6 @@
 		<update>Updated analyzer sensor linking</update>
 		<update>Updated spreadsheets to show precision for whole numbers</update>
     <fixed>Fixed reporting not showing devices as selected</fixed>
+    <fixed>Fixed job manager tab bar alignment</fixed>
   </display>
 </whatsnew>

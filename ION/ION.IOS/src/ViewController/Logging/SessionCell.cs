@@ -16,7 +16,9 @@ namespace ION.IOS.ViewController.Logging {
     public int SID;
     public DateTime start;
     public DateTime finish;
-    public UILabel sessionInfo;
+    public UILabel sessionDate;
+    public UILabel sessionTime;
+    public UILabel sessionLength;
     public IION ion;
 
     public SessionCell(IntPtr handle ) {
@@ -65,15 +67,32 @@ namespace ION.IOS.ViewController.Logging {
         formatTime += start.Second;
       }
 
-      sessionInfo = new UILabel(new CGRect(0,0,tableView.Bounds.Width, cellHeight));
-      sessionInfo.AdjustsFontSizeToFitWidth = true;
-      sessionInfo.TextAlignment = UITextAlignment.Left;
-      sessionInfo.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionInfo.Layer.BorderWidth = 1f;
-      sessionInfo.Text = start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min";
-      sessionInfo.Font = UIFont.SystemFontOfSize(20);
+      sessionDate = new UILabel(new CGRect(0,0,.3 * tableView.Bounds.Width, cellHeight));
+      sessionDate.AdjustsFontSizeToFitWidth = true;
+      sessionDate.TextAlignment = UITextAlignment.Center;
+      sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
+      sessionDate.Layer.BorderWidth = 1f;
+      sessionDate.Text = start.ToShortDateString();
+      sessionDate.Font = UIFont.SystemFontOfSize(20);
 
-      this.AddSubview(sessionInfo);
+      sessionTime = new UILabel(new CGRect(.3 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
+      sessionTime.AdjustsFontSizeToFitWidth = true;
+      sessionTime.TextAlignment = UITextAlignment.Center;
+      sessionTime.Layer.BorderColor = UIColor.Black.CGColor;
+      sessionTime.Layer.BorderWidth = 1f;
+      sessionTime.Text = formatTime;
+      sessionTime.Font = UIFont.SystemFontOfSize(20);
+      
+      sessionLength = new UILabel(new CGRect(.6 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
+      sessionLength.AdjustsFontSizeToFitWidth = true;
+      sessionLength.TextAlignment = UITextAlignment.Center;
+      sessionLength.Text = duration.ToString("0.0") + " min";
+      sessionLength.Font = UIFont.SystemFontOfSize(20);      
+
+      this.AddSubview(sessionDate);
+      this.AddSubview(sessionTime);
+      this.AddSubview(sessionLength);
+      this.Layer.BorderWidth = 1f;
     }
       
   }

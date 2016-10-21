@@ -322,8 +322,14 @@ namespace ION.Core.Net {
 		}
 		//layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"high\":\""+uploadAnalyzer.highAccessibility+"\"},";
 		
-		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"lsub\":[";
-		//Console.Write("Low subs: ");
+		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{";
+		if(uploadAnalyzer.lowAccessibility != "low"){
+		
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"as\":\"null\", \"lsub\":[";
+		} else {
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"as\":\"null\", \"lsub\":[";
+		}		
+	//Console.Write("Low subs: ");
 		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){		
 			layoutJson += "\""+uploadAnalyzer.lowSubviews[s]+"\"";
 			if(s < uploadAnalyzer.lowSubviews.Count - 1){

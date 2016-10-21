@@ -28,6 +28,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader = lhSensor.shFluidState;
+      //lhSensor.shFluidState = cellHeader;
 
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
@@ -57,28 +58,37 @@ namespace ION.IOS.ViewController.Analyzer {
 
       tempReading = lhSensor.shReading;
       if (lhSensor.manifold.secondarySensor != null) {
-        
-        if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
-          lhSensor.shFluidState.Text = Util.Strings.Analyzer.SC;
-        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
-          lhSensor.shFluidState.Text = Util.Strings.Analyzer.SH;
-        }
-
+				var stateCheck = new ScalarSpan();
         if(lhSensor.manifold.primarySensor.type == ESensorType.Pressure){
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.isRelative);
-          if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
+	        stateCheck = calculation;  
+					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
 					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         } else {
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
-          if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
+          stateCheck = calculation;  
+					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
 					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
         }
+       	
+        var ptAmount = stateCheck.magnitude;
+        if (!lhSensor.manifold.ptChart.fluid.mixture){
+          if (ptAmount < 0) {
+            lhSensor.shFluidState.Text = Util.Strings.Analyzer.SC;
+          } else {
+            lhSensor.shFluidState.Text = Util.Strings.Analyzer.SH;
+          }
+        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Bubble)) {
+          lhSensor.shFluidState.Text = Util.Strings.Analyzer.SC;
+        } else if (lhSensor.manifold.ptChart.state.Equals(Fluid.EState.Dew)) {
+          lhSensor.shFluidState.Text = Util.Strings.Analyzer.SH;
+        }  
       } else {
         tempReading.Text = Util.Strings.Analyzer.SETUP;
       }

@@ -299,6 +299,7 @@ namespace ION.IOS.ViewController.Logging {
 
 			ChosenDates.breakPoints = graphResult.Count;
       for(int s = 0; s < graphResult.Count; s++){
+      	//Console.WriteLine("Going through session " + graphResult[s].SID);
         var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber, sensorIndex FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
         //Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
   
@@ -347,6 +348,7 @@ namespace ION.IOS.ViewController.Logging {
       var breakPoint = 0;
 
       foreach (var time in holderList) {
+      	//Console.WriteLine("Adding time " +time);
         ChosenDates.allTimes.Add(time, indexes);
         ChosenDates.allIndexes.Add(indexes, time);
         if (breakPoint < sessionBreaks.Length && sessionBreaks[breakPoint].Equals(time)) {

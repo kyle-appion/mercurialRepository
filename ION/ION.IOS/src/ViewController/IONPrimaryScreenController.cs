@@ -75,10 +75,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
 #if DEBUG
-    //    new Section("Remote Viewing".ToUpper()){
-				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				//} ,
+        new Section("Remote Viewing".ToUpper()){
+					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				} ,
 #endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -188,7 +188,7 @@ namespace ION.IOS.ViewController {
 
 				Log.D(this, Arrays.AsString<ISerialNumber>(serials.ToArray()));
 				var task = new ION.Core.Net.RequestCalibrationCertificates(ion, serials.ToArray());
-//        var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
+        //var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
         task.tokenSource = source;
 
         foreach (var result in task.Request().Result) {
@@ -202,7 +202,17 @@ namespace ION.IOS.ViewController {
 
           try {
             GaugeDeviceCertificatePdfExporter.Export(ion, result.certificate, stream);
-            ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ?",result.certificate.lastTestCalibrationDate);
+            Log.D(this, "Device nist date is " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+            var existing = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?", result.serialNumber.rawSerial);
+
+            if(existing.Count.Equals(0)){
+              Log.D(this,"Creating new entry for device: " + result.serialNumber.rawSerial + " with a calibration date of: " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+              var addDevice = new ION.Core.Database.LoggingDeviceRow(){serialNumber = result.serialNumber.rawSerial, nistDate = result.certificate.lastTestCalibrationDate.ToShortDateString()};
+              ion.database.Insert(addDevice);
+            }else {
+              Log.D(this,"Updated entry for device: " + result.serialNumber.rawSerial + " with a calibration date of: " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+            	ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ? WHERE serialNumber = ?",result.certificate.lastTestCalibrationDate.ToShortDateString(),result.serialNumber.rawSerial);
+						}
           } catch (Exception e) {
             Log.E(this, "Failed to export certificate.", e);
             file.Delete();
@@ -264,8 +274,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
 #if DEBUG
-        //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
 #endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
@@ -500,7 +510,6 @@ namespace ION.IOS.ViewController {
 
       return ret;
     }
-
   }
 }
 

@@ -69,11 +69,15 @@
     /// The collection that of records that the source is displaying.
     /// </summary>
     private ObservableCollection<IWorkbenchSourceRecord> records = new ObservableCollection<IWorkbenchSourceRecord>();
+    /// <summary>
+    /// Flag to determine if subviews should be rendered or not
+    /// </summary>
+    private bool expanded = true;
 
     public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
-      this.tableView = tableView;		
+      this.tableView = tableView;
     }
 
     // Overridden from UITableViewSource
@@ -114,9 +118,62 @@
     // Overridden from UITableViewSource
     public override bool CanEditRow(UITableView tableView, NSIndexPath path) {
       var record = records[path.Row];
-      return record is ViewerRecord || !((record is AddRecord)) || !((record is SpaceRecord));
+			if (record is AddRecord || record is SpaceRecord){
+				return false;
+			} else {
+				return true;
+			}
+      //return record is ViewerRecord || !((record is AddRecord)) || !((record is SpaceRecord));
     }
 
+
+    public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
+    	if(records[indexPath.Row] is ViewerRecord){
+      	return true;
+      } else {
+      	return false;
+      }
+    }
+    
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
+      var item = records[sourceIndexPath.Row];
+      var manifold = workbench.manifolds[sourceIndexPath.Row];
+      Console.WriteLine("Grabbed manifold " + manifold.primarySensor.name + "-" + manifold.primarySensor.measurement);
+      var deleteAt = sourceIndexPath.Row;
+      var insertAt = destinationIndexPath.Row;
+
+      // are we inserting
+      Console.WriteLine("MoveRow manifold from index " + sourceIndexPath.Row + " going to index " + destinationIndexPath.Row + " total number of rows " + (records.Count - 1));
+      if(destinationIndexPath.Row < records.Count - 1){
+      	Console.WriteLine("Normal placing of cell");
+	      if (destinationIndexPath.Row < sourceIndexPath.Row) {
+	        // add one to where we delete, because we're increasing the index by inserting
+	        deleteAt += 1;
+	      } else {
+	        // add one to where we insert, because we haven't deleted the original yet
+	        insertAt += 1;
+	      }
+	      records.Insert (insertAt, item);
+	      records.RemoveAt (deleteAt);
+	      
+	      workbench.manifolds.Insert(insertAt,manifold);
+	      workbench.manifolds.RemoveAt(deleteAt);
+	
+				expanded = true;
+				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+				SetWorkbench(workbench);				
+	      tableView.SetEditing(false, true);
+      } else {
+      	Console.WriteLine("Tried to place cell after add button");
+	      records.Insert (records.Count - 2, item);
+	      records.RemoveAt (deleteAt);
+				expanded = true;
+				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+				SetWorkbench(workbench);
+	
+	      tableView.SetEditing(false, true);
+			}
+    }
     // Overridden from UITableViewSource
     public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
       return Strings.DELETE_QUESTION;
@@ -184,7 +241,8 @@
       var record = records[indexPath.Row];
 
       if (record is ViewerRecord) {
-        return 158;
+        //return 158;
+        return 168;
       } else if (record is SpaceRecord) {
         return 10;
       } else {
@@ -223,6 +281,28 @@
 
         cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
         cell.Layer.CornerRadius = 5;
+        
+        var longPress = new UILongPressGestureRecognizer((obj) => {
+					if(obj.State == UIGestureRecognizerState.Began){
+						if(tableView.Editing){
+							tableView.SetEditing(false,true);
+							expanded = true;
+							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+							SetWorkbench(workbench);
+						} else {
+							tableView.SetEditing(true,true);
+							expanded = false;
+							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+							SetWorkbench(workbench);							
+						}	
+					}	else if(obj.State == UIGestureRecognizerState.Cancelled){
+						tableView.SetEditing(false,true);
+						expanded = true;
+						this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+						SetWorkbench(workbench);
+					}
+				});
+				this.tableView.AddGestureRecognizer(longPress);
         return cell;
       } else if (record is MeasurementRecord) {
         var meas = record as MeasurementRecord;
@@ -270,7 +350,8 @@
         //cell.Layer.CornerRadius = 5;
         return cell;
       }else {
-        throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
+        Log.E(this,"Cannot get cell: " + record.viewType + " is not a supported record type.");
+        return null;
       }
     }
 
@@ -308,12 +389,14 @@
 					manifold = manifold,
 					expanded = true,
 				});
-
-				foreach (var sp in manifold.sensorProperties) {
-					records.Add(CreateRecordForSensorProperty(manifold, sp));
+				
+				if(expanded){
+					Console.WriteLine("Workbench adding sensor properties");
+					foreach (var sp in manifold.sensorProperties) {
+						records.Add(CreateRecordForSensorProperty(manifold, sp));
+					}
 				}
-
-				records.Add(new SpaceRecord());
+				//records.Add(new SpaceRecord());
 			}
 
 			records.Add(new AddRecord());
@@ -562,10 +645,10 @@
           records.Insert(recordIndex, vr);
 
           indices.Add(recordIndex + 1);
-          records.Insert(recordIndex + 1, new SpaceRecord());
+          //records.Insert(recordIndex + 1, new SpaceRecord());
 
           tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
-          break;    
+          break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
           OnManifoldEvent(workbenchEvent.manifoldEvent);
@@ -646,6 +729,13 @@
       }
     }
 
+		public void collapseSubviews(){
+
+		}
+		
+		public void expandSubviews(){
+
+		}
     /// <summary>
     /// Creates a new WorkbenchSourceRecord from the given sensor property.
     /// </summary>

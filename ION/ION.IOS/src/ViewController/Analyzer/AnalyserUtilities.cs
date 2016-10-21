@@ -120,8 +120,8 @@ namespace ION.IOS.ViewController.Analyzer
     public static void CreateActionViews(ActionView sactionView){
       sactionView.aView.BackgroundColor = UIColor.White;
       sactionView.aView.Hidden = true;
-      sactionView.aView.Layer.BorderWidth = 1f;
-      sactionView.aView.Layer.BorderColor = UIColor.LightGray.CGColor;
+      sactionView.aView.Layer.BorderWidth = 2f;
+      sactionView.aView.Layer.BorderColor = UIColor.Black.CGColor;
       sactionView.pactionButton.SetTitle(Util.Strings.Analyzer.ACTIONS, UIControlState.Normal);
       sactionView.pactionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       sactionView.pcloseButton.SetTitle(Util.Strings.Analyzer.CLOSE, UIControlState.Normal);

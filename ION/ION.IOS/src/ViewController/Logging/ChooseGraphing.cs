@@ -31,6 +31,7 @@ namespace ION.IOS.ViewController.Logging {
     }
 
     public void SetupSettingsButtons(UIView mainView, UIActivityIndicatorView activityLoadingGraphs){
+    	Console.WriteLine("Setting buttons being setup");
       graphingView.menuButton.TouchUpInside += (sender, e) => {
         legendView.beginValue.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
         legendView.endValue.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
@@ -58,7 +59,7 @@ namespace ION.IOS.ViewController.Logging {
         ///resize left tracker to match manual selection
         graphingView.leftTrackerView.Frame = new CGRect(.1 * mainView.Bounds.Width,.15 * mainView.Bounds.Height, lwidth, graphingView.trackerHeight);
         var trackerRect = graphingView.leftTrackerCircle.Center;
-        trackerRect.X = graphingView.leftTrackerView.Center.X + (.5f * graphingView.leftTrackerView.Bounds.Width);
+        trackerRect.X = graphingView.leftTrackerView.Frame.Right + (.5f * graphingView.leftTrackerCircle.Bounds.Width);
         graphingView.leftTrackerCircle.Center = trackerRect;
 
         ////calculate right tracker size based on manual selected dates
@@ -70,7 +71,7 @@ namespace ION.IOS.ViewController.Logging {
         ///resize right tracker to match manual selection
         graphingView.rightTrackerView.Frame = new CGRect(rfinal,.15 * mainView.Bounds.Height,rwidth,graphingView.trackerHeight);
         trackerRect = graphingView.rightTrackerCircle.Center;
-        trackerRect.X = graphingView.rightTrackerView.Center.X - (.5f * graphingView.rightTrackerView.Bounds.Width);
+        trackerRect.X = graphingView.rightTrackerView.Frame.Left - (.5f * graphingView.rightTrackerCircle.Bounds.Width);
         graphingView.rightTrackerCircle.Center = trackerRect;
 
         graphingView.subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();

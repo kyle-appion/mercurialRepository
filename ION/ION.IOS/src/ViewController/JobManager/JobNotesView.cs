@@ -43,9 +43,9 @@ namespace ION.IOS.ViewController.JobManager {
       saveStatus.TextAlignment = UITextAlignment.Center;
       saveStatus.TextColor = UIColor.FromRGB(49, 111, 18);
       saveStatus.Text = "Notes Saved";
-      saveStatus.Hidden = true;
+      saveStatus.Hidden = true;   
 
-      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .1 * notesView.Bounds.Height ,.9 * notesView.Bounds.Width,.55 * notesView.Bounds.Height));
+      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .05 * notesView.Bounds.Height ,.9 * notesView.Bounds.Width,.55 * notesView.Bounds.Height));
       notesText.Font = UIFont.SystemFontOfSize(14);
       notesText.Layer.BorderWidth = 1f;
       notesText.UserInteractionEnabled = true;

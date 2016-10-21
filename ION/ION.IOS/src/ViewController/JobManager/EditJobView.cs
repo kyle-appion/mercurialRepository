@@ -25,7 +25,7 @@ namespace ION.IOS.ViewController.JobManager  {
         editView.EndEditing(true);
       }));
 
-      confirmLabel = new UILabel(new CGRect(.25 * editView.Bounds.Width, .08 * editView.Bounds.Height,.5 * editView.Bounds.Width,.07 * editView.Bounds.Height));
+      confirmLabel = new UILabel(new CGRect(.25 * editView.Bounds.Width, 0,.5 * editView.Bounds.Width,.07 * editView.Bounds.Height));
       confirmLabel.AdjustsFontSizeToFitWidth = true;
       confirmLabel.TextColor = UIColor.FromRGB(49, 111, 18);
       confirmLabel.TextAlignment = UITextAlignment.Center;
@@ -56,7 +56,7 @@ namespace ION.IOS.ViewController.JobManager  {
         }
       }
 
-      jobName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.18 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
+      jobName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.07 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
         Placeholder = "Job Name(Required)",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
@@ -70,7 +70,7 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       jobName.Text = holderName;
 
-      customerNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.32 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
+      customerNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.21 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
         Placeholder = "Customer Number",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
@@ -84,7 +84,7 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       customerNumber.Text = holderCustomer;
 
-      dispatchNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.46 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
+      dispatchNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.35 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
         Placeholder = "Dispatch Number",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
@@ -99,7 +99,7 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       dispatchNumber.Text = holderDispatch;
 
-      prodOrderNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.6 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
+      prodOrderNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.49 * editView.Bounds.Height,.8 * editView.Bounds.Width,.14 * editView.Bounds.Height)){
         Placeholder = "Product Order Number",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
