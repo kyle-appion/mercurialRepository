@@ -145,7 +145,6 @@
       // are we inserting
       Console.WriteLine("MoveRow manifold from index " + sourceIndexPath.Row + " going to index " + destinationIndexPath.Row + " total number of rows " + (records.Count - 1));
       if(destinationIndexPath.Row < records.Count - 1){
-      	Console.WriteLine("Normal placing of cell");
 	      if (destinationIndexPath.Row < sourceIndexPath.Row) {
 	        // add one to where we delete, because we're increasing the index by inserting
 	        deleteAt += 1;
@@ -164,9 +163,13 @@
 				SetWorkbench(workbench);				
 	      tableView.SetEditing(false, true);
       } else {
-      	Console.WriteLine("Tried to place cell after add button");
+      
 	      records.Insert (records.Count - 2, item);
 	      records.RemoveAt (deleteAt);
+
+	      workbench.manifolds.Insert(records.Count - 1,manifold);
+	      workbench.manifolds.RemoveAt(deleteAt);
+	      
 				expanded = true;
 				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 				SetWorkbench(workbench);
@@ -245,7 +248,9 @@
         return 168;
       } else if (record is SpaceRecord) {
         return 10;
-      } else {
+      } else if (record is AddRecord){
+			 	return 58;
+			} else {
         return 48;
       }
     }
@@ -275,7 +280,7 @@
 					cell.Hidden = false;
 				}
         return cell;
-      } else if (record is ViewerRecord) {
+      } else if (record is ViewerRecord) {   
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
@@ -303,6 +308,7 @@
 					}
 				});
 				this.tableView.AddGestureRecognizer(longPress);
+				cell.ContentView.BackgroundColor = UIColor.Clear;
         return cell;
       } else if (record is MeasurementRecord) {
         var meas = record as MeasurementRecord;
@@ -391,7 +397,6 @@
 				});
 				
 				if(expanded){
-					Console.WriteLine("Workbench adding sensor properties");
 					foreach (var sp in manifold.sensorProperties) {
 						records.Add(CreateRecordForSensorProperty(manifold, sp));
 					}
@@ -644,7 +649,7 @@
 
           records.Insert(recordIndex, vr);
 
-          indices.Add(recordIndex + 1);
+          //indices.Add(recordIndex + 1);
           //records.Insert(recordIndex + 1, new SpaceRecord());
 
           tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
@@ -656,7 +661,8 @@
 
         case WorkbenchEvent.EType.Removed:
           var start = recordIndex;
-          var end = start + 1;
+          //var end = start + 1;  
+          var end = start;
 
           vr = records[start] as ViewerRecord;
 
@@ -665,7 +671,7 @@
           }
 
           for (int i = end; i >= start; i--) {
-            records.RemoveAt(i);
+            records.RemoveAt(i);   
           }
 
           tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Top);
