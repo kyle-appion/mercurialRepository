@@ -20,6 +20,8 @@ using ION.Core.Net;
 using ION.IOS.ViewController.RemoteDeviceManager;
 using ION.IOS.Viewcontroller.RemoteAccess;
 using ION.Core.Database;
+using ION.IOS.ViewController.ScreenshotReport;
+using ION.Core.Util;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -181,6 +183,11 @@ namespace ION.IOS.ViewController.Analyzer {
 		      var sensorList = new List<Sensor>();
 		      analyzer.sensorList = sensorList;
 				}
+	      var screenshot = new UIButton(new CGRect(0, 0, 31, 30));
+	      screenshot.TouchUpInside += (obj, args) => {
+	        TakeScreenshot();
+	      };
+	      screenshot.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
 				
 	      dataRecord = new UIButton(new CGRect(0,0,35,35));
 	      dataRecord.BackgroundColor = UIColor.Clear;
@@ -197,8 +204,8 @@ namespace ION.IOS.ViewController.Analyzer {
 	      }
 	
 	      var button = new UIBarButtonItem(dataRecord);
-
-	      NavigationItem.RightBarButtonItem = button;
+				var button2 = new UIBarButtonItem(screenshot);
+	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{button2,button};
 				layoutAnalyzer();
 			}
 			/*
@@ -1479,6 +1486,20 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 			}
 		}
+		
+    private void TakeScreenshot() {
+      try {
+        var vc = InflateViewController<ScreenshotReportViewController>(VC_SCREENSHOT_REPORT);
+        vc.image = View.Capture();
+        // TODO: ahodder@appioninc.com: I have to be ignorant; this is a fucking stupid way to have to dismiss a fucking view controller
+        vc.closer = () => {
+          NavigationController.PopViewController(true);
+        };
+        NavigationController.PushViewController(vc, true);
+      } catch (Exception e) {
+        Log.E(this, "Failed to create pdf", e);
+      }
+    }
 		
     public override void ViewDidAppear(bool animated) {
 	    if(!remoteMode){

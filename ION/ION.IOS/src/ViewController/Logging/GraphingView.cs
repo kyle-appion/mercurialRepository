@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Logging
 		public UIImageView rightTrackerCircle;
 
 		public UILabel subDates;
-
+		int[] types = {3,4,5};
 		public double trackerHeight;
 		public int topCell;
 		public int bottomCell;
@@ -832,7 +832,7 @@ namespace ION.IOS.ViewController.Logging
       var scaleReduction = 100 - (dataList.Count * 6);
       XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
       xls.AllowOverwritingFiles = true; 
-      xls.PrintScale = scaleReduction;
+      xls.PrintScale = scaleReduction;   
 
       TFlxFormat blackout = xls.GetDefaultFormat; //1
       blackout.FillPattern = new TFlxFillPattern { Pattern = TFlxPatternStyle.Solid, FgColor = TExcelColor.FromIndex(1) };
@@ -845,7 +845,7 @@ namespace ION.IOS.ViewController.Logging
       centerText.VAlignment = TVFlxAlignment.top;
       centerText.HAlignment = THFlxAlignment.center;
       centerText.ShrinkToFit = true;
-      xls.AddFormat(centerText);
+      xls.AddFormat(centerText);      
 
       TFlxFormat borderColor = xls.GetDefaultFormat; //3
       borderColor.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
@@ -875,7 +875,7 @@ namespace ION.IOS.ViewController.Logging
 				//	headerStartIndex = 3;
 				//}
     //  }
-
+			Convert.ToInt32
       var ion = AppState.context;
       var paramList = new List<string>();
       foreach (var num in sessions) {
