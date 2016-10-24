@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="1.8.2">		
+		<update>Updated analyzer sensor linking</update>
+		<update>Updated spreadsheets to show precision for whole numbers</update>
+    <fixed>Fixed reporting not showing devices as selected</fixed>
+    <fixed>Fixed job manager tab bar alignment</fixed>
+  </display>
 	<display version="1.8.1">
 		<new>Added option to change gauge units remotely</new>
 		<update>Updated workbench to include alternate unit subview</update>

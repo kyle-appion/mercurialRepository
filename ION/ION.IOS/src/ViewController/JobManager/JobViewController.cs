@@ -20,6 +20,8 @@ namespace ION.IOS.ViewController.JobManager {
     public override void ViewDidLoad() {
       base.ViewDidLoad();
 
+			DateTime start = DateTime.Now;
+
       ion = AppState.context;
       // Perform any additional setup after loading the view, typically from a nib.
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
