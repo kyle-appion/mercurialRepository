@@ -875,7 +875,7 @@ namespace ION.IOS.ViewController.Logging
 				//	headerStartIndex = 3;
 				//}
     //  }
-			Convert.ToInt32
+
       var ion = AppState.context;
       var paramList = new List<string>();
       foreach (var num in sessions) {

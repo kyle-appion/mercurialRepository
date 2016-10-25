@@ -39,7 +39,7 @@ namespace ION.IOS.ViewController.Logging {
         .Where(smr => smr.frn_SID == SID)
         .Select(smr => smr.serialNumber).Distinct()
         .Count();
-
+		
       var duration = finish.Subtract(start).TotalMinutes;
 
       var formatTime = "";
@@ -67,31 +67,40 @@ namespace ION.IOS.ViewController.Logging {
         formatTime += start.Second;
       }
 
-      sessionDate = new UILabel(new CGRect(0,0,.3 * tableView.Bounds.Width, cellHeight));
+      sessionDate = new UILabel(new CGRect(0,0,tableView.Bounds.Width, cellHeight));
       sessionDate.AdjustsFontSizeToFitWidth = true;
-      sessionDate.TextAlignment = UITextAlignment.Center;
+      sessionDate.TextAlignment = UITextAlignment.Left;
       sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
       sessionDate.Layer.BorderWidth = 1f;
-      sessionDate.Text = start.ToShortDateString();
+      sessionDate.Text = " Start Date: " + start.ToShortDateString()+" "+formatTime+"\n Duration:    " + duration.ToString("0.0") + " min\n Devices:     " + deviceAmount;
       sessionDate.Font = UIFont.SystemFontOfSize(20);
+      sessionDate.Lines = 0;
 
-      sessionTime = new UILabel(new CGRect(.3 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
-      sessionTime.AdjustsFontSizeToFitWidth = true;
-      sessionTime.TextAlignment = UITextAlignment.Center;
-      sessionTime.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionTime.Layer.BorderWidth = 1f;
-      sessionTime.Text = formatTime;
-      sessionTime.Font = UIFont.SystemFontOfSize(20);
+      //sessionDate = new UILabel(new CGRect(0,0,.3 * tableView.Bounds.Width, cellHeight));
+      //sessionDate.AdjustsFontSizeToFitWidth = true;
+      //sessionDate.TextAlignment = UITextAlignment.Center;
+      //sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
+      //sessionDate.Layer.BorderWidth = 1f;
+      //sessionDate.Text = start.ToShortDateString();
+      //sessionDate.Font = UIFont.SystemFontOfSize(20);
+
+      //sessionTime = new UILabel(new CGRect(.3 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
+      //sessionTime.AdjustsFontSizeToFitWidth = true;
+      //sessionTime.TextAlignment = UITextAlignment.Center;
+      //sessionTime.Layer.BorderColor = UIColor.Black.CGColor;
+      //sessionTime.Layer.BorderWidth = 1f;
+      //sessionTime.Text = formatTime;
+      //sessionTime.Font = UIFont.SystemFontOfSize(20);
       
-      sessionLength = new UILabel(new CGRect(.6 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
-      sessionLength.AdjustsFontSizeToFitWidth = true;
-      sessionLength.TextAlignment = UITextAlignment.Center;
-      sessionLength.Text = duration.ToString("0.0") + " min";
-      sessionLength.Font = UIFont.SystemFontOfSize(20);      
+      //sessionLength = new UILabel(new CGRect(.6 * tableView.Bounds.Width,0,.3 * tableView.Bounds.Width, cellHeight));
+      //sessionLength.AdjustsFontSizeToFitWidth = true;
+      //sessionLength.TextAlignment = UITextAlignment.Center;
+      //sessionLength.Text = duration.ToString("0.0") + " min";
+      //sessionLength.Font = UIFont.SystemFontOfSize(20);      
 
       this.AddSubview(sessionDate);
-      this.AddSubview(sessionTime);
-      this.AddSubview(sessionLength);
+      //this.AddSubview(sessionTime);
+      //this.AddSubview(sessionLength);
       this.Layer.BorderWidth = 1f;
     }
       

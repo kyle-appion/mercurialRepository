@@ -20,7 +20,7 @@ namespace ION.IOS.ViewController.Logging {
     public void makeCellData(int job, string jName, UITableView tableView, nfloat cellHeight){
       JID = job;
       Name = jName;
-      jobInfo = new UILabel(new CGRect(0,0,tableView.Bounds.Width, cellHeight));
+      jobInfo = new UILabel(new CGRect(0,0,tableView.Bounds.Width, .8 * cellHeight));
       jobInfo.AdjustsFontSizeToFitWidth = true;
       jobInfo.TextAlignment = UITextAlignment.Center;
       jobInfo.Layer.BorderColor = UIColor.Black.CGColor;

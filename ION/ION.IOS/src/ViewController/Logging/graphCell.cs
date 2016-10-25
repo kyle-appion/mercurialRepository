@@ -44,6 +44,7 @@ namespace ION.IOS.ViewController.Logging
 				Model = CreatePlotModel(trackerHeight, parentView),
         BackgroundColor = UIColor.Clear,
 			};
+			
 			deviceName = new UILabel (new CGRect (0,.92 * cellHeight,.3 * cellWidth,.25 * cellHeight));
       deviceName.Text = cellData.serialNumber;
 			deviceName.AdjustsFontSizeToFitWidth = true;

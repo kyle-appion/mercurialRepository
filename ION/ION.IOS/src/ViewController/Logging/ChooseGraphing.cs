@@ -31,7 +31,6 @@ namespace ION.IOS.ViewController.Logging {
     }
 
     public void SetupSettingsButtons(UIView mainView, UIActivityIndicatorView activityLoadingGraphs){
-    	Console.WriteLine("Setting buttons being setup");
       graphingView.menuButton.TouchUpInside += (sender, e) => {
         legendView.beginValue.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
         legendView.endValue.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
