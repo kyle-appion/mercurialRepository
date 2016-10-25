@@ -149,15 +149,17 @@
 		}
 
 		private void NotifyDeviceFound(BluetoothDevice device, byte[] scanRecord) {
+			Log.D(this, "Found device: " + device.Name);
 			ISerialNumber serialNumber = null;
 
 			if (!DiscoverSerialNumber(device, scanRecord, out serialNumber)) {
+				Log.D(this, "Discarding device: " + device.Name);
 				return; // The device is not ours. Discard it.
 			}
 
-			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
+//			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
 			byte[] broadcastPayload = ParseBroadcastPayloadFromScanRecord(scanRecord);
-			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
+//			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
 
 			var protocolVersion = DiscoverProtocolVersion(device, serialNumber, broadcastPayload);
 

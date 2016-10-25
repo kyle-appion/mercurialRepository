@@ -1,4 +1,5 @@
-﻿namespace ION.Core.Report.DataLogs {
+﻿using MoreLinq;
+namespace ION.Core.Report.DataLogs {
 
   using System;
   using System.Collections.Generic;
@@ -142,17 +143,16 @@
       return Task.Factory.StartNew(() => {
         var db = ion.database;
 
-        // TODO ahodder@appioninc.com: This could be optimized
-        var res = db.Table<SensorMeasurementRow>()
-          .Where(smr => smr.frn_SID == sessionId)
-          .GroupBy(smr => smr.serialNumber)
-          .Select(g => g.Last());
+
+				var identifiers = db.Table<SensorMeasurementRow>()
+				  .Where(smr => smr.frn_SID == sessionId)
+          .DistinctBy(smr => new { smr.serialNumber, smr.sensorIndex });
 
         var dsl = new List<DeviceSensorLogs>();
-        foreach (var row in res) {
+				foreach (var ident in identifiers) {
           var query = db.Table<SensorMeasurementRow>()
-            .Where(smr => smr.serialNumber == row.serialNumber)
-            .Where(smr => smr.sensorIndex == row.sensorIndex)
+            .Where(smr => smr.serialNumber == ident.serialNumber)
+            .Where(smr => smr.sensorIndex == ident.sensorIndex)
             .Where(smr => smr.frn_SID == sessionId)
             .OrderBy(s => s.recordedDate)
             .AsEnumerable();
@@ -165,7 +165,7 @@
 						logs[i++] = new SensorLog(smr.measurement, smr.recordedDate);
           }
 
-					dsl.Add(new DeviceSensorLogs(row.serialNumber, row.sensorIndex, logs));
+					dsl.Add(new DeviceSensorLogs(ident.serialNumber, ident.sensorIndex, logs));
         }
 
 				var tmp = dsl;
