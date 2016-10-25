@@ -46,7 +46,7 @@ namespace ION.IOS.ViewController.Logging {
     }
     // Overriden from UITableViewSource
     public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-      return cellHeight;
+      return .8f * cellHeight;
     }
 
     // Overriden from UITableViewSource

@@ -52,7 +52,8 @@ namespace ION.IOS.ViewController.Logging {
 
       selectedSessions = selected;
       selectedSessions.CollectionChanged += checkForSelected;
-      cellHeight = .07f * mainView.Bounds.Height;
+      //cellHeight = .07f * mainView.Bounds.Height;
+      cellHeight = .1f * mainView.Bounds.Height;
 
       step2 = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .09 * mainView.Bounds.Height));
       step2.BackgroundColor = UIColor.FromRGB(95,212,48);
@@ -129,7 +130,8 @@ namespace ION.IOS.ViewController.Logging {
       bottomBorder.Layer.ShouldRasterize = true;
       bottomBorder.Layer.MasksToBounds = true;
 
-      showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
+      //showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
+      showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, .7 * cellHeight));
       showGraphButton.Layer.BorderColor = UIColor.Black.CGColor;
       showGraphButton.Layer.BorderWidth = 2f;
       showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
