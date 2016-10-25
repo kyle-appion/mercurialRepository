@@ -431,7 +431,6 @@
     /// <param name="type">Type.</param>
     /// <param name="index">Index.</param>
     private void NotifyOfEvent(ManifoldEvent.EType type, int index = -1, int otherIndex = -1) {
-			Log.D(this, "Manifold: " + GetHashCode() + " is notifying of event");
       // TODO ahodder@appioninc.com: Delete this: deprecated.
       if (onManifoldChanged != null) {
         onManifoldChanged(this);

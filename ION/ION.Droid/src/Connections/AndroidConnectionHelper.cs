@@ -135,9 +135,11 @@
 		public void StopScan() {
 			handler.RemoveCallbacksAndMessages(null);
 
-			leScanDelegate.StopScan();
-			classicScanDelegate.StopScan();
-			isScanning = false;
+			if (isScanning) {
+				isScanning = false;
+				leScanDelegate.StopScan();
+				classicScanDelegate.StopScan();
+			}
 		}
 
 		private void NotifyClassicDeviceFound(ISerialNumber serialNumber, BluetoothDevice device) {

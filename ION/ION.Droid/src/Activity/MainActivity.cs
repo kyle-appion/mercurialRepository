@@ -21,10 +21,8 @@ namespace ION.Droid.Activity {
   /// The activity that is responsible for launching the ION app state.
   /// </summary>
   [Activity(Label = "@string/app_name", MainLauncher=true, Icon="@drawable/ic_logo_appiondefault", ScreenOrientation=ScreenOrientation.Portrait)]
-  public class MainActivity : Activity, ActivityCompat.IOnRequestPermissionsResultCallback { 
+	public class MainActivity : IONActivity { 
 
-    private const int REQUEST_LOCATION_PERMISSIONS = 1;
-   
     /// <summary>
     /// The minimum time to wait for the ION context to init.
     /// </summary>
@@ -37,29 +35,32 @@ namespace ION.Droid.Activity {
       Log.printer = new LogPrinter();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-				EnsurePermissions();
+				EnsureBluetoothPermissions();
 			} else {
 				Task.Factory.StartNew(InitApplication);
 			}
 		}
 
-    public void OnRequestPermissionsResult(int requestCode, String[] permissions, Permission[] grantResults) {
-      switch (requestCode) {
-        case REQUEST_LOCATION_PERMISSIONS: {
-          if (grantResults[0] == Permission.Granted) {
-            EnsurePermissions();
-          } else {
-            ShowMissingPermissionsDialog(GetString(Resource.String.location));
-          }
-        } break;
-      }
-    }
+		public override void OnRequestPermissionsResult(int requestCode, String[] permissions, Permission[] grantResults) {
+			switch (requestCode) {
+				case REQUEST_LOCATION_PERMISSIONS: {
+						if (grantResults[0] == Permission.Granted) {
+							EnsureBluetoothPermissions();
+						} else {
+							ShowMissingPermissionsDialog(GetString(Resource.String.location));
+						}
+				} break;
+				default:
+					base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+					break;
+			}
+		}
 
     /// <summary>
     /// Checks that the application has all of the permissions inline to actually start up.
     /// </summary>
     /// <returns>The permissions.</returns>
-    private void EnsurePermissions() {
+		private void EnsureBluetoothPermissions() {
       if (Permission.Granted != ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.AccessFineLocation)) {
         var adb = new IONAlertDialog(this);
         adb.SetTitle(Resource.String.alert);

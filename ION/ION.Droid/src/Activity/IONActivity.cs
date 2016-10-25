@@ -7,9 +7,13 @@
   using Android.App;
 	using Android.Bluetooth;
   using Android.Content;
+	using Android.Content.PM;
   using Android.Graphics;
   using Android.Graphics.Drawables;
+	using Android.Locations;
   using Android.OS;
+	using Android.Support.V4.App;
+	using Android.Support.V4.Content;
   using Android.Views;
   using Android.Views.InputMethods;
   using Android.Widget;
@@ -20,13 +24,21 @@
   using ION.Droid.App;
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
+	using ION.Droid.Preferences;
   using ION.Droid.Util;
 
-  public class IONActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener {
+	public class IONActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener, ActivityCompat.IOnRequestPermissionsResultCallback {
+
+		/// <summary>
+		/// The request code that is used to request the location permissions from the user.
+		/// </summary>
+		public const int REQUEST_LOCATION_PERMISSIONS = 1;
+
 		/// <summary>
 		/// The request code that is used when the app requests to enable bluetooth.
 		/// </summary>
 		public const int REQUEST_BLUETOOTH_ENABLE = -1;
+
     /// <summary>
     /// Queries the current running ion instance.
     /// </summary>
@@ -36,6 +48,28 @@
         return AppState.context as AndroidION;
       }
     }
+		/// <summary>
+		/// Queries whether or not the bluetooth adapter is enabled.
+		/// </summary>
+		/// <value><c>true</c> if is bluetooth on; otherwise, <c>false</c>.</value>
+		public bool isBluetoothOn { get { return Android.Bluetooth.BluetoothAdapter.DefaultAdapter.IsEnabled; } }
+		// TODO ahodder@appioninc.com: This property is required by android 6 for some reason.
+		/// <summary>
+		/// Queries whether or not the gps is enabled.
+		/// </summary>
+		/// <value><c>true</c> if is location on; otherwise, <c>false</c>.</value>
+		public bool isLocationOn {
+			get {
+				var manager = GetSystemService(Context.LocationService) as LocationManager;
+				return manager.IsProviderEnabled(LocationManager.GpsProvider);
+			}
+		}
+		/// <summary>
+		/// Queries whether or not the application has fine location permissions.
+		/// </summary>
+		/// <value><c>true</c> if has fine location perms; otherwise, <c>false</c>.</value>
+		public bool hasFineLocationPerms { get { return ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.AccessFineLocation) == Permission.Granted; } } 
+
     /// <summary>
     /// The cache that will store bitmaps.
     /// </summary>
@@ -46,6 +80,12 @@
     /// </summary>
     /// <value>The flags.</value>
     protected EFlags flags { get; private set; }
+		/// <summary>
+		/// The application's preferences.
+		/// </summary>
+		/// <value>The prefs.</value>
+		protected AppPrefs prefs { get; private set; }
+
 
     /// <summary>
     /// Raises the create event.
@@ -55,27 +95,48 @@
       base.OnCreate(state);
 
       cache = new BitmapCache(Resources);
-			ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
+			prefs = AppPrefs.Get(this);
+			prefs.prefs.RegisterOnSharedPreferenceChangeListener(this);
     }
 
 		protected override void OnResume() {
 			base.OnResume();
-			SetWakeLock(ion.preferences.isWakeLocked);
+			SetWakeLock(prefs.isWakeLocked);
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
 			switch (requestCode) {
 				case REQUEST_BLUETOOTH_ENABLE:
 					if (resultCode == Result.Ok) {
-						this.Alert("UNSAFE Enabled bluetooth OK");
+						Alert(GetString(Resource.String.bluetooth_enabled));
 					} else {
-						this.Alert("UNSAGE Failed to enable bluetooth");
+						Alert(GetString(Resource.String.bluetooth_enable_failed));
 					}
 					break;
 				default:
 					base.OnActivityResult(requestCode, resultCode, data);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// Called by the system when we get a permission result.
+		/// </summary>
+		/// <param name="requestCode">Request code.</param>
+		/// <param name="permissions">Permissions.</param>
+		/// <param name="grantResults">Grant results.</param>
+		public virtual void OnRequestPermissionsResult(int requestCode, String[] permissions, Permission[] grantResults) {
+/*
+			switch (requestCode) {
+				case REQUEST_LOCATION_PERMISSIONS: {
+						if (grantResults[0] == Permission.Granted) {
+							EnsureBluetoothPermissions();
+						} else {
+							ShowMissingPermissionsDialog(GetString(Resource.String.location));
+						}
+				} break;
+			}
+*/
 		}
 
     /// <summary>
@@ -177,13 +238,17 @@
     /// <summary>
     /// Shows a dialog that will turn explaining to the user that bluetooth is off.
     /// </summary>
-    public void ShowBluetoothOffDialog() {
+    public void RequestBluetoothAdapterOn(Action onDeny = null) {
       var adb = new IONAlertDialog(this);
-      adb.SetTitle(Resource.String.error_bluetooth);
+      adb.SetTitle(Resource.String.bluetooth_disabled);
       adb.SetMessage(Resource.String.error_bluetooth_scan_module_off);
+			adb.SetCancelable(false);
       adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
         var dialog = obj as Dialog;
         dialog.Dismiss();
+				if (onDeny != null) {
+					onDeny();
+				}
       });
         adb.SetPositiveButton(Resource.String.enable_bluetooth, (obj, e) => {
         var dialog = obj as Dialog;
@@ -192,6 +257,54 @@
       });
       adb.Show();
     }
+
+		/// <summary>
+		/// Shows a dialog that will prompt a user to renable their gps.
+		/// </summary>
+		/// <param name="onDeny">On deny.</param>
+		public void RequestLocationServicesEnabled(Action onDeny = null) {
+			var adb = new IONAlertDialog(this);
+			adb.SetTitle(Resource.String.bluetooth_location_off);
+			adb.SetMessage(Resource.String.bluetooth_requires_location);
+			adb.SetCancelable(true);
+			adb.SetNegativeButton(Resource.String.cancel, (obj, e) => {
+				var dialog = obj as Dialog;
+				dialog.Dismiss();
+				if (onDeny != null) {
+					onDeny();
+				}
+			});
+			adb.SetPositiveButton(Resource.String.enable, (obj, e) => {
+				var dialog = obj as Dialog;
+				dialog.Dismiss();
+				var intent = new Intent(Android.Provider.Settings.ActionLocationSourceSettings);
+				StartActivity(intent);
+			});
+			adb.Show();
+		}
+
+		/// <summary>
+		/// Shows a dialog that will request that the user enable location so that we may scan.
+		/// </summary>
+		public void RequestFineLocationPermission(Action onDeny = null) {
+			var adb = new IONAlertDialog(this);
+			adb.SetTitle(Resource.String.error_location_disabled);
+			adb.SetMessage(Resource.String.error_start_up_request_location_for_bluetooth);
+			adb.SetCancelable(false);
+			adb.SetNegativeButton(Resource.String.close, (sender, e) => {
+				var d = sender as Dialog;
+				d.Dismiss();
+				if (onDeny != null) {
+					onDeny();
+				}
+			});
+			adb.SetPositiveButton(Resource.String.allow, (sender, e) => {
+				var d = sender as Dialog;
+				d.Dismiss();
+				ActivityCompat.RequestPermissions(this, new string[] { Android.Manifest.Permission.AccessFineLocation }, REQUEST_LOCATION_PERMISSIONS);
+			});
+			adb.Show();
+		}
 
     /// <summary>
     /// A utility method that will forcefully close the keyboard.
