@@ -36,6 +36,7 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>
   <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
@@ -153,6 +154,15 @@
 	<string name="analyzer_swap_failed">Failed to swap sensors</string>
 	<string name="analyzer_swap_linked_manifolds">Would you like to swap the linked measurements? Your subviews will remain intact.</string>
 
+	<!--
+	BLUETOOTH
+	-->
+	<string name="bluetooth_disabled">Bluetooth Disabled</string>
+	<string name="bluetooth_enable_failed">Failed to enable bluetooth</string>
+	<string name="bluetooth_enabled">Enabled bluetooth</string>
+	<string name="bluetooth_location_off">Location Off</string>
+	<string name="bluetooth_requires_location">As of Android version 6, location services are required to be turned on to successfully scan for a bluetooth device. Would you like to enable location services?\n\nDenying this action will prevent your device from finding your gauges.</string>
+
   <!--
   CALCULATORS
   -->
@@ -200,6 +210,7 @@
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
   <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
+  <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
