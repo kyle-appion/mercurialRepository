@@ -48,30 +48,33 @@
                     android:layout_height="40dp" />
             </RelativeLayout>
             <FrameLayout
+                android:layout_weight="1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
                 <android.support.v7.widget.RecyclerView
                     android:id="@id/list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="match_parent" />
             </FrameLayout>
             <AbsoluteLayout
                 android:id="@id/view"
                 android:layout_width="match_parent"
-                android:layout_height="30dp">
+                android:layout_height="wrap_content">
                 <ImageView
                     android:id="@id/left"
+                    android:background="@color/green"
                     android:scaleType="fitStart"
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/ic_drag_arrow_left" />
                 <ImageView
                     android:id="@id/right"
+                    android:background="@color/red"
                     android:scaleType="fitEnd"
-                    android:layout_width="45dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="30dp"
+                    android:layout_height="45dp"
                     android:src="@drawable/ic_drag_arrow_right" />
             </AbsoluteLayout>
         </LinearLayout>

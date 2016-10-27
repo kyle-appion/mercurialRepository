@@ -128,7 +128,6 @@
         ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
       }
 
-
       return ret;
     }
 
