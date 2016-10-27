@@ -343,13 +343,21 @@
 			var f = ptChart.fluid;
 			var state = ptChart.state;
 			var smp = Units.Pressure.PSIG.OfScalar(-8);
+			var ion = AppState.context;
+			var alt = ion.locationManager.lastKnownLocation.altitude;
+			var rmin = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMinimumPressure(ptChart.state).ConvertTo(Units.Pressure.PSIG), alt);
+			var max = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMaximumPressure(state).ConvertTo(pressureUnit), alt);
+
+			if (smp.amount < rmin.amount) {
+				smp = rmin;
+			}
 
 			minPressure = (float)smp.ConvertTo(pressureUnit).amount;
-			maxPressure = (float)f.GetMaximumPressure(state).ConvertTo(pressureUnit).amount;
+			maxPressure = (float)max.amount;
 
 			try {
 				minTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(smp, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
-				maxTemperature = (float)f.GetMaximumTemperature().ConvertTo(temperatureUnit).amount;
+				maxTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
 			} catch (Exception e) {
 				Log.E(this, "Failed to perform unit conversion", e);
 			}

@@ -248,6 +248,12 @@
 				}
 			};
 
+			// TODO DIPSHIT
+//			Need to update the width of the handles with repect to dragging
+
+
+
+
 			right.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:

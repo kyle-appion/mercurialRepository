@@ -458,13 +458,6 @@
 
 			Refresh();
 		}
-/*
-		public override bool DispatchTouchEvent(MotionEvent ev) {
-			pressureEntryView.ClearFocus();
-			temperatureEntryView.ClearFocus();
-			return base.DispatchTouchEvent(ev);
-		}
-*/
 
 		/// <summary>
 		/// Initializes the activity using the given manifold.
