@@ -229,11 +229,11 @@
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width / 2 + right.Width / 2;
+						var dw = left.Width + right.Width;
 
 						if (x < modifiedStart) {
 							x = modifiedStart;
-						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - dw) {
+						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - right.Width - dw) {
 							x = modifiedStart + rect.Width() - rightOverlay.width - dw;
 						}
 
@@ -248,12 +248,6 @@
 				}
 			};
 
-			// TODO DIPSHIT
-//			Need to update the width of the handles with repect to dragging
-
-
-
-
 			right.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:
@@ -264,7 +258,7 @@
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width / 2 + right.Width / 2;
+						var dw = left.Width + right.Width;
 
 						if (x < modifiedStart + leftOverlay.width + dw) {
 							x = modifiedStart + leftOverlay.width + dw;
