@@ -141,6 +141,10 @@
 	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
 	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
+  <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
+  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
+  <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
   <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
   <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
@@ -155,6 +159,14 @@
   <string name="analyzer_side_high">High Side</string>
 	<string name="analyzer_swap_failed">Failed to swap sensors</string>
 	<string name="analyzer_swap_linked_manifolds">Would you like to swap the linked measurements? Your subviews will remain intact.</string>
+
+	<!--
+	APP
+	-->
+	<string name="app_no_navigation_items">No Items added to the navigation drawer</string>
+	<string name="app_error_failed_to_take_screenshot">Failed to save screenshot</string>
+	<string name="app_error_failed_to_start">Failed to start ION</string>
+	<string name="app_error_failed_to_start_msg">Failed to start ION. Please contact Appion for assistance.</string>
 
 	<!--
 	BLUETOOTH
@@ -370,6 +382,8 @@
 	-->
 	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid Viewer</string>
 	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
+	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
+	<string name="ptchart_error_change_unit">Please change the unit for the PT Chart.</string>
 
 	<!--
 	SUPERHEAT / SUBCOOL

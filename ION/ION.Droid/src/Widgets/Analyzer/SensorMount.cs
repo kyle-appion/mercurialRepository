@@ -114,7 +114,7 @@
         title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
       title.SetIncludeFontPadding(false);
-      title.Text = "Boogers";
+      title.Text = "       ";
 //      title.SetTypeface(regular);
 
       measurement = new TextView(context);
@@ -139,7 +139,7 @@
       unit.SetSingleLine(true);
       unit.Ellipsize = TextUtils.TruncateAt.End;
       unit.SetIncludeFontPadding(false);
-      unit.Text = "Million";
+      unit.Text = "       ";
 //      unit.SetTypeface(regular);
 
       var s1 = new View(context);

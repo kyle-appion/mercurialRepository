@@ -2,5 +2,7 @@
 <whatsnew>
 	<display version="0.9.27">
 		<new>Added new refrigerants</new>
+		<update>Updated some older refigerants</update>
+		<update>Updated text localization</update>
 	</display>
 </whatsnew>

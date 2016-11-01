@@ -395,10 +395,10 @@
 				var sp = (SensorParcelable)Intent.GetParcelableExtra(EXTRA_SENSOR);
 				var s = sp.Get(ion);
 				if (ESensorType.Pressure == s?.type || ESensorType.Temperature == s?.type) {
-					this.sensor = s;
+					sensor = s;
 					sensorLocked = true;
 				} else {
-					Error("Cannot start PTChartActivity. Expected a pressure/temperature sensor, received: " + s?.type);
+					Error(string.Format(GetString(Resource.String.ptchart_error_cannot_start_activity_1sarg), s?.type.GetTypeString()));
 					SetResult(Result.Canceled);
 					Finish();
 				}
