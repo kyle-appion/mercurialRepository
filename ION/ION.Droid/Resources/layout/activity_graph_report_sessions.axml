@@ -64,14 +64,12 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@id/left"
-                    android:background="@color/green"
                     android:scaleType="fitStart"
                     android:layout_width="30dp"
                     android:layout_height="45dp"
                     android:src="@drawable/ic_drag_arrow_left" />
                 <ImageView
                     android:id="@id/right"
-                    android:background="@color/red"
                     android:scaleType="fitEnd"
                     android:layout_width="30dp"
                     android:layout_height="45dp"
@@ -225,6 +223,7 @@
         android:layout_height="wrap_content">
         <Button
             android:id="@id/reset"
+            android:background="@drawable/np_rounded_rect_red"
             android:textSize="@dimen/text_size_xlarge"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
@@ -234,6 +233,7 @@
             android:text="@string/reset" />
         <Button
             android:id="@id/export"
+            android:background="@drawable/np_rounded_rect_green"
             android:textSize="@dimen/text_size_xlarge"
             android:layout_width="120dp"
             android:layout_height="wrap_content"

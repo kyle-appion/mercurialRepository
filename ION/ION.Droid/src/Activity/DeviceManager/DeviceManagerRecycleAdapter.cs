@@ -12,13 +12,9 @@
   using ION.Core.Devices;
 	using ION.Core.Devices.Sorters;
   using ION.Core.Sensors;
-  using ION.Core.Sensors.Filters;
   using ION.Core.Util;
 
-  using ION.Droid.Activity;
   using ION.Droid.Dialog;
-  using ION.Droid.Devices;
-  using ION.Droid.Sensors;
   using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
@@ -145,8 +141,13 @@
     /// <param name="index">Index.</param>
     /// <param name="record">Record.</param>
     public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
-      var ret = record is DeviceRecord;
-			return ret;
+			var dr = record as DeviceRecord;
+			if (dr == null) {
+				return false;
+			}
+
+			var nearbySection = allSections[EDeviceState.New];
+			return !nearbySection.HasDevice(dr.device);
     }
 
     /// <summary>

@@ -108,7 +108,6 @@
     protected override void OnResume() {
       base.OnResume();
       Invalidate();
-      AttemptTabFix();
     }
 
     // Overridden from Activity
@@ -149,13 +148,6 @@
         default:
           return base.OnMenuItemSelected(featureId, item);          
       }
-    }
-
-    private async void AttemptTabFix() {
-      await Task.Delay(25);
-      pagerView.CurrentItem = 1;
-      await Task.Delay(25);
-      pagerView.CurrentItem = 0;
     }
 
     /// <summary>

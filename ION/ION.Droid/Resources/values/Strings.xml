@@ -65,6 +65,8 @@
   <string name="main">Main</string>
   <string name="measurement">Measurement</string>
   <string name="manual">Manual</string>
+  <string name="maximum">Maximum</string>
+	<string name="minimum">Minimum</string>
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>

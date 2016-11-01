@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.25">
-		<update>Updated checks to ensure valid system state for various features in newer android versions</update>
-		<update>Updated rate of change algorithm</update>
-		<update>Updated refrigerant library</update>
-		<update>Updated the graphing selection icons</update>
-		<fixed>Fixed notification icon color on some devices</fixed>
-		<fixed>Fixed corner-case bugs in Analyzer</fixed>
-		<fixed>Fixed alarm activity not responding to save clicks</fixed>
-		<fixed>Fixed some bugs in preferences and preference handling</fixed>
-		<fixed>Fixed various performance and graphical bugs</fixed>
+	<display version="0.9.27">
+		<new>Added new refrigerants</new>
 	</display>
 </whatsnew>

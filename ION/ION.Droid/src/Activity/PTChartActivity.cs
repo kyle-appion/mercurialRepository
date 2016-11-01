@@ -99,7 +99,8 @@
 				if (sensor != null) {
 					OnSensorChanged(sensor);
 				} else {
-					slider.ScrollToPressure(pressureUnit.OfScalar(ptChart.fluid.GetMedianPressure(ptChart.state)), true);
+					var pressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(ptChart.fluid.GetMedianAbsolutePressure(ptChart.state), ptChart.elevation);
+					slider.ScrollToPressure(pressure, true);
 				}
 			}
 		} PTChart __ptChart;
@@ -404,6 +405,8 @@
 			} else {
 				sensorLocked = false;
 			}
+
+			ClearInput();
 		}
 
 		// Overridden from IONActivity
@@ -457,6 +460,7 @@
 			}
 
 			Refresh();
+			ClearInput();
 		}
 
 		/// <summary>

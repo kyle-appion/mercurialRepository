@@ -95,7 +95,7 @@
 		public bool Commit() {
 			try {
 				RenderSessionResults();
-				RenderJobAndDevicesDetails();
+				RenderCoverSheet();
 
 				file.Save(filepath);
 				file.Save(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "A Lovely Filename.xlsx"));
@@ -107,7 +107,7 @@
 			}
 		}
 
-		private void RenderJobAndDevicesDetails() {
+		private void RenderCoverSheet() {
 			file.ActiveSheet = SHEET_JOB_INFO;
 
 			// We will render the device details first
@@ -185,6 +185,22 @@
 				file.SetCellValue(5, 5, job.poNumber, formatContent);
 			} else {
 				file.SetCellValue(1, 5, context.GetString(Resource.String.report_spans_multiple_jobs), formatHeader);
+			}
+
+			// Add a couple of rows as padding, we are going to add some sensor meta data
+			curRow += 2;
+
+			// Render the serial number meta data
+			// Add the header
+			file.SetCellValue(curRow, 2, context.GetString(Resource.String.device_serial_number), formatHeader);
+			file.SetCellValue(curRow, 3, context.GetString(Resource.String.minimum), formatHeader);
+			file.SetCellValue(curRow, 4, context.GetString(Resource.String.maximum), formatHeader);
+			file.SetCellValue(curRow, 5, context.GetString(Resource.String.average), formatHeader);
+
+			// Move to next row
+			curRow++;
+
+			foreach (var device in dlr.devices) {
 			}
 
 			// Autofit

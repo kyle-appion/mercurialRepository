@@ -23,6 +23,11 @@
     /// The name of the fluid.
     /// </summary>
     public string name { get; private set; }
+		/// <summary>
+		/// The flags that are associated to the fluid.
+		/// </summary>
+		/// <value>The flags.</value>
+		public EFlags flags { get; private set; }
     /// <summary>
     /// The ARGB8888 color of the fluid.
     /// </summary>
@@ -70,8 +75,9 @@
     /// <param name="temperatures"></param>
     /// <param name="bubblePressures"></param>
     /// <param name="dewPressures"></param>
-    public Fluid(string name, bool mixture, double tmin, double tmax, double step, int rows, double[] temperatures, double[] pressureValues) {
+    public Fluid(string name, EFlags flags, bool mixture, double tmin, double tmax, double step, int rows, double[] temperatures, double[] pressureValues) {
       this.name = name;
+			this.flags = flags;
       this.mixture = mixture;
       this.tmin = tmin;
       this.tmax = tmax;
@@ -142,9 +148,9 @@
 		/// </summary>
 		/// <returns>The median pressure.</returns>
 		/// <param name="state">State.</param>
-		public double GetMedianPressure(EState state) {
-			var index = (state == EState.Dew) ? rows : 0;
-			return index + rows / 2;
+		public Scalar GetMedianAbsolutePressure(EState state) {
+			var index = (mixture && state == EState.Dew) ? rows : 0;
+			return Units.Pressure.KILOPASCAL.OfScalar(index + rows / 2);
 		}
 
     /// <summary>
@@ -278,5 +284,11 @@
       Bubble,
       Dew,
     } // End State
+
+		[Flags]
+		public enum EFlags {
+			None = 0,
+			Explosive = 1 << 0,
+		}
   }
 }
