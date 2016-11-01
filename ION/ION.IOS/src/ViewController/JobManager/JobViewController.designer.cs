@@ -13,13 +13,13 @@ namespace ION.IOS.ViewController.JobManager
 	partial class JobViewController
 	{
 		[Outlet]
-		UIKit.UIView jobViewHolder { get; set; }
+		UIKit.UITableView jobTable { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (jobViewHolder != null) {
-				jobViewHolder.Dispose ();
-				jobViewHolder = null;
+			if (jobTable != null) {
+				jobTable.Dispose ();
+				jobTable = null;
 			}
 		}
 	}

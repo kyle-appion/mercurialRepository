@@ -11,7 +11,7 @@ using System.Globalization;
 namespace ION.IOS.ViewController.JobManager {
   public partial class JobViewController : BaseIONViewController {
 
-    ManageJobView manageJobs;
+    public UIRefreshControl jobRefresh;
     IION ion;
     public bool pushed = false;
 
@@ -53,18 +53,46 @@ namespace ION.IOS.ViewController.JobManager {
       foreach (var id in jobQuery) {
         jobList.Add(id.JID);
       }
-      manageJobs = new ManageJobView(View,jobList,this);
-      View.AddSubview(manageJobs.mjView);
-    }
+      jobTable.Layer.CornerRadius = 5f;
+      jobTable.Layer.BorderWidth = 1f;
+      jobTable.RegisterClassForCellReuse(typeof(CreatedJobCell), "createdJobCell");
+      jobTable.ClipsToBounds = true;
+      jobTable.ContentInset = UIEdgeInsets.Zero;
+      jobTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+      jobTable.Source = new CreatedJobSource(jobList,this);
+      jobTable.ReloadData();
 
+      jobRefresh = new UIRefreshControl();
+      jobRefresh.ValueChanged += (sender, e) => {
+        refreshJobList(this);
+      };
+
+      jobTable.InsertSubview(jobRefresh,0);
+      jobTable.SendSubviewToBack(jobRefresh);
+
+    }
+    
+    public void refreshJobList(JobViewController manageVC){
+      var jobs = ion.database.Query<ION.Core.Database.JobRow>("SELECT DISTINCT JID FROM JobRow ORDER BY JID DESC");
+
+      var jobList = new List<int>();
+      foreach (var job in jobs) {
+        jobList.Add(job.JID);
+      }
+
+      jobTable.Source = new CreatedJobSource(jobList, this);
+      jobTable.ReloadData();
+      jobRefresh.EndRefreshing();
+    }
+    
     public override void ViewDidAppear(bool animated) {
       var jobQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT DISTINCT JID FROM JobRow ORDER BY JID DESC");
       var jobList = new List<int>();
       foreach (var id in jobQuery) {
         jobList.Add(id.JID);
       }
-      manageJobs.currentJobs.Source = new CreatedJobSource(jobList,this);
-      manageJobs.currentJobs.ReloadData();
+      jobTable.Source = new CreatedJobSource(jobList,this);
+      jobTable.ReloadData();
     }
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();

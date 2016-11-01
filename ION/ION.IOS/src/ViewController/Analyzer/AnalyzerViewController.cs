@@ -93,11 +93,11 @@ namespace ION.IOS.ViewController.Analyzer {
 				remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
 				remoteTitle.TextAlignment = UITextAlignment.Center;
 				remoteTitle.TextColor = UIColor.Black;
-				remoteTitle.Text = "Analyzer\nRemote Viewing";
+				remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				
 				this.NavigationItem.TitleView = remoteTitle;				
 			} else {
-	      Title = "Analyzer";
+	      Title = Util.Strings.Analyzer.SELF;
 			}
       
       createSensors ();
@@ -113,7 +113,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView.mcloseButton.TouchUpInside += delegate {
         mentryView.mtextValue.Text = "";
         mentryView.mView.Hidden = true;
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
         mentryView.mbuttonText.Text = start.pressures[0];
         mentryView.textValidation.Hidden = true;
@@ -131,13 +131,13 @@ namespace ION.IOS.ViewController.Analyzer {
 				freeSpace /= 1024;
 				freeSpace /= 1024;
 				
-				Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
+				//Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
 			
 				UIView blockerView = new UIView(new CGRect(0,0,viewAnalyzerContainer.Bounds.Width,viewAnalyzerContainer.Bounds.Height));
 				blockerView.BackgroundColor = UIColor.Clear;
 
 				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle("Options", UIControlState.Normal);
+				remoteButton.SetTitle(Util.Strings.Analyzer.OPTIONS, UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteButton.TouchUpInside += (sender, e) =>{
 					if(remoteControl.controlView.Hidden){
@@ -159,13 +159,13 @@ namespace ION.IOS.ViewController.Analyzer {
 				};
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
-					remoteTitle.Text = "Analyzer\nRemote Editing";
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 					webServices.downloading = false;
 					blockerView.Hidden = true;
 				};
 
 				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
-					remoteTitle.Text = "Analyzer\nRemote Viewing";
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 					pauseRemote(false);
 					webServices.downloading = true;
 					blockerView.Hidden = false;					
@@ -273,12 +273,12 @@ namespace ION.IOS.ViewController.Analyzer {
         dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
-        recordingMessage = "Session recording has stopped";
+        recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
       } else {
         dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Session recording has started";
+        recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
       }
       showRecordingToast(recordingMessage);
     }
@@ -369,7 +369,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         } else if (pressedArea.currentSensor != null && !pressedArea.isManual) {
           pressedArea.sactionView.pconnection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
-          pressedArea.sactionView.pconnectionStatus.Text = Util.Strings.Analyzer.DISCONNECTED;
+          pressedArea.sactionView.pconnectionStatus.Text = Util.Strings.Device.DISCONNECTED;
           pressedArea.sactionView.pconnectionStatus.TextColor = UIColor.Red;
           pressedArea.sactionView.pdeviceImage.Image = pressedArea.deviceImage.Image;
           pressedArea.sactionView.connectionColor.BackgroundColor = UIColor.Red;
@@ -436,7 +436,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
 
-        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.DEVICEMANAGER, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Device.Manager.SELF, UIAlertActionStyle.Default, (action) => {
           OnRequestViewer(pressedArea);
         }));
 
@@ -475,18 +475,18 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
+          mentryView.textValidation.Text = Util.Strings.Analyzer.VALIDMEASUREMENT;
           mentryView.textValidation.Hidden = false;
           return;
         }
       }
       if (mentryView.mtextValue.Text.Length <= 0) {
-        mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.MISSINGVALUE;
         mentryView.textValidation.Hidden = false;
         return;
       }
       if (mentryView.mtextValue.Text.Contains("-") && mentryView.mtextValue.Text.Length.Equals(1)) {
-        mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.VALIDMEASUREMENT;
         mentryView.textValidation.Hidden = false;
         return;
       }
@@ -577,7 +577,7 @@ namespace ION.IOS.ViewController.Analyzer {
       
       mentryView.textValidation.Hidden = true;
       mentryView.mdoneButton.TouchUpInside -= handleManualPopup;
-      mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       mentryView.mbuttonText.Text = start.pressures[0];
       mentryView.mtextValue.Text = "";
@@ -603,11 +603,11 @@ namespace ION.IOS.ViewController.Analyzer {
         presentationPopover.PermittedArrowDirections = UIPopoverArrowDirection.Right;
       }
       if (sensorActions.pressedSensor.isManual.Equals(false)) {
-        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Alarms.SELF, UIAlertActionStyle.Default, (action) => {
           alarmRequestViewer(sensorActions);
         }));
       }
-      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.RENAME, UIAlertActionStyle.Default, (action) => {
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.RENAME, UIAlertActionStyle.Default, (action) => {
         renamePopup();
       }));
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.REMOVESENSOR, UIAlertActionStyle.Default, (action) => {
@@ -645,7 +645,7 @@ namespace ION.IOS.ViewController.Analyzer {
         }
       }
 
-      mtypeAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      mtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
       this.View.Window.RootViewController.PresentViewController (mtypeAlert, true, null);
       mentryView.mtextValue.ResignFirstResponder();
     }
@@ -658,24 +658,24 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       UIAlertController dtypeAlert = UIAlertController.Create (Util.Strings.Analyzer.CHOOSEDEVICE, "", UIAlertControllerStyle.Alert);
 
-      dtypeAlert.AddAction (UIAlertAction.Create ("Pressure", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.PRESSURE, UIAlertActionStyle.Default, (action) => {
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
         mentryView.mbuttonText.Text = start.pressures[0];
       }));
       if(!mentryView.isManual){
-	      dtypeAlert.AddAction (UIAlertAction.Create ("Temperature", UIAlertActionStyle.Default, (action) => {
-	        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.TEMPERATURE, UIControlState.Normal);
+	      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.TEMPERATURE, UIAlertActionStyle.Default, (action) => {
+	        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.TEMPERATURE, UIControlState.Normal);
 	        mentryView.dtypeButton.AccessibilityIdentifier = "Temperature";
 	        mentryView.mbuttonText.Text = start.temperatures[0];
 	      }));
       }
-      dtypeAlert.AddAction (UIAlertAction.Create ("Vacuum", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.VACUUM, UIControlState.Normal);
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.VACUUM, UIAlertActionStyle.Default, (action) => {
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.VACUUM, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Vacuum";
         mentryView.mbuttonText.Text = start.vacuum[0];
       }));
-      dtypeAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
       this.View.Window.RootViewController.PresentViewController (dtypeAlert, true, null);
     }
     /// <summary>
@@ -688,7 +688,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
 
-        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.DEVICEMANAGER, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Device.Manager.SELF, UIAlertActionStyle.Default, (action) => {
           if(!AnalyserUtilities.freeSpot(analyzerSensors,removeSensor,lowHighArea.snapArea.AccessibilityIdentifier)){
             showFullAlert();
           } else {
@@ -733,13 +733,14 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a number after the decimal for this sensor's measurement**";
-          mentryView.textValidation.Hidden = false;
+          //mentryView.textValidation.Text = "**Please enter a number after the decimal for this sensor's measurement**";
+          //mentryView.textValidation.Hidden = false;
+          mentryView.mtextValue.Text += "0";
           return;
         }
       }
       if (mentryView.mtextValue.Text.Length <= 0) {        
-        mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.MISSINGVALUE;
         mentryView.textValidation.Hidden = false;
         return;
       }
@@ -859,7 +860,7 @@ namespace ION.IOS.ViewController.Analyzer {
       }
 
       mentryView.mdoneButton.TouchUpInside -= handleManualLHPopup;
-      mentryView.dtypeButton.SetTitle (Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      mentryView.dtypeButton.SetTitle (Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       mentryView.mtextValue.Text = "";
       mentryView.mbuttonText.Text = start.pressures[0];
@@ -982,7 +983,7 @@ namespace ION.IOS.ViewController.Analyzer {
       UIAlertController textAlert = UIAlertController.Create (Util.Strings.Analyzer.ENTERNAME, sensorActions.topLabel.Text, UIAlertControllerStyle.Alert);
       textAlert.AddTextField(textField => {});
       textAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
-      textAlert.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.OKSAVE, UIAlertActionStyle.Default, UIAlertAction => {
+      textAlert.AddAction (UIAlertAction.Create (Util.Strings.OK_SAVE, UIAlertActionStyle.Default, UIAlertAction => {
         sensorActions.topLabel.Text = " " + textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.sactionView.pdeviceName.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.lowArea.LabelTop.Text = textAlert.TextFields[0].Text;
@@ -1023,8 +1024,8 @@ namespace ION.IOS.ViewController.Analyzer {
 	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
 	      	if(sensor.type == ESensorType.Temperature){
-						UIAlertController tempAlert = UIAlertController.Create ("Setup", "Pressure must be defined first for proper viewer display", UIAlertControllerStyle.Alert);
-						tempAlert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel,null));
+						UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
 						this.PresentViewController(tempAlert,true,null);
 					}else {
 	        	addLHDeviceSensor(area,sensor);
@@ -1035,8 +1036,8 @@ namespace ION.IOS.ViewController.Analyzer {
 	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
 	      	if(sensor.type == ESensorType.Temperature){
-						UIAlertController tempAlert = UIAlertController.Create ("Setup", "Pressure must be defined first for proper viewer display", UIAlertControllerStyle.Alert);
-						tempAlert.AddAction(UIAlertAction.Create("Ok", UIAlertActionStyle.Cancel,null));
+						UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
 						this.PresentViewController(tempAlert,true,null);
 					}else {
 	        	addLHDeviceSensor(area,sensor);
@@ -1237,7 +1238,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = analyzerSensors.viewList[i].middleLabel.Text;
               analyzerSensors.viewList[i].lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
+              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
               analyzerSensors.viewList[i].lowArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].lowArea.isManual = false;
               analyzerSensors.viewList[i].highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1246,7 +1247,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.LabelMiddle.Text = analyzerSensors.viewList[i].middleLabel.Text;
               analyzerSensors.viewList[i].highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
+              analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
               analyzerSensors.viewList[i].highArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].highArea.isManual = false;
               area.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1512,9 +1513,9 @@ namespace ION.IOS.ViewController.Analyzer {
 	      }
 	    } else {
 				if(webServices.downloading){
-					remoteTitle.Text = "Analyzer\nRemote Viewing";
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
-					remoteTitle.Text = "Analyzer\nRemote Editing";
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
 			}
 	    //viewAnalyzerContainer.SetNeedsDisplay();
