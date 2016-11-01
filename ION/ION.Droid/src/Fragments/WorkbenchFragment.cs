@@ -166,7 +166,7 @@
             if (u != -1) {
               // TODO ahodder@appioninc.com: Assign the unit.
 							Log.E(this, "Invalid unit on activity result for ptchart");
-              Alert("Please change the unit for the pt chart");
+							Alert(GetString(Resource.String.ptchart_error_change_unit));
             }
           }
           break;

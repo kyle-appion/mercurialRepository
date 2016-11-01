@@ -231,7 +231,7 @@
         i.PutExtra(ScreenshotActivity.EXTRA_PNG_BYTES, bytes);
         StartActivity(i);
       } catch (Exception e) {
-        Error("Failed to take screenshot", e);
+				Error(GetString(Resource.String.app_error_failed_to_take_screenshot), e);
       }
     }
 

@@ -125,10 +125,10 @@ namespace ION.Droid.Activity {
       success = true;
 
       if (!success) {
-        string msg = "Failed to start ION. Please contact Appion for assistance.";
+				string msg = GetString(Resource.String.app_error_failed_to_start_msg);
         Log.E(this, msg);
         var adb = new AlertDialog.Builder(this);
-        adb.SetTitle("Failed to start ION");
+				adb.SetTitle(Resource.String.app_error_failed_to_start);
         adb.SetMessage(msg);
 
         adb.SetNegativeButton(Android.Resource.String.Cancel, (obj, args) => {

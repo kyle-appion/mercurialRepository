@@ -560,7 +560,7 @@
         i.SetAction(Intent.ActionPick);
 				Analyzer.ESide side;
 				if  (!analyzer.GetSideOfManifold(manifold, out side)) {
-					Error("Failed to get the analyzer side of the manifold.");
+					Error(GetString(Resource.String.analyzer_error_failed_to_get_viewer_side));
 					return;
 				}
 				i.PutExtra(PTChartActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
@@ -578,7 +578,7 @@
       var side = Analyzer.ESide.Low;
 
       if (!analyzer.GetSideOfManifold(manifold, out side)) {
-        Error("Failed to open Superheat/Subcool activity; the manifold is not present in the analyzer.");
+				Error(GetString(Resource.String.analyzer_error_failed_to_launch_shsc_missing_manifold));
         return;
       }
 
@@ -587,9 +587,7 @@
       if (manifold.secondarySensor == null && !analyzer.CanAddSensorToSide(side)) {
         // TODO ahodder@appioninc.com: Localize this string.
         var adb = new IONAlertDialog(Activity, Resource.String.error);
-        adb.SetMessage("We cannot open the Superheat / Subcool activity for the clicked subview. Currently, the " + side +
-          " side of the analyzer is full and cannot accept a sensor that is assigned there. Please remove a sensor " +
-          "from the " + side + " of the analyzer to make room.");
+				adb.SetMessage(string.Format(GetString(Resource.String.analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg), side.ToLocalizedString(Activity)));
 
         adb.SetNegativeButton(Resource.String.ok, (obj, args) => {
           var dialog = obj as Android.App.Dialog;
@@ -617,12 +615,25 @@
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
         default:
-          var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
+					var msg = string.Format(GetString(Resource.String.analyzer_error_invalid_sensor_type), sensor.type.GetTypeString());
           Log.E(this, msg);
           Alert(msg);
           break;
       }
     }
   }
+
+	internal static class AnalyzerExtensions {
+		public static string ToLocalizedString(this Analyzer.ESide side, Context context) {
+			switch (side) {
+				case Analyzer.ESide.Low:
+					return context.GetString(Resource.String.analyzer_side_low);
+				case Analyzer.ESide.High:
+					return context.GetString(Resource.String.analyzer_side_high);
+				default:
+					return context.GetString(Resource.String.unknown);
+			}
+		}
+	}
 }
 

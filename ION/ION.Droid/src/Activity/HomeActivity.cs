@@ -106,7 +106,7 @@
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
       var emptyText = new TextView(this);
-      emptyText.Text = "No items added to the navigation drawer";
+			emptyText.Text = GetString(Resource.String.app_no_navigation_items);
       drawerList.EmptyView = emptyText;
 
       var i = Intent;
