@@ -64,7 +64,16 @@ EPSILON = 0.005 # the allowance of float precision error
 OUT_PATH = './output/' # the out directory for the data files
 OUT_EXT = '.fluid' # the file extension for the converted files
 
-ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600')])
+FLAG_NONE = 0
+FLAG_EXPLOSIVE = 1
+
+ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600'), ('ISOBUTAN', 'R600a'), ('PENTANE', 'R601'), ('IPENTANE', 'R601a'), \
+                ('ETHANE', 'R170'), ('METHANE','R50'), ('OXYGEN', 'R732'), ('HYDROGEN', 'R702'), \
+                ('HELIUM', 'R704'), ('AMMONIA', 'R717'), ('WATER', 'R718'), ('NEON', 'R720'), ('NITROGEN', 'R728'), \
+                ('ARGON', 'R740'), ('CO2', 'R744'), ('N20', '744a'), ('R134A', 'R134a')])
+
+FLAGGED_FLUIDS = dict([('R290', FLAG_EXPLOSIVE), ('R600', FLAG_EXPLOSIVE), ('R601a', FLAG_EXPLOSIVE)])
+
 
 def run():
     '''
@@ -95,6 +104,9 @@ def run():
         if not convert_fluid(fluid, OUT_PATH):
             failures.append(fluid)
 
+#    if not convert_fluid(u'AIR', OUT_PATH):
+#        failures.append(u'AIR')
+
     print '\n\nFailed to create the following fluids\n'
     for fluid in failures:
         print fluid
@@ -111,6 +123,9 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         fluid = r.setup(u'def', fluid_name)
         if fluid_name in ALIASES:
             fluid_name = ALIASES[fluid_name]
+        else:
+            if u'.PPF' in fluid_name:
+                fluid_name.replace(u'.PPF', '')
 
         # remove any unnecessary file extensions
         #fluid_name = r.name()['hname']
@@ -123,8 +138,11 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         limits = r.limits(x)
         info = r.info()
 
+#        print fluid_name, 'limits are', limits
+
         tmin = math.ceil(float(limits['tmin']))
         tmax = math.floor(float(r.critp(x)['tcrit']))
+        tmax = math.floor(float(limits['tmax']))
 
         delta = (tmax - tmin) - 2
         rows = int(delta / step)
@@ -136,27 +154,25 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         rowsOut = 0
         for i in range(rows):
             temp = tmin + (step * i)
+
             try:
-                bubble.append(r.satt(temp, x, kph=1)['p'])
+                bapp = r.satt(temp, x, kph=1)['p']
+                dapp = r.satt(temp, x, kph=2)['p']
+
+                bubble.append(bapp)
+                dew.append(dapp)
+
+                rowsOut = rowsOut + 1
             except:
-                bubble.append(float('nan'))
-            try:
-                dew.append(r.satt(temp, x, kph=2)['p'])
-            except:
-                dew.append(float('nan'))
-            rowsOut = rowsOut + 1
-#            except:
-                # Quick and dirty fix for some fluids not accepting Fluids that
-                # are exaclty the tmin
-#                tmin = temp
-#                temp = []
-#                bubble = []
-#                dew = []
-#                rowsOut = 0
+                if rowsOut > 0:
+#                    print 'Failed to get saturated temperature. Finalizing fluid at current row'
+                    break
 
         if rowsOut <= 0:
             print 'Failed to export fluid {0} with expected rows {1}: \n{2}'.format(fluid_name, rows, traceback.format_exc())
             return False
+#        else:
+#            print fluid_name, 'exported', rowsOut, 'rows of lookup data with tmin=', tmin, 'and tmax=', tmax, 'and expected rows=', rows
 
         similar = True
         # Check if the fluid has a pressure difference for the different phases
@@ -172,12 +188,16 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         vals = bubble
 
         if similar:
-            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut))
+            fmt = '>BB{0}sBiifI?{1}f'.format(len(fluid_name), str(rowsOut))
         else:
-            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
+            fmt = '>BB{0}sBiifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
             vals = vals + dew
 
-        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), tmin, tmax, step, rowsOut, similar, *vals)
+        flags = FLAG_NONE
+        if fluid_name in FLAGGED_FLUIDS:
+            flags = FLAGGED_FLUIDS[fluid_name]
+
+        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), flags, tmin, tmax, step, rowsOut, similar, *vals)
 
         file.write(data)
         file.flush()

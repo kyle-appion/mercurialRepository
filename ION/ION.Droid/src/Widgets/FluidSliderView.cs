@@ -81,18 +81,18 @@
 		/// <summary>
 		/// The minimum relative pressure for the slider.
 		/// </summary>
-		private float minPressure;
+		private int minPressure;
 		/// <summary>
 		/// The maximum relative pressure for the slider.
 		/// </summary>
-		private float maxPressure;
-		private float minTemperature;
-		private float maxTemperature;
+		private int maxPressure;
+		private int minTemperature;
+		private int maxTemperature;
 
 		/// <summary>
 		/// The window that the content of the view will be drawn to.
 		/// </summary>
-		private RectF window;
+		private Window window;
 		/// <summary>
 		/// The paint that the window rect will be drawn as.
 		/// </summary>
@@ -141,15 +141,7 @@
 
 			SetMeasuredDimension(MeasureSpec.MakeMeasureSpec(w, MeasureSpecMode.Exactly), MeasureSpec.MakeMeasureSpec(h, MeasureSpecMode.Exactly));
 
-			var padding = h * 0;
-
-			window = new RectF(padding, padding, w - padding, h - padding);
-
-			step = window.Width() / 50;
-			fullTickHeight = window.Height() * 0.25f;
-			offset = 0;
-
-			InitPaints();
+			Init();
 		}
 
 		public override bool OnTouchEvent(MotionEvent e) {
@@ -167,8 +159,8 @@
 					offset += (x - lastDragX);
 
 					var width = CalculateContentWidth();
-					var hw = window.Width() / 2;
-					if (offset > hw) {
+					var hw = window.width / 2;
+					if (offset >= hw) {
 						offset = hw;
 					} else if (offset < -width + hw) {
 						offset = -width + hw;
@@ -191,13 +183,18 @@
 		}
 
 		public void ScrollToTemperature(Scalar temperature, bool animate) {
+			var t = (float)temperature.ConvertTo(temperatureUnit).amount;
+			if (t < minTemperature) {
+				t = minTemperature;
+			} else if (t > maxTemperature) {
+				t = maxTemperature;
+			}
+
 			if (animate) {
-				var temp = (float)temperature.ConvertTo(temperatureUnit).amount;
-				var newOffset = this.CalculateOffsetFromTemperature(temp);
+				var newOffset = this.CalculateOffsetFromTemperature(t);
 				ScrollToOffset(newOffset);
 			} else {
-				var temp = (float)temperature.ConvertTo(temperatureUnit).amount;
-				offset = CalculateOffsetFromTemperature(temp);
+				offset = CalculateOffsetFromTemperature(t);
 				PostInvalidate();
 				NotifyOfScroll(false);
 			}
@@ -212,16 +209,20 @@
 			NotifyOfScroll(false);
 		}
 
+		// TODO ahodder@appioninc.com: Remove this: not safe
+		private static readonly RectF rect = new RectF();
 		protected override void OnDraw(Canvas canvas) {
-			var cx = window.CenterX();
+			var cx = window.centerX;
 
 			DrawPressureTicks(canvas);
 			DrawTemperatureTicks(canvas);
 
-			canvas.ClipRect(window);
+			window.FillRect(rect);
+
+			canvas.ClipRect(rect);
 
 			// Draw the window
-			canvas.DrawRoundRect(window, 7, 7, windowPaint);
+			canvas.DrawRoundRect(rect, 7, 7, windowPaint);
 			// Draw the selection line
 			canvas.DrawLine(cx, 0, cx, MeasuredHeight, windowPaint);
 		}
@@ -232,10 +233,10 @@
 		/// <returns>The pressure ticks.</returns>
 		/// <param name="canvas">Canvas.</param>
 		private void DrawPressureTicks(Canvas canvas) {
-			var minPress = (int)Math.Round(minPressure);
+			var minPress = minPressure;
 			var span = CalculatePressureTickSpan(minPress);
 			minPress = minPress - Math.Sign(minPress) * (minPress % span);
-			var y = window.Height() * 0.5f;
+			var y = window.height * 0.5f;
 
 			while (minPress < maxPressure) {
 				// Draw the big tick
@@ -290,15 +291,15 @@
 		/// <returns>The temperature ticks.</returns>
 		/// <param name="canvas">Canvas.</param>
 		private void DrawTemperatureTicks(Canvas canvas) {
-			var min = (int)minTemperature;
-			var max = (int)maxTemperature;
+			var min = minTemperature;
+			var max = maxTemperature;
 			var range = max - min;
 
 			// Draw the meat of the temperatures
 			for (int i = 0; i <= range; i++) {
 				var temp = min + i;
 				var x = CalculateRelativeXCoordForTemperature(temp);
-				var y = window.Height() * 0.5f;
+				var y = window.height * 0.5f;
 				var tsd = MeasuredHeight * TEXT_SIZE;
 
 				// Check if we need to draw a large temperature tick
@@ -312,6 +313,20 @@
 					canvas.DrawLine(x, y, x, y + fullTickHeight / 5, temperaturePaint);
 				}
 			}
+		}
+
+		private void Init() {
+			var w = MeasuredWidth;
+			var h = MeasuredHeight;
+			var padding = h * 0;
+
+			window.Set(new RectF(padding, padding, w - padding, h - padding));
+
+			step = window.width / 50;
+			fullTickHeight = window.height * 0.25f;
+			offset = 0;
+
+			InitPaints();
 		}
 
 		/// <summary>
@@ -348,19 +363,18 @@
 			var rmin = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMinimumPressure(ptChart.state).ConvertTo(Units.Pressure.PSIG), alt);
 			var max = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(f.GetMaximumPressure(state).ConvertTo(pressureUnit), alt);
 
-			if (smp.amount < rmin.amount) {
-				smp = rmin;
+			if (smp.amount > rmin.amount) {
+				rmin = smp;
 			}
 
-			minPressure = (float)smp.ConvertTo(pressureUnit).amount;
-			maxPressure = (float)max.amount;
+			minPressure = (int)Math.Ceiling(rmin.ConvertTo(pressureUnit).amount);
+			maxPressure = (int)Math.Floor(max.amount);
 
-			try {
-				minTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(smp, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
-				maxTemperature = (float)f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount;
-			} catch (Exception e) {
-				Log.E(this, "Failed to perform unit conversion", e);
-			}
+			rmin = pressureUnit.OfScalar(minPressure);
+			max = pressureUnit.OfScalar(maxPressure);
+
+			minTemperature = (int)Math.Ceiling(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
+			maxTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 
 			Invalidate();
 		}
@@ -373,13 +387,10 @@
 		}
 
 		private float CalculateAbsoluteXCoordForTemperature(float temperature) {
-			if (window == null) {
-				return -1;
-			}
 			var fullRange = maxTemperature - minTemperature;
 			var width = CalculateContentWidth();
 
-			var ret = window.Left + (((temperature - minTemperature) / fullRange) * width);
+			var ret = window.left + (((temperature - minTemperature) / fullRange) * width);
 			return ret;
 		}
 
@@ -390,10 +401,10 @@
 		private float CalculateOffsetFromTemperature(float temperature) {
 			var fullRange = maxTemperature - minTemperature;
 			var width = CalculateContentWidth();
-			if (window == null || width == 0) {
+			if (width == 0) {
 				return 0;
 			}
-			return -((temperature - minTemperature) / fullRange * width) + (window.Right - window.Left) / 2;
+			return -((temperature - minTemperature) / fullRange * width) + (window.right - window.left) / 2;
 		}
 
 		/// <summary>
@@ -410,16 +421,43 @@
 				return temperatureUnit.OfScalar(double.NaN);
 			}
 
-			return temperatureUnit.OfScalar((x - window.Left - offset) / width * fullRange + minTemperature);
+			return temperatureUnit.OfScalar((x - window.left - offset) / width * fullRange + minTemperature);
 		}
 
 		private void NotifyOfScroll(bool touching) {
-			if (onScroll != null && window != null) {
-				var x = window.Width() / 2;
+			if (onScroll != null) {
+				var x = window.width / 2;
 				var temp = CalculateTemperatureFromX(x);
 				onScroll(this, touching, ptChart.GetPressure(temp), temp);
      	}
     }
+
+		/// <summary>
+		/// This struct was created to replace RectF because it kept getting disposed by the fucking xamarin framework.
+		/// </summary>
+		private struct Window {
+			public float left, right, top, bottom;
+
+			public float width { get { return right - left; } }
+			public float height { get { return bottom - top; } }
+
+			public float centerX { get { return (left + right) / 2; } }
+			public float centerY { get { return (top + bottom) / 2; } }
+
+			public void Set(RectF rect) {
+				left = rect.Left;
+				right = rect.Right;
+				top = rect.Top;
+				bottom = rect.Bottom;
+			}
+
+			public void FillRect(RectF rect) {
+				rect.Left = left;
+				rect.Right = right;
+				rect.Top = top;
+				rect.Bottom = bottom;
+			}
+		}
 	}
 }
 

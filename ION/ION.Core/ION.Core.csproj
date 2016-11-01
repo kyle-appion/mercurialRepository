@@ -172,6 +172,7 @@
     <Compile Include="src\Content\Parsers\SensorParser.cs" />
     <Compile Include="src\Connections\RemoteConnection.cs" />
     <Compile Include="src\Measure\RateOfChange.cs" />
+    <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -206,7 +207,6 @@
     <Folder Include="src\StateMachine\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Measure\" />
-    <Folder Include="src\Report\DataLogs\Exporters\" />
     <Folder Include="src\Net\" />
   </ItemGroup>
   <ItemGroup>
@@ -242,12 +242,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
       <LogicalName>UpgradeDatabase.sql</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\CO2.fluid">
-      <LogicalName>CO2.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\ISOBUTAN.fluid">
-      <LogicalName>ISOBUTAN.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R11.fluid">
       <LogicalName>R11.fluid</LogicalName>
@@ -290,9 +284,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R13.fluid">
       <LogicalName>R13.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R134aa.fluid">
-      <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R14.fluid">
       <LogicalName>R14.fluid</LogicalName>
@@ -521,6 +512,102 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R600.fluid">
       <LogicalName>R600.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R170.fluid">
+      <LogicalName>R170.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R403A.fluid">
+      <LogicalName>R403A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R403B.fluid">
+      <LogicalName>R403B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R405A.fluid">
+      <LogicalName>R405A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R406A.fluid">
+      <LogicalName>R406A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R409B.fluid">
+      <LogicalName>R409B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R412A.fluid">
+      <LogicalName>R412A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R414A.fluid">
+      <LogicalName>R414A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R414B.fluid">
+      <LogicalName>R414B.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R416A.fluid">
+      <LogicalName>R416A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R417A.fluid">
+      <LogicalName>R417A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R418A.fluid">
+      <LogicalName>R418A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R426A.fluid">
+      <LogicalName>R426A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R435A.fluid">
+      <LogicalName>R435A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R437A.fluid">
+      <LogicalName>R437A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R442A.fluid">
+      <LogicalName>R442A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R444A.fluid">
+      <LogicalName>R444A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R50.fluid">
+      <LogicalName>R50.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R601.fluid">
+      <LogicalName>R601.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R601a.fluid">
+      <LogicalName>R601a.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R702.fluid">
+      <LogicalName>R702.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R717.fluid">
+      <LogicalName>R717.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R718.fluid">
+      <LogicalName>R718.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R720.fluid">
+      <LogicalName>R720.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R728.fluid">
+      <LogicalName>R728.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R732.fluid">
+      <LogicalName>R732.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R740.fluid">
+      <LogicalName>R740.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R744.fluid">
+      <LogicalName>R744.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\XENON.fluid">
+      <LogicalName>XENON.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R600a.fluid">
+      <LogicalName>R600a.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R704.fluid">
+      <LogicalName>R704.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
+      <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

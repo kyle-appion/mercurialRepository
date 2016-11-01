@@ -2,6 +2,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.IO;
 	using System.Threading.Tasks;
 
 	using Android.Animation;
@@ -17,6 +18,7 @@
 
 	using OxyPlot.Xamarin.Android;
 
+	using ION.Core.Devices;
 	using ION.Core.IO;
 	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
@@ -156,6 +158,7 @@
 			startDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
 			endDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 
+/*
 			startDateSpinner.ItemSelected += (sender, e) => {
 				var pos = e.Position;
 				var len = (float)graphAdapter.dil.dateSpan;
@@ -171,6 +174,7 @@
 
 				InvalidateGraphViews();
 			};
+*/
 
 			var empty = FindViewById(Resource.Id.empty);
 			empty.Visibility = ViewStates.Gone;
@@ -455,18 +459,18 @@
 				GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
 
 			var date = settingsView.FindViewById(Resource.Id.date);
-			date.Visibility = ViewStates.Gone;
 			
 			var startIndex = graphAdapter.IndexOfDateTime(startDate);
 			var endIndex = graphAdapter.IndexOfDateTime(endDate);
 
 			var startDates = graphAdapter.GetDatesInRange(0, endIndex);
-			var endDates = graphAdapter.GetDatesInRange(startIndex, graphAdapter.dil.dateSpan - 1);
+			var endDates = graphAdapter.GetDatesInRange(endIndex + 1, graphAdapter.dil.dateSpan - 1);
 
 			startTimesAdapter = new DateTimeAdapter(this, startDates);
 			endTimesAdapter = new DateTimeAdapter(this, endDates);
 
-//			this.startTimesAdapter = new ArrayAdapter<string>(DatesToStr
+			startDateSpinner.Adapter = startTimesAdapter;
+			endDateSpinner.Adapter = endTimesAdapter;
 		}
 
 		private async Task RefreshGraphList() {
@@ -530,6 +534,23 @@
 			dialog.Show();
 		}
 
+		/// <summary>
+		/// Captures all of the graph selected graph views and converts them into a png for exporting.
+		/// </summary>
+		private Dictionary<GaugeDeviceSensor, Stream> CaptureGraphs() {
+			var ret = new Dictionary<GaugeDeviceSensor, Stream>();
+
+			for (int i = 0; i < graphAdapter.ItemCount; i++) {
+				var record = graphAdapter.GetRecordAt(i) as GraphRecord;
+				if (record.isChecked) {
+					var view = graphList.GetLayoutManager().FindViewByPosition(i);
+					ret[record.sensor] = view.ToPng();
+				}
+			}
+
+			return ret;
+		}
+
 		private async Task ExportExcel() {
 			var dialog = new ProgressDialog(this);
 			dialog.SetTitle(Resource.String.please_wait);
@@ -545,6 +566,7 @@
 					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
 					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+//					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 
@@ -588,6 +610,7 @@
 					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
 					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+//					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 

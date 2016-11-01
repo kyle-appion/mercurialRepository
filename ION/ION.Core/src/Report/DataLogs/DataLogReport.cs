@@ -2,10 +2,12 @@
 
 	using System;
   using System.Collections.Generic;
+	using System.IO;
 
 	using ION.Core.App;
   using ION.Core.Database;
 	using ION.Core.Devices;
+	using ION.Core.Sensors;
 	using ION.Core.Util;
 
 	/// <summary>
@@ -36,8 +38,10 @@
     /// </summary>
     /// <value>The results.</value>
 		public List<SessionResults> sessionResults { get; private set; }
-
-
+		/// <summary>
+		/// The Dictionary that maps sensors to their epxorted graph png image. 
+		/// </summary>
+		public Dictionary<GaugeDeviceSensor, Stream> graphImages { get; set; }
 
 
 		/// <summary>
