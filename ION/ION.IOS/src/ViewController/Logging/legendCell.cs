@@ -94,7 +94,7 @@ namespace ION.IOS.ViewController.Logging
       workingValue = standardUnit.OfScalar((totalValue/totalMeasurements));
       var finalAverage = workingValue.ConvertTo(lookup);
 
-      information.Text = "Lowest Measurement: " + finalLowest.amount.ToString("N") + " " + lookup.ToString() + "\nHighest Measurement: " + finalHighest.amount.ToString("N") + " " + lookup.ToString() + "\n" + "Average measurement: " + finalAverage.amount.ToString("N") + " " + lookup.ToString();
+      information.Text = Util.Strings.Measure.LOWESTMEASUREMENT+": " + finalLowest.amount.ToString("N") + " " + lookup.ToString() + "\n"+Util.Strings.Measure.HIGHESTMEASUREMENT + ": " + finalHighest.amount.ToString("N") + " " + lookup.ToString() + "\n" + Util.Strings.Measure.AVERAGEMEASUREMENT + ": " + finalAverage.amount.ToString("N") + " " + lookup.ToString();
 
 			this.AddSubview (header);
 			this.AddSubview (information);

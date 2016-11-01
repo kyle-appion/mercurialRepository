@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Logging {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      Title = "Reports";
+      Title = Util.Strings.Report.REPORTS;
       ChosenDates.includeList = new List<string> ();
       selectedSessions = new ObservableCollection<int>();
       ChosenDates.allTimes = new Dictionary<string,int> ();

@@ -182,10 +182,10 @@ namespace ION.IOS.ViewController.Logging
         noData.TextAlignment = UITextAlignment.Center;
         gView.AddSubview(noData);
       }
-			//exportSelect = new ReportType(gView);
-			//gView.AddSubview(exportSelect.blackoutView);
-			//gView.AddSubview(exportSelect.popupView);
-			//gView.BringSubviewToFront(exportSelect.popupView);
+			exportSelect = new ReportType(gView);
+			gView.AddSubview(exportSelect.blackoutView);
+			gView.AddSubview(exportSelect.popupView);
+			gView.BringSubviewToFront(exportSelect.popupView);
 		}
 
 		/// <summary>
@@ -480,55 +480,55 @@ namespace ION.IOS.ViewController.Logging
     /// <param name="sessions">List of sessions included in the graphing</param>
     public void ChooseReportType(ObservableCollection<int> sessions){
 		/***************************DETAILED VERSION*****************************/	  
- 		//	exportSelect.blackoutView.Hidden = false;
- 		//	exportSelect.popupView.Hidden = false;
+ 			exportSelect.blackoutView.Hidden = false;
+ 			exportSelect.popupView.Hidden = false;
  			
- 		//	exportSelect.pdfExport.TouchUpInside += async (sender, e) => {
-   //       var sessionBreaks = new List<string>();
-   //       var data = categorizeData(sessions,sessionBreaks);
-   //       UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating PDF", null,null,null);
-   //       messageBox.Show();
-   //       await Task.Delay(TimeSpan.FromMilliseconds (100));
-   //       createPDF(messageBox,data,sessionBreaks,sessions);
-			//		NSUserDefaults.StandardUserDefaults.SetString(exportSelect.pdfType.ToString(),"user_pdf_default");          
-			//		NSUserDefaults.StandardUserDefaults.SetString(Convert.ToInt32(exportSelect.rawData.On).ToString(),"user_data_default");
-   //       exportSelect.closeExport();
-			//};
+ 			exportSelect.pdfExport.TouchUpInside += async (sender, e) => {
+          exportSelect.closeExport();          
+					var sessionBreaks = new List<string>();
+          var data = categorizeData(sessions,sessionBreaks);
+          UIAlertView messageBox = new UIAlertView(Util.Strings.Report.PLEASEWAIT, Util.Strings.Report.TOASTPDF, null,null,null);
+          messageBox.Show();
+          await Task.Delay(TimeSpan.FromMilliseconds (100));
+          createPDF(messageBox,data,sessionBreaks,sessions);
+					NSUserDefaults.StandardUserDefaults.SetString(exportSelect.pdfType.ToString(),"user_pdf_default");          
+					NSUserDefaults.StandardUserDefaults.SetString(Convert.ToInt32(exportSelect.rawData.On).ToString(),"user_data_default");
+			};
 			
-  	//	exportSelect.spreadsheetExport.TouchUpInside += async (sender, e) => {
-   //       var sessionBreaks = new List<string>();
-   //       var data = categorizeData(sessions,sessionBreaks);
-   //       UIAlertView messageBox = new UIAlertView("Please Wait....", "Creating Spreadsheet", null,null,null);
-   //       messageBox.Show();
-   //       await Task.Delay(TimeSpan.FromMilliseconds (100));
-   //       createSpreadsheet(messageBox,data,sessionBreaks,sessions);
-   //       exportSelect.closeExport();
-			//		NSUserDefaults.StandardUserDefaults.SetString(exportSelect.spreadsheetType.ToString(),"user_spreadsheet_default");
-			//};
-
-			/*********************ORIGINAL VERSION***************************/			
-      UIAlertView reportBox = new UIAlertView(Util.Strings.Report.SELF, Util.Strings.Report.CHOOSEFORMAT, null,Util.Strings.CANCEL,Util.Strings.Report.CREATESPREADSHEET,Util.Strings.Report.CREATEPDF);
-      reportBox.Show();
-      reportBox.Clicked += async (sender, e) => {
-        
-        if(e.ButtonIndex.Equals(1)){          
+  		exportSelect.spreadsheetExport.TouchUpInside += async (sender, e) => {
+          exportSelect.closeExport();
           var sessionBreaks = new List<string>();
           var data = categorizeData(sessions,sessionBreaks);
           UIAlertView messageBox = new UIAlertView(Util.Strings.Report.PLEASEWAIT, Util.Strings.Report.TOASTSPREADSHEET, null,null,null);
           messageBox.Show();
           await Task.Delay(TimeSpan.FromMilliseconds (100));
           createSpreadsheet(messageBox,data,sessionBreaks,sessions);
+					NSUserDefaults.StandardUserDefaults.SetString(exportSelect.spreadsheetType.ToString(),"user_spreadsheet_default");
+			};
 
-        } else if (e.ButtonIndex.Equals(2)){          
-          var sessionBreaks = new List<string>();
-          var data = categorizeData(sessions,sessionBreaks);
-          UIAlertView messageBox = new UIAlertView(Util.Strings.Report.PLEASEWAIT, Util.Strings.Report.TOASTPDF, null,null,null);
-          messageBox.Show();
-          await Task.Delay(TimeSpan.FromMilliseconds (100));
-          createPDF(messageBox,data,sessionBreaks,sessions);
+			/*********************ORIGINAL VERSION***************************/			
+      //UIAlertView reportBox = new UIAlertView(Util.Strings.Report.SELF, Util.Strings.Report.CHOOSEFORMAT, null,Util.Strings.CANCEL,Util.Strings.Report.CREATESPREADSHEET,Util.Strings.Report.CREATEPDF);
+      //reportBox.Show();
+      //reportBox.Clicked += async (sender, e) => {
+        
+      //  if(e.ButtonIndex.Equals(1)){          
+      //    var sessionBreaks = new List<string>();
+      //    var data = categorizeData(sessions,sessionBreaks);
+      //    UIAlertView messageBox = new UIAlertView(Util.Strings.Report.PLEASEWAIT, Util.Strings.Report.TOASTSPREADSHEET, null,null,null);
+      //    messageBox.Show();
+      //    await Task.Delay(TimeSpan.FromMilliseconds (100));
+      //    createSpreadsheet(messageBox,data,sessionBreaks,sessions);
+
+      //  } else if (e.ButtonIndex.Equals(2)){          
+      //    var sessionBreaks = new List<string>();
+      //    var data = categorizeData(sessions,sessionBreaks);
+      //    UIAlertView messageBox = new UIAlertView(Util.Strings.Report.PLEASEWAIT, Util.Strings.Report.TOASTPDF, null,null,null);
+      //    messageBox.Show();
+      //    await Task.Delay(TimeSpan.FromMilliseconds (100));
+      //    createPDF(messageBox,data,sessionBreaks,sessions);
           
-        }
-      };
+      //  }
+      //};
     }
     /// <summary>
     /// Based on the devices included and the date range chosen, the times and measurements are collected for
@@ -622,13 +622,12 @@ namespace ION.IOS.ViewController.Logging
     public void createSpreadsheet(UIAlertView messageBox, List<deviceReadings> dataList, List<string> sessionBreaks, ObservableCollection<int> sessions){
       messageBox.Dismissed += previewSpreadsheet;
       var numberFormat = "#,##0.00";
-      //if(exportSelect.spreadsheetType == 0){
-      //	fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".xlsx";
-      //} else {
-      //	fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".csv";
-      //	numberFormat = "0.00";
-      //}
-      fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".xlsx";
+      if(exportSelect.spreadsheetType == 0){
+      	fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".xlsx";
+      } else {
+      	fileName = DateTime.UtcNow.ToLocalTime().ToString("MM-dd-yy hh:mm:ss tt") + ".csv";
+      	numberFormat = "F2";
+      }
       
       var masterTimes = new List<string>(); 
 
@@ -647,6 +646,11 @@ namespace ION.IOS.ViewController.Logging
       xls.SheetName = Util.Strings.Report.DATALOGGED;
       xls.ActiveSheet = 2;
       xls.SheetName = Util.Strings.Report.DEVICEINFO;
+      
+      if(exportSelect.spreadsheetType == 1){
+				var colWidth = 4317;      
+				xls.SetColWidth(1,dataList.Count + 1,colWidth);
+			}
 
       TFlxFormat blackout = xls.GetDefaultFormat; //1
       blackout.FillPattern = new TFlxFillPattern { Pattern = TFlxPatternStyle.Solid, FgColor = TExcelColor.FromIndex(1) };
@@ -729,10 +733,10 @@ namespace ION.IOS.ViewController.Logging
     //  }
       
       xls.MergeCells(1, 1, 1, 3);
-      xls.SetCellValue(1, 1, "Devices Used",2);
-      xls.SetCellValue(2, 1, "Serial Number", 1);
-      xls.SetCellValue(2, 2, "Name", 1);
-      xls.SetCellValue(2, 3, "Certification Date", 1);
+      xls.SetCellValue(1, 1, Util.Strings.Report.DEVICESUSED,2);
+      xls.SetCellValue(2, 1, Util.Strings.Device.SERIAL_NUMBER, 1);
+      xls.SetCellValue(2, 2, Util.Strings.NAME, 1);
+      xls.SetCellValue(2, 3, Util.Strings.Device.CERTDATE, 1);
 
       int deviceCellIndex = 3;
       foreach (var device in dataList) {
@@ -748,11 +752,11 @@ namespace ION.IOS.ViewController.Logging
       
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 2, deviceCellIndex, 3);
-      xls.SetCellValue(deviceCellIndex, 1, "Report Created", 1);
+      xls.SetCellValue(deviceCellIndex, 1, Util.Strings.Report.CREATED, 1);
       xls.SetCellValue(deviceCellIndex, 2, DateTime.Now.ToLocalTime().ToString(), 2);
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 1, deviceCellIndex, 3);
-      xls.SetCellValue(deviceCellIndex, 1, "Report Dates", 1);
+      xls.SetCellValue(deviceCellIndex, 1, Util.Strings.Report.REPORTDATES, 1);
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 1, deviceCellIndex, 3);
       xls.SetCellValue(deviceCellIndex, 1, ChosenDates.subLeft + " - " + ChosenDates.subRight, 2);
@@ -767,7 +771,7 @@ namespace ION.IOS.ViewController.Logging
 			
       xls.SetCellValue(1, 1, " ", 1);
       xls.SetCellValue(2, 1, " ", 1);
-      xls.SetCellValue(3, 1, "Time",2);
+      xls.SetCellValue(3, 1, Util.Strings.TIME,2);
 
       for (int i = 4; i < masterTimes.Count + 4; i++) { 
           xls.SetCellValue(i, 1, masterTimes[i-4], 2);
@@ -809,8 +813,12 @@ namespace ION.IOS.ViewController.Logging
             if (masterTimes[t].Equals(dataList[i - 2].times[compareIndex].ToString())) {
               var workingValue = standardUnit.OfScalar(dataList[i - 2].readings[compareIndex]);
               var finalValue = workingValue.ConvertTo(lookup);
-              var formatValue = ION.Core.Sensors.SensorUtils.ToFormattedString(deviceType, finalValue);
-              
+              string formatValue = "";
+              if(exportSelect.spreadsheetType == 1 && deviceType == Core.Sensors.ESensorType.Vacuum){
+									formatValue = finalValue.amount.ToString("F");
+							} else {
+									formatValue = ION.Core.Sensors.SensorUtils.ToFormattedString(deviceType, finalValue);
+							}
               if (sessionBreaks.Contains(dataList[i - 2].times[compareIndex].ToString())) {
                 //xls.SetCellValue(rowIndex, i, Convert.ToDecimal(formatValue),5);
                 xls.SetCellValue(rowIndex, i, formatValue,5);
@@ -932,10 +940,10 @@ namespace ION.IOS.ViewController.Logging
       xls.AddFormat(measurementBorder);
 
       xls.MergeCells(1, 2, 1, 4);
-      xls.SetCellValue(1, 2, "Devices Used",2);
-      xls.SetCellValue(2, 2, "Serial Number", 1);
-      xls.SetCellValue(2, 3, "Name", 1);
-      xls.SetCellValue(2, 4, "Certification Date", 1);
+      xls.SetCellValue(1, 2, Util.Strings.Report.DEVICESUSED,2);
+      xls.SetCellValue(2, 2, Util.Strings.Device.SERIAL_NUMBER, 1);
+      xls.SetCellValue(2, 3, Util.Strings.NAME, 1);
+      xls.SetCellValue(2, 4, Util.Strings.Device.CERTDATE, 1);
 
       int deviceCellIndex = 3;
       foreach (var device in dataList) {
@@ -967,40 +975,40 @@ namespace ION.IOS.ViewController.Logging
       if (sessionSpan == 1) {
       	var jobInfo = ion.database.Query<JobRow>("SELECT jobName, poNumber, customerNumber, dispatchNumber FROM JobRow WHERE JID = ?",jobID);
 				xls.MergeCells(2, 6, 2, 7);
-	      xls.SetCellValue(2, 6, "Job Info",1);
-	      xls.SetCellValue(3, 6, "Job Name",1);
+	      xls.SetCellValue(2, 6, Util.Strings.Job.JOBINFO,1);
+	      xls.SetCellValue(3, 6, Util.Strings.Job.JOBNAME,1);
 	      xls.SetCellValue(3, 7, jobInfo[0].jobName,2);
-	      xls.SetCellValue(4, 6, "PO Number", 1);
+	      xls.SetCellValue(4, 6, Util.Strings.Job.PONUMBER, 1);
 	      xls.SetCellValue(4, 7, jobInfo[0].poNumber, 2);
-	      xls.SetCellValue(5, 6, "Customer Number", 1);
+	      xls.SetCellValue(5, 6, Util.Strings.Job.CUSTOMERNUMBER, 1);
 	      xls.SetCellValue(5, 7, jobInfo[0].customerNumber, 2);
-	      xls.SetCellValue(6, 6, "Dispatch Number", 1);
+	      xls.SetCellValue(6, 6, Util.Strings.Job.DISPATCHNUMBER, 1);
 	      xls.SetCellValue(6, 7, jobInfo[0].dispatchNumber, 2);
 				//xls.KeepRowsTogether(1,5,1,false);
 				//xls.AutoPageBreaks();
       } else if (certInfo.Count > 1) {
 				xls.MergeCells(2, 6, 2,7);
-				xls.SetCellValue(2, 6, "Spans multiple jobs",1);
+				xls.SetCellValue(2, 6, Util.Strings.Job.MULTIPLEJOBS,1);
 				//xls.KeepRowsTogether(1,3,1,false);
 				//xls.AutoPageBreaks();
 			}
       
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 3, deviceCellIndex, 4);
-      xls.SetCellValue(deviceCellIndex, 2, "Report Created", 1);
+      xls.SetCellValue(deviceCellIndex, 2, Util.Strings.Report.CREATED, 1);
       xls.SetCellValue(deviceCellIndex, 3, DateTime.Now.ToLocalTime().ToString(), 2);
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 2, deviceCellIndex, 4);
-      xls.SetCellValue(deviceCellIndex, 2, "Report Dates", 1);
+      xls.SetCellValue(deviceCellIndex, 2, Util.Strings.Report.REPORTDATES, 1);
       deviceCellIndex++;
       xls.MergeCells(deviceCellIndex, 2, deviceCellIndex, 4);
       xls.SetCellValue(deviceCellIndex, 2, ChosenDates.subLeft + " - " + ChosenDates.subRight, 2);
       deviceCellIndex+= 2;
       
-      xls.SetCellValue(deviceCellIndex,3,"Serial #",1);
-      xls.SetCellValue(deviceCellIndex,4,"Minimum ",1);
-      xls.SetCellValue(deviceCellIndex,5,"Maximum",1);
-      xls.SetCellValue(deviceCellIndex,6,"Average ",1);
+      xls.SetCellValue(deviceCellIndex,3,Util.Strings.Device.SERIAL_NUMBER,1);
+      xls.SetCellValue(deviceCellIndex,4,Util.Strings.Measure.MINIMUM,1);
+      xls.SetCellValue(deviceCellIndex,5,Util.Strings.Measure.MAXIMUM,1);
+      xls.SetCellValue(deviceCellIndex,6,Util.Strings.Measure.AVERAGE,1);
       deviceCellIndex++;
      	var extraInfoRow = deviceCellIndex;
      
@@ -1047,104 +1055,103 @@ namespace ION.IOS.ViewController.Logging
 					}
 				}
 			}
-			/**********************************************/
-			
-			xls.ActiveSheet = 2;			
-			
-			/**********************************************/
-			deviceCellIndex = 1;
-      TXlsNamedRange Range;
-      string RangeName;
-      RangeName = TXlsNamedRange.GetInternalName(InternalNameRange.Print_Titles);
-      Range = new TXlsNamedRange(RangeName, 2, 2, deviceCellIndex, 1, deviceCellIndex + 2, dataList.Count + 1, 32);
-      xls.SetNamedRange(Range);
-
-      xls.SetCellValue(deviceCellIndex, 1, " ", 1);
-      deviceCellIndex++;
-      xls.SetCellValue(deviceCellIndex, 1, " ", 1);
-      deviceCellIndex++;
-      xls.SetCellValue(deviceCellIndex, 1, "Time",2);
-      deviceCellIndex++;
-			var jobStartIndex = 0;
-      for (int i = deviceCellIndex; i < masterTimes.Count + deviceCellIndex; i++) { 
-        xls.SetCellValue(i, 1, masterTimes[i-deviceCellIndex], 2);
-        if (sessionBreaks.Contains(masterTimes[i-deviceCellIndex])) {
-          xls.SetCellValue(i, 1, masterTimes[i-deviceCellIndex], 3);
-        } else {
-          xls.SetCellValue(i,1, masterTimes[i-deviceCellIndex], 2);
-        }
-        jobStartIndex = i;
-      }
-      deviceCellIndex -= 3;
-      var measStartIndex = deviceCellIndex;
-      
-      for (int i = 2; i < dataList.Count + 2; i++) {
-      	//Console.WriteLine("pdf for device " + dataList[i-2].serialNumber + " si: " + dataList[i-2].sensorIndex);
-        var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
-
-        if (dataList[i - 2].type.Equals("Temperature")) {
-          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
-        } else if (dataList[i - 2].type.Equals("Vacuum")) {
-          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
-        }
-
-        var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));        
-							
-        //if (defaultUnit.Equals("7")) {
-        //  xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(psig/inHg)", 1);
-        //} else if (defaultUnit.Equals("8")){
-        //  xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(kg/cm²/cmHg)", 1);
-        //} else {
-          xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(" + lookup + ")", 1);
-        //}
-        measStartIndex++;
-        xls.SetCellValue(measStartIndex, i, dataList[i - 2].serialNumber,2);
-        measStartIndex++;
-        xls.SetCellValue(measStartIndex, i, dataList[i - 2].name, 2);
-        measStartIndex++;
-
-        var standardUnit = lookup.standardUnit;
-        var deviceType = ION.Core.Sensors.UnitLookup.GetSensorTypeFromCode(Convert.ToInt32(defaultUnit));
-        var rowIndex = measStartIndex;
-        var compareIndex = 0;
-							
-        for (int t = 0; t < masterTimes.Count; t++) {
-          if (compareIndex < dataList[i - 2].times.Count) {
-            if (masterTimes[t].Equals(dataList[i - 2].times[compareIndex].ToString())) {
-              var workingValue = standardUnit.OfScalar(dataList[i - 2].readings[compareIndex]);
-              var finalValue = workingValue.ConvertTo(lookup);
-							var formatValue = ION.Core.Sensors.SensorUtils.ToFormattedString(deviceType, finalValue);
-							//Console.WriteLine("pdf at reading " + formatValue + " at time " + masterTimes[t]);
-              if (sessionBreaks.Contains(dataList[i - 2].times[compareIndex].ToString())) {
-                xls.SetCellValue(rowIndex, i, formatValue, 5);
-              } else {
-                xls.SetCellValue(rowIndex, i, formatValue, 4);
-              }
-              compareIndex++;
-            } else {
-              if (sessionBreaks.Contains(masterTimes[t].ToString())) {
-                xls.SetCellValue(rowIndex, i, " ", 3);
-              } else {
-                xls.SetCellValue(rowIndex, i, " ", 2);
-              }
-            }
-          } else {
-            if (sessionBreaks.Contains(masterTimes[t].ToString())) {
-              xls.SetCellValue(rowIndex, i, " ", 3);
-            } else {
-              xls.SetCellValue(rowIndex, i, " ", 2);
-            }
-          }
-          rowIndex++;
-        }
-        xls.AutofitCol(i, false, 1.1);
-        measStartIndex = deviceCellIndex;
-      }
-      jobStartIndex += 2;
-
-      xls.AutofitCol(1, false, 1.1);
-			/******************************************/
-			
+			if(exportSelect.rawData.On){
+				/**********************************************/				
+				xls.ActiveSheet = 2;				
+				/**********************************************/
+				deviceCellIndex = 1;
+	      TXlsNamedRange Range;
+	      string RangeName;
+	      RangeName = TXlsNamedRange.GetInternalName(InternalNameRange.Print_Titles);
+	      Range = new TXlsNamedRange(RangeName, 2, 2, deviceCellIndex, 1, deviceCellIndex + 2, dataList.Count + 1, 32);
+	      xls.SetNamedRange(Range);
+	
+	      xls.SetCellValue(deviceCellIndex, 1, " ", 1);
+	      deviceCellIndex++;
+	      xls.SetCellValue(deviceCellIndex, 1, " ", 1);
+	      deviceCellIndex++;
+	      xls.SetCellValue(deviceCellIndex, 1, Util.Strings.TIME,2);
+	      deviceCellIndex++;
+				var jobStartIndex = 0;
+	      for (int i = deviceCellIndex; i < masterTimes.Count + deviceCellIndex; i++) { 
+	        xls.SetCellValue(i, 1, masterTimes[i-deviceCellIndex], 2);
+	        if (sessionBreaks.Contains(masterTimes[i-deviceCellIndex])) {
+	          xls.SetCellValue(i, 1, masterTimes[i-deviceCellIndex], 3);
+	        } else {
+	          xls.SetCellValue(i,1, masterTimes[i-deviceCellIndex], 2);
+	        }
+	        jobStartIndex = i;
+	      }
+	      deviceCellIndex -= 3;
+	      var measStartIndex = deviceCellIndex;
+	      
+	      for (int i = 2; i < dataList.Count + 2; i++) {
+	      	//Console.WriteLine("pdf for device " + dataList[i-2].serialNumber + " si: " + dataList[i-2].sensorIndex);
+	        var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
+	
+	        if (dataList[i - 2].type.Equals("Temperature")) {
+	          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+	        } else if (dataList[i - 2].type.Equals("Vacuum")) {
+	          defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
+	        }
+	
+	        var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));        
+								
+	        //if (defaultUnit.Equals("7")) {
+	        //  xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(psig/inHg)", 1);
+	        //} else if (defaultUnit.Equals("8")){
+	        //  xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(kg/cm²/cmHg)", 1);
+	        //} else {
+	          xls.SetCellValue(measStartIndex, i, dataList[i - 2].type + "(" + lookup + ")", 1);
+	        //}
+	        measStartIndex++;
+	        xls.SetCellValue(measStartIndex, i, dataList[i - 2].serialNumber,2);
+	        measStartIndex++;
+	        xls.SetCellValue(measStartIndex, i, dataList[i - 2].name, 2);
+	        measStartIndex++;
+	
+	        var standardUnit = lookup.standardUnit;
+	        var deviceType = ION.Core.Sensors.UnitLookup.GetSensorTypeFromCode(Convert.ToInt32(defaultUnit));
+	        var rowIndex = measStartIndex;
+	        var compareIndex = 0;
+								
+	        for (int t = 0; t < masterTimes.Count; t++) {
+	          if (compareIndex < dataList[i - 2].times.Count) {
+	            if (masterTimes[t].Equals(dataList[i - 2].times[compareIndex].ToString())) {
+	              var workingValue = standardUnit.OfScalar(dataList[i - 2].readings[compareIndex]);
+	              var finalValue = workingValue.ConvertTo(lookup);
+								var formatValue = ION.Core.Sensors.SensorUtils.ToFormattedString(deviceType, finalValue);
+								//Console.WriteLine("pdf at reading " + formatValue + " at time " + masterTimes[t]);
+	              if (sessionBreaks.Contains(dataList[i - 2].times[compareIndex].ToString())) {
+	                xls.SetCellValue(rowIndex, i, formatValue, 5);
+	              } else {
+	                xls.SetCellValue(rowIndex, i, formatValue, 4);
+	              }
+	              compareIndex++;
+	            } else {
+	              if (sessionBreaks.Contains(masterTimes[t].ToString())) {
+	                xls.SetCellValue(rowIndex, i, " ", 3);
+	              } else {
+	                xls.SetCellValue(rowIndex, i, " ", 2);
+	              }
+	            }
+	          } else {
+	            if (sessionBreaks.Contains(masterTimes[t].ToString())) {
+	              xls.SetCellValue(rowIndex, i, " ", 3);
+	            } else {
+	              xls.SetCellValue(rowIndex, i, " ", 2);
+	            }
+	          }
+	          rowIndex++;
+	        }
+	        xls.AutofitCol(i, false, 1.1);
+	        measStartIndex = deviceCellIndex;
+	      }
+	      jobStartIndex += 2;
+	
+	      xls.AutofitCol(1, false, 1.1);
+				/******************************************/
+			}
 			xls.ActiveSheet = 1;
 			
 			/******************************************/
@@ -1158,9 +1165,10 @@ namespace ION.IOS.ViewController.Logging
           pdfExport.BeginExport(Pdf);
 
           pdfExport.ExportSheet();
-					xls.ActiveSheet = 2;
-          pdfExport.ExportSheet(1,pdfExport.TotalPagesInSheet());
-
+          if(exportSelect.rawData.On){
+						xls.ActiveSheet = 2;
+          	pdfExport.ExportSheet(1,pdfExport.TotalPagesInSheet());
+					}
           pdfExport.EndExport();
         }
       }catch (Exception e){

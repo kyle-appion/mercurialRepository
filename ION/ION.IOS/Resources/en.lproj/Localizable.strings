@@ -24,6 +24,9 @@ file.
 "close" = "Close";
 "ok_done" = "OK - Done";
 "return_settings" = "Return to settings";
+"name" = "Name";
+"time" = "Time";
+"required" = "Required";
 /* ALARMS */
 "alarms" = "Alarms";
 "alarms_low" = "Low Alarm";
@@ -96,6 +99,7 @@ file.
 "device_serial" = "Serial";
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
+"device_cert_date" = "Certification Date";
 
 /* DEVICE MANAGER */
 "device_manager" = "Device Manager";
@@ -166,6 +170,12 @@ file.
 /* MEASURE */
 "measure_per_minute" = "/min";
 "measure_pick_unit" = "Pick Unit";
+"measure_minimum" = "Minimum";
+"measure_maximum" = "Maximum";
+"measure_average" = "Average";
+"measure_lowest" = "Lowest Measurement";
+"measure_highest" = "Highest Measurement";
+"measure_avg" = "Average Measurement";
 
 /* NAVIGATION DRAWER */
 "navigation_calculators" = "Calculators";
@@ -206,6 +216,13 @@ file.
 "report_toast_pdf" = "Creating PDF";
 "report_data_logged" = "Data Logged";
 "report_device_info" = "Device Info";
+"report_devices_used" = "Devices Used";
+"report_created" = "Report Created";
+"report_dates" = "Report Dates";
+"report_one_page" = "One Page Summary";
+"report_detailed" = "Detailed Summary";
+"report_raw_data" = "Include Raw Data";
+"report_export" = "Export";
 /* SENSOR */
 
 /* SENSOR TYPE */
