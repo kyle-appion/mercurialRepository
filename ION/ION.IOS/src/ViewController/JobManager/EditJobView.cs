@@ -58,7 +58,7 @@ namespace ION.IOS.ViewController.JobManager  {
       }
 
       jobName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = "Job Name(Required)",
+        Placeholder = Util.Strings.Job.JOBNAME+"("+ Util.Strings.REQUIRED+")",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,
@@ -74,7 +74,7 @@ namespace ION.IOS.ViewController.JobManager  {
       jobName.Text = holderName;
 
       customerNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.21 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = "Customer Number",
+        Placeholder = Util.Strings.Job.CUSTOMERNUMBER,
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,
@@ -90,7 +90,7 @@ namespace ION.IOS.ViewController.JobManager  {
       customerNumber.Text = holderCustomer;
 
       dispatchNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.35 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = "Dispatch Number",
+        Placeholder = Util.Strings.Job.DISPATCHNUMBER,
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,

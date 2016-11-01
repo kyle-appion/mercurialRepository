@@ -85,7 +85,7 @@ namespace ION.IOS.ViewController.Logging {
 				};
 				
 				singleSummary = new UILabel(new CGRect(.2 * pdfView.Bounds.Width, .1 * pdfView.Bounds.Height, .8 * pdfView.Bounds.Width, .15 * pdfView.Bounds.Height));
-				singleSummary.Text = "1-Page Summary";
+				singleSummary.Text = Util.Strings.Report.ONEPAGE;
 				singleSummary.AdjustsFontSizeToFitWidth = true;
 				singleSummary.TextAlignment = UITextAlignment.Left;
 				
@@ -100,7 +100,7 @@ namespace ION.IOS.ViewController.Logging {
 				};
 				
 				detailedSummary = new UILabel(new CGRect(.2 * pdfView.Bounds.Width, .3 * pdfView.Bounds.Height, .8 * pdfView.Bounds.Width, .15 * pdfView.Bounds.Height));
-				detailedSummary.Text = "Detailed Summary";
+				detailedSummary.Text = Util.Strings.Report.DETAILED;
 				detailedSummary.AdjustsFontSizeToFitWidth = true;
 				detailedSummary.TextAlignment = UITextAlignment.Left;
 				
@@ -108,7 +108,7 @@ namespace ION.IOS.ViewController.Logging {
 				rawData.On = defaultData;
 				
 				rawLabel = new UILabel(new CGRect(.4 * pdfView.Bounds.Width, .55 * pdfView.Bounds.Height, .6 * pdfView.Bounds.Width, .15 * pdfView.Bounds.Height));
-				rawLabel.Text = "Include Raw Data";
+				rawLabel.Text = Util.Strings.Report.RAWDATA;
 				rawLabel.AdjustsFontSizeToFitWidth = true;
 				rawLabel.TextAlignment = UITextAlignment.Left;
 				
@@ -149,12 +149,12 @@ namespace ION.IOS.ViewController.Logging {
 				csvFormat.TextAlignment = UITextAlignment.Left;
 				
 				spreadsheetExport = new UIButton(new CGRect(.5 * spreadsheetView.Bounds.Width, .8 * spreadsheetView.Bounds.Height, .5 * spreadsheetView.Bounds.Width, .2 * spreadsheetView.Bounds.Height));
-				spreadsheetExport.SetTitle("Export", UIControlState.Normal);
+				spreadsheetExport.SetTitle(Util.Strings.Report.EXPORT, UIControlState.Normal);
 				spreadsheetExport.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				spreadsheetExport.Layer.BorderWidth = 1f;
 				
 				spreadsheetCancel = new UIButton(new CGRect(0, .8 * spreadsheetView.Bounds.Height, .5 * spreadsheetView.Bounds.Width, .2 * spreadsheetView.Bounds.Height));
-				spreadsheetCancel.SetTitle("Cancel", UIControlState.Normal);
+				spreadsheetCancel.SetTitle(Util.Strings.CANCEL, UIControlState.Normal);
 				spreadsheetCancel.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				spreadsheetCancel.TouchUpInside += (sender, e) => {
 					closeExport();
@@ -166,8 +166,8 @@ namespace ION.IOS.ViewController.Logging {
 				popupView.AddSubview(pdfView);
 				pdfView.AddSubview(pdfSingle);
 				pdfView.AddSubview(singleSummary);
-				pdfView.AddSubview(pdfDetailed);
-				pdfView.AddSubview(detailedSummary);
+				//pdfView.AddSubview(pdfDetailed);
+				//pdfView.AddSubview(detailedSummary);
 				pdfView.AddSubview(rawData);
 				pdfView.AddSubview(rawLabel);
 				pdfView.AddSubview(pdfExport);
