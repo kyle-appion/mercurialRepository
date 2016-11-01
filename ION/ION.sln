@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.IOS", "ION.IOS\ION.IOS.
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ION.CoreExtensions", "ION.CoreExtensions\ION.CoreExtensions.shproj", "{CCD6F504-0E93-45CB-8803-52050A76A58D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ION.DevAssist", "ION.DevAssist\ION.DevAssist.csproj", "{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ION.CoreExtensions\ION.CoreExtensions.projitems*{ccd6f504-0e93-45cb-8803-52050a76a58d}*SharedItemsImports = 13
@@ -89,6 +91,18 @@ Global
 		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhone.Build.0 = Release|iPhone
 		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{BA1758E1-2E02-40C0-BE41-5AFB1F0271C5}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|Any CPU.ActiveCfg = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|Any CPU.Build.0 = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|iPhone.Build.0 = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Debug|iPhoneSimulator.Build.0 = Debug|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|Any CPU.ActiveCfg = Release|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|Any CPU.Build.0 = Release|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|iPhone.ActiveCfg = Release|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|iPhone.Build.0 = Release|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|iPhoneSimulator.ActiveCfg = Release|iPhone
+		{3DC751A7-DE43-442C-A82A-0F22C2DA5BD5}.Release|iPhoneSimulator.Build.0 = Release|iPhone
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
