@@ -6,10 +6,11 @@
   using Android.Content;
   using Android.OS;
   using Android.Views;
-  using Android.Widget;
 
   using ION.Core.Content;
   using ION.Core.Devices;
+	using ION.Core.Devices.Protocols;
+	using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
@@ -149,13 +150,13 @@
 
 		public override void OnResume() {
 			base.OnResume();
-			this.analyzerView.analyzer = analyzer;
-			this.analyzer.onAnalyzerEvent += OnAnalyzerEvent;
+			analyzerView.analyzer = analyzer;
+			analyzer.onAnalyzerEvent += OnAnalyzerEvent;
 		}
 
 		public override void OnPause() {
 			base.OnPause();
-			this.analyzer.onAnalyzerEvent -= OnAnalyzerEvent;
+			analyzer.onAnalyzerEvent -= OnAnalyzerEvent;
 		}
 
     /// <summary>
@@ -222,6 +223,27 @@
         new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
+			if (dgs.device.isConnected) {
+				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
+					var device = dgs.device;
+
+					if (device.sensorCount > 1) {
+						var d = new ListDialogBuilder(Activity);
+						d.SetTitle(Resource.String.select_a_sensor);
+
+						for (int i = 0; i < device.sensorCount; i++) {
+							var sensor = device[i];
+							d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+								ShowChangeUnitDialog(sensor);
+							});
+						}
+
+						d.Show();
+					} else {
+						ShowChangeUnitDialog(device.sensors[0]);
+					}
+				});
+			}
 
       ldb.AddItem(Resource.String.workbench_add_viewer_sub, () => {
         ShowAddSubviewDialog(manifold);
@@ -245,6 +267,27 @@
 
       ldb.Show();
     }
+
+		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
+			var ldb = new ListDialogBuilder(Activity);
+			ldb.SetTitle(Resource.String.pick_unit);
+
+			foreach (var unit in sensor.supportedUnits) {
+				if (!unit.Equals(sensor.unit)) {
+					ldb.AddItem(unit.ToString(), () => {
+						DoThings(sensor, unit);
+					});
+				}
+			}
+
+			ldb.Show();
+		}
+
+		private void DoThings(GaugeDeviceSensor sensor, Unit unit) {
+			var device = sensor.device;
+			var p = device.protocol as IGaugeProtocol;
+			device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
+		}
 
     /// <summary>
     /// Shows the add subview dialog.

@@ -36,6 +36,9 @@
 			base.OnActivityCreated(savedInstanceState);
 
 			adapter = new SessionAdapter(ion);
+			adapter.onSessionRowChecked += (sender, e) => {
+				onSessionChecked(e.row, e.isChecked);
+			};
 			adapter.onItemClicked += (adapter, position) => {
 				var record = (SessionRecord)adapter.GetRecordAt(position);
 				record.isChecked = !record.isChecked;

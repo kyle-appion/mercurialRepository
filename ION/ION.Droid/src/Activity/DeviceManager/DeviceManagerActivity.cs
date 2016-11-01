@@ -136,9 +136,11 @@
 			var connectionHelper = ion.deviceManager.connectionHelper;
 
 			if (bm.Adapter.IsEnabled) {
+/*
 				if (!ion.deviceManager.connectionHelper.isScanning) {
 					ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
 				}
+*/
 			} else {
 				ShowBluetoothOffDialog();
 			}

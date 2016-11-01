@@ -240,9 +240,6 @@
     <EmbeddedResource Include="src\Database\UpgradeDatabase.sql">
       <LogicalName>UpgradeDatabase.sql</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\BUTANE.fluid">
-      <LogicalName>BUTANE.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\CO2.fluid">
       <LogicalName>CO2.fluid</LogicalName>
     </EmbeddedResource>
@@ -515,6 +512,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R404A.fluid">
       <LogicalName>R404A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R290.fluid">
+      <LogicalName>R290.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R600.fluid">
+      <LogicalName>R600.fluid</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -631,6 +631,10 @@
     <AndroidResource Include="Resources\xml\whats_new_history.xml" />
     <AndroidResource Include="Resources\drawable\ic_record.png" />
     <AndroidResource Include="Resources\drawable\ic_stop.png" />
+    <AndroidResource Include="Resources\drawable\.DS_Store" />
+    <AndroidResource Include="Resources\drawable\Thumbs.db" />
+    <AndroidResource Include="Resources\drawable\ic_job.png" />
+    <AndroidResource Include="Resources\drawable\ic_nav_reporting.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

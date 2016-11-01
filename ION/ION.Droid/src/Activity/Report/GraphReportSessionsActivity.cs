@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Activity.Report {
+﻿using System.ComponentModel;
+namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
@@ -26,7 +27,7 @@
 	using ION.Droid.Util;
 	using ION.Droid.Views;
 
-	[Activity(Label="@string/report_select_export_data", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/report_select_export_data", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
 	public class GraphReportSessionsActivity : IONActivity {
 		/// <summary>
 		/// The extra that will retrieve an integer array from the starting Intent. This list is what is used to populate the
@@ -112,6 +113,7 @@
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetHomeButtonEnabled(true);
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_reporting, Resource.Color.gray));
 
 			if (!Intent.HasExtra(EXTRA_SESSIONS)) {
 				Error(GetString(Resource.String.report_error_graph_no_sessions_provided));
@@ -486,6 +488,11 @@
 
 			await task;
 
+			var data = new Intent();
+			data.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_SPREADSHEETS, true);
+			SetResult(Result.Ok, data);
+			Finish();
+
 			dialog.Dismiss();
 		}
 
@@ -518,6 +525,11 @@
 			});
 
 			await task;
+
+			var data = new Intent();
+			data.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
+			SetResult(Result.Ok, data);
+			Finish();
 
 			dialog.Dismiss();
 		}

@@ -31,11 +31,14 @@ namespace ION.Droid.Widgets.Adapters.Job {
     private TextView text;
     private CheckBox check;
 
-    public SessionViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+		public SessionViewHolder(ViewGroup parent, int viewResource, Action<SessionRecord> onChecked) : base(parent, viewResource) {
       text = view.FindViewById<TextView>(Resource.Id.name);
       check = view.FindViewById<CheckBox>(Resource.Id.check);
 			check.CheckedChange += (sender, e) => {
 				t.isChecked = check.Checked;
+				if (onChecked != null) {
+					onChecked(this.t);
+				}
 			};
     }
 
@@ -43,7 +46,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
       var ellapsed = t.row.sessionEnd - t.row.sessionStart;
 			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
 			var dateString = t.row.sessionStart.ToLocalTime().ToShortDateString() + " " + t.row.sessionStart.ToLocalTime().ToShortTimeString();
-			dateString = dateString + " " + ellapsed.TotalMinutes.ToString("0.0") + " # Records: " + g.deviceSensorLogs.Count;
+			dateString += " " + ToFriendlyString(ellapsed);
 
 			ION.Core.Util.Log.D(this, "frn_jid: " + t.row.frn_JID + " job.id: " + t.job?._id);
 			if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
@@ -55,6 +58,19 @@ namespace ION.Droid.Widgets.Adapters.Job {
 			text.Text = dateString;
 			check.Checked = t.isChecked;
     }
+
+		private string ToFriendlyString(TimeSpan timeSpan) {
+			var c = view.Context;
+			if (timeSpan.TotalHours > 24) {
+				return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
+			} else if (timeSpan.TotalMinutes > 60) {
+				return timeSpan.TotalHours.ToString("#.#") + " " + c.GetString(Resource.String.time_hours_abrv);
+			} else if (timeSpan.TotalSeconds > 60) {
+				return timeSpan.TotalMinutes.ToString("#.#") + " " + c.GetString(Resource.String.time_minutes_abrv);
+			} else {
+				return timeSpan.TotalSeconds.ToString("#.#") + " " + c.GetString(Resource.String.time_seconds_abrv);
+			}
+		}
   }
 }
 

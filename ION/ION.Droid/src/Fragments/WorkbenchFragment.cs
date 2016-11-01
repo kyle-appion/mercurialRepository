@@ -1,22 +1,18 @@
 ﻿namespace ION.Droid.Fragments {
 
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
   using Android.OS;
-  using Android.Runtime;
   using Android.Support.V7.Widget;
   using Android.Support.V7.Widget.Helper;
   using Android.Views;
-  using Android.Widget;
 
   using ION.Core.Content;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
+	using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
@@ -26,9 +22,7 @@
   using Activity.DeviceManager;
   using Dialog;
   using Sensors;
-  using Views;
   using Widgets.Adapters.Workbench;
-  using Widgets.RecyclerViews;
 
   public class WorkbenchFragment : IONFragment {
 
@@ -266,23 +260,6 @@
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
 			if (dgs != null) {
-#if DEBUG
-				ldb.AddItem("Remote Change Unit", () => {
-					var device = dgs.device;
-					var d = new ListDialogBuilder(Activity);
-					d.SetTitle("Select a Sensor");
-
-					for (int i = 0; i < device.sensorCount; i++) {
-						var sensor = device[i];
-						d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
-							ShowChangeUnitDialog(sensor);
-						});
-					}
-
-					d.Show();
-				});
-#endif
-
 				if (!dgs.device.isConnected) {
 					ldb.AddItem(Resource.String.reconnect, () => {
 						dgs.device.connection.ConnectAsync();
@@ -294,6 +271,27 @@
         new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
+			if (dgs.device.isConnected) {
+				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
+					var device = dgs.device;
+
+					if (device.sensorCount > 1) {
+						var d = new ListDialogBuilder(Activity);
+						d.SetTitle(Resource.String.select_a_sensor);
+
+						for (int i = 0; i < device.sensorCount; i++) {
+							var sensor = device[i];
+							d.AddItem(i + ": " + sensor.type.GetTypeString(), () => {
+								ShowChangeUnitDialog(sensor);
+							});
+						}
+
+						d.Show();
+					} else {
+						ShowChangeUnitDialog(device.sensors[0]);
+					}
+				});
+			}
 
       ldb.AddItem(Resource.String.workbench_add_viewer_sub, () => {
         ShowAddSubviewDialog(manifold);
@@ -320,16 +318,23 @@
 
 		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
 			var ldb = new ListDialogBuilder(Activity);
+			ldb.SetTitle(Resource.String.pick_unit);
 
 			foreach (var unit in sensor.supportedUnits) {
-				ldb.AddItem(unit.ToString(), () => {
-					var device = sensor.device;
-					var p = device.protocol as IGaugeProtocol;
-					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
-				});
+				if (!unit.Equals(sensor.unit)) {
+					ldb.AddItem(unit.ToString(), () => {
+						DoThings(sensor, unit);
+					});
+				}
 			}
 
 			ldb.Show();
+		}
+
+		private void DoThings(GaugeDeviceSensor sensor, Unit unit) {
+			var device = sensor.device;
+			var p = device.protocol as IGaugeProtocol;
+			device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 		}
 
     /// <summary>
@@ -343,6 +348,7 @@
 
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
+			ldb.SetTitle(Resource.String.pick_unit);
 
 			if (manifold.secondarySensor != null) {
 				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {

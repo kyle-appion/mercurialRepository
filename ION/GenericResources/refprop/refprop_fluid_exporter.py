@@ -64,6 +64,8 @@ EPSILON = 0.005 # the allowance of float precision error
 OUT_PATH = './output/' # the out directory for the data files
 OUT_EXT = '.fluid' # the file extension for the converted files
 
+ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600')])
+
 def run():
     '''
     Initializes Refprop
@@ -107,6 +109,8 @@ def convert_fluid(fluid_name, out_path, step=0.25):
     try:
         # Prepare the fluid in Refprop
         fluid = r.setup(u'def', fluid_name)
+        if fluid_name in ALIASES:
+            fluid_name = ALIASES[fluid_name]
 
         # remove any unnecessary file extensions
         #fluid_name = r.name()['hname']

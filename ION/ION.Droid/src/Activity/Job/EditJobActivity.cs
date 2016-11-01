@@ -20,7 +20,7 @@
   using ION.Core.Util;
   using ION.Core.Database;
 
-  [Activity(Label = "EditJobActivityTheme", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label = "@string/job_edit", Icon="@drawable/ic_job", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
   public class EditJobActivity : IONActivity, ViewPager.IOnPageChangeListener {
 
     public const string EXTRA_JOB_ID = "ION.Droid.extra.job_id";
@@ -40,6 +40,7 @@
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetHomeButtonEnabled(true);
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_job, Resource.Color.gray));
 
       pager = FindViewById<ViewPager>(Resource.Id.content);
 

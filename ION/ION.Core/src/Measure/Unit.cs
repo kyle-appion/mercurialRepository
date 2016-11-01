@@ -413,7 +413,8 @@
       if (this == other) {
         return true;
       } else if (other is BaseUnit) {
-        return __symbol.Equals(((BaseUnit)other).__symbol);
+				var bu = other as BaseUnit;
+				return quantity == bu.quantity && symbol.Equals(bu.symbol);
       } else {
         return false;
       }
@@ -489,15 +490,14 @@
     }
 
     public override bool Equals(object other) {
-      if (this == other) {
-        return true;
-      } else if (other is AlternateUnit) {
-        //return ((AlternateUnit)other).symbol.Equals(symbol);
-        var bu = other as AlternateUnit;
-        return quantity == bu.quantity && symbol.Equals(bu.symbol);
-      } else {
-        return false;
-      }
+			if (this == other) {
+				return true;
+			} else if (other is AlternateUnit) {
+				var bu = other as AlternateUnit;
+				return quantity == bu.quantity && symbol.Equals(bu.symbol);
+			} else {
+				return false;
+			}
     }
   }
 
