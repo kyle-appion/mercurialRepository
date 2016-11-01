@@ -22,7 +22,7 @@ using ION.Core.Util;
 using ION.Core.App;
 using ION.IOS.ViewController.FileManager;
 
-namespace ION.IOS.ViewController.Logging {
+namespace ION.IOS.ViewController.Logging {   
   public static class ChosenDates {
     public static DateTime subLeft;
     public static DateTime subRight;
@@ -40,7 +40,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseReporting reportingSection;
     public ChooseData dataSection;
     public ChooseSaved savedReportsSection;
-    public ChooseGraphing graphingSection;
+    public ChooseGraphing graphingSection;   
     private IION ion;
     public UIActivityIndicatorView activityLoadingGraphs;
     public ObservableCollection<int> selectedSessions;
@@ -181,6 +181,9 @@ namespace ION.IOS.ViewController.Logging {
           foreach(var file in Directory.GetFiles(dir,"*.xlsx")){
             spreadsheets.Add(file);
           }
+          foreach(var file in Directory.GetFiles(dir,"*.csv")){
+            spreadsheets.Add(file);
+          }
           foreach(var file in Directory.GetFiles(dir,"*.pdf")){
             pdfs.Add(file);
           }
@@ -317,7 +320,7 @@ namespace ION.IOS.ViewController.Logging {
           var df = ion.deviceManager.deviceFactory;
           var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.serialNumber)) as GaugeDeviceDefinition;
           activeDevice.type = tempD.sensorDefinitions[measurementCount[0].sensorIndex].sensorType.ToString();
-
+					
           foreach(var meas in measurementCount){
             activeDevice.times.Add(meas.recordedDate.ToLocalTime());
             if (!holderList.Contains(meas.recordedDate.ToLocalTime().ToString())) {
@@ -326,6 +329,7 @@ namespace ION.IOS.ViewController.Logging {
             var measurement = Convert.ToDouble(meas.measurement);
             activeDevice.readings.Add(measurement);
           }
+
           tempResults.Add(activeDevice);
           //Console.WriteLine("Added package for serial " + activeDevice.serialNumber);
         }
@@ -428,6 +432,7 @@ namespace ION.IOS.ViewController.Logging {
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.
+      Console.WriteLine("MEMORY HOLY CRAP ITS GONE!");
     }
   }
 }

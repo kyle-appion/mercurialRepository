@@ -39,21 +39,21 @@ namespace ION.IOS.ViewController.JobManager {
 
       var detailString = "";
       foreach (var job in jobQuery) {
-        detailString += "Job Name: " + job.jobName;
+        detailString += " Job Name: " + job.jobName;
 
-        detailString += "\nCustomer #: ";
+        detailString += "\n Customer #: ";
         if (job.customerNumber != null) {
           detailString += job.customerNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\nDispatch #: ";
+        detailString += "\n Dispatch #: ";
         if (job.dispatchNumber != null) {
           detailString += job.dispatchNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\nPurchase Order #: ";
+        detailString += "\n Purchase Order #: ";
         if (job.poNumber != null) {
           detailString += job.poNumber;
         } else {

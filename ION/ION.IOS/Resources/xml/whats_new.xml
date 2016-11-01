@@ -1,12 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.8.3">
-		<new>Added job and session info to spreadsheets</new>
-		<new>Added Screenshot functionality to analyzer</new>
-		<new>Added Workbench device swapping by long pressing device</new>
-		<new>Added default unit change option to graphing setting view</new>
-		<new>Added warning image for superheat/subcool calculations</new>		
-		<update>Updated analyzer subviews responsiveness</update>
-		<update>Updated wording and information for reporting</update>
+	<display version="1.8.4">
+		<new>Added default "Unassigned" job categorizing for improved session tracking</new>
+		<update>Updated PDF reporting to include more information on a cover page</update>
+		<update>Updated session list to be more descriptive</update>
+		<fixed>Fixed issue with some fluid ranges for P/T Chart</fixed>
+		<fixed>Fixed time display difference between job manager and reporting</fixed>
   </display>
 </whatsnew>

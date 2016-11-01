@@ -46,6 +46,9 @@ namespace ION.IOS.ViewController.Logging {
       moreInfo.TouchUpInside += (sender, e) => {
         moreInfoPopup(selectedSessions, jobTable, vc);
       };
+      if(JID == 0){
+				moreInfo.Hidden = true;  
+			}
 
       jobSelect = new UITapGestureRecognizer(() => {
         var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID = " + JID);

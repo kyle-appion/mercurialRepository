@@ -1814,12 +1814,26 @@
                     <view key="view" contentMode="scaleToFill" id="ZPS-VV-gT7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="8yN-YV-3Qu">
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="8yN-YV-3Qu" secondAttribute="trailing" constant="-6" id="f7R-Rs-hZt"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="8yN-YV-3Qu" secondAttribute="leading" constant="6" id="mUM-Ez-uJc"/>
+                            <constraint firstItem="8GU-uR-vJA" firstAttribute="top" secondItem="8yN-YV-3Qu" secondAttribute="bottom" constant="25" id="oT5-yS-zwe"/>
+                            <constraint firstItem="8yN-YV-3Qu" firstAttribute="top" secondItem="1us-Wh-77M" secondAttribute="bottom" constant="13" id="oZD-KS-hn4"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="jobTable" destination="8yN-YV-3Qu" id="X3q-lf-JTt"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KyA-Gr-3uw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2407" y="3052"/>
+            <point key="canvasLocation" x="2405.5999999999999" y="3051.7241379310349"/>
         </scene>
         <!--Job Edit View Controller-->
         <scene sceneID="TfW-bc-VUx">
@@ -1833,20 +1847,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WwB-Hj-rDf">
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oPf-vj-Ea7">
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </scrollView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0Cx-fe-7Fk">
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="xWd-j4-AMd"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="WwB-Hj-rDf" firstAttribute="top" secondItem="Tcb-eO-ueJ" secondAttribute="bottom" constant="3" id="9ML-Fx-fT7"/>
-                            <constraint firstItem="WwB-Hj-rDf" firstAttribute="leading" secondItem="Prb-Tf-FUi" secondAttribute="leading" constant="1" id="G2x-Dq-TGe"/>
-                            <constraint firstAttribute="trailing" secondItem="WwB-Hj-rDf" secondAttribute="trailing" constant="1" id="vop-n5-1LQ"/>
-                            <constraint firstItem="P77-mm-1g5" firstAttribute="top" secondItem="WwB-Hj-rDf" secondAttribute="bottom" constant="20" id="wvB-eE-2zU"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="0Cx-fe-7Fk" secondAttribute="leading" constant="16" id="7bj-Gt-pWW"/>
+                            <constraint firstItem="P77-mm-1g5" firstAttribute="top" secondItem="oPf-vj-Ea7" secondAttribute="bottom" constant="20" id="7p3-R0-QSy"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="0Cx-fe-7Fk" secondAttribute="trailing" constant="-16" id="E6b-gj-2Iy"/>
+                            <constraint firstItem="oPf-vj-Ea7" firstAttribute="top" secondItem="Tcb-eO-ueJ" secondAttribute="bottom" constant="1" id="Vzn-TG-R6C"/>
+                            <constraint firstItem="oPf-vj-Ea7" firstAttribute="leading" secondItem="Prb-Tf-FUi" secondAttribute="leadingMargin" constant="-16" id="XLh-N0-y31"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="oPf-vj-Ea7" secondAttribute="trailing" constant="-16" id="i7G-zk-KcW"/>
+                            <constraint firstItem="P77-mm-1g5" firstAttribute="top" secondItem="0Cx-fe-7Fk" secondAttribute="bottom" constant="20" id="k5f-i5-8B1"/>
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="jobViewHolder" destination="WwB-Hj-rDf" id="oGq-ne-9Zn"/>
+                        <outlet property="holderView" destination="0Cx-fe-7Fk" id="jdk-FG-0SN"/>
+                        <outlet property="infoScroller" destination="oPf-vj-Ea7" id="jhD-ay-2ny"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ter-Zw-5jz" userLabel="First Responder" sceneMemberID="firstResponder"/>

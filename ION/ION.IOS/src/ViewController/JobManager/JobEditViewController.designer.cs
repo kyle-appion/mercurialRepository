@@ -1,4 +1,4 @@
-﻿// WARNING
+// WARNING
 //
 // This file has been generated automatically by Xamarin Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
@@ -13,13 +13,21 @@ namespace ION.IOS.ViewController.JobManager
 	partial class JobEditViewController
 	{
 		[Outlet]
-		UIKit.UIView jobViewHolder { get; set; }
+		UIKit.UIView holderView { get; set; }
+
+		[Outlet]
+		UIKit.UIScrollView infoScroller { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (jobViewHolder != null) {
-				jobViewHolder.Dispose ();
-				jobViewHolder = null;
+			if (holderView != null) {
+				holderView.Dispose ();
+				holderView = null;
+			}
+
+			if (infoScroller != null) {
+				infoScroller.Dispose ();
+				infoScroller = null;
 			}
 		}
 	}

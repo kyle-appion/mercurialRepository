@@ -277,6 +277,11 @@ namespace ION.IOS.ViewController.Logging
           endingDates.Add (time.Key);
         }
       }
+      if(endingDates.Count == 0){
+				foreach(var time in ChosenDates.allTimes){
+					endingDates.Add(time.Key);
+				}
+			}
       endingDates.OrderBy(x => x);
       modalPicker.PickerView.Model = new CustomPickerModel(endingDates,lView);
 
