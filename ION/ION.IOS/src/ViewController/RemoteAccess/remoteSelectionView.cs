@@ -21,10 +21,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UILabel offlineLabel;
 		public UITableView onlineTable;
 		public UITableView offlineTable;
+		public UIActivityIndicatorView loadingUsers;
+		public UIRefreshControl reloadOnline;
+		public UIRefreshControl reloadOffline;
 		public List<accessData> onlineUsers;
 		public List<accessData> offlineUsers;
 		public ObservableCollection<int> selectedUser;
-		public UIActivityIndicatorView loadingUsers;
 		public IION ion;
 		public WebPayload webServices;
 
@@ -53,7 +55,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
       onlineTable.Layer.CornerRadius = 5f;
       onlineTable.Layer.BorderWidth = 1f;
       onlineTable.RegisterClassForCellReuse(typeof(RemoteAccessTableCell),"remoteAccessCell");
-
+ 
+      reloadOnline = new UIRefreshControl();
+      reloadOnline.ValueChanged += (sender, e) => {
+        GetAccessList();
+      };
+      onlineTable.InsertSubview(reloadOnline,0);  
+      onlineTable.SendSubviewToBack(reloadOnline);
+     
       offlineLabel = new UILabel(new CGRect(.05 * parentView.Bounds.Width, .43 * selectionView.Bounds.Height, .9 * parentView.Bounds.Width, .08 * selectionView.Bounds.Height));
       offlineLabel.Text = "Offline Users";
       offlineLabel.TextAlignment = UITextAlignment.Center;
@@ -64,6 +73,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
       offlineTable.Layer.CornerRadius = 5f;
       offlineTable.Layer.BorderWidth = 1f;
       offlineTable.RegisterClassForCellReuse(typeof(RemoteAccessTableCell),"remoteAccessCell");
+
+      reloadOffline = new UIRefreshControl();
+      reloadOffline.ValueChanged += (sender, e) => {
+        GetAccessList();
+      };
+
+      offlineTable.InsertSubview(reloadOffline,0);  
+      offlineTable.SendSubviewToBack(reloadOffline);
   
 			remoteMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .87 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
 			remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
@@ -77,7 +94,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpOutside += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-				Console.WriteLine("clicked to start remote");
+				Console.WriteLine("clicked to start remote");   
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 
@@ -157,6 +174,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			offlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();
+      reloadOnline.EndRefreshing();
+      reloadOffline.EndRefreshing();
 		}
 		
     public void checkForSelected(object sender, EventArgs e){

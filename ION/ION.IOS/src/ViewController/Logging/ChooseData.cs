@@ -52,14 +52,15 @@ namespace ION.IOS.ViewController.Logging {
 
       selectedSessions = selected;
       selectedSessions.CollectionChanged += checkForSelected;
-      cellHeight = .07f * mainView.Bounds.Height;
+      //cellHeight = .07f * mainView.Bounds.Height;
+      cellHeight = .1f * mainView.Bounds.Height;
 
       step2 = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .09 * mainView.Bounds.Height));
       step2.BackgroundColor = UIColor.FromRGB(95,212,48);
       step2.ClipsToBounds = true;
       step2.Layer.BorderWidth = 1f;
       step2.Layer.CornerRadius = 5;
-      step2.Text = "Back To Session List"; 
+      step2.Text = Util.Strings.Report.RETURNSESSIONS; 
       step2.TextColor = UIColor.Black;
       step2.TextAlignment = UITextAlignment.Center;
       step2.AdjustsFontSizeToFitWidth = true;
@@ -111,7 +112,7 @@ namespace ION.IOS.ViewController.Logging {
 
       sessionHeader = new UILabel(new CGRect(0,0,DataType.Bounds.Width, .061 * mainView.Bounds.Height));
       sessionHeader.Layer.CornerRadius = 5;
-      sessionHeader.Text = "Session Selection";
+      sessionHeader.Text = Util.Strings.Report.SESSIONSELECTION;
       sessionHeader.TextAlignment = UITextAlignment.Center;
       sessionHeader.Font = UIFont.BoldSystemFontOfSize(20);
       sessionHeader.BackgroundColor = UIColor.FromRGB(95,212,48);
@@ -129,11 +130,12 @@ namespace ION.IOS.ViewController.Logging {
       bottomBorder.Layer.ShouldRasterize = true;
       bottomBorder.Layer.MasksToBounds = true;
 
-      showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
+      //showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, cellHeight));
+      showGraphButton = new UIButton(new CGRect(.25 * mainView.Bounds.Width,.89 * mainView.Bounds.Height,.5 * mainView.Bounds.Width, .7 * cellHeight));
       showGraphButton.Layer.BorderColor = UIColor.Black.CGColor;
       showGraphButton.Layer.BorderWidth = 2f;
       showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-      showGraphButton.SetTitle("Graph Selection", UIControlState.Normal);
+      showGraphButton.SetTitle(Util.Strings.Report.GRAPHSELECTION, UIControlState.Normal);
       showGraphButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       showGraphButton.Enabled = false;
       showGraphButton.Alpha = .6f;
@@ -144,7 +146,7 @@ namespace ION.IOS.ViewController.Logging {
       showGraphButton.TouchDown += (sender, e) => { showGraphButton.BackgroundColor = UIColor.Blue;};
       showGraphButton.TouchUpOutside += (sender, e) => { showGraphButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
-      sessionTable = new UITableView(new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 9 * cellHeight));
+      sessionTable = new UITableView(new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight));
       sessionTable.RegisterClassForCellReuse(typeof(SessionCell),"sessionCell");
       sessionTable.BackgroundColor = UIColor.Clear;
       sessionTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -160,7 +162,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionTable.InsertSubview(refreshSessions,0);
       sessionTable.SendSubviewToBack(refreshSessions);
 
-      jobTable = new UITableView(new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 9 * cellHeight));
+      jobTable = new UITableView(new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight));
       jobTable.RegisterClassForCellReuse(typeof(JobCell),"jobCell");
       jobTable.BackgroundColor = UIColor.Clear;
       jobTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -267,7 +269,7 @@ namespace ION.IOS.ViewController.Logging {
       }
       allSessions = queriedSessions;
 
-      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight);
+      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       sessionTable.Source = new LoggingSessionSource(allSessions,cellHeight, selectedSessions);
       sessionTable.ReloadData();
       sessionTable.LayoutIfNeeded();
@@ -298,7 +300,7 @@ namespace ION.IOS.ViewController.Logging {
       }
       allSessions = queriedSessions;
 
-      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight);
+      sessionTable.Frame = new CGRect(0, 2 * sessionButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       sessionTable.Source = new LoggingSessionSource(allSessions,cellHeight, selectedSessions);
       sessionTable.ReloadData();
       sessionTable.LayoutIfNeeded();
@@ -351,6 +353,7 @@ namespace ION.IOS.ViewController.Logging {
       activityLoadingTables.StartAnimating();
 
       var result = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID, jobName FROM JobRow ORDER BY JID");
+      var unassigned = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID is null OR frn_JID = 0");
 
       List<JobData> queriedJobs = new List<JobData>();
       for (int i = 0; i < result.Count; i++) {
@@ -360,11 +363,16 @@ namespace ION.IOS.ViewController.Logging {
           queriedJobs[i].jobSessions.Add(new SessionData(sess.SID, sess.sessionStart, sess.sessionEnd));
         }
       }
+      queriedJobs.Add(new JobData(0,Util.Strings.Report.UNASSIGNED,jobTable, cellHeight, selectedSessions, parentVC));
+      foreach(var unsesh in unassigned){
+      	queriedJobs[queriedJobs.Count - 1].jobSessions.Add(new SessionData(unsesh.SID, unsesh.sessionStart, unsesh.sessionEnd));
+      }
+      
       allJobs = queriedJobs;
-      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight);
+      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       jobTable.Source = new LoggingJobSource(allJobs, cellHeight, selectedSessions);
       jobTable.ReloadData();
-      jobTable.LayoutIfNeeded();
+      //jobTable.LayoutIfNeeded();
 
       if (result.Count.Equals(0)) {
         noJobLabel.Hidden = false;
@@ -383,6 +391,7 @@ namespace ION.IOS.ViewController.Logging {
     /// </summary>
     public void ReloadAllJobs (){
       var result = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID, jobName FROM JobRow ORDER BY JID");
+      var unassigned = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID is null OR frn_JID = 0");
 
       List<JobData> queriedJobs = new List<JobData>();
       for (int i = 0; i < result.Count; i++) {
@@ -392,8 +401,14 @@ namespace ION.IOS.ViewController.Logging {
           queriedJobs[i].jobSessions.Add(new SessionData(sess.SID, sess.sessionStart, sess.sessionEnd));
         }
       }
+
+      queriedJobs.Add(new JobData(0,"Unassigned",jobTable, cellHeight, selectedSessions, parentVC));
+      foreach(var unsesh in unassigned){
+      	queriedJobs[queriedJobs.Count - 1].jobSessions.Add(new SessionData(unsesh.SID, unsesh.sessionStart, unsesh.sessionEnd));
+      }      
+      
       allJobs = queriedJobs;
-      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 8 * cellHeight);
+      jobTable.Frame = new CGRect(0, 2 * jobButton.Bounds.Height, DataType.Bounds.Width, 6.1 * cellHeight);
       jobTable.Source = new LoggingJobSource(allJobs, cellHeight, selectedSessions);
       jobTable.ReloadData();
       jobTable.LayoutIfNeeded();

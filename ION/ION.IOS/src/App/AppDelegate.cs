@@ -70,7 +70,7 @@
       //*********CHECK APP VERSION!!!!!
 //			var record = KeychainAccess.ValueForKey("lastUsedVersion");
 			var record = NSUserDefaults.StandardUserDefaults.StringForKey("lastUsedVersion");
-
+			
 			if(!string.IsNullOrEmpty(record)){
 				var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
 			 	var latestVersion = record;
@@ -96,6 +96,22 @@
 		    	vc.View.AddSubview(updateView.infoView);
 //				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 				NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
+			}
+			/*********************CHECK REPORTING DEFAULTS***************************/
+			var defaultSpreadsheet = NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default");
+			if(string.IsNullOrEmpty(defaultSpreadsheet)){
+				NSUserDefaults.StandardUserDefaults.SetString("0","user_spreadsheet_default");
+				Console.WriteLine("Set blank user pdf setting to " + NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default"));
+			}
+			var defaultData = NSUserDefaults.StandardUserDefaults.StringForKey("user_data_default");
+			if(string.IsNullOrEmpty(defaultData)){
+				NSUserDefaults.StandardUserDefaults.SetString("0","user_data_default");
+				Console.WriteLine("Set blank user raw data setting to " + NSUserDefaults.StandardUserDefaults.StringForKey("user_data_default"));
+			}
+			var defaultPDF = NSUserDefaults.StandardUserDefaults.StringForKey("user_pdf_default");
+			if(string.IsNullOrEmpty(defaultPDF)){
+				NSUserDefaults.StandardUserDefaults.SetString("0","user_pdf_default");
+				Console.WriteLine("Set blank user pdf setting to " + NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default"));
 			}
       //************************************************************************
 
@@ -146,7 +162,7 @@
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {
-          UIAlertView loggingWarning = new UIAlertView("Logging Interval", "Using a 1 second logging interval uses much more disk space and is not recommended", null,"Close","Return to Settings");
+          UIAlertView loggingWarning = new UIAlertView(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, null,Util.Strings.CLOSE, Util.Strings.RETURNSETTINGS);
           loggingWarning.Clicked += (sender, e) => {
             if(e.ButtonIndex.Equals(1)){
               UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));

@@ -188,7 +188,7 @@ namespace ION.IOS.ViewController {
 
 				Log.D(this, Arrays.AsString<ISerialNumber>(serials.ToArray()));
 				var task = new ION.Core.Net.RequestCalibrationCertificates(ion, serials.ToArray());
-//        var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
+        //var task = new RequestCalibrationCertificatesTask(ion, serials.ToArray());
         task.tokenSource = source;
 
         foreach (var result in task.Request().Result) {
@@ -202,7 +202,17 @@ namespace ION.IOS.ViewController {
 
           try {
             GaugeDeviceCertificatePdfExporter.Export(ion, result.certificate, stream);
-            ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ?",result.certificate.lastTestCalibrationDate);
+            Log.D(this, "Device nist date is " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+            var existing = ion.database.Query<ION.Core.Database.LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?", result.serialNumber.rawSerial);
+
+            if(existing.Count.Equals(0)){
+              Log.D(this,"Creating new entry for device: " + result.serialNumber.rawSerial + " with a calibration date of: " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+              var addDevice = new ION.Core.Database.LoggingDeviceRow(){serialNumber = result.serialNumber.rawSerial, nistDate = result.certificate.lastTestCalibrationDate.ToShortDateString()};
+              ion.database.Insert(addDevice);
+            }else {
+              Log.D(this,"Updated entry for device: " + result.serialNumber.rawSerial + " with a calibration date of: " + result.certificate.lastTestCalibrationDate.ToShortDateString());
+            	ion.database.Query<ION.Core.Database.LoggingDeviceRow>("UPDATE LoggingDeviceRow SET nistDate = ? WHERE serialNumber = ?",result.certificate.lastTestCalibrationDate.ToShortDateString(),result.serialNumber.rawSerial);
+						}
           } catch (Exception e) {
             Log.E(this, "Failed to export certificate.", e);
             file.Delete();
@@ -229,10 +239,11 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
+    		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    			OpenWalkthroughSections();
+    		} )
 #if DEBUG 
-    		//.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
-    		//	OpenWalkthroughSections();
-    		//} )
+
     //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
 				//	ShowRSSFeed();
 				//} )
@@ -274,7 +285,7 @@ namespace ION.IOS.ViewController {
         null, // Help Navigation
       };
 
-      return ret;
+      return ret;  
     }    
 
     /// <summary>
@@ -303,7 +314,7 @@ namespace ION.IOS.ViewController {
     /// off an email to complain to appion.
     /// </summary>
     private void DoSendAppionFeedback() {
-      var vc = new MFMailComposeViewController();
+      var vc = new MFMailComposeViewController();     
       vc.MailComposeDelegate = new MailDelegate();
       vc.SetSubject("ION App Feedback");
       vc.SetMessageBody("Hello,\n\n", false);
@@ -314,7 +325,7 @@ namespace ION.IOS.ViewController {
       vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/json", file.name);
 
       navigation.PresentViewController(vc, true, null);
-    }
+    }          
 
     /// <summary>
     /// Opens up a list of options for walkthroughs. They are broken up between the main
@@ -499,7 +510,6 @@ namespace ION.IOS.ViewController {
 
       return ret;
     }
-
   }
 }
 

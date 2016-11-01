@@ -79,8 +79,10 @@
 
         var sensors = new HashSet<GaugeDeviceSensor>();
 
-				if (ion.currentAnalyzer != null) {
-					foreach (var s in ion.currentAnalyzer.GetSensors()) {
+
+				//// pull ios sensorlist items
+        if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
+          foreach (var s in ion.currentAnalyzer.sensorList) {
             var gds = s as GaugeDeviceSensor;
             if (gds != null && gds.device.isConnected) {
               sensors.Add(gds);

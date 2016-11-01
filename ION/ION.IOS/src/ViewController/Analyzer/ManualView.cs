@@ -5,7 +5,21 @@ using Foundation;
 
 namespace ION.IOS.ViewController.Analyzer {
   public class ManualView {
-    
+  
+    public UIView mView;
+    public UIButton mcloseButton;
+    public UIButton mdoneButton;
+    public UIButton mmeasurementType;
+    public UIButton dtypeButton;
+    public UITextField mtextValue;
+    public UITextField mbuttonText;
+    public UILabel mdeviceType;
+    public UILabel popupText;
+    public UILabel textValidation;
+    public UIView mbuttonBorder;
+    public UIView mbuttonBorder2;
+    public bool isManual = false;
+  
     public ManualView(UIView mainView) {
       
       mView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
@@ -130,18 +144,6 @@ namespace ION.IOS.ViewController.Analyzer {
       };
     }
 
-    public UIView mView;
-    public UIButton mcloseButton;
-    public UIButton mdoneButton;
-    public UIButton mmeasurementType;
-    public UIButton dtypeButton;
-    public UITextField mtextValue;
-    public UITextField mbuttonText;
-    public UILabel mdeviceType;
-    public UILabel popupText;
-    public UILabel textValidation;
-    public UIView mbuttonBorder;
-    public UIView mbuttonBorder2;
   }
 }
 

@@ -40,34 +40,49 @@ namespace ION.IOS.ViewController.Logging
  
       if (deviceData.type.Equals("Temperature")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
-        Console.WriteLine("Changed to temperature default unit: " + defaultUnit);
+        //Console.WriteLine("Changed to temperature default unit: " + defaultUnit);
         if (defaultUnit == null) {
           defaultUnit = "18";
           NSUserDefaults.StandardUserDefaults.SetInt(18, "settings_units_default_temperature");
         }
       } else if (deviceData.type.Equals("Vacuum")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
-        Console.WriteLine("Changed to vacuum default unit: " + defaultUnit);
+        //Console.WriteLine("Changed to vacuum default unit: " + defaultUnit);
       }
-
-      foreach (var device in allData) {        
-        if (device.serialNumber.Equals(deviceData.serialNumber) && device.type.Equals(deviceData.type)) {
-          foreach (var reading in device.readings) {
-            if (reading < lowestMeasurement) {
-              lowestMeasurement = reading;
-            }
-            if (reading > highestMeasurement) {
-              highestMeasurement = reading;
-            } 
-            totalValue += reading;
+      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
+      var standardUnit = lookup.standardUnit;
+      
+			//Console.WriteLine("Compiling legend data for device " + deviceData.serialNumber + " with index " + deviceData.sensorIndex);
+      foreach (var device in allData) {
+      	//Console.WriteLine("Looking at device " + device.serialNumber + " and index " + device.sensorIndex);
+        if (device.serialNumber.Equals(deviceData.serialNumber) && device.sensorIndex.Equals(deviceData.sensorIndex)) {
+        	//Console.WriteLine("Looking through data");
+          //foreach (var reading in device.readings) {
+          for(int i = 0;i < device.readings.Count; i++){
+      			var baseValue = standardUnit.OfScalar(device.readings[i]);
+      			var coverted = baseValue.ConvertTo(lookup);
+          	//Console.WriteLine("legend at reading " + coverted + " at time " + device.times[i]);
+          	if(device.readings[i] < lowestMeasurement){
+							lowestMeasurement = device.readings[i];				
+						}
+          	if(device.readings[i] > highestMeasurement){
+							highestMeasurement = device.readings[i];
+						}
+						totalValue += device.readings[i];					
+          	//Console.WriteLine("Lowest: " + lowestMeasurement + " highest: " + highestMeasurement + " current " + coverted.amount);
+            //if (reading < coverted.amount) {
+            //  lowestMeasurement = reading;
+            //}
+            //if (reading > coverted.amount) {
+            //  highestMeasurement = reading;
+            //} 
+            //totalValue += reading;
             totalMeasurements++;
           }
         }
       }
 
-      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
 
-      var standardUnit = lookup.standardUnit;
 
       var workingValue = standardUnit.OfScalar(highestMeasurement);
 

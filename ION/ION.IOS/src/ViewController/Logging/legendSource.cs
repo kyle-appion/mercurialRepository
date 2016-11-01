@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.Logging
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "legendCell") as legendCell;
 			}
 
-			cell.setupTable (parentView,tableItems [indexPath.Row],tableItems);
+			cell.setupTable(parentView,tableItems [indexPath.Row],tableItems);
 			cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 			return cell;
 		}

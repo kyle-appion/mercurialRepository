@@ -351,6 +351,10 @@
 
       switch (manifoldEvent.type) {
         case ManifoldEvent.EType.Invalidated:
+        	break;
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	break;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
           break;
         case ManifoldEvent.EType.SensorPropertyAdded:
           var mr = records[manifoldIndex] as ManifoldRecord;

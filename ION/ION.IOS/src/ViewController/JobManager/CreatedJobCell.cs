@@ -22,15 +22,16 @@ namespace ION.IOS.ViewController.JobManager {
     public void makeCellData(int JobID, double cellWidth, double cellHeight){
       ion = AppState.context;
 
-      cellHeader = new UILabel(new CGRect(0,0,cellWidth,.1 * cellHeight));
-      cellHeader.TextAlignment = UITextAlignment.Center;
-      cellHeader.AdjustsFontSizeToFitWidth = true;
-      cellHeader.TextColor = UIColor.White;
-      cellHeader.BackgroundColor = UIColor.Black;
+      //cellHeader = new UILabel(new CGRect(0,0,cellWidth,.1 * cellHeight));
+      //cellHeader.TextAlignment = UITextAlignment.Center;
+      //cellHeader.AdjustsFontSizeToFitWidth = true;
+      //cellHeader.TextColor = UIColor.White;
+      //cellHeader.BackgroundColor = UIColor.Black;
 
-      jobDetails = new UILabel(new CGRect(0,.1 * cellHeight, cellWidth, .9 * cellHeight));
+      //jobDetails = new UILabel(new CGRect(0,.1 * cellHeight, cellWidth, .9 * cellHeight));
+      jobDetails = new UILabel(new CGRect(0,0, cellWidth, cellHeight));
       jobDetails.Font = UIFont.BoldSystemFontOfSize(30);
-      jobDetails.BackgroundColor = UIColor.LightGray;
+      jobDetails.BackgroundColor = UIColor.White;
       jobDetails.AdjustsFontSizeToFitWidth = true;
       jobDetails.Lines = 0;
 
@@ -38,21 +39,21 @@ namespace ION.IOS.ViewController.JobManager {
 
       var detailString = "";
       foreach (var job in jobQuery) {
-        detailString += "Job Name: " + job.jobName;
+        detailString += " Job Name: " + job.jobName;
 
-        detailString += "\nCustomer #: ";
+        detailString += "\n Customer #: ";
         if (job.customerNumber != null) {
           detailString += job.customerNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\nDispatch #: ";
+        detailString += "\n Dispatch #: ";
         if (job.dispatchNumber != null) {
           detailString += job.dispatchNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\nPurchase Order #: ";
+        detailString += "\n Purchase Order #: ";
         if (job.poNumber != null) {
           detailString += job.poNumber;
         } else {
@@ -62,7 +63,7 @@ namespace ION.IOS.ViewController.JobManager {
 
       jobDetails.Text = detailString;
 
-      this.AddSubview(cellHeader);
+      //this.AddSubview(cellHeader);
       this.AddSubview(jobDetails);
     }
   }

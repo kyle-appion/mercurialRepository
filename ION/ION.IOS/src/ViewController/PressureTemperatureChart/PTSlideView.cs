@@ -58,7 +58,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     public PTSlideView(IntPtr handle) : base(handle){}
 
     public void resetData(PTChart newChart, Unit pressureUnit, Unit temperatureUnit){
-      //Console.WriteLine("Resetting data from change. Pressure unit: " + pressureUnit + " temperature unit: " + temperatureUnit);
+      Console.WriteLine("Resetting data from change. Pressure unit: " + pressureUnit + " temperature unit: " + temperatureUnit + " for fluid " + newChart.fluid.name);
       tempLookup = temperatureUnit;
 
       lookup = pressureUnit;
@@ -77,16 +77,16 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure,ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup);
 
       minTemperature = ptChart.GetTemperature(new Scalar(lookup,minPressure), pressureSensor.isRelative).ConvertTo(tempLookup);
-	  	maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount;
+	  	maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount - 1;
 
 		  //Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
-	   // Console.WriteLine ("min pressure: " + minPressure);
-	   // Console.WriteLine ("max pressure: " + maxPressure.amount);
+	    //Console.WriteLine ("min pressure: " + minPressure);
+	    //Console.WriteLine ("max pressure: " + maxPressure.amount);
 		  //Console.WriteLine ("min temperature: " + minTemperature);
 		  //Console.WriteLine ("fluid min temperature: " + ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup));
 		  //Console.WriteLine ("min pressure for min temperature" + ptChart.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
 		  //Console.WriteLine ("min pressure for fluid min temperature: " + ptChart.GetPressure(new Scalar(tempLookup,ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup).amount),pressureSensor.isRelative).ConvertTo(lookup));
-	   // Console.WriteLine ("max temperature: " + maxTemperature);
+	    //Console.WriteLine ("max temperature: " + maxTemperature);
 
       startGap = sViewWidth / 2.0;
       measurementWidth = this.Frame.Width - sViewWidth;
@@ -243,20 +243,47 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
 
     public double setPressureStart(Unit pressureUnit){
+    	var fluidMin = ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup);
+    	var convertedFluidMin = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(fluidMin,ptChart.elevation);
+    	
       if(pressureUnit == Units.Pressure.PSIG){
-        return -8;
+      	if(convertedFluidMin.amount > -8){
+					return convertedFluidMin.amount;
+				} else {
+        	return -8;
+				}
       } else if (pressureUnit == Units.Pressure.BAR){
-        return -.5;
+      	if(convertedFluidMin.amount > -.5){
+					return convertedFluidMin.amount;
+				} else {      
+        	return -.5;
+        }
       } else if (pressureUnit == Units.Pressure.IN_HG){
-        return -12;
+      	if(convertedFluidMin.amount > -12){
+					return convertedFluidMin.amount;
+				} else {
+        	return -12;
+        }
       } else if (pressureUnit == Units.Pressure.CM_HG){
-        return -20;
+      	if(convertedFluidMin.amount > -20){
+					return convertedFluidMin.amount;
+				} else {
+        	return -20;
+        }
       } else if (pressureUnit == Units.Pressure.KG_CM){
-        return -.5;
+      	if(convertedFluidMin.amount > -.5){
+					return convertedFluidMin.amount;
+				} else {
+        	return -.5;
+        }
       } else if (pressureUnit == Units.Pressure.KILOPASCAL){
-        return -50;
+      	if(fluidMin > -50){
+					return convertedFluidMin.amount;
+				} else {
+        	return -50;
+        }
       } else if (pressureUnit == Units.Pressure.MEGAPASCAL){
-		return ptChart.fluid.GetMinimumPressure(ptChart.state).ConvertTo(lookup).amount;
+				return convertedFluidMin.amount;
       } else {
         return 0;
       }

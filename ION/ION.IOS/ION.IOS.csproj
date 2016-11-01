@@ -644,6 +644,16 @@
     <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\blank_checkbox.imageset\blank_checkbox.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\filled_checkbox.imageset\filled_checkbox.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_left_tracker.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_right_tracker.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_left_tracker.imageset\ic_left_tracker.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_right_tracker.imageset\ic_right_tracker.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_warning_triangle.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_warning_triangle.imageset\ic_warning_triangle.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_radio_blank.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_radio_filled.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_radio_blank.imageset\ic_radio_blank.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_radio_filled.imageset\ic_radio_filled.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -902,7 +912,6 @@
     <Compile Include="src\ViewController\DeviceManager\DeviceManagerTableSource.cs" />
     <Compile Include="src\ViewController\Logging\SpreadsheetTableSource.cs" />
     <Compile Include="src\ViewController\Logging\SpreadsheetCell.cs" />
-    <Compile Include="src\ViewController\JobManager\ManageJobView.cs" />
     <Compile Include="src\ViewController\JobManager\CreatedJobSource.cs" />
     <Compile Include="src\ViewController\JobManager\CreatedJobCell.cs" />
     <Compile Include="src\ViewController\JobManager\JobEditViewController.cs" />
@@ -984,6 +993,7 @@
       <DependentUpon>RemoteDeviceSectionHeaderTableCell.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\RemoteControls.cs" />
+    <Compile Include="src\ViewController\Logging\ReportType.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1057,6 +1067,11 @@
     <Folder Include="src\ViewController\AccessRequest\" />
     <Folder Include="src\ViewController\RemoteWorkbench\" />
     <Folder Include="src\ViewController\RemoteDeviceManager\" />
+    <Folder Include="Resources\Images.xcassets\ic_left_tracker.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_right_tracker.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_warning_triangle.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_radio_blank.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_radio_filled.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

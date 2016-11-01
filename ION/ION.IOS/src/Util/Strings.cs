@@ -29,6 +29,9 @@ namespace ION.IOS.Util {
     SAVE = "save".FromResources(),
     SAVING = "saving".FromResources(),
     SETTINGS = "settings".FromResources(),
+    CLOSE = "close".FromResources(),
+		OKDONE = "ok_done".FromResources(),
+		RETURNSETTINGS = "return_settings".FromResources(),   
     UNKNOWN = "unknown"
     ;
 
@@ -47,49 +50,47 @@ namespace ION.IOS.Util {
     public static class Analyzer {
       public static readonly string
       SELF = "analyzer".FromResources(),
-      ACTION = "Complete Action?".FromResources(),
-      ADDTEMP = "Do you want to add this Temperature sensor to the current Pressure sensor?".FromResources(),
-      ADDPRESS = "Do you want to add this Pressure sensor to the current Temperature sensor?".FromResources(),
-      CANTMOVE = "Cannot Move Sensor".FromResources(),
-      CANTADD = "Cannot add as secondary sensor".FromResources(),
-      NOSPACE = "Not enough space".FromResources(),
-      SAMESIDE = "Secondary sensor must be on the same side as the primary sensor".FromResources(),
-      HIGHLOST = "Completing this action will cause the High side subview arrangement to be lost.".FromResources(),
-      LOWLOST = "Completing this action will cause the Low side subview arrangement to be lost.".FromResources(),
-      SUBVIEW = "Choose a subview".FromResources(),
-      ADDSUBVIEW = "Add Subview".FromResources(),
-      REMOVESENSOR = "Remove Sensor".FromResources(),
-      HIGHUNDEFINED = "High Viewer Not Defined".FromResources(),
-      LOWUNDEFINED = "Low Viewer Not Defined".FromResources(),
-      ACTIONS = "Actions".FromResources(),
-      CLOSE = "Close".FromResources(),
-      DISPLAYLINK = "Display Link:".FromResources(),
-      OKDONE = "OK-Done".FromResources(),
-      OKSAVE = "OK - Save".FromResources(),
-      DEVICETYPE = "Device Type".FromResources(),
-      CREATEMANUAL = "Create Manual Entry".FromResources(),
-      PRESSURE = "Pressure".FromResources(),
-      TEMPERATURE = "Temperature".FromResources(),
-      VACUUM = "Vacuum".FromResources(),
-      ENTERNAME = "Enter Name".FromResources(),
-      UNITPICKER = "Unit Picker".FromResources(),
-      CHOOSEUNIT = "Choose Unit".FromResources(),
-      DEVICEMANAGER = "Device Manager".FromResources(),
-      DEVICEACTIONS = "Device Actions".FromResources(),
-      ADDFROM = "Add From...".FromResources(),
-      CHOOSEDEVICE = "Choose Device Type".FromResources(),
-      RENAME = "Rename".FromResources(),
-      ALARMS = "Alarms".FromResources(),
-      UNSPECIFIED = "Unspecified".FromResources(),
-      LOWSIDE = "Low Side".FromResources(),
-      HIGHSIDE = "High Side".FromResources(),
-      DISCONNECTED = "Disconnected".FromResources(),
-      LHTABLE = "'s Subviews".FromResources(),
-      SC = "S/C".FromResources(),
-      SH = "S/H".FromResources(),
-      HOLD = "hold".FromResources(),
-      SETUP = "Setup".FromResources(),
-      STABLE = "Stable".FromResources()
+      ACTION = "complete_action".FromResources(),
+      ADDFROM = "add_from".FromResources(),
+      ADDPRESS = "add_pressure".FromResources(),
+      ADDSECONDARY = "add_secondary_2sarg".FromResources(),
+      ADDSUBVIEW = "add_subview".FromResources(),
+      ADDTEMP = "add_temp".FromResources(),
+      ANALYZERREMOTEVIEW = "analyzer_remote_view".FromResources(),
+      ANALYZERREMOTEEDIT = "analyzer_remote_edit".FromResources(),
+      CANTMOVE = "cant_move".FromResources(),
+      CANTADD = "cant_add".FromResources(),
+      CHOOSEDEVICE = "choose_type".FromResources(),
+      CHOOSEUNIT = "choose_unit".FromResources(),
+      CREATEMANUAL = "create_manual".FromResources(),
+      DEVICEACTIONS = "device_actions".FromResources(),
+      DISPLAYLINK = "display_link".FromResources(),
+      ENTERNAME = "enter_name".FromResources(),
+      HIGHLOST = "high_lost".FromResources(),
+      HIGHSIDE = "high_side".FromResources(),
+      HIGHUNDEFINED = "high_undefined".FromResources(),
+      HOLD = "analyzer_hold".FromResources(),
+      LHTABLE = "lh_subviews".FromResources(),
+      LOWLOST = "low_lost".FromResources(),
+      LOWSIDE = "low_side".FromResources(),
+      LOWUNDEFINED = "low_undefined".FromResources(),
+      MISSINGVALUE = "missing_value".FromResources(),
+      NOSPACE = "no_space".FromResources(),
+      OPTIONS = "analyzer_options".FromResources(),
+      SETUPPRESSURE = "setup_pressure".FromResources(),
+      RECORDINGSTARTED = "recording_started".FromResources(),
+      RECORDINGSTOPPED = "recording_stopped".FromResources(),
+      REMOVESENSOR = "remove_sensor".FromResources(),
+      REMOVESETUP = "remove_setup".FromResources(),
+      SAMESIDE = "same_side".FromResources(),
+      SC = "analyzer_subcool".FromResources(),
+      SETUP = "analyzer_setup".FromResources(),
+      SH = "analyzer_superheat".FromResources(),
+      STABLE = "analyzer_stable".FromResources(),
+      SUBVIEW = "choose_subview".FromResources(),
+      UNITPICKER = "unit_picker".FromResources(),
+      UNSPECIFIED = "unspecified".FromResources(),
+      VALIDMEASUREMENT = "valid_measurement".FromResources()
       ;
     } // End Strings.Analyzer
 
@@ -185,6 +186,21 @@ namespace ION.IOS.Util {
       } // End Strings.Fluid.Manager
     } // End Strings.Fluid
 
+		public static class Job{
+		public static readonly string
+      CUSTOMERNUMBER = "job_customer_number".FromResources(),
+			DISPATCHNUMBER = "job_dispatch_number".FromResources(),
+			JOBINFO = "job_info".FromResources(),
+			JOBNAME = "job_name".FromResources(),
+			MULTIPLEJOBS = "job_multiple_jobs".FromResources(),
+      PONUMBER = "job_po_number".FromResources()
+			;
+			public static class Manager{
+				public static readonly string
+				SELF = "job_manager".FromResources()
+				;
+			}
+		}
     public static class Help {
       public static readonly string
       ABOUT = "help_about".FromResources(),
@@ -211,20 +227,38 @@ namespace ION.IOS.Util {
 
     public static class Report {
       public static readonly string
+      SELF = "report".FromResources(),
       CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),
       CITY = "report_city".FromResources(),
+      CHOOSEFORMAT = "report_choose_format".FromResources(),
+      CREATESPREADSHEET = "report_create_spreadsheet".FromResources(),
+      CREATEPDF = "report_create_pdf".FromResources(),
+      DATALOGGED = "report_data_logged".FromResources(),
+      DEVICEINFO = "report_device_info".FromResources(),
       DOWNLOADING_CERTIFICATES = "report_downloading_certificates".FromResources(),
       DOWNLOADING_CERTIFICATES_FAILURES = "report_downloading_certificates_failures".FromResources(),
       FAILED_TO_DOWNLOAD = "report_failed_to_download".FromResources(),
+      FINISH = "report_finish".FromResources(),
+			GRAPHSELECTION = "report_graph_selection".FromResources(),
       LOGGING = "report_create".FromResources(),
+      LOGGINGINTERVAL = "report_logging_interval".FromResources(),
+      LOWINTERVAL = "report_low_interval".FromResources(),
       MANAGER = "report_job".FromResources(),
       TITLE = "report_title".FromResources(),
       NOTES = "report_notes".FromResources(),
-      REPORTS = "Reports".FromResources(),
+      NODATA = "report_no_data".FromResources(),
+      PLEASEWAIT = "report_please_wait".FromResources(),
+      REPORTS = "reports".FromResources(),
+      RETURNSESSIONS = "report_view_sessions".FromResources(),
       SCREENSHOT = "report_screenshot".FromResources(),
       SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
       SCREENSHOT_TITLE = "report_screenshot_title".FromResources(),
+      SESSIONSELECTION = "report_session_selection".FromResources(),
+      START = "report_start".FromResources(),
       STATE = "report_state".FromResources(),
+      TOASTSPREADSHEET = "report_toast_spreadsheet".FromResources(),
+      TOASTPDF = "report_toast_pdf".FromResources(),
+      UNASSIGNED = "report_session_unassigned".FromResources(),
       ZIP = "report_zip".FromResources()
       ;
     }

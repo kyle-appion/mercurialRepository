@@ -28,11 +28,11 @@ namespace ION.IOS.ViewController.Logging {
       jName = name;
       jobSessions = new ObservableCollection<SessionData>(); 
 
-      headerView = new UIView(new CGRect(0,0,jobTable.Bounds.Width,cellHeight)){
+      headerView = new UIView(new CGRect(0,0,jobTable.Bounds.Width, .8 * cellHeight)){
         BackgroundColor = UIColor.Black,
       };
 
-      headerName = new UILabel(new CGRect(0,0,.9 * jobTable.Bounds.Width, cellHeight)){
+      headerName = new UILabel(new CGRect(0,0,.9 * jobTable.Bounds.Width, .8 * cellHeight)){
         Text = jName,
         TextAlignment = UITextAlignment.Center,
         AdjustsFontSizeToFitWidth = true,
@@ -40,12 +40,15 @@ namespace ION.IOS.ViewController.Logging {
         TextColor = UIColor.White,
       };
 
-      moreInfo = new UIButton(new CGRect(.9 * headerView.Bounds.Width,0,.1 * headerView.Bounds.Width,cellHeight));
+      moreInfo = new UIButton(new CGRect(.9 * headerView.Bounds.Width,0,.1 * headerView.Bounds.Width, .8 * cellHeight));
       moreInfo.Layer.BorderWidth = 1f;
       moreInfo.SetImage(UIImage.FromBundle("ic_more_info"), UIControlState.Normal);
       moreInfo.TouchUpInside += (sender, e) => {
         moreInfoPopup(selectedSessions, jobTable, vc);
       };
+      if(JID == 0){
+				moreInfo.Hidden = true;  
+			}
 
       jobSelect = new UITapGestureRecognizer(() => {
         var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID = " + JID);

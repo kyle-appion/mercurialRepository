@@ -1,8 +1,10 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.6.1">
-    <update>Updated graphing subsection selection precision</update>
-    <update>Updated various state checks to improve performance</update>
-    <fixed>Fixed analyzer subview arrow in certain cases where all subviews were removed</fixed>
+	<display version="1.8.4">
+		<new>Added default "Unassigned" job categorizing for improved session tracking</new>
+		<update>Updated PDF reporting to include more information on a cover page</update>
+		<update>Updated session list to be more descriptive</update>
+		<fixed>Fixed issue with some fluid ranges for P/T Chart</fixed>
+		<fixed>Fixed time display difference between job manager and reporting</fixed>
   </display>
 </whatsnew>

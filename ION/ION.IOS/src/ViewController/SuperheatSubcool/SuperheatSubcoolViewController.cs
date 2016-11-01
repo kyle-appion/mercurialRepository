@@ -374,10 +374,17 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         if (initialManifold != null) {
           initialManifold.ptChart = ptChart;
           var type = initialManifold.primarySensor.type;
+          
           if (ESensorType.Pressure == type) {
-            initialManifold.SetSecondarySensor(temperatureSensor);
+          	if(initialManifold.secondarySensor != null && !initialManifold.secondarySensor.Equals(temperatureSensor)){
+            	initialManifold.SetSecondarySensor(temperatureSensor);
+            } else if (initialManifold.secondarySensor == null){
+							initialManifold.SetSecondarySensor(temperatureSensor);
+						}
           } else if (ESensorType.Temperature == type) {
-            initialManifold.SetSecondarySensor(pressureSensor);
+          	//if(initialManifold.secondarySensor != null && !initialManifold.secondarySensor.Equals(pressureSensor)){
+            	initialManifold.SetSecondarySensor(pressureSensor);
+           	//}
           } else {
             ION.Core.Util.Log.E(this, "Failed to update manifold: invalid primary sensor type " + type);
           }
@@ -472,6 +479,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           default:
             throw new Exception("Cannot update delta for state: " + ptChart.state);
         }
+        if(calculation.magnitude < 0){
+					imageNegativeWarning.Hidden = false;
+					View.BringSubviewToFront(imageNegativeWarning);
+				} else {
+					imageNegativeWarning.Hidden = true;
+					View.BringSubviewToFront(imageNegativeWarning);
+				}
       } else {
 				if (System.Math.Abs(calculation.magnitude) < 0.1) {
           labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);

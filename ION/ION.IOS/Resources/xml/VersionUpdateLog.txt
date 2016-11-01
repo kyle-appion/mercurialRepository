@@ -1,5 +1,34 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="1.8.3">
+		<new>Added job and session info to spreadsheets</new>
+		<new>Added Screenshot functionality to analyzer</new>
+		<new>Added Workbench device swapping by long pressing device</new>
+		<new>Added default unit change option to graphing setting view</new>
+		<new>Added warning image for superheat/subcool calculations</new>		
+		<update>Updated analyzer subviews responsiveness</update>
+		<update>Updated wording and information for reporting</update>
+  </display>
+	<display version="1.8.2">		
+		<update>Updated analyzer sensor linking</update>
+		<update>Updated spreadsheets to show precision for whole numbers</update>
+    <fixed>Fixed reporting not showing devices as selected</fixed>
+    <fixed>Fixed job manager tab bar alignment</fixed>
+  </display>
+	<display version="1.8.1">
+		<new>Added option to change gauge units remotely</new>
+		<update>Updated workbench to include alternate unit subview</update>
+		<update>Updated linked sensor subview to display pressure or temperature</update>
+    <fixed>Fixed temperature conversion values for reports</fixed>
+    <fixed>Fixed measurements displayed for unit changes</fixed>
+  </display>	
+	<display version="1.7.2">
+		<new>Added an introductory walkthrough in help menu</new>
+    <update>Updated graphing subsection selection precision</update>
+    <update>Updated various state checks to improve performance</update>
+    <fixed>Fixed analyzer subview arrow in certain cases where all subviews were removed</fixed>
+    <fixed>Fixed calibration certificate download issue</fixed>
+  </display>
 	<display version="1.6.4">
     <new>Added Data Logging Feature</new>
     <new>Added Data Log Reporting</new>

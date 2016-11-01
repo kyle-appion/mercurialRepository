@@ -21,7 +21,9 @@ file.
 "saving" = "Saving...";
 "settings" = "Settings";
 "unknown" = "Unknown";
-
+"close" = "Close";
+"ok_done" = "OK - Done";
+"return_settings" = "Return to settings";
 /* ALARMS */
 "alarms" = "Alarms";
 "alarms_low" = "Low Alarm";
@@ -32,6 +34,46 @@ file.
 
 /* ANALYZER */
 "analyzer" = "Analyzer";
+"add_secondary_2sarg" = "Do you want to add this {0} sensor to the current {1} sensor?";
+"remove_setup" = "Do you want to remove the current sensor setup?";
+"add_temp" = "Do you want to add this Temperature sensor to the current Pressure sensor?";
+"add_pressure" = "Do you want to add this Pressure sensor to the current Temperature sensor?";
+"cant_move" = "Cannot Move Sensor";
+"cant_add" = "Cannot add as secondary sensor";
+"no_space" = "Not enough space";
+"same_side" = "Secondary sensor must be on the same side as the primary sensor";
+"high_lost" = "Completing this action will cause the High side subview arrangement to be lost.";
+"low_lost" = "Completing this action will cause the Low side subview arrangement to be lost.";
+"choose_subview" = "Choose a subview";
+"add_subview" = "Add Subview";
+"remove_sensor" = "Remove Sensor";
+"high_undefined" = "High Viewer Not Defined";
+"low_undefined" = "Low Viewer Not Defined";
+"display_link" = "Display Link:";
+"complete_action" = "Complete Action?";
+"enter_name" = "Enter Name";
+"unit_picker" = "Unit Picker";
+"create_manual" = "Create Manual Entry";
+"choose_unit" = "Choose Unit";
+"device_actions" = "Device Actions";
+"add_from" = "Add From...";
+"choose_type" = "Choose Device Type";
+"unspecified" = "Unspecified";
+"setup_pressure" = "Pressure must be defined first for proper viewer display";
+"analyzer_options" = "Options";
+"analyzer_remote_view" = "Analyzer\nRemote Viewing";
+"analyzer_remote_edit" = "Analyzer\nRemote Editing";
+"low_side" = "Low Side";
+"high_side" = "High Side";
+"lh_subviews" = "'s Subviews";
+"analyzer_subcool" = "S/C";
+"analyzer_superheat" = "S/H";
+"analyzer_hold" = "hold";
+"analyzer_setup" = "Setup";
+"analyzer_stable" = "Stable";
+"valid_measurement" = "**Please enter a valid measurement for this sensor**";
+"missing_value" = "**Please enter a value for this sensor's measurement**";
+
 
 /* DEVICE */
 "device_available" = "Available";
@@ -108,6 +150,13 @@ file.
 /* FLUID MANAGER */
 "fluid_manager" = "Refrigerant Manager";
 
+/*JOB MANAGER*/
+"job_dispatch_number" = "Dispatch Number";
+"job_info" = "Job Info";
+"job_name" = "Job Name";
+"job_po_number" = "PO Number";
+"job_customer_number" = "Customer Number";
+"job_multiple" = "Spans multiple jobs";
 /* HELP */
 "help_about" = "About ION";
 "help_send_feedback" = "Send Feedback";
@@ -124,6 +173,7 @@ file.
 "navigation_main" = "Main";
 
 /* REPORT */
+"report" = "Report";
 "reports" = "Reports";
 "report_calibration_certificates" = "Calibration Certificates";
 "report_city" = "City";
@@ -139,7 +189,23 @@ file.
 "report_zip" = "Zip Code";
 "report_create" = "Reporting";
 "report_job" = "Job Settings";
-
+"report_session_unassigned" = "Unassigned";
+"report_view_sessions" = "Back To Session List";
+"report_session_selection" = "Session Selection";
+"report_graph_selection" = "Graph Selection";
+"report_logging_interval" = "Logging Interval";
+"report_low_interval" = "Using a 1 second logging interval uses much more disk space and is not recommended";
+"report_no_data" = "No Data Available";
+"report_start" = "Start";
+"report_finish" = "Finish";
+"report_please_wait" = "Please wait...";
+"report_choose_format" = "Choose a Format";
+"report_create_spreadsheet" = "Create Spreadsheet";
+"report_create_pdf" = "Create PDF";
+"report_toast_spreadsheet" = "Creating Spreadsheet";
+"report_toast_pdf" = "Creating PDF";
+"report_data_logged" = "Data Logged";
+"report_device_info" = "Device Info";
 /* SENSOR */
 
 /* SENSOR TYPE */
