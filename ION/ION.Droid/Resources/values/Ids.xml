@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<resources>
+  <!--
+  GENERAL APPLICATION ACTIONS
+  -->
+  <item name="add" type="id"/>
+  <item name="address" type="id"/>
+  <item name="alarm" type="id"/>
+  <item name="arrow" type="id"/>
+	<item name="association" type="id"/>
+	<item name="average" type="id"/>
+  <item name="battery" type="id"/>
+  <item name="button" type="id"/>
+  <item name="card" type="id"/>
+  <item name="check" type="id"/>
+  <item name="city" type="id"/>
+  <item name="clear" type="id"/>
+  <item name="close" type="id"/>
+  <item name="connect" type="id"/>
+  <item name="connection" type="id"/>
+  <item name="content" type="id"/>
+  <item name="content2" type="id"/>
+  <item name="color" type="id"/>
+  <item name="counter" type="id"/>
+	<item name="customer_no" type="id"/>
+  <item name="date" type="id"/>
+	<item name="dispatch_no" type="id"/>
+  <item name="down" type="id"/>
+  <item name="download" type="id"/>
+  <item name="edit" type="id"/>
+  <item name="empty" type="id"/>
+  <item name="end" type="id"/>
+	<item name="end_times" type="id"/>
+  <item name="exit" type="id"/>
+	<item name="export" type="id"/>
+  <item name="fluid" type="id"/>
+  <item name="footer" type="id"/>
+  <item name="graph" type="id"/>
+  <item name="help" type="id"/>
+	<item name="highest" type="id"/>
+  <item name="icon" type="id"/>
+	<item name="job" type="id"/>
+  <item name="left" type="id"/>
+  <item name="library" type="id"/>
+  <item name="list" type="id"/>
+  <item name="loading" type="id"/>
+	<item name="lowest" type="id"/>
+  <item name="next" type="id"/>
+  <!-- lock is a keyword for c# -->
+  <item name="padlock" type="id"/>
+  <item name="progress" type="id"/>
+  <item name="main" type="id"/>
+  <item name="measurement" type="id"/>
+  <item name="name" type="id"/>
+  <item name="notes" type="id"/>
+  <item name="ok_done" type="id"/>
+  <item name="options" type="id"/>
+  <item name="play" type="id"/>
+	<item name="plus" type="id"/>
+  <item name="preferred" type="id"/>
+	<item name="purchase_no" type="id"/>
+  <item name="record" type="id"/>
+  <item name="reenable" type="id"/>
+  <item name="right" type="id"/>
+	<item name="remove" type="id"/>
+	<item name="reset" type="id"/>
+  <item name="save" type="id"/>
+  <item name="scan" type="id"/>
+  <item name="screenshot" type="id"/>
+  <item name="settings" type="id"/>
+  <item name="start" type="id"/>
+	<item name="start_times" type="id"/>
+  <item name="state" type="id"/>
+  <item name="status" type="id"/>
+	<item name="tab_1" type="id"/>
+	<item name="tab_2" type="id"/>
+	<item name="table" type="id"/>
+  <item name="text" type="id"/>
+  <item name="time" type="id"/>
+  <item name="title" type="id"/>
+  <item name="toggle" type="id"/>
+  <item name="type" type="id"/>
+  <item name="unit" type="id"/>
+  <item name="up" type="id"/>
+  <item name="version" type="id"/>
+  <item name="view" type="id"/>
+  <item name="viewpager" type="id"/>
+  <item name="warning" type="id"/>
+  <item name="zip" type="id"/>
+
+  <!--
+  ALARM
+  -->
+  <item name="low_alarm" type="id"/>
+  <item name="high_alarm" type="id"/>
+
+  <!--
+  ANALYZER
+  -->
+  <item name="analyzer" type="id"/>
+  <item name="analyzer_add_to" type="id"/>
+
+  <!--
+  CALCULATORS
+  -->
+  <item name="calculators" type="id"/>
+
+  <item name="ptchart" type="id"/>
+  <item name="ptchart_calculations" type="id"/>
+  <item name="ptchart_pressure_edit" type="id"/>
+  <item name="ptchart_pressure_unit" type="id"/>
+  <item name="ptchart_temperature_edit" type="id"/>
+  <item name="ptchart_temperature_unit" type="id"/>
+  <item name="ptchart_saturated_temperature" type="id"/>
+
+  <item name="shsc" type="id"/>
+
+  <!--
+  DEVICE MANAGER
+  -->
+  <item name="device_manager" type="id"/>
+  <item name="device_serial_number" type="id"/>
+
+  <!--
+  DRAWER
+  -->
+  <item name="drawer" type="id"/>
+  <item name="drawer_list" type="id"/>
+
+
+	<!--
+	MEASUREMENTS
+	-->
+	<item name="pressure" type="id"/>
+	<item name="temperature" type="id"/>
+	<item name="vacuum" type="id"/>
+	
+
+  <!--
+  REPORTS
+  -->
+  <item name="reports" type="id"/>
+  <item name="report_by_date" type="id"/>
+  <item name="report_by_job" type="id"/>
+  <item name="report_certificates" type="id"/>
+  <item name="report_create_job" type="id"/>
+  <item name="report_create_date" type="id"/>
+  <item name="report_data_logging" type="id"/>
+  <item name="report_data_logging_lowest_measurement" type="id"/>
+  <item name="report_data_logging_highest_measurement" type="id"/>
+  <item name="report_data_logging_measurement_count" type="id"/>
+  <item name="report_date_created" type="id"/>
+  <item name="report_session_duration" type="id"/>
+  <item name="report_devices_used" type="id"/>
+  <item name="report_graph" type="id"/>
+  <item name="report_job" type="id"/>
+  <item name="report_new" type="id"/>
+  <item name="report_pick" type="id"/>
+  <item name="report_saved" type="id"/>
+  <item name="report_screenshot_archive" type="id"/>
+  <item name="report_selection" type="id"/>
+  <item name="report_session_selection" type="id"/>
+  <item name="report_sessions" type="id"/>
+
+  <!--
+  WORKBENCH
+  -->
+  <item name="workbench" type="id"/>
+  <item name="workbench_add_to" type="id"/>
+</resources>
