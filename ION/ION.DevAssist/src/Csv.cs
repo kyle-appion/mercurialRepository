@@ -8,6 +8,18 @@
 	/// This simple class allows for quick formatted CSV's to be created.
 	/// </summary>
 	public class Csv {
+
+		/// <summary>
+		/// The default delimiter.
+		/// </summary>
+		private const string DEFAULT_DELIMITER = "|";
+
+		/// <summary>
+		/// The delimiter that is used to separate the columns.
+		/// </summary>
+		/// <value>The delimiter.</value>
+		public string delimiter = DEFAULT_DELIMITER;
+
 		/// <summary>
 		/// The rows that are present in the exporter.
 		/// </summary>
@@ -30,7 +42,8 @@
     /// </summary>
     private bool changed;
 
-		public Csv() {
+		public Csv(string delimeter=DEFAULT_DELIMITER) {
+			this.delimiter = delimiter;
 		}
 
 		/// <summary>
@@ -50,17 +63,12 @@
 		public bool Export(Stream stream) {
 			using (var s = new StreamWriter(stream)) {
 				foreach (var row in rows) {
-					var i = 0;
-					var lim = Min(width, row.width);
-
-					for (; i < lim; i++) {
+					for (int i = 0; i < row.width - 1; i++) {
 						s.Write(row[i]);
-            s.Write(",");
+						s.Write(delimiter);
 					}
 
-          for (; i < Max(width, row.width); i++) {
-						s.Write(",");
-					}
+					s.Write(row[row.width - 1]);
 
           s.WriteLine();
 				}

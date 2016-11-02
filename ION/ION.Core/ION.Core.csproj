@@ -573,9 +573,6 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R601a.fluid">
       <LogicalName>R601a.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R702.fluid">
-      <LogicalName>R702.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R717.fluid">
       <LogicalName>R717.fluid</LogicalName>
     </EmbeddedResource>
@@ -602,9 +599,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R600a.fluid">
       <LogicalName>R600a.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R704.fluid">
-      <LogicalName>R704.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
       <LogicalName>R134a.fluid</LogicalName>
