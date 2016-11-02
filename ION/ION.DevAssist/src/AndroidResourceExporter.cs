@@ -19,7 +19,7 @@
 				ReadStringFile(fi, strings);
 			}
 
-			ExportStringsToCsv(strings, File.Open("TESTO_android.csv", FileMode.Create));
+			ExportStringsToCsv(strings, File.Open("AndroidLocalization.csv", FileMode.Create));
 		}
 
 		/// <summary>

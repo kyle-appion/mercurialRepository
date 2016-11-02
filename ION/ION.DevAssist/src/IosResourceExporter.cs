@@ -13,7 +13,7 @@
 				ReadStringFile(fi, strings);
 			}
 
-			ExportStringsToCsv(strings, File.Open("TESTO_ios.csv", FileMode.Create));
+			ExportStringsToCsv(strings, File.Open("IonLocalization.csv", FileMode.Create));
 		}
 
 		private static void ReadStringFile(FileInfo fi, Dictionary<string, string> strings) {

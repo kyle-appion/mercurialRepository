@@ -68,8 +68,8 @@ FLAG_NONE = 0
 FLAG_EXPLOSIVE = 1
 
 ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600'), ('ISOBUTAN', 'R600a'), ('PENTANE', 'R601'), ('IPENTANE', 'R601a'), \
-                ('ETHANE', 'R170'), ('METHANE','R50'), ('OXYGEN', 'R732'), ('HYDROGEN', 'R702'), \
-                ('HELIUM', 'R704'), ('AMMONIA', 'R717'), ('WATER', 'R718'), ('NEON', 'R720'), ('NITROGEN', 'R728'), \
+                ('ETHANE', 'R170'), ('METHANE','R50'), ('OXYGEN', 'R732'), \
+                ('AMMONIA', 'R717'), ('WATER', 'R718'), ('NITROGEN', 'R728'), \
                 ('ARGON', 'R740'), ('CO2', 'R744'), ('N20', '744a'), ('R134A', 'R134a')])
 
 FLAGGED_FLUIDS = dict([('R290', FLAG_EXPLOSIVE), ('R600', FLAG_EXPLOSIVE), ('R601a', FLAG_EXPLOSIVE)])

@@ -21,7 +21,7 @@
 				new FileInfo("ION.IOS/Resources/en.lproj/Localizable.strings"),
 			};
 
-//			AndroidResourceExporter.ExportAndroidStrings(androidFiles);
+			AndroidResourceExporter.ExportAndroidStrings(androidFiles);
 			IosResourceExporter.ExportIosStrings(iosFiles);
 		}
 	}
