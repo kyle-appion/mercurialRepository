@@ -556,19 +556,28 @@
           asp.unit = u;
         }).Show();
       } else if (sensorProperty is PTChartSensorProperty) {
-        var i = new Intent(Activity, typeof(PTChartActivity));
-        i.SetAction(Intent.ActionPick);
-				Analyzer.ESide side;
-				if  (!analyzer.GetSideOfManifold(manifold, out side)) {
-					Error(GetString(Resource.String.analyzer_error_failed_to_get_viewer_side));
-					return;
-				}
-				i.PutExtra(PTChartActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-        StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+				ViewInPtChartActivity(manifold, sensorProperty);
       } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
         ViewInSuperheatSubcoolActivity(manifold, sensorProperty);
       }
     }
+
+		private void ViewInPtChartActivity(Manifold manifold, ISensorProperty sensorProperty) {
+			var side = Analyzer.ESide.Low;
+
+			if (!analyzer.GetSideOfManifold(manifold, out side)) {
+				Error(GetString(Resource.String.analyzer_error_failed_to_launch_ptchart_missing_manifold));
+				return;
+			}
+
+			var i = new Intent(Activity, typeof(PTChartActivity));
+			i.SetAction(Intent.ActionPick);
+			i.PutExtra(PTChartActivity.EXTRA_LOCK_FLUID, true);
+			i.PutExtra(PTChartActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
+			i.PutExtra(PTChartActivity.EXTRA_FLUID_STATE, (int)analyzer.SideAsFluidState(side));
+			i.PutExtra(PTChartActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
+			StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+		}
 
     /// <summary>
     /// Views the in superheat subcool activity.
