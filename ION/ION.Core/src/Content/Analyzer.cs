@@ -553,13 +553,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -736,6 +736,10 @@
 
         lowSideManifold = high;
         highSideManifold = low;
+
+				lowSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Dew, lowSideManifold.ptChart.fluid);
+				highSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Bubble, highSideManifold.ptChart.fluid);
+
 				lowSideManifold.SetSecondarySensor(null);
 				highSideManifold.SetSecondarySensor(null);
       } else {
@@ -807,9 +811,9 @@
     public Fluid.EState SideAsFluidState(ESide side) {
       switch (side) {
         case ESide.Low:
-          return Fluid.EState.Bubble;
-        case ESide.High:
           return Fluid.EState.Dew;
+        case ESide.High:
+          return Fluid.EState.Bubble;
         default:
           throw new Exception("Cannot get fluid state from side: " + side);
       }

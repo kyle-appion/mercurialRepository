@@ -8,11 +8,6 @@ This directory is used to contain phone sized dimensions. So far this file affec
 
 -->
 
-	
-  <!--
-  DIMENSIONS CONTAINED WITHIN THIS FILE ARE STATIC ACROSS ALL DEVICE SIZES!
-  -->
-
   <!--
   START MATERIAL DESIGN DIMENSIONS
   These dimensions are the constant dimensions that android recommends for good
