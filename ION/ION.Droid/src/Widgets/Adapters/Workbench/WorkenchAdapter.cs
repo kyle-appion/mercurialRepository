@@ -230,8 +230,13 @@
       records.Clear();
 
       foreach (var m in workbench.manifolds) {
-        records.Add(new ManifoldRecord(m));
-        records.Add(new SpaceRecord());
+				var mr = new ManifoldRecord(m);
+        records.Add(mr);
+				records.Add(new SpaceRecord());
+
+				if (m.sensorPropertyCount > 0) {
+					ExpandManifold(m);
+				}
       }
 
       records.Add(new FooterRecord(footerAction));
