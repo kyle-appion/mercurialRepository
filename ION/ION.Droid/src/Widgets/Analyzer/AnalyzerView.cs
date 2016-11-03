@@ -506,7 +506,7 @@
     /// <param name="second">Second.</param>
     public void SwapSensorMounts(int first, int second) {
 			ION.Core.Util.Log.D(this, "SWAPPING SENSOR MOUNTS: {" + first + ", " + second + "}");
-      if (analyzer.CanSensorsSwapSafely(first, second)) {
+      if (CanSensorsSwapSafely(first, second)) {
         AnimateSensorMountSwap(first, second);
       } else {
 				IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
@@ -514,6 +514,47 @@
 				});
       }
     }
+
+		/// <summary>
+		/// This is a more loss version of the analyzer's method. This allows sensors to swap even if attached to a manifold
+		/// so long as they both do not have secondary sensors.
+		/// </summary>
+		/// <returns><c>true</c>, if sensor swap safely was caned, <c>false</c> otherwise.</returns>
+		/// <param name="first">First.</param>
+		/// <param name="second">Second.</param>
+		private bool CanSensorsSwapSafely(int first, int second) {
+			var fs = Analyzer.ESide.Low;
+			var ss = Analyzer.ESide.Low;
+
+			analyzer.GetSideOfIndex(first, out fs);
+			analyzer.GetSideOfIndex(second, out ss);
+
+			if (fs == ss) {
+				// this is a completely safe swap
+				return true;
+			} else {
+				// This swap needs a little more attention to be deemed safe.
+				var fm = analyzer.GetManifoldFromSide(fs);
+				var sm = analyzer.GetManifoldFromSide(ss);
+
+				if (fm == null && sm == null) {
+					// Both of the manifolds are null, this is a safe swap.
+					return true;
+				} else if (fm == null) {
+					// The first manifold is null. This swap is only safe if the second's secondary sensor is null.
+					return sm.secondarySensor == null;
+				} else if (sm == null) {
+					// The second manifold is null. This swap is only safe if the first's secondary sensor is null.
+					return sm.secondarySensor == null;
+				} else if (fm.secondarySensor == null && sm.secondarySensor == null) {
+					// Both of the manifold's secondary sensors are null. This is a safe swap.
+					return true;
+				} else {
+					// Either one of the manifolds has a secondary sensor. This will break the analyzer if the swap is allowed.
+					return false;
+				}
+			}
+		}
 
     /// <summary>
     /// Performs uncheck animation of two sensor mounts.
@@ -630,12 +671,15 @@
 				if (sensor.type == ESensorType.Temperature) {
 					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
 				} else if (analyzer.IsSensorAttachedToManifold(sensor)) {
-					IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
+					// This swap is done when a sensor mount is dragged into an opposing empty manifold.
+					// All sensor properties should be kept.
+					IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_swap_linked_manifolds, () => {
 						var si = analyzer.IndexOfSensor(sensor);
 						var di = analyzer.NextEmptySensorIndex(destSide);
 						AnimateSensorMountSwap(si, di);
 						curManifold.SetSecondarySensor(null);
-						analyzer.SetManifold(destSide, sensor);
+						var sm = analyzer.GetManifoldFromSide(destSide.Opposite());
+						analyzer.SetManifold(destSide, sm);
 					});
 				} else {
 					// The sensor is free to move into the new side.
@@ -658,7 +702,9 @@
           if (sensor.type == ESensorType.Temperature) {
             Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
           } else {
-            IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_swap_linked_manifolds, () => {
+						// This swap is done when a sensor mount is dragged into a opposing full manifold.
+						// The swap will remove all subviews.
+						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
               var si = analyzer.IndexOfSensor(sensor);
 							var di = analyzer.NextEmptySensorIndex(destSide);
 							AnimateSensorMountSwap(si, di);

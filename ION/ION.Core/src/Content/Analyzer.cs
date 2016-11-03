@@ -567,6 +567,35 @@
       }
     }
 
+		/// <summary>
+		/// Sets the manifold for the given side. Is a manifold already exists, then it will be replaced by the new manifold.
+		/// </summary>
+		/// <returns><c>true</c>, if manifold was set, <c>false</c> otherwise.</returns>
+		/// <param name="side">Side.</param>
+		/// <param name="manifold">Manifold.</param>
+		public bool SetManifold(ESide side, Manifold manifold) {
+			switch (side) {
+				case ESide.Low:
+					RemoveManifold(ESide.Low);
+					lowSideManifold = manifold;
+					if (manifold.ptChart == null) {
+						manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+					}
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
+					return true;
+				case ESide.High:
+					RemoveManifold(ESide.High);
+					highSideManifold = manifold;
+					if (manifold.ptChart == null) {
+						manifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+					}
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
+					return true;
+				default:
+					throw new Exception("Cannot set primary manifold: unknown side: " + side);
+			}
+		}
+
     /// <summary>
     /// Queries the and sets the value of side to the side of the given manifold. If the manifold is not present in the
     /// analyzer, we will return false and set the side to ESide.Low.
@@ -699,6 +728,9 @@
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     /// <param name="force">If set to <c>true</c> force.</param>
+		[Obsolete("This is essentially a 'God Function'.")]
+		// TODO ahodder@appioninc.com: It is way too complicated and doesn't need to be this way. Make it either do the swap or not.
+		// All the other things that this method does should be handled by the caller.
     public bool SwapSensors(int first, int second, bool force) {
       // The actual swap logic is this delegate.
       Action swap = delegate() {
