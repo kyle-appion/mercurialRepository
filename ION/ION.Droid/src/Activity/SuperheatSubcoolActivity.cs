@@ -406,6 +406,9 @@
         var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
 				Log.D(this, "State: " + state);
 
+				var locked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
+				fluidPhaseToggleView.Enabled = !locked;
+
         ptChart = PTChart.New(ion, state, fluid);
       } else {
         ptChart = PTChart.New(ion, Fluid.EState.Dew);

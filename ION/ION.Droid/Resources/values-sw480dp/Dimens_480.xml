@@ -1,6 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
   <!--
+This directory is used to contain older 7 inch tablet sized dimensions. So far this file affects the following devices:
+
+	Nexus 7 Tablet
+
+-->
+
+  <!--
   START MATERIAL DESIGN DIMENSIONS
   These dimensions are the constant dimensions that android recommends for good
   material design.
@@ -99,6 +106,10 @@
   <dimen name="analyzer_icon_size">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_device_icon_size">32dp</dimen>
+	  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_header">8dp</dimen>
+  <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_measurement">14dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
   <dimen name="analyzer_viewer_text_size">18sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->

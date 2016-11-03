@@ -641,6 +641,7 @@
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
     <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
+    <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
