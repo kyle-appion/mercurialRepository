@@ -12,6 +12,7 @@
         android:layout_weight="1" />
     <Button
         android:text="@string/report_no_jobs_exist"
+        android:textSize="@dimen/text_size_large"
         android:id="@id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

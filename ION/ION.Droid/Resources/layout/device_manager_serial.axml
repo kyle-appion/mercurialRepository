@@ -16,6 +16,7 @@
             android:background="@color/black"
             android:gravity="center"
             android:hint="@string/device_serial_number"
+            android:textSize="@dimen/text_size_medium"
             android:textColor="@color/white" />
         <LinearLayout
             android:id="@id/content"

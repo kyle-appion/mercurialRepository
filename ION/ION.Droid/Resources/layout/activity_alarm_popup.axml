@@ -25,13 +25,15 @@
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:text="@string/close" />
+            android:textSize="@dimen/text_size_large"
+            android:text="@string/close"/>
         <Button
             android:id="@id/reenable"
             android:layout_width="0px"
             android:layout_weight="1"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:textSize="@dimen/text_size_large"
             android:text="@string/reenable" />
     </LinearLayout>
 </LinearLayout>
