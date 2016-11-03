@@ -46,6 +46,18 @@
 		/// </summary>
 		public const string EXTRA_RETURN_UNIT = "ION.Droid.Activity.extra.RETURN_UNIT";
 		/// <summary>
+		/// The extra that is used to get whether or not the fluid is locked in the activity.
+		/// </summary>
+		public const string EXTRA_LOCK_FLUID = "ION.Droid.Activity.extra.LOCK_FLUID";
+		/// <summary>
+		/// The name of the fluid that is to be used for the activity.
+		/// </summary>
+		public const string EXTRA_FLUID_NAME = "ION.Droid.Activity.extra.FLUID_NAME";
+		/// <summary>
+		/// The int representation of a Fluid.EState.
+		/// </summary>
+		public const string EXTRA_FLUID_STATE = "ION.Droid.Activity.extra.FLUID_STATE";
+		/// <summary>
 		/// The extra that is used if you with to pass a workbench manifold instead of individual sensors to the activity.
 		/// This extra is paired with the index that the manifold is located at within the current app's workbench.
 		/// </summary>
@@ -305,7 +317,7 @@
 		} Unit __temperatureUnit;
 
 		// Overridden from IONActivity
-		protected override void OnCreate(Bundle bundle) {
+		protected override async void OnCreate(Bundle bundle) {
 			base.OnCreate(bundle);
 
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_ptconversion, Resource.Color.gray));
@@ -365,7 +377,19 @@
 			var contentView = FindViewById(Resource.Id.content);
 			contentView.SetOnTouchListener(new ClearFocusListener(pressureEntryView, temperatureEntryView));
 
-			ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+			if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
+				var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
+				var fluid = await ion.fluidManager.GetFluidAsync(name);
+
+				var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
+
+				var locked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
+				fluidPhaseToggleView.Enabled = !locked;
+
+				ptChart = PTChart.New(ion, state, fluid);
+			} else {
+				ptChart = PTChart.New(ion, Fluid.EState.Dew);
+			}
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
