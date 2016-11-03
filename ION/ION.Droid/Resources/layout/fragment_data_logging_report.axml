@@ -21,11 +21,13 @@
                 android:id="@id/report_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium"
                 android:text="@string/report_new" />
             <Button
                 android:id="@id/report_new"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium"
                 android:text="@string/report_saved" />
         </LinearLayout>
         <LinearLayout
@@ -58,16 +60,19 @@
                 android:id="@id/report_saved"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_large"
                 android:text="@string/report_saved" />
             <Button
                 android:id="@id/report_new"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_large"
                 android:text="@string/report_new" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 <!-- The session/data selector -->
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@id/report_selection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -83,8 +88,8 @@
             <TextView
                 android:id="@id/title"
                 android:text="@string/report_data_logging_step_2"
-                android:hint="@string/title"
                 android:textSize="@dimen/text_size_xlarge"
+                android:hint="@string/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <CheckBox
@@ -108,12 +113,14 @@
             <Button
                 android:id="@id/next"
                 android:text="@string/next"
+                android:textSize="@dimen/text_size_large"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 <!-- The data graph selector -->
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@id/report_graph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -129,8 +136,8 @@
             <TextView
                 android:id="@id/title"
                 android:text="@string/report_data_logging_step_3"
+                android:textSize="@dimen/text_size_large"
                 android:hint="@string/title"
-                android:textSize="@dimen/text_size_xlarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <CheckBox
@@ -154,6 +161,7 @@
                 android:layout_height="40dp" />
             <TextView
                 android:id="@id/time"
+                android:textSize="@dimen/text_size_medium"
                 android:gravity="center"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
@@ -212,6 +220,7 @@
             android:layout_height="match_parent">
             <Button
                 android:id="@id/options"
+                android:textSize="@dimen/text_size_medium"
                 android:layout_gravity="end"
                 android:background="@drawable/ic_settings"
                 android:layout_width="40dp"
@@ -225,19 +234,23 @@
 -->
             <TextView
                 android:text="@string/report_data_logging_select_start_datetime"
+                android:textSize="@dimen/text_size_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@id/start"
+                android:textSize="@dimen/text_size_medium"
                 android:hint="XXXXXXXXXX XXXXXXXXXX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="@string/report_data_logging_select_end_datetime"
+                android:textSize="@dimen/text_size_medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <Button
                 android:id="@id/end"
+                android:textSize="@dimen/text_size_medium"
                 android:hint="XXXXXXXXXX XXXXXXXXXX"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />

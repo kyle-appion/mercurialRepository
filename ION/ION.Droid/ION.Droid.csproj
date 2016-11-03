@@ -262,6 +262,7 @@
     <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
+    <Compile Include="src\Widgets\Templates\CompactManifoldViewTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -275,7 +276,6 @@
     <AndroidResource Include="Resources\layout\list_item_device_manager_device.axml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_sensor.axml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_sensor_content.axml" />
-    <AndroidResource Include="Resources\values\Dimens_Static.xml" />
     <AndroidResource Include="Resources\layout\button_scan.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
@@ -640,6 +640,7 @@
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
     <AndroidResource Include="Resources\values\Ids.xml" />
+    <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -669,6 +670,7 @@
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
+    <Folder Include="Resources\values-sw480dp\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

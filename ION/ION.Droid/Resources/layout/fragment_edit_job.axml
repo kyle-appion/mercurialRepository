@@ -11,11 +11,13 @@
         <android.support.design.widget.TextInputLayout
             android:id="@id/name"
             android:theme="@style/IONTextInputLayout"
+            android:textSize="@dimen/text_size_large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:id="@id/text"
                 android:textColor="@color/black"
+                android:textSize="@dimen/text_size_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
@@ -23,11 +25,13 @@
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@id/customer_no"
+            android:textSize="@dimen/text_size_large"
             android:theme="@style/IONTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:id="@id/text"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,11 +40,13 @@
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@id/dispatch_no"
+            android:textSize="@dimen/text_size_large"
             android:theme="@style/IONTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:id="@id/text"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -49,11 +55,13 @@
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@id/purchase_no"
+            android:textSize="@dimen/text_size_large"
             android:theme="@style/IONTextInputLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                 android:id="@id/text"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -62,6 +70,7 @@
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:id="@id/notes"
+            android:textSize="@dimen/text_size_large"
             android:theme="@style/IONTextInputLayout"
             android:textColor="@color/red"
             android:layout_width="match_parent"
@@ -69,6 +78,7 @@
             <android.support.design.widget.TextInputEditText
                 android:id="@id/text"
                 android:textColor="@color/black"
+                android:textSize="@dimen/text_size_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="false"

@@ -594,17 +594,11 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R744.fluid">
       <LogicalName>R744.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\XENON.fluid">
-      <LogicalName>XENON.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R600a.fluid">
       <LogicalName>R600a.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
       <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Dimens.xml" />
   </ItemGroup>
 </Project>

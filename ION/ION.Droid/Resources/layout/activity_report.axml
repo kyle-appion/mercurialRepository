@@ -18,6 +18,7 @@
             android:gravity="center"
             android:id="@id/text"
             android:textColor="@color/black"
+            android:textSize="@dimen/text_size_large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <LinearLayout
@@ -29,6 +30,7 @@
                 android:background="@drawable/tab_indicator_ab_ion_action_bar"
                 android:id="@id/tab_1"
                 android:text="@string/report_by_job"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -38,6 +40,7 @@
                 android:background="@drawable/tab_indicator_ab_ion_action_bar"
                 android:id="@id/tab_2"
                 android:text="@string/report_by_date"
+                android:textSize="@dimen/text_size_large"
                 android:textColor="@color/black"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -54,6 +57,7 @@
     <Button
         android:id="@id/report_graph"
         android:text="@string/report_graph_selection"
+        android:textSize="@dimen/text_size_large"
         android:visibility="invisible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
