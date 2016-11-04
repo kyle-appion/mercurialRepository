@@ -52,6 +52,7 @@ namespace ION.IOS.ViewController.Workbench {
 		public WebPayload webServices;    
     public bool remoteMode = false;
     public UIScrollView remoteBlocker;
+    public UILabel remoteTitle;
 		RemoteControls remoteControl;
     public WorkbenchViewController (IntPtr handle) : base (handle) {
       // Nope
@@ -67,8 +68,20 @@ namespace ION.IOS.ViewController.Workbench {
         root.navigation.ToggleMenu();
       };
       AutomaticallyAdjustsScrollViewInsets = false;
-
-      Title = Strings.Workbench.SELF.FromResources();
+			
+			if(remoteMode){
+				remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
+				remoteTitle.BackgroundColor = UIColor.Clear;
+				remoteTitle.Lines = 2;
+				remoteTitle.Font = UIFont.BoldSystemFontOfSize(14f);
+				remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
+				remoteTitle.TextAlignment = UITextAlignment.Center;
+				remoteTitle.TextColor = UIColor.Black;
+				remoteTitle.Text = "Workbench\nRemote Viewing";
+				this.NavigationItem.TitleView = remoteTitle;
+			} else {
+      	Title = Strings.Workbench.SELF.FromResources();
+			}
 
       ion = AppState.context; 			
      	var webIon = ion as IosION;
@@ -86,27 +99,38 @@ namespace ION.IOS.ViewController.Workbench {
 				remoteBlocker.ShowsVerticalScrollIndicator = false;
 				
 				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle("Remote", UIControlState.Normal);
+				remoteButton.SetTitle("Options", UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteButton.TouchUpInside += (sender, e) =>{
-					pauseRemote(false);
-					webServices.downloading = true;
-					remoteBlocker.Hidden = false;
-					this.NavigationItem.RightBarButtonItem = null;
-				};   
+					if(remoteControl.controlView.Hidden){
+						remoteControl.controlView.Hidden = false;
+					} else {
+						remoteControl.controlView.Hidden = true;
+					}
+				};
 				
 				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
+				this.NavigationItem.RightBarButtonItem = button;
+				this.NavigationController.NavigationBar.BarTintColor = UIColor.Red;
 				
-				remoteControl = new RemoteControls(.88f * View.Bounds.Height,View.Bounds.Width, .1f * View.Bounds.Height);
+				remoteControl = new RemoteControls(45,View);
 				remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
 					disconnectRemoteMode();
 				};
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
+					remoteTitle.Text = "Workbench\nRemote Editing";
 					pauseRemote(true);
 					webServices.downloading = false;
 					remoteBlocker.Hidden = true;
-					this.NavigationItem.RightBarButtonItem = button;
+				};
+
+				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
+					remoteTitle.Text = "Workbench\nRemote Viewing";
+					pauseRemote(false);
+					webServices.downloading = true;
+					remoteBlocker.Hidden = false;
+					remoteBlocker.ExclusiveTouch = true;					
 				};
 				
 				remoteBlocker.Scrolled += (sender, e) => {
@@ -179,9 +203,9 @@ namespace ION.IOS.ViewController.Workbench {
 	      }
 	    } else {
 				if(webServices.downloading){
-		 			remoteControl.controlView.Hidden = false;
+					remoteTitle.Text = "Workbench\nRemote Viewing";
 				} else {
-				 	remoteControl.controlView.Hidden = true;
+					remoteTitle.Text = "Workbench\nRemote Editing";
 				}
 			}
     }
@@ -275,14 +299,10 @@ namespace ION.IOS.ViewController.Workbench {
     }
     
 		public void pauseRemote(bool paused){		
-			if(paused == true){
-		 		remoteControl.controlView.Hidden = true;
-		 		tableContent.ReloadData();
-			} else {
-				remoteControl.controlView.Hidden = false;
-		 		tableContent.ReloadData();
+			if(paused == false){
 				initializeBlockerHeight();
 			}
+		 	tableContent.ReloadData();
 		}
 		
 		/// <summary>

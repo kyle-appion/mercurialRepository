@@ -174,7 +174,7 @@
       var offset = (mixture && EState.Dew == state) ? rows : 0;
       int i = BinSearch(pressureValues, pressure.amount, 0 + offset, rows + offset);
 
-      if (i >= 0) {       
+      if (i >= 0) {
         return TEMPERATURE.OfScalar(temperatures[i]);
       } else {
         i = ~i;

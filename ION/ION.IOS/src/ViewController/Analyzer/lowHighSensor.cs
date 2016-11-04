@@ -68,7 +68,6 @@ namespace ION.IOS.ViewController.Analyzer
     private AnalyzerViewController __analyzerviewcontroller;
     public Unit tUnit;
     public Unit pUnit;
-    public sensor attachedSensor;
     public UIActivityIndicatorView activityConnectStatus;
     public List<string> tableSubviews = new List<string>();
     public List<string> altUnits = new List<string>{"kg/cm","inHg","psig","cmHg","bar","kPa","mPa"};
@@ -83,7 +82,16 @@ namespace ION.IOS.ViewController.Analyzer
     public string location;
     private RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
-
+    public List<sensor> sensorList;
+    List<int> locationList;
+    public LowHighArea lharea;
+		public sensor attachedSensor{
+      get { return __attachedSensor;}
+      set { 
+						__attachedSensor = value;						
+					}
+    } sensor __attachedSensor;
+    
     public GaugeDeviceSensor currentSensor{
 
       get { return __currentSensor;}
@@ -117,8 +125,10 @@ namespace ION.IOS.ViewController.Analyzer
       }
     } Manifold __manifold;
 
-		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController)
+		public lowHighSensor (CGRect areaRect, CGRect tblRect, AnalyzerViewController ViewController, List<sensor> viewList, List<int> areaList = null)
 		{
+			sensorList = viewList;
+			locationList = areaList;
 			snapArea = new UIView (areaRect);
 			this.areaRect = areaRect;
       cellHeight = .521f * snapArea.Bounds.Height;
@@ -126,7 +136,7 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.Bounces = false;
 
       LabelTop = new UILabel (new CGRect(0,0, .859 * areaRect.Width, .217 * areaRect.Height));
-      LabelMiddle = new UILabel (new CGRect(.1 * areaRect.Width, .217 * areaRect.Height, .8 * areaRect.Width, .347 * areaRect.Height));
+      LabelMiddle = new UILabel (new CGRect(.214 * areaRect.Width, .217 * areaRect.Height, .686 * areaRect.Width, .347 * areaRect.Height));
       LabelBottom = new UILabel (new CGRect(0, .565 * areaRect.Height, areaRect.Width, .217 * areaRect.Height));
       LabelSubview = new UILabel (new CGRect(0, .8 * areaRect.Height, .8 * snapArea.Bounds.Width, .204 * areaRect.Height));
       LabelSubview.ClipsToBounds = true;
@@ -167,13 +177,13 @@ namespace ION.IOS.ViewController.Analyzer
       ptFluidState.TextColor = UIColor.White;
       ptFluidState.BackgroundColor = UIColor.Black;
       ptFluidState.Text = "PTDew";
-      changeFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      changeFluid = new UIButton(new CGRect(0, .5 * cellHeight,tblRect.Width, .5 * cellHeight));
       changeFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changeFluid.Layer.BorderWidth = 1f;
       changeFluid.BackgroundColor = UIColor.Clear;
       ptReading = new UILabel(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       ptFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
-      changePTFluid = new UIButton(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
+      changePTFluid = new UIButton(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
       changePTFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changePTFluid.Layer.BorderWidth = 1f;
       changePTFluid.BackgroundColor = UIColor.Clear;
@@ -331,7 +341,82 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
       var manifold = Event.manifold;
-
+      Console.WriteLine(Event.type);
+			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
+				var compareSensor = __manifold.secondarySensor;
+					foreach(var slot in sensorList){
+						if(slot.currentSensor != null){
+							if(slot.currentSensor == compareSensor){
+					      var window = UIApplication.SharedApplication.KeyWindow;
+					      var vc = window.RootViewController;
+					      while (vc.PresentedViewController != null) {
+					        vc = vc.PresentedViewController;
+					      }
+								var location = locationList.IndexOf(Convert.ToInt32(slot.snapArea.AccessibilityIdentifier));
+								//Console.WriteLine("Added sensor from location " + location);
+								if(LabelSubview.BackgroundColor == UIColor.Blue && location > 3){
+									//Console.WriteLine("blue. Adding sensor from location " + location);
+									__manifold.SetSecondarySensor(null);
+			            UIAlertController noneAvailable;
+			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
+			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
+			            vc.PresentViewController(noneAvailable, true, null);
+									return;
+								} else if (LabelSubview.BackgroundColor == UIColor.Red && location < 4){
+									//Console.WriteLine("red. Adding sensor from location " + location);
+									__manifold.SetSecondarySensor(null);
+			            UIAlertController noneAvailable;
+			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
+			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
+			            vc.PresentViewController(noneAvailable, true, null);
+									return;
+								}
+								attachedSensor = slot;
+								slot.topLabel.BackgroundColor = LabelSubview.BackgroundColor;
+								slot.tLabelBottom.BackgroundColor = LabelSubview.BackgroundColor;
+								slot.topLabel.TextColor = UIColor.White;
+							}
+						} 				
+					}
+			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
+			 var compareSensor = __manifold.secondarySensor;
+				if(currentSensor != compareSensor && attachedSensor != null){
+					foreach(var slot in sensorList){
+						if(slot.currentSensor != null){
+							if(slot.currentSensor == compareSensor){
+								slot.topLabel.BackgroundColor = UIColor.Clear;
+								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
+								slot.topLabel.TextColor = UIColor.Black;	
+							}
+							if(slot.currentSensor == currentSensor){
+								slot.lowArea.attachedSensor = null;
+								slot.highArea.attachedSensor = null;
+							}
+						} else if (slot.manualSensor != null){
+							if(slot.manualSensor == compareSensor){
+								slot.topLabel.BackgroundColor = UIColor.Clear;
+								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
+								slot.topLabel.TextColor = UIColor.Black;	
+							}
+							if(__manualSensor != null && slot.manualSensor == __manualSensor){
+								slot.lowArea.attachedSensor = null;
+								slot.highArea.attachedSensor = null;
+							}
+						}
+					}
+				}
+			}
+			foreach(var slot in sensorList){
+				if(manifold.secondarySensor!=null)
+					if(slot.manualSensor != null && slot.manualSensor == manifold.secondarySensor){											
+						slot.middleLabel.Text = manifold.secondarySensor.measurement.amount.ToString("N");
+						slot.bottomLabel.Text = manifold.secondarySensor.unit.ToString();
+						break;
+				}
+			}
+			
+			subviewTable.ReloadData();
+			
       updateSHSCCell(manifold);
 
       updatePTCell(manifold);
@@ -359,7 +444,9 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void updateSHSCCell(Manifold manifold){
+    	Console.WriteLine("lowHighSensor updateSHSCCell");
       if (manifold.secondarySensor != null) {
+      	Console.WriteLine("Secondary sensor is not null");
         isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;
@@ -404,7 +491,6 @@ namespace ION.IOS.ViewController.Analyzer
       }
 
       if (manifold.ptChart != null) {
-
         if (!manifold.ptChart.fluid.mixture){
           if (ptAmount < 0) {
             shFluidState.Text = Util.Strings.Analyzer.SC;
@@ -513,6 +599,19 @@ namespace ION.IOS.ViewController.Analyzer
         updatePTCell(__manifold);
       }
     }
+    
+    /// <summary>
+    /// Checks if a sensor is on the correct side of the analyzer before adding it as a secondary sensor to a high or low area
+    /// </summary>
+    /// <returns><c>true</c>, if sensor is on the same side as the low/high addition, <c>false</c> otherwise.</returns>
+    /// <param name="Sensor">The sensor being added as a secondary sensor to the existing sensor</param>
+    /// <param name="existingSensor">The sensor being added to</param>
+    /// <param name="analyzerSensors">holds the positions of all the sensors</param>
+    public static bool secondarySlotSpot(sensor Sensor, sensor existingSensor){
+      bool available = false;
+				
+      return available;
+    }    
 	}
 }
 

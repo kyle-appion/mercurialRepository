@@ -178,10 +178,8 @@
 						s.device.onDeviceEvent -= OnDeviceEvent;
 					}
           __secondarySensor.onSensorStateChangedEvent -= OnManifoldSensorChanged;
+          NotifyOfEvent(ManifoldEvent.EType.SecondarySensorRemoved);
         }
-
-				__secondarySensor = null;
-				NotifyOfEvent(ManifoldEvent.EType.SecondarySensorRemoved);
 
         __secondarySensor = value;
 
@@ -193,9 +191,10 @@
 
           __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
+          NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
         }
 
-				NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
+        //NotifyOfEvent(ManifoldEvent.EType.Invalidated);
       }
     } Sensor __secondarySensor;
 

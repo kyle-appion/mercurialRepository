@@ -69,11 +69,15 @@
     /// The collection that of records that the source is displaying.
     /// </summary>
     private ObservableCollection<IWorkbenchSourceRecord> records = new ObservableCollection<IWorkbenchSourceRecord>();
+    /// <summary>
+    /// Flag to determine if subviews should be rendered or not
+    /// </summary>
+    private bool expanded = true;
 
     public WorkbenchTableSource(WorkbenchViewController vc, IION ion, UITableView tableView) {
       this.vc = vc;
       this.ion = ion;
-      this.tableView = tableView;		
+      this.tableView = tableView;
     }
 
     // Overridden from UITableViewSource
@@ -114,9 +118,65 @@
     // Overridden from UITableViewSource
     public override bool CanEditRow(UITableView tableView, NSIndexPath path) {
       var record = records[path.Row];
-      return record is ViewerRecord || !((record is AddRecord)) || !((record is SpaceRecord));
+			if (record is AddRecord || record is SpaceRecord){
+				return false;
+			} else {
+				return true;
+			}
+      //return record is ViewerRecord || !((record is AddRecord)) || !((record is SpaceRecord));
     }
 
+
+    public override bool CanMoveRow(UITableView tableView, NSIndexPath indexPath) {
+    	if(records[indexPath.Row] is ViewerRecord){
+      	return true;
+      } else {
+      	return false;
+      }
+    }
+    
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
+      var item = records[sourceIndexPath.Row];
+      var manifold = workbench.manifolds[sourceIndexPath.Row];
+      Console.WriteLine("Grabbed manifold " + manifold.primarySensor.name + "-" + manifold.primarySensor.measurement);
+      var deleteAt = sourceIndexPath.Row;
+      var insertAt = destinationIndexPath.Row;
+
+      // are we inserting
+      Console.WriteLine("MoveRow manifold from index " + sourceIndexPath.Row + " going to index " + destinationIndexPath.Row + " total number of rows " + (records.Count - 1));
+      if(destinationIndexPath.Row < records.Count - 1){
+	      if (destinationIndexPath.Row < sourceIndexPath.Row) {
+	        // add one to where we delete, because we're increasing the index by inserting
+	        deleteAt += 1;
+	      } else {
+	        // add one to where we insert, because we haven't deleted the original yet
+	        insertAt += 1;
+	      }
+	      records.Insert (insertAt, item);
+	      records.RemoveAt (deleteAt);
+	      
+	      workbench.manifolds.Insert(insertAt,manifold);
+	      workbench.manifolds.RemoveAt(deleteAt);
+	
+				expanded = true;
+				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+				SetWorkbench(workbench);				
+	      tableView.SetEditing(false, true);
+      } else {
+      
+	      records.Insert (records.Count - 2, item);
+	      records.RemoveAt (deleteAt);
+
+	      workbench.manifolds.Insert(records.Count - 1,manifold);
+	      workbench.manifolds.RemoveAt(deleteAt);
+	      
+				expanded = true;
+				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+				SetWorkbench(workbench);
+	
+	      tableView.SetEditing(false, true);
+			}
+    }
     // Overridden from UITableViewSource
     public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
       return Strings.DELETE_QUESTION;
@@ -125,6 +185,7 @@
     // Overridden from UITableViewSource
     public override void RowSelected(UITableView tableView, NSIndexPath indexPath) {
       var record = records[indexPath.Row];
+    	Console.WriteLine("Clicked row " + indexPath.Row+ ". Record is a " + record.viewType);
 
       if (record is FluidRecord) {
         var fr = record as FluidRecord;
@@ -155,6 +216,22 @@
           vc.NavigationController.PushViewController(shvc, true);
         }
       }
+      if (record is MeasurementRecord){
+				var property = ((MeasurementRecord)record).sensorProperty as AlternateUnitSensorProperty;
+				if(property != null){
+					var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
+					
+					var unitList = property.sensor.supportedUnits;
+					
+					foreach(var unit in unitList){
+	          dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {
+	            property.unit = unit;
+	          }));
+					}
+ 					dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+					vc.PresentViewController(dialog, false, null);
+				}
+			}
     }
 
     // Overridden from UITableViewSource
@@ -167,10 +244,13 @@
       var record = records[indexPath.Row];
 
       if (record is ViewerRecord) {
-        return 158;
+        //return 158;
+        return 168;
       } else if (record is SpaceRecord) {
         return 10;
-      } else {
+      } else if (record is AddRecord){
+			 	return 58;
+			} else {
         return 48;
       }
     }
@@ -194,18 +274,41 @@
         });
         cell.Layer.CornerRadius = 5;
         var webIon = ion as IosION;
-        if(webIon.webServices.downloading){       
+        if(webIon.webServices.downloading){
 					cell.Hidden = true;
 				} else {
 					cell.Hidden = false;
 				}
         return cell;
-      } else if (record is ViewerRecord) {
+      } else if (record is ViewerRecord) {   
         var viewer = record as ViewerRecord;
         var cell = tableView.DequeueReusableCell(CELL_VIEWER) as ViewerTableCell;
 
         cell.UpdateTo(ion, viewer.manifold, ShowManifoldContext);
         cell.Layer.CornerRadius = 5;
+        
+        var longPress = new UILongPressGestureRecognizer((obj) => {
+					if(obj.State == UIGestureRecognizerState.Began){
+						if(tableView.Editing){
+							tableView.SetEditing(false,true);
+							expanded = true;
+							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+							SetWorkbench(workbench);
+						} else {
+							tableView.SetEditing(true,true);
+							expanded = false;
+							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+							SetWorkbench(workbench);							
+						}	
+					}	else if(obj.State == UIGestureRecognizerState.Cancelled){
+						tableView.SetEditing(false,true);
+						expanded = true;
+						this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+						SetWorkbench(workbench);
+					}
+				});
+				this.tableView.AddGestureRecognizer(longPress);
+				cell.ContentView.BackgroundColor = UIColor.Clear;
         return cell;
       } else if (record is MeasurementRecord) {
         var meas = record as MeasurementRecord;
@@ -250,10 +353,11 @@
 
         cell.UpdateTo(sr,tableView.Bounds.Width);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-        cell.Layer.CornerRadius = 5;
+        //cell.Layer.CornerRadius = 5;
         return cell;
       }else {
-        throw new Exception("Cannot get cell: " + record.viewType + " is not a supported record type.");
+        Log.E(this,"Cannot get cell: " + record.viewType + " is not a supported record type.");
+        return null;
       }
     }
 
@@ -291,12 +395,13 @@
 					manifold = manifold,
 					expanded = true,
 				});
-
-				foreach (var sp in manifold.sensorProperties) {
-					records.Add(CreateRecordForSensorProperty(manifold, sp));
+				
+				if(expanded){
+					foreach (var sp in manifold.sensorProperties) {
+						records.Add(CreateRecordForSensorProperty(manifold, sp));
+					}
 				}
-
-				records.Add(new SpaceRecord());
+				//records.Add(new SpaceRecord());
 			}
 
 			records.Add(new AddRecord());
@@ -326,19 +431,19 @@
             sensor.device.connection.ConnectAsync();
           }));
         }
-#if DEBUG
-				//dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
-				//	var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
-				//	var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
-				//	for (int i = 0; i < device.sensorCount; i++) {
-				//		var s = device[i];
-				//		d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
-				//			ShowChangeUnitDialog(s);
-				//		}));
-				//	}
-				//	vc.PresentViewController(d, true, null);
-				//}));
-#endif
+				dialog.AddAction(UIAlertAction.Create("Remote change unit", UIAlertActionStyle.Default, (action) => {
+					var d = UIAlertController.Create("Select a Sensor", "", UIAlertControllerStyle.Alert);
+					var device = ((GaugeDeviceSensor)manifold.primarySensor).device;
+					for (int i = 0; i < device.sensorCount; i++) {
+						var s = device[i];
+						//d.AddAction(UIAlertAction.Create(i + ": " + s.GetType(), UIAlertActionStyle.Default, (e) => {
+						d.AddAction(UIAlertAction.Create(s.type.ToString(), UIAlertActionStyle.Default, (e) => {
+							ShowChangeUnitDialog(s);
+						}));
+					}
+					d.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,null));
+					vc.PresentViewController(d, true, null);
+				}));
       }
 
       dialog.AddAction(UIAlertAction.Create(Strings.Workbench.Viewer.ADD, UIAlertActionStyle.Default, (action) => {
@@ -399,7 +504,7 @@
 					device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 				}));
 			}
-
+			d.AddAction(UIAlertAction.Create("Cancel", UIAlertActionStyle.Cancel,null));
 			var window = UIApplication.SharedApplication.KeyWindow;
 			var vc = window.RootViewController;
 			vc.PresentViewController(d, true, null);
@@ -484,13 +589,12 @@
         });
       }
 
-      /*
+      
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ALT_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new AlternateUnitSensorProperty(sensor, sensor.supportedUnits[0]));
         });
-      }
-      */
+      }      
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         addAction(Strings.Workbench.Viewer.TIMER_DESC, (UIAlertAction action) => {
@@ -545,11 +649,11 @@
 
           records.Insert(recordIndex, vr);
 
-          indices.Add(recordIndex + 1);
-          records.Insert(recordIndex + 1, new SpaceRecord());
+          //indices.Add(recordIndex + 1);
+          //records.Insert(recordIndex + 1, new SpaceRecord());
 
           tableView.InsertRows(ToNSIndexPath(indices.ToArray()), UITableViewRowAnimation.Top);
-          break;    
+          break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
           OnManifoldEvent(workbenchEvent.manifoldEvent);
@@ -557,7 +661,8 @@
 
         case WorkbenchEvent.EType.Removed:
           var start = recordIndex;
-          var end = start + 1;
+          //var end = start + 1;  
+          var end = start;
 
           vr = records[start] as ViewerRecord;
 
@@ -566,7 +671,7 @@
           }
 
           for (int i = end; i >= start; i--) {
-            records.RemoveAt(i);
+            records.RemoveAt(i);   
           }
 
           tableView.DeleteRows(ToNSIndexPath(Arrays.Range(start, end)), UITableViewRowAnimation.Top);
@@ -596,6 +701,10 @@
       int index;
 			
       switch (e.type) {
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	goto case ManifoldEvent.EType.Invalidated;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
+        	goto case ManifoldEvent.EType.Invalidated;
         case ManifoldEvent.EType.Invalidated:
           if (recordIndex > 0) {
             vr = records[recordIndex] as ViewerRecord;
@@ -626,6 +735,13 @@
       }
     }
 
+		public void collapseSubviews(){
+
+		}
+		
+		public void expandSubviews(){
+
+		}
     /// <summary>
     /// Creates a new WorkbenchSourceRecord from the given sensor property.
     /// </summary>
@@ -642,8 +758,12 @@
         return new FluidRecord(manifold, sensorProperty);
       } else if (sensorProperty is SecondarySensorProperty){
         return new SecondarySensorRecord(manifold, sensorProperty as SecondarySensorProperty);
+      } else if (sensorProperty is AlternateUnitSensorProperty){
+      	return new MeasurementRecord(manifold, sensorProperty as AlternateUnitSensorProperty);
       } else {
-        throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
+        //throw new Exception("Cannot create WorkbenchSourceRecord for sensor property: " + sensorProperty);
+        Log.E(this, "Sensor property chosen that hasn't been implemented yet");
+        return null;
       }
     }
 

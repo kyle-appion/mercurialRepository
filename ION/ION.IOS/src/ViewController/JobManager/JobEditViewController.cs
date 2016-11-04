@@ -5,6 +5,7 @@ using Foundation;
 using CoreGraphics;
 
 using ION.Core.App;
+using System.Threading.Tasks;
 
 namespace ION.IOS.ViewController.JobManager {
   public partial class JobEditViewController : BaseIONViewController {
@@ -18,20 +19,21 @@ namespace ION.IOS.ViewController.JobManager {
     public UIButton saveButton;
     public int frnJID;
     IION ion;
+    static int loadCount = 0;
+    static nfloat loadHeight = 0;
 
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       ion = AppState.context;
-
+			
       saveButton = new UIButton(new CGRect(0,0,60,30));
-      saveButton.SetTitle("Save", UIControlState.Normal);
+      saveButton.SetTitle(Util.Strings.SAVE, UIControlState.Normal);
       saveButton.Layer.BorderWidth = 1f;
       saveButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       saveButton.TouchDown += (sender, e) => {saveButton.BackgroundColor = UIColor.Blue;};
       saveButton.TouchUpOutside += (sender, e) => {saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-      saveButton.TouchUpInside += (sender, e) => {
-      	
+      saveButton.TouchUpInside += (sender, e) => {      	
         saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 
         if(editView.jobName.Text.Length.Equals(0)){
@@ -52,7 +54,7 @@ namespace ION.IOS.ViewController.JobManager {
             this.NavigationController.PopViewController(true);
           } else {
             editView.confirmLabel.TextColor = UIColor.Red;
-            editView.confirmLabel.Text = "Job Name Already Exists";
+            editView.confirmLabel.Text = Util.Strings.Job.JOBEXISTS;
           }
         } else {
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
@@ -67,42 +69,73 @@ namespace ION.IOS.ViewController.JobManager {
 						}	
 						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
             editView.confirmLabel.TextColor = UIColor.Green;
-            editView.confirmLabel.Text = "Job Updated";	          
+            editView.confirmLabel.Text = Util.Strings.Job.UPDATED;
           } else {
             editView.confirmLabel.TextColor = UIColor.Red;
-            editView.confirmLabel.Text = "Job Name Already Exists";
+            editView.confirmLabel.Text = Util.Strings.Job.JOBEXISTS;
           }
         }
 
-        editView.confirmLabel.Hidden = false;
+        editView.confirmLabel.Hidden = false;     
       };
 
-      NavigationItem.Title = "Edit Job";
+      NavigationItem.Title = Util.Strings.Job.EDIT;
 
       var button = new UIBarButtonItem(saveButton);
 
       NavigationItem.RightBarButtonItem = button;
-      tabManager = new UITabBar(new CGRect(0,View.Bounds.Height - 70, View.Bounds.Width,60));
+			AutomaticallyAdjustsScrollViewInsets = false;
+			
+   //   Console.WriteLine("View bounds start " + View.Bounds);
+			//Console.WriteLine("Holder dimensions " + holderView.Bounds);
+			//Console.WriteLine("Scroller dimensions " + infoScroller.Bounds);
+  		setupLayout();
+    }
 
-      editView = new EditJobView(View,frnJID);
-      associateView = new JobSessionView(View,tabManager,UIApplication.SharedApplication.StatusBarFrame.Size.Height * 2,frnJID);
-      notesView = new JobNotesView(View, frnJID);
+		public async void setupLayout(){
+			await Task.Delay(TimeSpan.FromMilliseconds(2));
+			//Console.WriteLine("View dimensions " + View.Bounds);
+			//Console.WriteLine("Holder dimensions " + holderView.Bounds);
+			//Console.WriteLine("Scroller dimensions " + infoScroller.Bounds);
+			var managerOffset = 50;
+			if(loadCount == 0){
+				loadHeight = infoScroller.Bounds.Height;
+				loadCount++;
+			} else {
+				if(infoScroller.Bounds.Height != loadHeight){
+					//Console.WriteLine("Heights didn't match for scrollview " + infoScroller.Bounds + " stored height: " + loadHeight);
+					var tempBounds = infoScroller.Bounds;
+					tempBounds.Height = loadHeight;
+					infoScroller.Bounds = tempBounds;
+					managerOffset = 40;
+					var tabBounds = holderView.Bounds;
+					tabBounds.Height += 20;
+					holderView.Bounds = tabBounds;
+					//Console.WriteLine("Now scrollview bounds are: " + infoScroller.Bounds);
+				}
+			}			
+
+      tabManager = new UITabBar(new CGRect(0,holderView.Bounds.Height - managerOffset, holderView.Bounds.Width,60));
+
+      editView = new EditJobView(infoScroller,frnJID);
+      associateView = new JobSessionView(infoScroller,frnJID);
+      notesView = new JobNotesView(infoScroller, frnJID);
 
       var infoTab = new UITabBarItem();
       infoTab.Tag = 0;
       infoTab.Image = UIImage.FromBundle("ic_small_edit");
-      infoTab.Title = "Job Info";
+      infoTab.Title = Util.Strings.Job.JOBINFO;
 
       if (!frnJID.Equals(0)) {
         var sessionTab = new UITabBarItem();
         sessionTab.Tag = 1;
         sessionTab.Image = UIImage.FromBundle("ic_small_list");
-        sessionTab.Title = "Sessions";
+        sessionTab.Title = Util.Strings.SESSIONS;
 
         var notesTab = new UITabBarItem();
         notesTab.Tag = 2;
         notesTab.Image = UIImage.FromBundle("ic_notes");
-        notesTab.Title = "Notes";
+        notesTab.Title = Util.Strings.NOTES;
 
         tabManager.Items = new UITabBarItem[]{ infoTab, sessionTab, notesTab };
       } else {
@@ -110,38 +143,44 @@ namespace ION.IOS.ViewController.JobManager {
       }
 
       tabManager.SelectedItem = infoTab;
-      tabManager.ItemSelected += (sender, e) => {
-        switch(e.Item.Tag) {
+      tabManager.ItemSelected += (sender, e) => {    
+        switch(e.Item.Tag) {    
           case 0:
-            NavigationItem.Title = "Edit Job";
+            NavigationItem.Title = Util.Strings.Job.EDIT;
             saveButton.Hidden = false;
             associateView.sessionView.Hidden = true;
             notesView.notesView.Hidden = true;
             editView.editView.Hidden = false;
             break;
           case 1:
-            NavigationItem.Title = "Edit Sessions Links";
+            NavigationItem.Title = Util.Strings.Job.EDITSESSIONS;    
+						//infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
             saveButton.Hidden = true;
             editView.editView.Hidden = true;
             notesView.notesView.Hidden = true;
             associateView.sessionView.Hidden = false;
             break;
           case 2:
-            NavigationItem.Title = "Add Notes";
+            NavigationItem.Title = Util.Strings.Job.ADDNOTES;
+						//infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
             saveButton.Hidden = true;
             editView.editView.Hidden = true;
             associateView.sessionView.Hidden = true;
             notesView.notesView.Hidden = false;
             break;
-        }
+        }   
       };
-
-      View.AddSubview(tabManager);
-      View.AddSubview(editView.editView);
-      View.AddSubview(associateView.sessionView);
-      View.AddSubview(notesView.notesView);
-    }
-
+      
+      holderView.AddSubview(tabManager);
+      infoScroller.AddSubview(editView.editView);      
+      infoScroller.AddSubview(associateView.sessionView);
+      infoScroller.AddSubview(notesView.notesView);
+			holderView.BringSubviewToFront(tabManager);
+		}		
+		public override void ViewDidAppear(bool animated) {
+			base.ViewDidAppear(animated);
+			View.LayoutSubviews();
+		}
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.

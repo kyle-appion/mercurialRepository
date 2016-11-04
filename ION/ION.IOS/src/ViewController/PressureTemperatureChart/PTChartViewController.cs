@@ -253,7 +253,8 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
         } else {
-          throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
+          //throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
+          Log.E(this,"Cannot accept sensor that is not a pressure or temperature sensor");
         }
       }
 			 var manualEdit = false;

@@ -26,26 +26,26 @@ namespace ION.IOS.ViewController.JobManager {
       var accessoryView = new UIView(new CGRect(0,0,parentView.Bounds.Width, 40));
       accessoryView.BackgroundColor = UIColor.LightGray;
       var accessoryDoneButton = new UIButton(new CGRect(.8 * accessoryView.Bounds.Width,0,.2 * accessoryView.Bounds.Width,accessoryView.Bounds.Height));
-      accessoryDoneButton.SetTitle("Done",UIControlState.Normal);
+      accessoryDoneButton.SetTitle(Util.Strings.DONE,UIControlState.Normal);
       accessoryDoneButton.TouchUpInside += (sender, e) => {
 				notesText.ResignFirstResponder();
 			};
       accessoryView.AddSubview(accessoryDoneButton);
 
-      notesView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height - 70));
+      notesView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height));
       notesView.Hidden = true;
       notesView.AddGestureRecognizer(new UITapGestureRecognizer(() => {
         notesText.ResignFirstResponder();
       }));
 
-      saveStatus = new UILabel(new CGRect(.1 * notesView.Bounds.Width,.8 * notesView.Bounds.Height + 50,.8 * notesView.Bounds.Width,.1 * notesView.Bounds.Height));
+      saveStatus = new UILabel(new CGRect(.1 * notesView.Bounds.Width,.8 * notesView.Bounds.Height,.8 * notesView.Bounds.Width,.1 * (notesView.Bounds.Height - 60)));
       saveStatus.AdjustsFontSizeToFitWidth = true;
       saveStatus.TextAlignment = UITextAlignment.Center;
       saveStatus.TextColor = UIColor.FromRGB(49, 111, 18);
-      saveStatus.Text = "Notes Saved";
-      saveStatus.Hidden = true;
+      saveStatus.Text = Util.Strings.Job.NOTESSAVED;
+      saveStatus.Hidden = true;   
 
-      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .1 * notesView.Bounds.Height ,.9 * notesView.Bounds.Width,.55 * notesView.Bounds.Height));
+      notesText = new UITextView(new CGRect(.05 * notesView.Bounds.Width, .05 * (notesView.Bounds.Height - 60) ,.9 * notesView.Bounds.Width,.55 * (notesView.Bounds.Height - 60)));
       notesText.Font = UIFont.SystemFontOfSize(14);
       notesText.Layer.BorderWidth = 1f;
       notesText.UserInteractionEnabled = true;
@@ -60,8 +60,8 @@ namespace ION.IOS.ViewController.JobManager {
         fileDir = System.IO.Path.Combine(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal)), infoQuery[0].jobName + ".xml");
       }
 
-      saveNotes = new UIButton(new CGRect(.35 * notesView.Bounds.Width, .71 * notesView.Bounds.Height, .3 * notesView.Bounds.Width, .05 * notesView.Bounds.Height));
-      saveNotes.SetTitle("Save Notes", UIControlState.Normal);
+      saveNotes = new UIButton(new CGRect(.35 * notesView.Bounds.Width, .71 * (notesView.Bounds.Height - 60), .3 * notesView.Bounds.Width, .05 * (notesView.Bounds.Height - 60)));
+      saveNotes.SetTitle(Util.Strings.Job.SAVENOTES, UIControlState.Normal);
       saveNotes.SetTitleColor(UIColor.Black, UIControlState.Normal);
       saveNotes.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       saveNotes.Layer.BorderWidth = 1f;

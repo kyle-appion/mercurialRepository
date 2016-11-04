@@ -232,6 +232,10 @@
         case ManifoldEvent.EType.Invalidated:
           Invalidate();
           break;
+        case ManifoldEvent.EType.SecondarySensorAdded:
+        	goto case ManifoldEvent.EType.Invalidated;
+        case ManifoldEvent.EType.SecondarySensorRemoved:
+        	goto case ManifoldEvent.EType.Invalidated;
         default:
           Log.E(this, "Cannot handle manifold event: " + manifoldEvent.type);
 					break;

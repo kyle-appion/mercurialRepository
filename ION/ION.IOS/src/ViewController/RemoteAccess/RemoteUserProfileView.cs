@@ -76,7 +76,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			emailField.AutocorrectionType = UITextAutocorrectionType.No;
 			emailField.AutocapitalizationType = UITextAutocapitalizationType.None;
 			
-			changeEmailButton = new UIButton(new CGRect(.67 * profileView.Bounds.Width, .35 * profileView.Bounds.Height, .3 * profileView.Bounds.Width, .07 * profileView.Bounds.Height));
+			changeEmailButton = new UIButton(new CGRect(.67 * profileView.Bounds.Width, .41 * profileView.Bounds.Height, .3 * profileView.Bounds.Width, .07 * profileView.Bounds.Height));
 			changeEmailButton.SetTitle("Update", UIControlState.Normal);
 			changeEmailButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			changeEmailButton.Layer.CornerRadius = 5f;
