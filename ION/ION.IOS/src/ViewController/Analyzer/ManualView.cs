@@ -40,7 +40,7 @@ namespace ION.IOS.ViewController.Analyzer {
       dtypeButton.Layer.BorderWidth = 2f;
       mtextValue = new UITextField (new CGRect(.028 * mView.Bounds.Width, .384 * mView.Bounds.Height, .5 * mView.Bounds.Width, .153 * mView.Bounds.Height));
       mtextValue.AttributedPlaceholder = new NSAttributedString (
-        "Enter Measurement"
+        Util.Strings.Analyzer.ENTERMEASUREMENT
       );
       mtextValue.KeyboardType = UIKeyboardType.NumbersAndPunctuation;
       mtextValue.AdjustsFontSizeToFitWidth = true;

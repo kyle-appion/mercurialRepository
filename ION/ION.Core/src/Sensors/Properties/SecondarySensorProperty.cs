@@ -7,13 +7,13 @@
     // Overridden from AbstractSensorProperty
     public override Scalar modifiedMeasurement {
       get {
-        return __modifiedMeasurement;
+				if (manifold.secondarySensor == null) {
+					return Units.Dimensionless.NONE.OfScalar(0);
+				} else {
+					return manifold.secondarySensor.measurement;
+				}
       }
-			protected set {
-				__modifiedMeasurement = value;
-				NotifyChanged();
-			}
-    } Scalar __modifiedMeasurement;
+    }
 
 		public override bool supportedReset {
 			get {
@@ -35,14 +35,11 @@
     public SecondarySensorProperty(Manifold manifold): base(manifold.primarySensor) {
 			this.manifold = manifold;
 			manifold.onManifoldEvent += ManifoldEventListener;
+			ION.Core.Util.Log.D(this, "We are initially registered to manifold: " + manifold.GetHashCode());
     }
 
 		protected override void OnSensorChanged() {
-			if (manifold.secondarySensor == null) {
-				modifiedMeasurement = Units.Dimensionless.NONE.OfScalar(0);
-			} else {
-				modifiedMeasurement = manifold.secondarySensor.measurement;
-			}
+			NotifyChanged();
 		}
 
 		public override void Dispose() {
@@ -51,7 +48,9 @@
 		}
 
 		public void ManifoldEventListener(ManifoldEvent e) {
+			ION.Core.Util.Log.D(this, "Received manifold event from: " + e.manifold.GetHashCode() + " we are listening to: " + manifold.GetHashCode());
 			switch (e.type) {
+				case ManifoldEvent.EType.Invalidated:
 				case ManifoldEvent.EType.SecondarySensorAdded:
 				case ManifoldEvent.EType.SecondarySensorRemoved:
 					OnSensorChanged();		

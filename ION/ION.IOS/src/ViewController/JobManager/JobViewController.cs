@@ -33,7 +33,7 @@ namespace ION.IOS.ViewController.JobManager {
         };
       }
 
-      Title = "Job Settings";
+      Title = Util.Strings.Job.JOBSETTINGS;
       var addJobButton = new UIButton(new CGRect(0,0,31,30));
       addJobButton.TouchUpInside += (sender, e) => {
         var jevc = this.InflateViewController<JobEditViewController>(BaseIONViewController.VC_EDIT_JOB);

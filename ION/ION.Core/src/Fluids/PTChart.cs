@@ -62,7 +62,10 @@
 		 
     private PTChart(IION ion, Fluid.EState state, Fluid fluid) {
       if (fluid == null) {
-        throw new Exception("Cannot create a PTChart with a null fluid");        
+				fluid = ion.fluidManager.lastUsedFluid;
+				if (fluid == null) {
+        	throw new Exception("Cannot create a PTChart with a null fluid");        
+				}
       }
       this.ion = ion;
       this.state = state;
@@ -124,7 +127,6 @@
       if (isRelative) {
         ret = Physics.ConvertAbsolutePressureToRelative(ret, elevation);
       }
-
 
       return ret;
     }

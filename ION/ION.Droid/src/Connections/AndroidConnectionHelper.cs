@@ -5,7 +5,9 @@
 
 	using Android.Bluetooth;
 	using Android.Content;
+	using Android.Content.PM;
 	using Android.OS;
+	using Android.Support.V4.Content;
 
 	using ION.Core.Devices;
 	using ION.Core.Devices.Connections;
@@ -79,8 +81,15 @@
 			handler = new Handler();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-				leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+					Log.D(this, "This user is using the 5.0 bluetooth api");
+					leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				} else {
+					Log.D(this, "This user is using the 4.3 bluetooth api due to rejected permissions");
+					leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
+				}
 			} else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
+				Log.D(this, "This user is using the 4.3 bluetooth api due to versioning");
 				leScanDelegate = new Api18ScanDelegate(manager.Adapter, NotifyDeviceFound);
 			} else {
 				// TODO ahodder@appioninc.com: Catch and display user message
@@ -126,9 +135,11 @@
 		public void StopScan() {
 			handler.RemoveCallbacksAndMessages(null);
 
-			leScanDelegate.StopScan();
-			classicScanDelegate.StopScan();
-			isScanning = false;
+			if (isScanning) {
+				isScanning = false;
+				leScanDelegate.StopScan();
+				classicScanDelegate.StopScan();
+			}
 		}
 
 		private void NotifyClassicDeviceFound(ISerialNumber serialNumber, BluetoothDevice device) {
@@ -138,15 +149,17 @@
 		}
 
 		private void NotifyDeviceFound(BluetoothDevice device, byte[] scanRecord) {
+			Log.D(this, "Found device: " + device.Name);
 			ISerialNumber serialNumber = null;
 
 			if (!DiscoverSerialNumber(device, scanRecord, out serialNumber)) {
+				Log.D(this, "Discarding device: " + device.Name);
 				return; // The device is not ours. Discard it.
 			}
 
-			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
+//			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
 			byte[] broadcastPayload = ParseBroadcastPayloadFromScanRecord(scanRecord);
-			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
+//			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
 
 			var protocolVersion = DiscoverProtocolVersion(device, serialNumber, broadcastPayload);
 

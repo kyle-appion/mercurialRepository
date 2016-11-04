@@ -382,6 +382,15 @@
       return ret;
     }
 
+		/// <summary>
+		/// Queries whether or not a side of the analyzer is full.
+		/// </summary>
+		/// <returns><c>true</c>, if side full was ised, <c>false</c> otherwise.</returns>
+		/// <param name="side">Side.</param>
+		public bool IsSideFull(ESide side) {
+			return NextEmptySensorIndex(side) < 0;
+		}
+
     /// <summary>
     /// Queries whether or not a sensor can be added to the given side of the analyzer.
     /// </summary>
@@ -398,6 +407,10 @@
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
     public bool AddSensorToSide(ESide side, Sensor sensor) {
+			if (HasSensor(sensor)) {
+				return false;
+			}
+
       switch (side) {
         case ESide.Low:
           return AddSensorToRange(0, sensorsPerSide, sensor);
@@ -499,13 +512,21 @@
       sensors[index].onSensorStateChangedEvent -= OnSensorChangedEvent;
       sensors[index] = null;
 
-      if (lowSideManifold != null && lowSideManifold.ContainsSensor(sensor)) {
-        RemoveManifold(ESide.Low);
-      }
+			if (lowSideManifold != null) {
+				if (lowSideManifold.primarySensor.Equals(sensor)) {
+					RemoveManifold(ESide.Low);
+				} else {
+					lowSideManifold.SetSecondarySensor(null);
+				}
+			}
 
-      if (highSideManifold != null && highSideManifold.ContainsSensor(sensor)) {
-        RemoveManifold(ESide.High);
-      }
+			if (highSideManifold != null) {
+				if (highSideManifold.primarySensor.Equals(sensor)) {
+					RemoveManifold(ESide.High);
+				} else {
+					highSideManifold.SetSecondarySensor(null);
+				}
+			}
 
       var ae = new AnalyzerEvent(AnalyzerEvent.EType.Removed, index);
       NotifyOfAnalyzerEvent(ae);
@@ -715,18 +736,30 @@
 
         lowSideManifold = high;
         highSideManifold = low;
+				lowSideManifold.SetSecondarySensor(null);
+				highSideManifold.SetSecondarySensor(null);
       } else {
         if (firstIsInManifold) {
           ESide side;
           if (GetSideOfIndex(first, out side)) {
-            RemoveManifold(side);
+						var manifold = GetManifoldFromSide(side);
+						if (manifold.primarySensor.Equals(sensors[first])) {
+							RemoveManifold(side);
+						} else {
+							manifold.SetSecondarySensor(null);
+						}
           }
         }
 
         if (secondIsInManifold) {
           ESide side;
           if (GetSideOfIndex(second, out side)) {
-            RemoveManifold(side);
+						var manifold = GetManifoldFromSide(side);
+						if (manifold.primarySensor.Equals(sensors[second])) {
+            	RemoveManifold(side);
+						} else {
+							manifold.SetSecondarySensor(null);
+						}
           }
         }
       }
@@ -736,26 +769,33 @@
     }
 
 		/// <summary>
+		/// Attempts to remove the sensor from either of its manifolds.
+		/// </summary>
+		/// <param name="sensor">Sensor.</param>
+		public void RemoveSensorFromManifold(Sensor sensor) {
+			ESide side;
+			if (!GetSideOfSensor(sensor, out side)) {
+				return;
+			}
+
+			RemoveSensorFromManifold(side, sensor);
+		}
+
+		/// <summary>
 		/// Attempts to remove the given sensor from the manifold on the given side of the analyzer.
 		/// </summary>
-		/// <returns><c>true</c>, if sensor from manifold was removed (or the manifold was null), <c>false</c> otherwise.</returns>
 		/// <param name="side">Side.</param>
 		/// <param name="sensor">Sensor.</param>
-		public bool RemoveSensorFromManifold(ESide side, Sensor sensor) {
+		public void RemoveSensorFromManifold(ESide side, Sensor sensor) {
 			var manifold = GetManifoldFromSide(side);
 			if (manifold == null) {
-				return true;
+				return;
 			}
+
 			if (manifold.primarySensor.Equals(sensor)) {
 				RemoveManifold(side);
-				return true;
-			} else if (manifold.secondarySensor != null) {
-				if (manifold.secondarySensor.Equals(sensor)) {
-					RemoveSensorFromManifold(side, sensor);
-				}
-				return true;
-			} else {
-				return false;
+			} else if (manifold.secondarySensor != null && manifold.secondarySensor.Equals(sensor)) {
+				manifold.SetSecondarySensor(null);
 			}
 		}
 
@@ -826,5 +866,19 @@
       High,
     }
   }
+
+	public static class AnalyzerESideExtensions {
+		public static Analyzer.ESide Opposite(this Analyzer.ESide side) {
+			switch (side) {
+				case Analyzer.ESide.Low:
+					return Analyzer.ESide.High;
+				case Analyzer.ESide.High:
+					return Analyzer.ESide.Low;
+				default:
+					return Analyzer.ESide.Low;
+			}
+		}
+	}
 }
 
+ 

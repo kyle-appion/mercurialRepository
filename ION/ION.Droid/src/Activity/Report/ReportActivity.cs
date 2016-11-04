@@ -183,7 +183,7 @@
 			newReportTab.Select();
 			var frag = new ByJobFragment();
 			frag.sessions = checkedSessions;
-			frag.onSessionChecked += OnSessionChecked;
+			frag.onSessionChecked = OnSessionChecked;
 			GotoFragment(frag, Resource.Animation.enter_left, Resource.Animation.exit_right);
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
@@ -200,7 +200,7 @@
 			newReportTab.Select();
 			var frag = new BySessionFragment();
 			frag.sessions = checkedSessions;
-			frag.onSessionChecked += OnSessionChecked;
+			frag.onSessionChecked = OnSessionChecked;
 			GotoFragment(frag, Resource.Animation.enter_right, Resource.Animation.exit_left);
 
 			tab1Button.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);

@@ -32,6 +32,9 @@ namespace ION.IOS.ViewController.Logging {
 
     public void SetupSettingsButtons(UIView mainView, UIActivityIndicatorView activityLoadingGraphs){
       graphingView.menuButton.TouchUpInside += (sender, e) => {
+      	graphingView.exportGraph.Hidden = true;
+      	graphingView.resetButton.Hidden = true;
+      	
         legendView.beginValue.SetTitle(ChosenDates.subLeft.ToString(), UIControlState.Normal);
         legendView.endValue.SetTitle(ChosenDates.subRight.ToString(), UIControlState.Normal);
         checkData.DataType.RemoveGestureRecognizer(checkData.resize);
@@ -50,6 +53,8 @@ namespace ION.IOS.ViewController.Logging {
       };
 
       legendView.menuButton.TouchUpInside += (sender, e) => {
+      	graphingView.exportGraph.Hidden = false;
+      	graphingView.resetButton.Hidden = false;
         checkData.DataType.RemoveGestureRecognizer(checkData.resize);
         ////calculate left tracker size based on manual selected dates
         var leftIndex = ChosenDates.allTimes[ChosenDates.subLeft.ToString()];
@@ -73,7 +78,7 @@ namespace ION.IOS.ViewController.Logging {
         trackerRect.X = graphingView.rightTrackerView.Frame.Left - (.5f * graphingView.rightTrackerCircle.Bounds.Width);
         graphingView.rightTrackerCircle.Center = trackerRect;
 
-        graphingView.subDates.Text = "Start: " + ChosenDates.subLeft.ToString () + "\nFinish: " + ChosenDates.subRight.ToString();
+        graphingView.subDates.Text = Util.Strings.Report.START+ ": " + ChosenDates.subLeft.ToString () + "\n"+Util.Strings.Report.FINISH+": " + ChosenDates.subRight.ToString();
 
         UIView.Transition(
           fromView:legendView.lView,

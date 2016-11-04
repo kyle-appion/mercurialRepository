@@ -41,9 +41,7 @@ namespace ION.IOS.ViewController.JobManager {
       var availableData = new List<ION.IOS.ViewController.Logging.SessionData>();
 
 
-      if (queryAll.Count.Equals(0)) {
-        availableSessions.Hidden = true;
-      }
+
       foreach (var session in queryAll) {
         var data = new ION.IOS.ViewController.Logging.SessionData(session.SID,session.sessionStart,session.sessionEnd,session.frn_JID);
         availableData.Add(data);
@@ -54,10 +52,10 @@ namespace ION.IOS.ViewController.JobManager {
       attachedHeader.Font = UIFont.BoldSystemFontOfSize(20);
       attachedHeader.TextAlignment = UITextAlignment.Center;
       attachedHeader.AdjustsFontSizeToFitWidth = true;     
-      attachedHeader.Text = "Current Sessions";
+      attachedHeader.Text = Util.Strings.Job.CURRENTSESSIONS;
 
       NoneAttached = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.07 * (sessionView.Bounds.Height - 60),.8 * sessionView.Bounds.Width,.08 * (sessionView.Bounds.Height - 60)));
-      NoneAttached.Text = "No Sessions Currently Associated";
+      NoneAttached.Text = Util.Strings.Job.NOSESSIONS;
       NoneAttached.AdjustsFontSizeToFitWidth = true;
       NoneAttached.TextAlignment = UITextAlignment.Center;
       if (!queryAttached.Count.Equals(0)) {
@@ -83,7 +81,7 @@ namespace ION.IOS.ViewController.JobManager {
       //////////////////////////////////////////////////////////////////////////////////////////
 
       removeSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width,.38 * (sessionView.Bounds.Height - 60),.5 * sessionView.Bounds.Width,.05 * (sessionView.Bounds.Height - 60)));
-      removeSession.SetTitle("Remove Selected", UIControlState.Normal);
+      removeSession.SetTitle(Util.Strings.Job.REMOVESELECTED, UIControlState.Normal);
       removeSession.SetTitleColor(UIColor.Black, UIControlState.Normal);
       removeSession.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       removeSession.Layer.BorderWidth = 1f;
@@ -100,9 +98,9 @@ namespace ION.IOS.ViewController.JobManager {
           }
           UIAlertController moreInfoSheet;
 
-          moreInfoSheet = UIAlertController.Create ("Removing Sessions", "Are you sure you want to remove these sessions from the current job?", UIAlertControllerStyle.Alert);
+          moreInfoSheet = UIAlertController.Create (Util.Strings.Job.REMOVINGSESSIONS, Util.Strings.Job.REMOVEDIALOGUE, UIAlertControllerStyle.Alert);
 
-          moreInfoSheet.AddAction (UIAlertAction.Create ("Confirm Removal", UIAlertActionStyle.Default, (action) => {
+          moreInfoSheet.AddAction (UIAlertAction.Create (Util.Strings.Job.CONFIRMREMOVAL, UIAlertActionStyle.Default, (action) => {
 
 
             NoneAvailable.Hidden = true;
@@ -152,18 +150,18 @@ namespace ION.IOS.ViewController.JobManager {
       availableHeader.Font = UIFont.BoldSystemFontOfSize(20);
       availableHeader.TextAlignment = UITextAlignment.Center;
       availableHeader.AdjustsFontSizeToFitWidth = true;
-      availableHeader.Text = "Available Sessions";
+      availableHeader.Text = Util.Strings.Job.AVAILABLESESSIONS;
 
       availableWarning = new UILabel(new CGRect(.025 * sessionView.Bounds.Width, .5 * (sessionView.Bounds.Height - 60), .95 * sessionView.Bounds.Width,.07 * (sessionView.Bounds.Height - 60)));
       availableWarning.Font = UIFont.ItalicSystemFontOfSize(14);
       availableWarning.AdjustsFontSizeToFitWidth = true;
       availableWarning.TextAlignment = UITextAlignment.Center;
-      availableWarning.Text = "(Adding a session in red will remove the association to it's current job)";
+      availableWarning.Text = Util.Strings.Job.REDSESSIONS;
       availableWarning.Lines = 0;
       availableWarning.LineBreakMode = UILineBreakMode.WordWrap;
 
       NoneAvailable = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.57 * (sessionView.Bounds.Height - 60),.8 * sessionView.Bounds.Width,.08 * (sessionView.Bounds.Height - 60)));
-      NoneAvailable.Text = "No Sessions Available";
+      NoneAvailable.Text = Util.Strings.Job.NONEAVAILABLE;
       NoneAvailable.AdjustsFontSizeToFitWidth = true;
       NoneAvailable.TextAlignment = UITextAlignment.Center;
       if (!queryAll.Count.Equals(0)) { 
@@ -177,11 +175,14 @@ namespace ION.IOS.ViewController.JobManager {
       
       //availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
       availableSessions.Source = new AvailableSessionSource(availableData, .1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID, addList);
-      availableSessions.ReloadData();   
+      availableSessions.ReloadData(); 
+      if (queryAll.Count.Equals(0)) {
+        availableSessions.Hidden = true;
+      }  
       //////////////////////////////////////////////////////////////////////////////////////////
 
       addSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width, .88 * (sessionView.Bounds.Height - 60),.5 * sessionView.Bounds.Width, .05 * (sessionView.Bounds.Height - 60)));
-      addSession.SetTitle("Add Selected", UIControlState.Normal);
+      addSession.SetTitle(Util.Strings.Job.ADDSELECTED, UIControlState.Normal);
       addSession.SetTitleColor(UIColor.Black, UIControlState.Normal);
       addSession.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       addSession.Layer.BorderWidth = 1f;

@@ -6,6 +6,7 @@
   using Android.Content;
   using Android.OS;
   using Android.Views;
+	using Android.Widget;
 
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -129,10 +130,21 @@
 					var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
 					var manifold = analyzer.GetManifoldFromSide(side);
 
-					if (!analyzer.HasSensor(manifold.secondarySensor) && manifold.secondarySensor != null) {
+					if (analyzer.HasSensor(manifold.secondarySensor)) {
+						if (analyzer.IsSideFull(side)) {
+							Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_side_full_1sarg), side), ToastLength.Long).Show();
+							manifold.SetSecondarySensor(null);
+						} else {
+							if (!analyzer.IsSensorOnSide(manifold.secondarySensor, side)) {
+								var si = analyzer.IndexOfSensor(manifold.secondarySensor);
+								var di = analyzer.NextEmptySensorIndex(side);
+								analyzerView.SwapSensorMounts(di, si);
+							}
+						}
+					} else {
 						analyzer.AddSensorToSide(side, manifold.secondarySensor);
 					}
-          break;
+					break;
 
         case REQUEST_MANIFOLD_ON_SIDE:
           var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
@@ -223,7 +235,7 @@
         new RenameDialog(manifold.primarySensor).Show(Activity);
       });
 
-			if (dgs.device.isConnected) {
+			if (dgs != null && dgs.device.isConnected) {
 				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
 					var device = dgs.device;
 
@@ -275,18 +287,14 @@
 			foreach (var unit in sensor.supportedUnits) {
 				if (!unit.Equals(sensor.unit)) {
 					ldb.AddItem(unit.ToString(), () => {
-						DoThings(sensor, unit);
+						var device = sensor.device;
+						var p = device.protocol as IGaugeProtocol;
+						device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 					});
 				}
 			}
 
 			ldb.Show();
-		}
-
-		private void DoThings(GaugeDeviceSensor sensor, Unit unit) {
-			var device = sensor.device;
-			var p = device.protocol as IGaugeProtocol;
-			device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 		}
 
     /// <summary>
@@ -448,6 +456,7 @@
       ldb.SetTitle(Resource.String.analyzer_add_from);
       ldb.AddItem(Resource.String.device_manager, () => {
         var i = new Intent(Activity, typeof(DeviceManagerActivity));
+				i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)(EDeviceFilter.All & (~EDeviceFilter.Temperature)));
         i.SetAction(Intent.ActionPick);
         StartActivityForResult(i, this.EncodeManifoldSideRequest(side));
       });
@@ -456,11 +465,13 @@
           TrySetManifold(side, sensor);
         }).Show();
       });
+/*
       ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
         new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
           TrySetManifold(side, sensor);
         }).Show();
       });
+*/
       ldb.Show();
     }
 
@@ -549,7 +560,7 @@
         i.SetAction(Intent.ActionPick);
 				Analyzer.ESide side;
 				if  (!analyzer.GetSideOfManifold(manifold, out side)) {
-					Error("Failed to get the analyzer side of the manifold.");
+					Error(GetString(Resource.String.analyzer_error_failed_to_get_viewer_side));
 					return;
 				}
 				i.PutExtra(PTChartActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
@@ -567,7 +578,7 @@
       var side = Analyzer.ESide.Low;
 
       if (!analyzer.GetSideOfManifold(manifold, out side)) {
-        Error("Failed to open Superheat/Subcool activity; the manifold is not present in the analyzer.");
+				Error(GetString(Resource.String.analyzer_error_failed_to_launch_shsc_missing_manifold));
         return;
       }
 
@@ -576,9 +587,7 @@
       if (manifold.secondarySensor == null && !analyzer.CanAddSensorToSide(side)) {
         // TODO ahodder@appioninc.com: Localize this string.
         var adb = new IONAlertDialog(Activity, Resource.String.error);
-        adb.SetMessage("We cannot open the Superheat / Subcool activity for the clicked subview. Currently, the " + side +
-          " side of the analyzer is full and cannot accept a sensor that is assigned there. Please remove a sensor " +
-          "from the " + side + " of the analyzer to make room.");
+				adb.SetMessage(string.Format(GetString(Resource.String.analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg), side.ToLocalizedString(Activity)));
 
         adb.SetNegativeButton(Resource.String.ok, (obj, args) => {
           var dialog = obj as Android.App.Dialog;
@@ -606,12 +615,25 @@
           StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
           break;
         default:
-          var msg = "Cannot start SuperheatSubcoolActivity: sensor is not valid {" + sensor.type + "}";
+					var msg = string.Format(GetString(Resource.String.analyzer_error_invalid_sensor_type), sensor.type.GetTypeString());
           Log.E(this, msg);
           Alert(msg);
           break;
       }
     }
   }
+
+	internal static class AnalyzerExtensions {
+		public static string ToLocalizedString(this Analyzer.ESide side, Context context) {
+			switch (side) {
+				case Analyzer.ESide.Low:
+					return context.GetString(Resource.String.analyzer_side_low);
+				case Analyzer.ESide.High:
+					return context.GetString(Resource.String.analyzer_side_high);
+				default:
+					return context.GetString(Resource.String.unknown);
+			}
+		}
+	}
 }
 

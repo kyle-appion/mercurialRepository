@@ -77,16 +77,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       maxPressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(maxPressure,ion.locationManager.lastKnownLocation.altitude).ConvertTo(lookup);
 
       minTemperature = ptChart.GetTemperature(new Scalar(lookup,minPressure), pressureSensor.isRelative).ConvertTo(tempLookup);
-	  	maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount - 1;
+	  	//maxTemperature = ptChart.fluid.GetMaximumTemperature().ConvertTo(tempLookup).amount - 1;
+	  	maxTemperature = ptChart.GetTemperature(new Scalar(lookup,Math.Floor(maxPressure.amount)), pressureSensor.isRelative).ConvertTo(tempLookup).amount - 1;
 
 		  //Console.WriteLine ("pressure sensor relativeness: " + pressureSensor.isRelative);
-	    //Console.WriteLine ("min pressure: " + minPressure);
-	    //Console.WriteLine ("max pressure: " + maxPressure.amount);
+	   // Console.WriteLine ("min pressure: " + minPressure);
+	   // Console.WriteLine ("max pressure: " + maxPressure.amount);
 		  //Console.WriteLine ("min temperature: " + minTemperature);
 		  //Console.WriteLine ("fluid min temperature: " + ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup));
 		  //Console.WriteLine ("min pressure for min temperature" + ptChart.GetPressure(new Scalar(minTemperature.unit,minTemperature.amount),pressureSensor.isRelative).ConvertTo(lookup));
 		  //Console.WriteLine ("min pressure for fluid min temperature: " + ptChart.GetPressure(new Scalar(tempLookup,ptChart.fluid.GetMinimumTemperature ().ConvertTo(tempLookup).amount),pressureSensor.isRelative).ConvertTo(lookup));
-	    //Console.WriteLine ("max temperature: " + maxTemperature);
+	   // Console.WriteLine ("max temperature: " + maxTemperature);
 
       startGap = sViewWidth / 2.0;
       measurementWidth = this.Frame.Width - sViewWidth;
@@ -248,37 +249,37 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     	
       if(pressureUnit == Units.Pressure.PSIG){
       	if(convertedFluidMin.amount > -8){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {
         	return -8;
 				}
       } else if (pressureUnit == Units.Pressure.BAR){
       	if(convertedFluidMin.amount > -.5){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {      
         	return -.5;
         }
       } else if (pressureUnit == Units.Pressure.IN_HG){
       	if(convertedFluidMin.amount > -12){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {
         	return -12;
         }
       } else if (pressureUnit == Units.Pressure.CM_HG){
       	if(convertedFluidMin.amount > -20){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {
         	return -20;
         }
       } else if (pressureUnit == Units.Pressure.KG_CM){
       	if(convertedFluidMin.amount > -.5){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {
         	return -.5;
         }
       } else if (pressureUnit == Units.Pressure.KILOPASCAL){
       	if(fluidMin > -50){
-					return convertedFluidMin.amount;
+					return Math.Ceiling(convertedFluidMin.amount);
 				} else {
         	return -50;
         }

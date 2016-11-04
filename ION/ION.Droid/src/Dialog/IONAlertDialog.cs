@@ -1,17 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Text;
-using Android.Views;
-using Android.Widget;
-
 namespace ION.Droid.Dialog {
+
+	using System;
+
+	using Android.App;
+	using Android.Content;
+	using Android.Text;
+	using Android.Views;
+	using Android.Widget;
+
   public class IONAlertDialog : AlertDialog.Builder, IDialogInterfaceOnCancelListener {
     /// <summary>
     /// A delegate that is called when the dialog is canceled.
@@ -108,6 +104,38 @@ namespace ION.Droid.Dialog {
         onCanceled();
       }
     }
+
+		/// <summary>
+		/// A quick builder that will show a dialog and assign action callbacks to the postive and negative buttons.
+		/// </summary>
+		/// <returns>The dialog.</returns>
+		/// <param name="context">Context.</param>
+		/// <param name="title">Title.</param>
+		/// <param name="message">Message.</param>
+		/// <param name="positive">Positive.</param>
+		/// <param name="negative">Negative.</param>
+		public static Dialog ShowDialog(Context context, int title, int message, Action positive, Action negative = null) {
+			return ShowDialog(context, context.GetString(title), context.GetString(message), positive, negative);
+		}
+
+		public static Dialog ShowDialog(Context context, string title, string message, Action positive, Action negative = null) {
+			var adb = new IONAlertDialog(context, title);
+			adb.SetMessage(message);
+
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+				(sender as Dialog).Dismiss();
+				if (negative != null) {
+					negative();
+				}
+			});
+
+			adb.SetPositiveButton(Resource.String.ok, (sender, e) => {
+				(sender as Dialog).Dismiss();
+				positive();
+			});
+
+			return adb.Show();
+		}
 
     internal class CloseDialogAction : Java.Lang.Object, View.IOnClickListener {
       public AlertDialog dialog { get; set; }

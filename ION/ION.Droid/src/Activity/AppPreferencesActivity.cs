@@ -1,25 +1,12 @@
 ﻿namespace ION.Droid.Activity {
 
-  using System;
-  using System.IO;
-
   using Android.App;
-  using Android.Content;
   using Android.Content.PM;
-  using Android.Graphics;
-  using Android.Graphics.Drawables;
   using Android.Preferences;
   using Android.OS;
-  using Android.Views;
-  using Android.Widget;
 
-  using ION.Core.App;
-  using ION.Core.Util;
-
-  using ION.Droid.App;
   using ION.Droid.Dialog;
-  using ION.Droid.Fragments;
-  using ION.Droid.Util;
+	using ION.Droid.Preferences;
 
   [Activity(Label="@string/preferences", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class AppPreferenceActivity : IONPreferenceActivity {
@@ -30,7 +17,7 @@
       base.OnCreate(bundle);
 
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_settings, Resource.Color.gray));
-      PreferenceManager.SharedPreferencesName = AndroidION.PREFERENCES_GENERAL;
+			PreferenceManager.SharedPreferencesName = AppPrefs.PREFERENCES_GENERAL;
       AddPreferencesFromResource(Resource.Xml.preferences_application);
 
 

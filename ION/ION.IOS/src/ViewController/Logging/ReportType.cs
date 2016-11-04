@@ -65,7 +65,7 @@ namespace ION.IOS.ViewController.Logging {
 				pdfButton.ClipsToBounds = true;
 				
 				spreadsheetButton = new UIButton(new CGRect(.5 * popupView.Bounds.Width, 0, .5 * popupView.Bounds.Width, .2 * popupView.Bounds.Height));
-				spreadsheetButton.SetTitle("Spreadsheet", UIControlState.Normal);
+				spreadsheetButton.SetTitle(Util.Strings.SPREADSHEET, UIControlState.Normal);
 				spreadsheetButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				spreadsheetButton.TouchUpInside += switchSpreadsheet;
 				spreadsheetButton.ClipsToBounds = true;
@@ -113,12 +113,12 @@ namespace ION.IOS.ViewController.Logging {
 				rawLabel.TextAlignment = UITextAlignment.Left;
 				
 				pdfExport = new UIButton(new CGRect(.5 * pdfView.Bounds.Width, .8 * pdfView.Bounds.Height, .5 * pdfView.Bounds.Width, .2 * pdfView.Bounds.Height));
-				pdfExport.SetTitle("Export", UIControlState.Normal);
+				pdfExport.SetTitle(Util.Strings.Report.EXPORT, UIControlState.Normal);
 				pdfExport.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				pdfExport.Layer.BorderWidth = 1f;       
 				
 				pdfCancel = new UIButton(new CGRect(0, .8 * pdfView.Bounds.Height, .5 * pdfView.Bounds.Width, .2 * pdfView.Bounds.Height));
-				pdfCancel.SetTitle("Cancel", UIControlState.Normal);
+				pdfCancel.SetTitle(Util.Strings.CANCEL, UIControlState.Normal);
 				pdfCancel.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				pdfCancel.TouchUpInside += (sender, e) => {
 					closeExport();
@@ -130,8 +130,12 @@ namespace ION.IOS.ViewController.Logging {
 				spreadsheetView.Hidden = true;
 				
 				spreadsheetXLSX = new UIButton(new CGRect(.1 * spreadsheetView.Bounds.Width, .2 * spreadsheetView.Bounds.Height, .12 * spreadsheetView.Bounds.Width, .15 * spreadsheetView.Bounds.Height));
-				spreadsheetXLSX.SetImage(UIImage.FromBundle("ic_radio_filled"),UIControlState.Normal);
-				spreadsheetXLSX.TouchUpInside += (sender, e) => {
+				if(spreadsheetType == 0){
+					spreadsheetXLSX.SetImage(UIImage.FromBundle("ic_radio_filled"),UIControlState.Normal);
+				} else {
+					spreadsheetXLSX.SetImage(UIImage.FromBundle("ic_radio_blank"),UIControlState.Normal);
+				}
+				spreadsheetXLSX.TouchUpInside += (sender, e) => {   
 					setSpreadsheet(0);
 				};    
 				
@@ -140,7 +144,11 @@ namespace ION.IOS.ViewController.Logging {
 				xslxFormat.TextAlignment = UITextAlignment.Left;
 				
 				spreadsheetCSV = new UIButton(new CGRect(.1 * spreadsheetView.Bounds.Width, .4 * spreadsheetView.Bounds.Height, .12 * spreadsheetView.Bounds.Width, .15 * spreadsheetView.Bounds.Height));
-				spreadsheetCSV.SetImage(UIImage.FromBundle("ic_radio_blank"),UIControlState.Normal);
+				if(spreadsheetType == 0){
+					spreadsheetCSV.SetImage(UIImage.FromBundle("ic_radio_blank"),UIControlState.Normal);
+				} else {
+					spreadsheetCSV.SetImage(UIImage.FromBundle("ic_radio_filled"),UIControlState.Normal);
+				}
 				spreadsheetCSV.TouchUpInside += (sender, e) => {
 					setSpreadsheet(1);
 				};				

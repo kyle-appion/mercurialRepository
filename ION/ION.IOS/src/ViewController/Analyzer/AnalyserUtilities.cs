@@ -2314,14 +2314,14 @@ namespace ION.IOS.ViewController.Analyzer
 				} else {
           if(Sensor.isManual){
 						if(Sensor.manualSensor.type == ESensorType.Temperature){
-							UIAlertController tempAlert = UIAlertController.Create (Util.Strings.OK, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+							UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
 							tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
 							vc.PresentViewController(tempAlert,true,null);
 							return;
 						}
 					} else {
 						if(Sensor.currentSensor.type == ESensorType.Temperature){
-							UIAlertController tempAlert = UIAlertController.Create (Util.Strings.OK, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+							UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
 							tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
 							vc.PresentViewController(tempAlert,true,null);
 							return;

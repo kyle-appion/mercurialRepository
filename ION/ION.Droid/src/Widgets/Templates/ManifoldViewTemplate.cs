@@ -237,7 +237,8 @@
         case ManifoldEvent.EType.SecondarySensorRemoved:
         	goto case ManifoldEvent.EType.Invalidated;
         default:
-          throw new Exception("Cannot handle manifold event: " + manifoldEvent.type);
+          Log.E(this, "Cannot handle manifold event: " + manifoldEvent.type);
+					break;
       }
     }
   }

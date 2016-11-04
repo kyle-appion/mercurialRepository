@@ -77,8 +77,8 @@ namespace ION.IOS.ViewController.Logging {
 				var window = UIApplication.SharedApplication.KeyWindow;
     		var rootVC = window.RootViewController as IONPrimaryScreenController;
     		
-        var confirmDelete = UIAlertController.Create("Delete Session", "This will permanently remove the session from your device",UIAlertControllerStyle.Alert);
-					confirmDelete.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {
+        var confirmDelete = UIAlertController.Create(Util.Strings.Report.DELETESESSION, Util.Strings.Report.DELETEMESSAGE,UIAlertControllerStyle.Alert);
+					confirmDelete.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
 	          var sessionId = tableItems[indexPath.Row].SID;
 	          // remove that entry from the table and all the associated measurements     
 	          // delete the measurement associated with the session being removed
@@ -96,7 +96,7 @@ namespace ION.IOS.ViewController.Logging {
 	          // delete the row from the table
 	          tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
 					}));
-					confirmDelete.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
+					confirmDelete.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (confirmDelete, animated: true, completionHandler: null);
           break;
         case UITableViewCellEditingStyle.None:

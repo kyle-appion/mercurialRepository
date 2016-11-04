@@ -2,6 +2,7 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 
 	using Android.App;
 	using Android.Views;
@@ -186,7 +187,13 @@
 			var r = new List<SessionRecord>();
 
 			foreach (var sr in sessions) {
-				r.Add(new SessionRecord(sr));
+				var table = ion.database.Table<SensorMeasurementRow>();
+				var query = table.Where(smr => smr.frn_SID == sr._id)
+				                 .GroupBy(smr => smr.serialNumber);
+
+				var count = query.Count();
+
+				r.Add(new SessionRecord(sr, count));
 			}
 
 			SetSessions(r);

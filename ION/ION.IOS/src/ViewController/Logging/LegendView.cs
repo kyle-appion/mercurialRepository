@@ -70,7 +70,7 @@ namespace ION.IOS.ViewController.Logging
       header = new UILabel (new CGRect (0,0,lView.Bounds.Width,.1 * lView.Bounds.Height));
       header.Layer.CornerRadius = 8;
       header.TextAlignment = UITextAlignment.Center;
-      header.Text = "Graph Information";
+      header.Text = Util.Strings.Report.GRAPHINFO;
       header.Font = UIFont.BoldSystemFontOfSize(20);
 
       bluePlot = new UIImageView(new CGRect(.1 * lView.Bounds.Width,.1 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
@@ -78,7 +78,7 @@ namespace ION.IOS.ViewController.Logging
       
       blueLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.1 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       blueLabel.AdjustsFontSizeToFitWidth = true;
-      blueLabel.Text = "Pressure";
+      blueLabel.Text = Util.Strings.Sensor.Type.PRESSURE;
       blueLabel.TextAlignment = UITextAlignment.Left;
       
       pressureUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .1 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
@@ -93,7 +93,7 @@ namespace ION.IOS.ViewController.Logging
       
       burgundyLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.165 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       burgundyLabel.AdjustsFontSizeToFitWidth = true;
-      burgundyLabel.Text = "Vacuum";
+      burgundyLabel.Text = Util.Strings.Sensor.Type.VACUUM;
       burgundyLabel.TextAlignment = UITextAlignment.Left;
 
       vacuumUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .165 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
@@ -108,7 +108,7 @@ namespace ION.IOS.ViewController.Logging
       
       redLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.23 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       redLabel.AdjustsFontSizeToFitWidth = true;
-      redLabel.Text = "Temperature";
+      redLabel.Text = Util.Strings.Sensor.Type.TEMPERATURE;
       redLabel.TextAlignment = UITextAlignment.Left;
 
       temperatureUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .23 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
@@ -155,7 +155,7 @@ namespace ION.IOS.ViewController.Logging
       beginLabel = new UILabel (new CGRect (0, .3 * lView.Bounds.Height, lView.Bounds.Width, .04 * lView.Bounds.Height));
       beginLabel.AdjustsFontSizeToFitWidth = true;
       beginLabel.TextAlignment = UITextAlignment.Center;
-      beginLabel.Text = "Select a start time for the graph";
+      beginLabel.Text = Util.Strings.Report.CHOOSESTART;
 
       endValue = new UIButton (new CGRect (.19 * lView.Bounds.Width, .43 * lView.Bounds.Height,.62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
       endValue.SetTitle (ChosenDates.subRight.ToString (), UIControlState.Normal);
@@ -169,7 +169,7 @@ namespace ION.IOS.ViewController.Logging
       endLabel = new UILabel (new CGRect (0, .39 * lView.Bounds.Height, lView.Bounds.Width, .04 * lView.Bounds.Height));
       endLabel.AdjustsFontSizeToFitWidth = true;
       endLabel.TextAlignment = UITextAlignment.Center;
-      endLabel.Text = "Select an end time for the graph";
+      endLabel.Text = Util.Strings.Report.CHOOSEEND;
     }
 
     public void createTableInfo(){
@@ -187,7 +187,7 @@ namespace ION.IOS.ViewController.Logging
 
     async void BeginningDatePickerTapped (object sender, EventArgs e)
     {
-      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, "Select A Start Time", parentVC)
+      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTSTART, parentVC)
       {
         HeaderBackgroundColor = UIColor.Red,
         HeaderTextColor = UIColor.White,
@@ -263,7 +263,7 @@ namespace ION.IOS.ViewController.Logging
 
     async void EndingDatePickerTapped (object sender, EventArgs e)
     {
-      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, "Select An End Time", parentVC)
+      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTEND, parentVC)
       {
         HeaderBackgroundColor = UIColor.Red,
         HeaderTextColor = UIColor.White,
@@ -330,7 +330,7 @@ namespace ION.IOS.ViewController.Logging
       }
       
     	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_PRESSURE_UNITS;
-    	var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
 			foreach(var unit in unitList){
         dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {          
           NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_pressure");
@@ -350,7 +350,7 @@ namespace ION.IOS.ViewController.Logging
       }
       
     	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_VACUUM_UNITS;
-    	var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
 			foreach(var unit in unitList){
         dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {
           NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_vacuum");
@@ -370,7 +370,7 @@ namespace ION.IOS.ViewController.Logging
       }
       
     	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_TEMPERATURE_UNITS;
-    	var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
 			foreach(var unit in unitList){
         dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => { 
           NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_temperature");

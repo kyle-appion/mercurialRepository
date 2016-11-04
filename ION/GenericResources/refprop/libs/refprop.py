@@ -433,7 +433,7 @@ def _outputierrcheck(ierr, herr, defname, prop):
         #warning string
         if unicode(SetErrorDebug()) == u'on':
             print mes_string(u'warning')
-        raise RefpropdllWarning(herr.decode(u'utf-8'))
+#        raise RefpropdllWarning(herr.decode(u'utf-8'))
     elif ierr > 0 and unicode(SetError()) == u'on': #raise error
         #error string
         if unicode(SetErrorDebug()) == u'on':
@@ -544,9 +544,9 @@ def _inputerrorcheck(deflocals):
                         raise RefpropicompError(u'input value ' + key
                                                  + u' does not match the setup '
                                                  + u'fluid selection')
-                if sum(value) != 1:
-                    raise RefpropnormalizeError(u'sum input value '
-                                                 + key + u'is unequal to 1')
+#                if sum(value) != 1.0:
+#                    raise RefpropnormalizeError(u'sum input value '
+#                                                 + key + u'is unequal to 1. Is: ' + str(sum(value)))
         elif key in checklist:
             if not type(value) == list:
                 raise RefpropinputError (u'expect "list" input for ' +

@@ -247,17 +247,18 @@
 						connectionState = EConnectionState.Resolving;
 						handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, 0, 0), (long)connectionTimeout.TotalMilliseconds);
 					}
-				break;
+					break;
 				case ProfileState.Connecting:
-				break;
+					break;
 				case ProfileState.Disconnected:
 					DoUnexpectedDisconnect();
-				break;
+					break;
 				case ProfileState.Disconnecting:
 					DoUnexpectedDisconnect();
-				break;
+					break;
 			}
 		}
+
 		public override void OnServicesDiscovered(BluetoothGatt gatt, GattStatus status) {
 			if (ValidateServices()) {
 				if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {

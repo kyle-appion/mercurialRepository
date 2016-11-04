@@ -103,7 +103,7 @@
         foreach(var gds in sensors){
           var existing = db.Query<LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?",gds.device.serialNumber.ToString());
 
-          if(existing.Count.Equals(0)){
+					if(existing.Count == 0){
             var newDevice = new LoggingDeviceRow{serialNumber = gds.device.serialNumber.ToString()};
             db.Insert(newDevice);
           }

@@ -43,7 +43,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 	   	sliderLabel = new UILabel(new CGRect(.025 * View.Bounds.Width,290,.95 * View.Bounds.Width,20));
 	   	sliderLabel.AdjustsFontSizeToFitWidth = true;
 	   	sliderLabel.TextAlignment = UITextAlignment.Center;
-	   	sliderLabel.Text = "Saturated Pressure and Temperature";
+	   	sliderLabel.Text = Util.Strings.Fluid.SLIDERHEADING;
 		
 			ptScroller = new UIScrollView(new CGRect(.025 * View.Bounds.Width,320, .95 * View.Bounds.Width, 128));
 			ptScroller.ShowsHorizontalScrollIndicator = false;

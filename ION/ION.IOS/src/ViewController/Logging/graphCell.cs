@@ -56,7 +56,7 @@ namespace ION.IOS.ViewController.Logging
 
       includeLabel = new UILabel (new CGRect (.8 * cellWidth,0,includeButton.Bounds.Width,.25 * includeButton.Bounds.Height));
       includeLabel.TextAlignment = UITextAlignment.Center;
-      includeLabel.Text = "Included";
+      includeLabel.Text = Util.Strings.INCLUDED;
       includeLabel.AdjustsFontSizeToFitWidth = true;
       includeLabel.Layer.BorderWidth = 1f;
       includeLabel.BackgroundColor = UIColor.Black;

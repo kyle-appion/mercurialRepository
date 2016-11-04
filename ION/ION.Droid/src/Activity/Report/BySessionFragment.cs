@@ -1,5 +1,6 @@
 ﻿namespace ION.Droid.Activity.Report {
 
+	using System.Linq;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@
 	using Widgets.Adapters.Job;
 
 	public class BySessionFragment : IONFragment {
-		public event OnSessionChecked onSessionChecked;
+		public OnSessionChecked onSessionChecked;
 
 		public List<int> sessions { private get; set; }
 
@@ -71,7 +72,14 @@
 				if (s._id == ion.dataLogManager.currentSessionId) {
 					continue;
 				}
-				var sessionRecord = new SessionRecord(s);
+
+				var table = ion.database.Table<SensorMeasurementRow>();
+				var query = table.Where(smr => smr.frn_SID == s._id)
+				                 .GroupBy(smr => smr.serialNumber);
+
+				var count = query.Count();
+
+				var sessionRecord = new SessionRecord(s, count);
 				if (sessions != null) {
 					sessionRecord.isChecked = sessions.Contains(s._id);
 				}

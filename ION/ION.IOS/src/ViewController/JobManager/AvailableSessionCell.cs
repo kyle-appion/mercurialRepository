@@ -51,7 +51,7 @@ namespace ION.IOS.ViewController.JobManager {
       sessionInfo.TextAlignment = UITextAlignment.Left;
       sessionInfo.Font = UIFont.SystemFontOfSize(20);
       sessionInfo.Lines = 0;
-      sessionInfo.Text = "Start Date: " + data.start.ToShortDateString() + " " + formatTime + " \nDuration:    " + duration.ToString("0.0") + " min";
+      sessionInfo.Text = Util.Strings.Job.STARTDATE +": " + data.start.ToShortDateString() + " " + formatTime + " \n"+Util.Strings.Job.DURATION+":    " + duration.ToString("0.0") + " min";
       if (!data.frnJID.Equals(0)) {
         sessionInfo.TextColor = UIColor.Red;
       }

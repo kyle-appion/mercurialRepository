@@ -17,7 +17,12 @@
 		}
 
 		public bool StartScan() {
+			try {
 			return adapter.StartLeScan(this);
+			} catch (Exception e) {
+				ION.Core.Util.Log.E(this, "Wtf?", e);
+				return false;
+			}
 		}
 
 		public void StopScan() {

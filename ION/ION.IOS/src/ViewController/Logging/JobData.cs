@@ -80,15 +80,15 @@ namespace ION.IOS.ViewController.Logging {
 
       UIAlertController moreInfoSheet;
 
-      moreInfoSheet = UIAlertController.Create ("Job Options", "", UIAlertControllerStyle.Alert);
+      moreInfoSheet = UIAlertController.Create (Util.Strings.Job.JOBOPTIONS, "", UIAlertControllerStyle.Alert);
 
-      moreInfoSheet.AddAction (UIAlertAction.Create ("Job Info", UIAlertActionStyle.Default, (action) => {
+      moreInfoSheet.AddAction (UIAlertAction.Create (Util.Strings.Job.JOBINFO, UIAlertActionStyle.Default, (action) => {
         var jevc = vc.InflateViewController<JobEditViewController>(BaseIONViewController.VC_EDIT_JOB);
         jevc.frnJID = JID;
         vc.NavigationController.PushViewController(jevc,true);
       }));
 
-      moreInfoSheet.AddAction (UIAlertAction.Create ("Select All", UIAlertActionStyle.Default, (action) => {
+      moreInfoSheet.AddAction (UIAlertAction.Create (Util.Strings.SELECTALL, UIAlertActionStyle.Default, (action) => {
         var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID = " + JID);
         foreach(var sesh in sessions){
           if(!selectedSessions.Contains(sesh.SID)){
@@ -98,7 +98,7 @@ namespace ION.IOS.ViewController.Logging {
         jobTable.ReloadData();
       }));
 
-      moreInfoSheet.AddAction (UIAlertAction.Create ("Deselect All", UIAlertActionStyle.Default, (action) => {
+      moreInfoSheet.AddAction (UIAlertAction.Create (Util.Strings.DESELECTALL, UIAlertActionStyle.Default, (action) => {
         var sessions = ion.database.Query<ION.Core.Database.SessionRow>("SELECT * FROM SessionRow WHERE frn_JID = " + JID);
         foreach(var sesh in sessions){
           if(selectedSessions.Contains(sesh.SID)){

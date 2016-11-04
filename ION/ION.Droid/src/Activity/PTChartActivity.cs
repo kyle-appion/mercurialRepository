@@ -99,7 +99,8 @@
 				if (sensor != null) {
 					OnSensorChanged(sensor);
 				} else {
-					slider.ScrollToPressure(pressureUnit.OfScalar(ptChart.fluid.GetMedianPressure(ptChart.state)), true);
+					var pressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(ptChart.fluid.GetMedianAbsolutePressure(ptChart.state), ptChart.elevation);
+					slider.ScrollToPressure(pressure, true);
 				}
 			}
 		} PTChart __ptChart;
@@ -394,16 +395,18 @@
 				var sp = (SensorParcelable)Intent.GetParcelableExtra(EXTRA_SENSOR);
 				var s = sp.Get(ion);
 				if (ESensorType.Pressure == s?.type || ESensorType.Temperature == s?.type) {
-					this.sensor = s;
+					sensor = s;
 					sensorLocked = true;
 				} else {
-					Error("Cannot start PTChartActivity. Expected a pressure/temperature sensor, received: " + s?.type);
+					Error(string.Format(GetString(Resource.String.ptchart_error_cannot_start_activity_1sarg), s?.type.GetTypeString()));
 					SetResult(Result.Canceled);
 					Finish();
 				}
 			} else {
 				sensorLocked = false;
 			}
+
+			ClearInput();
 		}
 
 		// Overridden from IONActivity
@@ -457,14 +460,8 @@
 			}
 
 			Refresh();
+			ClearInput();
 		}
-/*
-		public override bool DispatchTouchEvent(MotionEvent ev) {
-			pressureEntryView.ClearFocus();
-			temperatureEntryView.ClearFocus();
-			return base.DispatchTouchEvent(ev);
-		}
-*/
 
 		/// <summary>
 		/// Initializes the activity using the given manifold.

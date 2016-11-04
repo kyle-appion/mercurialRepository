@@ -72,7 +72,7 @@ namespace ION.IOS.ViewController.Logging {
       sessionDate.TextAlignment = UITextAlignment.Left;
       sessionDate.Layer.BorderColor = UIColor.Black.CGColor;
       sessionDate.Layer.BorderWidth = 1f;
-      sessionDate.Text = " Start Date: " + start.ToShortDateString()+" "+formatTime+"\n Duration:    " + duration.ToString("0.0") + " min\n Devices:     " + deviceAmount;
+      sessionDate.Text = Util.Strings.Job.STARTDATE + " : " + start.ToShortDateString()+" "+formatTime+"\n " + Util.Strings.Job.DURATION + ":    " + duration.ToString("0.0") + " min\n " + Util.Strings.DEVICES + ":     " + deviceAmount;
       sessionDate.Font = UIFont.SystemFontOfSize(20);
       sessionDate.Lines = 0;
 
