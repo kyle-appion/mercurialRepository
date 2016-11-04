@@ -1,4 +1,6 @@
-﻿using System;
+﻿/*
+
+using System;
 using System.Collections.Generic;
 using UIKit;
 using Foundation;
@@ -200,3 +202,4 @@ namespace ION.IOS.ViewController.AccessRequest
 	}
 }
 
+*/

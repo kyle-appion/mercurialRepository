@@ -41,7 +41,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public UITapGestureRecognizer outsideTap;
 
     private IosION ion;
-    public WebPayload webServices;
+//    public WebPayload webServices;
 
     /// <summary>
     /// The analyzer that we are working with.
@@ -76,7 +76,7 @@ namespace ION.IOS.ViewController.Analyzer {
       InitNavigationBar("ic_nav_analyzer", false); 
       ion = AppState.context as IosION;      
 
-      webServices = ion.webServices;
+//      webServices = ion.webServices;
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
@@ -160,21 +160,21 @@ namespace ION.IOS.ViewController.Analyzer {
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
-					webServices.downloading = false;
+//					webServices.downloading = false;
 					blockerView.Hidden = true;
 				};
 
 				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 					pauseRemote(false);
-					webServices.downloading = true;
+//					webServices.downloading = true;
 					blockerView.Hidden = false;					
 				};
 			
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
-      	webServices.paused += pauseRemote;
+//      	webServices.paused += pauseRemote;
       	viewAnalyzerContainer.AddSubview(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
@@ -1376,6 +1376,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public async void refreshSensorLayout(){
+/*
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			while(webServices.downloading){
 				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);				
@@ -1428,6 +1429,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 				await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			}
+*/
 		}
 		
 		public void pauseRemote(bool paused){
@@ -1441,9 +1443,11 @@ namespace ION.IOS.ViewController.Analyzer {
       var rootVC = window.RootViewController as IONPrimaryScreenController;
       
 		 	remoteControl.controlView.Hidden = true;
+/*
 		 	webServices.downloading = false;
 		 	webServices.remoteViewing = false;
 		 	webServices.paused = null;
+*/
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
@@ -1512,11 +1516,13 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
 	    } else {
+/*
 				if(webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
+*/
 			}
 	    //viewAnalyzerContainer.SetNeedsDisplay();
     }

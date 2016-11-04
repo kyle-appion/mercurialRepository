@@ -11,6 +11,7 @@
   using Newtonsoft.Json.Linq;
 
   using ION.Core.App;
+	using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Devices.Certificates;
   using ION.Core.Security;

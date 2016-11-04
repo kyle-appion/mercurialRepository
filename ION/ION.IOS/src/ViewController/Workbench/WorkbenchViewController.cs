@@ -49,7 +49,7 @@ namespace ION.IOS.ViewController.Workbench {
     private WorkbenchTableSource source { get; set; }
 
     public UIButton recordButton;
-		public WebPayload webServices;    
+//		public WebPayload webServices;    
     public bool remoteMode = false;
     public UIScrollView remoteBlocker;
     public UILabel remoteTitle;
@@ -85,7 +85,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       ion = AppState.context; 			
      	var webIon = ion as IosION;
-     	webServices = webIon.webServices;
+//     	webServices = webIon.webServices;
 
 			if(remoteMode){
 				workbench = new Workbench(ion);
@@ -121,14 +121,14 @@ namespace ION.IOS.ViewController.Workbench {
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = "Workbench\nRemote Editing";
 					pauseRemote(true);
-					webServices.downloading = false;
+//					webServices.downloading = false;
 					remoteBlocker.Hidden = true;
 				};
 
 				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = "Workbench\nRemote Viewing";
 					pauseRemote(false);
-					webServices.downloading = true;
+//					webServices.downloading = true;
 					remoteBlocker.Hidden = false;
 					remoteBlocker.ExclusiveTouch = true;					
 				};
@@ -137,7 +137,7 @@ namespace ION.IOS.ViewController.Workbench {
 					tableContent.SetContentOffset(remoteBlocker.ContentOffset,false);		
 				};
 				
-				webServices.paused += pauseRemote;
+//				webServices.paused += pauseRemote;
 				View.AddSubview(remoteBlocker);
 				View.AddSubview(remoteControl.controlView);
 				View.BringSubviewToFront(remoteControl.controlView);
@@ -202,11 +202,11 @@ namespace ION.IOS.ViewController.Workbench {
 	        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	      }
 	    } else {
-				if(webServices.downloading){
-					remoteTitle.Text = "Workbench\nRemote Viewing";
-				} else {
-					remoteTitle.Text = "Workbench\nRemote Editing";
-				}
+//				if(webServices.downloading){
+//					remoteTitle.Text = "Workbench\nRemote Viewing";
+//				} else {
+//					remoteTitle.Text = "Workbench\nRemote Editing";
+//				}
 			}
     }
 
@@ -333,9 +333,9 @@ namespace ION.IOS.ViewController.Workbench {
       var rootVC = window.RootViewController as IONPrimaryScreenController;
       
 		 	remoteControl.controlView.Hidden = true;
-		 	webServices.downloading = false;
-		 	webServices.remoteViewing = false;
-			webServices.paused = null;
+//		 	webServices.downloading = false;
+//		 	webServices.remoteViewing = false;
+//			webServices.paused = null;
 			
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();

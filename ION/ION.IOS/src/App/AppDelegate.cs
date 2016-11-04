@@ -58,7 +58,7 @@
         Log.E(this, "Failed to initialize ion.", e);
         Environment.Exit(1);
       }
-      ion.webServices = new WebPayload();
+//      ion.webServices = new WebPayload();
       // create a new window instance based on the screen size
       Window = new UIWindow(UIScreen.MainScreen.Bounds);
 
@@ -193,7 +193,7 @@
           var done = ion.dataLogManager.StopRecording().Result;
         }
 
-			  ion.webServices.updateOnlineStatus("0");
+//			  ion.webServices.updateOnlineStatus("0");
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {
