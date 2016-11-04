@@ -25,6 +25,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool
 		UIKit.UITextField editTemperature { get; set; }
 
 		[Outlet]
+		UIKit.UIImageView imageNegativeWarning { get; set; }
+
+		[Outlet]
 		UIKit.UIImageView imagePressureIcon { get; set; }
 
 		[Outlet]
@@ -101,21 +104,6 @@ namespace ION.IOS.ViewController.SuperheatSubcool
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (labelFluidState != null) {
-				labelFluidState.Dispose ();
-				labelFluidState = null;
-			}
-
-			if (labelFluidDelta != null) {
-				labelFluidDelta.Dispose ();
-				labelFluidDelta = null;
-			}
-
-			if (viewDivider4 != null) {
-				viewDivider4.Dispose ();
-				viewDivider4 = null;
-			}
-
 			if (buttonPressureUnit != null) {
 				buttonPressureUnit.Dispose ();
 				buttonPressureUnit = null;
@@ -156,9 +144,19 @@ namespace ION.IOS.ViewController.SuperheatSubcool
 				imageTemperatureLock = null;
 			}
 
+			if (labelFluidDelta != null) {
+				labelFluidDelta.Dispose ();
+				labelFluidDelta = null;
+			}
+
 			if (labelFluidName != null) {
 				labelFluidName.Dispose ();
 				labelFluidName = null;
+			}
+
+			if (labelFluidState != null) {
+				labelFluidState.Dispose ();
+				labelFluidState = null;
 			}
 
 			if (labelPressure != null) {
@@ -206,6 +204,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool
 				viewDivider3 = null;
 			}
 
+			if (viewDivider4 != null) {
+				viewDivider4.Dispose ();
+				viewDivider4 = null;
+			}
+
 			if (viewFluidColor != null) {
 				viewFluidColor.Dispose ();
 				viewFluidColor = null;
@@ -244,6 +247,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool
 			if (viewTemperatureTouchArea != null) {
 				viewTemperatureTouchArea.Dispose ();
 				viewTemperatureTouchArea = null;
+			}
+
+			if (imageNegativeWarning != null) {
+				imageNegativeWarning.Dispose ();
+				imageNegativeWarning = null;
 			}
 		}
 	}

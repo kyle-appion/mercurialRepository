@@ -22,7 +22,7 @@ using ION.Core.Util;
 using ION.Core.App;
 using ION.IOS.ViewController.FileManager;
 
-namespace ION.IOS.ViewController.Logging {
+namespace ION.IOS.ViewController.Logging {   
   public static class ChosenDates {
     public static DateTime subLeft;
     public static DateTime subRight;
@@ -40,7 +40,7 @@ namespace ION.IOS.ViewController.Logging {
     public ChooseReporting reportingSection;
     public ChooseData dataSection;
     public ChooseSaved savedReportsSection;
-    public ChooseGraphing graphingSection;
+    public ChooseGraphing graphingSection;   
     private IION ion;
     public UIActivityIndicatorView activityLoadingGraphs;
     public ObservableCollection<int> selectedSessions;
@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Logging {
       backAction = () => {
         root.navigation.ToggleMenu();
       };
-      Title = "Reports";
+      Title = Util.Strings.Report.REPORTS;
       ChosenDates.includeList = new List<string> ();
       selectedSessions = new ObservableCollection<int>();
       ChosenDates.allTimes = new Dictionary<string,int> ();
@@ -181,6 +181,9 @@ namespace ION.IOS.ViewController.Logging {
           foreach(var file in Directory.GetFiles(dir,"*.xlsx")){
             spreadsheets.Add(file);
           }
+          foreach(var file in Directory.GetFiles(dir,"*.csv")){
+            spreadsheets.Add(file);
+          }
           foreach(var file in Directory.GetFiles(dir,"*.pdf")){
             pdfs.Add(file);
           }
@@ -209,7 +212,7 @@ namespace ION.IOS.ViewController.Logging {
         dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 1f;
       },
-      () => { 
+      () => {
           dataSection.jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           dataSection.jobButton.Hidden = false;
           dataSection.sessionButton.Hidden = false;
@@ -299,6 +302,7 @@ namespace ION.IOS.ViewController.Logging {
 
 			ChosenDates.breakPoints = graphResult.Count;
       for(int s = 0; s < graphResult.Count; s++){
+      	//Console.WriteLine("Going through session " + graphResult[s].SID);
         var deviceCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT DISTINCT serialNumber, sensorIndex FROM SensorMeasurementRow WHERE frn_SID = ? ORDER BY serialNumber ASC", graphResult[s].SID);
         //Console.WriteLine("Grabbed " + deviceCount.Count + " device results");
   
@@ -309,13 +313,14 @@ namespace ION.IOS.ViewController.Logging {
           activeDevice.SID = graphResult[s].SID;
           activeDevice.frnJID = graphResult[s].frn_JID;
           activeDevice.serialNumber = deviceCount[m].serialNumber;
-
-          var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
+					activeDevice.sensorIndex = deviceCount[m].sensorIndex;
+					
+         var measurementCount = ion.database.Query<ION.Core.Database.SensorMeasurementRow>("SELECT * FROM SensorMeasurementRow WHERE serialNumber = ? AND frn_SID = ? AND sensorIndex = ? ORDER BY MID ASC",activeDevice.serialNumber, graphResult[s].SID,deviceCount[m].sensorIndex);
           //Console.WriteLine("Using sensor index: " + measurementCount[0].sensorIndex + " for device: " + measurementCount[0].serialNumber);
           var df = ion.deviceManager.deviceFactory;
           var tempD = df.GetDeviceDefinition(SerialNumberExtensions.ParseSerialNumber(activeDevice.serialNumber)) as GaugeDeviceDefinition;
           activeDevice.type = tempD.sensorDefinitions[measurementCount[0].sensorIndex].sensorType.ToString();
-
+					
           foreach(var meas in measurementCount){
             activeDevice.times.Add(meas.recordedDate.ToLocalTime());
             if (!holderList.Contains(meas.recordedDate.ToLocalTime().ToString())) {
@@ -324,8 +329,9 @@ namespace ION.IOS.ViewController.Logging {
             var measurement = Convert.ToDouble(meas.measurement);
             activeDevice.readings.Add(measurement);
           }
+
           tempResults.Add(activeDevice);
-          Console.WriteLine("Added package for serial " + activeDevice.serialNumber);
+          //Console.WriteLine("Added package for serial " + activeDevice.serialNumber);
         }
         if (holderList.Count > 0) {
           sessionBreaks[s] = holderList[holderList.Count - 1]; 
@@ -346,6 +352,7 @@ namespace ION.IOS.ViewController.Logging {
       var breakPoint = 0;
 
       foreach (var time in holderList) {
+      	//Console.WriteLine("Adding time " +time);
         ChosenDates.allTimes.Add(time, indexes);
         ChosenDates.allIndexes.Add(indexes, time);
         if (breakPoint < sessionBreaks.Length && sessionBreaks[breakPoint].Equals(time)) {
@@ -425,6 +432,7 @@ namespace ION.IOS.ViewController.Logging {
     public override void DidReceiveMemoryWarning() {
       base.DidReceiveMemoryWarning();
       // Release any cached data, images, etc that aren't in use.
+      Console.WriteLine("MEMORY HOLY CRAP ITS GONE!");
     }
   }
 }

@@ -17,18 +17,37 @@ namespace ION.IOS.Util {
   public static class Strings {
     public static readonly String
     ACTIONS = "actions".FromResources(),
+    APPFEEDBACK = "app_feedback".FromResources(),
     CANCEL = "cancel".FromResources(),
+    CLOSE = "close".FromResources(),
     DATE = "date".FromResources(),
     DELETE_QUESTION = "delete_question".FromResources(),
+    DESELECTALL = "deselect_all".FromResources(),
+    DEVICES = "devices".FromResources(),
+    DONE = "done".FromResources(),
     ENTER_NAME = "enter_name".FromResources(),
     HELP = "help".FromResources(),
+    INCLUDED = "included".FromResources(),
+    LINKED = "linked".FromResources(),
+    NAME = "name".FromResources(),
+    NEXT = "next".FromResources(),
+    NOTES = "notes".FromResources(),
     OK = "ok".FromResources(),
+		OKDONE = "ok_done".FromResources(),
     OK_SAVE = "ok_save".FromResources(),
-    RENAME = "rename".FromResources(),
     PLEASE_WAIT = "please_wait".FromResources(),
+    PREVIOUS = "previous".FromResources(),
+    RENAME = "rename".FromResources(),
+    REQUIRED = "required".FromResources(),
+    RESET = "reset".FromResources(),
+		RETURNSETTINGS = "return_settings".FromResources(),   
     SAVE = "save".FromResources(),
     SAVING = "saving".FromResources(),
+    SELECTALL = "select_all".FromResources(),
+    SESSIONS = "sessions".FromResources(),
     SETTINGS = "settings".FromResources(),
+    SPREADSHEET = "spreadsheet".FromResources(),
+    TIME = "time".FromResources(),
     UNKNOWN = "unknown"
     ;
 
@@ -47,49 +66,50 @@ namespace ION.IOS.Util {
     public static class Analyzer {
       public static readonly string
       SELF = "analyzer".FromResources(),
-      ACTION = "Complete Action?".FromResources(),
-      ADDTEMP = "Do you want to add this Temperature sensor to the current Pressure sensor?".FromResources(),
-      ADDPRESS = "Do you want to add this Pressure sensor to the current Temperature sensor?".FromResources(),
-      CANTMOVE = "Cannot Move Sensor".FromResources(),
-      CANTADD = "Cannot add as secondary sensor".FromResources(),
-      NOSPACE = "Not enough space".FromResources(),
-      SAMESIDE = "Secondary sensor must be on the same side as the primary sensor".FromResources(),
-      HIGHLOST = "Completing this action will cause the High side subview arrangement to be lost.".FromResources(),
-      LOWLOST = "Completing this action will cause the Low side subview arrangement to be lost.".FromResources(),
-      SUBVIEW = "Choose a subview".FromResources(),
-      ADDSUBVIEW = "Add Subview".FromResources(),
-      REMOVESENSOR = "Remove Sensor".FromResources(),
-      HIGHUNDEFINED = "High Viewer Not Defined".FromResources(),
-      LOWUNDEFINED = "Low Viewer Not Defined".FromResources(),
-      ACTIONS = "Actions".FromResources(),
-      CLOSE = "Close".FromResources(),
-      DISPLAYLINK = "Display Link:".FromResources(),
-      OKDONE = "OK-Done".FromResources(),
-      OKSAVE = "OK - Save".FromResources(),
-      DEVICETYPE = "Device Type".FromResources(),
-      CREATEMANUAL = "Create Manual Entry".FromResources(),
-      PRESSURE = "Pressure".FromResources(),
-      TEMPERATURE = "Temperature".FromResources(),
-      VACUUM = "Vacuum".FromResources(),
-      ENTERNAME = "Enter Name".FromResources(),
-      UNITPICKER = "Unit Picker".FromResources(),
-      CHOOSEUNIT = "Choose Unit".FromResources(),
-      DEVICEMANAGER = "Device Manager".FromResources(),
-      DEVICEACTIONS = "Device Actions".FromResources(),
-      ADDFROM = "Add From...".FromResources(),
-      CHOOSEDEVICE = "Choose Device Type".FromResources(),
-      RENAME = "Rename".FromResources(),
-      ALARMS = "Alarms".FromResources(),
-      UNSPECIFIED = "Unspecified".FromResources(),
-      LOWSIDE = "Low Side".FromResources(),
-      HIGHSIDE = "High Side".FromResources(),
-      DISCONNECTED = "Disconnected".FromResources(),
-      LHTABLE = "'s Subviews".FromResources(),
-      SC = "S/C".FromResources(),
-      SH = "S/H".FromResources(),
-      HOLD = "hold".FromResources(),
-      SETUP = "Setup".FromResources(),
-      STABLE = "Stable".FromResources()
+      ACTION = "complete_action".FromResources(),
+      ADDFROM = "add_from".FromResources(),
+      ADDPRESS = "add_pressure".FromResources(),
+      ADDSECONDARY = "add_secondary_2sarg".FromResources(),
+      ADDSUBVIEW = "add_subview".FromResources(),
+      ADDTEMP = "add_temp".FromResources(),
+      ANALYZERREMOTEVIEW = "analyzer_remote_view".FromResources(),
+      ANALYZERREMOTEEDIT = "analyzer_remote_edit".FromResources(),
+      CANTMOVE = "cant_move".FromResources(),
+      CANTADD = "cant_add".FromResources(),
+      CHOOSEDEVICE = "choose_type".FromResources(),
+      CHOOSEUNIT = "choose_unit".FromResources(),
+      CREATEMANUAL = "create_manual".FromResources(),
+      DEVICEACTIONS = "device_actions".FromResources(),
+      DISPLAYLINK = "display_link".FromResources(),
+      ENTERNAME = "enter_name".FromResources(),
+      ENTERMEASUREMENT = "enter_measurement".FromResources(),
+      HIGHLOST = "high_lost".FromResources(),
+      HIGHSIDE = "high_side".FromResources(),
+      HIGHUNDEFINED = "high_undefined".FromResources(),
+      HOLD = "analyzer_hold".FromResources(),
+      LHTABLE = "lh_subviews".FromResources(),
+      LOWLOST = "low_lost".FromResources(),
+      LOWSIDE = "low_side".FromResources(),
+      LOWUNDEFINED = "low_undefined".FromResources(),
+      MISSINGVALUE = "missing_value".FromResources(),
+      NOSPACE = "no_space".FromResources(),
+      OPTIONS = "analyzer_options".FromResources(),
+      PTDESC = "analyzer_pt_desc".FromResources(),
+      SETUPPRESSURE = "setup_pressure".FromResources(),
+      RECORDINGSTARTED = "recording_started".FromResources(),
+      RECORDINGSTOPPED = "recording_stopped".FromResources(),
+      REMOVESENSOR = "remove_sensor".FromResources(),
+      REMOVESETUP = "remove_setup".FromResources(),
+      SAMESIDE = "same_side".FromResources(),
+      SHSCDESC = "analyzer_shsc_desc".FromResources(),
+      SC = "analyzer_subcool".FromResources(),
+      SETUP = "analyzer_setup".FromResources(),
+      SH = "analyzer_superheat".FromResources(),
+      STABLE = "analyzer_stable".FromResources(),
+      SUBVIEW = "choose_subview".FromResources(),
+      UNITPICKER = "unit_picker".FromResources(),
+      UNSPECIFIED = "unspecified".FromResources(),
+      VALIDMEASUREMENT = "valid_measurement".FromResources()
       ;
     } // End Strings.Analyzer
 
@@ -98,6 +118,7 @@ namespace ION.IOS.Util {
       AVAILABLE = "device_available".FromResources(),
       CONNECTED = "device_connected".FromResources(),
       CONNECT_ALL = "device_connect_all".FromResources(),
+      CERTDATE = "device_cert_date".FromResources(),
       DISCONNECT = "device_disconnect".FromResources(),
       DISCONNECT_ALL = "device_disconnect_all".FromResources(),
       DISCONNECTED = "device_disconnected".FromResources(),
@@ -110,6 +131,7 @@ namespace ION.IOS.Util {
       LONG_RANGE = "device_long_range".FromResources(),
       NAME = "device_name".FromResources(),
       NEW_DEVICES = "device_new_devices".FromResources(),
+      NOTLINKED = "device_not_linked".FromResources(),
       REALLY_FORGET = "device_really_forget".FromResources(),
       RECONNECT = "device_reconnect".FromResources(),
       SERIAL = "device_serial".FromResources(),
@@ -157,7 +179,7 @@ namespace ION.IOS.Util {
       SCREENSHOT_MISSING_TITLE = "errors_screenshot_missing_title".FromResources(),
       TEMPERATURE_INPUT_PARSE_ERROR = "errors_temperature_input_parse_error".FromResources()
       ;
-    }
+    } //End String.Errors
 
     public static class Fluid {
       public static readonly string
@@ -171,6 +193,7 @@ namespace ION.IOS.Util {
       SC = "fluid_sc".FromResources(),
       SH = "fluid_sh".FromResources(),
       SHSC = "fluid_shsc".FromResources(),
+      SLIDERHEADING = "fluid_slider_heading".FromResources(),
       STATE_HELP = "fluid_state_help".FromResources(),
       SUBCOOL = "fluid_subcool".FromResources(),
       SUBCOOL_ABRV = "fluid_subcool_abrv".FromResources(),
@@ -184,7 +207,7 @@ namespace ION.IOS.Util {
         ;
       } // End Strings.Fluid.Manager
     } // End Strings.Fluid
-
+	
     public static class Help {
       public static readonly string
       ABOUT = "help_about".FromResources(),
@@ -194,8 +217,56 @@ namespace ION.IOS.Util {
       ;
     } // End Strings.Help
 
+		public static class Job{
+		public static readonly string
+			ADDNOTES = "job_add_notes".FromResources(),
+			ADDSELECTED = "job_add_selected".FromResources(),
+			AVAILABLESESSIONS = "job_available_sessions".FromResources(),
+			CONFIRMREMOVAL = "job_confirm_removal".FromResources(),
+			CURRENTSESSIONS = "job_current_sessions".FromResources(),
+      CUSTOMERNUMBER = "job_customer_number".FromResources(),
+      CUSTOMERSIGN = "job_customer_sign".FromResources(),
+			DISPATCHNUMBER = "job_dispatch_number".FromResources(),
+			DISPATCHSIGN = "job_dispatch_sign".FromResources(),
+			DURATION = "job_duration".FromResources(),
+			EDITSESSIONS = "job_edit_sessions".FromResources(),
+			EDIT = "job_edit".FromResources(),
+			JOBEXISTS = "job_exists".FromResources(),
+			JOBINFO = "job_info".FromResources(),
+			JOBNAME = "job_name".FromResources(),
+			JOBOPTIONS = "job_options".FromResources(),
+			JOBSETTINGS = "job_settings".FromResources(),
+			MULTIPLEJOBS = "job_multiple_jobs".FromResources(),
+			NONEAVAILABLE = "job_none_available".FromResources(),
+			NOSESSIONS = "job_no_session".FromResources(),
+			NOTESSAVED = "job_notes_saved".FromResources(),
+      POFULL = "job_po_full".FromResources(),
+      PONUMBER = "job_po_number".FromResources(),
+      POSIGN = "job_po_sign".FromResources(),
+      REDSESSIONS = "job_red_sessions".FromResources(),
+      REMOVEDIALOGUE = "job_remove_dialogue".FromResources(),
+      REMOVESELECTED = "job_remove_selected".FromResources(),
+      REMOVINGSESSIONS = "job_sessions_removing".FromResources(),
+      SAVENOTES = "job_save_notes".FromResources(),
+      SAVEDSUCCESS = "job_saved_success".FromResources(),
+      STARTDATE = "job_start_date".FromResources(),
+      UPDATED = "job_updated".FromResources()
+			;
+			public static class Manager{
+				public static readonly string
+				SELF = "job_manager".FromResources()
+				;
+			} //End Strings.Manager
+		} //End Strings.Job
+				
     public static class Measure {
       public static readonly string
+      AVERAGE = "measure_average".FromResources(),
+      LOWESTMEASUREMENT = "measure_lowest".FromResources(),
+      HIGHESTMEASUREMENT = "measure_highest".FromResources(),
+      AVERAGEMEASUREMENT = "measure_avg".FromResources(),
+      MAXIMUM = "measure_maximum".FromResources(),
+      MINIMUM = "measure_minimum".FromResources(),
       PER_MINUTE = "measure_per_minute".FromResources(),
       PICK_UNIT = "measure_pick_unit".FromResources()
       ;
@@ -211,23 +282,61 @@ namespace ION.IOS.Util {
 
     public static class Report {
       public static readonly string
+      SELF = "report".FromResources(),
+			BYDATE = "logging_by_date".FromResources(),
+			BYJOB = "logging_by_job".FromResources(),
       CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),
       CITY = "report_city".FromResources(),
+      CHOOSEEND = "report_choose_end".FromResources(),
+      CHOOSEFORMAT = "report_choose_format".FromResources(),
+      CHOOSESTART = "report_choose_start".FromResources(),
+      CREATED ="report_created".FromResources(),
+      CREATESPREADSHEET = "report_create_spreadsheet".FromResources(),
+      CREATEPDF = "report_create_pdf".FromResources(),
+      DATALOGGED = "report_data_logged".FromResources(),
+      DELETEMESSAGE = "report_delete_message".FromResources(),
+      DELETESESSION = "report_delete_session".FromResources(),
+      DETAILED = "report_detailed".FromResources(),
+      DEVICEINFO = "report_device_info".FromResources(),
+      DEVICESUSED = "report_devices_used".FromResources(),
       DOWNLOADING_CERTIFICATES = "report_downloading_certificates".FromResources(),
       DOWNLOADING_CERTIFICATES_FAILURES = "report_downloading_certificates_failures".FromResources(),
+      EXPORT = "report_export".FromResources(),
       FAILED_TO_DOWNLOAD = "report_failed_to_download".FromResources(),
+      FINISH = "report_finish".FromResources(),
+      GRAPHINFO = "report_graph_info".FromResources(),
+			GRAPHSELECTION = "report_graph_selection".FromResources(),
       LOGGING = "report_create".FromResources(),
+      LOGGINGINTERVAL = "report_logging_interval".FromResources(),
+      LOWINTERVAL = "report_low_interval".FromResources(),
       MANAGER = "report_job".FromResources(),
+      NEWREPORT = "report_new".FromResources(),
       TITLE = "report_title".FromResources(),
+      NODATA = "report_no_data".FromResources(),
+			NOJOBS = "logging_no_jobs".FromResources(),
       NOTES = "report_notes".FromResources(),
-      REPORTS = "Reports".FromResources(),
+      ONEPAGE = "report_one_page".FromResources(),
+      PLEASEWAIT = "report_please_wait".FromResources(),
+      RAWDATA = "report_raw_data".FromResources(),
+      REPORTS = "reports".FromResources(),
+      REPORTDATES = "report_dates".FromResources(),
+      RETURNSESSIONS = "report_view_sessions".FromResources(),
+      SAVEDREPORT = "report_saved".FromResources(),
       SCREENSHOT = "report_screenshot".FromResources(),
       SCREENSHOT_ARCHIVE = "report_screenshot_archive".FromResources(),
       SCREENSHOT_TITLE = "report_screenshot_title".FromResources(),
+      SELECTION = "report_selection".FromResources(),
+      SELECTEND = "report_select_end".FromResources(),
+      SELECTSTART = "report_select_start".FromResources(),
+      SESSIONSELECTION = "report_session_selection".FromResources(),
+      START = "report_start".FromResources(),
       STATE = "report_state".FromResources(),
+      TOASTSPREADSHEET = "report_toast_spreadsheet".FromResources(),
+      TOASTPDF = "report_toast_pdf".FromResources(),
+      UNASSIGNED = "report_session_unassigned".FromResources(),
       ZIP = "report_zip".FromResources()
       ;
-    }
+    } //End Strings.Report
 
     public static class Sensor {
       public static class Type {
@@ -277,6 +386,21 @@ namespace ION.IOS.Util {
         ;
       }      
     } // End Strings.Workbench
+    
+    public static class Walkthrough{
+			public static readonly string 
+			INTRODUCTORY = "walkthrough_introductory".FromResources(),
+			INTR1 = "walkthrough_1_1".FromResources(),
+			INTR2 = "walkthrough_1_2".FromResources(),
+			INTR3 = "walkthrough_1_3".FromResources(),
+			INTR4 = "walkthrough_1_4".FromResources(),
+			INTR5 = "walkthrough_1_5".FromResources(),
+			INTR6 = "walkthrough_1_6".FromResources(),
+			INTR7 = "walkthrough_1_7".FromResources(),
+			INTR8 = "walkthrough_1_8".FromResources()
+			;
+		} //End Strings.Walkthrough
+    
     public static class AccessManager{
 			public static readonly string
 			SELF = "access_manager".FromResources()

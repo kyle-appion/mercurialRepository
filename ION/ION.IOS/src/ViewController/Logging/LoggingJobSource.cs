@@ -46,7 +46,7 @@ namespace ION.IOS.ViewController.Logging {
     }
     // Overriden from UITableViewSource
     public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
-      return cellHeight;
+      return .8f * cellHeight;
     }
 
     // Overriden from UITableViewSource
@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.Logging {
         cell = new SessionCell ();
 
       cell.makeCellData(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID, tableItems[indexPath.Section].jobSessions[indexPath.Row].start,tableItems[indexPath.Section].jobSessions[indexPath.Row].finish ,tableView, cellHeight);
-      cell.SelectionStyle = UITableViewCellSelectionStyle.None;
+      cell.SelectionStyle = UITableViewCellSelectionStyle.Default;
 
       if(usingSessions.Contains(tableItems[indexPath.Section].jobSessions[indexPath.Row].SID)){
         cell.Accessory = UITableViewCellAccessory.Checkmark;

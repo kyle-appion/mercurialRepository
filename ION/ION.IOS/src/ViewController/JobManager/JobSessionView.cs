@@ -26,7 +26,7 @@ namespace ION.IOS.ViewController.JobManager {
 
     public int frnJID;
 
-    public JobSessionView(UIView parentView, UITabBar tabBar, nfloat navHeight ,int JID = 0) {
+    public JobSessionView(UIView parentView,int JID = 0) {
       ion = AppState.context;
       frnJID = JID;
       addList = new List<int>();
@@ -35,28 +35,34 @@ namespace ION.IOS.ViewController.JobManager {
       var queryAll = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd, frn_JID FROM SessionRow WHERE frn_JID <> ? OR frn_JID IS NULL",frnJID);
       var queryAttached = ion.database.Query<ION.Core.Database.SessionRow>("SELECT SID, sessionStart, sessionEnd FROM SessionRow WHERE frn_JID = ?", frnJID);
 
-      sessionView = new UIView(new CGRect(0,navHeight,parentView.Bounds.Width,parentView.Bounds.Height - (tabBar.Bounds.Height + navHeight)));
+      sessionView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height));
       sessionView.Hidden = true;
 
-      sessionDivider = new UILabel(new CGRect(0,.415 * sessionView.Bounds.Height,sessionView.Bounds.Width,5));
-      sessionDivider.BackgroundColor = UIColor.Black;
+      var availableData = new List<ION.IOS.ViewController.Logging.SessionData>();
 
+
+
+      foreach (var session in queryAll) {
+        var data = new ION.IOS.ViewController.Logging.SessionData(session.SID,session.sessionStart,session.sessionEnd,session.frn_JID);
+        availableData.Add(data);
+      }
+      
       //////////////////////////////////////////////////////////////////////////////////////////
-      attachedHeader = new UILabel(new CGRect(.25 * sessionView.Bounds.Width, 0, .5 * sessionView.Bounds.Width, .08 * sessionView.Bounds.Height));
+      attachedHeader = new UILabel(new CGRect(.25 * sessionView.Bounds.Width, .02 * (sessionView.Bounds.Height - 60), .5 * sessionView.Bounds.Width, .05 * (sessionView.Bounds.Height - 60) ));
       attachedHeader.Font = UIFont.BoldSystemFontOfSize(20);
       attachedHeader.TextAlignment = UITextAlignment.Center;
-      attachedHeader.AdjustsFontSizeToFitWidth = true;
-      attachedHeader.Text = "Current Sessions";
+      attachedHeader.AdjustsFontSizeToFitWidth = true;     
+      attachedHeader.Text = Util.Strings.Job.CURRENTSESSIONS;
 
-      NoneAttached = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.08 * sessionView.Bounds.Height,.8 * sessionView.Bounds.Width,.08 * sessionView.Bounds.Height));
-      NoneAttached.Text = "No Sessions Currently Associated";
+      NoneAttached = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.07 * (sessionView.Bounds.Height - 60),.8 * sessionView.Bounds.Width,.08 * (sessionView.Bounds.Height - 60)));
+      NoneAttached.Text = Util.Strings.Job.NOSESSIONS;
       NoneAttached.AdjustsFontSizeToFitWidth = true;
       NoneAttached.TextAlignment = UITextAlignment.Center;
       if (!queryAttached.Count.Equals(0)) {
         NoneAttached.Hidden = true;
       } 
 
-      attachedSessions = new UITableView(new CGRect(.025 * sessionView.Bounds.Width, .08 * sessionView.Bounds.Height, .95 * sessionView.Bounds.Width, .25 * sessionView.Bounds.Height));
+      attachedSessions = new UITableView(new CGRect(.025 * sessionView.Bounds.Width, .07 * (sessionView.Bounds.Height - 60), .95 * sessionView.Bounds.Width, .3 * (sessionView.Bounds.Height - 60)));
       attachedSessions.Bounces = false;
       attachedSessions.Layer.BorderWidth = 1f;
       attachedSessions.RegisterClassForCellReuse(typeof(AssociatedSessionCell), "associatedCell");
@@ -69,53 +75,13 @@ namespace ION.IOS.ViewController.JobManager {
         var data = new ION.IOS.ViewController.Logging.SessionData(session.SID,session.sessionStart,session.sessionEnd);
         attachedData.Add(data);
       }
-      attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
+      //attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
+      attachedSessions.Source = new AssociatedSessionSource(attachedData,.1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID,removeList);
       attachedSessions.ReloadData();
       //////////////////////////////////////////////////////////////////////////////////////////
 
-
-      //////////////////////////////////////////////////////////////////////////////////////////
-      availableHeader = new UILabel(new CGRect(.25 * sessionView.Bounds.Width,.415 * sessionView.Bounds.Height,.5 * sessionView.Bounds.Width, .05 * sessionView.Bounds.Height));
-      availableHeader.Font = UIFont.BoldSystemFontOfSize(20);
-      availableHeader.TextAlignment = UITextAlignment.Center;
-      availableHeader.AdjustsFontSizeToFitWidth = true;
-      availableHeader.Text = "Available Sessions";
-
-      availableWarning = new UILabel(new CGRect(.025 * sessionView.Bounds.Width, .46 * sessionView.Bounds.Height, .95 * sessionView.Bounds.Width,.08 * sessionView.Bounds.Height));
-      availableWarning.Font = UIFont.ItalicSystemFontOfSize(14);
-      availableWarning.AdjustsFontSizeToFitWidth = true;
-      availableWarning.TextAlignment = UITextAlignment.Center;
-      availableWarning.Text = "(Adding a session in red will remove the association to it's current job)";
-      availableWarning.Lines = 0;
-      availableWarning.LineBreakMode = UILineBreakMode.WordWrap;
-
-      NoneAvailable = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.54 * sessionView.Bounds.Height,.8 * sessionView.Bounds.Width,.08 * sessionView.Bounds.Height));
-      NoneAvailable.Text = "No Sessions Available";
-      NoneAvailable.AdjustsFontSizeToFitWidth = true;
-      NoneAvailable.TextAlignment = UITextAlignment.Center;
-      if (!queryAll.Count.Equals(0)) { 
-        NoneAvailable.Hidden = true;
-      }
-
-      availableSessions = new UITableView(new CGRect(.025 * sessionView.Bounds.Width,.54 * sessionView.Bounds.Height,.95 * sessionView.Bounds.Width,.35 * sessionView.Bounds.Height));
-      availableSessions.Bounces = false;
-      availableSessions.RegisterClassForCellReuse(typeof(AvailableSessionCell), "availableCell");
-      availableSessions.Layer.BorderWidth = 1f;
-      availableSessions.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      if (queryAll.Count.Equals(0)) {
-        availableSessions.Hidden = true;
-      }
-      var availableData = new List<ION.IOS.ViewController.Logging.SessionData>();
-      foreach (var session in queryAll) {
-        var data = new ION.IOS.ViewController.Logging.SessionData(session.SID,session.sessionStart,session.sessionEnd,session.frn_JID);
-        availableData.Add(data);
-      }
-      availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
-      availableSessions.ReloadData();
-      //////////////////////////////////////////////////////////////////////////////////////////
-
-      removeSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width,.36 * sessionView.Bounds.Height,.5 * sessionView.Bounds.Width,.05 * sessionView.Bounds.Height));
-      removeSession.SetTitle("Remove Selected", UIControlState.Normal);
+      removeSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width,.38 * (sessionView.Bounds.Height - 60),.5 * sessionView.Bounds.Width,.05 * (sessionView.Bounds.Height - 60)));
+      removeSession.SetTitle(Util.Strings.Job.REMOVESELECTED, UIControlState.Normal);
       removeSession.SetTitleColor(UIColor.Black, UIControlState.Normal);
       removeSession.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       removeSession.Layer.BorderWidth = 1f;
@@ -132,9 +98,9 @@ namespace ION.IOS.ViewController.JobManager {
           }
           UIAlertController moreInfoSheet;
 
-          moreInfoSheet = UIAlertController.Create ("Removing Sessions", "Are you sure you want to remove these sessions from the current job?", UIAlertControllerStyle.Alert);
+          moreInfoSheet = UIAlertController.Create (Util.Strings.Job.REMOVINGSESSIONS, Util.Strings.Job.REMOVEDIALOGUE, UIAlertControllerStyle.Alert);
 
-          moreInfoSheet.AddAction (UIAlertAction.Create ("Confirm Removal", UIAlertActionStyle.Default, (action) => {
+          moreInfoSheet.AddAction (UIAlertAction.Create (Util.Strings.Job.CONFIRMREMOVAL, UIAlertActionStyle.Default, (action) => {
 
 
             NoneAvailable.Hidden = true;
@@ -161,10 +127,12 @@ namespace ION.IOS.ViewController.JobManager {
               availableData.Add(data);
             }
 
-            attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
-            attachedSessions.ReloadData();
+            //attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
+            attachedSessions.Source = new AssociatedSessionSource(attachedData,.1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID,removeList);
+            attachedSessions.ReloadData();   
 
-            availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
+            //availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
+            availableSessions.Source = new AvailableSessionSource(availableData, .1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID, addList);
             availableSessions.ReloadData();
           }));
 
@@ -173,9 +141,48 @@ namespace ION.IOS.ViewController.JobManager {
         } 
       };
       ////////////////////////////////////////////////////////////////////////////////////////// 
+      
+      sessionDivider = new UILabel(new CGRect(0,.44 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width,5));
+      sessionDivider.BackgroundColor = UIColor.Black;
+      
+      //////////////////////////////////////////////////////////////////////////////////////////
+      availableHeader = new UILabel(new CGRect(.25 * sessionView.Bounds.Width,.45 * (sessionView.Bounds.Height - 60),.5 * sessionView.Bounds.Width, .05 * (sessionView.Bounds.Height - 60)));
+      availableHeader.Font = UIFont.BoldSystemFontOfSize(20);
+      availableHeader.TextAlignment = UITextAlignment.Center;
+      availableHeader.AdjustsFontSizeToFitWidth = true;
+      availableHeader.Text = Util.Strings.Job.AVAILABLESESSIONS;
 
-      addSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width, .9 * sessionView.Bounds.Height,.5 * sessionView.Bounds.Width, .05 * sessionView.Bounds.Height));
-      addSession.SetTitle("Add Selected", UIControlState.Normal);
+      availableWarning = new UILabel(new CGRect(.025 * sessionView.Bounds.Width, .5 * (sessionView.Bounds.Height - 60), .95 * sessionView.Bounds.Width,.07 * (sessionView.Bounds.Height - 60)));
+      availableWarning.Font = UIFont.ItalicSystemFontOfSize(14);
+      availableWarning.AdjustsFontSizeToFitWidth = true;
+      availableWarning.TextAlignment = UITextAlignment.Center;
+      availableWarning.Text = Util.Strings.Job.REDSESSIONS;
+      availableWarning.Lines = 0;
+      availableWarning.LineBreakMode = UILineBreakMode.WordWrap;
+
+      NoneAvailable = new UILabel(new CGRect(.1 * sessionView.Bounds.Width,.57 * (sessionView.Bounds.Height - 60),.8 * sessionView.Bounds.Width,.08 * (sessionView.Bounds.Height - 60)));
+      NoneAvailable.Text = Util.Strings.Job.NONEAVAILABLE;
+      NoneAvailable.AdjustsFontSizeToFitWidth = true;
+      NoneAvailable.TextAlignment = UITextAlignment.Center;
+      if (!queryAll.Count.Equals(0)) { 
+        NoneAvailable.Hidden = true;
+      }
+      availableSessions = new UITableView(new CGRect(.025 * sessionView.Bounds.Width,.57 * (sessionView.Bounds.Height - 60),.95 * sessionView.Bounds.Width,.3 * (sessionView.Bounds.Height - 60)));
+      availableSessions.Bounces = false;
+      availableSessions.RegisterClassForCellReuse(typeof(AvailableSessionCell), "availableCell");
+      availableSessions.Layer.BorderWidth = 1f;
+      availableSessions.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+      
+      //availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
+      availableSessions.Source = new AvailableSessionSource(availableData, .1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID, addList);
+      availableSessions.ReloadData(); 
+      if (queryAll.Count.Equals(0)) {
+        availableSessions.Hidden = true;
+      }  
+      //////////////////////////////////////////////////////////////////////////////////////////
+
+      addSession = new UIButton(new CGRect(.25 * sessionView.Bounds.Width, .88 * (sessionView.Bounds.Height - 60),.5 * sessionView.Bounds.Width, .05 * (sessionView.Bounds.Height - 60)));
+      addSession.SetTitle(Util.Strings.Job.ADDSELECTED, UIControlState.Normal);
       addSession.SetTitleColor(UIColor.Black, UIControlState.Normal);
       addSession.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       addSession.Layer.BorderWidth = 1f;
@@ -186,7 +193,7 @@ namespace ION.IOS.ViewController.JobManager {
         addSession.BackgroundColor = UIColor.FromRGB(255, 215, 101);
         if(addList.Count > 0){
           NoneAttached.Hidden = true;
-          attachedSessions.Hidden = false;
+          attachedSessions.Hidden = false;   
 
           foreach(var id in addList){
             ion.database.Query<ION.Core.Database.SessionRow>("UPDATE SessionRow SET frn_JID = ? WHERE SID = ?",frnJID,id);
@@ -209,10 +216,12 @@ namespace ION.IOS.ViewController.JobManager {
             attachedData.Add(data);
           }
 
-          availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
+          //availableSessions.Source = new AvailableSessionSource(availableData, .05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID, addList);
+          availableSessions.Source = new AvailableSessionSource(availableData, .1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID, addList);
           availableSessions.ReloadData();
 
-          attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
+          //attachedSessions.Source = new AssociatedSessionSource(attachedData,.05 * sessionView.Bounds.Height,sessionView.Bounds.Width, frnJID,removeList);
+          attachedSessions.Source = new AssociatedSessionSource(attachedData,.1 * (sessionView.Bounds.Height - 60),sessionView.Bounds.Width, frnJID,removeList);
           attachedSessions.ReloadData();
         }
       };

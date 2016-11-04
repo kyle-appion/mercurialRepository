@@ -75,8 +75,8 @@ namespace ION.IOS.ViewController.Logging
       HeaderText = headerText;
       PickerType = pickerType;
       _parent = parent;
-      DoneButtonText = "Done";
-      CancelButtonText = "Cancel";
+      DoneButtonText = Util.Strings.DONE;
+      CancelButtonText = Util.Strings.CANCEL;
     }
 
     public override void ViewDidLoad()

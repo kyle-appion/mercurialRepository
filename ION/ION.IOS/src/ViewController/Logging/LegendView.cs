@@ -9,6 +9,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
+using ION.IOS.Util;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -30,6 +31,9 @@ namespace ION.IOS.ViewController.Logging
     public UIButton menuButton;
     public UIButton beginValue;
     public UIButton endValue;
+    public UIButton pressureUnits;
+    public UIButton temperatureUnits;
+    public UIButton vacuumUnits;
 
     public UITableView extraInfoTable;
     public List<deviceReadings> selectedData;
@@ -56,37 +60,64 @@ namespace ION.IOS.ViewController.Logging
     }
 
     public void createLegend(){
+    	var defaultPressure = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
+    	var defaultVacuum = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
+    	var defaultTemperature = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+    	
       menuButton = new UIButton (new CGRect (.9 * lView.Bounds.Width,5,.1 * lView.Bounds.Width,.1 * lView.Bounds.Width));
       menuButton.SetBackgroundImage(UIImage.FromBundle("ic_graph"),UIControlState.Normal);
 
       header = new UILabel (new CGRect (0,0,lView.Bounds.Width,.1 * lView.Bounds.Height));
       header.Layer.CornerRadius = 8;
       header.TextAlignment = UITextAlignment.Center;
-      header.Text = "Graph Information";
+      header.Text = Util.Strings.Report.GRAPHINFO;
       header.Font = UIFont.BoldSystemFontOfSize(20);
 
-      bluePlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.1 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      bluePlot = new UIImageView(new CGRect(.1 * lView.Bounds.Width,.1 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       bluePlot.Image = UIImage.FromBundle("img_blue_plot");
-      blueLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.1 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      
+      blueLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.1 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       blueLabel.AdjustsFontSizeToFitWidth = true;
-      blueLabel.Text = "Pressure";
-      blueLabel.TextAlignment = UITextAlignment.Center;
+      blueLabel.Text = Util.Strings.Sensor.Type.PRESSURE;
+      blueLabel.TextAlignment = UITextAlignment.Left;
+      
+      pressureUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .1 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      pressureUnits.SetTitle(ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultPressure)).ToString(),UIControlState.Normal);
+      pressureUnits.SetTitleColor(UIColor.Black,UIControlState.Normal);
+      pressureUnits.Layer.BorderWidth = 1f;
+      pressureUnits.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      pressureUnits.TouchUpInside += changePressureDefault;
 
-      burgundyPlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.165 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      burgundyPlot = new UIImageView(new CGRect(.1 * lView.Bounds.Width,.165 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       burgundyPlot.Image = UIImage.FromBundle("img_burgundy_plot");
-      burgundyLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.165 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      
+      burgundyLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.165 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       burgundyLabel.AdjustsFontSizeToFitWidth = true;
-      burgundyLabel.Text = "Vacuum";
-      burgundyLabel.TextAlignment = UITextAlignment.Center;
+      burgundyLabel.Text = Util.Strings.Sensor.Type.VACUUM;
+      burgundyLabel.TextAlignment = UITextAlignment.Left;
 
-      redPlot = new UIImageView(new CGRect(.3 * lView.Bounds.Width,.23 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      vacuumUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .165 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      vacuumUnits.SetTitle(ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultVacuum)).ToString(),UIControlState.Normal);
+      vacuumUnits.SetTitleColor(UIColor.Black,UIControlState.Normal);
+      vacuumUnits.Layer.BorderWidth = 1f;
+      vacuumUnits.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      vacuumUnits.TouchUpInside += changeVacuumDefault;
+      
+      redPlot = new UIImageView(new CGRect(.1 * lView.Bounds.Width,.23 * lView.Bounds.Height,.15 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       redPlot.Image = UIImage.FromBundle("img_red_plot");
-      redLabel = new UILabel(new CGRect(.45 * lView.Bounds.Width,.23 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      
+      redLabel = new UILabel(new CGRect(.26 * lView.Bounds.Width,.23 * lView.Bounds.Height,.35 * lView.Bounds.Width, .065 * lView.Bounds.Height));
       redLabel.AdjustsFontSizeToFitWidth = true;
-      redLabel.Text = "Temperature";
-      redLabel.TextAlignment = UITextAlignment.Center;
+      redLabel.Text = Util.Strings.Sensor.Type.TEMPERATURE;
+      redLabel.TextAlignment = UITextAlignment.Left;
 
-
+      temperatureUnits = new UIButton(new CGRect(.62 * lView.Bounds.Width, .23 * lView.Bounds.Height,.25 * lView.Bounds.Width, .065 * lView.Bounds.Height));
+      temperatureUnits.SetTitle(ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultTemperature)).ToString(),UIControlState.Normal);
+      temperatureUnits.SetTitleColor(UIColor.Black,UIControlState.Normal);
+      temperatureUnits.Layer.BorderWidth = 1f;
+      temperatureUnits.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+      temperatureUnits.TouchUpInside += changeTemperatureDefault;
+      
       createDatePicker ();
 
       createTableInfo ();
@@ -98,6 +129,9 @@ namespace ION.IOS.ViewController.Logging
       lView.AddSubview (blueLabel);
       lView.AddSubview (redLabel);
       lView.AddSubview (burgundyLabel);
+      lView.AddSubview (pressureUnits);
+      lView.AddSubview (temperatureUnits);
+      lView.AddSubview (vacuumUnits);
       lView.AddSubview (beginLabel);
       lView.AddSubview (beginValue);
 
@@ -121,7 +155,7 @@ namespace ION.IOS.ViewController.Logging
       beginLabel = new UILabel (new CGRect (0, .3 * lView.Bounds.Height, lView.Bounds.Width, .04 * lView.Bounds.Height));
       beginLabel.AdjustsFontSizeToFitWidth = true;
       beginLabel.TextAlignment = UITextAlignment.Center;
-      beginLabel.Text = "Select a start time for the graph";
+      beginLabel.Text = Util.Strings.Report.CHOOSESTART;
 
       endValue = new UIButton (new CGRect (.19 * lView.Bounds.Width, .43 * lView.Bounds.Height,.62 * lView.Bounds.Width, .05 * lView.Bounds.Height));
       endValue.SetTitle (ChosenDates.subRight.ToString (), UIControlState.Normal);
@@ -135,7 +169,7 @@ namespace ION.IOS.ViewController.Logging
       endLabel = new UILabel (new CGRect (0, .39 * lView.Bounds.Height, lView.Bounds.Width, .04 * lView.Bounds.Height));
       endLabel.AdjustsFontSizeToFitWidth = true;
       endLabel.TextAlignment = UITextAlignment.Center;
-      endLabel.Text = "Select an end time for the graph";
+      endLabel.Text = Util.Strings.Report.CHOOSEEND;
     }
 
     public void createTableInfo(){
@@ -153,7 +187,7 @@ namespace ION.IOS.ViewController.Logging
 
     async void BeginningDatePickerTapped (object sender, EventArgs e)
     {
-      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, "Select A Start Time", parentVC)
+      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTSTART, parentVC)
       {
         HeaderBackgroundColor = UIColor.Red,
         HeaderTextColor = UIColor.White,
@@ -229,7 +263,7 @@ namespace ION.IOS.ViewController.Logging
 
     async void EndingDatePickerTapped (object sender, EventArgs e)
     {
-      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, "Select An End Time", parentVC)
+      var modalPicker = new ModalPickerViewController(ModalPickerType.Custom, Util.Strings.Report.SELECTEND, parentVC)
       {
         HeaderBackgroundColor = UIColor.Red,
         HeaderTextColor = UIColor.White,
@@ -243,6 +277,11 @@ namespace ION.IOS.ViewController.Logging
           endingDates.Add (time.Key);
         }
       }
+      if(endingDates.Count == 0){
+				foreach(var time in ChosenDates.allTimes){
+					endingDates.Add(time.Key);
+				}
+			}
       endingDates.OrderBy(x => x);
       modalPicker.PickerView.Model = new CustomPickerModel(endingDates,lView);
 
@@ -283,6 +322,65 @@ namespace ION.IOS.ViewController.Logging
 //
 //      await parentVC.PresentViewControllerAsync(modalPicker, true);
     }
+    public void changePressureDefault(object sender, EventArgs e){
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+      while (vc.PresentedViewController != null) {
+        vc = vc.PresentedViewController;
+      }
+      
+    	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_PRESSURE_UNITS;
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
+			foreach(var unit in unitList){
+        dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {          
+          NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_pressure");
+      		pressureUnits.SetTitle(unit.ToString(),UIControlState.Normal);
+					extraInfoTable.ReloadData();      
+        }));
+			}   	
+			dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+			vc.PresentViewController(dialog,true, null);
+		}
+		
+		public void changeVacuumDefault(object sender, EventArgs e){
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+      while (vc.PresentedViewController != null) {
+        vc = vc.PresentedViewController;
+      }
+      
+    	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_VACUUM_UNITS;
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
+			foreach(var unit in unitList){
+        dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => {
+          NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_vacuum");
+      		vacuumUnits.SetTitle(unit.ToString(),UIControlState.Normal);
+					extraInfoTable.ReloadData();      
+				}));
+			}
+			dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+			vc.PresentViewController(dialog,true, null);
+		}     
+		
+		public void changeTemperatureDefault(object sender, EventArgs e){
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var vc = window.RootViewController;
+      while (vc.PresentedViewController != null) {
+        vc = vc.PresentedViewController;
+      }
+      
+    	var unitList = ION.Core.Sensors.SensorUtils.DEFAULT_TEMPERATURE_UNITS;
+    	var dialog = UIAlertController.Create(Util.Strings.Analyzer.CHOOSEUNIT, null, UIAlertControllerStyle.Alert);
+			foreach(var unit in unitList){
+        dialog.AddAction(UIAlertAction.Create(unit.ToString(), UIAlertActionStyle.Default, (action) => { 
+          NSUserDefaults.StandardUserDefaults.SetString(ION.Core.Sensors.UnitLookup.GetCode(unit).ToString(), "settings_units_default_temperature");
+      		temperatureUnits.SetTitle(unit.ToString(),UIControlState.Normal);
+					extraInfoTable.ReloadData();      
+        }));
+			}
+			dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
+			vc.PresentViewController(dialog,true, null);
+		}
   }
 }
 

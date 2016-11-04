@@ -18,8 +18,10 @@ using ION.Core.Measure;
 using ION.Core.App;
 using ION.Core.Net;
 using ION.IOS.ViewController.RemoteDeviceManager;
-using System.Collections.ObjectModel;
 using ION.IOS.Viewcontroller.RemoteAccess;
+using ION.Core.Database;
+using ION.IOS.ViewController.ScreenshotReport;
+using ION.Core.Util;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -34,7 +36,9 @@ namespace ION.IOS.ViewController.Analyzer {
     public static UIButton dataRecord;
     public static UIImageView compressor;
     public static UIImageView expansion;
+    public UILabel remoteTitle;
     public RemoteControls remoteControl;
+    public UITapGestureRecognizer outsideTap;
 
     private IosION ion;
     public WebPayload webServices;
@@ -64,9 +68,10 @@ namespace ION.IOS.ViewController.Analyzer {
 		
       arvc = this;
       
-      lowHighSensors = new LowHighArea (viewAnalyzerContainer, this);
+      analyzerSensors = new sensorGroup(viewAnalyzerContainer, this);      
+      lowHighSensors = new LowHighArea (viewAnalyzerContainer, this, analyzerSensors);
+
       mentryView = new ManualView(viewAnalyzerContainer);
-      analyzerSensors = new sensorGroup(viewAnalyzerContainer, this);
       
       InitNavigationBar("ic_nav_analyzer", false); 
       ion = AppState.context as IosION;      
@@ -80,8 +85,21 @@ namespace ION.IOS.ViewController.Analyzer {
      
 			analyzer = ion.currentAnalyzer;
 			
-      Title = "Analyzer";
-
+			if(remoteMode){
+				remoteTitle = new UILabel(new CGRect(0, 0, 480, 44));
+				remoteTitle.BackgroundColor = UIColor.Clear;
+				remoteTitle.Lines = 2;
+				remoteTitle.Font = UIFont.BoldSystemFontOfSize(14f);
+				remoteTitle.ShadowColor = UIColor.FromWhiteAlpha(0.0f,.5f);
+				remoteTitle.TextAlignment = UITextAlignment.Center;
+				remoteTitle.TextColor = UIColor.Black;
+				remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
+				
+				this.NavigationItem.TitleView = remoteTitle;				
+			} else {
+	      Title = Util.Strings.Analyzer.SELF;
+			}
+      
       createSensors ();
 
       mentryView.mmeasurementType.TouchUpInside += showManualPicker;
@@ -95,7 +113,7 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView.mcloseButton.TouchUpInside += delegate {
         mentryView.mtextValue.Text = "";
         mentryView.mView.Hidden = true;
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
         mentryView.mbuttonText.Text = start.pressures[0];
         mentryView.textValidation.Hidden = true;
@@ -106,51 +124,70 @@ namespace ION.IOS.ViewController.Analyzer {
       viewAnalyzerContainer.SendSubviewToBack(lowHighSensors.highArea.snapArea);
       
       if(remoteMode){
-				UIView blockerView = new UIView(new CGRect(0,40,viewAnalyzerContainer.Bounds.Width,.8 * viewAnalyzerContainer.Bounds.Height));
+      	var totalSize = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).Size;
+				totalSize /= 1024;
+				totalSize /= 1024;
+				var freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
+				freeSpace /= 1024;
+				freeSpace /= 1024;
+				
+				//Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
+			
+				UIView blockerView = new UIView(new CGRect(0,0,viewAnalyzerContainer.Bounds.Width,viewAnalyzerContainer.Bounds.Height));
 				blockerView.BackgroundColor = UIColor.Clear;
-    		blockerView.ExclusiveTouch = true;
 
 				var remoteButton = new UIButton(new CGRect(0,0,65,35));
-				remoteButton.SetTitle("Remote", UIControlState.Normal);
+				remoteButton.SetTitle(Util.Strings.Analyzer.OPTIONS, UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteButton.TouchUpInside += (sender, e) =>{
-					analyzer.sensorPositions = new List<int>(analyzer.revertPositions);
-					pauseRemote(false);
-					webServices.downloading = true;
-					blockerView.Hidden = false;
-					blockerView.ExclusiveTouch = true;
-					this.NavigationItem.RightBarButtonItem = null;
+					if(remoteControl.controlView.Hidden){
+						remoteControl.controlView.Hidden = false;
+					} else {
+						remoteControl.controlView.Hidden = true;
+					}
 				};
 				
 				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
-   		
-	   		remoteControl = new RemoteControls(.8f * viewAnalyzerContainer.Bounds.Height,viewAnalyzerContainer.Bounds.Width, .1f * viewAnalyzerContainer.Bounds.Height);
+				this.NavigationItem.RightBarButtonItem = button;
+				this.NavigationController.NavigationBar.BarTintColor = UIColor.Red;
+
+	   		remoteControl = new RemoteControls(0,viewAnalyzerContainer);
+	   		remoteControl.controlView.ExclusiveTouch = true;
 	   		remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
 	   			blockerView.Hidden = true;
-	   			blockerView.ExclusiveTouch = false;
 					disconnectRemoteMode();
 				};
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
-					Console.WriteLine("Clicked edit button");
-					pauseRemote(true);
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 					webServices.downloading = false;
 					blockerView.Hidden = true;
-					blockerView.ExclusiveTouch = false;
-					this.NavigationItem.RightBarButtonItem = button;					
-				};				
-				
+				};
+
+				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
+					pauseRemote(false);
+					webServices.downloading = true;
+					blockerView.Hidden = false;					
+				};
+			
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
       	webServices.paused += pauseRemote;
-      	View.AddSubview(blockerView);
-      	View.BringSubviewToFront(blockerView);
-      } else {				
+      	viewAnalyzerContainer.AddSubview(blockerView);
+      	viewAnalyzerContainer.BringSubviewToFront(blockerView);
+      	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
+      } else {
 				if(analyzer.sensorList == null){
 		      var sensorList = new List<Sensor>();
 		      analyzer.sensorList = sensorList;
 				}
+	      var screenshot = new UIButton(new CGRect(0, 0, 31, 30));
+	      screenshot.TouchUpInside += (obj, args) => {
+	        TakeScreenshot();
+	      };
+	      screenshot.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
 				
 	      dataRecord = new UIButton(new CGRect(0,0,35,35));
 	      dataRecord.BackgroundColor = UIColor.Clear;
@@ -167,10 +204,61 @@ namespace ION.IOS.ViewController.Analyzer {
 	      }
 	
 	      var button = new UIBarButtonItem(dataRecord);
+				var button2 = new UIBarButtonItem(screenshot);
+	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{button2,button};
+				layoutAnalyzer();
+			}
+			/*
+			var dbButton = new UIButton(new CGRect(.3 * viewAnalyzerContainer.Bounds.Width,.3 * viewAnalyzerContainer.Bounds.Height,.3 * viewAnalyzerContainer.Bounds.Width, .1 * viewAnalyzerContainer.Bounds.Height));
+			dbButton.BackgroundColor = UIColor.White;
+			dbButton.Layer.BorderWidth = 1f;
+			
+			dbButton.TouchUpInside+= (sender, e) => {
+				var sessions = ion.database.Query<SessionRow>("SELECT SID, frn_JID, sessionStart, sessionEnd FROM SessionRow ORDER BY SID");
+        foreach (var MID in sessions) {
+					Console.WriteLine("Session : " + MID.SID + " JID " + MID.frn_JID + " start: " + MID.sessionStart +  " end: " + MID.sessionEnd);
+        }
+				
+				try{
+					DateTime startPoint = DateTime.UtcNow.ToLocalTime();
+	        var session = new SessionRow() {
+	          frn_JID = 0,
+	          sessionStart = startPoint,
+	          sessionEnd = startPoint.AddMinutes(120),
+	        };
+	        var SID = ion.database.SaveAsync<SessionRow>(session).Result;
+	        Console.WriteLine("Inserted session with id " + SID);
+
+					var rows = new List<SensorMeasurementRow>();				
+					for(int i = 0; i < 120; i++){
+						var date = startPoint.AddMinutes(i);
+			      var ret = new SensorMeasurementRow();    
+						
+						if(i > 69 && i < 74){
+				      ret.serialNumber = "P314J0169";		
+				      ret.frn_SID = session.SID;
+				      ret.sensorIndex = 0;
+				      ret.recordedDate = date;
+				      ret.measurement = 1068687.3804;
+						} else {
+				      ret.serialNumber = "P314J0169";		
+				      ret.frn_SID = session.SID;
+				      ret.sensorIndex = 0;
+				      ret.recordedDate = date;
+				      ret.measurement = 1103161.1669;
+				    }
 	
-	      NavigationItem.RightBarButtonItem = button;
-				layoutAnalyzer();				
-			}      
+						rows.Add(ret);				
+					}
+					var inserted = ion.database.InsertAll(rows, true);
+					Console.WriteLine("Inserted all the rows " + inserted);
+				} catch (Exception except){
+					Console.WriteLine("data failed " + except);
+				}
+			};
+			viewAnalyzerContainer.AddSubview(dbButton);
+			viewAnalyzerContainer.BringSubviewToFront(dbButton);
+			*/
     }
 
     /// <summary>
@@ -185,12 +273,12 @@ namespace ION.IOS.ViewController.Analyzer {
         dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.StopRecording();
-        recordingMessage = "Session recording has stopped";
+        recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
       } else {
         dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
         dataRecord.BackgroundColor = UIColor.Clear;
         ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Session recording has started";
+        recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
       }
       showRecordingToast(recordingMessage);
     }
@@ -281,7 +369,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
         } else if (pressedArea.currentSensor != null && !pressedArea.isManual) {
           pressedArea.sactionView.pconnection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
-          pressedArea.sactionView.pconnectionStatus.Text = Util.Strings.Analyzer.DISCONNECTED;
+          pressedArea.sactionView.pconnectionStatus.Text = Util.Strings.Device.DISCONNECTED;
           pressedArea.sactionView.pconnectionStatus.TextColor = UIColor.Red;
           pressedArea.sactionView.pdeviceImage.Image = pressedArea.deviceImage.Image;
           pressedArea.sactionView.connectionColor.BackgroundColor = UIColor.Red;
@@ -334,6 +422,12 @@ namespace ION.IOS.ViewController.Analyzer {
 
         ///SHOW ACTIONSHEET FOR SENSOR OPTIONS
         pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;
+        
+        outsideTap = new UITapGestureRecognizer(() => {
+					pressedArea.sactionView.aView.Hidden = true;
+					viewAnalyzerContainer.RemoveGestureRecognizer(outsideTap);
+				});
+        viewAnalyzerContainer.AddGestureRecognizer(outsideTap);
       } 
       else {
 
@@ -342,24 +436,24 @@ namespace ION.IOS.ViewController.Analyzer {
 
         addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
 
-        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.DEVICEMANAGER, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Device.Manager.SELF, UIAlertActionStyle.Default, (action) => {
           OnRequestViewer(pressedArea);
         }));
 
         addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.CREATEMANUAL, UIAlertActionStyle.Default, (action) => {
           start = new manualEntry();
           start.pressedSensor = pressedArea;
-          start.addPan = pressedArea.panGesture;
+          start.addPan = pressedArea.panGesture; 
           start.pressedView = pressedArea.snapArea;
           start.availableView = pressedArea.availableView;
           start.addLong = pressedArea.holdGesture;
-          start.addPan = pressedArea.panGesture;
           start.topLabel = pressedArea.topLabel;
           start.middleLabel = pressedArea.middleLabel;
           start.bottomLabel = pressedArea.bottomLabel;
           start.addIcon = pressedArea.addIcon;
           start.isManual = pressedArea.isManual;
-
+					mentryView.isManual = false;
+					mentryView.mdoneButton.TouchUpInside -= handleManualLHPopup;
           mentryView.mdoneButton.TouchUpInside += handleManualPopup;
           //View.BringSubviewToFront(mentryView.mView);
           viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
@@ -381,22 +475,24 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
+          mentryView.textValidation.Text = Util.Strings.Analyzer.VALIDMEASUREMENT;
           mentryView.textValidation.Hidden = false;
           return;
         }
       }
       if (mentryView.mtextValue.Text.Length <= 0) {
-        mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.MISSINGVALUE;
         mentryView.textValidation.Hidden = false;
         return;
       }
       if (mentryView.mtextValue.Text.Contains("-") && mentryView.mtextValue.Text.Length.Equals(1)) {
-        mentryView.textValidation.Text = "**Please enter a valid measurement for this sensor**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.VALIDMEASUREMENT;
         mentryView.textValidation.Hidden = false;
         return;
       }
-
+			if(start.addPan == null){
+				Console.WriteLine("Pan gesture is null");
+			}
 
       start.pressedView.AddGestureRecognizer (start.addPan);
       start.availableView.Hidden = true;
@@ -481,7 +577,7 @@ namespace ION.IOS.ViewController.Analyzer {
       
       mentryView.textValidation.Hidden = true;
       mentryView.mdoneButton.TouchUpInside -= handleManualPopup;
-      mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       mentryView.mbuttonText.Text = start.pressures[0];
       mentryView.mtextValue.Text = "";
@@ -507,11 +603,11 @@ namespace ION.IOS.ViewController.Analyzer {
         presentationPopover.PermittedArrowDirections = UIPopoverArrowDirection.Right;
       }
       if (sensorActions.pressedSensor.isManual.Equals(false)) {
-        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Analyzer.ALARMS, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction(UIAlertAction.Create(Util.Strings.Alarms.SELF, UIAlertActionStyle.Default, (action) => {
           alarmRequestViewer(sensorActions);
         }));
       }
-      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.RENAME, UIAlertActionStyle.Default, (action) => {
+      addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.RENAME, UIAlertActionStyle.Default, (action) => {
         renamePopup();
       }));
       addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.REMOVESENSOR, UIAlertActionStyle.Default, (action) => {
@@ -549,7 +645,7 @@ namespace ION.IOS.ViewController.Analyzer {
         }
       }
 
-      mtypeAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      mtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
       this.View.Window.RootViewController.PresentViewController (mtypeAlert, true, null);
       mentryView.mtextValue.ResignFirstResponder();
     }
@@ -562,22 +658,24 @@ namespace ION.IOS.ViewController.Analyzer {
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       UIAlertController dtypeAlert = UIAlertController.Create (Util.Strings.Analyzer.CHOOSEDEVICE, "", UIAlertControllerStyle.Alert);
 
-      dtypeAlert.AddAction (UIAlertAction.Create ("Pressure", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.PRESSURE, UIAlertActionStyle.Default, (action) => {
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
         mentryView.mbuttonText.Text = start.pressures[0];
       }));
-      dtypeAlert.AddAction (UIAlertAction.Create ("Temperature", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.TEMPERATURE, UIControlState.Normal);
-        mentryView.dtypeButton.AccessibilityIdentifier = "Temperature";
-        mentryView.mbuttonText.Text = start.temperatures[0];
-      }));
-      dtypeAlert.AddAction (UIAlertAction.Create ("Vacuum", UIAlertActionStyle.Default, (action) => {
-        mentryView.dtypeButton.SetTitle(Util.Strings.Analyzer.VACUUM, UIControlState.Normal);
+      if(!mentryView.isManual){
+	      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.TEMPERATURE, UIAlertActionStyle.Default, (action) => {
+	        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.TEMPERATURE, UIControlState.Normal);
+	        mentryView.dtypeButton.AccessibilityIdentifier = "Temperature";
+	        mentryView.mbuttonText.Text = start.temperatures[0];
+	      }));
+      }
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.Sensor.Type.VACUUM, UIAlertActionStyle.Default, (action) => {
+        mentryView.dtypeButton.SetTitle(Util.Strings.Sensor.Type.VACUUM, UIControlState.Normal);
         mentryView.dtypeButton.AccessibilityIdentifier = "Vacuum";
         mentryView.mbuttonText.Text = start.vacuum[0];
       }));
-      dtypeAlert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, (action) => {}));
+      dtypeAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {}));
       this.View.Window.RootViewController.PresentViewController (dtypeAlert, true, null);
     }
     /// <summary>
@@ -590,10 +688,11 @@ namespace ION.IOS.ViewController.Analyzer {
 
         addDeviceSheet = UIAlertController.Create (Util.Strings.Analyzer.ADDFROM, "", UIAlertControllerStyle.Alert);
 
-        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.DEVICEMANAGER, UIAlertActionStyle.Default, (action) => {
+        addDeviceSheet.AddAction (UIAlertAction.Create (Util.Strings.Device.Manager.SELF, UIAlertActionStyle.Default, (action) => {
           if(!AnalyserUtilities.freeSpot(analyzerSensors,removeSensor,lowHighArea.snapArea.AccessibilityIdentifier)){
             showFullAlert();
           } else {
+          	Console.WriteLine("Low high pressed");
             lhOnRequestViewer(lowHighArea);
           }
         }));
@@ -610,7 +709,8 @@ namespace ION.IOS.ViewController.Analyzer {
             start.bottomLabel = lowHighArea.LabelBottom;
             start.subviewLabel = lowHighArea.LabelSubview;
             mentryView.mView.AccessibilityIdentifier = "Pressure";
-
+            mentryView.isManual = true;
+						mentryView.mdoneButton.TouchUpInside -= handleManualPopup;
             mentryView.mdoneButton.TouchUpInside += handleManualLHPopup;
             //View.BringSubviewToFront(mentryView.mView);
             viewAnalyzerContainer.BringSubviewToFront(mentryView.mView);
@@ -633,13 +733,14 @@ namespace ION.IOS.ViewController.Analyzer {
         var p1 = mentryView.mtextValue.Text.Split('.');
         var check = p1[1];
         if (check.Length.Equals(0)) {
-          mentryView.textValidation.Text = "**Please enter a number after the decimal for this sensor's measurement**";
-          mentryView.textValidation.Hidden = false;
+          //mentryView.textValidation.Text = "**Please enter a number after the decimal for this sensor's measurement**";
+          //mentryView.textValidation.Hidden = false;
+          mentryView.mtextValue.Text += "0";
           return;
         }
       }
       if (mentryView.mtextValue.Text.Length <= 0) {        
-        mentryView.textValidation.Text = "**Please enter a value for this sensor's measurement**";
+        mentryView.textValidation.Text = Util.Strings.Analyzer.MISSINGVALUE;
         mentryView.textValidation.Hidden = false;
         return;
       }
@@ -656,7 +757,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
       for (int i = begin; i < end; i++) {
         if (!analyzerSensors.viewList[i].availableView.Hidden) {
-          var foundSensor = analyzerSensors.viewList[i];
           analyzerSensors.viewList[i].addIcon.Hidden = true;
           analyzerSensors.viewList[i].availableView.Hidden = true;
           analyzerSensors.viewList[i].snapArea.BackgroundColor = UIColor.White;
@@ -693,7 +793,7 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;          
           analyzerSensors.viewList[i].highArea.Connection.Hidden = true;
           analyzerSensors.viewList[i].highArea.DeviceImage.Image = UIImage.FromBundle("ic_edit");
-
+					Console.WriteLine("Handlemanuallhpopup about to low high associate");
           if (begin == 4) {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
@@ -760,7 +860,7 @@ namespace ION.IOS.ViewController.Analyzer {
       }
 
       mentryView.mdoneButton.TouchUpInside -= handleManualLHPopup;
-      mentryView.dtypeButton.SetTitle (Util.Strings.Analyzer.PRESSURE, UIControlState.Normal);
+      mentryView.dtypeButton.SetTitle (Util.Strings.Sensor.Type.PRESSURE, UIControlState.Normal);
       mentryView.dtypeButton.AccessibilityIdentifier = "Pressure";
       mentryView.mtextValue.Text = "";
       mentryView.mbuttonText.Text = start.pressures[0];
@@ -883,7 +983,7 @@ namespace ION.IOS.ViewController.Analyzer {
       UIAlertController textAlert = UIAlertController.Create (Util.Strings.Analyzer.ENTERNAME, sensorActions.topLabel.Text, UIAlertControllerStyle.Alert);
       textAlert.AddTextField(textField => {});
       textAlert.AddAction (UIAlertAction.Create (Util.Strings.CANCEL, UIAlertActionStyle.Cancel, UIAlertAction => {}));
-      textAlert.AddAction (UIAlertAction.Create (Util.Strings.Analyzer.OKSAVE, UIAlertActionStyle.Default, UIAlertAction => {
+      textAlert.AddAction (UIAlertAction.Create (Util.Strings.OK_SAVE, UIAlertActionStyle.Default, UIAlertAction => {
         sensorActions.topLabel.Text = " " + textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.sactionView.pdeviceName.Text = textAlert.TextFields[0].Text;
         sensorActions.pressedSensor.lowArea.LabelTop.Text = textAlert.TextFields[0].Text;
@@ -923,13 +1023,25 @@ namespace ION.IOS.ViewController.Analyzer {
 			if(!remoteMode){
 	      var sb = InflateViewController<DeviceManagerViewController>(VC_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        addLHDeviceSensor(area,sensor);
+	      	if(sensor.type == ESensorType.Temperature){
+						UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
+						this.PresentViewController(tempAlert,true,null);
+					}else {
+	        	addLHDeviceSensor(area,sensor);
+	        }
 	      };
 	      NavigationController.PushViewController(sb, true);
 	    } else {
 	      var sb = InflateViewController<RemoteDeviceManagerViewController>(VC_REMOTE_DEVICE_MANAGER);
 	      sb.onSensorReturnDelegate = (GaugeDeviceSensor sensor) => {
-	        addLHDeviceSensor(area,sensor);
+	      	if(sensor.type == ESensorType.Temperature){
+						UIAlertController tempAlert = UIAlertController.Create (Util.Strings.Analyzer.SETUP, Util.Strings.Analyzer.SETUPPRESSURE, UIAlertControllerStyle.Alert);
+						tempAlert.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Cancel,null));
+						this.PresentViewController(tempAlert,true,null);
+					}else {
+	        	addLHDeviceSensor(area,sensor);
+	        }
 	      };
 	      NavigationController.PushViewController(sb, true);
 			}
@@ -1001,6 +1113,31 @@ namespace ION.IOS.ViewController.Analyzer {
         area.highArea.LabelSubview.Text = "  " + sensor.device.name + Util.Strings.Analyzer.LHTABLE;
         area.highArea.DeviceImage.Image = area.deviceImage.Image;
         area.highArea.isManual = false;
+        ///Check for low high association for newly added sensor and alert for incorrect placement/setup
+    //    if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
+				//	var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier));
+				//	var checkSensor = analyzerSensors.viewList[checkIndex];
+				//	if(checkSensor.lowArea.manifold.secondarySensor != null){
+				//		if(checkSensor.lowArea.manifold.secondarySensor == sensor){
+				//			checkSensor.lowArea.attachedSensor = area;
+				//			area.topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+				//			area.tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+				//			area.topLabel.TextColor = UIColor.White;
+				//		}
+				//	}
+				//}
+				//if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
+				//	var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier));
+				//	var checkSensor = analyzerSensors.viewList[checkIndex];
+				//	if(checkSensor.highArea.manifold.secondarySensor != null){
+				//		if(checkSensor.highArea.manifold.secondarySensor == sensor){
+				//			checkSensor.highArea.attachedSensor = area;
+				//			area.topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+				//			area.tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+				//			area.topLabel.TextColor = UIColor.White;
+				//		}
+				//	}
+				//}
       }
 		}
     
@@ -1031,6 +1168,9 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
             } else {
+            	if(lowHighSensors.lowArea.attachedSensor != null && lowHighSensors.lowArea.attachedSensor.currentSensor != null && lowHighSensors.lowArea.attachedSensor.currentSensor == sensor){
+								return;
+							}
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
               analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
@@ -1048,7 +1188,7 @@ namespace ION.IOS.ViewController.Analyzer {
           }
         }
 
-        if(!existingConnection){
+        if(!existingConnection){        	
           for(int i = start; i < stop; i ++){
             if(!analyzerSensors.viewList[i].availableView.Hidden){
               if(!analyzer.sensorList.Contains(sensor)){
@@ -1098,7 +1238,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].lowArea.LabelMiddle.Text = analyzerSensors.viewList[i].middleLabel.Text;
               analyzerSensors.viewList[i].lowArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].lowArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
+              analyzerSensors.viewList[i].lowArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
               analyzerSensors.viewList[i].lowArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].lowArea.isManual = false;
               analyzerSensors.viewList[i].highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1107,7 +1247,7 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].highArea.LabelMiddle.Text = analyzerSensors.viewList[i].middleLabel.Text;
               analyzerSensors.viewList[i].highArea.LabelBottom.Text = sensor.measurement.unit.ToString() + " ";
               analyzerSensors.viewList[i].highArea.LabelMiddle.TextAlignment = UITextAlignment.Right;
-              analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + "'s Subviews";
+              analyzerSensors.viewList[i].highArea.LabelSubview.Text = "  " + analyzerSensors.viewList[i].topLabel.Text + Util.Strings.Analyzer.LHTABLE;
               analyzerSensors.viewList[i].highArea.DeviceImage.Image = analyzerSensors.viewList[i].deviceImage.Image;
               analyzerSensors.viewList[i].highArea.isManual = false;
               area.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
@@ -1157,7 +1297,29 @@ namespace ION.IOS.ViewController.Analyzer {
                 analyzerSensors.viewList[i].lowArea.connectionColor.Hidden = true;
                 analyzerSensors.viewList[i].highArea.connectionColor.Hidden = true;
               }
-
+			        ///Check for low high association for newly added sensor
+			        if(lowHighSensors.lowArea.attachedSensor != null){
+								var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier));
+								var checkSensor = analyzerSensors.viewList[checkIndex];
+								if(checkSensor.lowArea.attachedSensor.currentSensor != null){
+									if(checkSensor.lowArea.attachedSensor.currentSensor == sensor){
+										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
+									}
+								}
+							}
+							if(lowHighSensors.highArea.attachedSensor != null){
+								var checkIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier));
+								var checkSensor = analyzerSensors.viewList[checkIndex];
+								if(checkSensor.highArea.attachedSensor.currentSensor != null){
+									if(checkSensor.highArea.attachedSensor.currentSensor == sensor){
+										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
+										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
+									}
+								}
+							} 
               break;
             }
           }
@@ -1187,7 +1349,7 @@ namespace ION.IOS.ViewController.Analyzer {
             analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
             analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
           }
-        }
+        }       
 		}
 
     private void alarmRequestViewer(actionPopup area) {
@@ -1216,7 +1378,6 @@ namespace ION.IOS.ViewController.Analyzer {
 		public async void refreshSensorLayout(){
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			while(webServices.downloading){
-				//analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
 				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);				
 				layoutAnalyzer();
 		
@@ -1234,7 +1395,8 @@ namespace ION.IOS.ViewController.Analyzer {
 						}
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.lowAccessibility));
-					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);    
+					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);
+					confirmSubviews(analyzerSensors.viewList[newIndex],"low");   
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.lowArea.snapArea.Hidden){
@@ -1254,6 +1416,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.highAccessibility));
 					AnalyserUtilities.addLHSensorAssociation("high",analyzerSensors.viewList[newIndex]);
+					confirmSubviews(analyzerSensors.viewList[newIndex]);
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.highArea.snapArea.Hidden){
@@ -1268,13 +1431,10 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public void pauseRemote(bool paused){
-			if(paused == true){
-		 		remoteControl.controlView.Hidden = true;
-			} else {
-				remoteControl.controlView.Hidden = false;
+			if(paused == false){
 				refreshSensorLayout();
 			}
-		}	
+		}
 	
 		public async void disconnectRemoteMode(){
       var window = UIApplication.SharedApplication.KeyWindow;
@@ -1287,7 +1447,60 @@ namespace ION.IOS.ViewController.Analyzer {
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
-		}	
+		}
+		
+		public void confirmSubviews(sensor updateSensor, string section = "high"){
+			Console.WriteLine(section);
+			if(section == "low"){
+				foreach(var existing in analyzer.lowSubviews){
+					if(!updateSensor.lowArea.tableSubviews.Contains(existing)){
+						Console.WriteLine("Added subview " + existing);
+						updateSensor.lowArea.tableSubviews.Add(existing);
+						updateSensor.lowArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.lowArea.tableSubviews, updateSensor.lowArea);
+						updateSensor.lowArea.subviewTable.Hidden = false;
+						updateSensor.lowArea.subviewTable.ReloadData();
+					}
+				}
+				foreach(var removal in updateSensor.lowArea.tableSubviews.ToArray()){
+					if(!analyzer.lowSubviews.Contains(removal)){
+						Console.WriteLine("Removed " + removal);
+						updateSensor.lowArea.tableSubviews.Remove(removal);
+						updateSensor.lowArea.subviewTable.ReloadData();
+					}
+				}
+			} else {
+				foreach(var existing in analyzer.highSubviews){
+					if(!updateSensor.highArea.tableSubviews.Contains(existing)){
+						Console.WriteLine("Added subview " + existing);
+						updateSensor.highArea.tableSubviews.Add(existing);
+						updateSensor.highArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.highArea.tableSubviews, updateSensor.highArea);
+						updateSensor.highArea.subviewTable.Hidden = false;
+						updateSensor.highArea.subviewTable.ReloadData();
+					}
+				}
+				foreach(var removal in updateSensor.highArea.tableSubviews.ToArray()){
+					if(!analyzer.highSubviews.Contains(removal)){
+						Console.WriteLine("Removed " + removal);
+						updateSensor.highArea.tableSubviews.Remove(removal);
+						updateSensor.highArea.subviewTable.ReloadData();
+					}
+				}
+			}
+		}
+		
+    private void TakeScreenshot() {
+      try {
+        var vc = InflateViewController<ScreenshotReportViewController>(VC_SCREENSHOT_REPORT);
+        vc.image = View.Capture();
+        // TODO: ahodder@appioninc.com: I have to be ignorant; this is a fucking stupid way to have to dismiss a fucking view controller
+        vc.closer = () => {
+          NavigationController.PopViewController(true);
+        };
+        NavigationController.PushViewController(vc, true);
+      } catch (Exception e) {
+        Log.E(this, "Failed to create pdf", e);
+      }
+    }
 		
     public override void ViewDidAppear(bool animated) {
 	    if(!remoteMode){
@@ -1298,8 +1511,14 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
-	    } 
-	    viewAnalyzerContainer.SetNeedsDisplay();
+	    } else {
+				if(webServices.downloading){
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
+				} else {
+					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
+				}
+			}
+	    //viewAnalyzerContainer.SetNeedsDisplay();
     }
 	}
 }

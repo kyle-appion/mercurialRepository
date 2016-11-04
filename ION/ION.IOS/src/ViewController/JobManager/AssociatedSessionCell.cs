@@ -22,10 +22,10 @@ namespace ION.IOS.ViewController.JobManager {
 
       var formatTime = "";
 
-      if(data.start.TimeOfDay.Equals("PM")){
+      if(data.start.ToLocalTime().TimeOfDay.Equals("PM")){
         data.start.AddHours(12);
         //formatTime = start.AddHours(12).Hour + ":" + start.Minute + ":" + start.Second;
-        formatTime = data.start.AddHours(12).Hour + ":";
+        formatTime = data.start.ToLocalTime().AddHours(12).Hour + ":";
 
         if (data.start.Minute < 10)
           formatTime += "0" + data.start.Minute + ":";
@@ -35,7 +35,7 @@ namespace ION.IOS.ViewController.JobManager {
         formatTime += data.start.Second;
       }else{
         //formatTime = start.Hour + ":" + start.Minute + ":" + start.Second;
-        formatTime = data.start.Hour + ":";
+        formatTime = data.start.ToLocalTime().Hour + ":";
 
         if (data.start.Minute < 10)
           formatTime += "0" + data.start.Minute + ":";
@@ -50,7 +50,8 @@ namespace ION.IOS.ViewController.JobManager {
       sessionInfo.AdjustsFontSizeToFitWidth = true;
       sessionInfo.TextAlignment = UITextAlignment.Left;
       sessionInfo.Font = UIFont.SystemFontOfSize(20);
-      sessionInfo.Text = data.start.ToShortDateString() + " " + formatTime + " " + duration.ToString("0.0") + " min";
+      sessionInfo.Lines = 0;
+      sessionInfo.Text = Util.Strings.Job.STARTDATE + ": " +data.start.ToShortDateString() + " " + formatTime + "\n" + Util.Strings.Job.DURATION +":    " + duration.ToString("0.0") + " min";
 
       this.Layer.ShadowColor = UIColor.Black.CGColor;
       this.Layer.ShadowOpacity = .1f;

@@ -48,7 +48,7 @@ namespace ION.IOS.ViewController.AccessRequest {
       accessHolderView.Bounds = View.Bounds;
       
   		requestManager = new AccessRequestManager(accessHolderView,webServices);				
-    	settingsManager = new AccessSettings(accessHolderView);
+    	settingsManager = new AccessSettings(accessHolderView, webServices);
     	settingsManager.onlineButton.TouchUpInside += (sender, e) => {
 				uploadTimer();
 			};
@@ -109,11 +109,11 @@ namespace ION.IOS.ViewController.AccessRequest {
 			startedViewing = DateTime.Now;
 			if(!webServices.uploading){
 				webServices.uploading = true;
-				settingsManager.onlineButton.SetTitle("Stop Uploading", UIControlState.Normal);
+				settingsManager.onlineButton.SetTitle("Stop Remote", UIControlState.Normal);
 				await webServices.updateOnlineStatus("1");
 			} else {
 				webServices.uploading = false;
-				settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
+				settingsManager.onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
 				await webServices.updateOnlineStatus("0");
 			}
 			while(webServices.uploading){
@@ -133,7 +133,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 					}
 				} else {
 					webServices.uploading = false;
-					settingsManager.onlineButton.SetTitle("Start Uploading", UIControlState.Normal);
+					settingsManager.onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
 					var window = UIApplication.SharedApplication.KeyWindow;
 		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
 					

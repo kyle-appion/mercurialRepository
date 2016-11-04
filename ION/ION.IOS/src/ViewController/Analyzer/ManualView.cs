@@ -5,7 +5,21 @@ using Foundation;
 
 namespace ION.IOS.ViewController.Analyzer {
   public class ManualView {
-    
+  
+    public UIView mView;
+    public UIButton mcloseButton;
+    public UIButton mdoneButton;
+    public UIButton mmeasurementType;
+    public UIButton dtypeButton;
+    public UITextField mtextValue;
+    public UITextField mbuttonText;
+    public UILabel mdeviceType;
+    public UILabel popupText;
+    public UILabel textValidation;
+    public UIView mbuttonBorder;
+    public UIView mbuttonBorder2;
+    public bool isManual = false;
+  
     public ManualView(UIView mainView) {
       
       mView = new UIView(new CGRect(.062 * mainView.Bounds.Width, .176 * mainView.Bounds.Height, .875 * mainView.Bounds.Width, .343 * mainView.Bounds.Height));
@@ -26,7 +40,7 @@ namespace ION.IOS.ViewController.Analyzer {
       dtypeButton.Layer.BorderWidth = 2f;
       mtextValue = new UITextField (new CGRect(.028 * mView.Bounds.Width, .384 * mView.Bounds.Height, .5 * mView.Bounds.Width, .153 * mView.Bounds.Height));
       mtextValue.AttributedPlaceholder = new NSAttributedString (
-        "Enter Measurement"
+        Util.Strings.Analyzer.ENTERMEASUREMENT
       );
       mtextValue.KeyboardType = UIKeyboardType.NumbersAndPunctuation;
       mtextValue.AdjustsFontSizeToFitWidth = true;
@@ -130,18 +144,6 @@ namespace ION.IOS.ViewController.Analyzer {
       };
     }
 
-    public UIView mView;
-    public UIButton mcloseButton;
-    public UIButton mdoneButton;
-    public UIButton mmeasurementType;
-    public UIButton dtypeButton;
-    public UITextField mtextValue;
-    public UITextField mbuttonText;
-    public UILabel mdeviceType;
-    public UILabel popupText;
-    public UILabel textValidation;
-    public UIView mbuttonBorder;
-    public UIView mbuttonBorder2;
   }
 }
 

@@ -30,7 +30,7 @@ namespace ION.IOS.ViewController.Logging {
 
       savedHeader = new UILabel(new CGRect(0,0,showReports.Bounds.Width, .061 * mainView.Bounds.Height));
       savedHeader.Layer.CornerRadius = 8f;
-      savedHeader.Text = "Report Selection";
+      savedHeader.Text = Util.Strings.Report.SELECTION;
       savedHeader.TextAlignment = UITextAlignment.Center;
       savedHeader.Font = UIFont.BoldSystemFontOfSize(20);
       savedHeader.BackgroundColor = UIColor.FromRGB(95,212,48);
@@ -39,7 +39,7 @@ namespace ION.IOS.ViewController.Logging {
       ///button to switch to job listing
       spreadsheetButton = new UIButton(new CGRect(0,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
       spreadsheetButton.Layer.BorderColor = UIColor.Black.CGColor;
-      spreadsheetButton.SetTitle("Spreadsheet", UIControlState.Normal);
+      spreadsheetButton.SetTitle(Util.Strings.SPREADSHEET, UIControlState.Normal);
       spreadsheetButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       spreadsheetButton.BackgroundColor = UIColor.White;
       spreadsheetButton.Hidden = true;
