@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Net;
 using System.Threading.Tasks;
 using CoreGraphics;
@@ -13,8 +14,8 @@ using ION.Core.Net;
 namespace ION.IOS.ViewController.RemoteAccess {
 	public partial class RemoteSystemViewController : BaseIONViewController {
 		public remoteSelectionView remoteView;
-		public RemoteUserProfileView profileView;
 		public RemoteLoginView loginView;
+		public RemoteUserProfileView profileView;
 		public RemoteUserRegistration registerView;
 		public const string loginUserUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/applogin.php";
 		public IosION ion;
@@ -88,7 +89,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		public async void LogOutUser(object sender, EventArgs e){
-			await webServices.updateOnlineStatus("0");
+	  	await webServices.updateOnlineStatus("0");
 			
 			KeychainAccess.SetValueForKey("no", "stayLogged");
 			KeychainAccess.SetValueForKey("","userID");
@@ -145,7 +146,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		public async void credentialsCheck(object sender, EventArgs e){
-
 			loginView.loadingLogin = null;
 	
 			loginView.loadingLogin = new UIActivityIndicatorView(new CGRect(0,0, loginView.loginView.Bounds.Width, loginView.loginView.Bounds.Height));
@@ -311,3 +311,4 @@ namespace ION.IOS.ViewController.RemoteAccess {
 }
 
 
+*/

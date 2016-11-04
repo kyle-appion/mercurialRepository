@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using UIKit;
 using CoreGraphics;
 using ION.IOS.Util;
@@ -173,3 +174,4 @@ namespace ION.IOS.ViewController.AccessRequest {
 }
 
 
+*/
