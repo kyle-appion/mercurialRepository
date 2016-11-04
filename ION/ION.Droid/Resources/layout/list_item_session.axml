@@ -3,14 +3,53 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@id/name"
-        android:layout_gravity="center_vertical"
-        android:textColor="@color/black"
-        android:hint="@string/name"
+    <TableLayout
         android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+        <TableRow>
+            <TextView
+                android:textStyle="bold"
+                android:text="@string/report_date_created"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@id/report_date_created"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:textStyle="bold"
+                android:text="@string/report_session_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@id/report_session_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+        <TableRow>
+            <TextView
+                android:textStyle="bold"
+                android:text="@string/report_devices_used"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:id="@id/report_devices_used"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+    </TableLayout>
     <CheckBox
         android:enabled="true"
         android:layout_gravity="right|center_vertical"

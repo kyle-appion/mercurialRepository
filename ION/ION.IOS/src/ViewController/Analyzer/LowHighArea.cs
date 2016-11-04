@@ -14,7 +14,8 @@ namespace ION.IOS.ViewController.Analyzer
     public lowHighSensor highArea;
 
 		public List<string> availableSubviews = new List<string> {
-      "Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)"
+      //"Hold Reading (HOLD)","Maximum Reading (MAX)", "Minimum Reading (MIN)", "Alternate Unit(ALT)","Rate of Change (RoC)", "Superheat / Subcool (S/H or S/C)", "Pressure / Temperature (P/T)"
+      Util.Strings.Workbench.Viewer.HOLD_DESC,Util.Strings.Workbench.Viewer.MAX_DESC, Util.Strings.Workbench.Viewer.MIN_DESC, Util.Strings.Workbench.Viewer.ALT_DESC,Util.Strings.Workbench.Viewer.ROC_DESC, Util.Strings.Analyzer.SHSCDESC, Util.Strings.Analyzer.PTDESC
 		};
 		
     public LowHighArea (UIView mainView, AnalyzerViewController ViewController, sensorGroup analyzerSensors)

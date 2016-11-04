@@ -44,6 +44,19 @@
     /// </summary>
     public const string EXTRA_SENSOR = "ion.droid.activity.extra.device_manager.SENSOR";
 
+		/// <summary>
+		/// The state flag that indicates that the activity has requested bluetooth permissions.
+		/// </summary>
+		private const int STATE_REQUESTED_BLUETOOTH_ON = 1 << 0;
+		/// <summary>
+		/// The state flags that indicates that the activity has requested that the gps be turned on.
+		/// </summary>
+		private const int STATE_REQUESTED_LOCATION_ON = 1 << 1;
+		/// <summary>
+		/// The state flag that indicates that the activity has requested fine location permissions.
+		/// </summary>
+		private const int STATE_REQUESTED_LOCATION_PERM = 1 << 2;
+
     /// <summary>
     /// The default time that the activity will be scanning for.
     /// </summary>
@@ -73,6 +86,11 @@
     /// The connection helper that the application was using before the activity started.
     /// </summary>
     private IConnectionHelper previousHelper;
+		/// <summary>
+		/// Holds the current state of permissions requests. This is used to prevent the activity from requesting permissions
+		/// everytime the activity gains focus.
+		/// </summary>
+		private int permissionStates;
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
@@ -135,15 +153,8 @@
 
 			var connectionHelper = ion.deviceManager.connectionHelper;
 
-			if (bm.Adapter.IsEnabled) {
-/*
-				if (!ion.deviceManager.connectionHelper.isScanning) {
-					ion.deviceManager.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-				}
-*/
-			} else {
-				ShowBluetoothOffDialog();
-			}
+			// Check permissions
+//			CheckPermissionsAndStates();
 
       adapter.Reload();
     }
@@ -187,19 +198,7 @@
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
-				var manager = (BluetoothManager)GetSystemService(BluetoothService);
-
-        var dm = ion.deviceManager;
-
-				if (manager.Adapter.IsEnabled) {
-          if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.StopScan();
-          } else {
-            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-          }
-        } else {
-          ShowBluetoothOffDialog();
-        }
+				ToggleScanning();
       }));
 
       if (ion.deviceManager.connectionHelper.isScanning) {
@@ -220,20 +219,69 @@
           SetResult(Result.Canceled);
           Finish();
           return true;
-/*
-        case Resource.Id.scan:
-          var dm = ion.deviceManager;
-
-          if (dm.connectionHelper.isScanning) {
-            dm.connectionHelper.StopScan();
-          } else {
-            dm.connectionHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-          }
-*/
         default:
           return base.OnMenuItemSelected(featureId, item);
       }
     }
+
+		/// <summary>
+		/// Toggles whether or not the activity should perform a scan operation.
+		/// </summary>
+		private void ToggleScanning() {
+			var scanHelper = ion.deviceManager.connectionHelper;
+
+			if (scanHelper.isScanning) {
+				scanHelper.StopScan();
+			} else {
+				ClearPermissionStates();
+				if (CheckPermissionsAndStates()) {
+					scanHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
+				}
+			}
+		}
+
+		/// <summary>
+		/// Checks the application's permission state to see if we have all of the necessary permissions to operate at full
+		/// efficiency. If all of the the necessary permisions are present, then we will return true. Otherwise, we will
+		/// return false.
+		/// </summary>
+		private bool CheckPermissionsAndStates() {
+			var bm = (BluetoothManager)GetSystemService(BluetoothService);
+
+			// Check bluetooth state
+			if (!isBluetoothOn && (permissionStates & STATE_REQUESTED_BLUETOOTH_ON) == 0) {
+				RequestBluetoothAdapterOn();
+				permissionStates |= STATE_REQUESTED_BLUETOOTH_ON;
+				return false;
+			} else if ((int)Android.OS.Build.VERSION.SdkInt >= 23) {
+				// TODO ahodder@appioninc.com: Insert non hardcoded value
+				// At the time of writing, xamarin was THREE full versions of build codes behind, so we needed to hard code this
+
+				// Check location permissions
+				if (!isLocationOn && (permissionStates & STATE_REQUESTED_LOCATION_ON) == 0) {
+					RequestLocationServicesEnabled();
+					permissionStates |= STATE_REQUESTED_LOCATION_ON;
+					return false;
+				}
+
+				// Check location enabled state
+        if (!hasFineLocationPerms && (permissionStates & STATE_REQUESTED_LOCATION_PERM) == 0) {
+					RequestFineLocationPermission();
+					permissionStates |= STATE_REQUESTED_LOCATION_PERM;
+					return false;
+				}
+
+				// Nothing needed handling.
+				return true;
+			} else {
+				// Nothing needed handling.
+				return true;
+			}
+		}
+
+		private void ClearPermissionStates() {
+			permissionStates = 0;
+		}
 
     /// <summary>
     /// Called when the user clicks the return sensor in the adapter.

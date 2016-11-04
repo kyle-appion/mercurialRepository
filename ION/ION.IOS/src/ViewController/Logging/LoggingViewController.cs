@@ -212,7 +212,7 @@ namespace ION.IOS.ViewController.Logging {
         dataSection.DataType.Layer.CornerRadius = 5;
         dataSection.DataType.Layer.BorderWidth = 1f;
       },
-      () => { 
+      () => {
           dataSection.jobButton.SendActionForControlEvents(UIControlEvent.TouchUpInside);
           dataSection.jobButton.Hidden = false;
           dataSection.sessionButton.Hidden = false;

@@ -21,6 +21,8 @@ namespace ION.Core.Fluids.Parser {
         // Read the name of the fluid
         var nameLen = reader.ReadByte();
         var rawName = reader.ReadBytes(nameLen);
+				// Read the flags for the fluid
+				var flags = (Fluid.EFlags)reader.ReadByte();
 
         // Read the tmin and tmax
         var tmin = reader.ReadInt32BE();
@@ -59,7 +61,7 @@ namespace ION.Core.Fluids.Parser {
         }
 
         // All done, return this bitch
-        return new Fluid(System.Text.Encoding.UTF8.GetString(rawName, 0, nameLen), mixture, tmin, tmax, step, rowCount, temps, values);
+        return new Fluid(System.Text.Encoding.UTF8.GetString(rawName, 0, nameLen), flags, mixture, tmin, tmax, step, rowCount, temps, values);
       }
     }
   }

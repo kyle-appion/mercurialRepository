@@ -77,7 +77,7 @@ namespace ION.IOS.ViewController.Logging {
       ///button to switch to job listing
       jobButton = new UIButton(new CGRect(0,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
       jobButton.Layer.BorderColor = UIColor.Black.CGColor;
-      jobButton.SetTitle("By Job", UIControlState.Normal);
+      jobButton.SetTitle(Util.Strings.Report.BYJOB, UIControlState.Normal);
       jobButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       jobButton.BackgroundColor = UIColor.White;
 
@@ -94,7 +94,7 @@ namespace ION.IOS.ViewController.Logging {
       ///button to switch to session listing
       sessionButton = new UIButton(new CGRect(.49 * mainView.Bounds.Width,.06 * mainView.Bounds.Height,.49 * mainView.Bounds.Width, .06 * mainView.Bounds.Height));
       sessionButton.Layer.BorderColor = UIColor.Black.CGColor;
-      sessionButton.SetTitle("By Date", UIControlState.Normal);
+      sessionButton.SetTitle(Util.Strings.Report.BYDATE, UIControlState.Normal);
       sessionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       sessionButton.BackgroundColor = UIColor.White;
 
@@ -175,7 +175,7 @@ namespace ION.IOS.ViewController.Logging {
       jobTable.SendSubviewToBack(refreshJobs);
 
       noJobLabel = new UIButton(new CGRect(0,2 * jobButton.Bounds.Height,DataType.Bounds.Width,cellHeight));
-      noJobLabel.SetTitle("No jobs exist. Click to create", UIControlState.Normal);
+      noJobLabel.SetTitle(Util.Strings.Report.NOJOBS, UIControlState.Normal);
       noJobLabel.SetTitleColor(UIColor.Black, UIControlState.Normal);
       noJobLabel.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       noJobLabel.Layer.BorderWidth = 1f;
@@ -196,7 +196,7 @@ namespace ION.IOS.ViewController.Logging {
       DataType.BringSubviewToFront(sessionButton);
       DataType.AddSubview(jobTable);
       DataType.BringSubviewToFront(jobTable);
-      DataType.AddSubview(noJobLabel);
+      //DataType.AddSubview(noJobLabel);
       DataType.AddSubview(sessionTable);
       DataType.BringSubviewToFront(sessionTable);
       DataType.AddSubview(activityLoadingTables);
@@ -402,7 +402,7 @@ namespace ION.IOS.ViewController.Logging {
         }
       }
 
-      queriedJobs.Add(new JobData(0,"Unassigned",jobTable, cellHeight, selectedSessions, parentVC));
+      queriedJobs.Add(new JobData(0,Util.Strings.Report.UNASSIGNED,jobTable, cellHeight, selectedSessions, parentVC));
       foreach(var unsesh in unassigned){
       	queriedJobs[queriedJobs.Count - 1].jobSessions.Add(new SessionData(unsesh.SID, unsesh.sessionStart, unsesh.sessionEnd));
       }      

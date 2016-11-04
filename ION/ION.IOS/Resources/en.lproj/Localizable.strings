@@ -11,6 +11,7 @@ file.
 "cancel" = "Cancel";
 "date" = "Date";
 "delete_question" = "Delete?";
+"done" = "Done";
 "enter_name" = "Enter Name";
 "help" = "Help";
 "ok" = "OK";
@@ -27,6 +28,20 @@ file.
 "name" = "Name";
 "time" = "Time";
 "required" = "Required";
+"notes" = "Notes";
+"sessions" = "Sessions";
+"reset" = "Reset";
+"app_feedback" = "ION App Feedback";
+"linked" = "Linked";
+"spreadsheet" = "Spreadsheet";
+"included" = "Included";
+"select_all" = "Select All";
+"deselet_all" = "Deselect All";
+"devices" = "Devices";
+"next" = "Next";
+"previous" = "Previous";
+
+
 /* ALARMS */
 "alarms" = "Alarms";
 "alarms_low" = "Low Alarm";
@@ -76,7 +91,11 @@ file.
 "analyzer_stable" = "Stable";
 "valid_measurement" = "**Please enter a valid measurement for this sensor**";
 "missing_value" = "**Please enter a value for this sensor's measurement**";
-
+"enter_measurement" = "Enter Measurement";
+"analyzer_shsc_desc" = "Superheat / Subcool (S/H or S/C)";
+"analyzer_pt_desc" = "Pressure / Temperature (P/T)";
+"recording_started" = "Recording Started";
+"recording_stopped" = "Recording Stopped. Session in Reports";
 
 /* DEVICE */
 "device_available" = "Available";
@@ -100,6 +119,7 @@ file.
 "device_serial_number" = "Serial Number";
 "device_type" = "Device Type";
 "device_cert_date" = "Certification Date";
+"device_not_linked" = "Not Linked";
 
 /* DEVICE MANAGER */
 "device_manager" = "Device Manager";
@@ -153,19 +173,51 @@ file.
 
 /* FLUID MANAGER */
 "fluid_manager" = "Refrigerant Manager";
+"fluid_slider_heading" = "Saturated Pressure and Temperature";
 
-/*JOB MANAGER*/
-"job_dispatch_number" = "Dispatch Number";
-"job_info" = "Job Info";
-"job_name" = "Job Name";
-"job_po_number" = "PO Number";
-"job_customer_number" = "Customer Number";
-"job_multiple" = "Spans multiple jobs";
 /* HELP */
 "help_about" = "About ION";
 "help_send_feedback" = "Send Feedback";
 "help_sent_feedback" = "Feedback sent, thank you!";
 "help_version" = "App Version";
+
+/*JOB MANAGER*/
+"job_dispatch_number" = "Dispatch Number";
+"job_dispatch_sign" = "Dispatch #";
+"job_info" = "Job Info";
+"job_name" = "Job Name";
+"job_po_number" = "PO Number";
+"job_po_full" = "Product Order Number";
+"job_po_sign" = "Product Order #";
+"job_customer_number" = "Customer Number";
+"job_customer_sign" = "Customer #";
+"job_multiple" = "Spans multiple jobs";
+"job_saved_success" = "Saved Successfully";
+"job_edit" = "Edit Job";
+"job_edit_sessions" = "Edit Session Links";
+"job_add_notes" = "Add Notes";
+"job_updated" = "Job Updated";
+"job_exists" = "Job Name Already Exists";
+"job_start_date" = "Start Date";
+"job_duration" = "Duration";
+"job_current_sessions" = "Current Sessions";
+"job_no_session" = "No Sessions Currently Associated";
+"job_none_available" = "No Sessions Available";
+"job_remove_selected" = "Remove Selected";
+"job_sessions_removing" = "Removing Sessions";
+"job_remove_dialogue" = "Are you sure you want to remove these sessions from the current job?";
+"job_confirm_removal" = "Confirm Removal";
+"job_red_sessions" = "(Adding a session in red will remove the association to it's current job)";
+"job_available_sessions" = "Available Sessions";
+"job_add_selected" = "Add Selected";
+"job_notes_saved" = "Notes Saved";
+"job_save_notes" = "Save Notes";
+"job_settings" = "Job Settings";
+"job_options" = "Job Options";
+
+/*LOGGING*/
+
+
 
 /* MEASURE */
 "measure_per_minute" = "/min";
@@ -223,6 +275,19 @@ file.
 "report_detailed" = "Detailed Summary";
 "report_raw_data" = "Include Raw Data";
 "report_export" = "Export";
+"report_by_job" = "By Job";
+"report_by_date" = "By Date";
+"report_no_jobs" = "No jobs exist. Click to create";
+"report_new" = "New Report";
+"report_saved" = "Saved Reports";
+"report_selection" = "Report Selection";
+"report_graph_info" = "Graph Information";
+"report_choose_start" = "Select a start time for the graph";
+"report_choose_end" = "Select an end time for the graph";
+"report_select_start" = "Select A Start Time";
+"report_select_end" = "Select An End Time";
+"report_delete_session" = "Delete Session";
+"report_delete_message" = "This will permanently remove the session from your device";
 /* SENSOR */
 
 /* SENSOR TYPE */
@@ -264,5 +329,15 @@ file.
 "workbench_subview_timer_desc" = "Time Tracker (TIME)";
 "workbench_subview_linked_desc" = "Linked Sensor (Linked)";
 
+/*WALKTHROUGH*/
+"walkthrough_introductory" = "Introductory Walkthrough";
+"walkthrough_1_1" = "The menu button will allow for navigation through the app.";
+"walkthrough_1_2" = "Pressing this button will start or stop a recording session(data logging)";
+"walkthrough_1_3" = "You can take a screenshot of the workbench by pressing this button.";
+"walkthrough_1_4" = "Pressing here will open the device manager where you can choose an available device to add to the workbench.";
+"walkthrough_1_5" = "The available devices will be shown and separated based on if they are connected or not.";
+"walkthrough_1_6" = "These buttons let you connect and disconnect from a device.";
+"walkthrough_1_7" = "You add the device to the workbench, analyzer, or other section by pressing this button";
+"walkthrough_1_8" = "Pressing on an added device will display a popup that allows you to connect/disconnect, add a subview, set an alarm, or other options.";
 /*ACCESS MANAGER*/
 "access_manager" = "Access Manager";

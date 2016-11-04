@@ -31,7 +31,7 @@ namespace ION.IOS.ViewController.JobManager  {
       confirmLabel.TextColor = UIColor.FromRGB(49, 111, 18);
       confirmLabel.TextAlignment = UITextAlignment.Center;
       confirmLabel.Font = UIFont.BoldSystemFontOfSize(20);
-      confirmLabel.Text = "Saved Successfully";
+      confirmLabel.Text = Util.Strings.Job.SAVEDSUCCESS;
       confirmLabel.Hidden = true;     
 
       var holderName = "";
@@ -107,7 +107,7 @@ namespace ION.IOS.ViewController.JobManager  {
       dispatchNumber.Text = holderDispatch;
 
       prodOrderNumber = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.49 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.14 * (editView.Bounds.Height - 60))){
-        Placeholder = "Product Order Number",
+        Placeholder = Util.Strings.Job.POFULL,
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,

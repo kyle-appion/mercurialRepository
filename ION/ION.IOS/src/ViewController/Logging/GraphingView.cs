@@ -73,7 +73,6 @@ namespace ION.IOS.ViewController.Logging
 		public UIImageView rightTrackerCircle;
 
 		public UILabel subDates;
-		int[] types = {3,4,5};
 		public double trackerHeight;
 		public int topCell;
 		public int bottomCell;
@@ -366,7 +365,7 @@ namespace ION.IOS.ViewController.Logging
       var deviceCount = ChosenDates.includeList.Count;
       resetButton = new UIButton (new CGRect (.05 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height, .3 * gView.Bounds.Width, .08 * gView.Bounds.Height));
 			resetButton.BackgroundColor = UIColor.Red;
-			resetButton.SetTitle ("Reset", UIControlState.Normal);
+			resetButton.SetTitle (Util.Strings.RESET, UIControlState.Normal);
       resetButton.Font = UIFont.ItalicSystemFontOfSize(22);
 			resetButton.Layer.CornerRadius = 5f;
 
@@ -396,7 +395,7 @@ namespace ION.IOS.ViewController.Logging
 
       exportGraph = new UIButton (new CGRect (.65 * gView.Bounds.Width, .82 * mainVC.View.Bounds.Height,.3 * gView.Bounds.Width,.08 * gView.Bounds.Height));
       exportGraph.BackgroundColor = UIColor.FromRGB(49, 111, 18);
-			exportGraph.SetTitle ("Export", UIControlState.Normal); 
+			exportGraph.SetTitle (Util.Strings.Report.EXPORT, UIControlState.Normal); 
 			exportGraph.Layer.CornerRadius = 5f; 
 
 			exportGraph.TouchUpInside += (sender, e) => {

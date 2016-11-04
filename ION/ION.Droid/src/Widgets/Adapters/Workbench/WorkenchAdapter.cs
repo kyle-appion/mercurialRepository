@@ -4,7 +4,6 @@
   using System.Collections.Generic;
 
   using Android.Content.Res;
-  using Android.OS;
   using Android.Support.V7.Widget;
   using Android.Support.V7.Widget.Helper;
   using Android.Views;
@@ -12,14 +11,12 @@
 
   using ION.Core.App;
   using ION.Core.Content;
-  using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
   using ION.Core.Util;
 
   using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
-  using ION.Droid.Widgets.Templates;
 
   /// <summary>
   /// The adapter that will provide the views for use in the workbench fragment. After creating the adapter, if you want
@@ -27,7 +24,7 @@
   /// swipeListener for swipping).
   /// that you assign
   /// </summary>
-	public class WorkbenchAdapter : SwipableRecyclerViewAdapter, View.IOnTouchListener {
+	public class WorkbenchAdapter : SwipableRecyclerViewAdapter {
 
     public delegate void OnManifoldClicked(Manifold manifold);
     public delegate void OnSensorPropertyClicked(Manifold manifold, ISensorProperty sensorProperty);
@@ -51,10 +48,6 @@
     /// </summary>
     /// <value>The cache.</value>
     private BitmapCache cache;
-		/// <summary>
-		/// The handler that is used to post delayed events to.
-		/// </summary>
-		private Handler handler;
     /// <summary>
     /// The drag decoration.
     /// </summary>
@@ -67,7 +60,6 @@
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
-			handler = new Handler();
       dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
     }
 
@@ -223,18 +215,6 @@
       (holder as SwipableViewHolder)?.Unbind();
     }
 
-		public bool OnTouch(View view, MotionEvent e) {
-			switch (e.Action) {
-				case MotionEventActions.Up:
-					handler.PostDelayed(() => {
-						this.NotifyDataSetChanged();
-					}, 250);
-				break;
-			}
-
-			return true;
-		}
-
     /// <summary>
     /// Sets the workbench content that the adapter will display.
     /// </summary>
@@ -264,55 +244,111 @@
     /// </summary>
     /// <param name="workbenchEvent">Workbench event.</param>
     public void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-      var manifold = workbenchEvent.manifold;
-      int startIndex = IndexOfManifold(manifold);
-      int manifoldSensorPropertyCount = manifold.sensorPropertyCount;
+			try {
+	      var manifold = workbenchEvent.manifold;
+	      int startIndex = IndexOfManifold(manifold);
+	      int manifoldSensorPropertyCount = manifold.sensorPropertyCount;
 
-      switch (workbenchEvent.type) {
-        case WorkbenchEvent.EType.Added:
-          if (startIndex < 0) {
-            var i = records.Count - 1;
-            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
-            records.Insert(i + 1, new SpaceRecord());
-            NotifyItemRangeInserted(i, 2);
-          } else {
-            records.Insert(startIndex, new SpaceRecord());
-            records.Insert(startIndex, new ManifoldRecord(manifold));
-            NotifyItemRangeInserted(startIndex, 2);
-          }
-          break;
-        case WorkbenchEvent.EType.ManifoldEvent:
-          OnManifoldEvent(workbenchEvent.manifoldEvent);
-          break;
-        case WorkbenchEvent.EType.Removed:
-          if (startIndex >= 0) {
-            records.RemoveAt(startIndex);
-            for (int i = 0; i < manifoldSensorPropertyCount; i++) {
-              records.RemoveAt(startIndex);
-            }
-            var count = 1 + manifoldSensorPropertyCount;
-            if (records[startIndex] is SpaceRecord) {
-              records.RemoveAt(startIndex);
-              count++;
-            }
-            NotifyItemRangeRemoved(startIndex, count);
-          }
-          break;
-        case WorkbenchEvent.EType.Swapped:
-          var sm = workbench[workbenchEvent.otherIndex];
-          var secondIndex = IndexOfManifold(sm);
-          var offset = manifoldSensorPropertyCount + 1;
+	      switch (workbenchEvent.type) {
+	        case WorkbenchEvent.EType.Added:
+	          if (startIndex < 0) {
+	            var i = records.Count - 1;
+	            records.Insert(i/*records.Count - 1*/, new ManifoldRecord(manifold));
+	            records.Insert(i + 1, new SpaceRecord());
+	            NotifyItemRangeInserted(i, 2);
+	          } else {
+	            records.Insert(startIndex, new SpaceRecord());
+	            records.Insert(startIndex, new ManifoldRecord(manifold));
+	            NotifyItemRangeInserted(startIndex, 2);
+	          }
+	          break;
+	        case WorkbenchEvent.EType.ManifoldEvent:
+	          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	          break;
+	        case WorkbenchEvent.EType.Removed:
+	          if (startIndex >= 0) {
+	            records.RemoveAt(startIndex);
+	            for (int i = 0; i < manifoldSensorPropertyCount; i++) {
+	              records.RemoveAt(startIndex);
+	            }
+	            var count = 1 + manifoldSensorPropertyCount;
+	            if (records[startIndex] is SpaceRecord) {
+	              records.RemoveAt(startIndex);
+	              count++;
+	            }
+	            NotifyItemRangeRemoved(startIndex, count);
+	          }
+	          break;
+	        case WorkbenchEvent.EType.Swapped:
+	          var sm = workbench[workbenchEvent.otherIndex];
+	          var secondIndex = IndexOfManifold(sm);
+	          var offset = manifoldSensorPropertyCount + 1;
 
-          var tmp = records[startIndex];
-          records[startIndex] = records[secondIndex];
-          records[secondIndex] = tmp;
-          NotifyItemMoved(startIndex, secondIndex);
+	          var tmp = records[startIndex];
+	          records[startIndex] = records[secondIndex];
+	          records[secondIndex] = tmp;
+	          NotifyItemMoved(startIndex, secondIndex);
 
-          break;
-        default:
-          throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
-      }
+	          break;
+	        default:
+	          throw new Exception("No case for workbenchtype: " + workbenchEvent.type);  
+	      }
+			} catch (Exception e) {
+				NotifyDataSetChanged();
+				Log.E(this, "Index exception occured while trying to remove stuff from the workbench", e);
+#if DEBUG
+				Toast.MakeText(recyclerView.Context, "AN AMAZING ERROR OCCURED", ToastLength.Long).Show();
+#endif
+			}
     }
+
+		/// <summary>
+		/// Raises the manifold event event.
+		/// </summary>
+		/// <param name="manifoldEvent">Manifold event.</param>
+		public void OnManifoldEvent(ManifoldEvent manifoldEvent) {
+			var manifold = manifoldEvent.manifold;
+			var manifoldIndex = IndexOfManifold(manifold);
+			int index = 0;
+
+			switch (manifoldEvent.type) {
+				case ManifoldEvent.EType.Invalidated:
+				break;
+				case ManifoldEvent.EType.SensorPropertyAdded:
+					var mr = records[manifoldIndex] as ManifoldRecord;
+
+					if (manifold.sensorPropertyCount <= 1 && !mr.expanded) {
+						mr.expanded = true;
+					}
+
+					index = manifoldIndex + 1 + manifoldEvent.index;
+
+					records.Insert(index, CreateSensorPropertyRecord(manifold, manifold[manifoldEvent.index]));
+
+					NotifyItemChanged(manifoldIndex);
+					NotifyItemInserted(index);
+				break;
+
+				case ManifoldEvent.EType.SensorPropertyRemoved:
+					index = manifoldIndex + 1 + manifoldEvent.index;
+					records.RemoveAt(index);
+					NotifyItemChanged(manifoldIndex);
+					NotifyItemRemoved(index);
+				break;
+
+				case ManifoldEvent.EType.SensorPropertySwapped:
+					var from = manifoldIndex + 1 + manifoldEvent.index;
+					var to = manifoldIndex + 1 + manifoldEvent.otherIndex;
+					var tmp = records[from];
+
+					records[from] = records[to];
+					records[to] = tmp;
+
+					NotifyItemMoved(from, to);
+
+				break;
+			}
+		}
 
     /// <summary>
     /// Pushes a new manifold expanssion state, effectively saving whether or not a manifold is expanded.
@@ -321,7 +357,7 @@
       var tuples = new List<Tuple<Manifold, bool>>();
       foreach (var m in workbench.manifolds) {
         tuples.Add(new Tuple<Manifold, bool>(m, IsManifoldExpanded(m)));
-        this.CollapseManifold(m);
+        CollapseManifold(m, false);
       }
       expansionStack.Push(tuples);
     }
@@ -340,60 +376,7 @@
       }
     }
 
-    /// <summary>
-    /// Raises the manifold event event.
-    /// </summary>
-    /// <param name="manifoldEvent">Manifold event.</param>
-    public void OnManifoldEvent(ManifoldEvent manifoldEvent) {
-      var manifold = manifoldEvent.manifold;
-      var manifoldIndex = IndexOfManifold(manifold);
-      int index = 0;
-
-      switch (manifoldEvent.type) {
-        case ManifoldEvent.EType.Invalidated:
-        	break;
-        case ManifoldEvent.EType.SecondarySensorAdded:
-        	break;
-        case ManifoldEvent.EType.SecondarySensorRemoved:
-          break;
-        case ManifoldEvent.EType.SensorPropertyAdded:
-          var mr = records[manifoldIndex] as ManifoldRecord;
-
-          if (manifold.sensorPropertyCount <= 1 && !mr.expanded) {
-            mr.expanded = true;
-          }
-
-          index = manifoldIndex + 1 + manifoldEvent.index;
-
-          records.Insert(index, CreateSensorPropertyRecord(manifold, manifold[manifoldEvent.index]));
-
-          NotifyItemChanged(manifoldIndex);
-          NotifyItemInserted(index);
-          break;
-
-        case ManifoldEvent.EType.SensorPropertyRemoved:
-          index = manifoldIndex + 1 + manifoldEvent.index;
-          records.RemoveAt(index);
-          NotifyItemChanged(manifoldIndex);
-          NotifyItemRemoved(index);
-          break;
-
-        case ManifoldEvent.EType.SensorPropertySwapped:
-          var from = manifoldIndex + 1 + manifoldEvent.index;
-          var to = manifoldIndex + 1 + manifoldEvent.otherIndex;
-          var tmp = records[from];
-
-          records[from] = records[to];
-          records[to] = tmp;
-
-          NotifyItemMoved(from, to);
-
-          break;
-      }
-    }
-
-
-    public void CollapseManifold(Manifold manifold) {
+    public void CollapseManifold(Manifold manifold, bool refresh=true) {
       var index = IndexOfManifold(manifold);
       var mr = records[index] as ManifoldRecord;
 
@@ -405,7 +388,9 @@
             records.RemoveAt(index + i);
           }
 
-          NotifyItemChanged(index);
+					if (refresh) {
+	          NotifyItemChanged(index);
+					}
           NotifyItemRangeRemoved(index + 1, count);
         }
 
@@ -426,7 +411,7 @@
           }
 
           NotifyItemChanged(index);
-          NotifyItemRangeRemoved(index + 1, count);
+          NotifyItemRangeInserted(index + 1, count);
         }
 
         mr.expanded = true;

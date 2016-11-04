@@ -20,6 +20,7 @@ namespace ION.Droid.Activity.Report {
 	using Dialog;
 	using Job;
 	using Fragments;
+	using Views;
 	using Widgets.RecyclerViews;
 
 	public class ByJobFragment : IONFragment {
@@ -49,17 +50,8 @@ namespace ION.Droid.Activity.Report {
 
 			adapter = new JobAdapter();
 			adapter.onJobHeaderClicked = OnJobClicked;
-			adapter.onItemClicked += (adapter, position) => {
-				switch ((EViewType)adapter.GetItemViewType(position)) {
-					case EViewType.Job:
-						break;
-					case EViewType.Session:
-						var record = (SessionRecord)adapter.GetRecordAt(position);
-						record.isChecked = !record.isChecked;
-						adapter.NotifyItemChanged(position);
-						NotifySessionChecked(record);
-						break;
-				}
+			adapter.onSessionClicked = (sr) => {
+				NotifySessionChecked(sr);
 			};
 			list.SetAdapter(adapter);
 		}
@@ -113,6 +105,7 @@ namespace ION.Droid.Activity.Report {
 		private void NotifySessionChecked(SessionRecord record) {
 			if (onSessionChecked != null) {
 				onSessionChecked(record.row, record.isChecked);
+				Log.D(this, "The record check state is: " + record.isChecked);
 			}
 		}
 
@@ -131,7 +124,13 @@ namespace ION.Droid.Activity.Report {
 				var sr = new List<SessionRecord>();
 
 				foreach (var s in table.Where(s => s.frn_JID == j._id)) {
-					var sessionRecord = new SessionRecord(s);
+					var t = ion.database.Table<SensorMeasurementRow>();
+					var query = t.Where(smr => smr.frn_SID == s._id)
+					               .GroupBy(smr => smr.serialNumber);
+
+					var count = query.Count();
+
+					var sessionRecord = new SessionRecord(s, count);
 					if (sessions != null) {
 						sessionRecord.isChecked = sessions.Contains(s._id);
 					}
@@ -170,28 +169,70 @@ namespace ION.Droid.Activity.Report {
 			public int viewType { get { return (int)EViewType.Session; } }
 
 			public SessionRow row { get; private set; }
+			public int devicesCount { get; private set; }
+			public JobRow job { get; set; }
 
 			public bool isChecked { get; set; }
 
-			public SessionRecord(SessionRow row) {
+			public SessionRecord(SessionRow row, int devicesCount) {
 				this.row = row;
+				this.devicesCount = devicesCount;
+				this.isChecked = false;
 			}
 		}
 
 		public class SessionViewHolder : SwipableViewHolder<SessionRecord> {
-			private TextView text;
+			private TextView date;
+			private TextView duration;
+			private TextView devicesUsed;
 			private CheckBox check;
 
-			public SessionViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_session) {
-				text = view.FindViewById<TextView>(Resource.Id.name);
+			public SessionViewHolder(ViewGroup parent, int viewResource, Action<SessionRecord> onChecked) : base(parent, viewResource) {
+				date = view.FindViewById<TextView>(Resource.Id.report_date_created);
+				duration = view.FindViewById<TextView>(Resource.Id.report_session_duration);
+				devicesUsed = view.FindViewById<TextView>(Resource.Id.report_devices_used);
 				check = view.FindViewById<CheckBox>(Resource.Id.check);
+				check.CheckedChange += (sender, e) => {
+					t.isChecked = check.Checked;
+					if (onChecked != null) {
+						onChecked(this.t);
+					}
+				};
+				check.Checked = false;
+
+				view.SetOnClickListener(new ViewClickAction((view) => {
+					t.isChecked = !check.Checked;
+					check.Checked = t.isChecked;
+				}));;
 			}
 
 			public override void OnBindTo() {
-				var ellapsed = t.row.sessionEnd - t.row.sessionStart;
-				text.Text = t.row.sessionStart.ToLongDateString() + " " + ellapsed.TotalMinutes.ToString("#.0") + " mins";
+				var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
+				var dateString = t.row.sessionStart.ToLocalTime().ToShortDateString() + " " + t.row.sessionStart.ToLocalTime().ToShortTimeString();
 
+				if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
+					date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.black));
+				} else {
+					date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.red));
+				}
+
+				date.Text = dateString;
+				duration.Text = ToFriendlyString(t.row.sessionEnd - t.row.sessionStart);
+				devicesUsed.Text = "" + t.devicesCount;
 				check.Checked = t.isChecked;
+			}
+
+			private string ToFriendlyString(TimeSpan timeSpan) {
+				var c = view.Context;
+				if (timeSpan.TotalHours > 24) {
+					return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
+				} else if (timeSpan.TotalMinutes > 60) {
+					return timeSpan.TotalHours.ToString("#.#") + " " + c.GetString(Resource.String.time_hours_abrv);
+				} else if (timeSpan.TotalSeconds > 60) {
+					return timeSpan.TotalMinutes.ToString("#.#") + " " + c.GetString(Resource.String.time_minutes_abrv);
+				} else {
+					return timeSpan.TotalSeconds.ToString("#.#") + " " + c.GetString(Resource.String.time_seconds_abrv);
+				}
 			}
 		}
 
@@ -232,6 +273,7 @@ namespace ION.Droid.Activity.Report {
 
 		private class JobAdapter : SwipableRecyclerViewAdapter {
 			public OnJobHeaderClicked onJobHeaderClicked;
+			public Action<SessionRecord> onSessionClicked;
 
 			public override long GetItemId(int position) {
 				return records[position].viewType;
@@ -242,7 +284,11 @@ namespace ION.Droid.Activity.Report {
 					case EViewType.Job:
 						return new JobViewHolder(parent, this);
 					case EViewType.Session:
-						var sessionret = new SessionViewHolder(parent);
+						var sessionret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
+							if (onSessionClicked != null) {
+								onSessionClicked(sr);
+							}
+						});
 						sessionret.button.SetText(Resource.String.delete);
 						return sessionret;	
 					default:

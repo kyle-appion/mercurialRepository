@@ -26,6 +26,7 @@
   <string name="date">Date</string>
   <string name="delete">Delete</string>
   <string name="deleting">Deleting</string>
+  <string name="deny">Deny</string>
 	<string name="deselect_all">Deselect All</string>
   <string name="disabled">Disabled</string>
   <string name="disconnect">Disconnect</string>
@@ -35,12 +36,12 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>
   <string name="enable_bluetooth">Enable Bluetooth</string>
   <string name="enabled">Enabled</string>
 	<string name="end">End</string>
   <string name="enter_number">Enter a number</string>
-  <string name="error">Error</string>
   <string name="exit">Exit</string>
   <string name="exit_ion">Exit ION</string>
 	<string name="export">Export</string>
@@ -64,6 +65,8 @@
   <string name="main">Main</string>
   <string name="measurement">Measurement</string>
   <string name="manual">Manual</string>
+  <string name="maximum">Maximum</string>
+	<string name="minimum">Minimum</string>
   <string name="na">N/A</string>
   <string name="name">Name</string>
   <string name="navigation">Navigation</string>
@@ -129,7 +132,6 @@
   ANALYZER
   -->
   <string name="analyzer">System Analyzer</string>
-  <string name="analyzer_action_breaks_manifold">Action Breaks Viewer</string>
   <string name="analyzer_add_from">Add From...</string>
   <string name="analyzer_added_to_high">Added Sensor to High Side in the System Analyzer</string>
   <string name="analyzer_added_to_low">Added Sensor to Low Side in the System Analyzer</string>
@@ -139,16 +141,41 @@
 	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
 	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
+  <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
+  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
+  <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
+  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
   <string name="analyzer_remove_sensor">Remove Sensor?</string>
   <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
-  <string name="analyzer_replace_primary_sensor">Completing the desired action will change one or more viewers and their subviews. Would you like to continue?</string>
-  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
+  <string name="analyzer_replace_manifold_sensor">Completing the desired action will change (or remove) one or more viewers and their subviews. Would you like to continue?</string>
+  <string name="analyzer_require_pressure_primary">Pressure must be defined for proper viewer display</string>
+  <string name="analyzer_sensor_already_in_viewer">The sensor is already added to this viewer</string>
+  <string name="analyzer_sensor_incompatible_with_manifold">Cannot link sensor to Viewer: the sensor is not compatible with the Viewer.</string>
   <string name="analyzer_set_viewer_failed">Failed to change the viewer.</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to {0} side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
   <string name="analyzer_side_low">Low Side</string>
   <string name="analyzer_side_high">High Side</string>
 	<string name="analyzer_swap_failed">Failed to swap sensors</string>
+	<string name="analyzer_swap_linked_manifolds">Would you like to swap the linked measurements? Your subviews will remain intact.</string>
+
+	<!--
+	APP
+	-->
+	<string name="app_no_navigation_items">No Items added to the navigation drawer</string>
+	<string name="app_error_failed_to_take_screenshot">Failed to save screenshot</string>
+	<string name="app_error_failed_to_start">Failed to start ION</string>
+	<string name="app_error_failed_to_start_msg">Failed to start ION. Please contact Appion for assistance.</string>
+
+	<!--
+	BLUETOOTH
+	-->
+	<string name="bluetooth_disabled">Bluetooth Disabled</string>
+	<string name="bluetooth_enable_failed">Failed to enable bluetooth</string>
+	<string name="bluetooth_enabled">Enabled bluetooth</string>
+	<string name="bluetooth_location_off">Location Off</string>
+	<string name="bluetooth_requires_location">As of Android version 6, location services are required to be turned on to successfully scan for a bluetooth device. Would you like to enable location services?\n\nDenying this action will prevent your device from finding your gauges.</string>
 
   <!--
   CALCULATORS
@@ -192,21 +219,25 @@
   <!--
   ERRORS, GENERAL
   -->
+  <string name="error">Error</string>
   <string name="error_bluetooth">Bluetooth Error</string>
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
   <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
+  <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
   <string name="error_failed_to_parse_number">Please enter a valid number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
+  <string name="error_failed_to_set_unit">Failed to set unit</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>
   <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
   <string name="error_pdf_viewer_missing">It appears that your device does not have an application capable of viewing PDF files. Please install a PDF application to view the file.</string>
   <string name="error_excel_viewer_missing">It appears that your device does not have an application capable of viewing Excel files. Please install a Excel application to view the file.</string>
-	<string name="error_start_up_request_location_for_bluetooth">As of Android 5.0, Android requires the Location permission to enable bluetooth scanning. ION HVAC/R requires bluetooth to communicate with ION compatible gauges.</string>
+	<string name="error_start_up_request_location_for_bluetooth">As of Android 6.0, Android requires the Location permission to enable bluetooth scanning operations in the ION HVAC/R app. \n\nWould you like to give ION HVAC/R the Location permission? \n\nDenying the permission will prevent the application from scanning and finding your gauges.</string>
 	<string name="error_start_up_fail">Failed to Launch ION</string>
-	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R cannot be used. Please restart the ION HVAC/R application and authorize the application\'s use of these features.</string>
+	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R app cannot be used. Please authorize the application\'s use of these features to use the app.</string>
+	<string name="errror_unknown">An unknown error occured.</string>
 
   <!--
   FLUIDS
@@ -298,6 +329,7 @@
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
 	<string name="report_choose_export_format">Choose an Export Format</string>
+	<string name="report_created">Report Created</string>
   <string name="report_data_logging">Reporting</string>
   <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
@@ -310,14 +342,20 @@
   <string name="report_data_logging_step_1">Step 1</string>
   <string name="report_data_logging_step_2">Step 2</string>
   <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_date_created">Date Recorded</string>
+  <string name="report_session_duration">Session Duration</string>
+  <string name="report_dates">Report Dates</string>
   <string name="report_delete_session">Really delete session?</string>
   <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
+  <string name="report_devices_used">Devices Used</string>
 	<string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
   <string name="report_graph">Graph</string>
 	<string name="report_graph_selection">Graph Selection</string>
   <string name="report_jobs">Jobs</string>
+  <string name="report_job_details">Job Details</string>
   <string name="report_name">Report Name</string>
   <string name="report_new">New Report</string>
+  <string name="report_nist_date">Certification Date</string>
   <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
 	<string name="report_no_sessions_exist">No sessions exist. Click the record button in the Workbench or Analyzer to start recording a new session"</string>
 	<string name="report_no_spreadsheets_exist">No spreadsheet reports exist</string>
@@ -336,12 +374,16 @@
 	<string name="report_selection">Report Selection</string>
   <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
+  <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
+  <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
 
 	<!--
 	PTCHART
 	-->
 	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid Viewer</string>
 	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
+	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
+	<string name="ptchart_error_change_unit">Please change the unit for the PT Chart.</string>
 
 	<!--
 	SUPERHEAT / SUBCOOL

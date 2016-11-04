@@ -1,8 +1,8 @@
-﻿using System.ComponentModel;
-namespace ION.Droid.Activity.Report {
+﻿namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
+	using System.IO;
 	using System.Threading.Tasks;
 
 	using Android.Animation;
@@ -18,8 +18,11 @@ namespace ION.Droid.Activity.Report {
 
 	using OxyPlot.Xamarin.Android;
 
+	using ION.Core.Devices;
 	using ION.Core.IO;
+	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
+	using ION.Core.Sensors;
 	using ION.Core.Util;
 
 	using ION.Droid.Dialog;
@@ -63,6 +66,19 @@ namespace ION.Droid.Activity.Report {
 		/// The recycler view that will list the graphing components.
 		/// </summary>
 		private RecyclerView graphList;
+
+		/// <summary>
+		/// The button that is used to select the pressure unit for the reports.
+		/// </summary>
+		private Button pressureUnitButton;
+		/// <summary>
+		/// The button taht is used to select the temperature unit for the reports.
+		/// </summary>
+		private Button temperatureUnitButton;
+		/// <summary>
+		/// The button that is used to select the vacuum unit for the reports.
+		/// </summary>
+		private Button vacuumUnitButton;
 		/// <summary>
 		/// The spinner that will display the start dates.
 		/// </summary>
@@ -142,6 +158,7 @@ namespace ION.Droid.Activity.Report {
 			startDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
 			endDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 
+/*
 			startDateSpinner.ItemSelected += (sender, e) => {
 				var pos = e.Position;
 				var len = (float)graphAdapter.dil.dateSpan;
@@ -157,6 +174,7 @@ namespace ION.Droid.Activity.Report {
 
 				InvalidateGraphViews();
 			};
+*/
 
 			var empty = FindViewById(Resource.Id.empty);
 			empty.Visibility = ViewStates.Gone;
@@ -166,7 +184,6 @@ namespace ION.Droid.Activity.Report {
 		protected override void OnResume() {
 			base.OnResume();
 
-			InvalidateGraphViews();
 			RefreshGraphList();
 		}
 
@@ -216,16 +233,16 @@ namespace ION.Droid.Activity.Report {
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width / 2 + right.Width / 2;
+						var dw = left.Width + right.Width;
 
 						if (x < modifiedStart) {
 							x = modifiedStart;
-						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - dw) {
+						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - right.Width - dw) {
 							x = modifiedStart + rect.Width() - rightOverlay.width - dw;
 						}
 
 						leftOverlay.width = (int)(x - modifiedStart);
-						left.SetX(x - left.Width / 2);
+						left.SetX(x);
 
 						graphList.Invalidate();
 						UpdateDates();
@@ -245,7 +262,7 @@ namespace ION.Droid.Activity.Report {
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width / 2 + right.Width / 2;
+						var dw = left.Width + right.Width;
 
 						if (x < modifiedStart + leftOverlay.width + dw) {
 							x = modifiedStart + leftOverlay.width + dw;
@@ -255,7 +272,7 @@ namespace ION.Droid.Activity.Report {
 
 						rightOverlay.width = (int)(modifiedStart + rect.Width() - x);
 
-						right.SetX(x - right.Width / 2);
+						right.SetX(x - right.Width);
 
 						graphList.Invalidate();
 						UpdateDates();
@@ -267,6 +284,37 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void InitOptionsViews() {
+			var table = FindViewById(Resource.Id.table);
+			var pressure = table.FindViewById(Resource.Id.pressure);
+			var temperature = table.FindViewById(Resource.Id.temperature);
+			var vacuum = table.FindViewById(Resource.Id.vacuum);
+
+			pressureUnitButton = pressure.FindViewById<Button>(Resource.Id.unit);
+			temperatureUnitButton = temperature.FindViewById<Button>(Resource.Id.unit);
+			vacuumUnitButton = vacuum.FindViewById<Button>(Resource.Id.unit);
+
+			pressureUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_PRESSURE_UNITS, (sender, e) => {
+					SetPressureReportUnit(e);
+				}).Show();
+			}));
+
+			temperatureUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_TEMPERATURE_UNITS, (sender, e) => {
+					SetTemperatureReportUnit(e);
+				}).Show();
+			}));
+
+			vacuumUnitButton.SetOnClickListener(new ViewClickAction((view) => {
+				UnitDialog.Create(this, SensorUtils.DEFAULT_VACUUM_UNITS, (sender, e) => {
+					SetVacuumReportUnit(e);
+				}).Show();
+			}));
+
+			SetPressureReportUnit(ion.preferences.units.pressure);
+			SetTemperatureReportUnit(ion.preferences.units.temperature);
+			SetVacuumReportUnit(ion.preferences.units.vacuum);
+
 			var icon = settingsView.FindViewById(Resource.Id.icon);
 			icon.SetOnClickListener(new ViewClickAction((view) => {
 				AnimateToGraphView();
@@ -276,6 +324,33 @@ namespace ION.Droid.Activity.Report {
 
 			var list = settingsView.FindViewById<RecyclerView>(Resource.Id.list);
 			list.SetAdapter(overviewAdapter);
+		}
+
+		private void SetPressureReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.pressure)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				pressureUnitButton.Text = unit.ToString();
+				ion.preferences.units.pressure = unit;
+			}
+		}
+
+		private void SetTemperatureReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.temperature)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				temperatureUnitButton.Text = unit.ToString();
+				ion.preferences.units.temperature = unit;
+			}
+		}
+
+		private void SetVacuumReportUnit(Unit unit) {
+			if (!unit.IsCompatible(ion.preferences.units.vacuum)) {
+				Error(GetString(Resource.String.error_failed_to_set_unit));
+			} else {
+				vacuumUnitButton.Text = unit.ToString();
+				ion.preferences.units.vacuum = unit;
+			}
 		}
 
 		private void AnimateToOptionsView() {
@@ -359,8 +434,11 @@ namespace ION.Droid.Activity.Report {
 			leftOverlay.plotWidth = rect.Width();
 			rightOverlay.plotWidth = rect.Width();
 
-			left.SetX(modifiedStart + leftOverlay.width - left.Width / 2);
-			right.SetX(modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
+			var leftx = Math.Max(modifiedStart, modifiedStart + leftOverlay.width - left.Width / 2);
+			var rightx = Math.Min(modifiedStart + rect.Width() - right.Width, modifiedStart + rect.Width() - rightOverlay.width - right.Width / 2);
+
+			left.SetX(leftx);
+			right.SetX(rightx);
 
 			graphList.Invalidate();
 
@@ -381,18 +459,18 @@ namespace ION.Droid.Activity.Report {
 				GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
 
 			var date = settingsView.FindViewById(Resource.Id.date);
-			date.Visibility = ViewStates.Gone;
 			
 			var startIndex = graphAdapter.IndexOfDateTime(startDate);
 			var endIndex = graphAdapter.IndexOfDateTime(endDate);
 
 			var startDates = graphAdapter.GetDatesInRange(0, endIndex);
-			var endDates = graphAdapter.GetDatesInRange(startIndex, graphAdapter.dil.dateSpan - 1);
+			var endDates = graphAdapter.GetDatesInRange(endIndex + 1, graphAdapter.dil.dateSpan - 1);
 
 			startTimesAdapter = new DateTimeAdapter(this, startDates);
 			endTimesAdapter = new DateTimeAdapter(this, endDates);
 
-//			this.startTimesAdapter = new ArrayAdapter<string>(DatesToStr
+			startDateSpinner.Adapter = startTimesAdapter;
+			endDateSpinner.Adapter = endTimesAdapter;
 		}
 
 		private async Task RefreshGraphList() {
@@ -437,18 +515,15 @@ namespace ION.Droid.Activity.Report {
 		}
 
 		private void Export() {
-			var results = graphAdapter.GatherSelectedLogs(leftOverlay.width / (float)leftOverlay.plotWidth,
-			                                         1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
-			
 			var dialog = new ListDialogBuilder(this);
 			dialog.SetTitle(Resource.String.report_choose_export_format);
 
 			dialog.AddItem(Resource.String.spreadsheet, () => {
-				ExportExcel(results);
+				ExportExcel();
 			});
 
 			dialog.AddItem(Resource.String.pdf, () => {
-				ExportPdf(results);
+				ExportPdf();
 			});
 
 			dialog.SetNegativeButton(Resource.String.cancel, (sender, e) => {
@@ -459,7 +534,24 @@ namespace ION.Droid.Activity.Report {
 			dialog.Show();
 		}
 
-		private async Task ExportExcel(List<SessionResults> results) {
+		/// <summary>
+		/// Captures all of the graph selected graph views and converts them into a png for exporting.
+		/// </summary>
+		private Dictionary<GaugeDeviceSensor, Stream> CaptureGraphs() {
+			var ret = new Dictionary<GaugeDeviceSensor, Stream>();
+
+			for (int i = 0; i < graphAdapter.ItemCount; i++) {
+				var record = graphAdapter.GetRecordAt(i) as GraphRecord;
+				if (record.isChecked) {
+					var view = graphList.GetLayoutManager().FindViewByPosition(i);
+					ret[record.sensor] = view.ToPng();
+				}
+			}
+
+			return ret;
+		}
+
+		private async Task ExportExcel() {
 			var dialog = new ProgressDialog(this);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.saving));
@@ -467,6 +559,15 @@ namespace ION.Droid.Activity.Report {
 
 			var task = Task.Factory.StartNew(() => {
 				try {
+					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
+					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
+					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
+
+					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
+					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+//					dlr.graphImages = CaptureGraphs();
+
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 
 					dateString = dateString.Replace('/', '-');
@@ -474,9 +575,7 @@ namespace ION.Droid.Activity.Report {
 					var folder = ion.dataLogReportFolder;
 					var file = folder.GetFile(FILE_NAME + "_" + dateString + EXCEL_EXT, EFileAccessResponse.ReplaceIfExists);
 
-					var success = new DataLogExcelReportExporter().Export(ion, this, file.fullPath, results);
-
-					if (success) {
+					if (DataLogExcelReportExporter.Export(this, ion, file.fullPath, dlr)) {
 						Log.D(this, "Succeeded in exporting the results");
 					} else {
 						Log.D(this, "Failed to export the results.");
@@ -496,7 +595,7 @@ namespace ION.Droid.Activity.Report {
 			dialog.Dismiss();
 		}
 
-		private async Task ExportPdf(List<SessionResults> results) {
+		private async Task ExportPdf() {
 			var dialog = new ProgressDialog(this);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.saving));
@@ -504,6 +603,15 @@ namespace ION.Droid.Activity.Report {
 
 			var task = Task.Factory.StartNew(() => {
 				try {
+					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
+					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
+					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
+
+					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
+					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+//					dlr.graphImages = CaptureGraphs();
+
 					var dateString = DateTime.Now.ToFullShortString();
 					dateString = dateString.Replace('\\', '-'); 
 					dateString = dateString.Replace('/', '-');
@@ -512,7 +620,7 @@ namespace ION.Droid.Activity.Report {
 					var folder = ion.dataLogReportFolder;
 					var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
 
-					var success = new DataLogPdfReportExporter().Export(ion, this, file.fullPath, results);
+					var success = DataLogPdfReportExporter.Export(this, ion, file.fullPath, dlr);
 
 					if (success) {
 						Log.D(this, "Succeeded in exporting the results");

@@ -37,23 +37,23 @@ namespace ION.IOS.ViewController.JobManager {
 
       var jobQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow WHERE JID = ?", JobID);
 
-      var detailString = "";
+      var detailString = " ";
       foreach (var job in jobQuery) {
-        detailString += " Job Name: " + job.jobName;
+        detailString += Util.Strings.Job.JOBNAME + " : " + job.jobName;
 
-        detailString += "\n Customer #: ";
+        detailString += "\n "+ Util.Strings.Job.CUSTOMERSIGN +": ";
         if (job.customerNumber != null) {
           detailString += job.customerNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\n Dispatch #: ";
+        detailString += "\n "+ Util.Strings.Job.DISPATCHSIGN +": ";
         if (job.dispatchNumber != null) {
           detailString += job.dispatchNumber;
         } else {
           detailString += "N/A";
         }
-        detailString += "\n Purchase Order #: ";
+        detailString += "\n "+ Util.Strings.Job.POSIGN +": ";
         if (job.poNumber != null) {
           detailString += job.poNumber;
         } else {

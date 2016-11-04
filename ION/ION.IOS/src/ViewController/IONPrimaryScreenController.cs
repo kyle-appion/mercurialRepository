@@ -239,7 +239,7 @@ namespace ION.IOS.ViewController {
         .Link(new HelpPageBuilder(Strings.Help.ABOUT)
           .Info(Strings.Help.VERSION, NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString())
           .Build())
-    		.Link("Introductory Walkthrough",(object obj, HelpViewController ovc) => {
+    		.Link(Util.Strings.Walkthrough.INTRODUCTORY,(object obj, HelpViewController ovc) => {
     			OpenWalkthroughSections();
     		} )
 #if DEBUG 
@@ -316,7 +316,7 @@ namespace ION.IOS.ViewController {
     private void DoSendAppionFeedback() {
       var vc = new MFMailComposeViewController();     
       vc.MailComposeDelegate = new MailDelegate();
-      vc.SetSubject("ION App Feedback");
+      vc.SetSubject(Util.Strings.APPFEEDBACK);
       vc.SetMessageBody("Hello,\n\n", false);
       vc.SetToRecipients(new String[] { AppionServerHelper.Email.APPION_SUPPORT });
 

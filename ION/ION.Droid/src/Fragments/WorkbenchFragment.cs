@@ -166,7 +166,7 @@
             if (u != -1) {
               // TODO ahodder@appioninc.com: Assign the unit.
 							Log.E(this, "Invalid unit on activity result for ptchart");
-              Alert("Please change the unit for the pt chart");
+							Alert(GetString(Resource.String.ptchart_error_change_unit));
             }
           }
           break;
@@ -323,18 +323,14 @@
 			foreach (var unit in sensor.supportedUnits) {
 				if (!unit.Equals(sensor.unit)) {
 					ldb.AddItem(unit.ToString(), () => {
-						DoThings(sensor, unit);
+						var device = sensor.device;
+						var p = device.protocol as IGaugeProtocol;
+						device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 					});
 				}
 			}
 
 			ldb.Show();
-		}
-
-		private void DoThings(GaugeDeviceSensor sensor, Unit unit) {
-			var device = sensor.device;
-			var p = device.protocol as IGaugeProtocol;
-			device.connection.Write(p.CreateSetUnitCommand(device.IndexOfSensor(sensor) + 1, sensor.type, unit));
 		}
 
     /// <summary>

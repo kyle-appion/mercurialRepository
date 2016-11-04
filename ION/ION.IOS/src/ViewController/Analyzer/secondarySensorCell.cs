@@ -27,13 +27,13 @@ namespace ION.IOS.ViewController.Analyzer {
       secondaryReading = new UILabel(new CGRect(0, .5 * lhSensor.cellHeight, tableRect.Width, .5 * lhSensor.cellHeight));
 			
 			if(lhSensor.currentSensor != null && lhSensor.currentSensor.type == ESensorType.Temperature){
-				cellHeader.Text = "Linked PRESS";
+				cellHeader.Text = Util.Strings.LINKED + " PRESS";
 			} else if(lhSensor.currentSensor != null){
-				cellHeader.Text = "Linked TEMP";
+				cellHeader.Text = Util.Strings.LINKED + " TEMP";
 			} else if (lhSensor.manualSensor != null && lhSensor.manualSensor.type == ESensorType.Pressure){
-				cellHeader.Text = "Linked TEMP";
+				cellHeader.Text = Util.Strings.LINKED + " TEMP";
 			} else {
-				cellHeader.Text = "Linked PRESS";
+				cellHeader.Text = Util.Strings.LINKED + " PRESS";
 			}
       cellHeader.TextColor = UIColor.White;
       cellHeader.BackgroundColor = UIColor.Black;
@@ -51,7 +51,7 @@ namespace ION.IOS.ViewController.Analyzer {
         } else if (lhSensor.currentSensor == lhSensor.manifold.primarySensor) {
           secondaryReading.Text = lhSensor.manifold.secondarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.secondarySensor.unit;
         } else {
-          secondaryReading.Text = "Not Linked";
+          secondaryReading.Text = Util.Strings.Device.NOTLINKED;
         }
       } else if (lhSensor.manualSensor != null && lhSensor.manifold.secondarySensor != null) {
         if(lhSensor.manualSensor.type.Equals(ESensorType.Pressure)){
@@ -60,7 +60,7 @@ namespace ION.IOS.ViewController.Analyzer {
           secondaryReading.Text = lhSensor.manifold.primarySensor.measurement.amount.ToString("N") + " " + lhSensor.manifold.primarySensor.unit;
         }
       } else {
-        secondaryReading.Text = "Not Linked";      
+        secondaryReading.Text = Util.Strings.Device.NOTLINKED;      
       }
       this.AddSubview(cellHeader);
       this.AddSubview(secondaryReading);
