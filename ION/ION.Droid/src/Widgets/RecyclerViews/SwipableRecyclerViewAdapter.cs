@@ -80,7 +80,7 @@
     /// <summary>
     /// The item decorator that will draw the action button behind a swiped view.
     /// </summary>
-    private ItemTouchHelper touchHelperDecoration;
+		protected ItemTouchHelper touchHelperDecoration { get; set; }
     /// <summary>
     /// The item decorator that will resolve item swipes.
     /// </summary>
