@@ -33,7 +33,7 @@ namespace ION.Core.Net {
 		public IION ion;
 		public WebClient webClient;
 		HttpClient client;  
-		public bool remoteViewing = false;
+		public bool remoteViewing = false;   
 		public bool uploading = false;
 		public bool downloading 
 		{

@@ -3,23 +3,38 @@ using System.IO;
 using UIKit;
 using Foundation;
 using CoreGraphics;
+using CoreLocation;
 
 using ION.Core.App;
+using System.Threading.Tasks;
 
 namespace ION.IOS.ViewController.JobManager  {
   
   public class EditJobView {
     public UIView editView;
     public UILabel confirmLabel;
+    public UILabel coordinateLabel;
     public UITextField jobName;
     public UITextField customerNumber;
     public UITextField dispatchNumber;
     public UITextField prodOrderNumber;
-    public UIButton moreInfoButton;
+    public UITextField techName;
+    public UITextField systemName;    
+    public UITextField jobAddress;
+    
+    public UIButton coordinateButton;
+    public UIButton additionalInfo;
     IION ion;
+    
+    public CLGeocoder geoCoder;
+    
+    public bool expanded = false;
+    public int jobID = 0;
 
     public EditJobView(UIView parentView,int frnJID) {
       ion = AppState.context;
+      jobID = frnJID;
+      geoCoder = new CLGeocoder();
 
       editView = new UIView(new CGRect(0,0,parentView.Bounds.Width,parentView.Bounds.Height));
       editView.AddGestureRecognizer(new UITapGestureRecognizer(() => {
@@ -38,6 +53,10 @@ namespace ION.IOS.ViewController.JobManager  {
       var holderCustomer = "";
       var holderDispatch = "";      
       var holderPO = "";
+      var holderTech = "";
+      var holderSystem = "";
+      var holderAddress = "";
+      var holderLocation = "";
 
       if (!frnJID.Equals(0)) {
         var infoQuery = ion.database.Query<ION.Core.Database.JobRow>("SELECT * FROM JobRow WHERE JID = ?", frnJID);
@@ -54,6 +73,18 @@ namespace ION.IOS.ViewController.JobManager  {
           if (job.poNumber != null) {
             holderPO = job.poNumber;
           }
+          if(job.techName != null){
+						holderTech = job.techName;
+					}
+					if(job.systemType != null){
+						holderSystem = job.systemType;
+					}
+					if(job.jobAddress != null){
+						holderAddress = job.jobAddress;
+					}
+					if(job.jobLocation != null){
+						holderLocation = job.jobLocation;
+					}
         }
       }
 
@@ -122,13 +153,130 @@ namespace ION.IOS.ViewController.JobManager  {
       };
       prodOrderNumber.Text = holderPO;
       
+      additionalInfo = new UIButton(new CGRect(.1 * editView.Bounds.Width,.63 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+      additionalInfo.SetTitle("Additional Information",UIControlState.Normal);
+      additionalInfo.SetTitleColor(UIColor.Blue,UIControlState.Normal);
+      additionalInfo.TouchUpInside += showAdditionalInfo;
+			additionalInfo.TouchDown += (sender, e) => {additionalInfo.SetTitleColor(UIColor.Black, UIControlState.Normal);};
+			additionalInfo.TouchUpOutside += (sender, e) => {additionalInfo.SetTitleColor(UIColor.Blue, UIControlState.Normal);}; 
+    
+      techName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.7 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
+        Placeholder = "Tech Name",
+        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        FloatingLabelTextColor = UIColor.Gray,
+        FloatingLabelActiveTextColor = UIColor.Blue,
+        TextAlignment = UITextAlignment.Center,
+        AutocorrectionType = UITextAutocorrectionType.No,
+        AutocapitalizationType = UITextAutocapitalizationType.None,
+        Hidden = true,
+			};
+			techName.Layer.BorderWidth = 1f;
+      techName.ShouldReturn += (textField) => {
+        textField.ResignFirstResponder();
+        return true;
+      };
+      techName.Text = holderTech;
+
+      systemName = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width,.79 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
+        Placeholder = "Type of System",
+        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        FloatingLabelTextColor = UIColor.Gray,
+        FloatingLabelActiveTextColor = UIColor.Blue,
+        TextAlignment = UITextAlignment.Center,
+        AutocorrectionType = UITextAutocorrectionType.No,
+        AutocapitalizationType = UITextAutocapitalizationType.None,
+        Hidden = true,
+			};
+			systemName.Layer.BorderWidth = 1f;
+      systemName.ShouldReturn += (textField) => {
+        textField.ResignFirstResponder();
+        return true;
+      };
+      systemName.Text = holderSystem;
+           
+      jobAddress = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width, .88 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
+				Placeholder = "Address",
+        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
+        FloatingLabelTextColor = UIColor.Gray,
+        FloatingLabelActiveTextColor = UIColor.Blue,
+        TextAlignment = UITextAlignment.Center,
+        AutocorrectionType = UITextAutocorrectionType.No,
+        AutocapitalizationType = UITextAutocapitalizationType.None,
+        AdjustsFontSizeToFitWidth = true,
+        Hidden = true,
+			};
+			jobAddress.Layer.BorderWidth = 1f;
+			jobAddress.Text = holderAddress;
+			
+			coordinateButton = new UIButton(new CGRect(.1 * editView.Bounds.Width, .97 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+			coordinateButton.SetTitle("Set Coordinates",UIControlState.Normal);
+			coordinateButton.SetTitleColor(UIColor.Blue,UIControlState.Normal);
+			coordinateButton.Hidden = true;
+			coordinateButton.TouchUpInside += updateJobCoordinates;
+			coordinateButton.TouchDown += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
+			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);};
+			
+			coordinateLabel = new UILabel(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+			coordinateLabel.AdjustsFontSizeToFitWidth = true;
+			coordinateLabel.Hidden = true;
+			coordinateLabel.TextAlignment = UITextAlignment.Center;
+			coordinateLabel.Text = holderLocation;
+			
       editView.AddSubview(confirmLabel);
       editView.AddSubview(jobName);
       editView.AddSubview(customerNumber);
       editView.AddSubview(dispatchNumber);
       editView.AddSubview(prodOrderNumber);
+      editView.AddSubview(additionalInfo);
+      editView.AddSubview(techName);
+      editView.AddSubview(systemName);
+      editView.AddSubview(jobAddress);
+      editView.AddSubview(coordinateButton);
+      editView.AddSubview(coordinateLabel);
     }
+		
+		public void showAdditionalInfo(object sender, EventArgs e){
+			additionalInfo.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			if(expanded){
+				techName.Hidden = true;
+				systemName.Hidden = true;
+				jobAddress.Hidden = true;
+				coordinateButton.Hidden = true;
+				coordinateLabel.Hidden = true;
+				expanded = false;			
+			} else {
+				techName.Hidden = false;
+				systemName.Hidden = false;
+				jobAddress.Hidden = false;
+				coordinateButton.Hidden = false;
+				coordinateLabel.Hidden = false;
+				expanded = true;
+			}			
+		}
+		
+		public async void updateJobCoordinates(object sender, EventArgs e){
+			await Task.Delay(TimeSpan.FromMilliseconds(2));
+			coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			if(string.IsNullOrEmpty(jobAddress.Text)){
+				coordinateLabel.Text = "Address is Empty";
+			} else {
+				coordinateButton.Enabled = false;
+				var placemarks = await geoCoder.GeocodeAddressAsync(jobAddress.Text);
+				if(placemarks.Length == 0){
+					coordinateLabel.Text = "Unable to retrieve coordinates";
+				} else {
+					var latlong = "";
+					foreach(var placemark in placemarks){
+						latlong = placemark.Location.Coordinate.Latitude + ","+placemark.Location.Coordinate.Longitude;
+					}
+					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ? WHERE JID = ?",latlong,jobID);
 
+					coordinateLabel.Text = latlong;
+				}
+
+				coordinateButton.Enabled = true;
+			}
+		}		
   }
 }
 
