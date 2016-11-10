@@ -9,6 +9,7 @@
 
   public class SwipeDecorator : ItemTouchHelper.SimpleCallback {
 
+		public bool isSwiping { get; private set; }
     private SwipableRecyclerViewAdapter adapter;
     private Drawable background;
 
@@ -19,6 +20,16 @@
       this.adapter = adapter;
       background = new ColorDrawable(color);
     }
+
+		public override void OnSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
+			base.OnSelectedChanged(viewHolder, actionState);
+			isSwiping = true;
+		}
+
+		public override void ClearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+			base.ClearView(recyclerView, viewHolder);
+			isSwiping = false;
+		}
 
     /// <summary>
     /// Raises the move event.
@@ -46,14 +57,6 @@
       } else {
         return 0;
       }
-/*
-      if (adapter != null && adapter.HasPendingAction(viewHolder.AdapterPosition) ||
-        !adapter.IsViewHolderSwipable(record, viewHolder as SwipableViewHolder, viewHolder.AdapterPosition)) {
-        return 0;
-      } else {
-        return base.GetSwipeDirs(recyclerView, viewHolder);
-      }
-*/
     }
 
     /// <summary>

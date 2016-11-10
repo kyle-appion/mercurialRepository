@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.27">
+	<display version="0.9.28">
 		<new>Added new refrigerants</new>
 		<update>Updated some older refigerants</update>
 		<update>Updated text localization</update>
+		<fixed>Layout issue when swiping Viewers on the Workbench</fixed>
 	</display>
 </whatsnew>
