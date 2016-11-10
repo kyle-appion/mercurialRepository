@@ -275,7 +275,7 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
 #if DEBUG
         //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),     
 #endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
