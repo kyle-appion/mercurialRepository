@@ -121,8 +121,15 @@
   <dimen name="fluid_color_width">64dp</dimen>
   <!-- The general height of the the fuid color. -->
   <dimen name="fluid_color_height">48dp</dimen>
+  <!-- The size of the text view that is to display the name of the fluid -->
+  <dimen name="fluid_text_width">100dp</dimen>
   <!-- The size of an icon in the fluid dialog manager. -->
   <dimen name="fluid_icon_size">64dp</dimen>
+  <!-- The "padding" inset that is applied to the fluid manager to align some components -->
+	<dimen name="fluid_inset">64dp</dimen>
+	<!-- The size of the fluid text. -->
+	<dimen name="fluid_saftey_text_size">24sp</dimen>
+	<dimen name="fluid_indicator_size">8dp</dimen>
 
   <!--
   PTChart dimensions

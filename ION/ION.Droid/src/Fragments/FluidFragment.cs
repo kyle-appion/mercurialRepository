@@ -178,7 +178,6 @@
 
         vh.color = convert.FindViewById(Resource.Id.color);
         vh.name = convert.FindViewById<TextView>(Resource.Id.name);
-        vh.selected = convert.FindViewById<ImageView>(Resource.Id.status);
         vh.perferred = convert.FindViewById<ImageView>(Resource.Id.preferred);
       }
 
@@ -188,9 +187,9 @@
       vh.name.Text = fluidName;
 
       if (fluidName.Equals(selectedFluid)) {
-        vh.selected.Visibility = ViewStates.Visible;
+				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.light_gray));
       } else {
-        vh.selected.Visibility = ViewStates.Invisible;
+				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.white));
       }
 
       if (fm.IsFluidPreferred(fluidName)) {
@@ -209,7 +208,7 @@
     private class ViewHolder : Java.Lang.Object {
       public View color;
       public TextView name;
-      public ImageView selected, perferred;
+      public ImageView perferred;
     }
   }
 }

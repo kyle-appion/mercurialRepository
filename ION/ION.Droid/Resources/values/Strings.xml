@@ -254,6 +254,7 @@
   <string name="fluid_manager">Fluid Manager</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
+  <string name="fluid_safety">Safety</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
   <string name="fluid_setup">Setup</string>
   <string name="fluid_sc">Subcool</string>
