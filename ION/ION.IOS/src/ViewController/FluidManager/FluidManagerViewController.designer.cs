@@ -13,6 +13,12 @@ namespace ION.IOS.ViewController.FluidManager
 	partial class FluidManagerViewController
 	{
 		[Outlet]
+		UIKit.UILabel fluidNameLabel { get; set; }
+
+		[Outlet]
+		UIKit.UILabel fluidSafetyLabel { get; set; }
+
+		[Outlet]
 		UIKit.UILabel labelFluidName { get; set; }
 
 		[Outlet]
@@ -29,6 +35,11 @@ namespace ION.IOS.ViewController.FluidManager
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (labelFluidName != null) {
+				labelFluidName.Dispose ();
+				labelFluidName = null;
+			}
+
 			if (switchFluidSource != null) {
 				switchFluidSource.Dispose ();
 				switchFluidSource = null;
@@ -39,19 +50,24 @@ namespace ION.IOS.ViewController.FluidManager
 				tableContent = null;
 			}
 
-			if (viewSelectedFluidContainer != null) {
-				viewSelectedFluidContainer.Dispose ();
-				viewSelectedFluidContainer = null;
-			}
-
 			if (viewFluidColor != null) {
 				viewFluidColor.Dispose ();
 				viewFluidColor = null;
 			}
 
-			if (labelFluidName != null) {
-				labelFluidName.Dispose ();
-				labelFluidName = null;
+			if (viewSelectedFluidContainer != null) {
+				viewSelectedFluidContainer.Dispose ();
+				viewSelectedFluidContainer = null;
+			}
+
+			if (fluidSafetyLabel != null) {
+				fluidSafetyLabel.Dispose ();
+				fluidSafetyLabel = null;
+			}
+
+			if (fluidNameLabel != null) {
+				fluidNameLabel.Dispose ();
+				fluidNameLabel = null;
 			}
 		}
 	}
