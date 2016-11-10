@@ -1,9 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.28">
-		<new>Added new refrigerants</new>
-		<update>Updated some older refigerants</update>
-		<update>Updated text localization</update>
-		<fixed>Layout issue when swiping Viewers on the Workbench</fixed>
+	<display version="0.9.29">
+		<update>Added saftey details for refrigerants</update>
+		<update>Look and feel of the refrigerant manager</update>
 	</display>
 </whatsnew>

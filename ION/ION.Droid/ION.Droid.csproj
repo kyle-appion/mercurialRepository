@@ -633,7 +633,6 @@
     <AndroidResource Include="Resources\drawable\ic_record.png" />
     <AndroidResource Include="Resources\drawable\ic_stop.png" />
     <AndroidResource Include="Resources\drawable\.DS_Store" />
-    <AndroidResource Include="Resources\drawable\Thumbs.db" />
     <AndroidResource Include="Resources\drawable\ic_job.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_reporting.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />
@@ -642,6 +641,7 @@
     <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
     <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
+    <AndroidResource Include="Resources\drawable\shape_circle_red.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

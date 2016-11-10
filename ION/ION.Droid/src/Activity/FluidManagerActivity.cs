@@ -26,7 +26,7 @@
   using ION.Droid.Fragments;
 
   [Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
-  public class FluidManagerActivity : Activity {
+	public class FluidManagerActivity : Activity, ViewPager.IOnPageChangeListener {
 
     /// <summary>
     /// The key that will retrieve the string name for the fluid that is
@@ -57,7 +57,8 @@
     private View colorView { get; set; }
     private TextView fluidNameView { get; set; }
     private ViewPager pagerView { get; set; }
-    private PagerTabStrip titleView { get; set; }
+		private Switch pageToggle;
+//    private PagerTabStrip titleView { get; set; }
 
     private IION ion { get; set; }
 
@@ -76,7 +77,9 @@
       colorView = FindViewById(Resource.Id.color);
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       pagerView = FindViewById<ViewPager>(Resource.Id.content);
-      titleView = FindViewById<PagerTabStrip>(Resource.Id.title);
+			pagerView.AddOnPageChangeListener(this);
+			pageToggle = FindViewById<Switch>(Resource.Id.toggle);
+//      titleView = FindViewById<PagerTabStrip>(Resource.Id.title);
 
       ion = AppState.context;
       ion.fluidManager.onFluidPreferenceChanged += OnFluidPreferenceChanged;
@@ -149,6 +152,16 @@
           return base.OnMenuItemSelected(featureId, item);          
       }
     }
+
+		public void OnPageScrollStateChanged(int state) {
+		}
+
+		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		}
+
+		public void OnPageSelected(int position) {
+			pageToggle.Checked = position != 0;
+		}
 
     /// <summary>
     /// Called whan a fluid is selected by on of the fragments.
