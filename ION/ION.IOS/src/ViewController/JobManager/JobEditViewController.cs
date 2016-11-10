@@ -21,7 +21,6 @@ namespace ION.IOS.ViewController.JobManager {
     IION ion;
     static int loadCount = 0;
     static nfloat loadHeight = 0;
-
     public override void ViewDidLoad() {
       base.ViewDidLoad();
       ion = AppState.context;
@@ -33,7 +32,7 @@ namespace ION.IOS.ViewController.JobManager {
       saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       saveButton.TouchDown += (sender, e) => {saveButton.BackgroundColor = UIColor.Blue;};
       saveButton.TouchUpOutside += (sender, e) => {saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
-      saveButton.TouchUpInside += (sender, e) => {      	
+      saveButton.TouchUpInside += (sender, e) => {
         saveButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 
         if(editView.jobName.Text.Length.Equals(0)){
@@ -45,11 +44,11 @@ namespace ION.IOS.ViewController.JobManager {
           return;
         }
 
-        if(frnJID.Equals(0)){
+        if(frnJID.Equals(0)){   
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 
           if(jobCheck.Count == 0){
-            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text};         
+            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text};         
             ion.database.Insert(job);
             this.NavigationController.PopViewController(true);
           } else {
@@ -67,7 +66,7 @@ namespace ION.IOS.ViewController.JobManager {
 	            System.IO.File.Copy(fileDir,newFileDir,true);
 	            System.IO.File.Delete(fileDir);
 						}	
-						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text,frnJID);
+						ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobName = ?, customerNumber = ?, dispatchNumber = ?, poNumber = ?, techName = ?, systemType = ?, jobAddress = ? WHERE JID = ?",editView.jobName.Text, editView.customerNumber.Text, editView.dispatchNumber.Text, editView.prodOrderNumber.Text, editView.techName.Text,editView.systemName.Text, editView.jobAddress.Text,frnJID);
             editView.confirmLabel.TextColor = UIColor.Green;
             editView.confirmLabel.Text = Util.Strings.Job.UPDATED;
           } else {
@@ -78,6 +77,7 @@ namespace ION.IOS.ViewController.JobManager {
 
         editView.confirmLabel.Hidden = false;     
       };
+      
 
       NavigationItem.Title = Util.Strings.Job.EDIT;
 
@@ -147,6 +147,9 @@ namespace ION.IOS.ViewController.JobManager {
         switch(e.Item.Tag) {    
           case 0:
             NavigationItem.Title = Util.Strings.Job.EDIT;
+            if(editView.expanded){
+							infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, 1.5 * infoScroller.Bounds.Height);
+						}
             saveButton.Hidden = false;
             associateView.sessionView.Hidden = true;
             notesView.notesView.Hidden = true;
@@ -154,7 +157,7 @@ namespace ION.IOS.ViewController.JobManager {
             break;
           case 1:
             NavigationItem.Title = Util.Strings.Job.EDITSESSIONS;    
-						//infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
+						infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
             saveButton.Hidden = true;
             editView.editView.Hidden = true;
             notesView.notesView.Hidden = true;
@@ -162,7 +165,7 @@ namespace ION.IOS.ViewController.JobManager {
             break;
           case 2:
             NavigationItem.Title = Util.Strings.Job.ADDNOTES;
-						//infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
+						infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
             saveButton.Hidden = true;
             editView.editView.Hidden = true;
             associateView.sessionView.Hidden = true;
@@ -171,12 +174,22 @@ namespace ION.IOS.ViewController.JobManager {
         }   
       };
       
+      editView.additionalInfo.TouchUpInside += adjustContentSize;
+      
       holderView.AddSubview(tabManager);
       infoScroller.AddSubview(editView.editView);      
       infoScroller.AddSubview(associateView.sessionView);
       infoScroller.AddSubview(notesView.notesView);
 			holderView.BringSubviewToFront(tabManager);
-		}		
+		}
+		
+		public void adjustContentSize(object sender, EventArgs e){
+			if(editView.expanded){
+				infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, 1.5 * infoScroller.Bounds.Height);
+			} else {
+				infoScroller.ContentSize = new CGSize(infoScroller.Bounds.Width, infoScroller.Bounds.Height);
+			}
+		}
 		public override void ViewDidAppear(bool animated) {
 			base.ViewDidAppear(animated);
 			View.LayoutSubviews();

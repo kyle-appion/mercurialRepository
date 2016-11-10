@@ -18,7 +18,8 @@ namespace ION.IOS.ViewController.Logging
     public List<deviceReadings> allData;
 		public LinearAxis LAX;
 		public LinearAxis RAX;
-		public LinearAxis BAX;
+		//public LinearAxis BAX;
+		public CategoryAxis BAX;
 		public UILabel deviceName;
 		public UILabel includeLabel;
 		public UIButton includeButton;
@@ -34,6 +35,7 @@ namespace ION.IOS.ViewController.Logging
       cellData = startData;
  
       var combineName = cellData.serialNumber + "/" + cellData.sensorIndex;
+      //Console.WriteLine("Looking at device " + combineName);
       allData = totalData;
 
 			graphTable = tableView;
@@ -101,7 +103,9 @@ namespace ION.IOS.ViewController.Logging
 		/// <returns>The plot model.</returns>	
 		public PlotModel CreatePlotModel(double trackerHeight, UIView parentView) {
 			var lowValue = 9999999.9;
-			var highValue = -9999.9; 
+			var highValue = -9999.9;
+			bool lowestMarked = false;
+			bool highestMarked = false;
 
       var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
       if (cellData.type.Equals("Temperature")) {
@@ -109,7 +113,9 @@ namespace ION.IOS.ViewController.Logging
       } else if (cellData.type.Equals("Vacuum")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
       }
-
+      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
+      
+      var standardUnit = lookup.standardUnit;
       foreach (var device in allData) {
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
           foreach (var reading in device.readings) {
@@ -122,11 +128,16 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
+			var baseLow = standardUnit.OfScalar(lowValue);
+			lowValue = baseLow.ConvertTo(lookup).amount; 
+			var baseHigh = standardUnit.OfScalar(highValue);
+			highValue = baseHigh.ConvertTo(lookup).amount;
+			
       var color = OxyColors.Blue;
-      var buffer = 10000;
+      var buffer = 5;
       if(cellData.type.Equals("Temperature")){
         color = OxyColors.Red;
-        buffer = 1;
+        buffer = 3;
       } else if (cellData.type.Equals("Vacuum")){
         color = OxyColors.Maroon;
         buffer = 2000;
@@ -141,7 +152,22 @@ namespace ION.IOS.ViewController.Logging
 
 			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
       /// Corresponsding date indexes will provide the plot points
-      BAX = new LinearAxis {
+      //BAX = new LinearAxis {
+      //  Position = AxisPosition.Bottom,
+      //  Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
+      //  AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
+      //  Minimum = 0,
+      //  AbsoluteMinimum = -1,
+      //  IntervalLength = 1,
+      //  IsAxisVisible = false,
+      //  IsZoomEnabled = false,
+      //  IsPanEnabled = false,
+      //  MinimumPadding = 0,
+      //  MaximumPadding = 0,
+      //  AxislineThickness = 0,
+      //};
+      
+      BAX = new CategoryAxis {
         Position = AxisPosition.Bottom,
         Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
         AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
@@ -154,7 +180,14 @@ namespace ION.IOS.ViewController.Logging
         MinimumPadding = 0,
         MaximumPadding = 0,
         AxislineThickness = 0,
+        Angle = 90,
+        Title = "Time",
       };
+
+			foreach(var time in ChosenDates.allIndexes){
+				var formatTime = DateTime.Parse(time.Value).ToString("H:mm:ss");
+				BAX.ActualLabels.Add(formatTime);
+			}
 			/// left axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
 			/// this will be used for pressure measurements
 			LAX = new LinearAxis {
@@ -170,16 +203,19 @@ namespace ION.IOS.ViewController.Logging
 				MinimumPadding = 0,
 				MaximumPadding = 0,
 				AxislineThickness = 0,
+				Title = cellData.type+"("+lookup+")",
 			};
 
 			plotModel.Axes.Add (BAX);
 			plotModel.Axes.Add (LAX);
 
+      
       foreach(var device in allData){
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
+        	var markSize = 0.0;
           var series = new LineSeries {
             MarkerType = MarkerType.Circle,
-            MarkerSize = .5,
+            MarkerSize = markSize,
             MarkerStroke = color,
             MarkerFill = color,
             LineStyle = LineStyle.Solid,
@@ -187,9 +223,13 @@ namespace ION.IOS.ViewController.Logging
           };
 
           for(int i = 0; i < device.times.Count; i++) {
+      			var baseValue = standardUnit.OfScalar(device.readings[i]);
+      			var measurement = baseValue.ConvertTo(lookup).amount;
+      			
             var index = ChosenDates.allTimes[device.times[i].ToString()];
-            var measurement = device.readings[i];
+
             series.Points.Add(new DataPoint(index,measurement));
+            series.MarkerSize = 0;
           }
           plotModel.Series.Add (series);
         }

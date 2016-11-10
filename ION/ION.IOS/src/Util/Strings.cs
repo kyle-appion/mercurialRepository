@@ -231,12 +231,14 @@ namespace ION.IOS.Util {
 			DURATION = "job_duration".FromResources(),
 			EDITSESSIONS = "job_edit_sessions".FromResources(),
 			EDIT = "job_edit".FromResources(),
+			JOBADDRESS= "job_address".FromResources(),
 			JOBEXISTS = "job_exists".FromResources(),
 			JOBINFO = "job_info".FromResources(),
+			JOBLOCATION = "job_location".FromResources(),
 			JOBNAME = "job_name".FromResources(),
 			JOBOPTIONS = "job_options".FromResources(),
 			JOBSETTINGS = "job_settings".FromResources(),
-			MULTIPLEJOBS = "job_multiple_jobs".FromResources(),
+			MULTIPLEJOBS = "job_multiple".FromResources(),
 			NONEAVAILABLE = "job_none_available".FromResources(),
 			NOSESSIONS = "job_no_session".FromResources(),
 			NOTESSAVED = "job_notes_saved".FromResources(),
@@ -250,6 +252,8 @@ namespace ION.IOS.Util {
       SAVENOTES = "job_save_notes".FromResources(),
       SAVEDSUCCESS = "job_saved_success".FromResources(),
       STARTDATE = "job_start_date".FromResources(),
+      SYSTEMTYPE = "job_system".FromResources(),
+      TECHNAME = "job_tech".FromResources(),
       UPDATED = "job_updated".FromResources()
 			;
 			public static class Manager{
@@ -283,8 +287,8 @@ namespace ION.IOS.Util {
     public static class Report {
       public static readonly string
       SELF = "report".FromResources(),
-			BYDATE = "logging_by_date".FromResources(),
-			BYJOB = "logging_by_job".FromResources(),
+			BYDATE = "report_by_date".FromResources(),
+			BYJOB = "report_by_job".FromResources(),
       CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),
       CITY = "report_city".FromResources(),
       CHOOSEEND = "report_choose_end".FromResources(),
