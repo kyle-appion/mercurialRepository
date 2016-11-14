@@ -22,6 +22,9 @@ namespace ION.IOS.ViewController.FluidManager
 		UIKit.UILabel labelFluidName { get; set; }
 
 		[Outlet]
+		UIKit.UILabel safetyClassification { get; set; }
+
+		[Outlet]
 		UIKit.UIView viewFluidColor { get; set; }
 		
 		void ReleaseDesignerOutlets ()
@@ -44,6 +47,11 @@ namespace ION.IOS.ViewController.FluidManager
 			if (viewFluidColor != null) {
 				viewFluidColor.Dispose ();
 				viewFluidColor = null;
+			}
+
+			if (safetyClassification != null) {
+				safetyClassification.Dispose ();
+				safetyClassification = null;
 			}
 		}
 	}

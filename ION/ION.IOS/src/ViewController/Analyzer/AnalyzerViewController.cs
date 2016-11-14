@@ -220,17 +220,17 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 				
 				try{
-					DateTime startPoint = DateTime.UtcNow.ToLocalTime();
+					DateTime startPoint = DateTime.UtcNow.ToLocalTime().AddMinutes(48);
 	        var session = new SessionRow() {
 	          frn_JID = 0,
 	          sessionStart = startPoint,
-	          sessionEnd = startPoint.AddMinutes(120),
+	          sessionEnd = startPoint.AddMinutes(48),
 	        };
 	        var SID = ion.database.SaveAsync<SessionRow>(session).Result;
 	        Console.WriteLine("Inserted session with id " + SID);
 
 					var rows = new List<SensorMeasurementRow>();				
-					for(int i = 0; i < 120; i++){
+					for(int i = 0; i < 48; i++){
 						var date = startPoint.AddMinutes(i);
 			      var ret = new SensorMeasurementRow();    
 						
@@ -245,7 +245,8 @@ namespace ION.IOS.ViewController.Analyzer {
 				      ret.frn_SID = session.SID;
 				      ret.sensorIndex = 0;
 				      ret.recordedDate = date;
-				      ret.measurement = 1103161.1669;
+				      ret.measurement = 1068687.3804;
+				      //ret.measurement = 1103161.1669;
 				    }
 	
 						rows.Add(ret);				

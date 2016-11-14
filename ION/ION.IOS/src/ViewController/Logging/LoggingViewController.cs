@@ -352,11 +352,11 @@ namespace ION.IOS.ViewController.Logging {
       var breakPoint = 0;
 
       foreach (var time in holderList) {
-      	//Console.WriteLine("Adding time " +time);
+      	//Console.WriteLine("Adding index " +indexes);
         ChosenDates.allTimes.Add(time, indexes);
         ChosenDates.allIndexes.Add(indexes, time);
         if (breakPoint < sessionBreaks.Length && sessionBreaks[breakPoint].Equals(time)) {
-
+					//Console.WriteLine("hit a breakpoint");
           indexes = indexes + ChosenDates.extraPlots;
           breakPoint = breakPoint + 1;
           

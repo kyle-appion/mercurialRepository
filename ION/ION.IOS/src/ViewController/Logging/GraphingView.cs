@@ -12,6 +12,7 @@ using QuickLook;
 using ION.Core.Database;
 using ION.Core.Report;
 using ION.Core.App;
+using ION.Core.Devices;
 
 using OxyPlot;
 using OxyPlot.Axes;
@@ -900,7 +901,7 @@ namespace ION.IOS.ViewController.Logging
       //XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
       XlsFile xls = new XlsFile(2, TExcelFileFormat.v2013, true);
       xls.AllowOverwritingFiles = true;
-			xls.ActiveSheet = 2; 
+			xls.ActiveSheet = 2;
       xls.PrintScale = scaleReduction;
 			xls.ActiveSheet = 1;
       xls.PrintScale = 60;
@@ -920,7 +921,7 @@ namespace ION.IOS.ViewController.Logging
       centerText.VAlignment = TVFlxAlignment.top;
       centerText.HAlignment = THFlxAlignment.center;
       centerText.ShrinkToFit = true;
-      xls.AddFormat(centerText);      
+      xls.AddFormat(centerText);
 
       TFlxFormat borderColor = xls.GetDefaultFormat; //3
       borderColor.Borders.Bottom.Color = TUIColor.FromArgb(0xFF, 0x33, 0x33);
@@ -991,6 +992,25 @@ namespace ION.IOS.ViewController.Logging
 			rightBottomCornerBorder.Borders.Bottom.Style = TFlxBorderStyle.Medium;
       xls.AddFormat(rightBottomCornerBorder); 
 
+			TFlxFormat borderedCell = xls.GetDefaultFormat; // 14
+			borderedCell.Borders.Top.Color = TUIColor.FromArgb(0,0,0);    
+			borderedCell.Borders.Top.Style = TFlxBorderStyle.Thin;
+			borderedCell.Borders.Left.Color = TUIColor.FromArgb(0,0,0);
+			borderedCell.Borders.Left.Style = TFlxBorderStyle.Thin;   
+			borderedCell.Borders.Right.Color = TUIColor.FromArgb(0,0,0);    
+			borderedCell.Borders.Right.Style = TFlxBorderStyle.Thin;
+			borderedCell.Borders.Bottom.Color = TUIColor.FromArgb(0,0,0);
+			borderedCell.Borders.Bottom.Style = TFlxBorderStyle.Thin;
+      borderedCell.ShrinkToFit = true;
+      borderedCell.WrapText = true;
+      borderedCell.VAlignment = TVFlxAlignment.top;
+      borderedCell.HAlignment = THFlxAlignment.left;      
+      xls.AddFormat(borderedCell);
+      
+      TFlxFormat boldText = xls.GetDefaultFormat;// 15
+      boldText.Font.Style = TFlxFontStyles.Bold;
+      xls.AddFormat(boldText);
+      
 			///ADD THE APPION LOGO TO THE TOP OF EACH PAGE
 			var logoView = new UIImageView(new CGRect(0,0,150,50));
 			logoView.Image = UIImage.FromBundle("appion_logo_black");
@@ -1311,12 +1331,12 @@ namespace ION.IOS.ViewController.Logging
       TFlxFormat blackout = xls.GetDefaultFormat; //1
       blackout.FillPattern = new TFlxFillPattern { Pattern = TFlxPatternStyle.Solid, FgColor = TExcelColor.FromIndex(1) };
       blackout.VAlignment = TVFlxAlignment.top;
-      blackout.HAlignment = THFlxAlignment.center;
+      blackout.HAlignment = THFlxAlignment.left;
       blackout.Font.Color = TExcelColor.FromIndex(2);
       xls.AddFormat(blackout);
 
       TFlxFormat centerText = xls.GetDefaultFormat; //2
-      centerText.VAlignment = TVFlxAlignment.top;
+      centerText.VAlignment = TVFlxAlignment.center;
       centerText.HAlignment = THFlxAlignment.center;
       centerText.ShrinkToFit = true;
       xls.AddFormat(centerText);
@@ -1389,7 +1409,27 @@ namespace ION.IOS.ViewController.Logging
 			rightBottomCornerBorder.Borders.Bottom.Color = TUIColor.FromArgb(0,0,0);
 			rightBottomCornerBorder.Borders.Bottom.Style = TFlxBorderStyle.Medium;
       xls.AddFormat(rightBottomCornerBorder);  
-      
+
+			TFlxFormat borderedCell = xls.GetDefaultFormat; // 14
+			borderedCell.Borders.Top.Color = TUIColor.FromArgb(0,0,0);    
+			borderedCell.Borders.Top.Style = TFlxBorderStyle.Thin;
+			borderedCell.Borders.Left.Color = TUIColor.FromArgb(0,0,0);
+			borderedCell.Borders.Left.Style = TFlxBorderStyle.Thin;   
+			borderedCell.Borders.Right.Color = TUIColor.FromArgb(0,0,0);    
+			borderedCell.Borders.Right.Style = TFlxBorderStyle.Thin;
+			borderedCell.Borders.Bottom.Color = TUIColor.FromArgb(0,0,0);
+			borderedCell.Borders.Bottom.Style = TFlxBorderStyle.Thin;
+      borderedCell.ShrinkToFit = true;
+      borderedCell.WrapText = true;
+      borderedCell.VAlignment = TVFlxAlignment.top;
+      borderedCell.HAlignment = THFlxAlignment.left;      
+      xls.AddFormat(borderedCell);
+ 
+      TFlxFormat boldText = xls.GetDefaultFormat;// 15
+      boldText.Font.Style = TFlxFontStyles.Bold;
+      boldText.Font.Size20 = 400;
+      xls.AddFormat(boldText);
+   
       ///SET PRINTSCALE FOR RAW DATA SHEET
 			xls.ActiveSheet = dataList.Count + 1; 
       xls.PrintScale = scaleReduction;
@@ -1398,7 +1438,7 @@ namespace ION.IOS.ViewController.Logging
       ///LOOP THROUGH EACH DEVICE AND CREATE THE DATA FOR THAT SHEET
     	for(int i = 1; i <= graphTable.NumberOfRowsInSection(0); i++){      
 				xls.ActiveSheet = i;
-	      xls.PrintScale = 65;
+	      xls.PrintScale = 67;
 	      ///SET A UNIFORM CELL WIDTH FOR COVER PAGE ITEMS
 	      ///DEFAULT COL WIDTH = 3189 AND SETTING IT TO 1.3X THAT SO 4317
 				var colWidth = 4317;
@@ -1416,30 +1456,37 @@ namespace ION.IOS.ViewController.Logging
 							using (Stream fs = data.AsStream())
 							{
 								TImageProperties ImgProps = new TImageProperties();
-								ImgProps.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, 1, 0, 4, 0, 5, 255, 6, 1024);
+								ImgProps.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, 1, 0, 1, 0, 5, 255, 3, 1024);
 								ImgProps.ShapeName = "Graph";
 								xls.AddImage(fs, ImgProps);
 							}
             }
         	}
 		    }
+		    
+		    xls.MergeCells(4,4,5,6);
+		    xls.SetCellValue(4,4,"DATA LOGGING REPORT",15);
 	
-	      xls.MergeCells(7, 2, 7, 4);
-	      xls.SetCellValue(7, 2, Util.Strings.Report.DEVICESUSED,2);
-	      xls.SetCellValue(8, 2, Util.Strings.Device.SERIAL_NUMBER, 1);
-	      xls.SetCellValue(8, 3, Util.Strings.NAME, 1);
-	      xls.SetCellValue(8, 4, Util.Strings.Device.CERTDATE, 1);
+	      xls.SetCellValue(7, 1, Util.Strings.Device.SERIAL_NUMBER, 1);
+	      xls.SetCellValue(7, 2, Util.Strings.NAME, 1);
+	      xls.SetCellValue(7, 3, Util.Strings.Device.CERTDATE, 1);
+	      xls.SetCellValue(7, 4, Util.Strings.Report.DEVICEMODEL, 1);
 				
-				deviceCellIndex = 9;
+				deviceCellIndex = 8;
 				
-	      xls.SetCellValue(deviceCellIndex,2,dataList[i-1].serialNumber,2);
-	      xls.SetCellValue(deviceCellIndex,3, dataList[i-1].name,2);
+	      xls.SetCellValue(deviceCellIndex,1,dataList[i-1].serialNumber,14);
+	      xls.SetCellValue(deviceCellIndex,2, dataList[i-1].name,14);
 	      if(string.IsNullOrEmpty(dataList[i-1].nistDate) || dataList[i-1].nistDate.Length > 10){
-	          xls.SetCellValue(deviceCellIndex, 4, "N/A", 2);
+	          xls.SetCellValue(deviceCellIndex, 3, "N/A", 14);
 				} else {
-	          xls.SetCellValue(deviceCellIndex, 4, dataList[i-1].nistDate, 2);
+	          xls.SetCellValue(deviceCellIndex, 3, dataList[i-1].nistDate, 14);
 				}
-				deviceCellIndex++;
+				//todo	THIS WILL BREAK IF IT IS NOT A GAUGE SERIAL NUMBER
+				var gaugeSerial = SerialNumberExtensions.ParseSerialNumber(dataList[i-1].serialNumber);
+				
+	      xls.SetCellValue(deviceCellIndex,4, gaugeSerial.deviceModel.ToString(),14);
+				
+				deviceCellIndex+= 4;
 	      
 	      var ion = AppState.context;
 	      var paramList = new List<string>();
@@ -1460,47 +1507,59 @@ namespace ION.IOS.ViewController.Logging
 	      	var jobInfo = ion.database.Query<JobRow>("SELECT jobName, poNumber, customerNumber, dispatchNumber, techName, systemType, jobLocation, jobAddress FROM JobRow WHERE JID = ?", jobID);
 					xls.MergeCells(7, 6, 7, 7);
 		      xls.SetCellValue(7, 6, Util.Strings.Job.JOBINFO,1);
+		      xls.MergeCells(8,6,9,6);
 		      xls.SetCellValue(8, 6, Util.Strings.Job.JOBNAME,1);
-		      xls.SetCellValue(8, 7, jobInfo[0].jobName,2);
-		      xls.SetCellValue(9, 6, Util.Strings.Job.PONUMBER, 1);
-		      xls.SetCellValue(9, 7, jobInfo[0].poNumber, 2);
-		      xls.SetCellValue(10, 6, Util.Strings.Job.CUSTOMERNUMBER, 1);
-		      xls.SetCellValue(10, 7, jobInfo[0].customerNumber, 2);
-		      xls.SetCellValue(11, 6, Util.Strings.Job.DISPATCHNUMBER, 1);
-		      xls.SetCellValue(11, 7, jobInfo[0].dispatchNumber, 2);
-		      xls.SetCellValue(12, 6, Util.Strings.Job.TECHNAME, 1);
-		      xls.SetCellValue(12, 7, jobInfo[0].techName, 2);
-		      xls.SetCellValue(13, 6, Util.Strings.Job.JOBADDRESS, 1);
-		      xls.SetCellValue(13, 7, jobInfo[0].jobAddress, 2);
-		      xls.SetCellValue(14, 6, Util.Strings.Job.JOBLOCATION, 1);
-		      xls.SetCellValue(14, 7, jobInfo[0].jobLocation, 2);
-		      xls.SetCellValue(15, 6, Util.Strings.Job.SYSTEMTYPE, 1);
-		      xls.SetCellValue(15, 7, jobInfo[0].systemType, 2);
-					//xls.KeepRowsTogether(1,5,1,false);
-					//xls.AutoPageBreaks();
+		      xls.MergeCells(8,7,9,7);
+		      xls.SetCellFormat(9,7,14);
+		      xls.SetCellValue(8, 7, jobInfo[0].jobName,14);
+		      xls.SetCellValue(10, 6, Util.Strings.Job.PONUMBER, 1);
+		      xls.SetCellValue(10, 7, jobInfo[0].poNumber, 14);
+		      xls.SetCellValue(11, 6, Util.Strings.Job.CUSTOMERNUMBER, 1);
+		      xls.SetCellValue(11, 7, jobInfo[0].customerNumber, 14);
+		      xls.SetCellValue(12, 6, Util.Strings.Job.DISPATCHNUMBER, 1);
+		      xls.SetCellValue(12, 7, jobInfo[0].dispatchNumber, 14);
+		      xls.SetCellValue(13, 6, Util.Strings.Job.TECHNAME, 1);
+		      xls.SetCellValue(13, 7, jobInfo[0].techName, 14);
+		      xls.MergeCells(14, 6, 16, 6);
+		      xls.SetCellValue(14, 6, Util.Strings.Job.JOBADDRESS, 1);
+		      xls.MergeCells(14, 7, 16, 7);
+		      xls.SetCellFormat(15,7,14);
+		      xls.SetCellFormat(16,7,14);
+		      xls.SetCellValue(14, 7, jobInfo[0].jobAddress, 14);
+		      xls.SetCellValue(17, 6, Util.Strings.Job.JOBLOCATION, 1);
+		      xls.SetCellValue(17, 7, jobInfo[0].jobLocation, 14);
+		      xls.MergeCells(18,6,19,6);
+		      xls.SetCellValue(18, 6, Util.Strings.Job.SYSTEMTYPE, 1);
+		      xls.MergeCells(18,7,19,7);
+		      xls.SetCellFormat(19,7,14);    
+		      xls.SetCellValue(18, 7, jobInfo[0].systemType, 14);
 	      } else if (certInfo.Count > 1) {
 					xls.MergeCells(7, 6, 7,7);
 					xls.SetCellValue(7, 6, Util.Strings.Job.MULTIPLEJOBS,1);
-					//xls.KeepRowsTogether(1,3,1,false);
-					//xls.AutoPageBreaks();
 				}
-	      
-	      deviceCellIndex++;
-	      xls.MergeCells(deviceCellIndex, 3, deviceCellIndex, 4);
-	      xls.SetCellValue(deviceCellIndex, 2, Util.Strings.Report.CREATED, 1);
-	      xls.SetCellValue(deviceCellIndex, 3, DateTime.Now.ToLocalTime().ToString(), 2);
-	      deviceCellIndex++;
+
 	      xls.MergeCells(deviceCellIndex, 2, deviceCellIndex, 4);
-	      xls.SetCellValue(deviceCellIndex, 2, Util.Strings.Report.REPORTDATES, 1);
+	      xls.SetCellValue(deviceCellIndex, 1, Util.Strings.Report.CREATED, 1);
+	      xls.SetCellFormat(deviceCellIndex,3,14);
+	      xls.SetCellFormat(deviceCellIndex,4,14);
+	      xls.SetCellValue(deviceCellIndex, 2, DateTime.Now.ToLocalTime().ToString(), 2);
+	      xls.SetCellFormat(deviceCellIndex,2,14);
 	      deviceCellIndex++;
-	      xls.MergeCells(deviceCellIndex, 2, deviceCellIndex, 4);
-	      xls.SetCellValue(deviceCellIndex, 2, ChosenDates.subLeft + " - " + ChosenDates.subRight, 2);
+	      xls.MergeCells(deviceCellIndex, 1, deviceCellIndex, 4);
+	      xls.SetCellValue(deviceCellIndex, 1, Util.Strings.Report.REPORTDATES, 1);
+	      deviceCellIndex++;
+	      xls.MergeCells(deviceCellIndex, 1, deviceCellIndex, 4);
+	      xls.SetCellFormat(deviceCellIndex,2,14);
+	      xls.SetCellFormat(deviceCellIndex,3,14);
+	      xls.SetCellFormat(deviceCellIndex,4,14);
+	      xls.SetCellValue(deviceCellIndex, 1, ChosenDates.subLeft + " - " + ChosenDates.subRight, 2);
+	      xls.SetCellFormat(deviceCellIndex,1,14);
 	      deviceCellIndex += 4;
 	      
-	      xls.SetCellValue(deviceCellIndex,3,Util.Strings.Device.SERIAL_NUMBER,1);
-	      xls.SetCellValue(deviceCellIndex,4,Util.Strings.Measure.MINIMUM,1);
-	      xls.SetCellValue(deviceCellIndex,5,Util.Strings.Measure.MAXIMUM,1);
-	      xls.SetCellValue(deviceCellIndex,6,Util.Strings.Measure.AVERAGE,1);
+	      xls.SetCellValue(deviceCellIndex,1,Util.Strings.Device.SERIAL_NUMBER,1);
+	      xls.SetCellValue(deviceCellIndex,2,Util.Strings.Measure.MINIMUM,1);
+	      xls.SetCellValue(deviceCellIndex,3,Util.Strings.Measure.MAXIMUM,1);
+	      xls.SetCellValue(deviceCellIndex,4,Util.Strings.Measure.AVERAGE,1);
 	      deviceCellIndex++;
 	     
 	      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
@@ -1527,16 +1586,15 @@ namespace ION.IOS.ViewController.Logging
 	      var finalAvg = avgValue.ConvertTo(lookup);
 				var formatAvg = ION.Core.Sensors.SensorUtils.ToFormattedString(deviceType, finalAvg);
 				
-				xls.SetCellValue(deviceCellIndex,3, dataList[i-1].serialNumber,2);
-				xls.SetCellValue(deviceCellIndex,4, formatMin + " " + lookup,2);
-				xls.SetCellValue(deviceCellIndex,5, formatMax + " " + lookup,2);
-				xls.SetCellValue(deviceCellIndex,6, formatAvg + " " + lookup,2);
-	     	deviceCellIndex += 6;
+				xls.SetCellValue(deviceCellIndex,1, dataList[i-1].serialNumber,14);
+				xls.SetCellValue(deviceCellIndex,2, formatMin + " " + lookup,14);
+				xls.SetCellValue(deviceCellIndex,3, formatMax + " " + lookup,14);
+				xls.SetCellValue(deviceCellIndex,4, formatAvg + " " + lookup,14);
+	     	deviceCellIndex += 4;
 				var imageRow = deviceCellIndex;
 				var imageCol = 1;
 				
 	    	//UIImageView[] graphViews = new UIImageView[graphTable.NumberOfRowsInSection(0)];
-	    	UIImageView graphView = new UIImageView(new CGRect(0,0,900,300));
     	
     		///THIS METHOD ONLY GETS "VISIBLE" CELLS FROM THE TABLE VIEW AND RETURNS NULL FOR ANY OTHERS
     		//var cell = graphTable.CellAt(NSIndexPath.FromRowSection(i,0)) as graphCell;
@@ -1547,25 +1605,32 @@ namespace ION.IOS.ViewController.Logging
     		if(ChosenDates.includeList.Contains(includedName)){
     			var originalFrame = cell.plotView.Frame;
     			
-    			cell.plotView.Frame = new CGRect(0,0,900,300);
-    			cell.plotView.Model.PlotMargins = new OxyThickness(75,0,0,80);
+	    		UIImageView graphView = new UIImageView(new CGRect(0,0,2000,(2000 * (cell.plotView.Bounds.Height/ cell.plotView.Bounds.Width)))); /// W = 900 H = W
+    			//Console.WriteLine("Graphview bounds " + graphView.Bounds);
+
+    			var majorStep = cell.plotView.Model.Axes[0].Maximum / 10;
     			
-    			cell.plotView.Model.Axes[0].IsAxisVisible = true;/// BOTTOM AXIS
-    			var minorStep = Convert.ToInt32(Math.Ceiling(cell.plotView.Model.Axes[0].Maximum / 10));
-    			var majorStep = Convert.ToInt32(Math.Ceiling(cell.plotView.Model.Axes[0].Maximum / 10));
-    			
-    			cell.plotView.Model.Axes[0].MinorStep = minorStep;
-    			cell.plotView.Model.Axes[0].MajorStep = majorStep;
-    			cell.plotView.Model.Axes[0].AxisTitleDistance = 20;
-    			cell.plotView.Model.Axes[0].FontSize = 10;
+    			cell.plotView.Model.Axes[0].MajorStep = majorStep;/// BOTTOM AXIS
+    			cell.plotView.Model.Axes[0].IsAxisVisible = true;
+    			cell.plotView.Model.Axes[0].AxisTitleDistance = 5;
+    			cell.plotView.Model.Axes[0].AxisTickToLabelDistance = 1;
     			cell.plotView.Model.Axes[0].AxislineThickness = 1;
     			cell.plotView.Model.Axes[0].AxislineColor = OxyColor.FromRgb(0,0,0);
     			cell.plotView.Model.Axes[0].AxislineStyle = LineStyle.Solid;
+    			cell.plotView.Model.Axes[0].MajorGridlineStyle = LineStyle.Solid;
+    			cell.plotView.Model.Axes[0].MajorGridlineThickness = 1;
     			cell.plotView.Model.Axes[1].IsAxisVisible = true;/// LEFT AXIS
     			cell.plotView.Model.Axes[1].AxisTitleDistance = 20;
     			cell.plotView.Model.Axes[1].AxislineThickness = 2;
      			cell.plotView.Model.Axes[1].AxislineColor = OxyColor.FromRgb(0,0,0);
     			cell.plotView.Model.Axes[1].AxislineStyle = LineStyle.Solid;
+    			cell.plotView.Model.Axes[1].MinorGridlineStyle = LineStyle.Solid;
+    			cell.plotView.Model.Axes[1].MajorGridlineStyle = LineStyle.Solid;
+    			cell.plotView.Model.Axes[1].MinorGridlineThickness = 1;
+    			cell.plotView.Model.Axes[1].MajorGridlineThickness = 1;
+    			cell.plotView.Model.PlotMargins = new OxyThickness(75,0,0,65);
+    			
+					cell.plotView.Frame = new CGRect(0,0,900,240);
     			
 					graphView.Image = UI.UIViewExtensions.Capture(cell.plotView);
 					//Console.WriteLine("Image done");
@@ -1577,95 +1642,35 @@ namespace ION.IOS.ViewController.Logging
 								using (Stream fs = data.AsStream())
 								{
 									TImageProperties ImgProps = new TImageProperties();
-									ImgProps.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, imageRow, 0, imageCol, 0, imageRow + 26, 255, imageCol + 7, 1024);
+									ImgProps.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, imageRow, 0, imageCol, 0, imageRow + 18, 255, imageCol + 7, 1024);
 									ImgProps.ShapeName = "Graph";
 									xls.AddImage(fs, ImgProps);
 								}
 	            }
 	        	}
 			    }
+    			
 			    cell.plotView.Frame = originalFrame;
  
 			    xls.MergeCells(imageRow - 1,4,imageRow - 1, 5);
 			    xls.SetCellValue(imageRow - 1,4,cell.cellData.serialNumber+"("+cell.cellData.type+")",2);
 			    
-			    ///LEFT EDGE GRAPH BORDER
+			    ///LEFT EDGE GRAPH BORDER			    
 			    xls.SetCellFormat(imageRow,1,6);
-			    xls.SetCellFormat(imageRow + 1,1,7);
-			    xls.SetCellFormat(imageRow + 2,1,7);
-			    xls.SetCellFormat(imageRow + 3,1,7);
-			    xls.SetCellFormat(imageRow + 4,1,7);
-			    xls.SetCellFormat(imageRow + 5,1,7);
-			    xls.SetCellFormat(imageRow + 6,1,7);
-			    xls.SetCellFormat(imageRow + 7,1,7);
-			    xls.SetCellFormat(imageRow + 8,1,7);
-			    xls.SetCellFormat(imageRow + 9,1,7);
-			    xls.SetCellFormat(imageRow + 10,1,7);
-			    xls.SetCellFormat(imageRow + 11,1,7);
-			    xls.SetCellFormat(imageRow + 12,1,7);
-			    xls.SetCellFormat(imageRow + 13,1,7);
-			    xls.SetCellFormat(imageRow + 14,1,7);
-			    xls.SetCellFormat(imageRow + 15,1,7);
-			    xls.SetCellFormat(imageRow + 16,1,7);
-			    xls.SetCellFormat(imageRow + 17,1,7);
-			    xls.SetCellFormat(imageRow + 18,1,7);
-			    xls.SetCellFormat(imageRow + 19,1,7);
-			    xls.SetCellFormat(imageRow + 20,1,7);
-			    xls.SetCellFormat(imageRow + 21,1,7);
-			    xls.SetCellFormat(imageRow + 22,1,7);
-			    xls.SetCellFormat(imageRow + 23,1,7);
-			    xls.SetCellFormat(imageRow + 24,1,7);
-			    xls.SetCellFormat(imageRow + 25,1,7);
-			    xls.SetCellFormat(imageRow + 26,1,7);
-			    xls.SetCellFormat(imageRow + 27,1,8);
+			    xls.SetCellFormat(imageRow + 1,1,imageRow + 18,1,7);
+			    xls.SetCellFormat(imageRow + 19,1,8);
 			    
 			    ///BOTTOM GRAPH BORDER
-			    xls.SetCellFormat(imageRow + 27, 2,9);
-			    xls.SetCellFormat(imageRow + 27, 3,9);
-			    xls.SetCellFormat(imageRow + 27, 4,9);
-			    xls.SetCellFormat(imageRow + 27, 5,9);
-			    xls.SetCellFormat(imageRow + 27, 6,9);
-			    xls.SetCellFormat(imageRow + 27, 7,9);
+			    xls.SetCellFormat(imageRow + 19, 2,imageRow + 19,7,9);
 			    
-			    ///TOP GRAPH BORDER 
-			    xls.SetCellFormat(imageRow , 2,10);
-			    xls.SetCellFormat(imageRow , 3,10);
-			    xls.SetCellFormat(imageRow , 4,10);
-			    xls.SetCellFormat(imageRow , 5,10);
-			    xls.SetCellFormat(imageRow , 6,10);
-			    xls.SetCellFormat(imageRow , 7,10);
+			    ///TOP GRAPH BORDER
+			    xls.SetCellFormat(imageRow, 2, imageRow, 7, 10);
 			    
 			    /// RIGHT EDGE GRAPH BORDER
 			    xls.SetCellFormat(imageRow,8,11);
-			    xls.SetCellFormat(imageRow + 1,8,12);
-			    xls.SetCellFormat(imageRow + 2,8,12);
-			    xls.SetCellFormat(imageRow + 3,8,12);
-			    xls.SetCellFormat(imageRow + 4,8,12);
-			    xls.SetCellFormat(imageRow + 5,8,12);
-			    xls.SetCellFormat(imageRow + 6,8,12);
-			    xls.SetCellFormat(imageRow + 7,8,12);
-			    xls.SetCellFormat(imageRow + 8,8,12);
-			    xls.SetCellFormat(imageRow + 9,8,12);
-			    xls.SetCellFormat(imageRow + 10,8,12);
-			    xls.SetCellFormat(imageRow + 11,8,12);
-			    xls.SetCellFormat(imageRow + 12,8,12);
-			    xls.SetCellFormat(imageRow + 13,8,12);
-			    xls.SetCellFormat(imageRow + 14,8,12);
-			    xls.SetCellFormat(imageRow + 15,8,12);
-			    xls.SetCellFormat(imageRow + 16,8,12);			    
-			    xls.SetCellFormat(imageRow + 17,8,12);			    
-			    xls.SetCellFormat(imageRow + 18,8,12);			    
-			    xls.SetCellFormat(imageRow + 19,8,12);			    
-			    xls.SetCellFormat(imageRow + 20,8,12);			    
-			    xls.SetCellFormat(imageRow + 21,8,12);			    
-			    xls.SetCellFormat(imageRow + 22,8,12);			    
-			    xls.SetCellFormat(imageRow + 23,8,12);			    
-			    xls.SetCellFormat(imageRow + 24,8,12);			    
-			    xls.SetCellFormat(imageRow + 25,8,12);			    
-			    xls.SetCellFormat(imageRow + 26,8,12);			    
-			    xls.SetCellFormat(imageRow + 27,8,13);			    
-				}
-				
+			    xls.SetCellFormat(imageRow + 1,8,imageRow + 18,8,12);			    
+			    xls.SetCellFormat(imageRow + 19,8,13);			    			    
+				}				
 			}
 			if(exportSelect.rawData.On){
 				/**********************************************/				

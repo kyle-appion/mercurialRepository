@@ -50,22 +50,22 @@ namespace ION.IOS.ViewController.FluidManager {
     /// The fluid manager.
     /// </summary>
     /// <value>The fluid manager.</value>
-    private IFluidManager fluidManager { get; set; }
+    private IFluidManager fluidManager { get; set; }    
     /// <summary>
     /// The source of fluid cells for our table.
     /// </summary>
     /// <value>The source.</value>
-    private FluidSource source { get; set; }
+    private FluidSource source { get; set; }     
 
-    public FluidManagerViewController (IntPtr handle) : base (handle) {
+    public FluidManagerViewController (IntPtr handle) : base (handle) {    
       // Nope
 		}
 
     // Overridden from UIViewController
     public override void ViewDidLoad() {
-      base.ViewDidLoad();
+      base.ViewDidLoad();   
 
-      NavigationItem.Title = Strings.Fluid.Manager.SELF;
+      NavigationItem.Title = Strings.Fluid.Manager.SELF;   
       /*
       NavigationItem.SetRightBarButtonItem(
         new UIBarButtonItem("Done", UIBarButtonItemStyle.Done, async (obj, args) => {
@@ -74,7 +74,7 @@ namespace ION.IOS.ViewController.FluidManager {
             NavigationController.PopViewController(true);
           } 
         }), false);
-      */
+      */   
 
       ion = AppState.context;
       fluidManager = ion.fluidManager;

@@ -8,6 +8,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
+using System.Collections;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -152,21 +153,7 @@ namespace ION.IOS.ViewController.Logging
 
 			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
       /// Corresponsding date indexes will provide the plot points
-      //BAX = new LinearAxis {
-      //  Position = AxisPosition.Bottom,
-      //  Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
-      //  AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
-      //  Minimum = 0,
-      //  AbsoluteMinimum = -1,
-      //  IntervalLength = 1,
-      //  IsAxisVisible = false,
-      //  IsZoomEnabled = false,
-      //  IsPanEnabled = false,
-      //  MinimumPadding = 0,
-      //  MaximumPadding = 0,
-      //  AxislineThickness = 0,
-      //};
-      
+
       BAX = new CategoryAxis {
         Position = AxisPosition.Bottom,
         Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
@@ -183,11 +170,28 @@ namespace ION.IOS.ViewController.Logging
         Angle = 90,
         Title = "Time",
       };
-
+			 
+			string[] timeArray = new string[ChosenDates.allTimes[ChosenDates.latest.ToString()] + 1];
+			
 			foreach(var time in ChosenDates.allIndexes){
 				var formatTime = DateTime.Parse(time.Value).ToString("H:mm:ss");
-				BAX.ActualLabels.Add(formatTime);
+				timeArray[time.Key] = formatTime;
+				//Console.WriteLine("Set time: " + formatTime + " at index " + time.Key);
 			}
+			
+			///FILL IN EMPTY SPACES FOR SESSION PADDED INDEXES
+			for(int a = 0; a < timeArray.Length; a++){
+				if(timeArray[a] == null){
+					//Console.WriteLine("time array had a null spot at index " + a + " setting it to previous time of " + timeArray[a-1]);
+					timeArray[a] = timeArray[a-1];
+					//Console.WriteLine("Null Time is now: " + timeArray[a]);					
+				}
+			}
+			foreach(var entry in timeArray){
+				BAX.ActualLabels.Add(entry);
+				
+			}
+			BAX.IsTickCentered = true;
 			/// left axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
 			/// this will be used for pressure measurements
 			LAX = new LinearAxis {
@@ -208,7 +212,6 @@ namespace ION.IOS.ViewController.Logging
 
 			plotModel.Axes.Add (BAX);
 			plotModel.Axes.Add (LAX);
-
       
       foreach(var device in allData){
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
@@ -229,7 +232,6 @@ namespace ION.IOS.ViewController.Logging
             var index = ChosenDates.allTimes[device.times[i].ToString()];
 
             series.Points.Add(new DataPoint(index,measurement));
-            series.MarkerSize = 0;
           }
           plotModel.Series.Add (series);
         }

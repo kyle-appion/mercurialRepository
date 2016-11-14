@@ -303,6 +303,7 @@ namespace ION.IOS.Util {
       DETAILED = "report_detailed".FromResources(),
       DEVICEINFO = "report_device_info".FromResources(),
       DEVICESUSED = "report_devices_used".FromResources(),
+      DEVICEMODEL = "report_device_model".FromResources(),
       DOWNLOADING_CERTIFICATES = "report_downloading_certificates".FromResources(),
       DOWNLOADING_CERTIFICATES_FAILURES = "report_downloading_certificates_failures".FromResources(),
       EXPORT = "report_export".FromResources(),
