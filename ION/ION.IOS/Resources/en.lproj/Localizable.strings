@@ -292,6 +292,7 @@ file.
 "report_select_end" = "Select An End Time";
 "report_delete_session" = "Delete Session";
 "report_delete_message" = "This will permanently remove the session from your device";
+"report_device_model" = "Device Model";
 /* SENSOR */
 
 /* SENSOR TYPE */

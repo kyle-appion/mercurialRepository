@@ -35,6 +35,16 @@ namespace ION.IOS.ViewController.FluidManager
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (fluidNameLabel != null) {
+				fluidNameLabel.Dispose ();
+				fluidNameLabel = null;
+			}
+
+			if (fluidSafetyLabel != null) {
+				fluidSafetyLabel.Dispose ();
+				fluidSafetyLabel = null;
+			}
+
 			if (labelFluidName != null) {
 				labelFluidName.Dispose ();
 				labelFluidName = null;
@@ -58,16 +68,6 @@ namespace ION.IOS.ViewController.FluidManager
 			if (viewSelectedFluidContainer != null) {
 				viewSelectedFluidContainer.Dispose ();
 				viewSelectedFluidContainer = null;
-			}
-
-			if (fluidSafetyLabel != null) {
-				fluidSafetyLabel.Dispose ();
-				fluidSafetyLabel = null;
-			}
-
-			if (fluidNameLabel != null) {
-				fluidNameLabel.Dispose ();
-				fluidNameLabel = null;
 			}
 		}
 	}
