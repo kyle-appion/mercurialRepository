@@ -9,6 +9,8 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
 using System.Collections;
+using ION.Core.Measure;
+using ION.Core.Sensors;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -135,14 +137,18 @@ namespace ION.IOS.ViewController.Logging
 			highValue = baseHigh.ConvertTo(lookup).amount;
 			
       var color = OxyColors.Blue;
-      var buffer = 5;
+      var buffer = 0.0;
+      
       if(cellData.type.Equals("Temperature")){
         color = OxyColors.Red;
-        buffer = 3;
+        buffer = getUnitBuffer(ESensorType.Temperature,lookup);
       } else if (cellData.type.Equals("Vacuum")){
         color = OxyColors.Maroon;
-        buffer = 2000;
-      }
+        buffer = getUnitBuffer(ESensorType.Vacuum,lookup);
+      } else {
+				buffer = getUnitBuffer(ESensorType.Pressure,lookup);
+			}
+			
 			var plotModel = new PlotModel();
 
 			plotModel.Background = OxyColors.Transparent;
@@ -191,9 +197,14 @@ namespace ION.IOS.ViewController.Logging
 				BAX.ActualLabels.Add(entry);
 				
 			}
+			///YOU WOULD OBVIOUSLY WANT TICK MARKS TO BE CENTERED AS DEFAULT, SO WHY IS THE DEFAULT FALSE OXYPLOT!?!?!
 			BAX.IsTickCentered = true;
 			/// left axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
 			/// this will be used for pressure measurements
+			var measurementRange = Math.Ceiling(highValue + buffer) - Math.Floor(lowValue - buffer);
+      var majorStep = Math.Ceiling(measurementRange / 5);
+			//Console.WriteLine("Looking at high value " + Math.Ceiling(highValue + buffer) + " and low value " + Math.Floor(lowValue - buffer) + " to get a range of " + measurementRange + " that gives a major step of " + majorStep);
+       
 			LAX = new LinearAxis {
 				Position = AxisPosition.Left,
         Maximum = highValue + buffer,
@@ -208,6 +219,7 @@ namespace ION.IOS.ViewController.Logging
 				MaximumPadding = 0,
 				AxislineThickness = 0,
 				Title = cellData.type+"("+lookup+")",
+				MajorStep = majorStep,
 			};
 
 			plotModel.Axes.Add (BAX);
@@ -240,6 +252,35 @@ namespace ION.IOS.ViewController.Logging
 			plotModel.IsLegendVisible = false;
 
 			return plotModel;
+		}
+		/// <summary>
+		/// RETURNS THE BUFFER VALUE FOR THE GRAPH BASED ON THE UNIT A USER HAS CHOSEN
+		/// </summary>
+		/// <returns>THE GRAPH TOP AND BOTTOM BUFFER</returns>
+		/// <param name="type">TYPE OF SENSOR</param>
+		/// <param name="gaugeUnit">SPECIFIC UNIT CHOSEN BY USER FOR THE SENSOR TYPE</param>
+		public double getUnitBuffer(ESensorType type, Unit gaugeUnit){
+			switch(type){
+				case ESensorType.Pressure:
+					double psig = 10;
+					var pressureBuffer = new ScalarSpan(Units.Pressure.PSIG,psig);
+					var pressureConvert = pressureBuffer.ConvertTo(gaugeUnit);
+					return pressureConvert.magnitude;
+				case ESensorType.Temperature:
+					double fahrenheit = 10;
+					var temperatureBuffer = new ScalarSpan(Units.Temperature.FAHRENHEIT,fahrenheit);
+					var temperatureConvert = temperatureBuffer.ConvertTo(gaugeUnit);
+					return temperatureConvert.magnitude;
+				case ESensorType.Vacuum:
+					double micron = 2000;
+					var vacuumBuffer = new ScalarSpan(Units.Vacuum.MICRON,micron);
+					var vacuumConvert = vacuumBuffer.ConvertTo(gaugeUnit);
+					return vacuumConvert.magnitude;
+				default:
+					var defaultBuffer = new ScalarSpan(Units.Pressure.PSIG,10);
+					var defaultConvert = defaultBuffer.ConvertTo(gaugeUnit);
+					return defaultConvert.magnitude;				
+			}
 		}
 	}
 }
