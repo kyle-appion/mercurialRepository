@@ -486,7 +486,7 @@ namespace ION.Core.Net {
 							break;
  						} 						
 					}
-				}
+				}  
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;

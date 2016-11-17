@@ -1670,6 +1670,7 @@ namespace ION.IOS.ViewController.Logging
     		var currentDevice = dataList[i-1].serialNumber+"/"+dataList[i-1].sensorIndex;
     		var includedName = cell.cellData.serialNumber+"/"+cell.cellData.sensorIndex;
     		var cellIndex = 1;
+    		
     		if(!currentDevice.Equals(includedName)){
 	    		do{ 
 	    			cell = graphTable.Source.GetCell(graphTable,NSIndexPath.FromRowSection(cellIndex,0)) as graphCell;    		
@@ -1747,7 +1748,7 @@ namespace ION.IOS.ViewController.Logging
 			    xls.SetCellFormat(imageRow,8,11);
 			    xls.SetCellFormat(imageRow + 1,8,imageRow + 18,8,12);			    
 			    xls.SetCellFormat(imageRow + 19,8,13);			    			    
-				}				
+				}
 			}
 			if(exportSelect.rawData.On){
 				/**********************************************/				
