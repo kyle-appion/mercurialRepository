@@ -320,32 +320,30 @@ namespace ION.Core.Net {
 				count++;
 			}		
 		}
-		//layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"high\":\""+uploadAnalyzer.highAccessibility+"\"},";
 		
-		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"]},\"LH\":{";
-		if(uploadAnalyzer.lowAccessibility != "low"){
-		
-			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"as\":\"null\", \"lsub\":[";
+		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"],\"fluid\":\""+ion.fluidManager.lastUsedFluid.name+"\"},\"LH\":{";
+		if(uploadAnalyzer.lowAccessibility != "low"){		
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\""+ +"\", \"lsub\":[";
 		} else {
-			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"as\":\"null\", \"lsub\":[";
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"null\", \"lsub\":[";
 		}		
-	//Console.Write("Low subs: ");
 		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){		
 			layoutJson += "\""+uploadAnalyzer.lowSubviews[s]+"\"";
 			if(s < uploadAnalyzer.lowSubviews.Count - 1){
 				layoutJson += ",";
 			}
 		}
-		//Console.WriteLine(Environment.NewLine);	
-		layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"hsub\":[";
-		//Console.Write("High subs: ");
+		if(uploadAnalyzer.highAccessibility != "high"){		
+			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\""+ +"\", \"hsub\":[";
+		} else {
+			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"null\", \"hsub\":[";
+		}
 		for(int s = 0; s < uploadAnalyzer.highSubviews.Count;s++){			
 			layoutJson += "\""+uploadAnalyzer.highSubviews[s]+"\"";
 			if(s < uploadAnalyzer.highSubviews.Count - 1){
 				layoutJson += ",";
 			}
 		}
-		//Console.WriteLine(Environment.NewLine);
 		layoutJson += "]},";
 		
 		///Package the workbench layout

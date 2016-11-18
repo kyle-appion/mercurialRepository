@@ -912,11 +912,11 @@ namespace ION.IOS.ViewController.Analyzer
 			int swap = 0;
 			int swap2 = 0;
       bool removeLH = false;
-   //   Console.WriteLine("layout started");
-   //   foreach(var spot in analyzerSensors.areaList){
-			//	Console.WriteLine(spot);
-			//}
-			//Console.WriteLine(Environment.NewLine);
+      Console.WriteLine("layout started");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
+			Console.WriteLine(Environment.NewLine);
 
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
@@ -1024,11 +1024,11 @@ namespace ION.IOS.ViewController.Analyzer
         }
 			}
       confirmLayout(analyzerSensors, View);
-   //   Console.WriteLine("layout ended");
-   //   foreach(var spot in analyzerSensors.areaList){
-			//	Console.WriteLine(spot);
-			//}
-			//Console.WriteLine(Environment.NewLine);
+      Console.WriteLine("layout ended");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
+			Console.WriteLine(Environment.NewLine);
 			////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
 			analyzerSensors.viewList = new List<sensor> ();
 			for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
@@ -1655,16 +1655,16 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="View">View.</param>
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
     	var analyzer = AppState.context.currentAnalyzer;
-   		//Console.WriteLine("area list");
-   		//foreach(var spot in analyzerSensors.areaList){
-			//	Console.Write(spot + " ");
-			//}
-			//Console.WriteLine(Environment.NewLine);
-   		//Console.WriteLine("position list");
-   		//foreach(var spot in analyzer.sensorPositions){
-			//	Console.Write(spot + " ");
-			//}			
-			//Console.WriteLine(Environment.NewLine);
+   		Console.WriteLine("area list");
+   		foreach(var spot in analyzerSensors.areaList){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
+   		Console.WriteLine("position list");
+   		foreach(var spot in analyzer.sensorPositions){
+				Console.Write(spot + " ");
+			}			
+			Console.WriteLine(Environment.NewLine);
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
       	
@@ -2936,7 +2936,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="attachSensor">Attach sensor.</param>
 		public static void RemoveLHAssociation(sensor attachSensor){
-			Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
+			//Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
 			attachSensor.topLabel.BackgroundColor = UIColor.Clear;
 			attachSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
 			attachSensor.topLabel.TextColor = UIColor.Black;

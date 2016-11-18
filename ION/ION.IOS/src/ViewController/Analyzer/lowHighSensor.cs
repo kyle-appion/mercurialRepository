@@ -444,7 +444,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void updateSHSCCell(Manifold manifold){
-    	Console.WriteLine("lowHighSensor updateSHSCCell");
+    	//Console.WriteLine("lowHighSensor updateSHSCCell");
       if (manifold.secondarySensor != null) {
       	Console.WriteLine("Secondary sensor is not null");
         isLinked = true;
