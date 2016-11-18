@@ -22,6 +22,7 @@ using ION.IOS.Viewcontroller.RemoteAccess;
 using ION.Core.Database;
 using ION.IOS.ViewController.ScreenshotReport;
 using ION.Core.Util;
+using System.Linq;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -168,7 +169,10 @@ namespace ION.IOS.ViewController.Analyzer {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 					pauseRemote(false);
 					webServices.downloading = true;
-					blockerView.Hidden = false;					
+					blockerView.Hidden = false;
+					//if(!analyzerSensors.areaList.SequenceEqual(analyzer.revertPositions)){
+					//	analyzerSensors.areaList = new List<int>(analyzer.revertPositions);
+					//}
 				};
 			
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
@@ -1397,6 +1401,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.lowAccessibility));
 					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);
+					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier;
 					confirmSubviews(analyzerSensors.viewList[newIndex],"low");   
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
@@ -1417,6 +1422,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.highAccessibility));
 					AnalyserUtilities.addLHSensorAssociation("high",analyzerSensors.viewList[newIndex]);
+					lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier;
 					confirmSubviews(analyzerSensors.viewList[newIndex]);
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
@@ -1427,6 +1433,8 @@ namespace ION.IOS.ViewController.Analyzer {
 						}
 					}
 				}
+
+				analyzerSensors.areaList = analyzer.sensorPositions;
 				await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			}
 		}
@@ -1464,7 +1472,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 				foreach(var removal in updateSensor.lowArea.tableSubviews.ToArray()){
 					if(!analyzer.lowSubviews.Contains(removal)){
-						Console.WriteLine("Removed " + removal);
+						Console.WriteLine("Removed " + removal);  
 						updateSensor.lowArea.tableSubviews.Remove(removal);
 						updateSensor.lowArea.subviewTable.ReloadData();
 					}
