@@ -319,11 +319,11 @@ namespace ION.Core.Net {
 				}
 				count++;
 			}		
-		}
+		}    
 		
 		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"],\"fluid\":\""+ion.fluidManager.lastUsedFluid.name+"\"},\"LH\":{";
 		if(uploadAnalyzer.lowAccessibility != "low"){		
-			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\""+ +"\", \"lsub\":[";
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"attached\", \"lsub\":[";
 		} else {
 			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"null\", \"lsub\":[";
 		}		
@@ -334,7 +334,7 @@ namespace ION.Core.Net {
 			}
 		}
 		if(uploadAnalyzer.highAccessibility != "high"){		
-			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\""+ +"\", \"hsub\":[";
+			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"attached\", \"hsub\":[";
 		} else {
 			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"null\", \"hsub\":[";
 		}
@@ -484,7 +484,10 @@ namespace ION.Core.Net {
 							break;
  						} 						
 					}
-				}  
+				} 
+				if(ion.fluidManager.lastUsedFluid.name != deserializedPositions.fluid){
+					await ion.fluidManager.GetFluidAsync(deserializedPositions.fluid);
+				}
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
@@ -1183,6 +1186,8 @@ namespace ION.Core.Net {
 		public analyzerPositions(){}
 		[JsonProperty("positions")]
 		public int [] sensorPositions {get;set;}
+		[JsonProperty("fluid")]
+		public string fluid {get;set;}
 	}
 	[Preserve(AllMembers = true)]
 	public class analyzerLowHigh {

@@ -341,7 +341,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
       var manifold = Event.manifold;
-      Console.WriteLine(Event.type);
+      //Console.WriteLine(Event.type);
 			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
 				var compareSensor = __manifold.secondarySensor;
 					foreach(var slot in sensorList){
