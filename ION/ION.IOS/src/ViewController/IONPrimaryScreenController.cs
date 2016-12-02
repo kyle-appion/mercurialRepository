@@ -78,7 +78,7 @@ namespace ION.IOS.ViewController {
     //    new Section("Remote Viewing".ToUpper()){
 				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
 				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				//} ,
+				//},
 #endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -283,7 +283,7 @@ namespace ION.IOS.ViewController {
         null, // Screenshot Navigation
         null, // Settings navigation
         null, // Help Navigation
-      };
+      };    
 
       return ret;  
     }    

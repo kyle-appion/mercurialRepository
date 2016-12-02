@@ -36,7 +36,7 @@ file.
 "spreadsheet" = "Spreadsheet";
 "included" = "Included";
 "select_all" = "Select All";
-"deselet_all" = "Deselect All";
+"deselect_all" = "Deselect All";
 "devices" = "Devices";
 "next" = "Next";
 "previous" = "Previous";
@@ -182,6 +182,10 @@ file.
 "help_version" = "App Version";
 
 /*JOB MANAGER*/
+"job_address" = "Job Address";
+"job_location" = "GPS";
+"job_system" = "System";
+"job_tech" = "Technician";
 "job_dispatch_number" = "Dispatch Number";
 "job_dispatch_sign" = "Dispatch #";
 "job_info" = "Job Info";
@@ -288,6 +292,7 @@ file.
 "report_select_end" = "Select An End Time";
 "report_delete_session" = "Delete Session";
 "report_delete_message" = "This will permanently remove the session from your device";
+"report_device_model" = "Device Model";
 /* SENSOR */
 
 /* SENSOR TYPE */

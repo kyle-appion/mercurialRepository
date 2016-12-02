@@ -24,6 +24,7 @@ using ION.IOS.ViewController.Alarms;
 using ION.IOS.Util;
 using System.Collections.ObjectModel;
 using ION.IOS.App;
+using System.Linq;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -912,11 +913,11 @@ namespace ION.IOS.ViewController.Analyzer
 			int swap = 0;
 			int swap2 = 0;
       bool removeLH = false;
-   //   Console.WriteLine("layout started");
-   //   foreach(var spot in analyzerSensors.areaList){
-			//	Console.WriteLine(spot);
-			//}
-			//Console.WriteLine(Environment.NewLine);
+      Console.WriteLine("layout started");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
+			Console.WriteLine(Environment.NewLine);
 
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
@@ -1024,56 +1025,57 @@ namespace ION.IOS.ViewController.Analyzer
         }
 			}
       confirmLayout(analyzerSensors, View);
-   //   Console.WriteLine("layout ended");
-   //   foreach(var spot in analyzerSensors.areaList){
-			//	Console.WriteLine(spot);
-			//}
-			//Console.WriteLine(Environment.NewLine);
-			////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
-			analyzerSensors.viewList = new List<sensor> ();
-			for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
-				if (analyzerSensors.areaList [i] == 1) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
-					if(analyzerSensors.snapArea1.currentSensor != null){
-						analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 2) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
-					if(analyzerSensors.snapArea2.currentSensor != null){
-						analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 3) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
-					if(analyzerSensors.snapArea3.currentSensor != null){
-						analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 4) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
-					if(analyzerSensors.snapArea4.currentSensor != null){
-						analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 5) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
-					if(analyzerSensors.snapArea5.currentSensor != null){
-						analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 6) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
-					if(analyzerSensors.snapArea6.currentSensor != null){
-						analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 7) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
-					if(analyzerSensors.snapArea7.currentSensor != null){
-						analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
-					}
-				} else if (analyzerSensors.areaList [i] == 8) {
-					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
-					if(analyzerSensors.snapArea8.currentSensor != null){
-						analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
-					}
-				}
+      Console.WriteLine("layout ended");
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
 			}
+			Console.WriteLine(Environment.NewLine);
+			arrangeViews(analyzerSensors);
+			//////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
+			//analyzerSensors.viewList = new List<sensor> ();
+			//for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
+			//	if (analyzerSensors.areaList [i] == 1) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
+			//		if(analyzerSensors.snapArea1.currentSensor != null){
+			//			analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 2) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
+			//		if(analyzerSensors.snapArea2.currentSensor != null){
+			//			analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 3) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
+			//		if(analyzerSensors.snapArea3.currentSensor != null){
+			//			analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 4) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
+			//		if(analyzerSensors.snapArea4.currentSensor != null){
+			//			analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 5) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
+			//		if(analyzerSensors.snapArea5.currentSensor != null){
+			//			analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 6) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
+			//		if(analyzerSensors.snapArea6.currentSensor != null){
+			//			analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 7) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
+			//		if(analyzerSensors.snapArea7.currentSensor != null){
+			//			analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
+			//		}
+			//	} else if (analyzerSensors.areaList [i] == 8) {
+			//		analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
+			//		if(analyzerSensors.snapArea8.currentSensor != null){
+			//			analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
+			//		}
+			//	}
+			//}
       if (removeLH) {
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {         
@@ -1496,7 +1498,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="touchPoint">Touch point.</param>
     /// <param name="View">View.</param>
     public static void LHSwapCheck(sensorGroup analyzerSensors,LowHighArea lowHighSensors, int position, CGPoint touchPoint, UIView View, ION.Core.Content.Analyzer currentAnalyzer){
-    	//Console.WriteLine("AnalyzerUtilities LHSwapCheck");
+    	Console.WriteLine("AnalyzerUtilities LHSwapCheck");
       int start = analyzerSensors.areaList.IndexOf(position);
       int swap = 0;
       bool removeLH = false;
@@ -1655,16 +1657,27 @@ namespace ION.IOS.ViewController.Analyzer
     /// <param name="View">View.</param>
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
     	var analyzer = AppState.context.currentAnalyzer;
-   		//Console.WriteLine("area list");
-   		//foreach(var spot in analyzerSensors.areaList){
-			//	Console.Write(spot + " ");
-			//}
-			//Console.WriteLine(Environment.NewLine);
-   		//Console.WriteLine("position list");
-   		//foreach(var spot in analyzer.sensorPositions){
-			//	Console.Write(spot + " ");
-			//}			
-			//Console.WriteLine(Environment.NewLine);
+   	
+   		Console.WriteLine("revert list");
+   		foreach(var spot in analyzer.revertPositions){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
+   		Console.WriteLine("area list");
+   		foreach(var spot in analyzerSensors.areaList){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
+   		Console.WriteLine("position list");
+   		foreach(var spot in analyzer.sensorPositions){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
+   		Console.WriteLine("view list");
+   		foreach(var spot in analyzerSensors.viewList){
+				Console.Write(spot.snapArea.AccessibilityIdentifier + " ");
+			}			
+			Console.WriteLine(Environment.NewLine);
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
       	
@@ -2936,7 +2949,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="attachSensor">Attach sensor.</param>
 		public static void RemoveLHAssociation(sensor attachSensor){
-			Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
+			//Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
 			attachSensor.topLabel.BackgroundColor = UIColor.Clear;
 			attachSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
 			attachSensor.topLabel.TextColor = UIColor.Black;
@@ -2954,20 +2967,86 @@ namespace ION.IOS.ViewController.Analyzer
 		/// </summary>
 		public static void addLHSensorAssociation(string LHArea, sensor activeSensor){
 			if(LHArea == "low"){
+				Console.WriteLine("Setting low area sensor ui");
 				activeSensor.topLabel.BackgroundColor = UIColor.Blue;
 				activeSensor.topLabel.TextColor = UIColor.White;
 				activeSensor.tLabelBottom.BackgroundColor = UIColor.Blue;
 				activeSensor.lowArea.snapArea.Hidden = false;
 				activeSensor.highArea.snapArea.Hidden = true;
-				
+				///SETS THE SECONDARY SENSOR FOR THE LOW AREA
+				if(ion.currentAnalyzer.lowSideManifold != null){
+					activeSensor.lowArea.manifold.SetSecondarySensor(ion.currentAnalyzer.lowSideManifold.primarySensor);
+					Console.WriteLine("Set low area secondary sensor");
+				} else {
+					activeSensor.lowArea.manifold.SetSecondarySensor(null);
+					Console.WriteLine("Removed low area secondary sensor");
+				}
 			}else {
+				Console.WriteLine("Setting high area sensor ui");
 				activeSensor.topLabel.BackgroundColor = UIColor.Red;
 				activeSensor.topLabel.TextColor = UIColor.White;
 				activeSensor.tLabelBottom.BackgroundColor = UIColor.Red;
 				activeSensor.highArea.snapArea.Hidden = false;				
 				activeSensor.lowArea.snapArea.Hidden = true;				
+				///SETS THE SECONDARY SENSOR FOR THE LOW AREA
+				if(ion.currentAnalyzer.highSideManifold != null){
+					activeSensor.highArea.manifold.SetSecondarySensor(ion.currentAnalyzer.highSideManifold.primarySensor);			
+					Console.WriteLine("Set high area secondary sensor");
+				} else {
+					activeSensor.highArea.manifold.SetSecondarySensor(null);
+					Console.WriteLine("Removed high area secondary sensor");
+				}
 			}
 		}
+
+		public static void arrangeViews(sensorGroup analyzerSensors){
+			////ARRANGE SENSOR LIST BASED ON THEIR SNAP POINT ASSOCIATIONS
+			analyzerSensors.viewList = new List<sensor> ();
+			for(int i = 0; i < analyzerSensors.areaList.Count; i++) {
+				if (analyzerSensors.areaList [i] == 1) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea1);
+					if(analyzerSensors.snapArea1.currentSensor != null){
+						analyzerSensors.snapArea1.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 2) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea2);
+					if(analyzerSensors.snapArea2.currentSensor != null){
+						analyzerSensors.snapArea2.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 3) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea3);
+					if(analyzerSensors.snapArea3.currentSensor != null){
+						analyzerSensors.snapArea3.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 4) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea4);
+					if(analyzerSensors.snapArea4.currentSensor != null){
+						analyzerSensors.snapArea4.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 5) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea5);
+					if(analyzerSensors.snapArea5.currentSensor != null){
+						analyzerSensors.snapArea5.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 6) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea6);
+					if(analyzerSensors.snapArea6.currentSensor != null){
+						analyzerSensors.snapArea6.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 7) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea7);
+					if(analyzerSensors.snapArea7.currentSensor != null){
+						analyzerSensors.snapArea7.currentSensor.analyzerSlot = i;
+					}
+				} else if (analyzerSensors.areaList [i] == 8) {
+					analyzerSensors.viewList.Insert (i, analyzerSensors.snapArea8);
+					if(analyzerSensors.snapArea8.currentSensor != null){
+						analyzerSensors.snapArea8.currentSensor.analyzerSlot = i;
+					}
+				}
+			}
+		}		
+		
 	}
 }
 

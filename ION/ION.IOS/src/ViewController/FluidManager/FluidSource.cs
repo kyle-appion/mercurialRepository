@@ -71,7 +71,7 @@ namespace ION.IOS.ViewController.FluidManager {
     // Overridden from UITableViewSource
     public override nint NumberOfSections(UITableView tableView) {
       return 1;
-    }
+    }  
 
     // Overridden from UITableViewSource
     public override nint RowsInSection(UITableView tableview, nint section) {

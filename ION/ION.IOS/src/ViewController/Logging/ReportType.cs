@@ -38,9 +38,7 @@ namespace ION.IOS.ViewController.Logging {
 		
 		public ReportType(UIView parentView) {
 				/********************REPORTING DEFAULTS**************************/
-				var defaultSpreadsheet = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default"));
 				var defaultData = Convert.ToBoolean(Convert.ToInt32(NSUserDefaults.StandardUserDefaults.StringForKey("user_data_default")));
-				var defaultPDF = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.StringForKey("user_pdf_default"));
 				/****************************************************************/
 				outsideTap = new UITapGestureRecognizer((obj) => {
 					closeExport();
@@ -75,7 +73,7 @@ namespace ION.IOS.ViewController.Logging {
 				
 				pdfSingle = new UIButton(new CGRect(.05 * pdfView.Bounds.Width, .1 * pdfView.Bounds.Height, .12 * pdfView.Bounds.Width, .15 * pdfView.Bounds.Height));
 				
-				if(defaultPDF == 0){
+				if(pdfType == 0){
 					pdfSingle.SetImage(UIImage.FromBundle("ic_radio_filled"),UIControlState.Normal);
 				} else {
 					pdfSingle.SetImage(UIImage.FromBundle("ic_radio_blank"),UIControlState.Normal);					
@@ -90,7 +88,7 @@ namespace ION.IOS.ViewController.Logging {
 				singleSummary.TextAlignment = UITextAlignment.Left;
 				
 				pdfDetailed = new UIButton(new CGRect(.05 * pdfView.Bounds.Width, .3 * pdfView.Bounds.Height, .12 * pdfView.Bounds.Width, .15 * pdfView.Bounds.Height));
-				if(defaultPDF == 0){
+				if(pdfType == 0){
 					pdfDetailed.SetImage(UIImage.FromBundle("ic_radio_blank"),UIControlState.Normal);					
 				} else {
 					pdfDetailed.SetImage(UIImage.FromBundle("ic_radio_filled"),UIControlState.Normal);
@@ -174,8 +172,8 @@ namespace ION.IOS.ViewController.Logging {
 				popupView.AddSubview(pdfView);
 				pdfView.AddSubview(pdfSingle);
 				pdfView.AddSubview(singleSummary);
-				//pdfView.AddSubview(pdfDetailed);
-				//pdfView.AddSubview(detailedSummary);
+				pdfView.AddSubview(pdfDetailed);
+				pdfView.AddSubview(detailedSummary);
 				pdfView.AddSubview(rawData);
 				pdfView.AddSubview(rawLabel);
 				pdfView.AddSubview(pdfExport);

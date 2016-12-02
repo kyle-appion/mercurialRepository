@@ -53,6 +53,7 @@ import shutil
 import struct
 import sys
 import traceback
+import csv
 
 # Include the refprop libs
 sys.path.insert(0, 'libs')
@@ -73,6 +74,9 @@ ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600'), ('ISOBUTAN', 'R600a'), ('
                 ('ARGON', 'R740'), ('CO2', 'R744'), ('N20', '744a'), ('R134A', 'R134a')])
 
 FLAGGED_FLUIDS = dict([('R290', FLAG_EXPLOSIVE), ('R600', FLAG_EXPLOSIVE), ('R601a', FLAG_EXPLOSIVE)])
+
+SAFETY = dict()
+
 
 
 def run():
@@ -98,6 +102,9 @@ def run():
     os.makedirs(out)
 
     failures = []
+
+    with open('refrigerant_safety.csv') as f:
+        SAFETY = dict(filter(None, csv.reader(f)))
 
     for fluid in fluids:
         tries = 0;
@@ -188,16 +195,20 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         vals = bubble
 
         if similar:
-            fmt = '>BB{0}sBiifI?{1}f'.format(len(fluid_name), str(rowsOut))
+            fmt = '>BB{0}sBBiifI?{1}f'.format(len(fluid_name), str(rowsOut))
         else:
-            fmt = '>BB{0}sBiifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
+            fmt = '>BB{0}sBBiifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
             vals = vals + dew
 
         flags = FLAG_NONE
         if fluid_name in FLAGGED_FLUIDS:
             flags = FLAGGED_FLUIDS[fluid_name]
 
-        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), flags, tmin, tmax, step, rowsOut, similar, *vals)
+        sclass = "";
+        if fluid_name in SAFETY:
+            sclass = SAFETY[fluid_name]
+
+        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), flags, sclass, tmin, tmax, step, rowsOut, similar, *vals)
 
         file.write(data)
         file.flush()

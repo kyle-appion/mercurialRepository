@@ -8,6 +8,9 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
+using System.Collections;
+using ION.Core.Measure;
+using ION.Core.Sensors;
 
 namespace ION.IOS.ViewController.Logging
 {
@@ -18,7 +21,8 @@ namespace ION.IOS.ViewController.Logging
     public List<deviceReadings> allData;
 		public LinearAxis LAX;
 		public LinearAxis RAX;
-		public LinearAxis BAX;
+		//public LinearAxis BAX;
+		public CategoryAxis BAX;
 		public UILabel deviceName;
 		public UILabel includeLabel;
 		public UIButton includeButton;
@@ -34,6 +38,7 @@ namespace ION.IOS.ViewController.Logging
       cellData = startData;
  
       var combineName = cellData.serialNumber + "/" + cellData.sensorIndex;
+      //Console.WriteLine("Looking at device " + combineName);
       allData = totalData;
 
 			graphTable = tableView;
@@ -101,7 +106,9 @@ namespace ION.IOS.ViewController.Logging
 		/// <returns>The plot model.</returns>	
 		public PlotModel CreatePlotModel(double trackerHeight, UIView parentView) {
 			var lowValue = 9999999.9;
-			var highValue = -9999.9; 
+			var highValue = -9999.9;
+			bool lowestMarked = false;
+			bool highestMarked = false;
 
       var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
       if (cellData.type.Equals("Temperature")) {
@@ -109,7 +116,9 @@ namespace ION.IOS.ViewController.Logging
       } else if (cellData.type.Equals("Vacuum")) {
         defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
       }
-
+      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));
+      
+      var standardUnit = lookup.standardUnit;
       foreach (var device in allData) {
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
           foreach (var reading in device.readings) {
@@ -122,15 +131,24 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
+			var baseLow = standardUnit.OfScalar(lowValue);
+			lowValue = baseLow.ConvertTo(lookup).amount; 
+			var baseHigh = standardUnit.OfScalar(highValue);
+			highValue = baseHigh.ConvertTo(lookup).amount;
+			
       var color = OxyColors.Blue;
-      var buffer = 10000;
+      var buffer = 0.0;
+      
       if(cellData.type.Equals("Temperature")){
         color = OxyColors.Red;
-        buffer = 1;
+        buffer = getUnitBuffer(ESensorType.Temperature,lookup);
       } else if (cellData.type.Equals("Vacuum")){
         color = OxyColors.Maroon;
-        buffer = 2000;
-      }
+        buffer = getUnitBuffer(ESensorType.Vacuum,lookup);
+      } else {
+				buffer = getUnitBuffer(ESensorType.Pressure,lookup);
+			}
+			
 			var plotModel = new PlotModel();
 
 			plotModel.Background = OxyColors.Transparent;
@@ -141,7 +159,8 @@ namespace ION.IOS.ViewController.Logging
 
 			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
       /// Corresponsding date indexes will provide the plot points
-      BAX = new LinearAxis {
+
+      BAX = new CategoryAxis {
         Position = AxisPosition.Bottom,
         Maximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
         AbsoluteMaximum = ChosenDates.allTimes[ChosenDates.latest.ToString()],
@@ -154,9 +173,38 @@ namespace ION.IOS.ViewController.Logging
         MinimumPadding = 0,
         MaximumPadding = 0,
         AxislineThickness = 0,
+        Angle = 90,
+        Title = "Time",
       };
+			 
+			string[] timeArray = new string[ChosenDates.allTimes[ChosenDates.latest.ToString()] + 1];
+			
+			foreach(var time in ChosenDates.allIndexes){
+				var formatTime = DateTime.Parse(time.Value).ToString("H:mm:ss");
+				timeArray[time.Key] = formatTime;
+				//Console.WriteLine("Set time: " + formatTime + " at index " + time.Key);
+			}
+			
+			///FILL IN EMPTY SPACES FOR SESSION PADDED INDEXES
+			for(int a = 0; a < timeArray.Length; a++){
+				if(timeArray[a] == null){
+					//Console.WriteLine("time array had a null spot at index " + a + " setting it to previous time of " + timeArray[a-1]);
+					timeArray[a] = timeArray[a-1];
+					//Console.WriteLine("Null Time is now: " + timeArray[a]);					
+				}
+			}
+			foreach(var entry in timeArray){
+				BAX.ActualLabels.Add(entry);
+				
+			}
+			///YOU WOULD OBVIOUSLY WANT TICK MARKS TO BE CENTERED AS DEFAULT, SO WHY IS THE DEFAULT FALSE OXYPLOT!?!?!
+			BAX.IsTickCentered = true;
 			/// left axis of the graph that adds a pad on the top and bottom to the lowest and highest value 
 			/// this will be used for pressure measurements
+			var measurementRange = Math.Ceiling(highValue + buffer) - Math.Floor(lowValue - buffer);
+      var majorStep = Math.Ceiling(measurementRange / 5);
+			//Console.WriteLine("Looking at high value " + Math.Ceiling(highValue + buffer) + " and low value " + Math.Floor(lowValue - buffer) + " to get a range of " + measurementRange + " that gives a major step of " + majorStep);
+       
 			LAX = new LinearAxis {
 				Position = AxisPosition.Left,
         Maximum = highValue + buffer,
@@ -170,16 +218,19 @@ namespace ION.IOS.ViewController.Logging
 				MinimumPadding = 0,
 				MaximumPadding = 0,
 				AxislineThickness = 0,
+				Title = cellData.type+"("+lookup+")",
+				MajorStep = majorStep,
 			};
 
 			plotModel.Axes.Add (BAX);
 			plotModel.Axes.Add (LAX);
-
+      
       foreach(var device in allData){
         if (device.serialNumber.Equals(cellData.serialNumber) && device.type.Equals(cellData.type)) {
+        	var markSize = 0.0;
           var series = new LineSeries {
             MarkerType = MarkerType.Circle,
-            MarkerSize = .5,
+            MarkerSize = markSize,
             MarkerStroke = color,
             MarkerFill = color,
             LineStyle = LineStyle.Solid,
@@ -187,8 +238,11 @@ namespace ION.IOS.ViewController.Logging
           };
 
           for(int i = 0; i < device.times.Count; i++) {
+      			var baseValue = standardUnit.OfScalar(device.readings[i]);
+      			var measurement = baseValue.ConvertTo(lookup).amount;
+      			
             var index = ChosenDates.allTimes[device.times[i].ToString()];
-            var measurement = device.readings[i];
+
             series.Points.Add(new DataPoint(index,measurement));
           }
           plotModel.Series.Add (series);
@@ -198,6 +252,35 @@ namespace ION.IOS.ViewController.Logging
 			plotModel.IsLegendVisible = false;
 
 			return plotModel;
+		}
+		/// <summary>
+		/// RETURNS THE BUFFER VALUE FOR THE GRAPH BASED ON THE UNIT A USER HAS CHOSEN
+		/// </summary>
+		/// <returns>THE GRAPH TOP AND BOTTOM BUFFER</returns>
+		/// <param name="type">TYPE OF SENSOR</param>
+		/// <param name="gaugeUnit">SPECIFIC UNIT CHOSEN BY USER FOR THE SENSOR TYPE</param>
+		public double getUnitBuffer(ESensorType type, Unit gaugeUnit){
+			switch(type){
+				case ESensorType.Pressure:
+					double psig = 10;
+					var pressureBuffer = new ScalarSpan(Units.Pressure.PSIG,psig);
+					var pressureConvert = pressureBuffer.ConvertTo(gaugeUnit);
+					return pressureConvert.magnitude;
+				case ESensorType.Temperature:
+					double fahrenheit = 10;
+					var temperatureBuffer = new ScalarSpan(Units.Temperature.FAHRENHEIT,fahrenheit);
+					var temperatureConvert = temperatureBuffer.ConvertTo(gaugeUnit);
+					return temperatureConvert.magnitude;
+				case ESensorType.Vacuum:
+					double micron = 2000;
+					var vacuumBuffer = new ScalarSpan(Units.Vacuum.MICRON,micron);
+					var vacuumConvert = vacuumBuffer.ConvertTo(gaugeUnit);
+					return vacuumConvert.magnitude;
+				default:
+					var defaultBuffer = new ScalarSpan(Units.Pressure.PSIG,10);
+					var defaultConvert = defaultBuffer.ConvertTo(gaugeUnit);
+					return defaultConvert.magnitude;				
+			}
 		}
 	}
 }

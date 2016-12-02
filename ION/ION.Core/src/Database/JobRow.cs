@@ -43,6 +43,26 @@
     /// <value>The notes.</value>
     public string notes { get; set; }
     /// <summary>
+    /// Gets or sets the name of the tech.
+    /// </summary>
+    /// <value>The name of the tech.</value>
+    public string techName {get; set;}
+    /// <summary>
+    /// Gets or sets the type of the system.
+    /// </summary>
+    /// <value>The type of the system.</value>
+    public string systemType { get; set;}
+    /// <summary>
+    /// Gets or sets the job location.
+    /// </summary>
+    /// <value>The job location.</value>
+    public string jobLocation {get; set;}
+    /// <summary>
+    /// Gets or sets the job address.
+    /// </summary>
+    /// <value>The job address.</value>
+    public string jobAddress {get; set;}
+    /// <summary>
     /// Serves as a hash function for a <see cref="ION.Core.Database.JobRow"/> object.
     /// </summary>
     /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a hash table.</returns>
