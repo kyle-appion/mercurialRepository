@@ -490,18 +490,18 @@ namespace ION.Core.Net {
 									}
 								}
 							}
-							break;
+							//break;
  						}
 						////SET THE SECONDARY SENSOR FOR LOW AND HIGH AREAS
 						if(deserializedLowHigh.lowAttached != "null"){
-	 						if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
+	 						if(gDevice.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
 								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,gDevice.sensors[1]);
 							}
 						} else {
 							ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,null);
 						} 						
 						if(deserializedLowHigh.highAttached != "null"){
-	 						if(device.serialNumber.rawSerial == deserializedLowHigh.highAttached){
+	 						if(gDevice.serialNumber.rawSerial == deserializedLowHigh.highAttached){
 								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,gDevice.sensors[1]);
 							}
 						} else {
