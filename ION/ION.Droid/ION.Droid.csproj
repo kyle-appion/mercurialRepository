@@ -82,18 +82,6 @@
     <Reference Include="OxyPlot.Xamarin.Android">
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Basement">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Base">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Maps">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Location">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\packages\Xamarin.Android.Support.v4.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -114,6 +102,18 @@
     </Reference>
     <Reference Include="Xamarin.Android.Support.Design">
       <HintPath>..\packages\Xamarin.Android.Support.Design.23.4.0.1\lib\MonoAndroid43\Xamarin.Android.Support.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Location">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Nearby">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Nearby.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Nearby.dll</HintPath>
@@ -692,6 +692,6 @@
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
-  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets')" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0.1\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0.1\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
+  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets')" />
 </Project>
