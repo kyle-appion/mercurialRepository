@@ -654,6 +654,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_radio_filled.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_radio_blank.imageset\ic_radio_blank.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_radio_filled.imageset\ic_radio_filled.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\appion_logo_black.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\appion_logo_black.imageset\appion_logo_black.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1073,6 +1075,7 @@
     <Folder Include="Resources\Images.xcassets\ic_warning_triangle.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_radio_blank.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_radio_filled.imageset\" />
+    <Folder Include="Resources\Images.xcassets\appion_logo_black.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -16,7 +16,7 @@ namespace ION.IOS.ViewController.FluidManager {
 
     private string fluidName { get; set; }
 
-		public FluidTableCell (IntPtr handle) : base (handle) {
+		public FluidTableCell (IntPtr handle) : base (handle) {  
 		}
 
     public override void AwakeFromNib() {
@@ -29,8 +29,10 @@ namespace ION.IOS.ViewController.FluidManager {
           onFavoriteClicked(this, fluidName);
         }
       }));
-
-      imageSelected.Image = UIImage.FromBundle("ic_check");
+			imageSelected.Layer.CornerRadius = 5;
+      //imageSelected.Image = UIImage.FromBundle("ic_check");
+      imageSelected.BackgroundColor = UIColor.Red;
+      imageSelected.Hidden = false;
     }
 
     public void UpdateTo(string fluidName, int fluidColor, bool selected, bool preferred, EventHandler<string> favoriteClicked = null) {
@@ -38,8 +40,14 @@ namespace ION.IOS.ViewController.FluidManager {
       viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(fluidColor);
       labelFluidName.Text = fluidName;
       onFavoriteClicked = favoriteClicked;
-
-      imageSelected.Hidden = !selected;
+			safetyClassification.Text = "US";
+			
+      //imageSelected.Hidden = !selected;
+      if(selected){
+				this.BackgroundColor = UIColor.FromRGB(176,176,176);
+			} else {
+				this.BackgroundColor = UIColor.White;
+			}
 
       if (preferred) {
         imageFavorite.TintColor = new UIColor(Colors.GOLD);

@@ -494,7 +494,9 @@
         popover.SourceView = tableView;
         popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
       }
-      vc.PresentViewController(dialog, true, null);
+      if(!tableView.Editing){
+      	vc.PresentViewController(dialog, true, null);
+      }
     }
 
 		private void ShowChangeUnitDialog(GaugeDeviceSensor sensor) {
@@ -611,8 +613,7 @@
         popover.SourceView = tableView;
         popover.PermittedArrowDirections = UIPopoverArrowDirection.Up;
       }
-
-      vc.PresentViewController(dialog, true, null);
+      	vc.PresentViewController(dialog, true, null);
     }
 
     private string GetLocalizedTitleString(ISensorProperty sensorProperty) {

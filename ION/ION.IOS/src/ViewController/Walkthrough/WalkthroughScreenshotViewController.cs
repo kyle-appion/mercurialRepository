@@ -22,7 +22,6 @@ namespace ION.IOS.ViewController.Walkthrough {
 
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-			Console.WriteLine("Walkthrough holder bounds: " + walkthroughHolder.Bounds);
     	pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 70 , .7 * View.Bounds.Width, .6 * View.Bounds.Height));
     //pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 0, .7 * View.Bounds.Width, .6 * View.Bounds.Height));
 			
@@ -40,7 +39,7 @@ namespace ION.IOS.ViewController.Walkthrough {
       pictureView.Image = UIImage.FromBundle("Intro1");
       explanation.Text = Util.Strings.Walkthrough.INTR1;
       
-      nextPicture.SetTitle("Next", UIControlState.Normal);
+      nextPicture.SetTitle(Util.Strings.NEXT, UIControlState.Normal);
       nextPicture.SetTitleColor(UIColor.Black, UIControlState.Normal);
       nextPicture.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       nextPicture.Layer.BorderWidth = 1f;
@@ -51,7 +50,7 @@ namespace ION.IOS.ViewController.Walkthrough {
         walkthrough.GoForward();
       };
       
-      lastPicture.SetTitle("Previous", UIControlState.Normal);
+      lastPicture.SetTitle(Util.Strings.PREVIOUS, UIControlState.Normal);
       lastPicture.SetTitleColor(UIColor.Black, UIControlState.Normal);
       lastPicture.BackgroundColor = UIColor.FromRGB(255, 215, 101);
       lastPicture.Layer.BorderWidth = 1f;
@@ -67,8 +66,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     
     public async void setupWalkthrough(){
 			await Task.Delay(TimeSpan.FromMilliseconds(2));
-			Console.WriteLine("Walkthrough holder bounds: " + walkthroughHolder.Bounds);
-			
+ 			
       View.AddSubview(pictureView);
       View.SendSubviewToBack(pictureView);
       View.AddSubview(explanation);
