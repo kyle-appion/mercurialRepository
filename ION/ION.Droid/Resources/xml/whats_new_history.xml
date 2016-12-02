@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<whatsnew>
+	<display version="0.9.26">
+		<update>Updated checks to ensure valid system state for various features in newer android versions</update>
+		<update>Updated rate of change algorithm</update>
+		<update>Updated refrigerant library</update>
+		<update>Updated the graphing selection icons</update>
+		<fixed>Fixed notification icon color on some devices</fixed>
+		<fixed>Fixed corner-case bugs in Analyzer</fixed>
+		<fixed>Fixed alarm activity not responding to save clicks</fixed>
+		<fixed>Fixed some bugs in preferences and preference handling</fixed>
+		<fixed>Fixed various performance and graphical bugs</fixed>
+	</display>
+	<display version="0.9.15">
+		<new>Added slider in the PT Chart</new>
+		<new>Added Data Logging</new>
+		<new>Added basic Data Log Reporting</new>
+		<update>Removed legacy toasts</update>
+	</display>
+	<display version="0.9.14">
+		<update>Cleaned up various UI elements</update>
+		<fixed>Fixed Various button interactions</fixed>
+		<fixed>Fixed SH/SC calculation issues</fixed>
+	</display>
+	<display version="0.9.11">
+		<new>The analyzer is now saved across app instances</new>
+		<update>Improved new gauge bluetooth performance</update>
+		<update>Updated refrigerant list sorting</update>
+		<fixed>Fixed issue where bluetooth devices wouldn't communicate</fixed>
+		<fixed>Fixed Analyzer subview bugs</fixed>
+		<fixed>Fixed Analyzer rendering bugs</fixed>
+	</display>
+	<display version="0.9.10">
+		<new>Added basic Job Manager</new>
+		<fixed>Fixed a bug with a refrigerant causing the app to crash</fixed>
+	</display>
+	<display version="0.9.9">
+		<new>Added support for new gauges</new>
+		<new>Added gauge location icons to the device manager</new>
+		<update>Updated application notification icon</update>
+		<fixed>Fixed backend measurements</fixed>
+		<fixed>Fixed PTChart and Superheat / Subcool subview data exchange issue</fixed>
+		<fixed>Fixed default units causing gauges not to load</fixed>
+	</display>
+  <display version="0.9.8">
+    <new>Swipe to remove Viewer and Subview in Workbench.</new>
+    <new>Swipe to forget device in Device Manager</new>
+		<new>Suppory for new Android bluetooth model</new>
+		<new>Support for new Android permission model</new>
+    <update>Updated viewer movement actions within the workbench</update>
+    <update>Updated Backend support throughout the app</update>
+		<fixed>Some fluid conversion errors at the fluid's extremes</fixed>
+    <fixed>Fixed lingering bluetooth bugs.</fixed>
+  </display>
+</whatsnew>
