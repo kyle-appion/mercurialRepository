@@ -173,11 +173,19 @@
     <Compile Include="src\Connections\RemoteConnection.cs" />
     <Compile Include="src\Measure\RateOfChange.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
+    <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="src\Fluids\Embedded\R438A.fluid" />
+    <None Include="src\Fluids\Embedded\R429A.fluid" />
+    <None Include="src\Fluids\Embedded\R430A.fluid" />
+    <None Include="src\Fluids\Embedded\R431A.fluid" />
+    <None Include="src\Fluids\Embedded\R432A.fluid" />
+    <None Include="src\Fluids\Embedded\R433A.fluid" />
+    <None Include="src\Fluids\Embedded\R434A.fluid" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

@@ -78,7 +78,7 @@
 			get {
 				return __lastPacket;
 			}
-			protected set {
+			set {
 				__lastPacket = value;
 				if (onDataReceived != null) {
 					onDataReceived(this, __lastPacket);

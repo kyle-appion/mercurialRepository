@@ -75,10 +75,15 @@
 		/// </summary>
 		/// <param name="context">Context.</param>
 		private IScanDelegate classicScanDelegate;
+		/// <summary>
+		/// The entity that is used to manager broadcasting.
+		/// </summary>
+//		private BackgroundBle broadcasting;
 
 		public AndroidConnectionHelper(AndroidION ion) {
 			manager = (BluetoothManager)ion.GetSystemService(Context.BluetoothService);
 			handler = new Handler();
+//			broadcasting = new BackgroundBle(manager.Adapter);
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
 				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
@@ -108,7 +113,13 @@
 			if (isScanning) {
 				return false;
 			}
-
+/*
+			broadcasting.StartBroadcastReceiving();
+			if (onScanStateChanged != null) {
+				onScanStateChanged(this);
+			}
+			return true;
+*/
 			var ret = leScanDelegate.StartScan();
 
 			if (ret) {
@@ -133,6 +144,12 @@
 		}
 
 		public void StopScan() {
+/*
+			broadcasting.StopBroadcastReceiving();
+			if (onScanStateChanged != null) {
+				onScanStateChanged(this);
+			}
+*/
 			handler.RemoveCallbacksAndMessages(null);
 
 			if (isScanning) {
@@ -157,9 +174,9 @@
 				return; // The device is not ours. Discard it.
 			}
 
-//			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
+			Log.D(this, "ScanRecord: " + scanRecord.ToByteString());
 			byte[] broadcastPayload = ParseBroadcastPayloadFromScanRecord(scanRecord);
-//			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
+			Log.D(this, "BroadcastPayload: " + broadcastPayload?.ToByteString());
 
 			var protocolVersion = DiscoverProtocolVersion(device, serialNumber, broadcastPayload);
 

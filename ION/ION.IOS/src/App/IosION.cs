@@ -249,10 +249,13 @@
 
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
 
+			var handler = new IONBluetoothService();
+
       database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this);
       fileManager = new IosFileManager();
       locationManager = new IosLocationManager(this);
-      deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch);
+//      deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch);
+			deviceManager = new BaseDeviceManager(this, handler, handler);
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {

@@ -2,14 +2,128 @@
 
 	using System;
 	using System.Collections.Generic;
+	using System.Threading;
+	using System.Threading.Tasks;
 
 	using Android.App;
 	using Android.Bluetooth;
 	using Android.Content;
 	using Android.OS;
-	using Android.Support.V4.Content;
 	using Android.Util;
-	using Android.Widget;
+
+	[Service]
+	public class BackendBluetoothService : Service {
+
+		public const string ACTION_START_SCAN = "BackendBluetoothService.ActionStartScan";
+		public const string ACTION_STOP_SCAN = "BackendBluetoothService.ActionStopScan";
+		public const string ACTION_SCAN_STARTED = "BackendBluetoothService.ActionScanStarted";
+		public const string ACTION_SCAN_STOPPED = "BackendBluetoothService.ActionScanStopped";
+		public const string ACTION_DEVICE_FOUND = "BackendBluetoothService.ActionDeviceFound";
+
+		public event Action<BackendBluetoothService> onScanStarted;
+		public event Action<BackendBluetoothService> onScanStopped;
+		public event Action<BackendBluetoothService, BluetoothDevice> onDeviceFound;
+		public event Action<BluetoothDevice> onDeviceChanged;
+
+		public BluetoothManager manager { get; private set; }
+		public BluetoothAdapter adapter { get; private set; }
+		public bool isScanning { get; private set; }
+		public ConnectionHandler connectionHandler { get; private set; }
+
+		private Dictionary<string, BluetoothDevice> deviceLookup = new Dictionary<string, BluetoothDevice>();
+
+		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId) {
+			base.OnStartCommand(intent, flags, startId);
+
+			manager = GetSystemService(BluetoothService) as BluetoothManager;
+			adapter = manager.Adapter;
+			connectionHandler = new ConnectionHandler(this);
+			connectionHandler.onDeviceStateChange += OnDeviceStateChange;
+			connectionHandler.onDeviceFound += OnDeviceFound;
+
+			D("Started BluetoothService");
+
+			return StartCommandResult.NotSticky;
+		}
+
+		public override IBinder OnBind(Intent intent) {
+			return new Binder() { service = this };
+		}
+
+		public override void OnDestroy() {
+			base.OnDestroy();
+		}
+
+		public void OnConnected(Bundle bundle) {
+		}
+
+		public void OnDisconnected() {
+		}
+
+		public void OnConnectionSuspended(int i) {
+		}
+
+		public void StartScan() {
+			if (isScanning) {
+				return;
+			}
+			connectionHandler.StartScan();
+			isScanning = true;
+			if (onScanStarted != null) {
+				onScanStarted(this);
+			}
+		}
+
+		public void StopScan() {
+			connectionHandler.StopScan();
+			isScanning = false;
+			if (onScanStopped != null) {
+				onScanStopped(this);
+			}
+		}
+
+		private void OnDeviceStateChange(BluetoothDevice device, ProfileState state) {
+			if (onDeviceChanged != null) {
+				onDeviceChanged(device);
+			}
+		}
+
+		private void OnDeviceFound(BluetoothDevice device) {
+			if (!deviceLookup.ContainsKey(device.Address)) {
+				deviceLookup[device.Address] = device;
+
+				if (onDeviceFound != null) {
+					onDeviceFound(this, device);
+				}
+			}
+		}
+
+		public static void D(string msg) {
+			Log.Debug(typeof(BackendBluetoothService).Name, msg);
+		}
+
+		public class Binder : Android.OS.Binder {
+			public BackendBluetoothService service { get; internal set; }
+		}
+	}
+}
+
+
+
+
+/*
+namespace BluetoothTesting {
+
+	using System;
+	using System.Collections.Generic;
+	using System.Threading;
+	using System.Threading.Tasks;
+
+	using Android.App;
+	using Android.Bluetooth;
+	using Android.Content;
+	using Android.OS;
+	using Android.Util;
 
 	[Service]
 	public class BackendBluetoothService : Service {
@@ -32,12 +146,14 @@
 
 		private LeScanDelegate_4_3 scanDelegate;
 
+		private Handler handler;
 		private Dictionary<string, BluetoothConnection> connectionLookup = new Dictionary<string, BluetoothConnection>();
 		private List<BluetoothConnection> connections = new List<BluetoothConnection>();
 
 		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId) {
 			base.OnStartCommand(intent, flags, startId);
 
+			handler = new Handler();
 			manager = GetSystemService(BluetoothService) as BluetoothManager;
 			adapter = manager.Adapter;
 			scanDelegate = new LeScanDelegate_4_3(this, adapter);
@@ -53,6 +169,15 @@
 
 		public override void OnDestroy() {
 			base.OnDestroy();
+		}
+
+		public void OnConnected(Bundle bundle) {
+		}
+
+		public void OnDisconnected() {
+		}
+
+		public void OnConnectionSuspended(int i) {
 		}
 
 		public void StartScan() {
@@ -136,3 +261,4 @@
 		}
 	}
 }
+*/

@@ -2,15 +2,11 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
 
 	using Android.App;
 	using Android.Bluetooth;
 	using Android.Content;
 	using Android.OS;
-	using Android.Runtime;
-	using Android.Support.V4.Content;
 	using Android.Support.V7.Widget;
 	using Android.Util;
 	using Android.Views;
@@ -38,8 +34,6 @@
 			handler = new Handler();
 
 			list = FindViewById<RecyclerView>(Resource.Id.list);
-			list.SetAdapter(adapter = new Adapter());
-			adapter.onRowClicked += OnRowClicked;
 		}
 
 		protected override void OnResume() {
@@ -91,7 +85,11 @@
 			service.onScanStarted += OnScanStarted;
 			service.onScanStopped += OnScanStopped;
 			service.onDeviceFound += OnDeviceFound;
-			service.onConnectionChanged += OnConnectionChanged;
+			service.onDeviceChanged += OnConnectionChanged;
+
+			list.SetAdapter(adapter = new Adapter(service));
+			adapter.onRowClicked += OnRowClicked;
+
 			InvalidateProgress();
 		}
 
@@ -109,24 +107,24 @@
 			InvalidateProgress();
 		}
 
-		private void OnDeviceFound(BackendBluetoothService service, BluetoothConnection connection) {
+		private void OnDeviceFound(BackendBluetoothService service, BluetoothDevice device) {
 			handler.Post(() => {
-				D("Found new device: " + connection.device.Name);
-				adapter.AddConnection(connection);
+				D("Found new device: " + device.Name);
+				adapter.AddDevice(device);
 			});
 		}
 
-		private void OnRowClicked(int position, BluetoothConnection connection) {
-			if (connection.connectionState == ProfileState.Disconnected) {
-				connection.Connect();
+		private void OnRowClicked(int position, BluetoothDevice device) {
+			if (service.connectionHandler.GetProfileStateFor(device) == ProfileState.Disconnected) {
+				service.connectionHandler.Connect(device);
 			} else {
-				connection.Disconnect();
+				service.connectionHandler.Disconnect(device);
 			}
 		}
 
-		private void OnConnectionChanged(BluetoothConnection connection) {
+		private void OnConnectionChanged(BluetoothDevice device) {
 			handler.Post(() => {
-				adapter.UpdateConnection(connection);
+				adapter.UpdateConnection(device);
 			});
 		}
 
@@ -164,14 +162,19 @@
 		}
 
 		private class Adapter : RecyclerView.Adapter {
-			public event Action<int, BluetoothConnection> onRowClicked;
+			public event Action<int, BluetoothDevice> onRowClicked;
 
-			public List<BluetoothConnection> list = new List<BluetoothConnection>();
+			public BackendBluetoothService service;
+			public List<BluetoothDevice> list = new List<BluetoothDevice>();
 
 			public override int ItemCount {
 				get {
 					return list.Count;
 				}
+			}
+
+			public Adapter(BackendBluetoothService service) {
+				this.service = service;
 			}
 
 			/// <summary>
@@ -199,21 +202,20 @@
 					ClickRow(position);
 
 				}));
-				((DeviceViewHolder)holder).Bind(list[position]);
+				((DeviceViewHolder)holder).Bind(list[position], service);
 			}
 
-			public void AddConnection(BluetoothConnection connection) {
-				if (!list.Contains(connection)) {
+			public void AddDevice(BluetoothDevice device) {
+				if (!list.Contains(device)) {
 					var index = list.Count;
 					BluetoothScanActivity.D("There are " + index + " connections now");
-					list.Add(connection);
+					list.Add(device);
 			  	NotifyItemInserted(index);
-//					NotifyDataSetChanged();
 				}
 			}
 
-			public void UpdateConnection(BluetoothConnection connection) {
-				var index = list.IndexOf(connection);
+			public void UpdateConnection(BluetoothDevice device) {
+				var index = list.IndexOf(device);
 				NotifyItemChanged(index);
 			}
 
@@ -225,7 +227,7 @@
 		}
 
 		private class DeviceViewHolder : RecyclerView.ViewHolder {
-			public BluetoothConnection connection;
+			public BluetoothDevice device;
 
 			private TextView name, address, state;
 
@@ -235,13 +237,12 @@
 				state = parent.FindViewById<TextView>(Resource.Id.state);
 			}
 
-			public void Bind(BluetoothConnection connection) {
-				this.connection = connection;
-				var device = connection.device;
+			public void Bind(BluetoothDevice device, BackendBluetoothService service) {
+				this.device = device;
 
 				name.Text = device.Name;
 				address.Text = device.Address;
-				state.Text = connection.connectionState.ToString();
+				state.Text = service.connectionHandler.GetProfileStateFor(device).ToString();
 			}
 		}
 	}
