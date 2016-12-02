@@ -60,6 +60,13 @@ namespace ION.Core.Fluids {
     /// <param name="fluidName">Fluid name.</param>
     int GetFluidColor(string fluidName);
 
+		/// <summary>
+		/// Queries the safety of the fluid with the given name.
+		/// </summary>
+		/// <returns>The fluid safety.</returns>
+		/// <param name="fluidName">Fluid name.</param>
+		Fluid.ESafety GetFluidSafety(string fluidName);
+
     /// <summary>
     /// Marks whether or not the the named fluid is a preferred fluid. Preferred
     /// fluids are easier for the user to interact with and are generally
