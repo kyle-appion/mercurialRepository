@@ -542,7 +542,9 @@
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
     public bool SetManifold(ESide side, Sensor sensor) {
+    	Log.D(this,"Setting manifold for " + side + " side");
       var index = IndexOfSensor(sensor);
+    	Log.D(this,"index for sensor is " + index + " side");
 
       if (index < 0) {
         // The sensor is not in the analyzer.
@@ -566,7 +568,36 @@
           throw new Exception("Cannot set primary manifold: unknown side: " + side);
       }
     }
-
+		/// <summary>
+		/// Sets the manifold for remote viewing linked sensors.
+		/// </summary>
+		/// <returns><c>true</c>, if remote manifold was set, <c>false</c> otherwise.</returns>
+		/// <param name="side">Side.</param>
+		/// <param name="sensor">Sensor.</param>
+		public bool SetRemoteManifold(ESide side, Sensor sensor){
+			if(sensor == null){
+				RemoveManifold(side);
+				Log.D(this, "Removing manifold from side " + side);
+				return false;
+			}
+      switch (side) {
+        case ESide.Low:
+          RemoveManifold(ESide.Low);
+          lowSideManifold = new Manifold(sensor);
+          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
+          return true;
+        case ESide.High:
+          RemoveManifold(ESide.High);
+          highSideManifold = new Manifold(sensor);
+          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
+          return true;
+        default:
+          Log.D(this,"Cannot set primary manifold: unknown side: " + side);
+          return true;
+      }
+		}
     /// <summary>
     /// Queries the and sets the value of side to the side of the given manifold. If the manifold is not present in the
     /// analyzer, we will return false and set the side to ESide.Low.

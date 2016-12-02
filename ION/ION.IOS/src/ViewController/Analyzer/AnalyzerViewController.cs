@@ -165,7 +165,7 @@ namespace ION.IOS.ViewController.Analyzer {
 						analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
 						//////MAYBE ONLY RUN THIS ON EDIT START AND STOP.........
 						AnalyserUtilities.arrangeViews(analyzerSensors);
-					} 					
+					}
 					webServices.downloading = false;
 					blockerView.Hidden = true;
 				};
@@ -1416,7 +1416,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					Console.WriteLine("About to associate low area with sensor at index " + newIndex + " with name " + analyzerSensors.viewList[newIndex].topLabel.Text + " and identifier " + analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier);
 					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);
 					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier;
-					confirmSubviews(analyzerSensors.viewList[newIndex],"low");   
+					confirmSubviews(analyzerSensors.viewList[newIndex],"low");
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.lowArea.snapArea.Hidden){

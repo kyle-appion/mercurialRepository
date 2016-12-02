@@ -21,7 +21,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		IION ion;
     ObservableCollection<int> selectedUser;
     WebClient webServices;
-    public const string deleteUserUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/deleteAccess.php";
+    public const string deleteUserUrl = "http://portal.appioninc.com/App/deleteAccess.php";
     
 		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<int> selected, WebClient webClient) {
 			tableItems = accessItems;
