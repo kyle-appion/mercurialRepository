@@ -399,7 +399,7 @@ namespace ION.IOS.ViewController.Analyzer
 								slot.topLabel.BackgroundColor = UIColor.Clear;
 								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
 								slot.topLabel.TextColor = UIColor.Black;	
-							}
+							}    
 							if(slot.currentSensor == currentSensor){    
 								slot.lowArea.attachedSensor = null;
 								slot.highArea.attachedSensor = null;
