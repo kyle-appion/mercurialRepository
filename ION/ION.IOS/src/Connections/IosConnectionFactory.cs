@@ -41,10 +41,12 @@
 
 			if (serialNumber.rawSerial.StartsWith("S")) {
 				var h = (LeConnectionHelper)ion.deviceManager.connectionHelper;
-				return new IosRigadoConnection(h, peripheral);
+//				return new IosRigadoConnection(h, peripheral);
 			}
 
-			return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
+//			return new IosLeConnection(ion.deviceManager.connectionHelper as LeConnectionHelper, peripheral);
+
+			return null;
     }
   }
 }

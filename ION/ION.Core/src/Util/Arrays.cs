@@ -39,6 +39,31 @@
       return ret;
     }
 
+		/// <summary>
+		/// Creates a subset of T starting at start and ending at the end of the array.
+		/// </summary>
+		/// <param name="t">T.</param>
+		/// <param name="start">Start.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T[] Subset<T>(this T[] t, int start) {
+			return Subset(t, start, t.Length - 1);
+		}
+
+		/// <summary>
+		/// Creates a subset of T start at start and ending at the end point.
+		/// </summary>
+		/// <param name="t">T.</param>
+		/// <param name="start">The inclusive start index within t.</param>
+		/// <param name="end">The exclusive end index within t.</param>
+		/// <typeparam name="T">The 1st type parameter.</typeparam>
+		public static T[] Subset<T>(this T[] t, int start, int end) {
+			var ret = new T[end - start];
+
+			Array.Copy(t, start, ret, 0, ret.Length);
+
+			return ret;
+		}
+
     /// <summary>
     /// Converts the array to a comma separated string.
     /// </summary>

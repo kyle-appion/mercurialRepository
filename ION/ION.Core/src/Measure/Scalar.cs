@@ -5,7 +5,7 @@
   /// <summary>
   /// A Scalar is a one dimensional value with a unit.
   /// </summary>
-  public struct Scalar {
+  public struct Scalar : IComparable<Scalar> {
     /// <summary>
     /// The unit that the scalar is referring to.
     /// </summary>
@@ -59,6 +59,15 @@
 			} else {
 				return false;
 			}
+		}
+
+		// Implemented From IComparable
+		public int CompareTo(Scalar other) {
+			if (!CompatibleWith(other.unit.quantity)) {
+				throw new Exception("Scalar with unit: " + unit + " is not compatible with quantity " + other.unit + "[" + other.unit.quantity + "]");
+			}
+
+			return amount.CompareTo(other.ConvertTo(unit).amount);
 		}
 
 		/// <summary>

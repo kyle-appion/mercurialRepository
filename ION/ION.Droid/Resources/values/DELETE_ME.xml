@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- @SECTION() -->
+  <string name="testing">Testing the parser</string>
+  <string name="dasdf">asdfasdf</string>
+  <!-- @SECTION(More) -->
+  <string name="asdf">gfds</string>
+  <string name="asdf">akjsdlkfjgsdfG</string>
+</resources>

@@ -115,6 +115,9 @@
     <Reference Include="Xamarin.Android.Support.Design">
       <HintPath>..\packages\Xamarin.Android.Support.Design.23.4.0.1\lib\MonoAndroid43\Xamarin.Android.Support.Design.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Nearby">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Nearby.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Nearby.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Activity\MainActivity.cs" />
@@ -144,7 +147,6 @@
     <Compile Include="src\Util\GenericParcelableCreator.cs" />
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
-    <Compile Include="src\Connections\LeConnectionHelper.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
     <Compile Include="src\Dialog\UnitDialog.cs" />
@@ -198,7 +200,6 @@
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
     <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
-    <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
     <Compile Include="src\Connections\ClassicConnection.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
@@ -263,6 +264,9 @@
     <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
     <Compile Include="src\Widgets\Templates\CompactManifoldViewTemplate.cs" />
+    <Compile Include="src\Connections\BackgroundBle.cs" />
+    <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
+    <Compile Include="src\Connections\BaseScanHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -672,6 +676,7 @@
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\values-sw480dp\" />
+    <Folder Include="src\Connections\Beta\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

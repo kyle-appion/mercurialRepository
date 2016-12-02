@@ -111,7 +111,8 @@
     /// <summary>
     /// The central manager that is being used to host this connection.
     /// </summary>
-    private LeConnectionHelper connectionHelper { get; set; }
+//    private LeConnectionHelper connectionHelper { get; set; }
+		private IONBluetoothService connectionHelper { get; set; }
     /// <summary>
     /// The delegate that will received discovered service events.
     /// </summary>
@@ -145,7 +146,7 @@
     /// </summary>
     /// <param name="centeralManager">Centeral manager.</param>
     /// <param name="peripheral">Peripheral.</param>
-    public IosRigadoConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) {
+    public IosRigadoConnection(IONBluetoothService connectionHelper, CBPeripheral peripheral) {
 			this.connectionHelper = connectionHelper;
       __nativeDevice = peripheral;
       name = __nativeDevice.Name;

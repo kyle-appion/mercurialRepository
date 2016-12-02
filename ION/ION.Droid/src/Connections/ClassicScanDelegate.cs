@@ -21,6 +21,13 @@
 		/// </summary>
 		private const string APPION_GAUGE = "APPION Gauge";
 
+		// Implemented from IScanDelegate
+		public bool isScanning {
+			get {
+				return adapter.IsDiscovering;
+			}
+		}
+
 		private AndroidION ion;
 		private BluetoothAdapter adapter;
 		private InternalClassicDeviceFound deviceFound;
@@ -38,6 +45,10 @@
 		}
 
 		public bool StartScan() {
+			if (isScanning) {
+				return false;
+			}
+
 			var ret = adapter.StartDiscovery();
 			if (ret) {
 				var filter = new IntentFilter();
@@ -59,26 +70,28 @@
 		}
 
 		public async void StopScan() {
-			try {
-				lock (this) {
-					if (isBroadcastRegistered) {
-						ion.UnregisterReceiver(this);
-						isBroadcastRegistered = false;
+			if (isScanning) {
+				try {
+					lock (this) {
+						if (isBroadcastRegistered) {
+							ion.UnregisterReceiver(this);
+							isBroadcastRegistered = false;
+						}
 					}
+				} catch (Exception e) {
+					Log.E(this, "Calling unregister too many times", e);
 				}
-			} catch (Exception e) {
-				Log.E(this, "Calling unregister too many times", e);
-			}
-			adapter.CancelDiscovery();
+				adapter.CancelDiscovery();
 
-			var pd = new HashSet<BluetoothDevice>(pendingDevices);
-			pendingDevices.Clear();
+				var pd = new HashSet<BluetoothDevice>(pendingDevices);
+				pendingDevices.Clear();
 
-			foreach (var device in pd) {
-				var serial = await ClassicConnection.ResolveSerialNumber(device);
-				Log.D(this, "Found serial number: " + serial);
-				if (serial != null) {
-					deviceFound(serial, device);
+				foreach (var device in pd) {
+					var serial = await ClassicConnection.ResolveSerialNumber(device);
+					Log.D(this, "Found serial number: " + serial);
+					if (serial != null) {
+						deviceFound(serial, device);
+					}
 				}
 			}
 		}

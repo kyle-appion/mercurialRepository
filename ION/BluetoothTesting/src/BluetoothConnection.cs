@@ -1,4 +1,6 @@
-﻿namespace BluetoothTesting {
+﻿
+
+namespace BluetoothTesting {
 
 
 	using System;
