@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
 	<display version="0.9.29">
-		<update>Added saftey details for refrigerants</update>
+		<new>Added saftey details for refrigerants</new>
+		<new>Added new refrigerants</new>
+
 		<update>Look and feel of the refrigerant manager</update>
-		<update>Added new fluids</update>
 	</display>
 </whatsnew>

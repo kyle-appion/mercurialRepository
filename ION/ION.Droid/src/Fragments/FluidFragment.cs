@@ -8,12 +8,14 @@
   using Android.App;
   using Android.Content;
   using Android.Graphics;
+	using Android.Graphics.Drawables;
   using Android.OS;
   using AUtil = Android.Util;
   using Android.Views;
   using Android.Widget;
 
   using ION.Core.App;
+	using ION.Core.Fluids;
   using ION.Core.Util;
 
   using ION.Droid.Views;
@@ -177,8 +179,12 @@
         convert.Tag = vh = new ViewHolder();
 
         vh.color = convert.FindViewById(Resource.Id.color);
+				vh.safetyColor = convert.FindViewById(Resource.Id.view);
         vh.name = convert.FindViewById<TextView>(Resource.Id.name);
+				vh.safety = convert.FindViewById<TextView>(Resource.Id.text);
         vh.perferred = convert.FindViewById<ImageView>(Resource.Id.preferred);
+
+				vh.safetyColor.Background = new ShapeDrawable(new Android.Graphics.Drawables.Shapes.OvalShape());
       }
 
       string fluidName = fluids[position];
@@ -198,6 +204,20 @@
         vh.perferred.SetColorFilter(new Color(c.Resources.GetColor(Resource.Color.black)));
       }
 
+
+			var safety = fm.GetFluidSafety(fluidName);
+			var b = vh.safetyColor.Background as ShapeDrawable;
+			b.Paint.Color = new Color(safety.Color());
+			vh.safetyColor.InvalidateDrawable(b);
+
+			if (safety == Fluid.ESafety.Unknown) {
+				vh.safety.Text = c.GetString(Resource.String.na);
+				vh.safetyColor.Visibility = ViewStates.Gone;
+			} else {
+				vh.safety.Text = safety.ToString();
+				vh.safetyColor.Visibility = ViewStates.Visible;
+			}
+
       vh.perferred.SetOnClickListener(new ViewClickAction((view) => {
         fm.MarkFluidAsPreferred(fluidName, !fm.IsFluidPreferred(fluidName));
       }));
@@ -206,8 +226,8 @@
     }
 
     private class ViewHolder : Java.Lang.Object {
-      public View color;
-      public TextView name;
+      public View color, safetyColor;
+      public TextView name, safety;
       public ImageView perferred;
     }
   }
