@@ -75,10 +75,10 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
 #if DEBUG
-        new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				},
+    //    new Section("Remote Viewing".ToUpper()){
+				//	new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
+				//	new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
+				//},
 #endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -274,8 +274,8 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
 #if DEBUG
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
-        new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
+        //new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
+        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
 #endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),

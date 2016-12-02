@@ -53,19 +53,19 @@ namespace ION.Core.Net {
 		} bool __downloading;
 		
 		public DateTime startedViewing;   
-		public const string uploadSessionUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/uploadSession.php";
-		public const string downloadSessionUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/downloadSession.php";
-		public const string registerUserUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/registerUser.php";
-		public const string submitCodeUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/submitAccessCode.php";
-		public const string confirmAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/confirmAccess.php";
-		public const string retrieveAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/retrieveAccess.php";
-		public const string createAccessUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/requestAccess.php";
-		public const string getRequestsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/getRequests.php";
-		public const string changeOnlineUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/changeOnlineStatus.php";
-		public const string uploadLayoutsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/uploadLayouts.php";
-		public const string downloadLayoutsUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/downloadLayouts.php";
-		public const string forgotAccountUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/forgotUserPass.php";
-		public const string updateAccountUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/updateAccount.php";
+		public const string uploadSessionUrl = "http://portal.appioninc.com/App/uploadSession.php";
+		public const string downloadSessionUrl = "http://portal.appioninc.com/App/downloadSession.php";
+		public const string registerUserUrl = "http://portal.appioninc.com/App/registerUser.php";
+		public const string submitCodeUrl = "http://portal.appioninc.com/App/submitAccessCode.php";
+		public const string confirmAccessUrl = "http://portal.appioninc.com/App/confirmAccess.php";
+		public const string retrieveAccessUrl = "http://portal.appioninc.com/App/retrieveAccess.php";
+		public const string createAccessUrl = "http://portal.appioninc.com/App/requestAccess.php";
+		public const string getRequestsUrl = "http://portal.appioninc.com/App/getRequests.php";
+		public const string changeOnlineUrl = "http://portal.appioninc.com/App/changeOnlineStatus.php";
+		public const string uploadLayoutsUrl = "http://portal.appioninc.com/App/uploadLayouts.php";
+		public const string downloadLayoutsUrl = "http://portal.appioninc.com/App/downloadLayouts.php";
+		public const string forgotAccountUrl = "http://portal.appioninc.com/App/forgotUserPass.php";
+		public const string updateAccountUrl = "http://portal.appioninc.com/App/updateAccount.php";
 		public webTimeoutEvent timedOut;
 		public webPauseEvent paused;
 		
@@ -122,7 +122,7 @@ namespace ION.Core.Net {
 			}
 			
 			jsonPayload += "}";
-			
+			//Console.WriteLine(jsonPayload);
 			UploadSession(jsonPayload,true);
 		}
 		/// <summary>
@@ -306,9 +306,11 @@ namespace ION.Core.Net {
 				connectedCount++;
 			}
 		}
-		layoutJson += "],";
+		layoutJson += "],";  
 	  ///Package the analyzer layout
 		layoutJson += "\"alyzer\":[";
+		string lowSecondary = "null";
+		string highSecondary = "null";
 		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){			
 			var count = 1;                                                                    
 			foreach(var sensor in uploadAnalyzer.sensorList){
@@ -317,28 +319,35 @@ namespace ION.Core.Net {
 				if(count < uploadAnalyzer.sensorList.Count){
 					layoutJson += ",";
 				}
+			
 				count++;
 			}		
-		}    
+		}
+		if(uploadAnalyzer.lowSideManifold != null){
+			lowSecondary = uploadAnalyzer.lowSideManifold.primarySensor.name;
+		}
+		if(uploadAnalyzer.highSideManifold != null){
+			highSecondary = uploadAnalyzer.highSideManifold.primarySensor.name;
+		}		
 		
 		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"],\"fluid\":\""+ion.fluidManager.lastUsedFluid.name+"\"},\"LH\":{";
-		if(uploadAnalyzer.lowAccessibility != "low"){		
-			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"attached\", \"lsub\":[";
+		if(uploadAnalyzer.lowAccessibility != "low"){
+			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"" + lowSecondary + "\", \"lsub\":[";
 		} else {
 			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"las\":\"null\", \"lsub\":[";
-		}		
-		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){		
+		}
+		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){
 			layoutJson += "\""+uploadAnalyzer.lowSubviews[s]+"\"";
 			if(s < uploadAnalyzer.lowSubviews.Count - 1){
 				layoutJson += ",";
 			}
 		}
-		if(uploadAnalyzer.highAccessibility != "high"){		
-			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"attached\", \"hsub\":[";
+		if(uploadAnalyzer.highAccessibility != "high"){
+			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"" + highSecondary + "\", \"hsub\":[";
 		} else {
 			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"has\":\"null\", \"hsub\":[";
 		}
-		for(int s = 0; s < uploadAnalyzer.highSubviews.Count;s++){			
+		for(int s = 0; s < uploadAnalyzer.highSubviews.Count;s++){
 			layoutJson += "\""+uploadAnalyzer.highSubviews[s]+"\"";
 			if(s < uploadAnalyzer.highSubviews.Count - 1){
 				layoutJson += ",";
@@ -478,13 +487,29 @@ namespace ION.Core.Net {
 										gDevice.sensors[1].analyzerSlot = deserializedToken.position;
 										gDevice.sensors[1].analyzerArea = deserializedToken.area;
 										remoteAnalyzer.sensorList.Add(gDevice.sensors[1]);   
-									}								
-								}							
+									}
+								}
 							}
 							break;
- 						} 						
+ 						}
+						////SET THE SECONDARY SENSOR FOR LOW AND HIGH AREAS
+						if(deserializedLowHigh.lowAttached != "null"){
+	 						if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
+								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,gDevice.sensors[1]);
+							}
+						} else {
+							ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,null);
+						} 						
+						if(deserializedLowHigh.highAttached != "null"){
+	 						if(device.serialNumber.rawSerial == deserializedLowHigh.highAttached){
+								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,gDevice.sensors[1]);
+							}
+						} else {
+							ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,null);
+						}
+
 					}
-				} 
+				}
 				if(ion.fluidManager.lastUsedFluid.name != deserializedPositions.fluid){
 					await ion.fluidManager.GetFluidAsync(deserializedPositions.fluid);
 				}
@@ -497,9 +522,10 @@ namespace ION.Core.Net {
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
-						Console.WriteLine("Removed a sensor from analyzer list");     
+						Console.WriteLine("Removed a sensor from analyzer list");
 					}
 				}
+
 			
 				var wManager = response.GetValue("workB");				
 				foreach(var con in wManager){
@@ -1200,6 +1226,10 @@ namespace ION.Core.Net {
 		public string[] lowSubviews {get;set;}
 		[JsonProperty("hsub")]
 		public string[] highSubviews {get;set;}
-	}		
+		[JsonProperty("las")]
+		public string lowAttached {get;set;}
+		[JsonProperty("has")]
+		public string highAttached {get;set;}		
+	}
 }
 

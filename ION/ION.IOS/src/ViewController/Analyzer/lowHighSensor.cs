@@ -340,7 +340,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
-      var manifold = Event.manifold;
+      //var manifold = Event.manifold;
       //Console.WriteLine(Event.type);
 			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
 				var compareSensor = __manifold.secondarySensor;
@@ -357,6 +357,7 @@ namespace ION.IOS.ViewController.Analyzer
 								if(LabelSubview.BackgroundColor == UIColor.Blue && location > 3){
 									//Console.WriteLine("blue. Adding sensor from location " + location);
 									__manifold.SetSecondarySensor(null);
+									ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.Low,null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
@@ -365,12 +366,14 @@ namespace ION.IOS.ViewController.Analyzer
 								} else if (LabelSubview.BackgroundColor == UIColor.Red && location < 4){
 									//Console.WriteLine("red. Adding sensor from location " + location);
 									__manifold.SetSecondarySensor(null);
+									ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.High,null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
 			            vc.PresentViewController(noneAvailable, true, null);
 									return;
 								}
+								
 								attachedSensor = slot;
 								slot.topLabel.BackgroundColor = LabelSubview.BackgroundColor;
 								slot.tLabelBottom.BackgroundColor = LabelSubview.BackgroundColor;
@@ -378,6 +381,15 @@ namespace ION.IOS.ViewController.Analyzer
 							}
 						} 				
 					}
+					///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
+					if(LabelSubview.BackgroundColor == UIColor.Blue){
+						Console.WriteLine("Set low side manifold in Analyzer class");
+						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,__manifold.secondarySensor) ;		
+					} else if (LabelSubview.BackgroundColor == UIColor.Red){
+						Console.WriteLine("Set high side manifold in Analyzer class");
+						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,__manifold.secondarySensor);	
+					}
+					
 			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
 			 var compareSensor = __manifold.secondarySensor;
 				if(currentSensor != compareSensor && attachedSensor != null){
@@ -388,7 +400,7 @@ namespace ION.IOS.ViewController.Analyzer
 								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
 								slot.topLabel.TextColor = UIColor.Black;	
 							}
-							if(slot.currentSensor == currentSensor){
+							if(slot.currentSensor == currentSensor){    
 								slot.lowArea.attachedSensor = null;
 								slot.highArea.attachedSensor = null;
 							}
@@ -405,6 +417,14 @@ namespace ION.IOS.ViewController.Analyzer
 						}
 					}
 				}
+				///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
+				if(LabelSubview.BackgroundColor == UIColor.Blue){
+					Console.WriteLine("Remove low side manifold in Analyzer class");
+					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null) ;		
+				} else if (LabelSubview.BackgroundColor == UIColor.Red){
+					Console.WriteLine("Remove high side manifold in Analyzer class");
+					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null);	
+				}				
 			}
 			foreach(var slot in sensorList){
 				if(manifold.secondarySensor!=null)
@@ -446,7 +466,7 @@ namespace ION.IOS.ViewController.Analyzer
     public void updateSHSCCell(Manifold manifold){
     	//Console.WriteLine("lowHighSensor updateSHSCCell");
       if (manifold.secondarySensor != null) {
-      	Console.WriteLine("Secondary sensor is not null");
+      	//Console.WriteLine("Secondary sensor is not null");
         isLinked = true;
         if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
           shFluidType.Text = manifold.ptChart.fluid.name;

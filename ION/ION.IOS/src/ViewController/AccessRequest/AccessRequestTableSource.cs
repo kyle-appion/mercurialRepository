@@ -22,8 +22,8 @@ namespace ION.IOS.ViewController.AccessRequest
 		//string cellIdentifier;
 		List<requestData> tableItems;
 		public nfloat cellHeight;
-		public const string deleteRequestUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/deleteAccess.php";
-		public const string confirmAccessUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/confirmAccess.php";
+		public const string deleteRequestUrl = "http://portal.appioninc.com/App/deleteAccess.php";
+		public const string confirmAccessUrl = "http://portal.appioninc.com/App/confirmAccess.php";
 
 		public AccessRequestTableSource (List<requestData> items,double cHeight){
 			tableItems = items;
@@ -62,7 +62,7 @@ namespace ION.IOS.ViewController.AccessRequest
 			switch (editingStyle) {
 			case UITableViewCellEditingStyle.Delete:
 				// delete the request from the database
-				await DeleteUserRequests(tableView, indexPath);
+				await DeleteUserRequests(tableView, indexPath);   
 				// remove the item from the underlying data source
 				tableItems.RemoveAt(indexPath.Row);
 
@@ -74,7 +74,7 @@ namespace ION.IOS.ViewController.AccessRequest
 				Console.WriteLine ("CommitEditingStyle:None called");
 				break;
 			}
-		}
+		}    
 
 		public override UITableViewCell GetCell (UITableView tableView, Foundation.NSIndexPath indexPath)
 		{
@@ -96,7 +96,7 @@ namespace ION.IOS.ViewController.AccessRequest
 				if(tableItems[indexPath.Row].id != 0){
 					Console.WriteLine("Needs final confirmation for this click!");
 					var window = UIApplication.SharedApplication.KeyWindow;
-	    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+	    		var rootVC = window.RootViewController as IONPrimaryScreenController;  
 					
 					var alert = UIAlertController.Create ("Confirm Access", "Do you want to grant this user access to view your data?", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Default, (action) => {
