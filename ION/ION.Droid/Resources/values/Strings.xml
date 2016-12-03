@@ -255,6 +255,24 @@
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
   <string name="fluid_safety">Safety</string>
+  <string name="fluid_safety_help">Safety Help</string>
+  <string name="fluid_safety_help_descriptions">
+ASHRAE Standard 34 provides refrigerant safety classification according to <b>toxicity</b> and <b>flammability</b>.
+\n\n
+<b><u>Toxicity:</u></b>\n
+	A: Lower Toxicity\n
+  B: Higher Toxicity\n
+\n\n
+<b><u>Flammability:</u></b>\n
+	1: Non-flammable\n
+	2L: Mildly flammable, lower limits\n
+	2: Mildly flammable\n
+	3: Flammable\n
+\n\n
+<b><u>Example:</u></b>\n
+	R410A is classified <b>A1</b> (lower toxicity, non-flammable)\n
+	R32 is classified <b>A2L</b> (lower toxicity, mildly flammable, lower limits)
+	</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
   <string name="fluid_setup">Setup</string>
   <string name="fluid_sc">Subcool</string>
