@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Activity {
+﻿using ION.Droid.Dialog;
+using ION.Droid.Views;
+namespace ION.Droid.Activity {
 
   using System;
   using System.Collections.Generic;
@@ -58,7 +60,6 @@
     private TextView fluidNameView { get; set; }
     private ViewPager pagerView { get; set; }
 		private Switch pageToggle;
-//    private PagerTabStrip titleView { get; set; }
 
     private IION ion { get; set; }
 
@@ -79,7 +80,13 @@
       pagerView = FindViewById<ViewPager>(Resource.Id.content);
 			pagerView.AddOnPageChangeListener(this);
 			pageToggle = FindViewById<Switch>(Resource.Id.toggle);
-//      titleView = FindViewById<PagerTabStrip>(Resource.Id.title);
+			pageToggle.CheckedChange += (sender, e) => {
+				if (e.IsChecked) {
+					pagerView.SetCurrentItem(1, true);
+				} else {
+					pagerView.SetCurrentItem(0, true);
+				}
+			};
 
       ion = AppState.context;
       ion.fluidManager.onFluidPreferenceChanged += OnFluidPreferenceChanged;
@@ -105,6 +112,16 @@
       });
 
       pagerView.Adapter = adapter;
+
+			var help = FindViewById(Resource.Id.help);
+			help.SetOnClickListener(new ViewClickAction((view) => {
+				var adb = new IONAlertDialog(this);
+				adb.SetTitle(Resource.String.fluid_safety_help);
+				adb.SetMessage(Resource.String.fluid_safety_help_descriptions);
+				adb.SetPositiveButton(Resource.String.ok, (s, e2) => {
+				});
+				adb.Show();
+			}));
     }
 
     // Overridden from Activity
