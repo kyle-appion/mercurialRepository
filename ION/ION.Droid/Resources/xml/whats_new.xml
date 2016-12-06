@@ -7,7 +7,7 @@
 		<update>Look and feel of the refrigerant manager</update>
 		
 		<fixed>Rendering bugs in PT Chart and Superheat/Subcool calculators</fixed>
-		<fixed>Rendering gauge OL rendering</fixed>
+		<fixed>Rendering gauge of OL</fixed>
 		<fixed>Ghost rending of Workbench and Analyzer</fixed>
 		<fixed>Bugs in automatic altitude service</fixed>
 	</display>

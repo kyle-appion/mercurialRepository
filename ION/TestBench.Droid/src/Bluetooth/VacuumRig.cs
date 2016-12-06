@@ -81,13 +81,17 @@
 
 		// Implemented from IRig
 		public void Disconnect() {
-			if (gatt != null) {
-				gatt.Disconnect();
-				gatt.Close();
-				NotifyConnectionState();
-			}
+			try {
+				if (gatt != null) {
+					gatt.Disconnect();
+					gatt.Close();
+					NotifyConnectionState();
+				}
 
-			gatt = null;
+				gatt = null;
+			} catch (Exception e) {
+				Log.E(this, "Failed to disconnect", e);
+			}
 		}
 
 		public void WriteCommand(EVrcRigCommand command) {

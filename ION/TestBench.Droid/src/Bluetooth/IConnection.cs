@@ -1,5 +1,7 @@
 ﻿namespace TestBench.Droid {
 
+	using System;
+
 	using Android.Bluetooth;
 
 	using ION.Core.Devices;
@@ -8,6 +10,7 @@
 	public delegate void OnNewPacket(IConnection connection, GaugePacket packet);
 	public interface IConnection {
 		event OnNewPacket onNewPacket;
+		event Action<IConnection> onConnectionStateChanged;
 
 		bool isConnected { get; }
 		ProfileState state { get; }

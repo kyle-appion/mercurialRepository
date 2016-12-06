@@ -46,6 +46,8 @@
 
 		// Implemented from IConnection
 		public event OnNewPacket onNewPacket;
+		// Implemented from IRig
+		public event Action<IConnection> onConnectionStateChanged;
 
 		public bool isConnected { get { return state == ProfileState.Connected; } }
 		public ProfileState state { get { return service.manager.GetConnectionState(device, ProfileType.Gatt); } }
@@ -107,9 +109,14 @@
 				if (gatt != null) {
 					gatt.Disconnect();
 					gatt.Close();
+
+					if (onConnectionStateChanged != null) {
+						onConnectionStateChanged(this);
+					}
 				}
 
 				gatt = null;
+
 			}
 		}
 

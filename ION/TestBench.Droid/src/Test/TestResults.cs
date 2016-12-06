@@ -16,6 +16,8 @@
 		public Scalar humidity;
 		public double errorBand;
 
+		public TimeSpan testDuration;
+
 		public Dictionary<ISerialNumber, Dictionary<TestParameters.TargetPoint, Result>> resultsTable { get; set; }
 
 		public TestResults() {
