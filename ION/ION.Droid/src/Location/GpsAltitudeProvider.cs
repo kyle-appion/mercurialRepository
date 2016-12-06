@@ -58,6 +58,10 @@
     /// </summary>
     /// <value>The last known location.</value>
     public Location lastKnownLocation { get; internal set; }
+		/// <summary>
+		/// The location provider that we are subscribed to.
+		/// </summary>
+		private LocationProvider lp; 
     /// <summary>
     /// The location manager that we are subscribed to to received new locations with altitudes.
     /// </summary>
@@ -71,6 +75,7 @@
 
     public GpsAltitudeProvider(LocationManager lm) {
       this.lm = lm;
+			this.lp = lm.GetProvider(LocationManager.GpsProvider);
     }
 
     /// <summary>
@@ -94,7 +99,7 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
-       Log.D(this, "GpsAltitudeProvider says that it got a new location: " + location);
+			Log.D(this, "GpsAltitudeProvider says that it got a new location: " + location + " Supports altitude: " + lp.SupportsAltitude());
       lastKnownLocation = location;
       lastLocationReceivedTime = DateTime.Now;
       NotifyEvent(new AltitudeEvent(AltitudeEvent.EType.NewLocation, location));
@@ -150,6 +155,13 @@
     public void StopUpdates() {
       lm.RemoveUpdates(this);
     }
+
+		/// <summary>
+		/// Requests a single location update.
+		/// </summary>
+		public void PostRequestSingleLocation() {
+			lm.RequestSingleUpdate(LocationManager.GpsProvider, this, Looper.MainLooper);
+		}
 
     /// <summary>
     /// Requests a single location update form the location manager.

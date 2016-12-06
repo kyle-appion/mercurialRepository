@@ -91,7 +91,7 @@
     public DeviceManagerRecycleAdapter(IION ion, RecyclerView listView) {
       this.ion = ion;
       this.listView = listView;
-      this.cache = new BitmapCache(listView.Resources);
+      cache = new BitmapCache(listView.Resources);
 
       var connected = new Section(EDeviceState.Connected, Resource.String.connected, Resource.Color.green);
       connected.actions = BuildBatchOptionsDialog(EActions.DisconnectAll | EActions.ForgetAll | EActions.AddAllToWorkbench,
@@ -262,46 +262,60 @@
       NotifyDataSetChanged();
     }
 
+		/// <summary>
+		/// Reloads the contents of the device.
+		/// </summary>
+		/// <param name="device">Device.</param>
+		private void ReloadDevice(IDevice device) {
+			var index = IndexOfDevice(device);
+			NotifyItemChanged(index);
+		}
+
     /// <summary>
-    /// Adds the given device to the given section and performs an add animation.
+    /// Adds the given device to the given section and performs an add animation. Returns true if the device was added
+		/// to the section.
     /// </summary>
     /// <param name="section">Section.</param>
     /// <param name="device">Device.</param>
-    private void AddDeviceToSection(Section section, IDevice device, bool animate = true) {
-      if (section.HasDevice(device) || !AllowsDevice(device)) {
-        return;
-      }
+    private bool AddDeviceToSection(Section section, IDevice device, bool animate = true) {
+			lock (this) {
+	      if (section.HasDevice(device) || !AllowsDevice(device)) {
+	        return false;
+	      }
 
-			section.AddDevice(device);
-      section.Sort(new DeviceSerialNumberSorter());
+				section.AddDevice(device);
+	      section.Sort(new DeviceSerialNumberSorter());
+				deviceToSection[device] = section;
 
-      var sectionIndex = IndexOfSection(section);
+	      var sectionIndex = IndexOfSection(section);
 
-      if (!shownSections.Contains(section)) {
-        shownSections.Add(section);
-        shownSections.Sort(new SectionSorter());
-        sectionIndex = FindInsertionIndexForSection(section);
-        records.Insert(sectionIndex, new DeviceSectionRecord(section));
-        if (animate) {
-          NotifyItemInserted(sectionIndex);
-        }
-      }
+	      if (!shownSections.Contains(section)) {
+	        shownSections.Add(section);
+	        shownSections.Sort(new SectionSorter());
+	        sectionIndex = FindInsertionIndexForSection(section);
+	        records.Insert(sectionIndex, new DeviceSectionRecord(section));
+	        if (animate) {
+	          NotifyItemInserted(sectionIndex);
+	        }
+	      }
 
-      var deviceIndex = FindInsertionIndexForDevice(section, device);
-      var record = CreateRecordFor(device);
-      if (deviceIndex >= records.Count) {
-        records.Add(record);
-        records.Add(new SpaceRecord());        
-      } else {
-        records.Insert(deviceIndex, new SpaceRecord());
-        records.Insert(deviceIndex, record);
-      }
+	      var deviceIndex = FindInsertionIndexForDevice(section, device);
+	      var record = CreateRecordFor(device);
+	      if (deviceIndex >= records.Count) {
+	        records.Add(record);
+	        records.Add(new SpaceRecord());        
+	      } else {
+	        records.Insert(deviceIndex, new SpaceRecord());
+	        records.Insert(deviceIndex, record);
+	      }
 
-      if (animate) {
-        NotifyItemRangeInserted(deviceIndex, 2);
-      }
+	      if (animate) {
+	        NotifyItemRangeInserted(deviceIndex, 2);
+	      }
 
-      NotifyItemChanged(sectionIndex);
+	      NotifyItemChanged(sectionIndex);
+				return true;
+			}
     }
 
     /// <summary>
@@ -310,36 +324,39 @@
     /// <param name="section">Section.</param>
     /// <param name="device">Device.</param>
     private void RemoveDeviceFromSection(Section section, IDevice device, bool animate = true) {
-      if (!section.HasDevice(device)) {
-        return;
-      }
-
-      var sectionIndex = IndexOfSection(section);
-      var deviceIndex = IndexOfDevice(device);
-      var record = RecordForDevice(device);
-      var size = SizeOfRecord(record);
-      section.RemoveDevice(device);
-
-			if (deviceIndex != -1) {
-	      Log.D(this, "Removing record of size: " + size);
-	      records.RemoveRange(deviceIndex, size);
-	      if (animate) {
-	        NotifyItemRangeRemoved(deviceIndex, size);
+			lock (this) {
+	      if (!section.HasDevice(device)) {
+	        return;
 	      }
 
-	      if (shownSections.Contains(section) && section.count <= 0) {
-	        shownSections.Remove(section);
-	        records.RemoveAt(sectionIndex);
-	        if (animate) {
-	          NotifyItemRemoved(sectionIndex);
-	        }
-	      } else {
-	        NotifyItemChanged(sectionIndex);
-	      }
+	      var sectionIndex = IndexOfSection(section);
+	      var deviceIndex = IndexOfDevice(device);
+	      var record = RecordForDevice(device);
+	      var size = SizeOfRecord(record);
+	      section.RemoveDevice(device);
+				deviceToSection.Remove(device);
 
-	      if (device == expandedDevice) {
-	        expandedDevice = null;
-	      }
+				if (deviceIndex != -1) {
+		      Log.D(this, "Removing record of size: " + size);
+		      records.RemoveRange(deviceIndex, size);
+		      if (animate) {
+		        NotifyItemRangeRemoved(deviceIndex, size);
+		      }
+
+		      if (shownSections.Contains(section) && section.count <= 0) {
+		        shownSections.Remove(section);
+		        records.RemoveAt(sectionIndex);
+		        if (animate) {
+		          NotifyItemRemoved(sectionIndex);
+		        }
+		      } else {
+		        NotifyItemChanged(sectionIndex);
+		      }
+
+		      if (device == expandedDevice) {
+		        expandedDevice = null;
+		      }
+				}
 			}
     }
 
@@ -418,6 +435,22 @@
 
       expandedDevice = null;
     }
+
+		/// <summary>
+		/// Deletes a device from the adapter.
+		/// THIS CALLED AFTER THE DEVICE HAS ALREADY BEEN REMOVED FROM THE DEVICE MANAGER.
+		/// </summary>
+		/// <param name="device">Device.</param>
+		/// <param name="animate">If set to <c>true</c> animate.</param>
+		private void DeleteDevice(IDevice device, bool animate=true) {
+			foreach (var s in allSections.Values) {
+				if (s.HasDevice(device)) {
+					RemoveDeviceFromSection(s, device, animate);
+				}
+			}
+
+			AddDeviceToSection(allSections[EDeviceState.New], device, animate);
+		}
 
     /// <summary>
     /// Queries whether or not the record is expandable.
@@ -670,16 +703,57 @@
     }
 
     private void OnDeviceManagerEvent(DeviceManagerEvent de) {
-      Log.D(this, "I found a deviceevent: " + de.type);
       lock (this) {
         if (DeviceManagerEvent.EType.DeviceEvent == de.type) {
+					var device = de.deviceEvent.device;
           var et = de.deviceEvent.type;
-          if (DeviceEvent.EType.ConnectionChange != et && DeviceEvent.EType.Deleted != et && DeviceEvent.EType.Found != et) {
+					Log.D(this, "DeviceEvent: " + et);
+					var destSection = allSections[device.GetDeviceState()];
+
+					switch (et) {
+						case DeviceEvent.EType.Found:
+//							AddDeviceToSection(destSection, device, true);
+//              break;
+							// Fallthrough
+						case DeviceEvent.EType.ConnectionChange:
+							bool added = false;
+							if (deviceToSection.ContainsKey(device)) {
+								var oldSection = deviceToSection[device];
+
+								if (oldSection != destSection) {
+									foreach (var section in allSections.Values) {
+										RemoveDeviceFromSection(section, device);
+									}
+									added = AddDeviceToSection(destSection, device);
+								} // Else the device is already in the proper section.
+							} else {
+								// The device is not known
+								added = AddDeviceToSection(destSection, device);
+							}
+
+							if (added) {
+								if (device.GetDeviceState() == EDeviceState.Connected) {
+									ExpandRecord(IndexOfDevice(device));
+								}
+							}
+							break;
+						case DeviceEvent.EType.Deleted:
+							DeleteDevice(de.deviceEvent.device);
+							break;
+						case DeviceEvent.EType.NameChanged:
+							ReloadDevice(device);
+							break;
+						case DeviceEvent.EType.NewData:
+							break;							
+					}
+/*
+					if (DeviceEvent.EType.Deleted == et) {
+						return;
+					} else if (DeviceEvent.EType.ConnectionChange != et) {// || DeviceEvent.EType.Found != et) {
             return;
           }
 
           var device = de.deviceEvent.device;
-          var index = IndexOfDevice(device);
           var state = device.GetDeviceState();
           var section = allSections[state];
 
@@ -698,7 +772,8 @@
               ExpandRecord(IndexOfDevice(device));
             }
           }
-        }
+*/
+				}
       }
     }
 
@@ -727,11 +802,6 @@
         }
       }));
     }
-
-    /// <summary>
-    /// Unbinds the record from anything that it has attached to.
-    /// </summary>
-    public abstract void Unbind();
   }
 
   /// <summary>

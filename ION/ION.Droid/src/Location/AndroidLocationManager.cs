@@ -157,6 +157,8 @@
 	      request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
 	      LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
 	      isPolling = true;
+				altitudeProvider.StartUpdates();
+				altitudeProvider.PostRequestSingleLocation();
 	      return true;
 			} else {
 				return false;
@@ -172,6 +174,7 @@
       	LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
 			}
       isPolling = false;
+			altitudeProvider.StopUpdates();
     }
 
     /// <summary>
@@ -235,8 +238,12 @@
           altitude = l.Altitude;
         }
       }
-      Log.D(this, "Location changed: " + location + ", Altitude: " + altitude);
-      lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, location.Latitude);
+			Log.D(this, "Location changed: " + location + ", Altitude: " + altitude + ", hasAltitude: " + location.HasAltitude);
+			if (location.HasAltitude) {
+				lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, location.Latitude);
+			} else {
+				lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, lastKnownLocation.altitude.ConvertTo(Units.Length.METER).amount);
+			}
     }
 
     /// <summary>

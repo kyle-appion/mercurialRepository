@@ -779,7 +779,7 @@
       var calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
         temperatureSensor.measurement, pressureSensor.isRelative).ConvertTo(tu);
 
-			if (calculation.magnitude < 0) {
+			if (this.ptChart.fluid.mixture && calculation.magnitude < 0) {
 				warning.Visibility = ViewStates.Visible;
 			} else {
 				warning.Visibility = ViewStates.Gone;

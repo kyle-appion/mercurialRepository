@@ -129,6 +129,7 @@
       HandlePacketInternal(packet);
     }
 
+		private DateTime last;
     private void HandlePacketInternal(byte[] packet) {
       if (packet == null) {
         return;
@@ -166,6 +167,7 @@
         }
 
 				if (changed || DateTime.Now - lastNotify > MAX_UPDATE_DELAY) {
+					last = DateTime.Now;
           NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
 					lastNotify = DateTime.Now;
         }
