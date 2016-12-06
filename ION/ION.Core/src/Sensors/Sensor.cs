@@ -426,7 +426,12 @@
     /// <returns>The formatted string.</returns>
     /// <param name="includeUnit">If set to <c>true</c> include unit.</param>
     public string ToFormattedString(bool includeUnit) {
-      return SensorUtils.ToFormattedString(type, measurement, includeUnit);
+			if (measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
+			    measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount) {
+				return "OL";
+			} else {
+      	return SensorUtils.ToFormattedString(type, measurement, includeUnit);
+			}
     }
 
     /// <summary>

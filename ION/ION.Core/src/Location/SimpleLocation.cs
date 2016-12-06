@@ -53,9 +53,9 @@
       Init(0, 0, 0);
     }
 
-    public SimpleLocation(bool valid, double altitude, double longitude, double latitude) {
+		public SimpleLocation(bool valid, double altitudeMeters, double longitude, double latitude) {
       this.isValid = valid;
-      Init(altitude, longitude, latitude);
+      Init(altitudeMeters, longitude, latitude);
     }
 
     /// <summary>
