@@ -72,6 +72,11 @@
 			spinner.SetSelection(0);
 			deviceFilter = EDeviceModel.AV760;
 
+			FindViewById(Resource.Id.clear).Click += (sender, e) => {
+				deviceAdapter.Clear();
+				UpdateRigDisplay();
+			};
+
 			rigState = FindViewById<TextView>(Resource.Id.rigState);
 			rig = null;
 			UpdateRigDisplay();
@@ -84,6 +89,9 @@
 
 		protected override void OnPause() {
 			base.OnPause();
+			if (service != null) {
+				service.scanDelegate.StopScan();
+			}
 			if (rig != null) {
 				rig.onConnectionStateChanged -= OnRigConnectionStateChanged;
 			}
@@ -312,6 +320,11 @@
 			NotifyItemInserted(pos);
 			list.Visibility = ViewStates.Visible;
 			emptyView.Visibility =  ViewStates.Gone;
+		}
+
+		public void Clear() {
+			connections.Clear();
+			NotifyDataSetChanged();
 		}
 
 		public HashSet<IConnection> GetCheckedConnections() {

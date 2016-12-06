@@ -6,9 +6,11 @@ namespace TestBench.Droid {
 
 	using Android.App;
 	using Android.Content;
+	using Android.Content.PM;
 	using Android.Bluetooth;
 	using Android.Bluetooth.LE;
 	using Android.OS;
+	using Android.Support.V4.Content;
 
 	using ION.Core.Devices.Connections;
 	using ION.Core.Util;
@@ -38,7 +40,24 @@ namespace TestBench.Droid {
 			ION.Core.Util.Log.printer = new LogPrinter();
 			this.manager = GetSystemService(Context.BluetoothService) as BluetoothManager;
 			this.adapter = manager.Adapter;
-			scanDelegate = new Api21Scanner(adapter);
+
+			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
+				if (Permission.Granted == ContextCompat.CheckSelfPermission(this, Android.Manifest.Permission.AccessFineLocation)) {
+					Log.D(this, "This user is using the 5.0 bluetooth api");
+					scanDelegate = new Api21Scanner(manager.Adapter);
+				} else {
+					Log.D(this, "This user is using the 4.3 bluetooth api due to rejected permissions");
+					scanDelegate = new Api18Scanner(manager.Adapter);
+				}
+			} else if (Build.VERSION.SdkInt >= BuildVersionCodes.JellyBean) {
+				Log.D(this, "This user is using the 4.3 bluetooth api due to versioning");
+				scanDelegate = new Api18Scanner(manager.Adapter);
+			} else {
+				// TODO ahodder@appioninc.com: Catch and display user message
+				// No good, the user's device cannot support le connections.
+				throw new Exception("Cannot create AndroidLeConnectionHelper: device version too old");
+			}
+//			scanDelegate = new Api21Scanner(adapter);
 			scanDelegate.onBluetoothDeviceFound += OnBluetoothDeviceFound;
 
 			return StartCommandResult.NotSticky;
@@ -126,7 +145,7 @@ namespace TestBench.Droid {
 						connection = addressConnectionLookup[device.Address];
 					}
 
-					connection.ReceivePacket(advertisementPacket);
+//					connection.ReceivePacket(advertisementPacket);
 				} else if (device.Name.IsValidRigIdentifier()) {
 					ERigType rigType;
 					if (device.Name.TryGetRigType(out rigType)) {
@@ -227,6 +246,49 @@ namespace TestBench.Droid {
 
 		public override void OnScanFailed(ScanFailure errorCode) {
 			base.OnScanFailed(errorCode);
+		}
+	}
+
+	internal class Api18Scanner : Java.Lang.Object, BluetoothAdapter.ILeScanCallback, IScanDelegate {
+		// Implemented from IScanDelegate
+		public bool isScanning { get; private set; }
+		public event OnBluetoothDeviceFound onBluetoothDeviceFound;
+
+
+		private BluetoothAdapter adapter;
+		private Handler handler;
+
+		public Api18Scanner(BluetoothAdapter adapter) {
+			this.adapter = adapter;
+			this.handler = new Handler();
+		}
+
+		public void StartScan() {
+			if (isScanning) {
+				return;
+			}
+
+			try {
+				var ret = adapter.StartLeScan(this);
+				isScanning = true;
+			} catch (Exception e) {
+				ION.Core.Util.Log.E(this, "Wtf?", e);
+			}
+		}
+
+		public void StopScan() {
+			if (isScanning) {
+				adapter.StopLeScan(this);
+			}
+			isScanning = false;
+		}
+
+		public void OnLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
+			handler.Post(() => {
+				if (onBluetoothDeviceFound != null) {
+					onBluetoothDeviceFound(device, scanRecord);
+				}
+			});
 		}
 	}
 }
