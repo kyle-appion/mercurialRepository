@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.29">
-		<new>Added saftey details for refrigerants</new>
-		<new>Added new refrigerants</new>
-
-		<update>Look and feel of the refrigerant manager</update>
+	<display version="0.9.33">
+		<update>Updated mailing addresses localization</update>
 	</display>
 </whatsnew>

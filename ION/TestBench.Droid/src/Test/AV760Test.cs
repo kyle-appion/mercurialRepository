@@ -4,13 +4,15 @@ namespace TestBench.Droid {
 	using System;
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Threading.Tasks;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Measure;
 	using ION.Core.IO.Exporter;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	public class AV760Test : ITest {
 		private const float ERROR_TOLERANCE = 0.05f;
@@ -42,6 +44,7 @@ namespace TestBench.Droid {
 
 		public bool isTesting { get; private set; }
 		public bool isDone { get; private set; }
+		public DateTime startTime { get; private set; }
 
 		public AV760Test(TestParameters parameters, VacuumRig rig, List<IConnection> connections) {
 			this.parameters = parameters;
@@ -53,9 +56,13 @@ namespace TestBench.Droid {
 				this.connections[connection.serialNumber] = connection;
 			}
 
+			InvalidateTestResults();
+		}
+
+		private void InvalidateTestResults() {
 			testResults = new TestResults();
 			testResults.errorBand = parameters.errorBand;
-			foreach (var connection in connections) {
+			foreach (var connection in connections.Values) {
 				var results = new Dictionary<TestParameters.TargetPoint, TestResults.Result>();
 				testResults.resultsTable[connection.serialNumber] = results;
 				foreach (var tp in parameters.targetPoints) {
@@ -73,9 +80,16 @@ namespace TestBench.Droid {
 
 			isTesting = true;
 			isDone = false;
+			startTime = DateTime.Now;
 			currentTargetPointIndex = 0;
+			rig.onConnectionStateChanged += OnRigConnectionStateChanged;
+			foreach (var connection in connections.Values) {
+				connection.onConnectionStateChanged += OnConnectionStateChanged;
+			}
 			__rig.WriteCommand(VacuumRig.EVrcRigCommand.Test);
 			NotifyTestEvent(TestEvent.EType.TestStarted);
+			InvalidateTestResults();
+			NotifyTestEvent(TestEvent.EType.NewTestData);
 		}
 
 		// Implemented from ITest
@@ -92,9 +106,11 @@ namespace TestBench.Droid {
 			  .Append("<br><b>Angle: </b>")
 			  .Append(__rig.rigAngle)
 			  .Append("<br><b>CPI: </b>")
-			  .Append(currentTargetPointIndex)
+			  .Append(currentTargetPointIndex + 1)
 			  .Append("<br><b>Test Complete: </b>")
-			  .Append(isDone);
+			  .Append(isDone)
+			  .Append("<br><b>Ellapsed Time: </b>")
+			  .Append(DateTime.Now - startTime);
 			return sb.ToString();
 		}
 
@@ -114,10 +130,16 @@ namespace TestBench.Droid {
 		private void CompleteTest() {
 			DoFinishTest();
 			isDone = true;
+			testResults.testDuration = DateTime.Now - startTime;
 			NotifyTestEvent(TestEvent.EType.TestComplete);
 		}
 
 		private void DoFinishTest() {
+			rig.onConnectionStateChanged -= OnRigConnectionStateChanged;
+			foreach (var connection in connections.Values) {
+				connection.onConnectionStateChanged -= OnConnectionStateChanged;
+			}
+
 			__rig.onNewVrcReading -= HandleNewVrcReading;
 			foreach (var c in connections.Values) {
 				c.onNewPacket -= HandleNewGaugePacket;
@@ -127,12 +149,6 @@ namespace TestBench.Droid {
 			__rig.WriteCommand(VacuumRig.EVrcRigCommand.Reset);
 			isDone = false;
 			isTesting = false;
-		}
-
-		private void OnRigConnectionStateChanged(IRig rig) {
-			if (!rig.isConnected) {
-				CancelTest("Rig disconnected unexpectedly");
-			}
 		}
 
 		private void HandleNewVrcReading(VacuumRig controller, Scalar lastMeas, Scalar newMeas) {
@@ -188,13 +204,41 @@ namespace TestBench.Droid {
 				TestResults.Result old;
 
 				if (results.TryGetValue(tp, out old)) {
-					if (old.IsBetterThan(result)) {
+					if (old != null && old.IsBetterThan(result)) {
 						result = old;
 					}
 				}
 
 				testResults.resultsTable[connection.serialNumber][tp] = result;
 			}
+		}
+
+		private void OnRigConnectionStateChanged(IRig rig) {
+			lock (this) {
+				if (isTesting) {
+					CancelTest("Rig disconnected resulting in the test be scrubbed");
+				}
+			}
+		}
+
+		private void OnConnectionStateChanged(IConnection connection) {
+			Task.Factory.StartNew(() => {
+				connection.Connect();
+				var start = DateTime.Now;
+				while (DateTime.Now - start < TimeSpan.FromSeconds(5)) {
+					if (connection.isConnected) {
+						break;
+					}
+				}
+
+				if (!connection.isConnected) {
+					lock (this) {
+						if (isTesting) {
+							CancelTest("One or more connection have disconnected in the middle of the test resulting in the entire test being scrubbed");
+						}
+					}
+				}
+			});
 		}
 
 		private void NotifyTestEvent(TestEvent.EType type, string message=null) {
@@ -213,6 +257,7 @@ namespace TestBench.Droid {
 			var csv = new Csv();
 
 			csv.AddRow(new Csv.Row().AddCol(DOCUMENT_HEADER));
+			csv.AddRow(new Csv.Row().AddCol("Test Time:").AddCol(testResults.testDuration.ToString()));
 
 			var header = new Csv.Row();
 			csv.AddRow(header);

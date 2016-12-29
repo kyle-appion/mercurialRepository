@@ -2,11 +2,12 @@
 
 	using System;
 
+	using Appion.Commons.Measure;
+
 	using ION.Core.App;
 	using ION.Core.Content;
 	using ION.Core.Content.Properties;
-	using ION.Core.Fluids;
-	using ION.Core.Measure;
+
   public class SuperheatSubcoolSensorProperty : AbstractManifoldSensorProperty {
 
     // Overridden from AbstractSensorProperty

@@ -1,10 +1,9 @@
 ﻿namespace ION.Core.Devices.Filters {
   
-  using System;
+	using Appion.Commons.Util;
 
   using ION.Core.Devices;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   public class HasSensorOfTypeFilter : AbstractFilter<IDevice> {
 

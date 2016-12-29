@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.IOS.ViewController.Analyzer {
 
-using CoreGraphics;
-using Foundation;
-using UIKit;
+	using System;
+	using System.Collections.Generic;
 
-using ION.Core.Util;
+	using CoreGraphics;
+	using UIKit;
 
-using ION.IOS.Util;
+	using Appion.Commons.Util;
 
-namespace ION.IOS.ViewController.Analyzer {
+	using ION.IOS.Util;
+
   public class AnalyzerDisplayView : UIView {
 
     /// <summary>

@@ -1,10 +1,9 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Alarms {
 
-using ION.Core.Alarms;
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using Appion.Commons.Measure;
 
-namespace ION.Core.Sensors.Alarms {
+	using ION.Core.Sensors;
+
   public abstract class BoundedSensorAlarm : SensorAlarm {
 
     /// <summary>

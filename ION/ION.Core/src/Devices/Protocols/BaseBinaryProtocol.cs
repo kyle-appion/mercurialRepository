@@ -1,9 +1,9 @@
-﻿using System;
+﻿namespace ION.Core.Devices.Protocols {
 
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using System;
 
-namespace ION.Core.Devices.Protocols {
+	using Appion.Commons.Measure;
+
   /// <summary>
   /// A base class that provides methods that are used in the majority of
   /// binary operations.

@@ -105,6 +105,9 @@
       drawerList.OnItemClickListener = this;
       drawerList.Adapter = navigationAdapter = new NavigationAdapter(BuildNavigationItems(), cache);
 
+			var up = FindViewById<ImageView>(Android.Resource.Id.Home);
+			up.SetPadding(15, 0, 0, 0);
+
       var emptyText = new TextView(this);
 			emptyText.Text = GetString(Resource.String.app_no_navigation_items);
       drawerList.EmptyView = emptyText;
@@ -184,15 +187,14 @@
     /// </summary>
     /// <param name="fragment">Fragment.</param>
     private void GotoFragment(Fragment fragment, Drawable drawable) {
+			// Ensure that the fragment stack is clear.
+
       var ft = FragmentManager.BeginTransaction();
 
       ft.SetCustomAnimations(Resource.Animation.enter, Resource.Animation.exit);
 
-      if (activeFragment != null) {
-        ft.Remove(activeFragment);
-      }
-
-      ft.Add(Resource.Id.content, activeFragment = fragment, null);
+			ft.Replace(Resource.Id.content, fragment);
+			activeFragment = fragment;
 
       ft.Commit();
 
@@ -234,17 +236,6 @@
               HideDrawer();
             },
           },
-/*
-          new NavigationIconItem() {
-            id = Resource.Id.device_manager,
-            title = GetString(Resource.String.device_manager),
-            icon = Resource.Drawable.ic_nav_devmanager,
-            hidden = false,
-            action = () => {
-              StartActivity(new Intent(this, typeof(DeviceManagerActivity)));
-            },
-          },
-*/
         },
       };
 
@@ -403,7 +394,7 @@
       private HomeActivity activity { get; set; }
       public string lastTitle { get; set; }
 
-      public DrawerToggle(HomeActivity activity, DrawerLayout layout) : base(activity, layout, Resource.String.open, Resource.String.close) {
+			public DrawerToggle(HomeActivity activity, DrawerLayout layout) : base(activity, layout, Resource.String.open, Resource.String.close) {
         this.activity = activity;
       }
 

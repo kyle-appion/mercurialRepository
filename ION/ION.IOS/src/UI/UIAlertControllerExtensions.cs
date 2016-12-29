@@ -1,11 +1,11 @@
-﻿using System;
+﻿namespace ION.IOS.UI {
 
-using Foundation;
-using UIKit;
+	using System;
 
-using ION.Core.Util;
+	using UIKit;
 
-namespace ION.IOS.UI {
+	using Appion.Commons.Util;
+
   /// <summary>
   /// Extensions to the UIAlertController
   /// </summary>

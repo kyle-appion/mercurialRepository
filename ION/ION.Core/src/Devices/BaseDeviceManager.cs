@@ -4,13 +4,14 @@
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Database;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// Provides a standard implementation for the device manager. This device manager
@@ -124,16 +125,20 @@
 
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
-      deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
+			try {
+      	deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
+			} catch (Exception e) {
+				Log.E(this, "Failed from device factor", e);
+			}
+
       if (deviceFactory == null) {
         return new InitializationResult() {
           success = false,
-          errorMessage = "Failed to init device manager: could not load device's database."
+          errorMessage = "Failed to init device manager: could not load device database."
         };
       }
 
       try {
-      	
         var devices = await ion.database.QueryForAllDevicesAsync();
         foreach (IDevice device in devices) {
           Register(device);
@@ -225,6 +230,7 @@
     /// <returns>The device.</returns>
     /// <param name="device">Device.</param>
     public async Task<bool> SaveDevice(IDevice device) {
+			Register(device);
       Log.D(this, "Attempting to save device");
       var d = await ion.database.DeconstructDevice(device);
       var ret = await ion.database.SaveAsync<DeviceRow>(d);
@@ -248,10 +254,6 @@
 
     // Overridden from IDeviceManager
     public bool IsDeviceKnown(IDevice device) {
-      var sb = new System.Text.StringBuilder();
-      foreach (IDevice d in knownDevices) {
-        sb.Append(d.serialNumber).Append(",");
-      }
       return knownDevices.Contains(device);
     }
 
@@ -260,9 +262,10 @@
     /// </summary>
     /// <param name="device">Device.</param>
     public void Register(IDevice device) {
-      __foundDevices.Remove(device.serialNumber);
-      __knownDevices.Add(device.serialNumber, device);
-			device.onDeviceEvent += OnDeviceEvent;
+			if (!__knownDevices.ContainsKey(device.serialNumber)) {
+	      __foundDevices.Remove(device.serialNumber);
+	      __knownDevices.Add(device.serialNumber, device);
+			}
     }
 
     /// <summary>
@@ -376,10 +379,6 @@
 
       switch (deviceEvent.type) {
         case DeviceEvent.EType.ConnectionChange:
-          if (!IsDeviceKnown(device)) {
-            Register(device);
-          }
-
           if (device.isConnected) {
             await SaveDevice(device);
           }

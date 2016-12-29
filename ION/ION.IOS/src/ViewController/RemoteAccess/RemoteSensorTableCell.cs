@@ -2,12 +2,12 @@
 
   using System;
 	using CoreGraphics;
-  using Foundation;
   using UIKit;
+
+	using Appion.Commons.Util;
 
   using ION.Core.Devices;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.IOS.Sensors;
   using ION.IOS.UI;

@@ -6,6 +6,9 @@
 	using System.Net.Http;
 	using Newtonsoft.Json.Linq;
 	using Newtonsoft.Json;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 	
 	using ION.Core.App;
 	using ION.Core.Connections;
@@ -14,8 +17,6 @@
 	using ION.Core.Devices.Protocols;
 	using ION.Core.IO;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
-
 
 	/// <summary>
 	/// Provides a standard implementation for the device manager. This device manager
@@ -437,7 +438,7 @@
 						var manualDevice = CreateDevice(iserial,EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
 						
 						for(int i = 0; i < deserializedToken.sensors.Length;i++){
-							manualDevice.sensors[i].RemoteForceSetMeasurement(new Measure.Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
+							manualDevice.sensors[i].RemoteForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
 						}						
 						__knownDevices.Add(iserial,manualDevice); 
 					}

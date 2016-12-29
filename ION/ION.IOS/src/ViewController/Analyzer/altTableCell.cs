@@ -1,9 +1,9 @@
 ﻿using System;
-using Foundation;
 using UIKit;
 using CoreGraphics;
-using System.Threading.Tasks;
-using ION.Core.Measure;
+
+using Appion.Commons.Measure;
+
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
 using ION.IOS.Util;

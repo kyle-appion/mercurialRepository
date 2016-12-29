@@ -1,10 +1,8 @@
-﻿using System;
-using System.Runtime.Serialization;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using System;
 
-namespace ION.Core.Sensors.Properties {
+	using Appion.Commons.Measure;
 
   /// <summary>
   /// The delegate that is called when the SensorProperty state or content changes.

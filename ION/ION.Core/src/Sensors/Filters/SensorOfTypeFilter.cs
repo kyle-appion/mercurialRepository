@@ -1,8 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Filters {
 
-using ION.Core.Util;
+	using Appion.Commons.Util;
 
-namespace ION.Core.Sensors.Filters {
   public class SensorOfTypeFilter : IFilter<Sensor> {
     /// <summary>
     /// The sensor type to match to.

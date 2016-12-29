@@ -1,12 +1,11 @@
 ﻿namespace ION.IOS.Connections {
   
-  using System;
-
   using CoreBluetooth;
   using Foundation;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
-  using ION.Core.Util;
 
   public class BluefruitLeConnection : BaseIOSConnection {
 //    private static readonly CBUUID READ_SERVICE = CBUUID.FromString("ffe0");

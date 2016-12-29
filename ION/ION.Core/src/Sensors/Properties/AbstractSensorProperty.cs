@@ -1,6 +1,6 @@
 ﻿namespace ION.Core.Sensors.Properties {
 
-	using ION.Core.Measure;
+	using Appion.Commons.Measure;
 
   /// <summary>
   /// A common implementation of a sensor property that will allow for quick

@@ -24,8 +24,8 @@
           return ion.GetString(Resource.String.humidity);
         case ESensorType.Length:
           return ion.GetString(Resource.String.length);
-        case ESensorType.Mass:
-          return ion.GetString(Resource.String.mass);
+        case ESensorType.Weight:
+          return ion.GetString(Resource.String.weight);
         case ESensorType.Pressure:
           return ion.GetString(Resource.String.pressure);
         case ESensorType.Temperature:
@@ -49,8 +49,8 @@
 					return ion.GetString(Resource.String.humidity_short);
 				case ESensorType.Length:
 					return ion.GetString(Resource.String.length_short);
-				case ESensorType.Mass:
-					return ion.GetString(Resource.String.mass_short);
+				case ESensorType.Weight:
+					return ion.GetString(Resource.String.weight_short);
 				case ESensorType.Pressure:
 					return ion.GetString(Resource.String.pressure_short);
 				case ESensorType.Temperature:

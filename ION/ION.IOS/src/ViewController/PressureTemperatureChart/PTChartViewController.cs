@@ -2,23 +2,22 @@
 namespace ION.IOS.ViewController.PressureTemperatureChart {
 
   using System;
-  using System.Drawing;
   using System.Threading.Tasks;
 
   using CoreGraphics;
-  using Foundation;
   using UIKit;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Location;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
 	using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   using ION.IOS.Devices;
   using ION.IOS.UI;

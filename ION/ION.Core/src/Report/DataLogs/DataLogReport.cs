@@ -4,11 +4,11 @@
   using System.Collections.Generic;
 	using System.IO;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
   using ION.Core.Database;
 	using ION.Core.Devices;
-	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	/// <summary>
 	/// A small data object that holds all of the data that is used when generating a data log report.

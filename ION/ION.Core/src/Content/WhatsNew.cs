@@ -5,8 +5,6 @@
   using System.Xml;
   using System.Xml.Linq;
 
-  using ION.Core.Util;
-
   /// <summary>
   /// A simple object that contains an app version's what's new diaload content. For every version there is suppose to
   /// be a what's new update description.

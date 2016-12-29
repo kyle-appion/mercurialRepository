@@ -5,6 +5,8 @@
   -->
   <item name="add" type="id"/>
   <item name="address" type="id"/>
+  <item name="address1" type="id"/>
+  <item name="address2" type="id"/>
   <item name="alarm" type="id"/>
   <item name="arrow" type="id"/>
 	<item name="association" type="id"/>
@@ -22,6 +24,7 @@
   <item name="content2" type="id"/>
   <item name="color" type="id"/>
   <item name="counter" type="id"/>
+  <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
   <item name="date" type="id"/>
 	<item name="dispatch_no" type="id"/>
@@ -126,7 +129,6 @@
   -->
   <item name="drawer" type="id"/>
   <item name="drawer_list" type="id"/>
-
 
 	<!--
 	MEASUREMENTS

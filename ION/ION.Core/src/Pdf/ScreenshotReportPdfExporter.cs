@@ -193,7 +193,6 @@
 
         for (int r = 0; r < len; r++) {
           rows.Add(table[r,c]);
-          ION.Core.Util.Log.D("SR", "Record[" + r + ", " + c + "] = " + table[r, c]);
         }
 
         var app = NewAppearance(content);

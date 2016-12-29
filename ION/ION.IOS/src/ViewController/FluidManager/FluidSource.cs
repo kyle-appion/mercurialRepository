@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.IOS.ViewController.FluidManager {
 
-using CoreGraphics;
-using Foundation;
-using UIKit;
+	using System;
+	using System.Collections.Generic;
 
-using ION.Core.Fluids;
-using ION.Core.Util;
+	using Foundation;
+	using UIKit;
 
-using ION.IOS.Util;
+	using Appion.Commons.Util;
 
-namespace ION.IOS.ViewController.FluidManager {
+	using ION.Core.Fluids;
+
   public class FluidSource : UITableViewSource {
 
     private const string CELL_FLUID = "cellFluid";

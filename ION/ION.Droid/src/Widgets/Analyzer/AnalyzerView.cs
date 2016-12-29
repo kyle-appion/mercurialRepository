@@ -322,6 +322,8 @@
 
       MeasureChild(lowSideManifoldView, widthMeasureSpec, heightMeasureSpec);
       MeasureChild(highSideManifoldView, widthMeasureSpec, heightMeasureSpec);
+
+			InitTraces();
     }
 
     /// <Docs>The child to measure</Docs>
@@ -374,13 +376,19 @@
 
       var s = (int)iconSize;
 
+			if (expansionIcon != null) {
+				expansionIcon.Recycle();
+			}
       Bitmap tmp = cache.GetBitmap(Resource.Drawable.ic_expansionchamber);
       expansionIcon = Bitmap.CreateScaledBitmap(tmp, s, s, false);
+			tmp.Recycle();
 
+			if (compressorIcon != null) {
+				compressorIcon.Recycle();
+			}
       tmp = cache.GetBitmap(Resource.Drawable.ic_compressor);
       compressorIcon = Bitmap.CreateScaledBitmap(cache.GetBitmap(Resource.Drawable.ic_compressor), s, s, false);
-
-      InitTraces();
+			tmp.Recycle();
     }
 
     /// <Docs>This is called when the view is attached to a window.</Docs>
@@ -407,7 +415,7 @@
 
       lowSideManifoldTemplate.Unbind();
       highSideManifoldTemplate.Unbind();
-
+/*
       if (expansionIcon != null) {
         expansionIcon.Recycle();
       }
@@ -415,7 +423,11 @@
       if (compressorIcon != null) {
         compressorIcon.Recycle();
       }
+*/
     }
+
+		protected override void Dispose(bool disposing) {
+		}
 
     /// <Docs>the canvas on which the background will be drawn</Docs>
     /// <remarks>Implement this to do your drawing.</remarks>
@@ -426,6 +438,14 @@
     /// </summary>
     /// <param name="canvas">Canvas.</param>
     protected override void OnDraw(Canvas canvas) {
+			try {
+				DoDraw(canvas);
+			} catch (Exception e) {
+				ION.Core.Util.Log.E(this, "Failed to draw canvas.", e);
+			}
+		}
+
+		private void DoDraw(Canvas canvas) {	
       canvas.DrawPath(lowSideSystemPath, lowSidePaint);
       canvas.DrawPath(highSideSystemPath, highSidePaint);
 
@@ -626,7 +646,7 @@
 				if (sensor.type == ESensorType.Temperature) {
 					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
 				} else {
-					analyzer.SetManifold(destSide, sensor);
+					analyzer.SetManifoldBySensor(destSide, sensor);
 				}
 			} else {
 				if (manifold.ContainsSensor(sensor)) {
@@ -637,7 +657,7 @@
 						manifold.SetSecondarySensor(sensor);
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
 						});
 					}
 				} else {
@@ -647,7 +667,7 @@
 						});
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
 						});
 					}
 				}
@@ -686,7 +706,7 @@
 					var si = analyzer.IndexOfSensor(sensor);
 					var di = analyzer.NextEmptySensorIndex(destSide);
 					AnimateSensorMountSwap(si, di);
-					analyzer.SetManifold(destSide, sensor);
+					analyzer.SetManifoldBySensor(destSide, sensor);
 				}
 			} else {
         if (destManifold.ContainsSensor(sensor)) {
@@ -708,7 +728,7 @@
               var si = analyzer.IndexOfSensor(sensor);
 							var di = analyzer.NextEmptySensorIndex(destSide);
 							AnimateSensorMountSwap(si, di);
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
             });
           }
         }

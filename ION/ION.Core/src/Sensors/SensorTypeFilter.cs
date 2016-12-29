@@ -2,7 +2,7 @@
   
   using System;
 
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
   public abstract class SensorTypeFilter : IFilter<ESensorType[]> {
     /// <summary>

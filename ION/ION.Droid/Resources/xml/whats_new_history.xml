@@ -1,5 +1,16 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="0.9.32">
+		<new>Added saftey details for refrigerants</new>
+		<new>Added new refrigerants</new>
+
+		<update>Look and feel of the refrigerant manager</update>
+		
+		<fixed>Rendering bugs in PT Chart and Superheat/Subcool calculators</fixed>
+		<fixed>Rendering gauge of OL</fixed>
+		<fixed>Ghost rending of Workbench and Analyzer</fixed>
+		<fixed>Bugs in automatic altitude service</fixed>
+	</display>
 	<display version="0.9.26">
 		<update>Updated checks to ensure valid system state for various features in newer android versions</update>
 		<update>Updated rate of change algorithm</update>

@@ -2,10 +2,9 @@
 
   using System;
 
-  using Foundation;
   using UIKit;
 
-  using ION.Core.Measure;
+	using Appion.Commons.Measure;
 
   using ION.IOS.Util;
 

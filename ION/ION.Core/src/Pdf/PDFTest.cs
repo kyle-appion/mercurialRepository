@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
+﻿namespace ION.Core.Pdf {
 
-using Xfinium.Pdf;
+	using System;
+	using System.IO;
 
-using ION.Core.App;
-using ION.Core.IO;
-using ION.Core.Report;
-using ION.Core.Util;
+	using Appion.Commons.Util;
 
-namespace ION.Core.Pdf {
+	using ION.Core.App;
+	using ION.Core.IO;
+
   public class PDFTest {
     public static void Test(string name, Stream outstream) {
       

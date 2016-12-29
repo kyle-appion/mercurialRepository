@@ -1,9 +1,9 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.IO;
-using ION.Core.Measure;
+	using System;
 
-namespace ION.Core.Sensors.Properties {
+	using Appion.Commons.Measure;
+
   /// <summary>
   /// A property that will display the senor's measurement in a different unit.
   /// </summary>

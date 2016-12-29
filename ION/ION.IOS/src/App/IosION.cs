@@ -9,6 +9,9 @@
 	using Foundation;
 	using UIKit;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.Alarms;
 	using ION.Core.Alarms.Alerts;
 	using ION.Core.App;
@@ -19,16 +22,13 @@
 	using ION.Core.Fluids;
 	using ION.Core.IO;
 	using ION.Core.Location;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	using ION.IOS.Alarms.Alerts;
 	using ION.IOS.IO;
 	using ION.IOS.Location;
 	using ION.IOS.Connections;
-	using ION.Core.Net;
 
 	/// <summary>
 	/// The iOS ION implementation.

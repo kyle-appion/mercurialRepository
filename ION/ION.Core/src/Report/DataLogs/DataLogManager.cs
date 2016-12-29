@@ -1,15 +1,16 @@
-﻿using MoreLinq;
-namespace ION.Core.Report.DataLogs {
+﻿namespace ION.Core.Report.DataLogs {
 
   using System;
   using System.Collections.Generic;
   using System.Linq;
   using System.Threading.Tasks;
 
+	using MoreLinq;
+
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Database;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// The manager that will allow easy interactions with how devices will log there data.

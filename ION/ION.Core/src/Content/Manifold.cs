@@ -2,14 +2,12 @@
 
   using System;
   using System.Collections.Generic;
-  using System.Runtime.Serialization;
 
-  using ION.Core.App;
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Devices;
   using ION.Core.Fluids;
-  using ION.Core.IO;
-  using ION.Core.Measure;
-  using ION.Core.Util;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 

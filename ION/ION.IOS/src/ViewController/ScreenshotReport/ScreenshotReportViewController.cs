@@ -4,15 +4,14 @@ namespace ION.IOS.ViewController.ScreenshotReport {
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
-  using CoreGraphics;
-  using Foundation;
   using UIKit;
+
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.IO;
   using ION.Core.Pdf;
   using ION.Core.Report;
-  using ION.Core.Util;
 
   using ION.IOS.Util;
   using ION.IOS.ViewController;

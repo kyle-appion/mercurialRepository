@@ -47,20 +47,17 @@
     <Compile Include="src\IO\Preferences\BasePreferences.cs" />
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
-    <Compile Include="src\Util\Log.cs" />
     <Compile Include="src\App\ION.cs" />
     <Compile Include="src\App\Viewer.cs" />
     <Compile Include="src\IO\IFileManager.cs" />
     <Compile Include="src\IO\IFolder.cs" />
     <Compile Include="src\IO\BinaryReaderExtension.cs" />
     <Compile Include="src\Content\Manifold.cs" />
-    <Compile Include="src\Util\Arrays.cs" />
     <Compile Include="src\Content\Workbench.cs" />
     <Compile Include="src\Database\IONDatabase.cs" />
     <Compile Include="src\Devices\GaugeDeviceSensor.cs" />
     <Compile Include="src\Devices\Protocols\BaseBinaryProtocol.cs" />
     <Compile Include="src\IO\Properties.cs" />
-    <Compile Include="src\Util\IReleasable.cs" />
     <Compile Include="src\IO\IParser.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParser.cs" />
     <Compile Include="src\Content\Parsers\WorkbenchParser.cs" />
@@ -73,7 +70,6 @@
     <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
     <Compile Include="src\Fluids\PTChart.cs" />
     <Compile Include="src\Math\Physics.cs" />
-    <Compile Include="src\Util\Filter.cs" />
     <Compile Include="src\Alarms\IAlarm.cs" />
     <Compile Include="src\Alarms\AbstractAlarm.cs" />
     <Compile Include="src\Alarms\IAlarmManager.cs" />
@@ -95,7 +91,6 @@
     <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
     <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
-    <Compile Include="src\Security\Obfuscation.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificate.cs" />
     <Compile Include="src\Sensors\Alarms\Serialization\HighSensorAlarmJsonConverter.cs" />
     <Compile Include="src\Location\ILocationManager.cs" />
@@ -129,7 +124,6 @@
     <Compile Include="src\Devices\SerialNumberExtensions.cs" />
     <Compile Include="src\Report\DataLogs\DataLogManager.cs" />
     <Compile Include="src\Report\DataLogs\LoggingSession.cs" />
-    <Compile Include="src\Util\Timer.cs" />
     <Compile Include="src\Job\Job.cs" />
     <Compile Include="src\Database\JobRow.cs" />
     <Compile Include="src\Database\SensorMeasurementRow.cs" />
@@ -155,23 +149,10 @@
     <Compile Include="src\StateMachine\StateEngine.cs" />
     <Compile Include="src\StateMachine\ERetCode.cs" />
     <Compile Include="src\IO\Exporter\Csv.cs" />
-    <Compile Include="src\Measure\Converter.cs" />
-    <Compile Include="src\Measure\Dimension.cs" />
-    <Compile Include="src\Measure\Quantity.cs" />
-    <Compile Include="src\Measure\Scalar.cs" />
-    <Compile Include="src\Measure\ScalarSpan.cs" />
-    <Compile Include="src\Measure\Unit.cs" />
-    <Compile Include="src\Measure\Units.cs" />
     <Compile Include="src\Devices\RemoteBaseDeviceManager.cs" />
-    <Compile Include="src\NumberExtensions.cs" />
-    <Compile Include="src\DateTimeExtensions.cs" />
-    <Compile Include="src\StringExtensions.cs" />
-    <Compile Include="src\ByteExtensions.cs" />
-    <Compile Include="src\Util\AlphabeticalStringComparer.cs" />
     <Compile Include="src\Content\Parsers\AnalyzerParser.cs" />
     <Compile Include="src\Content\Parsers\SensorParser.cs" />
     <Compile Include="src\Connections\RemoteConnection.cs" />
-    <Compile Include="src\Measure\RateOfChange.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
     <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
     <Compile Include="src\Fluids\FluidExtensions.cs" />
@@ -231,7 +212,6 @@
     <Folder Include="src\Sensors\Serialization\" />
     <Folder Include="src\Devices\Connections\" />
     <Folder Include="src\Content\Properties\" />
-    <Folder Include="src\Security\" />
     <Folder Include="src\Devices\Certificates\" />
     <Folder Include="src\Sensors\Alarms\Serialization\" />
     <Folder Include="src\Location\" />
@@ -244,13 +224,8 @@
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\StateMachine\" />
     <Folder Include="src\IO\Exporter\" />
-    <Folder Include="src\Measure\" />
-    <Folder Include="src\Net\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Xfinium.Pdf.Pcl">
-      <HintPath>..\packages\Nfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
     </Reference>
@@ -271,6 +246,9 @@
     </Reference>
     <Reference Include="MoreLinq.Portable">
       <HintPath>..\packages\MoreLinq.Portable.1.4.0\lib\portable-net4+sl5+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1\MoreLinq.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Pcl">
+      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -638,5 +616,11 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
       <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Appion.Commons\Appion.Commons.csproj">
+      <Project>{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}</Project>
+      <Name>Appion.Commons</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

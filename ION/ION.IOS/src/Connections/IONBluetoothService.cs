@@ -7,13 +7,13 @@
 	using CoreFoundation;
 	using Foundation;
 
-	using ION.Core.App;
+	using Appion.Commons.Util;
+
 	using ION.Core.Connections;
 	using ION.Core.Devices;
 	using ION.Core.Devices.Connections;
 	using ION.Core.Devices.Protocols;
 	using ION.Core.Thread;
-	using ION.Core.Util;
 
 	public class IONBluetoothService : CBCentralManagerDelegate, IConnectionHelper, IConnectionFactory {
 		/// <summary>
@@ -157,11 +157,11 @@
 		}
 
 		public override void ConnectedPeripheral(CBCentralManager central, CBPeripheral peripheral) {
-			base.ConnectedPeripheral(central, peripheral);
+//			base.ConnectedPeripheral(central, peripheral);
 		}
 
 		public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
-			base.DisconnectedPeripheral(central, peripheral, error);
+//			base.DisconnectedPeripheral(central, peripheral, error);
 		}
 
 		public override void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
@@ -172,7 +172,7 @@
 			if (data != null) {
 				bytes = ((NSData)data).ToArray();
 			}
-			Log.D(this, "NAME: " + name + " BYTES: " + bytes?.ToByteString());
+//			Log.D(this, "NAME: " + name + " BYTES: " + bytes?.ToByteString());
 
 
 			if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
@@ -210,8 +210,9 @@
 					// See, the device has a valid serial number.
 					sn = name.ParseSerialNumber();
 					if (connection == null) {
+						var p = FindProtocolFromDeviceModel(sn.deviceModel);
 						// We have not discovered this device before. Notify the world
-						NotifyOfDeviceFound(sn, uuid.ToString(), null, EProtocolVersion.V1);
+						NotifyOfDeviceFound(sn, uuid.ToString(), null, p);
 					} else {
 						// The connection already exists. Update the last time that it was seen.
 						connection.lastSeen = DateTime.Now;
@@ -237,6 +238,30 @@
 		public override void UpdatedState(CBCentralManager central) {
 			if (onScanStateChanged != null) {
 				onScanStateChanged(this);
+			}
+		}
+
+		private EProtocolVersion FindProtocolFromDeviceModel(EDeviceModel dm) {
+			switch (dm) {
+				case EDeviceModel._1XTM:
+				case EDeviceModel._3XTM:
+					return EProtocolVersion.V4;
+				case EDeviceModel.AV760:
+					return EProtocolVersion.V1;
+				case EDeviceModel.HT:
+					return EProtocolVersion.V4;
+				case EDeviceModel.P300:
+				case EDeviceModel.P500:
+				case EDeviceModel.P800:
+					return EProtocolVersion.V1;
+				case EDeviceModel.PT300:
+				case EDeviceModel.PT500:
+				case EDeviceModel.PT800:
+				case EDeviceModel.WL:
+					return EProtocolVersion.V4;
+				default:
+					return EProtocolVersion.V1;
+					
 			}
 		}
 

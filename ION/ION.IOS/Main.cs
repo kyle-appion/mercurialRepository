@@ -1,10 +1,11 @@
-﻿using UIKit;
+﻿namespace ION.IOS {
 
-using ION.Core.Util;
+	using UIKit;
 
-using ION.IOS.Util;
+	using Appion.Commons.Util;
 
-namespace ION.IOS {
+	using ION.IOS.Util;
+
   public class Application {
     // This is the main entry point of the application.
     static void Main(string[] args) {

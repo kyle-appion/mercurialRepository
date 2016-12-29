@@ -17,7 +17,7 @@
 	using ION.Core.Devices;
 	using ION.Core.IO;
 
-	[Activity(Label="Perform Test", MainLauncher=true)]
+	[Activity(Label="Perform Test")]
 	public class TestActivity : BaseActivity {
 		public const string EXTRA_SERIALS = "TestBench.Droid.extra.SERIALS";
 		public const string EXTRA_TEST_TYPE = "TestBench.Droid.extra.TYPE";
@@ -38,6 +38,7 @@
 
 		protected override void OnCreate(Bundle bundle) {
 			base.OnCreate(bundle);
+			Window.AddFlags(WindowManagerFlags.KeepScreenOn);
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetHomeButtonEnabled(true);
@@ -110,17 +111,12 @@
 		public override bool OnCreateOptionsMenu(IMenu menu) {
 			base.OnCreateOptionsMenu(menu);
 
-			MenuInflater.Inflate(Resource.Menu.export, menu);
-
 			return true;
 		}
 
 		// Overridden from Activity
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
 			switch (item.ItemId) {
-				case Resource.Id.export:
-					StartActivity(new Intent(this, typeof(ExportTestActivity)));
-					return true;
 				case Android.Resource.Id.Home:
 					SetResult(Result.Canceled);
 					if (test != null) {
@@ -182,29 +178,46 @@
 				return false;
 			}
 
-			// Connect to all of the selected connections.
-			foreach (var connection in connections) {
-				handler.Post(() => {
-					connection.Connect();
-				});
-				await Task.Delay(TimeSpan.FromMilliseconds(500));
-			}
-
 			var missingConnection = false;
-			start = DateTime.Now;
-			while (DateTime.Now - start <= TimeSpan.FromSeconds(30)) {
-				missingConnection = false;
+			for (var attempts = 3; attempts >= 2; attempts--) {
+				// Connect to all of the selected connections.
 				foreach (var connection in connections) {
-					if (!connection.isConnected) {
-						missingConnection = true;
+					handler.Post(() => {
+						if (!connection.isConnected) {
+							connection.Connect();
+						}
+					});
+					await Task.Delay(TimeSpan.FromMilliseconds(2000));
+				}
+
+				start = DateTime.Now;
+				while (DateTime.Now - start <= TimeSpan.FromSeconds(20)) {
+					missingConnection = false;
+					foreach (var connection in connections) {
+						if (!connection.isConnected) {
+							missingConnection = true;
+							break;
+						}
+					}
+
+					if (!missingConnection) {
 						break;
+					} else {
+						await Task.Delay(150);
 					}
 				}
 
-				if (!missingConnection) {
-					break;
-				} else {
-					await Task.Delay(150);
+				// Check if we need another try
+				bool needsAnotherTry = false;
+				foreach (var connection in connections) {
+					if (!connection.isConnected) {
+						connection.Disconnect();
+						needsAnotherTry = true;
+					}
+				}
+
+				if (needsAnotherTry) {
+					continue;
 				}
 			}
 
@@ -251,7 +264,6 @@
 
 		private void StopTest() {
 			test.StopTest();
-			DisconnectFromTheWorld();
 		}
 
 		private void DisconnectFromTheWorld() {
@@ -323,6 +335,26 @@
 			handler.PostDelayed(() => grid.ReloadData(), 1500);
 		}
 
+		private void Export() {
+			var adb = new AlertDialog.Builder(this);
+			adb.SetTitle("Test Complete");
+			adb.SetMessage("The test has completed. Would you like to export it?");
+			adb.SetNegativeButton("No", (sender, e) => {
+				var adb2 = new AlertDialog.Builder(this);
+				adb2.SetTitle("Really?");
+				adb2.SetMessage("Are you sure you don't want to export?");
+				adb2.SetCancelable(false);
+				adb2.SetNegativeButton("I'm Sure", (sender2, e2) => {});
+				adb2.SetPositiveButton("Export", (sender2, e2) => { StartActivity(new Intent(this, typeof(ExportTestActivity))); });
+				adb2.Show();
+			});
+			adb.SetPositiveButton("Export", (sender, e) => {
+				StartActivity(new Intent(this, typeof(ExportTestActivity)));
+			});
+      adb.SetCancelable(false);
+			adb.Show();
+		}
+
 		private void OnTestEvent(ITest test, TestEvent te) {
 			handler.Post(() => {
 				switch (te.type) {
@@ -332,6 +364,14 @@
 						DisconnectFromTheWorld();
 						break;
 					case TestEvent.EType.TestCancelled:
+						handler.Post(() => {
+							var adb = new AlertDialog.Builder(this);
+							adb.SetTitle("Test Canceled");
+							adb.SetMessage(te.message);
+							adb.SetCancelable(false);
+							adb.SetNegativeButton("Well, damn", (sender, e) => {});
+							adb.Show();
+						});
 						DisconnectFromTheWorld();
 						break;
 					case TestEvent.EType.NewTestData:
@@ -341,6 +381,7 @@
 						break;
 					case TestEvent.EType.TestComplete:
 						DisconnectFromTheWorld();
+						this.handler.Post(() => Export());
 						break;
 				}
 

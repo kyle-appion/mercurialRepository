@@ -7,13 +7,12 @@
   using Foundation;
   using UIKit;
 
-  //  using SWTableViewCell;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.IOS.UI;
   using ION.IOS.Util;

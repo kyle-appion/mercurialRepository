@@ -349,7 +349,7 @@ namespace ION.IOS.Util {
         public static readonly string
         LENGTH = "sensor_type_length".FromResources(),
         HUMIDITY = "sensor_type_humidity".FromResources(),
-        MASS = "sensor_type_mass".FromResources(),
+				WEIGHT = "sensor_type_weight".FromResources(),
         PRESSURE = "sensor_type_pressure".FromResources(),
         TEMPERATURE = "sensor_type_temperature".FromResources(),
         VACUUM = "sensor_type_vacuum".FromResources(),

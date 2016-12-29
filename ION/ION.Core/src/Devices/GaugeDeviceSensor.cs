@@ -1,9 +1,11 @@
-﻿using System;
+﻿namespace ION.Core.Devices {
 
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using System;
 
-namespace ION.Core.Devices {
+	using Appion.Commons.Measure;
+
+	using ION.Core.Sensors;
+
   /// <summary>
   /// A Type of sensor that exists within a GaugeDevice.
   /// </summary>

@@ -7,9 +7,6 @@
   THAT THEY ARE GIVEN. ANY CHANGE TO THESE STRINGS WILL BREAK A FEATURE WITHIN THE APPLICATION.
   -->
 
-  <!--
-  The keys that are used for preferences. These should almost never change once set.
-  -->
   <string name="pkey_app_version">app_version</string>
   <string name="pkey_first_launch">first_launch"</string>
   <string name="pkey_send_feedback">send_feedback</string>
@@ -30,6 +27,7 @@
   <string name="pkey_unit_pressure">unit_pressure</string>
   <string name="pkey_unit_temperature">unit_temperature</string>
   <string name="pkey_unit_vacuum">unit_vacuum</string>
+  <string name="pkey_unit_weight">unit_weight</string>
 
 	<string name="pkey_reporting_data_log_interval">reporting_data_log_interval</string>
 </resources>

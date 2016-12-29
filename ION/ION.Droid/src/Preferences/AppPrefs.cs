@@ -316,6 +316,16 @@
       }
     }
 
+		// Overridden from IUnits
+		public Unit weight {
+			get {
+				return AssertUnitGet(Resource.String.pkey_unit_weight, Units.Weight.POUND_FORCE);
+			}
+			set {
+				AssertUnitSet(Resource.String.pkey_unit_weight, Quantity.Force, value);
+			}
+		}
+
 		public UnitPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
     }
 
