@@ -1,21 +1,16 @@
 namespace ION.IOS.ViewController.DeviceManager {
 
   using System;
-  using System.Collections.Generic;
-  using System.Threading;
-  using System.Threading.Tasks;
 
-  using CoreGraphics;
-  using Foundation;
+	using Foundation;
   using UIKit;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Connections;
   using ION.Core.Devices;
-  using ION.Core.Devices.Connections;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.IOS.UI;
   using ION.IOS.Util;

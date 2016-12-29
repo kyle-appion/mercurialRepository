@@ -6,12 +6,13 @@ namespace TestBench.Droid {
 	using System.IO;
 	using System.Threading.Tasks;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Measure;
 	using ION.Core.IO.Exporter;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	public class AV760Test : ITest {
 		private const float ERROR_TOLERANCE = 0.05f;

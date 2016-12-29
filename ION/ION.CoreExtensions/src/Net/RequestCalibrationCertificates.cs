@@ -10,12 +10,13 @@
   using Newtonsoft.Json;
   using Newtonsoft.Json.Linq;
 
+	using Appion.Commons.Security;
+	using Appion.Commons.Util;
+
   using ION.Core.App;
 	using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Devices.Certificates;
-  using ION.Core.Security;
-  using ION.Core.Util;
 
   /// <summary>
   /// A task that will download the calibration certificates from the appion server.

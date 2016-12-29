@@ -6,8 +6,9 @@
   using CoreBluetooth;
   using Foundation;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
-  using ION.Core.Util;
 
   public class IosRigadoConnection : IConnection {
     /// <summary>
@@ -316,11 +317,9 @@
       writeCharacteristic = null;
 
       foreach (CBService service in __nativeDevice.Services) {
-        Log.D(this, "Service: " + service.UUID);
         if (service != null && service.Characteristics != null) {
           // Apparently services can be null after discovery?
           foreach (CBCharacteristic characteristic in service.Characteristics) {
-            Log.D(this, "Characteristic: " + characteristic.UUID);
             if (READ_CHARACTERISTIC.Equals(characteristic.UUID)) {
               readCharacteristic = characteristic;
             } else if (WRITE_CHARACTERISTIC.Equals(characteristic.UUID)) {

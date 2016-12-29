@@ -1,14 +1,13 @@
 ﻿namespace ION.Core.Devices {
   
   using System;
-	using SQLite.Net;
-  using System.IO;
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Database;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Util;
 
   /// <summary>
   /// Utility extensions that will assist in pulling specifically devices from the database.

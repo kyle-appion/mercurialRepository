@@ -1,11 +1,8 @@
 ﻿namespace ION.IOS.Devices {
 
-  using System;
-
   using UIKit;
 
   using ION.Core.Devices;
-  using ION.Core.Util;
 
   using ION.IOS.Util;
 
@@ -38,9 +35,6 @@
           return Strings.Device.Model.PT800.FromResources();
         case EDeviceModel._3XTM:
           return Strings.Device.Model._3XTM.FromResources();
-
-        case EDeviceModel.InternalBluefruit:
-          return "Bluefruit";
 
         default:
           return Strings.Device.Model.UNKNOWN.FromResources();

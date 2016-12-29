@@ -12,8 +12,9 @@ namespace TestBench.Droid {
 	using Android.OS;
 	using Android.Support.V4.Content;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices.Connections;
-	using ION.Core.Util;
 
 	[Service]
 	public class AppService : Service {
@@ -37,7 +38,7 @@ namespace TestBench.Droid {
 
 		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId) {
 			INSTANCE = this;
-			ION.Core.Util.Log.printer = new LogPrinter();
+			Appion.Commons.Util.Log.printer = new LogPrinter();
 			this.manager = GetSystemService(Context.BluetoothService) as BluetoothManager;
 			this.adapter = manager.Adapter;
 
@@ -272,7 +273,7 @@ namespace TestBench.Droid {
 				var ret = adapter.StartLeScan(this);
 				isScanning = true;
 			} catch (Exception e) {
-				ION.Core.Util.Log.E(this, "Wtf?", e);
+				Log.E(this, "Wtf?", e);
 			}
 		}
 

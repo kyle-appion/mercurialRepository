@@ -1,0 +1,35 @@
+black->blue
+red->black
+white->brown
+result: no return
+
+black->blue
+red->brown
+white->black
+result: returned what was sent
+
+black->brown
+red->blue
+white->black
+result: returned what was sent
+
+black->brown
+red->black
+white->blue
+result: no return
+
+black->black
+red->brown
+white->blue
+result: no return
+
+black->black
+red->blue
+white->brown
+result no return
+
+
+Web says:
+red->blue
+black->black
+white->brown

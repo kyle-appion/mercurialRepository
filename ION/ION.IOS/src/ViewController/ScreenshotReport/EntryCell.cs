@@ -39,7 +39,6 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     }
 
     public override void EditingEnded(UITextField textField) {
-      ION.Core.Util.Log.D(this, "Editing ended");
       item.value = textField.Text;
       cell.entry.ResignFirstResponder();
     }

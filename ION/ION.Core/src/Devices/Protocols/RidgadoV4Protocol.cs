@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-namespace ION.Core.Devices.Protocols {
+﻿namespace ION.Core.Devices.Protocols {
 
   using System;
-
+	using System.Collections.Generic;
   using System.IO;
 
+	using Appion.Commons.Measure;
+
   using ION.Core.IO;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// The protocol that is used to communicate with the Rigado bluetooth chipset based devices. This protocol allows

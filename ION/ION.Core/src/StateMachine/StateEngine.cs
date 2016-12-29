@@ -2,9 +2,8 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Reflection;
 
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	/// <summary>
 	/// A state function that is used to perform state logic.

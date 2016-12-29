@@ -41,6 +41,8 @@
   <string name="preferences_units_temperature_title">Select a new default temperature</string>
   <string name="preferences_units_vacuum">Default Vacuum Unit</string>
   <string name="preferences_units_vacuum_title">Select a new default vacuum</string>
+	<string name="preferences_units_weight">Default Weight Unit</string>
+  <string name="preferences_units_weight_title">Select a new default weight</string>
 
 	<string name="preferences_reporting">Reporting Preferences</string>
 	<string name="preferences_reporting_data_log_interval">Data Logging Interval</string>
@@ -53,6 +55,7 @@
   <integer name="preferences_units_pressure_default">7</integer>
   <integer name="preferences_units_temperature_default">18</integer>
   <integer name="preferences_units_vacuum_default">39</integer>
+  <integer name="preferences_units_weight_default">24</integer>
 
 	<integer name="preferences_reporting_data_log_interval_default">60</integer>
 
@@ -136,6 +139,20 @@
     <item>39</item>
     <item>40</item>
     <item>41</item>
+  </string-array>
+
+	<!-- Vacuum Entries -->
+  <string-array name="preferences_units_weight_entries">
+    <item>kgf</item>
+    <item>lbf</item>
+    <item>lbf/oz</item>
+  </string-array>
+
+  <!-- Vacuum Values -->
+  <string-array name="preferences_units_weight_values">
+    <item>24</item>
+    <item>25</item>
+    <item>26</item>
   </string-array>
 
 	<!-- Data Log Reporting Intervals -->

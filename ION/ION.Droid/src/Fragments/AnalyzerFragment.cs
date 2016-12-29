@@ -207,7 +207,7 @@
     private bool TrySetManifold(Analyzer.ESide side, Sensor sensor) {
       if (analyzer.CanAddSensorToSide(side) && !analyzer.HasSensor(sensor)) {
         analyzer.AddSensorToSide(side, sensor);
-        analyzer.SetManifold(side, sensor);
+        analyzer.SetManifoldBySensor(side, sensor);
         return true;
       } else {
         Log.E(this, "Trying to add a sensor to a manifold that already has a sensor.");

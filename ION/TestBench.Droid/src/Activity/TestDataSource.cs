@@ -2,20 +2,9 @@
 
 	using System.Collections.Generic;
 
-	using Android.App;
-	using Android.Content;
-	using Android.Graphics;
-	using Android.OS;
-	using Android.Support.V4.Widget;
-	using Android.Support.V7.Widget;
-	using Android.Views;
-	using Android.Widget;
-
 	using DSoft.Datatypes.Grid.Data;
-	using DSoft.UI.Grid;
 
-	using ION.Core.Devices;
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	public class TestDataSource : DSDataTable {
 		public ITest test { get; private set; }

@@ -2,8 +2,8 @@
 
 	using System;
 
-	using ION.Core.Measure;
-
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
@@ -22,7 +22,6 @@
       get {
 				tracker.AddPoint(sensor.measurement);
         var ret = tracker.rateOfChange.ConvertTo(sensor.unit);
-				ION.Core.Util.Log.D(this, "Ret: " + ret);
 				return ret;
       }
     }

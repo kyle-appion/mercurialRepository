@@ -5,12 +5,11 @@
 	using System.IO;
 
 	using Android.Bluetooth;
-	using Android.OS;
 
 	using Java.Util;
 
-	using ION.Core.Measure;
-	using ION.Core.Util;
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
 	public delegate void OnNewVrcReading(VacuumRig controller, Scalar lastMeas, Scalar newMeas);
 	public class VacuumRig : BluetoothGattCallback, IRig {

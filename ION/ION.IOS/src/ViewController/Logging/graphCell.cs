@@ -4,12 +4,12 @@ using UIKit;
 using Foundation;
 using CoreGraphics;
 
+using Appion.Commons.Measure;
+
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using OxyPlot.Xamarin.iOS;
-using System.Collections;
-using ION.Core.Measure;
 using ION.Core.Sensors;
 
 namespace ION.IOS.ViewController.Logging

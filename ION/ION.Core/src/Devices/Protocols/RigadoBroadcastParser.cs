@@ -1,9 +1,8 @@
 ﻿namespace ION.Core.Devices.Connections {
 
-	using System;
+	using Appion.Commons.Util;
 
 	using ION.Core.App;
-	using ION.Core.Util;
 
 	/// <summary>
 	/// A simple class that is used to parse advertisement packets for BLE.

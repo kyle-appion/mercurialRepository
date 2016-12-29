@@ -2,7 +2,7 @@
 
   using System;
 
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
   /// <summary>
   /// The class that will hold all of the sensor logs for a particular device's sensor.

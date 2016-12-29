@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace ION.Core.Sensors {
 
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using System;
+	using System.Collections.Generic;
 
-namespace ION.Core.Sensors {
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   public class UnitLookup {
     /// <summary>
     /// The dictionary used to lookup units given a unit code.
@@ -24,7 +25,7 @@ namespace ION.Core.Sensors {
       try {
       return CODE_TO_UNIT[code];
       } catch (Exception e) {
-        ION.Core.Util.Log.D("UnitLookup", "invalid unit code: " + code);
+        Log.D("UnitLookup", "invalid unit code: " + code);
         throw e;
       }
     }
@@ -54,7 +55,7 @@ namespace ION.Core.Sensors {
       } else if (code == 0x14 || code == 0x15) {
         return ESensorType.Length;
       } else if (code >= 0x16 && code <= 0x1a) {
-        return ESensorType.Mass;
+        return ESensorType.Weight;
       } else if (code >= 0x20 && code <= 0x2a) {
         return ESensorType.Vacuum;
       } else {
@@ -68,8 +69,8 @@ namespace ION.Core.Sensors {
           return GetHumidityUnit(code);
         case ESensorType.Length:
           return GetLengthUnit(code);
-        case ESensorType.Mass:
-          return GetMassUnit(code);
+        case ESensorType.Weight:
+          return GetWeightUnit(code);
         case ESensorType.Pressure:
           return GetPressureUnit(code);
         case ESensorType.Temperature:
@@ -98,15 +99,6 @@ namespace ION.Core.Sensors {
           return Units.Length.METER;
         default:
           throw new ArgumentException("Cannot find length unit for code: " + code);
-      }
-    }
-
-    private static Unit GetMassUnit(string code) {
-      switch (code) {
-        case "kg":
-          return  Units.Mass.KILOGRAM;
-        default:
-          throw new ArgumentException("Cannot find length mass for code: " + code);
       }
     }
 
@@ -183,6 +175,21 @@ namespace ION.Core.Sensors {
       }
     }
 
+		private static Unit GetWeightUnit(string code) {
+			switch (code) {
+				case "N":
+					return Units.Weight.NEWTON;
+				case "kgf":
+					return Units.Weight.KILOGRAM; 
+				case "lbf":
+					return Units.Weight.POUND_FORCE;
+				case "lbf/oz":
+					return Units.Weight.POUND_OUNCE_FORCE;
+				default:
+					throw new ArgumentException("Cannot find weight unit for code: " + code);
+			}
+		}
+
     /// <summary>
     /// Adds a new unit/code lookup.
     /// </summary>
@@ -228,6 +235,11 @@ namespace ION.Core.Sensors {
       Add(0x27, Units.Vacuum.MICRON);
       Add(0x28, Units.Vacuum.TORR);
       Add(0x29, Units.Vacuum.MILLITORR);
+
+			// Weight
+			Add(0x16, Units.Weight.POUND_FORCE);
+			Add(0x17, Units.Weight.KILOGRAM);
+			Add(0x18, Units.Weight.POUND_OUNCE_FORCE);
     }
   }
 }

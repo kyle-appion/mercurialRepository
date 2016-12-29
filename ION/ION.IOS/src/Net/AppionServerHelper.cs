@@ -1,14 +1,11 @@
 ﻿namespace ION.IOS.Net {
   
-  using System;
   using System.IO;
   using System.Reflection;
-  using System.Runtime.InteropServices;
 
   using Foundation;
   using UIKit;
 
-  using Newtonsoft.Json;
   using Newtonsoft.Json.Linq;
 
   using ION.Core.IO;
@@ -31,8 +28,6 @@
         obj["host_device"] = UIDevice.CurrentDevice.SystemName;
         obj["host_version"] = UIDevice.CurrentDevice.SystemVersion;
         obj["ion_version"] = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
-
-        ION.Core.Util.Log.D("AppionServiceHelper.Email", obj.ToString());
 
         var tempFile = fm.CreateTemporaryFile("Platform Description");
         using (var w = new StreamWriter(tempFile.OpenForWriting())) {

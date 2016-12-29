@@ -4,7 +4,7 @@
 	using System.Collections.Generic;
 	using System.Threading;
 
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	/// <summary>
 	/// Message queue is a cross platform message handler that synchronizes and executes messages in a secondary thread.
@@ -40,7 +40,6 @@
 		public void Start(ThreadPriority priority) {
 			lock (pendingActions) {
 				if (isStarted) {
-					Log.D(this, "The message queue has already been started!");
 					return;
 				}
 				thread = new Thread(ThreadLoop);
@@ -149,11 +148,9 @@
 		private void ThreadLoop() {
 			while (!isStopped) {
 				lock (pendingActions) {
-					Log.D(this, "We have: " + pendingActions.Count + " pending actions");
 					if (pendingActions.Count <= 0) {
 						Monitor.Wait(pendingActions);
 					}
-					Log.D(this, "The wait is over");
 
 					// Check whether or not we have been stopped since the wait.
 					if (isStopped) {
@@ -169,14 +166,11 @@
 						var action = pendingActions[0];
 
 						if (action.desiredExecutionTime < DateTime.Now) {
-							Log.D(this, "Executing action");
 							action.action();
 							pendingActions.RemoveAt(0);
 						} else {
 							// Inform the monitor that we want to wait untile the execution time OR we get a pulse. The pulse can come
 							// a newly posted action or a removal of actions.
-							Log.D(this, "We have: " + pendingActions.Count + " pending actions");
-							Log.D(this, "We will wait: " + (action.desiredExecutionTime - DateTime.Now) + " until we execute the action");
 							Monitor.Wait(pendingActions, action.desiredExecutionTime - DateTime.Now);
 						}
 					} catch (Exception e) {

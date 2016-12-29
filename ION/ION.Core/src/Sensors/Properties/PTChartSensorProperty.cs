@@ -1,12 +1,13 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Content;
-using ION.Core.Content.Properties;
-using ION.Core.Fluids;
-using ION.Core.Measure;
-using ION.Core.App;
+	using System;
 
-namespace ION.Core.Sensors.Properties {
+	using Appion.Commons.Measure;
+
+	using ION.Core.Content;
+	using ION.Core.Content.Properties;
+	using ION.Core.App;
+
   public class PTChartSensorProperty : AbstractManifoldSensorProperty {
 
     // Overriden from AbstractSensorProperty
@@ -29,7 +30,6 @@ namespace ION.Core.Sensors.Properties {
 				return __unit;
 			}
 			set {
-				ION.Core.Util.Log.D(this, "Setting unit to: " + value);
 				__unit = value;
 				NotifyChanged();
 			}

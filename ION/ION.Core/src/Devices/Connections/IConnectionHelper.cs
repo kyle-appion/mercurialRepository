@@ -1,12 +1,10 @@
 ﻿namespace ION.Core.Devices.Connections {
 
   using System;
-  using System.Threading;
-  using System.Threading.Tasks;
 
-  using ION.Core.Connections;
+	using Appion.Commons.Util;
+
   using ION.Core.Devices.Protocols;
-  using ION.Core.Util;
 
   /// <summary>
   /// The delegate that is called when the connection helper's scan state changes.

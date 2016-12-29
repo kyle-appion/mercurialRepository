@@ -1,25 +1,18 @@
 ﻿namespace ION.IOS.ViewController.RemoteDeviceManager {
 
   using System;
-  using System.Collections.Generic;
-  using System.Threading;
-  using System.Threading.Tasks;
 
   using CoreGraphics;
   using Foundation;
   using UIKit;
 
-  using ION.Core.App;
-  using ION.Core.Connections;
-  using ION.Core.Devices;
-  using ION.Core.Devices.Connections;
-  using ION.Core.Measure;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
-  using ION.IOS.UI;
+  using ION.Core.App;
+  using ION.Core.Devices;
+  using ION.Core.Sensors;
+
   using ION.IOS.Util;
-  using ION.IOS.ViewController.DeviceManager;
 
 	public partial class RemoteDeviceManagerViewController : BaseIONViewController {
     /// <summary>

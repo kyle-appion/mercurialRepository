@@ -1,9 +1,8 @@
 ﻿namespace ION.Core.Devices.Protocols {
 
-	using System;
+	using Appion.Commons.Measure;
 
-	using ION.Core.Measure;
-  using ION.Core.Sensors;
+	using ION.Core.Sensors;
 
   /// <summary>
   /// An enumeration of the supported protocols.

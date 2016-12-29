@@ -1,8 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Measure;
-
-namespace ION.Core.Sensors.Properties {
+	using Appion.Commons.Measure;
+	            
   /// <summary>
   /// A property that will retain the minimum measurement that a sensor makes.
   /// </summary>

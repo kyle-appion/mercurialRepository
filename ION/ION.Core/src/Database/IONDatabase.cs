@@ -9,10 +9,10 @@
   using SQLite.Net;
   using SQLite.Net.Interop;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Database.Deprecated;
   using ION.Core.IO;
-  using ION.Core.Util;
 
 
   public class DatabaseEvent {

@@ -1,12 +1,12 @@
-﻿using System;
+﻿namespace ION.IOS.UI {
 
-using CoreGraphics;
-using Foundation;
-using UIKit;
+	using System;
 
-using ION.Core.Util;
+	using CoreGraphics;
+	using UIKit;
 
-namespace ION.IOS.UI {
+	using Appion.Commons.Util;
+
   public class Toast : UIView {
     /// <summary>
     /// The height of the toast window.

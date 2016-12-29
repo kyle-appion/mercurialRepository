@@ -94,6 +94,8 @@ namespace ION.Droid.Devices {
           return ion.GetString(Resource.String.device_pt500);
         case EDeviceModel.PT800:
           return ion.GetString(Resource.String.device_pt800);
+				case EDeviceModel.WL:
+					return ion.GetString(Resource.String.device_wllibra);
         default:
           return ion.GetString(Resource.String.device_unknown);
       }
@@ -115,6 +117,8 @@ namespace ION.Droid.Devices {
           return ion.GetString(Resource.String.temperature);
         case ESensorType.Vacuum:
           return ion.GetString(Resource.String.vacuum);
+				case ESensorType.Weight:
+					return ion.GetString(Resource.String.weight);
         default:
           return ion.GetString(Resource.String.unknown);
       }

@@ -3,7 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 
-	using ION.Core.Measure;
+	using Appion.Commons.Measure;
+
 	using ION.Core.Devices;
 
 	public class TestResults {

@@ -6,7 +6,7 @@
   /// Enumerates the ION device models that Appion has manufactured.
   /// </summary>
   public enum EDeviceModel {
-    InternalBluefruit,
+		Internal,
     P300,
     PT300,
     P500,
@@ -17,6 +17,7 @@
     _3XTM, // I kind of hate how greg names products some times
 		_1XTM,
     HT,
+		WL,
   }
 
   /// <summary>
@@ -31,6 +32,7 @@
     /// <param name="deviceModel">Device model.</param>
     public static string GetModelCode(this EDeviceModel deviceModel) {
       switch (deviceModel) {
+				case EDeviceModel.Internal: return "Internal";
         case EDeviceModel.P300: return "P3";
         case EDeviceModel.P500: return "P5";
         case EDeviceModel.P800: return "P8";
@@ -41,7 +43,7 @@
         case EDeviceModel._3XTM: return "T3";
 				case EDeviceModel._1XTM: return "T1";
         case EDeviceModel.HT: return "HT";
-        case EDeviceModel.InternalBluefruit: return "Bf";
+				case EDeviceModel.WL: return "WL";
       default: {
           throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
         }
@@ -50,6 +52,7 @@
 
     public static string GetUnlocalizedPartNumber(this EDeviceModel deviceModel) {
       switch (deviceModel) {
+				case EDeviceModel.Internal: return "Internal";
         case EDeviceModel.P300: return "P300";
         case EDeviceModel.P500: return "P500";
         case EDeviceModel.P800: return "P800";
@@ -60,7 +63,7 @@
         case EDeviceModel._3XTM: return "T3";
 				case EDeviceModel._1XTM: return "T1";
         case EDeviceModel.HT: return "HT";
-        case EDeviceModel.InternalBluefruit: return "Bf";
+				case EDeviceModel.WL: return "WL";
         default: {
             throw new ArgumentException("Cannot get model code: unrecoginized device model " + deviceModel);
           }
@@ -79,15 +82,30 @@
     /// <returns>The device model from string.</returns>
     /// <param name="modelCode">Model code.</param>
     public static EDeviceModel GetDeviceModelFromCode(string modelCode) {
-      modelCode = modelCode.ToUpper();
-
-      foreach (EDeviceModel model in Enum.GetValues(typeof(EDeviceModel))) {
-        if (model.GetModelCode().Equals(modelCode)) {
-          return model;
-        }
-      }
-
-      throw new ArgumentException("Cannot get device model: unrecognized code " + modelCode);
+			switch (modelCode) {
+				case "HT":
+					return EDeviceModel.HT;
+				case "P3":
+					return EDeviceModel.P300;
+				case "P5":
+					return EDeviceModel.P500;
+				case "PT5":
+				case "S5":
+					return EDeviceModel.PT500;
+				case "P8":
+					return EDeviceModel.P800;
+				case "PT8":
+				case "S8":
+					return EDeviceModel.PT800;
+				case "V7":
+					return EDeviceModel.AV760;
+				case "T1":
+					return EDeviceModel._1XTM;
+				case "WL":
+					return EDeviceModel.WL;
+				default:
+					throw new ArgumentException("Cannot get device model: unrecognized code " + modelCode);
+			}
     }
   }
 
@@ -128,6 +146,5 @@
     /// </summary>
     ushort batchId { get; }
 	}
-
 }
 

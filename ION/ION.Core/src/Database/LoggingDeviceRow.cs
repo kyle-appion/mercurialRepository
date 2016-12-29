@@ -1,13 +1,9 @@
-﻿using System;
+﻿namespace ION.Core.Database {
 
-using SQLite.Net.Attributes;
-
-using ION.Core.Util;
-
-namespace ION.Core.Database {
+	using SQLite.Net.Attributes;
 
 	[Preserve (AllMembers = true)]
-  public class LoggingDeviceRow : ITableRow{
+  public class LoggingDeviceRow : ITableRow {
     /// <summary>
     /// Queries the primary id of the table item.
     /// </summary>

@@ -1,15 +1,15 @@
 ﻿namespace TestBench.Droid {
 
 	using System;
-	using System.Collections.Generic;
 
 	using Android.Bluetooth;
 
 	using Java.Util;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Util;
 
 	public class LeConnection : BluetoothGattCallback, IConnection {
 		/// <summary>

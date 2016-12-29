@@ -1,10 +1,11 @@
-﻿using System;
+﻿namespace ION.IOS.Util {
 
-using CoreGraphics;
+	using System;
 
-using ION.Core.Util;
+	using CoreGraphics;
 
-namespace ION.IOS.Util {
+	using Appion.Commons.Util;
+
   /// <summary>
   /// A resource class that will hold common colors for the iOS application.
   /// </summary>

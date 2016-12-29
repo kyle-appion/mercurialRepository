@@ -1,10 +1,11 @@
-﻿ using System.IO;
+﻿namespace ION.Core.Fluids.Parser {
 
-using ION.Core.Fluids;
-using ION.Core.IO;
-using ION.Core.Util;
+	using System.IO;
 
-namespace ION.Core.Fluids.Parser {
+	using Appion.Commons.Util;
+
+	using ION.Core.IO;
+
   /// <summary>
   /// A FluidParser that will parse a Fluid from a binary stream.
   /// </summary>

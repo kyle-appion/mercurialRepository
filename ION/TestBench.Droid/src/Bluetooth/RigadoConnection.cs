@@ -7,9 +7,10 @@
 
 	using Java.Util;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Util;
 
 	public class RigadoConnection : BluetoothGattCallback, IConnection {
 		/// <summary>
