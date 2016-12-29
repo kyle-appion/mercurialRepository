@@ -239,6 +239,7 @@ file.
 "navigation_main" = "Main";
 
 /* REPORT */
+"report_address" = "Address";
 "report" = "Report";
 "reports" = "Reports";
 "report_calibration_certificates" = "Calibration Certificates";

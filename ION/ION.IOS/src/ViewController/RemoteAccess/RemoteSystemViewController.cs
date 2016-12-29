@@ -1,5 +1,4 @@
-﻿/*
-using System;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
 using CoreGraphics;
@@ -68,6 +67,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var checkLogin = KeychainAccess.ValueForKey("stayLogged");
 			
       if(string.IsNullOrEmpty(checkLogin) || checkLogin == "no"){
+				
       	loginView = new RemoteLoginView(remoteHolderView, webServices);
 	      loginView.submitButton.TouchUpInside += credentialsCheck;
 	      
@@ -88,13 +88,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// </summary>
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
-		public async void LogOutUser(object sender, EventArgs e){
-	  	await webServices.updateOnlineStatus("0");
-			
+		public void LogOutUser(object sender, EventArgs e){
+	  	webServices.updateOnlineStatus("0");
 			KeychainAccess.SetValueForKey("no", "stayLogged");
-			KeychainAccess.SetValueForKey("","userID");
-			KeychainAccess.SetValueForKey("","userName");
-			KeychainAccess.SetValueForKey("","userPword");
+			KeychainAccess.SetValueForKey(null,"userID");
+			KeychainAccess.SetValueForKey(null,"userName");
+			KeychainAccess.SetValueForKey(null,"userPword");
+			Console.WriteLine("Completed logout");
 			
 			loginView = new RemoteLoginView(remoteHolderView, webServices);
       loginView.submitButton.TouchUpInside += credentialsCheck;
@@ -274,18 +274,29 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				return;
 			}
 			var registered = await webServices.RegisterUser(registerView.firstName.Text,registerView.password.Text,registerView.lastName.Text,registerView.email.Text);
-
-    					
-			if(registered){			
-				var alert = UIAlertController.Create ("User Registration", "Registration Successful", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
-				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				
-				loginView.userName.Text = registerView.email.Text;
-				loginView.password.Text = registerView.password.Text;			
-				registerView.regView.RemoveFromSuperview();
-				registerView = null;
-				this.NavigationItem.RightBarButtonItem = register;
+			if(registered != null){
+				var textResponse = await registered.Content.ReadAsStringAsync();
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var isregistered = response.GetValue("success").ToString();
+				var message = response.GetValue("message").ToString();
+	    					
+				if(isregistered == "true"){			
+					var alert = UIAlertController.Create ("User Registration", message, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					
+					loginView.userName.Text = registerView.email.Text;
+					loginView.password.Text = registerView.password.Text;			
+					registerView.regView.RemoveFromSuperview();
+					registerView = null;
+					this.NavigationItem.RightBarButtonItem = register;
+				} else {
+					var alert = UIAlertController.Create ("User Registration", message, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
 			}
 		}
 		
@@ -309,6 +320,3 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		}
 	}
 }
-
-
-*/

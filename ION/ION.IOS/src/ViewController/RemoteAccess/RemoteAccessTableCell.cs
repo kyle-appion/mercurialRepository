@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System;
 using CoreGraphics;
 using UIKit;
@@ -27,5 +27,3 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		
 	}
 }
-
-*/

@@ -1,5 +1,4 @@
-﻿/*
-using System;
+﻿using System;
 using UIKit;
 using CoreGraphics;
 using System.Threading.Tasks;
@@ -132,5 +131,3 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		}	
 	}
 }
-
-*/

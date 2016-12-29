@@ -14,16 +14,16 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       base.AwakeFromNib();
 
       AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        text.ResignFirstResponder();
+        //text.ResignFirstResponder();
       }));
     }
 
     public void UpdateFrom(IItem item) {
-      labelHeader.Text = item.header;
-      text.Text = item.value;
-      text.Delegate = new TextDelegate(item);
-      text.AddTarget((object obj, EventArgs args) => {
-      }, UIControlEvent.AllEvents);
+    //  labelHeader.Text = item.header;
+    //  text.Text = item.value;
+    //  text.Delegate = new TextDelegate(item);
+    //  text.AddTarget((object obj, EventArgs args) => {
+    //  }, UIControlEvent.AllEvents);
     }
 	}
 

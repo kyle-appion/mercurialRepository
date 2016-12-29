@@ -236,7 +236,7 @@
 		/// Handles all the Amazon Web Service calls
 		/// </summary>
 		/// <value>The web services.</value>
-//		public WebPayload webServices { get; set; }
+		public WebPayload webServices { get; set; }
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>

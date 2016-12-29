@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -171,5 +171,3 @@ namespace ION.IOS.ViewController.AccessRequest {
 			public string accessCode { get; set; }
 		}	
 }
-
-*/

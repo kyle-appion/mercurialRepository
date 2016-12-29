@@ -8,6 +8,7 @@ using UIKit;
 using ION.Core.Fluids;
 
 using ION.IOS.Util;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.FluidManager {
 	public partial class FluidTableCell : UITableViewCell {
@@ -15,13 +16,16 @@ namespace ION.IOS.ViewController.FluidManager {
     private EventHandler<string> onFavoriteClicked { get; set; }
 
     private string fluidName { get; set; }
+    
+    IION ion;
 
 		public FluidTableCell (IntPtr handle) : base (handle) {  
 		}
 
     public override void AwakeFromNib() {
       base.AwakeFromNib();
-
+			ion = AppState.context;
+			
       imageFavorite.Image = UIImage.FromBundle("ic_bookmark").ImageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
       imageFavorite.UserInteractionEnabled = true;
       imageFavorite.AddGestureRecognizer(new UITapGestureRecognizer(() => {
@@ -36,13 +40,20 @@ namespace ION.IOS.ViewController.FluidManager {
     }
 
     public void UpdateTo(string fluidName, int fluidColor, bool selected, bool preferred, EventHandler<string> favoriteClicked = null) {
+    	var safetyInfo = ion.fluidManager.GetFluidSafety(fluidName);
+    	
       this.fluidName = fluidName;
       viewFluidColor.BackgroundColor = CGExtensions.FromARGB8888(fluidColor);
       labelFluidName.Text = fluidName;
       onFavoriteClicked = favoriteClicked;
-			safetyClassification.Text = "US";
+      if(safetyInfo != Fluid.ESafety.Unknown){
+				safetyClassification.Text = safetyInfo.ToString();
+			} else {
+				safetyClassification.Text = "N/A";
+			}
+
+			imageSelected.BackgroundColor = CGExtensions.FromARGB8888(safetyInfo.Color());
 			
-      //imageSelected.Hidden = !selected;
       if(selected){
 				this.BackgroundColor = UIColor.FromRGB(176,176,176);
 			} else {
