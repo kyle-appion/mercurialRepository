@@ -99,8 +99,24 @@ Unit Strings
     torr
     millitorr
     micron [default]
+
+	weight:
+		lb
+		kg
+		lb/oz
 -->
 
+<!--
+TODO As of 21 Dec 2016, the scale is unable to respond to remote change unit. Because of this, the app will need to be
+able to differentiate whether or not a device has an authority of its app displayed measurement. If it turns out that
+this is the case, then we may consider adding a flag to the device saying that the device is not an authority on its
+send unit and that the app must takes the reins in allowing the user to change displayed units.
+
+Example:
+<GaugeDevice deviceCode="WL" isRemoteAuthority="false">
+	...
+</GaugeDevice>
+-->
 
 <Devices>
   <GaugeDevice deviceCode="P3">
@@ -233,6 +249,28 @@ Unit Strings
 -->
   </GaugeDevice>
 
+	<GaugeDevice deviceCode="S5">
+    <GaugeDeviceSensor type="pressure" min="-29" minUnit="inhg" max="500" maxUnit="psig" relative="true">
+      <SupportedUnit>inhg</SupportedUnit>
+      <SupportedUnit>psig</SupportedUnit>
+      <SupportedUnit>kgcm</SupportedUnit>
+      <SupportedUnit>cmhg</SupportedUnit>
+      <SupportedUnit>bar</SupportedUnit>
+      <SupportedUnit>kpa</SupportedUnit>
+      <SupportedUnit>mpa</SupportedUnit>
+    </GaugeDeviceSensor>
+    <GaugeDeviceSensor type="temperature" min="-40" minUnit="celsius" max="150" maxUnit="celsius" relative="true">
+      <SupportedUnit>fahrenheit</SupportedUnit>
+      <SupportedUnit>celsius</SupportedUnit>
+    </GaugeDeviceSensor>
+<!--
+    <Commands>
+      <Command name="SetUnit" uses="True"/>
+      <Command name="Zero" uses="True"/>
+    </Commands>
+-->
+  </GaugeDevice>
+
   <GaugeDevice deviceCode="S8">
     <GaugeDeviceSensor type="pressure" min="0" minUnit="psig" max="800" maxUnit="psig" relative="true">
       <SupportedUnit>psig</SupportedUnit>
@@ -281,5 +319,11 @@ Unit Strings
 -->
   </GaugeDevice>
 
-  <InternalDevice deviceCode="Bf"/>
+	<GaugeDevice deviceCode="WL">
+		<GaugeDeviceSensor type="weight" removable="False" min="0" minUnit="lbf" max="450" maxUnit="lbf" relative="false">
+			<SupportedUnit>lbf</SupportedUnit>
+			<SupportedUnit>kgf</SupportedUnit>
+			<SupportedUnit>lbf/oz</SupportedUnit>
+		</GaugeDeviceSensor>
+	</GaugeDevice>
 </Devices>

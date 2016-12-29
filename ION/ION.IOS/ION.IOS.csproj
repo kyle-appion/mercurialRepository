@@ -131,6 +131,12 @@
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http" />
+    <Reference Include="Xfinium.Pdf.Xamarin.iOS">
+      <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
+    </Reference>
+    <Reference Include="SWTableViewCell">
+      <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -1101,6 +1107,10 @@
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Appion.Commons\Appion.Commons.csproj">
+      <Project>{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}</Project>
+      <Name>Appion.Commons</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,9 +1,9 @@
 ﻿using System;
 using UIKit;
 using CoreGraphics;
+using Appion.Commons.Measure;
 using ION.Core.Devices;
 using ION.Core.Sensors;
-using ION.Core.Connections;
 using System.Threading.Tasks;
 namespace ION.IOS.ViewController.Analyzer {
 
@@ -146,7 +146,7 @@ namespace ION.IOS.ViewController.Analyzer {
         pconnection.BackgroundColor = UIColor.Red;
         pconnectionStatus.Hidden = false;
       }
-      if (sensor.unit != ION.Core.Measure.Units.Vacuum.MICRON) {
+      if (sensor.unit != Units.Vacuum.MICRON) {
         pgaugeValue.Text = sensor.measurement.amount.ToString("N");
       } else {
         pgaugeValue.Text = sensor.measurement.amount.ToString();

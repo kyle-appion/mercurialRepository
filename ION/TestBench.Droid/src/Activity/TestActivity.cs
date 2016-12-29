@@ -179,7 +179,7 @@
 			}
 
 			var missingConnection = false;
-			for (var attempts = 2; attempts >= 2; attempts--) {
+			for (var attempts = 3; attempts >= 2; attempts--) {
 				// Connect to all of the selected connections.
 				foreach (var connection in connections) {
 					handler.Post(() => {
@@ -187,7 +187,7 @@
 							connection.Connect();
 						}
 					});
-					await Task.Delay(TimeSpan.FromMilliseconds(1000));
+					await Task.Delay(TimeSpan.FromMilliseconds(2000));
 				}
 
 				start = DateTime.Now;
@@ -208,10 +208,16 @@
 				}
 
 				// Check if we need another try
+				bool needsAnotherTry = false;
 				foreach (var connection in connections) {
 					if (!connection.isConnected) {
-						continue;
+						connection.Disconnect();
+						needsAnotherTry = true;
 					}
+				}
+
+				if (needsAnotherTry) {
+					continue;
 				}
 			}
 

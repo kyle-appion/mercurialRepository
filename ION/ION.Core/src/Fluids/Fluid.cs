@@ -1,8 +1,8 @@
 ﻿namespace ION.Core.Fluids {
 
   using System;
-  using ION.Core.Util;
-  using ION.Core.Measure;
+
+	using Appion.Commons.Measure;
 
   /// <summary>
   /// The fluid class is a lookup table that is used to calculate pressures and

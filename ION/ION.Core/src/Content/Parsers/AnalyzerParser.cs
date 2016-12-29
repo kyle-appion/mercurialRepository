@@ -7,7 +7,6 @@
 	using ION.Core.Content;
 	using ION.Core.IO;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	public class AnalyzerParser : IParser<Analyzer> {
 		public int version { get { return 1; } }

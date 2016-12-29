@@ -4,11 +4,10 @@
 
   using Newtonsoft.Json;
 
+	using Appion.Commons.Measure;
+
   using ION.Core.App;
-  using ION.Core.Devices;
-  using ION.Core.Measure;
   using ION.Core.Sensors.Serialization;
-  using ION.Core.Util;
 
   /// <summary>
   /// Enumerates the possible sensors.
@@ -16,10 +15,10 @@
   public enum ESensorType {
     Length,
     Humidity,
-    Mass,
     Pressure,
     Temperature,
     Vacuum,
+		Weight,
     Unknown,
   }
 
@@ -51,6 +50,8 @@
           return SensorUtils.DEFAULT_TEMPERATURE_UNITS[0];
         case ESensorType.Vacuum:
           return SensorUtils.DEFAULT_VACUUM_UNITS[0];
+				case ESensorType.Weight:
+					return SensorUtils.DEFAULT_WEIGHT_UNITS[0];
         default:
           throw new ArgumentException("Cannot get default unit for " + sensorType);
       }
@@ -110,6 +111,16 @@
       Units.Vacuum.PSIA,
       Units.Vacuum.KILOPASCAL,
     };
+
+		/// <summary>
+		/// The default weight units to use for senors that do not provide their own
+		/// unit list.
+		/// </summary>
+		public static Unit[] DEFAULT_WEIGHT_UNITS = new Unit[] {
+			Units.Weight.KILOGRAM,
+			Units.Weight.POUND_FORCE,
+			Units.Weight.POUND_OUNCE_FORCE,
+		};
 
     public static ESensorType FromString(string sensorType) {
       var ret = ESensorType.Unknown;
@@ -235,8 +246,8 @@
         case ESensorType.Humidity: {
           return unit.IsCompatible(Units.Humidity.RELATIVE_HUMIDITY);
         }
-        case ESensorType.Mass: {
-          return unit.IsCompatible(Units.Mass.KILOGRAM);
+        case ESensorType.Weight: {
+          return unit.IsCompatible(Units.Weight.KILOGRAM);
         }
         case ESensorType.Pressure: {
           return unit.IsCompatible(Units.Pressure.PASCAL);

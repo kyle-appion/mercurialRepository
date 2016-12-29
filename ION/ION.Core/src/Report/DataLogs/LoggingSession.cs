@@ -1,16 +1,14 @@
 ﻿namespace ION.Core.Report.DataLogs {
 
   using System;
-  using System.Diagnostics;
   using System.Collections.Generic;
-  using System.Threading;
   using System.Threading.Tasks;
+
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Database;
   using ION.Core.Devices;
-  using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// A construct that will maintain the session of device sensor logs.

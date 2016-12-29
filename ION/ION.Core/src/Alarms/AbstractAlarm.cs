@@ -1,8 +1,6 @@
 ﻿namespace ION.Core.Alarms {
 
-  using System;
-
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
   public abstract class AbstractAlarm : IAlarm {
     /// <summary>

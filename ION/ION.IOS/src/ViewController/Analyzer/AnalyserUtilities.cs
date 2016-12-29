@@ -11,13 +11,14 @@ using CoreGraphics;
 using Foundation;
 using CoreAnimation;
 
+using Appion.Commons.Measure;
+using Appion.Commons.Util;
+
 using ION.Core.Content;
 using ION.Core.Devices;
-using ION.Core.Util;
 using ION.Core.Sensors;
 using ION.Core.Sensors.Properties;
 using ION.Core.Fluids;
-using ION.Core.Measure;
 using ION.Core.App;
 
 using ION.IOS.ViewController.Alarms;
@@ -2577,8 +2578,8 @@ namespace ION.IOS.ViewController.Analyzer
           return Units.Humidity.RELATIVE_HUMIDITY;
         case ESensorType.Length:
           return Units.Length.FOOT;
-        case ESensorType.Mass:
-          return  Units.Mass.KILOGRAM;
+				case ESensorType.Weight:
+					return  Units.Weight.KILOGRAM;
         case ESensorType.Pressure:
           switch (code) {
             case "pa":

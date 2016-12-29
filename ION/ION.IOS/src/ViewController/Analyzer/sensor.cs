@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UIKit;
 using CoreGraphics;
+using Appion.Commons.Measure;
 using ION.Core.Devices;
 using ION.Core.Sensors;
 
@@ -55,7 +55,7 @@ namespace ION.IOS.ViewController.Analyzer
 		}
 
     public void gaugeUpdating(Sensor sensor){
-      if (sensor.unit != ION.Core.Measure.Units.Vacuum.MICRON) {
+      if (sensor.unit != Units.Vacuum.MICRON) {
         middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
       } else {
         middleLabel.Text = sensor.measurement.amount.ToString();

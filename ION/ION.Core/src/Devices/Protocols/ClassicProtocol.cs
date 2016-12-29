@@ -1,12 +1,12 @@
 ﻿namespace ION.Core.Devices.Protocols {
 
-  using System;
   using System.Collections.Generic;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Devices;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// This protocol was the first bluetooth protocol ever used for ion. It is highly deprecated and unsupported. The

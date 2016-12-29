@@ -1,28 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using CoreGraphics;
-using UIKit;
-using System.IO;
-//using System.IO.IsolatedStorage;
-//using SQLite;
-//using System.Threading.Tasks;
-using System.Linq;
+﻿namespace ION.IOS.ViewController.Logging {   
 
-using ION.IOS.ViewController;
-using ION.IOS.Util;
-using ION.IOS.UI;
-using ION.Core.IO;
+	using System;
+	using System.Collections.Generic;
+	using System.Collections.ObjectModel;
+	using CoreGraphics;
+	using UIKit;
+	using System.IO;
+	//using System.IO.IsolatedStorage;
+	//using SQLite;
+	//using System.Threading.Tasks;
 
-using ION.Core.Database;
-using ION.Core.Content;
-using ION.Core.Devices;
-using ION.Core.Report.DataLogs;
-using ION.Core.Util;
-using ION.Core.App;
-using ION.IOS.ViewController.FileManager;
+	using Appion.Commons.Util;
 
-namespace ION.IOS.ViewController.Logging {   
+
+	using ION.Core.App;
+	using ION.Core.Devices;
+
   public static class ChosenDates {
     public static DateTime subLeft;
     public static DateTime subRight;

@@ -646,7 +646,7 @@
 				if (sensor.type == ESensorType.Temperature) {
 					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
 				} else {
-					analyzer.SetManifold(destSide, sensor);
+					analyzer.SetManifoldBySensor(destSide, sensor);
 				}
 			} else {
 				if (manifold.ContainsSensor(sensor)) {
@@ -657,7 +657,7 @@
 						manifold.SetSecondarySensor(sensor);
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
 						});
 					}
 				} else {
@@ -667,7 +667,7 @@
 						});
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
 						});
 					}
 				}
@@ -706,7 +706,7 @@
 					var si = analyzer.IndexOfSensor(sensor);
 					var di = analyzer.NextEmptySensorIndex(destSide);
 					AnimateSensorMountSwap(si, di);
-					analyzer.SetManifold(destSide, sensor);
+					analyzer.SetManifoldBySensor(destSide, sensor);
 				}
 			} else {
         if (destManifold.ContainsSensor(sensor)) {
@@ -728,7 +728,7 @@
               var si = analyzer.IndexOfSensor(sensor);
 							var di = analyzer.NextEmptySensorIndex(destSide);
 							AnimateSensorMountSwap(si, di);
-							analyzer.SetManifold(destSide, sensor);
+							analyzer.SetManifoldBySensor(destSide, sensor);
             });
           }
         }

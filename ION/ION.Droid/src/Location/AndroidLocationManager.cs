@@ -195,7 +195,7 @@
         return new ION.Core.Location.Address();
       } else {
         return new ION.Core.Location.Address() {
-          address = first.GetAddressLine(0),
+          address1 = first.GetAddressLine(0),
           city = first.Locality,
           state = first.AdminArea,
           zip = first.PostalCode,

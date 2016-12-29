@@ -12,6 +12,7 @@
   using Android.Graphics;
   using Android.OS;
   using Android.Runtime;
+	using Android.Support.Design.Widget;
   using Android.Views;
   using Android.Widget;
 
@@ -37,14 +38,16 @@
     /// The image view that will show the screenshot that will be screenshot.
     /// </summary>
     private ImageView imageView;
-    private EditText nameView;
-    private TextView dateView;
-    private TextView versionView;
-    private EditText addressView;
-    private EditText cityView;
-    private Spinner stateView;
-    private EditText zipView;
-    private EditText notesView;
+    private TextInputEditText nameView;
+		private TextInputEditText dateView;
+		private TextInputEditText versionView;
+		private TextInputEditText addressView1;
+		private TextInputEditText addressView2;
+		private TextInputEditText cityView;
+		private TextInputEditText stateView;
+		private TextInputEditText countryView;
+		private TextInputEditText zipView;
+		private TextInputEditText notesView;
 
     private byte[] screenshot;
     private DateTime createdDate;
@@ -62,14 +65,16 @@
       SetContentView(Resource.Layout.activity_screenshot);
 
       imageView = FindViewById<ImageView>(Resource.Id.content);
-      nameView = FindViewById<EditText>(Resource.Id.name);
-      dateView = FindViewById<TextView>(Resource.Id.date);
-      versionView = FindViewById<TextView>(Resource.Id.version);
-      addressView = FindViewById<EditText>(Resource.Id.address);
-      cityView = FindViewById<EditText>(Resource.Id.city);
-      stateView = FindViewById<Spinner>(Resource.Id.state);
-      zipView = FindViewById<EditText>(Resource.Id.zip);
-      notesView = FindViewById<EditText>(Resource.Id.notes);
+			nameView = FindViewById<TextInputEditText>(Resource.Id.name);
+			dateView = FindViewById<TextInputEditText>(Resource.Id.date);
+			versionView = FindViewById<TextInputEditText>(Resource.Id.version);
+			addressView1 = FindViewById<TextInputEditText>(Resource.Id.address1);
+			addressView2 = FindViewById<TextInputEditText>(Resource.Id.address2);
+			cityView = FindViewById<TextInputEditText>(Resource.Id.city);
+			stateView = FindViewById<TextInputEditText>(Resource.Id.state);
+			countryView = FindViewById<TextInputEditText>(Resource.Id.country);
+			zipView = FindViewById<TextInputEditText>(Resource.Id.zip);
+			notesView = FindViewById<TextInputEditText>(Resource.Id.notes);
 
       createdDate = DateTime.Now;
 
@@ -171,9 +176,11 @@
         report.tableData = new string[,] {
           { GetString(Resource.String.date), createdDate.ToShortDateString() + " " + createdDate.ToShortTimeString() },
           { GetString(Resource.String.app_version), ion.version },
-          { GetString(Resource.String.address), addressView.Text },
-          { GetString(Resource.String.city), cityView.Text },
-          { GetString(Resource.String.state), ((Java.Lang.String)stateView.SelectedItem).ToString() },
+					{ GetString(Resource.String.location_address_1), addressView1.Text },
+					{ GetString(Resource.String.location_address_2), addressView2.Text },
+          { GetString(Resource.String.location_city), cityView.Text },
+					{ GetString(Resource.String.location_state_province_region), stateView.Text },
+					{ GetString(Resource.String.location_country), countryView.Text },
           { GetString(Resource.String.zip), zipView.Text },
         };
 
@@ -218,17 +225,11 @@
     /// </summary>
     /// <param name="address">Address.</param>
     private void FillOutFieldsUsingAddress(Address address) {
-      addressView.Text = address.address;
+      addressView1.Text = address.address1;
+			addressView2.Text = address.address2;
       cityView.Text = address.city;
-      if (!string.IsNullOrEmpty(address.state)) {
-        string[] states = Resources.GetStringArray(Resource.Array.us_states);
-        var index = Array.FindIndex(states, (s) => {
-          return s.Equals(address.state);
-        });
-        if (index >= 0 && index < states.Length) {
-          stateView.SetSelection(index);
-        }
-      }
+			stateView.Text = address.state;
+			countryView.Text = address.country;
       zipView.Text = address.zip;
     }
 

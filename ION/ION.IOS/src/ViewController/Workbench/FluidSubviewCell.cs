@@ -9,7 +9,6 @@ namespace ION.IOS.ViewController.Workbench {
   using ION.Core.Content;
   using ION.Core.Content.Properties;
   using ION.Core.Fluids;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 

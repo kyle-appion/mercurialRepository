@@ -2,12 +2,11 @@
 
   using System;
 
+	using Appion.Commons.Measure;
+
   using ION.Core.App;
-  using ION.Core.Fluids;
   using ION.Core.Math;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   public class PTChart {
 

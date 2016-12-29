@@ -4,13 +4,14 @@
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Database;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// Provides a standard implementation for the device manager. This device manager

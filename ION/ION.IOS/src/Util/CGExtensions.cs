@@ -1,11 +1,7 @@
-﻿using System;
+﻿namespace ION.IOS.Util {
 
-using Foundation;
-using UIKit;
+	using UIKit;
 
-using ION.Core.Util;
-
-namespace ION.IOS.Util {
   public static class CGExtensions {
     /// <summary>
     /// Creates a UIColor from an ARGB8888 32-bit integer.

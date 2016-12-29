@@ -1,10 +1,6 @@
 ﻿namespace ION.Core.Sensors.Alarms {
 
-  using System;
-
-  using ION.Core.Alarms;
   using ION.Core.Devices;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
 
   public class HighSensorAlarm : BoundedSensorAlarm {

@@ -6,10 +6,11 @@
   using CoreLocation;
   using UIKit;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Measure;
   using ION.Core.Location;
-  using ION.Core.Util;
 
   using ION.IOS.App;
 

@@ -4,6 +4,8 @@
   using System.Collections.Generic;
   using System.Runtime.Serialization;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Fluids;
@@ -187,7 +189,7 @@
     /// <param name="second">Second.</param>
     public void Swap(int first, int second) {
       if (first == second) {
-        ION.Core.Util.Log.D(this, "Not swapping manifolds");
+        Log.D(this, "Not swapping manifolds");
         return;
       }
       var tmp = manifolds[first];

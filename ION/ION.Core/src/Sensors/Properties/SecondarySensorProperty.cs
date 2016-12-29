@@ -1,7 +1,9 @@
 ﻿namespace ION.Core.Sensors.Properties {
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.Content;
-	using ION.Core.Measure;
 
   public class SecondarySensorProperty : AbstractSensorProperty  {
     // Overridden from AbstractSensorProperty
@@ -35,7 +37,7 @@
     public SecondarySensorProperty(Manifold manifold): base(manifold.primarySensor) {
 			this.manifold = manifold;
 			manifold.onManifoldEvent += ManifoldEventListener;
-			ION.Core.Util.Log.D(this, "We are initially registered to manifold: " + manifold.GetHashCode());
+			Log.D(this, "We are initially registered to manifold: " + manifold.GetHashCode());
     }
 
 		protected override void OnSensorChanged() {
@@ -48,7 +50,7 @@
 		}
 
 		public void ManifoldEventListener(ManifoldEvent e) {
-			ION.Core.Util.Log.D(this, "Received manifold event from: " + e.manifold.GetHashCode() + " we are listening to: " + manifold.GetHashCode());
+			Log.D(this, "Received manifold event from: " + e.manifold.GetHashCode() + " we are listening to: " + manifold.GetHashCode());
 			switch (e.type) {
 				case ManifoldEvent.EType.Invalidated:
 				case ManifoldEvent.EType.SecondarySensorAdded:

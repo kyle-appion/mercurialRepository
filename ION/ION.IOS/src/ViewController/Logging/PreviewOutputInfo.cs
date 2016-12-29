@@ -1,5 +1,4 @@
-﻿using System;
-using Xfinium.Pdf;
+﻿using Xfinium.Pdf;
 using Xfinium.Pdf.Core.Security;
 
 namespace ION.IOS.ViewController.Logging

@@ -1,6 +1,6 @@
 ﻿namespace ION.Core.Location {
   
-  using ION.Core.Measure;
+	using Appion.Commons.Measure;
 
   /// <summary>
   /// A simple implementation of a location that can be used by any platform.

@@ -13,11 +13,12 @@ namespace ION.IOS.ViewController {
 
 	using FlyoutNavigation;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Devices;
 	using ION.Core.Devices.Certificates;
 	using ION.Core.IO;
-	using ION.Core.Util;
 
 	using ION.IOS.App;
 	using ION.IOS.Net;

@@ -1,13 +1,10 @@
 ﻿using System;
-using Foundation;
 using UIKit;
 using CoreGraphics;
-using ION.Core.Content;
-using ION.Core.Fluids;
+
+using Appion.Commons.Measure;
+
 using ION.Core.Sensors;
-using ION.IOS.Util;
-using ION.Core.App;
-using ION.Core.Measure;
 
 namespace ION.IOS.ViewController.Analyzer {
   

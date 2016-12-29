@@ -3,10 +3,11 @@
 	using System;
 	using System.Collections.Generic;
 
+	using Appion.Commons.Measure;
+
 	using ION.Core.App;
 	using ION.Core.Database;
 	using ION.Core.Devices;
-	using ION.Core.Measure;
 
 	public class DeviceSensorGaugeReportData {
 		/// <summary>

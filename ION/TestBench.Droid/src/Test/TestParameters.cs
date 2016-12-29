@@ -4,8 +4,9 @@ namespace TestBench {
   using System;
   using System.Collections.Generic;
 
+	using Appion.Commons.Measure;
+
 	using ION.Core.Devices;
-  using ION.Core.Measure;
 	using ION.Core.Sensors;
 
   public class TestParameters {

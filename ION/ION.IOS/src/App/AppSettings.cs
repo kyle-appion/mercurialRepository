@@ -1,9 +1,7 @@
-﻿using System;
+﻿namespace ION.IOS.App {
 
+	using Foundation;
 
-using Foundation;
-
-namespace ION.IOS.App {
   public class AppSettings {
     const string PREFERENCES_PATH = "Settings.bundle/Root.plist";
     const string KEY_PREFERENCE_SPECIFIERS = "PreferenceSpecifiers";
@@ -62,7 +60,6 @@ namespace ION.IOS.App {
         }
 
         var val = item[KEY_DEFAULT_VALUE];
-        ION.Core.Util.Log.D(this, "Resolving key " + key);
 
         switch (key.ToString()) { 
           // Location

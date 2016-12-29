@@ -297,7 +297,7 @@ file.
 
 /* SENSOR TYPE */
 "sensor_type_length" = "Length";
-"sensor_type_mass" = "Mass";
+"sensor_type_weight" = "Weight";
 "sensor_type_pressure" = "Pressure";
 "sensor_type_temperature" = "Temperature";
 "sensor_type_vacuum" = "Vacuum";

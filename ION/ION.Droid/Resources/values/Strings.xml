@@ -206,6 +206,7 @@
   <string name="device_pt500">PT500</string>
   <string name="device_p800">P800</string>
   <string name="device_pt800">PT800</string>
+	<string name="device_wllibra">Libra</string>
   <string name="device_serial_number">Serial Number</string>
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
@@ -307,6 +308,17 @@
 
 	<string name="jobs_loading">Loading all of the saved jobs.</string>
 	<string name="jobs_saved">Saved Jobs</string>
+
+	<!--
+	LOCATION
+	-->
+	<string name="location_address_1">Address Line 1</string>
+	<string name="location_address_2">Address Line 2</string>
+	<string name="location_city">City</string>
+	<string name="location_state_province_region">State / Province / Region</string>
+	<string name="location_zip_postal_code">ZIP / Postal Code</string>
+	<string name="location_country">Country</string>
+	
   
   <!--
   MANIFOLD
@@ -325,14 +337,14 @@
   <string name="humidity_short">HUM</string>
   <string name="length">Length</string>
   <string name="length_short">LEN</string>
-  <string name="mass">Mass</string>
-  <string name="mass_short">M</string>
   <string name="pressure">Pressure</string>
   <string name="pressure_short">PRESS</string>
   <string name="temperature">Temperature</string>
   <string name="temperature_short">TEMP</string>
   <string name="vacuum">Vacuum</string>
   <string name="vacuum_short">VAC</string>
+  <string name="weight">Weight</string>
+  <string name="weight_short">WT.</string>
   <string name="unknown">Unknown</string>
 
   <!--

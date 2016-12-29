@@ -4,18 +4,18 @@
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Net;
-	using System.Linq;
 	using System.Threading;
 	using System.Threading.Tasks;
 
 	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
 
+	using Appion.Commons.Security;
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Devices;
 	using ION.Core.Devices.Certificates;
-	using ION.Core.Security;
-	using ION.Core.Util;
 	using Foundation;
 
 	public class RequestCalibrationCertificatesTask {

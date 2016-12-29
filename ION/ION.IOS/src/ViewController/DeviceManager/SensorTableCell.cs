@@ -2,12 +2,12 @@ namespace ION.IOS.ViewController.DeviceManager {
 
   using System;
 
-  using Foundation;
   using UIKit;
+
+	using Appion.Commons.Util;
 
   using ION.Core.Devices;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.IOS.Sensors;
   using ION.IOS.UI;

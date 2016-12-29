@@ -84,6 +84,15 @@
       android:entries="@array/preferences_units_vacuum_entries"
       android:entryValues="@array/preferences_units_vacuum_values"
       android:defaultValue="@integer/preferences_units_vacuum_default"/>
+    <!-- Weight -->
+    <ListPreference
+      android:key="@string/pkey_unit_weight"
+      android:title="@string/preferences_units_weight"
+      android:summary="%s"
+      android:dialogTitle="@string/preferences_units_weight_title"
+      android:entries="@array/preferences_units_weight_entries"
+      android:entryValues="@array/preferences_units_weight_values"
+      android:defaultValue="@integer/preferences_units_weight_default"/>
   </PreferenceCategory>
 
 	<!--
