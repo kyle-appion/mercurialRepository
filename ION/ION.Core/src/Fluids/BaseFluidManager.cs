@@ -27,6 +27,10 @@
     /// The asset file path for the refrigerant colors.
     /// </summary>
     private const string FLUID_COLORS_FILE = "refrigerantcolors.properties";
+		/// <summary>
+		/// The asset file path for the refrigerant safety.
+		/// </summary>
+		private const string FLUID_SAFETY_FILE = "refrigerantsafety.properties";
     /// <summary>
     /// The preference key that is used to retrieve the last used fluid for the fluid manager.
     /// </summary>
@@ -85,6 +89,10 @@
     /// The properties that contains the known fluid colors.
     /// </summary>
     private Properties fluidColors;
+		/// <summary>
+		/// The properties that contains the fluid safeties.
+		/// </summary>
+		private Properties fluidSafety;
     /// <summary>
     /// A lookup cache that will allow us to store commonly used fluids.
     /// </summary>
@@ -103,6 +111,9 @@
         preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
         var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
         fluidColors = await Properties.FromStreamAsync(propStream);
+
+				var fsStream = EmbeddedResource.Load(FLUID_SAFETY_FILE);
+				fluidSafety = await Properties.FromStreamAsync(fsStream);
 
         preferredFluids = new List<string>();
         var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
@@ -222,6 +233,18 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
       }
     }
 
+		// Overridden from IFluidManager
+		public Fluid.ESafety GetFluidSafety(string fluidName) {
+			var safety = fluidSafety[fluidName];
+			if (safety == null) {
+				return Fluid.ESafety.Unknown;
+			} else {
+				var ret = Fluid.ESafety.Unknown;
+				Enum.TryParse(safety, out ret);
+				return ret;
+			}
+		}
+
     // Overridden from IFluidManager
     public void MarkFluidAsPreferred(string fluidName, bool preferred) {
       if (fluidName == null || fluidName.Equals("")) {
@@ -250,7 +273,6 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
     /// <param name="fluidName">Fluid name.</param>
     private bool HasFluid(string fluidName) {
       foreach (var fn in GetAvailableFluidNames()) {
-//        if (fn.Equals(fluidName)) {
         var exists = String.Compare(fn,fluidName,StringComparison.CurrentCultureIgnoreCase);
         if (exists.Equals(0)) { 
           return true;
@@ -268,6 +290,7 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
     private Task<Fluid> LoadFluidAsync(string fluidName) {
       var ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
       ret.color = GetFluidColor(ret.name);
+			ret.safety = GetFluidSafety(ret.name);
       return Task.FromResult(ret);
     }
 

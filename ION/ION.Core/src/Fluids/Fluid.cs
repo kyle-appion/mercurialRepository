@@ -24,15 +24,15 @@
     /// </summary>
     public string name { get; private set; }
 		/// <summary>
-		/// The flags that are associated to the fluid.
+		/// The safety type for this fluid.
 		/// </summary>
-		/// <value>The flags.</value>
-		public EFlags flags { get; private set; }
+		/// <value>The safety.</value>
+		public ESafety safety { get; internal set; }
     /// <summary>
     /// The ARGB8888 color of the fluid.
     /// </summary>
     /// <value>The color.</value>
-    public int color { get; set; }
+    public int color { get; internal set; }
     /// <summary>
     /// Queries whether or not the fluid is a mixture.
     /// </summary>
@@ -75,9 +75,8 @@
     /// <param name="temperatures"></param>
     /// <param name="bubblePressures"></param>
     /// <param name="dewPressures"></param>
-    public Fluid(string name, EFlags flags, bool mixture, double tmin, double tmax, double step, int rows, double[] temperatures, double[] pressureValues) {
+    public Fluid(string name, bool mixture, double tmin, double tmax, double step, int rows, double[] temperatures, double[] pressureValues) {
       this.name = name;
-			this.flags = flags;
       this.mixture = mixture;
       this.tmin = tmin;
       this.tmax = tmax;
@@ -174,7 +173,6 @@
       var offset = (mixture && EState.Dew == state) ? rows : 0;
       int i = BinSearch(pressureValues, pressure.amount, 0 + offset, rows + offset);
 
-      //if (i >= 0 - 1) {
       if (i >= 0) {
         return TEMPERATURE.OfScalar(temperatures[i]);
       } else {
@@ -286,10 +284,15 @@
       Dew,
     } // End State
 
-		[Flags]
-		public enum EFlags {
-			None = 0,
-			Explosive = 1 << 0,
+		public enum ESafety {
+			A1			= 1,
+			A2			= 2,
+			A2L			= 3,
+			A3			= 4,
+			B1			= 5,
+			B2			= 6,
+
+			Unknown = 0,
 		}
   }
 }

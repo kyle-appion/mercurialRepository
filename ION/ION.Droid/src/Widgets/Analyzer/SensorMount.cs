@@ -111,7 +111,8 @@
       title.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_upper_white);
       title.SetPadding(10, 10, 10, 0);
       title.SetTextColor(gray);
-        title.SetSingleLine(true);
+			title.SetTextSize(Android.Util.ComplexUnitType.Dip, context.Resources.GetDimension(Resource.Dimension.analyzer_sensor_mount_header));
+      title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
       title.SetIncludeFontPadding(false);
       title.Text = "       ";
@@ -123,7 +124,7 @@
       measurement.Id = Resource.Id.measurement;
       measurement.SetTextColor(gray);
       measurement.Gravity = GravityFlags.Right;
-//			measurement.SetTextSize(Android.Util.ComplexUnitType.Dip, context.Resources.GetDimension(Resource.Dimension.text_size_large));
+			measurement.SetTextSize(Android.Util.ComplexUnitType.Sp, context.Resources.GetDimension(Resource.Dimension.analyzer_sensor_mount_measurement));
       measurement.SetSingleLine(true);
       measurement.Ellipsize = TextUtils.TruncateAt.End;
       measurement.SetIncludeFontPadding(false);

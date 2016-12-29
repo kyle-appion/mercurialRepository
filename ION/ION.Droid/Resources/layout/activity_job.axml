@@ -9,5 +9,5 @@
         android:background="@drawable/shape_rounded_white"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:dividerHeight="@dimen/view_padding" />
+        android:dividerHeight="@dimen/padding" />
 </LinearLayout>

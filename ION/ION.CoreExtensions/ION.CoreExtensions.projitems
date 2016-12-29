@@ -12,12 +12,14 @@
     <Folder Include="$(MSBuildThisFileDirectory)src\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\IO\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\Net\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Threading\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\RequestCalibrationCertificates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\WebPayload.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Threading\MessageQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

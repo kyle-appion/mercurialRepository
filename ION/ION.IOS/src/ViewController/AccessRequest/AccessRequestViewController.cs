@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using UIKit;
 using CoreGraphics;
 using ION.IOS.Util;
@@ -94,12 +95,29 @@ namespace ION.IOS.ViewController.AccessRequest {
 		
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
-			
+			Console.WriteLine("AccessRequestViewController userID stored " + KeychainAccess.ValueForKey("userID"));
 			if(string.IsNullOrEmpty(KeychainAccess.ValueForKey("userID"))){
-				requestManager.accessView.Hidden = true;
-				loggedOutLabel.Hidden = false;
+				requestManager.pendingTable.DataSource = null;
+				requestManager.pendingTable.ReloadData();
+        UIView.Transition(
+          fromView:settingsManager.settingsView,
+          toView:requestManager.accessView,
+          duration:.1,
+          options: UIViewAnimationOptions.TransitionNone,
+          completion: () => {
+          	settingsManager.settingsView.Hidden = true;
+          	requestManager.accessView.Hidden = true;
+						loggedOutLabel.Hidden = false;
+            accessHolderView.SendSubviewToBack(settingsManager.settingsView);
+            accessHolderView.BringSubviewToFront(requestManager.accessView);
+          }
+        );			
+				this.NavigationItem.RightBarButtonItem = null;
 			} else {
+				requestManager.getAllRequests(this,EventArgs.Empty);
 				requestManager.accessView.Hidden = false;
+				settingsManager.settingsView.Hidden = false;
+				this.NavigationItem.RightBarButtonItem = settingsButton;
 				loggedOutLabel.Hidden = true;
 			}
 		}
@@ -171,5 +189,3 @@ namespace ION.IOS.ViewController.AccessRequest {
 		}
 	}
 }
-
-

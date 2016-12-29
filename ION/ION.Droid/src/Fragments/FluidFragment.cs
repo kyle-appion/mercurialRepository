@@ -8,12 +8,14 @@
   using Android.App;
   using Android.Content;
   using Android.Graphics;
+	using Android.Graphics.Drawables;
   using Android.OS;
   using AUtil = Android.Util;
   using Android.Views;
   using Android.Widget;
 
   using ION.Core.App;
+	using ION.Core.Fluids;
   using ION.Core.Util;
 
   using ION.Droid.Views;
@@ -177,9 +179,12 @@
         convert.Tag = vh = new ViewHolder();
 
         vh.color = convert.FindViewById(Resource.Id.color);
+				vh.safetyColor = convert.FindViewById(Resource.Id.view);
         vh.name = convert.FindViewById<TextView>(Resource.Id.name);
-        vh.selected = convert.FindViewById<ImageView>(Resource.Id.status);
+				vh.safety = convert.FindViewById<TextView>(Resource.Id.text);
         vh.perferred = convert.FindViewById<ImageView>(Resource.Id.preferred);
+
+				vh.safetyColor.Background = new ShapeDrawable(new Android.Graphics.Drawables.Shapes.OvalShape());
       }
 
       string fluidName = fluids[position];
@@ -188,9 +193,9 @@
       vh.name.Text = fluidName;
 
       if (fluidName.Equals(selectedFluid)) {
-        vh.selected.Visibility = ViewStates.Visible;
+				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.light_gray));
       } else {
-        vh.selected.Visibility = ViewStates.Invisible;
+				convert.SetBackgroundColor(c.Resources.GetColor(Resource.Color.white));
       }
 
       if (fm.IsFluidPreferred(fluidName)) {
@@ -198,6 +203,20 @@
       } else {
         vh.perferred.SetColorFilter(new Color(c.Resources.GetColor(Resource.Color.black)));
       }
+
+
+			var safety = fm.GetFluidSafety(fluidName);
+			var b = vh.safetyColor.Background as ShapeDrawable;
+			b.Paint.Color = new Color(safety.Color());
+			vh.safetyColor.InvalidateDrawable(b);
+
+			if (safety == Fluid.ESafety.Unknown) {
+				vh.safety.Text = c.GetString(Resource.String.na);
+				vh.safetyColor.Visibility = ViewStates.Gone;
+			} else {
+				vh.safety.Text = safety.ToString();
+				vh.safetyColor.Visibility = ViewStates.Visible;
+			}
 
       vh.perferred.SetOnClickListener(new ViewClickAction((view) => {
         fm.MarkFluidAsPreferred(fluidName, !fm.IsFluidPreferred(fluidName));
@@ -207,9 +226,9 @@
     }
 
     private class ViewHolder : Java.Lang.Object {
-      public View color;
-      public TextView name;
-      public ImageView selected, perferred;
+      public View color, safetyColor;
+      public TextView name, safety;
+      public ImageView perferred;
     }
   }
 }

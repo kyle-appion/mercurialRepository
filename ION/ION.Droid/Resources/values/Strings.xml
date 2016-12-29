@@ -142,6 +142,7 @@
 	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
   <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
+  <string name="analyzer_error_failed_to_launch_ptchart_missing_manifold">Failed to open P/T Chart activity; the manifold is not present in the Analyzer.</string>
   <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
   <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
   <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
@@ -181,8 +182,6 @@
   CALCULATORS
   -->
   <string name="calculators">Calculators</string>
-  <string name="ptchart">P/T Conversion</string>
-  <string name="shsc">Superheat / Subcool</string>
 
   <!--
   DEVICE MANAGER
@@ -255,6 +254,25 @@
   <string name="fluid_manager">Fluid Manager</string>
   <string name="fluid_nothing_selected">Nothing Selected</string>
   <string name="fluid_pt_abrv">P/T</string>
+  <string name="fluid_safety">Safety</string>
+  <string name="fluid_safety_help">Safety Help</string>
+  <string name="fluid_safety_help_descriptions">
+ASHRAE Standard 34 provides refrigerant safety classification according to <b>toxicity</b> and <b>flammability</b>.
+\n\n
+<b><u>Toxicity:</u></b>\n
+	A: Lower Toxicity\n
+  B: Higher Toxicity\n
+\n\n
+<b><u>Flammability:</u></b>\n
+	1: Non-flammable\n
+	2L: Mildly flammable, lower limits\n
+	2: Mildly flammable\n
+	3: Flammable\n
+\n\n
+<b><u>Example:</u></b>\n
+	R410A is classified <b>A1</b> (lower toxicity, non-flammable)\n
+	R32 is classified <b>A2L</b> (lower toxicity, mildly flammable, lower limits)
+	</string>
   <string name="fluid_saturated_temperature">Saturated Temperature</string>
   <string name="fluid_setup">Setup</string>
   <string name="fluid_sc">Subcool</string>
@@ -297,6 +315,7 @@
   <string name="manifold_add_subview">Add Subview</string>
   <string name="manifold_select_action">Select a viewer action</string>
   <string name="manifold_select_subview">Add Subview</string>
+  <string name="manifold_subviews">Subviews</string>
 
   <!--
   MEASUREMENT
@@ -380,6 +399,7 @@
 	<!--
 	PTCHART
 	-->
+	<string name="ptchart">P/T Chart</string>
 	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid Viewer</string>
 	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
 	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
@@ -388,6 +408,7 @@
 	<!--
 	SUPERHEAT / SUBCOOL
 	-->
+  <string name="shsc">Superheat / Subcool</string>
 	<string name="shsc_error_failed_to_update_manifold">Failed to update Viewer</string>
 	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid Viewer</string>
 	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get Viewer</string>

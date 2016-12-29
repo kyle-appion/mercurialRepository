@@ -22,7 +22,6 @@ using ION.IOS.Viewcontroller.RemoteAccess;
 using ION.Core.Database;
 using ION.IOS.ViewController.ScreenshotReport;
 using ION.Core.Util;
-using System.Linq;
 
 namespace ION.IOS.ViewController.Analyzer { 
   
@@ -42,7 +41,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public UITapGestureRecognizer outsideTap;
 
     private IosION ion;
-    public WebPayload webServices;
+//    public WebPayload webServices;
 
     /// <summary>
     /// The analyzer that we are working with.
@@ -77,7 +76,7 @@ namespace ION.IOS.ViewController.Analyzer {
       InitNavigationBar("ic_nav_analyzer", false); 
       ion = AppState.context as IosION;      
 
-      webServices = ion.webServices;
+//      webServices = ion.webServices;
       AutomaticallyAdjustsScrollViewInsets = false;
 
       backAction = () => {
@@ -161,32 +160,21 @@ namespace ION.IOS.ViewController.Analyzer {
 				
 				remoteControl.editButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
-					if(!analyzerSensors.areaList.SequenceEqual(analyzer.revertPositions)){
-						analyzerSensors.areaList = new List<int>(analyzer.sensorPositions);
-						//////MAYBE ONLY RUN THIS ON EDIT START AND STOP.........
-						AnalyserUtilities.arrangeViews(analyzerSensors);
-					}
-					webServices.downloading = false;
+//					webServices.downloading = false;
 					blockerView.Hidden = true;
 				};
 
 				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
-					if(!analyzerSensors.areaList.SequenceEqual(analyzer.revertPositions)){
-						analyzerSensors.areaList = new List<int>(analyzer.revertPositions);
-						//////MAYBE ONLY RUN THIS ON EDIT START AND STOP.........
-						AnalyserUtilities.arrangeViews(analyzerSensors);
-					}
 					pauseRemote(false);
-					webServices.downloading = true;
-					blockerView.Hidden = false;
-
+//					webServices.downloading = true;
+					blockerView.Hidden = false;					
 				};
 			
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
-				layoutAnalyzer();
+	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
-      	webServices.paused += pauseRemote;
+//      	webServices.paused += pauseRemote;
       	viewAnalyzerContainer.AddSubview(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
@@ -232,17 +220,17 @@ namespace ION.IOS.ViewController.Analyzer {
         }
 				
 				try{
-					DateTime startPoint = DateTime.UtcNow.ToLocalTime().AddMinutes(48);
+					DateTime startPoint = DateTime.UtcNow.ToLocalTime();
 	        var session = new SessionRow() {
 	          frn_JID = 0,
 	          sessionStart = startPoint,
-	          sessionEnd = startPoint.AddMinutes(48),
+	          sessionEnd = startPoint.AddMinutes(120),
 	        };
 	        var SID = ion.database.SaveAsync<SessionRow>(session).Result;
 	        Console.WriteLine("Inserted session with id " + SID);
 
 					var rows = new List<SensorMeasurementRow>();				
-					for(int i = 0; i < 48; i++){
+					for(int i = 0; i < 120; i++){
 						var date = startPoint.AddMinutes(i);
 			      var ret = new SensorMeasurementRow();    
 						
@@ -257,8 +245,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				      ret.frn_SID = session.SID;
 				      ret.sensorIndex = 0;
 				      ret.recordedDate = date;
-				      ret.measurement = 1068687.3804;
-				      //ret.measurement = 1103161.1669;
+				      ret.measurement = 1103161.1669;
 				    }
 	
 						rows.Add(ret);				
@@ -317,7 +304,6 @@ namespace ION.IOS.ViewController.Analyzer {
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea6, "6", analyzerSensors.snapRect6, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
-      
       if (UserInterfaceIdiomIsPhone) {
         compressor = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width, .023 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height));
         expansion = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width,.365 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height));
@@ -325,7 +311,6 @@ namespace ION.IOS.ViewController.Analyzer {
         compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width, .025 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
         expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width,.36 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
       }
-      
       compressor.Image = UIImage.FromBundle("ic_compressor");
       expansion.Image = UIImage.FromBundle("ic_expansionchamber");
 
@@ -1071,10 +1056,9 @@ namespace ION.IOS.ViewController.Analyzer {
         } 
       }
 
-      if(!existingConnection){   
+      if(!existingConnection){
         sensor.analyzerSlot = Convert.ToInt32(area.snapArea.AccessibilityIdentifier) - 1;
         sensor.analyzerArea = Convert.ToInt32(area.snapArea.AccessibilityIdentifier);
-        Console.WriteLine("AnalyzerViewController addDeviceSensor set sensor area " + area.snapArea.AccessibilityIdentifier + "'s analyzer slot to " + sensor.analyzerSlot);
         if(analyzer.sensorList == null){
 					analyzer.sensorList = new List<Sensor>();
 				}
@@ -1108,7 +1092,7 @@ namespace ION.IOS.ViewController.Analyzer {
         if(sensor.type == ESensorType.Pressure || sensor.type == ESensorType.Temperature){
           area.lowArea.manifold.ptChart = PTChart.New(area.lowArea.ion, Fluid.EState.Dew);
           area.highArea.manifold.ptChart = PTChart.New(area.highArea.ion, Fluid.EState.Dew);
-        }else{ 
+        }else{
           area.lowArea.changeFluid.Hidden = true;
           area.lowArea.changePTFluid.Hidden = true;
           area.highArea.changeFluid.Hidden = true;
@@ -1389,13 +1373,13 @@ namespace ION.IOS.ViewController.Analyzer {
 				var viewIndex = analyzerSensors.areaList.IndexOf(analyzer.sensorList[i].analyzerArea);
 				addDeviceSensor(analyzerSensors.viewList[viewIndex],(GaugeDeviceSensor)analyzer.sensorList[i]);
 			}
-			Console.WriteLine("Finished layoutAnalyzer");
 		}
 		
 		public async void refreshSensorLayout(){
+/*
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			while(webServices.downloading){
-				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);			
+				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);				
 				layoutAnalyzer();
 		
 				for(int a = 0; a < analyzerSensors.viewList.Count; a++){
@@ -1408,21 +1392,18 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
 						if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != analyzer.lowAccessibility){
 							var previousIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier));
-							Console.WriteLine("removing the sensor area " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier +  " at index " + previousIndex + " from the low area");
 							AnalyserUtilities.RemoveLHAssociation(analyzerSensors.viewList[previousIndex]);
 						}
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.lowAccessibility));
-					Console.WriteLine("About to associate low area with sensor at index " + newIndex + " with name " + analyzerSensors.viewList[newIndex].topLabel.Text + " and identifier " + analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier);
 					AnalyserUtilities.addLHSensorAssociation("low",analyzerSensors.viewList[newIndex]);
-					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier;
-					confirmSubviews(analyzerSensors.viewList[newIndex],"low");
+					confirmSubviews(analyzerSensors.viewList[newIndex],"low");   
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
 						if(!clearSensor.lowArea.snapArea.Hidden){
 							lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
 							AnalyserUtilities.RemoveLHAssociation(clearSensor);
-							break;  
+							break;
 						}
 					}
 				}
@@ -1431,14 +1412,11 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
 						if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != analyzer.highAccessibility){
 							var previousIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier));
-							Console.WriteLine("removing the sensor area " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier +  " at index " + previousIndex + " from the high area");
 							AnalyserUtilities.RemoveLHAssociation(analyzerSensors.viewList[previousIndex]);
 						}
 					}
 					var newIndex = analyzerSensors.areaList.IndexOf(Convert.ToInt32(analyzer.highAccessibility));
-					Console.WriteLine("About to associate high area with sensor at index " + newIndex);
 					AnalyserUtilities.addLHSensorAssociation("high",analyzerSensors.viewList[newIndex]);
-					lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[newIndex].snapArea.AccessibilityIdentifier;
 					confirmSubviews(analyzerSensors.viewList[newIndex]);
 				} else {
 					foreach(var clearSensor in analyzerSensors.viewList){
@@ -1449,10 +1427,9 @@ namespace ION.IOS.ViewController.Analyzer {
 						}
 					}
 				}
-
-				//analyzerSensors.areaList = analyzer.sensorPositions;
 				await Task.Delay(TimeSpan.FromMilliseconds(1000));
 			}
+*/
 		}
 		
 		public void pauseRemote(bool paused){
@@ -1466,9 +1443,11 @@ namespace ION.IOS.ViewController.Analyzer {
       var rootVC = window.RootViewController as IONPrimaryScreenController;
       
 		 	remoteControl.controlView.Hidden = true;
+/*
 		 	webServices.downloading = false;
 		 	webServices.remoteViewing = false;
 		 	webServices.paused = null;
+*/
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
@@ -1488,7 +1467,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 				foreach(var removal in updateSensor.lowArea.tableSubviews.ToArray()){
 					if(!analyzer.lowSubviews.Contains(removal)){
-						Console.WriteLine("Removed " + removal);  
+						Console.WriteLine("Removed " + removal);
 						updateSensor.lowArea.tableSubviews.Remove(removal);
 						updateSensor.lowArea.subviewTable.ReloadData();
 					}
@@ -1537,11 +1516,13 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
 	    } else {
+/*
 				if(webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
+*/
 			}
 	    //viewAnalyzerContainer.SetNeedsDisplay();
     }

@@ -481,12 +481,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
         }
         if(calculation.magnitude < 0){
 					imageNegativeWarning.Hidden = false;
-					View.BringSubviewToFront(imageNegativeWarning);
+					View.BringSubviewToFront(imageNegativeWarning);  
 				} else {
 					imageNegativeWarning.Hidden = true;
 					View.BringSubviewToFront(imageNegativeWarning);
 				}
       } else {
+      	imageNegativeWarning.Hidden = true;
 				if (System.Math.Abs(calculation.magnitude) < 0.1) {
           labelFluidState.BackgroundColor = new UIColor(Colors.GREEN);
           labelFluidState.Text = Strings.Fluid.SATURATED;
@@ -499,7 +500,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           //should never show a negative temperature so multiply by -1
           calculation = calculation * -1;
         }
-      }
+      }  
       labelFluidDelta.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
     }
 

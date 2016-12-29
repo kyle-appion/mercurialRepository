@@ -7,7 +7,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 
 	public partial class EntryCell : UITableViewCell {
 
-    public string entryText { get { return entry.Text; } }
+    //public string entryText { get { return entry.Text; } }
 
 		public EntryCell (IntPtr handle) : base (handle) {
 		}
@@ -16,16 +16,16 @@ namespace ION.IOS.ViewController.ScreenshotReport {
       base.AwakeFromNib();
 
       AddGestureRecognizer(new UITapGestureRecognizer(() => {
-        entry.ResignFirstResponder();
+        //entry.ResignFirstResponder();
       }));
     }
 
     public void UpdateFrom(IItem item) {
-      labelHeader.Text = item.header;
-      entry.Text = item.value;
-      entry.Delegate = new EntryDelegate(this, item);
-      entry.AddTarget((object obj, EventArgs args) => {
-      }, UIControlEvent.AllEvents);
+      //labelHeader.Text = item.header;
+      //entry.Text = item.value;
+      //entry.Delegate = new EntryDelegate(this, item);
+      //entry.AddTarget((object obj, EventArgs args) => {
+      //}, UIControlEvent.AllEvents);
     }
 	}
 
@@ -41,7 +41,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     public override void EditingEnded(UITextField textField) {
       ION.Core.Util.Log.D(this, "Editing ended");
       item.value = textField.Text;
-      cell.entry.ResignFirstResponder();
+      //cell.entry.ResignFirstResponder();
     }
   }
 }

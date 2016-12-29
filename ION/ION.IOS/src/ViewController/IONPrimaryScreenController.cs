@@ -74,12 +74,12 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-#if DEBUG
+//#if DEBUG
         new Section("Remote Viewing".ToUpper()){
 					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
 					new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
 				},
-#endif
+//#endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
@@ -273,10 +273,10 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-#if DEBUG
+//#if DEBUG
         new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
-#endif
+//#endif
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates

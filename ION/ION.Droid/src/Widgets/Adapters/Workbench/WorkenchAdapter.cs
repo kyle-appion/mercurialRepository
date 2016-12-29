@@ -51,7 +51,7 @@
     /// <summary>
     /// The drag decoration.
     /// </summary>
-    private ItemTouchHelper dragDecoration;
+//    private ItemTouchHelper dragDecoration;
     /// <summary>
     /// The stack of pending expands.
     /// </summary>
@@ -60,7 +60,8 @@
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
-      dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
+//			dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this, swipes));
+			touchHelperDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
     }
 
     /// <summary>
@@ -69,7 +70,7 @@
     /// <param name="recyclerView">Recycler view.</param>
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-      dragDecoration.AttachToRecyclerView(recyclerView);
+//      dragDecoration.AttachToRecyclerView(recyclerView);
     }
 
     /// <summary>
@@ -189,7 +190,16 @@
     /// <returns>The view holder swipe action.</returns>
     /// <param name="index">Index.</param>
     public override Action GetViewHolderSwipeAction(int index) {
-      var record = records[index];
+			IRecord record = null;
+			try {
+      	record = records[index];
+			} catch (Exception e) {
+				Log.E(this, "Failed to get Swipe action for index: " + index, e);
+#if DEBUG
+				Toast.MakeText(recyclerView.Context, "Failed to get Swipe Action! See Logs", ToastLength.Long).Show();
+#endif
+				return null;
+			}
       if (record is SensorPropertyRecord) {
         var spr = record as SensorPropertyRecord;
         var manifold = spr.manifold;
@@ -230,8 +240,13 @@
       records.Clear();
 
       foreach (var m in workbench.manifolds) {
-        records.Add(new ManifoldRecord(m));
-        records.Add(new SpaceRecord());
+				var mr = new ManifoldRecord(m);
+        records.Add(mr);
+				records.Add(new SpaceRecord());
+
+				if (m.sensorPropertyCount > 0) {
+					ExpandManifold(m);
+				}
       }
 
       records.Add(new FooterRecord(footerAction));

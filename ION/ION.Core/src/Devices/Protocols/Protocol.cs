@@ -1,8 +1,8 @@
-﻿using System;
+﻿namespace ION.Core.Devices.Protocols {
 
-using ION.Core.Measure;
-namespace ION.Core.Devices.Protocols {
+	using System;
 
+	using ION.Core.Measure;
   using ION.Core.Sensors;
 
   /// <summary>

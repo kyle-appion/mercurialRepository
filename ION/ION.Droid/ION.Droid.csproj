@@ -13,9 +13,10 @@
     <AndroidResgenClass>Resource</AndroidResgenClass>
     <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
     <AndroidApplication>True</AndroidApplication>
-    <AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
+    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -33,6 +34,8 @@
     <AndroidSigningKeyAlias>appion keystore</AndroidSigningKeyAlias>
     <AndroidSigningKeyPass>AppionPublicKey</AndroidSigningKeyPass>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>full</DebugType>
@@ -40,7 +43,6 @@
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <ConsolePause>false</ConsolePause>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <AndroidSigningKeyStore>/Users/ahodder/Documents/code_space/certs/AppionPrivateKeystore.keystore</AndroidSigningKeyStore>
@@ -82,18 +84,6 @@
     <Reference Include="OxyPlot.Xamarin.Android">
       <HintPath>..\packages\OxyPlot.Mobile.2015.1.744-alpha\lib\MonoAndroid\OxyPlot.Xamarin.Android.dll</HintPath>
     </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Basement">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Base">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Maps">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
-    </Reference>
-    <Reference Include="Xamarin.GooglePlayServices.Location">
-      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
-    </Reference>
     <Reference Include="Xamarin.Android.Support.v4">
       <HintPath>..\packages\Xamarin.Android.Support.v4.23.4.0.1\lib\MonoAndroid403\Xamarin.Android.Support.v4.dll</HintPath>
     </Reference>
@@ -114,6 +104,21 @@
     </Reference>
     <Reference Include="Xamarin.Android.Support.Design">
       <HintPath>..\packages\Xamarin.Android.Support.Design.23.4.0.1\lib\MonoAndroid43\Xamarin.Android.Support.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Basement">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Basement.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Base">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Base.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Base.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Maps">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Maps.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Maps.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Location">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Location.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.GooglePlayServices.Nearby">
+      <HintPath>..\packages\Xamarin.GooglePlayServices.Nearby.29.0.0.2\lib\MonoAndroid41\Xamarin.GooglePlayServices.Nearby.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -144,7 +149,6 @@
     <Compile Include="src\Util\GenericParcelableCreator.cs" />
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
-    <Compile Include="src\Connections\LeConnectionHelper.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
     <Compile Include="src\Dialog\UnitDialog.cs" />
@@ -198,7 +202,6 @@
     <Compile Include="src\App\AndroidPlatformInfo.cs" />
     <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
-    <Compile Include="src\Connections\ClassicConnectionHelper.cs" />
     <Compile Include="src\Connections\ClassicConnection.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
@@ -262,6 +265,10 @@
     <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
+    <Compile Include="src\Widgets\Templates\CompactManifoldViewTemplate.cs" />
+    <Compile Include="src\Connections\BackgroundBle.cs" />
+    <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
+    <Compile Include="src\Connections\BaseScanHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -275,7 +282,6 @@
     <AndroidResource Include="Resources\layout\list_item_device_manager_device.axml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_sensor.axml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_sensor_content.axml" />
-    <AndroidResource Include="Resources\values\Dimens_Static.xml" />
     <AndroidResource Include="Resources\layout\button_scan.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
@@ -633,13 +639,15 @@
     <AndroidResource Include="Resources\drawable\ic_record.png" />
     <AndroidResource Include="Resources\drawable\ic_stop.png" />
     <AndroidResource Include="Resources\drawable\.DS_Store" />
-    <AndroidResource Include="Resources\drawable\Thumbs.db" />
     <AndroidResource Include="Resources\drawable\ic_job.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_reporting.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
     <AndroidResource Include="Resources\values\Ids.xml" />
+    <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
+    <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
+    <AndroidResource Include="Resources\drawable\shape_circle_red.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -669,6 +677,8 @@
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
+    <Folder Include="Resources\values-sw480dp\" />
+    <Folder Include="src\Connections\Beta\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
@@ -684,6 +694,6 @@
       <Visible>False</Visible>
     </XamarinComponentReference>
   </ItemGroup>
-  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets')" />
   <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0.1\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.23.4.0.1\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
+  <Import Project="..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Basement.29.0.0.2\build\Xamarin.GooglePlayServices.Basement.targets')" />
 </Project>

@@ -57,7 +57,7 @@ namespace ION.Core.Connections {
     /// <summary>
     /// Queries the last packet that the connection received.
     /// </summary>
-    byte[] lastPacket { get; }
+		byte[] lastPacket { get; set; }
     /// <summary>
     /// The last time that connection was seen- either through packet resolution or a scan.
     /// </summary>

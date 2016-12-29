@@ -160,7 +160,7 @@
 
 					var width = CalculateContentWidth();
 					var hw = window.width / 2;
-					if (offset >= hw) {
+					if (offset > hw) {
 						offset = hw;
 					} else if (offset < -width + hw) {
 						offset = -width + hw;
@@ -184,11 +184,13 @@
 
 		public void ScrollToTemperature(Scalar temperature, bool animate) {
 			var t = (float)temperature.ConvertTo(temperatureUnit).amount;
+/*
 			if (t < minTemperature) {
 				t = minTemperature;
 			} else if (t > maxTemperature) {
 				t = maxTemperature;
 			}
+*/
 
 			if (animate) {
 				var newOffset = this.CalculateOffsetFromTemperature(t);
@@ -373,7 +375,7 @@
 			rmin = pressureUnit.OfScalar(minPressure);
 			max = pressureUnit.OfScalar(maxPressure);
 
-			minTemperature = (int)Math.Ceiling(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
+			minTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 			maxTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 
 			Invalidate();

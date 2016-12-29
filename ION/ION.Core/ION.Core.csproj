@@ -173,11 +173,49 @@
     <Compile Include="src\Connections\RemoteConnection.cs" />
     <Compile Include="src\Measure\RateOfChange.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
+    <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
+    <Compile Include="src\Fluids\FluidExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <EmbeddedResource Include="src\Fluids\Embedded\R438A.fluid">
+      <LogicalName>R438A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R429A.fluid">
+      <LogicalName>R429A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R430A.fluid">
+      <LogicalName>R430A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R431A.fluid">
+      <LogicalName>R431A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R432A.fluid">
+      <LogicalName>R432A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R433A.fluid">
+      <LogicalName>R433A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R434A.fluid">
+      <LogicalName>R434A.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R702.fluid">
+      <LogicalName>R702.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R759.fluid">
+      <LogicalName>R759.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1150.fluid">
+      <LogicalName>R1150.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R1270.fluid">
+      <LogicalName>R1270.fluid</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\refrigerantsafety.properties">
+      <LogicalName>refrigerantsafety.properties</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -573,9 +611,6 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R601a.fluid">
       <LogicalName>R601a.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R702.fluid">
-      <LogicalName>R702.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R717.fluid">
       <LogicalName>R717.fluid</LogicalName>
     </EmbeddedResource>
@@ -597,20 +632,11 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R744.fluid">
       <LogicalName>R744.fluid</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\XENON.fluid">
-      <LogicalName>XENON.fluid</LogicalName>
-    </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R600a.fluid">
       <LogicalName>R600a.fluid</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="src\Fluids\Embedded\R704.fluid">
-      <LogicalName>R704.fluid</LogicalName>
     </EmbeddedResource>
     <EmbeddedResource Include="src\Fluids\Embedded\R134a.fluid">
       <LogicalName>R134a.fluid</LogicalName>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Dimens.xml" />
   </ItemGroup>
 </Project>

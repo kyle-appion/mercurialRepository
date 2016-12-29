@@ -39,6 +39,7 @@
                 android:id="@id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_large"
                 android:text="@string/job_info" />
         </LinearLayout>
         <Space
@@ -59,6 +60,7 @@
                 android:id="@id/text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_large"
                 android:hint="@string/job_sessions" />
         </LinearLayout>
     </LinearLayout>

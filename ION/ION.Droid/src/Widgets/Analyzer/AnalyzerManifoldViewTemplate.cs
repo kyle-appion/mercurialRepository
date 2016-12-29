@@ -11,7 +11,7 @@
 	using ION.Droid.Util;
 	using ION.Droid.Widgets.Templates;
 
-	public class AnalyzerManifoldViewTemplate : ManifoldViewTemplate {
+	public class AnalyzerManifoldViewTemplate : CompactManifoldViewTemplate {
 		public RecyclerView list { get; private set; }
 		public TextView empty { get; private set; }
 		public View content { get; private set; }

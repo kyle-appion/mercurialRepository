@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using CoreGraphics;
@@ -116,4 +117,3 @@ namespace ION.IOS.ViewController.AccessRequest {
 		}
 	}
 }
-

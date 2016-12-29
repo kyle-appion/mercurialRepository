@@ -219,16 +219,13 @@ namespace ION.Droid.App {
 
 			managers.Add(fileManager = new AndroidFileManager(this));
 
+//			var bluetoothService = new IONBluetoothService(this);
+
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       managers.Add(database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this));
       managers.Add(deviceManager = new BaseDeviceManager(this, new AndroidConnectionFactory(this), new AndroidConnectionHelper(this)));
+//			managers.Add(deviceManager = new BaseDeviceManager(this, bluetoothService, bluetoothService));
 
-// This is the last test of broadcasting performed on 22 Aug 2016
-/*
-managers.Add(deviceManager = new BaseDeviceManager(this,
-                           new AndroidConnectionFactory(this),
-                           new AndroidBroadcastHelper(this, TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(7.5))));
-*/
       managers.Add(locationManager = new AndroidLocationManager(this));
       managers.Add(alarmManager = new BaseAlarmManager(this));
       managers.Add(dataLogManager = new DataLogManager(this));

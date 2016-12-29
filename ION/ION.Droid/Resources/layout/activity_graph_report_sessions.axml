@@ -124,6 +124,7 @@
                         android:layout_height="wrap_content" />
                     <TextView
                         android:text="@string/pressure"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <Space
@@ -131,6 +132,7 @@
                         android:layout_height="wrap_content" />
                     <Button
                         android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </TableRow>
@@ -147,6 +149,7 @@
                         android:layout_height="wrap_content" />
                     <TextView
                         android:text="@string/temperature"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <Space
@@ -154,6 +157,7 @@
                         android:layout_height="wrap_content" />
                     <Button
                         android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </TableRow>
@@ -170,6 +174,7 @@
                         android:layout_height="wrap_content" />
                     <TextView
                         android:text="@string/vacuum"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <Space
@@ -177,6 +182,7 @@
                         android:layout_height="wrap_content" />
                     <Button
                         android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                 </TableRow>
@@ -193,6 +199,7 @@
                     android:layout_width="wrap_content" />
                 <TextView
                     android:text="@string/report_select_start_time"
+                    android:textSize="@dimen/text_size_large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <Spinner
@@ -201,6 +208,7 @@
                     android:layout_height="wrap_content" />
                 <TextView
                     android:text="@string/report_select_end_time"
+                    android:textSize="@dimen/text_size_large"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
                 <Spinner
@@ -224,23 +232,23 @@
         <Button
             android:id="@id/reset"
             android:background="@drawable/np_rounded_rect_red"
-            android:textSize="@dimen/text_size_xlarge"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:textStyle="italic"
+            android:textSize="@dimen/text_size_xlarge"
             android:text="@string/reset" />
         <Button
             android:id="@id/export"
             android:background="@drawable/np_rounded_rect_green"
-            android:textSize="@dimen/text_size_xlarge"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_gravity="top"
             android:textStyle="bold"
+            android:textSize="@dimen/text_size_xlarge"
             android:text="@string/export" />
     </RelativeLayout>
 </LinearLayout>

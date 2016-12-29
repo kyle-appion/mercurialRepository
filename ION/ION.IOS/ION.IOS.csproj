@@ -996,6 +996,8 @@
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\RemoteControls.cs" />
     <Compile Include="src\ViewController\Logging\ReportType.cs" />
+    <Compile Include="src\Connections\IONBluetoothService.cs" />
+    <Compile Include="src\ViewController\ScreenshotReport\AdditionalView.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

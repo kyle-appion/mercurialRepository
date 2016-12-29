@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<test deviceModel="AV760" sensorType="Vacuum">
+	<targetPoints>
+    <targetPoint amount="500000" unit="millitorr"/>
+    <targetPoint amount="150000" unit="millitorr"/>
+    <targetPoint amount="50000" unit="millitorr"/>
+    <targetPoint amount="25000" unit="millitorr"/>
+    <targetPoint amount="10000" unit="millitorr"/>
+		
+<!--
+    <targetPoint amount="1500" unit="millitorr"/>
+    <targetPoint amount="1000" unit="millitorr"/>
+    <targetPoint amount="500" unit="millitorr"/>
+    <targetPoint amount="200" unit="millitorr"/>
+-->
+	</targetPoints>
+
+	<gradeScale>
+    <grade errorBand="0.05" value="A" passable="true"/>
+    <grade errorBand="0.08" value="B" passable="true"/>
+    <grade errorBand="0.10" value="C" passable="true"/>
+    <grade errorBand="1.00" value="F" passable="false"/>
+	</gradeScale>
+</test>

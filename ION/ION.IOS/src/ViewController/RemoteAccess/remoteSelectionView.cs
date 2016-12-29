@@ -239,4 +239,3 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public int online { get; set; }
 	}
 }
-

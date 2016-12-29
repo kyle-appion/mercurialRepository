@@ -192,7 +192,12 @@
         if(ion.dataLogManager.isRecording){
           var done = ion.dataLogManager.StopRecording().Result;
         }
-
+        if(KeychainAccess.ValueForKey("stayLogged") == "no"){
+					KeychainAccess.SetValueForKey(null,"userID");
+					KeychainAccess.SetValueForKey(null,"userName");
+					KeychainAccess.SetValueForKey(null,"userPword");
+				}
+				
 			  ion.webServices.updateOnlineStatus("0");
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();

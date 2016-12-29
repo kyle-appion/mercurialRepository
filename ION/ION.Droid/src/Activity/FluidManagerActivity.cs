@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Activity {
+﻿using ION.Droid.Dialog;
+using ION.Droid.Views;
+namespace ION.Droid.Activity {
 
   using System;
   using System.Collections.Generic;
@@ -26,7 +28,7 @@
   using ION.Droid.Fragments;
 
   [Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
-  public class FluidManagerActivity : Activity {
+	public class FluidManagerActivity : Activity, ViewPager.IOnPageChangeListener {
 
     /// <summary>
     /// The key that will retrieve the string name for the fluid that is
@@ -57,7 +59,7 @@
     private View colorView { get; set; }
     private TextView fluidNameView { get; set; }
     private ViewPager pagerView { get; set; }
-    private PagerTabStrip titleView { get; set; }
+		private Switch pageToggle;
 
     private IION ion { get; set; }
 
@@ -76,7 +78,15 @@
       colorView = FindViewById(Resource.Id.color);
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       pagerView = FindViewById<ViewPager>(Resource.Id.content);
-      titleView = FindViewById<PagerTabStrip>(Resource.Id.title);
+			pagerView.AddOnPageChangeListener(this);
+			pageToggle = FindViewById<Switch>(Resource.Id.toggle);
+			pageToggle.CheckedChange += (sender, e) => {
+				if (e.IsChecked) {
+					pagerView.SetCurrentItem(1, true);
+				} else {
+					pagerView.SetCurrentItem(0, true);
+				}
+			};
 
       ion = AppState.context;
       ion.fluidManager.onFluidPreferenceChanged += OnFluidPreferenceChanged;
@@ -102,6 +112,16 @@
       });
 
       pagerView.Adapter = adapter;
+
+			var help = FindViewById(Resource.Id.help);
+			help.SetOnClickListener(new ViewClickAction((view) => {
+				var adb = new IONAlertDialog(this);
+				adb.SetTitle(Resource.String.fluid_safety_help);
+				adb.SetMessage(Resource.String.fluid_safety_help_descriptions);
+				adb.SetPositiveButton(Resource.String.ok, (s, e2) => {
+				});
+				adb.Show();
+			}));
     }
 
     // Overridden from Activity
@@ -149,6 +169,16 @@
           return base.OnMenuItemSelected(featureId, item);          
       }
     }
+
+		public void OnPageScrollStateChanged(int state) {
+		}
+
+		public void OnPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+		}
+
+		public void OnPageSelected(int position) {
+			pageToggle.Checked = position != 0;
+		}
 
     /// <summary>
     /// Called whan a fluid is selected by on of the fragments.

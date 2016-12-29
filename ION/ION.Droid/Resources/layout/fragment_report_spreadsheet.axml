@@ -12,6 +12,7 @@
         android:layout_weight="1" />
     <TextView
         android:text="@string/report_no_spreadsheets_exist"
+        android:textSize="@dimen/text_size_large"
         android:id="@id/empty"
         android:gravity="center"
         android:layout_width="match_parent"

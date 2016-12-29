@@ -15,9 +15,9 @@ PL| Identifier | Bytes
 6   row count   4 (u32)
 7   state fluid 1 (boolean: true = uses dew/bubble two data columns, false = one data column)
 IF NOT FLUID IS STATE FLUID
-8   pressures   len(6) * 4 as f32 array
+8  pressures   len(6) * 4 as f32 array
 ELSE IF THE FLUID IS A STATE FLUID
-8   pressures   len(6) * 4 * 2 as f32 array
+9  pressures   len(6) * 4 * 2 as f32 array
 Units
 ----------------------------------------------------------------------------
 temperature                         K
@@ -69,15 +69,11 @@ FLAG_NONE = 0
 FLAG_EXPLOSIVE = 1
 
 ALIASES = dict([('PROPANE','R290'), ('BUTANE','R600'), ('ISOBUTAN', 'R600a'), ('PENTANE', 'R601'), ('IPENTANE', 'R601a'), \
-                ('ETHANE', 'R170'), ('METHANE','R50'), ('OXYGEN', 'R732'), ('HYDROGEN', 'R702'), \
-                ('HELIUM', 'R704'), ('AMMONIA', 'R717'), ('WATER', 'R718'), ('NEON', 'R720'), ('NITROGEN', 'R728'), \
+                ('ETHANE', 'R170'), ('METHANE','R50'), ('OXYGEN', 'R732'), \
+                ('AMMONIA', 'R717'), ('WATER', 'R718'), ('NITROGEN', 'R728'), ('ETHYLENE', 'R1150'), \
+                ('S02', 'R764'), ('HYDROGEN', 'R702'), ('NEON', 'R720'), ('PROPYLEN', 'R1270'), \
+                ('AIR', 'R759'), \
                 ('ARGON', 'R740'), ('CO2', 'R744'), ('N20', '744a'), ('R134A', 'R134a')])
-
-FLAGGED_FLUIDS = dict([('R290', FLAG_EXPLOSIVE), ('R600', FLAG_EXPLOSIVE), ('R601a', FLAG_EXPLOSIVE)])
-
-SAFETY = dict()
-
-
 
 def run():
     '''
@@ -195,20 +191,12 @@ def convert_fluid(fluid_name, out_path, step=0.25):
         vals = bubble
 
         if similar:
-            fmt = '>BB{0}sBBiifI?{1}f'.format(len(fluid_name), str(rowsOut))
+            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut))
         else:
-            fmt = '>BB{0}sBBiifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
+            fmt = '>BB{0}siifI?{1}f'.format(len(fluid_name), str(rowsOut * 2))
             vals = vals + dew
 
-        flags = FLAG_NONE
-        if fluid_name in FLAGGED_FLUIDS:
-            flags = FLAGGED_FLUIDS[fluid_name]
-
-        sclass = "";
-        if fluid_name in SAFETY:
-            sclass = SAFETY[fluid_name]
-
-        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), flags, sclass, tmin, tmax, step, rowsOut, similar, *vals)
+        data = struct.pack(fmt, VERSION, len(fluid_name), str(fluid_name), tmin, tmax, step, rowsOut, similar, *vals)
 
         file.write(data)
         file.flush()

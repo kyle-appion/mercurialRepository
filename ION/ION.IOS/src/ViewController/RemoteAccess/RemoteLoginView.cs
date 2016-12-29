@@ -6,6 +6,8 @@ using UIKit;
 
 using ION.IOS.ViewController.JobManager;
 using ION.Core.Net;
+using System.Net.Http;
+using Newtonsoft.Json.Linq;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public class RemoteLoginView {
@@ -119,14 +121,36 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var alert = UIAlertController.Create ("Account Recovery", "Please enter your email", UIAlertControllerStyle.Alert);
 			alert.AddTextField(textField => {});
 			
-			alert.AddAction (UIAlertAction.Create ("Recover", UIAlertActionStyle.Default, (action)=>{
+			alert.AddAction (UIAlertAction.Create ("Recover", UIAlertActionStyle.Default, (action) =>{
 				if(!string.IsNullOrEmpty(alert.TextFields[0].Text)){					
-					webServices.resetPassword(alert.TextFields[0].Text);
+					handleResetResponse(alert.TextFields[0].Text);
 				}		
 			}));
+			
 			alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
 			rootVC.PresentViewController (alert, animated: true, completionHandler: null);	
-		}	
+		}
+		
+		public async void handleResetResponse(string email){
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+		
+			var feedback = await webServices.resetPassword(email);
+			
+			if(feedback != null){
+				var textResponse = await feedback.Content.ReadAsStringAsync();
+				
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success");
+	
+				var errorMessage = response.GetValue("message").ToString();
+				
+				var resetAlert = UIAlertController.Create ("Account Recovery", errorMessage, UIAlertControllerStyle.Alert);
+				resetAlert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (resetAlert, animated: true, completionHandler: null);
+			}
+		}
 	}
 }
-

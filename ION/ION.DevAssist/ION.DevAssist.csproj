@@ -35,6 +35,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\Program.cs" />
     <Compile Include="src\AndroidResourceExporter.cs" />
+    <Compile Include="src\Csv.cs" />
+    <Compile Include="src\IosResourceExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src\" />

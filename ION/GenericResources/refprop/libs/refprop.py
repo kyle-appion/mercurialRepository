@@ -653,6 +653,9 @@ def _fluidextention():
         fldext = {}
         fluidslistdir = listdir(_fpath + u'fluids/')
         mixtureslistdir = listdir(_fpath + u'mixtures/')
+
+        print mixtureslistdir
+
         fldext[_fpath + u'fluids/'] = [(each[:-4].upper()) for each in
                                             fluidslistdir if
                                             fnmatch(each, u'*.FLD')]
@@ -661,6 +664,9 @@ def _fluidextention():
         fldext[_fpath + u'mixtures/'] = [(each[:-4].upper()) for each in
                                               mixtureslistdir if fnmatch
                                               (each, u'*.MIX')]
+
+        print _fpath, "\n\n"
+        print fldext[_fpath + u'mixtures/']
         _fldext = fldext.copy()
     return _fldext
 

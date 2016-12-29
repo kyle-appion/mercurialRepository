@@ -199,4 +199,3 @@ namespace ION.IOS.ViewController.AccessRequest
 		}
 	}
 }
-
