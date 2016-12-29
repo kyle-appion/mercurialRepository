@@ -1,6 +1,4 @@
-﻿using System;
-
-using CoreGraphics;
+﻿using CoreGraphics;
 using Foundation;
 using UIKit;
 
@@ -51,7 +49,6 @@ namespace ION.IOS.UI {
 
       var attrs = new NSFileAttributes();
       NSFileManager.DefaultManager.CreateFile(filename, pdfFile, attrs);
-      ION.Core.Util.Log.D("UIImageExtensions", "Dern");
     }
   }
 }

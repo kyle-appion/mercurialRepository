@@ -1,16 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.IOS.ViewController {
 
-using CoreGraphics;
-using Foundation;
-using UIKit;
+	using System;
+	using System.Threading.Tasks;
 
-using ION.Core.Util;
+	using CoreGraphics;
+	using UIKit;
 
-using ION.IOS.UI;
-using ION.IOS.Util;
+	using Appion.Commons.Util;
 
-namespace ION.IOS.ViewController {
   public class BaseIONViewController : UIViewController {
 
     public delegate void OnScreenshotCompleted(bool success);

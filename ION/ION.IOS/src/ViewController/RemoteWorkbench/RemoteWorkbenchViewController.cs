@@ -1,27 +1,18 @@
 ﻿namespace ION.IOS.ViewController.RemoteAccess {
 
 	using System;
-	using System.Collections.Generic;
 	using System.Threading.Tasks;
 
 	using CoreGraphics;
 	using Foundation;
 	using UIKit;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Content;
-	using ION.Core.Content.Parsers;
 	using ION.Core.Devices;
-	using ION.Core.IO;
-	using ION.Core.Measure;
-	using ION.Core.Pdf;
-	using ION.Core.Report;
-	using ION.Core.Sensors;
-	using ION.Core.Util;
 
-	using ION.IOS.Devices;
-	using ION.IOS.Sensors;
-	using ION.IOS.UI;
 	using ION.IOS.Util;
 	using ION.IOS.ViewController.DeviceManager;
 	using ION.IOS.ViewController.ScreenshotReport;

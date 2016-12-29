@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Alarms {
 
-using ION.Core.Alarms.Alerts;
-using ION.Core.App;
-using ION.Core.Util;
+	using System;
+	using System.Collections.Generic;
+	using System.Threading.Tasks;
 
-namespace ION.Core.Alarms {
+	using Appion.Commons.Util;
+
+	using ION.Core.Alarms.Alerts;
+	using ION.Core.App;
+
   /// <summary>
   /// A simple agnostic implementation of the alarm manager.
   /// </summary>

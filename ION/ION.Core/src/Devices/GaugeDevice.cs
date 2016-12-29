@@ -3,11 +3,12 @@
   using System;
   using System.Collections.Generic;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// A GaugeDevice is a device that contains 1 or more sensors.
@@ -129,6 +130,7 @@
       HandlePacketInternal(packet);
     }
 
+		private DateTime last;
     private void HandlePacketInternal(byte[] packet) {
       if (packet == null) {
         return;
@@ -166,11 +168,12 @@
         }
 
 				if (changed || DateTime.Now - lastNotify > MAX_UPDATE_DELAY) {
+					last = DateTime.Now;
           NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
 					lastNotify = DateTime.Now;
         }
       } catch (Exception e) {
-//        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

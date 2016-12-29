@@ -7,7 +7,7 @@
   using Foundation;
   using UIKit;
 
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
   /// <summary>
   /// A helper that will scroll a ViewController when the text view is selected

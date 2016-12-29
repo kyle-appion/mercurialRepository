@@ -1,8 +1,6 @@
 ﻿namespace TestBench.Droid {
 
-	using System;
 	using System.Collections.Generic;
-	using System.Threading.Tasks;
 
 	using Android.App;
 	using Android.Content;
@@ -14,7 +12,6 @@
 	using Android.Widget;
 
 	using ION.Core.Devices;
-	using ION.Core.Util;
 
 	[Activity(Label = "Gauge Scanner", MainLauncher = true, Icon = "@mipmap/icon")]
 	public class GaugeScanActivity : BaseActivity, SwipeRefreshLayout.IOnRefreshListener {
@@ -66,11 +63,13 @@
 				EDeviceModel.P800,
 				EDeviceModel.P500,
 			});
-			spinner.ItemSelected += (sender, e) => {
-				SetDeviceFilter((EDeviceModel)spinnerAdapter[e.Position]);
-			};
+
 			spinner.SetSelection(0);
 			deviceFilter = EDeviceModel.AV760;
+
+			FindViewById(Resource.Id.clear).Click += (sender, e) => {
+				Clear();
+			};
 
 			rigState = FindViewById<TextView>(Resource.Id.rigState);
 			rig = null;
@@ -80,10 +79,14 @@
 		protected override void OnResume() {
 			base.OnResume();
 			InvalidateProgress();
+			Clear();
 		}
 
 		protected override void OnPause() {
 			base.OnPause();
+			if (service != null) {
+				service.scanDelegate.StopScan();
+			}
 			if (rig != null) {
 				rig.onConnectionStateChanged -= OnRigConnectionStateChanged;
 			}
@@ -138,6 +141,12 @@
 		public override void OnServiceBound() {
 			base.OnServiceBound();
 			InvalidateProgress();
+
+			spinner.ItemSelected += (sender, e) => {
+				SetDeviceFilter((EDeviceModel)spinnerAdapter[e.Position]);
+			};
+			Clear();
+			spinner.SetSelection(0);
 		}
 
 		public override void OnScanStateChanged(AppService service) {
@@ -182,6 +191,17 @@
 			if (rig != null && deviceModel.AsRigType() != rig.rigType) {
 				rig.Disconnect();
 				rig = null;
+			}
+		}
+
+		private void Clear() {
+			if (service != null) {
+				if (rig != null) {
+					rig.Disconnect();
+					rig = null;
+				}
+				deviceAdapter.Clear();
+				UpdateRigDisplay();
 			}
 		}
 
@@ -312,6 +332,12 @@
 			NotifyItemInserted(pos);
 			list.Visibility = ViewStates.Visible;
 			emptyView.Visibility =  ViewStates.Gone;
+		}
+
+		public void Clear() {
+			checkedConnections.Clear();
+			connections.Clear();
+			NotifyDataSetChanged();
 		}
 
 		public HashSet<IConnection> GetCheckedConnections() {

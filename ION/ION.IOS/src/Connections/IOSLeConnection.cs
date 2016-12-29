@@ -1,15 +1,14 @@
 namespace ION.IOS.Connections {
   
   using System;
-  using System.Threading;
   using System.Threading.Tasks;
 
-  using AudioToolbox;
   using CoreBluetooth;
   using Foundation;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
-  using ION.Core.Util;
 
   public class IosLeConnection : IConnection {
     /// <summary>

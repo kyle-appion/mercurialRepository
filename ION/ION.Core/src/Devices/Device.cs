@@ -1,11 +1,12 @@
-﻿using System;
+﻿namespace ION.Core.Devices {
 
-using ION.Core.Connections;
-using ION.Core.Devices.Protocols;
-using ION.Core.Sensors;
-using ION.Core.Util;
+	using System;
 
-namespace ION.Core.Devices {
+	using Appion.Commons.Util;
+
+	using ION.Core.Connections;
+	using ION.Core.Devices.Protocols;
+	using ION.Core.Sensors;
 
   public enum EDeviceType {
     /// <summary>

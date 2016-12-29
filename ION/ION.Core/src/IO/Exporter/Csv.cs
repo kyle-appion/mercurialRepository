@@ -4,6 +4,8 @@
 	using System.Collections.Generic;
 	using System.IO;
 
+	using Appion.Commons.Util;
+
 	/// <summary>
 	/// This simple class allows for quick formatted CSV's to be created.
 	/// </summary>
@@ -141,7 +143,7 @@
 				if (value == null) {
 					value = "";
 				}
-        ION.Core.Util.Log.D(this, "Adding value " + value);
+        Log.D(this, "Adding value " + value);
 				cols.Add(value);
 				return this;
 			}

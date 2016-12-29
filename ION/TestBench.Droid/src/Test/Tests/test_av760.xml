@@ -5,14 +5,11 @@
     <targetPoint amount="150000" unit="millitorr"/>
     <targetPoint amount="50000" unit="millitorr"/>
     <targetPoint amount="25000" unit="millitorr"/>
-    <targetPoint amount="10000" unit="millitorr"/>
-		
-<!--
+    <targetPoint amount="3000" unit="millitorr"/>
     <targetPoint amount="1500" unit="millitorr"/>
     <targetPoint amount="1000" unit="millitorr"/>
     <targetPoint amount="500" unit="millitorr"/>
     <targetPoint amount="200" unit="millitorr"/>
--->
 	</targetPoints>
 
 	<gradeScale>

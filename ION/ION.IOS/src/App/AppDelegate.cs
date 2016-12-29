@@ -1,26 +1,13 @@
 ﻿ namespace ION.IOS.App {
 
   using System;
-  using System.IO;
-  using System.Threading.Tasks;
 
   using Foundation;
   using UIKit;
 
-  using SQLite.Net;
-  using SQLite.Net.Interop;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
-  using ION.Core.Net;
-  using ION.Core.Database;
-  using ION.Core.Fluids;
-  using ION.Core.Util;
-
-  using ION.IOS.Devices;
-  using ION.IOS.IO;
-  using ION.IOS.Util;
-  using ION.IOS.ViewController;
-  using Security;
 
   // The UIApplicationDelegate for the application. This class is responsible for launching the
   // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.

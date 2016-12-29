@@ -245,7 +245,10 @@ namespace ION.Droid.App {
           Log.E(this, "Failed to init manager: " + m);
           Log.E(this, "" + res.errorMessage);
           StopSelf();
-          return;
+					var msg = "Failed to init manager: " + m.GetType().Name + "\n" + res.errorMessage;
+					// TODO ahodder@appioninc.com: At the time of writing, there was no activity or message to display to the user
+					// that the app failed. This definitely needs to be implemented soon.
+					throw new Exception(msg);
         }
       }
 

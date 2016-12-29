@@ -66,7 +66,7 @@
 
 			if (item.hasSecondarySensor) {
 				title.Text = item.manifold.secondarySensor.type.GetTypeAbreviationString();
-				measurement.Text = SensorUtils.ToFormattedString(item.sensor.type, item.modifiedMeasurement, false);
+				measurement.Text = item.sensor.ToFormattedString(false);
 				unit.Text = item.modifiedMeasurement.unit.ToString();
 			} else {
 				title.Text = c.GetString(Resource.String.link).ToUpper();

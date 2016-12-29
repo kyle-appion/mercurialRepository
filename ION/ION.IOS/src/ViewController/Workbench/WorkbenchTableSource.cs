@@ -3,10 +3,11 @@
   using System;
   using System.Collections.Generic;
   using System.Collections.ObjectModel;
-  using System.Linq;
 
   using Foundation;
   using UIKit;
+
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Content;
@@ -16,7 +17,6 @@
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   using ION.IOS.Util;
   using ION.IOS.App;

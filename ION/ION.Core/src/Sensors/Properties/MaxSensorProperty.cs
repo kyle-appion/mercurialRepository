@@ -1,8 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Measure;
+	using Appion.Commons.Measure;
 
-namespace ION.Core.Sensors.Properties {
   /// <summary>
   /// A property that will retain the maximum measurement that a sensor makes.
   /// </summary>

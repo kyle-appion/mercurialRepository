@@ -2,13 +2,13 @@ namespace ION.IOS.ViewController.Workbench {
 
   using System;
 
-  using Foundation;
   using UIKit;
+
+	using Appion.Commons.Util;
 
   using ION.Core.Content;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   public class MeasurementRecord : SensorPropertyRecord {
     public override WorkbenchTableSource.ViewType viewType {

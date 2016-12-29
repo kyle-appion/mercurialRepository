@@ -3,7 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 
-	using ION.Core.Measure;
+	using Appion.Commons.Measure;
+
 	using ION.Core.Devices;
 
 	public class TestResults {
@@ -15,6 +16,8 @@
 		public Scalar temperature;
 		public Scalar humidity;
 		public double errorBand;
+
+		public TimeSpan testDuration;
 
 		public Dictionary<ISerialNumber, Dictionary<TestParameters.TargetPoint, Result>> resultsTable { get; set; }
 

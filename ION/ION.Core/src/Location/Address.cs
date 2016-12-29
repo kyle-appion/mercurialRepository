@@ -6,38 +6,28 @@
   /// A simple object that representing an US address.
   /// </summary>
   public class Address {
-    /// <summary>
-    /// The last known address the device was located in.
-    /// </summary>
-    /// <value>The address.</value>
-    public string address { get; set; }
-    /// <summary>
-    /// The last known city the device was located in.
-    /// </summary>
-    /// <value>The city.</value>
+    public string address1 { get; set; }
+		public string address2 { get; set; }
     public string city { get; set; }
-    /// <summary>
-    /// The last known state the device was located in.
-    /// </summary>
-    /// <value>The state.</value>
     public string state { get; set; }
-    /// <summary>
-    /// The last known zip the device was located in.
-    /// </summary>
-    /// <value>The zip.</value>
+		public string country { get; set; }
     public string zip { get; set; }
 
     public Address() {
-      this.address = "";
+      this.address1 = "";
+			this.address2 = "";
       this.city = "";
       this.state = "";
+			this.country = "";
       this.zip = "";
     }
 
-    public Address(string address, string city, string state, string zip) {
-      this.address = address;
+		public Address(string address1, string address2, string city, string state, string country, string zip) {
+      this.address1 = address1;
+			this.address2 = address2;
       this.city = city;
       this.state = state;
+			this.country = country;
       this.zip = zip;
     }
   }

@@ -2,11 +2,9 @@
 
 using System;
 
-using Foundation;
-using UIKit;
+using Appion.Commons.Util;
 
 using ION.Core.App;
-using ION.Core.Content;
 using ION.Core.Fluids;
 
 using ION.IOS.Util;
@@ -100,9 +98,9 @@ namespace ION.IOS.ViewController.FluidManager {
       base.ViewWillDisappear(animated);
 
       if (IsMovingFromParentViewController) {
-        ION.Core.Util.Log.D(this, "Called fluid selected delegate");
+        Log.D(this, "Called fluid selected delegate");
         if (onFluidSelectedDelegate != null) {
-          ION.Core.Util.Log.D(this, "Returning fluid " + selectedFluid);
+          Log.D(this, "Returning fluid " + selectedFluid);
           onFluidSelectedDelegate(await fluidManager.GetFluidAsync(selectedFluid));
         }
       }

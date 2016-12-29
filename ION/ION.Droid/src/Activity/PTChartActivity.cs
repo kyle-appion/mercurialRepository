@@ -354,20 +354,6 @@
 			}));
 
 			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
-			slider.onScroll += (slider, touching, pressure, temperature) => {
-				if (touching) {
-					SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
-					SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
-				} else {
-					if (!pressureEntryView.HasFocus) {
-						SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
-					}
-
-					if (!temperatureEntryView.HasFocus) {
-						SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
-					}
-				}
-			};
 
 			pressureUnit = ion.defaultUnits.pressure;
 			temperatureUnit = ion.defaultUnits.temperature;
@@ -437,6 +423,12 @@
 		protected override void OnResume() {
 			base.OnResume();
 			Refresh();
+			slider.onScroll += OnSliderScroll;
+		}
+
+		protected override void OnPause() {
+			base.OnPause();
+			slider.onScroll -= OnSliderScroll;
 		}
 
 		// Overridden from Activity
@@ -528,6 +520,22 @@
 			}
 
 			initialManifold = manifold;
+			sensorLocked = true;
+		}
+
+		private void OnSliderScroll(FluidSliderView slider, bool touching, Scalar pressure, Scalar temperature) {
+			if (touching) {
+				SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
+				SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+			} else {
+				if (!pressureEntryView.HasFocus) {
+					SetPressureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Pressure, pressure.ConvertTo(pressureUnit)));
+				}
+
+				if (!temperatureEntryView.HasFocus) {
+					SetTemperatureInputQuietly(SensorUtils.ToFormattedString(ESensorType.Temperature, temperature.ConvertTo(temperatureUnit)));
+				}
+			}
 		}
 
 		private void UpdateManifold(Unit unit) {

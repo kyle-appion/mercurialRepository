@@ -26,8 +26,8 @@ namespace ION.IOS.Sensors {
         case ESensorType.Humidity: {
           return Strings.Sensor.Type.HUMIDITY.FromResources();
         }
-        case ESensorType.Mass: {
-          return Strings.Sensor.Type.MASS.FromResources();
+				case ESensorType.Weight: {
+          return Strings.Sensor.Type.WEIGHT.FromResources();
         }
         case ESensorType.Pressure: {
           return Strings.Sensor.Type.PRESSURE.FromResources();

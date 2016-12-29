@@ -6,8 +6,9 @@
   using CoreBluetooth;
   using Foundation;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
-  using ION.Core.Util;
 
   public abstract class BaseIOSConnection : CBPeripheralDelegate, IConnection {
 

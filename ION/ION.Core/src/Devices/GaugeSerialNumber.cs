@@ -2,8 +2,6 @@
   
   using System;
 
-  using ION.Core.Util;
-
   /// <summary>
   /// GaugeSerialNumber is a serial number that describes everything that is
   /// necessary to determine what a particular appion gauge is. As such, every
@@ -151,6 +149,7 @@
       }
 */
 			// TODO ahodder@appioninc.com: The new short serial number format of TTYYM### needs to be implemented
+/*
       if (serial.StartsWith("S8")) {
         return new GaugeSerialNumber(EDeviceModel.PT800, "PT8", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
       } else if (serial.StartsWith("S5")) {
@@ -158,16 +157,23 @@
 			} else if (serial.StartsWith("T1")) {
 				return new GaugeSerialNumber(EDeviceModel._1XTM, "T1", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
 			}
+*/
 
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate
       // this project.
-      if (serial.Length == 9) {
+			if (serial.Length == 8) {
+				string rawDeviceCode = serial.Substring(0, 2);
+				string rawYearCode = serial.Substring(2, 2);
+				char rawMonthCode = serial[4];
+				string rawBatchId = serial.Substring(5, 3);
+				EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceCode);
+				return new GaugeSerialNumber(deviceModel, rawDeviceCode, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
+			} else if (serial.Length == 9) {
         string rawDeviceModel = serial.Substring(0, 2);
         string rawYearCode = serial.Substring(2, 2);
         char rawMonthCode = serial[4];
         string rawBatchId = serial.Substring(5, 4);
         EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
-
         return new GaugeSerialNumber(deviceModel, rawDeviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
       } else if (serial.Length == 10) {
         string rawDeviceModel = serial.Substring(0, 3);
@@ -175,10 +181,9 @@
         char rawMonthCode = serial[5];
         string rawBatchId = serial.Substring(6, 4);
         EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
-
         return new GaugeSerialNumber(deviceModel, rawDeviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
       } else {
-        throw new ArgumentException("Cannot parse serial: expected serial of length 9 or 10, received length " + serial.Length);
+        throw new ArgumentException("Cannot parse serial: expected serial of length 8, 9 or 10, received length " + serial.Length);
       }
     }
 

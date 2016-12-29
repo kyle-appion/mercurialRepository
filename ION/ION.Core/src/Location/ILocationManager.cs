@@ -1,10 +1,10 @@
 ﻿namespace ION.Core.Location {
 
-  using System;
   using System.Threading.Tasks;
 
+	using Appion.Commons.Measure;
+
   using ION.Core.App;
-  using ION.Core.Measure;
 
   public delegate void OnLocationChanged(ILocationManager locationManager, ILocation oldLocation, ILocation newLocation);
 

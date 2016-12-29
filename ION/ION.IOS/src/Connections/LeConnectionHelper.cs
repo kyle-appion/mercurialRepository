@@ -8,12 +8,12 @@ namespace ION.IOS.Connections {
   using CoreFoundation;
   using Foundation;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
-  using ION.Core.IO;
-  using ION.Core.Util;
 
   using ION.IOS.App;
 

@@ -1,10 +1,9 @@
-﻿using System;
+﻿namespace ION.IOS.Util {
 
-using Foundation;
+	using System;
 
-using ION.Core.Util;
+	using Appion.Commons.Util;
 
-namespace ION.IOS.Util {
   /// <summary>
   /// The implementation for an iOS printer.
   /// </summary>

@@ -1,14 +1,12 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Serialization {
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+	using System;
 
-using ION.Core.App;
-using ION.Core.Devices;
-using ION.Core.Measure;
-using ION.Core.Sensors;
+	using Newtonsoft.Json;
 
-namespace ION.Core.Sensors.Serialization {
+	using ION.Core.App;
+	using ION.Core.Devices;
+
   public class DefaultSensorJsonConverter : JsonConverter {
 
     // Overridden from JsonConverter

@@ -1,11 +1,11 @@
-﻿using System;
+﻿namespace ION.Core.Content.Properties {
 
-using ION.Core.Location;
-using ION.Core.Measure;
-using ION.Core.Sensors;
-using ION.Core.Sensors.Properties;
+	using Appion.Commons.Measure;
 
-namespace ION.Core.Content.Properties {
+	using ION.Core.Location;
+	using ION.Core.Sensors;
+	using ION.Core.Sensors.Properties;
+
   public class AbstractManifoldSensorProperty : ISensorProperty {
 
     // Overridden from ISensorProperty

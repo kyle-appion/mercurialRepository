@@ -4,16 +4,15 @@
   using System.Collections.Generic;
   using System.IO;
   using System.Linq;
-  using System.Threading.Tasks;
   using System.Xml;
   using System.Xml.Linq;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
-  using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   /// <summary>
   /// DeviceFactory is a construct is used to provide pre-constructed device meta data. Before a device enters the

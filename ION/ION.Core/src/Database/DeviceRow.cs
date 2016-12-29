@@ -4,7 +4,7 @@
 
   using SQLite.Net.Attributes;
 
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	[Preserve (AllMembers = true)]
   public class DeviceRow : ITableRow {

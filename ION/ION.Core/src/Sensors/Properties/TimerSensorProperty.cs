@@ -1,6 +1,8 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-namespace ION.Core.Sensors.Properties {
+	using System;
+
+	using Appion.Commons.Measure;
   /// <summary>
   /// The timer sensor property is a sensor property who will maintain an aggragated time.
   /// The timer is wholly used by calling three methods: Start, Stop and Reset.
@@ -20,7 +22,7 @@ namespace ION.Core.Sensors.Properties {
   public class TimerSensorProperty : AbstractSensorProperty {
 
     // Overridden from AbstractSensorProperty
-    public override ION.Core.Measure.Scalar modifiedMeasurement {
+    public override Scalar modifiedMeasurement {
       get {
         return sensor.measurement;
       }

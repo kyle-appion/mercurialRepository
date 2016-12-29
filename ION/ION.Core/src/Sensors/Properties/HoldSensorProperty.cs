@@ -1,8 +1,7 @@
-﻿using System;
+﻿namespace ION.Core.Sensors.Properties {
 
-using ION.Core.Measure;
+	using Appion.Commons.Measure;
 
-namespace ION.Core.Sensors.Properties {
   public class HoldSensorProperty : AbstractSensorProperty {
 
     public override Scalar modifiedMeasurement {

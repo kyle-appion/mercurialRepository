@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
+﻿namespace ION.Core.IO.Preferences {
 
-using ION.Core.IO;
-using ION.Core.Util;
+	using System;
+	using System.Collections.Generic;
+	using System.IO;
+	using System.Threading.Tasks;
 
-namespace ION.Core.IO.Preferences {
+	using Appion.Commons.Util;
+
+	using ION.Core.IO;
   /// <summary>
   /// A Preference is an entity that wraps the storage of common ION assets,
   /// such as application preferences or persistent application state keys, in

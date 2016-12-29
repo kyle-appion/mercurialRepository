@@ -1,15 +1,12 @@
-﻿using System;
-using System.Text;
+﻿namespace ION.IOS.UI {
 
-using CoreData;
-using CoreGraphics;
-using Foundation;
-using UIKit;
+	using System;
 
-using ION.Core.Util;
-using ION.IOS.Util;
+	using CoreGraphics;
+	using UIKit;
 
-namespace ION.IOS.UI {
+	using Appion.Commons.Util;
+
   /// <summary>
   /// A Factory used to inflate ninepatch images.
   /// </summary>

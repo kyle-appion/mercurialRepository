@@ -1,9 +1,10 @@
-﻿namespace ION.Core.App {
+﻿using Appion.Commons.Measure;
+
+namespace ION.Core.App {
 
 	using System;
 	using System.Threading.Tasks;
 
-	using Newtonsoft.Json.Linq;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -12,10 +13,8 @@
 	using ION.Core.Fluids;
 	using ION.Core.IO;
 	using ION.Core.Location;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	/// <summary>
 	/// A utility class that will retain the ION context. We do this because
