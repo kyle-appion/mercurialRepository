@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@id/counter"
+        android:layout_width="@dimen/icon_large"
+        android:layout_height="@dimen/icon_large"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:textSize="@dimen/text_size_title"
+        android:hint="0" />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/black" />
+    <TextView
+        android:id="@id/title"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="5dp"
+        android:hint="Name"
+        android:textSize="@dimen/text_size_title"
+        android:textStyle="bold" />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/black" />
+    <ImageView
+        android:id="@id/icon"
+        android:layout_width="@dimen/icon_large"
+        android:layout_height="@dimen/icon_large"
+        android:background="@color/black"
+        android:focusable="false"
+        android:tint="@color/white"
+        android:src="@drawable/ic_menu_moreoverflow" />
+</LinearLayout>

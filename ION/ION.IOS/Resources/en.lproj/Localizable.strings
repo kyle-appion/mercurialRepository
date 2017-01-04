@@ -1,0 +1,348 @@
+﻿/*
+This file contains all of the key/content string lookups for the ION
+iOS application.
+
+All entries within this file should be reflected in the Util.Strings.cs
+file.
+*/
+
+/* APP */
+"actions" = "Actions";
+"cancel" = "Cancel";
+"date" = "Date";
+"delete_question" = "Delete?";
+"done" = "Done";
+"enter_name" = "Enter Name";
+"help" = "Help";
+"ok" = "OK";
+"ok_save" = "OK - Save";
+"rename" = "Rename";
+"please_wait" = "Please Wait";
+"save" = "Save";
+"saving" = "Saving...";
+"settings" = "Settings";
+"unknown" = "Unknown";
+"close" = "Close";
+"ok_done" = "OK - Done";
+"return_settings" = "Return to settings";
+"name" = "Name";
+"time" = "Time";
+"required" = "Required";
+"notes" = "Notes";
+"sessions" = "Sessions";
+"reset" = "Reset";
+"app_feedback" = "ION App Feedback";
+"linked" = "Linked";
+"spreadsheet" = "Spreadsheet";
+"included" = "Included";
+"select_all" = "Select All";
+"deselect_all" = "Deselect All";
+"devices" = "Devices";
+"next" = "Next";
+"previous" = "Previous";
+
+
+/* ALARMS */
+"alarms" = "Alarms";
+"alarms_low" = "Low Alarm";
+"alarms_low_fired" = "{0}'s reading has fallen below {1}";
+"alarms_high" = "High Alarm";
+"alarms_high_fired" = "{0}'s reading has risen above {1}";
+"alarms_reenable" = "Re-enable";
+
+/* ANALYZER */
+"analyzer" = "Analyzer";
+"add_secondary_2sarg" = "Do you want to add this {0} sensor to the current {1} sensor?";
+"remove_setup" = "Do you want to remove the current sensor setup?";
+"add_temp" = "Do you want to add this Temperature sensor to the current Pressure sensor?";
+"add_pressure" = "Do you want to add this Pressure sensor to the current Temperature sensor?";
+"cant_move" = "Cannot Move Sensor";
+"cant_add" = "Cannot add as secondary sensor";
+"no_space" = "Not enough space";
+"same_side" = "Secondary sensor must be on the same side as the primary sensor";
+"high_lost" = "Completing this action will cause the High side subview arrangement to be lost.";
+"low_lost" = "Completing this action will cause the Low side subview arrangement to be lost.";
+"choose_subview" = "Choose a subview";
+"add_subview" = "Add Subview";
+"remove_sensor" = "Remove Sensor";
+"high_undefined" = "High Viewer Not Defined";
+"low_undefined" = "Low Viewer Not Defined";
+"display_link" = "Display Link:";
+"complete_action" = "Complete Action?";
+"enter_name" = "Enter Name";
+"unit_picker" = "Unit Picker";
+"create_manual" = "Create Manual Entry";
+"choose_unit" = "Choose Unit";
+"device_actions" = "Device Actions";
+"add_from" = "Add From...";
+"choose_type" = "Choose Device Type";
+"unspecified" = "Unspecified";
+"setup_pressure" = "Pressure must be defined first for proper viewer display";
+"analyzer_options" = "Options";
+"analyzer_remote_view" = "Analyzer\nRemote Viewing";
+"analyzer_remote_edit" = "Analyzer\nRemote Editing";
+"low_side" = "Low Side";
+"high_side" = "High Side";
+"lh_subviews" = "'s Subviews";
+"analyzer_subcool" = "S/C";
+"analyzer_superheat" = "S/H";
+"analyzer_hold" = "hold";
+"analyzer_setup" = "Setup";
+"analyzer_stable" = "Stable";
+"valid_measurement" = "**Please enter a valid measurement for this sensor**";
+"missing_value" = "**Please enter a value for this sensor's measurement**";
+"enter_measurement" = "Enter Measurement";
+"analyzer_shsc_desc" = "Superheat / Subcool (S/H or S/C)";
+"analyzer_pt_desc" = "Pressure / Temperature (P/T)";
+"recording_started" = "Recording Started";
+"recording_stopped" = "Recording Stopped. Session in Reports";
+
+/* DEVICE */
+"device_available" = "Available";
+"device_connect_all" = "Connect All";
+"device_connected" = "Connected";
+"device_disconnect" = "Disconnect";
+"device_disconnect_all" = "Disconnect All";
+"device_disconnected" = "Disconnected";
+"device_forget" = "Forget";
+"device_forget_all" = "Forget All";
+"device_forget_desc" = "Forgetting a device will remove it from the application database. All data based on this device will also be deleted. This operation is irreversible (although you can reconnect the device at a later time). Are you sure you wish to continue?";
+"device_forget_name" = "Forget {0}";
+"device_forget_name_where" = "Forget {0}\n({1})";
+"device_in_workbench" = "In Workbench";
+"device_long_range" = "Long Range";
+"device_name" = "Device Name";
+"device_new_devices" = "New Devices Found";
+"device_really_forget" = "Really forget device?";
+"device_reconnect" = "Reconnect";
+"device_serial" = "Serial";
+"device_serial_number" = "Serial Number";
+"device_type" = "Device Type";
+"device_cert_date" = "Certification Date";
+"device_not_linked" = "Not Linked";
+
+/* DEVICE MANAGER */
+"device_manager" = "Device Manager";
+"device_manager_available_actions" = "Available Device Actions";
+"device_manager_broadcasting_actions" = "Broadcasting Device Actions";
+"device_manager_connected_actions" = "Connected Device Actions";
+"device_manager_disconnected_actions" = "Disconnected Device Actions";
+"device_manager_empty" = "Click Scan to discover nearby ION devices";
+"device_manager_new_actions" = "New Device Actions";
+"device_manager_scan" = "Scan";
+"device_manager_scanning" = "Scanning";
+
+/* DEVICE MODEL */
+"device_model_3xtm" = "3XTM";
+"device_model_av760" = "AV760";
+"device_model_ht" = "HT";
+"device_model_p300" = "P300";
+"device_model_p500" = "P500";
+"device_model_p800" = "P800";
+"device_model_pt300" = "PT300";
+"device_model_pt500" = "PT500";
+"device_model_pt800" = "PT800";
+"device_model_unknown" = "Unknown Device";
+
+/* ERRORS */
+"errors_cannot_send_feedback" = "Cannot send feedback at this time.";
+"errors_failed_to_send_feedback" = "Failed to send feedback to Appion";
+"errors_pressure_input_parse_error" = "Failed set pressure values: invalid number";
+"errors_scan_init_fail" = "Failed to initiate scan: invalid state";
+"errors_screenshot" = "Screenshot Report Error";
+"errors_screenshot_missing_title" = "Please enter a title for the Screenshot Report";
+"errors_temperature_input_parse_error" = "Failed set temperature values: invalid number";
+
+/* FLUIDS */
+"fluid_out_of_range" = "OUT OF RANGE";
+"fluid_pt" = "PT";
+"fluid_pt_calculator" = "P/T Calculator";
+"fluid_pt_chart" = "P/T Chart";
+"fluid_pt_chart_bub" = "P/Tbub";
+"fluid_pt_chart_dew" = "P/Tdew";
+"fluid_saturated" = "Saturated";
+"fluid_sc" = "SC";
+"fluid_sh" = "SH";
+"fluid_shsc" = "SH/SC";
+"fluid_state_help" = "Dew Point is used to calculate Superheat (low side, in vapor).\n\nBubble Point is used to calculate Subcool (high side, in liquid).\n\nThis affects measurement of blended refrigerants, since these points are usually not the same.";
+"fluid_subcool" = "Subcool";
+"fluid_subcool_abrv" = "S/C";
+"fluid_superheat" = "Superheat";
+"fluid_superheat_abrv" = "S/H";
+"fluid_superheat_subcool" = "Superheat/Subcool";
+
+/* FLUID MANAGER */
+"fluid_manager" = "Refrigerant Manager";
+"fluid_slider_heading" = "Saturated Pressure and Temperature";
+
+/* HELP */
+"help_about" = "About ION";
+"help_send_feedback" = "Send Feedback";
+"help_sent_feedback" = "Feedback sent, thank you!";
+"help_version" = "App Version";
+
+/*JOB MANAGER*/
+"job_address" = "Job Address";
+"job_location" = "GPS";
+"job_system" = "System";
+"job_tech" = "Technician";
+"job_dispatch_number" = "Dispatch Number";
+"job_dispatch_sign" = "Dispatch #";
+"job_info" = "Job Info";
+"job_name" = "Job Name";
+"job_po_number" = "PO Number";
+"job_po_full" = "Product Order Number";
+"job_po_sign" = "Product Order #";
+"job_customer_number" = "Customer Number";
+"job_customer_sign" = "Customer #";
+"job_multiple" = "Spans multiple jobs";
+"job_saved_success" = "Saved Successfully";
+"job_edit" = "Edit Job";
+"job_edit_sessions" = "Edit Session Links";
+"job_add_notes" = "Add Notes";
+"job_updated" = "Job Updated";
+"job_exists" = "Job Name Already Exists";
+"job_start_date" = "Start Date";
+"job_duration" = "Duration";
+"job_current_sessions" = "Current Sessions";
+"job_no_session" = "No Sessions Currently Associated";
+"job_none_available" = "No Sessions Available";
+"job_remove_selected" = "Remove Selected";
+"job_sessions_removing" = "Removing Sessions";
+"job_remove_dialogue" = "Are you sure you want to remove these sessions from the current job?";
+"job_confirm_removal" = "Confirm Removal";
+"job_red_sessions" = "(Adding a session in red will remove the association to it's current job)";
+"job_available_sessions" = "Available Sessions";
+"job_add_selected" = "Add Selected";
+"job_notes_saved" = "Notes Saved";
+"job_save_notes" = "Save Notes";
+"job_settings" = "Job Settings";
+"job_options" = "Job Options";
+
+/*LOGGING*/
+
+
+
+/* MEASURE */
+"measure_per_minute" = "/min";
+"measure_pick_unit" = "Pick Unit";
+"measure_minimum" = "Minimum";
+"measure_maximum" = "Maximum";
+"measure_average" = "Average";
+"measure_lowest" = "Lowest Measurement";
+"measure_highest" = "Highest Measurement";
+"measure_avg" = "Average Measurement";
+
+/* NAVIGATION DRAWER */
+"navigation_calculators" = "Calculators";
+"navigation_configuration" = "Configuration";
+"navigation_main" = "Main";
+
+/* REPORT */
+"report" = "Report";
+"reports" = "Reports";
+"report_calibration_certificates" = "Calibration Certificates";
+"report_city" = "City";
+"report_downloading_certificates" = "Downloading Certificates...";
+"report_downloading_certificates_failures" = "Download Error";
+"report_failed_to_download" = "Some certificates failed to download. If this problem persists, please contact Appion.\n\n Affected Serial Numbers:\n {0}";
+"report_title" = "Report Title";
+"report_notes" = "Notes";
+"report_screenshot" = "Screenshot Report";
+"report_screenshot_archive" = "Screenshot Archives";
+"report_screenshot_title" = "ION HVAC/R Screenshot Report";
+"report_state" = "State";
+"report_zip" = "Zip Code";
+"report_create" = "Reporting";
+"report_job" = "Job Settings";
+"report_session_unassigned" = "Unassigned";
+"report_view_sessions" = "Back To Session List";
+"report_session_selection" = "Session Selection";
+"report_graph_selection" = "Graph Selection";
+"report_logging_interval" = "Logging Interval";
+"report_low_interval" = "Using a 1 second logging interval uses much more disk space and is not recommended";
+"report_no_data" = "No Data Available";
+"report_start" = "Start";
+"report_finish" = "Finish";
+"report_please_wait" = "Please wait...";
+"report_choose_format" = "Choose a Format";
+"report_create_spreadsheet" = "Create Spreadsheet";
+"report_create_pdf" = "Create PDF";
+"report_toast_spreadsheet" = "Creating Spreadsheet";
+"report_toast_pdf" = "Creating PDF";
+"report_data_logged" = "Data Logged";
+"report_device_info" = "Device Info";
+"report_devices_used" = "Devices Used";
+"report_created" = "Report Created";
+"report_dates" = "Report Dates";
+"report_one_page" = "One Page Summary";
+"report_detailed" = "Detailed Summary";
+"report_raw_data" = "Include Raw Data";
+"report_export" = "Export";
+"report_by_job" = "By Job";
+"report_by_date" = "By Date";
+"report_no_jobs" = "No jobs exist. Click to create";
+"report_new" = "New Report";
+"report_saved" = "Saved Reports";
+"report_selection" = "Report Selection";
+"report_graph_info" = "Graph Information";
+"report_choose_start" = "Select a start time for the graph";
+"report_choose_end" = "Select an end time for the graph";
+"report_select_start" = "Select A Start Time";
+"report_select_end" = "Select An End Time";
+"report_delete_session" = "Delete Session";
+"report_delete_message" = "This will permanently remove the session from your device";
+"report_device_model" = "Device Model";
+/* SENSOR */
+
+/* SENSOR TYPE */
+"sensor_type_length" = "Length";
+"sensor_type_weight" = "Weight";
+"sensor_type_pressure" = "Pressure";
+"sensor_type_temperature" = "Temperature";
+"sensor_type_vacuum" = "Vacuum";
+"sensor_type_unknown" = "Unknown";
+
+/* WORKBENCH */
+"workbench" = "Workbench";
+"workbench_add" = "Add to Workbench";
+"workbench_add_all" = "Add all to Workbench";
+"workbench_remove" = "Remove From Workbench";
+"workbench_select_viewer_action" = "Select a viewer action";
+
+/* WORKBENCH SUBVIEW */
+"workbench_subview_add" = "Add Subview";
+"workbench_subview_alt" = "ALT";
+"workbench_subview_alt_desc" = "Alternate Unit (ALT)";
+"workbench_subview_hold" = "HOLD";
+"workbench_subview_hold_desc" = "Hold Reading (HOLD)";
+"workbench_subview_max" = "MAX";
+"workbench_subview_max_desc" = "Maximum Reading (MAX)";
+"workbench_subview_min" = "MIN";
+"workbench_subview_min_desc" = "Minimum Reading (MIN)";
+"workbench_subview_roc" = "RoC";
+"workbench_subview_roc_desc" = "Rate of Change (RoC)";
+"workbench_subview_roc_stable" = "STABLE";
+"workbench_subview_pt_chart_desc" = "Pressure Temperature Chart (P/T)";
+"workbench_subview_pt_chart_bub" = "P/Tbub";
+"workbench_subview_pt_chart_dew" = "P/Tdew";
+"workbench_subview_shsc_desc" = "Superheat/Subcool Calculation (S/H S/C)";
+"workbench_subview_sc" = "S/C";
+"workbench_subview_sh" = "S/H";
+"workbench_subview_shsc_setup" = "Setup";
+"workbench_subview_timer" = "TIME";
+"workbench_subview_timer_desc" = "Time Tracker (TIME)";
+"workbench_subview_linked_desc" = "Linked Sensor (Linked)";
+
+/*WALKTHROUGH*/
+"walkthrough_introductory" = "Introductory Walkthrough";
+"walkthrough_1_1" = "The menu button will allow for navigation through the app.";
+"walkthrough_1_2" = "Pressing this button will start or stop a recording session(data logging)";
+"walkthrough_1_3" = "You can take a screenshot of the workbench by pressing this button.";
+"walkthrough_1_4" = "Pressing here will open the device manager where you can choose an available device to add to the workbench.";
+"walkthrough_1_5" = "The available devices will be shown and separated based on if they are connected or not.";
+"walkthrough_1_6" = "These buttons let you connect and disconnect from a device.";
+"walkthrough_1_7" = "You add the device to the workbench, analyzer, or other section by pressing this button";
+"walkthrough_1_8" = "Pressing on an added device will display a popup that allows you to connect/disconnect, add a subview, set an alarm, or other options.";
+/*ACCESS MANAGER*/
+"access_manager" = "Access Manager";

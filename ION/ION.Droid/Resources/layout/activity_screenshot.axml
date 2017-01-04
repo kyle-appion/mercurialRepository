@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@id/content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content">
+        <!-- Report Name -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/name"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/report_name" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Report Date -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/date"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:hint="@string/date" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- App Version -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/version"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:editable="false"
+                    android:singleLine="true"
+                    android:hint="@string/app_version" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Address Line 1 -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/address1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_address_1" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Address Line 2 -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/address1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_address_2" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- City -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/city"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_city" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- State -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/state"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_state_province_region" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Country -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/country"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_country" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Zip -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/zip"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/location_zip_postal_code" />
+            </android.support.design.widget.TextInputLayout>
+        <!-- Notes -->
+            <android.support.design.widget.TextInputLayout
+                android:theme="@style/IONTextInputLayout"
+                android:textSize="@dimen/text_size_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@id/notes"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:hint="@string/notes" />
+            </android.support.design.widget.TextInputLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
