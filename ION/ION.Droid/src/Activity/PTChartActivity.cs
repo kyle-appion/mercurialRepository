@@ -11,10 +11,12 @@
 
 	using Java.Lang;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.Content;
 	using ION.Core.Devices;
 	using ION.Core.Fluids;
-	using ION.Core.Measure;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
@@ -553,7 +555,7 @@
 					ptchart.unit = unit;
 				}
 			} catch (Exception e) {
-				ION.Core.Util.Log.E(this, "Failed to update manifold", e);
+				Appion.Commons.Util.Log.E(this, "Failed to update manifold", e);
 			}
 		}
 

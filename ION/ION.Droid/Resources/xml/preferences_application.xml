@@ -127,4 +127,16 @@
 				android:entryValues="@array/preferences_reporting_data_log_interval_values"
 				android:defaultValue="@integer/preferences_reporting_data_log_interval_default"/>
 	</PreferenceCategory>
+
+	<!-- 
+	Help
+	--> 
+	<PreferenceCategory
+			android:title="@string/preferences_help">
+			<SwitchPreference
+			android:key="@string/pkey_help_walkthrough"
+			android:defaultValue="true"
+			android:title="@string/preferences_help_walkthrough"/>
+
+	</PreferenceCategory>
 </PreferenceScreen>

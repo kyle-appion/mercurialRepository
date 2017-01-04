@@ -3,12 +3,12 @@
   using System;
 
   using Android.Content;
-  using Android.Content.PM;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
-  using ION.Core.Measure;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.Droid.App;
 
@@ -111,6 +111,21 @@
         e.Commit();
       }
     }
+
+		/// <summary>
+		/// Queries whether or not the application should show the tutorial walkthrough.
+		/// </summary>
+		/// <value><c>true</c> if show tutorial; otherwise, <c>false</c>.</value>
+		public bool showTutorial {
+			get {
+				return prefs.GetBoolean(context.GetString(Resource.String.pkey_help_walkthrough), true);
+			}
+			set {
+				var e = prefs.Edit();
+				e.PutBoolean(context.GetString(Resource.String.pkey_help_walkthrough), value);
+				e.Commit();
+			}
+		}
 
 		/// <summary>
 		/// Queries whether or not the wake lock is set in preferences.

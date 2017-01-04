@@ -2,7 +2,7 @@
   
   using System;
 
-  public class Appion {
+  public class AppionConstants {
 
     /// <summary>
     /// The e-mail address to contact appion support.

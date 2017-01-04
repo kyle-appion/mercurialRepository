@@ -11,11 +11,13 @@ namespace ION.Droid.Activity {
   using Android.Support.V4.App;
   using Android.Support.V4.Content;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Util;
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
+	using ION.Droid.Util;
 
   /// <summary>
   /// The activity that is responsible for launching the ION app state.

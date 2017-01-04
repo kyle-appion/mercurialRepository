@@ -2,7 +2,6 @@
 
 	using System;
 
-  using Android.App;
   using Android.Content;
   using Android.Graphics;
 	using Android.OS;
@@ -441,7 +440,7 @@
 			try {
 				DoDraw(canvas);
 			} catch (Exception e) {
-				ION.Core.Util.Log.E(this, "Failed to draw canvas.", e);
+				Appion.Commons.Util.Log.E(this, "Failed to draw canvas.", e);
 			}
 		}
 
@@ -525,7 +524,7 @@
     /// <param name="first">First.</param>
     /// <param name="second">Second.</param>
     public void SwapSensorMounts(int first, int second) {
-			ION.Core.Util.Log.D(this, "SWAPPING SENSOR MOUNTS: {" + first + ", " + second + "}");
+			Appion.Commons.Util.Log.D(this, "SWAPPING SENSOR MOUNTS: {" + first + ", " + second + "}");
       if (CanSensorsSwapSafely(first, second)) {
         AnimateSensorMountSwap(first, second);
       } else {
@@ -622,13 +621,13 @@
 			Analyzer.ESide startSide = Analyzer.ESide.Low;
 			// Attempt to get the analyzer side that the sensor is on.
 			if (analyzer.HasSensor(sensor) && !analyzer.GetSideOfSensor(sensor, out startSide)) {
-				ION.Core.Util.Log.E(this, "Failed to get side of sensor in AnalyzerView#SetManifoldSensor(Analyzer.ESide, Sensor)");
+				Appion.Commons.Util.Log.E(this, "Failed to get side of sensor in AnalyzerView#SetManifoldSensor(Analyzer.ESide, Sensor)");
 				Toast.MakeText(Context, Resource.String.errror_unknown, ToastLength.Long).Show();
 				// The sensor was awkwardly present in the analyzer, but we couldn't find it anywhere. Lets remove it just to
 				// be safe.
 				if (!analyzer.RemoveSensor(sensor)) {
 					// TODO ahodder@appioninc.com: This should never happen. If it does, we need to discover why.
-					ION.Core.Util.Log.E(this, "Failed to remove ghost sensor from analyzer.");
+					Appion.Commons.Util.Log.E(this, "Failed to remove ghost sensor from analyzer.");
 				}
 			}
 
@@ -646,7 +645,7 @@
 				if (sensor.type == ESensorType.Temperature) {
 					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
 				} else {
-					analyzer.SetManifoldBySensor(destSide, sensor);
+					analyzer.SetManifold(destSide, sensor);
 				}
 			} else {
 				if (manifold.ContainsSensor(sensor)) {
@@ -657,7 +656,7 @@
 						manifold.SetSecondarySensor(sensor);
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifoldBySensor(destSide, sensor);
+							analyzer.SetManifold(destSide, sensor);
 						});
 					}
 				} else {
@@ -667,7 +666,7 @@
 						});
 					} else {
 						IONAlertDialog.ShowDialog(Context, Resource.String.analyzer_complete_swap, Resource.String.analyzer_replace_manifold_sensor, () => {
-							analyzer.SetManifoldBySensor(destSide, sensor);
+							analyzer.SetManifold(destSide, sensor);
 						});
 					}
 				}
@@ -706,7 +705,7 @@
 					var si = analyzer.IndexOfSensor(sensor);
 					var di = analyzer.NextEmptySensorIndex(destSide);
 					AnimateSensorMountSwap(si, di);
-					analyzer.SetManifoldBySensor(destSide, sensor);
+					analyzer.SetManifold(destSide, sensor);
 				}
 			} else {
         if (destManifold.ContainsSensor(sensor)) {
@@ -728,7 +727,7 @@
               var si = analyzer.IndexOfSensor(sensor);
 							var di = analyzer.NextEmptySensorIndex(destSide);
 							AnimateSensorMountSwap(si, di);
-							analyzer.SetManifoldBySensor(destSide, sensor);
+							analyzer.SetManifold(destSide, sensor);
             });
           }
         }
@@ -1009,43 +1008,43 @@
           case DragAction.Started:
             if (sensorMount.root == v) {
               analyzer.draggedView.Visibility = ViewStates.Invisible;
-              ION.Core.Util.Log.D(this, "Drag Started");
+              Appion.Commons.Util.Log.D(this, "Drag Started");
               dropped = false;
               return true;
             } else {
-              ION.Core.Util.Log.D(this, "Drag NOT Started");
+              Appion.Commons.Util.Log.D(this, "Drag NOT Started");
               return false;
             }
 
           case DragAction.Entered:
-            ION.Core.Util.Log.D(this, "Drag Entered");
+            Appion.Commons.Util.Log.D(this, "Drag Entered");
             return true;
 
           case DragAction.Exited:
-            ION.Core.Util.Log.D(this, "Drag Exited");
+            Appion.Commons.Util.Log.D(this, "Drag Exited");
             return true;
 
           case DragAction.Location:
             return true;
 
           case DragAction.Drop:
-            ION.Core.Util.Log.D(this, "Drag Dropped");
+            Appion.Commons.Util.Log.D(this, "Drag Dropped");
             var lp = v.LayoutParameters as LayoutParams;
 
 						if (lp != null && analyzer.draggedView != null) {
-							ION.Core.Util.Log.D(this, "SensorMounts Swapping");
+							Appion.Commons.Util.Log.D(this, "SensorMounts Swapping");
 							analyzer.draggedView.Visibility = ViewStates.Visible;
 							analyzer.SwapSensorMounts(dragState.index, lp.index);
               dropped = true;
 							analyzer.draggedView = null;
               return true;
             } else {
-              ION.Core.Util.Log.D(this, "SensorMounts NOT Swapping");
+              Appion.Commons.Util.Log.D(this, "SensorMounts NOT Swapping");
               return true;
             }
 
           case DragAction.Ended:
-            ION.Core.Util.Log.D(this, "Drag Ended");
+            Appion.Commons.Util.Log.D(this, "Drag Ended");
             if (!dropped) {
 							
 
@@ -1054,7 +1053,7 @@
             return true;
 
           default:
-            ION.Core.Util.Log.D(this, "Drag Defaulted");
+            Appion.Commons.Util.Log.D(this, "Drag Defaulted");
             return true;
         }
       }
@@ -1086,34 +1085,34 @@
 
         switch (e.Action) {
           case DragAction.Started:
-            ION.Core.Util.Log.D(this, "Drag Started");
+            Appion.Commons.Util.Log.D(this, "Drag Started");
             return true;
 
           case DragAction.Entered:
-            ION.Core.Util.Log.D(this, "Drag Entered");
+            Appion.Commons.Util.Log.D(this, "Drag Entered");
             return true;
 
           case DragAction.Exited:
-            ION.Core.Util.Log.D(this, "Drag Exited");
+            Appion.Commons.Util.Log.D(this, "Drag Exited");
             return true;
 
           case DragAction.Location:
             return true;
 
           case DragAction.Drop:
-            ION.Core.Util.Log.D(this, "Drag Dropped");
+            Appion.Commons.Util.Log.D(this, "Drag Dropped");
             analyzer.SetManifoldSensor(side, dragState.sensor);
             return true;
 
           case DragAction.Ended:
-            ION.Core.Util.Log.D(this, "Drag Ended");
+            Appion.Commons.Util.Log.D(this, "Drag Ended");
 						handler.PostDelayed(() => {
 							analyzer.RefreshContent();
 						}, ANIMATION_DURATION);
             return true;
 
           default:
-            ION.Core.Util.Log.D(this, "Drag Defaulted");
+            Appion.Commons.Util.Log.D(this, "Drag Defaulted");
             return true;
         }
       }

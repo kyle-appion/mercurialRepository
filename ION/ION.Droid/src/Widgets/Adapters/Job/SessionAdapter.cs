@@ -8,9 +8,10 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Database;
-	using ION.Core.Util;
 
 	using Dialog;
 	using ION.Droid.Widgets.RecyclerViews;

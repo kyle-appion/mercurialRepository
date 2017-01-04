@@ -9,10 +9,11 @@
   using Android.Views;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Content;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   using ION.Droid.Util;
   using ION.Droid.Views;

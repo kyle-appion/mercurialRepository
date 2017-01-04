@@ -5,11 +5,12 @@
   using Android.Views;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Content;
   using ION.Core.Devices;
-	using ION.Core.Util;
 
   using ION.Droid.Devices;
   using ION.Droid.Util;

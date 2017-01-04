@@ -9,13 +9,14 @@
   using Android.Support.V7.Widget.Helper;
   using Android.Views;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Content;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   // Using ION.Droid
   using Activity;

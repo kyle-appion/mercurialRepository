@@ -8,9 +8,10 @@
 
   using Android.Content;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.IO;
-  using ION.Core.Util;
 
   public class AndroidFileManager : IFileManager {
 

@@ -18,8 +18,9 @@
   using Android.Views.InputMethods;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Util;
 
   using ION.Droid.App;
   using ION.Droid.Dialog;

@@ -11,11 +11,11 @@ namespace ION.Droid.Widgets.Adapters.Job {
   using Android.OS;
   using Android.Runtime;
   using Android.Views;
-  using Android.Widget;
+
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Database;
-  using ION.Core.Util;
 
   using ION.Droid.Widgets.RecyclerViews;
 

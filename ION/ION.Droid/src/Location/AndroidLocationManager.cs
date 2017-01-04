@@ -10,13 +10,13 @@
   using Android.Gms.Location;
   using Android.Locations;
   using Android.OS;
-	using Android.Support.V4.App;
   using Android.Support.V4.Content;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Location;
-  using ION.Core.Measure;
-  using ION.Core.Util;
 
   using ION.Droid.App;
 

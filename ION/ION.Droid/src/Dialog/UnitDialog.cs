@@ -12,7 +12,8 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.Measure;
+	using Appion.Commons.Measure;
+
   using ION.Core.Sensors;
 
   public class UnitDialog {

@@ -13,11 +13,12 @@
 
   using Java.Lang;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
-	using ION.Core.Util;
 
   // Using ION.Droid
   using DeviceManager;

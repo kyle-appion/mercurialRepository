@@ -114,7 +114,7 @@
     <Compile Include="src\Sensors\Properties\SecondarySensorProperty.cs" />
     <Compile Include="src\Location\Address.cs" />
     <Compile Include="src\App\IAppDump.cs" />
-    <Compile Include="src\App\Appion.cs" />
+    <Compile Include="src\App\AppionConstants.cs" />
     <Compile Include="src\App\Constants.cs" />
     <Compile Include="src\Report\DataLoggingReport.cs" />
     <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />

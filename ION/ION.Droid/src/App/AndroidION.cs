@@ -12,6 +12,10 @@ namespace ION.Droid.App {
   using Android.OS;
   using Android.Support.V4.App;
 
+	using Newtonsoft.Json;
+
+	using Appion.Commons.Util;
+
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
   using ION.Core.App;
@@ -23,11 +27,11 @@ namespace ION.Droid.App {
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Report.DataLogs;
-  using ION.Core.Util;
 
   using ION.Droid.Alarms.Alerts;
   using ION.Droid.Activity;
   using ION.Droid.Connections;
+	using ION.Droid.Dialog;
   using ION.Droid.Location;
   using ION.Droid.Preferences;
 
@@ -439,6 +443,60 @@ namespace ION.Droid.App {
 
 		public Task setOriginalDeviceManager() {
 			return null;
+		}
+
+		/// <summary>
+		/// Sends a support email to appion.
+		/// </summary>
+		/// <returns>The app suppory email.</returns>
+		public void SendAppSupportEmail(Activity activity) {
+			var dump = CreateApplicationDump();
+
+			var i = new Intent(Intent.ActionSend);
+
+			try {
+				var file = fileManager.CreateTemporaryFile("HostDetails.json");
+				var s = file.OpenForWriting();
+				var w = new StreamWriter(s);
+				var json = Newtonsoft.Json.JsonConvert.SerializeObject(dump, Formatting.Indented);
+				w.Write(json);
+				w.Dispose();
+				s.Dispose();
+				i.PutExtra(Intent.ExtraStream, Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)));
+			} catch (Exception e) {
+				Log.E(this, "Failed to create the application dump", e);
+			}
+
+			i.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
+			i.PutExtra(Intent.ExtraEmail, new string[] { AppionConstants.EMAIL_SUPPORT });
+			i.SetType(Constants.MIME_RFC822);
+
+			try {
+				var chooser = Intent.CreateChooser(i, GetString(Resource.String.preferences_send_feedback));
+				chooser.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
+				StartActivity(chooser);
+			} catch (Exception e) {
+				Log.E(this, "Failed to start e-mail activity for support message", e);
+				var adb = new IONAlertDialog(activity, Resource.String.preferences_send_feedback);
+				adb.SetMessage(Resource.String.preferences_send_feedback_failed);
+				adb.SetNegativeButton(Resource.String.cancel, (obj, args) => {
+					var dialog = obj as Dialog;
+					dialog.Dismiss();
+				});
+				adb.SetPositiveButton(Resource.String.ok, (obj, args) => {
+					var dialog = obj as Dialog;
+					dialog.Dismiss();
+
+					try {
+						StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse("market://details?id=" + PackageName)));
+					} catch (Exception ee) {
+						Log.E(this, "Failed to start activity for maket with package name.", e);
+						StartActivity(new Intent(Intent.ActionView, Android.Net.Uri.Parse("http://play.google.com/store/apps/details?id=" + PackageName)));
+					}
+				});
+
+				adb.Show();
+			}
 		}
 
     /// <summary>

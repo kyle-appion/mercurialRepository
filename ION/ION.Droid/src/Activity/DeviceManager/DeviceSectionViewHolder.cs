@@ -5,11 +5,6 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.Connections;
-  using ION.Core.Devices;
-
-  using ION.Droid.Devices;
-  using ION.Droid.Util;
   using ION.Droid.Views;
   using ION.Droid.Widgets.RecyclerViews;
 

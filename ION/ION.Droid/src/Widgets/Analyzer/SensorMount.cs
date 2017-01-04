@@ -1,14 +1,11 @@
 ﻿namespace ION.Droid {
 
-  using System;
-
   using Android.Content;
   using Android.Text;
   using Android.Views;
   using Android.Widget;
 
   using ION.Core.Content;
-  using ION.Core.Devices;
   using ION.Core.Sensors;
 
   /// <summary>

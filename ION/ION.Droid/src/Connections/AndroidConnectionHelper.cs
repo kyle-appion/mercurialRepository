@@ -9,10 +9,11 @@
 	using Android.OS;
 	using Android.Support.V4.Content;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.Devices.Connections;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Util;
 
 	using ION.Droid.App;
 

@@ -8,13 +8,14 @@
   using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Content;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Measure;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
-  using ION.Core.Util;
 
   // Using ION.Droid
   using Activity;
@@ -207,7 +208,7 @@
     private bool TrySetManifold(Analyzer.ESide side, Sensor sensor) {
       if (analyzer.CanAddSensorToSide(side) && !analyzer.HasSensor(sensor)) {
         analyzer.AddSensorToSide(side, sensor);
-        analyzer.SetManifoldBySensor(side, sensor);
+        analyzer.SetManifold(side, sensor);
         return true;
       } else {
         Log.E(this, "Trying to add a sensor to a manifold that already has a sensor.");

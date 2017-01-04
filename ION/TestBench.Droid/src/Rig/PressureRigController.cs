@@ -19,6 +19,9 @@
 	/// The pressure rig controller is responsible for for controling the pressure rig thoughout a test procedure.
 	/// </summary>
 	public class PressureRigController : ITest {
+		private static readonly Scalar APPROXIMATION_AMOUNT = Units.Pressure.PSIG.OfScalar(5);
+
+
 		// Implemented from ITest
 		public event OnTestEvent onTestEvent;
 
@@ -51,7 +54,9 @@
 		private StateMachine<EState, ETrigger> sm;
 
 
-		public PressureRigController() {
+		public PressureRigController(PressureRigDevice pressureRig) {
+			this.pressureRig = pressureRig;
+			this.pressureRig.onDeviceEvent += OnDeviceEvent;
 		}
 
 		// Implemented from ITest
@@ -69,7 +74,73 @@
 			return false;
 		}
 
-		private async Task GotoTargetPoint(Scalar targetPoint) {
+		public StateMachine<EState, ETrigger> BuildStateMachine() {
+			var ret = new StateMachine<EState, ETrigger>(EState.Off);
+
+			// Register out unhandled trigger handler.
+			ret.OnUnhandledTrigger(OnHandleUnhandledTrigger);
+			ret.Configure(EState.Off)
+			   .OnEntry(OnTestOff)
+			   .Permit(ETrigger.Start, EState.Initialize);
+			// Configure the initialization state.
+			ret.Configure(EState.Initialize)
+			   .OnEntry(OnInitializeRig)
+			   .Permit(ETrigger.Success, EState.Idle)
+			   .Permit(ETrigger.Failure, EState.Off);
+			// Configure the idle state.
+			ret.Configure(EState.Idle)
+			   .Permit(ETrigger.Start, EState.VerifyTest);
+			// Configure the Verify Test state
+			ret.Configure(EState.VerifyTest)
+			   .Permit(ETrigger.Success, EState.Pressurize)
+			   .Permit(ETrigger.Failure, EState.Idle);
+			// Configure the Pressurize state
+			ret.Configure(EState.Pressurize)
+			   .Permit(ETrigger.NearbyTarget, EState.VerifyTargetPoint)
+			   .Permit(ETrigger.Success, EState.VerifyTargetPoint)
+			   .Permit(ETrigger.Stop, EState.CancelOperation);
+			// Configure the VerifyTargetPoint state
+			ret.Configure(EState.VerifyTargetPoint)
+			   .OnEntry(OnVerifyTargetPoint)
+			   .Permit(ETrigger.Success, EState.Advance);
+			ret.Configure(EState.Advance)
+			   .Permit(ETrigger.Success, EState.Pressurize)
+			   .Permit(ETrigger.Stop, EState.Complete);
+			// Configure the Complete state
+			ret.Configure(EState.Complete)
+			   .Permit(ETrigger.Success, EState.Idle);
+
+
+			return ret;
+		}
+
+		private void OnDeviceEvent(DeviceEvent de) {
+			switch (de.type) {
+				case DeviceEvent.EType.NewData:
+					DoDeviceUpdate();
+					break;
+			}
+		}
+
+		/// <summary>
+		/// Queries whether or not the pressure rig's pressure is near the current target point.
+		/// </summary>
+		/// <returns><c>true</c>, if near target point was ised, <c>false</c> otherwise.</returns>
+		private bool IsNearTargetPoint() {
+			var p = pressureRig.pressure;
+			var tp = parameters.targetPoints[currentTargetPointIndex].measurement.ConvertTo(p.unit);
+			return p.amount > (tp.amount - APPROXIMATION_AMOUNT.ConvertTo(p.unit).amount);
+		}
+
+		private void DoDeviceUpdate() {
+			if (sm.IsInState(EState.Pressurize)) {
+				if (IsNearTargetPoint()) {
+					sm.Fire(ETrigger.Success);
+				}
+			}
+		}
+
+		private void GotoTargetPoint(Scalar targetPoint) {
 			var startime = DateTime.Now;
 			var isNarrowing = false;
 			/*
@@ -84,44 +155,43 @@
 			*/
 		}
 
-		public StateMachine<EState, ETrigger> BuildStateMachine() {
-			var ret = new StateMachine<EState, ETrigger>(EState.Idle);
 
-			// Register out unhandled trigger handler.
-			ret.OnUnhandledTrigger(HandleUnhandledTrigger);
-			// Configure the initialization state.
-			ret.Configure(EState.Initialize)
-			   .OnEntry(InitializeRig)
-			   .Permit(ETrigger.Success, EState.Idle);
-			// Configure the idle state.
-			ret.Configure(EState.Idle)
-			   .Permit(ETrigger.Start, EState.VerifyTest);
-			// Configure the Verify Test state
-			ret.Configure(EState.VerifyTest)
-			   .Permit(ETrigger.Success, EState.Pressurize)
-			   .Permit(ETrigger.Failure, EState.Idle);
-			// Configure the Pressurize state
-			ret.Configure(EState.Pressurize)
-			   .InternalTransition(ETrigger.OverPressure, t => DoReleivePressure())
-			   .Permit(ETrigger.Success, EState.VerifyTargetPoint)
-			   .Permit(ETrigger.Stop, EState.CancelOperation);
-			// Configure the VerifyTargetPoint state
-			ret.Configure(EState.VerifyTargetPoint)
-			   .Permit(ETrigger.Success, EState.Complete)
-			   .Permit(ETrigger.OverPressure, EState.ReleiveTargetPoint)
-			   .Permit(ETrigger.UnderPressure, EState.Pressurize);
-			// Configure the ReleiveTargetPoint state
-			ret.Configure(EState.ReleiveTargetPoint)
-			   .Permit(ETrigger.Success, EState.Pressurize)
-			   .Permit(ETrigger.Stop, EState.CancelOperation);
-			// Configure the Complete state
-			ret.Configure(EState.Complete)
-			   .Permit(ETrigger.Success, EState.Idle);
+		/*
+		 * STATE ENTRY AND EXIT DEFINITIONS
+		 */
 
+		/// <summary>
+		/// Cleans up the test's internal state.
+		/// </summary>
+		/// <returns>The test off.</returns>
+		private void OnTestOff() {
 
-			return ret;
 		}
 
+		/// <summary>
+		/// Initializes the rig. This involved connecting to it if necessary and ensuring that the rig has properly
+		/// initialized itself.
+		/// </summary>
+		private void OnInitializeRig() {
+			var timeout = TimeSpan.FromMilliseconds(1000 * 15);
+
+			if (!pressureRig.isConnected) {
+				var start = DateTime.Now;
+				while (!pressureRig.isConnected) {
+					if (DateTime.Now - start > timeout) {
+						break;
+					}
+				}
+			}
+
+			if (!pressureRig.isConnected) {
+				sm.Fire(ETrigger.Failure);
+			} else {
+				sm.Fire(ETrigger.Success);
+			}
+		}
+
+/*
 		private void BastardedConceptVersion() {
 			// while we are actively connected to the pressure rig
 			while (pressureRig.isConnected) {
@@ -131,22 +201,41 @@
 						break;
 					case TESTING:
 						var tp = GetCurrentTargetPoint();
-						if (pressureRig.
-						
+						if (pressureRig.pressure > tp) {
+						}
 				}
 			}
 		}
+*/
 
 		/// <summary>
-		/// Commits the initialization command the rig hardware and fires a result trigger to the state machine.
+		/// Resolves the pressure controller receiving a new pressure measurement from the pressure rig.
 		/// </summary>
-		private void InitializeRig() {
+		private void OnRigPressureChanged() {
+			if (pressureRig.pressure > Units.Pressure.PSIG.OfScalar(5).amount) {
+				pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreateHoldPressureCommand());
+			}
 		}
 
-		/// <summary>
-		/// Write the releive pressure command to the remote rig.
-		/// </summary>
-		private void DoReleivePressure() {
+		private void OnVerifyTargetPoint() {
+			// Hold the Stop the G5 and track the pressure change.
+
+
+			var currentTargetPressure = parameters.targetPoints[currentTargetPointIndex++].measurement;
+			pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreatePressurizeCommand(currentTargetPressure));
+			if (currentTargetPointIndex > parameters.targetPoints.Count) {
+				// The test is complete.
+				sm.Fire(ETrigger.Success);
+			}
+		}
+
+		private void Advance() {
+			currentTargetPointIndex += 1;
+			if (currentTargetPointIndex >= parameters.targetPoints.Count) {
+				sm.Fire(ETrigger.Stop);
+			} else {
+				sm.Fire(ETrigger.Success);
+			}
 		}
 
 		/// <summary>
@@ -154,8 +243,11 @@
 		/// </summary>
 		/// <param name="state">State.</param>
 		/// <param name="trigger">Trigger.</param>
-		private void HandleUnhandledTrigger(EState state, ETrigger trigger) {
+		private void OnHandleUnhandledTrigger(EState state, ETrigger trigger) {
 			Log.E(this, "Received unhandled trigger {" + trigger + "} for state: " + state);
+			if (ETrigger.ConnectionLost == trigger) {
+				Log.E(this, "The connection was lost. Cleaning up the test.");
+			}
 		}
 
 
@@ -163,6 +255,10 @@
 		/// The enumeration of the states that the pressure rig can be in.
 		/// </summary>
 		public enum EState {
+			/// <summary>
+			/// The state that is used to show that the rig is not properly initialized.
+			/// </summary>
+			Off,
 			/// <summary>
 			/// The state that is used to prepare the rig hardware for a test. This is where the rig will perform any
 			/// necessary preprocessing and initialization of internal hardware and state. Once the initialization is complete,
@@ -197,12 +293,6 @@
 			/// </summary>
 			VerifyTargetPoint,
 			/// <summary>
-			/// The state that is used if a TargetPoint was not valid in the last state approach.
-			/// Action:
-			/// 	ReleiveRigPressure
-			/// </summary>
-			ReleiveTargetPoint,
-			/// <summary>
 			/// The state where the state machine determines whether it needs to keep excuting or complete the test.
 			/// Action:
 			/// 	AdvanceTest
@@ -234,17 +324,17 @@
 			/// </summary>
 			Success,
 			/// <summary>
+			/// The trigger that is used to indicate that the test lost connection to the pressure rig.
+			/// </summary>
+			ConnectionLost,
+			/// <summary>
 			/// The trigger used to indicate that a state failed its execution.
 			/// </summary>
 			Failure,
 			/// <summary>
-			/// The trigger that is used to indicate that the state was over pressure.
+			/// The trigger that is used to indicate that the state is neary the target pressure.
 			/// </summary>
-			OverPressure,
-			/// <summary>
-			/// The trigger that is used to indicate that the state was under pressure.
-			/// </summary>
-			UnderPressure,
+			NearbyTarget,
 		}
 	}
 }

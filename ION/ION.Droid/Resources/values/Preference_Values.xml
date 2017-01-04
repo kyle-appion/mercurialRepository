@@ -32,6 +32,10 @@
   <string name="preferences_location_gps_on">Use of your location will be used for various features throughout the application.</string>
   <string name="preferences_location_gps_off">Your location will not be explicity accessed by the application.</string>
 
+  <string name="preferences_help">Help</string>
+  <string name="preferences_help_walkthrough">App Walkthrough</string>
+  <string name="preferences_help_walkthrough_show">Show Walkthrough on application startup?</string>
+
   <string name="preferences_units_default">Default Units</string>
   <string name="preferences_units_length">Default Length Unit</string>
   <string name="preferences_units_length_title">Select a new default length</string>

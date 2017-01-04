@@ -14,9 +14,10 @@
   <string name="pkey_whats_new">whats_new</string>
   <string name="pkey_youtube">youtube</string>
 
-
   <string name="pkey_alarm_vibrate">alarm_vibrate</string>
   <string name="pkey_alarm_sound">alarm_sound</string>
+
+  <string name="pkey_help_walkthrough">help_walkthrough</string>
 
 	<string name="pkey_location_ask_for_permissions">location_ask_for_permissions</string>
   <string name="pkey_location_elevation">location_elevation</string>

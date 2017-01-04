@@ -2,6 +2,7 @@
 
   using System;
 
+	public delegate string ToFormattedString(double amount);
   public abstract class Unit {
     /// <summary>
     /// The units that is indicative of a unit of magnitude one.
@@ -22,6 +23,11 @@
     /// </summary>
     /// <returns> The unit this unit is derived from. </returns>
     public abstract Unit standardUnit { get; }
+
+		/// <summary>
+		/// The quantity stringer that is used to format a unit.
+		/// </summary>
+		public ToFormattedString stringer;
 
 
     /// <summary>
@@ -66,6 +72,16 @@
     /// <param name="other"> The object to attempt to equate to this unit. </param>
     /// <returns> True if this unit is equal to other. </returns>
     public override abstract bool Equals(object other);
+
+		/// <summary>
+		/// Sets the stringer that will be used by a scalar when formatting a unit's string.
+		/// </summary>
+		/// <returns>The stringer.</returns>
+		/// <param name="stringer">Stringer.</param>
+		public Unit SetStringer(ToFormattedString stringer) {
+			this.stringer = stringer;
+			return this;
+		}
 
     public override sealed string ToString() {
       if (this is BaseUnit) {

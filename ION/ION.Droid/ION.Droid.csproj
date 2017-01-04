@@ -266,6 +266,10 @@
     <Compile Include="src\Widgets\Templates\CompactManifoldViewTemplate.cs" />
     <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
     <Compile Include="src\Connections\BaseScanHelper.cs" />
+    <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
+    <Compile Include="src\Activity\Tutorial\TutorialFragment.cs" />
+    <Compile Include="src\Activity\Tutorial\TutorialPage.cs" />
+    <Compile Include="src\Animations\AnimatorListenerActionAdapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -644,6 +648,22 @@
     <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
     <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
     <AndroidResource Include="Resources\drawable\shape_circle_red.xml" />
+    <AndroidResource Include="Resources\layout\activity_tutorial.axml" />
+    <AndroidResource Include="Resources\drawable\shape_tab_circle_selected.xml" />
+    <AndroidResource Include="Resources\drawable\shape_tab_circle_default.xml" />
+    <AndroidResource Include="Resources\drawable\selector_tab_circle.xml" />
+    <AndroidResource Include="Resources\layout\fragment_tutorial.axml" />
+    <AndroidResource Include="Resources\values\Tutorial.xml" />
+    <AndroidResource Include="Resources\drawable\tutorial_analyzer.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_analyzer_actions.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_device_manager.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_device_manager_scan.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_navigation_drawer.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_workbench.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_workbench_actions.png" />
+    <AndroidResource Include="Resources\drawable\tutorial_workbench_subviews.png" />
+    <AndroidResource Include="Resources\drawable\ic_arrow_red.png" />
+    <AndroidResource Include="Resources\drawable\img_logo_appionblack.png" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -656,6 +676,10 @@
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">
       <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
       <Name>ION.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Appion.Commons\Appion.Commons.csproj">
+      <Project>{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}</Project>
+      <Name>Appion.Commons</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -675,6 +699,7 @@
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\values-sw480dp\" />
     <Folder Include="src\Connections\Beta\" />
+    <Folder Include="src\Activity\Tutorial\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

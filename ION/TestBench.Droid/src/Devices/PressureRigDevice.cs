@@ -4,6 +4,7 @@
 	using System.IO;
 
 	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
 	using ION.Core.Connections;
 	using ION.Core.Devices;
@@ -27,7 +28,7 @@
 		// Implemented from IDevice
 		public IConnection connection { get; private set; }
 		// Implemented from IDevice
-		public IProtocol protocol { get; private set; }
+		public IProtocol protocol { get { return pressureRigProtocol; } }
 		// Implemented from IDevice
 		public bool isConnected { get { return connection.connectionState == EConnectionState.Connected; } }
 		// Implemented from IDevice
@@ -37,11 +38,28 @@
 		public ERigType rigType { get { return ERigType.Pressure; } }
 		// Implemented from IRig
 		public string address { get { return connection.address; } }
-		// Implemented from IRig
 
+		/// <summary>
+		/// The protocol that the pressure rig is using.
+		/// </summary>
+		public readonly PressureRigProtocol pressureRigProtocol;
+
+		/// <summary>
+		/// The last known pressure from the rig device.
+		/// </summary>
+		public Scalar pressure;
+		/// <summary>
+		/// The last known angle of the pressure rig's g5 stepper.
+		/// </summary>
+		public Scalar g5StepperAngle;
+		/// <summary>
+		/// The last known angle of the pressure rig's exhaust stepper.
+		/// </summary>
+		public Scalar exhaustStepperAngle;
 
 		public PressureRigDevice() {
 			serialNumber = new PressureRigSerialNumber("PR00Z001");
+			pressureRigProtocol = new PressureRigProtocol();
 		}
 
 		// Implemented from IDevice
@@ -65,6 +83,14 @@
 		}
 
 		public void HandlePacket(byte[] packet) {
+			try {
+				var p = pressureRigProtocol.ParsePacket(packet);
+				this.pressure = p.pressure;
+				this.g5StepperAngle = p.g5StepperAngle;
+				this.exhaustStepperAngle = p.exhaustStepperAngle;
+			} catch (Exception e) {
+				Log.E(this, "Failed to parse pressure rig packet", e);
+			}
 		}
 	}
 
@@ -114,18 +140,26 @@
 	}
 
 	public enum EState {
-		Off = 0x01,
-		Idle = 0x02,
-		Initialize = 0x03,
-		GotoPressure = 0x04,
-		HoldPressure = 0x05,
-		Purge = 0x06,
+		// The state/command that will shut the rig
+		Shutdown = 1,
+		// The state/command type that puts the rig into an idle state.
+		Idle = 2,
+		// The state/command type that puts the rig into a pressurize until target state.
+		Pressurize = 3,
+		// The state/command type that puts the rig into a hold pressure state.
+		HoldPressure = 4,
+		// The state/command that will depressurize the rig.
+		Depressurize = 5,
+		// The state/command that will is used when the rig crashes.
+		Crash = 6,
 	}
 
 	public class PressureRigPacket {
 		public EState state;
+		public uint errorCode;
 		public Scalar pressure;
-		public Scalar currentStepperRotation;
+		public Scalar g5StepperAngle;
+		public Scalar exhaustStepperAngle;
 	}
 
 	public class PressureRigProtocol : IProtocol {
@@ -136,23 +170,28 @@
 
 			using (var r = new BinaryReader(ms)) {
 				var state = (EState)r.ReadByte();
+				var usEc = r.ReadUInt32BE();
 				var usPressure = r.ReadFloat32BE();
-				var usRot = r.ReadFloat32BE();
+				var usG5Rot = r.ReadFloat32BE();
+				var usERot = r.ReadFloat32BE();
 
 				return new PressureRigPacket() {
 					state = state,
+					errorCode = usEc, 
 					pressure = Units.Pressure.PSIG.OfScalar(usPressure),
-					currentStepperRotation = Units.Angle.DEGREE.OfScalar(usRot),
+					g5StepperAngle = Units.Angle.DEGREE.OfScalar(usG5Rot),
+					exhaustStepperAngle = Units.Angle.DEGREE.OfScalar(usERot),
 				};
 			}
 		}
 
 		/// <summary>
-		/// Creates a packet that will turn the rig off (aside from bluetooth).
+		/// Creates a packet that will shutdown the rig.
+		/// Note: this will also disconnect the device.
 		/// </summary>
-		/// <returns>The off command.</returns>
-		public byte[] CreateOffCommand() {
-			return new byte[] { (byte)EState.Off };
+		/// <returns>The shutdown command.</returns>
+		public byte[] CreateShutdownCommand() {
+			return new byte[] { (byte)EState.Shutdown };
 		}
 
 		/// <summary>
@@ -164,23 +203,15 @@
 		}
 
 		/// <summary>
-		/// Creates a packet that will intialize the remote rig.
-		/// </summary>
-		/// <returns>The initialize command.</returns>
-		public byte[] CreateInitializeCommand() {
-			return new byte[] { (byte)EState.Initialize };
-		}
-
-		/// <summary>
 		/// Creates a new command that will tell the rig to go to the given pressure.
 		/// </summary>
 		/// <returns>The goto pressure command.</returns>
 		/// <param name="targetPressure">Target pressure.</param>
-		public byte[] CreateGotoPressureCommand(Scalar targetPressure) {
+		public byte[] CreatePressurizeCommand(Scalar targetPressure) {
 			var ret = new MemoryStream();
 
 			using (var w = new BinaryWriter(ret)) {
-				w.Write((byte)EState.GotoPressure);
+				w.Write((byte)EState.Pressurize);
 				w.Write((float)targetPressure.ConvertTo(Units.Pressure.PSIG).amount);
 			}
 
@@ -199,8 +230,8 @@
 		/// Creates a new command that will have the rig purge itself of pressure.
 		/// </summary>
 		/// <returns>The purge command.</returns>
-		public byte[] CreatePurgeCommand() {
-			return new byte[] { (byte)EState.Purge };
+		public byte[] CreateDepressurizeCommand() {
+			return new byte[] { (byte)EState.Depressurize };
 		}
 	}
 }

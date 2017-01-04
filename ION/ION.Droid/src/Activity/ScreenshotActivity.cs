@@ -1,27 +1,23 @@
 ﻿namespace ION.Droid.Activity {
 
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
   using System.Threading.Tasks;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
   using Android.Content.PM;
   using Android.Graphics;
   using Android.OS;
-  using Android.Runtime;
 	using Android.Support.Design.Widget;
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.App;
+	using Appion.Commons.Util;
+
   using ION.Core.IO;
   using ION.Core.Location;
   using ION.Core.Pdf;
   using ION.Core.Report;
-  using ION.Core.Util;
 
   using ION.Droid.Dialog;
   using ION.Droid.Views;

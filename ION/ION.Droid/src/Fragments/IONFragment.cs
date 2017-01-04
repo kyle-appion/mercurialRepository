@@ -1,23 +1,20 @@
 ﻿namespace ION.Droid.Fragments {
 
   using System;
-  using System.Collections.Generic;
   using System.IO;
-  using System.Linq;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
   using Android.Graphics;
   using Android.Graphics.Drawables;
   using Android.OS;
-  using Android.Runtime;
   using Android.Views;
 	using Android.Views.InputMethods;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Util;
 
   using ION.Droid.Activity;
 	using ION.Droid.App;

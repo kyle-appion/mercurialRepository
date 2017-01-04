@@ -6,11 +6,12 @@
 	using Android.Graphics;
 	using Android.Views;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Fluids;
 	using ION.Core.Math;
-	using ION.Core.Measure;
-	using ION.Core.Util;
 	
 	public class FluidSliderView : View {
 		/// <summary>

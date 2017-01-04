@@ -16,10 +16,12 @@
   using Android.Support.V7.App;
   using Android.Support.V4.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Util;
 
   // ION.Droid
+	using ION.Droid.Activity.Tutorial;
   using Job;
 	using Report;
   using Dialog;
@@ -135,6 +137,10 @@
         }
         ion.preferences.appVersion = ion.version;
       }
+
+			if (ion.preferences.showTutorial) {
+				StartActivity(new Intent(this, typeof(TutorialActivity)));
+			}
     }
 
     // Overridden from Activity

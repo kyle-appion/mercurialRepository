@@ -7,12 +7,13 @@
   using Android.Support.V7.Widget;
   using Android.Views;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.Connections;
   using ION.Core.Devices;
 	using ION.Core.Devices.Sorters;
   using ION.Core.Sensors;
-  using ION.Core.Util;
 
   using ION.Droid.Dialog;
   using ION.Droid.Util;

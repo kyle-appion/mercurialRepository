@@ -6,8 +6,9 @@
   using Android.Views;
   using Android.Widget;
 
+	using Appion.Commons.Measure;
+
   using ION.Core.Sensors;
-  using ION.Core.Measure;
 
   using ION.Droid.Views;
 

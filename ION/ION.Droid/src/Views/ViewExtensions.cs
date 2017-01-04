@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Views {
+﻿using ION.Droid.Animations;
+namespace ION.Droid.Views {
 
 	using System;
 	using System.IO;
@@ -36,6 +37,31 @@
 			b.Dispose();
 
 			return ret;
+		}
+
+		public static void FadeIn(this View view, long duration=500) {
+			view.Visibility = ViewStates.Visible;
+			view.Alpha = 0f;
+
+			view.Animate()
+			    .Alpha(1f)
+			    .SetDuration(duration)
+			    .SetListener(null);
+		}
+
+		public static void FadeOut(this View view, long duration=500) {
+			view.Visibility = ViewStates.Visible;
+			view.Alpha = 1f;
+
+			view.Animate()
+			    .Alpha(0f)
+			    .SetDuration(duration)
+			    .SetListener(new AnimatorListenerActionAdapter() {
+				onAnimationEnd = (obj) => {
+					view.Visibility = ViewStates.Invisible;
+				},
+			});
+
 		}
 	}
 }
