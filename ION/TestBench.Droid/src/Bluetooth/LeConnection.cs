@@ -163,6 +163,9 @@
 					Disconnect();
 					return;
 				}
+				if (onConnectionStateChanged != null) {
+					onConnectionStateChanged(this);
+				}
 			}
 		}
 

@@ -6,6 +6,7 @@
   using Android.Widget;
 
   using ION.Core.Content;
+	using ION.Core.Devices;
   using ION.Core.Sensors;
 
   /// <summary>
@@ -88,6 +89,7 @@
     public SensorMount(Context context, Analyzer analyzer) {
       this.context = context;
       this.analyzer = analyzer;
+			var black = context.Resources.GetColor(Resource.Color.black);
       var gray = context.Resources.GetColor(Resource.Color.gray);
 
       root = new LinearLayout(context);
@@ -107,7 +109,7 @@
       title.Gravity = GravityFlags.CenterHorizontal;
       title.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_upper_white);
       title.SetPadding(10, 10, 10, 0);
-      title.SetTextColor(gray);
+      title.SetTextColor(black);
 			title.SetTextSize(Android.Util.ComplexUnitType.Dip, context.Resources.GetDimension(Resource.Dimension.analyzer_sensor_mount_header));
       title.SetSingleLine(true);
       title.Ellipsize = TextUtils.TruncateAt.End;
@@ -132,7 +134,7 @@
       unit.SetBackgroundResource(Resource.Drawable.np_half_rounded_square_lower_white);
       unit.SetPadding(10, 0, 10, 10);
       unit.Id = Resource.Id.unit;
-      unit.SetTextColor(gray);
+      unit.SetTextColor(black);
       unit.Gravity = GravityFlags.Right;
       unit.SetSingleLine(true);
       unit.Ellipsize = TextUtils.TruncateAt.End;
@@ -168,6 +170,9 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     private void OnSensorStateChangedEvent(Sensor sensor) {
+			var gray = context.Resources.GetColor(Resource.Color.gray);
+			var black = context.Resources.GetColor(Resource.Color.black);
+
       title.Text = sensor.name;
       measurement.Text = sensor.ToFormattedString(false);
       unit.Text = sensor.unit.ToString();
@@ -179,6 +184,13 @@
         UpdateTitleBackground(side);
         isSet = true;
       }
+
+			var gds = sensor as GaugeDeviceSensor;
+			if (gds == null || gds.device.isConnected) {
+				measurement.SetTextColor(black);
+			} else {
+				measurement.SetTextColor(gray);
+			}
     }
 
     /// <summary>

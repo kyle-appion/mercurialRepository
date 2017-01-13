@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid {
+﻿namespace TestBench.Droid.Activity {
 
 	using System.Collections.Generic;
 
@@ -15,7 +15,7 @@
 
 	using ION.Core.Devices;
 
-	[Activity(Label = "Gauge Scanner", MainLauncher = true, Icon = "@mipmap/icon")]
+	[Activity(Label = "Gauge Scanner", MainLauncher=true, Icon = "@mipmap/icon")]
 	public class GaugeScanActivity : BaseActivity, SwipeRefreshLayout.IOnRefreshListener {
 		private SwipeRefreshLayout swiper;
 		private RecyclerView list;
@@ -74,7 +74,8 @@
 			};
 
 			rigState = FindViewById<TextView>(Resource.Id.rigState);
-			rig = null;
+//			rig = null;
+
 			UpdateRigDisplay();
 		}
 
@@ -105,7 +106,7 @@
 		public override bool OnPrepareOptionsMenu(IMenu menu) {
 			base.OnPrepareOptionsMenu(menu);
 
-			var item = menu.FindItem(Android.Resource.Id.Button1);
+			var item = menu.FindItem(Resource.Id.scan);
 			if (service == null) {
 				item.SetTitle("Please Wait...");
 			} else {
@@ -121,17 +122,7 @@
 
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
 			switch (item.ItemId) {
-				case Android.Resource.Id.Button1:
-					Appion.Commons.Util.Log.D(this, "Printing Matrix");
-					var matrix = new Appion.Commons.Math.Matrix(new double[3, 4] {
-						{  1, 2, -1,  -4 },
-						{  2, 3, -1, -11 },
-						{ -2, 0, -3,  22 },
-					});
-					Appion.Commons.Util.Log.D(this, "Pre-rr\n" + matrix.ToString());
-					matrix.Echelonize();
-					Appion.Commons.Util.Log.D(this, "Post-rr\n" + matrix.ToString());
-/*
+				case Resource.Id.scan:
 					if (service == null) {
 						Toast.MakeText(this, "Please wait for the service to connect...", ToastLength.Long).Show();
 					} else {
@@ -144,7 +135,6 @@
 							}
 						}
 					}
-*/
 					return true;
 				default:
 					return base.OnMenuItemSelected(featureId, item);

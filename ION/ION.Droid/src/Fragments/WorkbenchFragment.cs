@@ -99,6 +99,15 @@
       SetHasOptionsMenu(true);
       AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
 
+#if DEBUG
+			if (ion == null) {
+				Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
+				StartActivity(new Intent(Activity, typeof(MainActivity)));
+				Activity.Finish();
+				return;
+			}
+#endif
+
       if (workbench == null) {
 				workbench = ion.currentWorkbench;
       }
@@ -236,19 +245,25 @@
             ion.SaveWorkbenchAsync();
             break;
           case WorkbenchEvent.EType.ManifoldEvent:
-            switch (workbenchEvent.manifoldEvent.type) {
-              case ManifoldEvent.EType.SensorPropertyAdded:
-                goto case ManifoldEvent.EType.SensorPropertySwapped;
-              case ManifoldEvent.EType.SensorPropertyRemoved:
-                goto case ManifoldEvent.EType.SensorPropertySwapped;
-              case ManifoldEvent.EType.SensorPropertySwapped:
-                ion.SaveWorkbenchAsync();
-                break;
-            }          
+						OnManifoldEvent(workbenchEvent.manifoldEvent);
             break;
         }
       }
     }
+
+		private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
+			switch (manifoldEvent.type) {
+				case ManifoldEvent.EType.SensorPropertyAdded:
+					adapter.UpdateManifoldSubview(manifoldEvent.manifold, Math.Max(manifoldEvent.index - 1, 0));
+					goto case ManifoldEvent.EType.SensorPropertySwapped;
+				case ManifoldEvent.EType.SensorPropertyRemoved:
+					adapter.UpdateManifoldSubview(manifoldEvent.manifold, manifoldEvent.manifold.sensorPropertyCount - 1);
+					goto case ManifoldEvent.EType.SensorPropertySwapped;
+				case ManifoldEvent.EType.SensorPropertySwapped:
+					ion.SaveWorkbenchAsync();
+				break;
+			}
+		}
 
     /// <summary>
     /// Shows a context dialog for a manifold. This will present all the options that are available for

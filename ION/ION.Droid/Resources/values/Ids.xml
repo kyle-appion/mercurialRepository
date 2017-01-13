@@ -23,6 +23,7 @@
   <item name="content" type="id"/>
   <item name="content2" type="id"/>
   <item name="color" type="id"/>
+  <item name="coordinates" type="id"/>
   <item name="counter" type="id"/>
   <item name="country" type="id"/>
 	<item name="customer_no" type="id"/>
@@ -129,6 +130,12 @@
   -->
   <item name="drawer" type="id"/>
   <item name="drawer_list" type="id"/>
+
+	<!--
+	JOB
+	-->
+	<item name="job_system" type="id"/>
+	<item name="job_technician_name" type="id"/>
 
 	<!--
 	MEASUREMENTS

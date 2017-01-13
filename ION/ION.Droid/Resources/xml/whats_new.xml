@@ -1,5 +1,11 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
 	<display version="0.9.34">
+		<update>Updated sizing for larger devices</update>
+
+		<fixed>Fixed rendering bugs in Alarms</fixed>
+		<fixed>Fixed rendering bugs in P/T Chart</fixed>
+		<fixed>Fixed rendering bugs in Superheat / Subcool</fixed>
+		<fixed>Fixed app crashes in System Analyzer</fixed>
 	</display>
 </whatsnew>

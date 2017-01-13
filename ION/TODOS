@@ -31,7 +31,6 @@ ANDROID
 
     - Manifold
       * Show "Linked sensor as secondary" toast when a secondary sensor is added
-      * add secondary (linked) sensor subview
       * swapping a manifold with subviews to other empty doesn't ask to break subviews
       * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
 
@@ -41,11 +40,10 @@ ANDROID
   Workbench
     * Changing fluids isn't reflected in subview when back or arrow is clicked. Ok done works for superheat and subcool
 
-  Alarm
-    * Alarm save button doesn't work
-
-  Device Manager
-    * Collapse arrow doesn't update
+DEVICE SPECIFIC (Samsung Tablet 7 (found in the warehouse))
+  Workbench
+  	* The manifolds sometimes don't update when a device is connected / reconnected.
+  		(could not reproduce)
 
 
   * Out of memory when reconnect goes into a weird loop

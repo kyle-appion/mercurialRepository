@@ -156,6 +156,7 @@
     <Compile Include="src\Report\DataLogs\DeviceSensorGaugeReportData.cs" />
     <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
     <Compile Include="src\Fluids\FluidExtensions.cs" />
+    <Compile Include="src\Content\AppVersion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

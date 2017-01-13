@@ -2,6 +2,16 @@
 
 	using System.Text;
 
+	/*
+	var m = new Appion.Commons.Math.Matrix(new double[,] {
+				{ 8, 26, 170, 1232, 9686, 24.5 },
+				{ 26, 170, 1232, 9686, 79256, 106.5 },
+				{ 170, 1232, 9686, 79256, 665510, 676.5 },
+				{ 1232, 9686, 79256, 665510, 5.68695e6, 5032.5 },
+				{ 9686, 79256, 665510, 5.68695e6, 4.9209e7, 39904.5 },
+			});
+			m.Echelonize();
+	 */
 	public class Matrix {
 
 		public int width { get; private set; }
@@ -39,11 +49,12 @@
 
 		/// <summary>
 		/// Wraps the given matrix.
+		/// The first collection of data is the width and the second is the height.
 		/// </summary>
 		/// <param name="matrix">Matrix.</param>
-		public Matrix(double[,] matrix) : this(matrix.GetLength(0), matrix.GetLength(1)) {
-			for (int c = 0; c < width; c++) {
-				for (int r = 0; r < height; r++) {
+		public Matrix(double[,] matrix) : this(matrix.GetLength(1), matrix.GetLength(0)) {
+			for (int r = 0; r < height; r++) {
+				for (int c = 0; c < width; c++) {
 					this[r, c] = matrix[r, c];
 				}
 			}
@@ -52,6 +63,19 @@
 		/// <summary>
 		/// Performs a Row reduction to echeolon form upon the matrix.
 		/// </summary>
+		/// <code>
+		/// var m = new Matrix(new double[3, 4]{
+		///		{  1, 2, -1,  -4 },
+		///		{  2, 3, -1, -11 },
+		///		{ -2, 0, -3,  22 }
+		/// };
+		/// m.Echelonize();
+		/// Console.Print(m.ToString()
+		/// OUTPUT:
+		/// 1   0   0   -8
+		///	0   1   0   1
+		///	0   0   1   -2
+		/// </code>
 		public void Echelonize() {
 			int lead = 0;
 			for (int r = 0; r < height; r++) {
@@ -103,12 +127,12 @@
 		/// Returns a pretty string of the contents of this matrix.
 		/// </summary>
 		/// <returns>A <see cref="T:System.String"/> that represents the current <see cref="T:Appion.Commons.Matrix"/>.</returns>
-		public string ToString() {
+		public override string ToString() {
 			var sb = new StringBuilder();
 
-			for (int c = 0; c < width; c++) {
+			for (int r = 0; r < height; r++) {
 				sb.Append("[");
-				for (int r = 0; r < height; r++) {
+				for (int c = 0; c < width; c++) {
 					sb.Append(this[r, c].ToString("e5")).Append(", ");
 				}
 				sb.Append("]\n");

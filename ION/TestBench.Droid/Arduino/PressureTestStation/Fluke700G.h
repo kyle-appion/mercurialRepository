@@ -17,8 +17,6 @@ HC_COMD_LIST
 
 #include <string.h>
 
-#include <SoftwareSerial.h>
-
 #include "Appion.h"
 
 // An enumeration of the units that are present in the fluke protocol.
@@ -83,11 +81,13 @@ bool Fl_FlukeUnitFromString(char* str, i32 strlen, EFlukeUnit* outUnit);
 
 class Fluke700G {
 private:
-  SoftwareSerial* serial;
+  HardwareSerial* serial;
+  int timeout;
 
 public:
-  Fluke700G(u8 tx, u8 rx, bool invertLogic=true) {
-    this->serial = new SoftwareSerial(tx, rx, invertLogic);
+  Fluke700G(HardwareSerial* serial, int timeout) {
+    this->serial = serial;
+    this->timeout = timeout;
   }
 
   // Queries the next error from the fluke gauge.
@@ -98,7 +98,7 @@ public:
 
   // Queries the identification string for the Fluke700G. This includes the
   // manufacturer, model number and firmware version.
-  char* GetIdentification();
+  i32 GetIdn(char* buffer, i32 len);
 
   // Write the tare command to the Fluke700G.
   void Tare();
@@ -114,6 +114,9 @@ public:
 
   // Queries the current pressure from the Fluke700G in its current units.
   EFlukeError GetPressure(f32* outPres);
+
+  // Queries the current pressure and unit from the Fluke700G.
+  EFlukeError GetPressureAndUnit(f32* outPres, EFlukeUnit* outUnit);
 
   // Attempts to set the temperature unit for the Fluke700G.
   void SetTemperatureUnit(EFlukeUnit unit);
@@ -148,21 +151,26 @@ public:
 
   // Writes a line to the fluke gauge.
   void Write(char* msg) {
-    this->serial->println(msg);
+    serial->println(msg);
   }
 
   // Attempts to read a line from the fluke's serial device.
   // If the timeout is negative, then the readline will timeout in approximately 70 minutes.
   // Returns the number of characters read. If the Readline timed out during the read, then the returned value will be
   // inverted (ie. ~ret).
-  i32 ReadLine(char* buffer, i32 maxRead, i32 timeout) {
+  i32 ReadLine(char* buffer, i32 maxRead) {
     i32 ret = 0;
+    i32 start = millis();
+
+    Serial.println("Reading Line");
 
     while (timeout--) {
       while (serial->available()) {
         char c = serial->read();
         // End-of-line
-        if (c == '\r' || c == '\n') {
+        if (c == '\r') {
+          i32 end = millis() - start;
+          Serial.print(end);Serial.println("ms");
           return ret;
         } else {
           buffer[ret++] = c;
@@ -172,6 +180,8 @@ public:
       delay(1);
     }
 
+    Serial.println("Timeout");
+
     return ~ret;
   }
 
@@ -179,8 +189,17 @@ public:
   // float will be placed into the outResult. The max length is the max number of characters that will be read from the
   // buffer.
   bool AssertF32(char* buffer, i32 maxLength, f32* outResult) {
+    Serial.print("Asserting: ");
+    Serial.write(buffer, maxLength);
+    Serial.println();
+
+    // Guarantee that the buffer is a "c" string.
+    int nl = maxLength + 1;
+    char b[nl];
+    memcpy(b, buffer, nl);
+
     char* t;
-    *outResult = strntof(buffer, maxLength, &t);
+    *outResult = strtod(b, &t);
     return buffer != t;
   }
 /*

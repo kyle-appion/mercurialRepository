@@ -379,6 +379,10 @@
 				expansionIcon.Recycle();
 			}
       Bitmap tmp = cache.GetBitmap(Resource.Drawable.ic_expansionchamber);
+			if (tmp.IsRecycled) {
+				cache.Remove(Resource.Drawable.ic_expansionchamber);
+				tmp = cache.GetBitmap(Resource.Drawable.ic_expansionchamber);
+			}
       expansionIcon = Bitmap.CreateScaledBitmap(tmp, s, s, false);
 			tmp.Recycle();
 
@@ -386,6 +390,10 @@
 				compressorIcon.Recycle();
 			}
       tmp = cache.GetBitmap(Resource.Drawable.ic_compressor);
+			if (tmp.IsRecycled) {
+				cache.Remove(Resource.Drawable.ic_compressor);
+				tmp = cache.GetBitmap(Resource.Drawable.ic_compressor);
+			}
       compressorIcon = Bitmap.CreateScaledBitmap(cache.GetBitmap(Resource.Drawable.ic_compressor), s, s, false);
 			tmp.Recycle();
     }
@@ -564,7 +572,7 @@
 					return sm.secondarySensor == null;
 				} else if (sm == null) {
 					// The second manifold is null. This swap is only safe if the first's secondary sensor is null.
-					return sm.secondarySensor == null;
+					return fm.secondarySensor == null;
 				} else if (fm.secondarySensor == null && sm.secondarySensor == null) {
 					// Both of the manifold's secondary sensors are null. This is a safe swap.
 					return true;
