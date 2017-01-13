@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid {
+﻿namespace TestBench.Droid.Activity {
 
 	using Android.App;
 	using Android.Bluetooth;
@@ -11,9 +11,10 @@
 
 	[Activity(Label = "Activity")]
 	public class BaseActivity : Activity, IServiceConnection {
-
 		public const int REQUEST_LOCATION_PERMISSIONS = 1;
 		public const int REQUEST_BLUETOOTH_ENABLE = 2;
+
+		public Prefs prefs { get { return Prefs.Get(this); } }
 
 		protected AppService service { get; set; }
 

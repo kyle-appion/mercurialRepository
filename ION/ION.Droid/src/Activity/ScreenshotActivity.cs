@@ -195,8 +195,7 @@
         }
       });
 
-      task.Wait();
-      var result = task.Result;
+			var result = await task;
       pd.Dismiss();
 
       if (result.success) {

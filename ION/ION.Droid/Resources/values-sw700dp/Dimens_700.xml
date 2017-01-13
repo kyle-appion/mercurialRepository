@@ -99,21 +99,21 @@ This directory is used to contain older 7 inch tablet sized dimensions. So far t
   Analyzer Dimensions
   -->
   <!-- The icon width for the battery icon within the manifold for the analyzer. -->
-  <dimen name="analyzer_battery_icon_width">14dp</dimen>
+  <dimen name="analyzer_battery_icon_width">20dp</dimen>
   <!-- The icon height for the battery icon within the manifold for the analyzer. -->
-  <dimen name="analyzer_battery_icon_height">24dp</dimen>
+  <dimen name="analyzer_battery_icon_height">30dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
-  <dimen name="analyzer_icon_size">24dp</dimen>
+  <dimen name="analyzer_icon_size">30dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
-  <dimen name="analyzer_device_icon_size">32dp</dimen>
-  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
-  <dimen name="analyzer_sensor_mount_header">8dp</dimen>
+  <dimen name="analyzer_device_icon_size">40dp</dimen>
+	  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
+  <dimen name="analyzer_sensor_mount_header">22dp</dimen>
   <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
-  <dimen name="analyzer_sensor_mount_measurement">14dp</dimen>
+  <dimen name="analyzer_sensor_mount_measurement">28dp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <dimen name="analyzer_viewer_text_size">26sp</dimen>
   <!-- The text size for the measurement text view in the manifold within the analyzer. -->
-  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+  <dimen name="analyzer_viewer_measurement_text_size">26sp</dimen>
 
   <!--
   Device Manager dimensions

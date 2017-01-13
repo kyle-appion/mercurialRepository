@@ -21,6 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestBench.Droid", "TestBenc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Appion.Commons", "Appion.Commons\Appion.Commons.csproj", "{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{ED26B1F3-64C0-4DA7-A464-5818FFF62A52}"
+	ProjectSection(SolutionItems) = preProject
+		TODOS = TODOS
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		ION.CoreExtensions\ION.CoreExtensions.projitems*{ccd6f504-0e93-45cb-8803-52050a76a58d}*SharedItemsImports = 13

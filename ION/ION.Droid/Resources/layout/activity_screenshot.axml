@@ -87,7 +87,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                    android:id="@id/address1"
+                    android:id="@id/address2"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_size_large"
                     android:layout_width="match_parent"

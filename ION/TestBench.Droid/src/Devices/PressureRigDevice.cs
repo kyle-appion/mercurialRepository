@@ -86,8 +86,6 @@
 			try {
 				var p = pressureRigProtocol.ParsePacket(packet);
 				this.pressure = p.pressure;
-				this.g5StepperAngle = p.g5StepperAngle;
-				this.exhaustStepperAngle = p.exhaustStepperAngle;
 			} catch (Exception e) {
 				Log.E(this, "Failed to parse pressure rig packet", e);
 			}
@@ -139,27 +137,30 @@
 		}
 	}
 
+	[Flags]
 	public enum EState {
-		// The state/command that will shut the rig
-		Shutdown = 1,
-		// The state/command type that puts the rig into an idle state.
-		Idle = 2,
-		// The state/command type that puts the rig into a pressurize until target state.
-		Pressurize = 3,
-		// The state/command type that puts the rig into a hold pressure state.
-		HoldPressure = 4,
-		// The state/command that will depressurize the rig.
-		Depressurize = 5,
-		// The state/command that will is used when the rig crashes.
-		Crash = 6,
+		SinOpen = 1 << 0,
+		SinClosed = 1 << 1,
+		SoutOpen = 1 << 2,
+		SoutClosed = 1 << 3,
+		Crashed = 1 << 7,
+	}
+
+	[Flags]
+	public enum ECommand {
+		SinOpen = 1 << 0,
+		SinClosed = 1 << 1,
+		SoutOpen = 1 << 2,
+		SoutClosed = 1 << 3,
+		G5On = 1 << 4,
+		G5Off = 1 << 5,
 	}
 
 	public class PressureRigPacket {
 		public EState state;
-		public uint errorCode;
 		public Scalar pressure;
-		public Scalar g5StepperAngle;
-		public Scalar exhaustStepperAngle;
+		public Scalar sinAngle;
+		public Scalar soutAngle;
 	}
 
 	public class PressureRigProtocol : IProtocol {
@@ -177,61 +178,21 @@
 
 				return new PressureRigPacket() {
 					state = state,
-					errorCode = usEc, 
 					pressure = Units.Pressure.PSIG.OfScalar(usPressure),
-					g5StepperAngle = Units.Angle.DEGREE.OfScalar(usG5Rot),
-					exhaustStepperAngle = Units.Angle.DEGREE.OfScalar(usERot),
+					sinAngle = Units.Angle.DEGREE.OfScalar(usG5Rot),
+					soutAngle = Units.Angle.DEGREE.OfScalar(usERot),
 				};
 			}
 		}
 
-		/// <summary>
-		/// Creates a packet that will shutdown the rig.
-		/// Note: this will also disconnect the device.
-		/// </summary>
-		/// <returns>The shutdown command.</returns>
-		public byte[] CreateShutdownCommand() {
-			return new byte[] { (byte)EState.Shutdown };
-		}
+		public byte[] CreateCommand(ECommand command) {
+			var ms = new MemoryStream(new byte[20]);
 
-		/// <summary>
-		/// Creates a packet that will place the rig into an idle state.
-		/// </summary>
-		/// <returns>The idle command.</returns>
-		public byte[] CreateIdleCommand() {
-			return new byte[] { (byte)EState.Idle };
-		}
-
-		/// <summary>
-		/// Creates a new command that will tell the rig to go to the given pressure.
-		/// </summary>
-		/// <returns>The goto pressure command.</returns>
-		/// <param name="targetPressure">Target pressure.</param>
-		public byte[] CreatePressurizeCommand(Scalar targetPressure) {
-			var ret = new MemoryStream();
-
-			using (var w = new BinaryWriter(ret)) {
-				w.Write((byte)EState.Pressurize);
-				w.Write((float)targetPressure.ConvertTo(Units.Pressure.PSIG).amount);
+			using (var w = new BinaryWriter(ms)) {
+				w.Write((int)command);
 			}
 
-			return ret.ToArray();
-		}
-
-		/// <summary>
-		/// Creates a new command that will have the rig attempt to hold at the current pressure.
-		/// </summary>
-		/// <returns>The hold pressure command.</returns>
-		public byte[] CreateHoldPressureCommand() {
-			return new byte[] { (byte)EState.HoldPressure };
-		}
-
-		/// <summary>
-		/// Creates a new command that will have the rig purge itself of pressure.
-		/// </summary>
-		/// <returns>The purge command.</returns>
-		public byte[] CreateDepressurizeCommand() {
-			return new byte[] { (byte)EState.Depressurize };
+			return ms.ToArray();
 		}
 	}
 }

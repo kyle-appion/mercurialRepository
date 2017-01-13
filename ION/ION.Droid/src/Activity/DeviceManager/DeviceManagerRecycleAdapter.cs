@@ -407,6 +407,8 @@
       }
 
       expandedDevice = dr.device;
+			dr.isExpanded = true;
+			NotifyItemChanged(index);
     }
 
     /// <summary>
@@ -435,6 +437,8 @@
       }
 
       expandedDevice = null;
+			dr.isExpanded = false;
+			NotifyItemChanged(index);
     }
 
 		/// <summary>

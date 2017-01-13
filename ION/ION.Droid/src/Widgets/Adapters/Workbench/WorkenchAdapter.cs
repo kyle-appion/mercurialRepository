@@ -226,6 +226,18 @@
       (holder as SwipableViewHolder)?.Unbind();
     }
 
+		/// <summary>
+		/// Updates a specific subview record.
+		/// </summary>
+		/// <param name="manifold">Manifold.</param>
+		/// <param name="index">Index.</param>
+		public void UpdateManifoldSubview(Manifold manifold, int index) {
+			if (IsManifoldExpanded(manifold)) {
+				var i = IndexOfManifold(manifold);
+				NotifyItemChanged(i + index + 1);
+			}
+		}
+
     /// <summary>
     /// Sets the workbench content that the adapter will display.
     /// </summary>

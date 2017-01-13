@@ -2,6 +2,7 @@
 
   using System;
   using System.IO;
+	using System.Threading.Tasks;
 
   using Android.App;
   using Android.Content;
@@ -209,34 +210,44 @@
     /// <summary>
     /// Captures the current activity's view to a bitmap. This will start an activity to resolve the screenshot.
     /// </summary>
-    public void CaptureScreenToBitmap() {
-      try {
-        // TODO ahodder@appioninc.com: Turn this into an asynchronous task.
-        // TODO ahodder@appioninc.com: Figure out how to properly compress the screenshot such that we aren't scaling.
-        var v = Activity.Window.DecorView.RootView;
-        var drawingCache = v.DrawingCacheEnabled;
-        v.DrawingCacheEnabled = true;
-        var b = Bitmap.CreateBitmap(v.GetDrawingCache(true));
-        v.DrawingCacheEnabled = drawingCache;
+    public async Task CaptureScreenToBitmap() {
+			var pd = new ProgressDialog(Activity);
+			pd.SetTitle(Resource.String.please_wait);
+			pd.SetMessage(GetString(Resource.String.report_screenshot_saving));
+			pd.Show();
 
-        var aspectRatio = b.Width / (float)b.Height;
+			var task = Task.Factory.StartNew(() => {
+	      try {
+	        // TODO ahodder@appioninc.com: Turn this into an asynchronous task.
+	        // TODO ahodder@appioninc.com: Figure out how to properly compress the screenshot such that we aren't scaling.
+	        var v = Activity.Window.DecorView.RootView;
+	        var drawingCache = v.DrawingCacheEnabled;
+	        v.DrawingCacheEnabled = true;
+	        var b = Bitmap.CreateBitmap(v.GetDrawingCache(true));
+	        v.DrawingCacheEnabled = drawingCache;
 
-        var scaled = Bitmap.CreateScaledBitmap(b, (int)(800 * aspectRatio), 800, true);
-        b.Recycle();
+	        var aspectRatio = b.Width / (float)b.Height;
 
-        byte[] bytes = null;
-        var stream = new MemoryStream();
-        scaled.Compress(Bitmap.CompressFormat.Png, 100, stream);
-        bytes = stream.ToArray();
-        stream.Dispose();
-        scaled.Recycle();
+	        var scaled = Bitmap.CreateScaledBitmap(b, (int)(800 * aspectRatio), 800, true);
+	        b.Recycle();
 
-        var i = new Intent(Activity, typeof(ScreenshotActivity));
-        i.PutExtra(ScreenshotActivity.EXTRA_PNG_BYTES, bytes);
-        StartActivity(i);
-      } catch (Exception e) {
-				Error(GetString(Resource.String.app_error_failed_to_take_screenshot), e);
-      }
+	        byte[] bytes = null;
+	        var stream = new MemoryStream();
+	        scaled.Compress(Bitmap.CompressFormat.Png, 100, stream);
+	        bytes = stream.ToArray();
+	        stream.Dispose();
+	        scaled.Recycle();
+
+	        var i = new Intent(Activity, typeof(ScreenshotActivity));
+	        i.PutExtra(ScreenshotActivity.EXTRA_PNG_BYTES, bytes);
+	        StartActivity(i);
+	      } catch (Exception e) {
+					Error(GetString(Resource.String.app_error_failed_to_take_screenshot), e);
+	      }
+			});
+
+			await task;
+			pd.Dismiss();
     }
 
     /// <summary>

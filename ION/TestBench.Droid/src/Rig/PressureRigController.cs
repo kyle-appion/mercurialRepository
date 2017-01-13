@@ -3,7 +3,6 @@
 	using System;
 	using System.Collections.Generic;
 	using System.IO;
-	using System.Threading.Tasks;
 
 	using Stateless;
 
@@ -96,6 +95,8 @@
 			   .Permit(ETrigger.Failure, EState.Idle);
 			// Configure the Pressurize state
 			ret.Configure(EState.Pressurize)
+			   .OnEntry(OnEnterPressure)
+			   .OnExit(OnExitPressure)
 			   .Permit(ETrigger.NearbyTarget, EState.VerifyTargetPoint)
 			   .Permit(ETrigger.Success, EState.VerifyTargetPoint)
 			   .Permit(ETrigger.Stop, EState.CancelOperation);
@@ -104,6 +105,7 @@
 			   .OnEntry(OnVerifyTargetPoint)
 			   .Permit(ETrigger.Success, EState.Advance);
 			ret.Configure(EState.Advance)
+			   .OnEntry(OnAdvance)
 			   .Permit(ETrigger.Success, EState.Pressurize)
 			   .Permit(ETrigger.Stop, EState.Complete);
 			// Configure the Complete state
@@ -143,16 +145,6 @@
 		private void GotoTargetPoint(Scalar targetPoint) {
 			var startime = DateTime.Now;
 			var isNarrowing = false;
-			/*
-			while (isNarrowing) {
-				if (rig.pressure < (targetPoint - slop)) {
-					await Task.Delay(100);
-					continue;
-				} else if (rig.pressure > targetPoint + slop) {
-					await QuickReleasePressure();
-				} else if (
-			}
-			*/
 		}
 
 
@@ -191,45 +183,35 @@
 			}
 		}
 
-/*
-		private void BastardedConceptVersion() {
-			// while we are actively connected to the pressure rig
-			while (pressureRig.isConnected) {
-				switch (state) {
-					case IDLE:
-						DoNothing.EXE();
-						break;
-					case TESTING:
-						var tp = GetCurrentTargetPoint();
-						if (pressureRig.pressure > tp) {
-						}
-				}
-			}
+		private void OnEnterPressure() {
+			pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreateCommand(ECommand.G5On));
 		}
-*/
+
+		private void OnExitPressure()  {
+			pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreateCommand(ECommand.G5Off));
+		}
 
 		/// <summary>
 		/// Resolves the pressure controller receiving a new pressure measurement from the pressure rig.
 		/// </summary>
 		private void OnRigPressureChanged() {
-			if (pressureRig.pressure > Units.Pressure.PSIG.OfScalar(5).amount) {
-				pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreateHoldPressureCommand());
+			if (sm.State == EState.Pressurize) {
+				if (pressureRig.pressure > Units.Pressure.PSIG.OfScalar(5).amount) {
+					sm.Fire(ETrigger.Success);
+				}
 			}
 		}
 
 		private void OnVerifyTargetPoint() {
 			// Hold the Stop the G5 and track the pressure change.
-
-
 			var currentTargetPressure = parameters.targetPoints[currentTargetPointIndex++].measurement;
-			pressureRig.connection.Write(pressureRig.pressureRigProtocol.CreatePressurizeCommand(currentTargetPressure));
 			if (currentTargetPointIndex > parameters.targetPoints.Count) {
 				// The test is complete.
 				sm.Fire(ETrigger.Success);
 			}
 		}
 
-		private void Advance() {
+		private void OnAdvance() {
 			currentTargetPointIndex += 1;
 			if (currentTargetPointIndex >= parameters.targetPoints.Count) {
 				sm.Fire(ETrigger.Stop);

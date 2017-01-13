@@ -103,6 +103,7 @@
 		protected override void OnResume() {
 			base.OnResume();
 			SetWakeLock(prefs.isWakeLocked);
+			Log.D(this, new AndroidPlatformInfo(this).ToString());
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {

@@ -68,7 +68,7 @@
     /// <value>The app version.</value>
     public string appVersion {
       get {
-        return prefs.GetString(context.GetString(Resource.String.pkey_app_version), null);
+        return prefs.GetString(context.GetString(Resource.String.pkey_app_version), "0.0.0");
       }
 
       set {

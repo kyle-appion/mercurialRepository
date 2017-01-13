@@ -665,6 +665,7 @@
       pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (pressureSensor.isEditable) {
           UnitDialog.Create(this, pressureSensor.supportedUnits, (obj, unit) => {
+						pressureEntryView.ClearFocus();
             pressureSensor.unit = unit;
           }).Show();
         }
@@ -734,6 +735,7 @@
       temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (temperatureSensor.isEditable) {
           UnitDialog.Create(this, temperatureSensor.supportedUnits, (obj, unit) => {
+						temperatureEntryView.ClearFocus();
             temperatureSensor.unit = unit;
           }).Show();
         }
@@ -777,26 +779,29 @@
       saturatedTemperatureTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, satTemp);
       saturatedTemperatureUnitView.Text = temperatureSensor.unit.ToString();
 
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
-        temperatureSensor.measurement, pressureSensor.isRelative).ConvertTo(tu);
+      var delta = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
+			                                                    temperatureSensor.measurement.ConvertTo(tu), pressureSensor.isRelative);
 
-			if (this.ptChart.fluid.mixture && calculation.magnitude < 0) {
+			Log.D(this, "measTemp: " + temperatureSensor.measurement);
+			Log.D(this, "Delta: " + delta);
+
+			if (this.ptChart.fluid.mixture && delta.magnitude < 0) {
 				warning.Visibility = ViewStates.Visible;
 			} else {
 				warning.Visibility = ViewStates.Gone;
 			}
 
       if (!ptChart.fluid.mixture) {
-        if (calculation < 0) {
+				if (delta.magnitude < 0) {
           // Bubble
           ptChart.state = Fluid.EState.Bubble;
         } else {
           // Dew
           ptChart.state = Fluid.EState.Dew;
         }
-        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation.Abs(), true);
+				calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, delta.Abs(), true);
       } else {
-        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
+        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, delta, true);
       }
 
       switch (ptChart.state) {
