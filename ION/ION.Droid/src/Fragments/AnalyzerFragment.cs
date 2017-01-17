@@ -371,11 +371,9 @@
         }
       }
 
-#if DEBUG
-      ldb.AddItem("Add all subviews", () => {
+			ldb.AddItem(Resource.String.workbench_add_all, () => {
         AddAllSubviews(manifold);
       });
-#endif
 
       ldb.Show();
     }
@@ -595,7 +593,6 @@
       // If the manifold does not have a secondary sensor, then we will need to query whether or not the analyzer has
       // space to accept the returned sensor. If it does not, then we cannot open the activity safely.
       if (manifold.secondarySensor == null && !analyzer.CanAddSensorToSide(side)) {
-        // TODO ahodder@appioninc.com: Localize this string.
         var adb = new IONAlertDialog(Activity, Resource.String.error);
 				adb.SetMessage(string.Format(GetString(Resource.String.analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg), side.ToLocalizedString(Activity)));
 

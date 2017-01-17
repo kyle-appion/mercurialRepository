@@ -54,7 +54,6 @@
 		/// </summary>
 		/// <value><c>true</c> if is bluetooth on; otherwise, <c>false</c>.</value>
 		public bool isBluetoothOn { get { return Android.Bluetooth.BluetoothAdapter.DefaultAdapter.IsEnabled; } }
-		// TODO ahodder@appioninc.com: This property is required by android 6 for some reason.
 		/// <summary>
 		/// Queries whether or not the gps is enabled.
 		/// </summary>

@@ -17,6 +17,21 @@
     android:defaultValue="true"/>
 
 	<!--
+	REPORTING PREFERENCES
+	-->
+	<PreferenceCategory
+		android:title="@string/preferences_reporting">
+		<ListPreference
+				android:key="@string/pkey_reporting_data_log_interval"
+				android:title="@string/preferences_reporting_data_log_interval"
+				android:summary="%s"
+				android:dialogTitle="@string/preferences_reporting_data_log_interval_title"
+				android:entries="@array/preferences_reporting_data_log_interval_entries"
+				android:entryValues="@array/preferences_reporting_data_log_interval_values"
+				android:defaultValue="@integer/preferences_reporting_data_log_interval_default"/>
+	</PreferenceCategory>
+
+	<!--
 	LOCATION PREFERENCES
 	-->
   <PreferenceCategory
@@ -113,20 +128,6 @@
       android:summaryOn="@string/preferences_alarm_sound_on"
       android:summaryOff="@string/preferences_alarm_sound_off"/>
   </PreferenceCategory>
-  <!--
-	REPORTING PREFERENCES
-	-->
-	<PreferenceCategory
-		android:title="@string/preferences_reporting">
-		<ListPreference
-				android:key="@string/pkey_reporting_data_log_interval"
-				android:title="@string/preferences_reporting_data_log_interval"
-				android:summary="%s"
-				android:dialogTitle="@string/preferences_reporting_data_log_interval_title"
-				android:entries="@array/preferences_reporting_data_log_interval_entries"
-				android:entryValues="@array/preferences_reporting_data_log_interval_values"
-				android:defaultValue="@integer/preferences_reporting_data_log_interval_default"/>
-	</PreferenceCategory>
 
 	<!-- 
 	Help

@@ -288,7 +288,7 @@ void setup() {
   Serial.begin(9600);
   Serial3.begin(9600);
 
-  bt = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "PR00Z001");
+  bt = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "PB00Z0001");
   inputStepper = new VctControlStepper(PIN_SIN_DIR, IS_HIGH_CCW, PIN_SIN_STEP, 5000, 10, PIN_SIN_START_SWITCH, PIN_SIN_END_SWITCH);
   outputStepper = new VctControlStepper(PIN_SOUT_DIR, IS_HIGH_CCW, PIN_SOUT_STEP, 5000, 10, PIN_SOUT_START_SWITCH, PIN_SOUT_END_SWITCH);
 }

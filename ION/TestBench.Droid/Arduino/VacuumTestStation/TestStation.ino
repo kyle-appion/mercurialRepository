@@ -68,7 +68,7 @@ void setup() {
     200,
   };
 
-  btController = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "ION Test Rig");
+  btController = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "VB00A0001");
   vrc = new Vrc();
 
   intake = new VctControlStepper(PIN_STEPPER_1_DIR, IS_HIGH_CCW, PIN_STEPPER_1_STEP, 5000, 10, PIN_STEPPER_1_START_SWITCH, PIN_STEPPER_1_END_SWITCH);

@@ -94,7 +94,6 @@
 	      return ret;
 			} catch (Exception e) {
 				Log.E(this, "Failed to request calibration certificates.", e);
-				// TODO ahodder@appioninc.com: Build a list of the affect serial numbers.
 				return parameters;
 			}
     }

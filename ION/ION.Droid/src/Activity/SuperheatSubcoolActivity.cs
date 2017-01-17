@@ -650,7 +650,7 @@
       }));
 
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!isPressureLocked) {
+				if (!isPressureLocked && !(pressureSensor is ManualSensor)) {
           pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           pressureSensor.name = GetString(Resource.String.manual);
           pressureEntryView.Enabled = true;
@@ -720,7 +720,7 @@
       }));
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!isTemperatureLocked) {
+				if (!isTemperatureLocked && !(temperatureSensor is ManualSensor)) {
           temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureSensor.name = GetString(Resource.String.manual);
           temperatureEntryView.Enabled = true;

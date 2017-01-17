@@ -188,8 +188,7 @@
 
     // Overridden from IFolder.
     public bool Exists() {
-      // TODO ahodder@appioninc.com: This is a huge bug source
-      return true;
+			return new Java.IO.File(fullPath).Exists();
     }
 
     /// <summary>

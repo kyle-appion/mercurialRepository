@@ -212,8 +212,7 @@
 			NotifyOfScroll(false);
 		}
 
-		// TODO ahodder@appioninc.com: Remove this: not safe
-		private static readonly RectF rect = new RectF();
+		private readonly RectF rect = new RectF();
 		protected override void OnDraw(Canvas canvas) {
 			var cx = window.centerX;
 
