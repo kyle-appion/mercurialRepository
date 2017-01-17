@@ -437,8 +437,9 @@
     /// <returns>The formatted string.</returns>
     /// <param name="includeUnit">If set to <c>true</c> include unit.</param>
     public string ToFormattedString(bool includeUnit) {
-			if (measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
-			    measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount) {
+			if (!(this is ManualSensor) &&
+					(measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
+			     measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount)) {
 				return "OL";
 			} else {
       	return SensorUtils.ToFormattedString(type, measurement, includeUnit);
@@ -469,7 +470,7 @@
     /// compatible with the sensor's unit.
     /// </remarks>
     /// <param name="value">Value.</param>
-		public void RemoteForceSetMeasurement(Scalar value){
+		public void RemoteForceSetMeasurement(Scalar value) {
       if (!value.unit.IsCompatible(unit)) {
         throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
       }

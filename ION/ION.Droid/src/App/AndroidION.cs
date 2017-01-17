@@ -436,11 +436,12 @@ namespace ION.Droid.App {
 			});
 		}
 
-		// TODO ahodder@appioninc.com: Implement?
+		// TODO ahodder@appioninc.com: Implement? See kyle@appioninc.com for more info
 		public Task setRemoteDeviceManager() {
 			return null;
 		}
 
+		// TODO ahodder@appioninc.com: Implement? See kyle@appioninc.com for more info
 		public Task setOriginalDeviceManager() {
 			return null;
 		}

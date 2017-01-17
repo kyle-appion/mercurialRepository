@@ -423,11 +423,9 @@
         }
       }
 
-#if DEBUG
-      ldb.AddItem("Add all subviews", () => {
+			ldb.AddItem(Resource.String.workbench_add_all, () => {
         AddAllSubviews(manifold);
       });
-#endif
 
       ldb.Show();
     }

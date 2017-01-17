@@ -1,12 +1,19 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
+	<display version="0.9.34">
+		<update>Updated sizing for larger devices</update>
+
+		<fixed>Fixed rendering bugs in Alarms</fixed>
+		<fixed>Fixed rendering bugs in P/T Chart</fixed>
+		<fixed>Fixed rendering bugs in Superheat / Subcool</fixed>
+		<fixed>Fixed app crashes in System Analyzer</fixed>
+	</display>
 	<display version="0.9.33">
 		<new>Added an App walkthrough. This can be found in the <b>Help</b> Menu within the <b>Navigation Drawer</b></new>
 		<update>Updated mailing addresses localization</update>
 	</display>
 	<display version="0.9.32">
 		<new>Added saftey details for refrigerants</new>
-		<new>Added new refrigerants</new>
 
 		<update>Look and feel of the refrigerant manager</update>
 		

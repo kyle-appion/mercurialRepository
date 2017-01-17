@@ -187,8 +187,6 @@
       for (int c = 0; c < table.Rank; c++) {
         var rows = new List<string>();
 
-        // TODO ahodder@appioninc.com: Possible bug.
-        // Setting to c would yield unexpected results, so I hard coded 0. Fix? No. But I didn't cry myself to sleep this night.
         var len = table.GetLength(0);
 
         for (int r = 0; r < len; r++) {

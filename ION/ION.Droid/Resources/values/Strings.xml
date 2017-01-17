@@ -444,9 +444,10 @@
   <string name="workbench_remove">Remove from Workbench</string>
   <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
-  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
+	<string name="workbench_add_all">Add all Subviews</string>
   <string name="workbench_add_viewer">Add to Workbench</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
+  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
   <string name="workbench_alt">Alternate Unit</string>
   <string name="workbench_alt_abrv">ALT</string>
   <string name="workbench_hold">Hold Reading</string>

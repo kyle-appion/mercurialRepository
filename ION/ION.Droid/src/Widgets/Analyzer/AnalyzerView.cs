@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Widgets.Analyzer {
+﻿using ION.Droid.Fragments;
+namespace ION.Droid.Widgets.Analyzer {
 
 	using System;
 
@@ -583,6 +584,229 @@
 			}
 		}
 
+		/// <summary>
+		/// Performs a sensor mount swap.
+		/// </summary>
+		/// <param name="source">Dragged.</param>
+		/// <param name="target">Target.</param>
+		private void Swap(int source, int target) {
+			if (source < 0 || source >= analyzer.analyzerSize || target < 0 || target >= analyzer.analyzerSize) {
+				// TODO ahodder@appioninc.com: log and post and error.
+				return;
+			}
+
+			Analyzer.ESide ds, ts;
+			if (!analyzer.GetSideOfIndex(source, out ds)) {
+				// TODO ahodder@appioninc.com: log and post an error.
+				return;
+			}
+			if (!analyzer.GetSideOfIndex(target, out ts)) {
+				// TODO ahodder@appioninc.com: log and post an error.
+				return;
+			}
+
+			// The following algorithm is derived from the System Analyzer Logic Flow document on google drive.
+			// 3
+			if (ds == ts) {
+				AnimateSensorMountSwap(source, target);
+			} else {
+				// 4d
+				if (analyzer.IsSensorIndexAttachedToManifold(source) && analyzer.IsSensorIndexAttachedToManifold(target)) {
+					Sensor lowSensor = analyzer.lowSideManifold.secondarySensor;
+					Sensor highSensor = analyzer.highSideManifold.secondarySensor;
+
+					analyzer.lowSideManifold.SetSecondarySensor(highSensor);
+					analyzer.highSideManifold.SetSecondarySensor(lowSensor);
+
+					AnimateSensorMountSwap(source, target);
+				// 4b and 4c
+				} else if ((analyzer.IsSensorIndexAttachedToManifold(source) && !analyzer.IsSensorIndexAttachedToManifold(target)) ||
+				           (!analyzer.IsSensorIndexAttachedToManifold(source) && analyzer.IsSensorIndexAttachedToManifold(target))) {
+					RequestAnimateSensorMountSwap(source, target);
+				// 4a
+				} else {
+					AnimateSensorMountSwap(source, target);
+				}
+			}
+		}
+
+		private void SwapToManifold(int source, Analyzer.ESide targetSide) {
+			if (source < 0 || source >= analyzer.analyzerSize) {
+				// TODO ahodder@appioninc.com: log and post and error.
+				return;
+			}
+
+			Analyzer.ESide side;
+			if (!analyzer.GetSideOfIndex(source, out side)) {
+				// TODO ahodder@appioninc.com: log and post an error.
+				return;
+			}
+
+			var manifold = analyzer.GetManifoldFromSide(targetSide);
+			var sensor = analyzer[source];
+
+			if (side == targetSide) {
+				DoSwapSameSide(source, targetSide, manifold);
+			} else {
+				DoSwapOppositeSide(source, targetSide, manifold);
+			}
+		}
+
+		/// <summary>
+		/// This method is only used by <paramref name="SwapToManifold(int source, Analyzer.ESide targetSide"/>. The only
+		/// reason it is in its own method is because the logic is simply too complicated and the if tree becomes a mess.
+		/// </summary>
+		/// <param name="source">Source.</param>
+		/// <param name="targetSide">Target side.</param>
+		/// <param name="manifold">Manifold.</param>
+		private void DoSwapSameSide(int source, Analyzer.ESide targetSide, Manifold targetManifold) {
+			var s = analyzer[source];
+			// We can assume that everything has been safety checked and that the sides are equal.
+			if (targetManifold == null) {
+				// TODO ahodder@appioninc.com: This "if" needs to be replaced with a more general type check
+				if (s.type == ESensorType.Temperature) {
+					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
+				} else {
+					analyzer.SetManifold(targetSide, s);
+				}
+			} else if (targetManifold.WillAcceptSecondarySensor(s)) {
+				targetManifold.SetSecondarySensor(s);
+			} else {
+				RequestBreakManifold(() => {
+					analyzer.SetManifold(targetSide, s);
+				});
+			}
+		}
+
+		/// <summary>
+		/// This method is only used by <paramref name="SwapToManifold(int source, Analyzer.ESide targetSide"/>. The only
+		/// reason it is in its own method is because the logic is simply too complicated and the if tree becomes a mess.
+		/// </summary>
+		/// <param name="source">Source.</param>
+		/// <param name="targetSide">Target side.</param>
+		/// <param name="targetManifold">Target manifold.</param>
+		private void DoSwapOppositeSide(int source, Analyzer.ESide targetSide, Manifold targetManifold) {
+			var side = targetSide.Opposite();
+			var s = analyzer[source];
+			// We can assume that everything has been safety checked and that the sides are NOT equal.
+			if (targetManifold == null) {
+				// TODO ahodder@appioninc.com: This "if" needs to be replaced with a more general type check
+				if (s.type == ESensorType.Temperature) {
+					Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
+					return;
+				}
+				// Check for room and bail if full.
+				if (analyzer.IsSideFull(targetSide)) {
+					Toast.MakeText(Context, string.Format(Context.GetString(Resource.String.analyzer_side_full_1sarg), targetSide.ToLocalizedString(Context)), ToastLength.Long).Show();
+					return;
+				}
+
+				if (analyzer.IsSensorIndexAttachedToManifold(source)) {
+					var m = analyzer.GetManifoldFromSide(targetSide.Opposite());
+					if (m.secondarySensor == null) {
+						// we can simply move the sensor into the manifold
+						analyzer.SetManifold(targetSide, analyzer[source]);
+						AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+					} else { // The opposite manifold has a secondary sensor that will break upon movement
+						RequestBreakManifold(() => {
+							analyzer.RemoveManifold(targetSide);
+						});
+					}
+				} else { // The sensor is NOT attached to a manifold
+					analyzer.SetManifold(targetSide, analyzer[source]);
+					AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+				}
+			} else { // The target manifold is not null
+				if (targetManifold.WillAcceptSecondarySensor(s)) {
+					// Check for room and bail if full.
+					if (analyzer.IsSideFull(targetSide)) {
+						Toast.MakeText(Context, string.Format(Context.GetString(Resource.String.analyzer_side_full_1sarg), targetSide.ToLocalizedString(Context)), ToastLength.Long).Show();
+						return;
+					}
+
+					if (analyzer.IsSensorIndexAttachedToManifold(source)) {
+						var m = analyzer.GetManifoldFromSide(side);
+
+						if (m.secondarySensor == null) { // The sensor is the primary viewer.
+							RequestBreakManifold(() => {
+								analyzer.RemoveManifold(side);
+								targetManifold.SetSecondarySensor(s);
+								AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+							});
+						} else { // The sensor is the secondary sensor
+							RequestBreakManifold(() => {
+								m.SetSecondarySensor(null);
+								targetManifold.SetSecondarySensor(s);
+								AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+							});
+						} //.
+					} else { // The source is NOT attached to the opposite manifold
+						if (targetManifold.secondarySensor == null) {
+							targetManifold.SetSecondarySensor(s);
+							AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+						} else { // The target manifold DOES have a secondary sensor
+							RequestBreakManifold(() => {
+								targetManifold.SetSecondarySensor(s);
+								AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
+							});
+						} //.
+					} //.
+				} else { // The target manifold will NOT accept the sensor as a secondary
+					// TODO ahodder@appioninc.com: This "if" needs to be replaced with a more general type check
+					if (s.type == ESensorType.Temperature) {
+						Toast.MakeText(Context, Resource.String.analyzer_require_pressure_primary, ToastLength.Long).Show();
+						return;
+					}
+					if (analyzer.IsSensorIndexAttachedToManifold(source)) {
+						var m = analyzer.GetManifoldFromSide(side);
+						if (m.secondarySensor == null && targetManifold.secondarySensor == null) {
+							// both of the manifolds are empty and incompatible. We can straight swap them.
+							analyzer.RemoveManifold(side);
+							analyzer.RemoveManifold(targetSide);
+
+							analyzer.SetManifold(side, targetManifold);
+							analyzer.SetManifold(targetSide, m);
+
+							AnimateSensorMountSwap(source, analyzer.IndexOfSensor(targetManifold.primarySensor));
+						} else { // The swap is more complicated. One or both of the manifold has a secondary.
+							RequestBreakManifold(() => {
+								// Resolve the source sensor's manifold situation
+								if (s.Equals(m.primarySensor)) {
+									analyzer.RemoveManifold(side);
+								} else {
+									m.SetSecondarySensor(null);
+								}
+
+								var i = analyzer.IndexOfSensor(targetManifold.primarySensor);
+								analyzer.RemoveManifold(targetSide);
+								analyzer.SetManifold(targetSide, analyzer[source]);
+								AnimateSensorMountSwap(source, i);
+							});
+						} //.
+					} else { // The sensor is NOT attached to the opposite side
+						RequestBreakManifold(() => {
+							var i = analyzer.IndexOfSensor(targetManifold.primarySensor);
+							analyzer.RemoveManifold(targetSide);
+							analyzer.SetManifold(targetSide, analyzer[i]);
+							AnimateSensorMountSwap(source, i);
+						});
+					} //.
+				} //.
+			} //.
+		}
+
+		private void RequestBreakManifold(Action action) {
+			var adb = new IONAlertDialog(Context);
+			adb.SetTitle(Resource.String.analyzer_complete_swap);
+			adb.SetMessage(Resource.String.analyzer_replace_manifold_sensor);
+			adb.SetPositiveButton(Resource.String.ok, (sender, e) => {
+				action();
+			});
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+			});
+			adb.Show();
+		}
+
     /// <summary>
     /// Performs uncheck animation of two sensor mounts.
     /// </summary>
@@ -605,6 +829,18 @@
         analyzer.SwapSensors(first, second, true);
       }, 350);
     }
+
+		private void RequestAnimateSensorMountSwap(int first, int second) {
+			var adb = new IONAlertDialog(Context);
+			adb.SetTitle(Resource.String.analyzer_complete_swap);
+			adb.SetMessage(Resource.String.analyzer_replace_manifold_sensor);
+			adb.SetPositiveButton(Resource.String.ok, (sender, e) => {
+				AnimateSensorMountSwap(first, second);
+			});
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+			});
+			adb.Show();
+		}
 
     /// <summary>
     /// Creates a new animation.
@@ -688,8 +924,7 @@
 			// Not matter the outcome, a sensor is moving into the dest side. If the side can't support the new sensor, then
 			// we have to error out.
 			if (analyzer.IsSideFull(destSide)) {
-				// TODO ahodder@appioninc.com: Localize
-				var msg = string.Format(Context.GetString(Resource.String.analyzer_side_full_1sarg), destSide);
+				var msg = string.Format(Context.GetString(Resource.String.analyzer_side_full_1sarg), destSide.ToLocalizedString(Context));
 				Toast.MakeText(Context, msg, ToastLength.Long).Show();
 				return;
 			}
@@ -1042,7 +1277,7 @@
 						if (lp != null && analyzer.draggedView != null) {
 							Appion.Commons.Util.Log.D(this, "SensorMounts Swapping");
 							analyzer.draggedView.Visibility = ViewStates.Visible;
-							analyzer.SwapSensorMounts(dragState.index, lp.index);
+							analyzer.Swap(dragState.index, lp.index);
               dropped = true;
 							analyzer.draggedView = null;
               return true;
@@ -1109,7 +1344,8 @@
 
           case DragAction.Drop:
             Appion.Commons.Util.Log.D(this, "Drag Dropped");
-            analyzer.SetManifoldSensor(side, dragState.sensor);
+//            analyzer.SetManifoldSensor(side, dragState.sensor);
+						analyzer.SwapToManifold(analyzer.analyzer.IndexOfSensor(dragState.sensor), side);
             return true;
 
           case DragAction.Ended:
