@@ -3,12 +3,13 @@
 using System;
 
 using Appion.Commons.Util;
-
+using Foundation;
 using ION.Core.App;
 using ION.Core.Fluids;
 
 using ION.IOS.Util;
 using ION.IOS.ViewController;
+using UIKit;
 
 namespace ION.IOS.ViewController.FluidManager {
 	public partial class FluidManagerViewController : BaseIONViewController {
