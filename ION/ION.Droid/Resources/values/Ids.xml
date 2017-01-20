@@ -17,6 +17,7 @@
   <item name="check" type="id"/>
   <item name="city" type="id"/>
   <item name="clear" type="id"/>
+  <item name="cloud" type="id"/>
   <item name="close" type="id"/>
   <item name="connect" type="id"/>
   <item name="connection" type="id"/>
@@ -48,6 +49,7 @@
   <item name="library" type="id"/>
   <item name="list" type="id"/>
   <item name="loading" type="id"/>
+	<item name="login" type="id"/>
 	<item name="lowest" type="id"/>
   <item name="next" type="id"/>
   <!-- lock is a keyword for c# -->
@@ -59,6 +61,7 @@
   <item name="notes" type="id"/>
   <item name="ok_done" type="id"/>
   <item name="options" type="id"/>
+  <item name="password" type="id"/>
   <item name="play" type="id"/>
 	<item name="plus" type="id"/>
   <item name="preferred" type="id"/>
@@ -72,6 +75,7 @@
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>
   <item name="settings" type="id"/>
+  <item name="submit" type="id"/>
   <item name="start" type="id"/>
 	<item name="start_times" type="id"/>
   <item name="state" type="id"/>
@@ -143,6 +147,11 @@
 	<item name="pressure" type="id"/>
 	<item name="temperature" type="id"/>
 	<item name="vacuum" type="id"/>
+
+	<!--
+	PORTAL
+	-->
+	<item name="portal" type="id="/>
 	
 
   <!--

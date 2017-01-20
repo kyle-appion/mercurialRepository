@@ -21,6 +21,7 @@
 
   // ION.Droid
 	using ION.Droid.Activity.Tutorial;
+	using ION.Droid.Activity.Portal;
   using Job;
 	using Report;
   using Dialog;
@@ -314,6 +315,21 @@
           },
         },
       };
+
+			var cloud = new NavigationCategory() {
+				id = Resource.Id.cloud,
+				title = GetString(Resource.String.cloud),
+				items = new NavigationItem[] {
+					new NavigationIconItem() {
+						id = Resource.Id.cloud,
+						title = GetString(Resource.String.portal),
+						icon = Resource.Drawable.img_logo_appionblack,
+						action = () => {
+							StartActivity(typeof(PortalActivity));
+						}
+					},
+				},
+			};
 
       var settings = new NavigationCategory() {
         title = GetString(Resource.String.settings),
