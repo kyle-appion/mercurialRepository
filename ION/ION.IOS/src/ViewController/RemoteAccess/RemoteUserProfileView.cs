@@ -3,6 +3,7 @@ using UIKit;
 using CoreGraphics;
 using System.Threading.Tasks;
 using ION.Core.Net;
+using Newtonsoft.Json.Linq;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
@@ -112,7 +113,27 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			} else {
 				passwordField.BackgroundColor = UIColor.White;
 				passwordField.Alpha = 1f;
-				webServices.updatePassword(passwordField.Text);
+				var window = UIApplication.SharedApplication.KeyWindow;
+  			var rootVC = window.RootViewController as IONPrimaryScreenController;
+					
+				var updateResponse = await webServices.updatePassword(passwordField.Text);
+				
+				if(updateResponse == null){
+					var textResponse = await updateResponse.Content.ReadAsStringAsync();
+					Console.WriteLine(textResponse);
+					//parse the text string into a json object to be deserialized
+					JObject response = JObject.Parse(textResponse);
+		
+					var errorMessage = response.GetValue("message").ToString();
+					
+					var alert = UIAlertController.Create ("Password Update", errorMessage, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				} else {
+					var alert = UIAlertController.Create ("Password Update", "Connection was lost. Please try again.", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
 			}
 			passwordField.Text = "";
 		}

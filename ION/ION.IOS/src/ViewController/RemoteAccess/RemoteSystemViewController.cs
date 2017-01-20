@@ -9,14 +9,15 @@ using ION.IOS.App;
 using Newtonsoft.Json.Linq;
 using System.Text;
 using ION.Core.Net;
+using ION.IOS.ViewController.AccessRequest;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public partial class RemoteSystemViewController : BaseIONViewController {
-		public remoteSelectionView remoteView;
+		//public remoteSelectionView remoteView;
+		public AccessSettings settingsManager;
 		public RemoteLoginView loginView;
 		public RemoteUserProfileView profileView;
 		public RemoteUserRegistration registerView;
-		public const string loginUserUrl = "http://ec2-54-174-144-11.compute-1.amazonaws.com/App/applogin.php";
 		public IosION ion;
 		public UIBarButtonItem settingsButton;
 		public UIBarButtonItem register;
@@ -74,8 +75,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				remoteHolderView.AddSubview(loginView.loginView);
 				this.NavigationItem.RightBarButtonItem = register;
       } else {
-      	remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
-				remoteHolderView.AddSubview(remoteView.selectionView);
+    		settingsManager = new AccessSettings(remoteHolderView, webServices);
+				remoteHolderView.AddSubview(settingsManager.settingsView);
+      
+      	//remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
+				//remoteHolderView.AddSubview(remoteView.selectionView);
+				
+				
 				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 				remoteHolderView.AddSubview(profileView.profileView);
 				this.NavigationItem.RightBarButtonItem = settingsButton;
@@ -99,9 +105,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loginView = new RemoteLoginView(remoteHolderView, webServices);
       loginView.submitButton.TouchUpInside += credentialsCheck;
 			remoteHolderView.AddSubview(loginView.loginView);
-			
-			remoteView.selectionView.RemoveFromSuperview();
-			remoteView = null;
+			settingsManager.settingsView.RemoveFromSuperview();
+			settingsManager = null;
+			//remoteView.selectionView.RemoveFromSuperview();
+			//remoteView = null;
 			profileView.profileView.RemoveFromSuperview();
 			profileView = null;
       this.NavigationItem.RightBarButtonItem = register; 
@@ -114,28 +121,34 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public void flipAccountViews(object sender, EventArgs e){
 			if(profileView.profileView.Hidden){
         UIView.Transition(
-          fromView:remoteView.selectionView,
+          //fromView:remoteView.selectionView,
+          fromView:settingsManager.settingsView,
           toView:profileView.profileView,
           duration:.5,
           options: UIViewAnimationOptions.TransitionFlipFromRight,
           completion: () => {
-          	remoteView.selectionView.Hidden = true;
+          	//remoteView.selectionView.Hidden = true;
+          	settingsManager.settingsView.Hidden = true;
           	profileView.profileView.Hidden = false;
-            remoteHolderView.SendSubviewToBack(remoteView.selectionView);
+            //remoteHolderView.SendSubviewToBack(remoteView.selectionView);
+            remoteHolderView.SendSubviewToBack(settingsManager.settingsView);
             remoteHolderView.BringSubviewToFront(profileView.profileView);
           }
         );
 			}	else {
         UIView.Transition(
           fromView:profileView.profileView,
-          toView:remoteView.selectionView,
+          //toView:remoteView.selectionView,
+          toView:settingsManager.settingsView,
           duration:.5,
           options: UIViewAnimationOptions.TransitionFlipFromRight,
           completion: () => {
           	profileView.profileView.Hidden = true;
-          	remoteView.selectionView.Hidden = false;
+          	//remoteView.selectionView.Hidden = false;
+          	settingsManager.settingsView.Hidden = false;
             remoteHolderView.SendSubviewToBack(profileView.profileView);
-            remoteHolderView.BringSubviewToFront(remoteView.selectionView);
+            //remoteHolderView.BringSubviewToFront(remoteView.selectionView);
+            remoteHolderView.BringSubviewToFront(settingsManager.settingsView);
           }
         );
 			}			
@@ -160,21 +173,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				loginView.loadingLogin.StopAnimating();
 				return; 
 			}
-			
-			//Create the data package to send for the post request
-			//Key value pair for post variable check
-			var data = new System.Collections.Specialized.NameValueCollection();
-
-			data.Add("loginUser","returning");
-			data.Add("uname",loginView.userName.Text);			
-			data.Add("usrPword",loginView.password.Text);
-			try{
-				//initiate the post request and get the request result in a byte array 
-				byte[] result = wc.UploadValues(loginUserUrl,data);
-				
-				//get the string conversion for the byte array
-				var textResponse = Encoding.UTF8.GetString(result);
-				Console.WriteLine(textResponse);
+			var window = UIApplication.SharedApplication.KeyWindow;
+    	var rootVC = window.RootViewController as IONPrimaryScreenController;
+    		
+			var feedback = await webServices.userLogin(loginView.userName.Text,loginView.password.Text);
+			if(feedback != null){
+				var textResponse = await feedback.Content.ReadAsStringAsync();
 	
 				await Task.Delay(TimeSpan.FromSeconds(1));
 				JObject response = JObject.Parse(textResponse);
@@ -197,8 +201,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					KeychainAccess.SetValueForKey(userEmail,"userEmail");
 					KeychainAccess.SetValueForKey(userDisplay,"userDisplay");
 					
-					remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
-					remoteHolderView.AddSubview(remoteView.selectionView);
+					//remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
+					//remoteHolderView.AddSubview(remoteView.selectionView);
+					settingsManager = new AccessSettings(remoteHolderView, webServices);
+					remoteHolderView.AddSubview(settingsManager.settingsView);
 					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 					profileView.logoutButton.TouchUpInside += LogOutUser;
 					
@@ -210,23 +216,19 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				} else {
 					loginView.loadingLogin.StopAnimating();
 					var failMessage = response.GetValue("message").ToString();
-					var window = UIApplication.SharedApplication.KeyWindow;
-	    		var rootVC = window.RootViewController as IONPrimaryScreenController;
 					
 					var alert = UIAlertController.Create ("Log In", failMessage, UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				}
-			} catch (Exception exception){
-				Console.WriteLine("Exception: " + exception);
-				var window = UIApplication.SharedApplication.KeyWindow;
-    		var rootVC = window.RootViewController as IONPrimaryScreenController;
+				}		
+			}	else {
+
 				
 				var alert = UIAlertController.Create ("Log In", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				loginView.loadingLogin.StopAnimating();				
-			}					
+				loginView.loadingLogin.StopAnimating();
+			}	
 		}
 
 		/// <summary>
@@ -304,13 +306,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			base.ViewWillAppear(animated);
 			var loggedIn = KeychainAccess.ValueForKey("userID");
 			if(!string.IsNullOrEmpty(loggedIn)){
-				if(remoteView != null && remoteView.fullMenuButton.Hidden){
-					remoteView.GetAccessList();
-				}
-				if(!webServices.remoteViewing && remoteView != null){
-					remoteView.fullMenuButton.Hidden = true;
-					remoteView.remoteMenuButton.Hidden = false;
-				}
+				//if(remoteView != null && remoteView.fullMenuButton.Hidden){
+				//	remoteView.GetAccessList();
+				//}
+				//if(!webServices.remoteViewing && remoteView != null){
+				//	remoteView.fullMenuButton.Hidden = true;
+				//	remoteView.remoteMenuButton.Hidden = false;
+				//}
 			}
 		}
     

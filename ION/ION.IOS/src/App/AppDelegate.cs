@@ -1,17 +1,21 @@
 ﻿ namespace ION.IOS.App {
 
-  using System;
+	using System;
 
-  using Foundation;
-  using UIKit;
+	using Foundation;
+	using UIKit;
 
 	using Appion.Commons.Util;
 
-  using ION.Core.App;
+	using ION.Core.App;
+	using ION.Core.Net;
+	using ION.IOS.ViewController.Walkthrough;
+	using ION.IOS.ViewController;
+	using FlyoutNavigation;
 
-  // The UIApplicationDelegate for the application. This class is responsible for launching the
-  // User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
-  [Register("AppDelegate")]
+	// The UIApplicationDelegate for the application. This class is responsible for launching the
+	// User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
+	[Register("AppDelegate")]
   public class AppDelegate : UIApplicationDelegate {
     private static UIStoryboard STORYBOARD = UIStoryboard.FromName("Storyboard", null);
 
@@ -54,36 +58,53 @@
       // make the window visible
       Window.MakeKeyAndVisible();
       
-      //*********CHECK APP VERSION!!!!!
-//			var record = KeychainAccess.ValueForKey("lastUsedVersion");
-			var record = NSUserDefaults.StandardUserDefaults.StringForKey("lastUsedVersion");
-			
-			if(!string.IsNullOrEmpty(record)){
-				var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
-			 	var latestVersion = record;
+      var preWalkthrough = NSUserDefaults.StandardUserDefaults.StringForKey("walkthrough_complete");
+      
+      if(string.IsNullOrEmpty(preWalkthrough)){
+    	  var ionvc = (IONPrimaryScreenController)Window.RootViewController;
+    	  var appdnavigation = ionvc.navigation;
+  
+	      var ret = (WalkthroughScreenshotViewController)STORYBOARD.InstantiateViewController(BaseIONViewController.VC_WALKTHROUGH_MENU);
+	      ret.initial = true;
+  	  	
+       	var nvc = ((UINavigationController)appdnavigation.CurrentViewController).VisibleViewController;
+      	nvc.NavigationController.PushViewController(ret, true);   	  	
+				NSUserDefaults.StandardUserDefaults.SetString("1","walkthrough_complete");
+
+			} else {
+				Console.WriteLine("Checking app version for popup");
+	      //*********CHECK APP VERSION!!!!!
+				//var record = KeychainAccess.ValueForKey("lastUsedVersion");
+				var record = NSUserDefaults.StandardUserDefaults.StringForKey("lastUsedVersion");
 				
-			 	if(!currentVersion.Equals(latestVersion)){
+				if(!string.IsNullOrEmpty(record)){
+					var currentVersion = NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString();
+				 	var latestVersion = record;
+					
+				 	if(!currentVersion.Equals(latestVersion)){
+						var window = UIApplication.SharedApplication.KeyWindow;
+					    var vc = window.RootViewController;
+					    while (vc.PresentedViewController != null) {
+					      vc = vc.PresentedViewController;
+					    }
+					    var updateView = new WhatsNewView(vc.View,vc);			    
+					    vc.View.AddSubview(updateView.infoView);
+						//KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+						NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
+					}
+				} else {
 					var window = UIApplication.SharedApplication.KeyWindow;
-				    var vc = window.RootViewController;
-				    while (vc.PresentedViewController != null) {
-				      vc = vc.PresentedViewController;
-				    }
-				    var updateView = new WhatsNewView(vc.View,vc);			    
-				    vc.View.AddSubview(updateView.infoView);
-//				    KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
-					NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
-				}
-			} else { 
-				var window = UIApplication.SharedApplication.KeyWindow;
 		    	var vc = window.RootViewController;
 		    	while (vc.PresentedViewController != null) {
 		     	 vc = vc.PresentedViewController;
 		    	}
 		    	var updateView = new WhatsNewView(vc.View,vc);			    
 		    	vc.View.AddSubview(updateView.infoView);
-//				KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
-				NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
+					//KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
+					NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
+				}			
 			}
+			
 			/*********************CHECK REPORTING DEFAULTS***************************/
 			var defaultSpreadsheet = NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default");
 			if(string.IsNullOrEmpty(defaultSpreadsheet)){
@@ -163,8 +184,10 @@
         UIApplication.SharedApplication.IdleTimerDisabled = true;
       }
       if (ion.settings.location.useGeoLocation) {
+      	Console.WriteLine("Came back and using geolocation");
         ion.locationManager.StartAutomaticLocationPolling();
       }else {
+      	Console.WriteLine("Came back and not using geolocation");
         ion.locationManager.StopAutomaticLocationPolling();
       }
     }
