@@ -270,6 +270,9 @@
     <Compile Include="src\Activity\Tutorial\TutorialFragment.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialPage.cs" />
     <Compile Include="src\Animations\AnimatorListenerActionAdapter.cs" />
+    <Compile Include="src\Activity\Portal\PortalActivity.cs" />
+    <Compile Include="src\Activity\Portal\ReportServiceExchangeFragment.cs" />
+    <Compile Include="src\Activity\Portal\LoginFragment.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -666,6 +669,8 @@
     <AndroidResource Include="Resources\drawable\img_logo_appionblack.png" />
     <AndroidResource Include="Resources\values-sw600dp\Dimens_600.xml" />
     <AndroidResource Include="Resources\values-sw700dp\Dimens_700.xml" />
+    <AndroidResource Include="Resources\layout\fragment_login.axml" />
+    <AndroidResource Include="Resources\layout\activity_portal.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -702,6 +707,7 @@
     <Folder Include="Resources\values-sw480dp\" />
     <Folder Include="src\Connections\Beta\" />
     <Folder Include="src\Activity\Tutorial\" />
+    <Folder Include="src\Activity\Portal\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

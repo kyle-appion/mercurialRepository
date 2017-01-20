@@ -19,6 +19,7 @@
 	<string name="average">Average</string>
   <string name="cancel">Cancel</string>
   <string name="city">City</string>
+  <string name="cloud">Cloud</string>
   <string name="close">Close</string>
   <string name="connect">Connect</string>
   <string name="connect_all">Connect All</string>
@@ -411,6 +412,12 @@
   <string name="report_sessions">Sessions</string>
   <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
   <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
+
+  <!--
+  PORTAL
+	-->
+	<string name="portal">Appion Portal</string>
+	<string name="portal_logging_in">Logging In</string>
 
 	<!--
 	PTCHART

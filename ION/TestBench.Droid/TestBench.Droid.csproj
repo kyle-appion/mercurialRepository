@@ -129,6 +129,7 @@
     <Compile Include="src\Activity\BtScannerActivity.cs" />
     <Compile Include="src\Bluetooth\BtScanner.cs" />
     <Compile Include="src\Activity\Prefs.cs" />
+    <Compile Include="src\Activity\BaseActivityDeprecated.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

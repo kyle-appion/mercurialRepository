@@ -10,11 +10,13 @@
 	using Android.Widget;
 
 	[Activity(Label = "Activity")]
-	public class BaseActivity : Activity {
+	public class BaseActivityDeprecated : Activity, IServiceConnection {
 		public const int REQUEST_LOCATION_PERMISSIONS = 1;
 		public const int REQUEST_BLUETOOTH_ENABLE = 2;
 
 		public Prefs prefs { get { return Prefs.Get(this); } }
+
+		protected AppService service { get; set; }
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
@@ -24,11 +26,31 @@
 
 		protected override void OnResume() {
 			base.OnResume();
-			CheckPermissions();
+			AttemptToBindAppService();
 		}
 
 		protected override void OnPause() {
 			base.OnPause();
+			if (service != null) {
+				service.onScanStateChanged -= OnScanStateChanged;
+				service.onConnectionFound -= OnConnectionFound;
+				UnbindService(this);
+			}
+		}
+
+		public void OnServiceConnected(ComponentName name, IBinder binder) {
+			service = ((AppService.Binder)binder).service;
+			service.onScanStateChanged += OnScanStateChanged;
+			service.onConnectionFound += OnConnectionFound;
+			service.onRigFound += OnRigFound;
+			OnServiceBound();
+		}
+
+		public void OnServiceDisconnected(ComponentName name) {
+			Toast.MakeText(this, "Service has disconnected", ToastLength.Short).Show();
+		}
+
+		public virtual void OnServiceBound() {
 		}
 
 		public virtual void OnScanStateChanged(AppService service) {
@@ -43,12 +65,12 @@
 		public override void OnRequestPermissionsResult(int requestCode, string[] permissions, Permission[] grantResults) {
 			switch (requestCode) {
 				case REQUEST_LOCATION_PERMISSIONS:
-					CheckPermissions();
+					AttemptToBindAppService();
 					break;
 			}
 		}
 
-		private void CheckPermissions() {
+		private void AttemptToBindAppService() {
 			var manager = GetSystemService(BluetoothService) as BluetoothManager;
 			var adapter = manager.Adapter;
 
@@ -75,6 +97,8 @@
 					StartActivityForResult(intent, REQUEST_BLUETOOTH_ENABLE);
 				});
 				adb.Show();
+			} else {
+				BindService(new Intent(this, typeof(AppService)), this, Bind.AutoCreate);
 			}
 		}
 
