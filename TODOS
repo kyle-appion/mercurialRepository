@@ -1,0 +1,51 @@
+TODOS
+
+CORE
+  UnitLookup
+    * Using Unitlookup to find the code of a pressure kPa returns the vacuum kPa
+      unit code. This is easily replicated by Adding a manual sensor to the
+      analyzer, setting its unit to kPa and adding and alarm to it.
+
+IOS
+  Device Manager
+    * Fix the connection spinner.
+    * Let the user cancel a connection attempt (related to the spinner)
+    * Fix the issue that connecting to a device marks all other devices (known
+      or not) as disconnected
+
+
+
+ANDROID
+  Application APK / Runtime
+    * Clearing the cache destroys the application (ie. the application will not
+      start). This appears to be because the cache contained important non-apk
+      dlls that are necessary for the c# runtime.
+
+  Screenshot Activity
+    * Allow screenshot to expand
+
+  Analyzer Fragment
+    - Sensor Mount
+      * Fix swap animation
+        ** Works for requested swap (dialog yes), but not normal swap
+
+    - Manifold
+      * Show "Linked sensor as secondary" toast when a secondary sensor is added
+      * add secondary (linked) sensor subview
+      * swapping a manifold with subviews to other empty doesn't ask to break subviews
+      * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
+
+  Calibration Certificate Activity
+    * add empty list TextView
+
+  Workbench
+    * Changing fluids isn't reflected in subview when back or arrow is clicked. Ok done works for superheat and subcool
+
+  Alarm
+    * Alarm save button doesn't work
+
+  Device Manager
+    * Collapse arrow doesn't update
+
+
+  * Out of memory when reconnect goes into a weird loop

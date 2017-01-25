@@ -1,0 +1,218 @@
+#include <string.h>
+
+#include <SoftwareSerial.h>
+
+#include "Appion.h"
+#include "BluetoothController.h"
+#include "Fluke700G.h"
+#include "Timer.h"
+#include "VctControlStepper.h"
+
+#define DEBUG true
+#define VERBOSE false
+
+#define IS_HIGH_CCW false     // The direction of the control stepper
+// Stepper 1 Pin layouts
+#define PIN_STEPPER_1_DIR 46  // The pin that will output the stepper 1 motor direction
+#define PIN_STEPPER_1_STEP 47 // The pin that will output the stepper 1 motor step
+#define PIN_STEPPER_1_START_SWITCH 40 // The pin stepper 1's home detection switch
+#define PIN_STEPPER_1_END_SWITCH 42   // The pin stepper 1's end detection switch
+// G5 Start Relay
+#define PIN_G5_START_RELAY 41     // The pin that, when high, will start the G5
+// Status LED
+#define PIN_ERROR_LED 53          // The led that is used to indicate an error
+
+#define BLUEFRUIT_SPI_SCK 52      // The pin to the bluefruit's SCK system clock
+#define BLUEFRUIT_SPI_MISO 50     // The pin to the bluefruit's MISO pin
+#define BLUEFRUIT_SPI_MOSI 51     // The pin to the bluefruit's MOSI pin
+#define BLUEFRUIT_SPI_CS 49       // The pin to the bluefruit's CS pin
+#define BLUEFRUIT_SPI_IRQ 48      // The pin to the bluefruit's IQR pin
+#define BLUEFRUIT_SPI_RST 22      // The pin to the bluefruit's RST pin
+
+#define FLUKE_TX 0                // The pin that is used to perform tx to the fluke
+#define FLUKE_RX 1                // The pin that is used to perform rx to the fluke
+
+// The enumeration of state that the rig controller is able to accept.
+enum ERigState {
+  // The off state. This state is means that the g5 is off and the control stepper is open.
+  RC_OFF = 1,
+  // The state type that puts the rig into an idle state.
+  RC_IDLE = 2,
+  // The state type that puts the rig into an initialization state.
+  RC_INITIALIZE = 3,
+  // The state type that puts the rig into a pressurize until target state.
+  RC_GOTO_PRESSURE = 4,
+  // The state type that puts the rig into a hold pressure state.
+  RC_HOLD_PRESSURE = 5,
+  // The state type that puts the rig into a purge system state.
+  RC_PURGE = 6,
+};
+
+// The enumeration of the error codes that are present in the rig.
+enum EErrorCode {
+  // The error code that indicates that the fluke failed to communicate with the rig.
+  ERR_FLUKE_COMM_FAIL,
+};
+
+//  The bluetooth controller that will wrap the general bluetooth communication objects.
+BluetoothController* bt;
+// The fluke gauge controller.
+Fluke700G* fluke;
+// The timer that will track time.
+Timer* timer;
+// The stepper that is controller the pressure flow. Closing this stepper build pressure throughout the rig. Opening
+// this stepper will release the pressure throughout the rig.
+VctControlStepper* stepper;
+
+
+// The current state of the rig.
+ERigState state;
+// The target pressure for the rig.
+f32 targetPressure;
+// The last known pressure that the was received from the fluke gauge.
+f32 lastKnownPressure;
+// The time since the last pressure update.
+u32 timeSinceLastUpdate;
+
+void Crash() {
+  DoPurge();
+  PowerG5(false);
+
+  u32 lastTime;
+  while (true) {
+    digitalWrite(PIN_G5_START_RELAY, 0);
+    stepper->RotateToDegree(0);
+
+    if (micros() - lastTime > 500) {
+      digitalWrite(PIN_ERROR_LED, !digitalRead(PIN_ERROR_LED));
+      lastTime = micros();
+    }
+  }
+}
+
+void CrashWithCode(EErrorCode errCode) {
+  u8 buffer[20];
+  memcpy(buffer, &errCode, sizeof(errCode));
+  bt->WriteTo(bt->localWriteCharacteristic, buffer, 20);
+
+  Crash();
+}
+
+void DoIdle() {
+  // Do nothing
+}
+
+void DoInitialize() {
+  // Do Nothing
+}
+
+// Pressures up the rig to the given pressure.
+void DoGotoPressure(f32 gotoPressure) {
+  targetPressure = gotoPressure;
+}
+
+// Purges the system of its current pressure.
+void DoPurge() {
+  targetPressure = 0;
+}
+
+void PowerG5(bool on) {
+  if (on) {
+    digitalWrite(PIN_G5_START_RELAY, 1);
+    digitalWrite(PIN_ERROR_LED, 1);
+  } else {
+    digitalWrite(PIN_G5_START_RELAY, 0);
+    digitalWrite(PIN_ERROR_LED, 0);
+  }
+}
+
+
+// Updates the current measurement from the fluke gauge.
+void UpdateFlukeMeasurement() {
+  f32 meas = 0;
+  EFlukeError err = fluke->GetPressure(&meas);
+  if (err != Fl_Err_Ok) {
+    CrashWithCode(ERR_FLUKE_COMM_FAIL);
+  } else {
+    lastKnownPressure = meas;
+  }
+}
+
+/*
+Command protocol
+Bytes | Type  | Description
+------+-------------------------------------------------------------
+ 1    | u8    | The command type as seen from ERigCommandType
+ 4    | i32   | The conditional integer pressure argument
+*/
+// Parses a command from the given buffer. Note: the returned command is malloc'd onto the heap and thus needs to be
+// freed.
+void ResolveControllerCommand(u8* tx, int cnt) {
+  u8* p = tx;
+  ERigState newState = (ERigState)((int)(p++));
+  state = newState;
+
+  switch (state) {
+    case RC_IDLE:
+      DoIdle();
+      break;
+    case RC_INITIALIZE:
+      DoInitialize();
+      break;
+    case RC_PURGE:
+      DoPurge();
+      break;
+    case RC_GOTO_PRESSURE: // Fallthrough
+      f32 f;
+      memcpymov(&f, p, 4);
+      DoGotoPressure(f);
+      break;
+  }
+
+  bt->ClearCharacteristic(bt->localWriteCharacteristic);
+}
+
+// Write the current rig state to bluetooth.
+void WriteBluetooth() {
+  u8 buffer[20];
+  u8* p = buffer;
+
+  u8 bState = (u8)state;
+  f32 stepperTheta = stepper->GetCurrentPositionAsDegrees();
+
+  memcpymov(p, &bState, 1);
+  memcpymov(p, &lastKnownPressure, sizeof(f32));
+  memcpymov(p, &stepperTheta, sizeof(f32));
+}
+
+/**********************************************************************************************************************
+ * ARDUINO CONTROL CODE
+ *********************************************************************************************************************/
+
+void setup() {
+  pinMode(PIN_ERROR_LED, OUTPUT);
+  pinMode(PIN_G5_START_RELAY, OUTPUT);
+
+  bt = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "PR00Z001");
+  stepper = new VctControlStepper(PIN_STEPPER_1_DIR, IS_HIGH_CCW, PIN_STEPPER_1_STEP, 5000, 10, PIN_STEPPER_1_START_SWITCH, PIN_STEPPER_1_END_SWITCH);
+  fluke = new Fluke700G(FLUKE_TX, FLUKE_RX);
+  timer = new Timer();
+
+  timer->Reset();
+}
+
+void loop() {
+  u32 dt = timer->GetDeltaTime();
+
+  UpdateFlukeMeasurement();
+
+  int blen = 64;
+  u8 buffer[blen];
+
+  u32 cnt = bt->ReadFrom(bt->localReadCharacteristic, buffer, blen);
+  if (cnt > 0) {
+    ResolveControllerCommand(buffer, cnt);
+  }
+
+  WriteBluetooth();
+}
