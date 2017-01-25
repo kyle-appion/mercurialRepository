@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using CoreGraphics;
 using ION.Core.App;
 using ION.Core.Net;
+using ION.IOS.App;
 using ION.IOS.ViewController.Logging;
 using Newtonsoft.Json.Linq;
 using UIKit;
@@ -13,24 +14,26 @@ namespace ION.IOS.ViewController.AccessRequest {
 
 	public class AccessSettings {
 		public UIView settingsView;
+		public UILabel uploadHeader;
 		public UIButton onlineButton;
 		public UIButton sessionButton;
 		public UITableView sessionTable;
     public UIRefreshControl refreshSessions;
     public List<SessionData> allSessions;
     public ObservableCollection<int> selectedSessions;
-		public IION ion;
+		public IosION ion;
 		public WebPayload webServices;
-		
+		UIActivityIndicatorView uploadActivity;
 		public nfloat cellHeight;
 		
-		public AccessSettings(UIView parentView, WebPayload webServices) {
-			ion = AppState.context;
-			this.webServices = webServices;
+		public AccessSettings(UIView parentView) {
+		
+			ion = AppState.context as IosION;  
+			webServices = ion.webServices;
 			
-			settingsView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height - 50));
+			settingsView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			settingsView.BackgroundColor = UIColor.White;
-			settingsView.Hidden = true;
+			//settingsView.Hidden = true;
 			selectedSessions = new ObservableCollection<int>();
 			
       selectedSessions.CollectionChanged += checkForSelected;
@@ -45,7 +48,13 @@ namespace ION.IOS.ViewController.AccessRequest {
 			onlineButton.TouchDown += (sender, e) => {onlineButton.BackgroundColor = UIColor.Blue;};
 			onlineButton.TouchUpOutside += (sender, e) => {onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			
-			sessionTable = new UITableView(new CGRect(.05 * settingsView.Bounds.Width,.18 * settingsView.Bounds.Height,.9 * settingsView.Bounds.Width, .65 * settingsView.Bounds.Height));
+			uploadHeader = new UILabel(new CGRect(0,0,settingsView.Bounds.Width, .1 * settingsView.Bounds.Height));
+			uploadHeader.BackgroundColor = UIColor.Black;
+			uploadHeader.TextAlignment = UITextAlignment.Center;
+			uploadHeader.Text = "Session List";
+			uploadHeader.TextColor = UIColor.FromRGB(255, 215, 101);
+			
+			sessionTable = new UITableView(new CGRect(.05 * settingsView.Bounds.Width,.12 * settingsView.Bounds.Height,.9 * settingsView.Bounds.Width, .65 * settingsView.Bounds.Height));
       sessionTable.RegisterClassForCellReuse(typeof(SessionCell),"sessionCell");
       sessionTable.BackgroundColor = UIColor.Clear;
       sessionTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
@@ -76,7 +85,8 @@ namespace ION.IOS.ViewController.AccessRequest {
 			
 			settingsView.AddSubview(sessionTable);
 			settingsView.AddSubview(sessionButton);
-			settingsView.AddSubview(onlineButton);
+			settingsView.AddSubview(uploadHeader);
+			//settingsView.AddSubview(onlineButton);
 			refreshSessions.SendActionForControlEvents(UIControlEvent.ValueChanged);
 		}
 		
@@ -113,18 +123,29 @@ namespace ION.IOS.ViewController.AccessRequest {
     }
     
     public async void startUpload(object sender, EventArgs e){
+			uploadActivity = new UIActivityIndicatorView(new CGRect(0,0, settingsView.Bounds.Width, settingsView.Bounds.Height));
+			uploadActivity.BackgroundColor = UIColor.Black;
+			uploadActivity.Alpha = .8f;
+			
+			settingsView.AddSubview(uploadActivity);
+			settingsView.BringSubviewToFront(uploadActivity);
+			uploadActivity.StartAnimating();    
+    
 			sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			var window = UIApplication.SharedApplication.KeyWindow;
     	var rootVC = window.RootViewController as IONPrimaryScreenController;
     	
-			var uploadResponse = await webServices.getSession(selectedSessions);
-    		
+			var ID = KeychainAccess.ValueForKey("userID");
+    	
+			var uploadResponse = await webServices.getSession(selectedSessions,ID);
+    	uploadActivity.StopAnimating();
+	
 			if(uploadResponse != null){
 				var textResponse = await uploadResponse.Content.ReadAsStringAsync();
 				Console.WriteLine(textResponse);
 				//parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
-				var isregistered = response.GetValue("success").ToString();
+				//var isregistered = response.GetValue("success").ToString();
 				var message = response.GetValue("message").ToString();
 			
 				var alert = UIAlertController.Create ("Session Upload", message, UIAlertControllerStyle.Alert);

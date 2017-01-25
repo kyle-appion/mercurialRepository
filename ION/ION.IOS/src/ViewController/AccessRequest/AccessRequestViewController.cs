@@ -48,8 +48,8 @@ namespace ION.IOS.ViewController.AccessRequest {
       loggedOutLabel.Hidden = true;
       accessHolderView.Bounds = View.Bounds;
       
-  		requestManager = new AccessRequestManager(accessHolderView,webServices);				
-    	settingsManager = new AccessSettings(accessHolderView, webServices);
+  		requestManager = new AccessRequestManager(accessHolderView);
+    	settingsManager = new AccessSettings(accessHolderView);
     	settingsManager.onlineButton.TouchUpInside += (sender, e) => {
 				uploadTimer();
 			};

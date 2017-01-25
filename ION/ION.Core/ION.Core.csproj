@@ -197,6 +197,9 @@
     <EmbeddedResource Include="src\Fluids\Embedded\refrigerantsafety.properties">
       <LogicalName>refrigerantsafety.properties</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R458A.fluid">
+      <LogicalName>R458A.fluid</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

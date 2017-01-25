@@ -37,6 +37,7 @@ namespace ION.IOS.ViewController {
 	using ION.IOS.ViewController.RssFeed;
   using ION.IOS.ViewController.RemoteAccess;
   using ION.IOS.ViewController.AccessRequest;   
+  using ION.IOS.ViewController.CloudSessions;   
   
 	using System.Net;
 	using System.Text;
@@ -76,8 +77,8 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
         //new Section("Remote Viewing".ToUpper()){
-        new Section("Portal Access".ToUpper()){
-					new IONElement("Portal Access", UIImage.FromBundle("ic_graph_menu")),
+        new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
 					//new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
 				},
 #if DEBUG
@@ -390,8 +391,8 @@ namespace ION.IOS.ViewController {
 			);
 			navigation.NavigationRoot.Add(
 				//new Section("Remote Viewing".ToUpper()){
-				new Section("Portal Access".ToUpper()){
-					new IONElement("Portal Access", UIImage.FromBundle("ic_graph_menu")),
+				new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
 					//new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
 					//new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
 				}

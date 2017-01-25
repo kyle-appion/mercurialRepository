@@ -8,12 +8,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	public class RemoteUserRegistration {
 		public UIView regView;
 		public UILabel signupLabel;
-		public UITextField firstName;
-		public UITextField password;
+		public UILabel requirementLabel;
 		public UITextField email;
-		public UITextField lastName;
+		public UITextField password;
+		public UITextField confirmPassword;
 		public UIButton submitButton;
 		public UIButton cancelbutton;
+		public UIActivityIndicatorView loadingRegistration;
 	
 		public RemoteUserRegistration(UIView parentView) {
 
@@ -40,39 +41,23 @@ namespace ION.IOS.ViewController.RemoteAccess {
       cancelbutton = new UIButton(new CGRect(regView.Bounds.Width - .1 * regView.Bounds.Width, .015 * regView.Bounds.Height ,.09 * regView.Bounds.Width,.09 * regView.Bounds.Width));
       cancelbutton.SetImage(UIImage.FromBundle("img_button_blackclosex"),UIControlState.Normal);
 
-      firstName = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.14 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
-        Placeholder = "First Name",
+      email = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.14 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
+        Placeholder = "Email",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
       };
-      firstName.Layer.BorderWidth = 1f;
-      firstName.Layer.CornerRadius = 5f;
-      firstName.AutocorrectionType = UITextAutocorrectionType.No;
-      firstName.AutocapitalizationType = UITextAutocapitalizationType.None;
-      firstName.ShouldReturn += (textField) => {
+      email.Layer.BorderWidth = 1f;
+      email.Layer.CornerRadius = 5f;
+      email.AutocorrectionType = UITextAutocorrectionType.No;
+      email.AutocapitalizationType = UITextAutocapitalizationType.None;
+      email.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
         return true;
       };
       
-      lastName = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.28 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
-        Placeholder = "Last Name",
-        FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
-        FloatingLabelTextColor = UIColor.Gray,
-        FloatingLabelActiveTextColor = UIColor.Blue,
-        TextAlignment = UITextAlignment.Center,
-      };
-      lastName.Layer.BorderWidth = 1f;
-      lastName.Layer.CornerRadius = 5f;
-      lastName.AutocorrectionType = UITextAutocorrectionType.No;
-      lastName.AutocapitalizationType = UITextAutocapitalizationType.None;
-      lastName.ShouldReturn += (textField) => {
-        textField.ResignFirstResponder();
-        return true;
-      };
-      
-      password = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.42 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
+      password = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.28 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
         Placeholder = "Password",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
@@ -88,22 +73,29 @@ namespace ION.IOS.ViewController.RemoteAccess {
         textField.ResignFirstResponder();
         return true;
       };
-      email = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.56 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
-        Placeholder = "Email",
+      
+      confirmPassword = new FloatLabeledTextField(new CGRect(.1 * regView.Bounds.Width,.42 * regView.Bounds.Height,.8 * regView.Bounds.Width,.09 * regView.Bounds.Height)){
+        Placeholder = "Confirm Password",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,
         TextAlignment = UITextAlignment.Center,
       };
-      email.Layer.BorderWidth = 1f;
-      email.Layer.CornerRadius = 5f;
-      email.AutocorrectionType = UITextAutocorrectionType.No;
-      email.AutocapitalizationType = UITextAutocapitalizationType.None;
-      email.ShouldReturn += (textField) => {
+      confirmPassword.Layer.BorderWidth = 1f;
+      confirmPassword.Layer.CornerRadius = 5f;
+      confirmPassword.AutocorrectionType = UITextAutocorrectionType.No;
+      confirmPassword.AutocapitalizationType = UITextAutocapitalizationType.None;
+      confirmPassword.SecureTextEntry = true;
+      confirmPassword.ShouldReturn += (textField) => {
         textField.ResignFirstResponder();
         return true;
       };
-
+      
+      requirementLabel = new UILabel(new CGRect(0,.51 * regView.Bounds.Height, regView.Bounds.Width,.17 * regView.Bounds.Height));
+      requirementLabel.AdjustsFontSizeToFitWidth = true;
+      requirementLabel.Lines = 0;
+      requirementLabel.Text = "Passwords must be 8 characters long and have at least 1 uppercase character";
+      requirementLabel.Font = UIFont.ItalicSystemFontOfSize(15);
       
       submitButton = new UIButton(new CGRect(.25 * regView.Bounds.Width, .68 * regView.Bounds.Height, .5 * regView.Bounds.Width, .09 * regView.Bounds.Height));
       submitButton.SetTitle("Submit",UIControlState.Normal);
@@ -115,10 +107,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
       submitButton.TouchUpInside += (sender, e) => {submitButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 
 			regView.AddSubview(signupLabel);
-      regView.AddSubview(firstName);
-      regView.AddSubview(password);
       regView.AddSubview(email);
-      regView.AddSubview(lastName);
+      regView.AddSubview(password);
+      regView.AddSubview(confirmPassword);
+      regView.AddSubview(requirementLabel);
       regView.AddSubview(submitButton);
       regView.AddSubview(cancelbutton);
       regView.BringSubviewToFront(cancelbutton);

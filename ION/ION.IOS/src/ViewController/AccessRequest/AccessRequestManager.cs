@@ -8,6 +8,8 @@ using UIKit;
 using Newtonsoft.Json;
 using ION.Core.Net;
 using ION.IOS.App;
+using ION.Core.App;
+using Newtonsoft.Json.Linq;
 
 namespace ION.IOS.ViewController.AccessRequest {
 	public class AccessRequestManager {
@@ -22,17 +24,18 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public List<requestData> pendingUsers;
 		public UIActivityIndicatorView loadingRequests;
 		public WebPayload webServices;
+		public IosION ion;
 		
-		public AccessRequestManager(UIView parentView, WebPayload webServices) {		
-			
-      this.webServices = webServices;
+		public AccessRequestManager(UIView parentView) {		
+			ion = AppState.context as IosION;  
+			webServices = ion.webServices;
 
 			var viewTap = new UITapGestureRecognizer(() => {
 				submitCodeField.ResignFirstResponder();
 			});
 			
 			viewTap.CancelsTouchesInView = false;
-			accessView = new UIView(new CGRect(0,0, parentView.Bounds.Width, parentView.Bounds.Height - 50));
+			accessView = new UIView(new CGRect(0,0, parentView.Bounds.Width, parentView.Bounds.Height));
 			accessView.BackgroundColor = UIColor.White;
 			accessView.AddGestureRecognizer(viewTap);
 		
@@ -80,7 +83,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 			pendingTable.AllowsSelection = true;
 						
 			requestButton = new UIButton(new CGRect(.05 * accessView.Bounds.Width, .86 * accessView.Bounds.Height, .9 * accessView.Bounds.Width, .1 * accessView.Bounds.Height));
-			requestButton.SetTitle("Generate Permanent Access Code", UIControlState.Normal);
+			requestButton.SetTitle("Generate Access Code", UIControlState.Normal);
 			requestButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			requestButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			requestButton.Layer.CornerRadius = 5f;
@@ -110,7 +113,26 @@ namespace ION.IOS.ViewController.AccessRequest {
 		/// <param name="e">E.</param>
 		public async void submitCode(object sender, EventArgs e){
 			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
-				await webServices.submitAccessCode(submitCodeField.Text);
+				var feedback = await webServices.submitAccessCode(submitCodeField.Text);
+
+				var window = UIApplication.SharedApplication.KeyWindow;
+				var rootVC = window.RootViewController as IONPrimaryScreenController;
+				
+				if(feedback != null){
+					var textResponse = await feedback.Content.ReadAsStringAsync();
+					Console.WriteLine(textResponse);
+					//parse the text string into a json object to be deserialized
+					JObject response = JObject.Parse(textResponse);
+					var responseMessage = response.GetValue("message").ToString();
+					
+					var alert = UIAlertController.Create ("Confirm Code", responseMessage, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				} else {
+					var alert = UIAlertController.Create ("Confirm Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				}
 				submitCodeField.Text = "";
 			} else {
 				var window = UIApplication.SharedApplication.KeyWindow;
@@ -132,6 +154,8 @@ namespace ION.IOS.ViewController.AccessRequest {
 			loadingRequests.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			pendingUsers = new List<requestData>();
+			var ID = KeychainAccess.ValueForKey("userID");
+			
 			await webServices.getAllRequests(pendingUsers);
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);

@@ -662,6 +662,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_radio_filled.imageset\ic_radio_filled.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\appion_logo_black.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\appion_logo_black.imageset\appion_logo_black.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\appion_log_mountain.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\appion_log_mountain.imageset\appion_logo_mountain.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\cloud_menu_icon.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\cloud_menu_icon.imageset\clouds-128.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1005,6 +1009,24 @@
     <Compile Include="src\Connections\IONBluetoothService.cs" />
     <Compile Include="src\ViewController\ScreenshotReport\AdditionalView.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughHelp.cs" />
+    <Compile Include="src\ViewController\RemoteAccess\PortalMenu.cs" />
+    <Compile Include="src\ViewController\CloudSessions\SessionsViewController.cs" />
+    <Compile Include="src\ViewController\CloudSessions\SessionsViewController.designer.cs">
+      <DependentUpon>SessionsViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\CloudSessions\CodeGenViewController.cs" />
+    <Compile Include="src\ViewController\CloudSessions\CodeGenViewController.designer.cs">
+      <DependentUpon>CodeGenViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\CloudSessions\ViewingControlViewController.cs" />
+    <Compile Include="src\ViewController\CloudSessions\ViewingControlViewController.designer.cs">
+      <DependentUpon>ViewingControlViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\AccessRequest\AccessUsers.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessViewingTableSource.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AccessAllowingTableSource.cs" />
+    <Compile Include="src\ViewController\AccessRequest\ViewingUserCell.cs" />
+    <Compile Include="src\ViewController\AccessRequest\AllowingUserCell.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1084,6 +1106,9 @@
     <Folder Include="Resources\Images.xcassets\ic_radio_blank.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_radio_filled.imageset\" />
     <Folder Include="Resources\Images.xcassets\appion_logo_black.imageset\" />
+    <Folder Include="Resources\Images.xcassets\appion_log_mountain.imageset\" />
+    <Folder Include="src\ViewController\CloudSessions\" />
+    <Folder Include="Resources\Images.xcassets\cloud_menu_icon.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

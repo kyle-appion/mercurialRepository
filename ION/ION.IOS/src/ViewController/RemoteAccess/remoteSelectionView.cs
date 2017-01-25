@@ -165,7 +165,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			onlineUsers = new List<accessData>();
 			offlineUsers = new List<accessData>();
 
-			await webServices.GetAccessList(onlineUsers, offlineUsers);
+			await webServices.GetAccessList("1");
 			
 			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webServices.webClient);
 			onlineTable.ReloadData();

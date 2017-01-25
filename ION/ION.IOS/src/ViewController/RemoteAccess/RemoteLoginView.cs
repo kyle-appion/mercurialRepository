@@ -12,6 +12,8 @@ using Newtonsoft.Json.Linq;
 namespace ION.IOS.ViewController.RemoteAccess {
 	public class RemoteLoginView {
 		public UIView loginView;
+		public UIView bannerHeader;
+		public UIView bannerFooter;
 		public UIImageView loginHeaderImage;
 		public UILabel saveLoginLabel;
 		public UITextField userName;
@@ -32,8 +34,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				password.ResignFirstResponder();
 			}));
 			
-			loginHeaderImage = new UIImageView(new CGRect(.25 * loginView.Bounds.Width, .1 * loginView.Bounds.Height, .5 * loginView.Bounds.Width, .2 * loginView.Bounds.Height));
-			loginHeaderImage.Image = UIImage.FromBundle("ic_missing");
+			bannerHeader = new UIView(new CGRect(0, 0, loginView.Bounds.Width, .05 * loginView.Bounds.Height));
+			bannerHeader.BackgroundColor = UIColor.Black;
+			
+			loginHeaderImage = new UIImageView(new CGRect(0, .05 * loginView.Bounds.Height, loginView.Bounds.Width, .15 * loginView.Bounds.Height));
+			loginHeaderImage.BackgroundColor = UIColor.Black;
+			loginHeaderImage.Image = UIImage.FromBundle("appion_log_mountain");
+			
+			bannerFooter = new UIView(new CGRect(0, .2 * loginView.Bounds.Height, loginView.Bounds.Width, .05 * loginView.Bounds.Height));
+			bannerFooter.BackgroundColor = UIColor.Black;
 			
 			userName = new FloatLabeledTextField(new CGRect(.1 * parentView.Bounds.Width, .35 * parentView.Bounds.Height,.8 * parentView.Bounds.Width, .07 * parentView.Bounds.Height));
 			userName.Placeholder = "email";
@@ -96,12 +105,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			recoveryButton = new UIButton(new CGRect(.05 * loginView.Bounds.Width, .9 * loginView.Bounds.Height, .4 * loginView.Bounds.Width, .1 * loginView.Bounds.Height));
 			recoveryButton.Font = UIFont.ItalicSystemFontOfSize(15f);
-			recoveryButton.SetAttributedTitle(new NSAttributedString("Account Recovery", underlineAttr), UIControlState.Normal);
+			recoveryButton.SetAttributedTitle(new NSAttributedString("Forgot Password", underlineAttr), UIControlState.Normal);
 			recoveryButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
 			recoveryButton.HorizontalAlignment = UIControlContentHorizontalAlignment.Left;
 			recoveryButton.TouchUpInside += recoverAccount;
 			
 			loginView.AddSubview(loginHeaderImage);   
+			loginView.AddSubview(bannerHeader);   
+			loginView.AddSubview(bannerFooter);   
 			loginView.AddSubview(userName);
 			loginView.AddSubview(password);
 			loginView.AddSubview(checkboxButton);
@@ -118,13 +129,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
 
-			var alert = UIAlertController.Create ("Account Recovery", "Please enter your email", UIAlertControllerStyle.Alert);
+			var alert = UIAlertController.Create ("Password Reset", "Please enter your email", UIAlertControllerStyle.Alert);
 			alert.AddTextField(textField => {});
 			
 			alert.AddAction (UIAlertAction.Create ("Recover", UIAlertActionStyle.Default, (action) =>{
-				if(!string.IsNullOrEmpty(alert.TextFields[0].Text)){					
+				if(!string.IsNullOrEmpty(alert.TextFields[0].Text)){
 					handleResetResponse(alert.TextFields[0].Text);
-				}		
+				}
 			}));
 			
 			alert.AddAction (UIAlertAction.Create ("Cancel", UIAlertActionStyle.Cancel, null));
@@ -147,7 +158,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	
 				var errorMessage = response.GetValue("message").ToString();
 				
-				var resetAlert = UIAlertController.Create ("Account Recovery", errorMessage, UIAlertControllerStyle.Alert);
+				var resetAlert = UIAlertController.Create ("Password Recovery", errorMessage, UIAlertControllerStyle.Alert);
 				resetAlert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (resetAlert, animated: true, completionHandler: null);
 			}

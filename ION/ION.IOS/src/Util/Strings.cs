@@ -284,6 +284,15 @@ namespace ION.IOS.Util {
       ;
     } // End Strings.Navigation
 
+    public static class Remote {
+      public static readonly string
+      ACCESSCODE = "portal_access_code".FromResources(),
+      APPIONPORTAL = "portal_appion".FromResources(),
+      MANAGEACCESS = "portal_manage_access".FromResources(),
+      UPLOADSESSION = "portal_upload_session".FromResources()
+      ;
+    } // End Strings.Remote
+    
     public static class Report {
       public static readonly string
       SELF = "report".FromResources(),

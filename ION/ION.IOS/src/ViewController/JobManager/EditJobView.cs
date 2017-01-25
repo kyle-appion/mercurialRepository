@@ -23,6 +23,7 @@ namespace ION.IOS.ViewController.JobManager  {
     public UITextField techName;
     public UITextField systemName;    
     public UITextField jobAddress;
+		public UIActivityIndicatorView loadingCoordinates;
     
     public UIButton coordinateButton;
     public UIButton additionalInfo;
@@ -210,17 +211,21 @@ namespace ION.IOS.ViewController.JobManager  {
 			jobAddress.Layer.BorderWidth = 1f;
 			jobAddress.Text = holderAddress;
 			
-			coordinateButton = new UIButton(new CGRect(.1 * editView.Bounds.Width, .97 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+			coordinateButton = new UIButton(new CGRect(.25 * editView.Bounds.Width, .97 * (editView.Bounds.Height - 60),.5 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+			coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);			
 			coordinateButton.SetTitle("Get Coordinates",UIControlState.Normal);
-			coordinateButton.SetTitleColor(UIColor.Blue,UIControlState.Normal);
+			coordinateButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
 			coordinateButton.Layer.BorderWidth = 1f;
+			coordinateButton.Layer.CornerRadius = 5f;
 			coordinateButton.Hidden = true;
+			coordinateButton.TouchDown += (sender, e) => {coordinateButton.BackgroundColor = UIColor.Blue;};
+			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			coordinateButton.TouchUpInside += (sender, e) => {
 				updateJobCoordinates(sender, e);
 			};
 
 			coordinateButton.TouchDown += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
-			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);};
+			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
 			
 			coordinateLabel = new UILabel(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
 			coordinateLabel.AdjustsFontSizeToFitWidth = true;
@@ -261,9 +266,14 @@ namespace ION.IOS.ViewController.JobManager  {
 		}
 		
 		public async Task<bool> updateJobCoordinates(object sender, EventArgs e){
-			await Task.Delay(TimeSpan.FromMilliseconds(2));
-			
-			coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			coordinateButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			await Task.Delay(TimeSpan.FromMilliseconds(2));			
+			loadingCoordinates = new UIActivityIndicatorView(new CGRect(.1 * editView.Bounds.Width, 1.05 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
+			loadingCoordinates.BackgroundColor = UIColor.Black;
+			loadingCoordinates.Alpha = .8f;
+			editView.AddSubview(loadingCoordinates);
+			editView.BringSubviewToFront(loadingCoordinates);
+			loadingCoordinates.StartAnimating();
 			
 			if(string.IsNullOrEmpty(jobAddress.Text)){
 				var settings = new AppSettings();
@@ -277,12 +287,15 @@ namespace ION.IOS.ViewController.JobManager  {
 			    foreach (var placemark in placemarks) {
 	          address = placemark.Name + " " + placemark.Locality + ", " + placemark.AdministrativeArea + " " + placemark.PostalCode;
 			    }
+					loadingCoordinates.StopAnimating();
 			    
 					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,address,jobID);
 					jobAddress.Text = address;
 								
 					coordinateButton.Enabled = true;
 					} else {
+						loadingCoordinates.StopAnimating();
+					
 						var window = UIApplication.SharedApplication.KeyWindow;
 						var rootVC = window.RootViewController as IONPrimaryScreenController;
 						
@@ -294,6 +307,8 @@ namespace ION.IOS.ViewController.JobManager  {
 			} else {
 				coordinateButton.Enabled = false;
 				var placemarks = await geoCoder.GeocodeAddressAsync(jobAddress.Text);
+				loadingCoordinates.StopAnimating();
+				
 				if(placemarks.Length == 0){
 					coordinateLabel.Text = "Unable to retrieve coordinates";
 				} else {

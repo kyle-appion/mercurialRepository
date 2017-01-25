@@ -10,11 +10,12 @@ using Newtonsoft.Json.Linq;
 using System.Text;
 using ION.Core.Net;
 using ION.IOS.ViewController.AccessRequest;
+using ION.IOS.ViewController.CloudSessions;
+using System.Linq;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public partial class RemoteSystemViewController : BaseIONViewController {
-		//public remoteSelectionView remoteView;
-		public AccessSettings settingsManager;
+		public PortalMenu portalControl;
 		public RemoteLoginView loginView;
 		public RemoteUserProfileView profileView;
 		public RemoteUserRegistration registerView;
@@ -29,10 +30,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
 			View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
-      InitNavigationBar("ic_nav_workbench", false);
+      InitNavigationBar("cloud_menu_icon", false);
       backAction = () => {
         root.navigation.ToggleMenu();
       };
+			Title = Util.Strings.Remote.APPIONPORTAL;				
+      
       ion = AppState.context as IosION;
 			wc = new WebClient(); 
 			wc.Proxy = null;
@@ -75,12 +78,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				remoteHolderView.AddSubview(loginView.loginView);
 				this.NavigationItem.RightBarButtonItem = register;
       } else {
-    		settingsManager = new AccessSettings(remoteHolderView, webServices);
-				remoteHolderView.AddSubview(settingsManager.settingsView);
       
-      	//remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
-				//remoteHolderView.AddSubview(remoteView.selectionView);
-				
+				portalControl = new PortalMenu(remoteHolderView);
+				portalControl.uploadButton.TouchUpInside += showUploads;
+				portalControl.codeButton.TouchUpInside += showCodeManager;
+				portalControl.accessButton.TouchUpInside += showAccessManager;
+				remoteHolderView.AddSubview(portalControl.portalView);		
 				
 				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 				remoteHolderView.AddSubview(profileView.profileView);
@@ -100,18 +103,21 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			KeychainAccess.SetValueForKey(null,"userID");
 			KeychainAccess.SetValueForKey(null,"userName");
 			KeychainAccess.SetValueForKey(null,"userPword");
-			Console.WriteLine("Completed logout");
+			//Console.WriteLine("Completed logout");
 			
 			loginView = new RemoteLoginView(remoteHolderView, webServices);
       loginView.submitButton.TouchUpInside += credentialsCheck;
 			remoteHolderView.AddSubview(loginView.loginView);
-			settingsManager.settingsView.RemoveFromSuperview();
-			settingsManager = null;
-			//remoteView.selectionView.RemoveFromSuperview();
-			//remoteView = null;
+			portalControl.portalView.RemoveFromSuperview();
+			portalControl.uploadButton.TouchUpInside -= showUploads;
+			portalControl.codeButton.TouchUpInside -= showCodeManager;
+			portalControl.accessButton.TouchUpInside -= showAccessManager;
+			
+			portalControl = null;
+
 			profileView.profileView.RemoveFromSuperview();
 			profileView = null;
-      this.NavigationItem.RightBarButtonItem = register; 
+      this.NavigationItem.RightBarButtonItem = register;
 		}
 		/// <summary>
 		/// Rotates the views to display either the profile page or the selection page
@@ -121,34 +127,28 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public void flipAccountViews(object sender, EventArgs e){
 			if(profileView.profileView.Hidden){
         UIView.Transition(
-          //fromView:remoteView.selectionView,
-          fromView:settingsManager.settingsView,
+          fromView:portalControl.portalView,
           toView:profileView.profileView,
           duration:.5,
           options: UIViewAnimationOptions.TransitionFlipFromRight,
           completion: () => {
-          	//remoteView.selectionView.Hidden = true;
-          	settingsManager.settingsView.Hidden = true;
+          	portalControl.portalView.Hidden = true;
           	profileView.profileView.Hidden = false;
-            //remoteHolderView.SendSubviewToBack(remoteView.selectionView);
-            remoteHolderView.SendSubviewToBack(settingsManager.settingsView);
+            remoteHolderView.SendSubviewToBack(portalControl.portalView);
             remoteHolderView.BringSubviewToFront(profileView.profileView);
           }
         );
 			}	else {
         UIView.Transition(
           fromView:profileView.profileView,
-          //toView:remoteView.selectionView,
-          toView:settingsManager.settingsView,
+          toView:portalControl.portalView,
           duration:.5,
           options: UIViewAnimationOptions.TransitionFlipFromRight,
           completion: () => {
           	profileView.profileView.Hidden = true;
-          	//remoteView.selectionView.Hidden = false;
-          	settingsManager.settingsView.Hidden = false;
+          	portalControl.portalView.Hidden = false;
             remoteHolderView.SendSubviewToBack(profileView.profileView);
-            //remoteHolderView.BringSubviewToFront(remoteView.selectionView);
-            remoteHolderView.BringSubviewToFront(settingsManager.settingsView);
+            remoteHolderView.BringSubviewToFront(portalControl.portalView);
           }
         );
 			}			
@@ -179,7 +179,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var feedback = await webServices.userLogin(loginView.userName.Text,loginView.password.Text);
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();
-	
+				Console.WriteLine(textResponse);
 				await Task.Delay(TimeSpan.FromSeconds(1));
 				JObject response = JObject.Parse(textResponse);
 				var userFound = response.GetValue("found").ToString();
@@ -203,8 +203,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					
 					//remoteView = new remoteSelectionView(remoteHolderView, ion,webServices);
 					//remoteHolderView.AddSubview(remoteView.selectionView);
-					settingsManager = new AccessSettings(remoteHolderView, webServices);
-					remoteHolderView.AddSubview(settingsManager.settingsView);
+					portalControl = new PortalMenu(remoteHolderView);
+					portalControl.uploadButton.TouchUpInside += showUploads;
+					portalControl.codeButton.TouchUpInside += showCodeManager;
+					portalControl.accessButton.TouchUpInside += showAccessManager;   
+					
+					remoteHolderView.AddSubview(portalControl.portalView);
 					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 					profileView.logoutButton.TouchUpInside += LogOutUser;
 					
@@ -268,14 +272,48 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
   		
-			if(string.IsNullOrEmpty(registerView.firstName.Text) || string.IsNullOrEmpty(registerView.password.Text) || string.IsNullOrEmpty(registerView.lastName.Text) || string.IsNullOrEmpty(registerView.email.Text)){
+			if(string.IsNullOrEmpty(registerView.email.Text) || string.IsNullOrEmpty(registerView.password.Text) || string.IsNullOrEmpty(registerView.confirmPassword.Text)){
 				var alert = UIAlertController.Create ("User Registration", "Please enter a value for each field", UIAlertControllerStyle.Alert);
 				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 				
 				return;
 			}
-			var registered = await webServices.RegisterUser(registerView.firstName.Text,registerView.password.Text,registerView.lastName.Text,registerView.email.Text);
+			
+			if(registerView.password.Text != registerView.confirmPassword.Text){
+				var alert = UIAlertController.Create ("User Registration", "Passwords must match", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				
+				return;
+			}
+			
+			if(!registerView.password.Text.Any(char.IsUpper) || registerView.password.Text.Length < 8){
+				var alert = UIAlertController.Create ("User Registration", "Passwords must be 8 characters long and have at least 1 uppercase character", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				
+				return;
+			}
+			
+			if(!registerView.email.ToString().Contains("@")){
+				var alert = UIAlertController.Create ("User Registration", "Invalid email address entered", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				
+				return;
+			}
+			
+			registerView.loadingRegistration = new UIActivityIndicatorView(new CGRect(0, 0, registerView.regView.Bounds.Width, registerView.regView.Bounds.Height));
+			registerView.loadingRegistration.BackgroundColor = UIColor.Black;
+			registerView.loadingRegistration.Alpha = .8f;
+			registerView.regView.AddSubview(registerView.loadingRegistration);
+			registerView.regView.BringSubviewToFront(registerView.loadingRegistration);
+			registerView.loadingRegistration.StartAnimating();
+			
+			var registered = await webServices.RegisterUser(registerView.password.Text,registerView.email.Text);
+			registerView.loadingRegistration.StopAnimating();
+			
 			if(registered != null){
 				var textResponse = await registered.Content.ReadAsStringAsync();
 				Console.WriteLine(textResponse);
@@ -301,7 +339,30 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				}
 			}
 		}
-		
+
+		public void showUploads(object sender, EventArgs e){
+				portalControl.uploadButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			
+			  var vc = InflateViewController<SessionsViewController>(VC_CLOUD_SESSIONS);
+
+        NavigationController.PushViewController(vc, true);			
+		}
+
+		public void showCodeManager(object sender, EventArgs e){
+				portalControl.codeButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			
+			  var vc = InflateViewController<CodeGenViewController>(VC_CLOUD_CODES);
+
+        NavigationController.PushViewController(vc, true);			
+		}
+
+		public void showAccessManager(object sender, EventArgs e){
+				portalControl.accessButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			
+			  var vc = InflateViewController<ViewingControlViewController>(VC_CLOUD_ACCESS);
+
+        NavigationController.PushViewController(vc, true);			
+		}		
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
 			var loggedIn = KeychainAccess.ValueForKey("userID");

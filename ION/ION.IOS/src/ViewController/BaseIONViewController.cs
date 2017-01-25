@@ -32,6 +32,9 @@
     public const string VC_REMOTE_VIEWING = "viewControllerRemoteAccess";
     public const string VC_REMOTE_DEVICE_MANAGER = "viewControllerRemoteDeviceManager";
     public const string VC_ACCESS_MANAGER = "viewControllerAccessManager";
+    public const string VC_CLOUD_SESSIONS = "viewControllerCloudSessions";
+    public const string VC_CLOUD_CODES = "viewControllerCloudCodes";
+    public const string VC_CLOUD_ACCESS = "viewControllerAcessManager";
 
 		public const string VC_INTERNAL_GAUGE_TESTING = "viewControllerInternalGaugeTesting";
 		public const string VC_SAVE_INTERNAL_TEST = "viewControllerSaveInternalTest";
