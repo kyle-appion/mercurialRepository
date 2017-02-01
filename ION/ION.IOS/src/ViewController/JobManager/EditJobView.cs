@@ -7,6 +7,8 @@ using CoreLocation;
 
 using ION.Core.App;
 using System.Threading.Tasks;
+using ION.Core.Location;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.JobManager  {
   
@@ -195,7 +197,7 @@ namespace ION.IOS.ViewController.JobManager  {
       systemName.Text = holderSystem;
            
       jobAddress = new FloatLabeledTextField(new CGRect(.1 * editView.Bounds.Width, .88 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.09 * (editView.Bounds.Height - 60))){
-				Placeholder = "Address",
+				Placeholder = "Address(Empty Address Uses GPS)",
         FloatingLabelFont = UIFont.BoldSystemFontOfSize(12),
         FloatingLabelTextColor = UIColor.Gray,
         FloatingLabelActiveTextColor = UIColor.Blue,
@@ -209,10 +211,14 @@ namespace ION.IOS.ViewController.JobManager  {
 			jobAddress.Text = holderAddress;
 			
 			coordinateButton = new UIButton(new CGRect(.1 * editView.Bounds.Width, .97 * (editView.Bounds.Height - 60),.8 * editView.Bounds.Width,.07 * (editView.Bounds.Height - 60)));
-			coordinateButton.SetTitle("Set Coordinates",UIControlState.Normal);
+			coordinateButton.SetTitle("Get Coordinates",UIControlState.Normal);
 			coordinateButton.SetTitleColor(UIColor.Blue,UIControlState.Normal);
+			coordinateButton.Layer.BorderWidth = 1f;
 			coordinateButton.Hidden = true;
-			coordinateButton.TouchUpInside += updateJobCoordinates;
+			coordinateButton.TouchUpInside += (sender, e) => {
+				updateJobCoordinates(sender, e);
+			};
+
 			coordinateButton.TouchDown += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Black, UIControlState.Normal);};
 			coordinateButton.TouchUpOutside += (sender, e) => {coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);};
 			
@@ -254,11 +260,37 @@ namespace ION.IOS.ViewController.JobManager  {
 			}			
 		}
 		
-		public async void updateJobCoordinates(object sender, EventArgs e){
+		public async Task<bool> updateJobCoordinates(object sender, EventArgs e){
 			await Task.Delay(TimeSpan.FromMilliseconds(2));
+			
 			coordinateButton.SetTitleColor(UIColor.Blue, UIControlState.Normal);
+			
 			if(string.IsNullOrEmpty(jobAddress.Text)){
-				coordinateLabel.Text = "Address is Empty";
+				var settings = new AppSettings();
+				if(settings.location.useGeoLocation){
+					var latlong = ion.locationManager.lastKnownLocation.latitude.amount.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.amount.ToString("0.000000");
+					coordinateButton.Enabled = false;
+					coordinateLabel.Text = latlong;			
+					
+					var placemarks = await geoCoder.ReverseGeocodeLocationAsync(new CLLocation(ion.locationManager.lastKnownLocation.latitude.amount,ion.locationManager.lastKnownLocation.longitude.amount));
+					var address = "";
+			    foreach (var placemark in placemarks) {
+	          address = placemark.Name + " " + placemark.Locality + ", " + placemark.AdministrativeArea + " " + placemark.PostalCode;
+			    }
+			    
+					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,address,jobID);
+					jobAddress.Text = address;
+								
+					coordinateButton.Enabled = true;
+					} else {
+						var window = UIApplication.SharedApplication.KeyWindow;
+						var rootVC = window.RootViewController as IONPrimaryScreenController;
+						
+						var alert = UIAlertController.Create ("GPS Disabled", "You must enable ION HVAC/R through your device settings to access your location if no address is entered.", UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					}
+					return true;
 			} else {
 				coordinateButton.Enabled = false;
 				var placemarks = await geoCoder.GeocodeAddressAsync(jobAddress.Text);
@@ -269,14 +301,15 @@ namespace ION.IOS.ViewController.JobManager  {
 					foreach(var placemark in placemarks){
 						latlong = placemark.Location.Coordinate.Latitude + ","+placemark.Location.Coordinate.Longitude;
 					}
-					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ? WHERE JID = ?",latlong,jobID);
+					ion.database.Query<ION.Core.Database.JobRow>("UPDATE JobRow SET jobLocation = ?, jobAddress = ? WHERE JID = ?",latlong,jobAddress.Text,jobID);
 
 					coordinateLabel.Text = latlong;
 				}
 
 				coordinateButton.Enabled = true;
+				return true;
 			}
-		}		
+		}	
   }
 }
 

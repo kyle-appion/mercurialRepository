@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foundation;
@@ -380,14 +380,14 @@ namespace ION.IOS.ViewController.Analyzer
 								slot.tLabelBottom.BackgroundColor = LabelSubview.BackgroundColor;
 								slot.topLabel.TextColor = UIColor.White;
 							}
-						} 				
+						}
 					}
 					///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
 					if(LabelSubview.BackgroundColor == UIColor.Blue){
-						Console.WriteLine("Set low side manifold in Analyzer class");
+						Console.WriteLine("lowHighSensor Set low side manifold in Analyzer class");
 						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,__manifold.secondarySensor) ;		
 					} else if (LabelSubview.BackgroundColor == UIColor.Red){
-						Console.WriteLine("Set high side manifold in Analyzer class");
+						Console.WriteLine("lowHighSensor Set high side manifold in Analyzer class");
 						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,__manifold.secondarySensor);	
 					}
 					
@@ -420,10 +420,10 @@ namespace ION.IOS.ViewController.Analyzer
 				}
 				///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
 				if(LabelSubview.BackgroundColor == UIColor.Blue){
-					Console.WriteLine("Remove low side manifold in Analyzer class");
+					Console.WriteLine("lowHighSensor Remove low side manifold in Analyzer class");
 					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null) ;		
 				} else if (LabelSubview.BackgroundColor == UIColor.Red){
-					Console.WriteLine("Remove high side manifold in Analyzer class");
+					Console.WriteLine("lowHighSensor Remove high side manifold in Analyzer class");
 					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null);	
 				}				
 			}

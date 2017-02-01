@@ -28,6 +28,8 @@ namespace ION.Droid.App {
   using ION.Core.Location;
   using ION.Core.Report.DataLogs;
 
+	using ION.CoreExtensions.Net.Portal;
+
   using ION.Droid.Alarms.Alerts;
   using ION.Droid.Activity;
   using ION.Droid.Connections;
@@ -103,6 +105,19 @@ namespace ION.Droid.App {
     /// </summary>
     /// <value>The data log manager.</value>
     public DataLogManager dataLogManager { get; set; }
+
+		/// <summary>
+		/// The service that is responsible for managing the connection to the ION Webservice portal.
+		/// </summary>
+		/// <value>The portal.</value>
+		public IONPortalService portal { 
+			get {
+				if (__portal == null) {
+					__portal = new IONPortalService();
+				}
+				return __portal;
+			}
+		} IONPortalService __portal;
 
     /// <summary>
     /// Gets or sets the current analyzer.

@@ -304,6 +304,9 @@
     <EmbeddedResource Include="src\Fluids\Embedded\R515A.fluid">
       <LogicalName>R515A.fluid</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="src\Fluids\Embedded\R458A.fluid">
+      <LogicalName>R458A.fluid</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

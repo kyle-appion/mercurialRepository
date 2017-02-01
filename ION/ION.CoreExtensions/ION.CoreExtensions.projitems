@@ -13,6 +13,7 @@
     <Folder Include="$(MSBuildThisFileDirectory)src\IO\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\Net\" />
     <Folder Include="$(MSBuildThisFileDirectory)src\Threading\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Net\Portal\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
@@ -20,6 +21,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\RequestCalibrationCertificates.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\WebPayload.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Threading\MessageQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\IONPortalService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\ConnectionData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\AccessCode.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

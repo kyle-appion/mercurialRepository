@@ -38,6 +38,7 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="email">Email</string>
   <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>
   <string name="enable_bluetooth">Enable Bluetooth</string>
@@ -49,6 +50,7 @@
 	<string name="export">Export</string>
   <string name="favorites">Favorites</string>
 	<string name="finish">Finish</string>
+	<string name="firstName">First Name</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
@@ -57,11 +59,13 @@
 	<string name="highest">Highest</string>
   <string name="inactive">Inactive</string>
 	<string name="include">Include</string>
+	<string name="lastName">Last Name</string>
   <string name="library">Library</string>
   <string name="link">Link</string>
 	<string name="link_none">Not Linked</string>
 	<string name="loading">Loading...</string>
 	<string name="location">Location</string>
+	<string name="logout">Log Out</string>
   <string name="long_range_mode">Long-Range Mode</string>
 	<string name="lowest">Lowest</string>
   <string name="main">Main</string>
@@ -79,13 +83,21 @@
   <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
+  <string name="password">Password</string>
+  <string name="passwordConfirm">Confirm Password</string>
+  <string name="passwords_dont_match">Entered passwords don\'t match</string>
 	<string name="pdf">PDF</string>
   <string name="pick_time">Pick Time</string>
   <string name="pick_unit">Pick Unit</string>
   <string name="please_wait">Please Wait</string>
   <string name="reconnect">Reconnect</string>
   <string name="record">Record</string>
+  <string name="recover">Recover</string>
   <string name="reenable">Re-enable</string>
+  <string name="refresh">Refresh</string>
+  <string name="refreshing">Refreshing</string>
+  <string name="register">Register</string>
+  <string name="remember_me">Remember Me</string>
   <string name="remote_change_unit">Remote Change Unit</string>
   <string name="remove">Remove</string>
 	<string name="remove_selected">Remove Selected</string>
@@ -106,13 +118,16 @@
   <string name="stable">Stable</string>
 	<string name="start">Start</string>
   <string name="state">State</string>
+  <string name="submit">Submit</string>
   <string name="text">Text</string>
 	<string name="time">Time</string>
   <string name="title">Title</string>
   <string name="undo">Undo</string>
   <string name="unit">Unit</string>
+  <string name="update">Update</string>
   <string name="updated">Updated</string>
   <string name="whats_new_in">What\'s New in {0}</string>
+  <string name="working">Working</string>
   <string name="zip">Zip Code</string>
 
   <!--
@@ -410,6 +425,7 @@
 	<string name="report_selection">Report Selection</string>
   <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
+  <string name="report_sessions_loading">Loading Sessions</string>
   <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
   <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
 
@@ -417,7 +433,54 @@
   PORTAL
 	-->
 	<string name="portal">Appion Portal</string>
+	<string name="portal_access_code">Access Code</string>
+	<string name="portal_access_code_confirm">Confirm Access</string>
+	<string name="portal_access_code_confirm_access">Do you want to grant this user access to view your data?</string>
+	<string name="portal_access_code_confirming">Confirming Access</string>
+	<string name="portal_access_code_deleting">Deleting Access Code</string>
+	<string name="portal_access_code_enter">Enter Access Code</string>
+	<string name="portal_access_code_generate">Generate Access Code</string>
+	<string name="portal_access_code_manager">Access Code Manager</string>
+	<string name="portal_access_codes">Access Codes</string>
+	<string name="portal_access_requests">Access Requests</string>
+	<string name="portal_access_submitting">Submitting Access Code</string>
+	<string name="portal_account_settings">Account Settings</string>
+	<string name="portal_connections">Connections</string>
+	<string name="portal_display_name">Display Name</string>
+	<string name="portal_error">ION Portal Error</string>
+	<string name="portal_error_access_code_submission_failed">Failed to submit access code</string>
+	<string name="portal_error_access_code_too_many">Too many requests currently open</string>
+	<string name="portal_error_email_invalid">Please provide a valid email</string>
+	<string name="portal_error_failed_to_login">Failed to login.</string>
+	<string name="portal_error_failed_to_query_access_codes">Failed to query pending access codes</string>
+	<string name="portal_error_general_server">Failed to connect to Appion Portal</string>
+	<string name="portal_error_password_invalid">Please provide a password with at least 8 characters, at least one of which is capitalized</string>
+	<string name="portal_error_passwords_dont_match">The provided passwords do not match</string>
+	<string name="portal_error_update_failed">Update Failed</string>
+	<string name="portal_error_upload_sessions_failed">Failed to upload the selected sessions to ION Portal.</string>
+	<string name="portal_following">Following</string>
+	<string name="portal_following_empty">You are not currently following anyone</string>
+	<string name="portal_followers">Followers</string>
+	<string name="portal_followers_empty">No one is currently following you</string>
+	<string name="portal_forgot_password">Forgot Password</string>
 	<string name="portal_logging_in">Logging In</string>
+	<string name="portal_logging_out">Logging Out</string>
+	<string name="portal_login">Portal Login</string>
+	<string name="portal_menu">Portal Menu</string>
+	<string name="portal_password_reset">Password Reset</string>
+	<string name="portal_password_reset_sent">Account password reset request send. Please check your email.</string>
+	<string name="portal_pending_access_requests">Pending Access Requests</string>
+	<string name="portal_pending_access_requests_empty">You have no Access Requests Pending</string>
+	<string name="portal_please_enter_email">Please enter your email</string>
+	<string name="portal_register_email_sent">Account Created. An email has been sent to the address provided to activate your account.</string>
+	<string name="portal_session">Sessions</string>
+	<string name="portal_update_successful">Account update successful</string>
+	<string name="portal_upload_sessions_success">Successfully uploaded sessions</string>
+	<string name="portal_upload_sessions">Upload Sessions</string>
+	<string name="portal_uploading_sessions">Uploading Sessions</string>
+	<string name="portal_view_connections">Manage Access</string>
+	<string name="portal_warning_stars_required">* Items are required</string>
+	<string name="portal_welcome_name">Welcome back, {0}!</string>
 
 	<!--
 	PTCHART

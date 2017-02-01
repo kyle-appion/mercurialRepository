@@ -287,6 +287,7 @@ namespace ION.IOS.Util {
     public static class Report {
       public static readonly string
       SELF = "report".FromResources(),
+      ADDRESS = "report_address".FromResources(),
 			BYDATE = "report_by_date".FromResources(),
 			BYJOB = "report_by_job".FromResources(),
       CALIBRATION_CERTIFICATES = "report_calibration_certificates".FromResources(),

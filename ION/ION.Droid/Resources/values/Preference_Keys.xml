@@ -24,6 +24,10 @@
   <string name="pkey_location_gps">location_gps</string>
   <string name="pkey_location_gps_error">location_gps_error</string>
 
+	<string name="pkey_portal_rememberme">portal_rememberme</string>
+	<string name="pkey_portal_username">portal_username</string>
+	<string name="pkey_portal_password">portal_password</string>
+
   <string name="pkey_unit_length">unit_length</string>
   <string name="pkey_unit_pressure">unit_pressure</string>
   <string name="pkey_unit_temperature">unit_temperature</string>

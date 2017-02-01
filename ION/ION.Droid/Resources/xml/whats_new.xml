@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.35">
-		<new>Add new refrigerants; now more than 165</new>
-		<fixed>Fixed bugs with passing sensors to and from Superheat / Subcool</fixed>
+	<display version="0.9.37">
 	</display>
 </whatsnew>

@@ -51,11 +51,7 @@
       }
     }
 
-    /// <summary>
-    /// The recycler view that this adapter is working within.
-    /// </summary>
-    /// <value>The recycler view.</value>
-    public RecyclerView recyclerView { get; private set; }
+    
     /// <summary>
     /// The handler that will post delayed actions to the main thread.
     /// </summary>
@@ -93,35 +89,17 @@
       swipeConfirmTimeout = PENDING_ACTION_DELAY;
     }
 
-    /// <summary>
-    /// Raises the attached to recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-      this.recyclerView = recyclerView;
       touchHelperDecoration.AttachToRecyclerView(recyclerView);
       recyclerView.AddItemDecoration(swipeDecoration);
-      if (recyclerView.GetLayoutManager() == null) {
-        recyclerView.SetLayoutManager(new LinearLayoutManager(recyclerView.Context));
-      }
     }
 
-    /// <summary>
-    /// Raises the detached from recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
-      this.recyclerView = recyclerView;
       recyclerView.RemoveItemDecoration(swipeDecoration);
     }
 
-    /// <summary>
-    /// Raises the create view holder event.
-    /// </summary>
-    /// <param name="parent">Parent.</param>
-    /// <param name="viewType">View type.</param>
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       var ret = OnCreateSwipableViewHolder(parent, viewType);
 
@@ -192,6 +170,25 @@
 		/// <param name="record">Record.</param>
 		public int IndexOfRecord(IRecord record) {
 			return records.IndexOf(record);
+		}
+
+		/// <summary>
+		/// Clears and set the current records for the adapter.
+		/// </summary>
+		/// <param name="records">Records.</param>
+		public void Set(IEnumerable<IRecord> records) {
+			this.records.Clear();
+			this.records.AddRange(records);
+			NotifyDataSetChanged();
+		}
+
+		/// <summary>
+		/// Removes the given record from the adapter.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		public void RemoveRecord(int index) {
+			this.records.RemoveAt(index);
+			this.NotifyItemRemoved(index);
 		}
 
     /// <summary>

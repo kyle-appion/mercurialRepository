@@ -12,23 +12,9 @@ namespace ION.IOS.ViewController.ScreenshotReport
 	[Register ("EntryCell")]
 	partial class EntryCell
 	{
-		[Outlet]
-		internal UIKit.UITextField entry { get; set; }
-
-		[Outlet]
-		UIKit.UILabel labelHeader { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (labelHeader != null) {
-				labelHeader.Dispose ();
-				labelHeader = null;
-			}
-
-			if (entry != null) {
-				entry.Dispose ();
-				entry = null;
-			}
 		}
 	}
 }

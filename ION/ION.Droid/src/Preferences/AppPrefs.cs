@@ -50,6 +50,11 @@
 		/// </summary>
 		/// <value>The reports.</value>
 		public ReportPreferences reports { get; private set; }
+		/// <summary>
+		/// The Appion Portal preferences.
+		/// </summary>
+		/// <value>The portal.</value>
+		public PortalPreferences portal { get; private set; }
 
     /// <summary>
     /// The android context that is used to get the preferences.
@@ -149,6 +154,7 @@
       location = new LocationPreferences(context, prefs);
       units = new UnitPreferences(context, prefs);
 			reports =  new ReportPreferences(context, prefs);
+			portal = new PortalPreferences(context, prefs);
     }
   }
 
@@ -184,6 +190,17 @@
 		}
 
 		/// <summary>
+		/// Queries a boolean from a string preference. If the preference doesn't exist or can't be retrieved, we will
+		/// return fallback.
+		/// </summary>
+		/// <returns>The int from string.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="fallback">Fallback.</param>
+		public bool GetBool(int key, bool fallback) {
+			return prefs.GetBoolean(context.GetString(key), fallback);
+		}
+
+		/// <summary>
 		/// Queries an integer from a string preference. If the preference doesn't exist or can't be retrieved, we will
 		/// return fallback.
 		/// </summary>
@@ -199,6 +216,54 @@
 				Log.E(this, "Failed to retrieve int from string preference: " + context.GetString(key), e);
 	      return fallback;
 			}
+		}
+
+		/// <summary>
+		/// Puts the string into the preferences.
+		/// </summary>
+		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public bool PutString(int key, string value) {
+			var e = prefs.Edit();
+			e.PutString(context.GetString(key), value);
+			return e.Commit();
+		}
+
+		/// <summary>
+		/// Puts the bool into the preferences.
+		/// </summary>
+		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public bool PutBool(int key, bool value) {
+			var e = prefs.Edit();
+			e.PutBoolean(context.GetString(key), value);
+			return e.Commit();
+		}
+
+		/// <summary>
+		/// Puts the int into the preferences.
+		/// </summary>
+		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public bool PutInt(int key, int value) {
+			var e = prefs.Edit();
+			e.PutInt(context.GetString(key), value);
+			return e.Commit();
+		}
+
+		/// <summary>
+		/// Puts the float into the preferences.
+		/// </summary>
+		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+		/// <param name="key">Key.</param>
+		/// <param name="value">Value.</param>
+		public bool PutFloat(int key, float value) {
+			var e = prefs.Edit();
+			e.PutFloat(context.GetString(key), value);
+			return e.Commit();
 		}
   }
 
@@ -418,6 +483,40 @@
 		}
 
 		public ReportPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+		}
+	}
+
+	public class PortalPreferences : BasePreferences {
+		public bool rememberMe {
+			get {
+				return GetBool(Resource.String.pkey_portal_rememberme, false);
+			}
+			set {
+				PutBool(Resource.String.pkey_portal_rememberme, value);
+			}
+		}
+
+		public string username {
+			get {
+				return GetString(Resource.String.pkey_portal_username, "");
+			}
+
+			set {
+				PutString(Resource.String.pkey_portal_username, value);
+			}
+		}
+
+		public string password {
+			get {
+				return GetString(Resource.String.pkey_portal_password, "");
+			}
+
+			set {
+				PutString(Resource.String.pkey_portal_password, value);
+			}
+		}
+
+		public PortalPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
 		}
 	}
 }

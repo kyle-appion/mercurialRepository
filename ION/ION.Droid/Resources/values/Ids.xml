@@ -13,6 +13,8 @@
 	<item name="average" type="id"/>
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
+  <item name="button1" type="id"/>
+  <item name="cancel" type="id"/>
   <item name="card" type="id"/>
   <item name="check" type="id"/>
   <item name="city" type="id"/>
@@ -33,42 +35,55 @@
   <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
+  <item name="email" type="id"/>
   <item name="empty" type="id"/>
   <item name="end" type="id"/>
 	<item name="end_times" type="id"/>
+	<item name="entry" type="id"/>
   <item name="exit" type="id"/>
 	<item name="export" type="id"/>
+	<item name="firstName" type="id"/>
   <item name="fluid" type="id"/>
   <item name="footer" type="id"/>
+  <item name="forgot" type="id"/>
   <item name="graph" type="id"/>
   <item name="help" type="id"/>
 	<item name="highest" type="id"/>
+	<item name="home" type="id"/>
   <item name="icon" type="id"/>
 	<item name="job" type="id"/>
+	<item name="lastName" type="id"/>
   <item name="left" type="id"/>
   <item name="library" type="id"/>
   <item name="list" type="id"/>
   <item name="loading" type="id"/>
 	<item name="login" type="id"/>
+	<item name="logout" type="id"/>
 	<item name="lowest" type="id"/>
   <item name="next" type="id"/>
   <!-- lock is a keyword for c# -->
   <item name="padlock" type="id"/>
+  <item name="password" type="id"/>
+	<item name="passwordConfirm" type="id"/>
   <item name="progress" type="id"/>
   <item name="main" type="id"/>
   <item name="measurement" type="id"/>
   <item name="name" type="id"/>
   <item name="notes" type="id"/>
+  <item name="ok" type="id"/>
   <item name="ok_done" type="id"/>
   <item name="options" type="id"/>
   <item name="password" type="id"/>
+	<item name="passwordConfirm" type="id"/>
   <item name="play" type="id"/>
 	<item name="plus" type="id"/>
   <item name="preferred" type="id"/>
 	<item name="purchase_no" type="id"/>
   <item name="record" type="id"/>
+  <item name="refresh" type="id"/>
   <item name="reenable" type="id"/>
   <item name="right" type="id"/>
+  <item name="register" type="id"/>
 	<item name="remove" type="id"/>
 	<item name="reset" type="id"/>
   <item name="save" type="id"/>
@@ -80,6 +95,7 @@
 	<item name="start_times" type="id"/>
   <item name="state" type="id"/>
   <item name="status" type="id"/>
+  <item name="swiper" type="id"/>
 	<item name="tab_1" type="id"/>
 	<item name="tab_2" type="id"/>
 	<item name="table" type="id"/>
@@ -90,6 +106,7 @@
   <item name="type" type="id"/>
   <item name="unit" type="id"/>
   <item name="up" type="id"/>
+  <item name="update" type="id"/>
   <item name="version" type="id"/>
   <item name="view" type="id"/>
   <item name="viewpager" type="id"/>
@@ -151,7 +168,12 @@
 	<!--
 	PORTAL
 	-->
-	<item name="portal" type="id="/>
+	<item name="portal" type="id"/>
+	<item name="portal_access_code" type="id"/>
+	<item name="portal_connections" type="id"/>
+	<item name="portal_following" type="id"/>
+	<item name="portal_followers" type="id"/>
+	<item name="portal_session" type="id"/>
 	
 
   <!--
