@@ -274,13 +274,13 @@
         });
         cell.Layer.CornerRadius = 5;
         var webIon = ion as IosION;
-/*
+
         if(webIon.webServices.downloading){
 					cell.Hidden = true;
 				} else {
 					cell.Hidden = false;
 				}
-*/
+
         return cell;
       } else if (record is ViewerRecord) {   
         var viewer = record as ViewerRecord;

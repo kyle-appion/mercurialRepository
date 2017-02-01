@@ -375,7 +375,7 @@
 			rmin = pressureUnit.OfScalar(minPressure);
 			max = pressureUnit.OfScalar(maxPressure);
 
-			minTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
+			minTemperature = (int)Math.Ceiling(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 			maxTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 
 			Invalidate();

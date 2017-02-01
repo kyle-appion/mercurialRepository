@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:gravity="center"
     android:orientation="vertical"
+    android:gravity="center_horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/portal_login_height"
+        android:layout_height="wrap_content"
         android:background="@color/black"
         android:orientation="horizontal"
+        android:padding="10dp"
         android:gravity="center">
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_appion_logo" />
+            android:src="@drawable/img_appion_logo_mountain" />
     </LinearLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="280dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content">
         <android.support.design.widget.TextInputLayout
             android:theme="@style/IONTextInputLayout"
@@ -31,7 +36,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:hint="@string/name" />
+                android:inputType="textEmailAddress"
+                android:hint="@string/email" />
         </android.support.design.widget.TextInputLayout>
         <android.support.design.widget.TextInputLayout
             android:theme="@style/IONTextInputLayout"
@@ -44,14 +50,15 @@
                 android:textSize="@dimen/text_size_large"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:singleLine="true"
-                android:hint="@string/name" />
+                android:hint="@string/password" />
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
     <LinearLayout
         android:gravity="center"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content">
         <CheckBox
             android:id="@id/checkbox"
@@ -59,10 +66,44 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="@string/remember_me" />
+            <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
         <Button
             android:id="@id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_title"
             android:text="@string/submit" />
     </LinearLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+        <LinearLayout
+        android:padding="@dimen/activity_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+        android:id="@id/forgot"
+        android:textSize="@dimen/text_size_large"
+        android:text="@string/portal_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textColor="@color/blue"/>
+        <Space
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1" />
+        <Button
+        android:id="@id/register"
+        android:text="@string/register"
+        android:textSize="@dimen/text_size_large"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="italic"
+        android:textColor="@color/blue"/>
+	</LinearLayout>
 </LinearLayout>

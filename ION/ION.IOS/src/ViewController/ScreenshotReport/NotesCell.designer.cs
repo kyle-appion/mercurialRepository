@@ -12,23 +12,9 @@ namespace ION.IOS.ViewController.ScreenshotReport
 	[Register ("NotesCell")]
 	partial class NotesCell
 	{
-		[Outlet]
-		UIKit.UILabel labelHeader { get; set; }
-
-		[Outlet]
-		UIKit.UITextField text { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (labelHeader != null) {
-				labelHeader.Dispose ();
-				labelHeader = null;
-			}
-
-			if (text != null) {
-				text.Dispose ();
-				text = null;
-			}
 		}
 	}
 }

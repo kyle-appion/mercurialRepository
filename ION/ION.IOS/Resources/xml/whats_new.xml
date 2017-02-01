@@ -1,11 +1,8 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.8.41">
-		<new>Added default "Unassigned" job categorizing for improved session tracking</new>
-		<update>Updated PDF reporting to include more information on a cover page</update>
-		<update>Updated session list to be more descriptive</update>
-		<fixed>Fixed issue with some fluid ranges for P/T Chart</fixed>
-		<fixed>Fixed time display difference between job manager and reporting</fixed>
-		<fixed>Fixed Job Manager layout for new job</fixed>
+	<display version="1.9.0">
+		<new>Added fluid safety information to Refrigerant Manager</new>
+		<update>Updated Refrigerant Manager layout to accomodate safety information</update>
+		<fixed>Fixed Superheat/Subcool warning showing after switching fluid from mixture to non-mixture</fixed>
   </display>
 </whatsnew>

@@ -709,7 +709,9 @@ namespace ION.Droid.Widgets.Analyzer {
 						AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
 					} else { // The opposite manifold has a secondary sensor that will break upon movement
 						RequestBreakManifold(() => {
-							analyzer.RemoveManifold(targetSide);
+							analyzer.RemoveManifold(targetSide.Opposite());
+							analyzer.SetManifold(targetSide, s);
+							AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
 						});
 					}
 				} else { // The sensor is NOT attached to a manifold

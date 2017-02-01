@@ -317,7 +317,6 @@
       };
 
 			var cloud = new NavigationCategory() {
-				id = Resource.Id.cloud,
 				title = GetString(Resource.String.cloud),
 				items = new NavigationItem[] {
 					new NavigationIconItem() {
@@ -370,6 +369,7 @@
       ret.Add(main);
       ret.Add(calculators);
       ret.Add(reports);
+			ret.Add(cloud);
       ret.Add(settings);
       ret.Add(exit);
 

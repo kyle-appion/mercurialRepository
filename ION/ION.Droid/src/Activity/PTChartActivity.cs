@@ -365,6 +365,9 @@
 			var contentView = FindViewById(Resource.Id.content);
 			contentView.SetOnTouchListener(new ClearFocusListener(pressureEntryView, temperatureEntryView));
 
+			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
+			ptChart = PTChart.New(ion, Fluid.EState.Dew);
+/*
 			if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
 				var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
 				var fluid = await ion.fluidManager.GetFluidAsync(name);
@@ -378,6 +381,7 @@
 			} else {
 				ptChart = PTChart.New(ion, Fluid.EState.Dew);
 			}
+*/
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);

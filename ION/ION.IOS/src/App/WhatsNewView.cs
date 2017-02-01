@@ -29,7 +29,7 @@ namespace ION.IOS.App {
 		{
 
 			var updateSize = 0.0;
-			var contentMultiplier = 105;
+			var contentMultiplier = 125;
 			if(UserInterfaceIdiomIsPhone){
 				headingSize = 3;
 				fontSize = 14;

@@ -1,7 +1,4 @@
-﻿/*
-
-
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -242,5 +239,3 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public int online { get; set; }
 	}
 }
-
-*/

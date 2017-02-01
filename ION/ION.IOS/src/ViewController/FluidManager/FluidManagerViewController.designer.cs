@@ -22,6 +22,9 @@ namespace ION.IOS.ViewController.FluidManager
 		UIKit.UILabel labelFluidName { get; set; }
 
 		[Outlet]
+		UIKit.UIButton safetyHelpButton { get; set; }
+
+		[Outlet]
 		UIKit.UISegmentedControl switchFluidSource { get; set; }
 
 		[Outlet]
@@ -68,6 +71,11 @@ namespace ION.IOS.ViewController.FluidManager
 			if (viewSelectedFluidContainer != null) {
 				viewSelectedFluidContainer.Dispose ();
 				viewSelectedFluidContainer = null;
+			}
+
+			if (safetyHelpButton != null) {
+				safetyHelpButton.Dispose ();
+				safetyHelpButton = null;
 			}
 		}
 	}

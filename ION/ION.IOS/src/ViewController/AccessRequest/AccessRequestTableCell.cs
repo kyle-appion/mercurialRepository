@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System;
 using CoreGraphics;
 using Foundation;
@@ -22,4 +22,3 @@ namespace ION.IOS.ViewController.AccessRequest {
 		}
 	}
 }
-*/

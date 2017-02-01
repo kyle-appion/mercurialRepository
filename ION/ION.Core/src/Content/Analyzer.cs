@@ -1,4 +1,4 @@
-﻿﻿namespace ION.Core.Content {
+﻿namespace ION.Core.Content {
 
 	using System;
 	using System.Collections.Generic;

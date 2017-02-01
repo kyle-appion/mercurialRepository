@@ -20,12 +20,21 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 
     public Action closer { get; set; }
     public UIImage image { get; set; }
+    public AdditionalView reportData;
+    
+    public string subtitle;
+    public string address1;
+    public string address2;
+    public string city;
+    public string state;
+    public string zipcode;
+    public string appversion;
 
-    private IItem reportTitle { get; set; }
+    //private IItem reportTitle { get; set; }
     private DateTime date { get; set; }
     private IItem notes { get; set; }
     private UITapGestureRecognizer noKeyboard{get; set;}
-    private List<IItem> items { get; set; }
+    //private List<IItem> items { get; set; }
 
     private ScreenshotReportSource source { get; set; }
     
@@ -48,7 +57,7 @@ namespace ION.IOS.ViewController.ScreenshotReport {
 
         var result = await CommitScreenshotReport();
 
-				savingDialog.DismissViewController(true, null);
+				savingDialog.DismissViewController(true, null);   
 
 				await Task.Delay(500);
 
@@ -63,24 +72,30 @@ namespace ION.IOS.ViewController.ScreenshotReport {
         }
       });
 
-      reportTitle = new EntryItem(Strings.Report.TITLE);
+      //reportTitle = new EntryItem(Strings.Report.TITLE);
       date = DateTime.Now;
+      reportData = new AdditionalView(View);
+      View.AddSubview(reportData.detailsView);
+      reportData.dateValue.Text =  date.ToLocalTime().ToShortDateString();
       notes = new NotesItem(Strings.Report.NOTES);
-      //notes = new UITextField(new CGRect(0,0,100, 60));
-      items = new List<IItem>();
-      items.Add(new EntryItem(Strings.Report.CITY));
-      items.Add(new EntryItem(Strings.Report.STATE));
-      items.Add(new EntryItem(Strings.Report.ZIP));
+      ////notes = new UITextField(new CGRect(0,0,100, 60));
+      //items = new List<IItem>();
+      //items.Add(new EntryItem(Strings.Report.ADDRESS));
+      //items.Add(new EntryItem(Strings.Report.CITY));
+      //items.Add(new EntryItem(Strings.Report.STATE));
+      //items.Add(new EntryItem(Strings.Report.ZIP));
+      //items.Add(new NotesItem(Strings.Report.NOTES));
 
-      var sourceList = new List<IItem>();
+      //var sourceList = new List<IItem>();
 
-      sourceList.Add(reportTitle);
-      sourceList.Add(new DisplayItem(Strings.DATE, date.ToLocalTime().ToShortDateString()));
-      sourceList.AddRange(items);
+      //sourceList.Add(reportTitle);
+      //sourceList.Add(new DisplayItem(Strings.DATE, date.ToLocalTime().ToShortDateString()));
+      //sourceList.AddRange(items);
       //sourceList.Add(notes);
 
-      source = new ScreenshotReportSource(sourceList);
-      table.Source = source;
+      //source = new ScreenshotReportSource(sourceList);
+      //table.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+      //table.Source = source;
 
       imageScreenshot.Image = image;
     }
@@ -89,35 +104,60 @@ namespace ION.IOS.ViewController.ScreenshotReport {
     /// Commits the current state of the screenshot report to a file.
     /// </summary>
     private Task<Result> CommitScreenshotReport() {
+    	subtitle = reportData.titleField.Text;
+    	address1 = reportData.addressField1.Text;
+    	address2 = reportData.addressField2.Text;
+    	city = reportData.cityField.Text;
+    	state = reportData.stateField.Text;
+    	zipcode = reportData.zipcodeField.Text;
+    	appversion = reportData.versionValue.Text;
       return Task.Factory.StartNew(SaveScreenshot);
     }
 
 		private Result SaveScreenshot() {
 			var report = new ScreenshotReport();
+
 			///save date in original format for localization later
 			//report.created = date;
 			report.title = Strings.Report.SCREENSHOT_TITLE;
-			report.subtitle = reportTitle.value;
+			//report.subtitle = reportTitle.value;
+			report.subtitle = subtitle;
+			//report.notes = notes.value;
 			report.notes = notes.value;
 			report.screenshot = image.AsPNG().ToArray();
 
-			if (report.subtitle == null || report.subtitle.Equals("")) {
+			//if (report.subtitle == null || report.subtitle.Equals("")) {
+			//	return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
+			//}
+			if (string.IsNullOrEmpty(subtitle)) {
 				return new Result(Strings.Errors.SCREENSHOT_MISSING_TITLE);
 			}
-
 			/// adding an extra spot to manually add the localized date
 			/// return here for possible raw data storage for different
 			/// exporting formats
-			var data = new string[items.Count + 1, 2];
+			//var data = new string[items.Count + 1, 2];
+			var data = new string[7, 2];
 			data[0,0] = Strings.DATE;
 			data[0,1] = date.ToLocalTime().ToShortDateString();
 
-			for (int i = 1; i <= items.Count; i++) {
-				var item = items[i - 1];
-				data[i, 0] = item.header;
-				data[i, 1] = item.value;
-			}
-
+			//for (int i = 1; i <= items.Count; i++) {
+			//	var item = items[i - 1];
+			//	data[i, 0] = item.header;
+			//	data[i, 1] = item.value;
+			//}
+			data[1,0] = "App Version";
+			data[1,1] = appversion;		
+			data[2,0] = "Address Line 1";
+			data[2,1] = address1;
+			data[3,0] = "Address Line 2";
+			data[3,1] = address2;
+			data[4,0] = "City";
+			data[4,1] = city;
+			data[5,0] = "State/Province/Region";
+			data[5,1] = state;
+			data[6,0] = "ZIP/Postal Code";
+			data[6,1] = zipcode;
+			
 			report.tableData = data;
 
 			try {

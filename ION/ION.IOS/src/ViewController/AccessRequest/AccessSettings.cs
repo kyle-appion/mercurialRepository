@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +6,7 @@ using CoreGraphics;
 using ION.Core.App;
 using ION.Core.Net;
 using ION.IOS.ViewController.Logging;
+using Newtonsoft.Json.Linq;
 using UIKit;
 
 namespace ION.IOS.ViewController.AccessRequest {
@@ -62,7 +63,7 @@ namespace ION.IOS.ViewController.AccessRequest {
       sessionTable.SendSubviewToBack(refreshSessions);      
       
 			sessionButton = new UIButton(new CGRect(.25 * settingsView.Bounds.Width, .85 * settingsView.Bounds.Height, .5 * settingsView.Bounds.Width, .1 * settingsView.Bounds.Height));
-			sessionButton.SetTitle("Upload Session(s)", UIControlState.Normal);
+			sessionButton.SetTitle("Upload Session", UIControlState.Normal);
 			sessionButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			sessionButton.Layer.BorderWidth = 1f;
 			sessionButton.Layer.CornerRadius = 5f;
@@ -111,11 +112,30 @@ namespace ION.IOS.ViewController.AccessRequest {
       }
     }
     
-    public void startUpload(object sender, EventArgs e){
+    public async void startUpload(object sender, EventArgs e){
 			sessionButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			webServices.getSession(selectedSessions);
+			var window = UIApplication.SharedApplication.KeyWindow;
+    	var rootVC = window.RootViewController as IONPrimaryScreenController;
+    	
+			var uploadResponse = await webServices.getSession(selectedSessions);
+    		
+			if(uploadResponse != null){
+				var textResponse = await uploadResponse.Content.ReadAsStringAsync();
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var isregistered = response.GetValue("success").ToString();
+				var message = response.GetValue("message").ToString();
+			
+				var alert = UIAlertController.Create ("Session Upload", message, UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+
+			} else {				
+				var alert = UIAlertController.Create ("Session Upload", "Upload connection was lost. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 		}
 	}
 }
-
-*/
