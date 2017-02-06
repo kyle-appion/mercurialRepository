@@ -83,6 +83,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				portalControl.uploadButton.TouchUpInside += showUploads;
 				portalControl.codeButton.TouchUpInside += showCodeManager;
 				portalControl.accessButton.TouchUpInside += showAccessManager;
+				portalControl.remoteButton.TouchUpInside += showRemoteViewing;
 				remoteHolderView.AddSubview(portalControl.portalView);		
 				
 				profileView = new RemoteUserProfileView(remoteHolderView,KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
@@ -362,7 +363,16 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			  var vc = InflateViewController<ViewingControlViewController>(VC_CLOUD_ACCESS);
 
         NavigationController.PushViewController(vc, true);			
-		}		
+		}
+	
+		public void showRemoteViewing(object sender, EventArgs e){
+				portalControl.remoteButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
+			
+			  var vc = InflateViewController<RemoteViewingViewController>(VC_CLOUD_REMOTE);
+
+        NavigationController.PushViewController(vc, true);			
+		}	
+	
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
 			var loggedIn = KeychainAccess.ValueForKey("userID");

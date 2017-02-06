@@ -29,13 +29,15 @@
         int len = packet.Length;
 
         if (len < 8 || len % 6 != 2) {
-          throw new ArgumentException("Cannot parse: bad packet size {" + len + "}");
+          	/////should not throw exeptions
+          //throw new ArgumentException("Cannot parse: bad packet size {" + len + "}");
         }
 
         var v = r.ReadByte();
 
         if (v != 1 && v != 2) {
-          throw new ArgumentException("Cannot parse: invalid version code");
+          	/////should not throw exeptions
+          //throw new ArgumentException("Cannot parse: invalid version code");
         }
 
         int battery = r.ReadByte();

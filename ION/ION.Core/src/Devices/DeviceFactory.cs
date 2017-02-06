@@ -211,11 +211,15 @@
     /// <param name="protocol">Protocol.</param>
     public IDevice CreateDevice(ISerialNumber serialNumber, IConnection connection, IProtocol protocol) {
       if (!(serialNumber is GaugeSerialNumber)) {
-        throw new ArgumentException("Cannot create device: expected GaugeSerialNumber, received: " + serialNumber.GetType().Name);
+          	/////should not throw exeptions
+        //throw new ArgumentException("Cannot create device: expected GaugeSerialNumber, received: " + serialNumber.GetType().Name);
+        return null;
       }
 
       if (!(protocol is IGaugeProtocol)) {
-        throw new ArgumentException("Cannot create device: expected an IGaugeProtocol, received: " + protocol.GetType().Name);
+          	/////should not throw exeptions
+        //throw new ArgumentException("Cannot create device: expected an IGaugeProtocol, received: " + protocol.GetType().Name);
+        return null;
       }
 			
       var ret = new GaugeDevice(serialNumber as GaugeSerialNumber, connection, protocol as IGaugeProtocol);

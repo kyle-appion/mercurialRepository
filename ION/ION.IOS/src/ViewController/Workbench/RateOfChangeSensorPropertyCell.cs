@@ -51,6 +51,7 @@ namespace ION.IOS.ViewController.Workbench {
 		}
 
     public void UpdateTo(RateOfChangeRecord record) {
+    	this.Layer.BorderWidth = 1f;
       this.record = record;
       labelTitle.Text = Strings.Workbench.Viewer.ROC;
     }

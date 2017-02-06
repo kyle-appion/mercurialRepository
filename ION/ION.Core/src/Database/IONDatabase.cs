@@ -126,7 +126,7 @@
     public Task<bool> SaveAsync<T>(T t) where T : ITableRow {
 			bool startedTransaction = false;
 
-      try {
+      //try {
 				BeginTransaction();
 				startedTransaction = true;
 
@@ -141,6 +141,7 @@
 
         if (affected > 0) {
           Commit();
+          Log.D(this, "finished save async");
           return Task.FromResult(true);
         } else {
         	try {
@@ -158,13 +159,13 @@
           Log.E(this, "Retried to store session info");
           return Task.FromResult(true);
         }
-      } catch (Exception e) {
-        Log.E(this, "Failed to save the item: " + t + " to the database", e);
-				if (startedTransaction) {
-        	Rollback();
-				}
-        return Task.FromResult(false);
-      }
+    //  } catch (Exception e) {
+    //    Log.E(this, "Failed to save the item: " + t + " to the database", e);
+				//if (startedTransaction) {
+    //    	Rollback();
+				//}
+    //    return Task.FromResult(false);
+    //  }
     }
 
     /// <summary>

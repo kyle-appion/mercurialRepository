@@ -1027,6 +1027,10 @@
     <Compile Include="src\ViewController\AccessRequest\AccessAllowingTableSource.cs" />
     <Compile Include="src\ViewController\AccessRequest\ViewingUserCell.cs" />
     <Compile Include="src\ViewController\AccessRequest\AllowingUserCell.cs" />
+    <Compile Include="src\ViewController\CloudSessions\RemoteViewingViewController.cs" />
+    <Compile Include="src\ViewController\CloudSessions\RemoteViewingViewController.designer.cs">
+      <DependentUpon>RemoteViewingViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

@@ -127,7 +127,8 @@
     private async Task<SensorMeasurementRow> CreateSensorMeasurement(IONDatabase db, GaugeDeviceSensor sensor, DateTime date) {
       var ret = new SensorMeasurementRow();
 
-      var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
+			// constant checking caused issue for timer when ending a logging session plus it was not used for anything....
+      //var d = await db.QueryForUsingSerialNumberAsync(sensor.device.serialNumber);
       var meas = sensor.measurement.ConvertTo(sensor.unit.standardUnit);
 
       ret.serialNumber = sensor.device.serialNumber.ToString();

@@ -513,7 +513,9 @@
       } else if (sensorProperty is AlternateUnitSensorProperty) {
         return Strings.Workbench.Viewer.ALT;
       } else {
-        throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
+        //should not throw exceptions
+        //throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
+        return Strings.Workbench.Viewer.MIN;
       }
     }
 

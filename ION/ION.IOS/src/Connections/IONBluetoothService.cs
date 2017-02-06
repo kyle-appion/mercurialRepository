@@ -176,7 +176,7 @@
 
 
 			if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-				Log.E(this, "Failed to resolve peripheral name'" + name + "'. The peripheral will not be presented to the application.");
+				//Log.E(this, "Failed to resolve peripheral name'" + name + "'. The peripheral will not be presented to the application.");
 				return;
 			}
 
@@ -209,13 +209,16 @@
 				if (name.IsValidSerialNumber()) {
 					// See, the device has a valid serial number.
 					sn = name.ParseSerialNumber();
-					if (connection == null) {
-						var p = FindProtocolFromDeviceModel(sn.deviceModel);
-						// We have not discovered this device before. Notify the world
-						NotifyOfDeviceFound(sn, uuid.ToString(), null, p);
-					} else {
-						// The connection already exists. Update the last time that it was seen.
-						connection.lastSeen = DateTime.Now;
+					// Check that an iserialnumber was returned
+					if(sn != null){
+						if (connection == null) {
+							var p = FindProtocolFromDeviceModel(sn.deviceModel);
+							// We have not discovered this device before. Notify the world
+							NotifyOfDeviceFound(sn, uuid.ToString(), null, p);
+						} else {
+							// The connection already exists. Update the last time that it was seen.
+							connection.lastSeen = DateTime.Now;
+						}
 					}
 				} else {
 					Log.D(this, "Ignoring non-appion device: " + name);

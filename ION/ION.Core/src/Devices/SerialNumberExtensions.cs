@@ -20,7 +20,9 @@
       if (GaugeSerialNumber.IsValid(serialNumber)) {
         return GaugeSerialNumber.Parse(serialNumber);
       } else {
-        throw new Exception("Cannot parse serial number: invalid serial number: " + serialNumber);
+      	// do not throw exceptions
+        //throw new Exception("Cannot parse serial number: invalid serial number: " + serialNumber);
+        return null;
       }
     }
   }
