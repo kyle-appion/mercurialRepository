@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
 	<display version="0.9.37">
+		<updated>Changed how item swipes look</updated>
+		<updated>Changed how manual entries are added to the analyzer</updated>
 		<!--
 		last used fluid
 		-->
+		<fixed>Fixed a bug in location gathering that would cause some devices to crash</fixed>
 		<fixed>Bugs</fixed>
 	</display>
 </whatsnew>

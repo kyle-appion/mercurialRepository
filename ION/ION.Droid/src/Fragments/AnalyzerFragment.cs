@@ -1,6 +1,7 @@
 ﻿namespace ION.Droid.Fragments {
 
   using System;
+	using System.Collections.Generic;
 
   using Android.App;
   using Android.Content;
@@ -432,6 +433,12 @@
         i.SetAction(Intent.ActionPick);
         StartActivityForResult(i, EncodeSensorMountRequest(index));
       });
+			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
+				var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
+					analyzer.PutSensor(index, sensor, false);
+				});
+			});
+/*
       ldb.AddItem(Resource.String.analyzer_create_editable_pressure, () => {
         new ManualSensorEditDialog(Activity, ESensorType.Pressure, true, (obj, sensor) => {
           analyzer.PutSensor(index, sensor, false);
@@ -442,6 +449,7 @@
           analyzer.PutSensor(index, sensor, false);
         }).Show();
       });
+*/
       ldb.Show();
     }
 
