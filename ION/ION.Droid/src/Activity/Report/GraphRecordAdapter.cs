@@ -5,12 +5,13 @@
 
 	using Android.Views;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Database;
 	using ION.Core.Devices;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	using ION.Droid.Widgets.RecyclerViews;
 

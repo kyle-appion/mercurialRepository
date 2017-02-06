@@ -32,7 +32,11 @@
 		/// </summary>
 		/// <returns>A <see cref="String"/> that represents the current <see cref="Scalar"/>.</returns>
 		public override string ToString() {
-			return amount.ToString("0.##") + " " + unit;
+			if (unit.stringer != null) {
+				return unit.stringer(amount);
+			} else {
+				return amount.ToString("0.##") + " " + unit;
+			}
 		}
 
 		/// <summary>

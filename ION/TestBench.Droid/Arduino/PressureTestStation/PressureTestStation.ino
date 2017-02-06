@@ -1,24 +1,45 @@
+/*
+The following is per christian 29 Dec 2016:
+
+The pressure rig should be designed such that is is able to perform both calibration and nist procedures.
+
+This requires that the rig have two steppers controllers that will isolate the test from the g5 and the exhaust. Further,
+test and calibration target points are to be relative. The rig does not need to precisely reach a desired target point
+as the only thing that matters is a test gauges proximity to the reference (fluke) at the target point.
+
+That said, this program only needs to preform the following functions which will be identified as states:
+  * pressure up
+  * hold pressure
+  * pressure down
+  * shudown safely
+*/
+
+
+
 #include <string.h>
 
 #include <SoftwareSerial.h>
 
 #include "Appion.h"
 #include "BluetoothController.h"
-#include "Fluke700G.h"
-#include "Timer.h"
+#include "PressureRig.h"
 #include "VctControlStepper.h"
 
 #define DEBUG true
-#define VERBOSE false
 
 #define IS_HIGH_CCW false     // The direction of the control stepper
-// Stepper 1 Pin layouts
-#define PIN_STEPPER_1_DIR 46  // The pin that will output the stepper 1 motor direction
-#define PIN_STEPPER_1_STEP 47 // The pin that will output the stepper 1 motor step
-#define PIN_STEPPER_1_START_SWITCH 40 // The pin stepper 1's home detection switch
-#define PIN_STEPPER_1_END_SWITCH 42   // The pin stepper 1's end detection switch
+// Input Stepper Pin layouts
+#define PIN_SIN_DIR 46  // The input stepper's direction pin
+#define PIN_SIN_STEP 47 // The input stepper's step pin (controls step pulses)
+#define PIN_SIN_START_SWITCH 40 // The switch pin used to determine if the input stepper vct is open
+#define PIN_SIN_END_SWITCH 42   // The switch pin used to determine if the input stepper vct is closed
+// Output Stepper Pin layouts
+#define PIN_SOUT_DIR 44  // The output stepper's direction pin
+#define PIN_SOUT_STEP 45 // The output stepper's step pin (controls step pulses)
+#define PIN_SOUT_START_SWITCH 41 // The switch pin used to determine if the output stepper vct is open
+#define PIN_SOUT_END_SWITCH 43   // The switch pin used to determine if the output stepper vct is closed
 // G5 Start Relay
-#define PIN_G5_START_RELAY 41     // The pin that, when high, will start the G5
+#define PIN_G5_START_RELAY 39     // The pin that, when high, will start the G5
 // Status LED
 #define PIN_ERROR_LED 53          // The led that is used to indicate an error
 
@@ -29,52 +50,43 @@
 #define BLUEFRUIT_SPI_IRQ 48      // The pin to the bluefruit's IQR pin
 #define BLUEFRUIT_SPI_RST 22      // The pin to the bluefruit's RST pin
 
-#define FLUKE_TX 0                // The pin that is used to perform tx to the fluke
-#define FLUKE_RX 1                // The pin that is used to perform rx to the fluke
+#define BLUETOOTH_WRITE_INTERVAL 100 // The time in milliseconds between bluetooth writes.
 
-// The enumeration of state that the rig controller is able to accept.
-enum ERigState {
-  // The off state. This state is means that the g5 is off and the control stepper is open.
-  RC_OFF = 1,
-  // The state type that puts the rig into an idle state.
-  RC_IDLE = 2,
-  // The state type that puts the rig into an initialization state.
-  RC_INITIALIZE = 3,
-  // The state type that puts the rig into a pressurize until target state.
-  RC_GOTO_PRESSURE = 4,
-  // The state type that relieve an over pressure in the rig with regards to the target pressure.
-  RC_RELIEVE_PRESSURE = 5,
-  // The state type that puts the rig into a hold pressure state.
-  RC_HOLD_PRESSURE = 6,
-  // The state type that puts the rig into a purge system state.
-  RC_PURGE = 7,
-};
+#define FLUKE_BUFFER_LEN 128      // The length of the fluke input buffer.
 
-// The enumeration of the error codes that are present in the rig.
-enum EErrorCode {
-  // The error code that indicates that the fluke failed to communicate with the rig.
-  ERR_FLUKE_COMM_FAIL,
-};
+#define SIN_OPEN 1 << 0     // Whether or not the input stepper is open
+#define SIN_CLOSED 1 << 1   // Whether or not the input stepper is closed
+#define SOUT_OPEN 1 << 2    // Whether or not the output stepper is open
+#define SOUT_CLOSED 1 << 3  // Whether or not the output stepper is closed
+#define CRASHED = 1 << 7    // Whether or not the rig has crashed
+
+#define COM_SIN_OPEN 1 << 0
+#define COM_SIN_CLOSED 1 << 1
+#define COM_SOUT_OPEN 1 << 2
+#define COM_SOUT_CLOSED 1 << 3
+#define COM_G5_ON 1 << 4
+#define COM_G5_OFF 1 << 5
 
 //  The bluetooth controller that will wrap the general bluetooth communication objects.
 BluetoothController* bt;
-// The fluke gauge controller.
-Fluke700G* fluke;
-// The timer that will track time.
-Timer* timer;
-// The stepper that is controller the pressure flow. Closing this stepper build pressure throughout the rig. Opening
-// this stepper will release the pressure throughout the rig.
-VctControlStepper* stepper;
+// The stepper that is used to block off input pressure to the rig.
+VctControlStepper* inputStepper;
+// The stepper that will vent the pressure within the rig.
+VctControlStepper* outputStepper;
 
-
-// The current state of the rig.
-ERigState state;
-// The target pressure for the rig.
+// The target pressure that the rig wants to be at.
 f32 targetPressure;
 // The last known pressure that the was received from the fluke gauge.
-f32 lastKnownPressure;
-// The time since the last pressure update.
-u32 timeSinceLastUpdate;
+f32 flukePressure;
+// The milliseconds since the last time bluetooth write.
+u32 dtBtWrite;
+
+// The buffer that will hold the fluke communication.
+char flukeBuffer[FLUKE_BUFFER_LEN];
+// The current index with the fluke buffer.
+i32 fi;
+// The number of responses we have pending from fluke command writes.
+i32 pendingResponses;
 
 void Crash() {
   Shutdown();
@@ -86,52 +98,24 @@ void Crash() {
       digitalWrite(PIN_ERROR_LED, !digitalRead(PIN_ERROR_LED));
       lastTime = micros();
     }
+    Step();
   }
 }
 
-void CrashWithCode(EErrorCode errCode) {
-  u8 buffer[20];
-  memcpy(buffer, &errCode, sizeof(errCode));
-  bt->WriteTo(bt->localWriteCharacteristic, buffer, 20);
-
+void CrashWithWrite() {
+  WriteBluetooth();
   Crash();
-}
-
-void DoIdle() {
-  // Do nothing
-}
-
-void DoInitialize() {
-  // Do Nothing
-}
-
-// Pressures up the rig to the given pressure.
-void DoGotoPressureFast() {
-  if (lastKnownPressure > gotoPressure) {
-    state = RC_RELIEVE_PRESSURE;
-  }
-}
-
-void DoGotoPressureSlow()
-
-void DoRelievePressure() {
-
-
-}
-
-// Purges the system of its current pressure.
-void DoPurge() {
-  targetPressure = 0;
 }
 
 // Shuts the rig down.
 void Shutdown() {
   bt->Disconnect();
   PowerG5(false);
-  stepper->RotateToDegree(0);
-  while (stepper->IsSteppingComplete()) {
-    stepper->SafeStep();
-  }
+  inputStepper->SetRPS(0.05);
+  inputStepper->RotateToDegree(0);
+
+  outputStepper->SetRPS(0.05);
+  outputStepper->RotateToDegree(0);
 }
 
 void PowerG5(bool on) {
@@ -144,63 +128,153 @@ void PowerG5(bool on) {
   }
 }
 
+u8 BuildStateByte() {
+  u8 ret;
 
-// Updates the current measurement from the fluke gauge.
-void UpdateFlukeMeasurement() {
-  f32 meas = 0;
-  EFlukeError err = fluke->GetPressure(&meas);
-  if (err != Fl_Err_Ok) {
-    CrashWithCode(ERR_FLUKE_COMM_FAIL);
-  } else {
-    lastKnownPressure = meas;
+  if (inputStepper->IsVctAtEnd()) {
+    ret |= SIN_CLOSED;
   }
+
+  if (inputStepper->IsVctAtStart()) {
+    ret |= SIN_OPEN;
+  }
+
+  if (outputStepper->IsVctAtEnd()) {
+    ret |= SOUT_CLOSED;
+  }
+
+  if (outputStepper->IsVctAtStart()) {
+    ret |= SOUT_OPEN;
+  }
+
+  return ret;
+}
+
+
+// Parses a command from the given buffer. Note: the returned command is malloc'd onto the heap and thus needs to be
+// freed.
+// Parses the command that is written from the control tablet.
+/*
+Input protocol
+Bytes | Type  | Description
+------+-------+-----------------------------------------------------
+ 4    | f32   | The target pressure that the rig wants should be.
+*/
+void ResolveBluetoothInput() {
+  u8 buffer[20];
+  int cnt = bt->ReadFrom(bt->localReadCharacteristic, buffer, 20);
+  if (cnt == 0 || buffer[0] == 0) {
+    return;
+  }
+
+  memcpy(&targetPressure, buffer, sizeof(targetPressure));
+
+  bt->ClearCharacteristic(bt->localReadCharacteristic);
 }
 
 /*
-Command protocol
+Output protocol
 Bytes | Type  | Description
-------+-------------------------------------------------------------
- 1    | u8    | The command type as seen from ERigCommandType
- 4    | i32   | The conditional integer pressure argument
+------+-------+-----------------------------------------------------
+ 1    | u8    | The current state of the rig
+ 4    | f32   | The current fluke measurement
+ 4    | f32   | The current input stepper angle
+ 4    | f32   | The current output angle
 */
-// Parses a command from the given buffer. Note: the returned command is malloc'd onto the heap and thus needs to be
-// freed.
-void ResolveControllerCommand(u8* tx, int cnt) {
-  u8* p = tx;
-  ERigState newState = (ERigState)((int)(p++));
-  state = newState;
-
-  switch (state) {
-    case RC_IDLE:
-      DoIdle();
-      break;
-    case RC_INITIALIZE:
-      DoInitialize();
-      break;
-    case RC_PURGE:
-      DoPurge();
-      break;
-    case RC_GOTO_PRESSURE: // Fallthrough
-      f32 f;
-      memcpymov(&f, p, 4);
-      DoGotoPressure(f);
-      break;
-  }
-
-  bt->ClearCharacteristic(bt->localWriteCharacteristic);
-}
-
 // Write the current rig state to bluetooth.
 void WriteBluetooth() {
   u8 buffer[20];
   u8* p = buffer;
 
-  u8 bState = (u8)state;
-  f32 stepperTheta = stepper->GetCurrentPositionAsDegrees();
+  u8 state = BuildStateByte();
+  f32 inputTheta = inputStepper->GetCurrentPositionAsDegrees();
+  f32 outputTheta = outputStepper->GetCurrentPositionAsDegrees();
 
-  memcpymov(p, &bState, 1);
-  memcpymov(p, &lastKnownPressure, sizeof(f32));
-  memcpymov(p, &stepperTheta, sizeof(f32));
+  // should be 13 bytes total
+  memcpymov(p, &state, sizeof(state));
+  memcpymov(p, &flukePressure, sizeof(flukePressure));
+  memcpymov(p, &inputTheta, sizeof(inputTheta));
+  memcpymov(p, &outputTheta, sizeof(outputTheta));
+
+  bt->WriteTo(bt->localWriteCharacteristic, buffer, 20);
+  dtBtWrite = millis() - dtBtWrite;
+}
+
+// Updates the fluke state.
+void UpdateFlukeMeasurement() {
+  if (unit != Fl_Psi) {
+    Serial3.println("PRES_UNIT Psi");
+  }
+  int avail;
+
+  if (pendingResponses == 0) {
+    if (avail = Serial3.available()) {
+      // Sink left over bytes.
+      char buffer[MAX(64, avail)];
+      Serial3.readBytes(buffer, avail);
+    }
+  }
+
+  if (avail = Serial3.available()) {
+    char buffer[MAX(64, avail)];
+    int cnt = Serial3.readBytes(buffer, avail);
+    if (cnt > 0) {
+      memcpy(flukeBuffer + fi, buffer, cnt);
+      fi += cnt;
+
+      // Attempt to find the \r
+      for (int i = 0; i < fi; i++) {
+        if (flukeBuffer[i] == '\r') {
+          if (!ResolveFlukeMeasurementBuffer(flukeBuffer, i)) {
+            Serial.println("Failed to resolve measurement buffer");
+          }
+          memcpy(flukeBuffer, flukeBuffer + i + 1, fi - i - 1);
+          fi = fi - i - 1;
+          break;
+        }
+      }
+    }
+  }
+}
+
+// Resolves the current fluke buffer's contents.
+bool ResolveFlukeMeasurementBuffer(char* buffer, i32 len) {
+  Serial.print("Resolving: ");
+  Serial.write(buffer, len);
+  Serial.println();
+  pendingResponses--;
+  char b[len];
+  int index = SplitByChar(buffer, len, b, ',');
+  if (index == -1) {
+    // The buffer is shot
+    Serial.println("Failed to resolve measurement buffer: failed to split");
+    return false;
+  } else {
+    f32 meas;
+
+    if (!AssertF32(b, index, &meas)) {
+      Serial.println("Failed to parse float");
+      return false;
+    } else if (!FlukeUnitFromString(buffer + index + 1, len - index - 1, &unit)) {
+      Serial.println("Failed to parse unit");
+      return false;
+    } else if (unit != Fl_Psi) {
+      Serial.println("Failed to resolve measurement: unit not psi");
+    } else {
+      flukePressure = meas;
+      Serial.print("Resolve measurement: ");
+      Serial.print(meas);
+      Serial.print(" [");
+      Serial.print(unit);
+      Serial.println("]");
+      return true;
+    }
+  }
+}
+
+void Step() {
+  inputStepper->SafeStep();
+  outputStepper->SafeStep();
 }
 
 /**********************************************************************************************************************
@@ -211,48 +285,38 @@ void setup() {
   pinMode(PIN_ERROR_LED, OUTPUT);
   pinMode(PIN_G5_START_RELAY, OUTPUT);
 
-  bt = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "PR00Z001");
-  stepper = new VctControlStepper(PIN_STEPPER_1_DIR, IS_HIGH_CCW, PIN_STEPPER_1_STEP, 5000, 10, PIN_STEPPER_1_START_SWITCH, PIN_STEPPER_1_END_SWITCH);
-  fluke = new Fluke700G(FLUKE_TX, FLUKE_RX);
-  timer = new Timer();
+  Serial.begin(9600);
+  Serial3.begin(9600);
 
-  timer->Reset();
+  bt = new BluetoothController(BLUEFRUIT_SPI_CS, BLUEFRUIT_SPI_IRQ, BLUEFRUIT_SPI_RST, "PB00Z0001");
+  inputStepper = new VctControlStepper(PIN_SIN_DIR, IS_HIGH_CCW, PIN_SIN_STEP, 5000, 10, PIN_SIN_START_SWITCH, PIN_SIN_END_SWITCH);
+  outputStepper = new VctControlStepper(PIN_SOUT_DIR, IS_HIGH_CCW, PIN_SOUT_STEP, 5000, 10, PIN_SOUT_START_SWITCH, PIN_SOUT_END_SWITCH);
 }
 
 void loop() {
-  u32 dt = timer->GetDeltaTime();
+  i32 start = millis();
+  // Save our souls from an overpressure event
+/*
+  if (flukePressure > 950) {
+    Shutdown();
+    CrashWithWrite();
+  }
+*/
 
   UpdateFlukeMeasurement();
+//  ResolveBluetoothInput();
+  Step();
 
-  int blen = 64;
-  u8 buffer[blen];
-
-  u32 cnt = bt->ReadFrom(bt->localReadCharacteristic, buffer, blen);
-  if (cnt > 0) {
-    ResolveControllerCommand(buffer, cnt);
-    targetPressure = gotoPressure;
+  if (millis() - dtBtWrite > BLUETOOTH_WRITE_INTERVAL) {
+    if (pendingResponses == 0) {
+      Serial3.println("VAL?");
+      pendingResponses++;
+    }
+    dtBtWrite = millis();
+//    WriteBluetooth();
   }
-
-  switch (state) {
-    case RC_IDLE:
-      DoIdle();
-      break;
-    case RC_INITIALIZE:
-      DoInitialize();
-      break;
-    case RC_GOTO_PRESSURE:
-      DoGotoPressure();
-      break;
-    case RC_RELIEVE_PRESSURE:
-      DoRelievePressure();
-      break;
-    case RC_HOLD_PRESSURE:
-      DoHoldPressure();
-    case RC_OFF:
-      Shutdown();
-    default:
-      // Nope
-  }
-
-  WriteBluetooth();
+  i32 end = millis() - start;
+  Serial.print("Loop iteration took: ");
+  Serial.print(end);
+  Serial.println("ms");
 }

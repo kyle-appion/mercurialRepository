@@ -1,9 +1,9 @@
-﻿using System.Text;
-namespace TestBench.Droid {
+﻿namespace TestBench.Droid {
 
 	using System;
 	using System.Collections.Generic;
 	using System.IO;
+	using System.Text;
 	using System.Threading.Tasks;
 
 	using Appion.Commons.Measure;
@@ -46,6 +46,8 @@ namespace TestBench.Droid {
 		public bool isDone { get; private set; }
 		public DateTime startTime { get; private set; }
 
+		private TestEvent lastEvent;
+
 		public AV760Test(TestParameters parameters, VacuumRig rig, List<IConnection> connections) {
 			this.parameters = parameters;
 			__rig = rig;
@@ -73,19 +75,18 @@ namespace TestBench.Droid {
 
 		// Implemented from ITest
 		public void StartTest() {
-			__rig.onNewVrcReading += HandleNewVrcReading;
-			foreach (var c in connections.Values) {
-				c.onNewPacket += HandleNewGaugePacket;
-			}
-
 			isTesting = true;
 			isDone = false;
 			startTime = DateTime.Now;
 			currentTargetPointIndex = 0;
+
+			__rig.onNewVrcReading += HandleNewVrcReading;
 			rig.onConnectionStateChanged += OnRigConnectionStateChanged;
-			foreach (var connection in connections.Values) {
-				connection.onConnectionStateChanged += OnConnectionStateChanged;
+			foreach (var c in connections.Values) {
+				c.onNewPacket += HandleNewGaugePacket;
+				c.onConnectionStateChanged += OnConnectionStateChanged;
 			}
+
 			__rig.WriteCommand(VacuumRig.EVrcRigCommand.Test);
 			NotifyTestEvent(TestEvent.EType.TestStarted);
 			InvalidateTestResults();
@@ -107,6 +108,10 @@ namespace TestBench.Droid {
 			  .Append(__rig.rigAngle)
 			  .Append("<br><b>CPI: </b>")
 			  .Append(currentTargetPointIndex + 1)
+			  .Append(" / ")
+			  .Append(parameters.targetPoints.Count)
+			  .Append("<br><b>Last Event: </b>")
+			  .Append(lastEvent?.type)
 			  .Append("<br><b>Test Complete: </b>")
 			  .Append(isDone)
 			  .Append("<br><b>Ellapsed Time: </b>")
@@ -136,12 +141,9 @@ namespace TestBench.Droid {
 
 		private void DoFinishTest() {
 			rig.onConnectionStateChanged -= OnRigConnectionStateChanged;
-			foreach (var connection in connections.Values) {
-				connection.onConnectionStateChanged -= OnConnectionStateChanged;
-			}
-
 			__rig.onNewVrcReading -= HandleNewVrcReading;
 			foreach (var c in connections.Values) {
+				c.onConnectionStateChanged -= OnConnectionStateChanged;
 				c.onNewPacket -= HandleNewGaugePacket;
 			}
 

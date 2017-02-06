@@ -70,6 +70,10 @@ public:
     return true;
   }
 
+  void Disconnect() {
+    ada->disconnect();
+  }
+
   // Reads from the given characteristic.
   // Returns the number of characters read.
   u32 ReadFrom(u32 characteristic, u8* outBuffer, u32 length) {

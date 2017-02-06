@@ -1,6 +1,6 @@
 ﻿using System;
 
-using ION.Core.Util;
+using Appion.Commons.Util;
 
 namespace ION.Droid {
   public class LogPrinter : IPrinter {

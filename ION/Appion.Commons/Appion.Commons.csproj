@@ -48,6 +48,8 @@
     <Compile Include="src\Util\IReleasable.cs" />
     <Compile Include="src\Util\Log.cs" />
     <Compile Include="src\Util\Timer.cs" />
+    <Compile Include="src\Math\Regression.cs" />
+    <Compile Include="src\Math\Matrix.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
@@ -58,6 +60,7 @@
     <Folder Include="src\Measure\" />
     <Folder Include="src\Security\" />
     <Folder Include="src\Util\" />
+    <Folder Include="src\Math\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Runtime.InteropServices.RuntimeInformation">

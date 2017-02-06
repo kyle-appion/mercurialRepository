@@ -10,13 +10,13 @@
 
   using Newtonsoft.Json;
 
-  using ION.Core.App;
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
-  using ION.Droid.App;
+  using ION.Core.App;
+
+	using ION.Droid.Activity.Tutorial;
   using ION.Droid.Dialog;
 	using ION.Droid.Preferences;
-  using ION.Droid.Views;
 
   [Activity(Label="@string/help")]      
   public class HelpPreferenceActivity : IONPreferenceActivity, Preference.IOnPreferenceClickListener {
@@ -29,6 +29,7 @@
       AddPreferencesFromResource(Resource.Xml.preferences_help);
 
       FindPreference(GetString(Resource.String.pkey_send_feedback)).OnPreferenceClickListener = this;
+			FindPreference(GetString(Resource.String.pkey_help_walkthrough)).OnPreferenceClickListener = this;
 
       var preference = FindPreference(GetString(Resource.String.pkey_app_version));
       preference.Summary = ion.preferences.appVersion;
@@ -36,13 +37,16 @@
 
     public bool OnPreferenceClick(Preference preference) {
       if (GetString(Resource.String.pkey_send_feedback).Equals(preference.Key)) {
-        SendAppSupportEmail();
+        ion.SendAppSupportEmail(this);
         return true;
+			} else if (GetString(Resource.String.pkey_help_walkthrough).Equals(preference.Key)) {
+				LaunchWalkthrough();
+				return true;
       } else {
         return false;
       }
     }
-
+		/*
     /// <summary>
     /// Sends a support email to appion.
     /// </summary>
@@ -66,7 +70,7 @@
       }
 
       i.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
-      i.PutExtra(Intent.ExtraEmail, new string[] { Appion.EMAIL_SUPPORT });
+      i.PutExtra(Intent.ExtraEmail, new string[] { AppionConstants.EMAIL_SUPPORT });
       i.SetType(Constants.MIME_RFC822);
 
       try {
@@ -95,7 +99,16 @@
 
         adb.Show();
       }
-    }
+		}
+		*/
+
+		/// <summary>
+		/// Launches the app walkthrough activity.
+		/// </summary>
+		private void LaunchWalkthrough() {
+			var i = new Intent(this, typeof(TutorialActivity));
+			StartActivity(i);
+		}
   }
 }
 

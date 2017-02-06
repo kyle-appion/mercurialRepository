@@ -2,6 +2,7 @@
 
   using System.Threading.Tasks;
 
+	using Android.Locations;
   using Android.OS;
   using Android.Support.Design.Widget;
   using Android.Views;
@@ -15,32 +16,28 @@
 
   public class EditJobFragment : IONFragment, IJobPresenter {
 
-    private TextInputLayout nameLayout;
-    private TextInputLayout customerLayout;
-    private TextInputLayout dispatchLayout;
-    private TextInputLayout purchaseNoLayout;
-    private TextInputLayout notesLayout;
+    private TextInputEditText name;
+		private TextInputEditText customer;
+		private TextInputEditText dispatch;
+		private TextInputEditText purchaseNo;
+		private TextInputEditText notes;
 
-    private TextView name;
-    private TextView customer;
-    private TextView dispatch;
-    private TextView purchaseNo;
-    private TextView notes;
+		private TextInputEditText technician;
+		private TextInputEditText system;
+		private TextInputEditText address;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
       var ret = inflater.Inflate(Resource.Layout.fragment_edit_job, container, false);
 
-      nameLayout = ret.FindViewById<TextInputLayout>(Resource.Id.name);
-      customerLayout = ret.FindViewById<TextInputLayout>(Resource.Id.customer_no);
-      dispatchLayout = ret.FindViewById<TextInputLayout>(Resource.Id.dispatch_no);
-      purchaseNoLayout = ret.FindViewById<TextInputLayout>(Resource.Id.purchase_no);
-      notesLayout = ret.FindViewById<TextInputLayout>(Resource.Id.notes);
+			name = ret.FindViewById<TextInputEditText>(Resource.Id.name);
+			customer = ret.FindViewById<TextInputEditText>(Resource.Id.customer_no);
+			dispatch = ret.FindViewById<TextInputEditText>(Resource.Id.dispatch_no);
+			purchaseNo = ret.FindViewById<TextInputEditText>(Resource.Id.purchase_no);
+			notes = ret.FindViewById<TextInputEditText>(Resource.Id.notes);
 
-      name = nameLayout.FindViewById<TextInputEditText>(Resource.Id.text);
-      customer = customerLayout.FindViewById<TextInputEditText>(Resource.Id.text);
-      dispatch = dispatchLayout.FindViewById<TextInputEditText>(Resource.Id.text);
-      purchaseNo = purchaseNoLayout.FindViewById<TextInputEditText>(Resource.Id.text);
-      notes = notesLayout.FindViewById<TextInputEditText>(Resource.Id.text);
+			technician = ret.FindViewById<TextInputEditText>(Resource.Id.job_technician_name);
+			system = ret.FindViewById<TextInputEditText>(Resource.Id.job_system);
+			address = ret.FindViewById<TextInputEditText>(Resource.Id.address);
 
       return ret;
     }
@@ -69,8 +66,23 @@
       job.poNumber = purchaseNo.Text;
       job.notes = notes.Text;
 
+			job.techName = technician.Text;
+			job.systemType = system.Text;
+			job.jobAddress = address.Text;
+
       return await ion.database.SaveAsync<JobRow>(job);
     }
+
+		private async Task<Address> PollGecode(string address) {
+			var geo = new Geocoder(Activity);
+
+			var addresses = await geo.GetFromLocationNameAsync(address, 1);
+			if (addresses.Count > 0) {
+				return addresses[0];
+			} else {
+				return null;
+			}
+		}
   }
 }
 

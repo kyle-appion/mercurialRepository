@@ -11,13 +11,14 @@
 	using FlexCel.Render;
 	using FlexCel.XlsAdapter;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Database;
 	using ION.Core.Devices;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	using ION.Droid.App;
 	using ION.Droid.Util;

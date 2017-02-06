@@ -136,6 +136,16 @@ This directory is used to contain phone sized dimensions. So far this file affec
   <!-- The size of an icon in the fluid dialog manager. -->
   <dimen name="fluid_icon_size">64dp</dimen>
 
+	<!--
+	Portal
+	-->
+	<!-- The height of the banner in the Portal login page. -->
+	<dimen name="portal_landing_button_width">150dp</dimen>
+	<dimen name="portal_landing_button_height">60dp</dimen>
+	<dimen name="portal_landing_text_size">20sp</dimen>
+	<dimen name="portal_title_text">30sp</dimen>
+	<dimen name="portal_icon_size">48dp</dimen>
+
   <!--
   PTChart dimensions
   -->
@@ -158,24 +168,24 @@ This directory is used to contain phone sized dimensions. So far this file affec
   <!-- The width of the gold association line. -->
   <dimen name="viewer_association_width">12dp</dimen>
   <!-- The height of the battery icon. -->
-  <dimen name="viewer_battery_icon_height">24dp</dimen>
+  <dimen name="viewer_battery_icon_height">16dp</dimen>
   <!-- The width of the battery icon. -->
-  <dimen name="viewer_battery_icon_width">48dp</dimen>
+  <dimen name="viewer_battery_icon_width">32dp</dimen>
   <!-- The width and hieght of the connection icon in the viewer's header. -->
-  <dimen name="viewer_connection_icon_size">32dp</dimen>
+  <dimen name="viewer_connection_icon_size">24dp</dimen>
   <!-- The width and height of the device icon in the viewer's content. -->
-  <dimen name="viewer_device_icon_size">64dp</dimen>
+  <dimen name="viewer_device_icon_size">48dp</dimen>
   <!-- The width and height of the alarm icon in the viewer's footer. -->
-  <dimen name="viewer_alarm_icon_size">32dp</dimen>
+  <dimen name="viewer_alarm_icon_size">24dp</dimen>
   <!-- The text size for the name view in the viewer' content. -->
-  <dimen name="viewer_name_text_size">30dp</dimen>
+  <dimen name="viewer_name_text_size">24dp</dimen>
   <!-- The text size for the measurement view in the viewer's content. -->
-  <dimen name="viewer_measurement_text_size">64sp</dimen>
+  <dimen name="viewer_measurement_text_size">48sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_large">36dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large_icon_size">32dp</dimen>
+  <dimen name="viewer_subview_large_icon_size">24dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->
-  <dimen name="viewer_text_size">24sp</dimen>
+  <dimen name="viewer_text_size">20sp</dimen>
 
 </resources>

@@ -12,9 +12,9 @@ namespace ION.Droid.Activity.Report {
 	using Android.Views;
 	using Android.Widget;
 
-	using ION.Core.App;
+	using Appion.Commons.Util;
+
 	using ION.Core.Database;
-	using ION.Core.Util;
 
 	// Using ION.Droid
 	using Dialog;

@@ -63,7 +63,7 @@
         }
       } else {
         if (item.manifold.secondarySensor != null) {
-          if (item.modifiedMeasurement <= 0) {
+          if (item.modifiedMeasurement >= 0) {
             title.Text = GetString(Resource.String.fluid_sh_abrv);
           } else {
             title.Text = GetString(Resource.String.fluid_sc_abrv);

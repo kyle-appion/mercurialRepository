@@ -3,7 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	using ION.Droid.Util;
 

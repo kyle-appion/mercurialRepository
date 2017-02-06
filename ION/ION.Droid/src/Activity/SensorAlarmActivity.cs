@@ -179,6 +179,7 @@
           }).Show();
         }));
 
+				toggle.Checked = alarm.enabled;
         measurement.Text = alarm.bounds.amount + "";
         unit.Text = alarm.bounds.unit.ToString();
         unitCode = UnitLookup.GetCode(alarm.bounds.unit);

@@ -9,6 +9,8 @@
 	using Android.Support.V7.Widget;
   using Android.Views;
 
+	using Appion.Commons.Util;
+
   // Using ION
   using Core.Database;
 
@@ -197,7 +199,7 @@
 				});
 				return true;
 			} catch (Exception e) {
-				ION.Core.Util.Log.E(this, "Failed to remove selected sessions from job", e);
+				Log.E(this, "Failed to remove selected sessions from job", e);
 				return false;
 			}
 		}
@@ -219,7 +221,7 @@
 				});
 				return true;
 			} catch (Exception e) {
-				ION.Core.Util.Log.E(this, "Failed to add selected sessions to job", e);
+				Log.E(this, "Failed to add selected sessions to job", e);
 				return false;
 			}
 		}

@@ -8,7 +8,7 @@
   using Android.Locations;
   using Android.OS;
 
-  using ION.Core.Util;
+	using Appion.Commons.Util;
 
   /// <summary>
   /// An object that describes an event within the altitude manager.

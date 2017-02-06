@@ -22,6 +22,10 @@
 			this.message = message;
 		}
 
+		public override string ToString() {
+			return string.Format("[TestEvent{Type:" + type + " Message: " + message + "}]");
+		}
+
     public enum EType {
 			/// <summary>
 			/// The test was started.

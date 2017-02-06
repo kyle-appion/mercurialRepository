@@ -27,7 +27,7 @@
 			var rawId = source.Subset(2, 4);
 			var manfacId = rawId[0] | rawId[1] << 8;
 
-			if (manfacId == Appion.MANFAC_ID) {
+			if (manfacId == AppionConstants.MANFAC_ID) {
 				var rawSerialNumber = source.Subset(4, 12);
 				var sn = System.Text.Encoding.UTF8.GetString(rawSerialNumber, 0, rawSerialNumber.Length);
 				if (sn.IsValidSerialNumber()) {

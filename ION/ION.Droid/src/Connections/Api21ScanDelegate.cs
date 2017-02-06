@@ -1,9 +1,12 @@
 ﻿namespace ION.Droid.Connections {
 
+	using System;
 	using System.Collections.Generic;
 
 	using Android.Bluetooth;
 	using Android.Bluetooth.LE;
+
+	using Appion.Commons.Util;
 
 	internal class Api21ScanDelegate : ScanCallback, IScanDelegate {
 		// Implemented from IScanDelegate
@@ -22,16 +25,25 @@
 			if (isScanning) {
 				return false;
 			}
-			adapter.BluetoothLeScanner.StartScan(this);
-			isScanning = true;
-			return true;
+			try {
+				adapter.BluetoothLeScanner.StartScan(this);
+				isScanning = true;
+				return true;
+			} catch (Exception e) {
+				Log.E(this, "Failed to start scan. This is likely due to the bluetooth mosule having been turned off before the scan.", e);
+				return false;
+			}
 		}
 
 		public void StopScan() {
 			if (isScanning) {
-				adapter.BluetoothLeScanner.StopScan(this);
+				try {
+					adapter.BluetoothLeScanner.StopScan(this);
+					isScanning = false;
+				} catch (Exception e) {
+					Log.E(this, "Failed to stop scan. This is likely due to the bluetooth module having been turned off mid scan", e);
+				}
 			}
-			isScanning = false;
 		}
 
 		public override void OnBatchScanResults(System.Collections.Generic.IList<ScanResult> results) {

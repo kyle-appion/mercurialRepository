@@ -1,30 +1,21 @@
-﻿namespace TestBench.Droid {
+﻿namespace TestBench.Droid.Activity {
 
 	using System;
 	using System.IO;
 
 	using Android.App;
 	using Android.Content;
-	using Android.Graphics;
 	using Android.OS;
 	using Android.Support.Design.Widget;
-	using Android.Support.V4.Widget;
-	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
+
+	using Appion.Commons.Util;
 
 	[Activity(Label="Export Test")]
 	public class ExportTestActivity : BaseActivity {
 
-		private const string SETTINGS = "settings";
 		private const string SAVE_PATH = "AppionTestRig";
-
-		private const string INSTRUMENT_MODEL = "instrumentModel";
-		private const string INSTRUMENT_SERIAL_NUMBER = "instrumentSerialNumber";
-		private const string INSTRUMENT_ACCURACY = "instrumentAccuracy";
-		private const string CERTIFIED_BY = "certifiedBy";
-		private const string SEND_TO = "sendTo";
-		private const string DATE_PICKER = "datePicker";
 
 		private TextInputEditText instrumentModel;
 		private TextInputEditText instrumentSerialNumber;
@@ -33,15 +24,6 @@
 		private TextInputEditText sendTo;
 
 		private DatePicker datePicker;
-
-		private ISharedPreferences prefs {
-			get {
-				if (__prefs == null) {
-					__prefs = GetSharedPreferences(SETTINGS, FileCreationMode.Private);
-				}
-				return __prefs;
-			}
-		} ISharedPreferences __prefs;
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
@@ -96,27 +78,22 @@
 		}
 
 		private void LoadSettings() {
-			instrumentModel.Text = prefs.GetString(INSTRUMENT_MODEL, "Not Set");
-			instrumentSerialNumber.Text = prefs.GetString(INSTRUMENT_SERIAL_NUMBER, "Not Set");
-			instrumentAccuracy.Text = prefs.GetString(INSTRUMENT_ACCURACY, "Not Set");
-			certifiedBy.Text = prefs.GetString(CERTIFIED_BY, "Not Set");
-			sendTo.Text = prefs.GetString(SEND_TO, "Not Set");
+			instrumentModel.Text = prefs.intrumentModel;
+			instrumentSerialNumber.Text = prefs.intrumentSerialNumber;
+			instrumentAccuracy.Text = prefs.intrumentAccuracy.ToString();
+			certifiedBy.Text = prefs.certifiedBy;
+			sendTo.Text = prefs.sendTo;
 
-			datePicker.DateTime = DateTime.Parse(prefs.GetString(DATE_PICKER, "01/01/2014"));
+			datePicker.DateTime = prefs.instrumentCalibrationDate;
 		}
 
 		private void SaveSettings() {
-			var e = prefs.Edit();
-
-			e.PutString(INSTRUMENT_MODEL, instrumentModel.Text);
-			e.PutString(INSTRUMENT_SERIAL_NUMBER, instrumentSerialNumber.Text);
-			e.PutString(INSTRUMENT_ACCURACY, instrumentAccuracy.Text);
-			e.PutString(CERTIFIED_BY, certifiedBy.Text);
-			e.PutString(SEND_TO, sendTo.Text);
-
-			e.PutString(DATE_PICKER, datePicker.DateTime.ToShortDateString());
-
-			e.Commit();
+			prefs.intrumentModel = instrumentModel.Text;
+			prefs.intrumentSerialNumber = instrumentSerialNumber.Text;
+			prefs.intrumentAccuracy = instrumentAccuracy.Text;
+			prefs.certifiedBy = certifiedBy.Text;
+			prefs.sendTo = sendTo.Text;
+			prefs.instrumentCalibrationDate = datePicker.DateTime;
 		}
 
 		/// <summary>
@@ -194,7 +171,7 @@
 				i.PutExtra(Intent.ExtraStream, Android.Net.Uri.FromFile(new Java.IO.File(file.FullName)));
 				i.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
 				i.PutExtra(Intent.ExtraEmail, new string[] { sendTo.Text });
-				i.PutExtra(Intent.ExtraSubject, "Appion Test Rig Results");
+				i.PutExtra(Intent.ExtraSubject, "Appion Test Rig Results" + DateTime.Now.ToUTCMilliseconds());
 				i.PutExtra(Intent.ExtraText, "The attached CSV is a new ION intial/recalibration test. Please document the attached devices.\n\nRegards,\n" + certifiedBy.Text);
 				i.SetType("message/rfc822");
 
