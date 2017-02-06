@@ -139,7 +139,6 @@
 
       if (pendingActions.ContainsKey(record)) {
         vh.ItemView.SetBackgroundColor(backgroundColor);
-        vh.RevealButton();
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
           Action action = GetViewHolderSwipeAction(position);
           if (action != null) {
@@ -155,8 +154,6 @@
       } else {
         vh.ItemView.SetBackgroundColor(Color.Transparent);
         vh.ItemView.Visibility = ViewStates.Visible;
-        vh.HideButton();
-
       }
     }
 
@@ -352,19 +349,6 @@
     public virtual void Unbind() {
     }
 
-    public void RevealButton() {
-      if (useSwipeLayout) {
-        content.Visibility = ViewStates.Invisible;
-        button.Visibility = ViewStates.Visible;
-      }
-    }
-
-    public void HideButton() {
-      if (useSwipeLayout) {
-        content.Visibility = ViewStates.Visible;
-        button.Visibility = ViewStates.Invisible;
-      }
-    }
 
     private static View BuildContentView(ViewGroup parent, int viewResource, bool useSwipeParent) {
       if (useSwipeParent) {
