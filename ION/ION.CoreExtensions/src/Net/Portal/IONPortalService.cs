@@ -43,7 +43,7 @@
 		private const string URL_RETRIEVE_ACCESS = "http://portal.appioninc.com/App/retrieveAccess.php";
 		private const string URL_REGISTER_USER = "http://portal.appioninc.com/App/registerUser.php";
 		private const string URL_UPLOAD_SESSION = "http://portal.appioninc.com/App/uploadSession.php";
-
+		private const string URL_LOGIN_USER_2_ARG = "http://portal.appioninc.com/joomla/modules/mod_processing/appWebLogin.php?usrEmail={0}&usrPass={1}";
 
 		private const string JSON_SESSION = "session";
 		private const string JSON_UPLOAD_SESSION = "uploadSession";
@@ -111,12 +111,24 @@
 		/// <value>The logged in time.</value>
 		public DateTime loggedInTime { get; private set; }
 
+		public string loginPortalUrl {
+			get {
+				if (isLoggedIn) {
+					return string.Format(URL_LOGIN_USER_2_ARG, userEmail, userPassword);
+				} else {
+					return "";
+				}
+			}
+		}
+
 		private WebClient web;
 		private HttpClient client;
 
 		public string loginId { get; private set; }
 		public string displayName { get; private set; }
 		public string userEmail { get; private set; }
+
+		private string userPassword { get; set; }
 
 		public IONPortalService() {
 			web = new WebClient();
@@ -222,6 +234,7 @@
 					loginId  = json[JSON_MESSAGE].ToString();
 					displayName = json[JSON_DISPLAY].ToString();
 					userEmail = json[JSON_EMAIL].ToString();
+					userPassword = password;
 
 					isLoggedIn = true;
 					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());

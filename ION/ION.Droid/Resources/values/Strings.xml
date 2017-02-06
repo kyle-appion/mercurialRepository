@@ -481,6 +481,7 @@
 	<string name="portal_uploading_sessions">Uploading Sessions</string>
 	<string name="portal_view_connections">Manage Access</string>
 	<string name="portal_warning_stars_required">* Items are required</string>
+	<string name="portal_web">Web Portal</string>
 	<string name="portal_welcome_name">Welcome back, {0}!</string>
 
 	<!--
