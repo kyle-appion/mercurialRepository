@@ -11,7 +11,7 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 		public UIButton disconnectButton;
 		
 		public RemoteControls(nfloat offset, UIView parentView) {
-			controlView = new UIView(new CGRect(.7 * parentView.Bounds.Width, offset, .3 * parentView.Bounds.Width, .2 * parentView.Bounds.Height));
+			controlView = new UIView(new CGRect(.7 * parentView.Bounds.Width, offset, .3 * parentView.Bounds.Width, .08 * parentView.Bounds.Height));
 			controlView.BackgroundColor = UIColor.White;
 			controlView.Layer.CornerRadius = 5f;
 			controlView.Layer.BorderWidth = 1f;
@@ -41,13 +41,14 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 			};
 			remoteButton.Layer.BorderWidth = 1f;
 			
-			disconnectButton = new UIButton(new CGRect(0, .5 * controlView.Bounds.Height,controlView.Bounds.Width, .5 * controlView.Bounds.Height));
+			//disconnectButton = new UIButton(new CGRect(0, .5 * controlView.Bounds.Height,controlView.Bounds.Width, .5 * controlView.Bounds.Height));
+			disconnectButton = new UIButton(new CGRect(0, 0,controlView.Bounds.Width, controlView.Bounds.Height));
 			disconnectButton.SetTitle("Disconnect",UIControlState.Normal);
 			disconnectButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 			disconnectButton.ClipsToBounds = true;
 
-			controlView.AddSubview(editButton);
-			controlView.AddSubview(remoteButton);
+			//controlView.AddSubview(editButton);
+			//controlView.AddSubview(remoteButton);
 			controlView.AddSubview(disconnectButton);
 		}		
 	}

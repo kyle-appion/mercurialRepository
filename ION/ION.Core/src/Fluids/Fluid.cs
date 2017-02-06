@@ -118,7 +118,9 @@
         case EState.Dew:
           return PRESSURE.OfScalar(pressureValues[rows]);
         default:
-          throw new ArgumentException("Cannot get minimum pressure for state: " + state);
+          	/////should not throw exeptions
+          //throw new ArgumentException("Cannot get minimum pressure for state: " + state);
+          return PRESSURE.OfScalar(0);
       }
     }
 
@@ -138,7 +140,9 @@
         case EState.Dew:         
           return PRESSURE.OfScalar(pressureValues[2 * rows - 1]);
         default:
-          throw new ArgumentException("Cannot get minimum pressure for state: " + state);
+          	/////should not throw exeptions
+          	return PRESSURE.OfScalar(0);
+          //throw new ArgumentException("Cannot get minimum pressure for state: " + state);
       }
     }
 

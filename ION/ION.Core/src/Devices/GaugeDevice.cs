@@ -145,12 +145,14 @@
         var changed = oldBattery != battery;
 
         for (int i = 0; i < sensorCount; i++) {
-          var reading = gp.gaugeReadings[i];
+          var reading = gp.gaugeReadings[i];    
           var sensor = this[i];
 
           if (reading.sensorType != sensor.type) {
-            throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
-              this[i].type + " is not valid with received type " + reading.sensorType);
+          	/////DO NOT throw exeptions
+            //throw new ArgumentException("Cannot set device sensor measurement: Sensor at " + i + " of type " + 
+            //  this[i].type + " is not valid with received type " + reading.sensorType);
+            return;
           }
 
           if (sensor.measurement != gp.gaugeReadings[i].reading) {
@@ -173,7 +175,7 @@
 					lastNotify = DateTime.Now;
         }
       } catch (Exception e) {
-        Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
+        //Log.D(this, "Cannot resolve packet " + serialNumber + ": unresolved exception {packet=> " + packet?.ToByteString() + "}", e);
 				NotifyOfDeviceEvent(DeviceEvent.EType.NewData);
       }
     }

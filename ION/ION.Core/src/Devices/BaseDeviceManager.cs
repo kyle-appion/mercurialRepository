@@ -93,7 +93,8 @@
           __connectionHelper.onDeviceFound += OnDeviceFound;
           __connectionHelper.onScanStateChanged += OnScanStateChanged;
         } else {
-          throw new ArgumentException(this + " cannot accept a null IScanMode");
+          	/////should not throw exeptions
+          //throw new ArgumentException(this + " cannot accept a null IScanMode");
         }
       }
     } IConnectionHelper __connectionHelper;

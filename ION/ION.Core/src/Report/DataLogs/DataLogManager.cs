@@ -97,7 +97,7 @@
 
         currentSession = new LoggingSession(ion, session, interval);
 
-        return true;
+        return true;      
       });
     }
 
@@ -117,21 +117,23 @@
 
         currentSession.session.sessionEnd = DateTime.Now;
 
-        if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
-          Log.E(this, "Failed to update session end time.");
-        }
-
-        currentSession.Cancel();
-
+        //if (!ion.database.SaveAsync<SessionRow>(currentSession.session).Result) {
+        //  Log.E(this, "Failed to update session end time.");
+        //}
+        
         Log.D(this, "Saving session: " + currentSession.session);
 
-        var ret = ion.database.SaveAsync(currentSession.session).Result;
+      	var ret = ion.database.SaveAsync(currentSession.session).Result;
 
+				Log.D(this, "about to cancel timer");
+        currentSession.Cancel();
+			
 //        ion.database.Update(ret);
-        currentSession.Dispose();
-        currentSession = null;
-
-        return ret;
+				Log.D(this, "Disposing current session");
+      	currentSession.Dispose();
+      	currentSession = null;
+				
+      	return ret;
       });
     }
 

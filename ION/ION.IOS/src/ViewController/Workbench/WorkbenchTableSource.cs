@@ -272,7 +272,7 @@
             onAddClicked();
           }
         });
-        cell.Layer.CornerRadius = 5;
+
         var webIon = ion as IosION;
 
         if(webIon.webServices.downloading){
@@ -319,35 +319,35 @@
         cell.UpdateTo(meas, GetLocalizedTitleString(meas.sensorProperty), "ic_refresh", (obj, sp) => {
           sp.Reset();
         });
-        cell.Layer.CornerRadius = 5;
+   
         return cell;
       } else if (record is TimerRecord) {
         var timer = record as TimerRecord;
         var cell = tableView.DequeueReusableCell(CELL_TIMER_SUBVIEW) as TimerSensorPropertyCell;
 
         cell.UpdateTo(timer);
-        cell.Layer.CornerRadius = 5;
+
         return cell;
       } else if (record is RateOfChangeRecord) {
         var rr = record as RateOfChangeRecord;
         var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
 
         cell.UpdateTo(rr);
-        cell.Layer.CornerRadius = 5;
+
         return cell;
       } else if (record is FluidRecord) {
         var fr = record as FluidRecord;
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
 
         cell.UpdateTo(fr);
-        cell.Layer.CornerRadius = 5;
+
         return cell;
       } else if (record is SpaceRecord) {
         var cell = tableView.DequeueReusableCell(CELL_SPACE);
 
         cell.BackgroundColor = UIColor.Clear;
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-        cell.Layer.CornerRadius = 5;
+
         return cell;
       } else if (record is SecondarySensorRecord) {
         var sr = record as SecondarySensorRecord;
@@ -355,7 +355,7 @@
 
         cell.UpdateTo(sr,tableView.Bounds.Width);
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
-        //cell.Layer.CornerRadius = 5;
+
         return cell;
       }else {
         Log.E(this,"Cannot get cell: " + record.viewType + " is not a supported record type.");
@@ -626,7 +626,9 @@
       } else if (sensorProperty is AlternateUnitSensorProperty) {
         return Strings.Workbench.Viewer.ALT;
       } else {
-        throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
+        //should not throw exceptions
+        //throw new ArgumentException("Cannot identifiy sensor property: " + sensorProperty);
+        return Strings.Workbench.Viewer.MIN;
       }
     }
 

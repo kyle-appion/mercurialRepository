@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			selectedUser = selected;
 			ion = AppState.context;
 			webServices = webClient;
-			tableItems.Sort((x, y) => x.displayName.CompareTo(y.displayName));
+			tableItems.Sort((x, y) => y.online.CompareTo(x.online));
 		}
 		
 		public override nint NumberOfSections(UITableView tableView) {

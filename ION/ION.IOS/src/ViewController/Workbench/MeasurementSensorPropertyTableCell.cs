@@ -76,11 +76,18 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     // Overridden from IReleasable
-    public void Release() {
+    public void Release() { 
       record = null;
     }
 
     public void UpdateTo(MeasurementRecord measurementRecord, string title, string icon, EventHandler<ISensorProperty> iconClicked) {
+    	this.ClipsToBounds = true;
+    	this.Layer.BorderWidth = 1f;
+
+    	buttonIcon.Layer.BorderWidth = 1f;
+    	buttonIcon.Layer.BorderColor = UIColor.Black.CGColor;
+    	buttonIcon.ClipsToBounds = true;
+    	
       record = measurementRecord;
       onIconClicked = iconClicked;
       labelTitle.Text = title;

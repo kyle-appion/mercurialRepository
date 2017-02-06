@@ -74,6 +74,7 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void HandlePTChartSensorPropertyChanged(PTChartSensorProperty sensorProperty) {
+    	
       var ion = AppState.context;
 
       UpdateToFluid(sensorProperty.manifold.ptChart.fluid);
@@ -156,6 +157,8 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void UpdateToFluid(Fluid fluid) {
+    	labelFluid.Layer.BorderWidth = 1f;
+    	this.Layer.BorderWidth = 1f;
       labelFluid.Text = fluid.name;
       labelFluid.BackgroundColor = new UIColor(Colors.FromInt((uint)fluid.color));
     }

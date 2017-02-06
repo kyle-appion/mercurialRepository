@@ -41,7 +41,8 @@
       if (!name.EndsWith(".9.png")) {
         // This assertion is used to enforce the explicit intent to create a
         // ninepatch.
-        throw new ArgumentException("Cannot create ninepatch: invalid name. Are you missing .9 token before extension?");
+        //should not throw exceptions
+        //throw new ArgumentException("Cannot create ninepatch: invalid name. Are you missing .9 token before extension?");
       }
 
       return CreateResizableImageFromNinePatchImage(new UIImage(name));

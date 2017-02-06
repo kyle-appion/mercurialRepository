@@ -139,7 +139,9 @@
     /// <param name="serial">Serial.</param>
     public static GaugeSerialNumber Parse(string serial) {
       if (serial == null) {
-        throw new ArgumentException("Cannot parse serial: serial is null");
+          	/////should not throw exeptions
+        //throw new ArgumentException("Cannot parse serial: serial is null");
+        return null;
       }
 
       // TODO ahodder@appioninc.com: remove this
@@ -183,7 +185,9 @@
         EDeviceModel deviceModel = DeviceModelUtils.GetDeviceModelFromCode(rawDeviceModel);
         return new GaugeSerialNumber(deviceModel, rawDeviceModel, serial, BuildManufactureDate(rawYearCode, rawMonthCode), Convert.ToUInt16(rawBatchId));
       } else {
-        throw new ArgumentException("Cannot parse serial: expected serial of length 8, 9 or 10, received length " + serial.Length);
+          	/////should not throw exeptions
+        //throw new ArgumentException("Cannot parse serial: expected serial of length 8, 9 or 10, received length " + serial.Length);
+        return null;
       }
     }
 
@@ -214,6 +218,7 @@
       int month = monthCode - 'A' + 1;
 
       if (month < 0 || month > 12) {
+          	/////should not throw exeptions
         throw new ArgumentException("Cannot build manufacture date: month code " + monthCode + " is out of range, expected [a|A, l|L]");
       }
 

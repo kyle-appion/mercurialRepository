@@ -26,7 +26,7 @@
 	      }
 
       return ret;
-    }
+    }    
 
     /// <summary>
     /// Queries for the device with the given serial number.
@@ -34,7 +34,7 @@
     /// <returns>The for using serial number async.</returns>
     /// <param name="serialNumber">Serial number.</param>
     public static Task<DeviceRow> QueryForUsingSerialNumberAsync(this IONDatabase db, ISerialNumber serialNumber) {
-      Log.D("DDD", "QueryFor: " + serialNumber);
+      Log.D("DeviceDatabaseExtensions", "QueryFor: " + serialNumber);   
       try {
         var serial = serialNumber.ToString();
         if (db.Table<DeviceRow>().Count() > 0) {
