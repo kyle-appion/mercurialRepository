@@ -13,7 +13,7 @@
     private SwipableRecyclerViewAdapter adapter;
     private Drawable background;
 
-    public SwipeDecorator(SwipableRecyclerViewAdapter adapter) : this(adapter, Color.Red) {
+		public SwipeDecorator(SwipableRecyclerViewAdapter adapter) : this(adapter, Color.Transparent) {
     }
 
     public SwipeDecorator(SwipableRecyclerViewAdapter adapter, Color color) : base(0, ItemTouchHelper.Left) {
@@ -85,6 +85,7 @@
     /// <param name="actionState">Action state.</param>
     /// <param name="isCurrentlyActive">If set to <c>true</c> is currently active.</param>
     public override void OnChildDraw(Canvas canvas, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive) {
+			Appion.Commons.Util.Log.D(this, "OnChildDraw(dx: " + dX + " dy: " + dY + " actionState: " + actionState + " isCurrentlyActive: " + isCurrentlyActive);
       var item = viewHolder.ItemView;
 
       if (viewHolder.AdapterPosition == -1) {
