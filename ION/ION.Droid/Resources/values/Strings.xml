@@ -19,10 +19,12 @@
 	<string name="average">Average</string>
   <string name="cancel">Cancel</string>
   <string name="city">City</string>
+  <string name="cloud">Cloud</string>
   <string name="close">Close</string>
   <string name="connect">Connect</string>
   <string name="connect_all">Connect All</string>
   <string name="connected">Connected</string>
+	<string name="coordinates">Coordinates</string>
   <string name="date">Date</string>
   <string name="delete">Delete</string>
   <string name="deleting">Deleting</string>
@@ -36,6 +38,7 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="email">Email</string>
   <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>
   <string name="enable_bluetooth">Enable Bluetooth</string>
@@ -47,6 +50,7 @@
 	<string name="export">Export</string>
   <string name="favorites">Favorites</string>
 	<string name="finish">Finish</string>
+	<string name="firstName">First Name</string>
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
@@ -55,11 +59,13 @@
 	<string name="highest">Highest</string>
   <string name="inactive">Inactive</string>
 	<string name="include">Include</string>
+	<string name="lastName">Last Name</string>
   <string name="library">Library</string>
   <string name="link">Link</string>
 	<string name="link_none">Not Linked</string>
 	<string name="loading">Loading...</string>
 	<string name="location">Location</string>
+	<string name="logout">Log Out</string>
   <string name="long_range_mode">Long-Range Mode</string>
 	<string name="lowest">Lowest</string>
   <string name="main">Main</string>
@@ -77,13 +83,22 @@
   <string name="ok_done">OK - Done</string>
   <string name="open">Open</string>
   <string name="open_with">Open With</string>
+  <string name="password">Password</string>
+  <string name="passwordConfirm">Confirm Password</string>
+  <string name="passwords_dont_match">Entered passwords don\'t match</string>
 	<string name="pdf">PDF</string>
   <string name="pick_time">Pick Time</string>
   <string name="pick_unit">Pick Unit</string>
+  <string name="please_enter_valid_number">Please enter a valid number</string>
   <string name="please_wait">Please Wait</string>
   <string name="reconnect">Reconnect</string>
   <string name="record">Record</string>
+  <string name="recover">Recover</string>
   <string name="reenable">Re-enable</string>
+  <string name="refresh">Refresh</string>
+  <string name="refreshing">Refreshing</string>
+  <string name="register">Register</string>
+  <string name="remember_me">Remember Me</string>
   <string name="remote_change_unit">Remote Change Unit</string>
   <string name="remove">Remove</string>
 	<string name="remove_selected">Remove Selected</string>
@@ -104,13 +119,16 @@
   <string name="stable">Stable</string>
 	<string name="start">Start</string>
   <string name="state">State</string>
+  <string name="submit">Submit</string>
   <string name="text">Text</string>
 	<string name="time">Time</string>
   <string name="title">Title</string>
   <string name="undo">Undo</string>
   <string name="unit">Unit</string>
+  <string name="update">Update</string>
   <string name="updated">Updated</string>
   <string name="whats_new_in">What\'s New in {0}</string>
+  <string name="working">Working</string>
   <string name="zip">Zip Code</string>
 
   <!--
@@ -226,9 +244,10 @@
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
   <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
-  <string name="error_failed_to_parse_number">Please enter a valid number</string>
+  <string name="error_failed_to_parse_number">Failed to parse number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_failed_to_set_unit">Failed to set unit</string>
+  <string name="error_failed_to_show_whats_new">Failed to show What\'s New</string>
   <string name="error_invalid_number_entry">Please enter a real number</string>
   <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
   <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
@@ -288,7 +307,7 @@
 	<string name="job_adding_sessions">Adding sessions to job...</string>
 	<string name="job_available_sessions">Available Sessions</string>
 	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
-	<string name="job_current_sessions">Current Sessions</string>
+	<string name="job_current_sessions">Linked Sessions</string>
 	<string name="job_customer_no">Customer #</string>
 	<string name="job_delete">Really delete job?</string>
 	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
@@ -300,11 +319,13 @@
   <string name="job_name">Job Name</string>
 	<string name="job_notes">Job Notes</string>
 	<string name="job_options">Job Options</string>
+	<string name="job_purchase_no">Purchase Order #</string>
 	<string name="job_removing_sessions">Removing sessions from job...</string>
 	<string name="job_saved">Job Saved</string>
 	<string name="job_sessions">Job Sessions</string>
 	<string name="job_settings">Job Settings</string>
-	<string name="job_purchase_no">Purchase Order #</string>
+	<string name="job_system">System</string>
+	<string name="job_technician_name">Technician Name</string>
 
 	<string name="jobs_loading">Loading all of the saved jobs.</string>
 	<string name="jobs_saved">Saved Jobs</string>
@@ -389,7 +410,7 @@
   <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
 	<string name="report_no_sessions_exist">No sessions exist. Click the record button in the Workbench or Analyzer to start recording a new session"</string>
 	<string name="report_no_spreadsheets_exist">No spreadsheet reports exist</string>
-	<string name="report_recording_started">Started Data Logging</string>
+	<string name="report_recording_started">Started Data Logging with an interval of ({0})</string>
 	<string name="report_recording_stopped">Stopped Data Logging. Session can be found in "Reports"</string>
   <string name="report_saved">Saved Reports</string>
   <string name="report_screenshot">Screenshot Report</string>
@@ -398,14 +419,70 @@
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
 	<string name="report_screenshot_saved">Saved Screenshot Report</string>
+	<string name="report_screenshot_saving">Capturing screen...</string>
 	<string name="report_select_export_data">Select Export Data</string>
 	<string name="report_select_start_time">Select start time for the graph</string>
 	<string name="report_select_end_time">Select end time for the graph</string>
 	<string name="report_selection">Report Selection</string>
   <string name="report_session_selection">Session Selection</string>
   <string name="report_sessions">Sessions</string>
+  <string name="report_sessions_loading">Loading Sessions</string>
   <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
   <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
+
+  <!--
+  PORTAL
+	-->
+	<string name="portal">Appion Portal</string>
+	<string name="portal_access_code">Access Code</string>
+	<string name="portal_access_code_confirm">Confirm Access</string>
+	<string name="portal_access_code_confirm_access">Do you want to grant this user access to view your data?</string>
+	<string name="portal_access_code_confirming">Confirming Access</string>
+	<string name="portal_access_code_deleting">Deleting Access Code</string>
+	<string name="portal_access_code_enter">Enter Access Code</string>
+	<string name="portal_access_code_generate">Generate Access Code</string>
+	<string name="portal_access_code_manager">Access Code Manager</string>
+	<string name="portal_access_codes">Access Codes</string>
+	<string name="portal_access_requests">Access Requests</string>
+	<string name="portal_access_submitting">Submitting Access Code</string>
+	<string name="portal_account_settings">Account Settings</string>
+	<string name="portal_connections">Connections</string>
+	<string name="portal_display_name">Display Name</string>
+	<string name="portal_error">ION Portal Error</string>
+	<string name="portal_error_access_code_submission_failed">Failed to submit access code</string>
+	<string name="portal_error_access_code_too_many">Too many requests currently open</string>
+	<string name="portal_error_email_invalid">Please provide a valid email</string>
+	<string name="portal_error_failed_to_login">Failed to login.</string>
+	<string name="portal_error_failed_to_query_access_codes">Failed to query pending access codes</string>
+	<string name="portal_error_general_server">Failed to connect to Appion Portal</string>
+	<string name="portal_error_password_invalid">Please provide a password with at least 8 characters, at least one of which is capitalized</string>
+	<string name="portal_error_passwords_dont_match">The provided passwords do not match</string>
+	<string name="portal_error_update_failed">Update Failed</string>
+	<string name="portal_error_upload_sessions_failed">Failed to upload the selected sessions to ION Portal.</string>
+	<string name="portal_following">Following</string>
+	<string name="portal_following_empty">You are not currently following anyone</string>
+	<string name="portal_followers">Followers</string>
+	<string name="portal_followers_empty">No one is currently following you</string>
+	<string name="portal_forgot_password">Forgot Password</string>
+	<string name="portal_logging_in">Logging In</string>
+	<string name="portal_logging_out">Logging Out</string>
+	<string name="portal_login">Portal Login</string>
+	<string name="portal_menu">Portal Menu</string>
+	<string name="portal_password_reset">Password Reset</string>
+	<string name="portal_password_reset_sent">Account password reset request send. Please check your email.</string>
+	<string name="portal_pending_access_requests">Pending Access Requests</string>
+	<string name="portal_pending_access_requests_empty">You have no Access Requests Pending</string>
+	<string name="portal_please_enter_email">Please enter your email</string>
+	<string name="portal_register_email_sent">Account Created. An email has been sent to the address provided to activate your account.</string>
+	<string name="portal_session">Sessions</string>
+	<string name="portal_update_successful">Account update successful</string>
+	<string name="portal_upload_sessions_success">Successfully uploaded sessions</string>
+	<string name="portal_upload_sessions">Upload Sessions</string>
+	<string name="portal_uploading_sessions">Uploading Sessions</string>
+	<string name="portal_view_connections">Manage Access</string>
+	<string name="portal_warning_stars_required">* Items are required</string>
+	<string name="portal_web">Web Portal</string>
+	<string name="portal_welcome_name">Welcome back, {0}!</string>
 
 	<!--
 	PTCHART
@@ -415,6 +492,12 @@
 	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
 	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
 	<string name="ptchart_error_change_unit">Please change the unit for the PT Chart.</string>
+
+	<!--
+	SENSOR
+	-->
+	<string name="sensor_create_manual_entry">Create Manual Entry</string>
+	<string name="sensor_select_type">Choose Device Type</string>
 
 	<!--
 	SUPERHEAT / SUBCOOL
@@ -439,9 +522,10 @@
   <string name="workbench_remove">Remove from Workbench</string>
   <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
 
-  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
+	<string name="workbench_add_all">Add all Subviews</string>
   <string name="workbench_add_viewer">Add to Workbench</string>
   <string name="workbench_add_viewer_sub">Add Subview</string>
+  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
   <string name="workbench_alt">Alternate Unit</string>
   <string name="workbench_alt_abrv">ALT</string>
   <string name="workbench_hold">Hold Reading</string>

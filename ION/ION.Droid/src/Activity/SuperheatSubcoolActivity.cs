@@ -13,11 +13,12 @@
 
   using Java.Lang;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Content;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
-	using ION.Core.Util;
 
   // Using ION.Droid
   using DeviceManager;
@@ -399,6 +400,9 @@
       pressureSensor.unit = ion.defaultUnits.pressure;
       temperatureSensor.unit = ion.defaultUnits.temperature;
 
+			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
+			ptChart = PTChart.New(ion, Fluid.EState.Dew);
+/*
       if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
         var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
         var fluid = await ion.fluidManager.GetFluidAsync(name);
@@ -413,6 +417,7 @@
       } else {
         ptChart = PTChart.New(ion, Fluid.EState.Dew);
       }
+*/
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -649,7 +654,7 @@
       }));
 
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!isPressureLocked) {
+				if (!isPressureLocked && !(pressureSensor is ManualSensor)) {
           pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           pressureSensor.name = GetString(Resource.String.manual);
           pressureEntryView.Enabled = true;
@@ -664,6 +669,7 @@
       pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (pressureSensor.isEditable) {
           UnitDialog.Create(this, pressureSensor.supportedUnits, (obj, unit) => {
+						pressureEntryView.ClearFocus();
             pressureSensor.unit = unit;
           }).Show();
         }
@@ -718,7 +724,7 @@
       }));
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
-        if (!isTemperatureLocked) {
+				if (!isTemperatureLocked && !(temperatureSensor is ManualSensor)) {
           temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
           temperatureSensor.name = GetString(Resource.String.manual);
           temperatureEntryView.Enabled = true;
@@ -733,6 +739,7 @@
       temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
         if (temperatureSensor.isEditable) {
           UnitDialog.Create(this, temperatureSensor.supportedUnits, (obj, unit) => {
+						temperatureEntryView.ClearFocus();
             temperatureSensor.unit = unit;
           }).Show();
         }
@@ -776,26 +783,29 @@
       saturatedTemperatureTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, satTemp);
       saturatedTemperatureUnitView.Text = temperatureSensor.unit.ToString();
 
-      var calculation = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
-        temperatureSensor.measurement, pressureSensor.isRelative).ConvertTo(tu);
+      var delta = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
+			                                                    temperatureSensor.measurement.ConvertTo(tu), pressureSensor.isRelative);
 
-			if (this.ptChart.fluid.mixture && calculation.magnitude < 0) {
+			Log.D(this, "measTemp: " + temperatureSensor.measurement);
+			Log.D(this, "Delta: " + delta);
+
+			if (this.ptChart.fluid.mixture && delta.magnitude < 0) {
 				warning.Visibility = ViewStates.Visible;
 			} else {
 				warning.Visibility = ViewStates.Gone;
 			}
 
       if (!ptChart.fluid.mixture) {
-        if (calculation < 0) {
+				if (delta.magnitude < 0) {
           // Bubble
           ptChart.state = Fluid.EState.Bubble;
         } else {
           // Dew
           ptChart.state = Fluid.EState.Dew;
         }
-        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation.Abs(), true);
+				calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, delta.Abs(), true);
       } else {
-        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
+        calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, delta, true);
       }
 
       switch (ptChart.state) {

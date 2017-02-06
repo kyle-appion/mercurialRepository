@@ -18,12 +18,13 @@
 
 	using OxyPlot.Xamarin.Android;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.IO;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
-	using ION.Core.Util;
 
 	using ION.Droid.Dialog;
 	using ION.Droid.Report;

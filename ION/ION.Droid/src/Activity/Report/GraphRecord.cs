@@ -11,12 +11,12 @@
 	using OxyPlot.Series;
 	using OxyPlot.Xamarin.Android;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
-	using ION.Core.Database;
 	using ION.Core.Devices;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
-	using ION.Core.Util;
 
 	using ION.Droid.Sensors;
 	using ION.Droid.Util;

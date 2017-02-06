@@ -8,13 +8,14 @@
   using Android.App;
   using Android.Content;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
 	using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Devices.Certificates;
   using ION.Core.IO;
   using ION.Core.Net;
-  using ION.Core.Util;
 
   using ION.Droid.Dialog;
 
@@ -93,7 +94,6 @@
 	      return ret;
 			} catch (Exception e) {
 				Log.E(this, "Failed to request calibration certificates.", e);
-				// TODO ahodder@appioninc.com: Build a list of the affect serial numbers.
 				return parameters;
 			}
     }

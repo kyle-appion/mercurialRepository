@@ -6,11 +6,12 @@
 	using Android.Graphics;
 	using Android.Views;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
 	using ION.Core.App;
 	using ION.Core.Fluids;
 	using ION.Core.Math;
-	using ION.Core.Measure;
-	using ION.Core.Util;
 	
 	public class FluidSliderView : View {
 		/// <summary>
@@ -211,8 +212,7 @@
 			NotifyOfScroll(false);
 		}
 
-		// TODO ahodder@appioninc.com: Remove this: not safe
-		private static readonly RectF rect = new RectF();
+		private readonly RectF rect = new RectF();
 		protected override void OnDraw(Canvas canvas) {
 			var cx = window.centerX;
 
@@ -375,7 +375,7 @@
 			rmin = pressureUnit.OfScalar(minPressure);
 			max = pressureUnit.OfScalar(maxPressure);
 
-			minTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
+			minTemperature = (int)Math.Ceiling(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(rmin, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 			maxTemperature = (int)Math.Floor(f.GetTemperatureFromAbsolutePressure(state, Physics.ConvertRelativePressureToAbsolute(max, ptChart.elevation)).ConvertTo(temperatureUnit).amount);
 
 			Invalidate();

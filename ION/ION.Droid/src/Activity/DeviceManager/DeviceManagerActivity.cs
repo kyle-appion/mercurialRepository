@@ -12,12 +12,13 @@
   using Android.Views;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Devices;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
-  using ION.Core.Util;
 
   using ION.Droid.Sensors;
   using ION.Droid.Views;

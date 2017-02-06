@@ -7,10 +7,11 @@
 	using Android.Content;
 	using Android.OS;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Devices;
 	using ION.Core.Devices.Connections;
 	using ION.Core.Devices.Protocols;
-	using ION.Core.Util;
 
 	/// <summary>
 	/// A connection helper that will receive broadcast packets from ION devices that are broadcast capable.

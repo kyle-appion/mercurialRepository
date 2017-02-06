@@ -106,7 +106,7 @@ This directory is used to contain older 7 inch tablet sized dimensions. So far t
   <dimen name="analyzer_icon_size">24dp</dimen>
   <!-- The icon size for the device icon in the manifold within the anlyzer. -->
   <dimen name="analyzer_device_icon_size">32dp</dimen>
-	  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
+  <!-- The text size for the measurement text view in the sensor mount header within the analyzer. -->
   <dimen name="analyzer_sensor_mount_header">8dp</dimen>
   <!-- The text size for the measurement text view in the sensor mount measurement within the analyzer. -->
   <dimen name="analyzer_sensor_mount_measurement">14dp</dimen>

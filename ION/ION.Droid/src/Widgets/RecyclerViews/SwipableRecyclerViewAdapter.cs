@@ -16,7 +16,7 @@
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter {
+  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter, Swiper.ISwipeListener {
     /// <summary>
     /// The delegate that will handle item clicks.
     /// </summary>
@@ -51,11 +51,7 @@
       }
     }
 
-    /// <summary>
-    /// The recycler view that this adapter is working within.
-    /// </summary>
-    /// <value>The recycler view.</value>
-    public RecyclerView recyclerView { get; private set; }
+    
     /// <summary>
     /// The handler that will post delayed actions to the main thread.
     /// </summary>
@@ -86,42 +82,34 @@
     /// </summary>
     private RecyclerView.ItemDecoration swipeDecoration;
 
+		private Swiper toucher;
+
+		private Color backgroundColor;
+
     public SwipableRecyclerViewAdapter() : base() {
       handler = new Handler();
-      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
+//      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
       swipeDecoration = new SwipeAnimationDecorator(Color.Transparent);
       swipeConfirmTimeout = PENDING_ACTION_DELAY;
+			backgroundColor = Color.Transparent;
     }
 
-    /// <summary>
-    /// Raises the attached to recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-      this.recyclerView = recyclerView;
-      touchHelperDecoration.AttachToRecyclerView(recyclerView);
+			toucher = new Swiper(recyclerView, Resource.Id.content, Resource.Id.button, this);
+			recyclerView.AddOnItemTouchListener(toucher);
+
+
+//      touchHelperDecoration.AttachToRecyclerView(recyclerView);
       recyclerView.AddItemDecoration(swipeDecoration);
-      if (recyclerView.GetLayoutManager() == null) {
-        recyclerView.SetLayoutManager(new LinearLayoutManager(recyclerView.Context));
-      }
     }
 
-    /// <summary>
-    /// Raises the detached from recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
-      this.recyclerView = recyclerView;
+			recyclerView.RemoveOnItemTouchListener(toucher);
       recyclerView.RemoveItemDecoration(swipeDecoration);
     }
 
-    /// <summary>
-    /// Raises the create view holder event.
-    /// </summary>
-    /// <param name="parent">Parent.</param>
-    /// <param name="viewType">View type.</param>
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       var ret = OnCreateSwipableViewHolder(parent, viewType);
 
@@ -150,8 +138,7 @@
       OnBindViewHolder(record, vh, position);
 
       if (pendingActions.ContainsKey(record)) {
-        vh.ItemView.SetBackgroundColor(Color.Red);
-        vh.RevealButton();
+        vh.ItemView.SetBackgroundColor(backgroundColor);
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
           Action action = GetViewHolderSwipeAction(position);
           if (action != null) {
@@ -167,10 +154,20 @@
       } else {
         vh.ItemView.SetBackgroundColor(Color.Transparent);
         vh.ItemView.Visibility = ViewStates.Visible;
-        vh.HideButton();
-
       }
     }
+
+		// Implemented from ISwipeListener
+		public bool CanSwipe(int position) {
+			return IsViewHolderSwipable(records[position], recyclerView.FindViewHolderForAdapterPosition(position) as SwipableViewHolder, position);
+		}
+
+		// Implemented from ISwipeListener
+		public void OnDismissedBySwipe(RecyclerView recyclerView, int[] reverseSortedPosition) {
+			foreach (var i in reverseSortedPosition) {
+				PerformSwipeAction(i);
+			}
+		}
 
     /// <summary>
     /// Queries the record at the given index.
@@ -192,6 +189,25 @@
 		/// <param name="record">Record.</param>
 		public int IndexOfRecord(IRecord record) {
 			return records.IndexOf(record);
+		}
+
+		/// <summary>
+		/// Clears and set the current records for the adapter.
+		/// </summary>
+		/// <param name="records">Records.</param>
+		public void Set(IEnumerable<IRecord> records) {
+			this.records.Clear();
+			this.records.AddRange(records);
+			NotifyDataSetChanged();
+		}
+
+		/// <summary>
+		/// Removes the given record from the adapter.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		public void RemoveRecord(int index) {
+			this.records.RemoveAt(index);
+			this.NotifyItemRemoved(index);
 		}
 
     /// <summary>
@@ -333,19 +349,6 @@
     public virtual void Unbind() {
     }
 
-    public void RevealButton() {
-      if (useSwipeLayout) {
-        content.Visibility = ViewStates.Invisible;
-        button.Visibility = ViewStates.Visible;
-      }
-    }
-
-    public void HideButton() {
-      if (useSwipeLayout) {
-        content.Visibility = ViewStates.Visible;
-        button.Visibility = ViewStates.Invisible;
-      }
-    }
 
     private static View BuildContentView(ViewGroup parent, int viewResource, bool useSwipeParent) {
       if (useSwipeParent) {

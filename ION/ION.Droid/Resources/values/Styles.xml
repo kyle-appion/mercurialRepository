@@ -18,6 +18,10 @@
     <item name="android:actionModeBackground">@drawable/cab_background_top_ion_action_bar</item>
     <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_ion_action_bar</item>
     <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Ion_action_bar</item>
+
+		<item name="colorPrimary">@color/black</item>
+    <item name="colorPrimaryDark">@color/black</item>
+    <item name="colorAccent">@color/gold</item>
   </style>
 
   <style name="TerminalActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
@@ -26,6 +30,13 @@
     <item name="android:textColorSecondary">@color/light_gray</item>
     <item name="android:textColorTertiary">@color/light_gray</item>
     <item name="android:buttonStyle">@style/IONButton</item>
+
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+
+		<item name="colorPrimary">@color/black</item>
+    <item name="colorPrimaryDark">@color/black</item>
+    <item name="colorAccent">@color/gold</item>
   </style>
 
   <style name="DialogActivityTheme" parent="android:style/Theme.Holo.Light.Dialog">
@@ -52,8 +63,6 @@
 	<style name="IONActionBarTextStyle" parent="@android:style/TextAppearance">
 		<item name="android:textColor">@color/white</item>
 	</style>
-
-	
 
 	 <style name="ActionBar.Solid.Ion_action_bar" parent="@android:style/Widget.Holo.ActionBar.Solid">
 <!--       

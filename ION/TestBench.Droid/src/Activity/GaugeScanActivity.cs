@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid {
+﻿namespace TestBench.Droid.Activity {
 
 	using System.Collections.Generic;
 
@@ -11,9 +11,11 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Math;
+
 	using ION.Core.Devices;
 
-	[Activity(Label = "Gauge Scanner", MainLauncher = true, Icon = "@mipmap/icon")]
+	[Activity(Label = "Gauge Scanner", MainLauncher=true, Icon = "@mipmap/icon")]
 	public class GaugeScanActivity : BaseActivity, SwipeRefreshLayout.IOnRefreshListener {
 		private SwipeRefreshLayout swiper;
 		private RecyclerView list;
@@ -72,7 +74,8 @@
 			};
 
 			rigState = FindViewById<TextView>(Resource.Id.rigState);
-			rig = null;
+//			rig = null;
+
 			UpdateRigDisplay();
 		}
 
@@ -103,7 +106,7 @@
 		public override bool OnPrepareOptionsMenu(IMenu menu) {
 			base.OnPrepareOptionsMenu(menu);
 
-			var item = menu.FindItem(Android.Resource.Id.Button1);
+			var item = menu.FindItem(Resource.Id.scan);
 			if (service == null) {
 				item.SetTitle("Please Wait...");
 			} else {
@@ -119,7 +122,7 @@
 
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
 			switch (item.ItemId) {
-				case Android.Resource.Id.Button1:
+				case Resource.Id.scan:
 					if (service == null) {
 						Toast.MakeText(this, "Please wait for the service to connect...", ToastLength.Long).Show();
 					} else {

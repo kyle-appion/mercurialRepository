@@ -10,9 +10,10 @@
 
 	using Java.Util;
 
+	using Appion.Commons.Util;
+
 	// Using ION
 	using Core.Connections;
-	using Core.Util;
 
 
 	public class LeConnection : BluetoothGattCallback, IConnection, Handler.ICallback {

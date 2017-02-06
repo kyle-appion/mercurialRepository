@@ -1,8 +1,8 @@
 ﻿namespace ION.Droid.Widgets.RecyclerViews {
 
-  using System;
-
   using Android.Support.V7.Widget;
+	using Android.Support.V7.RecyclerView;
+	using Android.Views;
 
   /// <summary>
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
@@ -19,13 +19,58 @@
     /// </summary>
     public event OnDatasetChanged onDatasetChanged;
 
+		/// <summary>
+		/// The recycler view that this adapter is working within.
+		/// </summary>
+		/// <value>The recycler view.</value>
+		public RecyclerView recyclerView { get; private set; }
+		/// <summary>
+		/// The view that will be shown if the adapter is empty.
+		/// </summary>
+		/// <value>The empty view.</value>
+		public View emptyView {
+			get {
+				return __emptyView;
+			}
+			set {
+				__emptyView = value;
+				if (__emptyView != null) {
+					NotifyDataSetChanged();
+				}
+			}
+		} View __emptyView;
+
     public IONRecyclerViewAdapter() {
       RegisterAdapterDataObserver(new InternalObserver(this));
     }
+
+		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
+			base.OnAttachedToRecyclerView(recyclerView);
+			this.recyclerView = recyclerView;
+			if (recyclerView.GetLayoutManager() == null) {
+				recyclerView.SetLayoutManager(new LinearLayoutManager(recyclerView.Context));
+			}
+		}
+
+		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
+			base.OnDetachedFromRecyclerView(recyclerView);
+			this.recyclerView = null;
+		}
+
     public void NotifyChanged() {
       if (onDatasetChanged != null) {
         onDatasetChanged(this);
       }
+
+			if (emptyView != null) {
+				if (ItemCount > 0) {
+					emptyView.Visibility = ViewStates.Gone;
+					recyclerView.Visibility = ViewStates.Visible;
+				} else {
+					emptyView.Visibility = ViewStates.Visible;
+					recyclerView.Visibility = ViewStates.Gone;
+				}
+			}
     }
 
     private class InternalObserver : RecyclerView.AdapterDataObserver {

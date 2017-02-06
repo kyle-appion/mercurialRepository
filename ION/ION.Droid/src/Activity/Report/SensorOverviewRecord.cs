@@ -6,9 +6,10 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Measure;
+
 	using ION.Core.App;
 	using ION.Core.Devices;
-	using ION.Core.Measure;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
 

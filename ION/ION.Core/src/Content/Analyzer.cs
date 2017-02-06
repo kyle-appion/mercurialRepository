@@ -562,6 +562,36 @@
           throw new Exception("Cannot set primary manifold: unknown side: " + side);
       }
     }
+
+		/// <summary>
+		/// Sets the manifold for the given side. Is a manifold already exists, then it will be replaced by the new manifold.
+		/// </summary>
+		/// <returns><c>true</c>, if manifold was set, <c>false</c> otherwise.</returns>
+		/// <param name="side">Side.</param>
+		/// <param name="manifold">Manifold.</param>
+		public bool SetManifold(ESide side, Manifold manifold) {
+			switch (side) {
+				case ESide.Low:
+					RemoveManifold(ESide.Low);
+					lowSideManifold = manifold;
+					if (manifold.ptChart == null) {
+						manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+					}
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
+				return true;
+				case ESide.High:
+					RemoveManifold(ESide.High);
+					highSideManifold = manifold;
+					if (manifold.ptChart == null) {
+						manifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+					}
+					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
+				return true;
+				default:
+					throw new Exception("Cannot set primary manifold: unknown side: " + side);
+			}
+		}
+
 		/// <summary>
 		/// Sets the manifold for remote viewing linked sensors.
 		/// </summary>
