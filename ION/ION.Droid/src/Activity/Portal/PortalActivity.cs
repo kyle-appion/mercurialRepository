@@ -51,6 +51,12 @@
 				StartActivity(typeof(PortalViewConnectionsActivity));
 			};
 
+			FindViewById<Button>(Resource.Id.portal_web).Click += (sender, e) => {
+				var i = new Intent(Intent.ActionView);
+				i.SetData(Android.Net.Uri.Parse(ion.portal.loginPortalUrl));
+				StartActivity(i);
+			};
+
 			home.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
 				AnimateToSettingsView();
 			};

@@ -40,7 +40,7 @@
                 android:background="@color/white"
                 android:padding="@dimen/activity_padding"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
                 <TableRow
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp">
@@ -83,6 +83,17 @@
                 -->
                 </TableRow>
             </TableLayout>
+            <Space
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp" />
+            <Button
+                android:layout_margin="@dimen/activity_padding"
+                android:id="@id/portal_web"
+                android:text="@string/portal_web"
+                android:textSize="@dimen/portal_landing_text_size"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/portal_landing_button_height" />
         </LinearLayout>
     <!-- SETTINGS -->
         <LinearLayout
