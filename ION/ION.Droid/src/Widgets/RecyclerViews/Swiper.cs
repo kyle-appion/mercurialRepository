@@ -14,6 +14,8 @@
 
 	using Java.Lang;
 
+	using Appion.Commons.Util;
+
 	using ION.Droid.Animations;
 	using ION.Droid.Views;
 
@@ -38,8 +40,8 @@
 		private int viewWidth = 1; // 1 and not 0 to prevent dividing by zero
 
 		// Transient properties
-		private List<PendingDismissData> pendingDismisses = new List<PendingDismissData>();
 		private Dictionary<int, PendingDismissData> pendingDismissAnimations = new Dictionary<int, PendingDismissData>();
+		private HashSet<int> activeAnimations = new HashSet<int>();
 		private int dismissAnimationRefCount = 0;
 		private float downX;
 		private float downY;
@@ -192,7 +194,7 @@
 							++dismissAnimationRefCount;
 							var pdd = new PendingDismissData(downPosition, foregroundView, backgroundView, viewWidth);
 							backgroundView.Animate()
-				             .Alpha(1)
+//				             .Alpha(1)
 				             .SetDuration(ANIMATION_FAST);
 							foregroundView.Animate()
 				             .TranslationX(/*dismissRight ? viewWidth :*/ -viewWidth)
@@ -222,13 +224,21 @@
 					}
 
 				case MotionEventActions.Move: {
-						if (velocityTracker == null || paused) {
+						if (velocityTracker == null || paused || activeAnimations.Contains(swipedDownPosition)) {
 							break;
 						}
 
 						velocityTracker.AddMovement(motionEvent);
 						float deltaX = motionEvent.RawX - downX;
 						float deltaY = motionEvent.RawY - downY;
+
+						if (deltaX > 0) {
+							if (this.pendingDismissAnimations.ContainsKey(this.swipedDownPosition)) {
+								pendingDismissAnimations.Remove(swipedDownPosition);
+								CloseView(new PendingDismissData(swipedDownPosition, foregroundView, backgroundView, viewWidth));
+							}
+							break;
+						}
 						if (!swiping && System.Math.Abs(deltaX) > slop && System.Math.Abs(deltaY) < System.Math.Abs(deltaX) / 2) {
 							swiping = true;
 							swipingSlop = (deltaX > 0 ? slop : -slop);
@@ -242,7 +252,7 @@
 							backgroundView.Visibility = ViewStates.Visible;
 							viewWidth = backgroundView.Width;
 							foregroundView.TranslationX = deltaX - swipingSlop;
-							backgroundView.Alpha = 1 - System.Math.Max(0f, System.Math.Min(1f, 1f - System.Math.Abs(deltaX) / viewWidth));
+//							backgroundView.Alpha = 1 - System.Math.Max(0f, System.Math.Min(1f, 1f - System.Math.Abs(deltaX) / viewWidth));
 							return true;
 						}
 						break;
@@ -264,8 +274,11 @@
 			}
 			pendingDismissAnimations.Add(data.position, data);
 			handler.PostDelayed(() => {
-				pendingDismissAnimations.Remove(data.position);
-				CloseView(data);
+				if (pendingDismissAnimations.ContainsValue(data)) {
+					pendingDismissAnimations.Remove(data.position);
+					activeAnimations.Add(data.position);
+					CloseView(data);
+				}
 			}, PENDING_ACTION_DELAY);
 		}
 
@@ -287,6 +300,7 @@
 			animator.AddListener(new AnimatorListenerActionAdapter() {
 				onAnimationEnd = (obj) => {
 					data.backgroundView.Visibility = ViewStates.Gone;
+					activeAnimations.Remove(data.position);
 				},
 			});
 
