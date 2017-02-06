@@ -89,6 +89,7 @@
 	<string name="pdf">PDF</string>
   <string name="pick_time">Pick Time</string>
   <string name="pick_unit">Pick Unit</string>
+  <string name="please_enter_valid_number">Please enter a valid number</string>
   <string name="please_wait">Please Wait</string>
   <string name="reconnect">Reconnect</string>
   <string name="record">Record</string>
@@ -243,7 +244,7 @@
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
   <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
-  <string name="error_failed_to_parse_number">Please enter a valid number</string>
+  <string name="error_failed_to_parse_number">Failed to parse number</string>
   <string name="error_failed_to_open_file">Open File Failed</string>
   <string name="error_failed_to_set_unit">Failed to set unit</string>
   <string name="error_failed_to_show_whats_new">Failed to show What\'s New</string>
@@ -490,6 +491,12 @@
 	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
 	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
 	<string name="ptchart_error_change_unit">Please change the unit for the PT Chart.</string>
+
+	<!--
+	SENSOR
+	-->
+	<string name="sensor_create_manual_entry">Create Manual Entry</string>
+	<string name="sensor_select_type">Choose Device Type</string>
 
 	<!--
 	SUPERHEAT / SUBCOOL

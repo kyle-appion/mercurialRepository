@@ -294,6 +294,7 @@
     <Compile Include="src\Widgets\RecyclerViews\Swiper.cs" />
     <Compile Include="src\Animations\AnimatorUpdateActionAdapter.cs" />
     <Compile Include="src\Views\ViewActionTouchListener.cs" />
+    <Compile Include="src\Dialog\ManualSensorCreateDialog.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -705,6 +706,7 @@
     <AndroidResource Include="Resources\layout\dialog_portal_register.axml" />
     <AndroidResource Include="Resources\drawable\ic_check.png" />
     <AndroidResource Include="Resources\drawable\ic_x.png" />
+    <AndroidResource Include="Resources\layout\dialog_manual_sensor_create.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

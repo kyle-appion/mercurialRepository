@@ -1,4 +1,5 @@
-﻿namespace ION.Core.Sensors {
+﻿using System.Collections.Generic;
+namespace ION.Core.Sensors {
 
   using System;
 
@@ -121,6 +122,21 @@
 			Units.Weight.POUND_FORCE,
 			Units.Weight.POUND_OUNCE_FORCE,
 		};
+
+		/// <summary>
+		/// Builds and returns a mapping of the application default units to sensor type mapping.
+		/// </summary>
+		/// <returns>The sensor type unit mapping.</returns>
+		public static Dictionary<ESensorType, IEnumerable<Unit>> GetSensorTypeUnitMapping() {
+			var ret = new Dictionary<ESensorType, IEnumerable<Unit>>();
+
+			ret[ESensorType.Pressure] = DEFAULT_PRESSURE_UNITS;
+			ret[ESensorType.Temperature] = DEFAULT_TEMPERATURE_UNITS;
+			ret[ESensorType.Vacuum] = DEFAULT_VACUUM_UNITS;
+			ret[ESensorType.Weight] = DEFAULT_WEIGHT_UNITS;
+
+			return ret;
+		}
 
     public static ESensorType FromString(string sensorType) {
       var ret = ESensorType.Unknown;

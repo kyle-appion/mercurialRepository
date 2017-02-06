@@ -72,7 +72,7 @@
 
           d.Dismiss();
         } catch (Exception e) {
-          Toast.MakeText(context, Resource.String.error_failed_to_parse_number, ToastLength.Long).Show();
+					Toast.MakeText(context, Resource.String.please_enter_valid_number, ToastLength.Long).Show();
         }
       });
 
