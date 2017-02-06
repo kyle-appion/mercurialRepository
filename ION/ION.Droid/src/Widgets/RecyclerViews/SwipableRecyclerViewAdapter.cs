@@ -16,7 +16,7 @@
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter {
+  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter, Swiper.ISwipeListener {
     /// <summary>
     /// The delegate that will handle item clicks.
     /// </summary>
@@ -82,21 +82,31 @@
     /// </summary>
     private RecyclerView.ItemDecoration swipeDecoration;
 
+		private Swiper toucher;
+
+		private Color backgroundColor;
+
     public SwipableRecyclerViewAdapter() : base() {
       handler = new Handler();
-      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
+//      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
       swipeDecoration = new SwipeAnimationDecorator(Color.Transparent);
       swipeConfirmTimeout = PENDING_ACTION_DELAY;
+			backgroundColor = Color.Transparent;
     }
 
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-      touchHelperDecoration.AttachToRecyclerView(recyclerView);
+			toucher = new Swiper(recyclerView, Resource.Id.content, Resource.Id.button, this);
+			recyclerView.AddOnItemTouchListener(toucher);
+
+
+//      touchHelperDecoration.AttachToRecyclerView(recyclerView);
       recyclerView.AddItemDecoration(swipeDecoration);
     }
 
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
+			recyclerView.RemoveOnItemTouchListener(toucher);
       recyclerView.RemoveItemDecoration(swipeDecoration);
     }
 
@@ -128,7 +138,7 @@
       OnBindViewHolder(record, vh, position);
 
       if (pendingActions.ContainsKey(record)) {
-        vh.ItemView.SetBackgroundColor(Color.Red);
+        vh.ItemView.SetBackgroundColor(backgroundColor);
         vh.RevealButton();
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
           Action action = GetViewHolderSwipeAction(position);
@@ -149,6 +159,18 @@
 
       }
     }
+
+		// Implemented from ISwipeListener
+		public bool CanSwipe(int position) {
+			return IsViewHolderSwipable(records[position], recyclerView.FindViewHolderForAdapterPosition(position) as SwipableViewHolder, position);
+		}
+
+		// Implemented from ISwipeListener
+		public void OnDismissedBySwipe(RecyclerView recyclerView, int[] reverseSortedPosition) {
+			foreach (var i in reverseSortedPosition) {
+				PerformSwipeAction(i);
+			}
+		}
 
     /// <summary>
     /// Queries the record at the given index.

@@ -291,6 +291,9 @@
     <Compile Include="src\Activity\Portal\PortalSessionsViewActivity.cs" />
     <Compile Include="src\Activity\Portal\PortalAccessCodeManagerActivity.cs" />
     <Compile Include="src\Activity\Portal\PortalViewConnectionsActivity.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\Swiper.cs" />
+    <Compile Include="src\Animations\AnimatorUpdateActionAdapter.cs" />
+    <Compile Include="src\Views\ViewActionTouchListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
