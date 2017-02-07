@@ -124,10 +124,8 @@
     /// <returns></returns>
     public static bool IsValid(string serial) {
       try {
-        Parse(serial);
-        return true;
+        return Parse(serial) != null;
       } catch (ArgumentException e) {
-//        ION.Core.Util.Log.D("SerialNumber", serial + " is not a valid GaugeDeviceSerial", e);
         return false;
       }
     }
