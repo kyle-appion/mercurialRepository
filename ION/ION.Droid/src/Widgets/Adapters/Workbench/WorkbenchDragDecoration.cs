@@ -44,6 +44,8 @@
 		/// <param name="recyclerView">Recycler view.</param>
 		/// <param name="viewHolder">View holder.</param>
 		public override int GetSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+			return 0;
+/*
 			var record = adapter[viewHolder.AdapterPosition];
 
 			if (adapter.HasPendingAction(viewHolder.AdapterPosition)) {
@@ -53,6 +55,7 @@
 			} else {
 				return 0;
 			}
+*/
 		}
 
 		/// <summary>
@@ -95,6 +98,7 @@
     /// <param name="viewHolder">View holder.</param>
     /// <param name="direction">Direction.</param>
     public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+			/*
 			var swipePosition = viewHolder.AdapterPosition;
 
 			if (adapter.HasPendingAction(viewHolder.AdapterPosition)) {
@@ -102,6 +106,7 @@
 			} else {
 				adapter.PerformSwipeAction(swipePosition);
 			}
+			*/
     }
 
 		/// <summary>
@@ -162,5 +167,6 @@
       }
     }
   }
+
 }
 

@@ -23,12 +23,8 @@ namespace ION.Droid {
 			return new OverviewViewHolder(parent);
 		}
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+		public override bool IsSwipable(int position) {
 			return false;
-		}
-
-		public override Action GetViewHolderSwipeAction(int index) {
-			return null;
 		}
 
 		public void SetLogs(IION ion, List<SessionResults> sessionResults) {

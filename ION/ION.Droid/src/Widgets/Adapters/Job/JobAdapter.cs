@@ -53,16 +53,17 @@ namespace ION.Droid.Widgets.Adapters.Job {
       }
     }
 
-    public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+		public override bool IsSwipable(int position) {
       return true;
     }
-
+/*
     public override Action GetViewHolderSwipeAction(int index) {
       return () => {
 				var jobRecord = records[index] as JobRecord;
 				RequestDeleteJob(jobRecord);
       };
     }
+*/
 
 		public void RequestDeleteJob(JobRecord record) {
 			var context = recyclerView.Context;

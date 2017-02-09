@@ -141,7 +141,8 @@
     /// <param name="viewHolder">View holder.</param>
     /// <param name="index">Index.</param>
     /// <param name="record">Record.</param>
-    public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
+    public override bool IsSwipable(int position) {
+			var record = records[position];
 			var dr = record as DeviceRecord;
 			if (dr == null) {
 				return false;
@@ -150,7 +151,7 @@
 			var nearbySection = allSections[EDeviceState.New];
 			return !nearbySection.HasDevice(dr.device);
     }
-
+/*
     /// <summary>
     /// Queries the action that is triggered when the swipe revealed button is clicked.
     /// </summary>
@@ -167,6 +168,7 @@
         return null;
       }
     }
+*/
 
     /// <summary>
     /// Gets the type of the item view.

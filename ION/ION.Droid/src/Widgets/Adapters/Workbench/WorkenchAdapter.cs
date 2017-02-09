@@ -33,6 +33,8 @@
     public event OnManifoldClicked onManifoldClicked;
     public event OnSensorPropertyClicked onSensorPropertyClicked;
 
+		public override bool allowDragging { get { return true; } }
+
     /// <summary>
     /// The workbench that the adapter is currently working with.
     /// </summary>
@@ -50,10 +52,6 @@
     /// <value>The cache.</value>
     private BitmapCache cache;
     /// <summary>
-    /// The drag decoration.
-    /// </summary>
-//    private ItemTouchHelper dragDecoration;
-    /// <summary>
     /// The stack of pending expands.
     /// </summary>
     private Stack<List<Tuple<Manifold, bool>>> expansionStack = new Stack<List<Tuple<Manifold, bool>>>();
@@ -61,30 +59,11 @@
     public WorkbenchAdapter(IION ion, Resources resources) {
       this.ion = ion;
       this.cache = new BitmapCache(resources);
-//			dragDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this, swipes));
-			touchHelperDecoration = new ItemTouchHelper(new WorkbenchDragDecoration(this));
-    }
-
-    /// <summary>
-    /// Raises the attached to recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
-    public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
-      base.OnAttachedToRecyclerView(recyclerView);
-//      dragDecoration.AttachToRecyclerView(recyclerView);
-    }
-
-    /// <summary>
-    /// Raises the detached from recycler view event.
-    /// </summary>
-    /// <param name="recyclerView">Recycler view.</param>
-    public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
-      base.OnDetachedFromRecyclerView(recyclerView);
     }
 
     // Overridden from RecyclerView.Adapter
     public override int GetItemViewType(int position) {
-      return (int)records[position].viewType;
+      return records[position].viewType;
     }
 
     // Overridden from RecyclerView.Adapter
@@ -174,22 +153,67 @@
       }
     }
 
-    /// <summary>
-    /// Queries whether or not the given view holder is swipeable.
-    /// </summary>
-    /// <returns>true</returns>
-    /// <c>false</c>
-    /// <param name="viewHolder">View holder.</param>
-    /// <param name="index">Index.</param>
-    public override bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index) {
-      return record is ManifoldRecord || record is SensorPropertyRecord;
+    public override bool IsSwipable(int position) {
+			var record = records[position];
+      var ret = record is ManifoldRecord || record is SensorPropertyRecord;
+			return ret;
     }
+
+		public override bool IsDraggable(RecyclerView.ViewHolder viewHolder) {
+			var sr = records[viewHolder.AdapterPosition];
+			return (sr is ManifoldRecord || sr is SensorPropertyRecord);
+		}
+
+		public override void StartingDrag(RecyclerView.ViewHolder viewHolder) {
+			base.StartingDrag(viewHolder);
+			var r = records[viewHolder.AdapterPosition] as ManifoldRecord;
+			if (r != null) {
+				SaveManifoldExpansionState();
+			}
+		}
+
+		public override bool WillAcceptDrop(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder dropTarget) {
+			var sr = records[viewHolder.AdapterPosition];
+			var tr = records[dropTarget.AdapterPosition];
+
+			if (sr is ManifoldRecord && tr is ManifoldRecord) {
+				var srr = sr as ManifoldRecord;
+				var trr = tr as ManifoldRecord;
+
+				workbench.Swap(workbench.IndexOf(srr.item), workbench.IndexOf(trr.item));
+				return true;
+			} else if (sr is SensorPropertyRecord && tr is SensorPropertyRecord) {
+				var srr = sr as SensorPropertyRecord;
+				var trr = tr as SensorPropertyRecord;
+
+				if (srr.manifold == trr.manifold) {
+					var m = srr.manifold;
+				m.SwapSensorProperties(m.IndexOfSensorProperty(srr.sensorProperty), m.IndexOfSensorProperty(trr.sensorProperty));
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				return false;
+			}
+		}
+
+		public override void EndingDrag(RecyclerView.ViewHolder viewHolder) {
+			var r = records[viewHolder.AdapterPosition];
+			if (r is ManifoldRecord) {
+				RestoreManifoldExpansionState();
+			} else if (r is SensorPropertyRecord) {
+				var spr = r as SensorPropertyRecord;
+				NotifyItemRangeChanged(IndexOfManifold(spr.manifold) + 1, spr.manifold.sensorPropertyCount);
+			}
+		}
 
     /// <summary>
     /// Queries the action that is triggered when the swipe revealed button is clicked.
     /// </summary>
     /// <returns>The view holder swipe action.</returns>
     /// <param name="index">Index.</param>
+/*
     public override Action GetViewHolderSwipeAction(int index) {
 			IRecord record = null;
 			try {
@@ -218,6 +242,7 @@
         };
       }
     }
+*/
 
     // Overridden from RecyclerView.Adapter
     public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
@@ -394,6 +419,9 @@
     /// Restores the manifold expanssion states.
     /// </summary>
     public void RestoreManifoldExpansionState() {
+			if (expansionStack.Count <= 0) {
+				return;
+			}
       var tuples = expansionStack.Pop();
       if (tuples != null) {
         foreach (var t in tuples) {

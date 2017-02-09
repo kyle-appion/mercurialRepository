@@ -80,7 +80,8 @@
 			}
 		}
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+		public override bool IsSwipable(int position) {
+			var record = records[position];
 			if (allowDeleting) {
 				if ((EViewType)record.viewType == EViewType.Session) {
 					return true;
@@ -91,7 +92,7 @@
 				return false;
 			}
 		} 
-
+/*
 		public override Action GetViewHolderSwipeAction(int index) {
 			var record = records[index];
 			if ((EViewType)record.viewType == EViewType.Session) {
@@ -102,6 +103,7 @@
 				return null;
 			}
 		}
+*/
 
 		private void RequestDeleteSession(SessionRecord record) {
 			var context = recyclerView.Context;
