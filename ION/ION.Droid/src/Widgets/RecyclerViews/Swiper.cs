@@ -23,7 +23,7 @@
 	/// Stolen from: 
 	/// https://github.com/heruoxin/Clip-Stack/blob/master/app/src/main/java/com/catchingnow/tinyclipboardmanager/SwipeableRecyclerViewTouchListener.java
 	/// </summary>
-	public class Swiper : RecyclerView.SimpleOnItemTouchListener {
+	public class Swiper : RecyclerView.SimpleOnItemTouchListener, Handler.ICallback {
 
 		private const long ANIMATION_FAST = 300;
 		private const long ANIMATION_WAIT = 2200;
@@ -41,7 +41,6 @@
 
 		// Transient properties
 		private Dictionary<int, PendingDismissData> pendingDismissAnimations = new Dictionary<int, PendingDismissData>();
-		private HashSet<int> activeAnimations = new HashSet<int>();
 		private int dismissAnimationRefCount = 0;
 		private float downX;
 		private float downY;
@@ -62,7 +61,7 @@
 		private int foregroundId;
 		private int backgroundId;
 
-		private Handler handler = new Handler();
+		private Handler handler;
 
 		/**
      * Constructs a new swipe touch listener for the given {@link android.support.v7.widget.RecyclerView}
@@ -79,6 +78,7 @@
 			maxFlingVelocity = vc.ScaledMaximumFlingVelocity;
 			this.recyclerView = recyclerView;
 			swipeListener = listener;
+			handler = new Handler(this);
 
 			/**
          * This will ensure that this SwipeableRecyclerViewTouchListener is paused during list view scrolling.
@@ -88,6 +88,12 @@
 			recyclerView.SetOnScrollListener(new ScrollListener(this));
 		}
 
+		public bool HandleMessage(Message msg) {
+			if (pendingDismissAnimations.ContainsKey(msg.What)) {
+				CloseView(pendingDismissAnimations[msg.What]);
+			}
+			return true;
+		}
 
 		/**
      * Enables or disables (pauses or resumes) watching for swipe-to-dismiss gestures.
@@ -110,6 +116,7 @@
 			switch (motionEvent.Action) {
 				case MotionEventActions.Down: {
 						if (paused) {
+							Log.D(this, "Breaking because paused");
 							break;
 						}
 
@@ -131,9 +138,14 @@
 						}
 
 						if (swipedDownView != null) {
+							swipedDownPosition = recyclerView.GetChildAdapterPosition(swipedDownView);
+
+							if (!swipeListener.CanSwipe(swipedDownPosition)) {
+								return false;
+							}
+
 							downX = motionEvent.RawX;
 							downY = motionEvent.RawY;
-							swipedDownPosition = recyclerView.GetChildAdapterPosition(swipedDownView);
 							velocityTracker = VelocityTracker.Obtain();
 							velocityTracker.AddMovement(motionEvent);
 							foregroundView = swipedDownView.FindViewById(foregroundId);
@@ -150,9 +162,9 @@
 						if (swipedDownView != null && swiping) {
 							// cancel
 							foregroundView.Animate()
-							       .TranslationX(0)
-				             .SetDuration(ANIMATION_FAST)
-				             .SetListener(null);
+							              .TranslationX(0)
+							              .SetDuration(ANIMATION_FAST)
+							              .SetListener(null);
 						}
 						velocityTracker.Recycle();
 						velocityTracker = null;
@@ -182,7 +194,7 @@
 							dismiss = true;
 							dismissRight = finalDelta > 0;
 						} else if (minFlingVelocity <= absVelocityX && absVelocityX <= maxFlingVelocity
-						               && absVelocityY < absVelocityX && swiping) {
+						           && absVelocityY < absVelocityX && swiping) {
 							// dismiss only if flinging in the same direction as dragging
 							dismiss = (velocityX < 0) == (finalDelta < 0);
 							dismissRight = velocityTracker.XVelocity > 0;
@@ -194,23 +206,21 @@
 							++dismissAnimationRefCount;
 							var pdd = new PendingDismissData(downPosition, foregroundView, backgroundView, viewWidth);
 							backgroundView.Animate()
-//				             .Alpha(1)
-				             .SetDuration(ANIMATION_FAST);
+							              .SetDuration(ANIMATION_FAST);
 							foregroundView.Animate()
-				             .TranslationX(/*dismissRight ? viewWidth :*/ -viewWidth)
-				             .SetDuration(ANIMATION_FAST)
-				             .SetListener(new AnimatorListenerActionAdapter() {
-												onAnimationEnd = (obj) => {
-													DoSwipe(pdd);
-//													PerformDismiss(downView, downPosition);
-												},
-											});
+							              .TranslationX(/*dismissRight ? viewWidth :*/ -viewWidth)
+							              .SetDuration(ANIMATION_FAST)
+							              .SetListener(new AnimatorListenerActionAdapter() {
+								onAnimationEnd = (obj) => {
+									DoSwipe(pdd);
+								},
+							});
 						} else {
 							// cancel
 							foregroundView.Animate()
-				             .TranslationX(0)
-				             .SetDuration(ANIMATION_FAST)
-				             .SetListener(null);
+							              .TranslationX(0)
+							              .SetDuration(ANIMATION_FAST)
+							              .SetListener(null);
 						}
 						velocityTracker.Recycle();
 						velocityTracker = null;
@@ -224,7 +234,7 @@
 					}
 
 				case MotionEventActions.Move: {
-						if (velocityTracker == null || paused || activeAnimations.Contains(swipedDownPosition)) {
+						if (velocityTracker == null || paused || pendingDismissAnimations.ContainsKey(swipedDownPosition)) {
 							break;
 						}
 
@@ -233,8 +243,7 @@
 						float deltaY = motionEvent.RawY - downY;
 
 						if (deltaX > 0) {
-							if (this.pendingDismissAnimations.ContainsKey(this.swipedDownPosition)) {
-								pendingDismissAnimations.Remove(swipedDownPosition);
+							if (pendingDismissAnimations.ContainsKey(this.swipedDownPosition)) {
 								CloseView(new PendingDismissData(swipedDownPosition, foregroundView, backgroundView, viewWidth));
 							}
 							break;
@@ -252,7 +261,9 @@
 							backgroundView.Visibility = ViewStates.Visible;
 							viewWidth = backgroundView.Width;
 							foregroundView.TranslationX = deltaX - swipingSlop;
-//							backgroundView.Alpha = 1 - System.Math.Max(0f, System.Math.Min(1f, 1f - System.Math.Abs(deltaX) / viewWidth));
+							if (foregroundView.TranslationX < -backgroundView.Width) {
+								foregroundView.TranslationX = -backgroundView.Width;
+							}
 							return true;
 						}
 						break;
@@ -270,133 +281,40 @@
 		private void DoSwipe(PendingDismissData data) {
 			if (pendingDismissAnimations.ContainsKey(data.position)) {
 				// Prevent the same item from spamming close.
+				Log.D(this, "Preventing the spamming of close at: " + data.position);
 				return;
 			}
+			data.backgroundView.Visibility = ViewStates.Visible;
 			pendingDismissAnimations.Add(data.position, data);
+			Log.D(this, "Adding: " + data.position + " to close queue");
+			handler.SendMessageDelayed(handler.ObtainMessage(data.position), PENDING_ACTION_DELAY); 
+			/*
 			handler.PostDelayed(() => {
-				if (pendingDismissAnimations.ContainsValue(data)) {
-					pendingDismissAnimations.Remove(data.position);
-					activeAnimations.Add(data.position);
+				if (pendingDismissAnimations.ContainsKey(data.position)) {
 					CloseView(data);
+				} else {
+					Log.D(this, "Failed to close item at position: " + data.position);
 				}
 			}, PENDING_ACTION_DELAY);
+*/
 		}
 
 		/// <summary>
 		/// Closes an expanded row view.
 		/// </summary>
 		private void CloseView(PendingDismissData data) {
-			ValueAnimator animator = ValueAnimator.OfInt(-data.scrollWidth, 0);
-			animator.SetDuration(ANIMATION_FAST);
-
-			// Animate the view back to its initial position
-			animator.AddUpdateListener(new AnimatorUpdateActionAdapter() {
-				onAnimationUpdate = (obj) => {
-					var w = ((Integer) obj.AnimatedValue).IntValue();
-					data.foregroundView.TranslationX = w;
-				},
-			});
-
-			animator.AddListener(new AnimatorListenerActionAdapter() {
+			handler.RemoveMessages(data.position);
+			pendingDismissAnimations.Remove(data.position);
+			data.foregroundView.Animate()
+			    .TranslationX(0)
+			    .SetListener(new AnimatorListenerActionAdapter() {
 				onAnimationEnd = (obj) => {
-					data.backgroundView.Visibility = ViewStates.Gone;
-					activeAnimations.Remove(data.position);
+					data.backgroundView.Visibility = ViewStates.Invisible;
 				},
-			});
-
-			animator.Start();
+			})
+			    .Start();
+			Log.D(this, "Removed: " + data.position + ". There are " + pendingDismissAnimations.Count + " items left to close");
 		}
-
-/*
-		private void PerformDismiss(View dismissView, int dismissPosition) {
-			// Animate the dismissed list item to zero-height and fire the dismiss callback when
-			// all dismissed list item animations have completed. This triggers layout on each animation
-			// frame; in the future we may want to do something smarter and more performant.
-
-			View backgroundView = dismissView.FindViewById(backgroundId);
-			ViewGroup.LayoutParams lp = dismissView.LayoutParameters;
-			int originalHeight = dismissView.Height;
-			bool[] deleteAble = {true};
-
-			ValueAnimator animator = ValueAnimator.OfInt(originalHeight, 1);
-			animator.SetDuration(ANIMATION_FAST);
-
-			animator.AddListener(new AnimatorListenerActionAdapter() {
-				onAnimationEnd = (obj) => {
-					--dismissAnimationRefCount;
-
-					if (dismissAnimationRefCount > 0) return;
-
-					dismissAnimationRefCount = 0;
-					// No active animations, process all pending dismisses.
-					// Sort by descending position
-					pendingDismisses.Sort();
-
-					int[] dismissPositions = new int[pendingDismisses.Count];
-					for (int i = pendingDismisses.Count - 1; i >= 0; i--) {
-						dismissPositions[i] = pendingDismisses[i].position;
-					}
-//					swipeListener.OnDismissedBySwipe(recyclerView, dismissPositions);
-
-					// Reset mDownPosition to avoid MotionEventActions.UP trying to start a dismiss
-					// animation with a stale position
-					swipedDownPosition = ListView.InvalidPosition;
-
-					ViewGroup.LayoutParams lp2;
-					foreach (PendingDismissData pendingDismiss in pendingDismisses) {
-						// Reset view presentation
-						pendingDismiss.view.FindViewById(foregroundId).TranslationX = 0;
-						lp2 = pendingDismiss.view.LayoutParameters;
-						lp2.Height = originalHeight;
-						pendingDismiss.view.LayoutParameters = lp;
-					}
-
-					// Send a cancel event
-					long time = SystemClock.UptimeMillis();
-					MotionEvent cancelEvent = MotionEvent.Obtain(time, time, MotionEventActions.Cancel, 0, 0, 0);
-					recyclerView.DispatchTouchEvent(cancelEvent);
-
-					pendingDismisses.Clear();
-				},
-			});
-
-			// Animate the dismissed list item to zero-height
-			animator.AddUpdateListener(new AnimatorUpdateActionAdapter() {
-				onAnimationUpdate = (obj) => {
-					lp.Height = ((Integer) obj.AnimatedValue).IntValue();
-					dismissView.LayoutParameters = lp;
-				},
-			});
-
-			PendingDismissData pendingDismissData = new PendingDismissData(dismissPosition, dismissView);
-			pendingDismisses.Add(pendingDismissData);
-
-			//fade out background view
-			backgroundView.Animate()
-			                .Alpha(0).SetDuration(ANIMATION_WAIT)
-			                .SetListener(new AnimatorListenerActionAdapter() {
-												onAnimationEnd = (obj) => {
-													if (deleteAble[0]) animator.Start();
-												},
-											});
-
-			//cancel animate when click(actually touch) background view.
-			backgroundView.SetOnTouchListener(new ViewActionTouchListener() {
-				onTouch = (v, e) => {
-					switch (e.Action) {
-						case MotionEventActions.Down:
-							deleteAble[0] = false;
-							--dismissAnimationRefCount;
-							pendingDismisses.Remove(pendingDismissData);
-							backgroundView.PlaySoundEffect(0);
-							backgroundView.SetOnTouchListener(null);
-							break;
-					}
-					return false;
-				},
-			});
-		}
-*/
 
 		/**
      * The callback interface used by {@link SwipeableRecyclerViewTouchListener} to inform its client
@@ -407,15 +325,6 @@
          * Called to determine whether the given position can be swiped.
          */
 			bool CanSwipe(int position);
-
-			/**
-         * Called when the item has been dismissed by swiping to the left.
-         *
-         * @param recyclerView           The originating {@link android.support.v7.widget.RecyclerView}.
-         * @param reverseSortedPositions An array of positions to dismiss, sorted in descending
-         *                               order for convenience.
-         */
-//			void OnDismissedBySwipe(RecyclerView recyclerView, int[] reverseSortedPositions);
 		}
 
 		class ScrollListener : RecyclerView.OnScrollListener {

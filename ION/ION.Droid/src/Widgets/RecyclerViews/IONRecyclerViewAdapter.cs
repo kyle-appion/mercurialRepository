@@ -41,6 +41,7 @@
 		} View __emptyView;
 
     public IONRecyclerViewAdapter() {
+//			HasStableIds = true;
       RegisterAdapterDataObserver(new InternalObserver(this));
     }
 

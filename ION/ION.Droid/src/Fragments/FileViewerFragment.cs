@@ -228,10 +228,12 @@
 				}
 			}
 
-			public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+			public override bool IsSwipable(int position) {
+				var record = records[position];
 				return record.viewType == (int)EViewType.File;
 			}
 
+/*
 			public override Action GetViewHolderSwipeAction(int index) {
 				return () => {
 					switch ((EViewType)records[index].viewType) {
@@ -244,6 +246,7 @@
 					}
 				};
 			}
+*/
 
 			/// <summary>
 			/// Sets the folder that the adaper will display.

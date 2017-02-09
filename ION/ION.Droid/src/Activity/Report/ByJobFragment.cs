@@ -300,12 +300,8 @@ namespace ION.Droid.Activity.Report {
 				vh.record = record;
 			}
 
-			public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+			public override bool IsSwipable(int position) {
 				return false;
-			}
-
-			public override Action GetViewHolderSwipeAction(int index) {
-				return null;
 			}
 
 			public void NotifyJobHeaderClicked(JobRow job) {

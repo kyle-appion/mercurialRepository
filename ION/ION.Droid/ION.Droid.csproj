@@ -220,7 +220,6 @@
     <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
     <Compile Include="src\Dialog\WhatsNewDialog.cs" />
     <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
@@ -295,6 +294,7 @@
     <Compile Include="src\Animations\AnimatorUpdateActionAdapter.cs" />
     <Compile Include="src\Views\ViewActionTouchListener.cs" />
     <Compile Include="src\Dialog\ManualSensorCreateDialog.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SimpleDragSwipeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

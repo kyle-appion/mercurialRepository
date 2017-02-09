@@ -16,16 +16,11 @@
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-  public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter, Swiper.ISwipeListener {
+	public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter, SimpleDragSwipeHandler.ICallback {
     /// <summary>
     /// The delegate that will handle item clicks.
     /// </summary>
     public delegate void OnItemClicked(SwipableRecyclerViewAdapter adapter, int position);
-
-    /// <summary>
-    /// The number of milliseconds that will ellapse before the swiped row will return.
-    /// </summary>
-    private const long PENDING_ACTION_DELAY = 2500;
 
     /// <summary>
     /// Occurs when an item is clicked.
@@ -41,6 +36,7 @@
         return records.Count;
       }
     }
+
     /// <summary>
     /// An indexer that will return the record from the given index.
     /// </summary>
@@ -51,12 +47,12 @@
       }
     }
 
-    
-    /// <summary>
-    /// The handler that will post delayed actions to the main thread.
-    /// </summary>
-    public Handler handler { get; private set; }
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual bool allowDragging { get { return false; } }
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual bool allowSwiping { get { return true; } }
 
+    
     /// <summary>
     /// The delay that is applied when a swipe event is performed. After this delay, the swiped action will be commited.
     /// </summary>
@@ -69,11 +65,6 @@
     protected readonly List<IRecord> records = new List<IRecord>();
 
     /// <summary>
-    /// The records that have pending actions.
-    /// </summary>
-    private Dictionary<IRecord, Action> pendingActions = new Dictionary<IRecord, Action>();
-
-    /// <summary>
     /// The item decorator that will draw the action button behind a swiped view.
     /// </summary>
 		protected ItemTouchHelper touchHelperDecoration { get; set; }
@@ -82,33 +73,24 @@
     /// </summary>
     private RecyclerView.ItemDecoration swipeDecoration;
 
-		private Swiper toucher;
-
-		private Color backgroundColor;
-
     public SwipableRecyclerViewAdapter() : base() {
-      handler = new Handler();
-//      touchHelperDecoration = new ItemTouchHelper(new SwipeDecorator(this, Color.Transparent));
-      swipeDecoration = new SwipeAnimationDecorator(Color.Transparent);
-      swipeConfirmTimeout = PENDING_ACTION_DELAY;
-			backgroundColor = Color.Transparent;
     }
 
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-			toucher = new Swiper(recyclerView, Resource.Id.content, Resource.Id.button, this);
-			recyclerView.AddOnItemTouchListener(toucher);
-
-
-//      touchHelperDecoration.AttachToRecyclerView(recyclerView);
-      recyclerView.AddItemDecoration(swipeDecoration);
+			recyclerView.GetItemAnimator().ChangeDuration = 0;
+			touchHelperDecoration = new ItemTouchHelper(new SimpleDragSwipeHandler(recyclerView, this));
+      touchHelperDecoration.AttachToRecyclerView(recyclerView);
     }
 
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
-			recyclerView.RemoveOnItemTouchListener(toucher);
-      recyclerView.RemoveItemDecoration(swipeDecoration);
+			recyclerView.RemoveItemDecoration(touchHelperDecoration);
     }
+
+		public override long GetItemId(int position) {
+			return position;
+		}
 
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       var ret = OnCreateSwipableViewHolder(parent, viewType);
@@ -136,7 +118,7 @@
       }
 
       OnBindViewHolder(record, vh, position);
-
+/*
       if (pendingActions.ContainsKey(record)) {
         vh.ItemView.SetBackgroundColor(backgroundColor);
         vh.button.SetOnClickListener(new ViewClickAction((v) => {
@@ -151,22 +133,40 @@
 					}
           NotifyItemChanged(position);
         }));
+
       } else {
         vh.ItemView.SetBackgroundColor(Color.Transparent);
         vh.ItemView.Visibility = ViewStates.Visible;
       }
+*/
     }
 
-		// Implemented from ISwipeListener
-		public bool CanSwipe(int position) {
-			return IsViewHolderSwipable(records[position], recyclerView.FindViewHolderForAdapterPosition(position) as SwipableViewHolder, position);
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual bool IsSwipable(int position) {
+			return false;
 		}
 
-		// Implemented from ISwipeListener
-		public void OnDismissedBySwipe(RecyclerView recyclerView, int[] reverseSortedPosition) {
-			foreach (var i in reverseSortedPosition) {
-				PerformSwipeAction(i);
-			}
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual bool IsDraggable(RecyclerView.ViewHolder viewHolder) {
+			return false;
+		}
+
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual void StartingDrag(RecyclerView.ViewHolder viewHolder) {
+		}
+
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual void EndingDrag(RecyclerView.ViewHolder viewHolder) {
+		}
+
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public virtual bool WillAcceptDrop(RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder dropTarget) {
+			return false;
+		}
+
+		// Implemented from SimpleDragSwipeHandler.ICallback
+		public void OnRecordsSwapped(int i1, int i2) {
+			SwapRecords(i1, i2, false);
 		}
 
     /// <summary>
@@ -210,6 +210,22 @@
 			this.NotifyItemRemoved(index);
 		}
 
+		/// <summary>
+		/// Swaps the records at the given indices.
+		/// </summary>
+		/// <param name="i1">I1.</param>
+		/// <param name="i2">I2.</param>
+		/// <param name="animate">If set to <c>true</c> animate.</param>
+		public void SwapRecords(int i1, int i2, bool animate=true) {
+			var tmp = records[i1];
+			records[i1] = records[i2];
+			records[i2] = tmp;
+
+			if (animate) {
+				NotifyItemMoved(i1, i2);
+			}
+		}
+
     /// <summary>
     /// Called when the adapter needs a new view holder.
     /// </summary>
@@ -230,57 +246,6 @@
 		public override int GetItemViewType(int position) {
 			return (int)records[position].viewType;
 		}
-
-    /// <summary>
-    /// Queries whether or not the given view holder is swipeable.
-    /// </summary>
-    /// <returns><c>true</c> if this instance is view holder swipable the specified viewHolder index; otherwise, <c>false</c>.</returns>
-    /// <param name="viewHolder">View holder.</param>
-    /// <param name="index">Index.</param>
-    public abstract bool IsViewHolderSwipable(IRecord record, SwipableViewHolder viewHolder, int index);
-
-    /// <summary>
-    /// Queries the action that is triggered when the swipe revealed button is clicked.
-    /// </summary>
-    /// <returns>The view holder swipe action.</returns>
-    /// <param name="index">Index.</param>
-    public abstract Action GetViewHolderSwipeAction(int index);
-
-    /// <summary>
-    /// Queries whether or not the given record in the recycler view has a pending action.
-    /// </summary>
-    /// <returns><c>true</c> if this instance is pending removal; otherwise, <c>false</c>.</returns>
-    public bool HasPendingAction(int position) {
-      return pendingActions.ContainsKey(records[position]);
-    }
-
-    /// <summary>
-    /// Performs a swipe action for the given position.
-    /// </summary>
-    /// <param name="swipePosition">Swipe position.</param>
-    public void PerformSwipeAction(int swipePosition) {
-      var record = records[swipePosition];
-      Action action = () => {
-        handler.RemoveCallbacks(pendingActions[record]);
-        pendingActions.Remove(record);
-        NotifyItemChanged(swipePosition);
-      };
-      pendingActions.Add(record, action);
-      handler.PostDelayed(action, swipeConfirmTimeout);
-      NotifyItemChanged(swipePosition);
-    }
-
-    /// <summary>
-    /// Cancels an active swipe.
-    /// </summary>
-    /// <returns><c>true</c> if this instance cancel swipe action the specified swipePosition; otherwise, <c>false</c>.</returns>
-    /// <param name="swipePosition">Swipe position.</param>
-    public void CancelSwipeAction(int swipePosition) {
-      var action = pendingActions[records[swipePosition]];
-      if (action != null) {
-        action();
-      }
-    }
 
     /// <summary>
     /// The contract for a record that will live in the recycler view.

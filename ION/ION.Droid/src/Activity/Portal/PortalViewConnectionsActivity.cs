@@ -160,10 +160,10 @@
 				cvh.button.Text = recyclerView.Context.GetString(Resource.String.remove);
 			}
 
-			public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+			public override bool IsSwipable(int position) {
 				return deleteAction != null;
 			}
-
+/*
 			public override Action GetViewHolderSwipeAction(int index) {
 				return () => {
 					if (deleteAction != null) {
@@ -173,6 +173,7 @@
 					}
 				};
 			}
+*/
 		}
 
 		private class ConnectionRecord : SwipableRecyclerViewAdapter.IRecord {

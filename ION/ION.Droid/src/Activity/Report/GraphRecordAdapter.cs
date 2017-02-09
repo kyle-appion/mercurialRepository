@@ -32,12 +32,8 @@
 			}
 		}
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+		public override bool IsSwipable(int position) {
 			return false;
-		}
-
-		public override Action GetViewHolderSwipeAction(int index) {
-			return null;
 		}
 
 		public List<SessionResults> GatherSelectedLogs(float leftPercent, float rightPercent) {

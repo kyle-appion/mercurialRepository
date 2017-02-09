@@ -134,10 +134,10 @@
       }));
     }
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
+		public override bool IsSwipable(int position) {
 			return true;
 		}
-
+/*
 		public override Action GetViewHolderSwipeAction(int index) {
 			Log.D(this, "Before we returned an action, we had: " + manifold.sensorPropertyCount);
 			return () => {
@@ -145,6 +145,7 @@
 				Log.D(this, "The number of subviews in the manifold after remove: " + manifold.sensorPropertyCount);
 			};
 		}
+*/
 
     /// <summary>
     /// Raises the view detached from window event.
