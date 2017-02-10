@@ -120,11 +120,15 @@
               (holder as ManifoldViewHolder).record = vr;
             }
 
-            holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
+            holder.content.SetOnClickListener(new ViewClickAction((v) => {
               if (onManifoldClicked != null) {
                 onManifoldClicked(vr.item);
               }
             }));
+
+						holder.button.SetOnClickListener(new ViewClickAction((view) => {
+							Toast.MakeText(view.Context, "Clicky, Clicky", ToastLength.Long).Show();
+						}));
 
             if (template.toggle != null) {
               if (vr.item.sensorPropertyCount > 0) {
@@ -504,6 +508,7 @@
     }
 
     private void BuildSensorPropertyViewHolder(RecyclerView.ViewHolder holder, int position) {
+			var svh = holder as SwipableViewHolder;
       var viewType = GetItemViewType(position);
       var record = records[position] as SensorPropertyRecord;
 
@@ -539,7 +544,7 @@
 					break;
       }
 
-			holder.ItemView.SetOnClickListener(new ViewClickAction((v) => {
+			svh.content.SetOnClickListener(new ViewClickAction((v) => {
         var manifold = FindManifoldAtIndex(position);
         if (manifold != null && onSensorPropertyClicked != null) {
           onSensorPropertyClicked(manifold, record.sensorProperty);
