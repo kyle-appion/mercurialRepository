@@ -27,7 +27,7 @@
 		private const int AUTO_CLOSE_TIME = 3000;
 
 		// Overridden from ItemTouchHelper.Callback
-		public override bool IsLongPressDragEnabled { get { return callback.allowDragging; } }
+		public override bool IsLongPressDragEnabled { get { return false; } }
 		// Overridden from ItemTouchHelper.Callback
 		public override bool IsItemViewSwipeEnabled { get { return callback.allowSwiping; } }
 
@@ -57,14 +57,6 @@
 				drag = ItemTouchHelper.Up | ItemTouchHelper.Down;
 			}
 
-
-/*
-			if (allowDrag && vh.isDraggable) {
-				drag = MakeFlag(ItemTouchHelper.ActionStateIdle, ItemTouchHelper.Up | ItemTouchHelper.Down) |
-				MakeFlag(ItemTouchHelper.ActionStateDrag, ItemTouchHelper.Up | ItemTouchHelper.Down);
-			}
-*/
-
 			Log.D(this, "AllowSwiping: " + callback.allowSwiping + ", swipable: " + callback.IsSwipable(viewHolder.AdapterPosition));
 			if (callback.allowSwiping && callback.IsSwipable(viewHolder.AdapterPosition)) {
 				swipe = ItemTouchHelper.Left;
@@ -75,12 +67,9 @@
 
 		// Overridden from ItemTouchHelper.Callback
 		public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-//			Log.D(this, "OnMove(RecyclerView: " + recyclerView + ", RecyclerView.ViewHolder: " + viewHolder + ", RecyclerView.ViewHolder: " + target + ")");
 			if (callback.WillAcceptDrop(viewHolder, target)) {
-//				Log.D(this, "Returning true");
 				return true;
 			} else {
-//				Log.D(this, "Returning false");
 				return false;
 			}
 		}
@@ -88,6 +77,7 @@
 		// Overridden from ItemTouchHelper.Callback
 		public override void OnSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
 			Log.D(this, "OnSwiped(RecyclerView.ViewHolder: " + viewHolder + ", direction: " + direction + ")");
+			recyclerView.GetAdapter().NotifyItemChanged(viewHolder.AdapterPosition);
 			PostMessage(viewHolder.AdapterPosition);
 		}
 
@@ -120,14 +110,17 @@
 				CloseView(viewHolder.AdapterPosition);
 			}
 		}
-
 		// Overridden from ItemTouchHelper.Callback
 		public override void OnChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, bool isCurrentlyActive) {
-//			Log.D(this, "OnChildDraw(dx: " + dX + " dy: " + dY + " actionState: " + actionState + " isCurrentlyActive: " + isCurrentlyActive + ")");
+			if (viewHolder.ItemView.Width == Math.Abs(dX) || dX == 0) {
+				return;
+			}
+			Log.D(this, "OnChildDraw(dx: " + dX + " dy: " + dY + " actionState: " + actionState + " isCurrentlyActive: " + isCurrentlyActive + ")");
 			if (actionState == ItemTouchHelper.ActionStateSwipe) {
 				var vh = viewHolder as SwipableViewHolder;
 
-				if (!pendingCloses.Contains(viewHolder.AdapterPosition)) {
+//				if (!pendingCloses.Contains(viewHolder.AdapterPosition)) {
+				if ((isCurrentlyActive || Math.Abs(dX) < viewHolder.ItemView.Width - 1) && !pendingCloses.Contains(viewHolder.AdapterPosition)) {
 					var view = vh.content;
 
 					if (dX < -vh.button.Width) {
@@ -166,7 +159,7 @@
 			  .SetDuration(300)
 			  .SetListener(new AnimatorListenerActionAdapter() {
 					onAnimationEnd = (obj) => {
-						vh.button.Visibility = ViewStates.Gone;
+//						vh.button.Visibility = ViewStates.Gone;
 						vh.content.TranslationX = 0;
 						recyclerView.GetAdapter().NotifyItemChanged(position);
 					},

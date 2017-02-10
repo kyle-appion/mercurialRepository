@@ -94,6 +94,7 @@
 
     public override sealed RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
       var ret = OnCreateSwipableViewHolder(parent, viewType);
+			ret.helper = this.touchHelperDecoration;
 
       ret.ItemView.Click += (sender, e) => {
         if (onItemClicked != null) {
@@ -284,6 +285,8 @@
       }
     } protected SwipableRecyclerViewAdapter.IRecord __record;
 
+		public ItemTouchHelper helper;
+
     /// <summary>
     /// The inflated content view.
     /// </summary>
@@ -305,6 +308,9 @@
         content = ItemView.FindViewById<LinearLayout>(Resource.Id.content);
         view = LayoutInflater.From(parent.Context).Inflate(viewResource, content, true);
         button = ItemView.FindViewById<Button>(Resource.Id.button);
+				content.SetOnLongClickListener(new ViewLongClickAction((view) => {;
+					this.helper.StartDrag(this);
+				}));
       }
     }
 
