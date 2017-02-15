@@ -130,6 +130,7 @@
 						var cancelEvent = MotionEvent.Obtain(ev);
 						cancelEvent.Action = MotionEventActions.Cancel;
 						base.OnTouchEvent(cancelEvent);
+						L.D(this, "Returning true");
 						return true;
 					}
 

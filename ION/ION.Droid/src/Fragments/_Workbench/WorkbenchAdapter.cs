@@ -23,6 +23,7 @@ namespace ION.Droid.Fragments._Workbench {
 	public class WorkbenchAdapter : RecordAdapter {
 
 		public event Action<Manifold> onManifoldClicked;
+		public event Action<Manifold, ISensorProperty> onSensorPropertyClicked;
 
 		/// <summary>
 		/// The workbench that the adapter is displaying.
@@ -151,6 +152,10 @@ namespace ION.Droid.Fragments._Workbench {
 			} else if (holder is SensorPropertyViewHolder) {
 				var spvh = holder as SensorPropertyViewHolder;
 				spvh.sensorPropertyRecord = r as SensorPropertyRecord;
+
+				spvh.foreground.SetOnClickListener(new ViewClickAction((view) => {
+					NotifySensorPropertyClicked(spvh.sensorPropertyRecord.manifold, spvh.sensorPropertyRecord.sensorProperty);
+				}));
 			}
 /*
 			} else if (holder is SecondarySensorPropertyViewHolder) {
@@ -261,6 +266,14 @@ namespace ION.Droid.Fragments._Workbench {
 			if (sp is PTChartSensorProperty) {
 				var p = sp as PTChartSensorProperty;
 				return new PTSensorPropertyRecord(manifold, p);
+			} else if (sp is SuperheatSubcoolSensorProperty) {
+				return new SHSCSensorPropertyRecord(manifold, sp as SuperheatSubcoolSensorProperty);
+			} else if (sp is RateOfChangeSensorProperty) {
+				return new ROCSensorPropertyRecord(manifold, sp as RateOfChangeSensorProperty);
+			} else if (sp is TimerSensorProperty) {
+				return new TimerSensorPropertyRecord(manifold, sp as TimerSensorProperty);
+			} else if (sp is SecondarySensorProperty) {
+				return new SecondarySensorPropertyRecord(manifold, sp as SecondarySensorProperty);
 			} else {
 				return new SimpleSensorPropertyRecord(manifold, sp);
 			}
@@ -356,11 +369,22 @@ namespace ION.Droid.Fragments._Workbench {
 					records.Insert(i, record);
 					NotifyItemInserted(i);
 					ExpandManifold(mr);
+					if (mr.manifold.sensorPropertyCount > 1) {
+						NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
+					} else {
+						NotifyItemChanged(aifm);
+					}
 				} break; // ManifoldEvent.EType.SensorPropertyAdded
 				case ManifoldEvent.EType.SensorPropertyRemoved: {
-					var i = AdapterIndexForManifold(e.manifold) + e.index + 1;
+					var aifm = AdapterIndexForManifold(e.manifold);
+					var i = aifm + e.index + 1;
 					records.RemoveAt(i);
 					NotifyItemRemoved(i);
+					if (e.manifold.sensorPropertyCount > 1) {
+						NotifyItemChanged(aifm + e.manifold.sensorPropertyCount);
+					} else {
+						NotifyItemChanged(aifm);
+					}
 				} break; // ManifoldEvent.EType.SensorPropertyRemoved
 				case ManifoldEvent.EType.SensorPropertySwapped: {
 					var m = e.manifold;
@@ -380,6 +404,12 @@ namespace ION.Droid.Fragments._Workbench {
 		private void NotifyManifoldClick(Manifold manifold) {
 			if (onManifoldClicked != null) {
 				onManifoldClicked(manifold);
+			}
+		}
+
+		private void NotifySensorPropertyClicked(Manifold manifold, ISensorProperty sp) {
+			if (onSensorPropertyClicked != null) {
+				onSensorPropertyClicked(manifold, sp);
 			}
 		}
 

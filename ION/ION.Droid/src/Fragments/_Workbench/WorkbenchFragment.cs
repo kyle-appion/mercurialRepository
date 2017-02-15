@@ -129,13 +129,13 @@
     public override void OnResume() {
       base.OnResume();
       adapter.NotifyDataSetChanged();
-//			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
+			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked += OnManifoldClicked;
     }
 
 		public override void OnPause() {
 			base.OnPause();
-//			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
+			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
 
@@ -433,6 +433,10 @@
     /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
     /// </summary>
     private void AddAllSubviews(Manifold manifold) {
+			if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+				manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+			}
+
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
       }

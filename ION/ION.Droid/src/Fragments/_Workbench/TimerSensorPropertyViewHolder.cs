@@ -31,7 +31,7 @@
 		private Handler handler;
 		private bool wasStarted;
 
-		public TimerSensorPropertyViewHolder(SwipeRecyclerView recyclerView, BitmapCache cache) : base(recyclerView, Resource.Layout.subview_measurement_large) {
+		public TimerSensorPropertyViewHolder(SwipeRecyclerView recyclerView, BitmapCache cache) : base(recyclerView, Resource.Layout.subview_timer_large) {
 			this.cache = cache;
 			title = foreground.FindViewById<TextView>(Resource.Id.title);
 			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
@@ -87,6 +87,11 @@
 			} else {
 				measurement.Text = sp.ellapsedTime.ToString("m'm 's's'");
 			}
+		}
+
+		public override void Bind() {
+			base.Bind();
+			handler.SendEmptyMessageDelayed(MSG_INVALIDATE, 333);
 		}
 
 		/// <summary>
