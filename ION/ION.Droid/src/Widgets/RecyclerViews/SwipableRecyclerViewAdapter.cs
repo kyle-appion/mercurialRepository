@@ -16,7 +16,7 @@
   /// A recycler view adapter that provides features that are not default in a recycler view, such as swipe to delete
   /// and other touch/convenience interactions. 
   /// </summary>
-	public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter, SimpleDragSwipeHandler.ICallback {
+	public abstract class SwipableRecyclerViewAdapter : IONRecyclerViewAdapter {
     /// <summary>
     /// The delegate that will handle item clicks.
     /// </summary>
@@ -47,18 +47,6 @@
       }
     }
 
-		// Implemented from SimpleDragSwipeHandler.ICallback
-		public virtual bool allowDragging { get { return false; } }
-		// Implemented from SimpleDragSwipeHandler.ICallback
-		public virtual bool allowSwiping { get { return true; } }
-
-    
-    /// <summary>
-    /// The delay that is applied when a swipe event is performed. After this delay, the swiped action will be commited.
-    /// </summary>
-    /// <value>The swipe confirm timeout.</value>
-    public long swipeConfirmTimeout { get; set; }
-
     /// <summary>
     /// The records that the recycler view will display.
     /// </summary>
@@ -78,14 +66,10 @@
 
     public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
-			recyclerView.GetItemAnimator().ChangeDuration = 0;
-			touchHelperDecoration = new ItemTouchHelper(new SimpleDragSwipeHandler(recyclerView, this));
-      touchHelperDecoration.AttachToRecyclerView(recyclerView);
     }
 
     public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
-			recyclerView.RemoveItemDecoration(touchHelperDecoration);
     }
 
 		public override long GetItemId(int position) {
@@ -141,6 +125,7 @@
       }
 */
     }
+
 
 		// Implemented from SimpleDragSwipeHandler.ICallback
 		public virtual bool IsSwipable(int position) {

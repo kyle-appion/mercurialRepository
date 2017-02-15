@@ -1,5 +1,5 @@
-﻿namespace ION.Droid.Fragments {
-/*
+﻿namespace ION.Droid.Fragments._Workbench {
+
   using System;
 
   using Android.App;
@@ -117,8 +117,8 @@
 			}
       workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
-      adapter = new WorkbenchAdapter(ion, Resources);
-      adapter.SetWorkbench(ion.currentWorkbench, OnAddViewer);
+      adapter = new WorkbenchAdapter(OnAddViewer);
+			adapter.workbench = ion.currentWorkbench;
       list.SetAdapter(adapter);
     }
 
@@ -129,13 +129,13 @@
     public override void OnResume() {
       base.OnResume();
       adapter.NotifyDataSetChanged();
-			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
+//			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked += OnManifoldClicked;
     }
 
 		public override void OnPause() {
 			base.OnPause();
-			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
+//			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
 
@@ -253,10 +253,10 @@
 		private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
 			switch (manifoldEvent.type) {
 				case ManifoldEvent.EType.SensorPropertyAdded:
-					adapter.UpdateManifoldSubview(manifoldEvent.manifold, Math.Max(manifoldEvent.index - 1, 0));
+//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, Math.Max(manifoldEvent.index - 1, 0));
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertyRemoved:
-					adapter.UpdateManifoldSubview(manifoldEvent.manifold, manifoldEvent.manifold.sensorPropertyCount - 1);
+//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, manifoldEvent.manifold.sensorPropertyCount - 1);
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertySwapped:
 					ion.SaveWorkbenchAsync();
@@ -468,7 +468,5 @@
       }
     }
   }
-
-*/
 }
 
