@@ -13,7 +13,10 @@
 
 	using L = Appion.Commons.Util.Log;
 
-	public class SwipeMenuLayout : FrameLayout, GestureDetector.IOnGestureListener {
+	public class SwipeMenuLayout : FrameLayout, GestureDetector.IOnGestureListener, Handler.ICallback {
+
+		private const int MSG_CLOSE = 1;
+		private const long PENDING_CLOSE_DELAY = 2500;
 
 		public SwipeRecyclerView recyclerView { 
 			get {
@@ -38,6 +41,7 @@
 		private bool isFling;
 		private float baseX;
 		private float downX;
+		private Handler handler;
 
 		public SwipeMenuLayout(Context context) : this(context, null, 0) {
 		}
@@ -46,6 +50,32 @@
 		}
 
 		public SwipeMenuLayout(Context context, IAttributeSet attrs, int style) : base(context, attrs, style) {
+		}
+
+		/// <summary>
+		/// Initializes the recycler view.
+		/// </summary>
+		public void Init() {
+			handler = new Handler(this);
+			Clickable = true;
+
+			foreground = FindViewById(Resource.Id.swipe_recycler_view_foreground);
+			if (foreground == null) {
+				throw new Exception("Attempted to create a " + typeof(SwipeMenuLayout).Name + " without a foreground view");
+			}
+
+			background = FindViewById(Resource.Id.swipe_recycler_view_background);
+			if (background == null) {
+				throw new Exception("Attempted to create a " + typeof(SwipeMenuLayout).Name + " without a background view");
+			}
+
+			viewConfig = ViewConfiguration.Get(Context);
+
+			isOpen = false;
+
+			gestureDetector = new GestureDetector(Context, this);
+			openScroller = new Scroller(Context, recyclerView.openInterpolator);
+			closeScroller = new Scroller(Context, recyclerView.closeInterpolator);
 		}
 
 		public override void ComputeScroll() {
@@ -123,7 +153,7 @@
 						dis += background.Width * (int)recyclerView.swipeDirection;
 					}
 					Swipe(dis);
-				break;
+				break; // MotionEventActions.Move
 
 				case MotionEventActions.Up:
 					if ((isFling || Math.Abs(downX - e.GetX()) > (background.Width / 3)) && Math.Sign(downX - e.GetX()) == (int)recyclerView.swipeDirection) {
@@ -139,13 +169,14 @@
 		}
 
 		public void Open() {
-			isOpen = false;
+			isOpen = true;
 			if (recyclerView.swipeDirection == SwipeRecyclerView.EDirection.Left) {
 				openScroller.StartScroll(-foreground.Left, 0, background.Width, 0, recyclerView.animationDuration);
 			} else {
 				openScroller.StartScroll(foreground.Left, 0, background.Width, 0, recyclerView.animationDuration);
 			}
 			PostInvalidate();
+			handler.SendEmptyMessageDelayed(MSG_CLOSE, PENDING_CLOSE_DELAY);
 		}
 
 		public void Close() {
@@ -158,31 +189,20 @@
 				closeScroller.StartScroll(0, 0, background.Width, 0, recyclerView.animationDuration);
 			}
 			PostInvalidate();
+			handler.RemoveMessages(MSG_CLOSE);
 		}
 
-		/// <summary>
-		/// Initializes the recycler view.
-		/// </summary>
-		private void Init() {
-			Clickable = true;
-
-			foreground = FindViewById(Resource.Id.swipe_recycler_view_foreground);
-			if (foreground == null) {
-				throw new Exception("Attempted to create a " + typeof(SwipeMenuLayout).Name + " without a foreground view");
+		// Implemented from Handler.ICallback
+		public bool HandleMessage(Message msg) {
+			switch (msg.What) {
+				case MSG_CLOSE:
+					if (isOpen) {
+						Close();
+					}
+				return true; // MSG_CLOSE
 			}
 
-			background = FindViewById(Resource.Id.swipe_recycler_view_background);
-			if (background == null) {
-				throw new Exception("Attempted to create a " + typeof(SwipeMenuLayout).Name + " without a background view");
-			}
-
-			viewConfig = ViewConfiguration.Get(Context);
-
-			isOpen = false;
-
-			gestureDetector = new GestureDetector(Context, this);
-			openScroller = new Scroller(Context, recyclerView.openInterpolator);
-			closeScroller = new Scroller(Context, recyclerView.closeInterpolator);
+			return false;
 		}
 
 		private void Swipe(int distance) {

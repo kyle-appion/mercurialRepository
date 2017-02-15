@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Fragments._Workbench {
+﻿using Java.Util;
+namespace ION.Droid.Fragments._Workbench {
 
 	using System;
 	using System.Collections.Generic;
@@ -147,6 +148,11 @@
 				};
 
 				mvh.record = mr;
+			} else if (holder is SensorPropertyViewHolder) {
+				var spvh = holder as SensorPropertyViewHolder;
+				spvh.sensorPropertyRecord = r as SensorPropertyRecord;
+			}
+/*
 			} else if (holder is SecondarySensorPropertyViewHolder) {
 				var svh = holder as SecondarySensorPropertyViewHolder;
 				var sr = r as SecondarySensorPropertyRecord;
@@ -172,6 +178,7 @@
 				var sr = r as SimpleSensorPropertyRecord;
 				svh.record = sr;
 			}
+*/
 		}
 
 		/// <summary>
@@ -284,7 +291,9 @@
 		}
 
 		private bool IsSwapableWith(RecyclerView.ViewHolder vh1, RecyclerView.ViewHolder vh2) {
-			if (vh1 is ManifoldViewHolder && vh2 is ManifoldViewHolder) {
+			if (vh1 == vh2) {
+				return false;
+			} else if (vh1 is ManifoldViewHolder && vh2 is ManifoldViewHolder) {
 				return true;
 			} else if (vh1 is SensorPropertyViewHolder && vh2 is SensorPropertyViewHolder) {
 				var sr1 = records[vh1.AdapterPosition] as SensorPropertyRecord;
@@ -297,7 +306,13 @@
 
 		private void PerformSwap(RecyclerView.ViewHolder vh1, RecyclerView.ViewHolder vh2) {
 			if (vh1 is ManifoldViewHolder && vh2 is ManifoldViewHolder) {
+				workbench.Swap(vh1.AdapterPosition, vh2.AdapterPosition);
+			} else if (vh1 is SensorPropertyViewHolder && vh2 is SensorPropertyViewHolder) {
+				var spr1 = records[vh1.AdapterPosition] as SensorPropertyRecord;
+				var spr2 = records[vh2.AdapterPosition] as SensorPropertyRecord;
+				var m = spr1.manifold;
 
+				m.SwapSensorProperties(m.IndexOfSensorProperty(spr1.sensorProperty), m.IndexOfSensorProperty(spr2.sensorProperty));
 			}
 		}
 
@@ -326,6 +341,7 @@
 					NotifyItemRangeRemoved(i, cnt);
 				} break; // WorkbenchEvent.EType.Removed
 				case WorkbenchEvent.EType.Swapped: {
+					SwapRecords(AdapterIndexForManifold(workbench[e.index]), AdapterIndexForManifold(workbench[e.otherIndex]));
 				} break; // WorkbenchEvent.EType.Swapped
 			}
 		}
@@ -346,6 +362,18 @@
 					records.RemoveAt(i);
 					NotifyItemRemoved(i);
 				} break; // ManifoldEvent.EType.SensorPropertyRemoved
+				case ManifoldEvent.EType.SensorPropertySwapped: {
+					var m = e.manifold;
+					var mi = AdapterIndexForManifold(m) + 1;
+					var i1 = mi + e.index;
+					var i2 = mi + e.otherIndex;
+					SwapRecords(i1, i2);
+
+					var vh1 = recyclerView.FindViewHolderForAdapterPosition(i1) as SensorPropertyViewHolder;
+					var vh2 = recyclerView.FindViewHolderForAdapterPosition(i2) as SensorPropertyViewHolder;
+					vh1.Invalidate();
+					vh2.Invalidate();
+				} break; // ManifoldEvent.EType.SensorPropertySwapped
 			}
 		}
 
@@ -387,7 +415,7 @@
 			public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
 				L.D(this, "OnMove");
 				if (adapter.IsSwapableWith(viewHolder, target)) {
-					adapter.SwapRecords(viewHolder.AdapterPosition, target.AdapterPosition);
+					adapter.PerformSwap(viewHolder, target);
 					return true;
 				} else {
 					return false;
