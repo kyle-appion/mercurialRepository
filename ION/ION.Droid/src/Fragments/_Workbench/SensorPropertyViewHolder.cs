@@ -47,6 +47,7 @@
 				Unbind();
 				__record = value;
 				if (__record != null) {
+					Bind();
 					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
 					Invalidate();
 				}
@@ -54,13 +55,19 @@
 		} SensorPropertyRecord __record;
 
 		private View association;
-		private TextView button;
 
 		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
 			association = ItemView.FindViewById(Resource.Id.association);
 
-			button = background as TextView;
+			var button = background as TextView;
 			button.SetText(Resource.String.remove);
+			button.SetOnClickListener(new ViewClickAction((view) => {
+				L.D(this, "Removing sensor property: " + sensorPropertyRecord.sensorProperty);
+				sensorPropertyRecord.manifold.RemoveSensorProperty(sensorPropertyRecord.sensorProperty);
+			}));
+		}
+
+		public virtual void Bind() {
 		}
 
 		public override void Unbind() {
@@ -71,11 +78,6 @@
 		}
 
 		public virtual void Invalidate() {
-			button.SetOnClickListener(new ViewClickAction((view) => {
-				L.D(this, "Removing sensor property: " + sensorPropertyRecord.sensorProperty);
-				sensorPropertyRecord.manifold.RemoveSensorProperty(sensorPropertyRecord.sensorProperty);
-			}));
-
 			if (association != null) {
 				if (sensorPropertyRecord.manifold.IndexOfSensorProperty(sensorPropertyRecord.sensorProperty) >= sensorPropertyRecord.manifold.sensorPropertyCount - 1) {
 					association.SetBackgroundResource(Resource.Drawable.ic_association);
