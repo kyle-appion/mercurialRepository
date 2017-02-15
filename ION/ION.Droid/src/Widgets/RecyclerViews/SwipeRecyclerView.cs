@@ -10,10 +10,10 @@
 	using Android.Views;
 	using Android.Views.Animations;
 
-	public class SwipeRecyclerView : RecyclerView, Handler.ICallback {
+	using L = Appion.Commons.Util.Log;
 
-		private const int MSG_CLOSE = 1;
-		private const long PENDING_CLOSE_DELAY = 2500;
+
+	public class SwipeRecyclerView : RecyclerView {
 
 		private enum ETouchState {
 			None,
@@ -71,8 +71,6 @@
 		private DateTime startClickTime;
 		private float dx, dy;
 
-		private Handler handler;
-
 		public SwipeRecyclerView(Context context) : this(context, null, 0) {
 		}
 
@@ -96,7 +94,6 @@
 			openInterpolator = new BounceInterpolator();
 			closeInterpolator = new BounceInterpolator();
 			swipeDirection = EDirection.Left;
-			handler = new Handler(this);
 		}
 
 		public override bool OnInterceptTouchEvent(MotionEvent ev) {
@@ -238,20 +235,6 @@
 			if (touchView != null && touchView.isOpen) {
 				touchView.Close();
 			}
-			handler.RemoveMessages(MSG_CLOSE);
-		}
-
-		// Implemented from Handler.ICallback
-		public bool HandleMessage(Message msg) {
-			switch (msg.What) {
-				case MSG_CLOSE:
-					if (touchView != null) {
-						SmoothCloseMenu();
-					}
-				return true; // MSG_CLOSE
-			}
-
-			return false;
 		}
 
 		/// <summary>
@@ -284,6 +267,7 @@
 				this.recyclerView = recyclerView;
 				layout = ItemView as SwipeMenuLayout;
 				layout.recyclerView = recyclerView;
+				layout.Init();
 				foreground = ItemView.FindViewById(Resource.Id.swipe_recycler_view_foreground);
 				background = ItemView.FindViewById(Resource.Id.swipe_recycler_view_background);
 				layout.isSwipeEnabled = swipeEnabled;

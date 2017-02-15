@@ -15,6 +15,8 @@
 	using ION.Droid.Widgets.RecyclerViews;
 	using ION.Droid.Views;
 
+	using L = Appion.Commons.Util.Log;
+
 	public abstract class SensorPropertyRecord : RecordAdapter.IRecord {
 		// Implemented from RecordAdapter.IRecord
 		public int viewType { get; private set; }
@@ -37,12 +39,7 @@
 	}
 
 	public abstract class SensorPropertyViewHolder : SwipeRecyclerView.ViewHolder {
-		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
-		}
-	}
-
-	public class SensorPropertyViewHolder<T> : SensorPropertyViewHolder where T : ISensorProperty {
-		public SensorPropertyRecord<T> record {
+		public SensorPropertyRecord sensorPropertyRecord {
 			get {
 				return __record;
 			}
@@ -50,34 +47,37 @@
 				Unbind();
 				__record = value;
 				if (__record != null) {
-					__record.sp.onSensorPropertyChanged += OnSensorPropertyChanged;
+					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
 					Invalidate();
 				}
 			}
-		} SensorPropertyRecord<T> __record;
+		} SensorPropertyRecord __record;
 
 		private View association;
+		private TextView button;
 
-		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout) {
+		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
 			association = ItemView.FindViewById(Resource.Id.association);
 
-			var button = background as TextView;
+			button = background as TextView;
 			button.SetText(Resource.String.remove);
-			button.SetOnClickListener(new ViewClickAction((view) => {
-				record.manifold.RemoveSensorProperty(record.sp);
-			}));
 		}
 
 		public override void Unbind() {
 			base.Unbind();
-			if (record != null) {
-				record.sp.onSensorPropertyChanged -= OnSensorPropertyChanged;
+			if (sensorPropertyRecord != null) {
+				sensorPropertyRecord.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
 			}
 		}
 
 		public virtual void Invalidate() {
+			button.SetOnClickListener(new ViewClickAction((view) => {
+				L.D(this, "Removing sensor property: " + sensorPropertyRecord.sensorProperty);
+				sensorPropertyRecord.manifold.RemoveSensorProperty(sensorPropertyRecord.sensorProperty);
+			}));
+
 			if (association != null) {
-				if (record.manifold.IndexOfSensorProperty(record.sp) >= record.manifold.sensorPropertyCount - 1) {
+				if (sensorPropertyRecord.manifold.IndexOfSensorProperty(sensorPropertyRecord.sensorProperty) >= sensorPropertyRecord.manifold.sensorPropertyCount - 1) {
 					association.SetBackgroundResource(Resource.Drawable.ic_association);
 				} else {
 					association.SetBackgroundResource(Resource.Drawable.ic_association_linked);
@@ -87,6 +87,13 @@
 
 		private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 			Invalidate();
+		}
+	}
+
+	public class SensorPropertyViewHolder<T> : SensorPropertyViewHolder where T : ISensorProperty {
+		public SensorPropertyRecord<T> record { get { return (SensorPropertyRecord<T>)sensorPropertyRecord; } } 
+
+		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout) {
 		}
 	}
 }
