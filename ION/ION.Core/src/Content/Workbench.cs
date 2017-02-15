@@ -182,6 +182,22 @@
       }
     }
 
+		/// <summary>
+		/// Inserts the manifold into the given index of the workbench.
+		/// </summary>
+		/// <param name="manifold">Manifold.</param>
+		/// <param name="index">Index.</param>
+		public bool Insert(Manifold manifold, int index) {
+			if (manifolds.Contains(manifold)) {
+				return false;
+			} else {
+				manifolds.Insert(index, manifold);
+				manifold.onManifoldEvent += OnManifoldEvent;
+				NotifyOfEvent(WorkbenchEvent.EType.Added, manifold, index);
+				return true;
+			}
+		}
+
     /// <summary>
     /// Swaps two manifold at the given indices.
     /// </summary>

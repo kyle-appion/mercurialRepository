@@ -295,6 +295,21 @@
     <Compile Include="src\Views\ViewActionTouchListener.cs" />
     <Compile Include="src\Dialog\ManualSensorCreateDialog.cs" />
     <Compile Include="src\Widgets\RecyclerViews\SimpleDragSwipeHandler.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeDecoration.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeRecyclerView.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeMenuLayout.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\RecordAdapter.cs" />
+    <Compile Include="src\Fragments\_Workbench\WorkbenchAdapter.cs" />
+    <Compile Include="src\Fragments\_Workbench\ManifoldViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\WorkbenchFragment.cs" />
+    <Compile Include="src\Fragments\_Workbench\AddViewerViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\PTSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SimpleSensorPropertyRecord.cs" />
+    <Compile Include="src\Fragments\_Workbench\SHSCSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\ROCSensorProperty.cs" />
+    <Compile Include="src\Fragments\_Workbench\TimerSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SecondarySensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SensorPropertyViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -707,6 +722,11 @@
     <AndroidResource Include="Resources\drawable\ic_check.png" />
     <AndroidResource Include="Resources\drawable\ic_x.png" />
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_create.axml" />
+    <AndroidResource Include="Resources\values\SwipeRecyclerView_Attrs.xml" />
+    <AndroidResource Include="Resources\layout\list_item_button.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\swipe_menu_layout.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -744,6 +764,7 @@
     <Folder Include="src\Connections\Beta\" />
     <Folder Include="src\Activity\Tutorial\" />
     <Folder Include="src\Activity\Portal\" />
+    <Folder Include="src\Fragments\_Workbench\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

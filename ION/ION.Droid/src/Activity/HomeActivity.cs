@@ -26,6 +26,7 @@
 	using Report;
   using Dialog;
   using Fragments;
+	using Fragments._Workbench;
   using Widgets.Adapters.Navigation;
 
   [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
