@@ -47,7 +47,7 @@
               t = Typeface.CreateFromAsset(Application.Context.Assets, path);
               TYPEFACES[path] = t;
             } catch (Exception e) {
-              ION.Core.Util.Log.E(this, "Failed to load typeface: " + path, e);
+							Appion.Commons.Util.Log.E(this, "Failed to load typeface: " + path, e);
               t = Typeface.Default;
             }
           }

@@ -18,8 +18,9 @@
   using Android.Views.InputMethods;
   using Android.Widget;
 
+	using Appion.Commons.Util;
+
   using ION.Core.App;
-  using ION.Core.Util;
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
@@ -53,7 +54,6 @@
 		/// </summary>
 		/// <value><c>true</c> if is bluetooth on; otherwise, <c>false</c>.</value>
 		public bool isBluetoothOn { get { return Android.Bluetooth.BluetoothAdapter.DefaultAdapter.IsEnabled; } }
-		// TODO ahodder@appioninc.com: This property is required by android 6 for some reason.
 		/// <summary>
 		/// Queries whether or not the gps is enabled.
 		/// </summary>
@@ -102,6 +102,7 @@
 		protected override void OnResume() {
 			base.OnResume();
 			SetWakeLock(prefs.isWakeLocked);
+			Log.D(this, new AndroidPlatformInfo(this).ToString());
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {

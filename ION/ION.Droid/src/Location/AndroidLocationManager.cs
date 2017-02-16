@@ -10,13 +10,13 @@
   using Android.Gms.Location;
   using Android.Locations;
   using Android.OS;
-	using Android.Support.V4.App;
   using Android.Support.V4.Content;
+
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Location;
-  using ION.Core.Measure;
-  using ION.Core.Util;
 
   using ION.Droid.App;
 
@@ -116,6 +116,12 @@
     /// <returns>The async.</returns>
     public async Task<InitializationResult> InitAsync() {
 			if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+				altitudeProvider = new GpsAltitudeProvider(ion.GetSystemService(Context.LocationService) as LocationManager);
+				altitudeProvider.onAltitudeEvent += (ap, e) => {
+					lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+					Log.D(this, "The GpsAltitudeProvider sent us a location of: " + lastKnownLocation);
+				};
+
 	      if (IsGooglePlayServicesInstalled()) {
 	        client = InitGooglePlayServices();
 	        client.Connect();
@@ -126,10 +132,7 @@
 	          StartAutomaticLocationPolling();
 	        }
 	      }
-	      altitudeProvider = new GpsAltitudeProvider(ion.GetSystemService(Context.LocationService) as LocationManager);
-	      altitudeProvider.onAltitudeEvent += (ap, e) => {
-	        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
-	      };
+	     
 			} else {
 				Log.E(this, "The user denied the location permission. We will not allow the location to update.");
 				ion.preferences.location.allowsGps = false;
@@ -233,10 +236,15 @@
     public void OnLocationChanged(Location location) {
       var altitude = location.Altitude;
       if (altitude == 0) {
-        var l = altitudeProvider.lastKnownLocation;
-        if (l != null) {
-          altitude = l.Altitude;
-        }
+				// TODO ahodder@appioninc.com: the altitude provider should not be null
+				if (altitudeProvider != null) {
+	        var l = altitudeProvider.lastKnownLocation;
+	        if (l != null) {
+	          altitude = l.Altitude;
+	        }
+				} else {
+					Log.E(this, "The altitude provider was null");
+				}
       }
 			Log.D(this, "Location changed: " + location + ", Altitude: " + altitude + ", hasAltitude: " + location.HasAltitude);
 			if (location.HasAltitude) {

@@ -96,6 +96,7 @@ file.
 "analyzer_pt_desc" = "Pressure / Temperature (P/T)";
 "recording_started" = "Recording Started";
 "recording_stopped" = "Recording Stopped. Session in Reports";
+"sensor_exists" = "Sensor is already on the analyzer";
 
 /* DEVICE */
 "device_available" = "Available";

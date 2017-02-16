@@ -1,7 +1,5 @@
 ﻿namespace ION.Droid.Dialog {
 
-  using System;
-
   using Android.Content;
   using Android.Views;
   using Android.Widget;
@@ -13,7 +11,6 @@
   using ION.Droid.Activity;
   using ION.Droid.Sensors;
   using ION.Droid.Util;
-  using ION.Droid.Views;
   using ION.Droid.Widgets.Templates;
 
   public class ViewerDialog {

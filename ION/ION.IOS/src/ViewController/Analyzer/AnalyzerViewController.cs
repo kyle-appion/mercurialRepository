@@ -1132,16 +1132,32 @@ namespace ION.IOS.ViewController.Analyzer {
     
     public void addLHDeviceSensor(lowHighSensor area, GaugeDeviceSensor sensor){
       bool existingConnection = false;
-      int start, stop;
+      int start, stop,existStart, existStop;
       
         if(area.location == "low"){
           start = 0;
           stop = 4;
+          existStart = 4;
+          existStop = 8;
         } else {
+          existStart = 0;
+          existStop = 4;
           start = 4;
           stop = 8;
         }
-
+        ///DON'T ALLOW A USER TO ADD AN EXISTING SENSOR TO THE OPPOSITE SIDE. JUST LET THEM KNOW IT IS ALREADY ON THE ANALYZER
+				for(int i = existStart; i < existStop; i++){
+					if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
+			      UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.SENSOREXISTS, UIAlertControllerStyle.Alert);
+			
+			      fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
+			
+			      PresentViewController (fullPopup, true, null);
+						return;				
+					}
+				}
+				
+				
         for(int i = start; i < stop; i ++){
           if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
             if(start == 0){

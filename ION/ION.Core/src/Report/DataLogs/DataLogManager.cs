@@ -186,7 +186,6 @@
           }
         }
 
-        // TODO ahodder@appioninc.com: Finish start/end time
         return new SessionResults() {
           complete = true,
           deviceSensorLogs = tmp,

@@ -1,20 +1,16 @@
 ﻿namespace ION.Droid.Activity {
 
   using System;
-  using System.Collections.Generic;
-  using System.Linq;
-  using System.Text;
 
   using Android.App;
   using Android.Content;
   using Android.Content.PM;
   using Android.OS;
-  using Android.Runtime;
   using Android.Views;
-  using Android.Widget;
+
+	using Appion.Commons.Util;
 
   using ION.Core.IO;
-  using ION.Core.Util;
 
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
@@ -64,7 +60,6 @@
     /// Starts an activity that will allow the user to view the given pdf.
     /// </summary>
     private void StartPdfActivity(IFile file) {
-      // TODO ahodder@appioninc.com: We will need to start our own activity if the user does not have their own pdf viewer
       try {
         Intent i = new Intent(Intent.ActionView);
         i.SetDataAndType(Android.Net.Uri.FromFile(new Java.IO.File(file.fullPath)), "application/pdf");

@@ -10,6 +10,8 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Util;
+
 	using ION.Core.Database;
 
 	using ION.Droid.Activity;
@@ -229,7 +231,7 @@
 					i.SetFlags(ActivityFlags.NoHistory);
 					StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
 				} catch (Exception e) {
-					ION.Core.Util.Log.E(this, "Failed to start Excel activity chooser", e);
+					Log.E(this, "Failed to start Excel activity chooser", e);
 					var adb = new IONAlertDialog(this);
 					adb.SetTitle(Resource.String.error_failed_to_open_file);
 					adb.SetMessage(Resource.String.error_excel_viewer_missing);
@@ -266,7 +268,7 @@
 					i.SetFlags(ActivityFlags.NoHistory);
 					StartActivity(Intent.CreateChooser(i, GetString(Resource.String.open_with)));
 				} catch (Exception e) {
-					ION.Core.Util.Log.E(this, "Failed to start Excel activity chooser", e);
+					Log.E(this, "Failed to start Excel activity chooser", e);
 					var adb = new IONAlertDialog(this);
 					adb.SetTitle(Resource.String.error_failed_to_open_file);
 					adb.SetMessage(Resource.String.error_pdf_viewer_missing);

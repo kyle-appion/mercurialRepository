@@ -5,6 +5,8 @@
   using Android.Bluetooth;
   using Android.Content;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
   using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
@@ -26,8 +28,6 @@
       if (device == null) {
         throw new Exception("Cannot create connection: Failed to resolve connection's device.");
       }
-
-      ION.Core.Util.Log.D(this, "Device: " + device.Name + " has a protocolversion of: " + protocolVersion);
 
       switch (protocolVersion) {
         case EProtocolVersion.Classic:

@@ -24,7 +24,7 @@
 
 		public WorkbenchDragDecoration(WorkbenchAdapter adapter) : base(ItemTouchHelper.Up | ItemTouchHelper.Down, ItemTouchHelper.Left) {
      	this.adapter = adapter;
-			background = new ColorDrawable(Color.Red);
+			background = new ColorDrawable(Color.Transparent);
     }
 
 		public override void OnSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {

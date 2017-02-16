@@ -101,6 +101,7 @@ namespace ION.IOS.Util {
       REMOVESENSOR = "remove_sensor".FromResources(),
       REMOVESETUP = "remove_setup".FromResources(),
       SAMESIDE = "same_side".FromResources(),
+      SENSOREXISTS = "sensor_exists".FromResources(),
       SHSCDESC = "analyzer_shsc_desc".FromResources(),
       SC = "analyzer_subcool".FromResources(),
       SETUP = "analyzer_setup".FromResources(),

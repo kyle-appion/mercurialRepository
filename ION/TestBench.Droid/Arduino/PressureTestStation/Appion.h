@@ -32,6 +32,10 @@ the appion c/c++ code respository.
 #define MIN(a, b) (a < b ? a : b)
 #endif
 
+#ifndef MAX
+#define MAX(a, b) (a > b ? a : b)
+#endif
+
 #ifndef I32_MAX
 #define I32_MAX 2147483647
 #endif
@@ -106,63 +110,23 @@ static void* memcpymov(void* dest, const void* src, size_t count) {
   return ret;
 }
 
-// Similar to strtol in which we convert a series of characters to a long. However, this will break out of the string
-// under two conditions: 1) a non numeric character is read, or 2) a number is read up to the number of characters
-// provided in sz.
-static i32 strntol(const char* str, size_t sz, char** end, int base) {
-	/* Expect that digit representation of LONG_MAX/MIN
-	 * not greater than this buffer */
-	char buf[24];
-	i32 ret;
-	const char* beg = str;
-	/* Catch up leading spaces */
-	for (; beg && sz && *beg == ' '; beg++, sz--);
-	if (!sz || sz >= sizeof(buf)) {
-		if (end) {
-			*end = (char*)str;
-    }
-		return 0;
-	}
-	memcpy(buf, beg, sz);
-	buf[sz] = '\0';
-	ret = strtol(buf, end, base);
-	if (ret == I32_MIN || ret == I32_MAX) {
-		return ret;
-  }
-	if (end) {
-		*end = (char*)str + (*end - buf);
-  }
-	return ret;
-}
+// Searches the in character buffer for the given token. All characters before the first requested token appearance
+// will be placed into the out buffer. If the in buffer does not contain the token, then the out buffer will be an
+// exact duplicate of the in buffer. Further, we will return -1.
+// Note: the length of the out buffer should be no less than inlen or we will go out of bounds.
+static i32 SplitByChar(char* in, i32 inlen, char* out, char token) {
+  i32 ret = 0;
 
-// Similar to strtof in which we convert a series of characters to a float. However, this will break out of the string
-// under two conditions: 1) a non numeric character is read, or 2) a number is read up to the number of characters
-// provided in sz.
-static f32 strntof(const char* str, i32 sz, char** end) {
-  /* Expect that digit representation of LONG_MAX/MIN
-   * not greater than this buffer */
-  char buf[24];
-  i32 ret;
-  const char* beg = str;
-  /* Catch up leading spaces */
-  for (; beg && sz && *beg == ' '; beg++, sz--);
-  if (!sz || sz >= sizeof(buf)) {
-    if (end) {
-      *end = (char*)str;
+  for (int i = 0; i < inlen; i++) {
+    if (in[i] == token) {
+      return ret;
+    } else {
+      out[i] = in[i];
+      ret++;
     }
-    return 0;
   }
-  memcpy(buf, beg, sz);
-  buf[sz] = '\0';
-  ret = strtod(buf, end);
-  if (ret == F32_MIN || ret == F32_MAX) {
-    return ret;
-  }
-  if (end) {
-    *end = (char*)str + (*end - buf);
-  }
-  return ret;
-}
 
+  return -1;
+}
 
 #endif // APPION_H

@@ -5,6 +5,7 @@
 	using System.IO;
 
 	using Android.Bluetooth;
+	using Android.OS;
 
 	using Java.Util;
 
@@ -76,6 +77,11 @@
 			}
 
 			gatt = device.ConnectGatt(service, false, this);
+/*
+			handler.PostDelayed(() => {
+				this.UpdateMockData();
+			}, 100);
+*/
 		}
 
 		// Implemented from IRig
@@ -86,7 +92,9 @@
 					gatt.Close();
 					NotifyConnectionState();
 				}
-
+/*
+				handler.RemoveCallbacksAndMessages(null);
+*/
 				gatt = null;
 			} catch (Exception e) {
 				Log.E(this, "Failed to disconnect", e);
@@ -164,7 +172,7 @@
 				onConnectionStateChanged(this);
 			}
 		}
-/*
+
 		private void UpdateMockData() {
 			var dm = (vrcMeasurement.amount < 10000) ? 100 : 1000;
 			vrcMeasurement = Units.Vacuum.MICRON.OfScalar(Math.Max(vrcMeasurement.amount - dm, 0));
@@ -180,7 +188,7 @@
 
 			ReceivePacket(ms.ToArray());
 		}
-*/
+
 
 		private void ReceivePacket(byte[] packet) {
 			try {

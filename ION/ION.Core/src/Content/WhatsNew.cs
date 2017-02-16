@@ -3,38 +3,43 @@
   using System.Collections.Generic;
   using System.IO;
   using System.Xml;
+	using System.Xml.Serialization;
   using System.Xml.Linq;
 
   /// <summary>
   /// A simple object that contains an app version's what's new diaload content. For every version there is suppose to
   /// be a what's new update description.
   /// </summary>
+	[XmlRoot("display")]
   public class WhatsNew : IComparable<WhatsNew>  {
     /// <summary>
     /// The version code of the app that this What's New belongs to.
     /// </summary>
     /// <value>The version code.</value>
-    public string versionCode { get; internal set; }
+		[XmlAttribute("version")]
+    public AppVersion versionCode { get; internal set; }
     /// <summary>
     /// The list of the updated
     /// </summary>
     /// <value>The whats updated.</value>
+		[XmlElement("update")]
     public List<string> whatsUpdated { get; internal set; }
     /// <summary>
     /// The list of the whats new.
     /// </summary>
     /// <value>The whats updated.</value>
+		[XmlElement("new")]
     public List<string> whatsNew { get; internal set; }
     /// <summary>
     /// The list of the what was fixed in the app.
     /// </summary>
     /// <value>The whats updated.</value>
+		[XmlElement("fixed")]
     public List<string> whatsFixed { get; internal set; }
 
     public int CompareTo(WhatsNew other) {
       return versionCode.CompareTo(other.versionCode);
     }
-
 
     /// <summary>
     /// Creates a list of WhatsNew objects from the given stream.
@@ -43,7 +48,8 @@
     /// <returns>The from stream.</returns>
     /// <param name="stream">Stream.</param>
     public static List<WhatsNew> ParseWithException(Stream stream) {
-      return ParseWithException(XmlReader.Create(stream));
+//      return ParseWithException(XmlReader.Create(stream));
+			return WhatsNewFactory.ParseOrThrow(stream);
     }
 
     /// <summary>
@@ -64,6 +70,16 @@
 
     private WhatsNewFactory() {
     }
+
+		public static List<WhatsNew> ParseOrThrow(Stream stream) {
+			var xml = new XmlSerializer(typeof(WhatsNew));
+			var ret = xml.Deserialize(stream) as WhatsNewXml;
+			if (ret != null) {
+				return ret.whatsNew;
+			} else {
+				throw new Exception("Failed to parse what's new");
+			}
+		}
 
     /// <summary>
     /// Parses a list of WhatsNew objects from the given xml reader.
@@ -87,7 +103,7 @@
     /// <returns>The whats new.</returns>
     /// <param name="element">Element.</param>
     private static WhatsNew ParseWhatsNew(XElement element) {
-      var version = element.Attribute(VERSION).Value;
+			var version = AppVersion.ParseOrThrow(element.Attribute(VERSION).Value);
 
       var @new = new List<string>();
       var updated = new List<string>();
@@ -116,6 +132,11 @@
         whatsFixed = @fixed,
       };
     }
+
+		[XmlRoot("whatsnew")]
+		private class WhatsNewXml {
+			public List<WhatsNew> whatsNew;
+		}
   }
 }
 

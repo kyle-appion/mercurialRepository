@@ -9,10 +9,11 @@
 
   using Java.Util;
 
+	using Appion.Commons.Util;
+
   using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
-  using ION.Core.Util;
 
 	public class ClassicConnection : Java.Lang.Object, IConnection, Handler.ICallback {
     /// <summary>

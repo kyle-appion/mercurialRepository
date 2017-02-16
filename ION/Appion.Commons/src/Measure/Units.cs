@@ -166,7 +166,11 @@
 			public static readonly Unit NEWTON = Alt(Quantity.Force, Force.NEWTON, "N");
 			public static readonly Unit KILOGRAM = Named(NEWTON.Mul(9.80665), "kgf");
 			public static readonly Unit POUND_FORCE = Named(NEWTON.Mul(4.44822), "lbf");
-			public static readonly Unit POUND_OUNCE_FORCE = Named(NEWTON.Mul(4.44822), "lbf/oz");
+			public static readonly Unit POUND_OUNCE_FORCE = Named(NEWTON.Mul(4.44822), "lbf/oz").SetStringer(amt => {
+				var pounds = (int)amt;
+				var ounces = (int)((amt - pounds) * 16);
+				return pounds + "lb " + ounces + "oz";
+			});
 		}
   }
 }

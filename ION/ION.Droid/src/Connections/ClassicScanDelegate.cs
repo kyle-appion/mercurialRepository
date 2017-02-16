@@ -8,7 +8,7 @@
 	using Android.Content;
 	using Android.OS;
 
-	using ION.Core.Util;
+	using Appion.Commons.Util;
 
 	using ION.Droid.App;
 

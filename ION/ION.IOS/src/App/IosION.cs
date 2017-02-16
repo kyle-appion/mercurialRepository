@@ -336,7 +336,7 @@
 					Log.D(this, "Initializing " + im.GetType().Name);
 					await im.InitAsync();
 				}
-
+				Log.D(this, "Finished loading the things");
 				InitSettings();
 
 				var internalDir = fileManager.GetApplicationInternalDirectory();
@@ -354,6 +354,7 @@
     }
 
 		public Task<Workbench> LoadWorkbenchAsync(IFile file) {
+			Log.D(this, "load workbenchasync");
       var wp = new WorkbenchParser();
       try {
         using (var stream = file.OpenForReading()) {

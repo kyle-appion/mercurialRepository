@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid {
+﻿namespace TestBench.Droid.Activity {
 
 	using System;
 	using System.Collections.Generic;
@@ -98,6 +98,11 @@
 
 		protected override void OnResume() {
 			base.OnResume();
+			if (test != null) {
+				test.onTestEvent -= OnTestEvent;
+				test.StopTest();
+				test = null;
+			}
 			grid.ReloadData();
 		}
 
@@ -119,11 +124,6 @@
 			switch (item.ItemId) {
 				case Android.Resource.Id.Home:
 					SetResult(Result.Canceled);
-					if (test != null) {
-						test.onTestEvent -= OnTestEvent;
-						test.StopTest();
-						test = null;
-					}
 					Finish();
 					return true;
 				default:
@@ -273,15 +273,12 @@
 			}
 		}
 
-/*
 		public override void OnServiceBound() {
 			base.OnServiceBound();
 			Initialize();
 		}
-*/
 
 		private void Initialize() {
-
 			var rawSerials = Intent.GetStringArrayExtra(EXTRA_SERIALS);
 			var type = (EDeviceModel)Intent.GetIntExtra(EXTRA_TEST_TYPE, -1);
 

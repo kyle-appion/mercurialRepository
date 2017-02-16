@@ -126,6 +126,10 @@
     <Compile Include="src\Rig\PressureRigController.cs" />
     <Compile Include="src\Devices\PressureRigDevice.cs" />
     <Compile Include="src\Activity\HomeActivity.cs" />
+    <Compile Include="src\Activity\BtScannerActivity.cs" />
+    <Compile Include="src\Bluetooth\BtScanner.cs" />
+    <Compile Include="src\Activity\Prefs.cs" />
+    <Compile Include="src\Activity\BaseActivityDeprecated.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -133,6 +137,7 @@
     <None Include="Assets\AboutAssets.txt" />
     <None Include="packages.config" />
     <None Include="src\Test\Procedures\pt800_test_procedure.xml" />
+    <None Include="environment.txt" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\Main.axml" />
@@ -150,6 +155,8 @@
     <AndroidResource Include="Resources\layout\activity_export_test.axml" />
     <AndroidResource Include="Resources\values\Styles.xml" />
     <AndroidResource Include="Resources\menu\export.xml" />
+    <AndroidResource Include="Resources\layout\activity_btscanner.axml" />
+    <AndroidResource Include="Resources\layout\activity_home.axml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\drawable\" />

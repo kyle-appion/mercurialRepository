@@ -10,6 +10,10 @@
     android:title="@string/preferences_send_feedback"/>
 
   <Preference
+  	android:key="@string/pkey_help_walkthrough"
+  	android:title="@string/preferences_help_walkthrough"/>
+
+  <Preference
     android:key="@string/pkey_youtube"
     android:title="@string/preferences_videos">
     <intent

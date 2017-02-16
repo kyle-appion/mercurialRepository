@@ -17,7 +17,8 @@
   using Android.Views;
   using Android.Widget;
 
-  using ION.Core.Util;
+	using Appion.Commons.Util;
+
   using ION.Core.Database;
 
 	[Activity(Label = "@string/job_edit", Icon="@drawable/ic_job", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]

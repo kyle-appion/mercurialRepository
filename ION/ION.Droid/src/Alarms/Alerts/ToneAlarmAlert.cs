@@ -6,10 +6,11 @@
   using Android.Media;
   using Android.OS;
 
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
+
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
-  using ION.Core.App;
-  using ION.Core.Util;
 
   using ION.Droid.App;
 

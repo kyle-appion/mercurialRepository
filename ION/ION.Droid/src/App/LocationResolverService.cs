@@ -12,8 +12,8 @@
 	using Android.Net;
 	using Android.OS;
 
-	using ION.Core.Measure;
-	using ION.Core.Util;
+	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
 	/// <summary>
 	/// This service is a fire and forget service that appempts to grab the user's current altitude (and location).
