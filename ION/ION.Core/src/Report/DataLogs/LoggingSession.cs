@@ -35,9 +35,65 @@
     public LoggingSession(IION ion, SessionRow session, TimeSpan interval) {
       this.ion = ion;
       this.session = session;
-      timer = new Timer(OnTimerCallback, interval);
+      //timer = new Timer(OnTimerCallback, interval);
       isActive = true;
+      recordInterval(interval);
     }
+    
+    /// <summary>
+    /// checking if timer error when saving
+    /// </summary>
+    public async void recordInterval(TimeSpan interval){
+    	await Task.Delay(TimeSpan.FromMilliseconds(1));
+    	while(isActive){
+    		Log.D(this, "Logging devices");
+	      try {
+
+	        var sensors = new HashSet<GaugeDeviceSensor>();
+	
+	
+					////// pull ios sensorlist items
+	        if(ion.currentAnalyzer != null && ion.currentAnalyzer.sensorList != null){
+	          foreach (var s in ion.currentAnalyzer.sensorList) {
+	            var gds = s as GaugeDeviceSensor;
+	            if (gds != null && gds.device.isConnected) {
+	              sensors.Add(gds);
+	            }
+	          }
+	        }
+	
+	        foreach (var m in ion.currentWorkbench.manifolds) {
+	          var gds = m.primarySensor as GaugeDeviceSensor;
+	          if (gds != null && gds.device.isConnected) {
+	            sensors.Add(gds);
+	          }
+	        }
+	
+	        var rows = new List<SensorMeasurementRow>();
+	        var db = ion.database;
+	        var now = DateTime.Now;
+	        foreach(var gds in sensors){
+	          var existing = db.Query<LoggingDeviceRow>("SELECT * FROM LoggingDeviceRow WHERE serialNumber = ?",gds.device.serialNumber.ToString());
+	
+						if(existing.Count == 0){
+	            var newDevice = new LoggingDeviceRow{serialNumber = gds.device.serialNumber.ToString()};
+	            db.Insert(newDevice);
+	          }
+	        }
+	
+	        foreach (var gds in sensors) {
+	          // TODO ahodder@appioninc.com: Normalize the device unit or the resulting data backend will be funky.
+	          rows.Add(await CreateSensorMeasurement(db, gds, now));
+	        }
+	
+	        var inserted = db.InsertAll(rows, true);
+					Log.D(this, "Inserting: " + inserted + " rows");
+	      } catch (Exception e) {
+	        Log.E(this, "Failed to resolve timer callback", e);
+	      }    	
+    		await Task.Delay(interval);
+			}
+		}
 
     /// <summary>
     /// Stops the logging session.
@@ -45,7 +101,7 @@
     /// <returns><c>true</c> if this instance cancel ; otherwise, <c>false</c>.</returns>
     public void Cancel() {
       isActive = false;
-      timer.Cancel();
+      //timer.Cancel();
     }
 
     /// <summary>
@@ -58,9 +114,9 @@
     /// collector can reclaim the memory that the <see cref="ION.Core.Report.DataLogs.LoggingSession"/> was occupying.</remarks>
     public void Dispose() {
       if (isActive) {
-        timer.Cancel();
+        //timer.Cancel();
       }
-      timer.Dispose();
+      //timer.Dispose();
       isActive = false;
     }
 
@@ -68,6 +124,8 @@
     /// Called when the timer throw a new timed event.
     /// </summary>
     /// <param name="timer">Timer.</param>
+    ////////SOME REASON USING THIS TIMER AND CALLBACK CAUSE THE APP TO CRASH WHEN ENDING A DATA LOGGING SESSION////////
+    ////////NEED TO FIGURE OUT WHY THAT IS////////////////
     private async void OnTimerCallback(Timer timer) {
       try {
         if (!isActive) {

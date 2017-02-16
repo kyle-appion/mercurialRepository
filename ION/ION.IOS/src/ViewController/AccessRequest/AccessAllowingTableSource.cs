@@ -83,8 +83,11 @@ namespace ION.IOS.ViewController.AccessRequest
 				cell = new UITableViewCell(UITableViewCellStyle.Default, "allowingCell") as AllowingUserCell;
 			}
 			cell.Layer.BorderWidth = 1f;
-			
-      cell.makeCellData (tableItems [indexPath.Row], cellHeight);
+			if(tableView.Bounds.Width < 330){
+      	cell.makeCellData (tableItems [indexPath.Row], cellHeight, true);
+			} else {
+      	cell.makeCellData (tableItems [indexPath.Row], cellHeight);
+			}
 
 			return cell;
 		}

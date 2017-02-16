@@ -19,14 +19,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIButton remoteMenuButton;
 		public UIButton fullMenuButton;
 		public UILabel onlineLabel;
-		//public UILabel offlineLabel;
 		public UITableView onlineTable;
-		//public UITableView offlineTable;
 		public UIActivityIndicatorView loadingUsers;
 		public UIRefreshControl reloadOnline;
-		//public UIRefreshControl reloadOffline;
 		public List<accessData> onlineUsers;
-		public List<accessData> offlineUsers;
 		public ObservableCollection<int> selectedUser;
 		public IosION ion;
 		public WebPayload webServices;
@@ -46,16 +42,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			var window = UIApplication.SharedApplication.KeyWindow;
       var rootVC = window.RootViewController as IONPrimaryScreenController;
       
-      //onlineLabel = new UILabel(new CGRect(.05 * parentView.Bounds.Width, 0, .9 * parentView.Bounds.Width, .08 * selectionView.Bounds.Height));
       onlineLabel = new UILabel(new CGRect(0, 0, parentView.Bounds.Width, .08 * selectionView.Bounds.Height));
       onlineLabel.BackgroundColor = UIColor.Black;
       onlineLabel.TextColor = UIColor.FromRGB(255, 215, 101);
-      //onlineLabel.Text = "Online Users";
       onlineLabel.Text = "Remote Viewing Access";
       onlineLabel.TextAlignment = UITextAlignment.Center;
       onlineLabel.AdjustsFontSizeToFitWidth = true;
       
-      //onlineTable = new UITableView(new CGRect(.05 * parentView.Bounds.Width, .08 * selectionView.Bounds.Height, .9 * parentView.Bounds.Width, .35 * selectionView.Bounds.Height));
       onlineTable = new UITableView(new CGRect(.05 * parentView.Bounds.Width, .08 * selectionView.Bounds.Height, .9 * parentView.Bounds.Width, .78 * selectionView.Bounds.Height));
       onlineTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
       onlineTable.Layer.CornerRadius = 5f;
@@ -68,26 +61,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       };
       onlineTable.InsertSubview(reloadOnline,0);  
       onlineTable.SendSubviewToBack(reloadOnline);
-     
-      //offlineLabel = new UILabel(new CGRect(.05 * parentView.Bounds.Width, .43 * selectionView.Bounds.Height, .9 * parentView.Bounds.Width, .08 * selectionView.Bounds.Height));
-      //offlineLabel.Text = "Offline Users";
-      //offlineLabel.TextAlignment = UITextAlignment.Center;
-      //offlineLabel.AdjustsFontSizeToFitWidth = true;
-      
-      //offlineTable = new UITableView(new CGRect(.05 * parentView.Bounds.Width, .51 * selectionView.Bounds.Height, .9 * parentView.Bounds.Width, .35 * selectionView.Bounds.Height));
-      //offlineTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-      //offlineTable.Layer.CornerRadius = 5f;
-      //offlineTable.Layer.BorderWidth = 1f;
-      //offlineTable.RegisterClassForCellReuse(typeof(RemoteAccessTableCell),"remoteAccessCell");
-
-      //reloadOffline = new UIRefreshControl();
-      //reloadOffline.ValueChanged += (sender, e) => {
-      //  GetAccessList();
-      //};
-
-      //offlineTable.InsertSubview(reloadOffline,0);  
-      //offlineTable.SendSubviewToBack(reloadOffline);
-  
+       
 			remoteMenuButton = new UIButton(new CGRect(.3 * selectionView.Bounds.Width, .87 * selectionView.Bounds.Height, .4 * selectionView.Bounds.Width, .1 * selectionView.Bounds.Height));
 			remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			remoteMenuButton.SetTitle("Remote Mode", UIControlState.Normal);
@@ -100,24 +74,38 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpOutside += (sender, e) => {remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-				Console.WriteLine("clicked to start remote");   
-				await Task.Delay(TimeSpan.FromMilliseconds(1));
-				var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
-
-				if(!string.IsNullOrEmpty(viewing)){
-					remoteMenuButton.Hidden = true;
-					fullMenuButton.Hidden = false;
-					onlineTable.UserInteractionEnabled = false;
-					webServices.remoteViewing = true;
-					
-					await ion.setRemoteDeviceManager(); 
-        	rootVC.setRemoteMenu();
-					webServices.downloading = true;
-					startDownloading();
-        } else {
-					var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
+				var checkSource = onlineTable.Source as RemoteAccessTableSource;
+				if(webServices.uploading && checkSource.selectedUser.Contains(Convert.ToInt32(KeychainAccess.ValueForKey("userID")))){
+					checkSource.selectedUser.Clear();
+					var alert = UIAlertController.Create ("Unable to View", "You cannot view your current layout while uploading from the same device", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+				} else {				
+					await Task.Delay(TimeSpan.FromMilliseconds(1));
+					var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+	
+					if(!string.IsNullOrEmpty(viewing)){
+					  ///TURN OFF ANY LOCATION POLLING TO ALLOW FOR REMOTE LOCATION BEING USED
+			      if (ion.settings.location.useGeoLocation) {			      	
+			        ion.locationManager.StopAutomaticLocationPolling();
+			      }
+					
+						remoteMenuButton.Hidden = true;
+						fullMenuButton.Hidden = false;
+						onlineTable.UserInteractionEnabled = false;
+						webServices.remoteViewing = true;
+						
+						///CHANGE THE APP MENU AND DEVICE MANAGER TO REFLECT REMOTE VIEWING OPTIONS
+						await ion.setRemoteDeviceManager();
+	        	rootVC.setRemoteMenu();
+						webServices.downloading = true;
+						///START THE LAYOUT DOWNLOADING PROCESS
+						startDownloading();
+	        } else {
+						var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+						rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+					}
 				}
 			};
 			
@@ -132,7 +120,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			fullMenuButton.TouchUpOutside += (sender, e) => {fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};			
 			fullMenuButton.TouchUpInside += async (sender, e) => {			
 				fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-				
+	
+			  ///TURN BACK ON ANY LOCATION POLLING THE LOCAL DEVICE WAS USING
+	      if (ion.settings.location.useGeoLocation) {			      	
+	        ion.locationManager.StartAutomaticLocationPolling();
+	      }
+			
 				fullMenuButton.Hidden = true;
 				remoteMenuButton.Hidden = false;
 				onlineTable.UserInteractionEnabled = true;
@@ -144,7 +137,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 				selectedUser.Clear();
 				onlineTable.ReloadData();
-				
+				///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
 				await ion.setOriginalDeviceManager();
 				rootVC.setMainMenu();
 			};
@@ -155,11 +148,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loadingUsers.HidesWhenStopped = true;			
 			
 			selectionView.AddSubview(onlineLabel);
-			//selectionView.AddSubview(offlineLabel);
 			selectionView.AddSubview(remoteMenuButton);
 			selectionView.AddSubview(fullMenuButton);
 			selectionView.AddSubview(onlineTable);
-			//selectionView.AddSubview(offlineTable);
 			selectionView.AddSubview(loadingUsers);
 			selectionView.BringSubviewToFront(loadingUsers);
 			GetAccessList();
@@ -169,7 +160,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			loadingUsers.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			onlineUsers = new List<accessData>();
-			offlineUsers = new List<accessData>();
 			var ID = KeychainAccess.ValueForKey("userID");
 			var userName = KeychainAccess.ValueForKey("userDisplay");
 			var userEmail = KeychainAccess.ValueForKey("userEmail");
@@ -209,13 +199,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			onlineTable.Source = new RemoteAccessTableSource(onlineUsers, selectedUser, webServices.webClient);
 			onlineTable.ReloadData();
-
-			//offlineTable.Source = new RemoteAccessTableSource(offlineUsers, null, webServices.webClient);
-			//offlineTable.ReloadData();
 			
 			loadingUsers.StopAnimating();
       reloadOnline.EndRefreshing();
-      //reloadOffline.EndRefreshing();
 		}
 		
     public void checkForSelected(object sender, EventArgs e){

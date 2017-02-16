@@ -21,6 +21,7 @@
       var ret = new List<IDevice>();
 
 	      var devices = await db.QueryForAllAsync<DeviceRow>();
+	      Log.D("DeviceDatabaseExtensions", "got all devices");
 	      foreach (var d in devices) {
 	        ret.Add(await db.ReconstructDevice(d));
 	      }

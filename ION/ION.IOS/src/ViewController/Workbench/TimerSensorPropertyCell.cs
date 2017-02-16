@@ -88,6 +88,9 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public void UpdateTo(TimerRecord timer) {
+    	this.buttonReset.Layer.BorderWidth = 1f;
+    	this.buttonPlayPause.Layer.BorderWidth = 1f;
+    	this.Layer.BorderWidth = 1f;
       this.timer = timer;
       SetButton(timer.timer.isStarted);
     }

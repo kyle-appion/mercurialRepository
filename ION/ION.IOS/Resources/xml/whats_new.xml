@@ -1,9 +1,12 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="1.9.2">
-		<new>Added fluid safety information to Refrigerant Manager</new>
-		<new>Added Cloud Access section to menu with new data logging and sharing features</new>
-		<update>Updated Refrigerant Manager layout to accomodate safety information</update>
-		<fixed>Fixed Superheat/Subcool warning showing after switching fluid from mixture to non-mixture</fixed>
+	<display version="1.9.3">
+		<new>Added ability to set Appion Portal account name through app in the settings area after logging in.</new>
+		<new>Added password confirmation for updating password through portal settings</new>
+		<update>Updated Appion Portal section to include direct login to web account</update>
+		<update>Updated several UI discrepancies for alignment in workbench subviews</update>
+		<fixed>Fixed Bluetooth connection status not updating from manual device changes</fixed>
+		<fixed>Fixed Issue when stopping a data recording session that caused app to close afterwards</fixed>
+		<fixed>Fixed incorrect status text when updating portal password</fixed>
   </display>
 </whatsnew>

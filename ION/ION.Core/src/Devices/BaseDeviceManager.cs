@@ -126,12 +126,13 @@
 
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
+    	Log.D(this, "loading the base device manager");
 			try {
       	deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
 			} catch (Exception e) {
 				Log.E(this, "Failed from device factor", e);
 			}
-
+			Log.D(this, "device factory set");
       if (deviceFactory == null) {
         return new InitializationResult() {
           success = false,

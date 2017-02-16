@@ -23,12 +23,12 @@ namespace ION.Droid.Activity {
   /// The activity that is responsible for launching the ION app state.
   /// </summary>
   [Activity(Label = "@string/app_name", MainLauncher=true, Icon="@drawable/ic_logo_appiondefault", ScreenOrientation=ScreenOrientation.Portrait)]
-	public class MainActivity : IONActivity { 
+	public class MainActivity : IONActivity {    
 
     /// <summary>
     /// The minimum time to wait for the ION context to init.
     /// </summary>
-    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(5);
+    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(5);     
 
     // Overridden from Activity
 		protected override void OnCreate (Bundle bundle) {

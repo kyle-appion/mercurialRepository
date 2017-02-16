@@ -135,8 +135,11 @@
       }
     }
     
-    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
-      var item = records[sourceIndexPath.Row];
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {    
+			workbench.onWorkbenchEvent -= OnManifoldEvent;
+			this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+			
+			var item = records[sourceIndexPath.Row];
       var manifold = workbench.manifolds[sourceIndexPath.Row];
       Console.WriteLine("Grabbed manifold " + manifold.primarySensor.name + "-" + manifold.primarySensor.measurement);
       var deleteAt = sourceIndexPath.Row;
@@ -144,38 +147,39 @@
 
       // are we inserting
       Console.WriteLine("MoveRow manifold from index " + sourceIndexPath.Row + " going to index " + destinationIndexPath.Row + " total number of rows " + (records.Count - 1));
-      if(destinationIndexPath.Row < records.Count - 1){
-	      if (destinationIndexPath.Row < sourceIndexPath.Row) {
-	        // add one to where we delete, because we're increasing the index by inserting
-	        deleteAt += 1;
-	      } else {
-	        // add one to where we insert, because we haven't deleted the original yet
-	        insertAt += 1;
-	      }
-	      records.Insert (insertAt, item);
-	      records.RemoveAt (deleteAt);
-	      
-	      workbench.manifolds.Insert(insertAt,manifold);
-	      workbench.manifolds.RemoveAt(deleteAt);
-	
-				expanded = true;
-				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
-				SetWorkbench(workbench);				
-	      tableView.SetEditing(false, true);
-      } else {
-      
-	      records.Insert (records.Count - 2, item);
-	      records.RemoveAt (deleteAt);
 
-	      workbench.manifolds.Insert(records.Count - 1,manifold);
-	      workbench.manifolds.RemoveAt(deleteAt);
+	      if(destinationIndexPath.Row < records.Count - 1){
+		      tableView.SetEditing(false, true);
 	      
-				expanded = true;
-				this.workbench.onWorkbenchEvent -= OnManifoldEvent;
-				SetWorkbench(workbench);
+		      if (destinationIndexPath.Row < sourceIndexPath.Row) {
+		        // add one to where we delete, because we're increasing the index by inserting
+		        deleteAt += 1;
+		      } else {
+		        // add one to where we insert, because we haven't deleted the original yet
+		        insertAt += 1;
+		      }
+		      records.Insert (insertAt, item);
+		      records.RemoveAt (deleteAt);
+		      workbench.manifolds.Insert(insertAt,manifold);
+		      workbench.manifolds.RemoveAt(deleteAt);
+		
+					expanded = true;
+					this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+					SetWorkbench(workbench);				
+	      } else {
+		      tableView.SetEditing(false, true);
+	      
+		      records.Insert (records.Count - 2, item);
+		      records.RemoveAt (deleteAt);
 	
-	      tableView.SetEditing(false, true);
-			}
+		      workbench.manifolds.Insert(records.Count - 1,manifold);
+		      workbench.manifolds.RemoveAt(deleteAt);
+		      
+					expanded = true;
+					this.workbench.onWorkbenchEvent -= OnManifoldEvent;
+					SetWorkbench(workbench);		
+				}
+
     }
     // Overridden from UITableViewSource
     public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
@@ -292,18 +296,18 @@
         var longPress = new UILongPressGestureRecognizer((obj) => {
 					if(obj.State == UIGestureRecognizerState.Began){
 						if(tableView.Editing){
-							tableView.SetEditing(false,true);
+							tableView.SetEditing(false,false);
 							expanded = true;
 							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 							SetWorkbench(workbench);
 						} else {
-							tableView.SetEditing(true,true);
+							tableView.SetEditing(true,false);
 							expanded = false;
 							this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 							SetWorkbench(workbench);							
 						}	
 					}	else if(obj.State == UIGestureRecognizerState.Cancelled){
-						tableView.SetEditing(false,true);
+						tableView.SetEditing(false,false);
 						expanded = true;
 						this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 						SetWorkbench(workbench);
@@ -699,6 +703,9 @@
     /// <param name="e">E.</param>
     /// <param name="manifold">Manifold.</param>
     private void OnManifoldEvent(ManifoldEvent e) {
+    	if(!expanded){
+				return;
+			}
       var manifold = e.manifold;
       var recordIndex = IndexOfManifold(manifold);
       var indices = new List<int>();

@@ -106,9 +106,7 @@
     /// <returns>The for all async.</returns>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public Task<List<T>> QueryForAllAsync<T>() where T : class, ITableRow {
-			return Task.Factory.StartNew(() => {
-				return new List<T>(Table<T>().AsEnumerable());
-			});
+      return Task.FromResult(new List<T>(Table<T>().AsEnumerable()));
     }
 
     /// <summary>
@@ -117,9 +115,7 @@
     /// <returns>The async.</returns>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public Task<long> CountAsync<T>() where T : class, ITableRow {
-			return Task.Factory.StartNew(() => {
-				return (long)Table<T>().Count();
-			});
+      return Task.FromResult((long)Table<T>().Count());
     }
 
     /// <summary>
@@ -128,49 +124,48 @@
     /// <returns>The async.</returns>
     /// <param name="t">T.</param>
     public Task<bool> SaveAsync<T>(T t) where T : ITableRow {
-			return Task.Factory.StartNew(() => {
-				bool startedTransaction = false;
+			bool startedTransaction = false;
 
-				try {
-					BeginTransaction();
-					startedTransaction = true;
+      //try {
+				BeginTransaction();
+				startedTransaction = true;
 
-					int affected = 0;
-					if (t._id > 0) {
-						affected = Update(t);
-						NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
-					} else {
-						affected = Insert(t);
-						NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
-					}
+        int affected = 0;
+        if (t._id > 0) {
+          affected = Update(t);
+          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
+        } else {
+          affected = Insert(t);
+          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
+        }
 
-					if (affected > 0) {
-						Commit();
-						return true;
-					} else {
-						try {
-							if (t._id > 0) {
-								affected = Update(t);
-								NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
-							} else {
-								affected = Insert(t);
-								NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
-							}
-						} catch (Exception e){
-							Log.E(this, "Issue trying to store session data the second go around");
-							return false;
-						}
-						Log.E(this, "Retried to store session info");
-						return true;
+        if (affected > 0) {
+          Commit();
+          Log.D(this, "finished save async");
+          return Task.FromResult(true);
+        } else {
+        	try {
+		        if (t._id > 0) {
+		          affected = Update(t);
+		          NotifyOfEvent(DatabaseEvent.EAction.Modified, t);
+		        } else {
+		          affected = Insert(t);
+		          NotifyOfEvent(DatabaseEvent.EAction.Inserted, t);
+		        }
+					} catch (Exception e){
+						Log.E(this, "Issue trying to store session data the second go around");
+          	return Task.FromResult(false);
 					}
-				} catch (Exception e) {
-					Log.E(this, "Failed to save the item: " + t + " to the database", e);
-					if (startedTransaction) {
-						Rollback();
-					}
-					return false;
-				}
-			});
+          Log.E(this, "Retried to store session info");
+          return Task.FromResult(true);
+        }
+    //  } catch (Exception e) {
+    //    Log.E(this, "Failed to save the item: " + t + " to the database", e);
+				//if (startedTransaction) {
+    //    	Rollback();
+				//}
+    //    return Task.FromResult(false);
+    //  }
     }
 
     /// <summary>
@@ -180,30 +175,28 @@
     /// <param name="t">T.</param>
     /// <typeparam name="T">The 1st type parameter.</typeparam>
     public Task<bool> DeleteAsync<T>(T t) where T : ITableRow {
-			return Task.Factory.StartNew(() => {
-				bool startedTransaction = false;
+			bool startedTransaction = false;
 
-	      try {
-					BeginTransaction();
-					startedTransaction = true;
-	        var affected = Delete(t);
+      try {
+				BeginTransaction();
+				startedTransaction = true;
+        var affected = Delete(t);
 
-	        if (affected > 0) {
-	          Commit();
-	          NotifyOfEvent(DatabaseEvent.EAction.Deleted, t);
-						return true;
-	        } else {
-	          Log.E(this, "Did not modify the database");
-						return false;
-	        }
-	      } catch (Exception e) {
-	        Log.E(this, "Failed to delete the item: " + t + " to the database", e);
-					if (startedTransaction) {
-	        	Rollback();
-					}
-					return false;
-	      }
-			});
+        if (affected > 0) {
+          Commit();
+          NotifyOfEvent(DatabaseEvent.EAction.Deleted, t);
+          return Task.FromResult(true);
+        } else {
+          Log.E(this, "Did not modify the database");
+          return Task.FromResult(false);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to delete the item: " + t + " to the database", e);
+				if (startedTransaction) {
+        	Rollback();
+				}
+        return Task.FromResult(false);
+      }
     }
 
     /// <summary>

@@ -51,7 +51,9 @@
       get {
         return __lastKnownLocation;
       }
-      private set {
+      //CHANGED TO ALLOW DIRECT SETTING BY REMOTE VIEWING SESSION
+      //private set {
+      set {
         var old = __lastKnownLocation;
         __lastKnownLocation = value;
         if (onLocationChanged != null) {
@@ -150,6 +152,10 @@
         Log.D(this, "New " + lastKnownLocation);
       }
     }
+    
+    public void setLocationRemote(double altitude){
+			lastKnownLocation = new IosLocation(altitude);
+		}
   }
 
   internal class IosLocation : ILocation {
@@ -161,7 +167,7 @@
     // Overridden from ILocation
     public Scalar latitude { get; }
 
-    public IosLocation() {
+    public IosLocation() {  
       isValid = false;
       altitude = Units.Length.METER.OfScalar(0);
       latitude = Units.Angle.DEGREE.OfScalar(0);
@@ -174,6 +180,14 @@
       latitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Latitude);
       longitude = Units.Angle.DEGREE.OfScalar(location.Coordinate.Longitude);
     }
+    
+    //REMOTE VIEWING CONSTRUCTOR
+    public IosLocation(double remoteAltitude){
+      isValid = false;
+      altitude = Units.Length.METER.OfScalar(remoteAltitude);
+      latitude = Units.Angle.DEGREE.OfScalar(0);
+      longitude = Units.Angle.DEGREE.OfScalar(0);
+		}
 
     // Overridden from Object
     public override string ToString() {

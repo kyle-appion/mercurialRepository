@@ -132,15 +132,16 @@ namespace ION.IOS.ViewController.Analyzer {
 				freeSpace /= 1024;
 				freeSpace /= 1024;
 				
-				//Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
+				Console.WriteLine("You have a total size of " + totalSize + " and " + freeSpace + " of that is free");
 			
 				UIView blockerView = new UIView(new CGRect(0,0,viewAnalyzerContainer.Bounds.Width,viewAnalyzerContainer.Bounds.Height));
 				blockerView.BackgroundColor = UIColor.Clear;
+				blockerView.Hidden = true;
 
 				var remoteButton = new UIButton(new CGRect(0,0,65,35));
 				remoteButton.SetTitle(Util.Strings.Analyzer.OPTIONS, UIControlState.Normal);
 				remoteButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-				remoteButton.TouchUpInside += (sender, e) =>{
+				remoteButton.TouchUpInside += (sender, e) =>{     
 					if(remoteControl.controlView.Hidden){
 						remoteControl.controlView.Hidden = false;
 					} else {
@@ -158,20 +159,7 @@ namespace ION.IOS.ViewController.Analyzer {
 	   			blockerView.Hidden = true;
 					disconnectRemoteMode();
 				};
-				
-				remoteControl.editButton.TouchUpInside += (sender, e) => {
-					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
-					webServices.downloading = false;
-					blockerView.Hidden = true;
-				};
-
-				remoteControl.remoteButton.TouchUpInside += (sender, e) => {
-					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
-					pauseRemote(false);
-					webServices.downloading = true;
-					blockerView.Hidden = false;					
-				};
-			
+						
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
 				refreshSensorLayout();
@@ -188,7 +176,7 @@ namespace ION.IOS.ViewController.Analyzer {
 	      screenshot.TouchUpInside += (obj, args) => {
 	        TakeScreenshot();
 	      };
-	      screenshot.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);
+	      screenshot.SetImage(UIImage.FromBundle("ic_camera"), UIControlState.Normal);    
 				
 	      dataRecord = new UIButton(new CGRect(0,0,35,35));
 	      dataRecord.BackgroundColor = UIColor.Clear;
@@ -1144,16 +1132,32 @@ namespace ION.IOS.ViewController.Analyzer {
     
     public void addLHDeviceSensor(lowHighSensor area, GaugeDeviceSensor sensor){
       bool existingConnection = false;
-      int start, stop;
+      int start, stop,existStart, existStop;
       
         if(area.location == "low"){
           start = 0;
           stop = 4;
+          existStart = 4;
+          existStop = 8;
         } else {
+          existStart = 0;
+          existStop = 4;
           start = 4;
           stop = 8;
         }
-
+        ///DON'T ALLOW A USER TO ADD AN EXISTING SENSOR TO THE OPPOSITE SIDE. JUST LET THEM KNOW IT IS ALREADY ON THE ANALYZER
+				for(int i = existStart; i < existStop; i++){
+					if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
+			      UIAlertController fullPopup = UIAlertController.Create (Util.Strings.Analyzer.CANTMOVE, Util.Strings.Analyzer.SENSOREXISTS, UIAlertControllerStyle.Alert);
+			
+			      fullPopup.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));            
+			
+			      PresentViewController (fullPopup, true, null);
+						return;				
+					}
+				}
+				
+				
         for(int i = start; i < stop; i ++){
           if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
             if(start == 0){
@@ -1334,8 +1338,22 @@ namespace ION.IOS.ViewController.Analyzer {
           stop = 4;
         }
 
-        for(int i = start; i < stop; i ++){
+        for(int i = start; i < stop; i ++){        
           if(analyzerSensors.viewList[i].currentSensor != null && analyzerSensors.viewList[i].currentSensor == sensor){
+            ///CHECK IF SENSOR WAS ON THE OPPOSITE SIDE AND LINKED TO THE HIGH OR LOW TO REMOVE THOSE ASSOCIATIONS AS WELL
+		        if(start == 0){
+							if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier){
+								Console.WriteLine("low side was attached to the sensor before and needs to be cleared out");
+		            lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+		            analyzer.lowAccessibility = "low";
+							}
+						} else {
+							if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier){
+								Console.WriteLine("high side was attached to the sensor before and needs to be cleared out");
+		            lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+		            analyzer.highAccessibility = "high";
+							}
+						}
             analyzerSensors.viewList[i].topLabel.Hidden = true;
             analyzerSensors.viewList[i].tLabelBottom.Hidden = true;
             analyzerSensors.viewList[i].middleLabel.Hidden = true;
@@ -1448,6 +1466,8 @@ namespace ION.IOS.ViewController.Analyzer {
 		 	webServices.downloading = false;
 		 	webServices.remoteViewing = false;
 		 	webServices.paused = null;
+		 	
+			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
@@ -1516,13 +1536,11 @@ namespace ION.IOS.ViewController.Analyzer {
 	        dataRecord.BackgroundColor = UIColor.Clear;
 	      }
 	    } else {
-
 				if(webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
-
 			}
 	    //viewAnalyzerContainer.SetNeedsDisplay();
     }

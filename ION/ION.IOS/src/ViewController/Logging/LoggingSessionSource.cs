@@ -113,11 +113,11 @@ namespace ION.IOS.ViewController.Logging {
       Console.WriteLine ("Clicked: " + tableItems[indexPath.Row].SID);
 
       if (usingSessions.Contains(tableItems[indexPath.Row].SID)) {
-        //usingSessions.Remove(tableItems[indexPath.Row].SID);
-        usingSessions.Clear();
+        usingSessions.Remove(tableItems[indexPath.Row].SID);
+        //usingSessions.Clear();
         tableView.ReloadData();
       } else {
-      	usingSessions.Clear();
+      	//usingSessions.Clear();
         usingSessions.Add(tableItems[indexPath.Row].SID);
         tableView.ReloadData();
       }

@@ -160,11 +160,11 @@ namespace ION.IOS.ViewController.Analyzer
 		{
 			// WARNING: SPECIAL HANDLING HERE FOR THE SECOND ROW
 			// ALSO MEANS SWIPE-TO-DELETE DOESN'T WORK ON THAT ROW
-			if (indexPath.Section == 0 && indexPath.Row == 1) {
-				return UITableViewCellEditingStyle.Insert;
-			} else {
+			//if (indexPath.Section == 0 && indexPath.Row == 1) {
+			//	return UITableViewCellEditingStyle.Insert;
+			//} else {
 				return UITableViewCellEditingStyle.Delete;
-			}
+			//}
 		}
 		
     public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {

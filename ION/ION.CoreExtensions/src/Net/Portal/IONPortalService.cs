@@ -9,9 +9,6 @@
 	using System.Text;
 	using System.Threading.Tasks;
 
-	using Android.App;
-	using Android.Content;
-
 	using Newtonsoft.Json.Linq;
 
 	using Appion.Commons.Util;

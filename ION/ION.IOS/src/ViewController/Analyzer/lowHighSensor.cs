@@ -95,8 +95,8 @@ namespace ION.IOS.ViewController.Analyzer
     
     public GaugeDeviceSensor currentSensor{
 
-      get { return __currentSensor;}
-      set { if (__currentSensor != null) {
+      get { return __currentSensor; }
+      set {if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
         }
         __currentSensor = value;
