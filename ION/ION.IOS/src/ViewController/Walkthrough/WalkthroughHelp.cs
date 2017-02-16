@@ -31,6 +31,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 			contentLabel.ClipsToBounds = true;
 			contentLabel.Lines = 0;
 			contentLabel.Text = "This walkthrough will introduce you to the primary features of the ION HVAC/R app. If you need to access the walkthrough at a later point, it will be found in the 'Help' section of the main menu";
+			contentLabel.AdjustsFontSizeToFitWidth = true;
 			
 			closeButton = new UIButton(new CGRect(0, .8 * helpView.Bounds.Height, helpView.Bounds.Width, .2 * helpView.Bounds.Height));
 			closeButton.SetTitle("Close", UIControlState.Normal);

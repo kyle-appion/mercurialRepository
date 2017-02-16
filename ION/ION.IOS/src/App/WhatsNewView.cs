@@ -33,7 +33,7 @@ namespace ION.IOS.App {
 			if(UserInterfaceIdiomIsPhone){
 				headingSize = 3;
 				fontSize = 14;
-				contentMultiplier = 85; 
+				contentMultiplier = 125; 
 			} else {
 				headingSize = 2;
 				fontSize = 20;
@@ -106,11 +106,11 @@ namespace ION.IOS.App {
 			closeCorner.TouchUpInside += (sender, e) => { 
 				infoView.RemoveFromSuperview();
 			};
-			
 			contentHolder = new UIScrollView(new CGRect(0,.12 * parentView.Bounds.Height,infoView.Bounds.Width,infoView.Bounds.Height));
 			contentHolder.Layer.CornerRadius = 5;
 			contentHolder.ClipsToBounds = true;
 			contentHolder.ContentSize = new CGSize(contentHolder.Bounds.Width, itemCount * contentMultiplier);
+			contentHolder.UserInteractionEnabled = true;
 			
 			closeBottom = new UIButton(new CGRect(0,infoView.Bounds.Height - .07 * parentView.Bounds.Height,infoView.Bounds.Width,.07 * parentView.Bounds.Height));
 			closeBottom.ClipsToBounds = true;
@@ -129,13 +129,13 @@ namespace ION.IOS.App {
 			content.UserInteractionEnabled = false;
 			content.Font = UIFont.SystemFontOfSize(30);
 			
-			if(UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone){
-				headingSize = 5;
-				fontSize = 12;
-			} else {
-				headingSize = 2;
-				fontSize = 15;
-			}
+			//if(UIDevice.CurrentDevice.UserInterfaceIdiom == UIUserInterfaceIdiom.Phone){
+			//	headingSize = 5;
+			//	fontSize = 12;
+			//} else {
+			//	headingSize = 2;
+			//	fontSize = 15;
+			//}
 			
       content.AttributedText = htmlString; 
 			

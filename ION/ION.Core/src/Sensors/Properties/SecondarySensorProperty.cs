@@ -50,7 +50,7 @@
 		}
 
 		public void ManifoldEventListener(ManifoldEvent e) {
-			Log.D(this, "Received manifold event from: " + e.manifold.GetHashCode() + " we are listening to: " + manifold.GetHashCode());
+			//Log.D(this, "Received manifold event from: " + e.manifold.GetHashCode() + " we are listening to: " + manifold.GetHashCode());
 			switch (e.type) {
 				case ManifoldEvent.EType.Invalidated:
 				case ManifoldEvent.EType.SecondarySensorAdded:

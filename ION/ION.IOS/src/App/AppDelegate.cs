@@ -92,6 +92,10 @@
 						//KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 						NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
 					}
+					////////USE THIS TO RESET VERSION NUMBER FOR TESTING WHAT'S NEW POPUP/////////
+					//else{
+					//	NSUserDefaults.StandardUserDefaults.SetString("1.0","lastUsedVersion");
+					//}
 				} else {
 					var window = UIApplication.SharedApplication.KeyWindow;
 		    	var vc = window.RootViewController;

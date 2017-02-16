@@ -11,13 +11,17 @@ namespace ION.IOS.ViewController.AccessRequest {
 		protected AllowingUserCell(IntPtr handle)  {
 			
 		}
-		public void makeCellData(accessUserData user, nfloat cellHeight){
+		public void makeCellData(accessUserData user, nfloat cellHeight, bool small = false){
 			header = new UILabel(new CGRect(0,0,this.Bounds.Width, cellHeight));
-			header.Text ="("+user.displayName+") " + user.userEmail;
+			if(small == false){
+				header.Text ="("+user.displayName+") " + user.userEmail;
+			} else {
+				header.Text = user.displayName;
+			}
 			header.AdjustsFontSizeToFitWidth = true;
 			header.TextAlignment = UITextAlignment.Center;
 			
 			this.AddSubview(header);			
-		}		
+		}
 	}
 }

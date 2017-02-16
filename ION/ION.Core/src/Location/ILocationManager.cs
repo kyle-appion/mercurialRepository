@@ -56,6 +56,11 @@
     /// Stops location polling.
     /// </summary>
     void StopAutomaticLocationPolling();
+    
+    /// <summary>
+    /// Sets the location from a remote device.
+    /// </summary>
+    void setLocationRemote(double remoteAltitude);
 
     /// <summary>
     /// Queries the address of the given location.

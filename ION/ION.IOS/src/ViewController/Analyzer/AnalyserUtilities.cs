@@ -2978,7 +2978,7 @@ namespace ION.IOS.ViewController.Analyzer
 				if(ion.currentAnalyzer.lowSideManifold != null){
 					activeSensor.lowArea.manifold.SetSecondarySensor(ion.currentAnalyzer.lowSideManifold.primarySensor);
 					Console.WriteLine("AnalyserUtilities Set low area secondary sensor");
-				} else {
+				} else if(activeSensor.lowArea.manifold != null){
 					activeSensor.lowArea.manifold.SetSecondarySensor(null);
 					Console.WriteLine("AnalyserUtilities Removed low area secondary sensor");
 				}
@@ -2991,11 +2991,13 @@ namespace ION.IOS.ViewController.Analyzer
 				activeSensor.lowArea.snapArea.Hidden = true;
 				///SETS THE SECONDARY SENSOR FOR THE LOW AREA
 				if(ion.currentAnalyzer.highSideManifold != null){
+					Console.WriteLine("AnalyserUtilities setting high area secondary sensor");
 					activeSensor.highArea.manifold.SetSecondarySensor(ion.currentAnalyzer.highSideManifold.primarySensor);			
 					Console.WriteLine("AnalyserUtilities Set high area secondary sensor");
-				} else {
+				} else if(activeSensor.highArea.manifold != null){
+					Console.WriteLine("AnalyserUtilities Removing high area secondary sensor");
 					activeSensor.highArea.manifold.SetSecondarySensor(null);
-					Console.WriteLine("AnalyserUtilities Removed high area secondary sensor");
+					Console.WriteLine("AnalyserUtilities Removed high area secondary sensor");   
 				}
 			}
 		}

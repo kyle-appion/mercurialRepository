@@ -269,18 +269,23 @@
       if (serialNumber != null) {
         for(int i = 0; i < manifolds.Count; i++) {
           var p = manifolds[i].primarySensor as GaugeDeviceSensor;
-          var s = manifolds[i].secondarySensor as GaugeDeviceSensor; 
+          //var s = manifolds[i].secondarySensor as GaugeDeviceSensor; 
 					
 					if(p != null){
 	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial && p.type == UnitLookup.GetSensorTypeFromCode(unitCode)){
 							return i;
 						};
 					}
-					if(s != null){
-	          if(serialNumber.rawSerial == s.device.serialNumber.rawSerial && s.type ==  UnitLookup.GetSensorTypeFromCode(unitCode)){
-							return i;
-						};
-					}
+					/// <summary>
+					/// WHY DID I WRITE THIS TO BEGIN WITH?!?!?!?!?!!?!
+					/// </summary>
+					/// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
+					/// <param name="sensor">Sensor.</param>
+					//if(s != null){
+	    //      if(serialNumber.rawSerial == s.device.serialNumber.rawSerial && s.type ==  UnitLookup.GetSensorTypeFromCode(unitCode)){
+					//		return i;
+					//	};
+					//}
         }
       }
 			return 99;

@@ -75,11 +75,18 @@ namespace ION.IOS.ViewController.AccessRequest {
 
       allowingTable.InsertSubview(followerRefresh,0);
       allowingTable.SendSubviewToBack(followerRefresh);
-			
+      
+			loadingRequests = new UIActivityIndicatorView(new CGRect(.05 * parentView.Bounds.Width, 0, .9 * parentView.Bounds.Width, .95 * parentView.Bounds.Height));
+			loadingRequests.Alpha = .8f;
+			loadingRequests.BackgroundColor = UIColor.Gray;
+			loadingRequests.HidesWhenStopped = true; 
+     
+			accessView.AddSubview(loadingRequests);   			
 			accessView.AddSubview(allowedHeader);
 			accessView.AddSubview(viewingTable);
 			accessView.AddSubview(grantedHeader);
 			accessView.AddSubview(allowingTable);
+			accessView.BringSubviewToFront(loadingRequests);
 			getAllUserAccess(parentView);
 		}
 		
@@ -90,11 +97,9 @@ namespace ION.IOS.ViewController.AccessRequest {
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
 		public async void getAllUserAccess(UIView parentView){
-			loadingRequests = new UIActivityIndicatorView(new CGRect(.05 * parentView.Bounds.Width, .05 * parentView.Bounds.Height, .9 * parentView.Bounds.Width, .4 * parentView.Bounds.Height));
-			loadingRequests.Alpha = .8f;
-			loadingRequests.BackgroundColor = UIColor.Gray;
-			loadingRequests.HidesWhenStopped = true;			
+			
 			loadingRequests.StartAnimating();
+			
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 
 			followingUsers = new List<accessUserData>();

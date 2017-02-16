@@ -162,6 +162,7 @@
 
 		public override void DisconnectedPeripheral(CBCentralManager central, CBPeripheral peripheral, NSError error) {
 //			base.DisconnectedPeripheral(central, peripheral, error);
+				onPeripheralDisconnected(this,peripheral);
 		}
 
 		public override void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {

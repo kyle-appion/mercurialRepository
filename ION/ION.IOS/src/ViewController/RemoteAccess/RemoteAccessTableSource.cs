@@ -18,15 +18,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	  
 		List<accessData> tableItems;
     nfloat cellHeight;
-		IION ion;
-    ObservableCollection<int> selectedUser;
+		IosION ion;
+    public ObservableCollection<int> selectedUser;
     WebClient webServices;
     public const string deleteUserUrl = "http://portal.appioninc.com/App/deleteAccess.php";
     
 		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<int> selected, WebClient webClient) {
 			tableItems = accessItems;
 			selectedUser = selected;
-			ion = AppState.context;
+			ion = AppState.context as IosION;
 			webServices = webClient;
 			tableItems.Sort((x, y) => y.online.CompareTo(x.online));
 		}
@@ -99,18 +99,24 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
     public override void RowSelected (UITableView tableView, NSIndexPath indexPath)
     {
+			if(!ion.webServices.remoteViewing){
+				var userID = KeychainAccess.ValueForKey("userID");
 
-    	if(selectedUser != null){
-				if(selectedUser.Contains(tableItems[indexPath.Row].id)){
-					selectedUser.Clear();
-					NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
-				} else if (tableItems[indexPath.Row].online == 1) {
-					selectedUser.Clear();
-					selectedUser.Add(tableItems[indexPath.Row].id);
-					NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].id.ToString(),"viewedUser");
+	    	if(selectedUser != null){
+	    		if(tableItems[indexPath.Row].id == Convert.ToInt32(userID) && ion.webServices.uploading){
+						return;
+					}
+					if(selectedUser.Contains(tableItems[indexPath.Row].id)){
+						selectedUser.Clear();
+						NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+					} else if (tableItems[indexPath.Row].online == 1) {
+						selectedUser.Clear();
+						selectedUser.Add(tableItems[indexPath.Row].id);
+						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].id.ToString(),"viewedUser");
+					}
+					
+					tableView.ReloadData();
 				}
-				
-				tableView.ReloadData();
 			}
     }
     

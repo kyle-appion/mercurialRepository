@@ -52,8 +52,9 @@ namespace ION.IOS.ViewController.Workbench
 
 
     public void UpdateTo(SecondarySensorRecord record, nfloat cellWidth) {
+    	this.Layer.BorderWidth = 1f;
       this.record = record;
-      labelTitle.Font = UIFont.BoldSystemFontOfSize(16);
+      labelTitle.Font = UIFont.BoldSystemFontOfSize(17);
       labelMeasurement.Font = UIFont.SystemFontOfSize(21);
 
       if (record.manifold.secondarySensor != null) {
