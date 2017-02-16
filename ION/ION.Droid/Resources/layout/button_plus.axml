@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/nav_icon"
+    android:layout_height="match_parent"
+    android:background="@drawable/selector_button_gold_black"
+    android:id="@id/plus"
+    android:text="+"
+    android:textStyle="bold"
+    android:hint="+"
+    android:gravity="center"
+    android:textColor="@color/black"
+    android:textSize="@dimen/text_size_title" />
