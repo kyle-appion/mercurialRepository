@@ -51,7 +51,7 @@ file.
 "alarms_reenable" = "Re-enable";
 
 /* ANALYZER */
-"analyzer" = "Analyzer";
+"analyzer" = "System Analyzer";
 "add_secondary_2sarg" = "Do you want to add this {0} sensor to the current {1} sensor?";
 "remove_setup" = "Do you want to remove the current sensor setup?";
 "add_temp" = "Do you want to add this Temperature sensor to the current Pressure sensor?";
@@ -65,13 +65,13 @@ file.
 "choose_subview" = "Choose a subview";
 "add_subview" = "Add Subview";
 "remove_sensor" = "Remove Sensor";
-"high_undefined" = "High Viewer Not Defined";
-"low_undefined" = "Low Viewer Not Defined";
+"high_undefined" = "High Side Not Defined";
+"low_undefined" = "Low Side Not Defined";
 "display_link" = "Display Link:";
 "complete_action" = "Complete Action?";
 "enter_name" = "Enter Name";
 "unit_picker" = "Unit Picker";
-"create_manual" = "Create Manual Entry";
+"create_manual" = "Manual Entry";
 "choose_unit" = "Choose Unit";
 "device_actions" = "Device Actions";
 "add_from" = "Add From...";

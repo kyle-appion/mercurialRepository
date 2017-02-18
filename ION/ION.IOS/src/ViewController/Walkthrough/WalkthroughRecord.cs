@@ -4,7 +4,7 @@ using Foundation;
 using UIKit;
 
 namespace ION.IOS.ViewController.Walkthrough {
-  public interface IWalkthrough{  
+  public interface IWalkthrough{
 		void GoForward();
 		void GoBackward();
 	}
@@ -13,6 +13,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 	    public int currentStep {get;set;}
 	    public UIView parentView {get;set;}
 	    public UILabel explanation {get;set;}
+	    public UILabel progress {get;set;}
 	    public UIImageView arrowImage {get;set;}
 	    public UIButton arrowButton {get;set;}
 	    public UIImageView screenshot {get;set;}
@@ -24,11 +25,15 @@ namespace ION.IOS.ViewController.Walkthrough {
 	/// Walkthrough methods for Workbench
 	/// </summary>
 	public class IntroductoryWalkthrough : WalkthroughProperties {
-		public IntroductoryWalkthrough(UIView pView, UILabel textLabel,UIImageView screenshotImage, UIButton nextButton) {
+		public IntroductoryWalkthrough(UIView pView, UILabel textLabel,UIImageView screenshotImage, UIButton nextButton, UILabel progressLabel) {
 	      currentStep = 1;
 	      parentView = pView;	
 	      explanation = textLabel;
 	      screenshot = screenshotImage;
+	      progress = progressLabel;
+	      
+				progress.Text = currentStep + "/9";
+	      
       
      	if(parentView.Bounds.Height <= 568){
 				arrowButton = new UIButton(new CGRect(.293 * parentView.Bounds.Width,80,.05 * parentView.Bounds.Width,.07 * parentView.Bounds.Height));
@@ -60,7 +65,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 		
 		public override void GoForward(){
 	      currentStep++;
-	
+				progress.Text = currentStep + "/9";
 	      switch (currentStep) {
 	        case 1:
 	          screenshot.Image = UIImage.FromBundle("Intro1");
@@ -94,13 +99,16 @@ namespace ION.IOS.ViewController.Walkthrough {
 	        	break;
 	        default:
 	          currentStep = 1;
+						progress.Text = currentStep + "/9";	          
 	          screenshot.Image = UIImage.FromBundle("Intro1"); 
 			  explainMenu();        
 	          break;
 	      }
 		} 
 		public override void GoBackward(){
-        	currentStep--;
+        currentStep--;
+				progress.Text = currentStep + "/9";
+        	
 	      	switch (currentStep) { 
 	        	case 1:
 				explainMenu();
@@ -138,6 +146,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 	          arrowImage.Hidden = true;
 	      	  arrowButton.Hidden = true;
 	          currentStep = 9;
+						progress.Text = currentStep + "/9";	          
 	          explainWorkbenchDeviceOptions();
 	          screenshot.Image = UIImage.FromBundle("Intro4");          
 	          break;

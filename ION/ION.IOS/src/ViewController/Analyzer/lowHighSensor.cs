@@ -306,9 +306,9 @@ namespace ION.IOS.ViewController.Analyzer
             minType = currentSensor.unit.ToString();
           }
           if (currentSensor.unit != Units.Vacuum.MICRON) {
-            minReading.Text = min.ToString("N") + " " + minType;
+            minReading.Text = min.ToString("N") + " " + minType + " ";
           } else {
-            minReading.Text = min.ToString() + " " + minType;
+            minReading.Text = min.ToString() + " " + minType + " ";
           }
         } 
         if (subview.Equals("Hold")) {          

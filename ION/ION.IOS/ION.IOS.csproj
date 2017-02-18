@@ -666,6 +666,10 @@
     <ImageAsset Include="Resources\Images.xcassets\appion_log_mountain.imageset\appion_logo_mountain.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\cloud_menu_icon.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\cloud_menu_icon.imageset\clouds-128.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\ic_arrow_rightwhite_long.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\ic_arrow_leftwhite_long.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1113,6 +1117,8 @@
     <Folder Include="Resources\Images.xcassets\appion_log_mountain.imageset\" />
     <Folder Include="src\ViewController\CloudSessions\" />
     <Folder Include="Resources\Images.xcassets\cloud_menu_icon.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

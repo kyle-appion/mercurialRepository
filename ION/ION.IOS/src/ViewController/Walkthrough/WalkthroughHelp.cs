@@ -17,7 +17,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 			helpView = new UIView(new CGRect(.05 * parentView.Bounds.Width, .25 * parentView.Bounds.Height, .9 * parentView.Bounds.Width, .4 * parentView.Bounds.Height));
 			helpView.BackgroundColor = UIColor.White;
 			helpView.Layer.CornerRadius = 5f;
-			helpView.Layer.BorderWidth = 1f;
+			helpView.Layer.BorderWidth = 3f;
 			helpView.ClipsToBounds = true;
 			
 			headerLabel = new UILabel(new CGRect(0, 0, helpView.Bounds.Width, .2 * helpView.Bounds.Height));
