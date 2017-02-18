@@ -58,9 +58,9 @@ namespace ION.IOS.ViewController.Analyzer
       if (sensor.unit != Units.Vacuum.MICRON) {
         middleLabel.Text = sensor.measurement.amount.ToString("N") + " ";
       } else {
-        middleLabel.Text = sensor.measurement.amount.ToString();
+        middleLabel.Text = sensor.measurement.amount.ToString() + " ";
       }
-      bottomLabel.Text = sensor.measurement.unit.ToString();
+      bottomLabel.Text = sensor.measurement.unit.ToString() + " ";
     }
   }
 	

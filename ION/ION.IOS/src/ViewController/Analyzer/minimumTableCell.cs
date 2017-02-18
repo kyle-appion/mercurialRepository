@@ -28,6 +28,7 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.minReading;
+      //cellReading.TextAlignment = UITextAlignment.Center;
       if (lhSensor.minType.Equals("hold")) {
         lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.minType = lhSensor.LabelBottom.Text;
@@ -40,7 +41,7 @@ namespace ION.IOS.ViewController.Analyzer {
         cellReading.Text = lhSensor.min.ToString("N")+ " " + lhSensor.minType + " ";
       }
       cellReading.TextAlignment = UITextAlignment.Right;
-      cellReading.Font = UIFont.FromName("Helvetica", 14f);
+      cellReading.Font = UIFont.FromName("Helvetica", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.Layer.BorderColor = UIColor.Black.CGColor;
       cellReading.Layer.BorderWidth = 1f;

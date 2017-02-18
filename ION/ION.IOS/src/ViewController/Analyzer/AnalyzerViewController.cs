@@ -294,11 +294,11 @@ namespace ION.IOS.ViewController.Analyzer {
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea7, "7", analyzerSensors.snapRect7, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
       AnalyserUtilities.ApplySnapArea (analyzerSensors.snapArea8, "8", analyzerSensors.snapRect8, analyzerSensors, lowHighSensors, viewAnalyzerContainer);
       if (UserInterfaceIdiomIsPhone) {
-        compressor = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width, .023 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height));
-        expansion = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width,.365 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width, .023 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height, .044 * viewAnalyzerContainer.Bounds.Height));
+        compressor = new UIImageView(new CGRect(.46 * viewAnalyzerContainer.Bounds.Width,.365 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height,.044 * viewAnalyzerContainer.Bounds.Height));
       } else {
-        compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width, .025 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
-        expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width,.36 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
+        expansion = new UIImageView(new CGRect(.47 * View.Bounds.Width, .025 * View.Bounds.Height, .044 * View.Bounds.Height, .044 * View.Bounds.Height));
+        compressor = new UIImageView(new CGRect(.47 * View.Bounds.Width,.36 * View.Bounds.Height,.044 * View.Bounds.Height,.044 * View.Bounds.Height));
       }
       compressor.Image = UIImage.FromBundle("ic_compressor");
       expansion.Image = UIImage.FromBundle("ic_expansionchamber");
@@ -939,27 +939,27 @@ namespace ION.IOS.ViewController.Analyzer {
     void AddLowHighGestures(){
 
       lowHighSensors.lowArea.shortPress = new UITapGestureRecognizer (() => {
-        if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "1"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea1,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "2"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea2,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "3"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea3,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "4"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea4,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "5"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea5,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "6"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea6,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "7"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea7,"Low Viewer Not Defined");}
-        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "8"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea8,"Low Viewer Not Defined");}
-        else {ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea, analyzerSensors.snapArea8,"Low Viewer Not Defined");}
+        if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "1"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea1,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "2"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea2,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "3"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea3,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "4"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea4,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "5"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea5,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "6"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea6,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "7"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea7,"Low Side Not Defined");}
+        else if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == "8"){ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea,analyzerSensors.snapArea8,"Low Side Not Defined");}
+        else {ShowPopup(lowHighSensors.lowArea.subviewTable, lowHighSensors.lowArea.snapArea, lowHighSensors.lowArea, analyzerSensors.snapArea8,"Low Side Not Defined");}
       });
 
       lowHighSensors.highArea.shortPress = new UITapGestureRecognizer (() => {
-        if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "1"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea1,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "2"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea2,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "3"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea3,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "4"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea4,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "5"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea5,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "6"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea6,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "7"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea7,"High Viewer Not Defined");}
-        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "8"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea8,"High Viewer Not Defined");}
-        else {ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea1,"High Viewer Not Defined");}
+        if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "1"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea1,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "2"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea2,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "3"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea3,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "4"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea4,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "5"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea5,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "6"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea6,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "7"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea7,"High Side Not Defined");}
+        else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "8"){ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea8,"High Side Not Defined");}
+        else {ShowPopup(lowHighSensors.highArea.subviewTable, lowHighSensors.highArea.snapArea, lowHighSensors.highArea, analyzerSensors.snapArea1,"High Side Not Defined");}
       });
 
       lowHighSensors.lowArea.snapArea.AddGestureRecognizer (lowHighSensors.lowArea.shortPress);
@@ -1154,7 +1154,7 @@ namespace ION.IOS.ViewController.Analyzer {
 			
 			      PresentViewController (fullPopup, true, null);
 						return;				
-					}
+					}   
 				}
 				
 				
