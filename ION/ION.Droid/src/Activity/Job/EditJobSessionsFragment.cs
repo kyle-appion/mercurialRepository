@@ -94,21 +94,23 @@
 			currentAdapter = new SessionAdapter(ion);
 			currentAdapter.onSessionRowChecked += (sender, e) => {
 				var sr = e;
-
+/*	
 				if (sr != null) {
 					sr.isChecked = !sr.isChecked;
 				}
+*/
 
-					UpdateButtons();
+				UpdateButtons();
 			};
 
 			availableAdapter = new SessionAdapter(ion);
 			availableAdapter.onSessionRowChecked += (sender, e) => {
 				var sr = e;
-
+/*
 				if (sr != null) {
 					sr.isChecked = !sr.isChecked;
 				}
+*/
 
 					UpdateButtons();
 			};

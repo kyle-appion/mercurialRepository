@@ -1,11 +1,15 @@
-﻿namespace ION.Droid.Widgets.Adapters.Job {
+﻿
+namespace ION.Droid.Widgets.Adapters.Job {
   
   using Android.Views;
   using Android.Widget;
 
+	using ION.Core.App;
   using ION.Core.Database;
 
+	using ION.Droid.Dialog;
   using ION.Droid.Widgets.RecyclerViews;
+	using ION.Droid.Views;
 
 	public class JobRecord : RecordAdapter.Record<JobRow> {
     public override int viewType { get { return (int)EViewType.Job; } } 
@@ -24,6 +28,22 @@
 			this.dispatch = foreground.FindViewById<TextView>(Resource.Id.dispatch_no);
 			this.purchase = foreground.FindViewById<TextView>(Resource.Id.purchase_no);
 			this.check = foreground.FindViewById(Resource.Id.check);
+			var b = background as TextView;
+			b.SetText(Resource.String.delete);
+			b.SetOnClickListener(new ViewClickAction((view) => {
+				if (record == null) {
+					return;
+				}
+				var adb = new IONAlertDialog(view.Context);
+				adb.SetTitle(Resource.String.job_delete);
+				adb.SetMessage(Resource.String.job_delete_message);
+				adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {});
+				adb.SetPositiveButton(Resource.String.delete, (sender, e) => {;
+					var ion = AppState.context;
+					ion.database.DeleteAsync(record.data);
+				});
+				adb.Show();
+			}));
       check.Visibility = ViewStates.Gone;
     }
 
