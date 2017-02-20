@@ -216,7 +216,7 @@
     <Compile Include="src\Widgets\RootFragmentLayout.cs" />
     <Compile Include="src\Activity\Report\Delegates.cs" />
     <Compile Include="src\Activity\Report\GraphReportSessionsActivity.cs" />
-    <Compile Include="src\Activity\Report\GraphRecord.cs" />
+    <Compile Include="src\Activity\Report\GraphViewHolder.cs" />
     <Compile Include="src\Activity\Report\EViewType.cs" />
     <Compile Include="src\Activity\Report\GraphRecordAdapter.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
@@ -225,7 +225,7 @@
     <Compile Include="src\Report\DataLogReportTable.cs" />
     <Compile Include="src\Report\DataLogPdfReportExporter.cs" />
     <Compile Include="src\Fragments\FileExtensionFilter.cs" />
-    <Compile Include="src\Activity\Report\SensorOverviewRecord.cs" />
+    <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
     <Compile Include="src\Connections\AndroidConnectionHelper.cs" />
@@ -237,11 +237,6 @@
     <Compile Include="src\Connections\Api21ScanDelegate.cs" />
     <Compile Include="src\App\LocationResolverService.cs" />
     <Compile Include="src\Connections\ClassicScanDelegate.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
     <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
@@ -293,6 +288,13 @@
     <Compile Include="src\Activity\Job\EViewType.cs" />
     <Compile Include="src\Activity\Job\SessionAdapter.cs" />
     <Compile Include="src\Activity\Job\SessionRecord.cs" />
+    <Compile Include="src\Activity\Report\JobAdapter.cs" />
+    <Compile Include="src\Activity\Report\JobViewHolder.cs" />
+    <Compile Include="src\Activity\Report\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Report\SessionViewHolder.cs" />
+    <Compile Include="src\Activity\Portal\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Portal\SessionRecord.cs" />
+    <Compile Include="src\Activity\Portal\EViewType.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -737,7 +739,6 @@
     <Folder Include="src\Activity\Report\" />
     <Folder Include="src\Activity\Job\" />
     <Folder Include="src\Activity\DeviceManager\" />
-    <Folder Include="src\Widgets\Adapters\Job\" />
     <Folder Include="src\Report\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />

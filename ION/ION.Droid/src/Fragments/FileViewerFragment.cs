@@ -2,13 +2,10 @@
   
   using System;
 
-  using Android.Content;
   using Android.Support.V7.Widget;
   using Android.OS;
   using Android.Views;
 	using Android.Widget;
-
-	using Appion.Commons.Util;
 
   using ION.Core.IO;
 
@@ -85,17 +82,9 @@
         return __adapter;
       }
       set {
-        if (__adapter != null) {
-          __adapter.onFileClicked -= NotifyFileClicked;
-					__adapter.onFolderClicked -= NotifyFolderClicked;
-        }
-
         __adapter = value;
 
         if (__adapter != null) {
-					__adapter.onFileClicked += NotifyFileClicked;
-					__adapter.onFolderClicked += NotifyFolderClicked;
-
           if (list != null) {
             list.SetAdapter(adapter);
           }
@@ -141,6 +130,29 @@
 			}
     }
 
+		public override void OnResume() {
+			base.OnResume();
+
+			adapter.onItemClicked += OnItemClicked;
+		}
+
+		public override void OnPause() {
+			base.OnPause();
+
+			adapter.onItemClicked -= OnItemClicked;
+		}
+
+		private void OnItemClicked(int position) {
+			var r = adapter[position];
+			if (r is FileRecord) {
+				var fr = r as FileRecord;
+				NotifyFileClicked(fr.data);
+			} else if (r is FolderRecord) {
+				var fr = r as FolderRecord;
+				NotifyFolderClicked(fr.data);
+			}
+		}
+
     /// <summary>
     /// Called when an adapter's file row is clicked.
     /// </summary>
@@ -162,15 +174,6 @@
     }
 
 		private class FileAdapter : RecordAdapter {
-			/// <summary>
-			/// The event handler that is used to notify listeners of when a file row is clicked.
-			/// </summary>
-			public OnFileClicked onFileClicked;
-			/// <summary>
-			/// The event handler that is used to notify listeners of when a folder row is clicked.
-			/// </summary>
-			public OnFolderClicked onFolderClicked;
-
 
 			/// <summary>
 			/// The cache that will hold the file icons.
@@ -192,23 +195,6 @@
 			}
 
 			/// <summary>
-			/// Gets the type of the item view.
-			/// </summary>
-			/// <returns>The item view type.</returns>
-			/// <param name="position">Position.</param>
-			public override int GetItemViewType(int position) {
-				var record = records[position];
-
-				if (record is FileRecord) {
-					return (int)EViewType.File;
-				} else if (record is FolderRecord) {
-					return (int)EViewType.Folder;
-				} else {
-					throw new Exception("Unknown record type: " + record);
-				}
-			}
-
-			/// <summary>
 			/// Raises the create view holder event.
 			/// </summary>
 			/// <param name="parent">Parent.</param>
@@ -225,7 +211,7 @@
 						throw new Exception("Cannot create view holder for: " + ((EViewType)viewType));
 				}
 			}
-
+/*
 			public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 				switch ((EViewType)GetItemViewType(position)) {
 					case EViewType.File: {
@@ -243,6 +229,7 @@
 					} break; // EViewType.Folder
 				}
 			}
+*/
 
 			/// <summary>
 			/// Sets the folder that the adaper will display.
@@ -271,26 +258,6 @@
 
 				if (folder != null) {
 					SetFolder(folder);
-				}
-			}
-
-			/// <summary>
-			/// Notifies that a file was clicked.
-			/// </summary>
-			/// <param name="file">File.</param>
-			internal void NotifyFileClicked(IFile file) {
-				if (onFileClicked != null) {
-					onFileClicked(file);
-				}
-			}
-
-			/// <summary>
-			/// Notifies that a folder was clicked.
-			/// </summary>
-			/// <param name="folder">Folder.</param>
-			internal void NotifyFolderClicked(IFolder folder) {
-				if (onFolderClicked != null) {
-					onFolderClicked(folder);
 				}
 			}
 

@@ -13,7 +13,6 @@
 
 	// Using ION.Droid
 	using Fragments;
-	using Widgets.Adapters.Job;
 
 	public class BySessionFragment : IONFragment {
 		public OnSessionChecked onSessionChecked;

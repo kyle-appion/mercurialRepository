@@ -19,8 +19,6 @@ namespace ION.Droid.Activity.Portal {
 	using ION.Core.Content;
 	using ION.Core.Database;
 
-	using ION.Droid.Widgets.Adapters.Job;
-
 	[Activity(Label = "@string/portal_upload_sessions", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
 	public class PortalSessionsViewActivity : IONActivity {
 

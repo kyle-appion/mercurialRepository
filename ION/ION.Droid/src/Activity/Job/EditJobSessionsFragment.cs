@@ -16,7 +16,6 @@
 
   // Using ION.Droid
   using Fragments;
-	using Widgets.Adapters.Job;
 
   public class EditJobSessionsFragment : IONFragment, IJobPresenter {
 
