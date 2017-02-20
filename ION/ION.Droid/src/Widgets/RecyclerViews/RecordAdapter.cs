@@ -10,6 +10,8 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using L = Appion.Commons.Util.Log;
+
 	using ION.Droid.Views;
 
 	public abstract class RecordAdapter : RecyclerView.Adapter {
@@ -17,6 +19,10 @@
 		/// The event that is notified when the data set changes.
 		/// </summary>
 		public event Action<RecordAdapter> onDataSetChanged;
+		/// <summary>
+		/// The event that is notified when an item is clicked.
+		/// </summary>
+		public event Action<int> onItemClicked;
 
 		/// <summary>
 		/// The recycler view that this adapter is working within.
@@ -71,8 +77,53 @@
 		}
 
 		// Overridden from RecyclerView.Adapter
+		public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
+			base.OnViewDetachedFromWindow(holder);
+			var vh = holder as SwipeRecyclerView.ViewHolder;
+			if (vh != null) {
+				vh.Unbind();
+			}
+		}
+
+		// Overridden from RecyclerView.Adapter
+		public override void OnViewRecycled(Java.Lang.Object holder) {
+			var vh = holder as SwipeRecyclerView.ViewHolder;
+			if (vh != null) {
+				vh.Unbind();
+			}
+		}
+
+		public override int GetItemViewType(int position) {
+			return records[position].viewType;
+		}
+
+		// Overridden from RecyclerView.Adapter
 		public override long GetItemId(int position) {
 			return position;
+		}
+
+		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+			if (holder is RecordViewHolder) {
+				var vh = holder as RecordViewHolder;
+				vh.ItemView.SetOnClickListener(new ViewClickAction((view) => {
+					NotifyItemClicked(position);
+				}));
+				vh.data = records[position] as Record;
+			} else if (holder is SwipeRecordViewHolder) {
+				var vh = holder as SwipeRecordViewHolder;
+				vh.data = records[position] as Record;
+				vh.foreground.SetOnClickListener(new ViewClickAction((view) => {
+					NotifyItemClicked(position);
+				}));
+			}
+
+
+		}
+
+		private void NotifyItemClicked(int position) {
+			if (onItemClicked != null) {
+				onItemClicked(position);
+			}
 		}
 
 		/// <summary>
@@ -95,12 +146,42 @@
 		}
 
 		/// <summary>
+		/// Inserts the record into the given index.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		/// <param name="record">Record.</param>
+		public void AddRecord(IRecord record) {
+			records.Add(record);
+			NotifyItemInserted(records.Count);
+		}
+
+		/// <summary>
+		/// Inserts the record into the given index.
+		/// </summary>
+		/// <param name="index">Index.</param>
+		/// <param name="record">Record.</param>
+		public void InsertRecord(int index, IRecord record) {
+			if (index >= records.Count) {
+				records.Add(record);
+				NotifyItemInserted(index);
+			} else {
+				records.Insert(index, record);
+				NotifyItemInserted(index);
+			}
+		}
+
+		/// <summary>
 		/// Removes the given record from the adapter.
 		/// </summary>
 		/// <param name="index">Index.</param>
 		public void RemoveRecord(int index) {
-			this.records.RemoveAt(index);
-			this.NotifyItemRemoved(index);
+			records.RemoveAt(index);
+			NotifyItemRemoved(index);
+		}
+
+		public void RemoveRecords(int index, int count) {
+			records.RemoveRange(index, count);
+			NotifyItemRangeRemoved(index, count);
 		}
 
 		/// <summary>
@@ -124,7 +205,7 @@
 				onDataSetChanged(this);
 			}
 
-			if (emptyView != null) {
+			if (recyclerView != null && emptyView != null) {
 				if (ItemCount > 0) {
 					emptyView.Visibility = ViewStates.Gone;
 					recyclerView.Visibility = ViewStates.Visible;
@@ -208,6 +289,114 @@
 			/// <param name="itemCount">Item count.</param>
 			public override void OnItemRangeRemoved(int positionStart, int itemCount) {
 				adapter.NotifyChanged();
+			}
+		}
+
+		/// <summary>
+		/// A simple implementation of a non-generic record object.
+		/// </summary>
+		public abstract class Record : IRecord {
+			public abstract int viewType { get; }
+
+			public object _object { get; private set; }
+
+			public Record(object data) {
+				this._object = data;
+			}
+		}
+
+		public abstract class Record<T> : Record {
+			/// <summary>
+			/// The type data for the record.
+			/// </summary>
+			/// <value>The record.</value>
+			public T data { get { return (T)base._object; } }
+
+			public Record(T t) : base(t) {
+			}
+		}
+
+		public class RecordViewHolder : RecyclerView.ViewHolder {
+			public Record data {
+				get {
+					return __data;
+				}
+				set {
+					if (__data != null) {
+						Unbind();
+					}
+
+					__data = value;
+					if (data != null) {
+						Bind();
+						Invalidate();
+					}
+				}
+			} Record __data;
+
+			public RecordViewHolder(View view) : base(view) {
+			}
+
+			public RecordViewHolder(ViewGroup parent, int layout) : base(Create(parent, layout)) {
+			}
+
+			public virtual void Bind() {
+			}
+
+			public virtual void Invalidate() {
+			}
+
+			public virtual void Unbind() {
+			}
+
+			internal static View Create(ViewGroup parent, int layout) {
+				return LayoutInflater.From(parent.Context).Inflate(layout, parent,false);
+			}
+		}
+
+		public class RecordViewHolder<T> : RecordViewHolder where T : Record {
+			public T record { get { return (T)data; } set { base.data = value; } }
+
+			public RecordViewHolder(View view) : base(view) {
+			}
+
+			public RecordViewHolder(ViewGroup parent, int layout) : base(Create(parent, layout)) {
+			}
+		}
+
+
+		public class SwipeRecordViewHolder : SwipeRecyclerView.ViewHolder {
+			public Record data {
+				get {
+					return __data;
+				}
+				set {
+					if (__data != null) {
+						Unbind();
+					}
+
+					__data = value;
+					if (data != null) {
+						Bind();
+						Invalidate();
+					}
+				}
+			} Record __data;
+
+			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {
+			}
+
+			public virtual void Bind() {
+			}
+
+			public virtual void Invalidate() {
+			}
+		}
+
+		public class SwipeRecordViewHolder<T> : SwipeRecordViewHolder where T : Record {
+			public T record { get { return (T)data; } set { base.data = value; } }
+
+			public SwipeRecordViewHolder(SwipeRecyclerView rv, int foregroundLayout, int backgroundLayout) : base(rv, foregroundLayout, backgroundLayout) {
 			}
 		}
 	}

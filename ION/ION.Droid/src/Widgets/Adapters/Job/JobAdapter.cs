@@ -1,5 +1,4 @@
-﻿using ION.Droid.Dialog;
-namespace ION.Droid.Widgets.Adapters.Job {
+﻿namespace ION.Droid.Widgets.Adapters.Job {
 
   using System;
   using System.Collections.Generic;
@@ -10,6 +9,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
   using Android.Content;
   using Android.OS;
   using Android.Runtime;
+	using Android.Support.V7.Widget;
   using Android.Views;
 
 	using Appion.Commons.Util;
@@ -17,9 +17,10 @@ namespace ION.Droid.Widgets.Adapters.Job {
   using ION.Core.App;
   using ION.Core.Database;
 
+	using ION.Droid.Dialog;
   using ION.Droid.Widgets.RecyclerViews;
 
-  public class JobAdapter : SwipableRecyclerViewAdapter {
+  public class JobAdapter : RecordAdapter {
 
     private IION ion;
 
@@ -27,24 +28,24 @@ namespace ION.Droid.Widgets.Adapters.Job {
       this.ion = ion;
     }
 
-    public override void OnAttachedToRecyclerView(Android.Support.V7.Widget.RecyclerView recyclerView) {
+    public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
       base.OnAttachedToRecyclerView(recyclerView);
 
       ion.database.onDatabaseEvent += OnDatabaseEvent;
     }
 
-    public override void OnDetachedFromRecyclerView(Android.Support.V7.Widget.RecyclerView recyclerView) {
+    public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
       base.OnDetachedFromRecyclerView(recyclerView);
 
       ion.database.onDatabaseEvent -= OnDatabaseEvent;
     }
 
-    public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+			var rv = recyclerView as SwipeRecyclerView;
 			var context = parent.Context;
       switch ((EViewType)viewType) {
         case EViewType.Job:
-					var jobret = new JobViewHolder(parent, Resource.Layout.list_item_job_row);
-					jobret.button.SetText(Resource.String.delete);
+					var jobret = new JobViewHolder(rv, Resource.Layout.list_item_job_row);
 					return jobret;
         default:
 					// TODO ahodder@appioninc.com: This needs to return a template empty object
@@ -52,18 +53,6 @@ namespace ION.Droid.Widgets.Adapters.Job {
 					return null;
       }
     }
-
-		public override bool IsSwipable(int position) {
-      return true;
-    }
-/*
-    public override Action GetViewHolderSwipeAction(int index) {
-      return () => {
-				var jobRecord = records[index] as JobRecord;
-				RequestDeleteJob(jobRecord);
-      };
-    }
-*/
 
 		public void RequestDeleteJob(JobRecord record) {
 			var context = recyclerView.Context;
@@ -78,7 +67,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
 				}
 			});
 			adb.SetPositiveButton(Resource.String.delete, (sender, e) => {
-				Log.D(this, "Deleted job: " + record.row._id + " = " + AppState.context.database.DeleteAsync<JobRow>(record.row));
+				Log.D(this, "Deleted job: " + record.data._id + " = " + AppState.context.database.DeleteAsync<JobRow>(record.data));
 			});
 
 			adb.Show();
@@ -87,7 +76,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
     public int IndexOfJob(JobRow job) {
       for (int i = 0; i < this.ItemCount; i++) {
         var r = records[i] as JobRecord;
-        if (r?.row._id == job?._id) {
+        if (r?.data._id == job?._id) {
           return i;
         }
       }
@@ -98,7 +87,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
     public JobRecord JobRecordWithId(long id) {
       for (int i = 0; i < records.Count; i++) {
         var job = records[i] as JobRecord;
-        if (job != null && job.row._id == id) {
+        if (job != null && job.data._id == id) {
           return job;
         }
       }
@@ -119,7 +108,7 @@ namespace ION.Droid.Widgets.Adapters.Job {
         return;
       }
 
-      var index = IndexOfJob(JobRecordWithId(de.id)?.row);
+      var index = IndexOfJob(JobRecordWithId(de.id)?.data);
 
       if (index < 0) {
         return;

@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Widgets.Templates {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
   using Android.Views;
   using Android.Widget;
@@ -52,36 +52,34 @@
 
     private int lastBattery;
     
-    public ManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
+		public ManifoldViewTemplate(View view, BitmapCache cache) : base(view) {
       this.cache = cache;
 
-      toggle = view.FindViewById(Resource.Id.toggle);
+			toggle = view.FindViewById(Resource.Id.toggle);
 
-      title = view.FindViewById<TextView>(Resource.Id.name);
-      measurement = view.FindViewById<TextView>(Resource.Id.measurement);
-      alarm = view.FindViewById<TextView>(Resource.Id.alarm);
-      status = view.FindViewById<TextView>(Resource.Id.status);
-      unit = view.FindViewById<TextView>(Resource.Id.unit);
-      serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
+			title = view.FindViewById<TextView>(Resource.Id.name);
+			measurement = view.FindViewById<TextView>(Resource.Id.measurement);
+			alarm = view.FindViewById<TextView>(Resource.Id.alarm);
+			status = view.FindViewById<TextView>(Resource.Id.status);
+			unit = view.FindViewById<TextView>(Resource.Id.unit);
+			serialNumber = view.FindViewById<TextView>(Resource.Id.device_serial_number);
 
-      battery = view.FindViewById<ImageView>(Resource.Id.battery);
-      connection = view.FindViewById<ImageView>(Resource.Id.connection);
-      icon = view.FindViewById<ImageView>(Resource.Id.icon);
-      arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
+			battery = view.FindViewById<ImageView>(Resource.Id.battery);
+			connection = view.FindViewById<ImageView>(Resource.Id.connection);
+			icon = view.FindViewById<ImageView>(Resource.Id.icon);
+			arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
 
-      progress = view.FindViewById<ProgressBar>(Resource.Id.progress);
+			progress = view.FindViewById<ProgressBar>(Resource.Id.progress);
 
-      lastBattery = -1;
+			lastBattery = -1;
     }
 
     /// <summary>
     /// Binds the view template to the given data.
     /// </summary>
     /// <param name="t">T.</param>
-    protected override void OnBind(Manifold t) {
-			OnUnbind();
+    protected override void OnBind(Manifold m) {
       item.onManifoldEvent += OnManifoldEvent;
-
       Invalidate();
 		}
 

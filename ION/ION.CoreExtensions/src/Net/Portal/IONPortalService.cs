@@ -9,15 +9,11 @@
 	using System.Text;
 	using System.Threading.Tasks;
 
-	using Android.App;
-	using Android.Content;
-
 	using Newtonsoft.Json.Linq;
 
 	using Appion.Commons.Util;
 
 	using ION.Core.App;
-	using ION.Core.Content;
 	using ION.Core.Database;
 
 	public class IONPortalService {

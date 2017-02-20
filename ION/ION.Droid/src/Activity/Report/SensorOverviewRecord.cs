@@ -16,18 +16,16 @@
 	using ION.Droid.Sensors;
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class SensorOverviewRecord : SwipableRecyclerViewAdapter.IRecord {
-		public int viewType { get { return 0; } }
+	public class SensorOverviewRecord : RecordAdapter.Record<GaugeDeviceSensor> {
+		public override int viewType { get { return 0; } }
 
-		public GaugeDeviceSensor sensor { get; private set; }
 		public IEnumerable<DeviceSensorLogs> logs { get; private set; }
 
 		public Scalar lowest { get; private set; }
 		public Scalar highest { get; private set; }
 		public Scalar average { get; private set; }
 
-		public SensorOverviewRecord(IION ion, GaugeDeviceSensor sensor, IEnumerable<DeviceSensorLogs> logs) {
-			this.sensor = sensor;
+		public SensorOverviewRecord(IION ion, GaugeDeviceSensor sensor, IEnumerable<DeviceSensorLogs> logs) : base(sensor) {
 			this.logs = logs;
 
 			var cnt = 0;
@@ -59,24 +57,24 @@
 		}
 	}
 
-	public class OverviewViewHolder : SwipableViewHolder<SensorOverviewRecord> {
+	public class OverviewViewHolder : RecordAdapter.RecordViewHolder<SensorOverviewRecord> {
 		private TextView header;
 		private TextView lowest;
 		private TextView highest;
 		private TextView average;
 
 		public OverviewViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_data_log_overview) {
-			header = view.FindViewById<TextView>(Resource.Id.device_serial_number);
-			lowest = view.FindViewById<TextView>(Resource.Id.lowest);
-			highest = view.FindViewById<TextView>(Resource.Id.highest);
-			average = view.FindViewById<TextView>(Resource.Id.average);
+			header = ItemView.FindViewById<TextView>(Resource.Id.device_serial_number);
+			lowest = ItemView.FindViewById<TextView>(Resource.Id.lowest);
+			highest = ItemView.FindViewById<TextView>(Resource.Id.highest);
+			average = ItemView.FindViewById<TextView>(Resource.Id.average);
 		}
 
-		public override void OnBindTo() {
-			header.Text = t.sensor.device.serialNumber + " (" + t.sensor.type.GetTypeString() + ")";
-			lowest.Text = SensorUtils.ToFormattedString(t.sensor.type, t.lowest);
-			highest.Text = SensorUtils.ToFormattedString(t.sensor.type, t.highest);
-			average.Text = SensorUtils.ToFormattedString(t.sensor.type, t.average);
+		public override void Invalidate() {
+			header.Text = record.data.device.serialNumber + " (" + record.data.type.GetTypeString() + ")";
+			lowest.Text = SensorUtils.ToFormattedString(record.data.type, record.lowest);
+			highest.Text = SensorUtils.ToFormattedString(record.data.type, record.highest);
+			average.Text = SensorUtils.ToFormattedString(record.data.type, record.average);
 		}
 	}
 }

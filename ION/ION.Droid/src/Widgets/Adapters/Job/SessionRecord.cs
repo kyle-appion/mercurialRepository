@@ -11,72 +11,70 @@
   using ION.Droid.Widgets.RecyclerViews;
 
 
-  public class SessionRecord : SwipableRecyclerViewAdapter.IRecord {
+	public class SessionRecord : RecordAdapter.Record<SessionRow> {
     /// <summary>
     ///  The view type for the record.
     /// </summary>
     /// <value>The type of the view.</value>
-    public int viewType { get { return (int)EViewType.Session; } }
+    public override int viewType { get { return (int)EViewType.Session; } }
 
-    public SessionRow row { get; private set; }
 		public int devicesCount { get; private set; }
 		public JobRow job { get; set; }
 
     public bool isChecked { get; set; }
 
-    public SessionRecord(SessionRow row, int devicesCount) {
-      this.row = row;
+		public SessionRecord(SessionRow row, int devicesCount) : base(row) {
 			this.devicesCount = devicesCount;
 			this.isChecked = false;
     }
   }
 
-  public class SessionViewHolder : SwipableViewHolder<SessionRecord> {
+	public class SessionViewHolder : RecordAdapter.SwipeRecordViewHolder<SessionRecord> {
 		private TextView date;
 		private TextView duration;
 		private TextView devicesUsed;
     private CheckBox check;
 
-		public SessionViewHolder(ViewGroup parent, int viewResource, Action<SessionRecord> onChecked) : base(parent, viewResource) {
-      date = view.FindViewById<TextView>(Resource.Id.report_date_created);
-			duration = view.FindViewById<TextView>(Resource.Id.report_session_duration);
-			devicesUsed = view.FindViewById<TextView>(Resource.Id.report_devices_used);
-      check = view.FindViewById<CheckBox>(Resource.Id.check);
+		public SessionViewHolder(SwipeRecyclerView rv, int viewResource, Action<SessionRecord> onChecked) : base(rv, viewResource, Resource.Layout.list_item_button) {
+      date = foreground.FindViewById<TextView>(Resource.Id.report_date_created);
+			duration = foreground.FindViewById<TextView>(Resource.Id.report_session_duration);
+			devicesUsed = foreground.FindViewById<TextView>(Resource.Id.report_devices_used);
+			check = foreground.FindViewById<CheckBox>(Resource.Id.check);
 			check.CheckedChange += (sender, e) => {
-				t.isChecked = check.Checked;
+				record.isChecked = check.Checked;
 				if (onChecked != null) {
-					onChecked(this.t);
+					onChecked(record);
 				}
 			};
 			check.Checked = false;
 
-			view.SetOnClickListener(new ViewClickAction((view) => {
-				t.isChecked = !check.Checked;
-				check.Checked = t.isChecked;
+			foreground.SetOnClickListener(new ViewClickAction((view) => {
+				record.isChecked = !check.Checked;
+				check.Checked = record.isChecked;
 				if (onChecked != null) {
-					onChecked(this.t);
+					onChecked(record);
 				}
 			}));;
     }
 
-    public override void OnBindTo() {
-			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
-			var dateString = t.row.sessionStart.ToLocalTime().ToShortDateString() + " " + t.row.sessionStart.ToLocalTime().ToShortTimeString();
+    public override void Invalidate() {
+			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(record.data._id).Result;
+			var dateString = record.data.sessionStart.ToLocalTime().ToShortDateString() + " " + record.data.sessionStart.ToLocalTime().ToShortTimeString();
 
-			if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
+			if (record.job == null || record.data.frn_JID == 0 || record.job._id == record.data.frn_JID) {
 				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.black));
 			} else {
 				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.red));
 			}
 
 			date.Text = dateString;
-			duration.Text = ToFriendlyString(t.row.sessionEnd - t.row.sessionStart);
-			devicesUsed.Text = "" + t.devicesCount;
-			check.Checked = t.isChecked;
+			duration.Text = ToFriendlyString(record.data.sessionEnd - record.data.sessionStart);
+			devicesUsed.Text = "" + record.devicesCount;
+			check.Checked = record.isChecked;
     }
 
 		private string ToFriendlyString(TimeSpan timeSpan) {
-			var c = view.Context;
+			var c = foreground.Context;
 			if (timeSpan.TotalHours > 24) {
 				return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
 			} else if (timeSpan.TotalMinutes > 60) {

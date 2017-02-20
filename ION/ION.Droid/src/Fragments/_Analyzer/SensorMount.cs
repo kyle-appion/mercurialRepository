@@ -1,4 +1,4 @@
-﻿namespace ION.Droid {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
   using Android.Content;
   using Android.Text;

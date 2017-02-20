@@ -115,7 +115,7 @@
         filter = EDeviceFilter.All;
       }
 
-      adapter = new DeviceManagerRecycleAdapter(ion, list);
+      adapter = new DeviceManagerRecycleAdapter(ion, cache);
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
       if (Intent.ActionPick.Equals(Intent.Action)) {
@@ -124,16 +124,7 @@
 
       empty.Visibility = ViewStates.Gone;
       list.Visibility = ViewStates.Visible;
-
-      adapter.onDatasetChanged += (adapter) => {
-        if (adapter.ItemCount > 0) {
-          empty.Visibility = ViewStates.Gone;
-          list.Visibility = ViewStates.Visible;
-        } else {
-          empty.Visibility = ViewStates.Visible;
-          list.Visibility = ViewStates.Gone;
-        }
-      };
+			adapter.emptyView = empty;
 
       list.SetAdapter(adapter);
     }
@@ -164,6 +155,7 @@
     protected override void OnPause() {
       base.OnPause();
 
+			ion.deviceManager.ForgetFoundDevices();
       ion.deviceManager.connectionHelper.Dispose();
       ion.deviceManager.connectionHelper = previousHelper;
 
@@ -179,7 +171,7 @@
       base.OnDestroy();
 
       ion.deviceManager.ForgetFoundDevices();
-      adapter.Release();
+//      adapter.Release();
     }
 
     // Overridden from Activity

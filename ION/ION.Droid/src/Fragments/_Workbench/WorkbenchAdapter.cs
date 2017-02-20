@@ -4,14 +4,9 @@ namespace ION.Droid.Fragments._Workbench {
 	using System;
 	using System.Collections.Generic;
 
-	using Android.Graphics;
-	using Android.OS;
 	using Android.Support.V7.Widget;
 	using Android.Support.V7.Widget.Helper;
 	using Android.Views;
-	using Android.Widget;
-
-	using L = Appion.Commons.Util.Log;
 
 	using ION.Core.Content;
 	using ION.Core.Sensors.Properties;
@@ -71,8 +66,12 @@ namespace ION.Droid.Fragments._Workbench {
 			if (cache == null) {
 				cache = new BitmapCache(recyclerView.Context.Resources);
 			}
-			// TODO clean up
 			dragger.AttachToRecyclerView(recyclerView);
+		}
+
+		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
+			base.OnDetachedFromRecyclerView(recyclerView);
+			dragger.AttachToRecyclerView(null);
 		}
 
 		// Overridden from RecordAdapter
@@ -116,15 +115,6 @@ namespace ION.Droid.Fragments._Workbench {
 			throw new Exception("Need a new view holder");
 		}
 
-		public override void OnViewDetachedFromWindow(Java.Lang.Object holder) {
-			base.OnViewDetachedFromWindow(holder);
-
-			var vh = holder as SwipeRecyclerView.ViewHolder;
-			if (vh != null) {
-				vh.Unbind();
-			}
-		}
-
 		// Overridden from RecordAdapter
 		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 			var r = records[position];
@@ -157,33 +147,6 @@ namespace ION.Droid.Fragments._Workbench {
 					NotifySensorPropertyClicked(spvh.sensorPropertyRecord.manifold, spvh.sensorPropertyRecord.sensorProperty);
 				}));
 			}
-/*
-			} else if (holder is SecondarySensorPropertyViewHolder) {
-				var svh = holder as SecondarySensorPropertyViewHolder;
-				var sr = r as SecondarySensorPropertyRecord;
-				svh.record = sr;
-			} else if (holder is TimerSensorPropertyViewHolder) {
-				var tvh = holder as TimerSensorPropertyViewHolder;
-				var tr = r as TimerSensorPropertyRecord;
-				tvh.record = tr;
-			} else if (holder is ROCSensorPropertyViewHolder) {
-				var rocvh = holder as ROCSensorPropertyViewHolder;
-				var rocr = r as ROCSensorPropertyRecord;
-				rocvh.record = rocr;
-			} else if (holder is SHSCSensorPropertyViewHolder) {
-				var shscvh = holder as SHSCSensorPropertyViewHolder;
-				var shscr = r as SHSCSensorPropertyRecord;
-				shscvh.record = shscr;
-			} else if (holder is PTSensorPropertyViewHolder) {
-				var ptvh = holder as PTSensorPropertyViewHolder;
-				var ptr = r as PTSensorPropertyRecord;
-				ptvh.record = ptr;
-			} else if (holder is SimpleSensorPropertyViewHolder) {
-				var svh = holder as SimpleSensorPropertyViewHolder;
-				var sr = r as SimpleSensorPropertyRecord;
-				svh.record = sr;
-			}
-*/
 		}
 
 		/// <summary>
@@ -244,7 +207,7 @@ namespace ION.Droid.Fragments._Workbench {
 			if (!mr.isExpanded) {
 				var cnt = mr.manifold.sensorPropertyCount;
 				for (int j = cnt - 1; j >= 0; j--) {
-					records.Insert(i, CreateSensorPropertyRecordOrThrow(mr.manifold, mr.manifold[j]));
+					records.Insert(i, CreateSensorPropertyRecord(mr.manifold, mr.manifold[j]));
 				}
 				NotifyItemRangeInserted(i, cnt);
 			}
@@ -262,7 +225,7 @@ namespace ION.Droid.Fragments._Workbench {
 			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0);
 		}
 
-		private IRecord CreateSensorPropertyRecordOrThrow(Manifold manifold, ISensorProperty sp) {
+		private IRecord CreateSensorPropertyRecord(Manifold manifold, ISensorProperty sp) {
 			if (sp is PTChartSensorProperty) {
 				var p = sp as PTChartSensorProperty;
 				return new PTSensorPropertyRecord(manifold, p);
@@ -365,7 +328,7 @@ namespace ION.Droid.Fragments._Workbench {
 					var aifm = AdapterIndexForManifold(e.manifold);
 					var mr = records[aifm] as ManifoldRecord;
 					var i = aifm + e.index + 1;
-					var record = CreateSensorPropertyRecordOrThrow(e.manifold, e.manifold[e.index]);
+					var record = CreateSensorPropertyRecord(e.manifold, e.manifold[e.index]);
 					records.Insert(i, record);
 					NotifyItemInserted(i);
 					ExpandManifold(mr);
@@ -433,17 +396,14 @@ namespace ION.Droid.Fragments._Workbench {
 			}
 
 			public override int GetMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-				L.D(this, "GetMovementFlags");
 				return MakeMovementFlags(ItemTouchHelper.Up | ItemTouchHelper.Down, 0);
 			}
 
 			public override void OnSelectedChanged(RecyclerView.ViewHolder viewHolder, int actionState) {
-				L.D(this, "OnSelectedChanged");
 				adapter.BeginDrag(viewHolder);
 			}
 
 			public override bool OnMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-				L.D(this, "OnMove");
 				if (adapter.IsSwapableWith(viewHolder, target)) {
 					adapter.PerformSwap(viewHolder, target);
 					return true;
@@ -453,7 +413,6 @@ namespace ION.Droid.Fragments._Workbench {
 			}
 
 			public override void ClearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-				L.D(this, "ClearView");
 				base.ClearView(recyclerView, viewHolder);
 				adapter.EndDrag();
 			}

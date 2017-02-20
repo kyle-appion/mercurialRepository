@@ -4,7 +4,9 @@
 	using System.Collections.Generic;
 	using System.Linq;
 
+
 	using Android.App;
+	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
 
@@ -16,7 +18,7 @@
 	using Dialog;
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class SessionAdapter : SwipableRecyclerViewAdapter {
+	public class SessionAdapter : RecordAdapter {
 
 		public event EventHandler<SessionRecord> onSessionRowChecked;
 
@@ -53,57 +55,32 @@
 			allowDeleting = true;
 		}
 
-		public override void OnAttachedToRecyclerView(Android.Support.V7.Widget.RecyclerView recyclerView) {
+		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
 			base.OnAttachedToRecyclerView(recyclerView);
 
 			ion.database.onDatabaseEvent += OnDatabaseEvent;
 		}
 
-		public override void OnDetachedFromRecyclerView(Android.Support.V7.Widget.RecyclerView recyclerView) {
+		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
 			base.OnDetachedFromRecyclerView(recyclerView);
 
 			ion.database.onDatabaseEvent -= OnDatabaseEvent;
 		}
 
-		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+			var rv = recyclerView as SwipeRecyclerView;
 			switch ((EViewType)viewType) {
 				case EViewType.Session:
-					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
+					var ret = new SessionViewHolder(rv, Resource.Layout.list_item_session, (sr) => {
 						if (onSessionRowChecked != null) {
 							onSessionRowChecked(this, sr);
 						}
 					});
-					ret.button.SetText(Resource.String.delete);
 					return ret;
 				default:
 					throw new Exception("Cannot create view for " + (EViewType)viewType);
 			}
 		}
-
-		public override bool IsSwipable(int position) {
-			var record = records[position];
-			if (allowDeleting) {
-				if ((EViewType)record.viewType == EViewType.Session) {
-					return true;
-				} else {
-					return false;
-				}
-			} else {
-				return false;
-			}
-		} 
-/*
-		public override Action GetViewHolderSwipeAction(int index) {
-			var record = records[index];
-			if ((EViewType)record.viewType == EViewType.Session) {
-				return () => {
-					RequestDeleteSession(record as SessionRecord);
-				};
-			} else {
-				return null;
-			}
-		}
-*/
 
 		private void RequestDeleteSession(SessionRecord record) {
 			var context = recyclerView.Context;
@@ -131,11 +108,11 @@
 				try {
 					database.BeginTransaction();
 
-					var results = database.Table<SensorMeasurementRow>().Delete(smr => smr.frn_SID == record.row._id);
+					var results = database.Table<SensorMeasurementRow>().Delete(smr => smr.frn_SID == record.data._id);
 					Log.D(this, "Deleted " + results + " sensor measurement rows");
 					database.Commit();
 
-					Log.D(this, "Deleted session: " + record.row._id + " = " + await AppState.context.database.DeleteAsync<SessionRow>(record.row));
+					Log.D(this, "Deleted session: " + record.data._id + " = " + await AppState.context.database.DeleteAsync<SessionRow>(record.data));
 					var index = records.IndexOf(record);
 					records.RemoveAt(index);
 					NotifyItemRemoved(index);
@@ -154,7 +131,7 @@
 		public int IndexOfSession(SessionRow session) {
 			for (int i = 0; i < ItemCount; i++) {
 				var r = records[i] as SessionRecord;
-				if (r?.row._id == session?._id) {
+				if (r?.data._id == session?._id) {
 					return i;
 				}
 			}

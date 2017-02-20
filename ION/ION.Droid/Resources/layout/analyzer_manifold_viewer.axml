@@ -109,7 +109,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/xml_white_bordered_background" />
-    <android.support.v7.widget.RecyclerView
+    <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
         android:id="@id/list"
         android:layout_width="match_parent"
         android:layout_height="0dp"

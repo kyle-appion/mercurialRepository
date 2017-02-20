@@ -1,8 +1,8 @@
-﻿using System.Linq;
-namespace ION.Droid.Activity.Report {
+﻿namespace ION.Droid.Activity.Report {
 
 	using System;
 	using System.Collections.Generic;
+	using System.Linq;
 	using System.Threading.Tasks;
 
 	using Android.App;
@@ -104,7 +104,7 @@ namespace ION.Droid.Activity.Report {
 
 		private void NotifySessionChecked(SessionRecord record) {
 			if (onSessionChecked != null) {
-				onSessionChecked(record.row, record.isChecked);
+				onSessionChecked(record.data, record.isChecked);
 				Log.D(this, "The record check state is: " + record.isChecked);
 			}
 		}
@@ -161,69 +161,72 @@ namespace ION.Droid.Activity.Report {
 			Session,
 		}
 
-		public class SessionRecord : SwipableRecyclerViewAdapter.IRecord {
+		public class SessionRecord : RecordAdapter.Record<SessionRow> {
 			/// <summary>
 			///  The view type for the record.
 			/// </summary>
 			/// <value>The type of the view.</value>
-			public int viewType { get { return (int)EViewType.Session; } }
+			public override int viewType { get { return (int)EViewType.Session; } }
 
-			public SessionRow row { get; private set; }
 			public int devicesCount { get; private set; }
 			public JobRow job { get; set; }
 
 			public bool isChecked { get; set; }
 
-			public SessionRecord(SessionRow row, int devicesCount) {
-				this.row = row;
+			public SessionRecord(SessionRow row, int devicesCount) : base(row) {
 				this.devicesCount = devicesCount;
 				this.isChecked = false;
 			}
 		}
 
-		public class SessionViewHolder : SwipableViewHolder<SessionRecord> {
+		public class SessionViewHolder : RecordAdapter.SwipeRecordViewHolder<SessionRecord> {
 			private TextView date;
 			private TextView duration;
 			private TextView devicesUsed;
 			private CheckBox check;
 
-			public SessionViewHolder(ViewGroup parent, int viewResource, Action<SessionRecord> onChecked) : base(parent, viewResource) {
-				date = view.FindViewById<TextView>(Resource.Id.report_date_created);
-				duration = view.FindViewById<TextView>(Resource.Id.report_session_duration);
-				devicesUsed = view.FindViewById<TextView>(Resource.Id.report_devices_used);
-				check = view.FindViewById<CheckBox>(Resource.Id.check);
+			public SessionViewHolder(SwipeRecyclerView rv, int viewResource, Action<SessionRecord> onChecked) : base(rv, viewResource, Resource.Layout.list_item_button) {
+				date = foreground.FindViewById<TextView>(Resource.Id.report_date_created);
+				duration = foreground.FindViewById<TextView>(Resource.Id.report_session_duration);
+				devicesUsed = foreground.FindViewById<TextView>(Resource.Id.report_devices_used);
+				check = foreground.FindViewById<CheckBox>(Resource.Id.check);
 				check.CheckedChange += (sender, e) => {
-					t.isChecked = check.Checked;
+					record.isChecked = check.Checked;
 					if (onChecked != null) {
-						onChecked(this.t);
+						onChecked(record);
 					}
 				};
 				check.Checked = false;
 
-				view.SetOnClickListener(new ViewClickAction((view) => {
-					t.isChecked = !check.Checked;
-					check.Checked = t.isChecked;
-				}));;
+				foreground.SetOnClickListener(new ViewClickAction((view) => {
+					record.isChecked = !check.Checked;
+					check.Checked = record.isChecked;
+				}));
+
+				var button = background as TextView;
+				button.SetText(Resource.String.remove);
+				button.SetOnClickListener(new ViewClickAction((view) => {
+				}));
 			}
 
-			public override void OnBindTo() {
-				var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(t.row._id).Result;
-				var dateString = t.row.sessionStart.ToLocalTime().ToShortDateString() + " " + t.row.sessionStart.ToLocalTime().ToShortTimeString();
+			public override void Invalidate() {
+				var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(record.data._id).Result;
+				var dateString = record.data.sessionStart.ToLocalTime().ToShortDateString() + " " + record.data.sessionStart.ToLocalTime().ToShortTimeString();
 
-				if (t.job == null || t.row.frn_JID == 0 || t.job._id == t.row.frn_JID) {
+				if (record.job == null || record.data.frn_JID == 0 || record.job._id == record.data.frn_JID) {
 					date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.black));
 				} else {
 					date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.red));
 				}
 
 				date.Text = dateString;
-				duration.Text = ToFriendlyString(t.row.sessionEnd - t.row.sessionStart);
-				devicesUsed.Text = "" + t.devicesCount;
-				check.Checked = t.isChecked;
+				duration.Text = ToFriendlyString(record.data.sessionEnd - record.data.sessionStart);
+				devicesUsed.Text = "" + record.devicesCount;
+				check.Checked = record.isChecked;
 			}
 
 			private string ToFriendlyString(TimeSpan timeSpan) {
-				var c = view.Context;
+				var c = foreground.Context;
 				if (timeSpan.TotalHours > 24) {
 					return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
 				} else if (timeSpan.TotalMinutes > 60) {
@@ -236,73 +239,66 @@ namespace ION.Droid.Activity.Report {
 			}
 		}
 
-		public class JobRecord : SwipableRecyclerViewAdapter.IRecord {
+		public class JobRecord : RecordAdapter.Record<JobRow> {
 			/// <summary>
 			/// The view type of the record.
 			/// </summary>
 			/// <value>The type of the view.</value>
-			public int viewType { get { return (int)EViewType.Job; } }
-			/// <summary>
-			/// The job row that we are representing.
-			/// </summary>
-			public JobRow row { get; private set; }
+			public override int viewType { get { return (int)EViewType.Job; } }
 
 			public List<SessionRecord> sessions;
 
-			public JobRecord(JobRow row) {
-				this.row = row;
-			}
+			public JobRecord(JobRow row) : base(row) { }
 		}
 
-		private class JobViewHolder : SwipableViewHolder<JobRecord> {
+		private class JobViewHolder : RecordAdapter.SwipeRecordViewHolder<JobRecord> {
 			private TextView name;
 			private View options;
 
-			public JobViewHolder(ViewGroup parent, JobAdapter adapter) : base(parent, Resource.Layout.list_item_job) {
-				this.name = view.FindViewById<TextView>(Resource.Id.name);  
-				this.options = view.FindViewById(Resource.Id.icon);
+			public JobViewHolder(SwipeRecyclerView rv, JobAdapter adapter) : base(rv, Resource.Layout.list_item_job, Resource.Layout.list_item_button) {
+				this.name = foreground.FindViewById<TextView>(Resource.Id.name);  
+				this.options = foreground.FindViewById(Resource.Id.icon);
 				options.Click += (sender, e) => {
-					adapter.NotifyJobHeaderClicked(t.row);
+					adapter.NotifyJobHeaderClicked(record.data);
 				};
 			}
 
-			public override void OnBindTo() {
-				name.Text = t.row.jobName;
+			public override void Invalidate() {
+				name.Text = record.data.jobName;
 			}
 		}
 
-		private class JobAdapter : SwipableRecyclerViewAdapter {
+		private class JobAdapter : RecordAdapter {
 			public OnJobHeaderClicked onJobHeaderClicked;
 			public Action<SessionRecord> onSessionClicked;
 
-			public override long GetItemId(int position) {
-				return records[position].viewType;
-			}
-
-			public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+			public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+				var rv = recyclerView as SwipeRecyclerView;
 				switch ((EViewType)viewType) {
 					case EViewType.Job:
-						return new JobViewHolder(parent, this);
+						return new JobViewHolder(rv, this);
 					case EViewType.Session:
-						var sessionret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
+						var sessionret = new SessionViewHolder(rv, Resource.Layout.list_item_session, (sr) => {
 							if (onSessionClicked != null) {
 								onSessionClicked(sr);
 							}
 						});
-						sessionret.button.SetText(Resource.String.delete);
 						return sessionret;	
 					default:
 						throw new Exception("Cannot create view holder for " + (EViewType)viewType);
 				}
 			}
 
-			public override void OnBindViewHolder(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder vh, int position) {
-				vh.record = record;
+			public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+				if (holder is SwipeRecordViewHolder) {
+					var vh = holder as SwipeRecordViewHolder;
+					vh.data = records[position] as Record;
+				} else if (holder is RecordViewHolder) {
+					var vh = holder as RecordViewHolder;
+					vh.data = records[position] as Record;
+				}
 			}
 
-			public override bool IsSwipable(int position) {
-				return false;
-			}
 
 			public void NotifyJobHeaderClicked(JobRow job) {
 				if (onJobHeaderClicked != null) {
@@ -330,7 +326,7 @@ namespace ION.Droid.Activity.Report {
 				foreach (var r in records) {
 					var jr = r as JobRecord;
 
-					if (jr != null && jr.row._id == id) {
+					if (jr != null && jr.data._id == id) {
 						return jr;
 					}
 				}

@@ -22,7 +22,6 @@
   using Activity.DeviceManager;
   using Dialog;
   using Sensors;
-  using Widgets.Adapters.Workbench;
 
   public class WorkbenchFragment : IONFragment {
 

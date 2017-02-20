@@ -1,5 +1,4 @@
-﻿using ION.Droid.Fragments;
-namespace ION.Droid.Widgets.Analyzer {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
 	using System;
 

@@ -87,7 +87,7 @@ namespace ION.Droid.Activity.Portal {
 
 			var sessions = new List<SessionRow>();
 			foreach (var sr in adapter.GetCheckedSessions()) {
-				sessions.Add(sr.row);
+				sessions.Add(sr.data);
 			}
 			var result = await ion.portal.UploadSessionsAsync(ion, sessions);
 

@@ -1,6 +1,4 @@
-﻿namespace ION.Droid.Widgets.Templates {
-
-  using System;
+﻿namespace ION.Droid.Fragments._Analyzer {
 
   using Android.Views;
   using Android.Widget;
