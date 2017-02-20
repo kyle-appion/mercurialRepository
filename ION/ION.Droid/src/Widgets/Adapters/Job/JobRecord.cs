@@ -1,7 +1,5 @@
 ﻿namespace ION.Droid.Widgets.Adapters.Job {
   
-  using System;
-
   using Android.Views;
   using Android.Widget;
 
@@ -9,34 +7,31 @@
 
   using ION.Droid.Widgets.RecyclerViews;
 
-  public class JobRecord : SwipableRecyclerViewAdapter.IRecord {
-    public int viewType { get { return (int)EViewType.Job; } } 
+	public class JobRecord : RecordAdapter.Record<JobRow> {
+    public override int viewType { get { return (int)EViewType.Job; } } 
 
-    public JobRow row { get; private set; }
-
-    public JobRecord(JobRow row) {
-      this.row = row;
+		public JobRecord(JobRow row) : base(row) {
     }
   }
 
-  public class JobViewHolder : SwipableViewHolder<JobRecord> {
+	public class JobViewHolder : RecordAdapter.SwipeRecordViewHolder<JobRecord> { 
     private TextView name, customer, dispatch, purchase;
     private View check;
 
-    public JobViewHolder(ViewGroup parent, int resource) : base(parent, resource) {
-      this.name = view.FindViewById<TextView>(Resource.Id.name);
-      this.customer = view.FindViewById<TextView>(Resource.Id.customer_no);
-      this.dispatch = view.FindViewById<TextView>(Resource.Id.dispatch_no);
-      this.purchase = view.FindViewById<TextView>(Resource.Id.purchase_no);
-      this.check = view.FindViewById(Resource.Id.check);
+		public JobViewHolder(SwipeRecyclerView rv, int resource) : base(rv, resource, Resource.Layout.list_item_button) {
+      this.name = foreground.FindViewById<TextView>(Resource.Id.name);
+			this.customer = foreground.FindViewById<TextView>(Resource.Id.customer_no);
+			this.dispatch = foreground.FindViewById<TextView>(Resource.Id.dispatch_no);
+			this.purchase = foreground.FindViewById<TextView>(Resource.Id.purchase_no);
+			this.check = foreground.FindViewById(Resource.Id.check);
       check.Visibility = ViewStates.Gone;
     }
 
-    public override void OnBindTo() {
-      name.Text = t.row.jobName;
-      customer.Text = t.row.customerNumber;
-      dispatch.Text = t.row.dispatchNumber;
-      purchase.Text = t.row.poNumber;
+    public override void Invalidate() {
+			name.Text = record.data.jobName;
+			customer.Text = record.data.customerNumber;
+			dispatch.Text = record.data.dispatchNumber;
+			purchase.Text = record.data.poNumber;
     }
   }
 }

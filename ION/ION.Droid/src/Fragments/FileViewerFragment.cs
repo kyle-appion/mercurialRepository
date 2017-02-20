@@ -161,7 +161,7 @@
       }
     }
 
-		private class FileAdapter : SwipableRecyclerViewAdapter {
+		private class FileAdapter : RecordAdapter {
 			/// <summary>
 			/// The event handler that is used to notify listeners of when a file row is clicked.
 			/// </summary>
@@ -213,40 +213,36 @@
 			/// </summary>
 			/// <param name="parent">Parent.</param>
 			/// <param name="viewType">View type.</param>
-			public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+			public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 				var li = LayoutInflater.From(parent.Context);
 
 				switch ((EViewType)viewType) {
 					case EViewType.File:
-						var ret = new FileHolder(parent, this, cache);
-						ret.button.SetText(Resource.String.delete);
-						return ret;
+						return new FileHolder(recyclerView as SwipeRecyclerView, cache);
 					case EViewType.Folder:
-						return new FolderHolder(parent, this, cache);
+						return new FolderHolder(recyclerView as SwipeRecyclerView, cache);
 					default:
 						throw new Exception("Cannot create view holder for: " + ((EViewType)viewType));
 				}
 			}
 
-			public override bool IsSwipable(int position) {
-				var record = records[position];
-				return record.viewType == (int)EViewType.File;
-			}
+			public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+				switch ((EViewType)GetItemViewType(position)) {
+					case EViewType.File: {
+						var file = holder as FileHolder;
+						file.foreground.SetOnClickListener(new ViewClickAction((view) => {
+							NotifyFileClicked(file.record.data);
+						}));
+					} break; // EViewType.File
 
-/*
-			public override Action GetViewHolderSwipeAction(int index) {
-				return () => {
-					switch ((EViewType)records[index].viewType) {
-						case EViewType.File:
-							var fileRecord = (FileRecord)records[index];
-							fileRecord.file.Delete();
-							records.RemoveAt(index);
-							NotifyItemRemoved(index);
-							break;
-					}
-				};
+					case EViewType.Folder: {
+						var file = holder as FileHolder;
+						file.foreground.SetOnClickListener(new ViewClickAction((view) => {
+							NotifyFileClicked(file.record.data);
+						}));
+					} break; // EViewType.Folder
+				}
 			}
-*/
 
 			/// <summary>
 			/// Sets the folder that the adaper will display.
@@ -304,68 +300,63 @@
 			}
 		}
 
-		private class FileRecord : SwipableRecyclerViewAdapter.IRecord {
-			public int viewType { get { return (int)FileAdapter.EViewType.File; }
-			}
-
-			public IFile file { get; set; }
-
-			public FileRecord(IFile file) {
-				this.file = file;
-			}
+		private class FileRecord : RecordAdapter.Record<IFile> {
+			public override int viewType { get { return (int)FileAdapter.EViewType.File; } }
+			public FileRecord(IFile file) : base(file) { }
 		}
 
-		private class FolderRecord : SwipableRecyclerViewAdapter.IRecord {
-			public int viewType { get { return (int)FileAdapter.EViewType.Folder; } }
-
-			public IFolder folder { get; set; }
-
-			public FolderRecord(IFolder folder) {
-				this.folder = folder;
-			}
+		private class FolderRecord : RecordAdapter.Record<IFolder> {
+			public override int viewType { get { return (int)FileAdapter.EViewType.Folder; } }
+			public FolderRecord(IFolder folder) : base(folder) { }
 		}
 
-		private class FileHolder : SwipableViewHolder<FileRecord> {
+		private class FileHolder : RecordAdapter.SwipeRecordViewHolder<FileRecord> {
 			private BitmapCache cache;
 			private ImageView icon;
 			private TextView name;
 
-			public FileHolder(ViewGroup parent, FileAdapter adapter, BitmapCache cache) : base(parent, Resource.Layout.list_item_file) {
+			public FileHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
 				this.cache = cache;
-				view.SetOnClickListener(new ViewClickAction((v) => {
-					adapter.NotifyFileClicked(t.file);
-				}));
 
-				icon = view.FindViewById<ImageView>(Resource.Id.icon);
-				name = view.FindViewById<TextView>(Resource.Id.name);
+				icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
+				name = foreground.FindViewById<TextView>(Resource.Id.name);
+
+				var button = background as TextView;
+				button.SetText(Resource.String.remove);
+				button.SetOnClickListener(new ViewClickAction((view) => {
+					record.data.Delete();
+				}));
 			}
 
-			public override void OnBindTo() {
-				icon.SetImageBitmap(cache.GetBitmap(t.file.GetIcon()));
-				name.Text = t.file.name;
+			public override void Invalidate() {
+				icon.SetImageBitmap(cache.GetBitmap(record.data.GetIcon()));
+				name.Text = record.data.name;
 			}
 		}
 
-		private class FolderHolder : SwipableViewHolder<FolderRecord> {
+		private class FolderHolder : RecordAdapter.SwipeRecordViewHolder<FolderRecord> {
 			private BitmapCache cache;
 			private ImageView icon;
 			private TextView name;
 
-			public FolderHolder(ViewGroup parent, FileAdapter adapter, BitmapCache cache) : base(parent, Resource.Layout.list_item_file) {
+			public FolderHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
 				this.cache = cache;
-				view.SetOnClickListener(new ViewClickAction((v) => {
-					adapter.NotifyFolderClicked(t.folder);
-				}));
 
-				icon = view.FindViewById<ImageView>(Resource.Id.icon);
-				name = view.FindViewById<TextView>(Resource.Id.name);
+				icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
+				name = foreground.FindViewById<TextView>(Resource.Id.name);
+
+				var button = background as TextView;
+				button.SetText(Resource.String.remove);
+				button.SetOnClickListener(new ViewClickAction((view) => {
+					record.data.Delete();
+				}));
 			}
 
 			public void BindTo(FolderRecord folder) {
 				this.record = folder;
 
-				icon.SetImageBitmap(cache.GetBitmap(t.folder.GetIcon()));
-				name.Text = t.folder.name;
+				icon.SetImageBitmap(cache.GetBitmap(record.data.GetIcon()));
+				name.Text = record.data.name;
 			}
 		}
   }

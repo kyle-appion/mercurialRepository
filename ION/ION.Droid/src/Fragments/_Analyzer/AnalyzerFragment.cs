@@ -1,7 +1,6 @@
-﻿namespace ION.Droid.Fragments {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
   using System;
-	using System.Collections.Generic;
 
   using Android.App;
   using Android.Content;
@@ -9,7 +8,6 @@
   using Android.Views;
 	using Android.Widget;
 
-	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
   using ION.Core.Content;
@@ -23,8 +21,6 @@
   using Activity.DeviceManager;
   using Dialog;
   using Sensors;
-  using Widgets;
-  using Widgets.Analyzer;
 
   public class AnalyzerFragment : IONFragment {
     /// <summary>

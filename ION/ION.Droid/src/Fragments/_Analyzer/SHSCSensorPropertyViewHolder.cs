@@ -1,9 +1,8 @@
-﻿namespace ION.Droid.Fragments._Workbench {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
 	using System;
 
 	using Android.Graphics;
-	using Android.Views;
 	using Android.Widget;
 
 	using ION.Core.Content;
@@ -12,10 +11,9 @@
 	using ION.Core.Sensors.Properties;
 
 	using ION.Droid.Widgets.RecyclerViews;
-	using ION.Droid.Views;
 
 	public class SHSCSensorPropertyRecord : SensorPropertyRecord<SuperheatSubcoolSensorProperty> {
-		public SHSCSensorPropertyRecord(Manifold manifold, SuperheatSubcoolSensorProperty sp) : base(manifold, sp, WorkbenchAdapter.EViewType.SHSC) { 
+		public SHSCSensorPropertyRecord(Manifold manifold, SuperheatSubcoolSensorProperty sp) : base(manifold, sp, SubviewAdapter.EViewType.SHSC) { 
 		}
 	}
 
@@ -25,7 +23,7 @@
 		private TextView measurement;
 		private TextView unit;
 
-		public SHSCSensorPropertyViewHolder(SwipeRecyclerView parent) : base(parent, Resource.Layout.subview_fluid_large) {
+		public SHSCSensorPropertyViewHolder(SwipeRecyclerView parent) : base(parent, Resource.Layout.subview_fluid_small) {
 			title = foreground.FindViewById<TextView>(Resource.Id.title);
 			fluid = foreground.FindViewById<TextView>(Resource.Id.fluid);
 			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
@@ -48,14 +46,14 @@
 			if (pt.fluid.mixture) {
 				switch (pt.state) {
 					case Fluid.EState.Bubble: {
-							title.Text = GetString(Resource.String.fluid_sc_abrv);
+						title.Text = GetString(Resource.String.fluid_sc_abrv);
 					} break; // Fluid.EState.Bubble
 
 					case Fluid.EState.Dew: {
-							title.Text = GetString(Resource.String.fluid_sh_abrv);
+						title.Text = GetString(Resource.String.fluid_sh_abrv);
 					} break; // Fluid.EState.Dew
 				}
-				//				measurement.Text = SensorUtils.ToFormattedString(Math.Abs(amount), unit);
+//				measurement.Text = SensorUtils.ToFormattedString(Math.Abs(amount), unit);
 			} else {
 				if (amount < 0) {
 					title.Text = GetString(Resource.String.fluid_sc_abrv);

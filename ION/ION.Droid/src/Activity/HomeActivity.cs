@@ -25,7 +25,7 @@
   using Job;
 	using Report;
   using Dialog;
-  using Fragments;
+	using Fragments._Analyzer;
 	using Fragments._Workbench;
   using Widgets.Adapters.Navigation;
 

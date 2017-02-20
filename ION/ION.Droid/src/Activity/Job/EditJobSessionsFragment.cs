@@ -186,8 +186,8 @@
 			var sessions = new List<SessionRow>();
 
 			foreach (var sr in currentAdapter.GetCheckedSessions()) {
-				sr.row.frn_JID = 0;
-				sessions.Add(sr.row);
+				sr.data.frn_JID = 0;
+				sessions.Add(sr.data);
 			}
 
 			try {
@@ -208,8 +208,8 @@
 			var sessions = new List<SessionRow>();
 
 			foreach (var sr in availableAdapter.GetCheckedSessions()) {
-				sr.row.frn_JID = job._id;
-				sessions.Add(sr.row);
+				sr.data.frn_JID = job._id;
+				sessions.Add(sr.data);
 			}
 
 			try {

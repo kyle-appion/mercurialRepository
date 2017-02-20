@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 
+	using Android.Support.V7.Widget;
 	using Android.Views;
 
 	using Appion.Commons.Util;
@@ -15,7 +16,7 @@
 
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class GraphRecordAdapter : SwipableRecyclerViewAdapter {
+	public class GraphRecordAdapter : RecordAdapter {
 		
 		public DateIndexLookup dil;
 		private List<SessionResults> sessionResults;
@@ -23,7 +24,7 @@
 		public GraphRecordAdapter() {
 		}
 
-		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Graph:
 					return new GraphViewHolder(parent, Resource.Layout.list_item_data_log_graph);
@@ -32,8 +33,10 @@
 			}
 		}
 
-		public override bool IsSwipable(int position) {
-			return false;
+		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+			if (holder is RecordViewHolder) {
+				((RecordViewHolder)holder).data = records[position] as Record;
+			}
 		}
 
 		public List<SessionResults> GatherSelectedLogs(float leftPercent, float rightPercent) {
@@ -135,7 +138,7 @@
 			foreach (var record in records) {
 				var gr = record as GraphRecord;
 				if (gr != null && gr.isChecked) {
-					ret.Add(gr.sensor);
+					ret.Add(gr.data);
 				}
 			}
 

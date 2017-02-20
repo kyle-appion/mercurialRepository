@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Fragments._Workbench {
+﻿namespace ION.Droid.Fragments._Analyzer {
 
 	using Android.Views;
 	using Android.Widget;
@@ -18,7 +18,7 @@
 		public Manifold manifold;
 		public ISensorProperty sensorProperty;
 
-		protected SensorPropertyRecord(Manifold manifold, ISensorProperty sensorProperty, WorkbenchAdapter.EViewType viewType) {
+		protected SensorPropertyRecord(Manifold manifold, ISensorProperty sensorProperty, SubviewAdapter.EViewType viewType) {
 			this.manifold = manifold;
 			this.sensorProperty = sensorProperty;
 			this.viewType = (int)viewType;
@@ -28,7 +28,7 @@
 	public abstract class SensorPropertyRecord<T> : SensorPropertyRecord where T : ISensorProperty {
 		public T sp { get { return (T)sensorProperty; } }
 
-		protected SensorPropertyRecord(Manifold manifold, T t, WorkbenchAdapter.EViewType viewType) : base(manifold, t, viewType) {
+		protected SensorPropertyRecord(Manifold manifold, T t, SubviewAdapter.EViewType viewType) : base(manifold, t, viewType) {
 		}
 	}
 
@@ -48,11 +48,7 @@
 			}
 		} SensorPropertyRecord __record;
 
-		private View association;
-
 		public SensorPropertyViewHolder(SwipeRecyclerView recyclerView, int foregroundLayout) : base(recyclerView, foregroundLayout, Resource.Layout.list_item_button) {
-			association = ItemView.FindViewById(Resource.Id.association);
-
 			var button = background as TextView;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
@@ -72,13 +68,6 @@
 		}
 
 		public virtual void Invalidate() {
-			if (association != null) {
-				if (sensorPropertyRecord.manifold.IndexOfSensorProperty(sensorPropertyRecord.sensorProperty) >= sensorPropertyRecord.manifold.sensorPropertyCount - 1) {
-					association.SetBackgroundResource(Resource.Drawable.ic_association);
-				} else {
-					association.SetBackgroundResource(Resource.Drawable.ic_association_linked);
-				}
-			}
 		}
 
 		private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {

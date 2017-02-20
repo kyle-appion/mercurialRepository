@@ -1,6 +1,4 @@
-﻿namespace ION.Droid.Widgets.Analyzer {
-
-	using System;
+﻿namespace ION.Droid.Fragments._Analyzer {
 
 	using Android.Support.V7.Widget;
 	using Android.Views;
@@ -9,7 +7,6 @@
 	using ION.Core.Content;
 
 	using ION.Droid.Util;
-	using ION.Droid.Widgets.Templates;
 
 	public class AnalyzerManifoldViewTemplate : CompactManifoldViewTemplate {
 		public RecyclerView list { get; private set; }

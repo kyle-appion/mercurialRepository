@@ -542,10 +542,10 @@
 			var ret = new Dictionary<GaugeDeviceSensor, Stream>();
 
 			for (int i = 0; i < graphAdapter.ItemCount; i++) {
-				var record = graphAdapter.GetRecordAt(i) as GraphRecord;
+				var record = graphAdapter[i] as GraphRecord;
 				if (record.isChecked) {
 					var view = graphList.GetLayoutManager().FindViewByPosition(i);
-					ret[record.sensor] = view.ToPng();
+					ret[record.data] = view.ToPng();
 				}
 			}
 

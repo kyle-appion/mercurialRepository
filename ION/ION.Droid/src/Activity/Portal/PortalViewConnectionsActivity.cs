@@ -2,14 +2,10 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
 
 	using Android.App;
-	using Android.Content;
 	using Android.Content.PM;
 	using Android.OS;
-	using Android.Runtime;
 	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
@@ -141,61 +137,35 @@
 			}
 		}
 
-		private class Adapter : SwipableRecyclerViewAdapter {
+		private class Adapter : RecordAdapter {
 
 			public Action<int, ConnectionData> deleteAction;
 
-			public override long GetItemId(int position) {
-				return records[position].viewType;
-			}
-
-			public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
-				var ret = new ConnectionViewHolder(parent);
+			public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+				var rv = recyclerView as SwipeRecyclerView;
+				var ret = new ConnectionViewHolder(rv);
 				return ret;
 			}
-
-			public override void OnBindViewHolder(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder vh, int position) {
-				var cvh = ((ConnectionViewHolder)vh);
-				cvh.record = record as ConnectionRecord;
-				cvh.button.Text = recyclerView.Context.GetString(Resource.String.remove);
-			}
-
-			public override bool IsSwipable(int position) {
-				return deleteAction != null;
-			}
-/*
-			public override Action GetViewHolderSwipeAction(int index) {
-				return () => {
-					if (deleteAction != null) {
-						var record = records[index] as ConnectionRecord;
-						deleteAction(index, record.data);
-						RemoveRecord(index);
-					}
-				};
-			}
-*/
 		}
 
-		private class ConnectionRecord : SwipableRecyclerViewAdapter.IRecord {
+		private class ConnectionRecord : RecordAdapter.Record<ConnectionData> {
 			// Implemented from SwipableRecyclerViewAdapter.IRecord
-			public int viewType { get { return 1; } }
+			public override int viewType { get { return 1; } }
 
 			public ConnectionData data { get; set; }
 
-			public ConnectionRecord(ConnectionData data) {
-				this.data = data;
-			}
+			public ConnectionRecord(ConnectionData data) : base(data) { }
 		}
 
-		private class ConnectionViewHolder : SwipableViewHolder<ConnectionRecord> {
+		private class ConnectionViewHolder : RecordAdapter.SwipeRecordViewHolder<ConnectionRecord> {
 			private TextView text;
 
-			public ConnectionViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_portal_connection) {
-				text = view.FindViewById<TextView>(Resource.Id.text);
+			public ConnectionViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection, Resource.Layout.list_item_button) {
+				text = foreground.FindViewById<TextView>(Resource.Id.text);
 			}
 
-			public override void OnBindTo() {
-				text.Text = "(" + t.data.email + ") " + t.data.displayName;
+			public override void Invalidate() {
+				text.Text = "(" + record.data.email + ") " + record.data.displayName;
 			}
 		}
 	}

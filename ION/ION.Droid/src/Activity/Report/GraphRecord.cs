@@ -22,10 +22,9 @@
 	using ION.Droid.Util;
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class GraphRecord : SwipableRecyclerViewAdapter.IRecord {
-		public int viewType { get { return (int)EViewType.Graph; } }
+	public class GraphRecord : RecordAdapter.Record<GaugeDeviceSensor> {
+		public override int viewType { get { return (int)EViewType.Graph; } }
 
-		public GaugeDeviceSensor sensor { get; private set; }
 		public DateIndexLookup dil { get; private set; }
 		public PointSeries[] pointSeries { get; private set; }
 
@@ -35,8 +34,7 @@
 		public LineSeries[] series { get; private set; }
 		public bool isChecked { get; set; }
 		
-		public GraphRecord(GaugeDeviceSensor sensor, DateIndexLookup dil, PointSeries[] pointSeries) {
-			this.sensor = sensor;
+		public GraphRecord(GaugeDeviceSensor sensor, DateIndexLookup dil, PointSeries[] pointSeries) : base(sensor) {
 			this.dil = dil;
 			this.pointSeries = pointSeries;
 			isChecked = true;
@@ -109,34 +107,34 @@
 		}
 	}
 
-	public class GraphViewHolder : SwipableViewHolder<GraphRecord> {
+	public class GraphViewHolder : RecordAdapter.RecordViewHolder<GraphRecord> {
 		private PlotView plot;
 		private TextView title;
 		private CheckBox check;
 
 		public GraphViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
-			plot = view.FindViewById<PlotView>(Resource.Id.graph);
-			title = view.FindViewById<TextView>(Resource.Id.name);
-			check = view.FindViewById<CheckBox>(Resource.Id.check);
+			plot = ItemView.FindViewById<PlotView>(Resource.Id.graph);
+			title = ItemView.FindViewById<TextView>(Resource.Id.name);
+			check = ItemView.FindViewById<CheckBox>(Resource.Id.check);
 
 			check.CheckedChange += (sender, e) => {
-				if (t != null) {
-					t.isChecked = e.IsChecked;
+				if (record != null) {
+					record.isChecked = e.IsChecked;
 				}
 			};
 		}
 
-		public override void OnBindTo() {
+		public override void Invalidate() {
 			var ion = AppState.context;
-			var serial = t.sensor.device.serialNumber;
+			var serial = record.data.device.serialNumber;
 
-			check.Checked = t.isChecked;
+			check.Checked = record.isChecked;
 
-			var sensor = t.sensor;
+			var sensor = record.data;
 			var u = sensor.unit.standardUnit;
 
-			foreach (var series in t.series) {
-				var c = t.sensor.GetChartColor(view.Context);
+			foreach (var series in record.series) {
+				var c = sensor.GetChartColor(ItemView.Context);
 
 				series.Color = OxyColor.FromUInt32((uint)c.ToArgb());
 			}
@@ -147,7 +145,7 @@
 				Padding = new OxyThickness(0),
 			};
 
-			var indices = t.dil.dateSpan;
+			var indices = record.dil.dateSpan;
 
 			var xAxis = new LinearAxis() {
 				Position = AxisPosition.Bottom,
@@ -160,11 +158,11 @@
 				MaximumPadding = 3,
 			};
 
-			var standardUnit = t.sensor.unit.standardUnit;
+			var standardUnit = record.data.unit.standardUnit;
 			var yAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = t.min,//t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
-				Maximum = t.max,//t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
+				Minimum = record.min,//t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
+				Maximum = record.max,//t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
@@ -174,7 +172,7 @@
 
 			var plots = new List<LineSeries>();
 
-			foreach (var s in t.series) {
+			foreach (var s in record.series) {
 				plots.Add(s);
 			}
 

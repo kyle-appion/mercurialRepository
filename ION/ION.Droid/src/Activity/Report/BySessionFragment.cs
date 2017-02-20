@@ -38,10 +38,10 @@
 
 			adapter = new SessionAdapter(ion);
 			adapter.onSessionRowChecked += (sender, e) => {
-				onSessionChecked(e.row, e.isChecked);
+				onSessionChecked(e.data, e.isChecked);
 			};
-			adapter.onItemClicked += (adapter, position) => {
-				var record = (SessionRecord)adapter.GetRecordAt(position);
+			adapter.onItemClicked += (position) => {
+				var record = (SessionRecord)adapter[position];
 				record.isChecked = !record.isChecked;
 				adapter.NotifyItemChanged(position);
 				NotifySessionChecked(record);
@@ -57,7 +57,7 @@
 
 		private void NotifySessionChecked(SessionRecord record) {
 			if (onSessionChecked != null) {
-				onSessionChecked(record.row, record.isChecked);
+				onSessionChecked(record.data, record.isChecked);
 			}
 		}
 
