@@ -57,6 +57,10 @@
       dispatch.Text = job.dispatchNumber;
       purchaseNo.Text = job.poNumber;
       notes.Text = job.notes;
+
+			technician.Text = job.techName;
+			system.Text = job.systemType;
+			address.Text = job.jobAddress;
     }
 
     public async Task<bool> SaveAsync(JobRow job) {

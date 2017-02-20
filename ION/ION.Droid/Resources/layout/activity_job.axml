@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_padding">
-    <android.support.v7.widget.RecyclerView
+    <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
         android:id="@id/list"
         android:background="@drawable/shape_rounded_white"
         android:layout_width="match_parent"

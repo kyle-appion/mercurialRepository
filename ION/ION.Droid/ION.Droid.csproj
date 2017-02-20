@@ -288,6 +288,11 @@
     <Compile Include="src\Fragments\_Analyzer\ViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\ManifoldViewTemplate.cs" />
     <Compile Include="src\Activity\DeviceManager\SpaceViewHolder.cs" />
+    <Compile Include="src\Activity\Job\JobAdapter.cs" />
+    <Compile Include="src\Activity\Job\JobViewHolder.cs" />
+    <Compile Include="src\Activity\Job\EViewType.cs" />
+    <Compile Include="src\Activity\Job\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Job\SessionRecord.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
