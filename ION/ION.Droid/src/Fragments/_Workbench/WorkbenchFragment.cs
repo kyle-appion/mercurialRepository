@@ -469,6 +469,8 @@
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         }
       }
+
+			adapter.ExpandManifold(manifold);
     }
   }
 }

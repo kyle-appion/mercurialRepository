@@ -178,6 +178,13 @@ namespace ION.Droid.Fragments._Workbench {
 			return AdapterIndexForManifold(manifold) > 0;
 		}
 
+		public void ExpandManifold(Manifold manifold) {
+			var r = records[AdapterIndexForManifold(manifold)] as ManifoldRecord;
+			if (r != null) {
+				ExpandManifold(r);
+			}
+		}
+
 		private void DoToggleManifoldExpanded(ManifoldRecord mr) {
 			if (mr.isExpanded) {
 				CollapseManifold(mr);
@@ -202,6 +209,10 @@ namespace ION.Droid.Fragments._Workbench {
 		}
 
 		private void ExpandManifold(ManifoldRecord mr) {
+			if (mr.isExpanded) {
+				return;
+			}
+
 			var i = AdapterIndexForManifold(mr.manifold) + 1;
 
 			if (!mr.isExpanded) {
@@ -327,15 +338,16 @@ namespace ION.Droid.Fragments._Workbench {
 				case ManifoldEvent.EType.SensorPropertyAdded: {
 					var aifm = AdapterIndexForManifold(e.manifold);
 					var mr = records[aifm] as ManifoldRecord;
-					var i = aifm + e.index + 1;
-					var record = CreateSensorPropertyRecord(e.manifold, e.manifold[e.index]);
-					records.Insert(i, record);
-					NotifyItemInserted(i);
-					ExpandManifold(mr);
-					if (mr.manifold.sensorPropertyCount > 1) {
-						NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
-					} else {
-						NotifyItemChanged(aifm);
+					if (mr.isExpanded) {
+						var i = aifm + e.index + 1;
+						var record = CreateSensorPropertyRecord(e.manifold, e.manifold[e.index]);
+						records.Insert(i, record);
+						NotifyItemInserted(i);
+						if (mr.manifold.sensorPropertyCount > 1) {
+							NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
+						} else {
+							NotifyItemChanged(aifm);
+						}
 					}
 				} break; // ManifoldEvent.EType.SensorPropertyAdded
 				case ManifoldEvent.EType.SensorPropertyRemoved: {
