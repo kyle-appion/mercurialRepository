@@ -59,7 +59,7 @@
     </LinearLayout>
     <Switch
         android:id="@id/toggle"
-        android:textColor="@color/black"
+        android:switchTextAppearance="@style/IONSwitchTextAppearance"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

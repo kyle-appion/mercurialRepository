@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Widgets.Adapters.Job {
+﻿namespace ION.Droid.Activity.Report {
 
   using System;
   using System.Collections.Generic;

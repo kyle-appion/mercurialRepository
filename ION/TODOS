@@ -13,9 +13,10 @@ IOS
     * Fix the issue that connecting to a device marks all other devices (known
       or not) as disconnected
 
-
-
 ANDROID
+  Alarm
+    * Manual sensors should not be allowed to have alarms
+
   Application APK / Runtime
     * Clearing the cache destroys the application (ie. the application will not
       start). This appears to be because the cache contained important non-apk
@@ -40,10 +41,126 @@ ANDROID
   Workbench
     * Changing fluids isn't reflected in subview when back or arrow is clicked. Ok done works for superheat and subcool
 
+  Report Manager
+    * XML and PDF reports are not exported correctly
+
 DEVICE SPECIFIC (Samsung Tablet 7 (found in the warehouse))
   Workbench
   	* The manifolds sometimes don't update when a device is connected / reconnected.
   		(could not reproduce)
 
-
   * Out of memory when reconnect goes into a weird loop
+
+
+
+CURRENT BUILD ISSUES (0.9.37) ::
+
+  Workbench
+    * Subviews association does not update with added
+    * Rate of change subview does not auto change
+      ** Connecting to a gauge causes a change that never falls to zero. However, dragging refreshes the item
+    * With a vacuum gauge hooked up, changing the units from micron to inHg causes the app to display OL.
+      ** Also PSIA,
+    * Vacuum gauge unit format for kPa is incorrect. needs to be 00.0000
+      ** mbar needs to be 000.000
+    * If all subviews are added to a manifold, when add subview is clicked, display a full toast.
+    * Data logging toast is not formatted correctly
+
+    System Analyzer
+      * Layout not saved on change
+      * Adding a gauge to opposite empty manifold does not bring sensor properties with the manifold
+      * Clearing current secondary for pressure gauge in shsc doesnt cause an error or warning when side is full
+      * Data Logging toast is not formatted correctly
+      * Clicking and empty manifold to add a device shows incorrect add from content
+      * Adding a shsc sensor property to a manifold that already has a secondary sensor does not setup the sensor property correctly
+      * Sensor properties are not removed properly
+        -> Removing a sensor property causes a backend failure
+[MonoDroid] System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
+  [MonoDroid] Parameter name: index
+  [MonoDroid]   at System.ThrowHelper.ThrowArgumentOutOfRangeException (System.ExceptionArgument argument, System.ExceptionResource resource) [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/throwhelper.cs:93
+  [MonoDroid]   at System.ThrowHelper.ThrowArgumentOutOfRangeException () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/throwhelper.cs:56
+  [MonoDroid]   at System.Collections.Generic.List`1[T].RemoveAt (System.Int32 index) [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/collections/generic/list.cs:886
+  [MonoDroid]   at ION.Core.Content.Manifold.RemoveSensorPropertyAt (System.Int32 index) [0x00008] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Content/Manifold.cs:386
+  [MonoDroid]   at ION.Core.Content.Manifold.RemoveSensorProperty (ION.Core.Sensors.Properties.ISensorProperty sensorProperty) [0x0000e] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Content/Manifold.cs:378
+  [MonoDroid]   at ION.Droid.Fragments._Analyzer.SensorPropertyViewHolder.<SensorPropertyViewHolder>m__0 (Android.Views.View view) [0x00033] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Fragments/_Analyzer/SensorPropertyViewHolder.cs:56
+  [MonoDroid]   at ION.Droid.Views.ViewClickAction.OnClick (Android.Views.View view) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Views/ViewClickAction.cs:25
+  [MonoDroid]   at Android.Views.View+IOnClickListenerInvoker.n_OnClick_Landroid_view_View_ (System.IntPtr jnienv, System.IntPtr native__this, System.IntPtr native_v) [0x00011] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Android.Views.View.cs:1857
+  [MonoDroid]   at (wrapper dynamic-method) System.Object:e9e0de40-ee8a-49d8-9b0d-c2df2ad4aba2 (intptr,intptr,intptr)
+
+    PTChart
+      * pressure lines not rendering mpa correctly
+
+    Device Manager
+      * Increase LE scan time
+      * Batch Options button doesnt work
+      * Randomly, a device row is not touchable allowing for the device to be expanded.
+        -> This happened to vacuum gauge after a scan where the gauge was known by not connected
+        -> This seems to happen after a device is connected. Possible update issue
+      * A forgotten device still appears in the device manager as new
+
+
+
+      * Connected to vacuum gauge after disconnect and got a
+[MonoDroid] System.InvalidOperationException: Cannot begin a transaction while already in a transaction.
+[MonoDroid]   at SQLite.Net.SQLiteConnection.BeginTransaction () [0x00079] in <8f2bb39aeff94a30a8628064be9c7efe>:0
+[MonoDroid]   at ION.Core.Database.IONDatabase.SaveAsync[T] (T t) [0x00004] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Database/IONDatabase.cs:130
+[MonoDroid]   at ION.Core.Devices.BaseDeviceManager+<SaveDevice>c__async1.MoveNext () [0x000ad] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/BaseDeviceManager.cs:237
+[MonoDroid] --- End of stack trace from previous location where exception was thrown ---
+[MonoDroid]   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/exceptionservices/exceptionservicescommon.cs:143
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00047] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:187
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification (System.Threading.Tasks.Task task) [0x0002e] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:156
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd (System.Threading.Tasks.Task task) [0x0000b] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:128
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter`1[TResult].GetResult () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:357
+[MonoDroid]   at ION.Core.Devices.BaseDeviceManager+<OnDeviceEvent>c__async3.MoveNext () [0x00066] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/BaseDeviceManager.cs:388
+[MonoDroid] --- End of stack trace from previous location where exception was thrown ---
+[MonoDroid]   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/exceptionservices/exceptionservicescommon.cs:143
+[MonoDroid]   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.<ThrowAsync>m__0 (System.Object state) [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/AsyncMethodBuilder.cs:1018
+[MonoDroid]   at Android.App.SyncContext+<Post>c__AnonStorey0.<>m__0 () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/xamarin-android/src/Mono.Android/Android.App/SyncContext.cs:18
+[MonoDroid]   at Java.Lang.Thread+RunnableImplementor.Run () [0x0000b] in /Users/builder/data/lanes/3511/501e63ce/source/xamarin-android/src/Mono.Android/Java.Lang/Thread.cs:36
+[MonoDroid]   at Java.Lang.IRunnableInvoker.n_Run (System.IntPtr jnienv, System.IntPtr native__this) [0x00009] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Java.Lang.IRunnable.cs:81
+[MonoDroid]   at (wrapper dynamic-method) System.Object:4884311f-cfdc-480f-b466-6b1e1cfaf8a8 (intptr,intptr
+
+
+  Screenshot Report
+    * Should not try to get address if location is not enabled
+
+  Edit Job
+    * sessions that are linked to other jobs are not wholly rendered in red
+
+  Select Export Data
+    * Changing the data range in settings does not update the selection slider
+    * changing the units in settings does not update the quick view list of displayed values
+
+  Screenshot Archive
+    * files are not deletable
+    * needs an empty view
+
+  Calibration Certificates
+    * Needs and empty view
+    * files are not deletable
+    * icon needs to be changed to a scroll
+
+  Appion Portal Login
+    * The toast used to show forget password email sent is horrible
+
+  Appion Portal
+    * Clicking the red x next to password verification not showing help dialog
+    * On successful password change, clear the password
+    * On successful password change, update password in settings
+    * use cloud for menu and activity icon
+
+  Access Code Manager
+    * Not using SwipeRecyclerView for list view
+
+  Manage Access
+    * Not using SwipeRecyclerView for list view
+
+  Upload Sessions
+    * When rows are clicked, we get a
+[MonoDroid] System.NullReferenceException: Object reference not set to an instance of an object.
+[MonoDroid]   at ION.Droid.Activity.Portal.SessionAdapter.OnItemClicked (System.Int32 pos) [0x0004d] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Activity/Portal/SessionAdapter.cs:93
+[MonoDroid]   at ION.Droid.Widgets.RecyclerViews.RecordAdapter.NotifyItemClicked (System.Int32 position) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Widgets/RecyclerViews/RecordAdapter.cs:125
+[MonoDroid]   at ION.Droid.Widgets.RecyclerViews.RecordAdapter+<OnBindViewHolder>c__AnonStorey0.<>m__0 (Android.Views.View view) [0x0000d] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Widgets/RecyclerViews/RecordAdapter.cs:109
+[MonoDroid]   at ION.Droid.Views.ViewClickAction.OnClick (Android.Views.View view) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Views/ViewClickAction.cs:25
+[MonoDroid]   at Android.Views.View+IOnClickListenerInvoker.n_OnClick_Landroid_view_View_ (System.IntPtr jnienv, System.IntPtr native__this, System.IntPtr native_v) [0x00011] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Android.Views.View.cs:1857
+[MonoDroid]   at (wrapper dynamic-method) System.Object:f4e1d379-1302-4a18-9502-e688903b78f9 (intptr,intptr,intptr)
