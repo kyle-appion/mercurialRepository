@@ -471,7 +471,7 @@
 	<string name="portal_login">Portal Login</string>
 	<string name="portal_menu">Portal Menu</string>
 	<string name="portal_password_reset">Password Reset</string>
-	<string name="portal_password_reset_sent">Account password reset request send. Please check your email.</string>
+	<string name="portal_password_reset_sent">Account password reset request sent. Please check your email for your new password.</string>
 	<string name="portal_pending_access_requests">Pending Access Requests</string>
 	<string name="portal_pending_access_requests_empty">You have no Access Requests Pending</string>
 	<string name="portal_please_enter_email">Please enter your email</string>
@@ -498,7 +498,7 @@
 	<!--
 	SENSOR
 	-->
-	<string name="sensor_create_manual_entry">Create Manual Entry</string>
+	<string name="sensor_create_manual_entry">Manual Entry</string>
 	<string name="sensor_select_type">Choose Device Type</string>
 
 	<!--

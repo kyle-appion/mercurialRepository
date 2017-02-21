@@ -434,18 +434,6 @@
 					analyzer.PutSensor(index, sensor, false);
 				});
 			});
-/*
-      ldb.AddItem(Resource.String.analyzer_create_editable_pressure, () => {
-        new ManualSensorEditDialog(Activity, ESensorType.Pressure, true, (obj, sensor) => {
-          analyzer.PutSensor(index, sensor, false);
-        }).Show();
-      });
-      ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
-        new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
-          analyzer.PutSensor(index, sensor, false);
-        }).Show();
-      });
-*/
       ldb.Show();
     }
 
@@ -455,27 +443,19 @@
     /// <param name="analyzer">Analyzer.</param>
     /// <param name="index">Index.</param>
     private void ShowAddFromDialog(Analyzer analyzer, Analyzer.ESide side) {
-      var ldb = new ListDialogBuilder(Activity);
-      ldb.SetTitle(Resource.String.analyzer_add_from);
-      ldb.AddItem(Resource.String.device_manager, () => {
-        var i = new Intent(Activity, typeof(DeviceManagerActivity));
-				i.PutExtra(DeviceManagerActivity.EXTRA_DEVICE_FILTER, (int)(EDeviceFilter.All & (~EDeviceFilter.Temperature)));
-        i.SetAction(Intent.ActionPick);
-        StartActivityForResult(i, this.EncodeManifoldSideRequest(side));
-      });
-      ldb.AddItem(Resource.String.analyzer_create_editable_pressure, () => {
-        new ManualSensorEditDialog(Activity, ESensorType.Pressure, true, (obj, sensor) => {
-          TrySetManifold(side, sensor);
-        }).Show();
-      });
-/*
-      ldb.AddItem(Resource.String.analyzer_create_editable_temperature, () => {
-        new ManualSensorEditDialog(Activity, ESensorType.Temperature, false, (obj, sensor) => {
-          TrySetManifold(side, sensor);
-        }).Show();
-      });
-*/
-      ldb.Show();
+			var ldb = new ListDialogBuilder(Activity);
+			ldb.SetTitle(Resource.String.analyzer_add_from);
+			ldb.AddItem(Resource.String.device_manager, () => {
+				var i = new Intent(Activity, typeof(DeviceManagerActivity));
+				i.SetAction(Intent.ActionPick);
+				StartActivityForResult(i, EncodeSensorMountRequest(analyzer.NextEmptySensorIndex(side)));
+			});
+			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
+				var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
+					analyzer.PutSensor(analyzer.NextEmptySensorIndex(side), sensor, false);
+				});
+			});
+			ldb.Show();
     }
 
 		private void OnAnalyzerEvent(AnalyzerEvent ae) {

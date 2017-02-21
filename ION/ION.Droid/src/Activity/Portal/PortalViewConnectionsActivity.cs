@@ -152,8 +152,6 @@
 			// Implemented from SwipableRecyclerViewAdapter.IRecord
 			public override int viewType { get { return 1; } }
 
-			public ConnectionData data { get; set; }
-
 			public ConnectionRecord(ConnectionData data) : base(data) { }
 		}
 
