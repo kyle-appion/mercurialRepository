@@ -50,9 +50,15 @@
 			var dateString = record.data.sessionStart.ToLocalTime().ToShortDateString() + " " + record.data.sessionStart.ToLocalTime().ToShortTimeString();
 
 			if (record.job == null || record.data.frn_JID == 0 || record.job._id == record.data.frn_JID) {
-				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.black));
+				var black = date.Context.Resources.GetColor(Resource.Color.black);
+				date.SetTextColor(black);
+				duration.SetTextColor(black);
+				devicesUsed.SetTextColor(black);
 			} else {
-				date.SetTextColor(date.Context.Resources.GetColor(Resource.Color.red));
+				var red = date.Context.Resources.GetColor(Resource.Color.red);
+				date.SetTextColor(red);
+				duration.SetTextColor(red);
+				devicesUsed.SetTextColor(red);
 			}
 
 			date.Text = dateString;

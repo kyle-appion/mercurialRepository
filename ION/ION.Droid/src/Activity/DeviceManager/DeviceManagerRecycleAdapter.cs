@@ -160,34 +160,40 @@
 		/// <param name="vh">Vh.</param>
 		/// <param name="position">Position.</param>
 		public override void OnBindViewHolder(RecyclerView.ViewHolder vh, int position) {
+			base.OnBindViewHolder(vh, position);
 			switch ((EViewType)GetItemViewType(position)) {
 				case EViewType.IDevice: {
-					var dvh = vh as DeviceViewHolder;
 					var dr = records[position] as DeviceRecord;
-					dvh.record = dr;
-					dvh.foreground.SetOnClickListener(new ViewClickAction((view) => {;
-						ToggleRecord(position);
-					}));
 					dr.onDeleteClicked = (obj) => {
 						RequestDeleteDevices(obj);
 					};
 				} break; // EViewType.IDevice
 				case EViewType.Section: {
-					var svh = vh as SectionViewHolder;
 					var sr = records[position] as SectionRecord;
-					svh.record = sr;
+					sr.clickAction = () => {
+						if (sr.data.actions != null) {
+							sr.data.actions();
+						}
+					};
 				} break; // EViewType.Section
 				case EViewType.Sensor: {
-					var svh = vh as SensorViewHolder;
 					var sr = records[position] as SensorRecord;
 					sr.onSensorClicked = (sensor) => {
 						if (onSensorReturnClicked != null) {
 							onSensorReturnClicked(sensor);
 						}
 					};
-					svh.record = sr;
 				} break; // EViewType.Sensor
 			}
+		}
+
+		protected override bool OnInterceptItemClicked(int position) {
+			var dr = records[position] as DeviceRecord;
+			if (dr != null) {
+				ToggleRecord(position);
+				return true;
+			}
+			return false;
 		}
 
 		/// <summary>

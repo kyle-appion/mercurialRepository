@@ -26,6 +26,7 @@
 			SetContentView(Resource.Layout.activity_portal_login);
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
 
 			username = FindViewById<TextInputEditText>(Resource.Id.login);
 			password = FindViewById<TextInputEditText>(Resource.Id.password);

@@ -106,23 +106,15 @@
 			if (holder is RecordViewHolder) {
 				var vh = holder as RecordViewHolder;
 				vh.ItemView.SetOnClickListener(new ViewClickAction((view) => {
-					NotifyItemClicked(position);
+					NotifyItemClicked(holder.AdapterPosition);
 				}));
 				vh.data = records[position] as Record;
 			} else if (holder is SwipeRecordViewHolder) {
 				var vh = holder as SwipeRecordViewHolder;
 				vh.data = records[position] as Record;
 				vh.foreground.SetOnClickListener(new ViewClickAction((view) => {
-					NotifyItemClicked(position);
+					NotifyItemClicked(holder.AdapterPosition);
 				}));
-			}
-
-
-		}
-
-		private void NotifyItemClicked(int position) {
-			if (onItemClicked != null) {
-				onItemClicked(position);
 			}
 		}
 
@@ -197,6 +189,23 @@
 
 			if (animate) {
 				NotifyItemMoved(i1, i2);
+			}
+		}
+
+		/// <summary>
+		/// Override and return true if you wish to steal a click event from a row.
+		/// </summary>
+		/// <returns><c>true</c>, if intercepty item clicked was oned, <c>false</c> otherwise.</returns>
+		/// <param name="position">Position.</param>
+		protected virtual bool OnInterceptItemClicked(int position) {
+			return false;
+		}
+
+		private void NotifyItemClicked(int position) {
+			if (!OnInterceptItemClicked(position)) {
+				if (onItemClicked != null) {
+					onItemClicked(position);
+				}
 			}
 		}
 

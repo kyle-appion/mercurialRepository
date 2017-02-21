@@ -377,6 +377,7 @@
   <string name="report_certificates">Calibration Certificates</string>
   <string name="report_certificates_download">Download Certificates?</string>
   <string name="report_certificates_downloading">Downloading Certificates</string>
+	<string name="report_certificates_empty">No Calibration Certificates have been downloaded. Click the download icon to download the Calibration Certificates for all of your saved devices.</string>
   <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
 	<string name="report_choose_export_format">Choose an Export Format</string>
@@ -415,6 +416,7 @@
   <string name="report_saved">Saved Reports</string>
   <string name="report_screenshot">Screenshot Report</string>
   <string name="report_screenshot_archive">Screenshot Archive</string>
+  <string name="report_screenshot_empty">No Screenshot Reports have been saved. Click the camera icon in the Workbench or Analyzer to create a Screenshot Report.</string>
   <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
   <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
   <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>

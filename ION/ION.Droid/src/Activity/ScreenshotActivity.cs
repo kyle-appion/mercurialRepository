@@ -87,7 +87,9 @@
 
       var loc = ion.locationManager.lastKnownLocation;
       try {
-        FillOutFieldsUsingAddress(await ion.locationManager.GetAddressFromLocationAsync(loc));
+				if (ion.locationManager.isEnabled) {
+        	FillOutFieldsUsingAddress(await ion.locationManager.GetAddressFromLocationAsync(loc));
+				}
       } catch (Exception e) {
         Error(GetString(Resource.String.error_location_failed_to_get_address), e);
       }
