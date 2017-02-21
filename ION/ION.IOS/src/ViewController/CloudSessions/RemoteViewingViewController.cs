@@ -57,9 +57,10 @@ namespace ION.IOS.ViewController.CloudSessions {
 		public async void changeUploadStatus(){	
 		var window = UIApplication.SharedApplication.KeyWindow;
     var rootVC = window.RootViewController as IONPrimaryScreenController;
+			var userID = KeychainAccess.ValueForKey("userID");
 		
 			if(webServices.uploading){
-				var feedback = await webServices.updateOnlineStatus("0");
+				var feedback = await webServices.updateOnlineStatus("0",userID);
 				
 				if(feedback != null){
 					var textResponse = await feedback.Content.ReadAsStringAsync();
@@ -82,7 +83,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 				}			
 
 			} else {
-				var feedback = await webServices.updateOnlineStatus("1");
+				var feedback = await webServices.updateOnlineStatus("1", userID);
 				
 				if(feedback != null){				
 					var textResponse = await feedback.Content.ReadAsStringAsync();
@@ -125,9 +126,10 @@ namespace ION.IOS.ViewController.CloudSessions {
 		
 		public async void startUploading(){
 			await Task.Delay(TimeSpan.FromMilliseconds(2));
+			var userID = KeychainAccess.ValueForKey("userID");
 			
 			while(webServices.uploading){
-				await webServices.uploadSystemLayout();
+				await webServices.uploadSystemLayout(userID);
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}
 		}

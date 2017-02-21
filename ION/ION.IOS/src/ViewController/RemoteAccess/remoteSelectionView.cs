@@ -223,7 +223,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
 					webServices.downloading = true;
 					sound.Close();
-					webServices.StartLayoutDownload();
+					var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+					var loggedUser = KeychainAccess.ValueForKey("userID");
+					
+					webServices.StartLayoutDownload(viewingID,loggedUser);
 				}));
 				alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {sound.Close();}));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
@@ -234,13 +237,19 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				sound.Close();
 		}
 		public void startDownloading(){
-			webServices.StartLayoutDownload();
+			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+			var loggedUser = KeychainAccess.ValueForKey("userID");
+		
+			webServices.StartLayoutDownload(viewingID,loggedUser);
 			webServices.paused += pauseRemote;
 		}
 		public void pauseRemote(bool paused){
 			if(paused == false){
 				Console.WriteLine("Should be starting the download now");
-				webServices.StartLayoutDownload();
+				var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+				var loggedUser = KeychainAccess.ValueForKey("userID");
+				
+				webServices.StartLayoutDownload(viewingID,loggedUser);
 			}
 		}
 	

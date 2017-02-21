@@ -125,23 +125,26 @@ namespace ION.IOS.ViewController.AccessRequest {
 		public async void uploadTimer(){			
 			settingsManager.onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 			startedViewing = DateTime.Now;
+			var userID = KeychainAccess.ValueForKey("userID");
+			
 			if(!webServices.uploading){
 				webServices.uploading = true;
 				settingsManager.onlineButton.SetTitle("Stop Remote", UIControlState.Normal);
-				await webServices.updateOnlineStatus("1");
+				
+				await webServices.updateOnlineStatus("1",userID);
 			} else {
 				webServices.uploading = false;
 				settingsManager.onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
-				await webServices.updateOnlineStatus("0");
+				await webServices.updateOnlineStatus("0",userID);
 			}
+			
 			while(webServices.uploading){
 			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 			 	SystemSound newSound = new SystemSound (1005);
 				if(timeDifference < 30){
-					var loggedUser = KeychainAccess.ValueForKey("userID");
-					if(!string.IsNullOrEmpty(loggedUser)){
+					if(!string.IsNullOrEmpty(userID)){
 						if(!webServices.webClient.IsBusy){					
-							await webServices.uploadSystemLayout();
+							await webServices.uploadSystemLayout(userID);
 							await Task.Delay(TimeSpan.FromMilliseconds(1500));
 						} else {
 							await Task.Delay(TimeSpan.FromMilliseconds(500)); 
@@ -162,7 +165,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 					}));
 					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, async (action) => {
 						newSound.Close();
-						await webServices.updateOnlineStatus("0");
+						await webServices.updateOnlineStatus("0",userID);
 					}));
 					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
 					AbsentRemoteTurnoff(alert);
@@ -176,10 +179,12 @@ namespace ION.IOS.ViewController.AccessRequest {
 		
 		public async void AbsentRemoteTurnoff(UIAlertController alert){
 			await Task.Delay(TimeSpan.FromSeconds(15));
+			var userID = KeychainAccess.ValueForKey("userID");
+			
 			alert.DismissViewController(false,null);
 			if(!webServices.uploading){
 				Console.WriteLine("dismissed alert and user didn't choose to continue uploading");
-				await webServices.updateOnlineStatus("0");
+				await webServices.updateOnlineStatus("0",userID);
 			}
 		}
 		

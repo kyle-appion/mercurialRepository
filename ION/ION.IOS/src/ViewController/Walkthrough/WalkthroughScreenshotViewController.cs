@@ -128,8 +128,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     public async void setupWalkthrough(){
 			await Task.Delay(TimeSpan.FromMilliseconds(2));
  			
-      View.AddSubview(pictureView);
-			View.BringSubviewToFront(pictureView);
+			//View.BringSubviewToFront(pictureView);
       View.AddSubview(explanation);
       View.AddSubview(nextPicture);
       View.AddSubview(lastPicture);
@@ -137,6 +136,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 			View.AddSubview(skipLabel);
 			View.AddSubview(progressLabel);
 			View.AddSubview(leaveButton);
+      View.AddSubview(pictureView);
 		}
 
     public override void DidReceiveMemoryWarning() {
