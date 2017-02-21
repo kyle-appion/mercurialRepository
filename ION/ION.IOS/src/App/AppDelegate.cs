@@ -211,8 +211,9 @@
 					KeychainAccess.SetValueForKey(null,"userName");
 					KeychainAccess.SetValueForKey(null,"userPword");
 				}
+			var userID = KeychainAccess.ValueForKey("userID");
 				
-			  ion.webServices.updateOnlineStatus("0");
+			  ion.webServices.updateOnlineStatus("0",userID);
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {

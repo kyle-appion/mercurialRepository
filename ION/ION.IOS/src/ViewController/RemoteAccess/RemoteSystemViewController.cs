@@ -99,7 +99,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		/// <param name="sender">Sender.</param>
 		/// <param name="e">E.</param>
 		public void LogOutUser(object sender, EventArgs e){
-	  	webServices.updateOnlineStatus("0");
+			var userID = KeychainAccess.ValueForKey("userID");
+		
+	  	webServices.updateOnlineStatus("0", userID);
 			KeychainAccess.SetValueForKey("no", "stayLogged");
 			KeychainAccess.SetValueForKey(null,"userID");
 			KeychainAccess.SetValueForKey(null,"userName");

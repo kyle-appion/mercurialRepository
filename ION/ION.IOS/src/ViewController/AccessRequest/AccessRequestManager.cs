@@ -113,7 +113,9 @@ namespace ION.IOS.ViewController.AccessRequest {
 		/// <param name="e">E.</param>
 		public async void submitCode(object sender, EventArgs e){
 			if(submitCodeField.Text.Length >= 8 && submitCodeField.Text.Length <= 10){
-				var feedback = await webServices.submitAccessCode(submitCodeField.Text);
+				var userID = KeychainAccess.ValueForKey("userID");
+			
+				var feedback = await webServices.submitAccessCode(submitCodeField.Text,userID);
 
 				var window = UIApplication.SharedApplication.KeyWindow;
 				var rootVC = window.RootViewController as IONPrimaryScreenController;
@@ -154,9 +156,38 @@ namespace ION.IOS.ViewController.AccessRequest {
 			loadingRequests.StartAnimating();
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			pendingUsers = new List<requestData>();
-			var ID = KeychainAccess.ValueForKey("userID");
+			var userID = KeychainAccess.ValueForKey("userID");
 			
-			await webServices.getAllRequests(pendingUsers);
+			var feedback = await webServices.getAllRequests(userID);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+  		
+			if(feedback != null){
+				var textResponse = await feedback.Content.ReadAsStringAsync();
+				Console.WriteLine(textResponse);
+				//parse the text string into a json object to be deserialized
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success");
+	
+				if(success.ToString() == "true"){
+					var users = response.GetValue("users");
+					
+					foreach(var user in users){
+						var deserializedToken = JsonConvert.DeserializeObject<requestData>(user.ToString());
+						pendingUsers.Add(deserializedToken);
+					}		
+				}  else {
+					var errorMessage = response.GetValue("message").ToString();
+					
+					var alert = UIAlertController.Create ("Access Requests", errorMessage, UIAlertControllerStyle.Alert);
+					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+					rootVC.PresentViewController (alert, animated: true, completionHandler: null);	
+				}
+			} else {				
+				var alert = UIAlertController.Create ("Access Requests", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();
@@ -176,8 +207,34 @@ namespace ION.IOS.ViewController.AccessRequest {
 			if(pendingUsers == null){
 				pendingUsers = new List<requestData>();
 			}
+			var userID = KeychainAccess.ValueForKey("userID");
 			
-			await webServices.GenerateAccessCode(pendingUsers);
+			var feedback = await webServices.GenerateAccessCode(userID);
+			var window = UIApplication.SharedApplication.KeyWindow;
+  		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			
+			if(feedback != null){
+				//parse the text string into a json object to be deserialized
+				var textResponse = await feedback.Content.ReadAsStringAsync();
+				
+				JObject response = JObject.Parse(textResponse);
+				var success = response.GetValue("success");
+				
+				if(success.ToString() == "true"){
+					var newCode = response.GetValue("message").ToString();
+					pendingUsers.Add(new requestData(){displayName = "Pending",id = 0, accessCode = newCode});
+				}  else {
+						var errorMessage = response.GetValue("message");
+						
+						var alert = UIAlertController.Create ("Access Code", errorMessage.ToString(), UIAlertControllerStyle.Alert);
+						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+						rootVC.PresentViewController (alert, animated: true, completionHandler: null);				
+				}			
+			} else {
+				var alert = UIAlertController.Create ("Access Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
+				alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
+				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
+			}
 			
 			pendingTable.Source = new AccessRequestTableSource(pendingUsers, .1 * accessView.Bounds.Height);
 			pendingTable.ReloadData();			

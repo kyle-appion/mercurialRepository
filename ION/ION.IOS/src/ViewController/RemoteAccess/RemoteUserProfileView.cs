@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ION.Core.Net;
 using Newtonsoft.Json.Linq;
 using System.Linq;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 
@@ -148,6 +149,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			updatingLabel.Text = "Updating password. Please Wait.";
 			updatingLabel.Hidden = false;
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
+			var userID = KeychainAccess.ValueForKey("userID");
 
 			if(string.IsNullOrEmpty(passwordField.Text) || string.IsNullOrEmpty(confirmPasswordField.Text)){
 				passwordField.BackgroundColor = UIColor.Red;
@@ -182,7 +184,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				var window = UIApplication.SharedApplication.KeyWindow;
   			var rootVC = window.RootViewController as IONPrimaryScreenController;
 					
-				var updateResponse = await webServices.updatePassword(passwordField.Text);
+				var updateResponse = await webServices.updatePassword(passwordField.Text,userID);
 				updatingLabel.Hidden = true;
 				
 				if(updateResponse != null){
@@ -213,8 +215,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			var window = UIApplication.SharedApplication.KeyWindow;
   		var rootVC = window.RootViewController as IONPrimaryScreenController;
+			var userID = KeychainAccess.ValueForKey("userID");
 					
-			var updateResponse = await webServices.updateDisplayName(firstNameField.Text, lastNameField.Text);
+			var updateResponse = await webServices.updateDisplayName(firstNameField.Text, lastNameField.Text, userID);
 				
 			if(updateResponse != null){
 				var textResponse = await updateResponse.Content.ReadAsStringAsync();
