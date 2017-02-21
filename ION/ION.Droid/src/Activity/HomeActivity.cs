@@ -309,7 +309,7 @@
           new NavigationIconItem() {
             id = Resource.Id.report_certificates,
             title = GetString(Resource.String.report_certificates),
-            icon = Resource.Drawable.ic_nav_certificates,
+            icon = Resource.Drawable.ic_scroll,
             action = () => {
               StartActivity(typeof(CalibrationCertificateArchiveActivity));
             }
@@ -323,7 +323,7 @@
 					new NavigationIconItem() {
 						id = Resource.Id.cloud,
 						title = GetString(Resource.String.portal),
-						icon = Resource.Drawable.img_logo_appionblack,
+						icon = Resource.Drawable.ic_cloud,
 						action = () => {
 							StartActivity(typeof(PortalActivity));
 						}

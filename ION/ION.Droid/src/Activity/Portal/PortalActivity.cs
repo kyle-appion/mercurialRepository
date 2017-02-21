@@ -36,6 +36,7 @@
 			SetContentView(Resource.Layout.activity_portal);
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
+			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
 
 			// Setup home widgets
 			var home = FindViewById(Resource.Id.home);

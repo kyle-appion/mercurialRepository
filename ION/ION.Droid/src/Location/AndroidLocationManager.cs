@@ -37,7 +37,7 @@
     /// <c>false</c>
     public bool isEnabled {
       get {
-        return client != null && client.IsConnected;
+				return ion.preferences.location.allowsGps && (client != null && client.IsConnected);
       }
     }
     /// <summary>

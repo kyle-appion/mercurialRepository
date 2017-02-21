@@ -7,6 +7,7 @@
 
 	using ION.Core.Database;
 
+	using ION.Droid.Util;
 	using ION.Droid.Views;
 	using ION.Droid.Widgets.RecyclerViews;
 
@@ -46,6 +47,7 @@
 		}
 
 		public override void Invalidate() {
+			var c = ItemView.Context;
 			var g = ION.Core.App.AppState.context.dataLogManager.QuerySessionDataAsync(record.data._id).Result;
 			var dateString = record.data.sessionStart.ToLocalTime().ToShortDateString() + " " + record.data.sessionStart.ToLocalTime().ToShortTimeString();
 
@@ -56,22 +58,9 @@
 			}
 
 			date.Text = dateString;
-			duration.Text = ToFriendlyString(record.data.sessionEnd - record.data.sessionStart);
+			duration.Text = (record.data.sessionEnd - record.data.sessionStart).ToFriendlyString(c);
 			devicesUsed.Text = "" + record.devicesCount;
 			check.Checked = record.isChecked;
-		}
-
-		private string ToFriendlyString(TimeSpan timeSpan) {
-			var c = ItemView.Context;
-			if (timeSpan.TotalHours > 24) {
-				return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
-			} else if (timeSpan.TotalMinutes > 60) {
-				return timeSpan.TotalHours.ToString("#.#") + " " + c.GetString(Resource.String.time_hours_abrv);
-			} else if (timeSpan.TotalSeconds > 60) {
-				return timeSpan.TotalMinutes.ToString("#.#") + " " + c.GetString(Resource.String.time_minutes_abrv);
-			} else {
-				return timeSpan.TotalSeconds.ToString("#.#") + " " + c.GetString(Resource.String.time_seconds_abrv);
-			}
 		}
 	}
 }

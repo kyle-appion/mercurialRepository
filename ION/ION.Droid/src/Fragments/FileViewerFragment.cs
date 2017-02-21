@@ -70,6 +70,11 @@
 			}
 		} FileExtensionFilter __filter;
 
+		/// <summary>
+		/// The text view that will display a message when the adapter is empty.
+		/// </summary>
+		public TextView empty;
+
     /// <summary>
     /// The recycler view that will list the files.
     /// </summary>
@@ -106,6 +111,8 @@
       var ret = inflater.Inflate(Resource.Layout.fragment_file_manager, container, false);
 
       list = ret.FindViewById<RecyclerView>(Resource.Id.list);
+			empty = ret.FindViewById<TextView>(Resource.Id.empty);
+
       list.SetLayoutManager(new LinearLayoutManager(Activity));
 
       return ret;
@@ -122,6 +129,7 @@
 
 			adapter = new FileAdapter(cache);
 			adapter.SetFilter(filter);
+			adapter.emptyView = empty;
 
 			list.SetAdapter(adapter);
 
@@ -204,32 +212,16 @@
 
 				switch ((EViewType)viewType) {
 					case EViewType.File:
-						return new FileHolder(recyclerView as SwipeRecyclerView, cache);
+						return new FileHolder(recyclerView as SwipeRecyclerView, cache, (record) => {
+							record.data.Delete();
+							RemoveRecord(IndexOfRecord(record));
+						});
 					case EViewType.Folder:
 						return new FolderHolder(recyclerView as SwipeRecyclerView, cache);
 					default:
 						throw new Exception("Cannot create view holder for: " + ((EViewType)viewType));
 				}
 			}
-/*
-			public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-				switch ((EViewType)GetItemViewType(position)) {
-					case EViewType.File: {
-						var file = holder as FileHolder;
-						file.foreground.SetOnClickListener(new ViewClickAction((view) => {
-							NotifyFileClicked(file.record.data);
-						}));
-					} break; // EViewType.File
-
-					case EViewType.Folder: {
-						var file = holder as FileHolder;
-						file.foreground.SetOnClickListener(new ViewClickAction((view) => {
-							NotifyFileClicked(file.record.data);
-						}));
-					} break; // EViewType.Folder
-				}
-			}
-*/
 
 			/// <summary>
 			/// Sets the folder that the adaper will display.
@@ -282,7 +274,7 @@
 			private ImageView icon;
 			private TextView name;
 
-			public FileHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
+			public FileHolder(SwipeRecyclerView rv, BitmapCache cache, Action<FileRecord> deleteAction) : base(rv, Resource.Layout.list_item_file, Resource.Layout.list_item_button) {
 				this.cache = cache;
 
 				icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
@@ -291,7 +283,7 @@
 				var button = background as TextView;
 				button.SetText(Resource.String.remove);
 				button.SetOnClickListener(new ViewClickAction((view) => {
-					record.data.Delete();
+					deleteAction(record);
 				}));
 			}
 

@@ -8,26 +8,20 @@
 
 # Expects an integer string indicating the pixel size of the export.
 convertPng() {
-  for file in *.ai
+  for file in *.svg
   do
     dir=`pwd`
     mkdir -p "${dir}/output"
     fn=${file%%.*}
 
     mkdir -p "${dir}/output/${1}"
-    echo "Converting {$file}"
-    /Applications/Inkscape.app/Contents/Resources/bin/inkscape -f "${dir}/${file}" -l "${dir}/${fn}.svg"
-    if [ $? -ne 0 ]; then
-      echo "Failed to convert ${file}"
-      return
-    fi
 
     echo "Writing ${file}"
     /Applications/Inkscape.app/Contents/Resources/bin/inkscape --export-png "${dir}/output/${1}/${fn}.png" -w $1 -h $1 "${dir}/${fn}.svg"
     if [ $? -ne 0 ]; then
       echo "Failed to export {$file}"
     fi
-    rm "${dir}/${fn}.svg"
+#    rm "${dir}/${fn}.svg"
   done
 }
 

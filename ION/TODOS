@@ -64,13 +64,11 @@ CURRENT BUILD ISSUES (0.9.37) ::
     * Vacuum gauge unit format for kPa is incorrect. needs to be 00.0000
       ** mbar needs to be 000.000
     * If all subviews are added to a manifold, when add subview is clicked, display a full toast.
-    * Data logging toast is not formatted correctly
 
     System Analyzer
       * Layout not saved on change
       * Adding a gauge to opposite empty manifold does not bring sensor properties with the manifold
       * Clearing current secondary for pressure gauge in shsc doesnt cause an error or warning when side is full
-      * Data Logging toast is not formatted correctly
       * Clicking and empty manifold to add a device shows incorrect add from content
       * Adding a shsc sensor property to a manifold that already has a secondary sensor does not setup the sensor property correctly
       * Sensor properties are not removed properly
@@ -91,15 +89,8 @@ CURRENT BUILD ISSUES (0.9.37) ::
       * pressure lines not rendering mpa correctly
 
     Device Manager
-      * Increase LE scan time
-      * Batch Options button doesnt work
-      * Randomly, a device row is not touchable allowing for the device to be expanded.
-        -> This happened to vacuum gauge after a scan where the gauge was known by not connected
-        -> This seems to happen after a device is connected. Possible update issue
       * A forgotten device still appears in the device manager as new
-
-
-
+      * Connect all does not work at all on nexus 7
       * Connected to vacuum gauge after disconnect and got a
 [MonoDroid] System.InvalidOperationException: Cannot begin a transaction while already in a transaction.
 [MonoDroid]   at SQLite.Net.SQLiteConnection.BeginTransaction () [0x00079] in <8f2bb39aeff94a30a8628064be9c7efe>:0
@@ -121,24 +112,9 @@ CURRENT BUILD ISSUES (0.9.37) ::
 [MonoDroid]   at (wrapper dynamic-method) System.Object:4884311f-cfdc-480f-b466-6b1e1cfaf8a8 (intptr,intptr
 
 
-  Screenshot Report
-    * Should not try to get address if location is not enabled
-
-  Edit Job
-    * sessions that are linked to other jobs are not wholly rendered in red
-
   Select Export Data
     * Changing the data range in settings does not update the selection slider
     * changing the units in settings does not update the quick view list of displayed values
-
-  Screenshot Archive
-    * files are not deletable
-    * needs an empty view
-
-  Calibration Certificates
-    * Needs and empty view
-    * files are not deletable
-    * icon needs to be changed to a scroll
 
   Appion Portal Login
     * The toast used to show forget password email sent is horrible
@@ -147,7 +123,6 @@ CURRENT BUILD ISSUES (0.9.37) ::
     * Clicking the red x next to password verification not showing help dialog
     * On successful password change, clear the password
     * On successful password change, update password in settings
-    * use cloud for menu and activity icon
 
   Access Code Manager
     * Not using SwipeRecyclerView for list view
