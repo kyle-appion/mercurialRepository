@@ -346,7 +346,7 @@ namespace ION.Droid.Fragments._Workbench {
 						if (mr.manifold.sensorPropertyCount > 1) {
 							NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
 						} else {
-							NotifyItemChanged(aifm);
+							NotifyItemChanged(aifm - 1);
 						}
 					}
 				} break; // ManifoldEvent.EType.SensorPropertyAdded
@@ -358,7 +358,7 @@ namespace ION.Droid.Fragments._Workbench {
 					if (e.manifold.sensorPropertyCount > 1) {
 						NotifyItemChanged(aifm + e.manifold.sensorPropertyCount);
 					} else {
-						NotifyItemChanged(aifm);
+						NotifyItemChanged(aifm - 1);
 					}
 				} break; // ManifoldEvent.EType.SensorPropertyRemoved
 				case ManifoldEvent.EType.SensorPropertySwapped: {

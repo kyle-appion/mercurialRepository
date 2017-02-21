@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Activity.Portal {
+﻿using ION.Droid.Views;
+namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -101,6 +102,14 @@
 					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_x));
 				}
 			};
+
+			icon.SetOnClickListener(new ViewClickAction((view) => {
+				var dialog = new IONAlertDialog(this);
+				dialog.SetMessage(GetString(Resource.String.portal_error_password_invalid));
+				dialog.SetCancelable(true);
+				dialog.SetNegativeButton(Resource.String.cancel, (sender2, e2) => {});
+				dialog.Show();
+			}));
 		}
 
 		protected override void OnResume() {
@@ -174,6 +183,11 @@
 
 			var response = await ion.portal.UpdatePassword(passwordConfirm.Text);
 			if (response.success) {
+				if (ion.preferences.portal.rememberMe) {
+					ion.preferences.portal.password = password.Text;
+				}
+				password.Text = "";
+				passwordConfirm.Text = "";
 				Toast.MakeText(this, Resource.String.portal_update_successful, ToastLength.Long).Show();
 			} else {
 				Toast.MakeText(this, response.message, ToastLength.Long).Show();

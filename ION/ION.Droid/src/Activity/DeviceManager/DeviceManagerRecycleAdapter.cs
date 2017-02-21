@@ -160,7 +160,6 @@
 		/// <param name="vh">Vh.</param>
 		/// <param name="position">Position.</param>
 		public override void OnBindViewHolder(RecyclerView.ViewHolder vh, int position) {
-			base.OnBindViewHolder(vh, position);
 			switch ((EViewType)GetItemViewType(position)) {
 				case EViewType.IDevice: {
 					var dr = records[position] as DeviceRecord;
@@ -185,6 +184,7 @@
 					};
 				} break; // EViewType.Sensor
 			}
+			base.OnBindViewHolder(vh, position);
 		}
 
 		protected override bool OnInterceptItemClicked(int position) {

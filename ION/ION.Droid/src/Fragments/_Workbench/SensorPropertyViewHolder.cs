@@ -56,7 +56,6 @@
 			var button = background as TextView;
 			button.SetText(Resource.String.remove);
 			button.SetOnClickListener(new ViewClickAction((view) => {
-				L.D(this, "Removing sensor property: " + sensorPropertyRecord.sensorProperty);
 				sensorPropertyRecord.manifold.RemoveSensorProperty(sensorPropertyRecord.sensorProperty);
 			}));
 		}

@@ -49,8 +49,6 @@
 
 		private BitmapCache cache;
 
-		private View toggle;
-
 		private TextView title;
 		private TextView measurement;
 		private TextView alarm;
@@ -69,8 +67,6 @@
 
 		public ManifoldViewHolder(SwipeRecyclerView parent, BitmapCache cache, Workbench workbench) : base(parent, Resource.Layout.viewer_large, Resource.Layout.list_item_button) {
 			this.cache = cache;
-
-			toggle = foreground.FindViewById(Resource.Id.toggle);
 
 			title = foreground.FindViewById<TextView>(Resource.Id.name);
 			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);

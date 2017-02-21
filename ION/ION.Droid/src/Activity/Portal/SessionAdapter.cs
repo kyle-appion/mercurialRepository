@@ -15,8 +15,6 @@
 	using ION.Core.App;
 	using ION.Core.Database;
 
-	using ION.Droid.Views;
-
 	using Dialog;
 	using ION.Droid.Widgets.RecyclerViews;
 
@@ -61,36 +59,33 @@
 			base.OnAttachedToRecyclerView(recyclerView);
 
 			ion.database.onDatabaseEvent += OnDatabaseEvent;
-			this.onItemClicked += OnItemClicked;
 		}
 
 		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
 			base.OnDetachedFromRecyclerView(recyclerView);
 
 			ion.database.onDatabaseEvent -= OnDatabaseEvent;
-			this.onItemClicked -= OnItemClicked;
 		}
 
 		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Session:
-					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session, (sr) => {
-						if (onSessionRowChecked != null) {
-							onSessionRowChecked(this, sr);
-						}
-					});
+					var ret = new SessionViewHolder(parent, Resource.Layout.list_item_session, null);
 				return ret;
 				default:
 					throw new Exception("Cannot create view for " + (EViewType)viewType);
 			}
 		}
 
-		private void OnItemClicked(int pos) {
-			var r = records[pos] as SessionRecord;
-			var vh = recyclerView.FindViewHolderForAdapterPosition(pos) as SessionViewHolder;
+		protected override bool OnInterceptItemClicked(int position) {
+			var r = records[position] as SessionRecord;
+			var vh = recyclerView.FindViewHolderForAdapterPosition(position) as SessionViewHolder;
 			r.isChecked = !r.isChecked;
 			vh.check.Checked = r.isChecked;
-			onSessionRowChecked(this, r);
+			if (onSessionRowChecked != null) {
+				onSessionRowChecked(this, r);
+			}
+			return true;
 		}
 
 		private void RequestDeleteSession(SessionRecord record) {

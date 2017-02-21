@@ -39,6 +39,12 @@
 			handler = new Handler(HandleMessage);
 		}
 
+		public override void Bind() {
+			base.Bind();
+			handler.RemoveCallbacksAndMessages(null);
+			handler.SendEmptyMessageDelayed(MSG_INVALIDATE, 333);
+		}
+
 		public override void Invalidate() {
 			base.Invalidate();
 			if (record == null) {
