@@ -6192,17 +6192,17 @@ namespace ION.Droid
 		public partial class Style
 		{
 			
-			// aapt resource value: 0x7f06016b
-			public const int ActionBar_Solid_Ion_action_bar = 2131100011;
-			
 			// aapt resource value: 0x7f06016c
-			public const int ActionBar_Transparent_Ion_action_bar = 2131100012;
+			public const int ActionBar_Solid_Ion_action_bar = 2131100012;
 			
-			// aapt resource value: 0x7f06016f
-			public const int ActionBarTabStyle_Ion_action_bar = 2131100015;
+			// aapt resource value: 0x7f06016d
+			public const int ActionBar_Transparent_Ion_action_bar = 2131100013;
 			
-			// aapt resource value: 0x7f060172
-			public const int ActionButton_CloseMode_Ion_action_bar = 2131100018;
+			// aapt resource value: 0x7f060170
+			public const int ActionBarTabStyle_Ion_action_bar = 2131100016;
+			
+			// aapt resource value: 0x7f060173
+			public const int ActionButton_CloseMode_Ion_action_bar = 2131100019;
 			
 			// aapt resource value: 0x7f0600a4
 			public const int AlertDialog_AppCompat = 2131099812;
@@ -6681,20 +6681,23 @@ namespace ION.Droid
 			// aapt resource value: 0x7f060167
 			public const int DialogActivityTheme = 2131100007;
 			
-			// aapt resource value: 0x7f06016e
-			public const int DropDownListView_Ion_action_bar = 2131100014;
+			// aapt resource value: 0x7f06016f
+			public const int DropDownListView_Ion_action_bar = 2131100015;
 			
-			// aapt resource value: 0x7f060170
-			public const int DropDownNav_Ion_action_bar = 2131100016;
+			// aapt resource value: 0x7f060171
+			public const int DropDownNav_Ion_action_bar = 2131100017;
 			
-			// aapt resource value: 0x7f06016a
-			public const int IONActionBarTextStyle = 2131100010;
+			// aapt resource value: 0x7f06016b
+			public const int IONActionBarTextStyle = 2131100011;
 			
 			// aapt resource value: 0x7f060168
 			public const int IONButton = 2131100008;
 			
 			// aapt resource value: 0x7f060169
-			public const int IONTextInputLayout = 2131100009;
+			public const int IONSwitchTextAppearance = 2131100009;
+			
+			// aapt resource value: 0x7f06016a
+			public const int IONTextInputLayout = 2131100010;
 			
 			// aapt resource value: 0x7f060033
 			public const int Platform_AppCompat = 2131099699;
@@ -6726,11 +6729,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f060037
 			public const int Platform_Widget_AppCompat_Spinner = 2131099703;
 			
-			// aapt resource value: 0x7f06016d
-			public const int PopupMenu_Ion_action_bar = 2131100013;
+			// aapt resource value: 0x7f06016e
+			public const int PopupMenu_Ion_action_bar = 2131100014;
 			
-			// aapt resource value: 0x7f060171
-			public const int ProgressBar_Ion_action_bar = 2131100017;
+			// aapt resource value: 0x7f060172
+			public const int ProgressBar_Ion_action_bar = 2131100018;
 			
 			// aapt resource value: 0x7f060044
 			public const int RtlOverlay_DialogWindowTitle_AppCompat = 2131099716;
@@ -7038,8 +7041,8 @@ namespace ION.Droid
 			// aapt resource value: 0x7f060011
 			public const int Theme_Design_NoActionBar = 2131099665;
 			
-			// aapt resource value: 0x7f060173
-			public const int Theme_Ion_action_bar_Widget = 2131100019;
+			// aapt resource value: 0x7f060174
+			public const int Theme_Ion_action_bar_Widget = 2131100020;
 			
 			// aapt resource value: 0x7f060116
 			public const int ThemeOverlay_AppCompat = 2131099926;
