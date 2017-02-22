@@ -154,6 +154,9 @@ file.
 "errors_screenshot_missing_title" = "Please enter a title for the Screenshot Report";
 "errors_temperature_input_parse_error" = "Failed set temperature values: invalid number";
 
+/* EXIT */
+"exit_self" = "EXIT";
+"exit_shutdown" = "Shutdown";
 /* FLUIDS */
 "fluid_out_of_range" = "OUT OF RANGE";
 "fluid_pt" = "PT";

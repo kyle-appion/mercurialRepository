@@ -670,6 +670,8 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\ic_arrow_rightwhite_long.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\ic_arrow_leftwhite_long.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_power.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\ic_nav_power.imageset\ic_nav_power.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1119,6 +1121,7 @@
     <Folder Include="Resources\Images.xcassets\cloud_menu_icon.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\" />
+    <Folder Include="Resources\Images.xcassets\ic_nav_power.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
