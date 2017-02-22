@@ -185,6 +185,9 @@
     /// Makes the analyzer the primary fragment to be viewed.
     /// </summary>
     public void DisplayAnalyzer() {
+			if (typeof(AnalyzerFragment).Equals(activeFragment?.GetType())) {
+				return;
+			}
       drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.analyzer);
       GotoFragment(new AnalyzerFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resource.Color.gray));
     }
@@ -193,6 +196,9 @@
     /// Makes the workbench the primary fragment to be viewed.
     /// </summary>
     public void DisplayWorkbench() {
+			if (typeof(WorkbenchFragment).Equals(activeFragment?.GetType())) {
+				return;
+			}
       drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.workbench);
       GotoFragment(new WorkbenchFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
     }

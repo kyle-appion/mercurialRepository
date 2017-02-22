@@ -17,10 +17,13 @@
 
 		private int background;
 		public SubviewAdapter adapter;
+		public Analyzer.ESide side;
 
-		public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int emptyText, int background, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
+		public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int emptyText, int background,
+		                                    Analyzer.ESide side, SubviewAdapter.OnSensorPropertyClicked clicked) : base(view, cache) {
 			this.list = list;
 			this.background = background;
+			this.side = side;
 
 			list = view.FindViewById<RecyclerView>(Resource.Id.list);
 			empty = view.FindViewById<TextView>(Resource.Id.empty);
@@ -44,9 +47,11 @@
 		/// </summary>
 		/// <param name="manifold">Manifold.</param>
 		protected override void OnBind(Manifold manifold) {
+			var c = parentView.Context;
 			if (manifold == null) {
 				this.Unbind();
 				empty.Visibility = ViewStates.Visible;
+				empty.Text = string.Format(c.GetString(Resource.String.analyzer_side_not_defined_1sarg), side.ToLocalizedString(c));
 				content.Visibility = ViewStates.Invisible;
 				serialNumber.SetBackgroundResource(Resource.Drawable.xml_white_bordered_background);
 				adapter.manifold = null;

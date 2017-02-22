@@ -175,6 +175,7 @@
   <string name="analyzer_set_viewer_failed">Failed to change the viewer.</string>
   <string name="analyzer_side_full_1sarg">Cannot add sensor to {0} side: the side is full.</string>
   <string name="analyzer_side_none">Unspecified</string>
+  <string name="analyzer_side_not_defined_1sarg">{0} not defined</string>
   <string name="analyzer_side_low">Low Side</string>
   <string name="analyzer_side_high">High Side</string>
 	<string name="analyzer_swap_failed">Failed to swap sensors</string>
