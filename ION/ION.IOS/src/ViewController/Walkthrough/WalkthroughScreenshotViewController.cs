@@ -18,7 +18,7 @@ namespace ION.IOS.ViewController.Walkthrough {
     public UILabel explanation;
     public UILabel skipLabel;
     public UILabel progressLabel;
-		public IWalkthrough walkthrough;   
+		public IntroductoryWalkthrough walkthrough;   
 		public WalkthroughHelp help;
 		public UISwipeGestureRecognizer swipeLeft;
 		public UISwipeGestureRecognizer swipeRight;
@@ -127,8 +127,9 @@ namespace ION.IOS.ViewController.Walkthrough {
     
     public async void setupWalkthrough(){
 			await Task.Delay(TimeSpan.FromMilliseconds(2));
- 			
-			//View.BringSubviewToFront(pictureView);
+      View.AddSubview(pictureView);
+      
+			View.BringSubviewToFront(pictureView);
       View.AddSubview(explanation);
       View.AddSubview(nextPicture);
       View.AddSubview(lastPicture);
@@ -136,7 +137,8 @@ namespace ION.IOS.ViewController.Walkthrough {
 			View.AddSubview(skipLabel);
 			View.AddSubview(progressLabel);
 			View.AddSubview(leaveButton);
-      View.AddSubview(pictureView);
+			walkthrough.parentView.BringSubviewToFront(walkthrough.arrowButton);
+			walkthrough.parentView.BringSubviewToFront(walkthrough.arrowImage);
 		}
 
     public override void DidReceiveMemoryWarning() {

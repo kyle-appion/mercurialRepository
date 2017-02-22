@@ -93,6 +93,9 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         },
+        new Section (Strings.Exit.SHUTDOWN) {
+          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
+        }
       };
 
       navigation.ViewControllers = BuildViewControllers();
@@ -112,6 +115,49 @@ namespace ION.IOS.ViewController {
     private void OnNavHelpClicked() {
       // TODO Do Helpful things
     }
+    
+    /// <summary>
+    /// Disconnects all gauges, stops data logging, and remote viewing
+    /// </summary>
+    private async void OnShutdownClicked(){
+    	await Task.Delay(TimeSpan.FromMilliseconds(1));
+			Console.WriteLine("Clicked shutdown");
+	    var alert = UIAlertController.Create(Strings.Exit.SHUTDOWN, "This will disconnect all gauges, end data logging, and disconnect any remote operations", UIAlertControllerStyle.Alert);
+	    alert.AddAction(UIAlertAction.Create(Strings.OK, UIAlertActionStyle.Default, (action) => {
+        Console.WriteLine("Turn everything off");
+        var ion = AppState.context;
+       	var userID = KeychainAccess.ValueForKey("userID");
+				foreach(var device in ion.deviceManager.devices){
+       		if(device.isConnected){
+						device.connection.Disconnect();
+					}
+				}
+				
+				if(ion.dataLogManager.isRecording){
+					ion.dataLogManager.StopRecording();
+				}
+				var ioion = ion as IosION;
+				if(ioion.webServices.uploading){
+					ioion.webServices.updateOnlineStatus("0",userID);
+					ioion.webServices.uploading = false;					
+				}
+				
+				if(ioion.webServices.downloading){
+					ioion.webServices.remoteViewing = false;
+					ioion.webServices.downloading = false;
+					ioion.webServices.paused = null;
+					///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
+					ioion.setOriginalDeviceManager();
+					setMainMenu();
+				}
+        
+      }));
+      alert.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, (action) => {
+        Console.WriteLine("Cancel shutdown");
+      }));
+
+      alert.Show();
+		}
 
     /// <summary>
     /// Opens up the application's screenshot report archive.
@@ -287,6 +333,7 @@ namespace ION.IOS.ViewController {
         
         null, // Settings navigation
         null, // Help Navigation
+        null, // Shutdown process
       };    
 
       return ret;  
@@ -390,14 +437,7 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         }
 			);
-			navigation.NavigationRoot.Add(
-				//new Section("Remote Viewing".ToUpper()){
-				new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-					//new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-					//new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				}
-			);	
+	
 			navigation.NavigationRoot.Add(
 				new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
@@ -412,7 +452,16 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         }
 			);
-
+			navigation.NavigationRoot.Add(
+				new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+				}
+			);
+			navigation.NavigationRoot.Add(
+				new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
+          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
+        }
+			);
 			navigation.ViewControllers = BuildViewControllers();
 		}
 		/// <summary>
@@ -435,17 +484,21 @@ namespace ION.IOS.ViewController {
 	        }
 			);
 			navigation.NavigationRoot.Add(
-				new Section("Remote Viewing".ToUpper()){
-					new IONElement("Remote Viewing", UIImage.FromBundle("ic_graph_menu")),
-				}
-			);
-			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
 	          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
 	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
 	        }
 			);
-
+			navigation.NavigationRoot.Add(
+				new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+				}
+			);
+			navigation.NavigationRoot.Add(
+				new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
+          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
+        }
+			);
 			BuildRemoteViewControllers();
 		}
 	}

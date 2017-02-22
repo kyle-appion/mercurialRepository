@@ -85,7 +85,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					UIApplication.SharedApplication.OpenUrl(new NSUrl(url),new NSDictionary(), null);
 				} else {
 					UIApplication.SharedApplication.OpenUrl(new NSUrl(url));
-				}  
+				}
 			};
 			
 			portalView.AddSubview(menuHeader);

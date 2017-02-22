@@ -4,13 +4,11 @@ using Foundation;
 using UIKit;
 
 namespace ION.IOS.ViewController.Walkthrough {
-  public interface IWalkthrough{
-		void GoForward();
-		void GoBackward();
-	}
-	
-	public abstract class WalkthroughProperties : IWalkthrough{
-	    public int currentStep {get;set;}
+	/// <summary>
+	/// Walkthrough methods for Workbench
+	/// </summary>
+	public class IntroductoryWalkthrough  {
+		    public int currentStep {get;set;}
 	    public UIView parentView {get;set;}
 	    public UILabel explanation {get;set;}
 	    public UILabel progress {get;set;}
@@ -18,13 +16,6 @@ namespace ION.IOS.ViewController.Walkthrough {
 	    public UIButton arrowButton {get;set;}
 	    public UIImageView screenshot {get;set;}
 	    
-	    public abstract void GoForward();
-	    public abstract void GoBackward();
-	}
-	/// <summary>
-	/// Walkthrough methods for Workbench
-	/// </summary>
-	public class IntroductoryWalkthrough : WalkthroughProperties {
 		public IntroductoryWalkthrough(UIView pView, UILabel textLabel,UIImageView screenshotImage, UIButton nextButton, UILabel progressLabel) {
 	      currentStep = 1;
 	      parentView = pView;	
@@ -63,7 +54,7 @@ namespace ION.IOS.ViewController.Walkthrough {
 			pView.BringSubviewToFront(arrowImage);
 		}
 		
-		public override void GoForward(){
+		public void GoForward(){
 	      currentStep++;
 				progress.Text = currentStep + "/9";
 	      switch (currentStep) {
@@ -105,7 +96,8 @@ namespace ION.IOS.ViewController.Walkthrough {
 	          break;
 	      }
 		} 
-		public override void GoBackward(){
+		
+		public void GoBackward(){
         currentStep--;
 				progress.Text = currentStep + "/9";
         	

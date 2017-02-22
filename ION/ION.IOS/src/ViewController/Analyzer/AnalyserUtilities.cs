@@ -129,11 +129,9 @@ namespace ION.IOS.ViewController.Analyzer
       sactionView.pcloseButton.SetTitle(Util.Strings.CLOSE, UIControlState.Normal);
       sactionView.pcloseButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
       sactionView.pvalueType.TextAlignment = UITextAlignment.Right;
-      sactionView.pLowHigh.AdjustsFontSizeToFitWidth = true;
       sactionView.pLowHigh.Layer.CornerRadius = 5f;
       sactionView.pLowHigh.Layer.BorderWidth = 1f;
       sactionView.pLowHigh.ClipsToBounds = true;
-      sactionView.pLowHigh.TextAlignment = UITextAlignment.Center;
       sactionView.pgaugeValue.AdjustsFontSizeToFitWidth = true;
       sactionView.pgaugeValue.Font = UIFont.FromName("Helvetica-Bold", 54f);
       sactionView.pgaugeValue.TextAlignment = UITextAlignment.Right;

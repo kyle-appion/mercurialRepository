@@ -38,6 +38,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public static UIImageView compressor;
     public static UIImageView expansion;
     public UILabel remoteTitle;
+    public UIView blockerView;
     public RemoteControls remoteControl;
     public UITapGestureRecognizer outsideTap;
 
@@ -66,6 +67,9 @@ namespace ION.IOS.ViewController.Analyzer {
       View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
       viewAnalyzerContainer.Bounds = View.Bounds;      
 			viewAnalyzerContainer.BackgroundColor = UIColor.Clear;
+			
+			blockerView = new UIView(viewAnalyzerContainer.Bounds);
+			blockerView.Hidden = true;
 		
       arvc = this;
       
@@ -248,6 +252,7 @@ namespace ION.IOS.ViewController.Analyzer {
 			viewAnalyzerContainer.AddSubview(dbButton);
 			viewAnalyzerContainer.BringSubviewToFront(dbButton);
 			*/
+			viewAnalyzerContainer.AddSubview(blockerView);
     }
 
     /// <summary>
@@ -376,19 +381,19 @@ namespace ION.IOS.ViewController.Analyzer {
 
 
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == pressedArea.snapArea.AccessibilityIdentifier) {
-          pressedArea.sactionView.pLowHigh.Text = Util.Strings.Analyzer.LOWSIDE;
+          pressedArea.sactionView.pLowHigh.SetTitle(Util.Strings.Analyzer.LOWSIDE, UIControlState.Normal);
           pressedArea.sactionView.pLowHigh.BackgroundColor = UIColor.Blue;
           pressedArea.sactionView.pLowHigh.Layer.CornerRadius = 6f;
-          pressedArea.sactionView.pLowHigh.TextColor = UIColor.White;
+          pressedArea.sactionView.pLowHigh.SetTitleColor(UIColor.White, UIControlState.Normal);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == pressedArea.snapArea.AccessibilityIdentifier) {
-          pressedArea.sactionView.pLowHigh.Text = Util.Strings.Analyzer.HIGHSIDE;
+          pressedArea.sactionView.pLowHigh.SetTitle(Util.Strings.Analyzer.HIGHSIDE, UIControlState.Normal);
           pressedArea.sactionView.pLowHigh.BackgroundColor = UIColor.Red;
           pressedArea.sactionView.pLowHigh.Layer.CornerRadius = 6f;
-          pressedArea.sactionView.pLowHigh.TextColor = UIColor.White;
+          pressedArea.sactionView.pLowHigh.SetTitleColor(UIColor.White, UIControlState.Normal);
         } else {
-          pressedArea.sactionView.pLowHigh.Text = Util.Strings.Analyzer.UNSPECIFIED;
+          pressedArea.sactionView.pLowHigh.SetTitle(Util.Strings.Analyzer.UNSPECIFIED, UIControlState.Normal);
           pressedArea.sactionView.pLowHigh.BackgroundColor = UIColor.White;
-          pressedArea.sactionView.pLowHigh.TextColor = UIColor.Black;
+          pressedArea.sactionView.pLowHigh.SetTitleColor(UIColor.Black, UIControlState.Normal);
         }
         ///SHOW POPUP
         pressedArea.sactionView.aView.Hidden = false;
@@ -413,11 +418,14 @@ namespace ION.IOS.ViewController.Analyzer {
         pressedArea.sactionView.pactionButton.TouchUpInside += handleActionPopup;
         
         outsideTap = new UITapGestureRecognizer(() => {
+        	Console.WriteLine("tapped analyzer container");
 					pressedArea.sactionView.aView.Hidden = true;
-					viewAnalyzerContainer.RemoveGestureRecognizer(outsideTap);
+					blockerView.RemoveGestureRecognizer(outsideTap);
+					blockerView.Hidden = true;
 				});
-        viewAnalyzerContainer.AddGestureRecognizer(outsideTap);
-      } 
+        blockerView.AddGestureRecognizer(outsideTap);
+				blockerView.Hidden = false;
+      }
       else {
 
         ///SHOW ACTIONSHEET FOR ADDING A NEW SENSOR

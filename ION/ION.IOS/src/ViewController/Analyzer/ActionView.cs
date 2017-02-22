@@ -20,7 +20,7 @@ namespace ION.IOS.ViewController.Analyzer {
     public UILabel pgaugeValue;
     public UILabel pvalueType;
     public UILabel pconnectionStatus;
-    public UILabel pLowHigh;
+    public UIButton pLowHigh;
     public UILabel pdisplayLink;
     UIView abuttonBorder;
     UIView abuttonBorder2;
@@ -52,7 +52,7 @@ namespace ION.IOS.ViewController.Analyzer {
       pgaugeValue = new UILabel(new CGRect(.292 * aView.Bounds.Width, .184 * aView.Bounds.Height, .678 * aView.Bounds.Width, .348 * aView.Bounds.Height));
       pvalueType = new UILabel(new CGRect(.682 * aView.Bounds.Width, .574 * aView.Bounds.Height, .289 * aView.Bounds.Width, .107 * aView.Bounds.Height));
       pconnectionStatus = new UILabel(new CGRect(.292 * aView.Bounds.Width, .574 * aView.Bounds.Height, .357 * aView.Bounds.Width, .107 * aView.Bounds.Height));
-      pLowHigh = new UILabel(new CGRect(.728 * aView.Bounds.Width, .682 * aView.Bounds.Height, .267 * aView.Bounds.Width,.107 * aView.Bounds.Height));
+      pLowHigh = new UIButton(new CGRect(.701 * aView.Bounds.Width, .682 * aView.Bounds.Height, .295 * aView.Bounds.Width,.107 * aView.Bounds.Height));
       pdisplayLink = new UILabel(new CGRect(0, .682 * aView.Bounds.Height, .7 * aView.Bounds.Width,.107 * aView.Bounds.Height));
       
       abuttonBorder = new UIView(new CGRect(0, .8 * aView.Bounds.Height, aView.Bounds.Width ,1));

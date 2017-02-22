@@ -284,7 +284,14 @@ namespace ION.IOS.Util {
       MAIN = "navigation_main".FromResources()
       ;
     } // End Strings.Navigation
-
+		
+		public static class Exit{
+			public static readonly string
+			SELF = "exit_self".FromResources(),
+			SHUTDOWN = "exit_shutdown".FromResources()
+			;
+		} // End Strings.Exit
+		
     public static class Remote {
       public static readonly string
       ACCESSCODE = "portal_access_code".FromResources(),
