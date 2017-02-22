@@ -9,6 +9,7 @@
 
   using ION.Core.App;
   using ION.Core.Content;
+	using ION.Core.Devices;
   using ION.Core.Sensors;
 
   using ION.Droid.Devices;
@@ -76,7 +77,17 @@
     public override void Invalidate() {
 			var sensor = record.data;
       type.Text = sensor.type.GetTypeString();
-      measurement.Text = sensor.ToFormattedString(true);
+
+			var gds = sensor as GaugeDeviceSensor;
+			if (gds != null) {
+				if (gds.removed || !gds.device.isConnected) {
+					measurement.Text = "- - -";
+				} else {
+					measurement.Text = sensor.ToFormattedString(true);
+				}
+			} else {
+      	measurement.Text = sensor.ToFormattedString(true);
+			}
 
 			if (record.onSensorClicked == null) {
         add.Visibility = ViewStates.Gone;

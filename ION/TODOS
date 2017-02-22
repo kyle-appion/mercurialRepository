@@ -64,18 +64,6 @@ CURRENT BUILD ISSUES (0.9.37) ::
       * Clearing current secondary for pressure gauge in shsc doesnt cause an error or warning when side is full
       * Adding a shsc sensor property to a manifold that already has a secondary sensor does not setup the sensor property correctly
       * Sensor properties are not removed properly
-        -> Removing a sensor property causes a backend failure
-[MonoDroid] System.ArgumentOutOfRangeException: Index was out of range. Must be non-negative and less than the size of the collection.
-  [MonoDroid] Parameter name: index
-  [MonoDroid]   at System.ThrowHelper.ThrowArgumentOutOfRangeException (System.ExceptionArgument argument, System.ExceptionResource resource) [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/throwhelper.cs:93
-  [MonoDroid]   at System.ThrowHelper.ThrowArgumentOutOfRangeException () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/throwhelper.cs:56
-  [MonoDroid]   at System.Collections.Generic.List`1[T].RemoveAt (System.Int32 index) [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/collections/generic/list.cs:886
-  [MonoDroid]   at ION.Core.Content.Manifold.RemoveSensorPropertyAt (System.Int32 index) [0x00008] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Content/Manifold.cs:386
-  [MonoDroid]   at ION.Core.Content.Manifold.RemoveSensorProperty (ION.Core.Sensors.Properties.ISensorProperty sensorProperty) [0x0000e] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Content/Manifold.cs:378
-  [MonoDroid]   at ION.Droid.Fragments._Analyzer.SensorPropertyViewHolder.<SensorPropertyViewHolder>m__0 (Android.Views.View view) [0x00033] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Fragments/_Analyzer/SensorPropertyViewHolder.cs:56
-  [MonoDroid]   at ION.Droid.Views.ViewClickAction.OnClick (Android.Views.View view) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Views/ViewClickAction.cs:25
-  [MonoDroid]   at Android.Views.View+IOnClickListenerInvoker.n_OnClick_Landroid_view_View_ (System.IntPtr jnienv, System.IntPtr native__this, System.IntPtr native_v) [0x00011] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Android.Views.View.cs:1857
-  [MonoDroid]   at (wrapper dynamic-method) System.Object:e9e0de40-ee8a-49d8-9b0d-c2df2ad4aba2 (intptr,intptr,intptr)
 
     Device Manager
       * A forgotten device still appears in the device manager as new

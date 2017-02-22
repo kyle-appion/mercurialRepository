@@ -229,6 +229,16 @@
         id = Resource.Id.main,
         title = GetString(Resource.String.main),
         items = new NavigationItem[] {
+					new NavigationIconItem() {
+						id = Resource.Id.workbench,
+						title = GetString(Resource.String.workbench),
+						icon = Resource.Drawable.ic_nav_workbench,
+						//            hidden = activeFragment is WorkbenchFragment,
+						action = () => {
+							DisplayWorkbench();
+							HideDrawer();
+						},
+					},
 
           new NavigationIconItem() {
             id = Resource.Id.analyzer,
@@ -237,17 +247,6 @@
 //            hidden = activeFragment is AnalyzerFragment,
             action = () => {
               DisplayAnalyzer();
-              HideDrawer();
-            },
-          },
-
-          new NavigationIconItem() {
-            id = Resource.Id.workbench,
-            title = GetString(Resource.String.workbench),
-            icon = Resource.Drawable.ic_nav_workbench,
-//            hidden = activeFragment is WorkbenchFragment,
-            action = () => {
-              DisplayWorkbench();
               HideDrawer();
             },
           },
