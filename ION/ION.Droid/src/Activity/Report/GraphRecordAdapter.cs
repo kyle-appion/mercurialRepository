@@ -106,6 +106,16 @@
 		}
 
 		/// <summary>
+		/// Queries the percent within the date spand that the given date is
+		/// </summary>
+		/// <returns>The percent from date time.</returns>
+		/// <param name="date">Date.</param>
+		public float FindPercentFromDateTime(DateTime date) {
+			var i = dil.IndexOfDate(date);
+			return i / (float)dil.dateSpan; 
+		}
+
+		/// <summary>
 		/// Queries a list of dates within the DateIndexLookup that are before the given date.
 		/// </summary>
 		/// <returns>The dates preceding.</returns>

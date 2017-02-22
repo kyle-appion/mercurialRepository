@@ -72,9 +72,10 @@
 
 		public override void Invalidate() {
 			header.Text = record.data.device.serialNumber + " (" + record.data.type.GetTypeString() + ")";
-			lowest.Text = SensorUtils.ToFormattedString(record.data.type, record.lowest);
-			highest.Text = SensorUtils.ToFormattedString(record.data.type, record.highest);
-			average.Text = SensorUtils.ToFormattedString(record.data.type, record.average);
+
+			lowest.Text = SensorUtils.ToFormattedString(record.lowest);
+			highest.Text = SensorUtils.ToFormattedString(record.highest);
+			average.Text = SensorUtils.ToFormattedString(record.average);
 		}
 	}
 }

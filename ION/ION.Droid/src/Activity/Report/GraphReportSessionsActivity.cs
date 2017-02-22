@@ -55,6 +55,8 @@
 		/// The container view that will hold all of the settins views.
 		/// </summary>
 		private View settingsView;
+		private View leftHandle;
+		private View rightHandle;
 		/// <summary>
 		/// The text view that will show the date range of the graph.
 		/// </summary>
@@ -66,7 +68,7 @@
 		/// <summary>
 		/// The recycler view that will list the graphing components.
 		/// </summary>
-		private RecyclerView graphList;
+		private RecyclerView list;
 
 		/// <summary>
 		/// The button that is used to select the pressure unit for the reports.
@@ -114,7 +116,7 @@
 		/// </summary>
 		private SelectionDrawable rightOverlay;
 		/// <summary>
-		/// The plot rect;
+		/// The base rect that is used to measure the plot sizes of the graphs
 		/// </summary>
 		private Rect rect;
 
@@ -122,6 +124,9 @@
 		/// The sessions that the activity is graphing.
 		/// </summary>
 		private List<int> sessions;
+
+		private DateTime startDate;
+		private DateTime endDate;
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
@@ -159,23 +164,17 @@
 			startDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
 			endDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 
-/*
 			startDateSpinner.ItemSelected += (sender, e) => {
-				var pos = e.Position;
-				var len = (float)graphAdapter.dil.dateSpan;
-				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
-
-				InvalidateGraphViews();
+				startDate = startTimesAdapter.dates[e.Position];
+				InvalidateOverlays();
+				UpdateDates();
 			};
 
 			endDateSpinner.ItemSelected += (sender, e) => {
-				var len = (float)graphAdapter.dil.dateSpan;
-				var pos = len - e.Position;
-				leftOverlay.width = (int)(pos / len * leftOverlay.plotWidth);
-
-				InvalidateGraphViews();
+				endDate = endTimesAdapter.dates[e.Position];
+				InvalidateOverlays();
+				UpdateDates();
 			};
-*/
 
 			var empty = FindViewById(Resource.Id.empty);
 			empty.Visibility = ViewStates.Gone;
@@ -184,7 +183,6 @@
 
 		protected override void OnResume() {
 			base.OnResume();
-
 			RefreshGraphList();
 		}
 
@@ -202,10 +200,10 @@
 		private void InitializeGraphViews() {
 			dateRangeView = FindViewById<TextView>(Resource.Id.date);
 			showSettingsView = FindViewById(Resource.Id.settings);
-			graphList = FindViewById<RecyclerView>(Resource.Id.list);
+			list = FindViewById<RecyclerView>(Resource.Id.list);
 
-			var left = FindViewById(Resource.Id.left);
-			var right = FindViewById(Resource.Id.right);
+			leftHandle = FindViewById(Resource.Id.left);
+			rightHandle = FindViewById(Resource.Id.right);
 			var container = FindViewById(Resource.Id.view);
 
 			var icon = graphView.FindViewById(Resource.Id.icon);
@@ -214,17 +212,17 @@
 			}));
 
 			graphAdapter = new GraphRecordAdapter();
-			graphList.SetAdapter(graphAdapter);
+			list.SetAdapter(graphAdapter);
 
 			var green = new Color(0xa0, 0xa0, 0xa0, 0xa0);
 			leftOverlay = new SelectionDrawable(SelectionDrawable.EAlign.Left, green, 0);
 			rightOverlay = new SelectionDrawable(SelectionDrawable.EAlign.Right, green, 0);
 
-			graphList.Overlay.Add(leftOverlay);
-			graphList.Overlay.Add(rightOverlay);
+			list.Overlay.Add(leftOverlay);
+			list.Overlay.Add(rightOverlay);
 
 			// Initialize all of the views and their actions
-			left.Touch += (sender, e) => {
+			leftHandle.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:
 						var r = new Rect();
@@ -234,18 +232,20 @@
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width + right.Width;
+						var dw = leftHandle.Width + rightHandle.Width;
 
 						if (x < modifiedStart) {
 							x = modifiedStart;
-						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - right.Width - dw) {
+						} else if (x > modifiedStart + rect.Width() - rightOverlay.width - rightHandle.Width - dw) {
 							x = modifiedStart + rect.Width() - rightOverlay.width - dw;
 						}
 
 						leftOverlay.width = (int)(x - modifiedStart);
-						left.SetX(x);
+						leftHandle.SetX(x);
 
-						graphList.Invalidate();
+						startDate = FindDateFromPosition(x);
+						list.Invalidate();
+						UpdateDateAdapters();
 						UpdateDates();
 						break;
 					case MotionEventActions.Up:
@@ -253,7 +253,7 @@
 				}
 			};
 
-			right.Touch += (sender, e) => {
+			rightHandle.Touch += (sender, e) => {
 				switch (e.Event.Action) {
 					case MotionEventActions.Move:
 						var r = new Rect();
@@ -263,7 +263,7 @@
 						var modifiedStart = rect.Left - r.Left;
 
 						var x = e.Event.RawX;
-						var dw = left.Width + right.Width;
+						var dw = leftHandle.Width + rightHandle.Width;
 
 						if (x < modifiedStart + leftOverlay.width + dw) {
 							x = modifiedStart + leftOverlay.width + dw;
@@ -273,9 +273,11 @@
 
 						rightOverlay.width = (int)(modifiedStart + rect.Width() - x);
 
-						right.SetX(x - right.Width);
+						rightHandle.SetX(x - rightHandle.Width);
 
-						graphList.Invalidate();
+						endDate = FindDateFromPosition(x);
+						list.Invalidate();
+						UpdateDateAdapters();
 						UpdateDates();
 						break;
 					case MotionEventActions.Up:
@@ -284,11 +286,48 @@
 			};
 		}
 
+		private DateTime FindDateFromPosition(float x) {
+			// Normalize the x to the rect.
+			x = x - rect.Left;
+
+			if (x > rect.Width()) {
+				x = rect.Width();
+			} else if (x < 0) {
+				x = 0;
+			}
+
+			return graphAdapter.FindDateTimeFromSelection(x / (float)leftOverlay.plotWidth);
+		}
+
+		private void InvalidateOverlays() {
+			leftOverlay.width = (int)(leftOverlay.plotWidth * graphAdapter.FindPercentFromDateTime(startDate));
+			rightOverlay.width = (int)(rightOverlay.plotWidth * (1 - graphAdapter.FindPercentFromDateTime(endDate)));
+			InvalidateHandles();
+			list.Invalidate();
+		}
+
+		// TODO ahodder@appioninc.com: Currently, if the user selects dates that are too close to eachother, the handle will overlap
+		private void InvalidateHandles() {
+			var containerRect = new Rect();
+			var container = FindViewById(Resource.Id.view);
+			container.GetGlobalVisibleRect(containerRect);
+			var ms = rect.Left - containerRect.Left; // The actual start for the container
+
+
+			// Layout the left handle.
+			leftHandle.SetX(ms + leftOverlay.width);
+
+			// Layout the right handle.
+			rightHandle.SetX(ms + (rightOverlay.plotWidth - rightOverlay.width) - rightHandle.Width);
+		}
+
 		private void InitOptionsViews() {
 			var table = FindViewById(Resource.Id.table);
 			var pressure = table.FindViewById(Resource.Id.pressure);
 			var temperature = table.FindViewById(Resource.Id.temperature);
 			var vacuum = table.FindViewById(Resource.Id.vacuum);
+
+			overviewAdapter = new OverviewAdapter();
 
 			pressureUnitButton = pressure.FindViewById<Button>(Resource.Id.unit);
 			temperatureUnitButton = temperature.FindViewById<Button>(Resource.Id.unit);
@@ -312,19 +351,17 @@
 				}).Show();
 			}));
 
-			SetPressureReportUnit(ion.preferences.units.pressure);
-			SetTemperatureReportUnit(ion.preferences.units.temperature);
-			SetVacuumReportUnit(ion.preferences.units.vacuum);
-
 			var icon = settingsView.FindViewById(Resource.Id.icon);
 			icon.SetOnClickListener(new ViewClickAction((view) => {
 				AnimateToGraphView();
 			}));
 
-			overviewAdapter = new OverviewAdapter();
-
 			var list = settingsView.FindViewById<RecyclerView>(Resource.Id.list);
 			list.SetAdapter(overviewAdapter);
+
+			SetPressureReportUnit(ion.preferences.units.pressure);
+			SetTemperatureReportUnit(ion.preferences.units.temperature);
+			SetVacuumReportUnit(ion.preferences.units.vacuum);
 		}
 
 		private void SetPressureReportUnit(Unit unit) {
@@ -333,6 +370,9 @@
 			} else {
 				pressureUnitButton.Text = unit.ToString();
 				ion.preferences.units.pressure = unit;
+			}
+			if (graphAdapter.dil != null) {
+				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
 			}
 		}
 
@@ -343,6 +383,9 @@
 				temperatureUnitButton.Text = unit.ToString();
 				ion.preferences.units.temperature = unit;
 			}
+			if (graphAdapter.dil != null) {
+				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+			}
 		}
 
 		private void SetVacuumReportUnit(Unit unit) {
@@ -352,11 +395,13 @@
 				vacuumUnitButton.Text = unit.ToString();
 				ion.preferences.units.vacuum = unit;
 			}
+			if (graphAdapter.dil != null) {
+				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+			}
 		}
 
 		private void AnimateToOptionsView() {
 			FlipView(content, Resource.Id.graph, Resource.Id.settings);
-
 		}
 
 		private void AnimateToGraphView() {
@@ -411,11 +456,11 @@
 			var container = FindViewById(Resource.Id.view);
 
 			var tries = 0;
-			var row = graphList.FindViewHolderForAdapterPosition(0)?.ItemView;
+			var row = list.FindViewHolderForAdapterPosition(0)?.ItemView;
 			do {
 				await Task.Delay(50);
 				tries++;
-			} while ((row = graphList.FindViewHolderForAdapterPosition(0)?.ItemView) == null && tries < 5);
+			} while ((row = list.FindViewHolderForAdapterPosition(0)?.ItemView) == null && tries < 5);
 
 			if (row == null) {
 				Log.E(this, "Failed to get row from list.");
@@ -441,10 +486,31 @@
 			left.SetX(leftx);
 			right.SetX(rightx);
 
-			graphList.Invalidate();
+			startDate = FindDateFromPosition(leftx);
+			endDate = FindDateFromPosition(rightx);
 
+			list.Invalidate();
 
 			UpdateDates();
+		}
+
+		private void UpdateDateAdapters() {
+			var startIndex = graphAdapter.IndexOfDateTime(startDate);
+			var endIndex = graphAdapter.IndexOfDateTime(endDate);
+
+			var startDates = graphAdapter.GetDatesInRange(0, endIndex);
+			var endDates = graphAdapter.GetDatesInRange(startIndex, graphAdapter.dil.dateSpan - 1);
+
+			startTimesAdapter = new DateTimeAdapter(this, startDates);
+			endTimesAdapter = new DateTimeAdapter(this, endDates);
+
+			startDateSpinner.Adapter = startTimesAdapter;
+			endDateSpinner.Adapter = endTimesAdapter;
+
+			endDateSpinner.SetSelection(startTimesAdapter.dates.IndexOf(startDate));
+			endDateSpinner.SetSelection(endTimesAdapter.dates.IndexOf(endDate));
+
+			overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
 		}
 
 		/// <summary>
@@ -453,25 +519,9 @@
 		/// <param name="startDate">Start date.</param>
 		/// <param name="endDate">End date.</param>
 		private void UpdateDates() {
-			var startDate = graphAdapter.FindDateTimeFromSelection(leftOverlay.width / (float)leftOverlay.plotWidth);
-			var endDate = graphAdapter.FindDateTimeFromSelection(1 - (rightOverlay.width / (float)rightOverlay.plotWidth));
-
-			dateRangeView.Text = GetString(Resource.String.start) + ": " + startDate.ToShortDateString() + " " + startDate.ToLongTimeString() + "\n" + 
+			overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+			dateRangeView.Text = GetString(Resource.String.start) + ": " + startDate.ToShortDateString() + " " + startDate.ToLongTimeString() + "\n" +
 				GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
-
-			var date = settingsView.FindViewById(Resource.Id.date);
-			
-			var startIndex = graphAdapter.IndexOfDateTime(startDate);
-			var endIndex = graphAdapter.IndexOfDateTime(endDate);
-
-			var startDates = graphAdapter.GetDatesInRange(0, endIndex);
-			var endDates = graphAdapter.GetDatesInRange(endIndex + 1, graphAdapter.dil.dateSpan - 1);
-
-			startTimesAdapter = new DateTimeAdapter(this, startDates);
-			endTimesAdapter = new DateTimeAdapter(this, endDates);
-
-			startDateSpinner.Adapter = startTimesAdapter;
-			endDateSpinner.Adapter = endTimesAdapter;
 		}
 
 		private async Task RefreshGraphList() {
@@ -506,6 +556,10 @@
 				empty.Visibility = ViewStates.Gone;
 				content.Visibility = ViewStates.Visible;
 			}
+
+			startDate = graphAdapter.dil.DateFromIndex(0);
+			endDate = graphAdapter.dil.DateFromIndex(graphAdapter.dil.dateSpan - 1);
+			UpdateDateAdapters();
 		}
 
 		private void Reset() {
@@ -544,7 +598,7 @@
 			for (int i = 0; i < graphAdapter.ItemCount; i++) {
 				var record = graphAdapter[i] as GraphRecord;
 				if (record.isChecked) {
-					var view = graphList.GetLayoutManager().FindViewByPosition(i);
+					var view = list.GetLayoutManager().FindViewByPosition(i);
 					ret[record.data] = view.ToPng();
 				}
 			}
@@ -570,7 +624,7 @@
 //					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();
-					dateString = dateString.Replace('\\', '-'); 
+					dateString = dateString.Replace('\\', '-');
 					dateString = dateString.Replace('/', '-');
 
 					var folder = ion.dataLogReportFolder;
@@ -614,7 +668,7 @@
 //					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();
-					dateString = dateString.Replace('\\', '-'); 
+					dateString = dateString.Replace('\\', '-');
 					dateString = dateString.Replace('/', '-');
 					var filename = FILE_NAME + "_" + dateString + PDF_EXT;
 
@@ -645,6 +699,15 @@
 	}
 
 	class SelectionDrawable : Drawable {
+		public float percent {
+			get {
+				if (plotWidth == 0) {
+					return (align == EAlign.Left) ? 0 : 1;
+				} else {
+					return (align == EAlign.Left) ? (width / (float)plotWidth) : 1 - (width / (float)plotWidth);
+				}
+			}
+		}
 		/// <summary>
 		/// The width of the defining plot.
 		/// </summary>
@@ -760,4 +823,3 @@
 		}
 	}
 }
-
