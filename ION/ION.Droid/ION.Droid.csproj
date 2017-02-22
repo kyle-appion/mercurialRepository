@@ -714,6 +714,11 @@
     <AndroidResource Include="Resources\drawable\ic_cloud.png" />
     <AndroidResource Include="Resources\drawable\ic_cloud_down.png" />
     <AndroidResource Include="Resources\drawable\ic_cloud_up.png" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_black.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_red.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_blue.xml" />
+    <AndroidResource Include="Resources\drawable\shape_white_center.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_bottom_white.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

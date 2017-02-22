@@ -83,14 +83,6 @@
             android:layout_weight="1"
             android:textSize="@dimen/viewer_text_size" />
         <TextView
-            android:id="@id/status"
-            android:textColor="@color/black"
-            android:layout_width="0px"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="@dimen/viewer_text_size" />
-        <TextView
             android:id="@id/unit"
             android:textColor="@color/black"
             android:layout_width="0px"
@@ -99,6 +91,14 @@
             android:gravity="right"
             android:textSize="@dimen/viewer_text_size" />
     </LinearLayout>
+    <TextView
+        android:id="@id/status"
+        android:textColor="@color/black"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="@dimen/viewer_text_size" />
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

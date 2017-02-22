@@ -258,7 +258,9 @@
 
       lowSideManifoldTemplate = new AnalyzerManifoldViewTemplate(lowSideManifoldView, cache,
 			                                                           Resource.String.analyzer_drag_to_set_low,
-			                                                           Resource.Drawable.xml_low_side_background, OnSensorPropertyClick);
+			                                                           Resource.Drawable.xml_low_side_background,
+			                                                           Analyzer.ESide.Low,
+			                                                           OnSensorPropertyClick);
       lowSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, lowSideManifoldTemplate, Analyzer.ESide.Low));
       lowSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         NotifyManifoldClicked(Analyzer.ESide.Low);
@@ -266,7 +268,9 @@
 
       highSideManifoldTemplate = new AnalyzerManifoldViewTemplate(highSideManifoldView, cache,
 			                                                            Resource.String.analyzer_drag_to_set_high,
-			                                                            Resource.Drawable.xml_high_side_background, OnSensorPropertyClick);
+			                                                            Resource.Drawable.xml_high_side_background,
+			                                                            Analyzer.ESide.High,
+			                                                            OnSensorPropertyClick);
       highSideManifoldView.SetOnDragListener(new ManifoldDragListener(this, highSideManifoldTemplate, Analyzer.ESide.High));
       highSideManifoldView.SetOnClickListener(new ViewClickAction((v) => {
         NotifyManifoldClicked(Analyzer.ESide.High);
