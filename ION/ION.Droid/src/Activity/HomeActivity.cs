@@ -234,7 +234,7 @@
             id = Resource.Id.analyzer,
             title = GetString(Resource.String.analyzer),
             icon = Resource.Drawable.ic_nav_analyzer,
-            hidden = activeFragment is AnalyzerFragment,
+//            hidden = activeFragment is AnalyzerFragment,
             action = () => {
               DisplayAnalyzer();
               HideDrawer();
@@ -245,7 +245,7 @@
             id = Resource.Id.workbench,
             title = GetString(Resource.String.workbench),
             icon = Resource.Drawable.ic_nav_workbench,
-            hidden = activeFragment is WorkbenchFragment,
+//            hidden = activeFragment is WorkbenchFragment,
             action = () => {
               DisplayWorkbench();
               HideDrawer();

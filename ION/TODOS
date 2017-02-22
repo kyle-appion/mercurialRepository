@@ -102,15 +102,6 @@ CURRENT BUILD ISSUES (0.9.37) ::
 
 
   Select Export Data
-    * Changing the data range in settings does not update the selection slider
-    * changing the units in settings does not update the quick view list of displayed values
-
-  Upload Sessions
-    * When rows are clicked, we get a
-[MonoDroid] System.NullReferenceException: Object reference not set to an instance of an object.
-[MonoDroid]   at ION.Droid.Activity.Portal.SessionAdapter.OnItemClicked (System.Int32 pos) [0x0004d] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Activity/Portal/SessionAdapter.cs:93
-[MonoDroid]   at ION.Droid.Widgets.RecyclerViews.RecordAdapter.NotifyItemClicked (System.Int32 position) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Widgets/RecyclerViews/RecordAdapter.cs:125
-[MonoDroid]   at ION.Droid.Widgets.RecyclerViews.RecordAdapter+<OnBindViewHolder>c__AnonStorey0.<>m__0 (Android.Views.View view) [0x0000d] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Widgets/RecyclerViews/RecordAdapter.cs:109
-[MonoDroid]   at ION.Droid.Views.ViewClickAction.OnClick (Android.Views.View view) [0x00014] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Droid/src/Views/ViewClickAction.cs:25
-[MonoDroid]   at Android.Views.View+IOnClickListenerInvoker.n_OnClick_Landroid_view_View_ (System.IntPtr jnienv, System.IntPtr native__this, System.IntPtr native_v) [0x00011] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Android.Views.View.cs:1857
-[MonoDroid]   at (wrapper dynamic-method) System.Object:f4e1d379-1302-4a18-9502-e688903b78f9 (intptr,intptr,intptr)
+    * The drag handles for the graph selection are a little off from what the data says. To repeat this,
+    simply drag the selection to a break in the graph. The speculated reason is that the adapter lookup
+    is not considering the "empty" records that are used for padding.
