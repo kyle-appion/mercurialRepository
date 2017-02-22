@@ -8,7 +8,7 @@
   using Android.Views;
 	using Android.Widget;
 
-	using Appion.Commons.Util;
+	using L = Appion.Commons.Util.Log;
 
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -129,14 +129,34 @@
 					var manifold = analyzer.GetManifoldFromSide(side);
 
 					if (analyzer.HasSensor(manifold.secondarySensor)) {
-						if (analyzer.IsSideFull(side)) {
+						// TODO ahodder@appioninc.com: Is this right?
+						Analyzer.ESide ss;
+						if (!analyzer.GetSideOfSensor(manifold.secondarySensor, out ss)) {
+							Appion.Commons.Util.Log.E(this, "Failed to get side of sensor");
+							return;
+						}
+
+						// The user returned from the SHSC activity with a sensor.
+						if (ss != side) {
+							// The sensor that the user returned with is not on the side of the manifold.
+							if (analyzer.IsSideFull(side)) {
+								// We cannot swap the side of the sensor; the side is full.
+								L.E(this, "Tried to add sensor from opposite side to this side.");
+								Toast.MakeText(Activity, Resource.String.analyzer_error_failed_to_link_sensors, ToastLength.Long).Show();
+								manifold.SetSecondarySensor(null);
+							} else {
+								analyzer.SwapSensors(analyzer.IndexOfSensor(manifold.secondarySensor), analyzer.NextEmptySensorIndex(side), true);
+							}
+						} else if (!analyzer.HasSensor(manifold.secondarySensor) && analyzer.IsSideFull(side)) {
 							Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_side_full_1sarg), side), ToastLength.Long).Show();
 							manifold.SetSecondarySensor(null);
 						} else {
 							if (!analyzer.IsSensorOnSide(manifold.secondarySensor, side)) {
 								var si = analyzer.IndexOfSensor(manifold.secondarySensor);
 								var di = analyzer.NextEmptySensorIndex(side);
-								analyzerView.SwapSensorMounts(di, si);
+//								analyzerView.SwapSensorMounts(di, si);
+								analyzer.SwapSensors(di, si, true);
+
 							}
 						}
 					} else {
@@ -153,7 +173,7 @@
 
           break;
         default:
-          Log.D(this, "Unknown request: " + request);
+          L.D(this, "Unknown request: " + request);
           break;
       }
     }
@@ -208,7 +228,7 @@
         analyzer.SetManifold(side, sensor);
         return true;
       } else {
-        Log.E(this, "Trying to add a sensor to a manifold that already has a sensor.");
+        L.E(this, "Trying to add a sensor to a manifold that already has a sensor.");
         return false;
       }
     }
@@ -413,7 +433,7 @@
         }
       }
 
-			Log.D(this, "Now we have: " + manifold.sensorPropertyCount);
+			L.D(this, "Now we have: " + manifold.sensorPropertyCount);
     }
 
     /// <summary>
@@ -506,7 +526,7 @@
       } else {
         ShowAddFromDialog(analyzer, index);
       }
-      Log.D(this, "Analyzer view callback sensor mount long clicked at index: " + index);
+      L.D(this, "Analyzer view callback sensor mount long clicked at index: " + index);
     }
 
     /// <summary>
@@ -607,7 +627,7 @@
           break;
         default:
 					var msg = string.Format(GetString(Resource.String.analyzer_error_invalid_sensor_type), sensor.type.GetTypeString());
-          Log.E(this, msg);
+          L.E(this, msg);
           Alert(msg);
           break;
       }

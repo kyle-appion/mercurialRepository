@@ -72,7 +72,7 @@
 				measurement.Text = c.GetString(Resource.String.fluid_setup);
 				unit.Text = "";
 			} else {
-				unit.Text = record.sp.temperatureSensor.unit.ToString();
+				unit.Text = record.sp.modifiedMeasurement.unit.ToString();
 			}
 		}
 	}

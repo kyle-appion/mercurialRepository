@@ -159,6 +159,7 @@
 	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
 	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
   <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_error_failed_to_link_sensors">Failed to link sensor</string>
   <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
   <string name="analyzer_error_failed_to_launch_ptchart_missing_manifold">Failed to open P/T Chart activity; the manifold is not present in the Analyzer.</string>
   <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
