@@ -29,7 +29,7 @@
 	public class TutorialActivity : IONActivity, ViewPager.IOnPageChangeListener {
 
 		private ViewPager pager;
-		private TabLayout tabLayout;
+		private TextView tabLayout;
 		private Adapter adapter;
 
 		private View left;
@@ -69,10 +69,10 @@
 			}));
 
 			pager = FindViewById<ViewPager>(Resource.Id.content);
-			tabLayout = FindViewById<TabLayout>(Resource.Id.tab_1);
+			tabLayout = FindViewById<TextView>(Resource.Id.tab_1);
 
 			adapter = new Adapter(FragmentManager, cache);
-
+/*
 			// WELCOME
 			adapter.AddPage(new TutorialPage() {
 				titleResource = Resource.String.tutorial_welcome,
@@ -81,6 +81,7 @@
 				xPercent = -1f,
 				yPercent = -1f,
 			});
+*/
 
 			// WORKBENCH
 			adapter.AddPage(new TutorialPage() {
@@ -204,10 +205,10 @@
 			pager.Adapter = adapter;
 			pager.AddOnPageChangeListener(this);
 
-			tabLayout.SetupWithViewPager(pager);
-
 			pager.CurrentItem = 0;
 			left.Visibility = ViewStates.Invisible;
+
+			tabLayout.Text = 1 + " / " + adapter.Count;
 		}
 
 		// Overridden from Activity
@@ -251,6 +252,8 @@
 					right.FadeIn();
 				}
 			}
+
+			tabLayout.Text = (position + 1) + " / " + adapter.Count;
 		}
 
 		private class Adapter : FragmentPagerAdapter {
