@@ -66,7 +66,7 @@ namespace ION.IOS.ViewController.Analyzer {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
-					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
+					tempReading.Text = calculation.magnitude.ToString("N")+ " " + calculation.unit.ToString();
         } else {
           var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
           stateCheck = calculation;  
@@ -74,7 +74,7 @@ namespace ION.IOS.ViewController.Analyzer {
             calculation = calculation * -1;
           }
           cellHeader.Text = lhSensor.shFluidState.Text;
-					tempReading.Text = calculation.magnitude.ToString("N") + calculation.unit.ToString();
+					tempReading.Text = calculation.magnitude.ToString("N")+ " " + calculation.unit.ToString();
         }
        	
         var ptAmount = stateCheck.magnitude;

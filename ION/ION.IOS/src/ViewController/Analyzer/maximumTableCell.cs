@@ -32,19 +32,19 @@ namespace ION.IOS.ViewController.Analyzer {
       if (lhSensor.maxType.Equals("hold")) {
         lhSensor.max = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.maxType = lhSensor.LabelBottom.Text;
-      } 
+      }
+ 
       if (lhSensor.isManual.Equals(true)) {
         var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
-        cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text;
+        cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text + " ";
       } else {        
         cellReading.Text = lhSensor.max.ToString("N") + " " + lhSensor.maxType + " ";
       }
 
       cellReading.TextAlignment = UITextAlignment.Right;
-      cellReading.Font = UIFont.FromName("Helvetica", 14f);
+      cellReading.Font = UIFont.FromName("Helvetica", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.Layer.BorderColor = UIColor.Black.CGColor;
-      cellReading.Layer.BorderWidth = 1f;
 
       cellButton.SetImage(UIImage.FromBundle("ic_refresh"), UIControlState.Normal);
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;

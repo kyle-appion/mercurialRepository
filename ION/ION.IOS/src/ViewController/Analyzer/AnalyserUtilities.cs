@@ -1552,11 +1552,11 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeLH) {
         if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          //Console.WriteLine("low and high areas are swapping with the low area being the start");
+          Console.WriteLine("occupied low area is moving to occupied high side");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier &&
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
-          //Console.WriteLine("low and high areas are swapping with the high area being the start");
+          Console.WriteLine("occupied high area is moving to occupied low area");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer);
         } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier ||
                    lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
@@ -1567,7 +1567,7 @@ namespace ION.IOS.ViewController.Analyzer
           //Console.WriteLine("low or high area is a swapie with a sensor not of the opposite peer");
           LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, analyzerSensors.viewList[swap]);
         } else {
-        	//Console.WriteLine("In the else part of swap check");
+        	Console.WriteLine("In the else part of swap check");
           bool foundAssociation = false;
           foreach (var item in analyzerSensors.viewList){
             if (item.lowArea.attachedSensor != null) {
@@ -1941,17 +1941,6 @@ namespace ION.IOS.ViewController.Analyzer
           }
           message = Util.Strings.Analyzer.ADDTEMP;
         }
-				 //else if (removeSensor.currentSensor.type == ION.Core.Sensors.ESensorType.Temperature && Sensor.currentSensor.type == ION.Core.Sensors.ESensorType.Pressure) {
-     //     var spotOpen = secondarySlotSpot(Sensor, removeSensor,analyzerSensors, type);
-     //     if (spotOpen.Equals(false)) {
-     //       UIAlertController noneAvailable;
-     //       noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
-     //       noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
-     //       vc.PresentViewController(noneAvailable, true, null);
-     //       return;
-     //     }
-     //     message = Util.Strings.Analyzer.ADDPRESS;
-     //   }
 
         UIAlertController addDeviceSheet;
 

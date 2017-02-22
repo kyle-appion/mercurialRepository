@@ -76,24 +76,20 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
           new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
         },
-
-#if DEBUG
-#endif
         new Section(Strings.Report.REPORTS.ToUpper()) {
           new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
           new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
         },
-        new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-					//new IONElement("Access Manager", UIImage.FromBundle("ic_graph_menu")),
-				},
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         },
-        new Section (Strings.Exit.SHUTDOWN) {
+        new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+				},
+        new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
         }
       };
@@ -322,17 +318,15 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER)),
         new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)),
         new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)),
-//#if DEBUG
-        //new UINavigationController(InflateViewController<AccessRequestViewController>(BaseIONViewController.VC_ACCESS_MANAGER)),
-//#endif
+
         new UINavigationController(InflateViewController<JobViewController>(BaseIONViewController.VC_JOB_MANAGER)),
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates
         null, // Screenshot Navigation
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         
         null, // Settings navigation
         null, // Help Navigation
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         null, // Shutdown process
       };    
 
@@ -353,7 +347,7 @@ namespace ION.IOS.ViewController {
 				remoteAn.remoteMode = true;
 				
 				navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-				navigation.ViewControllers[1] = new UINavigationController(remoteAn);
+				navigation.ViewControllers[1] = new UINavigationController(remoteAn);  
 				navigation.ViewControllers[5] = null;
 				navigation.ViewControllers[6] = null;
 				navigation.ViewControllers[7] = null;
@@ -376,7 +370,7 @@ namespace ION.IOS.ViewController {
       vc.AddAttachmentData(NSData.FromFile(file.fullPath), "application/json", file.name);
 
       navigation.PresentViewController(vc, true, null);
-    }          
+    }
 
     /// <summary>
     /// Opens up a list of options for walkthroughs. They are broken up between the main
@@ -391,7 +385,7 @@ namespace ION.IOS.ViewController {
     /// Opens up a list of options for walkthroughs. They are broken up between the main
     /// sections of the app
     /// </summary>
-    //private void ShowRSSFeed() {
+    //private void ShowRSSFeed() {  
     //  var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
     //  PresentViewControllerFromSelected(wvc);
     //}

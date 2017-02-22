@@ -1482,7 +1482,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public void confirmSubviews(sensor updateSensor, string section = "high"){
-			Console.WriteLine(section);
+			Console.WriteLine(section + " section for sensor " + updateSensor.currentSensor.name);
 			if(section == "low"){
 				foreach(var existing in analyzer.lowSubviews){
 					if(!updateSensor.lowArea.tableSubviews.Contains(existing)){
@@ -1497,26 +1497,30 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!analyzer.lowSubviews.Contains(removal)){
 						Console.WriteLine("Removed " + removal);
 						updateSensor.lowArea.tableSubviews.Remove(removal);
-						updateSensor.lowArea.subviewTable.ReloadData();
+						updateSensor.lowArea.subviewTable.ReloadData(); 
 					}
 				}
+				updateSensor.highArea.subviewTable.Hidden = true;
 			} else {
 				foreach(var existing in analyzer.highSubviews){
 					if(!updateSensor.highArea.tableSubviews.Contains(existing)){
 						Console.WriteLine("Added subview " + existing);
 						updateSensor.highArea.tableSubviews.Add(existing);
-						updateSensor.highArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.highArea.tableSubviews, updateSensor.highArea);
-						updateSensor.highArea.subviewTable.Hidden = false;
-						updateSensor.highArea.subviewTable.ReloadData();
+
 					}
 				}
+				updateSensor.highArea.subviewTable.Source = new AnalyzerTableSource(updateSensor.highArea.tableSubviews, updateSensor.highArea);
+				updateSensor.highArea.subviewTable.Hidden = false;
+				updateSensor.highArea.subviewTable.ReloadData();
 				foreach(var removal in updateSensor.highArea.tableSubviews.ToArray()){
 					if(!analyzer.highSubviews.Contains(removal)){
 						Console.WriteLine("Removed " + removal);
 						updateSensor.highArea.tableSubviews.Remove(removal);
-						updateSensor.highArea.subviewTable.ReloadData();
 					}
 				}
+				updateSensor.highArea.subviewTable.ReloadData();
+				
+				updateSensor.lowArea.subviewTable.Hidden = true;
 			}
 		}
 		

@@ -10,6 +10,7 @@ namespace ION.IOS.ViewController.Analyzer {
     UIButton cellButton;
 
     public minimumTableCell (IntPtr handle) {
+    
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
@@ -28,7 +29,6 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.minReading;
-      //cellReading.TextAlignment = UITextAlignment.Center;
       if (lhSensor.minType.Equals("hold")) {
         lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
         lhSensor.minType = lhSensor.LabelBottom.Text;
@@ -38,13 +38,13 @@ namespace ION.IOS.ViewController.Analyzer {
         var amount = Convert.ToDecimal(lhSensor.LabelMiddle.Text);
         cellReading.Text = amount.ToString("N") + " " + lhSensor.LabelBottom.Text + " ";
       } else {        
-        cellReading.Text = lhSensor.min.ToString("N")+ " " + lhSensor.minType + " ";
+        cellReading.Text = lhSensor.min.ToString("N") + " " + lhSensor.minType + " ";
       }
+      
       cellReading.TextAlignment = UITextAlignment.Right;
       cellReading.Font = UIFont.FromName("Helvetica", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.Layer.BorderColor = UIColor.Black.CGColor;
-      cellReading.Layer.BorderWidth = 1f;
 
       cellButton.SetImage(UIImage.FromBundle("ic_refresh"), UIControlState.Normal);
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;

@@ -162,9 +162,9 @@ namespace ION.IOS.ViewController.Analyzer
       subviewTable.RegisterClassForCellReuse(typeof(SHSCTableCell), "Superheat");
       subviewTable.RegisterClassForCellReuse(typeof(PTTableCell), "Pressure");
       subviewTable.RegisterClassForCellReuse(typeof(secondarySensorCell), "Linked");
-      maxReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
-      minReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
-      holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
+      maxReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
+      minReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
+      holdReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
       shReading = new UILabel(new CGRect(.5 * tblRect.Width, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       shFluidType = new UILabel(new CGRect(0, .5 * cellHeight, .5 * tblRect.Width, .5 * cellHeight));
       shFluidType.Layer.BorderColor = UIColor.Black.CGColor;
@@ -188,8 +188,8 @@ namespace ION.IOS.ViewController.Analyzer
       changePTFluid.Layer.BorderColor = UIColor.Black.CGColor;
       changePTFluid.Layer.BorderWidth = 1f;
       changePTFluid.BackgroundColor = UIColor.Clear;
-      altReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
-      rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .8 * tblRect.Width, .5 * cellHeight));
+      altReading = new UILabel(new CGRect(0, .5 * cellHeight, .99 * tblRect.Width, .5 * cellHeight));
+      rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
       rocImage = new UIImageView(new CGRect(0, .5 * cellHeight, .2 * tblRect.Width, .5 * cellHeight));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
       ion = AppState.context;
