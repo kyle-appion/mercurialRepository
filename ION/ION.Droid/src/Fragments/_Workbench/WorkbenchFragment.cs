@@ -190,6 +190,8 @@
           base.OnActivityResult(requestCode, resultCode, data);
           break;
       }
+
+			adapter.NotifyDataSetChanged();
     }
 
 		private void OnManifoldClicked(Manifold manifold) {
