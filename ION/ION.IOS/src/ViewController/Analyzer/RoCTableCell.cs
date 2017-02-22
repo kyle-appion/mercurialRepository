@@ -35,7 +35,6 @@ namespace ION.IOS.ViewController.Analyzer {
       cellReading.Font = UIFont.FromName("Helvetica-Bold", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.Layer.BorderColor = UIColor.Black.CGColor;
-      cellReading.Layer.BorderWidth = 1f;
 
       cellImage = lhSensor.rocImage;
       cellImage.Layer.BorderColor = UIColor.Black.CGColor;

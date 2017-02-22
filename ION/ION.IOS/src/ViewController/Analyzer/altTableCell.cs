@@ -42,7 +42,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellButton.BackgroundColor = UIColor.Clear;
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;
-      cellButton.Layer.BorderWidth = 1f;
 
       if (lhSensor.isManual) {
 

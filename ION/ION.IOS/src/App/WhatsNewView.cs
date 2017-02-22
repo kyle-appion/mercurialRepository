@@ -6,7 +6,7 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Text;
 using ION.Core.App;
-
+using System.Xml;
 
 namespace ION.IOS.App {
 
@@ -41,9 +41,10 @@ namespace ION.IOS.App {
 			var itemCount = 0;
 
 			FileStream stream = new FileStream("./xml/whats_new.xml",FileMode.Open,FileAccess.Read);			
-
+			var reader = XmlReader.Create(stream);
 			var sb = new StringBuilder();
-			var whatsNew = ION.Core.Content.WhatsNew.ParseWithException(stream);
+			//var whatsNew = ION.Core.Content.WhatsNew.ParseWithException(stream);
+			var whatsNew = ION.Core.Content.WhatsNew.ParseWithException(reader);
 			foreach (var wn in whatsNew) {
 				updateSize += .55;
 				sb.Append("<h2>").Append(" Version " + wn.versionCode).Append("</h2>");

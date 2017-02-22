@@ -17,7 +17,7 @@ namespace ION.IOS.ViewController.Analyzer {
 
       cellHeader = new UILabel(new CGRect(0,0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
 
-      cellReading = new UILabel(new CGRect(.2 * tableRect.Width, .5 * lhSensor.cellHeight, .8 * tableRect.Width, .5 * lhSensor.cellHeight));
+      cellReading = new UILabel(new CGRect(.2 * tableRect.Width, .5 * lhSensor.cellHeight, .79 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellButton = new UIButton(new CGRect(0, .5 * lhSensor.cellHeight, .2 * tableRect.Width, .5 * lhSensor.cellHeight));
 
@@ -34,14 +34,13 @@ namespace ION.IOS.ViewController.Analyzer {
         cellReading.Text = lhSensor.holdValue.ToString("N");
       }
       cellReading.TextAlignment = UITextAlignment.Right;
-      cellReading.Font = UIFont.FromName("Helvetica", 14f);
+      cellReading.Font = UIFont.FromName("Helvetica", 18f);
       cellReading.AdjustsFontSizeToFitWidth = true;
       cellReading.Layer.BorderColor = UIColor.Black.CGColor;
-      cellReading.Layer.BorderWidth = 1f;
 
       cellButton.SetImage(UIImage.FromBundle("ic_refresh"), UIControlState.Normal);
       cellButton.Layer.BorderColor = UIColor.Black.CGColor;
-      cellButton.Layer.BorderWidth = 1f;
+      cellButton.Layer.BorderWidth = 1f;    
 
       cellButton.TouchUpInside += delegate {
         if(lhSensor.isManual){
