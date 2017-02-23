@@ -16,7 +16,6 @@
 
   // Using ION.Droid
   using Fragments;
-	using Widgets.Adapters.Job;
 
   public class EditJobSessionsFragment : IONFragment, IJobPresenter {
 
@@ -94,21 +93,23 @@
 			currentAdapter = new SessionAdapter(ion);
 			currentAdapter.onSessionRowChecked += (sender, e) => {
 				var sr = e;
-
+/*	
 				if (sr != null) {
 					sr.isChecked = !sr.isChecked;
 				}
+*/
 
-					UpdateButtons();
+				UpdateButtons();
 			};
 
 			availableAdapter = new SessionAdapter(ion);
 			availableAdapter.onSessionRowChecked += (sender, e) => {
 				var sr = e;
-
+/*
 				if (sr != null) {
 					sr.isChecked = !sr.isChecked;
 				}
+*/
 
 					UpdateButtons();
 			};
@@ -186,8 +187,8 @@
 			var sessions = new List<SessionRow>();
 
 			foreach (var sr in currentAdapter.GetCheckedSessions()) {
-				sr.row.frn_JID = 0;
-				sessions.Add(sr.row);
+				sr.data.frn_JID = 0;
+				sessions.Add(sr.data);
 			}
 
 			try {
@@ -208,8 +209,8 @@
 			var sessions = new List<SessionRow>();
 
 			foreach (var sr in availableAdapter.GetCheckedSessions()) {
-				sr.row.frn_JID = job._id;
-				sessions.Add(sr.row);
+				sr.data.frn_JID = job._id;
+				sessions.Add(sr.data);
 			}
 
 			try {

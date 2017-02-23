@@ -25,7 +25,8 @@
   using Job;
 	using Report;
   using Dialog;
-  using Fragments;
+	using Fragments._Analyzer;
+	using Fragments._Workbench;
   using Widgets.Adapters.Navigation;
 
   [Activity(Label = "@string/app_name", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]      
@@ -184,6 +185,9 @@
     /// Makes the analyzer the primary fragment to be viewed.
     /// </summary>
     public void DisplayAnalyzer() {
+			if (typeof(AnalyzerFragment).Equals(activeFragment?.GetType())) {
+				return;
+			}
       drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.analyzer);
       GotoFragment(new AnalyzerFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_analyzer, Resource.Color.gray));
     }
@@ -192,6 +196,9 @@
     /// Makes the workbench the primary fragment to be viewed.
     /// </summary>
     public void DisplayWorkbench() {
+			if (typeof(WorkbenchFragment).Equals(activeFragment?.GetType())) {
+				return;
+			}
       drawerToggle.lastTitle = ActionBar.Title = GetString(Resource.String.workbench);
       GotoFragment(new WorkbenchFragment(), GetColoredDrawable(Resource.Drawable.ic_nav_workbench, Resource.Color.gray));
     }
@@ -228,25 +235,24 @@
         id = Resource.Id.main,
         title = GetString(Resource.String.main),
         items = new NavigationItem[] {
+					new NavigationIconItem() {
+						id = Resource.Id.workbench,
+						title = GetString(Resource.String.workbench),
+						icon = Resource.Drawable.ic_nav_workbench,
+						//            hidden = activeFragment is WorkbenchFragment,
+						action = () => {
+							DisplayWorkbench();
+							HideDrawer();
+						},
+					},
 
           new NavigationIconItem() {
             id = Resource.Id.analyzer,
             title = GetString(Resource.String.analyzer),
             icon = Resource.Drawable.ic_nav_analyzer,
-            hidden = activeFragment is AnalyzerFragment,
+//            hidden = activeFragment is AnalyzerFragment,
             action = () => {
               DisplayAnalyzer();
-              HideDrawer();
-            },
-          },
-
-          new NavigationIconItem() {
-            id = Resource.Id.workbench,
-            title = GetString(Resource.String.workbench),
-            icon = Resource.Drawable.ic_nav_workbench,
-            hidden = activeFragment is WorkbenchFragment,
-            action = () => {
-              DisplayWorkbench();
               HideDrawer();
             },
           },
@@ -308,7 +314,7 @@
           new NavigationIconItem() {
             id = Resource.Id.report_certificates,
             title = GetString(Resource.String.report_certificates),
-            icon = Resource.Drawable.ic_nav_certificates,
+            icon = Resource.Drawable.ic_scroll,
             action = () => {
               StartActivity(typeof(CalibrationCertificateArchiveActivity));
             }
@@ -322,7 +328,7 @@
 					new NavigationIconItem() {
 						id = Resource.Id.cloud,
 						title = GetString(Resource.String.portal),
-						icon = Resource.Drawable.img_logo_appionblack,
+						icon = Resource.Drawable.ic_cloud,
 						action = () => {
 							StartActivity(typeof(PortalActivity));
 						}

@@ -51,6 +51,10 @@
     <item name="android:textColor">@drawable/selector_text_blackgold</item>
   </style>
 
+  <style name="IONSwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
+  	<item name="android:textColor">@color/black</item>
+	</style>
+
 	<style name="IONTextInputLayout" parent="Theme.AppCompat.Light.NoActionBar">
 		<item name="android:textColorHint">@color/gray</item>
 		<item name="android:textSize">@dimen/text_size_large</item>

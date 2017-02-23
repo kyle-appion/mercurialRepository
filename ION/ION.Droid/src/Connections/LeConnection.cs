@@ -77,7 +77,6 @@
 			private set {
 				var oldState = __connectionState;
 				__connectionState = value;
-				Log.D(this, "Connection state is : " + value);
 				if (onStateChanged != null) {
 					onStateChanged(this, oldState);
 				}
@@ -212,7 +211,6 @@
 					if (reconnectAttempts < 2) {
 						ConnectAsync();
 					} else {
-						Log.D(this, "Failed to reconnect too many times. Stopping");
 						reconnectAttempts = 0;
 					}
 					return true;
@@ -234,7 +232,6 @@
 		}
 
 		public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
-			Log.D(this, "The Rigado device is in state: " + newState);
 			switch (newState) {
 				case ProfileState.Connected:
 					connectionState = EConnectionState.Resolving;
@@ -271,7 +268,6 @@
 				handler.RemoveMessages(MSG_TIMEOUT);
 				connectionState = EConnectionState.Connected;
 			} else {
-				Log.D(this, "Failed to discover services. Trying again...");
 				connectionState = EConnectionState.Resolving;
 				gatt.DiscoverServices();
 			}

@@ -313,6 +313,7 @@
 				return __temperatureUnit;
 			}
 			set  {
+				Log.E(this, "Settings temperature unit to: " + value);
 				__temperatureUnit = value;
 				slider.temperatureUnit = value;
 			}

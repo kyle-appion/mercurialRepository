@@ -16,47 +16,22 @@
   /// <summary>
   /// A record that holds a gauge device.
   /// </summary>
-  public class DeviceRecord : SwipableRecyclerViewAdapter.IRecord {
-    public int viewType {
-      get {
-        return (int)EViewType.IDevice;
-      }
-    }
+	public class DeviceRecord : RecordAdapter.Record<IDevice> {
+    public override int viewType { get { return (int)EViewType.IDevice; } }
 
-    public IDevice device { get; set; }
     public bool isExpandable { get { return true; } }
-    public bool isExpanded { get; set; }
+		public bool isExpanded;
+		public Action<IDevice> onDeleteClicked;
 
-    public DeviceRecord(IDevice device) {
-      this.device = device;
+		public DeviceRecord(IDevice device, Action<IDevice> onDeleteClicked) : base(device) {
+			this.onDeleteClicked = onDeleteClicked;
     }
   }
 
   /// <summary>
   /// A view holder that will present a gauge device record.
   /// </summary>
-  public class DeviceViewHolder : DMViewHolder {
-    /// <summary>
-    /// The record that is being presented
-    /// </summary>
-    /// <value>The record.</value>
-    private DeviceRecord record {
-      get {
-        return __record;
-      }
-      set {
-        if (__record != null) {
-          __record.device.onDeviceEvent -= OnDeviceEvent;
-        }
-
-        __record = value;
-
-        if (__record != null) {
-          __record.device.onDeviceEvent += OnDeviceEvent;
-          Invalidate();
-        }
-      }
-    } DeviceRecord __record;
+	public class DeviceViewHolder : RecordAdapter.SwipeRecordViewHolder<DeviceRecord> {
     /// <summary>
     /// The cache that will cache bitmaps for reuse.
     /// </summary>
@@ -70,41 +45,52 @@
     private ImageView status { get; set; }
     private ProgressBar progress { get; set; }
 
-    public DeviceViewHolder(ViewGroup parent, BitmapCache cache) : base(parent, Resource.Layout.list_item_device_manager_device) {
+		public DeviceViewHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_device_manager_device, Resource.Layout.list_item_button) {
       this.cache = cache;
-      icon = view.FindViewById<ImageView>(Resource.Id.icon);
-      type = view.FindViewById<TextView>(Resource.Id.type);
-      name = view.FindViewById<TextView>(Resource.Id.name);
-      arrow = view.FindViewById<ImageView>(Resource.Id.arrow);
-      connect = view.FindViewById(Resource.Id.connect);
-      status = view.FindViewById<ImageView>(Resource.Id.status);
-      progress = view.FindViewById<ProgressBar>(Resource.Id.loading);
+      icon = ItemView.FindViewById<ImageView>(Resource.Id.icon);
+			type = ItemView.FindViewById<TextView>(Resource.Id.type);
+			name = ItemView.FindViewById<TextView>(Resource.Id.name);
+			arrow = ItemView.FindViewById<ImageView>(Resource.Id.arrow);
+			connect = ItemView.FindViewById(Resource.Id.connect);
+			status = ItemView.FindViewById<ImageView>(Resource.Id.status);
+			progress = ItemView.FindViewById<ProgressBar>(Resource.Id.loading);
 
       connect.SetOnClickListener(new ViewClickAction((v) => {
-        switch (record.device.connection.connectionState) {
+        switch (record.data.connection.connectionState) {
           case EConnectionState.Disconnected:
-            record.device.connection.ConnectAsync();
+            record.data.connection.ConnectAsync();
             break;
           default:
-            record.device.connection.Disconnect();
+            record.data.connection.Disconnect();
             break;
         }
       }));
+
+			var button = background as TextView;
+			button.SetText(Resource.String.remove);
+			button.SetOnClickListener(new ViewClickAction((view) => {
+				if (record != null && record.onDeleteClicked != null) {
+					record.onDeleteClicked(record.data);
+				}
+			}));
     }
 
-    public void BindTo(DeviceRecord record) {
-      this.record = record;
+    public override void Bind() {
+			base.Bind();
+			record.data.onDeviceEvent += OnDeviceEvent;
     }
 
     public override void Unbind() {
-      this.record = null;
+			if (record != null) {
+				record.data.onDeviceEvent -= OnDeviceEvent;
+			}
     }
 
     /// <summary>
     /// Invalidates the 
     /// </summary>
-    private void Invalidate() {
-      var device = record.device;
+    public override void Invalidate() {
+      var device = record.data;
 
       icon.SetImageBitmap(cache.GetBitmap(device.GetDeviceIcon()));
       type.Text = device.GetDeviceProductName();

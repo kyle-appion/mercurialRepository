@@ -76,8 +76,8 @@
     /// </summary>
     /// <param name="menu">Menu.</param>
     public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
+			inflater.Inflate(Resource.Menu.record, menu);
       inflater.Inflate(Resource.Menu.screenshot, menu);
-      inflater.Inflate(Resource.Menu.record, menu);
 
 			var r = menu.FindItem(Resource.Id.record);
 			if (ion.dataLogManager.isRecording) {
@@ -268,7 +268,7 @@
           Log.D(this, "Failed to begin recording");
         }
 				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
-				Alert(Resource.String.report_recording_started);
+				Alert(string.Format(GetString(Resource.String.report_recording_started), ion.preferences.reports.DataLoggingInterval.ToFriendlyString(Activity)));
       }
     }
 

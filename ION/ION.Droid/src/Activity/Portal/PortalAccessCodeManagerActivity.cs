@@ -59,10 +59,10 @@ namespace ION.Droid.Activity.Portal {
 			list.SetAdapter(adapter = new Adapter());
 			adapter.emptyView = FindViewById(Resource.Id.empty);
 			adapter.deleteAction = OnDelete;
-			adapter.onItemClicked += (adapter, position) => {
+			adapter.onItemClicked += (position) => {
 				var record = adapter[position] as AccessCodeRecord;
-				if (record.code.acceptId != 0) {
-					RequestConfirmAccess(position, record.code);
+				if (record.data.acceptId != 0) {
+					RequestConfirmAccess(position, record.data);
 				}
 			};
 			swiper.SetOnRefreshListener(this);
@@ -191,58 +191,36 @@ namespace ION.Droid.Activity.Portal {
 			InvalidateOptionsMenu();
 		}
 
-		private class Adapter : SwipableRecyclerViewAdapter {
+		private class Adapter : RecordAdapter {
 			public Action<int, AccessCode> deleteAction;
 
 			public override long GetItemId(int position) {
 				return records[position].viewType;
 			}
 
-			public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
-				var ret = new AccessCodeViewHolder(parent);
+			public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
+				var rv = recyclerView as SwipeRecyclerView;
+				var ret = new AccessCodeViewHolder(rv);
 				return ret;
 			}
-
-			public override void OnBindViewHolder(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder vh, int position) {
-				var cvh = ((AccessCodeViewHolder)vh);
-				cvh.record = record as AccessCodeRecord;
-				cvh.button.Text = recyclerView.Context.GetString(Resource.String.remove);
-			}
-
-			public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
-				return deleteAction != null;
-			}
-
-			public override Action GetViewHolderSwipeAction(int index) {
-				return () => {
-					if (deleteAction != null) {
-						var record = records[index] as AccessCodeRecord;
-						deleteAction(index, record.code);
-					}
-				};
-			}
 		}
 
-		private class AccessCodeRecord : SwipableRecyclerViewAdapter.IRecord {
+		private class AccessCodeRecord : RecordAdapter.Record<AccessCode> {
 			// Implemented from SwipableRecyclerViewAdapter.IRecord
-			public int viewType { get { return 1; } }
+			public override int viewType { get { return 1; } }
 
-			public AccessCode code { get; private set; }
-
-			public AccessCodeRecord(AccessCode code) {
-				this.code = code;
-			}
+			public AccessCodeRecord(AccessCode code) : base(code) { }
 		}
 
-		private class AccessCodeViewHolder : SwipableViewHolder<AccessCodeRecord> {
+		private class AccessCodeViewHolder : RecordAdapter.SwipeRecordViewHolder<AccessCodeRecord> {
 			private TextView text;
 
-			public AccessCodeViewHolder(ViewGroup parent) : base(parent, Resource.Layout.list_item_portal_connection) {
-				text = view.FindViewById<TextView>(Resource.Id.text);
+			public AccessCodeViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection, Resource.Layout.list_item_button) {
+				text = foreground.FindViewById<TextView>(Resource.Id.text);
 			}
 
-			public override void OnBindTo() {
-				text.Text = "(" + t.code.code + ") " + t.code.user;
+			public override void Invalidate() {
+				text.Text = "(" + record.data.code + ") " + record.data.user;
 			}
 		}
 	}
