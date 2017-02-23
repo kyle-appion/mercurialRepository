@@ -1,8 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.37">
-		<updated>Changed how item swipes look</updated>
-		<updated>Changed how manual entries are added to the analyzer</updated>
+	<display version="0.9.38">
+		<update>Changed how item swipes look</update>
+		<update>Updated some graphical elements</update>
+		<update>Changed how manual entries are added to the analyzer</update>
 		<fixed>Fixed a bug that caused frequent crashing on some devices</fixed>
 		<fixed>Fixed other various bugs with refrigerant selection</fixed>
 	</display>

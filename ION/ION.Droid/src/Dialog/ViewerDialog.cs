@@ -9,9 +9,9 @@
   using ION.Core.Sensors;
 
   using ION.Droid.Activity;
+	using ION.Droid.Fragments._Analyzer;
   using ION.Droid.Sensors;
   using ION.Droid.Util;
-  using ION.Droid.Widgets.Templates;
 
   public class ViewerDialog {
 

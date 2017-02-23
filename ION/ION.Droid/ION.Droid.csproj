@@ -15,8 +15,9 @@
     <AndroidApplication>True</AndroidApplication>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
-    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidTlsProvider></AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -163,18 +164,12 @@
     <Compile Include="src\Util\GenericParcelableCreator.cs" />
     <Compile Include="src\Sensors\SensorParcelable.cs" />
     <Compile Include="src\Widgets\ListViewExtensions.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\WorkenchAdapter.cs" />
     <Compile Include="src\Activity\SuperheatSubcoolActivity.cs" />
     <Compile Include="src\Dialog\UnitDialog.cs" />
     <Compile Include="src\Sensors\Properties\SensorPropertyExtensions.cs" />
-    <Compile Include="src\Widgets\Analyzer\AnalyzerView.cs" />
-    <Compile Include="src\Widgets\Templates\ManifoldViewTemplate.cs" />
-    <Compile Include="src\Widgets\Analyzer\SensorMount.cs" />
     <Compile Include="src\Fragments\IONFragment.cs" />
-    <Compile Include="src\Fragments\WorkbenchFragment.cs" />
     <Compile Include="src\Fragments\GeneralApplicationSettingsFragment.cs" />
     <Compile Include="src\Fragments\FluidFragment.cs" />
-    <Compile Include="src\Fragments\AnalyzerFragment.cs" />
     <Compile Include="src\Activity\ScreenshotActivity.cs" />
     <Compile Include="src\Fragments\FileViewerFragment.cs" />
     <Compile Include="src\Activity\ScreenshotArchiveActivity.cs" />
@@ -183,20 +178,8 @@
     <Compile Include="src\Tasks\IONTask.cs" />
     <Compile Include="src\Activity\CalibrationCertificateArchiveActivity.cs" />
     <Compile Include="src\Animations\AnimationHelper.cs" />
-    <Compile Include="src\Widgets\Analyzer\SubviewAdapter.cs" />
-    <Compile Include="src\Widgets\Templates\MeasurementSubviewTemplate.cs" />
     <Compile Include="src\Views\ViewCheckChangedAction.cs" />
-    <Compile Include="src\Widgets\Templates\PTChartSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Templates\SuperheatSubcoolSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\PTChartSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\MeasurementViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\SuperheatSubcoolSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\ManifoldSubviewViewHolder.cs" />
     <Compile Include="src\Dialog\RenameDialog.cs" />
-    <Compile Include="src\Widgets\Templates\TimerSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\TimerSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Templates\RateOfChangeSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\RateOfChangeSubviewViewHolder.cs" />
     <Compile Include="src\Alarms\Alerts\PopupActivityAlert.cs" />
     <Compile Include="src\Preferences\NumberDialogPreference.cs" />
     <Compile Include="src\Dialog\NumberEntryDialog.cs" />
@@ -205,11 +188,6 @@
     <Compile Include="src\Activity\AlarmPopupActivity.cs" />
     <Compile Include="src\Alarms\Alerts\ToneAlarmAlert.cs" />
     <Compile Include="src\Alarms\Alerts\VibrateAlarmAlert.cs" />
-    <Compile Include="src\Widgets\Analyzer\MeasurementViewHolder.cs" />
-    <Compile Include="src\Widgets\Analyzer\PTChartSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Analyzer\RateOfChangeSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Analyzer\SuperheatSubcoolSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Analyzer\TimerSubviewViewHolder.cs" />
     <Compile Include="src\Preferences\AppPrefs.cs" />
     <Compile Include="src\Activity\AppPreferencesActivity.cs" />
     <Compile Include="src\Activity\HelpPreferenceActivity.cs" />
@@ -217,25 +195,17 @@
     <Compile Include="src\Dialog\ViewerDialog.cs" />
     <Compile Include="src\Dialog\ManualSensorEditDialog.cs" />
     <Compile Include="src\Connections\ClassicConnection.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SmoothItemScrollLinearLayoutManager.cs" />
     <Compile Include="src\Dialog\DateTimePickerDialog.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SwipableRecyclerViewAdapter.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SwipeDecorator.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\SwipeAnimationDecorator.cs" />
     <Compile Include="src\Dialog\WhatsNewDialog.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\WorkbenchDragDecoration.cs" />
     <Compile Include="src\Location\GpsAltitudeProvider.cs" />
     <Compile Include="src\Widgets\TypefaceTextView.cs" />
-    <Compile Include="src\Widgets\Templates\SubviewTemplate.cs" />
     <Compile Include="src\Activity\Report\ReportActivity.cs" />
-    <Compile Include="src\Widgets\Templates\ViewTemplate.cs" />
     <Compile Include="src\Activity\Job\JobActivity.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceManagerActivity.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceManagerRecycleAdapter.cs" />
-    <Compile Include="src\Activity\DeviceManager\DeviceSectionViewHolder.cs" />
+    <Compile Include="src\Activity\DeviceManager\SectionViewHolder.cs" />
     <Compile Include="src\Activity\DeviceManager\DeviceViewHolder.cs" />
     <Compile Include="src\Activity\DeviceManager\SensorViewHolder.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\IONRecyclerViewAdapter.cs" />
     <Compile Include="src\Activity\Job\EditJobActivity.cs" />
     <Compile Include="src\Activity\Job\EditJobFragment.cs" />
     <Compile Include="src\Activity\Job\EditJobSessionsFragment.cs" />
@@ -247,7 +217,7 @@
     <Compile Include="src\Widgets\RootFragmentLayout.cs" />
     <Compile Include="src\Activity\Report\Delegates.cs" />
     <Compile Include="src\Activity\Report\GraphReportSessionsActivity.cs" />
-    <Compile Include="src\Activity\Report\GraphRecord.cs" />
+    <Compile Include="src\Activity\Report\GraphViewHolder.cs" />
     <Compile Include="src\Activity\Report\EViewType.cs" />
     <Compile Include="src\Activity\Report\GraphRecordAdapter.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
@@ -256,7 +226,7 @@
     <Compile Include="src\Report\DataLogReportTable.cs" />
     <Compile Include="src\Report\DataLogPdfReportExporter.cs" />
     <Compile Include="src\Fragments\FileExtensionFilter.cs" />
-    <Compile Include="src\Activity\Report\SensorOverviewRecord.cs" />
+    <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
     <Compile Include="src\Connections\AndroidConnectionHelper.cs" />
@@ -266,20 +236,10 @@
     <Compile Include="src\Connections\Api18ScanDelegate.cs" />
     <Compile Include="src\Connections\ConnectionDelegates.cs" />
     <Compile Include="src\Connections\Api21ScanDelegate.cs" />
-    <Compile Include="src\Widgets\Analyzer\AnalyzerManifoldViewTemplate.cs" />
     <Compile Include="src\App\LocationResolverService.cs" />
     <Compile Include="src\Connections\ClassicScanDelegate.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\EViewType.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\JobRecord.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionAdapter.cs" />
-    <Compile Include="src\Widgets\Adapters\Job\SessionRecord.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
-    <Compile Include="src\Widgets\Templates\SecondarySensorSubviewTemplate.cs" />
-    <Compile Include="src\Widgets\Adapters\Workbench\SecondarySensorSubviewViewHolder.cs" />
-    <Compile Include="src\Widgets\Analyzer\SecondarySensorSubviewViewHolder.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
-    <Compile Include="src\Widgets\Templates\CompactManifoldViewTemplate.cs" />
     <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
     <Compile Include="src\Connections\BaseScanHelper.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
@@ -291,10 +251,51 @@
     <Compile Include="src\Activity\Portal\PortalSessionsViewActivity.cs" />
     <Compile Include="src\Activity\Portal\PortalAccessCodeManagerActivity.cs" />
     <Compile Include="src\Activity\Portal\PortalViewConnectionsActivity.cs" />
-    <Compile Include="src\Widgets\RecyclerViews\Swiper.cs" />
     <Compile Include="src\Animations\AnimatorUpdateActionAdapter.cs" />
     <Compile Include="src\Views\ViewActionTouchListener.cs" />
     <Compile Include="src\Dialog\ManualSensorCreateDialog.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeRecyclerView.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\SwipeMenuLayout.cs" />
+    <Compile Include="src\Widgets\RecyclerViews\RecordAdapter.cs" />
+    <Compile Include="src\Fragments\_Workbench\WorkbenchAdapter.cs" />
+    <Compile Include="src\Fragments\_Workbench\ManifoldViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\WorkbenchFragment.cs" />
+    <Compile Include="src\Fragments\_Workbench\AddViewerViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\PTSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SimpleSensorPropertyRecord.cs" />
+    <Compile Include="src\Fragments\_Workbench\SHSCSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\ROCSensorProperty.cs" />
+    <Compile Include="src\Fragments\_Workbench\TimerSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SecondarySensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\SensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\AnalyzerFragment.cs" />
+    <Compile Include="src\Fragments\_Analyzer\PTSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\ROCSensorProperty.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SecondarySensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SHSCSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SimpleSensorPropertyRecord.cs" />
+    <Compile Include="src\Fragments\_Analyzer\TimerSensorPropertyViewHolder.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SubviewAdapter.cs" />
+    <Compile Include="src\Fragments\_Analyzer\SensorMount.cs" />
+    <Compile Include="src\Fragments\_Analyzer\AnalyzerManifoldViewTemplate.cs" />
+    <Compile Include="src\Fragments\_Analyzer\CompactManifoldViewTemplate.cs" />
+    <Compile Include="src\Fragments\_Analyzer\ViewTemplate.cs" />
+    <Compile Include="src\Fragments\_Analyzer\ManifoldViewTemplate.cs" />
+    <Compile Include="src\Activity\DeviceManager\SpaceViewHolder.cs" />
+    <Compile Include="src\Activity\Job\JobAdapter.cs" />
+    <Compile Include="src\Activity\Job\JobViewHolder.cs" />
+    <Compile Include="src\Activity\Job\EViewType.cs" />
+    <Compile Include="src\Activity\Job\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Job\SessionRecord.cs" />
+    <Compile Include="src\Activity\Report\JobAdapter.cs" />
+    <Compile Include="src\Activity\Report\JobViewHolder.cs" />
+    <Compile Include="src\Activity\Report\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Report\SessionViewHolder.cs" />
+    <Compile Include="src\Activity\Portal\SessionAdapter.cs" />
+    <Compile Include="src\Activity\Portal\SessionRecord.cs" />
+    <Compile Include="src\Activity\Portal\EViewType.cs" />
+    <Compile Include="src\Fragments\_Analyzer\AnalyzerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -307,7 +308,6 @@
     </AndroidResource>
     <AndroidResource Include="Resources\layout\list_item_device_manager_device.axml" />
     <AndroidResource Include="Resources\layout\list_item_device_manager_sensor.axml" />
-    <AndroidResource Include="Resources\layout\list_item_device_manager_sensor_content.axml" />
     <AndroidResource Include="Resources\layout\button_scan.axml">
       <SubType>AndroidResource</SubType>
     </AndroidResource>
@@ -707,6 +707,19 @@
     <AndroidResource Include="Resources\drawable\ic_check.png" />
     <AndroidResource Include="Resources\drawable\ic_x.png" />
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_create.axml" />
+    <AndroidResource Include="Resources\values\SwipeRecyclerView_Attrs.xml" />
+    <AndroidResource Include="Resources\layout\list_item_button.axml">
+      <SubType>AndroidResource</SubType>
+    </AndroidResource>
+    <AndroidResource Include="Resources\layout\swipe_menu_layout.xml" />
+    <AndroidResource Include="Resources\drawable\ic_cloud.png" />
+    <AndroidResource Include="Resources\drawable\ic_cloud_down.png" />
+    <AndroidResource Include="Resources\drawable\ic_cloud_up.png" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_black.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_red.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_top_blue.xml" />
+    <AndroidResource Include="Resources\drawable\shape_white_center.xml" />
+    <AndroidResource Include="Resources\drawable\shape_round_bottom_white.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -735,7 +748,6 @@
     <Folder Include="src\Activity\Report\" />
     <Folder Include="src\Activity\Job\" />
     <Folder Include="src\Activity\DeviceManager\" />
-    <Folder Include="src\Widgets\Adapters\Job\" />
     <Folder Include="src\Report\" />
     <Folder Include="Resources\drawable-hdpi\" />
     <Folder Include="Resources\drawable-mdpi\" />
@@ -744,6 +756,8 @@
     <Folder Include="src\Connections\Beta\" />
     <Folder Include="src\Activity\Tutorial\" />
     <Folder Include="src\Activity\Portal\" />
+    <Folder Include="src\Fragments\_Workbench\" />
+    <Folder Include="src\Fragments\_Analyzer\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

@@ -4,6 +4,7 @@
 	using System.Collections.Generic;
 
 	using Appion.Commons.Util;
+	/*
 
 
 	public class RateOfChange {
@@ -141,8 +142,8 @@
 		}
 	}
 
+	*/
 
-/*
 
 	public class RateOfChange {
 
@@ -294,5 +295,4 @@
 		}
 	}
 
-*/
 }

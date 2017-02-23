@@ -24,7 +24,22 @@
     public event OnSensorPropertyChanged onSensorPropertyChanged;
 
     // Overridden from ISensorProperty
-    public Sensor sensor { get; private set; }
+    public Sensor sensor { 
+			get {
+				return __sensor;
+			}
+			private set {
+				if (__sensor != null) {
+					__sensor.onSensorStateChangedEvent -= SensorChangeEvent;
+				}
+
+				__sensor = value;
+
+				if (__sensor != null) {
+					__sensor.onSensorStateChangedEvent += SensorChangeEvent;
+				}
+			}
+		} Sensor __sensor;
 
     // Overridden from ISensorProperty
     public virtual Scalar modifiedMeasurement {
@@ -61,12 +76,11 @@
     public AbstractSensorProperty(Sensor sensor) {
       this.sensor = sensor;
       Reset();
-      this.sensor.onSensorStateChangedEvent += SensorChangeEvent;
     }
 
     // Overridden from ISensorProperty
     public virtual void Dispose() {
-      sensor.onSensorStateChangedEvent -= SensorChangeEvent;
+			sensor = null;
     }
 
     // Overridden from ISensorProperty

@@ -14,27 +14,38 @@
         android:textStyle="bold"
         android:textColor="@color/blue" />
     <LinearLayout
+        android:orientation="horizontal"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-        <ImageView
-            android:rotation="-90"
-            android:src="@drawable/selector_ic_arrow_up"
+        <LinearLayout
             android:id="@id/left"
+            android:gravity="center"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="match_parent">
+            <ImageView
+                android:rotation="-90"
+                android:src="@drawable/selector_ic_arrow_up"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
         <android.support.v4.view.ViewPager
             android:id="@id/content"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1" />
-        <ImageView
-            android:rotation="90"
-            android:src="@drawable/selector_ic_arrow_up"
+        <LinearLayout
             android:id="@id/right"
+            android:gravity="center"
             android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_height="match_parent">
+            <ImageView
+                android:rotation="90"
+                android:src="@drawable/selector_ic_arrow_up"
+                android:layout_width="40dp"
+                android:layout_height="40dp" />
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
@@ -56,6 +67,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <TextView
+        android:id="@id/tab_1"
+        android:textSize="@dimen/text_size_large"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+<!--
     <android.support.design.widget.TabLayout
         android:id="@id/tab_1"
         android:layout_width="match_parent"
@@ -65,4 +83,5 @@
         app:tabMode="fixed"
         app:tabIndicatorColor="@color/blue"
         app:tabIndicatorHeight="1dp" />
+-->
 </LinearLayout>

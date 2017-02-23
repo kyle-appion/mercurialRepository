@@ -26,7 +26,7 @@
       var adb = new IONAlertDialog(context);
 
       adb.SetTitle(Resource.String.pick_unit);
-      adb.SetItems(UnitsToString(units), (obj, args) =>{
+      adb.SetItems(UnitsToString(units), (obj, args) => {
         unitSelectionEvent(adb, units.ElementAt(args.Which));
       });
       adb.SetCancelable(true);

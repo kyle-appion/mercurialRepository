@@ -70,7 +70,7 @@
 			}
 		}
 
-		public bool isValid { get { return pressureSensor != null || temperatureSensor != null; } } 
+		public bool isValid { get { return pressureSensor != null && temperatureSensor != null; } } 
 
     public SuperheatSubcoolSensorProperty(Manifold manifold) : base(manifold) {
       bool isValid = IsSensorValid(manifold.primarySensor) &&

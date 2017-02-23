@@ -91,25 +91,43 @@
 				return;
 			}
 
-			sb.Append("<br><b>").Append(context.GetString(Resource.String._new)).Append("</b><br>");
+			var _new = new StringBuilder();
+			var hasNew = false;
+			_new.Append("<br><b>").Append(context.GetString(Resource.String._new)).Append("</b><br>");
 			foreach (var wn in news) {
 				foreach (var n in wn.whatsNew) {
-					sb.Append("•\t").Append(n).Append("<br>");
+					_new.Append("•\t").Append(n).Append("<br>");
+					hasNew = true;
 				}
 			}
+			if (hasNew) {
+				sb.Append(_new);
+			}
 
-			sb.Append("<br><b>").Append(context.GetString(Resource.String.updated)).Append("</b><br>");
+			var update = new StringBuilder();
+			var hasUpdate = false;
+			update.Append("<br><b>").Append(context.GetString(Resource.String.updated)).Append("</b><br>");
 			foreach (var wn in news) {
 				foreach (var u in wn.whatsUpdated) {
-					sb.Append("•\t").Append(u).Append("<br>");
+					update.Append("•\t").Append(u).Append("<br>");
+					hasUpdate = true;
 				}
 			}
+			if (hasUpdate) {
+				sb.Append(update);
+			}
 
-				sb.Append("<br><b>").Append(context.GetString(Resource.String._fixed)).Append("</b><br>");
+			var _fixed = new StringBuilder();
+			var hasFixed = false;
+			_fixed.Append("<br><b>").Append(context.GetString(Resource.String._fixed)).Append("</b><br>");
 			foreach (var wn in news) {
 				foreach (var f in wn.whatsFixed) {
-					sb.Append("•\t").Append(f).Append("<br>");
+					_fixed.Append("•\t").Append(f).Append("<br>");
+					hasFixed = true;
 				}
+			}
+			if (hasFixed) {
+				sb.Append(_fixed);
 			}
 		}
 
