@@ -80,7 +80,7 @@
 			}
 		}
 
-		private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
+		protected virtual void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 			Invalidate();
 		}
 	}

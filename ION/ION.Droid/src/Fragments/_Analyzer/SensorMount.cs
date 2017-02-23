@@ -135,7 +135,7 @@
 			unit.SetBackgroundResource(Resource.Drawable.shape_round_bottom_white);
 //      unit.SetPadding(10, 0, 10, 10);
       unit.Id = Resource.Id.unit;
-      unit.SetTextColor(black);
+      unit.SetTextColor(gray);
 			unit.Gravity = GravityFlags.Center;
       unit.SetSingleLine(true);
       unit.Ellipsize = TextUtils.TruncateAt.End;
