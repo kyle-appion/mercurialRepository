@@ -15,8 +15,9 @@
     <AndroidApplication>True</AndroidApplication>
     <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
     <AssemblyName>ION.Droid</AssemblyName>
-    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+    <AndroidTlsProvider></AndroidTlsProvider>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -277,7 +278,6 @@
     <Compile Include="src\Fragments\_Analyzer\TimerSensorPropertyViewHolder.cs" />
     <Compile Include="src\Fragments\_Analyzer\SubviewAdapter.cs" />
     <Compile Include="src\Fragments\_Analyzer\SensorMount.cs" />
-    <Compile Include="src\Fragments\_Workbench\AnalyzerView.cs" />
     <Compile Include="src\Fragments\_Analyzer\AnalyzerManifoldViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\CompactManifoldViewTemplate.cs" />
     <Compile Include="src\Fragments\_Analyzer\ViewTemplate.cs" />
@@ -295,6 +295,7 @@
     <Compile Include="src\Activity\Portal\SessionAdapter.cs" />
     <Compile Include="src\Activity\Portal\SessionRecord.cs" />
     <Compile Include="src\Activity\Portal\EViewType.cs" />
+    <Compile Include="src\Fragments\_Analyzer\AnalyzerView.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

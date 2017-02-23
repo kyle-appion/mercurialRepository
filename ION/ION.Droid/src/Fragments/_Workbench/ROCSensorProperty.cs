@@ -7,7 +7,6 @@
 	using Android.Widget;
 
 	using ION.Core.Content;
-	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
 	using ION.Droid.Util;
@@ -80,6 +79,9 @@
 
 				icon.Visibility = ViewStates.Visible;
 			}
+		}
+
+		protected override void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 		}
 
 		/// <summary>

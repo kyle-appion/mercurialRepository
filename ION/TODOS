@@ -64,8 +64,6 @@ CURRENT BUILD ISSUES (0.9.37) ::
       * Clearing current secondary for pressure gauge in shsc doesnt cause an error or warning when side is full
       * Adding a shsc sensor property to a manifold that already has a secondary sensor does not setup the sensor property correctly
       * Not checking for a breaking swap
-      * adding a manual to a full side manifold crashes
-      * adding a sensor from device manager to a full side doesn't populate the manifold
 
     Device Manager
       * A forgotten device still appears in the device manager as new

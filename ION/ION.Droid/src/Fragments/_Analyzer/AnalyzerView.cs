@@ -1,6 +1,7 @@
 ﻿namespace ION.Droid.Fragments._Analyzer {
 
 	using System;
+	using System.Collections.Generic;
 
   using Android.Content;
   using Android.Graphics;
@@ -707,8 +708,15 @@
 				if (analyzer.IsSensorIndexAttachedToManifold(source)) {
 					var m = analyzer.GetManifoldFromSide(targetSide.Opposite());
 					if (m.secondarySensor == null) {
+						var tmp = analyzer.GetManifoldFromSide(side);
+						var sps = new List<ISensorProperty>(tmp.sensorProperties);
+						tmp.ClearSensorProperties();
 						// we can simply move the sensor into the manifold
 						analyzer.SetManifold(targetSide, analyzer[source]);
+						var newManifold = analyzer.GetManifoldFromSide(targetSide);
+						foreach (var sp in sps) {
+							newManifold.AddSensorProperty(sp);
+						}
 						AnimateSensorMountSwap(source, analyzer.NextEmptySensorIndex(targetSide));
 					} else { // The opposite manifold has a secondary sensor that will break upon movement
 						RequestBreakManifold(() => {

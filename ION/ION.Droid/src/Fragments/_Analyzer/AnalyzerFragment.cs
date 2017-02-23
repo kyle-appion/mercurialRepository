@@ -118,14 +118,15 @@
       var request = requestCode & MASK_REQUEST;
 
       switch (request) {
-        case REQUEST_SENSOR_MOUNT_SENSOR:
-          var index = requestCode & MASK_REQUEST_PAYLOAD;
-          var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
-          analyzer.PutSensor(index, sp.Get(ion));
-          break;
+				case REQUEST_SENSOR_MOUNT_SENSOR: {
+						var index = requestCode & MASK_REQUEST_PAYLOAD;
+						var sp = (SensorParcelable)data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR);
+						analyzer.PutSensor(index, sp.Get(ion));
+				} break;
 
-        case REQUEST_SHOW_SUPERHEAT_SUBCOOL:
+				case REQUEST_SHOW_SUPERHEAT_SUBCOOL: {
 					var side = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
+
 					var manifold = analyzer.GetManifoldFromSide(side);
 
 					if (analyzer.HasSensor(manifold.secondarySensor)) {
@@ -162,16 +163,15 @@
 					} else {
 						analyzer.AddSensorToSide(side, manifold.secondarySensor);
 					}
-					break;
+				} break;
 
-        case REQUEST_MANIFOLD_ON_SIDE:
+				case REQUEST_MANIFOLD_ON_SIDE: {
           var mside = (Analyzer.ESide)unchecked((requestCode & MASK_SIDE) >> 8);
           var msp = data.GetParcelableExtra(DeviceManagerActivity.EXTRA_SENSOR) as SensorParcelable;
           var s = msp.Get(ion);
 
           TrySetManifold(mside, s);
-
-          break;
+				} break;
         default:
           L.D(this, "Unknown request: " + request);
           break;
@@ -223,14 +223,27 @@
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
     private bool TrySetManifold(Analyzer.ESide side, Sensor sensor) {
-      if (analyzer.CanAddSensorToSide(side) && !analyzer.HasSensor(sensor)) {
-        analyzer.AddSensorToSide(side, sensor);
-        analyzer.SetManifold(side, sensor);
-        return true;
-      } else {
-        L.E(this, "Trying to add a sensor to a manifold that already has a sensor.");
-        return false;
-      }
+			if (analyzer.HasSensor(sensor)) { // The analyzer already contains the sensor. We will need to ensure that the integrity of the analyzer is not broken
+				if (analyzer.IsSensorOnSide(sensor, side)) { // The sensor is already on the propert side, we can set the manifold.
+					analyzer.SetManifold(side, sensor);
+				} else { 
+					if (analyzer.IsSideFull(side)) { // We cannot move the sensor to the proper side. Toast a message
+						Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_cannot_set_manifold_side_full_1sarg), side.ToLocalizedString(Activity)), ToastLength.Long).Show();
+					} else { // Perform a sensor swap and set the manifold
+						analyzer.SwapSensors(analyzer.IndexOfSensor(sensor), analyzer.NextEmptySensorIndex(side), true);
+						analyzer.SetManifold(side, sensor);
+					}
+				}
+			} else { // The analyzer does not contain the sensor 
+				if (analyzer.IsSideFull(side)) {
+					Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_cannot_set_manifold_side_full_1sarg), side.ToLocalizedString(Activity)), ToastLength.Long).Show();
+				} else {
+					analyzer.AddSensorToSide(side, sensor);
+					analyzer.SetManifold(side, sensor);
+				}
+			}
+
+			return true;
     }
 
     /// <summary>
@@ -468,12 +481,17 @@
 			ldb.AddItem(Resource.String.device_manager, () => {
 				var i = new Intent(Activity, typeof(DeviceManagerActivity));
 				i.SetAction(Intent.ActionPick);
-				StartActivityForResult(i, EncodeSensorMountRequest(analyzer.NextEmptySensorIndex(side)));
+				StartActivityForResult(i, EncodeManifoldSideRequest(side));
 			});
 			ldb.AddItem(Resource.String.sensor_create_manual_entry, () => {
-				var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
-					analyzer.PutSensor(analyzer.NextEmptySensorIndex(side), sensor, false);
-				});
+				if (analyzer.IsSideFull(side)) {
+					Toast.MakeText(Activity, string.Format(GetString(Resource.String.analyzer_cannot_set_manifold_side_full_1sarg), side.ToLocalizedString(Activity)), ToastLength.Long).Show();
+				} else {
+					var d = new ManualSensorCreateDialog(Activity, SensorUtils.GetSensorTypeUnitMapping()).Show((sensor) => {
+						analyzer.PutSensor(analyzer.NextEmptySensorIndex(side), sensor, false);
+						analyzer.SetManifold(side, sensor);
+					});
+				}
 			});
 			ldb.Show();
     }
