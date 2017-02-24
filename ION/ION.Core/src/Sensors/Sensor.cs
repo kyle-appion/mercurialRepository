@@ -144,7 +144,10 @@ namespace ION.Core.Sensors {
       return ret;
     }
 
+		[Obsolete("Use 'ToFormattedString(Scalar measurement, bool includeUnit = false)' instead")]
     public static string ToFormattedString(ESensorType sensorType, Scalar measurement, bool includeUnit = false) {
+			return ToFormattedString(measurement, includeUnit);
+/*
       var unit = measurement.unit;
       var amount = measurement.amount;
 
@@ -194,7 +197,60 @@ namespace ION.Core.Sensors {
       }
 
       return ret;
+*/
     }
+
+		public static string ToFormattedString(Scalar measurement, bool includeUnit = false) {
+			return ToFormattedString(measurement.amount, measurement.unit, includeUnit);
+		}
+
+		public static string ToFormattedString(double amount, Unit unit, bool includeUnit = false) {
+			string ret = "";
+
+			if (double.IsNaN(amount)) {
+				ret = "---";
+			} else {
+				// PRESSURE UNITS
+				if (Units.Pressure.PASCAL.Equals(unit)) {
+					ret = amount.ToString("0");
+				} else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
+					ret = amount.ToString("0");
+				} else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
+					ret = amount.ToString("0.000");
+				} else if (Units.Pressure.MILLIBAR.Equals(unit)) {
+					ret = amount.ToString("0.000");
+				} else if (Units.Pressure.PSIG.Equals(unit)) {
+					ret = amount.ToString("0.0");
+				} else if (Units.Pressure.PSIA.Equals(unit)) {
+					ret = amount.ToString("0.0000");
+				} else if (Units.Pressure.IN_HG.Equals(unit)) {
+					ret = amount.ToString("0.00");
+				}
+				// VACUUM PRESSURE
+				else if (Units.Vacuum.IN_HG.Equals(unit)) {
+					ret = amount.ToString("0.000");
+				} else if (Units.Vacuum.KILOPASCAL.Equals(unit)) {
+					ret = amount.ToString("00.0000");
+				} else if (Units.Vacuum.MICRON.Equals(unit)) {
+					ret = amount.ToString("###,##0");
+				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
+					ret = amount.ToString("###,##0");
+				} else if (Units.Vacuum.MILLIBAR.Equals(unit)) {
+					ret = amount.ToString("000.000");
+				}
+				// DEFAULT
+				else {
+					Appion.Commons.Util.Log.D(typeof(SensorUtils).Name, "Could not find format for unit: " + unit);
+					ret = amount.ToString("0.00");
+				}
+			}
+
+			if (includeUnit) {
+				ret += " " + unit.ToString();
+			}
+
+			return ret;
+		}
 
 		public static string ToFormattedString(ESensorType sensorType, ScalarSpan measurement, bool includeUnit = false) {
 			var unit = measurement.unit;
@@ -453,7 +509,7 @@ namespace ION.Core.Sensors {
     /// <returns>The formatted string.</returns>
     /// <param name="includeUnit">If set to <c>true</c> include unit.</param>
     public string ToFormattedString(bool includeUnit) {
-			if (!(this is ManualSensor) &&
+			if (!(this is ManualSensor) && !(unit == Units.Vacuum.IN_HG || unit == Units.Pressure.IN_HG) &&
 					(measurement.ConvertTo(maxMeasurement.unit).amount > maxMeasurement.amount ||
 			     measurement.ConvertTo(minMeasurement.unit).amount < minMeasurement.amount)) {
 				return "OL";

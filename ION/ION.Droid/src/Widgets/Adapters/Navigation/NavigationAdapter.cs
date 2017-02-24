@@ -48,7 +48,7 @@
     /// <param name="context">Context.</param>
     /// <param name="content">Content.</param>
     public NavigationAdapter(List<NavigationItem> content, BitmapCache cache) {
-      this.content = Prune(content);
+			this.content = Expand(content);
       this.cache = cache;
     }
 
@@ -138,22 +138,22 @@
     /// Removes this hidden items from the list.
     /// </summary>
     /// <param name="items">Items.</param>
-    private List<NavigationItem> Prune(List<NavigationItem> items) {
+		private List<NavigationItem> Expand(List<NavigationItem> items) {
       var ret = new List<NavigationItem>();
 
       foreach (var item in items) {
         if (item is NavigationCategory) {
           var cat = item as NavigationCategory;
-          if (!item.hidden) {
+//          if (!item.hidden) {
             ret.Add(item);
             var list = new List<NavigationItem>();
             list.AddRange(cat.items);
-            ret.AddRange(Prune(list));
-          }
+            ret.AddRange(Expand(list));
+//          }
         } else {
-          if (!item.hidden) {
+//          if (!item.hidden) {
             ret.Add(item);
-          }
+//          }
         }
       }
 

@@ -46,6 +46,7 @@
       fragment.folder = ion.calibrationCertificateFolder;
       fragment.onFileClicked += OnFileClicked;
       fragment.onFolderClicked += OnFolderClicked;
+			fragment.empty.SetText(Resource.String.report_certificates_empty);
     }
 
     /// <Docs>The options menu in which you place your items.</Docs>

@@ -74,11 +74,13 @@
     public void Start() {
       startTime = DateTime.Now;
       isStarted = true;
+			NotifyChanged();
     }
 
     public void Stop() {
       ellapsedTime = DateTime.Now - startTime + __ellapsedTime;
       isStarted = false;
+			NotifyChanged();
     }
   }
 }

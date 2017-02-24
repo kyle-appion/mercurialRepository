@@ -318,11 +318,32 @@
       if (HasSensorPropertyOfType(sensorProperty.GetType())) {
         return false;
       } else {
-        sensorProperties.Add(sensorProperty);
-        NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
-        return true;
+				if (sensorProperty is SecondarySensorProperty) {
+					sensorProperties.Insert(0, sensorProperty);
+					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, 0);
+					return true;
+				} else {
+	        sensorProperties.Add(sensorProperty);
+					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
+					return true;
+				}
       }
     }
+
+		/// <summary>
+		/// Inserts the sensor property into the given index within the manifold.
+		/// </summary>
+		/// <returns><c>true</c>, if sensor property was inserted, <c>false</c> otherwise.</returns>
+		/// <param name="">.</param>
+		public bool InsertSensorProperty(ISensorProperty sensorProperty, int index) {
+			if (HasSensorPropertyOfType(sensorProperty.GetType())) {
+				return false;
+			} else {
+				sensorProperties.Insert(index, sensorProperty);
+				NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, index);
+				return true;
+			}
+		}
 
     /// <summary>
     /// Queries the index of the given sensor property.

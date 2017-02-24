@@ -1,4 +1,5 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿using Android.Widget;
+namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -14,7 +15,6 @@
 	using Appion.Commons.Util;
 
 	using ION.Core.App;
-	using ION.Core.Content;
 	using ION.Core.Database;
 
 	public class IONPortalService {
@@ -44,6 +44,7 @@
 
 		private const string JSON_SESSION = "session";
 		private const string JSON_UPLOAD_SESSION = "uploadSession";
+		private const string JSON_UPLOAD_PACKAGE = "sessionUploadPackage";
 		private const string JSON_START = "start";
 		private const string JSON_END = "end";
 		private const string JSON_MEASUREMENTS = "measurements";
@@ -357,7 +358,10 @@
 				package[JSON_SESSION_DATA] = root.ToString();
 				package[JSON_USER_ID] = loginId;
 
-				var postContent = new StringContent(package.ToString(), Encoding.UTF8, MIME_JSON);
+				var p = new JObject();
+				p[JSON_UPLOAD_PACKAGE] = package;
+
+				var postContent = new StringContent(p.ToString(), Encoding.UTF8, MIME_JSON);
 
 				// Post the sessions JSON to the server
 				var response = await client.PostAsync(URL_UPLOAD_SESSION, postContent);

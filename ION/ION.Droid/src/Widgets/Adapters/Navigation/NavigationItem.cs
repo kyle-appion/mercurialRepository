@@ -35,7 +35,7 @@
     /// drawer.
     /// </summary>
     /// <value><c>true</c> if hidden; otherwise, <c>false</c>.</value>
-    bool hidden { get; set; }
+//    bool hidden { get; set; }
   }
 
   public class BaseNavigationItem : NavigationItem {
@@ -46,18 +46,18 @@
     // Overridden from NavigationItem
     public Action action { get; set; }
     // Overridden from NavigationItem
-    public bool hidden { get; set; }
+//    public bool hidden { get; set; }
 
 
     public BaseNavigationItem() {
-      hidden = false;
+//      hidden = false;
     }
 
     public BaseNavigationItem(int id, string title, Action action) {
       this.id = id;
       this.title = title;
       this.action = action;
-      this.hidden = false;
+//      this.hidden = false;
     }
   }
 

@@ -4,6 +4,7 @@ namespace ION.Droid {
 	using System;
 	using System.Collections.Generic;
 
+	using Android.Support.V7.Widget;
 	using Android.Views;
 
 	using Appion.Commons.Util;
@@ -14,21 +15,18 @@ namespace ION.Droid {
 
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class OverviewAdapter : SwipableRecyclerViewAdapter {
+	public class OverviewAdapter : RecordAdapter {
 
 		public OverviewAdapter() {
 		}
 
-		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 			return new OverviewViewHolder(parent);
 		}
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
-			return false;
-		}
-
-		public override Action GetViewHolderSwipeAction(int index) {
-			return null;
+		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+			var vh = holder as OverviewViewHolder;
+			vh.data = records[position] as Record;
 		}
 
 		public void SetLogs(IION ion, List<SessionResults> sessionResults) {
