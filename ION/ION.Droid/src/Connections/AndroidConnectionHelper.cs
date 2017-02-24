@@ -203,7 +203,7 @@
 					Array.Copy(scanRecord, 4, serialBytes, 0, 8);
 					var raw = Encoding.UTF8.GetString(serialBytes);
 					if (SerialNumberExtensions.IsValidSerialNumber(raw)) {
-						serialNumber = null;
+						serialNumber = SerialNumberExtensions.ParseSerialNumber(raw);
 						return true;
 					} else {
 						serialNumber = null;

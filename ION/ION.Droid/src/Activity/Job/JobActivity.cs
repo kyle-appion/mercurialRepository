@@ -13,10 +13,6 @@
 
   using ION.Core.Database;
 
-	// Using ION.Droid
-	using Widgets.Adapters.Job;
-  using Widgets.RecyclerViews;
-
   [Activity(Label = "@string/jobs_saved", Icon="@drawable/ic_job", Theme = "@style/AppTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
   public class JobActivity : IONActivity {
 
@@ -42,9 +38,9 @@
 
       list = FindViewById<RecyclerView>(Resource.Id.list);
       adapter = new JobAdapter(ion);
-      adapter.onItemClicked += (adapter, position) => {
+      adapter.onItemClicked += (position) => {
         var i = new Intent(this, typeof(EditJobActivity));
-        i.PutExtra(EditJobActivity.EXTRA_JOB_ID, ((JobRecord)adapter.GetRecordAt(position)).row._id);
+        i.PutExtra(EditJobActivity.EXTRA_JOB_ID, ((JobRecord)adapter[position]).data._id);
         StartActivity(i);
       };
       list.SetAdapter(adapter);

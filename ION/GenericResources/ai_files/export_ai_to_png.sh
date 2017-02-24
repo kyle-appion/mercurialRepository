@@ -27,7 +27,7 @@ convertPng() {
     if [ $? -ne 0 ]; then
       echo "Failed to export {$file}"
     fi
-#    rm "${dir}/${fn}.svg"
+    rm "${dir}/${fn}.svg"
   done
 }
 

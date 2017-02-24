@@ -3,6 +3,7 @@
 	using System;
 	using System.Collections.Generic;
 
+	using Android.Support.V7.Widget;
 	using Android.Views;
 
 	using Appion.Commons.Util;
@@ -15,7 +16,7 @@
 
 	using ION.Droid.Widgets.RecyclerViews;
 
-	public class GraphRecordAdapter : SwipableRecyclerViewAdapter {
+	public class GraphRecordAdapter : RecordAdapter {
 		
 		public DateIndexLookup dil;
 		private List<SessionResults> sessionResults;
@@ -23,7 +24,7 @@
 		public GraphRecordAdapter() {
 		}
 
-		public override SwipableViewHolder OnCreateSwipableViewHolder(ViewGroup parent, int viewType) {
+		public override RecyclerView.ViewHolder OnCreateViewHolder(ViewGroup parent, int viewType) {
 			switch ((EViewType)viewType) {
 				case EViewType.Graph:
 					return new GraphViewHolder(parent, Resource.Layout.list_item_data_log_graph);
@@ -32,12 +33,10 @@
 			}
 		}
 
-		public override bool IsViewHolderSwipable(SwipableRecyclerViewAdapter.IRecord record, SwipableViewHolder viewHolder, int index) {
-			return false;
-		}
-
-		public override Action GetViewHolderSwipeAction(int index) {
-			return null;
+		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+			if (holder is RecordViewHolder) {
+				((RecordViewHolder)holder).data = records[position] as Record;
+			}
 		}
 
 		public List<SessionResults> GatherSelectedLogs(float leftPercent, float rightPercent) {
@@ -107,6 +106,16 @@
 		}
 
 		/// <summary>
+		/// Queries the percent within the date spand that the given date is
+		/// </summary>
+		/// <returns>The percent from date time.</returns>
+		/// <param name="date">Date.</param>
+		public float FindPercentFromDateTime(DateTime date) {
+			var i = dil.IndexOfDate(date);
+			return i / (float)dil.dateSpan; 
+		}
+
+		/// <summary>
 		/// Queries a list of dates within the DateIndexLookup that are before the given date.
 		/// </summary>
 		/// <returns>The dates preceding.</returns>
@@ -139,7 +148,7 @@
 			foreach (var record in records) {
 				var gr = record as GraphRecord;
 				if (gr != null && gr.isChecked) {
-					ret.Add(gr.sensor);
+					ret.Add(gr.data);
 				}
 			}
 

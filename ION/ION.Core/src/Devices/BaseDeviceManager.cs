@@ -345,7 +345,11 @@
     private void NotifyOfDeviceManagerEvent(DeviceManagerEvent dme) {
       if (onDeviceManagerEvent != null) {
         ion.PostToMain(() => {
+					try {
           onDeviceManagerEvent(dme);
+					} catch (Exception e) {
+						Appion.Commons.Util.Log.E(this, "Failed to post device manager event", e);
+					}
         });
       }
     }

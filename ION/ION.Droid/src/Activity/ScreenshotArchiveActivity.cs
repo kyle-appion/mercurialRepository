@@ -38,6 +38,7 @@
       fragment.folder = ion.screenshotReportFolder;
       fragment.onFileClicked = OnFileClicked;
       fragment.onFolderClicked = OnFolderClicked;
+			fragment.empty.SetText(Resource.String.report_screenshot_empty);
     }
 
     /// <Docs>The panel that the menu is in.</Docs>

@@ -19,8 +19,6 @@ namespace ION.Droid.Activity.Portal {
 	using ION.Core.Content;
 	using ION.Core.Database;
 
-	using ION.Droid.Widgets.Adapters.Job;
-
 	[Activity(Label = "@string/portal_upload_sessions", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
 	public class PortalSessionsViewActivity : IONActivity {
 
@@ -87,7 +85,7 @@ namespace ION.Droid.Activity.Portal {
 
 			var sessions = new List<SessionRow>();
 			foreach (var sr in adapter.GetCheckedSessions()) {
-				sessions.Add(sr.row);
+				sessions.Add(sr.data);
 			}
 			var result = await ion.portal.UploadSessionsAsync(ion, sessions);
 
