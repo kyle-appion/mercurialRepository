@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+
+<resources>
+  <style name="AppTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:windowBackground">@drawable/img_bgd_carbon</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:textColorPrimary">@color/black</item>
+    <item name="android:textColorSecondary">@color/black</item>
+    <item name="android:textColorTertiary">@color/black</item>
+    <item name="android:buttonStyle">@style/IONButton</item>
+
+		<item name="android:actionBarItemBackground">@drawable/selectable_background_ion_action_bar</item>
+    <item name="android:popupMenuStyle">@style/PopupMenu.Ion_action_bar</item>
+    <item name="android:dropDownListViewStyle">@style/DropDownListView.Ion_action_bar</item>
+    <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Ion_action_bar</item>
+    <item name="android:actionDropDownStyle">@style/DropDownNav.Ion_action_bar</item>
+    <item name="android:actionBarStyle">@style/ActionBar.Solid.Ion_action_bar</item>
+    <item name="android:actionModeBackground">@drawable/cab_background_top_ion_action_bar</item>
+    <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_ion_action_bar</item>
+    <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Ion_action_bar</item>
+
+		<item name="colorPrimary">@color/black</item>
+    <item name="colorPrimaryDark">@color/black</item>
+    <item name="colorAccent">@color/gold</item>
+  </style>
+
+  <style name="TerminalActivityTheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:textColorSecondary">@color/light_gray</item>
+    <item name="android:textColorTertiary">@color/light_gray</item>
+    <item name="android:buttonStyle">@style/IONButton</item>
+
+    <item name="windowActionBar">false</item>
+    <item name="windowNoTitle">true</item>
+
+		<item name="colorPrimary">@color/black</item>
+    <item name="colorPrimaryDark">@color/black</item>
+    <item name="colorAccent">@color/gold</item>
+  </style>
+
+  <style name="DialogActivityTheme" parent="android:style/Theme.Holo.Light.Dialog">
+    <item name="android:windowBackground">@color/white</item>
+    <item name="android:textColor">@color/black</item>
+    <item name="android:buttonStyle">@style/IONButton</item>    
+  </style>
+
+  <style name="IONButton" parent="android:Widget.Button">
+    <item name="android:background">@drawable/selector_button_gold_black</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@drawable/selector_text_blackgold</item>
+  </style>
+
+	<style name="IONTextInputLayout" parent="Theme.AppCompat.Light.NoActionBar">
+		<item name="android:textColorHint">@color/gray</item>
+		<item name="android:textSize">@dimen/text_size_large</item>
+		<item name="colorAccent">@color/red</item>
+		<item name="colorControlNormal">@color/green</item>
+		<item name="colorControlActivated">@color/blue</item>
+		<item name="colorControlHighlight">@color/black</item>
+	</style>
+
+	<style name="IONActionBarTextStyle" parent="@android:style/TextAppearance">
+		<item name="android:textColor">@color/white</item>
+	</style>
+
+	 <style name="ActionBar.Solid.Ion_action_bar" parent="@android:style/Widget.Holo.ActionBar.Solid">
+<!--       
+		<item name="android:background">@drawable/ab_solid_ion_action_bar</item>
+-->
+			<item name="android:titleTextStyle">@style/IONActionBarTextStyle</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_ion_action_bar</item>
+        <item name="android:backgroundSplit">@drawable/ab_bottom_solid_ion_action_bar</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Ion_action_bar</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Ion_action_bar" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_ion_action_bar</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Ion_action_bar</item>
+    </style>
+
+    <style name="PopupMenu.Ion_action_bar" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_ion_action_bar</item>	
+    </style>
+
+    <style name="DropDownListView.Ion_action_bar" parent="@android:style/Widget.Holo.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_ion_action_bar</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Ion_action_bar" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_ion_action_bar</item>
+    </style>
+
+    <style name="DropDownNav.Ion_action_bar" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_ion_action_bar</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_ion_action_bar</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_ion_action_bar</item>
+    </style>
+    
+    <style name="ProgressBar.Ion_action_bar" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_ion_action_bar</item>
+    </style>
+    
+    <style name="ActionButton.CloseMode.Ion_action_bar" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_ion_action_bar</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Ion_action_bar.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Ion_action_bar</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Ion_action_bar</item>
+    </style>
+</resources>

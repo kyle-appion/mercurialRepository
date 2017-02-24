@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6160D21B-58C6-4F3F-A15D-9686B9F94A2F}</ProjectGuid>
+    <ProjectTypeGuids>{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>TestBench.Droid</RootNamespace>
+    <AssemblyName>TestBench.Droid</AssemblyName>
+    <TargetFrameworkVersion>v7.0</TargetFrameworkVersion>
+    <AndroidApplication>True</AndroidApplication>
+    <AndroidResgenFile>Resources\Resource.designer.cs</AndroidResgenFile>
+    <AndroidResgenClass>Resource</AndroidResgenClass>
+    <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
+    <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
+    <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
+    <AndroidUseLatestPlatformSdk>true</AndroidUseLatestPlatformSdk>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidLinkMode>None</AndroidLinkMode>
+    <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86</AndroidSupportedAbis>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AndroidManagedSymbols>true</AndroidManagedSymbols>
+    <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Android" />
+    <Reference Include="Xamarin.Android.Support.Compat">
+      <HintPath>..\packages\Xamarin.Android.Support.Compat.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Compat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Core.UI">
+      <HintPath>..\packages\Xamarin.Android.Support.Core.UI.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Core.Utils">
+      <HintPath>..\packages\Xamarin.Android.Support.Core.Utils.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Core.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Media.Compat">
+      <HintPath>..\packages\Xamarin.Android.Support.Media.Compat.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Media.Compat.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Fragment">
+      <HintPath>..\packages\Xamarin.Android.Support.Fragment.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Fragment.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v13">
+      <HintPath>..\packages\Xamarin.Android.Support.v13.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.v13.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.RecyclerView">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.RecyclerView.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.RecyclerView.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Vector.Drawable.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Animated.Vector.Drawable">
+      <HintPath>..\packages\Xamarin.Android.Support.Animated.Vector.Drawable.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Animated.Vector.Drawable.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.v7.AppCompat">
+      <HintPath>..\packages\Xamarin.Android.Support.v7.AppCompat.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.v7.AppCompat.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes.Grid">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\android\DSoft.Datatypes.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\android\DSoft.Datatypes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Themes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\android\DSoft.Themes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.UI.Android">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\android\DSoft.UI.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Xamarin.Android.Support.Design">
+      <HintPath>..\packages\Xamarin.Android.Support.Design.24.2.1\lib\MonoAndroid70\Xamarin.Android.Support.Design.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Stateless">
+      <HintPath>..\packages\Stateless.3.1.0\lib\portable45-net45+win8+wp8+wpa81\Stateless.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Resources\Resource.designer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Bluetooth\RigadoConnection.cs" />
+    <Compile Include="src\LogPrinter.cs" />
+    <Compile Include="src\Bluetooth\IConnection.cs" />
+    <Compile Include="src\AppService.cs" />
+    <Compile Include="src\Bluetooth\LeConnection.cs" />
+    <Compile Include="src\Test\ITest.cs" />
+    <Compile Include="src\Test\TestParameters.cs" />
+    <Compile Include="src\Test\XmlTestParser.cs" />
+    <Compile Include="src\Test\AV760Test.cs" />
+    <Compile Include="src\Bluetooth\VacuumRig.cs" />
+    <Compile Include="src\Test\TestResults.cs" />
+    <Compile Include="src\Activity\BaseActivity.cs" />
+    <Compile Include="src\Activity\GaugeScanActivity.cs" />
+    <Compile Include="src\Activity\TestActivity.cs" />
+    <Compile Include="src\Activity\TestDataSource.cs" />
+    <Compile Include="src\Bluetooth\IRig.cs" />
+    <Compile Include="src\Bluetooth\RigExtensions.cs" />
+    <Compile Include="src\Activity\ExportTestActivity.cs" />
+    <Compile Include="src\Devices\BatchDeviceTasks.cs" />
+    <Compile Include="src\Test\TargetPointTest.cs" />
+    <Compile Include="src\Test\Parsers\XmlTargetPointTestParserExtensions.cs" />
+    <Compile Include="src\Test\Parsers\XmlParserExtensions.cs" />
+    <Compile Include="src\Rig\PressureRigController.cs" />
+    <Compile Include="src\Devices\PressureRigDevice.cs" />
+    <Compile Include="src\Activity\HomeActivity.cs" />
+    <Compile Include="src\Activity\BtScannerActivity.cs" />
+    <Compile Include="src\Bluetooth\BtScanner.cs" />
+    <Compile Include="src\Activity\Prefs.cs" />
+    <Compile Include="src\Activity\BaseActivityDeprecated.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\AboutResources.txt" />
+    <None Include="Properties\AndroidManifest.xml" />
+    <None Include="Assets\AboutAssets.txt" />
+    <None Include="packages.config" />
+    <None Include="src\Test\Procedures\pt800_test_procedure.xml" />
+    <None Include="environment.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\Main.axml" />
+    <AndroidResource Include="Resources\values\Strings.xml" />
+    <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\layout\activity_device_selector.axml" />
+    <AndroidResource Include="Resources\layout\list_item_content.axml" />
+    <AndroidResource Include="Resources\menu\scan.xml" />
+    <AndroidResource Include="Resources\layout\activity_test.axml" />
+    <AndroidResource Include="Resources\values\Colors.xml" />
+    <AndroidResource Include="Resources\layout\activity_export_test.axml" />
+    <AndroidResource Include="Resources\values\Styles.xml" />
+    <AndroidResource Include="Resources\menu\export.xml" />
+    <AndroidResource Include="Resources\layout\activity_btscanner.axml" />
+    <AndroidResource Include="Resources\layout\activity_home.axml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\drawable\" />
+    <Folder Include="src\" />
+    <Folder Include="src\Bluetooth\" />
+    <Folder Include="Resources\menu\" />
+    <Folder Include="src\Test\" />
+    <Folder Include="src\Activity\" />
+    <Folder Include="src\Test\Tests\" />
+    <Folder Include="src\Test\Procedures\" />
+    <Folder Include="src\Devices\" />
+    <Folder Include="src\Test\Parsers\" />
+    <Folder Include="src\Rig\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ION.Core\ION.Core.csproj">
+      <Project>{CA7A472F-B250-4A2E-9F7E-B2AAA4F6EF01}</Project>
+      <Name>ION.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Appion.Commons\Appion.Commons.csproj">
+      <Project>{4C9DFAAA-2322-4B5A-8DE1-AAC22E8DF716}</Project>
+      <Name>Appion.Commons</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="src\Test\Tests\test_av760.xml" />
+    <EmbeddedResource Include="src\Test\Tests\test_p500.xml" />
+    <EmbeddedResource Include="src\Test\Tests\test_pt800.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <XamarinComponentReference Include="dsgridview">
+      <Version>3.0.2</Version>
+      <Visible>False</Visible>
+    </XamarinComponentReference>
+  </ItemGroup>
+  <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <Import Project="..\packages\Xamarin.Android.Support.Vector.Drawable.24.2.1\build\Xamarin.Android.Support.Vector.Drawable.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Vector.Drawable.24.2.1\build\Xamarin.Android.Support.Vector.Drawable.targets')" />
+</Project>
