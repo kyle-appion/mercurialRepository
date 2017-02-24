@@ -270,6 +270,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="sensor">THE SENSOR THE LOW/HIGH AREA IS MONITORING</param>
     public void gaugeUpdating(Sensor sensor){
+    	Console.WriteLine("lowHighSensor gaugeUpdating called. Sensor name " + manifold.primarySensor.name + " working with fluid " + manifold.ptChart.fluid.name);
       if (currentSensor.device.isConnected) {
         connectionColor.BackgroundColor = UIColor.Green;
         Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");       
@@ -377,7 +378,6 @@ namespace ION.IOS.ViewController.Analyzer
 								
 								attachedSensor = slot;
 								slot.topLabel.BackgroundColor = LabelSubview.BackgroundColor;
-								slot.tLabelBottom.BackgroundColor = LabelSubview.BackgroundColor;
 								slot.topLabel.TextColor = UIColor.White;
 							}
 						}
@@ -398,7 +398,6 @@ namespace ION.IOS.ViewController.Analyzer
 						if(slot.currentSensor != null){
 							if(slot.currentSensor == compareSensor){
 								slot.topLabel.BackgroundColor = UIColor.Clear;
-								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
 								slot.topLabel.TextColor = UIColor.Black;	
 							}
 							if(slot.currentSensor == currentSensor){    
@@ -408,7 +407,6 @@ namespace ION.IOS.ViewController.Analyzer
 						} else if (slot.manualSensor != null){
 							if(slot.manualSensor == compareSensor){
 								slot.topLabel.BackgroundColor = UIColor.Clear;
-								slot.tLabelBottom.BackgroundColor = UIColor.Clear;
 								slot.topLabel.TextColor = UIColor.Black;	
 							}
 							if(__manualSensor != null && slot.manualSensor == __manualSensor){
@@ -504,7 +502,6 @@ namespace ION.IOS.ViewController.Analyzer
           isLinked = false;
           if (attachedSensor != null) {            
             attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-            attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             attachedSensor.topLabel.TextColor = UIColor.Black;
             attachedSensor = null;
           }

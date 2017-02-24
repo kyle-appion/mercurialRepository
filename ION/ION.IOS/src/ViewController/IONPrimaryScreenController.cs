@@ -82,13 +82,13 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
         },
+        new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+				},        
         new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         },
-        new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-				},
         new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
         }
@@ -323,10 +323,10 @@ namespace ION.IOS.ViewController {
         new UINavigationController(InflateViewController<LoggingViewController>(BaseIONViewController.VC_LOGGING)),
         null, // Calibration Certificates
         null, // Screenshot Navigation
+        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         
         null, // Settings navigation
         null, // Help Navigation
-        new UINavigationController(InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING)),
         null, // Shutdown process
       };    
 

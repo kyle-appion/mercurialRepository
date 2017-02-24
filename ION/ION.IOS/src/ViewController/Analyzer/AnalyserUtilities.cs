@@ -184,7 +184,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       AddHighLowArea(Sensor.lowArea, Sensor.highArea, mainView);
       applyLowHighGestures(Sensor.lowArea, Sensor.highArea, lowHighSensors, Sensor);
-      CreateSubviewLayout (Sensor.snapArea, Sensor.topLabel, Sensor.tLabelBottom, Sensor.middleLabel, Sensor.bottomLabel);
+      CreateSubviewLayout (Sensor.snapArea, Sensor.topLabel, Sensor.middleLabel, Sensor.bottomLabel);
       Sensor.lowArea.lharea = lowHighSensors;
       Sensor.highArea.lharea = lowHighSensors;
       mainView.AddSubview (Sensor.snapArea);
@@ -484,18 +484,14 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <param name="middleLabel">Middle label.</param>
 		/// <param name="bottomLabel">Bottom label.</param>
 		/// <param name="origin">Origin.</param>
-		public static void CreateSubviewLayout(UIView subview, UILabel topLabel, UILabel tLabelBottom, UILabel middleLabel, UILabel bottomLabel){
-      topLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, 0, subview.Frame.Size.Width, .307 * subview.Frame.Size.Height);
+		public static void CreateSubviewLayout(UIView subview, UILabel topLabel,  UILabel middleLabel, UILabel bottomLabel){
+      topLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, 0, .99 * subview.Frame.Size.Width, .307 * subview.Frame.Size.Height);
 			topLabel.AdjustsFontSizeToFitWidth = true;
 			topLabel.Text = " Press " + subview.AccessibilityIdentifier;
 			topLabel.Hidden = true;
 			topLabel.ClipsToBounds = true;
 			topLabel.TextColor = UIColor.Gray;
-      //topLabel.Layer.CornerRadius = 5;
-
-      //tLabelBottom.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect(0, .2 * subview.Bounds.Height, subview.Bounds.Width, .12 * subview.Bounds.Height);
-      //tLabelBottom.BackgroundColor = UIColor.Blue;
-      //tLabelBottom.Hidden = true;
+			topLabel.TextAlignment = UITextAlignment.Center;
 
       middleLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, .261 * subview.Bounds.Height, .984 * subview.Frame.Size.Width, .461 * subview.Frame.Size.Height);
 			middleLabel.AdjustsFontSizeToFitWidth = true;
@@ -504,18 +500,17 @@ namespace ION.IOS.ViewController.Analyzer
 			middleLabel.TextAlignment = UITextAlignment.Right;
 			middleLabel.Font = UIFont.BoldSystemFontOfSize(20);
 
-      bottomLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, .676 * subview.Bounds.Height, .969 * subview.Frame.Size.Width, .3 * subview.Frame.Size.Height);
+      bottomLabel.ViewForBaselineLayout.Frame = new CoreGraphics.CGRect (0, .676 * subview.Bounds.Height, .99 * subview.Frame.Size.Width, .3 * subview.Frame.Size.Height);
 			bottomLabel.AdjustsFontSizeToFitWidth = true;
 			bottomLabel.Text = "";
 			bottomLabel.Hidden = true;
 			bottomLabel.ClipsToBounds = true;
-			bottomLabel.TextAlignment = UITextAlignment.Right;
+			bottomLabel.TextAlignment = UITextAlignment.Center;
 			bottomLabel.TextColor = UIColor.Gray;
 
 			subview.AddSubview (topLabel);
 			subview.AddSubview (middleLabel);
 			subview.AddSubview (bottomLabel);
-      //subview.AddSubview(tLabelBottom);
       subview.BringSubviewToFront(topLabel);
 		}
 		/// <summary>
@@ -530,7 +525,6 @@ namespace ION.IOS.ViewController.Analyzer
 			//Console.WriteLine("AnalyzerUtilities RemoveDevice");
       removeSensor.topLabel.BackgroundColor = UIColor.Clear;
       removeSensor.topLabel.TextColor = UIColor.Gray;
-      removeSensor.tLabelBottom.Hidden = true;
 
       removeSensor.lowArea.snapArea.Hidden = true;
       //removeSensor.lowArea.tableSubviews = new List<string> ();
@@ -543,13 +537,11 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeSensor.lowArea.attachedSensor != null) {
         removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        removeSensor.lowArea.attachedSensor.tLabelBottom.Hidden = true;
         removeSensor.lowArea.attachedSensor = null;
       }
       if(removeSensor.highArea.attachedSensor != null){
         removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        removeSensor.highArea.attachedSensor.tLabelBottom.Hidden = true;
         removeSensor.highArea.attachedSensor = null;
 			}
       removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
@@ -605,7 +597,6 @@ namespace ION.IOS.ViewController.Analyzer
       removeSensor.topLabel.Hidden = true;
       removeSensor.topLabel.BackgroundColor = UIColor.Clear;
       removeSensor.topLabel.TextColor = UIColor.Gray;
-      removeSensor.tLabelBottom.Hidden = true;
       removeSensor.middleLabel.Hidden = true;
       removeSensor.bottomLabel.Hidden = true;
       removeSensor.topLabel.Text = "Press ";
@@ -651,12 +642,10 @@ namespace ION.IOS.ViewController.Analyzer
       if (removeSensor.lowArea.attachedSensor != null) {
         removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
        	removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        removeSensor.lowArea.attachedSensor.tLabelBottom.Hidden = true;
         removeSensor.lowArea.attachedSensor = null;
 
         removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        removeSensor.highArea.attachedSensor.tLabelBottom.Hidden = true;
         removeSensor.highArea.attachedSensor = null;
       } else {
         for (int i = 0; i < 8; i++) {
@@ -714,7 +703,6 @@ namespace ION.IOS.ViewController.Analyzer
       Sensor.pressedSensor.topLabel.Hidden = true;
       Sensor.pressedSensor.topLabel.BackgroundColor = UIColor.Clear;
       Sensor.pressedSensor.topLabel.TextColor = UIColor.Gray;
-      Sensor.pressedSensor.tLabelBottom.Hidden = true;
       Sensor.pressedSensor.middleLabel.Hidden = true;
       Sensor.pressedSensor.bottomLabel.Hidden = true;
       Sensor.pressedSensor.topLabel.Text = "Press " + Sensor.pressedSensor.snapArea.AccessibilityIdentifier;
@@ -760,13 +748,11 @@ namespace ION.IOS.ViewController.Analyzer
       if (Sensor.pressedSensor.lowArea.attachedSensor != null) {
         Sensor.pressedSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
         Sensor.pressedSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        Sensor.pressedSensor.lowArea.attachedSensor.tLabelBottom.Hidden = true;
         Sensor.pressedSensor.lowArea.attachedSensor = null;
 
       } else if (Sensor.pressedSensor.highArea.attachedSensor != null){
         Sensor.pressedSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
         Sensor.pressedSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-        Sensor.pressedSensor.highArea.attachedSensor.tLabelBottom.Hidden = true;
         Sensor.pressedSensor.highArea.attachedSensor = null;
 			}else {
         for (int i = 0; i < 8; i++) {
@@ -1085,7 +1071,6 @@ namespace ION.IOS.ViewController.Analyzer
           Console.WriteLine("In utilities sensorSwap and set low accessibility to " + ion.currentAnalyzer.highAccessibility + " and high accessibility to " + ion.currentAnalyzer.lowAccessibility);
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Red;
           analyzerSensors.viewList[start].topLabel.TextColor = UIColor.White;
-          analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Red;
           lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
           ion.currentAnalyzer.highAccessibility = analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier;
           ion.currentAnalyzer.highSubviews = analyzerSensors.viewList[start].highArea.tableSubviews;
@@ -1134,12 +1119,10 @@ namespace ION.IOS.ViewController.Analyzer
           	//Console.WriteLine("low and high area attached sensor are null");
             analyzerSensors.viewList[start].lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[start].lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[start].lowArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[start].lowArea.attachedSensor = null;
 
             analyzerSensors.viewList[start].highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[start].highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[start].highArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[start].highArea.attachedSensor = null;
           }
           if (analyzerSensors.viewList[start].currentSensor != null) {
@@ -1158,7 +1141,6 @@ namespace ION.IOS.ViewController.Analyzer
           }
 
           analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Blue;
-          analyzerSensors.viewList[swap].tLabelBottom.BackgroundColor = UIColor.Blue;
 
           if (!analyzerSensors.viewList[swap].isManual) {
             if(analyzerSensors.viewList[swap].currentSensor.device.isConnected){
@@ -1207,12 +1189,10 @@ namespace ION.IOS.ViewController.Analyzer
           if (analyzerSensors.viewList[swap].lowArea.attachedSensor != null && analyzerSensors.viewList[swap].highArea.attachedSensor != null) {
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].lowArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].lowArea.attachedSensor = null;
 
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].highArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].highArea.attachedSensor = null;
           }
 
@@ -1236,7 +1216,6 @@ namespace ION.IOS.ViewController.Analyzer
           Console.WriteLine("In utilities sensorSwap and set low accessibility to " + ion.currentAnalyzer.highAccessibility + " and high accessibility to " + ion.currentAnalyzer.lowAccessibility);
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Blue;
           analyzerSensors.viewList[start].topLabel.TextColor = UIColor.White;
-          analyzerSensors.viewList[start].tLabelBottom.BackgroundColor = UIColor.Blue;
 
           if (!analyzerSensors.viewList[start].isManual) {
             if(analyzerSensors.viewList[start].currentSensor.device.isConnected){
@@ -1286,12 +1265,10 @@ namespace ION.IOS.ViewController.Analyzer
           if (analyzerSensors.viewList[start].lowArea.attachedSensor != null && analyzerSensors.viewList[start].highArea.attachedSensor != null) {
             analyzerSensors.viewList[start].lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[start].lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[start].lowArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[start].lowArea.attachedSensor = null;
 
             analyzerSensors.viewList[start].highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[start].highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[start].highArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[start].highArea.attachedSensor = null;
           }
           if (analyzerSensors.viewList[start].currentSensor != null) {
@@ -1309,7 +1286,6 @@ namespace ION.IOS.ViewController.Analyzer
             analyzerSensors.viewList[start].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[start].lowArea.ion, Fluid.EState.Dew);
           }
           analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Red;
-          analyzerSensors.viewList[swap].tLabelBottom.BackgroundColor = UIColor.Red;
 
           if (!analyzerSensors.viewList[swap].isManual) {
             if(analyzerSensors.viewList[swap].currentSensor.device.isConnected){
@@ -1359,12 +1335,10 @@ namespace ION.IOS.ViewController.Analyzer
           if (analyzerSensors.viewList[swap].lowArea.attachedSensor != null && analyzerSensors.viewList[swap].highArea.attachedSensor != null) {
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].lowArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].lowArea.attachedSensor = null;
 
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].highArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].highArea.attachedSensor = null;
           }
 
@@ -1388,7 +1362,6 @@ namespace ION.IOS.ViewController.Analyzer
           analyzerSensors.viewList[start].highArea.snapArea.Hidden = true;
           analyzerSensors.viewList[start].topLabel.BackgroundColor = UIColor.Clear;
           analyzerSensors.viewList[start].topLabel.TextColor = UIColor.Gray;
-          analyzerSensors.viewList[start].tLabelBottom.Hidden = true;
 
           if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[start].snapArea.AccessibilityIdentifier) {
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
@@ -1417,12 +1390,10 @@ namespace ION.IOS.ViewController.Analyzer
           if (analyzerSensors.viewList[swap].lowArea.attachedSensor != null && analyzerSensors.viewList[swap].highArea.attachedSensor != null) {
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].lowArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].lowArea.attachedSensor = null;
 
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
             analyzerSensors.viewList[swap].highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-            analyzerSensors.viewList[swap].highArea.attachedSensor.tLabelBottom.Hidden = true;
             analyzerSensors.viewList[swap].highArea.attachedSensor = null;
           } else {
             for (int i = 0; i < 8; i++) {
@@ -1466,7 +1437,6 @@ namespace ION.IOS.ViewController.Analyzer
           analyzerSensors.viewList[swap].highArea.snapArea.Hidden = true;
           analyzerSensors.viewList[swap].topLabel.BackgroundColor = UIColor.Clear;
           analyzerSensors.viewList[swap].topLabel.TextColor = UIColor.Gray;
-          analyzerSensors.viewList[swap].tLabelBottom.Hidden = true;
 
           if (lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[swap].snapArea.AccessibilityIdentifier) {
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
@@ -1833,13 +1803,11 @@ namespace ION.IOS.ViewController.Analyzer
           if(removeSensor.lowArea.attachedSensor != null){
             //Console.WriteLine("low high sensor has a linked sensor already");
             removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-            removeSensor.lowArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
             removeSensor.lowArea.attachedSensor = null;
           }
           if(removeSensor.highArea.attachedSensor != null){
             removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-            removeSensor.highArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
             removeSensor.highArea.attachedSensor = null;
 					}
@@ -1849,8 +1817,6 @@ namespace ION.IOS.ViewController.Analyzer
               //Console.WriteLine("low high sensor is pressure and adding sensor is temperature");
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
-              Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
-              Sensor.tLabelBottom.Hidden = false;
               if(lowHighSensor.location == "low" || lowHighSensor.LabelSubview.BackgroundColor == UIColor.Blue){
               	removeSensor.lowArea.attachedSensor = Sensor;
               	removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.manualSensor);
@@ -1876,8 +1842,6 @@ namespace ION.IOS.ViewController.Analyzer
               //Console.WriteLine("low high sensor is pressure and adding sensor is temperature");
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
-              Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
-              Sensor.tLabelBottom.Hidden = false;
               if(lowHighSensor.location == "low" || lowHighSensor.LabelSubview.BackgroundColor == UIColor.Blue){
               	removeSensor.lowArea.attachedSensor = Sensor;
               	removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.manualSensor);
@@ -1902,8 +1866,6 @@ namespace ION.IOS.ViewController.Analyzer
               //Console.WriteLine("low high sensor is pressure and adding sensor is temperature");
               Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
               Sensor.topLabel.TextColor = UIColor.White;
-              Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
-              Sensor.tLabelBottom.Hidden = false;
               if(lowHighSensor.location == "low" || lowHighSensor.LabelSubview.BackgroundColor == UIColor.Blue){
               	removeSensor.lowArea.attachedSensor = Sensor;
               	removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.currentSensor);
@@ -1963,13 +1925,11 @@ namespace ION.IOS.ViewController.Analyzer
           if(removeSensor.lowArea.attachedSensor != null){
             //Console.WriteLine("lh sensor has attached sensor already and both are real devices");
             removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-            removeSensor.lowArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
             removeSensor.lowArea.attachedSensor = null;
           }
           if(removeSensor.highArea.attachedSensor != null){            
             removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-            removeSensor.highArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
             removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
 						removeSensor.highArea.attachedSensor = null;
 					}
@@ -1977,8 +1937,6 @@ namespace ION.IOS.ViewController.Analyzer
             //Console.WriteLine("Adding temp device " + Sensor.currentSensor.device.name + "'s sensor as device " + removeSensor.currentSensor.device.name + "'s secondary sensor");
             Sensor.topLabel.BackgroundColor = removeSensor.topLabel.BackgroundColor;
             Sensor.topLabel.TextColor = UIColor.White;
-            Sensor.tLabelBottom.BackgroundColor = removeSensor.tLabelBottom.BackgroundColor;
-            Sensor.tLabelBottom.Hidden = false;
               if(lowHighSensor.location == "low" || lowHighSensor.LabelSubview.BackgroundColor == UIColor.Blue){
               	removeSensor.lowArea.attachedSensor = Sensor;
             		removeSensor.lowArea.manifold.SetSecondarySensor(Sensor.currentSensor);
@@ -2070,7 +2028,6 @@ namespace ION.IOS.ViewController.Analyzer
                   ion.currentAnalyzer.highAccessibility = "high";
                   View.BringSubviewToFront(Sensor.lowArea.snapArea);
                   Sensor.topLabel.BackgroundColor = UIColor.Blue;
-                  Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
                   if (Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected) {
                     Sensor.highArea.connectionColor.BackgroundColor = UIColor.Green;
                     Sensor.lowArea.connectionColor.BackgroundColor = UIColor.Green;
@@ -2095,7 +2052,6 @@ namespace ION.IOS.ViewController.Analyzer
                   	Console.WriteLine("high area attached sensor was not null");
 	                  Sensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
 	                  Sensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-	                  Sensor.highArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
 	                }
                   Sensor.highArea.attachedSensor = null;
                   Sensor.lowArea.attachedSensor = null;
@@ -2161,8 +2117,6 @@ namespace ION.IOS.ViewController.Analyzer
           bool goOn = orderSensors (analyzerSensors, analyzerSensors.areaList.IndexOf (Convert.ToInt32 (Sensor.snapArea.AccessibilityIdentifier)), "low", View);
 					if (goOn) {
             Sensor.topLabel.BackgroundColor = UIColor.Blue;
-            Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
-            Sensor.tLabelBottom.Hidden = false;
             Sensor.topLabel.TextColor = UIColor.White;
 
             if (Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected) {
@@ -2246,7 +2200,6 @@ namespace ION.IOS.ViewController.Analyzer
                   ion.currentAnalyzer.lowAccessibility = "low";
                   View.BringSubviewToFront(Sensor.highArea.snapArea);
                   Sensor.topLabel.BackgroundColor = UIColor.Red;
-                  Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
                   if (Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected) {
                     Sensor.highArea.connectionColor.BackgroundColor = UIColor.Green;
                     Sensor.lowArea.connectionColor.BackgroundColor = UIColor.Green;
@@ -2268,7 +2221,6 @@ namespace ION.IOS.ViewController.Analyzer
                   	Console.WriteLine("low area attached sensor WAS not null");
 	                  Sensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
 	                  Sensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;
-	                  Sensor.lowArea.attachedSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
                   }
                   Sensor.lowArea.attachedSensor = null;                  
                   Sensor.highArea.attachedSensor = null;
@@ -2337,8 +2289,6 @@ namespace ION.IOS.ViewController.Analyzer
 					if (goOn) {
             Sensor.topLabel.BackgroundColor = UIColor.Red;
             Sensor.topLabel.TextColor = UIColor.White;
-            Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
-            Sensor.tLabelBottom.Hidden = false;
 
             if (Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected) {
               Sensor.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
@@ -2658,7 +2608,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (goOn) {
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
-        removeSensor.tLabelBottom.Hidden = true;
 
         removeSensor.lowArea.snapArea.Hidden = true;
         //removeSensor.lowArea.tableSubviews.Clear();
@@ -2683,8 +2632,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         Sensor.topLabel.BackgroundColor = UIColor.Blue;
         Sensor.topLabel.TextColor = UIColor.White;
-        Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
-        Sensor.tLabelBottom.Hidden = false;
         Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
         Sensor.lowArea.tableSubviews.Clear();
         Sensor.lowArea.subviewTable.Source = null;
@@ -2723,7 +2670,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (goOn) {
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
-        removeSensor.tLabelBottom.Hidden = true;
 
         removeSensor.lowArea.snapArea.Hidden = true;
         removeSensor.lowArea.tableSubviews.Clear();
@@ -2747,8 +2693,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         Sensor.topLabel.BackgroundColor = UIColor.Red;
         Sensor.topLabel.TextColor = UIColor.White;
-        Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
-        Sensor.tLabelBottom.Hidden = false;
         Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
         Sensor.lowArea.tableSubviews.Clear();
         Sensor.lowArea.subviewTable.Source = null;
@@ -2787,7 +2731,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (goOn) {
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
-        removeSensor.tLabelBottom.Hidden = true;
 
         removeSensor.lowArea.snapArea.Hidden = true;
         removeSensor.lowArea.tableSubviews.Clear();
@@ -2811,8 +2754,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         Sensor.topLabel.BackgroundColor = UIColor.Blue;
         Sensor.topLabel.TextColor = UIColor.White;
-        Sensor.tLabelBottom.BackgroundColor = UIColor.Blue;
-        Sensor.tLabelBottom.Hidden = false;
         Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
         Sensor.lowArea.tableSubviews.Clear();
         Sensor.lowArea.subviewTable.Source = null;
@@ -2852,7 +2793,6 @@ namespace ION.IOS.ViewController.Analyzer
       if (goOn) {
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
-        removeSensor.tLabelBottom.Hidden = true;
 
         removeSensor.lowArea.snapArea.Hidden = true;
         removeSensor.lowArea.tableSubviews.Clear();
@@ -2876,8 +2816,6 @@ namespace ION.IOS.ViewController.Analyzer
 
         Sensor.topLabel.BackgroundColor = UIColor.Red;
         Sensor.topLabel.TextColor = UIColor.White;
-        Sensor.tLabelBottom.BackgroundColor = UIColor.Red;
-        Sensor.tLabelBottom.Hidden = false;
         Sensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
         Sensor.lowArea.tableSubviews.Clear();
         Sensor.lowArea.subviewTable.Source = null;
@@ -2944,7 +2882,6 @@ namespace ION.IOS.ViewController.Analyzer
 		public static void RemoveLHAssociation(sensor attachSensor){
 			//Console.WriteLine("Removing sensor: " + attachSensor.currentSensor.name);
 			attachSensor.topLabel.BackgroundColor = UIColor.Clear;
-			attachSensor.tLabelBottom.BackgroundColor = UIColor.Clear;
 			attachSensor.topLabel.TextColor = UIColor.Gray;
 		
 			attachSensor.lowArea.snapArea.Hidden = true;
@@ -2963,7 +2900,6 @@ namespace ION.IOS.ViewController.Analyzer
 				Console.WriteLine("Setting low area sensor ui for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Blue;
 				activeSensor.topLabel.TextColor = UIColor.White;
-				activeSensor.tLabelBottom.BackgroundColor = UIColor.Blue;
 				activeSensor.lowArea.snapArea.Hidden = false;
 				activeSensor.highArea.snapArea.Hidden = true;
 				activeSensor.highArea.availableSubviews.Clear();
@@ -2982,7 +2918,6 @@ namespace ION.IOS.ViewController.Analyzer
 				Console.WriteLine("AnalyserUtilities Setting high area sensor ui for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Red;
 				activeSensor.topLabel.TextColor = UIColor.White;
-				activeSensor.tLabelBottom.BackgroundColor = UIColor.Red;
 				activeSensor.highArea.snapArea.Hidden = false;
 				activeSensor.lowArea.snapArea.Hidden = true;
 				activeSensor.lowArea.availableSubviews.Clear();

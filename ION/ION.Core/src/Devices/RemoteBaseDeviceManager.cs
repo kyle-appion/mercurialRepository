@@ -131,8 +131,9 @@
     public RemoteBaseDeviceManager(IION ion, string ID) {
       this.ion = ion;
 			userID = ID;
+   		InitAsync();
 
-      GetRemoteDevices();
+      //GetRemoteDevices();
     }
 
     // Overridden from IDeviceManager
@@ -414,43 +415,43 @@
       return "Failed to create device from serial number: " + serialNumber + ", Protocol: " + protocol;
     }
     
-    public async Task GetRemoteDevices(){
-   		await InitAsync();
+  //  public async Task GetRemoteDevices(){
+  // 		await InitAsync();
 
-     	var deviceUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadLayouts.php";
-			try{
-	     var content = new FormUrlEncodedContent(new[]
-	      {
-	          new KeyValuePair<string, string>("downloadLayouts", "manager"),
-	          new KeyValuePair<string, string>("userID",userID),
-	      });
+  //   	var deviceUrl = "http://ec2-54-205-38-19.compute-1.amazonaws.com/App/downloadLayouts.php";
+		//	try{
+	 //    var content = new FormUrlEncodedContent(new[]
+	 //     {
+	 //         new KeyValuePair<string, string>("downloadLayouts", "manager"),
+	 //         new KeyValuePair<string, string>("userID",userID),
+	 //     });
   
-	      HttpClient wc = new HttpClient();
-	      var result = await wc.PostAsync(deviceUrl,content);
+	 //     HttpClient wc = new HttpClient();
+	 //     var result = await wc.PostAsync(deviceUrl,content);
 	
-				if(result.IsSuccessStatusCode){
-					var textResponse = await result.Content.ReadAsStringAsync();
-					Log.D(this, textResponse);
-					JObject response = JObject.Parse(textResponse);
-					var manifolds = response.GetValue("known");
-					foreach(var device in manifolds){							
-						var deserializedToken = JsonConvert.DeserializeObject<deviceData>(device.ToString());
-						var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
-						var manualDevice = CreateDevice(iserial,EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
+		//		if(result.IsSuccessStatusCode){
+		//			var textResponse = await result.Content.ReadAsStringAsync();
+		//			Log.D(this, textResponse);
+		//			JObject response = JObject.Parse(textResponse);
+		//			var manifolds = response.GetValue("known");
+		//			foreach(var device in manifolds){							
+		//				var deserializedToken = JsonConvert.DeserializeObject<deviceData>(device.ToString());
+		//				var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
+		//				var manualDevice = CreateDevice(iserial,EProtocolVersion.V4, Convert.ToBoolean(deserializedToken.connected)) as GaugeDevice;
 						
-						for(int i = 0; i < deserializedToken.sensors.Length;i++){
-							manualDevice.sensors[i].RemoteForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
-						}						
-						__knownDevices.Add(iserial,manualDevice); 
-					}
-					Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);
-				} else {
-					Log.D("RemoteBaseDeviceManager","Error retrieving device list");
-				}
-			}catch (Exception e){
-				Log.D(this, "Exception: " + e);
-			}
-		}
+		//				for(int i = 0; i < deserializedToken.sensors.Length;i++){
+		//					manualDevice.sensors[i].RemoteForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
+		//				}						
+		//				__knownDevices.Add(iserial,manualDevice); 
+		//			}
+		//			Log.D("RemoteBaseDeviceManager","Number of manual Devices: " + devices.Count);
+		//		} else {
+		//			Log.D("RemoteBaseDeviceManager","Error retrieving device list");
+		//		}
+		//	}catch (Exception e){
+		//		Log.D(this, "Exception: " + e);
+		//	}
+		//}
 		
 		[Preserve(AllMembers = true)]
 		public class deviceData{

@@ -20,7 +20,7 @@ namespace ION.IOS.ViewController.Analyzer
     public UIImageView deviceImage = new UIImageView ();
 
 		public UILabel topLabel = new UILabel();
-    public UILabel tLabelBottom = new UILabel();
+
 		public UILabel middleLabel = new UILabel();
 		public UILabel bottomLabel = new UILabel();
 		public UITapGestureRecognizer shortPressGesture;

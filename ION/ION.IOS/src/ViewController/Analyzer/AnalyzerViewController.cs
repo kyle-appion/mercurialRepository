@@ -762,8 +762,7 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].topLabel.Hidden = false;
           analyzerSensors.viewList[i].topLabel.BackgroundColor = color;
           analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
-          analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = color;
-          analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
+
           if (mentryView.mbuttonText.Text == "micron") {
             analyzerSensors.viewList[i].middleLabel.Text = ((int)amount).ToString();
           } else {
@@ -1118,7 +1117,6 @@ namespace ION.IOS.ViewController.Analyzer {
 						if(checkSensor.lowArea.manifold.secondarySensor == sensor){
 							checkSensor.lowArea.attachedSensor = area;
 							area.topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
-							area.tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
 							area.topLabel.TextColor = UIColor.White;
 						}
 					}
@@ -1130,7 +1128,6 @@ namespace ION.IOS.ViewController.Analyzer {
 						if(checkSensor.highArea.manifold.secondarySensor == sensor){
 							checkSensor.highArea.attachedSensor = area;
 							area.topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
-							area.tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
 							area.topLabel.TextColor = UIColor.White;
 						}
 					}
@@ -1171,12 +1168,12 @@ namespace ION.IOS.ViewController.Analyzer {
             if(start == 0){
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
-              analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Blue;
-              analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
               analyzerSensors.viewList[i].snapArea.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = true;
               lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              //ADD LOW SIDE MANIFOLD TO ANALYZER OBJECT       
+             
               analyzer.lowAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
@@ -1186,12 +1183,12 @@ namespace ION.IOS.ViewController.Analyzer {
 							}
               analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
-              analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
-              analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
               analyzerSensors.viewList[i].snapArea.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
               analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               analyzerSensors.viewList[i].lowArea.snapArea.Hidden = true;
               lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              //ADD HIGH SIDE MANIFOLD TO ANALYZER OBJECT  
+              
               analyzer.highAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
               analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews;
               viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
@@ -1232,7 +1229,6 @@ namespace ION.IOS.ViewController.Analyzer {
               analyzerSensors.viewList[i].topLabel.Text =" " + sensor.device.name;
               analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
               analyzerSensors.viewList[i].topLabel.Hidden = false;
-              analyzerSensors.viewList[i].tLabelBottom.Hidden = false;
               if(sensor.unit == Units.Vacuum.MICRON){
                 analyzerSensors.viewList[i].middleLabel.Text = sensor.measurement.amount.ToString();
               } else {
@@ -1267,7 +1263,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
               if(start == 0){
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Blue;
-                analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Blue;
                 analyzerSensors.viewList[i].lowArea.DeviceImage.Hidden = false;           
                 analyzerSensors.viewList[i].lowArea.Connection.Hidden = false;
                 analyzerSensors.viewList[i].lowArea.headingDivider.Hidden = false;
@@ -1275,10 +1270,11 @@ namespace ION.IOS.ViewController.Analyzer {
                 viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].lowArea.snapArea);
                 analyzerSensors.viewList[i].lowArea.snapArea.Hidden = false;
                 analyzer.lowAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+	              //ADD LOW SIDE MANIFOLD TO ANALYZER OBJECT	
+                
                 analyzer.lowSubviews = analyzerSensors.viewList[i].lowArea.tableSubviews;
               } else {
                 analyzerSensors.viewList[i].topLabel.BackgroundColor = UIColor.Red;
-                analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = UIColor.Red;
                 analyzerSensors.viewList[i].highArea.DeviceImage.Hidden = false;           
                 analyzerSensors.viewList[i].highArea.Connection.Hidden = false;
                 analyzerSensors.viewList[i].highArea.headingDivider.Hidden = false;
@@ -1286,6 +1282,8 @@ namespace ION.IOS.ViewController.Analyzer {
                 viewAnalyzerContainer.BringSubviewToFront(analyzerSensors.viewList[i].highArea.snapArea);
                 analyzerSensors.viewList[i].highArea.snapArea.Hidden = false;
               	analyzer.highAccessibility = analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier;
+              	//ADD HIGH SIDE MANIFOLD TO ANALYZER OBJECT
+                            	
               	analyzer.highSubviews = analyzerSensors.viewList[i].highArea.tableSubviews;
               }
 
@@ -1317,7 +1315,6 @@ namespace ION.IOS.ViewController.Analyzer {
 								if(checkSensor.lowArea.attachedSensor.currentSensor != null){
 									if(checkSensor.lowArea.attachedSensor.currentSensor == sensor){
 										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
-										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.lowArea.LabelSubview.BackgroundColor;
 										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
 									}
 								}
@@ -1328,7 +1325,6 @@ namespace ION.IOS.ViewController.Analyzer {
 								if(checkSensor.highArea.attachedSensor.currentSensor != null){
 									if(checkSensor.highArea.attachedSensor.currentSensor == sensor){
 										analyzerSensors.viewList[i].topLabel.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
-										analyzerSensors.viewList[i].tLabelBottom.BackgroundColor = checkSensor.highArea.LabelSubview.BackgroundColor;
 										analyzerSensors.viewList[i].topLabel.TextColor = UIColor.White;
 									}
 								}
@@ -1354,16 +1350,19 @@ namespace ION.IOS.ViewController.Analyzer {
 								Console.WriteLine("low side was attached to the sensor before and needs to be cleared out");
 		            lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
 		            analyzer.lowAccessibility = "low";
+              	//ADD LOW SIDE MANIFOLD TO ANALYZER OBJECT
+	            
 							}
 						} else {
 							if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier == analyzerSensors.viewList[i].snapArea.AccessibilityIdentifier){
 								Console.WriteLine("high side was attached to the sensor before and needs to be cleared out");
 		            lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
 		            analyzer.highAccessibility = "high";
+		            //ADD LOW SIDE MANIFOLD TO ANALYZER OBJECT
+
 							}
 						}
             analyzerSensors.viewList[i].topLabel.Hidden = true;
-            analyzerSensors.viewList[i].tLabelBottom.Hidden = true;
             analyzerSensors.viewList[i].middleLabel.Hidden = true;
             analyzerSensors.viewList[i].bottomLabel.Hidden = true;
             analyzerSensors.viewList[i].snapArea.BackgroundColor = UIColor.Clear;
