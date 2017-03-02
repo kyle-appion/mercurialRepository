@@ -47,6 +47,12 @@
 
 				ion.PostToMainDelayed(() => {
 					adapter.NotifyDataSetChanged();
+					var r = adapter[i] as PortalRemoteViewingRecord;
+					if (r.isBeingDownloaded) {
+						button.SetText(Resource.String.portal_remote_mode);
+					} else {
+						button.SetText(Resource.String.portal_local_mode);
+					}
 				}, TimeSpan.FromMilliseconds(500));
 			};
 

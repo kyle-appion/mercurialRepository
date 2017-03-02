@@ -103,9 +103,12 @@
 
 		private async Task CloneRemote() {
 			await portal.CloneFromRemote(this, userId);
-			handler.PostDelayed(async () => {
-				await CloneRemote();
-			}, REQUEST_LAYOUT_INTERVAL);
+			// TODO ahodder@appioninc.com: Sometimes the user would dispose the remote instance in the middle of a remote download
+			if (handler != null) {
+				handler.PostDelayed(async () => {
+					await CloneRemote();
+				}, REQUEST_LAYOUT_INTERVAL);
+			}
 		}
 	}
 }
