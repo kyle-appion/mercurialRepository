@@ -15,6 +15,8 @@
 		public int linkedIndex;
 		[JsonProperty("fl")]
 		public string fluid;
+		[JsonProperty("fls")]
+		public int fluidState;
 		[JsonProperty("sub")]
 		public int[] subviewCodes;
 	}
