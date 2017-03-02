@@ -862,7 +862,7 @@ namespace ION.CoreExtensions.Net.Portal {
 
 			if (gd != null) {
 				var m = new Manifold(gd.sensors[remoteManifold.index]);
-				m.ptChart = PTChart.New(ion, Fluid.EState.Bubble, ion.fluidManager.LoadFluidAsync(remoteManifold.fluid).Result);
+				m.ptChart = PTChart.New(ion, (Fluid.EState)remoteManifold.fluidState, ion.fluidManager.LoadFluidAsync(remoteManifold.fluid).Result);
 
 				if (remoteManifold.linkedSerialNumber != null) {
 					var lsn = remoteManifold.linkedSerialNumber.ParseSerialNumber();
@@ -913,12 +913,12 @@ namespace ION.CoreExtensions.Net.Portal {
 						pendingRemovals.Remove(wb[wbi].primarySensor);
 
 						if (wbi != ci) { // The sensor moved in the workbench
-							Log.D(this, "Removing and replacing: " + sensor);
 							wb.Remove(sensor);
 							var m = InflateManifoldFromJson(ion, rm);
 							wb.Insert(m, ci);
 						} else { // The sensor is exactly where we left it.
 							// Do Nothing
+							SyncManifold(ion, wb[wbi], rm);
 							SyncManifoldSensorProperties(wb[wbi], rm);
 						}
 					} else { // The sensor is not present in the workbench
@@ -931,8 +931,33 @@ namespace ION.CoreExtensions.Net.Portal {
 			}
 
 			foreach (var sensor in pendingRemovals) {
-				Log.D(this, "Removing pending removal sensor: " + sensor);
 				wb.Remove(sensor);
+			}
+		}
+
+		// TODO ahodder@appioninc.com: Using Task.Result synchronously
+		private void SyncManifold(IION ion, Manifold manifold, RemoteManifold rm) {
+			var fs = (Fluid.EState)rm.fluidState;
+			if (!manifold.ptChart.fluid.name.Equals(rm.fluid) || manifold.ptChart.state != fs) {
+				manifold.ptChart = PTChart.New(ion, fs, ion.fluidManager.LoadFluidAsync(rm.fluid).Result);
+			}
+		}
+
+		private void SyncManifoldSensorProperties(Manifold manifold, RemoteManifold rm) {
+			var codes = new HashSet<int>(rm.subviewCodes);
+			var sps = new List<ISensorProperty>(manifold.sensorProperties);
+
+			foreach (var sp in sps) {
+				var code = CodeFromSensorProperty(sp);
+				if (code != -1) {
+					if (!codes.Contains(code)) {
+						manifold.RemoveSensorProperty(sp);
+					}
+				}
+			}
+
+			foreach (var code in codes) {
+				manifold.AddSensorProperty(ParseSensorPropertyFromCode(manifold, code));
 			}
 		}
 
@@ -993,24 +1018,6 @@ namespace ION.CoreExtensions.Net.Portal {
 				return CODE_SP_SECONDARY;
 			} else {
 				return -1;
-			}
-		}
-
-		private void SyncManifoldSensorProperties(Manifold manifold, RemoteManifold rm) {
-			var codes = new HashSet<int>(rm.subviewCodes);
-			var sps = new List<ISensorProperty>(manifold.sensorProperties);
-
-			foreach (var sp in sps) {
-				var code = CodeFromSensorProperty(sp);
-				if (code != -1) {
-					if (!codes.Contains(code)) {
-						manifold.RemoveSensorProperty(sp);
-					}
-				}
-			}
-
-			foreach (var code in codes) {
-				manifold.AddSensorProperty(ParseSensorPropertyFromCode(manifold, code));
 			}
 		}
 
