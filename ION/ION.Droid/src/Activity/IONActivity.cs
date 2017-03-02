@@ -28,7 +28,7 @@
 	using ION.Droid.Preferences;
   using ION.Droid.Util;
 
-	public class IONActivity : Activity, ISharedPreferencesOnSharedPreferenceChangeListener, ActivityCompat.IOnRequestPermissionsResultCallback {
+	public class IONActivity : Activity, IServiceConnection, ISharedPreferencesOnSharedPreferenceChangeListener, ActivityCompat.IOnRequestPermissionsResultCallback {
 
 		/// <summary>
 		/// The request code that is used to request the location permissions from the user.
@@ -40,15 +40,17 @@
 		/// </summary>
 		public const int REQUEST_BLUETOOTH_ENABLE = -1;
 
+		/// <summary>
+		/// The primary application service.
+		/// </summary>
+		/// <value>The service.</value>
+		public AppService service { get; private set; }
+
     /// <summary>
     /// Queries the current running ion instance.
     /// </summary>
     /// <value>The ion.</value>
-    public AndroidION ion {
-      get {
-        return AppState.context as AndroidION;
-      }
-    }
+		public BaseAndroidION ion { get { return AppState.context as BaseAndroidION; } }
 		/// <summary>
 		/// Queries whether or not the bluetooth adapter is enabled.
 		/// </summary>
@@ -97,12 +99,19 @@
       cache = new BitmapCache(Resources);
 			prefs = AppPrefs.Get(this);
 			prefs.prefs.RegisterOnSharedPreferenceChangeListener(this);
+
+			BindService(new Intent(this, typeof(AppService)), this, 0);
     }
 
 		protected override void OnResume() {
 			base.OnResume();
 			SetWakeLock(prefs.isWakeLocked);
 			Log.D(this, new AndroidPlatformInfo(this).ToString());
+			if (ion is RemoteION) {
+				ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Resource.Color.red)));
+			} else {
+				ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Android.Resource.Color.BackgroundDark)));
+			}
 		}
 
 		protected override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
@@ -114,6 +123,7 @@
 						Alert(GetString(Resource.String.bluetooth_enable_failed));
 					}
 					break;
+
 				default:
 					base.OnActivityResult(requestCode, resultCode, data);
 					break;
@@ -138,6 +148,17 @@
 				} break;
 			}
 */
+		}
+
+		// Implemented from IServiceConnection
+		public void OnServiceConnected(ComponentName name, IBinder service) {
+			var binder = service as AppService.AppBinder;
+			this.service = binder.service;
+		}
+
+		// Implemented from IServiceConnection
+		public void OnServiceDisconnected(ComponentName name) {
+			this.service = null;
 		}
 
     /// <summary>
@@ -365,6 +386,54 @@
       Log.E(this, message, e);
       Toast.MakeText(this, message, ToastLength.Long).Show();
     }
+
+		/// <summary>
+		/// The test function that is used to create a remote ion for testing and development puposes.
+		/// </summary>
+		/// <returns>The remote.</returns>
+		public async Task<bool> StartRemoteIONAsync(string userId) {
+			bool result = false;
+
+			try {
+				result = await service.InitRemoteION(userId);
+			} catch (Exception e) {
+				Log.E(this, "Failed to start RemoteION", e);
+			}
+
+			if (!result) {
+				var adb = new IONAlertDialog(this);
+				// TODO-LOCALIZE ahodder@appioninc.com:
+				adb.SetTitle("US Error");
+				adb.SetMessage("US Failed to start remote ION. Please check your internet connection. If the issue persists, please contact Appion at " + AppionConstants.EMAIL_SUPPORT);
+				adb.SetNegativeButton(Resource.String.close, (sender, args) => {}); 
+				adb.Show();
+				return false;
+			}
+
+			return true;
+		}
+
+		public async Task<bool> StartLocalIONAsync() {
+			bool result = false;
+
+			try {
+				result = await service.InitLocalION();
+			} catch (Exception e) {
+				Log.E(this, "Failed to start LocalION", e);
+			}
+
+			if (!result) {
+				var adb = new IONAlertDialog(this);
+				// TODO-LOCALIZE ahodder@appioninc.com:
+				adb.SetTitle("US Error");
+				adb.SetMessage("US Failed to start remote ION. Please check your internet connection. If the issue persists, please contact Appion at " + AppionConstants.EMAIL_SUPPORT);
+				adb.SetNegativeButton(Resource.String.close, (sender, args) => {}); 
+				adb.Show();
+				return false;
+			}
+
+			return true;
+		}
   }
 }
 

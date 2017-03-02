@@ -1,4 +1,4 @@
-﻿using Android.Widget;
+﻿using ION.Core.Fluids;
 namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
@@ -10,12 +10,21 @@ namespace ION.CoreExtensions.Net.Portal {
 	using System.Text;
 	using System.Threading.Tasks;
 
+	using Newtonsoft.Json;
 	using Newtonsoft.Json.Linq;
 
+	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
 	using ION.Core.App;
+	using ION.Core.Content;
 	using ION.Core.Database;
+	using ION.Core.Devices;
+	using ION.Core.Devices.Protocols;
+	using ION.Core.Sensors;
+	using ION.Core.Sensors.Properties;
+
+	using ION.CoreExtensions.Net.Portal.Remote;
 
 	public class IONPortalService {
 
@@ -34,6 +43,7 @@ namespace ION.CoreExtensions.Net.Portal {
 		private const string URL_ACCESS_CODE_DELETE = "http://portal.appioninc.com/App/deleteAccess.php";
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
+		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
 		private const string URL_UPDATE_ACCOUNT = "http://portal.appioninc.com/App/updateAccount.php";
 		private const string URL_FORGOT_ACCOUNT = "http://portal.appioninc.com/App/forgotUserPass.php";
 		private const string URL_LOGIN_USER = "http://portal.appioninc.com/App/applogin.php";
@@ -91,6 +101,25 @@ namespace ION.CoreExtensions.Net.Portal {
     private const string JSON_ACCESS_ID = "accessID";
     private const string JSON_ACCESS_CODE_DELETE_USER = "deleteUserAccess";
     private const string JSON_ACCESS_CODE_DELETE_VIEWER = "deleteViewerAccess";
+
+    private const string JSON_ACTION_CLONE_REMOTE = "downloadLayouts";
+    private const string JSON_ALTITUDE = "alt";
+    private const string JSON_LAYOUT = "layout";
+    private const string JSON_KNOWN = "known";
+    private const string JSON_ANALYZER = "alyzer";
+    private const string JSON_SETUP = "setup";
+    private const string JSON_MANIFOLDS = "LH";
+		private const string JSON_WORKBENCH = "workB";
+
+		private const int CODE_SP_PT = 1;
+		private const int CODE_SP_SHSC = 2;
+		private const int CODE_SP_MIN = 3;
+		private const int CODE_SP_MAX = 4;
+		private const int CODE_SP_HOLD = 5;
+		private const int CODE_SP_ROC = 6;
+		private const int CODE_SP_TIMER = 7;
+		private const int CODE_SP_SECONDARY = 8;
+
 
 
 		private const string PORTAL_DATE_FORMAT = "yy-MM-dd HH:mm:ss";
@@ -596,6 +625,7 @@ namespace ION.CoreExtensions.Net.Portal {
 								id = id,
 								displayName = user.GetValue(JSON_DISPLAY).ToString(),
 								email = user.GetValue(JSON_EMAIL).ToString(),
+								isUserOnline = int.Parse(user.GetValue(JSON_ONLINE).ToString()) != 0,
 							});
 						} catch (Exception e) {
 							Log.E(this, "Failed to parse user data:\n" + userTok, e);
@@ -726,6 +756,261 @@ namespace ION.CoreExtensions.Net.Portal {
 			} catch (Exception e) {
 				Log.E(this, "Failed to query user's connections", e);
 				return new PortalResponse<List<ConnectionData>>(null, "", EError.InternalError);
+			}
+		}
+
+		/// <summary>
+		/// Downloads and inflates the given remote user's ION instance into this instance.
+		/// </summary>
+		/// <returns>The from remote.</returns>
+		/// <param name="userId">User identifier.</param>
+		// TODO ahodder@appioninc.com: This method is OMG huge and can be simplified and refactored, likely, into a custom serializer
+		public async Task<PortalResponse> CloneFromRemote(IION ion, string userId) {
+			try {
+				var formContent = new FormUrlEncodedContent(new[] {
+					new KeyValuePair<string, string>(JSON_ACTION_CLONE_REMOTE, JSON_MANAGER),
+					new KeyValuePair<string, string>(JSON_USER_ID, userId),
+				});
+
+				var response = await client.PostAsync(URL_CLONE_REMOTE, formContent);
+				var content = await response.Content.ReadAsStringAsync();
+
+				var json = JObject.Parse(content);
+//				Log.D(this, json.ToString());
+				if (TRUE.Equals(json.GetValue(JSON_SUCCESS)) || CheckResponseForSuccess(json)) {
+					json = json.GetValue(JSON_LAYOUT) as JObject;
+					// Set the local altitude to the remote altitude
+					double remoteAltitude = 0;
+					if (double.TryParse(json.GetValue(JSON_ALTITUDE).ToString(), out remoteAltitude)) {
+						ion.locationManager.AttemptSetLocation(Units.Length.METER.OfScalar(remoteAltitude));
+					}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					// Clone the remote device manager
+					var deviceManagerClone = json.GetValue(JSON_KNOWN);
+					// This set is the set containing all the of the devices that are pending removal from the device manager.
+					// If a user forgets a device, we need to reflect that in the cloned device manager. So, this set will contain
+					// all of the "historical" devices from the last state. As devices are iterated over, we will remove them from
+					// the set. Once all new devices have been added, we will remove all remaining devices in the set from the
+					// device manager.
+					var oldDevices = new HashSet<IDevice>(ion.deviceManager.devices);
+					foreach (var deviceToken in deviceManagerClone) {
+						var remoteDevice = JsonConvert.DeserializeObject<RemoteGaugeDevice>(deviceToken.ToString());
+						var serialNumber = remoteDevice.serialNumber.ParseSerialNumber();
+//						var device = ion.deviceManager.CreateDevice(serialNumber, "", EProtocolVersion.V4);
+						var device = ion.deviceManager[serialNumber];
+
+						if (device == null) {
+							// The device does not exist. We need to create and register it.
+							device = ion.deviceManager.CreateDevice(serialNumber, "", EProtocolVersion.V4);
+							ion.deviceManager.Register(device);
+						}
+
+						var gd = device as GaugeDevice;
+						oldDevices.Remove(device); // Remove the device from the pending device removal.
+
+						foreach (var remoteSensor in remoteDevice.sensors) {
+							var sensor = gd[remoteSensor.sensorIndex];
+							sensor.ForceSetMeasurement(UnitLookup.GetUnit(remoteSensor.unit).OfScalar(remoteSensor.measurement));
+						}
+					}
+
+					// Remove all remaining historical devices.
+					foreach (var device in oldDevices) {
+						await ion.deviceManager.DeleteDevice(device.serialNumber);
+					}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					// Clone the workbench 
+					var workbenchClone = json.GetValue(JSON_WORKBENCH);
+
+					ion.PostToMain(() => {
+						SyncWorkbench(ion, workbenchClone);
+					});
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+					// TODO ahodder@appioninc.com: This could use a lot of clean up. There is little reason that the structure
+					// should be this fragmented.
+					// Clone the remote analyzer
+					var analyzerClone = json.GetValue(JSON_ANALYZER);
+					var setup = json.GetValue(JSON_SETUP);
+					var manifold = json.GetValue(JSON_MANIFOLDS);
+				}
+
+				return new PortalResponse(null, "", EError.InternalError);
+			} catch (Exception e) {
+				Log.E(this, "Failed to clone ion instance from remote", e);
+				return new PortalResponse(null, "", EError.InternalError);
+			}
+		}
+
+		/// <summary>
+		/// Inflates the manifold from json.
+		/// </summary>
+		/// <returns>The manifold from json.</returns>
+		/// <param name="remoteManifold">Workbench token.</param>
+		private Manifold InflateManifoldFromJson(IION ion, RemoteManifold remoteManifold) {
+			var sn = remoteManifold.serialNumber.ParseSerialNumber();
+
+			var device = ion.deviceManager[sn];
+			if (device == null) {
+				Log.E(this, "(CloneFromRemote) Failed to find device {" + sn + "} in device manager");
+				return null;
+			}
+
+			var gd = device as GaugeDevice;
+
+			if (gd != null) {
+				var m = new Manifold(gd.sensors[remoteManifold.index]);
+				m.ptChart = PTChart.New(ion, Fluid.EState.Bubble, ion.fluidManager.LoadFluidAsync(remoteManifold.fluid).Result);
+
+				if (remoteManifold.linkedSerialNumber != null) {
+					var lsn = remoteManifold.linkedSerialNumber.ParseSerialNumber();
+					var linkedDevice = ion.deviceManager[lsn];
+					if (linkedDevice != null) {
+						var lgs = ((GaugeDevice)linkedDevice)[remoteManifold.linkedIndex];
+						m.SetSecondarySensor(lgs);
+					}
+				}
+
+				foreach (int code in remoteManifold.subviewCodes) {
+					var sp = ParseSensorPropertyFromCode(m, code);
+					if (sp != null) {
+						m.AddSensorProperty(sp);
+					}
+				}
+
+				return m;
+			} else {
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Attempts to sync the received uploaded workbench to the local remote workbench.
+		/// </summary>
+		/// <param name="ion">Ion.</param>
+		/// <param name="workbenchClone">Workbench clone.</param>
+		private void SyncWorkbench(IION ion, JToken workbenchClone) {
+			var wb = ion.currentWorkbench;
+
+			var pendingRemovals = new HashSet<Sensor>();
+			foreach (var m in wb.manifolds) {
+				pendingRemovals.Add(m.primarySensor);
+			}
+
+			var ci = 0; // Current index
+			foreach (var manifoldToken in workbenchClone) {
+				var rm = JsonConvert.DeserializeObject<RemoteManifold>(manifoldToken.ToString());
+				var sn = rm.serialNumber.ParseSerialNumber();
+
+				var gd = ion.deviceManager[sn] as GaugeDevice;
+				if (gd != null) {
+					var sensor = gd[rm.index];
+
+					var wbi = wb.IndexOf(sensor);
+					if (wbi != -1) { // The sensor is present in the workbench
+						pendingRemovals.Remove(wb[wbi].primarySensor);
+
+						if (wbi != ci) { // The sensor moved in the workbench
+							Log.D(this, "Removing and replacing: " + sensor);
+							wb.Remove(sensor);
+							var m = InflateManifoldFromJson(ion, rm);
+							wb.Insert(m, ci);
+						} else { // The sensor is exactly where we left it.
+							// Do Nothing
+							SyncManifoldSensorProperties(wb[wbi], rm);
+						}
+					} else { // The sensor is not present in the workbench
+						// Insert the sensor into the workbench at the current index
+						var m = InflateManifoldFromJson(ion, rm);
+						wb.Insert(m, ci);
+					}
+				}
+				ci++;
+			}
+
+			foreach (var sensor in pendingRemovals) {
+				Log.D(this, "Removing pending removal sensor: " + sensor);
+				wb.Remove(sensor);
+			}
+		}
+
+		/// <summary>
+		/// Creates a new sensor property from the given code. 
+		/// </summary>
+		/// <returns>The sensor property from code.</returns>
+		/// <param name="code">Code.</param>
+		/// <param name="manifold">Manifold.</param>
+		private ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, int code) {
+			switch (code) {
+				case CODE_SP_PT:
+					return new PTChartSensorProperty(manifold);
+
+				case CODE_SP_SHSC:
+					return new SuperheatSubcoolSensorProperty(manifold);
+
+				case CODE_SP_MIN:
+					return new MinSensorProperty(manifold.primarySensor);
+
+				case CODE_SP_MAX:
+					return new MaxSensorProperty(manifold.primarySensor);
+
+				case CODE_SP_HOLD:
+					return new HoldSensorProperty(manifold.primarySensor);
+
+				case CODE_SP_ROC:
+					return new RateOfChangeSensorProperty(manifold.primarySensor);
+
+				case CODE_SP_TIMER:
+					return new TimerSensorProperty(manifold.primarySensor);
+
+				case CODE_SP_SECONDARY:
+					return new SecondarySensorProperty(manifold);
+
+				default:
+					Log.E(this, "Failed to find sensor property with code {" + code + "}");
+					return null;
+			}
+		}
+
+		private int CodeFromSensorProperty(ISensorProperty sp) {
+			if (sp is PTChartSensorProperty) {
+				return CODE_SP_PT;
+			} else if (sp is SuperheatSubcoolSensorProperty) {
+				return CODE_SP_SHSC;
+			} else if (sp is MinSensorProperty) {
+				return CODE_SP_MIN;
+			} else if (sp is MaxSensorProperty) {
+				return CODE_SP_MAX;
+			} else if (sp is HoldSensorProperty) {
+				return CODE_SP_HOLD;
+			} else if (sp is RateOfChangeSensorProperty) {
+				return CODE_SP_ROC;
+			} else if (sp is TimerSensorProperty) {
+				return CODE_SP_TIMER;
+			} else if (sp is SecondarySensorProperty) {
+				return CODE_SP_SECONDARY;
+			} else {
+				return -1;
+			}
+		}
+
+		private void SyncManifoldSensorProperties(Manifold manifold, RemoteManifold rm) {
+			var codes = new HashSet<int>(rm.subviewCodes);
+			var sps = new List<ISensorProperty>(manifold.sensorProperties);
+
+			foreach (var sp in sps) {
+				var code = CodeFromSensorProperty(sp);
+				if (code != -1) {
+					if (!codes.Contains(code)) {
+						manifold.RemoveSensorProperty(sp);
+					}
+				}
+			}
+
+			foreach (var code in codes) {
+				manifold.AddSensorProperty(ParseSensorPropertyFromCode(manifold, code));
 			}
 		}
 

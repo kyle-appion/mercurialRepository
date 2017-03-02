@@ -6,6 +6,7 @@
 	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
+	using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.Sensors;

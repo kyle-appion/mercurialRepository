@@ -42,7 +42,6 @@
 				__record = value;
 				if (__record != null) {
 					Bind();
-					__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
 					Invalidate();
 				}
 			}
@@ -61,16 +60,23 @@
 		}
 
 		public virtual void Bind() {
+			__record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+			sensorPropertyRecord.manifold.onManifoldEvent += OnManifoldEvent;
 		}
 
 		public override void Unbind() {
 			base.Unbind();
 			if (sensorPropertyRecord != null) {
 				sensorPropertyRecord.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+				sensorPropertyRecord.manifold.onManifoldEvent -= OnManifoldEvent;
 			}
 		}
 
 		public virtual void Invalidate() {
+			InvalidateAssociation();
+		}
+
+		private void InvalidateAssociation() {
 			if (association != null) {
 				if (sensorPropertyRecord.manifold.IndexOfSensorProperty(sensorPropertyRecord.sensorProperty) >= sensorPropertyRecord.manifold.sensorPropertyCount - 1) {
 					association.SetBackgroundResource(Resource.Drawable.ic_association);
@@ -82,6 +88,23 @@
 
 		protected virtual void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
 			Invalidate();
+		}
+
+		protected virtual void OnManifoldEvent(ManifoldEvent manifoldEvent) {
+			switch (manifoldEvent.type) {
+				case ManifoldEvent.EType.SensorPropertyAdded: {
+					InvalidateAssociation();
+					break;
+				} // ManifoldEvent.EType.SensorPropertyAdded
+				case ManifoldEvent.EType.SensorPropertyRemoved: {
+					InvalidateAssociation();
+					break;
+				} // ManifoldEvent.EType.SensorPropertyAdded
+				case ManifoldEvent.EType.SensorPropertySwapped: {
+					InvalidateAssociation();
+					break;
+				} // ManifoldEvent.EType.SensorPropertySwapped
+			}
 		}
 	}
 

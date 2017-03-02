@@ -1,22 +1,24 @@
-﻿using ION.Droid.Views;
-namespace ION.Droid.Activity.Portal {
+﻿namespace ION.Droid.Activity.Portal {
 
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
+	using System.Threading.Tasks;
 
 	using Android.Animation;
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
 	using Android.OS;
-	using Android.Runtime;
 	using Android.Support.Design.Widget;
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Util;
+
+	using ION.Core.App;
+
+	using ION.Droid.App;
 	using ION.Droid.Dialog;
+	using ION.Droid.Views;
 
 	/// <summary>
 	/// This activity is the base activity for Appion portal interactions.
@@ -57,6 +59,23 @@ namespace ION.Droid.Activity.Portal {
 				var i = new Intent(Intent.ActionView);
 				i.SetData(Android.Net.Uri.Parse(ion.portal.loginPortalUrl));
 				StartActivity(i);
+			};
+
+			// TODO-Localize ahodder@appioninc.com:
+			var startRemote = FindViewById<Button>(Resource.Id.button);
+			startRemote.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
+/*
+				if (ion is RemoteION) {
+					if (await StartLocalION()) {
+						startRemote.Text = "US Remote View";
+					}
+				} else {
+					if (await StartRemoteION()) {
+						startRemote.Text = "US Local View";
+					}
+				}
+*/
 			};
 
 			home.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
@@ -247,6 +266,5 @@ namespace ION.Droid.Activity.Portal {
 			            .Before(animIn);
 			animationSet.Start();
 		}
-
 	}
 }

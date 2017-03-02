@@ -171,7 +171,6 @@
       base.OnDestroy();
 
       ion.deviceManager.ForgetFoundDevices();
-//      adapter.Release();
     }
 
     // Overridden from Activity

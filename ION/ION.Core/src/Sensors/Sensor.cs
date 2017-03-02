@@ -240,7 +240,6 @@ namespace ION.Core.Sensors {
 				}
 				// DEFAULT
 				else {
-					Appion.Commons.Util.Log.D(typeof(SensorUtils).Name, "Could not find format for unit: " + unit);
 					ret = amount.ToString("0.00");
 				}
 			}
@@ -533,22 +532,8 @@ namespace ION.Core.Sensors {
       __measurement = value;
       NotifySensorStateChanged();
     }
-    /// <summary>
-    /// Forces the measurement of the remote sensor to be set to the given value. This bypasses the connection
-    /// helper and allows setting manual sensor values. SHOULD NOT BE USED FOR NORMAL GAUGE OPERATIONS
-    /// </summary>
-    /// <remarks>
-    /// This operation will throw an exception if the scalar is not
-    /// compatible with the sensor's unit.
-    /// </remarks>
-    /// <param name="value">Value.</param>
-		public void RemoteForceSetMeasurement(Scalar value) {
-      if (!value.unit.IsCompatible(unit)) {
-        throw new ArgumentException("Cannot set measurement: " + value.unit + " is not compatible with " + unit);
-      }
-      __measurement = value;
-      NotifySensorStateChanged();
-		}
+
+
     /// <summary>
     /// Forces the unit of the sensor to be set.
     /// </summary>

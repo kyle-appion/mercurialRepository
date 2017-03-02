@@ -38,7 +38,7 @@
 		private ImageView imageView;
 		private TextView textView;
 
-		private Handler handler = new Handler();
+		private Handler handler = new Handler(Looper.MainLooper);
 
 		public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			var ret = inflater.Inflate(Resource.Layout.fragment_tutorial, container, false);

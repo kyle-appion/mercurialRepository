@@ -56,6 +56,10 @@
     internal void SetMeasurement(Scalar measurement) {
       ForceSetMeasurement(measurement);
     }
+
+		public override string ToString() {
+			return string.Format("[GaugeDeviceSensor: isEditable={0}, device={1}, index={2}, removable={3}, removed={4}]", isEditable, device, index, removable, removed);
+		}
   }
 }
 

@@ -153,8 +153,13 @@
       }
     }
     
-    public void setLocationRemote(double altitude){
-			lastKnownLocation = new IosLocation(altitude);
+		public bool AttemptSetLocation(Scalar altitude){
+			if (altitude.unit.quantity != Quantity.Length) {
+				return false;
+			} else {
+				lastKnownLocation = new IosLocation(altitude.ConvertTo(Units.Length.METER).amount);
+				return true;
+			}
 		}
   }
 

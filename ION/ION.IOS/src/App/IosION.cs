@@ -57,6 +57,8 @@
 		/// </summary>
 		public event OnWorkbenchChanged onWorkbenchChanged;
 
+		public event OnAnalyzerChanged onAnalyzerChanged;
+
     // Overridden from IION
     public string name { get { return GetDisplayName(); } }
     // Overridden from IION
@@ -241,7 +243,7 @@
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>
-    private readonly List<IIONManager> managers = new List<IIONManager>();
+    private readonly List<IManager> managers = new List<IManager>();
 
     public IosION() {
       // Order matters - Manager's with no dependencies should come first such
@@ -365,6 +367,14 @@
 				return Task.FromResult(new Workbench(this));
       }
     }
+
+		public Task<Analyzer> LoadAnalyzerAsync(IFile file) {
+			return null;
+		}
+
+		public Task SaveAnalyzerAsync() {
+			return null;
+		}
     
     /// <summary>
     /// Creates a Device Manager that will deal only with the remote devices another user has uploaded
@@ -385,6 +395,7 @@
       	
       	///create a new remotebasedevicemanager for the remote session chosen and store the original basedevicemanager for restoring
       	var remoteDManager = new RemoteBaseDeviceManager(this, NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"));
+				remoteDManager.InitAsync().Wait();
 				remoteDManager.storedDeviceManager = (BaseDeviceManager)deviceManager;
 				deviceManager = remoteDManager;
 				deviceManager.connectionFactory = remoteDManager.storedDeviceManager.connectionFactory;

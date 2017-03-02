@@ -158,7 +158,7 @@
 
 			public Api18Scanner(BluetoothAdapter adapter) {
 				this.adapter = adapter;
-				this.handler = new Handler();
+				this.handler = new Handler(Looper.MainLooper);
 			}
 
 			public void StartScan() {

@@ -7,7 +7,7 @@ namespace ION.Core.IO {
   /// <summary>
   /// The contract that allows the core to interact with the platform storage.
   /// </summary>
-  public interface IFileManager : IIONManager {
+  public interface IFileManager : IManager {
     /// <summary>
     /// Queries the directory that the application's resources/assets are held.
     /// </summary>

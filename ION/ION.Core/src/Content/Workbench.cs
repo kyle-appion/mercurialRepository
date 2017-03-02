@@ -140,6 +140,21 @@
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
     }
 
+		/// <summary>
+		/// Queries the index of the manifold whose primary sensor is the given sensor.
+		/// </summary>
+		/// <returns>The of.</returns>
+		/// <param name="sensor">Sensor.</param>
+		public int IndexOf(Sensor sensor) {
+			for (int i = 0; i < manifolds.Count; i++) {
+				if (manifolds[i].primarySensor == sensor) {
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
     /// <summary>
     /// Queries the index of the given manifold or -1 if the manifold is not present in the workbench.
     /// </summary>

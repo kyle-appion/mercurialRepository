@@ -358,7 +358,7 @@ namespace ION.IOS.ViewController.Analyzer
 								if(LabelSubview.BackgroundColor == UIColor.Blue && location > 3){
 									//Console.WriteLine("blue. Adding sensor from location " + location);
 									__manifold.SetSecondarySensor(null);
-									ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.Low,null);
+                                ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.Low,(Manifold)null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
@@ -367,7 +367,7 @@ namespace ION.IOS.ViewController.Analyzer
 								} else if (LabelSubview.BackgroundColor == UIColor.Red && location < 4){
 									//Console.WriteLine("red. Adding sensor from location " + location);
 									__manifold.SetSecondarySensor(null);
-									ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.High,null);
+                                ion.currentAnalyzer.SetManifold(Core.Content.Analyzer.ESide.High,(Manifold)null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));

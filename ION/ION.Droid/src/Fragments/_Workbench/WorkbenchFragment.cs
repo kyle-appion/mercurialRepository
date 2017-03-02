@@ -20,6 +20,7 @@
   // Using ION.Droid
   using Activity;
   using Activity.DeviceManager;
+	using App;
   using Dialog;
   using Sensors;
 
@@ -37,7 +38,7 @@
     /// The workbench that the fragment is currently working with.
     /// </summary>
     /// <value>The workbench.</value>
-    public Workbench workbench { get; set; }
+		public Workbench workbench { get; set; }
 
     /// <summary>
     /// The listview that will display the Viewers (manifolds) for workbench fragment.
@@ -55,6 +56,12 @@
     /// </summary>
     /// <value>The adapter.</value>
     public WorkbenchAdapter adapter { get; set; }
+
+		/// <summary>
+		/// Whether or not the workbench is editable.
+		/// </summary>
+		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
+		public bool isEditable { get { return ion is AndroidION; } }
 
     /// <Docs>If the fragment is being re-created from
     ///  a previous saved state, this is the state.</Docs>
@@ -105,43 +112,42 @@
 				return;
 			}
 #endif
+		}
 
-      if (workbench == null) {
-				workbench = ion.currentWorkbench;
-      }
+
+		// Overridden from Fragment
+    public override void OnResume() {
+      base.OnResume();
 
 			if (workbench == null) {
+				workbench = ion.currentWorkbench;
+			}
+
+			if (workbench == null || workbench != ion.currentWorkbench) {
 				workbench = ion.currentWorkbench = new Workbench(ion);
 				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
-      workbench.onWorkbenchEvent += OnWorkbenchEvent;
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
-      adapter = new WorkbenchAdapter(OnAddViewer);
+			adapter = new WorkbenchAdapter(OnAddViewer, isEditable);
 			adapter.workbench = ion.currentWorkbench;
-      list.SetAdapter(adapter);
-    }
+			list.SetAdapter(adapter);
 
-    /// <Docs>Called when the Fragment is visible to the user.</Docs>
-    /// <summary>
-    /// Raises the start event.
-    /// </summary>
-    public override void OnResume() {
-      base.OnResume();
       adapter.NotifyDataSetChanged();
 			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked += OnManifoldClicked;
     }
 
+		// Overridden from Fragment
 		public override void OnPause() {
 			base.OnPause();
+
+			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
 
-    /// <Docs>Called when the fragment is no longer in use.</Docs>
-    /// <summary>
-    /// Raises the destroy event.
-    /// </summary>
+		// Overridden from Fragment
     public override void OnDestroy() {
       base.OnDestroy();
       if (workbench != null) {
@@ -149,16 +155,7 @@
       }
     }
 
-    /// <Docs>The integer request code originally supplied to
-    ///  startActivityForResult(), allowing you to identify who this
-    ///  result came from.</Docs>
-    /// <param name="data">An Intent, which can return result data to the caller
-    ///  (various data can be attached to Intent "extras").</param>
-    /// <summary>
-    /// Raises the activity result event.
-    /// </summary>
-    /// <param name="requestCode">Request code.</param>
-    /// <param name="resultCode">Result code.</param>
+		// Overridden from Fragment
     public override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
       switch (requestCode) {
         case REQUEST_SENSOR:
@@ -265,6 +262,19 @@
 			}
 		}
 
+		private void OnWorkbenchChanged(Workbench wb) {
+			if (this.workbench != null) {
+				this.workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+			}
+
+			this.workbench = wb;
+
+			if (this.workbench != null) {
+				this.workbench.onWorkbenchEvent += OnWorkbenchEvent;
+				this.adapter.workbench = wb;
+			}
+		}
+
     /// <summary>
     /// Shows a context dialog for a manifold. This will present all the options that are available for
     /// the manifold.
@@ -362,7 +372,8 @@
       ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
 			ldb.SetTitle(Resource.String.pick_unit);
 
-			if (manifold.secondarySensor != null) {
+			if ((manifold.primarySensor.type == ESensorType.Pressure ||
+			    manifold.primarySensor.type == ESensorType.Temperature) && manifold.secondarySensor != null) {
 				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
 					var t = manifold.secondarySensor.type;
 					var type = t.GetTypeString();
@@ -434,8 +445,10 @@
     /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
     /// </summary>
     private void AddAllSubviews(Manifold manifold) {
-			if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
-				manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+			if (manifold.primarySensor.type == ESensorType.Pressure || manifold.primarySensor.type == ESensorType.Temperature) {
+				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+					manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+				}
 			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
@@ -471,8 +484,7 @@
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         }
       }
-
-			adapter.ExpandManifold(manifold);
+//			adapter.ExpandManifold(manifold);
     }
   }
 }

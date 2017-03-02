@@ -9,5 +9,6 @@
 		public int id { get; set; }
 		public string displayName { get; set; }
 		public string email { get; set; }
+		public bool isUserOnline { get; set; }
 	}
 }

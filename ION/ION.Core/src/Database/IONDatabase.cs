@@ -33,7 +33,7 @@
     }
   }
 
-  public class IONDatabase : SQLiteConnection, IIONManager {
+  public class IONDatabase : SQLiteConnection, IManager {
     /// <summary>
     /// The delegate that is used when a database event is created.
     /// </summary>
@@ -57,8 +57,15 @@
     /// <value>The ion.</value>
     public IION ion { get; private set; }
 
+		/// <summary>
+		/// The file path where the database is located.
+		/// </summary>
+		/// <value>The path.</value>
+		public string path { get; private set; }
+
     public IONDatabase(ISQLitePlatform platform, string path, IION ion) : base(platform, path)  {
       this.ion = ion;
+			this.path = path;
       // Create the database
       CreateTable<JobRow>();
       CreateTable<DeviceRow>();
@@ -74,6 +81,12 @@
     public Task<InitializationResult> InitAsync() {
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
+
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+
+			onDatabaseEvent = null;
+		}
 
     /// <summary>
     /// Queries for the item with the given id.

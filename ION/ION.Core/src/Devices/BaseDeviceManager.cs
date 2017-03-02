@@ -164,6 +164,8 @@
 
       __knownDevices.Clear();
       __foundDevices.Clear();
+
+			onDeviceManagerEvent = null;
     }
 
     // Overridden from IDeviceManager
