@@ -537,7 +537,7 @@
     /// <returns><c>true</c>, if primary manifold was set, <c>false</c> otherwise.</returns>
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
-    public bool SetManifoldSensor(ESide side, Sensor sensor) {
+    public bool SetManifold(ESide side, Sensor sensor) {
       var index = IndexOfSensor(sensor);
 
       if (index < 0) {

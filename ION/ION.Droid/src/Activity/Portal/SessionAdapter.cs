@@ -44,15 +44,9 @@
 			}
 		} JobRow __jobRow;
 
-		/// <summary>
-		/// Whether or not the adapter will allow a session record to be deleted.
-		/// </summary>
-		/// <value><c>true</c> if allow deleting; otherwise, <c>false</c>.</value>
-		public bool allowDeleting { get; set; }
 
 		public SessionAdapter(IION ion) {
 			this.ion = ion;
-			allowDeleting = true;
 		}
 
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {

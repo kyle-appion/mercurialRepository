@@ -1,10 +1,9 @@
-﻿using Appion.Commons.Measure;
-
-namespace ION.Core.App {
+﻿namespace ION.Core.App {
 
 	using System;
 	using System.Threading.Tasks;
 
+	using Appion.Commons.Measure;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -44,6 +43,7 @@ namespace ION.Core.App {
   } // End ION
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);
+	public delegate void OnAnalyzerChanged(Analyzer analyzer);
 
   /// <summary>
   /// The interface that describes an ION application context.
@@ -53,6 +53,10 @@ namespace ION.Core.App {
 		/// The event that is notified when the ion's workbench changes.
 		/// </summary>
 		event OnWorkbenchChanged onWorkbenchChanged;
+		/// <summary>
+		/// The event that is notified when the ion's analyzer changes.
+		/// </summary>
+		event OnAnalyzerChanged onAnalyzerChanged;
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
@@ -146,8 +150,10 @@ namespace ION.Core.App {
     void PostToMainDelayed(Action action, TimeSpan delay);
 
     Task SaveWorkbenchAsync();
+		Task SaveAnalyzerAsync();
 
     Task<Workbench> LoadWorkbenchAsync(IFile file);
+		Task<Analyzer> LoadAnalyzerAsync(IFile file);
 
     /// <summary>
     /// Creates a new application dump object.

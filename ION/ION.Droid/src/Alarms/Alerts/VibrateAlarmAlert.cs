@@ -1,13 +1,10 @@
 ﻿namespace ION.Droid.Alarms.Alerts {
 
-  using System;
-
   using Android.Content;
   using Android.OS;
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
-  using ION.Core.App;
 
   using ION.Droid.App;
 
@@ -16,11 +13,11 @@
     private const long PULSE_LENGTH = 350;
     private const long INTERVAL_LENGTH = 500;
 
-    private AndroidION ion;
+		private BaseAndroidION ion;
     private Vibrator vibrator;
 
 
-    public VibrateAlarmAlert(IAlarm alarm, AndroidION ion) : base(alarm) {
+		public VibrateAlarmAlert(IAlarm alarm, BaseAndroidION ion) : base(alarm) {
       this.ion = ion;
     }
 
@@ -32,7 +29,7 @@
         return false;
       }
 
-      vibrator = ion.GetSystemService(Context.VibratorService) as Vibrator;
+      vibrator = ion.context.GetSystemService(Context.VibratorService) as Vibrator;
 
       var pl = PULSE_LENGTH;
       var il = INTERVAL_LENGTH;

@@ -1328,7 +1328,7 @@
         this.analyzer = analyzer;
         this.template = template;
         this.side = side;
-				handler = new Handler();
+				handler = new Handler(Looper.MainLooper);
       }
 
       /// <summary>

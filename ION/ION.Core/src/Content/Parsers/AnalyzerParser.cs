@@ -74,7 +74,7 @@
 				// Read the low side manifold
 				if (reader.ReadBoolean()) {
 					var manifold = ManifoldParser.ReadManifold(ion, reader);
-					ret.SetManifoldSensor(Analyzer.ESide.Low, manifold.primarySensor);
+					ret.SetManifold(Analyzer.ESide.Low, manifold.primarySensor);
 
 					ret.lowSideManifold.SetSecondarySensor(manifold.secondarySensor);
 					foreach (var sp in manifold.sensorProperties) {
@@ -85,7 +85,7 @@
 				// Read the high side manifold
 				if (reader.ReadBoolean()) {
 					var manifold = ManifoldParser.ReadManifold(ion, reader);
-					ret.SetManifoldSensor(Analyzer.ESide.High, manifold.primarySensor);
+					ret.SetManifold(Analyzer.ESide.High, manifold.primarySensor);
 
 					ret.highSideManifold.SetSecondarySensor(manifold.secondarySensor);
 					foreach (var sp in manifold.sensorProperties) {

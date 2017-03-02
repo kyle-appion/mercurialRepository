@@ -39,6 +39,11 @@
 		public event Action<SwipeRecyclerView, int> onSwipeEnd;
 
 		/// <summary>
+		/// Whether or not swiping is enabled for the view.
+		/// </summary>
+		/// <value><c>true</c> if swiping enabled; otherwise, <c>false</c>.</value>
+		public bool swipingEnabled { get; set; }
+		/// <summary>
 		/// The interpolator that will animate the closing of a row.
 		/// </summary>
 		/// <value>The close interpolator.</value>
@@ -94,10 +99,13 @@
 			openInterpolator = new BounceInterpolator();
 			closeInterpolator = new BounceInterpolator();
 			swipeDirection = EDirection.Left;
+			swipingEnabled = true;
 		}
 
 		public override bool OnInterceptTouchEvent(MotionEvent ev) {
 			if (ev.Action != MotionEventActions.Down && touchView == null) {
+				return base.OnInterceptTouchEvent(ev);
+			} else if (!swipingEnabled) {
 				return base.OnInterceptTouchEvent(ev);
 			}
 

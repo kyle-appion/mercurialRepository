@@ -57,7 +57,7 @@
 		/// <summary>
 		/// The context that is driving the connection helper.
 		/// </summary>
-		private AndroidION ion;
+		private BaseAndroidION ion;
 		/// <summary>
 		/// The bluetooth manager that the connection helper is using to start scans.
 		/// </summary>
@@ -81,13 +81,13 @@
 		/// </summary>
 //		private BackgroundBle broadcasting;
 
-		public AndroidConnectionHelper(AndroidION ion) {
-			manager = (BluetoothManager)ion.GetSystemService(Context.BluetoothService);
-			handler = new Handler();
+		public AndroidConnectionHelper(BaseAndroidION ion) {
+			manager = (BluetoothManager)ion.context.GetSystemService(Context.BluetoothService);
+			handler = new Handler(Looper.MainLooper);
 //			broadcasting = new BackgroundBle(manager.Adapter);
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
-				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion, Android.Manifest.Permission.AccessFineLocation)) {
+				if (Permission.Granted == ContextCompat.CheckSelfPermission(ion.context, Android.Manifest.Permission.AccessFineLocation)) {
 					Log.D(this, "This user is using the 5.0 bluetooth api");
 					leScanDelegate = new Api21ScanDelegate(manager.Adapter, NotifyDeviceFound);
 				} else {
