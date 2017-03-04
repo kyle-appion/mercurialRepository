@@ -2,7 +2,7 @@
 
 	using System;
 	using System.Collections.Generic;
-
+	using Appion.Commons.Util;
 	using ION.Core.App;
 	using ION.Core.Fluids;
 	using ION.Core.Sensors;
@@ -244,6 +244,26 @@
 		public List<string> highSubviews = new List<string>();
 		public string lowAccessibility ="low";
 		public string highAccessibility ="high";
+		public Fluid lowFluid{ 
+			get{return __lowFluid;} 
+			set {
+				Log.D(this, "setting low fluid in class");
+				if(__lowFluid != null){
+					__lowFluid = null;
+				}
+				__lowFluid = value;
+			}
+		} Fluid __lowFluid;
+		public Fluid highFluid{ 
+			get{ return __highFluid;} 
+			set {
+				Log.D(this, "setting high fluid in class");
+				if(__highFluid != null){
+					__highFluid = null;
+				}
+				__highFluid = value;
+			}
+		} Fluid __highFluid;
     /// <summary>
     /// Creates a new analyzer.
     /// </summary>
@@ -559,7 +579,8 @@
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
-          throw new Exception("Cannot set primary manifold: unknown side: " + side);
+          //throw new Exception("Cannot set primary manifold: unknown side: " + side);
+          return false;
       }
     }
 
@@ -588,7 +609,8 @@
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
 				return true;
 				default:
-					throw new Exception("Cannot set primary manifold: unknown side: " + side);
+          return false;
+					//throw new Exception("Cannot set primary manifold: unknown side: " + side);
 			}
 		}
 

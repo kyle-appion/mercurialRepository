@@ -33,6 +33,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
   public partial class PTChartViewController : BaseIONViewController {
     public event onUnitChanged pUnitChanged;
     public event onUnitChanged tUnitChanged;
+    public int lowHigh = 0;
     private const int SECTION_DEW = 0;
     private const int SECTION_BUBBLE = 1;
 
@@ -357,9 +358,17 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     }
 
     // Overridden from ViewController
-    public override void ViewWillDisappear(bool animated) {
+    public override void ViewWillDisappear(bool animated) {  
       base.ViewWillDisappear(animated);
-
+			
+			if(lowHigh == 0){
+				Console.WriteLine("Set low fluid to " +this.ptChart.fluid.name);
+				ion.currentAnalyzer.lowFluid = this.ptChart.fluid;	
+			} else {
+				Console.WriteLine("Set high fluid to " +this.ptChart.fluid.name);
+				ion.currentAnalyzer.highFluid = this.ptChart.fluid;	
+			}
+			
       if (initialManifold != null) {
         initialManifold.ptChart = this.ptChart;
       }
@@ -375,6 +384,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 			initialManifold = null;
 			temperatureUnit = null;
 			pressureUnit = null;
+
 		}
 
 		/// <summary>

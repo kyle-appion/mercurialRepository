@@ -31,11 +31,6 @@ namespace ION.IOS.ViewController.Walkthrough {
 
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-
-			if(initial){
-				help = new WalkthroughHelp(this.View);
-				this.View.AddSubview(help.helpView);
-			} 
       
     	pictureView = new UIImageView(new CGRect(.15 * View.Bounds.Width, 70 , .7 * View.Bounds.Width, .6 * View.Bounds.Height));
       pictureView.UserInteractionEnabled = true;
@@ -139,6 +134,12 @@ namespace ION.IOS.ViewController.Walkthrough {
 			View.AddSubview(leaveButton);
 			walkthrough.parentView.BringSubviewToFront(walkthrough.arrowButton);
 			walkthrough.parentView.BringSubviewToFront(walkthrough.arrowImage);
+			
+			if(initial){
+				help = new WalkthroughHelp(this.View);
+				View.AddSubview(help.helpView);
+				View.BringSubviewToFront(help.helpView);
+			} 
 		}
 
     public override void DidReceiveMemoryWarning() {

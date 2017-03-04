@@ -280,31 +280,26 @@
 
       return false;
     }
-
-		public int GetDeviceIndex(ISerialNumber serialNumber, int unitCode){
+		/// <summary>
+		/// Gets the index of the device.
+		/// </summary>
+		/// <returns>The device index.</returns>
+		/// <param name="serialNumber">Serial number.</param>
+		/// <param name="unitCode">Unit code.</param>
+		public int GetDeviceIndex(ISerialNumber serialNumber, int sensorIndex){
       if (serialNumber != null) {
         for(int i = 0; i < manifolds.Count; i++) {
           var p = manifolds[i].primarySensor as GaugeDeviceSensor;
-          //var s = manifolds[i].secondarySensor as GaugeDeviceSensor; 
 					
 					if(p != null){
-	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial && p.type == UnitLookup.GetSensorTypeFromCode(unitCode)){
+	          if(serialNumber.rawSerial == p.device.serialNumber.rawSerial && p.index == sensorIndex){
 							return i;
 						};
 					}
-					/// <summary>
-					/// WHY DID I WRITE THIS TO BEGIN WITH?!?!?!?!?!!?!
-					/// </summary>
-					/// <returns><c>true</c>, if sensor was containsed, <c>false</c> otherwise.</returns>
-					/// <param name="sensor">Sensor.</param>
-					//if(s != null){
-	    //      if(serialNumber.rawSerial == s.device.serialNumber.rawSerial && s.type ==  UnitLookup.GetSensorTypeFromCode(unitCode)){
-					//		return i;
-					//	};
-					//}
+
         }
       }
-			return 99;
+			return -1;
 		}
     /// <summary>
     /// Queries whether or not the workbench contains the given sensor as a primary

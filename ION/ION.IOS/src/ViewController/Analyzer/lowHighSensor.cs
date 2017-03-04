@@ -270,7 +270,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="sensor">THE SENSOR THE LOW/HIGH AREA IS MONITORING</param>
     public void gaugeUpdating(Sensor sensor){
-    	Console.WriteLine("lowHighSensor gaugeUpdating called. Sensor name " + manifold.primarySensor.name + " working with fluid " + manifold.ptChart.fluid.name);
+    	//Console.WriteLine("lowHighSensor gaugeUpdating called. Sensor name " + manifold.primarySensor.name + " working with fluid " + manifold.ptChart.fluid.name);
       if (currentSensor.device.isConnected) {
         connectionColor.BackgroundColor = UIColor.Green;
         Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");       
@@ -508,7 +508,7 @@ namespace ION.IOS.ViewController.Analyzer
         }
       }
 
-      if (manifold.ptChart != null) {
+      if (manifold.ptChart != null && manifold.ptChart.fluid != null) {
         if (!manifold.ptChart.fluid.mixture){
           if (ptAmount < 0) {
             shFluidState.Text = Util.Strings.Analyzer.SC;
@@ -527,6 +527,16 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void updatePTCell(Manifold manifold){
+    	if(LabelSubview.BackgroundColor == UIColor.Blue){    
+				if(ion.currentAnalyzer.lowFluid != null && ion.currentAnalyzer.lowFluid != manifold.ptChart.fluid){
+					manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.lowFluid);
+				}
+			} else {
+				if(ion.currentAnalyzer.highFluid != null && ion.currentAnalyzer.highFluid != manifold.ptChart.fluid){
+					manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.highFluid);
+				}
+			}
+    
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
         var ptname = manifold.ptChart.fluid.name;
@@ -577,6 +587,9 @@ namespace ION.IOS.ViewController.Analyzer
       var ptc = vc.InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART);
       if(manifold.ptChart == null)
         manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      if(LabelSubview.BackgroundColor == UIColor.Red){	
+				ptc.lowHigh = 1;		
+			}
       ptc.initialManifold = manifold;
       ptc.pUnitChanged += pUnitUpdating;
       ptc.tUnitChanged += tUnitUpdating;

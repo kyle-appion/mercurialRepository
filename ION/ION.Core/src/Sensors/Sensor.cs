@@ -240,7 +240,7 @@ namespace ION.Core.Sensors {
 				}
 				// DEFAULT
 				else {
-					Appion.Commons.Util.Log.D(typeof(SensorUtils).Name, "Could not find format for unit: " + unit);
+					//Appion.Commons.Util.Log.D(typeof(SensorUtils).Name, "Could not find format for unit: " + unit);
 					ret = amount.ToString("0.00");
 				}
 			}
