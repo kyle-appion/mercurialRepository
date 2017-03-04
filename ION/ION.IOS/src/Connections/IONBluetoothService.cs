@@ -113,14 +113,14 @@
 
 		// Implemented from IConnectionHelper
 		public bool StartScan(TimeSpan scanTime) {
-			Log.D(this, "StartScan called from: " + System.Threading.Thread.CurrentThread.Name);
+			//Log.D(this, "StartScan called from: " + System.Threading.Thread.CurrentThread.Name);
 			if (isScanning) {
 				messageQueue.RemoveAllPendingActions();
 				centralManager.StopScan();
 			}
 
-			Log.D(this, "Starting Scan for: " + scanTime.ToString());
-			Log.D(this, "Removed " + messageQueue.RemovePendingActionsWithCategoryId(CATEGORY_BROADCAST) + " broadcast messages from the message queue");
+			//Log.D(this, "Starting Scan for: " + scanTime.ToString());
+			//Log.D(this, "Removed " + messageQueue.RemovePendingActionsWithCategoryId(CATEGORY_BROADCAST) + " broadcast messages from the message queue");
 
 			isScanning = true;
 
@@ -134,7 +134,7 @@
 
 		// Implemented from IConnectionHelper
 		public void StopScan() {
-			Log.D(this, "StopScan called");
+			//Log.D(this, "StopScan called");
 			if (isScanning) {
 				centralManager.StopScan();
 			}
@@ -182,7 +182,7 @@
 			}
 
 			if (!name.IsValidSerialNumber()) {
-				Log.D(this, name + " is not a valid serial number. Ignoring device");
+				//Log.D(this, name + " is not a valid serial number. Ignoring device");
 				return;
 			}
 
@@ -222,7 +222,7 @@
 						}
 					}
 				} else {
-					Log.D(this, "Ignoring non-appion device: " + name);
+					//Log.D(this, "Ignoring non-appion device: " + name);
 				}
 			}
 		}

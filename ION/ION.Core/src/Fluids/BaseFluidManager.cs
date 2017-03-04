@@ -7,7 +7,7 @@
   using System.Text.RegularExpressions;
   using System.Threading.Tasks;
 
-	using Appion.Commons.Util;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Fluids.Parser;
@@ -26,10 +26,10 @@
     /// The asset file path for the refrigerant colors.
     /// </summary>
     private const string FLUID_COLORS_FILE = "refrigerantcolors.properties";
-		/// <summary>
-		/// The asset file path for the refrigerant safety.
-		/// </summary>
-		private const string FLUID_SAFETY_FILE = "refrigerantsafety.properties";
+    /// <summary>
+    /// The asset file path for the refrigerant safety.
+    /// </summary>
+    private const string FLUID_SAFETY_FILE = "refrigerantsafety.properties";
     /// <summary>
     /// The preference key that is used to retrieve the last used fluid for the fluid manager.
     /// </summary>
@@ -88,10 +88,10 @@
     /// The properties that contains the known fluid colors.
     /// </summary>
     private Properties fluidColors;
-		/// <summary>
-		/// The properties that contains the fluid safeties.
-		/// </summary>
-		private Properties fluidSafety;
+    /// <summary>
+    /// The properties that contains the fluid safeties.
+    /// </summary>
+    private Properties fluidSafety;
     /// <summary>
     /// A lookup cache that will allow us to store commonly used fluids.
     /// </summary>
@@ -111,8 +111,8 @@
         var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
         fluidColors = await Properties.FromStreamAsync(propStream);
 
-				var fsStream = EmbeddedResource.Load(FLUID_SAFETY_FILE);
-				fluidSafety = await Properties.FromStreamAsync(fsStream);
+        var fsStream = EmbeddedResource.Load(FLUID_SAFETY_FILE);
+        fluidSafety = await Properties.FromStreamAsync(fsStream);
 
         preferredFluids = new List<string>();
         var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
@@ -123,7 +123,7 @@
           }
         }
 
-				preferredFluids.Sort(new AlphabeticalStringComparer());
+        preferredFluids.Sort(new AlphabeticalStringComparer());
 
         var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, DEFAULT_FLUID);
         if (fluidName == null) {
@@ -133,9 +133,9 @@
           }
         }
 
-				// TODO ahodder@appioninc.com: Fix initialize app when a fluid is missing
-				// I didn't have time at the moment to fix this, so here is the trace from the moment. This will only occur when
-				// the user has a fluid saved as the last used or in the perferred that was renamed or removed.
+        // TODO ahodder@appioninc.com: Fix initialize app when a fluid is missing
+        // I didn't have time at the moment to fix this, so here is the trace from the moment. This will only occur when
+        // the user has a fluid saved as the last used or in the perferred that was renamed or removed.
 /*
 System.IO.IOException: Could not load resource of name R601A.fluid: doesn't exist
 E    at ION.Core.IO.EmbeddedResource.Load (System.Reflection.Assembly assembly, System.String filename) [0x0004e] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/IO/EmbeddedResource.cs:34
@@ -165,6 +165,7 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
     // Overridden from IFluidManager
     public void Dispose() {
       __cache.Clear();
+      onFluidPreferenceChanged = null;
     }
 
     // Overridden from IFluidManager
@@ -176,32 +177,20 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
           var fluidName = Regex.Replace(filename, "\\" + EXT_FLUID, "");
           ret.Add(fluidName);
         }
-			}
+      }
 
-			ret.Sort(new AlphabeticalStringComparer());
+      ret.Sort(new AlphabeticalStringComparer());
 
       return ret;
     }
 
     // Overridden from IFluidManager
     public async Task<Fluid> GetFluidAsync(string fluidName) {
-      Fluid ret = null;
+      Fluid ret = await LoadFluidAsync(fluidName);
 
-      if (__cache.ContainsKey(fluidName)) {
-        var reference = __cache[fluidName];
-        if (!reference.IsAlive) {
-          Log.D(this, "But it was garbage collected so removing key");
-          __cache.Remove(fluidName);
-        } else {          
-          ret = reference.Target as Fluid;
-        }
-      }
-
-      if (ret == null && HasFluid(fluidName)) {
-        ret = await LoadFluidAsync(fluidName);
-        __cache.Add(fluidName, new WeakReference(ret));
-      } else {
-          Log.D(this, "or not...");
+      if (ret == null) {
+        Log.D(this, "or not...");
+        return null;
       }
 
       lastUsedFluid = ret;
@@ -211,6 +200,35 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
       return ret;
     }
 
+    // Implemented from IFluidManager
+    public async Task<Fluid> LoadFluidAsync(string fluidName) {
+      //return Task.Factory.StartNew(() => {
+        Fluid ret = null;
+
+        if (__cache.ContainsKey(fluidName)) {
+          var reference = __cache[fluidName];
+          if (!reference.IsAlive) {
+            Log.D(this, "But it was garbage collected so removing key");
+            __cache.Remove(fluidName);
+          } else {          
+            ret = reference.Target as Fluid;
+          }
+        }
+
+        if (ret == null && HasFluid(fluidName)) {
+          ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
+          Log.D(this, "got the binary fluid stuff");
+          ret.color = GetFluidColor(ret.name);
+          ret.safety = GetFluidSafety(ret.name);
+          __cache.Add(fluidName, new WeakReference(ret));
+          //return ret;
+          return ret;
+        } else {
+          return ret;
+        }
+      //});
+    }
+
     // Overridden from IFluidManager
     public bool IsFluidPreferred(string fluidName) {
       return preferredFluids.Contains(fluidName);
@@ -218,7 +236,7 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
 
     // Overridden from IFluidManager
     public int GetFluidColor(string fluidName) {
-      var rawColor = fluidColors[fluidName.ToLower()];
+      var rawColor = fluidColors[fluidName.ToLower()];  
       if (rawColor == null) {
         return DEFAULT_FLUID_COLOR;
       } else {
@@ -232,17 +250,17 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
       }
     }
 
-		// Overridden from IFluidManager
-		public Fluid.ESafety GetFluidSafety(string fluidName) {
-			var safety = fluidSafety[fluidName];
-			if (safety == null) {
-				return Fluid.ESafety.Unknown;
-			} else {
-				var ret = Fluid.ESafety.Unknown;
-				Enum.TryParse(safety, out ret);
-				return ret;
-			}
-		}
+    // Overridden from IFluidManager
+    public Fluid.ESafety GetFluidSafety(string fluidName) {
+      var safety = fluidSafety[fluidName];
+      if (safety == null) {
+        return Fluid.ESafety.Unknown;
+      } else {
+        var ret = Fluid.ESafety.Unknown;
+        Enum.TryParse(safety, out ret);
+        return ret;
+      }
+    }
 
     // Overridden from IFluidManager
     public void MarkFluidAsPreferred(string fluidName, bool preferred) {
@@ -279,18 +297,6 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
       }
 
       return false;
-    }
-
-    /// <summary>
-    /// Loads a fluid from the file system.
-    /// </summary>
-    /// <param name="fluidName"></param>
-    /// <returns></returns>
-    private Task<Fluid> LoadFluidAsync(string fluidName) {
-      var ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
-      ret.color = GetFluidColor(ret.name);
-			ret.safety = GetFluidSafety(ret.name);
-      return Task.FromResult(ret);
     }
 
     /// <summary>

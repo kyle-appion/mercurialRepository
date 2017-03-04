@@ -1,5 +1,4 @@
-﻿using Android.Widget;
-namespace ION.CoreExtensions.Net.Portal {
+﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;

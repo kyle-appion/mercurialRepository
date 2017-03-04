@@ -4,6 +4,7 @@ using UIKit;
 using Foundation;
 using CoreGraphics;
 using ION.Core.Sensors.Properties;
+using ION.Core.App;
 
 namespace ION.IOS.ViewController.Analyzer
 {
@@ -12,10 +13,17 @@ namespace ION.IOS.ViewController.Analyzer
 		//string cellIdentifier;
 		List<string> tableItems;
     lowHighSensor tableSensors;
+		public IION ion = AppState.context;
 
     public AnalyzerTableSource (List<string> items, lowHighSensor lhSensor){
 			tableItems = items;
       tableSensors = lhSensor;
+      
+      if(lhSensor.LabelSubview.BackgroundColor == UIColor.Blue){
+      	tableSensors.manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.lowFluid);
+      } else {
+      	tableSensors.manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.highFluid);
+			}
 		}
 			
 		public override nint RowsInSection (UITableView tableview, nint section)

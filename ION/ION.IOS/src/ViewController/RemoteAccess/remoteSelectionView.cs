@@ -225,8 +225,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					sound.Close();
 					var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 					var loggedUser = KeychainAccess.ValueForKey("userID");
-					
-					webServices.StartLayoutDownload(viewingID,loggedUser);
+					var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
+					webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
 				}));
 				alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {sound.Close();}));
 				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
@@ -239,8 +239,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public void startDownloading(){
 			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 			var loggedUser = KeychainAccess.ValueForKey("userID");
+			var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 		
-			webServices.StartLayoutDownload(viewingID,loggedUser);
+			webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
 			webServices.paused += pauseRemote;
 		}
 		public void pauseRemote(bool paused){
@@ -248,8 +249,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				Console.WriteLine("Should be starting the download now");
 				var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 				var loggedUser = KeychainAccess.ValueForKey("userID");
+				var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 				
-				webServices.StartLayoutDownload(viewingID,loggedUser);
+				webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
 			}
 		}
 	

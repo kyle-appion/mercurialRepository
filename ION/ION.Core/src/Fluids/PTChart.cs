@@ -254,6 +254,13 @@
     public bool IsTemperatureBelowBounds(Scalar temperature) {
       return temperature < fluid.GetMinimumTemperature();
     }
+    /// <summary>
+    /// Sets the fluid for a low or high manifold based on the fluid sent from a remote layout
+    /// </summary>
+    /// <param name="remoteFluid">Remote fluid.</param>
+    public void setRemoteFluid(Fluid remoteFluid){
+			fluid = remoteFluid;
+		}
   }
 }
 
