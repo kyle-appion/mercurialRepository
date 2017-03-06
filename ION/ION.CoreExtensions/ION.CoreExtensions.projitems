@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteGaugeDeviceSensor.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\AnalyzerPositions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteManifold.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAnalyzer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />
