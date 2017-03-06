@@ -49,13 +49,6 @@
       }
     } Unit __unit;
 
-    /// <summary>
-    /// Used by the serialization system.
-    /// </summary>
-    public AlternateUnitSensorProperty() {
-      // Nope
-    }
-
     public AlternateUnitSensorProperty(Sensor sensor) : base(sensor) {
       this.__unit = sensor.measurement.unit;
       this.modifiedMeasurement = sensor.measurement;
@@ -67,7 +60,7 @@
     /// </summary>
     /// <param name="sensor">Sensor.</param>
     /// <param name="unit">Unit.</param>
-    public AlternateUnitSensorProperty(Sensor sensor, Unit unit) : base(sensor) {
+    public AlternateUnitSensorProperty(Sensor sensor, Unit unit) : this(sensor) {
       this.__unit = unit;
     }
   }
