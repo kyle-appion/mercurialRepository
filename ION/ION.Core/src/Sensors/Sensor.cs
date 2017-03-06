@@ -230,7 +230,7 @@ namespace ION.Core.Sensors {
 				else if (Units.Vacuum.IN_HG.Equals(unit)) {
 					ret = amount.ToString("0.000");
 				} else if (Units.Vacuum.KILOPASCAL.Equals(unit)) {
-					ret = amount.ToString("00.0000");
+					ret = amount.ToString("0.0000");
 				} else if (Units.Vacuum.MICRON.Equals(unit)) {
 					ret = amount.ToString("###,##0");
 				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
