@@ -110,6 +110,14 @@ namespace ION.CoreExtensions.Net.Portal {
     private const string JSON_SETUP = "setup";
     private const string JSON_MANIFOLDS = "LH";
 		private const string JSON_WORKBENCH = "workB";
+		private const string JSON_LOW = "low";
+		private const string JSON_LOW_SUBVIEWS = "lsub";
+		private const string JSON_LOW_SN = "lsn";
+		private const string JSON_LOW_SI = "lsi";
+		private const string JSON_HIGH = "high";
+		private const string JSON_HIGH_SUBVIEWS = "hsub";
+		private const string JSON_HIGH_SN = "hsn";
+		private const string JSON_HIGH_SI = "hsi";
 
 		private const int CODE_SP_PT = 1;
 		private const int CODE_SP_SHSC = 2;
@@ -834,7 +842,10 @@ namespace ION.CoreExtensions.Net.Portal {
 					// Clone the remote analyzer
 					var analyzerClone = json.GetValue(JSON_ANALYZER);
 					var setup = json.GetValue(JSON_SETUP);
-					var manifold = json.GetValue(JSON_MANIFOLDS);
+					var manifolds = json.GetValue(JSON_MANIFOLDS);
+					ion.PostToMain(() => {
+						SyncAnalyzer(ion, analyzerClone, manifolds as JObject);
+					});
 				}
 
 				return new PortalResponse(null, "", EError.InternalError);
@@ -844,46 +855,56 @@ namespace ION.CoreExtensions.Net.Portal {
 			}
 		}
 
-		/// <summary>
-		/// Inflates the manifold from json.
-		/// </summary>
-		/// <returns>The manifold from json.</returns>
-		/// <param name="remoteManifold">Workbench token.</param>
-		private Manifold InflateManifoldFromJson(IION ion, RemoteManifold remoteManifold) {
-			var sn = remoteManifold.serialNumber.ParseSerialNumber();
+		private void SyncAnalyzer(IION ion, JToken sensorMounts, JObject manifold) {
+			// Sync the sensor mounts as this is the more important part
+			var analyzer = ion.currentAnalyzer;
 
-			var device = ion.deviceManager[sn];
-			if (device == null) {
-				Log.E(this, "(CloneFromRemote) Failed to find device {" + sn + "} in device manager");
-				return null;
-			}
+			var pendingSensorMountRemovals = new HashSet<Sensor>(analyzer.sensorList);
 
-			var gd = device as GaugeDevice;
+			foreach (var analyzerToken in sensorMounts) {
+				var sm = JsonConvert.DeserializeObject<RemoteAnalyzer>(analyzerToken.ToString());
+				var sn = sm.serialNumber.ParseSerialNumber();
+				var device = ion.deviceManager[sn] as GaugeDevice;
 
-			if (gd != null) {
-				var m = new Manifold(gd.sensors[remoteManifold.index]);
-				m.ptChart = PTChart.New(ion, (Fluid.EState)remoteManifold.fluidState, ion.fluidManager.LoadFluidAsync(remoteManifold.fluid).Result);
+				if (device != null) {
+					var sensor = device[int.Parse(sm.index)];
+					var si = int.Parse(sm.sensorMountIndex);
 
-				if (remoteManifold.linkedSerialNumber != null) {
-					var lsn = remoteManifold.linkedSerialNumber.ParseSerialNumber();
-					var linkedDevice = ion.deviceManager[lsn];
-					if (linkedDevice != null) {
-						var lgs = ((GaugeDevice)linkedDevice)[remoteManifold.linkedIndex];
-						m.SetSecondarySensor(lgs);
+					if (analyzer.HasSensor(sensor)) {
+						pendingSensorMountRemovals.Remove(sensor);
+
+						var csi = analyzer.IndexOfSensor(sensor);
+						if (csi != si) {
+							// Swap where the sensor mount is
+							analyzer.SwapSensors(si, csi, true);
+						} else {
+							// Don't need to do anything
+						}
+					} else {
+						analyzer.PutSensor(si, sensor);
 					}
 				}
-
-				foreach (int code in remoteManifold.subviewCodes) {
-					var sp = ParseSensorPropertyFromCode(m, code);
-					if (sp != null) {
-						m.AddSensorProperty(sp);
-					}
-				}
-
-				return m;
-			} else {
-				return null;
 			}
+
+			foreach (var sensor in pendingSensorMountRemovals) {
+				analyzer.RemoveSensor(sensor);
+			}
+
+			// Sync the manifold of the analyzer
+			// Prepare the low side manifold
+			var lsn = manifold.GetValue(JSON_LOW_SN).ToString().ParseSerialNumber();
+			var lsi = int.Parse(manifold.GetValue(JSON_LOW_SI).ToString());
+			var ldevice = ion.deviceManager[lsn] as GaugeDevice;
+			if (ldevice != null) {
+/*
+				if (analyzer.lowSideManifold.primarySensor != lsensor) {
+				}
+*/
+			}
+
+			// Prepare the high side manifold
+			var hsn = manifold.GetValue(JSON_HIGH_SN).ToString().ParseSerialNumber();
+			var hsi = int.Parse(manifold.GetValue(JSON_HIGH_SI).ToString());
 		}
 
 		/// <summary>
@@ -962,6 +983,76 @@ namespace ION.CoreExtensions.Net.Portal {
 		}
 
 		/// <summary>
+		/// Inflates the manifold from json.
+		/// </summary>
+		/// <returns>The manifold from json.</returns>
+		/// <param name="remoteManifold">Workbench token.</param>
+		private Manifold InflateManifoldFromJson(IION ion, RemoteManifold remoteManifold) {
+			var sn = remoteManifold.serialNumber.ParseSerialNumber();
+
+			var device = ion.deviceManager[sn];
+			if (device == null) {
+				Log.E(this, "(CloneFromRemote) Failed to find device {" + sn + "} in device manager");
+				return null;
+			}
+
+			var gd = device as GaugeDevice;
+
+			if (gd != null) {
+				var m = new Manifold(gd.sensors[remoteManifold.index]);
+				m.ptChart = PTChart.New(ion, (Fluid.EState)remoteManifold.fluidState, ion.fluidManager.LoadFluidAsync(remoteManifold.fluid).Result);
+
+				if (remoteManifold.linkedSerialNumber != null) {
+					var lsn = remoteManifold.linkedSerialNumber.ParseSerialNumber();
+					var linkedDevice = ion.deviceManager[lsn];
+					if (linkedDevice != null) {
+						var lgs = ((GaugeDevice)linkedDevice)[remoteManifold.linkedIndex];
+						m.SetSecondarySensor(lgs);
+					}
+				}
+
+				foreach (int code in remoteManifold.subviewCodes) {
+					var sp = ParseSensorPropertyFromCode(m, code);
+					if (sp != null) {
+						m.AddSensorProperty(sp);
+					}
+				}
+
+				return m;
+			} else {
+				return null;
+			}
+		}
+
+		private ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, string code) {
+			switch (code) {
+				case "Pressure":
+				return new PTChartSensorProperty(manifold);
+
+				case "Minimum":
+				return new MinSensorProperty(manifold.primarySensor);
+
+				case "Maximum":
+				return new MaxSensorProperty(manifold.primarySensor);
+
+				case "Hold":
+				return new HoldSensorProperty(manifold.primarySensor);
+
+				case "Rate":
+				return new RateOfChangeSensorProperty(manifold.primarySensor);
+
+//				case "Alternate":
+//				return new AlternateSensorProperty(manifold.primarySensor);
+
+				case "Superheat":
+				return new SuperheatSubcoolSensorProperty(manifold);
+
+				default:
+				throw new Exception("Cannot create sensor property: " + code);
+			}
+		}
+
+		/// <summary>
 		/// Creates a new sensor property from the given code. 
 		/// </summary>
 		/// <returns>The sensor property from code.</returns>
@@ -970,32 +1061,32 @@ namespace ION.CoreExtensions.Net.Portal {
 		private ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, int code) {
 			switch (code) {
 				case CODE_SP_PT:
-					return new PTChartSensorProperty(manifold);
+				return new PTChartSensorProperty(manifold);
 
 				case CODE_SP_SHSC:
-					return new SuperheatSubcoolSensorProperty(manifold);
+				return new SuperheatSubcoolSensorProperty(manifold);
 
 				case CODE_SP_MIN:
-					return new MinSensorProperty(manifold.primarySensor);
+				return new MinSensorProperty(manifold.primarySensor);
 
 				case CODE_SP_MAX:
-					return new MaxSensorProperty(manifold.primarySensor);
+				return new MaxSensorProperty(manifold.primarySensor);
 
 				case CODE_SP_HOLD:
-					return new HoldSensorProperty(manifold.primarySensor);
+				return new HoldSensorProperty(manifold.primarySensor);
 
 				case CODE_SP_ROC:
-					return new RateOfChangeSensorProperty(manifold.primarySensor);
+				return new RateOfChangeSensorProperty(manifold.primarySensor);
 
 				case CODE_SP_TIMER:
-					return new TimerSensorProperty(manifold.primarySensor);
+				return new TimerSensorProperty(manifold.primarySensor);
 
 				case CODE_SP_SECONDARY:
-					return new SecondarySensorProperty(manifold);
+				return new SecondarySensorProperty(manifold);
 
 				default:
 					Log.E(this, "Failed to find sensor property with code {" + code + "}");
-					return null;
+				return null;
 			}
 		}
 
