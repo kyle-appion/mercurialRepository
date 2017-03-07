@@ -25,6 +25,7 @@
 			for (int i = 0; i < sensors.Length; i++) {
 				sensors[i] = new RemoteGaugeDeviceSensor(device[i]);
 			}
+			battery = device.battery;
 		}
 	}
 }

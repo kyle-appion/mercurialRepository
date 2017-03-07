@@ -110,5 +110,25 @@
 				}, REQUEST_LAYOUT_INTERVAL);
 			}
 		}
+
+		// Overridden from BaseAndroidION
+		public override Task<Analyzer> LoadAnalyzerAsync(IFile file) {
+			return null;
+		}
+
+		// Overridden from BaseAndroidION
+		public override Task<Workbench> LoadWorkbenchAsync(IFile file) {
+			return null;
+		}
+
+		// Overridden from BaseAndroidION
+		public override Task SaveAnalyzerAsync() {
+			return null;
+		}
+
+		// Overridden from BaseAndroidION
+		public override Task SaveWorkbenchAsync() {
+			return null;
+		}
 	}
 }
