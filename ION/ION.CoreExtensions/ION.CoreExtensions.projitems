@@ -30,6 +30,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\AnalyzerPositions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteManifold.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAnalyzer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAppState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteSensorMount.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

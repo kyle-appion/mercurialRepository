@@ -284,7 +284,7 @@
 		}
 
 		// Implemented from IION
-		public Task<Workbench> LoadWorkbenchAsync(IFile file) {
+		public virtual Task<Workbench> LoadWorkbenchAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
 				try {
 					var parser = new WorkbenchParser();
