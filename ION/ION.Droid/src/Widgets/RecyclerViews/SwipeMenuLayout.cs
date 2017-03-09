@@ -82,7 +82,7 @@
 			if (IsAttachedToWindow) {
 				// TODO ahodder@appioninc.com: This bug causes an exception to be thrown when the scroller is disposes.
 				// this usually happens when starting a remote view
-				L.E(this, "Tried to compute scroll while swipe menu was not attached to the a window.");
+//				L.E(this, "Tried to compute scroll while swipe menu was not attached to the a window.");
 				return;
 			}
 			if (isOpen) {

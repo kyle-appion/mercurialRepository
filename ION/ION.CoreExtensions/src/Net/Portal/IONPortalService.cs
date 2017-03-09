@@ -1,5 +1,4 @@
-﻿using ION.Core.Fluids;
-namespace ION.CoreExtensions.Net.Portal {
+﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -8,6 +7,7 @@ namespace ION.CoreExtensions.Net.Portal {
 	using System.Net;
 	using System.Net.Http;
 	using System.Text;
+	using System.Threading;
 	using System.Threading.Tasks;
 
 	using Newtonsoft.Json;
@@ -21,6 +21,7 @@ namespace ION.CoreExtensions.Net.Portal {
 	using ION.Core.Database;
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
+	using ION.Core.Fluids;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
@@ -51,6 +52,7 @@ namespace ION.CoreExtensions.Net.Portal {
 		private const string URL_REGISTER_USER = "http://portal.appioninc.com/App/registerUser.php";
 		private const string URL_UPLOAD_SESSION = "http://portal.appioninc.com/App/uploadSession.php";
 		private const string URL_LOGIN_USER_2_ARG = "http://portal.appioninc.com/joomla/modules/mod_processing/appWebLogin.php?usrEmail={0}&usrPass={1}";
+    private const string URL_UPLOAD_LAYOUTS = "http://portal.appioninc.com/App/uploadLayouts.php";
 
 		private const string JSON_SESSION = "session";
 		private const string JSON_UPLOAD_SESSION = "uploadSession";
@@ -85,6 +87,9 @@ namespace ION.CoreExtensions.Net.Portal {
 		private const string JSON_ALLOWING = "allowing";
 		private const string JSON_ONLINE = "online";
 		private const string JSON_PERMANENT = "permanent";
+    private const string JSON_LAYOUT = "layout";
+    private const string JSON_UPLOAD_LAYOUTS = "uploadLayouts";
+    private const string JSON_LAYOUT_JSON = "layoutJson";
 
 		private const string JSON_REGISTER_USER = "registerUser";
 		private const string JSON_NEW_USER = "newuser";
@@ -103,22 +108,6 @@ namespace ION.CoreExtensions.Net.Portal {
     private const string JSON_ACCESS_CODE_DELETE_VIEWER = "deleteViewerAccess";
 
     private const string JSON_ACTION_CLONE_REMOTE = "downloadLayouts";
-    private const string JSON_ALTITUDE = "alt";
-    private const string JSON_LAYOUT = "layout";
-    private const string JSON_KNOWN = "known";
-    private const string JSON_ANALYZER = "alyzer";
-    private const string JSON_SETUP = "setup";
-		private const string JSON_LH = "LH";
-		private const string JSON_WORKBENCH = "workB";
-		private const string JSON_LOW = "low";
-		private const string JSON_LOW_SUBVIEWS = "lsub";
-		private const string JSON_LOW_SN = "lsn";
-		private const string JSON_LOW_SI = "lsi";
-		private const string JSON_HIGH = "high";
-		private const string JSON_HIGH_SUBVIEWS = "hsub";
-		private const string JSON_HIGH_SN = "hsn";
-		private const string JSON_HIGH_SI = "hsi";
-
 
 		private const string PORTAL_DATE_FORMAT = "yy-MM-dd HH:mm:ss";
 
@@ -135,6 +124,11 @@ namespace ION.CoreExtensions.Net.Portal {
 		/// </summary>
 		/// <value>The logged in time.</value>
 		public DateTime loggedInTime { get; private set; }
+		/// <summary>
+		/// Whether or not the ion portal service is currently uploading.
+		/// </summary>
+		/// <value><c>true</c> if is uploading; otherwise, <c>false</c>.</value>
+		public bool isUploading { get { return appStateUploadCancellationToken != null; } }
 
 		public string loginPortalUrl {
 			get {
@@ -154,6 +148,8 @@ namespace ION.CoreExtensions.Net.Portal {
 		public string userEmail { get; private set; }
 
 		private string userPassword { get; set; }
+		private CancellationTokenSource appStateUploadCancellationToken;
+		private Task uploadLayoutTask;
 
 		public IONPortalService() {
 			web = new WebClient();
@@ -753,33 +749,42 @@ namespace ION.CoreExtensions.Net.Portal {
 				return new PortalResponse<List<ConnectionData>>(null, "", EError.InternalError);
 			}
 		}
-/*
+
 		/// <summary>
 		/// Uploads the current user's applications state for remote viewing.
 		/// </summary>
 		/// <returns>The app state.</returns>
 		/// <param name="ion">Ion.</param>
 		/// <param name="userId">User identifier.</param>
-		public async Task<PortalResponse> UploadAppState(IION ion) {
-			var analyzer = ion.currentAnalyzer;
-			var workbench = ion.currentWorkbench;
-			var dm = ion.deviceManager;
-
-			var j = new JObject();
-
-			// Serialize all of the known devices for the app.
-			var devices = new JArray();
-			foreach (var device in dm.knownDevices) {
-				var gd = device as GaugeDevice;
-				if (gd != null) {
-					var rgd = new RemoteGaugeDevice(gd);
-					devices.Add(JsonConvert.SerializeObject(rgd));
+		public bool BeginAppStateUpload(IION ion) {
+			lock (this) {
+				if (appStateUploadCancellationToken == null) {
+					appStateUploadCancellationToken = new CancellationTokenSource();
+					uploadLayoutTask = Task.Factory.StartNew(async () => {
+						while (!appStateUploadCancellationToken.Token.IsCancellationRequested) {
+							var appState = RemoteAppState.CreateOrThrow(ion);
+							await PerformAppStateUpload(ion, appState);
+							await Task.Delay(TimeSpan.FromSeconds(1));
+						}
+						appStateUploadCancellationToken = null;
+					}, appStateUploadCancellationToken.Token);
+					return true;
+				} else {
+					return false;
 				}
 			}
-
-			// Serialize the workbench
 		}
-*/
+
+		/// <summary>
+		/// Safely ends the app state upload task.
+		/// </summary>
+		public void EndAppStateUpload() {
+			lock (this) {
+				if (appStateUploadCancellationToken != null) {
+					appStateUploadCancellationToken.Cancel();
+				}
+			}
+		}
 
 		/// <summary>
 		/// Downloads and inflates the given remote user's ION instance into this instance.
@@ -799,28 +804,19 @@ namespace ION.CoreExtensions.Net.Portal {
 
 				var json = JObject.Parse(content);
 				string layout;
-//				Log.D(this, json.ToString());
 				if (TRUE.Equals(json.GetValue(JSON_SUCCESS)) || CheckResponseForSuccess(json)) {
 					layout = json.GetValue(JSON_LAYOUT).ToString();
 
 					var appState = JsonConvert.DeserializeObject<RemoteAppState>(layout);
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					// Sync DeviceManager
 					await SyncDeviceManagerAsync(ion, appState);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					// Clone the workbench
 					ion.PostToMain(() => {
-						SyncWorkbench(ion, appState);
-					});
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-					// TODO ahodder@appioninc.com: This could use a lot of clean up. There is little reason that the structure
-					// should be this fragmented.
-					// Clone the remote analyzer
-					ion.PostToMain(() => {
-						SyncAnalyzer(ion, appState);
+						try {
+							SyncWorkbench(ion, appState);
+							SyncAnalyzer(ion, appState);
+						} catch (Exception e) {
+							Log.E(this, "Failed to sync", e);
+						}
 					});
 				}
 
@@ -832,7 +828,33 @@ namespace ION.CoreExtensions.Net.Portal {
 		}
 
 		/// <summary>
-		/// Synchronizes the current 
+		/// Uploads the given app state to the appion server.
+		/// </summary>
+		/// <returns>The app state upload.</returns>
+		/// <param name="ion">Ion.</param>
+		private async Task<PortalResponse> PerformAppStateUpload(IION ion, RemoteAppState appState) {
+			try {
+				var layout = JsonConvert.SerializeObject(appState);
+
+				var formContent = new FormUrlEncodedContent(new[] {
+					new KeyValuePair<string, string>(JSON_UPLOAD_LAYOUTS, JSON_MANAGER),
+					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+					new KeyValuePair<string, string>(JSON_LAYOUT_JSON, layout.ToString()),
+				});
+
+				var response = await client.PostAsync(URL_UPLOAD_LAYOUTS, formContent);
+				var content = await response.Content.ReadAsStringAsync();
+
+				Log.E(this, content);
+				return new PortalResponse(response, "Ok", EError.Success);
+			} catch (Exception e) {
+				Log.E(this, "Failed to perform app state upload", e);
+				return new PortalResponse(null, "", EError.InternalError);
+			}
+		}
+
+		/// <summary>
+		/// Synchronizes the current
 		/// </summary>
 		/// <returns>The device manager.</returns>
 		/// <param name="ion">Ion.</param>
@@ -903,35 +925,70 @@ namespace ION.CoreExtensions.Net.Portal {
 				analyzer.RemoveSensor(sensor);
 			}
 
-/*
-// TODO ahodder@appioninc.com: This has not been updated in ios upload
-			var lh = content.GetValue(JSON_LH) as JObject;
-			// Sync the manifold of the analyzer
-			// Prepare the low side manifold
-			var uslsn = lh.GetValue(JSON_LOW_SN);
-			var lsn = lh.GetValue(JSON_LOW_SN).ToString().ParseSerialNumber();
-			var lsi = int.Parse(lh.GetValue(JSON_LOW_SI).ToString());
-			var ldevice = ion.deviceManager[lsn] as GaugeDevice;
-			var lsubs = lh.GetValue(JSON_LOW_SUBVIEWS);
+			// Sync the analyzer manifolds
+			int index = 0;
 
-			if (ldevice != null) {
-				var lsensor = ldevice[lsi];
-				if (analyzer.lowSideManifold.primarySensor != lsensor) {
-					analyzer.SetManifold(Analyzer.ESide.Low, lsensor);
+			// Sync the low manifold
+			if (int.TryParse(appState.lh.lowAnalyzerIndex, out index)) {
+				// We have a low side manifold
+				var sensor = analyzer[index];
+				var m = analyzer.lowSideManifold;
+
+				if (m == null || !sensor.Equals(m.primarySensor)) {
+					// We need to update the manifold
+					var ret = analyzer.SetManifold(Analyzer.ESide.Low, sensor);
+					m = analyzer.lowSideManifold;
 				}
 
-//				var lssn = 
-//				var lsdevice = ion.deviceManager[
-			} else {
-				if (analyzer.lowSideManifold.primarySensor != null) {
-					analyzer.SetManifold(Analyzer.ESide.Low, (Sensor)null);
+				if (m != null) {
+					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
+					foreach (var subCode in appState.lh.lowSubviews) {
+						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
+						var type = newSp.GetType();
+						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+							m.AddSensorProperty(newSp);
+						} else {
+							var sp = m.GetSensorPropertyOfType(type);
+							pendingSubviewRemovals.Remove(sp);
+						}
+					}
+
+					foreach (var sp in pendingSubviewRemovals) {
+						m.RemoveSensorProperty(sp);
+					}
 				}
 			}
 
-			// Prepare the high side manifold
-			var hsn = content.GetValue(JSON_HIGH_SN).ToString().ParseSerialNumber();
-			var hsi = int.Parse(content.GetValue(JSON_HIGH_SI).ToString());
-*/
+			// Sync the high manifold
+			if (int.TryParse(appState.lh.highAnalyzerIndex, out index)) {
+				// We have a low side manifold
+				var sensor = analyzer[index];
+				var m = analyzer.highSideManifold;
+
+				if (m == null || !sensor.Equals(m.primarySensor)) {
+					// We need to update the manifold
+					analyzer.SetManifold(Analyzer.ESide.High, sensor);
+					m = analyzer.highSideManifold;
+				}
+
+				if (m != null) {
+					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
+					foreach (var subCode in appState.lh.highSubviews) {
+						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
+						var type = newSp.GetType();
+						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+							m.AddSensorProperty(newSp);
+						} else {
+							var sp = m.GetSensorPropertyOfType(type);
+							pendingSubviewRemovals.Remove(sp);
+						}
+					}
+
+					foreach (var sp in pendingSubviewRemovals) {
+						m.RemoveSensorProperty(sp);
+					}
+				}
+			}
 		}
 		/// <summary>
 		/// Attempts to sync the received uploaded workbench to the local remote workbench.
@@ -1004,35 +1061,6 @@ namespace ION.CoreExtensions.Net.Portal {
 
 			foreach (var code in codes) {
 				manifold.AddSensorProperty(RemoteManifold.ParseSensorPropertyFromCode(manifold, code));
-			}
-		}
-
-
-		private ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, string code) {
-			switch (code) {
-				case "Pressure":
-				return new PTChartSensorProperty(manifold);
-
-				case "Minimum":
-				return new MinSensorProperty(manifold.primarySensor);
-
-				case "Maximum":
-				return new MaxSensorProperty(manifold.primarySensor);
-
-				case "Hold":
-				return new HoldSensorProperty(manifold.primarySensor);
-
-				case "Rate":
-				return new RateOfChangeSensorProperty(manifold.primarySensor);
-
-//				case "Alternate":
-//				return new AlternateSensorProperty(manifold.primarySensor);
-
-				case "Superheat":
-				return new SuperheatSubcoolSensorProperty(manifold);
-
-				default:
-				throw new Exception("Cannot create sensor property: " + code);
 			}
 		}
 

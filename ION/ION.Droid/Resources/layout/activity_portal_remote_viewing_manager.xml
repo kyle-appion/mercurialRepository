@@ -19,23 +19,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/activity_padding">
-        <FrameLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@id/refresh"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
-            <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
-                android:id="@id/list"
-                android:layout_margin="@dimen/padding"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-            <TextView
-                android:id="@id/empty"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:textSize="@dimen/text_size_large"
-                android:gravity="center"
-                android:text="@string/portal_following_empty" />
-        </FrameLayout>
+                android:layout_height="match_parent">
+                <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+                    android:id="@id/list"
+                    android:layout_margin="@dimen/padding"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:id="@id/empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/text_size_large"
+                    android:gravity="center"
+                    android:text="@string/portal_following_empty" />
+            </FrameLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
         <Button
             android:text="@string/portal_remote_mode"
             android:textSize="@dimen/text_size_xlarge"

@@ -263,7 +263,14 @@
       }
 
       ldb.AddItem(Resource.String.rename, () => {
-        new RenameDialog(manifold.primarySensor).Show(Activity);
+				ldb.AddItem(Resource.String.rename, () => {
+					if (manifold.primarySensor is GaugeDeviceSensor) {
+						var gds = manifold.primarySensor as GaugeDeviceSensor;
+						new RenameDialog(gds.device).Show(Activity);
+					} else {
+						new RenameDialog(manifold.primarySensor).Show(Activity);
+					}
+				});
       });
 
 			if (dgs != null && dgs.device.isConnected) {

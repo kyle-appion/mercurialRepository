@@ -40,9 +40,6 @@
 		[JsonProperty("sub")]
 		public int[] subviewCodes;
 
-		/// <summary>
-		/// The constructor used in deserialization.
-		/// </summary>
 		public RemoteManifold() {
 		}
 
@@ -71,10 +68,12 @@
 					}
 				}
 
-				foreach (int code in subviewCodes) {
-					var sp = ParseSensorPropertyFromCode(ret, code);
-					if (sp != null) {
-						ret.AddSensorProperty(sp);
+				if (subviewCodes != null) {
+					foreach (int code in subviewCodes) {
+						var sp = ParseSensorPropertyFromCode(ret, code);
+						if (sp != null) {
+							ret.AddSensorProperty(sp);
+						}
 					}
 				}
 
@@ -106,6 +105,7 @@
 						codes.Add(code);
 					}
 				}
+				ret.subviewCodes = codes.ToArray();
 
 				var sgds = manifold.secondarySensor as GaugeDeviceSensor;
 				// If the sgds is null, either there isn't a secondary sensor or it is not a gauge device sensor.

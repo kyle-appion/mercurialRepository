@@ -149,8 +149,26 @@
     /// <param name="delay">Delay.</param>
     void PostToMainDelayed(Action action, TimeSpan delay);
 
+		/// <summary>
+		/// Saves the current workbench to the primary workbench save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
     Task SaveWorkbenchAsync();
+		/// <summary>
+		/// Saves the current analyzer to the primary analyzer save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
 		Task SaveAnalyzerAsync();
+		/// <summary>
+		/// Loads the current workbench from the primary workbench save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
+		Task<Workbench> LoadWorkbenchAsync();
+		/// <summary>
+		/// Loads the current analyzer from the primary analyzer save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
+		Task<Analyzer> LoadAnalyzerAsync();
 
     Task<Workbench> LoadWorkbenchAsync(IFile file);
 		Task<Analyzer> LoadAnalyzerAsync(IFile file);

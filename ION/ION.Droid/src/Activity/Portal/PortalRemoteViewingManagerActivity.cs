@@ -5,7 +5,9 @@
 
 	using Android.App;
 	using Android.Content.PM;
+	using Android.Graphics.Drawables;
 	using Android.OS;
+	using Android.Support.V4.Widget;
 	using Android.Views;
 	using Android.Widget;
 
@@ -16,8 +18,9 @@
 	using ION.Droid.Widgets.RecyclerViews;
 
 	[Activity(Label="@string/portal", Theme="@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleInstance, ScreenOrientation=ScreenOrientation.Portrait)]
-	public class PortalRemoteViewingManagerActivity : IONActivity {
+	public class PortalRemoteViewingManagerActivity : IONActivity, SwipeRefreshLayout.IOnRefreshListener {
 
+		private SwipeRefreshLayout refresh;
 		private SwipeRecyclerView list;
 		private Button button;
 
@@ -32,6 +35,7 @@
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
 
+			refresh = FindViewById<SwipeRefreshLayout>(Resource.Id.refresh);
 			list = FindViewById<SwipeRecyclerView>(Resource.Id.list);
 			button = FindViewById<Button>(Resource.Id.button);
 			button.Visibility = ViewStates.Invisible;
@@ -53,6 +57,11 @@
 					} else {
 						button.SetText(Resource.String.portal_local_mode);
 					}
+					if (ion is RemoteION) {
+						ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Resource.Color.red)));
+					} else {
+						ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Android.Resource.Color.BackgroundDark)));
+					}
 				}, TimeSpan.FromMilliseconds(500));
 			};
 
@@ -73,12 +82,13 @@
 				}
 			};
 
+			refresh.SetOnRefreshListener(this);
 			list.SetAdapter(adapter);
 		}
 
 		protected override void OnResume() {
 			base.OnResume();
-			GetContacts();
+			GetContactsAsync();
 		}
 
 		public override bool OnCreateOptionsMenu(IMenu menu) {
@@ -94,19 +104,13 @@
 
 			var item = menu.FindItem(Resource.Id.button);
 			var tv = item.ActionView as TextView;
-			tv.SetText(Resource.String.portal_upload_layout);
+			if (ion.portal.isUploading) {
+				tv.SetText(Resource.String.portal_stop_uploading);
+			} else {
+				tv.SetText(Resource.String.portal_upload_layout);
+			}
 			tv.SetOnClickListener(new ViewClickAction((view) => {
-/*
-				if (ion is RemoteION) {
-					if (await StartLocalIONAsync()) {
-						tv.SetText(Resource.String.portal_remote_mode_start);
-					}
-				} else {
-					if (await StartRemoteIONAsync()) {
-						tv.SetText(Resource.String.portal_remote_mode_end);
-					}
-				}
-*/
+				ToggleUploading();
 			}));
 
 			return true;
@@ -123,12 +127,12 @@
 			}
 		}
 
-		private async Task GetContacts() {
-			var pd = new ProgressDialog(this);
-			pd.Indeterminate = true;
-			pd.SetTitle(Resource.String.loading);
-			pd.SetMessage(GetString(Resource.String.please_wait));
-			pd.Show();
+		public void OnRefresh() {
+			GetContactsAsync();
+		}
+
+		private async Task GetContactsAsync() {
+			refresh.Refreshing = true;
 
 			var result = await ion.portal.QueryFollowingAsync();
 			if (result.success) {
@@ -138,7 +142,19 @@
 				Toast.MakeText(this, Resource.String.portal_error_failed_to_query_following, ToastLength.Long).Show();
 			}
 
-			pd.Dismiss();
+			await Task.Delay(TimeSpan.FromSeconds(1.5));
+
+			refresh.Refreshing = false;
+		}
+
+		private void ToggleUploading() {
+			if (ion.portal.isUploading) {
+				ion.portal.EndAppStateUpload();
+			} else {
+				ion.portal.BeginAppStateUpload(ion);
+			}
+			InvalidateOptionsMenu();
+			adapter.NotifyDataSetChanged();
 		}
 	}
 }

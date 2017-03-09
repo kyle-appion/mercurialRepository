@@ -355,6 +355,14 @@
       }
     }
 
+		public Task<Workbench> LoadWorkbenchAsync() {
+			return null;
+		}
+
+		public Task<Analyzer> LoadAnalyzerAsync() {
+			return null;
+		}
+
 		public Task<Workbench> LoadWorkbenchAsync(IFile file) {
 			Log.D(this, "load workbenchasync");
       var wp = new WorkbenchParser();

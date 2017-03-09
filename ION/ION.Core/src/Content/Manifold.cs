@@ -412,6 +412,21 @@
 		}
 
 		/// <summary>
+		/// Returns the sensor property of given type.
+		/// </summary>
+		/// <returns>The sensor property of type.</returns>
+		/// <param name="type">Type.</param>
+		public ISensorProperty GetSensorPropertyOfType(Type type) {
+			foreach (var prop in sensorProperties) {
+				if (prop.GetType().Equals(type)) {
+					return prop;
+				}
+			}
+
+			return null;
+		}
+
+		/// <summary>
 		/// Returns the manifold's sensor property of the given type if it is present.
 		/// </summary>
 		/// <returns>The sensor property of type.</returns>

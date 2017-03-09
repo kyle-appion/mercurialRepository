@@ -188,14 +188,7 @@
 				                                 .GetFolder(FOLDER_DATALOGS, EFileAccessResponse.CreateIfMissing);
 
 				try {
-					Workbench w = null;
-					var internalDir = fileManager.GetApplicationInternalDirectory();
-					if (internalDir.ContainsFile(FILE_WORKBENCH)) {
-						var file = internalDir.GetFile(FILE_WORKBENCH);
-						w = await LoadWorkbenchAsync(file);
-					} else {
-						w = new Workbench(this);
-					}
+					Workbench w = await LoadWorkbenchAsync();
 					currentWorkbench = w;
 				} catch (Exception e) {
 					Log.E(this, "Failed to load workbench", e);
@@ -203,14 +196,7 @@
 				}
 
 				try {
-					Analyzer a = null;
-					var internalDir = fileManager.GetApplicationInternalDirectory();
-					if (internalDir.ContainsFile(FILE_ANALYZER)) {
-						var file = internalDir.GetFile(FILE_ANALYZER);
-						a = await LoadAnalyzerAsync(file);
-					} else {
-						a = new Analyzer(this);
-					}
+					Analyzer a = await LoadAnalyzerAsync();
 					currentAnalyzer = a;
 				} catch (Exception e) {
 					Log.E(this, "Failed to load analyzer", e);
@@ -284,6 +270,17 @@
 		}
 
 		// Implemented from IION
+		public virtual Task<Workbench> LoadWorkbenchAsync() {
+			var internalDir = fileManager.GetApplicationInternalDirectory();
+			if (internalDir.ContainsFile(FILE_WORKBENCH)) {
+				var file = internalDir.GetFile(FILE_WORKBENCH);
+				return LoadWorkbenchAsync(file);
+			} else {
+				return Task.FromResult(new Workbench(this));
+			}
+		}
+
+		// Implemented from IION
 		public virtual Task<Workbench> LoadWorkbenchAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
 				try {
@@ -314,6 +311,17 @@
 					}
 				}
 			});
+		}
+
+		// Implemented from IION
+		public virtual Task<Analyzer> LoadAnalyzerAsync() {
+			var internalDir = fileManager.GetApplicationInternalDirectory();
+			if (internalDir.ContainsFile(FILE_ANALYZER)) {
+				var file = internalDir.GetFile(FILE_ANALYZER);
+				return LoadAnalyzerAsync(file);
+			} else {
+				return Task.FromResult(new Analyzer(this));
+			}
 		}
 
 		// Implemented from IION

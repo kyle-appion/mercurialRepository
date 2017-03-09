@@ -680,7 +680,6 @@
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_left.png" />
     <AndroidResource Include="Resources\drawable\ic_drag_arrow_right.png" />
-    <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\values-sw320dp\Dimens_320.xml" />
     <AndroidResource Include="Resources\values-sw480dp\Dimens_480.xml" />
     <AndroidResource Include="Resources\drawable\shape_circle_red.xml" />
@@ -737,6 +736,7 @@
     <AndroidResource Include="Resources\layout\list_portal_remote_view_item.axml" />
     <AndroidResource Include="Resources\menu\button.xml" />
     <AndroidResource Include="Resources\layout\button.axml" />
+    <AndroidResource Include="Resources\values\Ids.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

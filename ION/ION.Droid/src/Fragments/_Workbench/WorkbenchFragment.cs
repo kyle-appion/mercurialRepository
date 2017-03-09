@@ -124,7 +124,7 @@
 			}
 
 			if (workbench == null || workbench != ion.currentWorkbench) {
-				workbench = ion.currentWorkbench = new Workbench(ion);
+				workbench = ion.LoadWorkbenchAsync().Result;
 				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
@@ -294,7 +294,12 @@
 			}
 
       ldb.AddItem(Resource.String.rename, () => {
-        new RenameDialog(manifold.primarySensor).Show(Activity);
+				if (manifold.primarySensor is GaugeDeviceSensor) {
+					var gds = manifold.primarySensor as GaugeDeviceSensor;
+					new RenameDialog(gds.device).Show(Activity);
+				} else {
+					new RenameDialog(manifold.primarySensor).Show(Activity);
+				}
       });
 
 			if (dgs.device.isConnected) {
