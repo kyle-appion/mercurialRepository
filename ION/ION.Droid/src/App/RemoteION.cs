@@ -113,12 +113,12 @@
 
 		// Overridden from BaseAndroidION
 		public override Task<Analyzer> LoadAnalyzerAsync(IFile file) {
-			return null;
+			return Task.FromResult(new Analyzer(this));
 		}
 
 		// Overridden from BaseAndroidION
 		public override Task<Workbench> LoadWorkbenchAsync(IFile file) {
-			return null;
+			return Task.FromResult(new Workbench(this));
 		}
 
 		// Overridden from BaseAndroidION

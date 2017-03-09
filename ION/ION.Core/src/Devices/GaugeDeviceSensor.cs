@@ -20,6 +20,16 @@
         return false;
       }
     }
+		// Overridden from Sensor
+		public override string name {
+			get {
+				return device.name;
+			}
+			set {
+				device.name = value;
+				NotifySensorStateChanged();
+			}
+		}
     /// <summary>
     /// The device that this sensor belongs to.
     /// </summary>
@@ -46,7 +56,6 @@
       : base(sensorType, relative) {
       this.device = device;
       this.index = index;
-      this.name = device.serialNumber.ToString();
     }
 
     /// <summary>

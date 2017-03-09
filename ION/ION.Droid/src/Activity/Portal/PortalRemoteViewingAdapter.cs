@@ -56,11 +56,15 @@ namespace ION.Droid.Activity.Portal {
 		public override void OnBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 			var ion = AppState.context as RemoteION;
 			var r = records[position] as PortalRemoteViewingRecord;
-			if (ion != null) {
-				r.isBeingDownloaded = (r.data.id + "").Equals(ion.userId);
-			} else {
-				r.isBeingDownloaded = false;
-			}
+
+//			if (r.data.id == int.Parse(ion.portal.loginId)) {
+//			} else {
+				if (ion != null) {
+					r.isBeingDownloaded = (r.data.id + "").Equals(ion.userId);
+				} else {
+					r.isBeingDownloaded = false;
+				}
+//			}
 			base.OnBindViewHolder(holder, position);
 		}
 

@@ -490,6 +490,7 @@
 	<string name="portal_remote_viewing_access">Remote Viewing Access</string>
 	<string name="portal_remote_your_feed">Your feed</string>
 	<string name="portal_session">Sessions</string>
+	<string name="portal_stop_uploading">Stop Uploading</string>
 	<string name="portal_update_successful">Account update successful</string>
 	<string name="portal_upload_layout">Upload Layout</string>
 	<string name="portal_upload_sessions_success">Successfully uploaded sessions</string>

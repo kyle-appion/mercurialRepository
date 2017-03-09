@@ -22,9 +22,13 @@
 		public RemoteState state;
 		[JsonProperty("alyzer")]
 		public RemoteSensorMount[] analyzer;
+		[JsonProperty("LH")]
+		public RemoteAnalyzerLH lh;
+		[JsonProperty("version")]
+		public int version;
 
 
-		private RemoteAppState() {
+		public RemoteAppState() {
 		}
 
 		/// <summary>
@@ -59,20 +63,24 @@
 					Log.E(typeof(RemoteAppState).Name, "Failed to create remote manifold", e);
 				}
 			}
+			ret.workbench = manifolds.ToArray();
 
 			// Commit the analyzer
 			var sensorMounts = new List<RemoteSensorMount>();
 			foreach (var sensor in analyzer.GetSensors()) {
 				var gds = sensor as GaugeDeviceSensor;
 				if (gds != null) {
+					// TODO
 					var index = analyzer.IndexOfSensor(sensor);
-					sensorMounts.Add(new RemoteSensorMount() {
-						sensorIndex = index + "",
-					});
+					sensorMounts.Add(new RemoteSensorMount(analyzer, sensor));
 				} else {
 					Log.D(typeof(RemoteAppState).Name, "Ignoring not gauge device sensor from analyzer");
 				}
 			}
+			ret.analyzer = sensorMounts.ToArray();
+
+			// Commit analyzer manifolds
+			ret.lh = new RemoteAnalyzerLH(analyzer);
 
 			// Commit the current state of the ion
 			ret.altitude = ion.locationManager.lastKnownLocation.altitude.ConvertTo(Units.Length.METER).amount + "";

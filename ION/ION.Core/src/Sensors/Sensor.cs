@@ -375,7 +375,7 @@ namespace ION.Core.Sensors {
     /// <summary>
     /// The custom name for the specific sensor.
     /// </summary>
-    public string name {
+    public virtual string name {
       get {
         return __name;
       }

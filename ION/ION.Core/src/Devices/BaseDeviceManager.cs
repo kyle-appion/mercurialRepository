@@ -391,6 +391,10 @@
             await SaveDevice(device);
           }
           break;
+
+				case DeviceEvent.EType.NameChanged:
+					await SaveDevice(deviceEvent.device);
+					break;
       }
 
       NotifyOfDeviceEvent(deviceEvent);
