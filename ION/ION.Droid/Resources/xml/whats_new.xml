@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
 	<display version="0.9.39">
+		<new>Added Real Time data logging</new>
 		<fixed>Fixed some graphical bugs in workbench</fixed>
 	</display>
 </whatsnew>

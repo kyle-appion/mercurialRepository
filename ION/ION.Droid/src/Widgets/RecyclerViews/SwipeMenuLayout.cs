@@ -79,22 +79,26 @@
 		}
 
 		public override void ComputeScroll() {
-			if (IsAttachedToWindow) {
+//			if (IsAttachedToWindow) {
 				// TODO ahodder@appioninc.com: This bug causes an exception to be thrown when the scroller is disposes.
 				// this usually happens when starting a remote view
 //				L.E(this, "Tried to compute scroll while swipe menu was not attached to the a window.");
-				return;
-			}
-			if (isOpen) {
-				if (openScroller.ComputeScrollOffset()) {
-					Swipe(openScroller.CurrX * (int)recyclerView.swipeDirection);
-					PostInvalidate();
+//				return;
+//			}
+			try {
+				if (isOpen) {
+					if (openScroller.ComputeScrollOffset()) {
+						Swipe(openScroller.CurrX * (int)recyclerView.swipeDirection);
+						PostInvalidate();
+					}
+				} else {
+					if (closeScroller.ComputeScrollOffset()) {
+						Swipe((int)((baseX - closeScroller.CurrX) * (int)recyclerView.swipeDirection));
+						PostInvalidate();
+					}
 				}
-			} else {
-				if (closeScroller.ComputeScrollOffset()) {
-					Swipe((int)((baseX - closeScroller.CurrX) * (int)recyclerView.swipeDirection));
-					PostInvalidate();
-				}
+			} catch (Exception e) {
+				L.E(this, "Tried to compute scroll while swipe menu was not attached to a window", e);
 			}
 		}
 
@@ -186,6 +190,9 @@
 		}
 
 		public void Close() {
+			if (!isOpen) {
+				return;
+			}
 			isOpen = false;
 			if (recyclerView.swipeDirection == SwipeRecyclerView.EDirection.Left) {
 				baseX = -foreground.Left;
@@ -202,9 +209,7 @@
 		public bool HandleMessage(Message msg) {
 			switch (msg.What) {
 				case MSG_CLOSE:
-					if (isOpen) {
-						Close();
-					}
+					Close();
 				return true; // MSG_CLOSE
 			}
 

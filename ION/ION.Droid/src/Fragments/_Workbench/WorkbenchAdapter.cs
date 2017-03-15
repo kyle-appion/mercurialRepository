@@ -117,6 +117,9 @@ namespace ION.Droid.Fragments._Workbench {
 				case EViewType.ROC: {
 					return new ROCSensorPropertyViewHolder(rv, cache);
 				} // EViewType.ROC
+				case EViewType.Graph: {
+					return new GraphSensorPropertyViewHolder(rv);	
+				} // EViewType.Graph
 				case EViewType.Timer: {
 					return new TimerSensorPropertyViewHolder(rv, cache);
 				} // EViewType.Timer
@@ -263,6 +266,8 @@ namespace ION.Droid.Fragments._Workbench {
 				return new SHSCSensorPropertyRecord(manifold, sp as SuperheatSubcoolSensorProperty);
 			} else if (sp is RateOfChangeSensorProperty) {
 				return new ROCSensorPropertyRecord(manifold, sp as RateOfChangeSensorProperty);
+			} else if (sp is GraphSensorProperty) {
+				return new GraphSensorPropertyRecord(manifold, sp as GraphSensorProperty);
 			} else if (sp is TimerSensorProperty) {
 				return new TimerSensorPropertyRecord(manifold, sp as TimerSensorProperty);
 			} else if (sp is SecondarySensorProperty) {
@@ -429,6 +434,7 @@ namespace ION.Droid.Fragments._Workbench {
 			Add,
 			Manifold,
 
+			Graph,
 			Secondary,
 			ROC,
 			Timer,

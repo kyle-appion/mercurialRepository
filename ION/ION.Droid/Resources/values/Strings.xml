@@ -549,6 +549,7 @@
   <string name="workbench_alt_abrv">ALT</string>
   <string name="workbench_hold">Hold Reading</string>
   <string name="workbench_hold_abrv">HOLD</string>
+  <string name="workbench_graph">Live Graph</string>
   <string name="workbench_linked">Linked</string>
   <string name="workbench_max">Maximim Reading</string>
   <string name="workbench_max_abrv">MAX</string>
