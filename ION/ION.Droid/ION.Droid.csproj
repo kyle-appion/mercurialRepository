@@ -82,9 +82,6 @@
     <Reference Include="SQLite.Net.Platform.XamarinAndroid">
       <HintPath>..\packages\SQLite.Net-PCL.3.1.1\lib\MonoAndroid\SQLite.Net.Platform.XamarinAndroid.dll</HintPath>
     </Reference>
-    <Reference Include="OxyPlot">
-      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
-    </Reference>
     <Reference Include="OxyPlot.Xamarin.Android">
       <HintPath>..\packages\OxyPlot.Xamarin.Android.1.0.0\lib\MonoAndroid10\OxyPlot.Xamarin.Android.dll</HintPath>
     </Reference>
@@ -138,6 +135,9 @@
     </Reference>
     <Reference Include="Xamarin.GooglePlayServices.Location">
       <HintPath>..\packages\Xamarin.GooglePlayServices.Location.42.1001.0\lib\MonoAndroid70\Xamarin.GooglePlayServices.Location.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +309,7 @@
     <Compile Include="src\Activity\Portal\PortalRemoteViewingAdapter.cs" />
     <Compile Include="src\Activity\Portal\PortalRemoteViewingManagerActivity.cs" />
     <Compile Include="src\Fragments\_Workbench\SpaceViewHolder.cs" />
+    <Compile Include="src\Fragments\_Workbench\GraphSensorPropertyViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -737,6 +738,7 @@
     <AndroidResource Include="Resources\menu\button.xml" />
     <AndroidResource Include="Resources\layout\button.axml" />
     <AndroidResource Include="Resources\values\Ids.xml" />
+    <AndroidResource Include="Resources\layout\subview_graph_large.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

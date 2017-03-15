@@ -401,6 +401,12 @@
         });
       }
 
+			if (!manifold.HasSensorPropertyOfType(typeof(GraphSensorProperty))) {
+				ldb.AddItem(GetString(Resource.String.workbench_graph), () => {
+					manifold.AddSensorProperty(new GraphSensorProperty(manifold, TimeSpan.FromSeconds(30), TimeSpan.FromMilliseconds(250)));
+				});
+			}
+
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_min, Resource.String.workbench_min_abrv), () => {
           manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));

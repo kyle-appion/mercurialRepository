@@ -152,22 +152,22 @@
 			}
 		}
 
-    // Overridden from Activity
-    protected override void OnPostCreate(Bundle savedInstanceState) {
-      base.OnPostCreate(savedInstanceState);
-      drawerToggle.SyncState();
-    }
+		// Overridden from Activity
+		protected override void OnPostCreate(Bundle savedInstanceState) {
+			base.OnPostCreate(savedInstanceState);
+			drawerToggle.SyncState();
+		}
 
-    // Overridden from Activity
-    public override void OnConfigurationChanged(Android.Content.Res.Configuration newConfig) {
-      base.OnConfigurationChanged(newConfig);
-      drawerToggle.OnConfigurationChanged(newConfig);
-    }
+		// Overridden from Activity
+		public override void OnConfigurationChanged(Android.Content.Res.Configuration newConfig) {
+			base.OnConfigurationChanged(newConfig);
+			drawerToggle.OnConfigurationChanged(newConfig);
+		}
 
-    // Overridden from Activity
-    public override bool OnOptionsItemSelected(IMenuItem item) {
-      return drawerToggle.OnOptionsItemSelected(item) || base.OnOptionsItemSelected(item);
-    }
+		// Overridden from Activity
+		public override bool OnOptionsItemSelected(IMenuItem item) {
+			return drawerToggle.OnOptionsItemSelected(item) || base.OnOptionsItemSelected(item);
+		}
 
     // Overridden from IOnItemClickListener
     public void OnItemClick(AdapterView adapterView, View view, int position, long id) {
