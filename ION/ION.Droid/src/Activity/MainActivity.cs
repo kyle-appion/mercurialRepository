@@ -38,6 +38,7 @@
     // Overridden from Activity
 		protected override void OnCreate (Bundle bundle) {
 			base.OnCreate (bundle);
+			Log.D(this, new AndroidPlatformInfo(this).ToString());
       SetContentView(Resource.Layout.activity_main);
       Log.printer = new LogPrinter();
 

@@ -66,48 +66,49 @@
         d.Dismiss();
       });
 
+			if (analyzer.isEditable) {
+				adb.SetPositiveButton(Resource.String.actions, (sender, e) => {
+					var ldb = new ListDialogBuilder(context);
+					ldb.SetTitle(string.Format(context.GetString(Resource.String.devices_actions_1arg), sensor.name));
 
-			adb.SetPositiveButton(Resource.String.actions, (sender, e) => {
-				var ldb = new ListDialogBuilder(context);
-				ldb.SetTitle(string.Format(context.GetString(Resource.String.devices_actions_1arg), sensor.name));
+					var dgs = sensor as GaugeDeviceSensor;
 
-				var dgs = sensor as GaugeDeviceSensor;
+					if (dgs != null && !dgs.device.isConnected) {
+						ldb.AddItem(Resource.String.reconnect, () => {
+							dgs.device.connection.ConnectAsync();
+						});
+					}
 
-				if (dgs != null && !dgs.device.isConnected) {
-					ldb.AddItem(Resource.String.reconnect, () => {
-						dgs.device.connection.ConnectAsync();
-					});
-				}
-
-				ldb.AddItem(Resource.String.rename, () => {
 					ldb.AddItem(Resource.String.rename, () => {
-						if (sensor is GaugeDeviceSensor) {
-							var gds = sensor as GaugeDeviceSensor;
-							new RenameDialog(gds.device).Show(context);
-						} else {
-							new RenameDialog(sensor).Show(context);
-						}
+						ldb.AddItem(Resource.String.rename, () => {
+							if (sensor is GaugeDeviceSensor) {
+								var gds = sensor as GaugeDeviceSensor;
+								new RenameDialog(gds.device).Show(context);
+							} else {
+								new RenameDialog(sensor).Show(context);
+							}
+						});
 					});
-				});
 
-				ldb.AddItem(Resource.String.alarm, () => {
-					var i = new Intent(context, typeof(SensorAlarmActivity));
-					i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, sensor.ToParcelable());
-					context.StartActivity(i);
-				});
-
-				if (dgs != null && dgs.device.isConnected) {
-					ldb.AddItem(Resource.String.disconnect, () => {
-						dgs.device.connection.Disconnect();
+					ldb.AddItem(Resource.String.alarm, () => {
+						var i = new Intent(context, typeof(SensorAlarmActivity));
+						i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, sensor.ToParcelable());
+						context.StartActivity(i);
 					});
-				}
 
-				ldb.AddItem(Resource.String.remove, () => {
-					analyzer.RemoveSensor(sensor);
+					if (dgs != null && dgs.device.isConnected) {
+						ldb.AddItem(Resource.String.disconnect, () => {
+							dgs.device.connection.Disconnect();
+						});
+					}
+
+					ldb.AddItem(Resource.String.remove, () => {
+						analyzer.RemoveSensor(sensor);
+					});
+
+					ldb.Show();
 				});
-
-				ldb.Show();
-			});
+			}
 
 			return adb.Show();
     }

@@ -1,5 +1,4 @@
-﻿using Java.Util;
-namespace ION.Droid.Fragments._Workbench {
+﻿namespace ION.Droid.Fragments._Workbench {
 
 	using System;
 	using System.Collections.Generic;
@@ -23,48 +22,27 @@ namespace ION.Droid.Fragments._Workbench {
 		/// <summary>
 		/// The workbench that the adapter is displaying.
 		/// </summary>
-		public Workbench workbench {
-			get {
-				return __workbench;
-			}
-			set {
-				if (__workbench != null) {
-					__workbench.onWorkbenchEvent -= OnWorkbenchEvent;
-				}
-
-				records.Clear();
-				__workbench = value;
-				__workbench.onWorkbenchEvent += OnWorkbenchEvent;
-
-				foreach (var manifold in __workbench.manifolds) {
-					var mr = new ManifoldRecord(manifold);
-					records.Add(mr);
-					ExpandManifold(mr);
-					records.Add(new SpaceRecord());
-				}
-
-				records.Add(new AddViewerRecord(onAddViewer));
-
-				NotifyDataSetChanged();
-
-			}
-		} Workbench __workbench;
-
-		/// <summary>
-		/// Whether or not the adapter is user editable.
-		/// </summary>
-		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
-		public bool isEditable { get; private set; } bool __isEditable;
+		public Workbench workbench { get; private set; }
 
 		private BitmapCache cache;
 		private Action onAddViewer;
 		private ItemTouchHelper dragger;
 		private HashSet<ManifoldRecord> dragCollapsedManifoldRecords = new HashSet<ManifoldRecord>();
 
-		public WorkbenchAdapter(Action onAddViewer, bool isEditable) {
+		public WorkbenchAdapter(Action onAddViewer, Workbench workbench) {
 			this.onAddViewer = onAddViewer;
-			this.isEditable = isEditable;
+			this.workbench = workbench;
 			dragger = new ItemTouchHelper(new Dragger(this));
+
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+			foreach (var manifold in workbench.manifolds) {
+				var mr = new ManifoldRecord(manifold);
+				records.Add(mr);
+				ExpandManifold(mr);
+				records.Add(new SpaceRecord());
+			}
+
+			records.Add(new AddViewerRecord(onAddViewer));
 		}
 
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -72,20 +50,14 @@ namespace ION.Droid.Fragments._Workbench {
 			if (cache == null) {
 				cache = new BitmapCache(recyclerView.Context.Resources);
 			}
-			if (isEditable) {
+			if (workbench.isEditable) {
 				dragger.AttachToRecyclerView(recyclerView);
 			}
-/*
-			var anim = recyclerView.GetItemAnimator() as SimpleItemAnimator;
-			if (anim != null) {
-				anim.SupportsChangeAnimations = false;
-			}
-*/
 		}
 
 		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
 			base.OnDetachedFromRecyclerView(recyclerView);
-			if (isEditable) {
+			if (workbench.isEditable) {
 				dragger.AttachToRecyclerView(null);
 			}
 		}

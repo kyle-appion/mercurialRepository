@@ -739,6 +739,8 @@
     <AndroidResource Include="Resources\layout\button.axml" />
     <AndroidResource Include="Resources\values\Ids.xml" />
     <AndroidResource Include="Resources\layout\subview_graph_large.axml" />
+    <AndroidResource Include="Resources\layout\activity_portal_login_4_4.axml" />
+    <AndroidResource Include="Resources\layout\activity_portal_4_4.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

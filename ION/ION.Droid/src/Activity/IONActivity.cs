@@ -106,7 +106,6 @@
 		protected override void OnResume() {
 			base.OnResume();
 			SetWakeLock(prefs.isWakeLocked);
-			Log.D(this, new AndroidPlatformInfo(this).ToString());
 			if (ion is RemoteION) {
 				ActionBar.SetBackgroundDrawable(new ColorDrawable(Resources.GetColor(Resource.Color.red)));
 			} else {

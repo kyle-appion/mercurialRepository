@@ -23,20 +23,24 @@
 	/// <summary>
 	/// This activity is the base activity for Appion portal interactions.
 	/// </summary>
-	[Activity(Label = "@string/portal", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label = "@string/portal", Theme = "@style/TerminalActivityTheme", /*LaunchMode=Android.Content.PM.LaunchMode.SingleTask, */ScreenOrientation=ScreenOrientation.Portrait)]
 	public class PortalActivity : IONActivity {
 
 		private const int REQUEST_LOGIN = 1;
 
-		private TextInputEditText displayName;
-		private TextInputEditText email;
-		private TextInputEditText password;
-		private TextInputEditText passwordConfirm;
+		private EditText displayName;
+		private EditText email;
+		private EditText password;
+		private EditText passwordConfirm;
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
 
-			SetContentView(Resource.Layout.activity_portal);
+			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+				SetContentView(Resource.Layout.activity_portal_4_4);
+			} else {
+				SetContentView(Resource.Layout.activity_portal);
+			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
@@ -65,17 +69,6 @@
 			var startRemote = FindViewById<Button>(Resource.Id.button);
 			startRemote.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
-/*
-				if (ion is RemoteION) {
-					if (await StartLocalION()) {
-						startRemote.Text = "US Remote View";
-					}
-				} else {
-					if (await StartRemoteION()) {
-						startRemote.Text = "US Local View";
-					}
-				}
-*/
 			};
 
 			home.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
@@ -84,10 +77,10 @@
 
 			// Setup settings Widgets
 			var settings = FindViewById(Resource.Id.settings);
-			displayName = settings.FindViewById<TextInputEditText>(Resource.Id.name);
-			email = settings.FindViewById<TextInputEditText>(Resource.Id.email);
-			password = settings.FindViewById<TextInputEditText>(Resource.Id.password);
-			passwordConfirm = settings.FindViewById<TextInputEditText>(Resource.Id.passwordConfirm);
+			displayName = settings.FindViewById<EditText>(Resource.Id.name);
+			email = settings.FindViewById<EditText>(Resource.Id.email);
+			password = settings.FindViewById<EditText>(Resource.Id.password);
+			passwordConfirm = settings.FindViewById<EditText>(Resource.Id.passwordConfirm);
 			var icon = settings.FindViewById<ImageView>(Resource.Id.icon);
 
 			settings.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
