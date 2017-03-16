@@ -81,7 +81,7 @@
 		private async Task<bool> SetION(BaseAndroidION newIon) {
 			try {
 				var old = AppState.context as BaseAndroidION;
-				AppState.context = newIon;
+				ion = AppState.context = newIon;
 				var ret = await newIon.InitAsync();
 
 				if (old != null) {
@@ -123,8 +123,8 @@
 			}
 			var total = ion.deviceManager.devices.Count;
 
-			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, Resource.Drawable.ic_nav_analyzer);
-			var ic = Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop ? Resource.Drawable.ic_nav_analyzer_white : Resource.Drawable.ic_nav_analyzer;
+			var ic = Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop ? Resource.Drawable.ic_nav_analyzer : Resource.Drawable.ic_nav_analyzer_white;
+			var bitmap = Android.Graphics.BitmapFactory.DecodeResource(Resources, ic);
 
 			var note = new NotificationCompat.Builder(this)
 			                                 .SetColor(Resource.Color.gold)

@@ -81,9 +81,8 @@
     }
 
 		protected override bool OnPostInit() {
-			return base.OnPostInit();
-
 			context.UpdateNotification();
+			return base.OnPostInit();
 		}
 
 		// Implemented from IION
