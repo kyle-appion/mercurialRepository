@@ -23,6 +23,7 @@
 	using App;
   using Dialog;
   using Sensors;
+	using Widgets.RecyclerViews;
 
   public class WorkbenchFragment : IONFragment {
 
@@ -56,12 +57,6 @@
     /// </summary>
     /// <value>The adapter.</value>
     public WorkbenchAdapter adapter { get; set; }
-
-		/// <summary>
-		/// Whether or not the workbench is editable.
-		/// </summary>
-		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
-		public bool isEditable { get { return ion is AndroidION; } }
 
     /// <Docs>If the fragment is being re-created from
     ///  a previous saved state, this is the state.</Docs>
@@ -119,18 +114,17 @@
     public override void OnResume() {
       base.OnResume();
 
-			if (workbench == null) {
+			if (workbench == null || workbench != ion.currentWorkbench) {
 				workbench = ion.currentWorkbench;
 			}
 
-			if (workbench == null || workbench != ion.currentWorkbench) {
+			if (workbench == null) {
 				workbench = ion.LoadWorkbenchAsync().Result;
-				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
+//				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
-			adapter = new WorkbenchAdapter(OnAddViewer, isEditable);
-			adapter.workbench = ion.currentWorkbench;
+			adapter = new WorkbenchAdapter(OnAddViewer, workbench);
 			list.SetAdapter(adapter);
 
       adapter.NotifyDataSetChanged();
@@ -232,6 +226,8 @@
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
     private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+			((SwipeRecyclerView)list).swipingEnabled = workbench.isEditable;
+
       if (IsVisible) {
         switch (workbenchEvent.type) {
           case WorkbenchEvent.EType.Added:
@@ -251,27 +247,12 @@
 		private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
 			switch (manifoldEvent.type) {
 				case ManifoldEvent.EType.SensorPropertyAdded:
-//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, Math.Max(manifoldEvent.index - 1, 0));
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertyRemoved:
-//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, manifoldEvent.manifold.sensorPropertyCount - 1);
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertySwapped:
 					ion.SaveWorkbenchAsync();
 				break;
-			}
-		}
-
-		private void OnWorkbenchChanged(Workbench wb) {
-			if (this.workbench != null) {
-				this.workbench.onWorkbenchEvent -= OnWorkbenchEvent;
-			}
-
-			this.workbench = wb;
-
-			if (this.workbench != null) {
-				this.workbench.onWorkbenchEvent += OnWorkbenchEvent;
-				this.adapter.workbench = wb;
 			}
 		}
 
@@ -280,6 +261,9 @@
     /// the manifold.
     /// </summary>
     private void ShowManifoldContextDialog(Manifold manifold) {
+			if (!workbench.isEditable) {
+				return;
+			}
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 

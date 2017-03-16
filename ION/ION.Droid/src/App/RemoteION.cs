@@ -47,7 +47,7 @@
 		public bool isUploadingState { get; /*private*/ set; }
 
 		private HandlerThread handlerThread;
-		private Handler handler;
+		private Handler remoteHandler;
 
 		public RemoteION(AppService context, string userId) : base(context) {
 			this.userId = userId;
@@ -84,9 +84,9 @@
 
 			handlerThread = new HandlerThread("RemoteIonThread");
 			handlerThread.Start();
-			handler = new Handler(handlerThread.Looper);
+			remoteHandler = new Handler(handlerThread.Looper);
 
-			handler.PostDelayed(async () => await CloneRemote(), REQUEST_LAYOUT_INTERVAL);
+			remoteHandler.PostDelayed(async () => await CloneRemote(), REQUEST_LAYOUT_INTERVAL);
 
 			return true;
 		}
@@ -94,18 +94,18 @@
 		// Overridden from BaseAndroidION
 		public override void Dispose() {
 			base.Dispose();
-			handler.RemoveCallbacksAndMessages(null);
+			remoteHandler.RemoveCallbacksAndMessages(null);
 			handlerThread.QuitSafely();
 
 			handlerThread = null;
-			handler = null;
+			remoteHandler = null;
 		}
 
 		private async Task CloneRemote() {
 			await portal.CloneFromRemote(this, userId);
 			// TODO ahodder@appioninc.com: Sometimes the user would dispose the remote instance in the middle of a remote download
-			if (handler != null) {
-				handler.PostDelayed(async () => {
+			if (remoteHandler != null) {
+				remoteHandler.PostDelayed(async () => {
 					await CloneRemote();
 				}, REQUEST_LAYOUT_INTERVAL);
 			}

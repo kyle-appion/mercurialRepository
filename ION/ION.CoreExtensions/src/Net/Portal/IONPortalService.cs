@@ -894,6 +894,7 @@
 		private void SyncAnalyzer(IION ion, RemoteAppState appState) {
 			// Sync the sensor mounts as this is the more important part
 			var analyzer = ion.currentAnalyzer;
+			analyzer.isEditable = false;
 
 			var pendingSensorMountRemovals = new HashSet<Sensor>(analyzer.sensorList);
 
@@ -997,6 +998,7 @@
 		/// <param name="workbenchClone">Workbench clone.</param>
 		private void SyncWorkbench(IION ion, RemoteAppState state) {
 			var wb = ion.currentWorkbench;
+			wb.isEditable = false;
 
 			var pendingRemovals = new HashSet<Sensor>();
 			foreach (var m in wb.manifolds) {

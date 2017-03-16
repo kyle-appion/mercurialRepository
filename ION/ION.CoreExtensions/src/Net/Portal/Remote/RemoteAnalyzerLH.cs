@@ -52,7 +52,7 @@ namespace ION.CoreExtensions.Net.Portal {
 
 				if (gds != null) {
 					var i = analyzer.IndexOfSensor(gds);
-					lowAnalyzerIndex = (i + 1) + "";
+					lowAnalyzerIndex = i + "";
 
 					var sgds = m.secondarySensor as GaugeDeviceSensor;
 					if (sgds != null) {
@@ -102,7 +102,9 @@ namespace ION.CoreExtensions.Net.Portal {
 
 		public static string GetCodeFromSensorProperty(ISensorProperty sp) {
 			var type = sp.GetType();
-			if (typeof(PTChartSensorProperty).Equals(type)) {
+			if (typeof(AlternateUnitSensorProperty).Equals(type)) {
+				return "Alternate";
+			} else if (typeof(PTChartSensorProperty).Equals(type)) {
 				return "Pressure";
 			} else if (typeof(MinSensorProperty).Equals(type)) {
 				return "Minimum";
@@ -121,24 +123,18 @@ namespace ION.CoreExtensions.Net.Portal {
 
 		public static ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, string code) {
 			switch (code) {
+				case "Alternate":
+					return new AlternateUnitSensorProperty(manifold.primarySensor);
 				case "Pressure":
 					return new PTChartSensorProperty(manifold);
-
 				case "Minimum":
 					return new MinSensorProperty(manifold.primarySensor);
-
 				case "Maximum":
 					return new MaxSensorProperty(manifold.primarySensor);
-
 				case "Hold":
 					return new HoldSensorProperty(manifold.primarySensor);
-
 				case "Rate":
 					return new RateOfChangeSensorProperty(manifold.primarySensor);
-
-//				case "Alternate":
-//				return new AlternateSensorProperty(manifold.primarySensor);
-
 				case "Superheat":
 					return new SuperheatSubcoolSensorProperty(manifold);
 

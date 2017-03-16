@@ -452,8 +452,6 @@
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         }
       }
-
-			L.D(this, "Now we have: " + manifold.sensorPropertyCount);
     }
 
     /// <summary>
@@ -535,6 +533,9 @@
         analyzer.GetSideOfIndex(index, out side);
         new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
       } else {
+				if (!analyzer.isEditable) {
+					return;
+				}
         ShowAddFromDialog(analyzer, index);
       }
     }
@@ -546,6 +547,9 @@
     /// <param name="analyzer">Analyzer.</param>
     /// <param name="index">Index.</param>
     private void OnSensorMountLongClicked(AnalyzerView view, Analyzer analyzer, int index) {
+			if (!analyzer.isEditable) {
+				return;
+			}
       if (analyzer.HasSensorAt(index)) {
         analyzerView.StartDraggingSensorMount(index);
       } else {
@@ -561,6 +565,10 @@
     /// <param name="analyzer">Analyzer.</param>
     /// <param name="side">Side.</param>
     private void OnManifoldClicked(AnalyzerView view, Analyzer analyzer, Analyzer.ESide side) {
+			if (!analyzer.isEditable) {
+				return;
+			}
+
       var manifold = analyzer.GetManifoldFromSide(side);
 
       if (manifold != null) {

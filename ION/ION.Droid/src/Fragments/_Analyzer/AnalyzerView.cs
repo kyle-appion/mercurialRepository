@@ -427,15 +427,6 @@
 
       lowSideManifoldTemplate.Unbind();
       highSideManifoldTemplate.Unbind();
-/*
-      if (expansionIcon != null) {
-        expansionIcon.Recycle();
-      }
-
-      if (compressorIcon != null) {
-        compressorIcon.Recycle();
-      }
-*/
     }
 
 		protected override void Dispose(bool disposing) {
@@ -1022,7 +1013,9 @@
       AddView(lowSideManifoldView, new LayoutParams(LayoutParams.LOW_SIDE_VIEWER));
       AddView(highSideManifoldView, new LayoutParams(LayoutParams.HIGH_SIDE_VIEWER));
 
+			lowSideManifoldTemplate.analyzer = analyzer;
 			lowSideManifoldTemplate.Bind(analyzer.lowSideManifold);
+			highSideManifoldTemplate.analyzer = analyzer;
 			highSideManifoldTemplate.Bind(analyzer.highSideManifold);
     }
 
