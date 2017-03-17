@@ -100,7 +100,9 @@
 
 		private void HandleMessage(Message msg) {
 			Invalidate();
-			handler.SendEmptyMessageDelayed(0, (long)record.sp.interval.TotalMilliseconds);
+			if (isRunning) {
+				handler.SendEmptyMessageDelayed(0, (long)record.sp.interval.TotalMilliseconds);
+			}
 		}
 	}
 }
