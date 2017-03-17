@@ -34,16 +34,16 @@
     /// The image view that will show the screenshot that will be screenshot.
     /// </summary>
     private ImageView imageView;
-    private TextInputEditText nameView;
-		private TextInputEditText dateView;
-		private TextInputEditText versionView;
-		private TextInputEditText addressView1;
-		private TextInputEditText addressView2;
-		private TextInputEditText cityView;
-		private TextInputEditText stateView;
-		private TextInputEditText countryView;
-		private TextInputEditText zipView;
-		private TextInputEditText notesView;
+    private EditText nameView;
+		private EditText dateView;
+		private EditText versionView;
+		private EditText addressView1;
+		private EditText addressView2;
+		private EditText cityView;
+		private EditText stateView;
+		private EditText countryView;
+		private EditText zipView;
+		private EditText notesView;
 
     private byte[] screenshot;
     private DateTime createdDate;
@@ -58,19 +58,23 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-      SetContentView(Resource.Layout.activity_screenshot);
+			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+				SetContentView(Resource.Layout.activity_screenshot_4_4);
+			} else {
+				SetContentView(Resource.Layout.activity_screenshot);
+			}
 
       imageView = FindViewById<ImageView>(Resource.Id.content);
-			nameView = FindViewById<TextInputEditText>(Resource.Id.name);
-			dateView = FindViewById<TextInputEditText>(Resource.Id.date);
-			versionView = FindViewById<TextInputEditText>(Resource.Id.version);
-			addressView1 = FindViewById<TextInputEditText>(Resource.Id.address1);
-			addressView2 = FindViewById<TextInputEditText>(Resource.Id.address2);
-			cityView = FindViewById<TextInputEditText>(Resource.Id.city);
-			stateView = FindViewById<TextInputEditText>(Resource.Id.state);
-			countryView = FindViewById<TextInputEditText>(Resource.Id.country);
-			zipView = FindViewById<TextInputEditText>(Resource.Id.zip);
-			notesView = FindViewById<TextInputEditText>(Resource.Id.notes);
+			nameView = FindViewById<EditText>(Resource.Id.name);
+			dateView = FindViewById<EditText>(Resource.Id.date);
+			versionView = FindViewById<EditText>(Resource.Id.version);
+			addressView1 = FindViewById<EditText>(Resource.Id.address1);
+			addressView2 = FindViewById<EditText>(Resource.Id.address2);
+			cityView = FindViewById<EditText>(Resource.Id.city);
+			stateView = FindViewById<EditText>(Resource.Id.state);
+			countryView = FindViewById<EditText>(Resource.Id.country);
+			zipView = FindViewById<EditText>(Resource.Id.zip);
+			notesView = FindViewById<EditText>(Resource.Id.notes);
 
       createdDate = DateTime.Now;
 
