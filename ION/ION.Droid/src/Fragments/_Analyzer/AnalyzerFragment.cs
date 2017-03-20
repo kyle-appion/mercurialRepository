@@ -19,6 +19,7 @@
   // Using ION.Droid
   using Activity;
   using Activity.DeviceManager;
+	using App;
   using Dialog;
   using Sensors;
 
@@ -612,7 +613,11 @@
 			i.PutExtra(PTChartActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
 			i.PutExtra(PTChartActivity.EXTRA_FLUID_STATE, (int)analyzer.SideAsFluidState(side));
 			i.PutExtra(PTChartActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-			StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+			if (ion is RemoteION) {
+				StartActivity(i);
+			} else {
+				StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+			}
 		}
 
     /// <summary>
@@ -652,11 +657,19 @@
       switch (sensor.type) {
         case ESensorType.Pressure:
 					i.PutExtra(SuperheatSubcoolActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-          StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+					if (ion is RemoteION) {
+						StartActivity(i);
+					} else {
+          	StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+					}
           break;
         case ESensorType.Temperature:
 					i.PutExtra(SuperheatSubcoolActivity.EXTRA_ANALYZER_MANIFOLD, (int)side);
-          StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+					if (ion is RemoteION) {
+						StartActivity(i);
+					} else {
+          	StartActivityForResult(i, EncodeSuperheatSubcoolRequest(side));
+					}
           break;
         default:
 					var msg = string.Format(GetString(Resource.String.analyzer_error_invalid_sensor_type), sensor.type.GetTypeString());
