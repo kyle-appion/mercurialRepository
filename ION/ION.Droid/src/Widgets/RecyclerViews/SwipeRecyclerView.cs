@@ -3,9 +3,7 @@
 	using System;
 
 	using Android.Content;
-	using Android.OS;
 	using Android.Support.V7.Widget;
-	using Android.Support.V13.View;
 	using Android.Util;
 	using Android.Views;
 	using Android.Views.Animations;

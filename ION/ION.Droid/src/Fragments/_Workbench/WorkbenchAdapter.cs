@@ -129,7 +129,9 @@
 				}));
 
 				mvh.onSerialNumberClicked = (obj) => {
-					DoToggleManifoldExpanded(mr);
+					if (!mr.isExpanded && mr.manifold.sensorPropertyCount > 0) {
+						DoToggleManifoldExpanded(mr);
+					}
 				};
 
 				mvh.record = mr;
