@@ -190,9 +190,9 @@
 		}
 
 		public void Close() {
-			if (!isOpen) {
-				return;
-			}
+//			if (!isOpen) {
+//				return;
+//			}
 			isOpen = false;
 			if (recyclerView.swipeDirection == SwipeRecyclerView.EDirection.Left) {
 				baseX = -foreground.Left;
