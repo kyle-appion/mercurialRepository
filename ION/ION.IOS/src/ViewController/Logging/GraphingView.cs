@@ -523,7 +523,7 @@ namespace ION.IOS.ViewController.Logging
     /// <param name="sessions">Sessions.</param>
     /// <param name="sessionBreaks">Session breaks.</param>
     public List<deviceReadings> categorizeData(ObservableCollection<int> sessions, List<string> sessionBreaks){
-    	//Console.WriteLine("CategorizeData called");
+    	Console.WriteLine("CategorizeData called. Starting at time " + ChosenDates.subLeft + " and ending with time " + ChosenDates.subRight);
       var ion = AppState.context;
       var deviceList = new List<deviceReadings>();
 
@@ -563,7 +563,7 @@ namespace ION.IOS.ViewController.Logging
           package.name = certInfo[0].name;
         }
 
-        var timesReadings = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate, measurement FROM SensorMeasurementRow WHERE serialNumber = ? and sensorIndex = ?  AND frn_SID in (" + string.Join(",",paramList.ToArray()) + ") AND recordedDate <= ? ORDER BY recordedDate ASC",package.serialNumber, sIndex, ChosenDates.subRight);
+        var timesReadings = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate, measurement FROM SensorMeasurementRow WHERE serialNumber = ? and sensorIndex = ?  AND frn_SID in (" + string.Join(",",paramList.ToArray()) + ") AND recordedDate >=? AND recordedDate <= ? ORDER BY MID ASC",package.serialNumber, sIndex,ChosenDates.subLeft, ChosenDates.subRight);
 				
 				///SANITIZE REPORTING DATA FOR SESSIONS WITH NO MEASUREMENTS 
 				if(timesReadings.Count > 0){
@@ -581,6 +581,8 @@ namespace ION.IOS.ViewController.Logging
 					package.avg = 0;
 				}
         foreach (var MID in timesReadings) {
+        	Console.WriteLine("Time : " + MID.recordedDate.ToLocalTime() + " measurement: " + MID.measurement);
+        	
           package.times.Add(MID.recordedDate.ToLocalTime());
           package.readings.Add(MID.measurement);
           if(MID.measurement < package.min){
@@ -623,7 +625,7 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
-      masterTimes.Sort();
+      //masterTimes.Sort();
 
       XlsFile xls = new XlsFile(2, TExcelFileFormat.v2013, true);
       xls.AllowOverwritingFiles = true;
@@ -914,7 +916,7 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
-      masterTimes.Sort();
+      //masterTimes.Sort();
 
       var scaleReduction = 100 - (dataList.Count * 6);
       //XlsFile xls = new XlsFile(1, TExcelFileFormat.v2013, true);
@@ -1378,7 +1380,7 @@ namespace ION.IOS.ViewController.Logging
           }
         }
       }
-      masterTimes.Sort();
+      //masterTimes.Sort();
 
       var scaleReduction = 100 - (ChosenDates.includeList.Count * 6);
       XlsFile xls = new XlsFile(ChosenDates.includeList.Count + 1, TExcelFileFormat.v2013, true);
@@ -1886,15 +1888,15 @@ namespace ION.IOS.ViewController.Logging
       
     public void includeDeviceStats(XlsFile xls, List<deviceReadings> deviceList, int extraInfoRow, int styleIndex){
 			foreach(var device in deviceList){
-      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
-
-      if (device.type.Equals("Temperature")) {
-        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
-      } else if (device.type.Equals("Vacuum")) {
-        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
-      }
-
-      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));					
+	      var defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_pressure");
+	
+	      if (device.type.Equals("Temperature")) {
+	        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_temperature");
+	      } else if (device.type.Equals("Vacuum")) {
+	        defaultUnit = NSUserDefaults.StandardUserDefaults.StringForKey("settings_units_default_vacuum");
+	      }
+	
+	      var lookup = ION.Core.Sensors.UnitLookup.GetUnit(Convert.ToInt32(defaultUnit));					
     		var standardUnit = lookup.standardUnit;
     		var deviceType = ION.Core.Sensors.UnitLookup.GetSensorTypeFromCode(Convert.ToInt32(defaultUnit));
 			

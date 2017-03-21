@@ -188,7 +188,7 @@ namespace ION.IOS.ViewController.Workbench {
 					remoteTitle.Text = "Workbench\nRemote Viewing";
 				} else {
 					remoteTitle.Text = "Workbench\nRemote Editing";
-				}
+				}  
 			}
     }
 

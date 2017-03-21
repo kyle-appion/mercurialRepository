@@ -78,6 +78,7 @@
       this.vc = vc;
       this.ion = ion;
       this.tableView = tableView;
+      
     }
 
     // Overridden from UITableViewSource
@@ -135,7 +136,7 @@
       }
     }
     
-    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {    
+    public override void MoveRow(UITableView tableView, NSIndexPath sourceIndexPath, NSIndexPath destinationIndexPath) {
 			workbench.onWorkbenchEvent -= OnManifoldEvent;
 			this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 			

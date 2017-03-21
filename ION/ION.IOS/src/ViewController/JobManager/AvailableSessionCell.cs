@@ -24,7 +24,6 @@ namespace ION.IOS.ViewController.JobManager {
 
       if(data.start.ToLocalTime().TimeOfDay.Equals("PM")){
         data.start.AddHours(12);
-        //formatTime = start.AddHours(12).Hour + ":" + start.Minute + ":" + start.Second;
         formatTime = data.start.ToLocalTime().AddHours(12).Hour + ":";
 
         if (data.start.Minute < 10)
