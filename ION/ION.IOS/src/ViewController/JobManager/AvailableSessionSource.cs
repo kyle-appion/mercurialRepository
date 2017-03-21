@@ -59,7 +59,7 @@ namespace ION.IOS.ViewController.JobManager {
       if (cell == null) {
         cell = new UITableViewCell(UITableViewCellStyle.Default, "availableCell") as AvailableSessionCell;
       }
-
+			Console.WriteLine("Session start date is " + tableItems[indexPath.Row].start);
       cell.SetupCell(tableItems[indexPath.Row],cellHeight,cellWidth);
 
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;

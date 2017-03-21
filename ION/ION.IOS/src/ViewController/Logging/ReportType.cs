@@ -149,7 +149,7 @@ namespace ION.IOS.ViewController.Logging {
 				}
 				spreadsheetCSV.TouchUpInside += (sender, e) => {
 					setSpreadsheet(1);
-				};				
+				};
 				csvFormat = new UILabel(new CGRect(.25 * spreadsheetView.Bounds.Width, .4 * spreadsheetView.Bounds.Height, .15 * spreadsheetView.Bounds.Width, .15 * spreadsheetView.Bounds.Height));
 				csvFormat.Text = "CSV";
 				csvFormat.TextAlignment = UITextAlignment.Left;

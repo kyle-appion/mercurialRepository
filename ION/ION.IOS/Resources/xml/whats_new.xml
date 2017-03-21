@@ -5,5 +5,6 @@
 		<update>Updated system analyzer measurement text to be larger</update>
 		<update>Updated menu order to accomodate new features</update>
 		<fixed>Fixed Bluetooth connection status not updating from manual device changes</fixed>
+		<fixed>Fixed report exporting not using the manually chosen start time/date</fixed>
   </display>
 </whatsnew>

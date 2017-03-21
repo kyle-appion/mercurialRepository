@@ -1,39 +1,39 @@
 ﻿namespace ION.Core.Content {
 
-  using System;
-  using System.Collections.Generic;
+	using System;
+	using System.Collections.Generic;
 
 	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
+	using ION.Core.App;
+	using ION.Core.Devices;
+	using ION.Core.Fluids;
+	using ION.Core.Sensors;
+	using ION.Core.Sensors.Properties;
 
-  using ION.Core.Devices;
-  using ION.Core.Fluids;
-  using ION.Core.Sensors;
-  using ION.Core.Sensors.Properties;
-
-  /// <summary>
-  /// A class that represents a change event within a manifold. This class will reflect the
-  /// type of change that occurred within the manifold.
-  /// </summary>
-  /// <example>
-  /// {
-  ///   ...
-  /// 
-  ///   var mySensor = new Sensor(ESensorType.Pressure);
-  ///   var m = new Manifold(mySensor);
-  ///   m.onManifoldEvent += OnManifoldEvent;
-  /// 
-  ///   ...
-  /// }
-  /// 
-  /// /// <summary>
-  /// /// Called when the manifold changes.
-  /// /// </summary>
-  /// private void OnManifoldEvent(ManifoldEvent event, Manifold manifold) {
-  /// }
-  /// 
-  /// </example>
-  public class ManifoldEvent {
+	/// <summary>
+	/// A class that represents a change event within a manifold. This class will reflect the
+	/// type of change that occurred within the manifold.
+	/// </summary>
+	/// <example>
+	/// {
+	///   ...
+	/// 
+	///   var mySensor = new Sensor(ESensorType.Pressure);
+	///   var m = new Manifold(mySensor);
+	///   m.onManifoldEvent += OnManifoldEvent;
+	/// 
+	///   ...
+	/// }
+	/// 
+	/// /// <summary>
+	/// /// Called when the manifold changes.
+	/// /// </summary>
+	/// private void OnManifoldEvent(ManifoldEvent event, Manifold manifold) {
+	/// }
+	/// 
+	/// </example>
+	public class ManifoldEvent {
     /// <summary>
     /// The type of the event.
     /// </summary>
@@ -315,16 +315,21 @@
     /// <param name="sensorProperty">Sensor property.</param>
     /// <returns>True if the property was added, false if the manifold already has the property.</returns>
     public bool AddSensorProperty(ISensorProperty sensorProperty) {
+    	var ion = AppState.context;
       if (HasSensorPropertyOfType(sensorProperty.GetType())) {
         return false;
       } else {
 				if (sensorProperty is SecondarySensorProperty) {
 					sensorProperties.Insert(0, sensorProperty);
 					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, 0);
+        	ion.SaveWorkbenchAsync().Wait();
+					
 					return true;
 				} else {
 	        sensorProperties.Add(sensorProperty);
 					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
+        	ion.SaveWorkbenchAsync().Wait();
+					
 					return true;
 				}
       }
