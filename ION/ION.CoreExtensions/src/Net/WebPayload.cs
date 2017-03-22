@@ -277,7 +277,7 @@ namespace ION.Core.Net {
 			foreach(var sensor in uploadAnalyzer.sensorList){
 				var gaugeSensor = sensor as GaugeDeviceSensor;
 				
-			 	layoutJson += "{\"sn\":\""+sensor.name+"\",\"sl\":\""+sensor.analyzerSlot+"\",\"sv\":\""+sensor.measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(sensor.unit)+"\",\"si\":\"" + gaugeSensor.index + "\"} ";
+			 	layoutJson += "{\"sn\":\""+sensor.name+"\",\"sa\":\"" + sensor.analyzerArea + "\",\"sl\":\""+sensor.analyzerSlot+"\",\"sv\":\""+sensor.measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(sensor.unit)+"\",\"si\":\"" + gaugeSensor.index + "\"} ";
 				if(count < uploadAnalyzer.sensorList.Count){
 					layoutJson += ",";
 				}
@@ -285,11 +285,15 @@ namespace ION.Core.Net {
 				count++;
 			}		
 		}
+		////GET LOW SIDE ATTACHED SENSOR
 		if(uploadAnalyzer.lowSideManifold != null){
-			lowSecondary = uploadAnalyzer.lowSideManifold.primarySensor.name;
+			var attachedGaugeSensor = uploadAnalyzer.lowSideManifold.primarySensor as GaugeDeviceSensor;
+			lowSecondary = attachedGaugeSensor.device.serialNumber.rawSerial;
 		}
+		////GET HIGH SIDE ATTACHED SENSOR
 		if(uploadAnalyzer.highSideManifold != null){
-			highSecondary = uploadAnalyzer.highSideManifold.primarySensor.name;
+			var attachedGaugeSensor = uploadAnalyzer.highSideManifold.primarySensor as GaugeDeviceSensor;
+			highSecondary = attachedGaugeSensor.device.serialNumber.rawSerial;
 		}		
 		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"],\"lfluid\":\"";
 		///SEND THE LOW SIDE MANIFOLD FLUID
@@ -306,9 +310,11 @@ namespace ION.Core.Net {
 		}
 		///SEND THE LOW SIDE SLOT AREA AND ATTACHED SENSOR
 		if(uploadAnalyzer.lowAccessibility != "low"){
+			Console.WriteLine("Uploading low area accessibility identifier " + uploadAnalyzer.lowAccessibility);
 			GaugeDeviceSensor lssensor = null;
 			foreach(var area in uploadAnalyzer.sensorList){
-				if(area.analyzerArea == Convert.ToInt32(uploadAnalyzer.lowAccessibility)){
+				Console.WriteLine("Looking for a match in the active sensor of the analyzer. area location: " + area.analyzerSlot);
+				if(area.analyzerSlot == Convert.ToInt32(uploadAnalyzer.lowAccessibility)){
 					lssensor = area as GaugeDeviceSensor;
 				}
 			}
@@ -325,9 +331,11 @@ namespace ION.Core.Net {
 		}
 		///SEND THE HIGH SIDE SLOT AREA AND ATTACHED SENSOR
 		if(uploadAnalyzer.highAccessibility != "high"){
+			Console.WriteLine("Uploading high area accessibility identifier " + uploadAnalyzer.highAccessibility);
 			GaugeDeviceSensor hssensor = null;
 			foreach(var area in uploadAnalyzer.sensorList){
-				if(area.analyzerArea == Convert.ToInt32(uploadAnalyzer.highAccessibility)){
+				Console.WriteLine("Looking for a match in the active sensor of the analyzer. area location: " + area.analyzerSlot);
+				if(area.analyzerSlot == Convert.ToInt32(uploadAnalyzer.highAccessibility)){
 					hssensor = area as GaugeDeviceSensor;
 				}
 			}
@@ -387,7 +395,7 @@ namespace ION.Core.Net {
     layoutJson += "\"state\":{\"log\":\"" + Convert.ToInt32(ion.dataLogManager.isRecording) + "\"}";
     
 		layoutJson += "}";  
-		Console.WriteLine(layoutJson);
+		//Console.WriteLine(layoutJson);
 		try{
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
@@ -402,7 +410,7 @@ namespace ION.Core.Net {
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 
 			var textReponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textReponse);
+			//Console.WriteLine(textReponse);
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
 		}
@@ -436,7 +444,7 @@ namespace ION.Core.Net {
 			var feedback = await client.PostAsync(downloadLayoutsUrl,formContent);
 
 			var textResponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textResponse);
+			//Console.WriteLine(textResponse);
 			//parse the text string into a json object to be deserialized
 			JObject response = JObject.Parse(textResponse);
 			var retrieved = response.GetValue("success").ToString();
@@ -485,7 +493,7 @@ namespace ION.Core.Net {
 				////////////////////////////SETTING UP THE ANALYZER BASED ON REMOTE DATA
 				var aManager = response.GetValue("alyzer");
 				var sensorOrder = response.GetValue("setup");
-				var aLowHigh = response.GetValue("LH");
+				var aLowHigh = response.GetValue("LH");  
 				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
 				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());
 
@@ -503,27 +511,31 @@ namespace ION.Core.Net {
 								gDevice.sensors[1].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.unit),deserializedToken.measurement));
 							}  else {
 								if(gDevice.serialNumber.rawSerial == deserializedToken.serialNumber){
-									if(UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Pressure || UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Vacuum){
-										gDevice.sensors[0].analyzerSlot = deserializedToken.position;
-										//gDevice.sensors[0].analyzerArea = deserializedToken.area;
-										remoteAnalyzer.sensorList.Add(gDevice.sensors[0]);
-									}
-									else {   
-										gDevice.sensors[1].analyzerSlot = deserializedToken.position;
-										//gDevice.sensors[1].analyzerArea = deserializedToken.area;
-										remoteAnalyzer.sensorList.Add(gDevice.sensors[1]);   
-									}
+									gDevice.sensors[deserializedToken.sensorIndex].analyzerSlot = deserializedToken.position;
+									gDevice.sensors[deserializedToken.sensorIndex].analyzerArea = deserializedToken.sensorArea;
+									remoteAnalyzer.sensorList.Add(gDevice.sensors[deserializedToken.sensorIndex]);
+									//if(UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Pressure || UnitLookup.GetSensorTypeFromCode(deserializedToken.unit) == ESensorType.Vacuum){
+									//	gDevice.sensors[0].analyzerSlot = deserializedToken.position;
+									//	//gDevice.sensors[0].analyzerArea = deserializedToken.area;
+									//	remoteAnalyzer.sensorList.Add(gDevice.sensors[0]);
+									//}
+									//else {   
+									//	gDevice.sensors[1].analyzerSlot = deserializedToken.position;
+									//	//gDevice.sensors[1].analyzerArea = deserializedToken.area;
+									//	remoteAnalyzer.sensorList.Add(gDevice.sensors[1]);   
+									//}
 								}
 							}
  						}
-						////SET THE SECONDARY SENSOR FOR LOW AND HIGH AREAS
-						if(deserializedLowHigh.lowAttached != "null"){  
+						////SET THE SECONDARY SENSOR FOR LOW AND HIGH AREAS (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
+						if(deserializedLowHigh.lowAttached != "null"){
 	 						if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
 								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,gDevice.sensors[1]);
 							}
 						}  else {
 							ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,null);
-						}  						
+						}
+						
 						if(deserializedLowHigh.highAttached != "null"){
 	 						if(device.serialNumber.rawSerial == deserializedLowHigh.highAttached){
 								ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,gDevice.sensors[1]);
@@ -536,13 +548,13 @@ namespace ION.Core.Net {
 
 				///CHECK LOW SIDE FLUID BEING SENT UP AND CHANGE IF NECESSARY
 				if(deserializedPositions.lfluid != "null" && (remoteAnalyzer.lowFluid == null || remoteAnalyzer.lowFluid.name != deserializedPositions.lfluid)){
-					Console.WriteLine("Setting analyzer low fluid to " + deserializedPositions.lfluid);
+					//Console.WriteLine("Setting analyzer low fluid to " + deserializedPositions.lfluid);
 					//remoteAnalyzer.lowFluid = await ion.fluidManager.LoadFluidAsync(deserializedPositions.lfluid);
 					//remoteAnalyzer.lowSideManifold.ptChart = PTChart.New(ion,remoteAnalyzer.lowSideManifold.ptChart.state,remoteAnalyzer.lowFluid);
 				}
 				///CHECK HIGH SIDE FLUID BEING SENT UP AND CHANGE IF NECESSARY
 				if(deserializedPositions.hfluid != "null" && (remoteAnalyzer.highFluid == null || remoteAnalyzer.highFluid.name != deserializedPositions.hfluid)){				
-					Console.WriteLine("Setting analyzer high fluid to " + deserializedPositions.lfluid);
+					//Console.WriteLine("Setting analyzer high fluid to " + deserializedPositions.lfluid);
 					//remoteAnalyzer.highFluid = await ion.fluidManager.LoadFluidAsync(deserializedPositions.hfluid);
 					//remoteAnalyzer.highSideManifold.ptChart = PTChart.New(ion,remoteAnalyzer.highSideManifold.ptChart.state,remoteAnalyzer.highFluid);					
 				}
@@ -1134,6 +1146,8 @@ namespace ION.Core.Net {
 		public analyzerSetup(){}
 		[JsonProperty("sn")]
 		public string serialNumber { get; set; }
+		[JsonProperty("sa")]
+		public int sensorArea { get; set; }		
 		[JsonProperty("sl")]
 		public int position { get; set; }
 		[JsonProperty("sv")]
