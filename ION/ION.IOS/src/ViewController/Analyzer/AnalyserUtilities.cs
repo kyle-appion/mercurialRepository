@@ -792,9 +792,9 @@ namespace ION.IOS.ViewController.Analyzer
 			int swap2 = 0;
       bool removeLH = false;
       Console.WriteLine("layout started");
-   //   foreach(var spot in analyzerSensors.areaList){
-			//	Console.WriteLine(spot);
-			//}
+      foreach(var spot in analyzerSensors.areaList){
+				Console.WriteLine(spot);
+			}
 			Console.WriteLine(Environment.NewLine);
 
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
@@ -902,6 +902,8 @@ namespace ION.IOS.ViewController.Analyzer
           removeLH = true;
         }
           swap = 7;
+			} else {
+				swap = start;
 			}
       confirmLayout(analyzerSensors, View);
       Console.WriteLine("layout ended");
@@ -1325,21 +1327,22 @@ namespace ION.IOS.ViewController.Analyzer
 				////////////////////UPDATE THE LOW HIGH CORRESPONDING BASED SAME SIDE MOVE
 				if(start.ToString() == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
 					Console.WriteLine("Low side start should now be looking at position " + swap);
-					currentAnalyzer.lowAccessibility = start.ToString();
-					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = start.ToString();
-				} else if (start.ToString() == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
-					Console.WriteLine("High side start should now be looking at position " + swap);
-					currentAnalyzer.highAccessibility = start.ToString();
-					lowHighSensors.highArea.snapArea.AccessibilityIdentifier = start.ToString();
-				} else if (swap.ToString() == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
-					Console.WriteLine("Low side swap should now be looking at position " + start);
 					currentAnalyzer.lowAccessibility = swap.ToString();
 					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = swap.ToString();
-				} else if (swap.ToString() == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
-					Console.WriteLine("High side swap should now be looking at position " + start);
+				} else if (start.ToString() == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
+					Console.WriteLine("High side start should now be looking at position " + swap);
 					currentAnalyzer.highAccessibility = swap.ToString();
 					lowHighSensors.highArea.snapArea.AccessibilityIdentifier = swap.ToString();
+				} else if (swap.ToString() == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
+					Console.WriteLine("Low side swap should now be looking at position " + start);
+					currentAnalyzer.lowAccessibility = start.ToString();
+					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = start.ToString();
+				} else if (swap.ToString() == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
+					Console.WriteLine("High side swap should now be looking at position " + start);
+					currentAnalyzer.highAccessibility = start.ToString();
+					lowHighSensors.highArea.snapArea.AccessibilityIdentifier = start.ToString();
 				}
+				
 				Console.WriteLine("Low side associated to slot: " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier + " High side associated to slot: " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
 				
 			}
@@ -1432,7 +1435,7 @@ namespace ION.IOS.ViewController.Analyzer
 								Console.WriteLine("low area Didn't fit in any category");   
 							}
             } else if( lowHighSensors.highArea.attachedSensor != null){
-						if (lowHighSensors.highArea.attachedSensor.currentSensor != null && item.currentSensor != null && lowHighSensors.highArea.attachedSensor.currentSensor == item.currentSensor){
+							if (lowHighSensors.highArea.attachedSensor.currentSensor != null && item.currentSensor != null && lowHighSensors.highArea.attachedSensor.currentSensor == item.currentSensor){
             		Console.WriteLine("High area attached sensor is not null for sensor " + item.topLabel.Text + " " + item.bottomLabel.Text);
                 LHSwapAlert(analyzerSensors, lowHighSensors, position, touchPoint, View,currentAnalyzer, item);
                 foundAssociation = true;
@@ -1545,71 +1548,66 @@ namespace ION.IOS.ViewController.Analyzer
     	var analyzer = AppState.context.currentAnalyzer;
    	
    		Console.WriteLine("revert list");
-   //		foreach(var spot in analyzer.revertPositions){
-			//	Console.Write(spot + " ");
-			//}
-			//Console.WriteLine(Environment.NewLine);
+   		foreach(var spot in analyzer.revertPositions){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
    		Console.WriteLine("area list");
-   //		foreach(var spot in analyzerSensors.areaList){
-			//	Console.Write(spot + " ");
-			//}
-			//Console.WriteLine(Environment.NewLine);
+   		foreach(var spot in analyzerSensors.areaList){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
    		Console.WriteLine("position list");
-   //		foreach(var spot in analyzer.sensorPositions){
-			//	Console.Write(spot + " ");
-			//}
-			//Console.WriteLine(Environment.NewLine);
+   		foreach(var spot in analyzer.sensorPositions){
+				Console.Write(spot + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
    		Console.WriteLine("view list");
-   //		foreach(var spot in analyzerSensors.viewList){
-			//	Console.Write(spot.snapArea.AccessibilityIdentifier + " ");
-			//}			
-			//Console.WriteLine(Environment.NewLine);
+   		for(int v = 0; v < analyzerSensors.viewList.Count; v++){
+   			if(Convert.ToInt32(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier) != analyzer.sensorPositions[v]){
+					Console.WriteLine("View area " + analyzer.sensorPositions[v] + " should be in the " +v +" spot but " + analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " is instead");
+				}
+				Console.Write(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " ");
+			}
+			Console.WriteLine(Environment.NewLine);
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
       	
-        //if (analyzerSensors.areaList [i] == 1) {
         if (analyzer.sensorPositions [i] == 1) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{
               analyzerSensors.snapArea1.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList [i] == 2) {
         } else if (analyzer.sensorPositions [i] == 2) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea2.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList [i] == 3) {
         } else if (analyzer.sensorPositions [i] == 3) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea3.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList[i] == 4) {
         } else if (analyzer.sensorPositions[i] == 4) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea4.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList[i] == 5) {
         } else if (analyzer.sensorPositions[i] == 5) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea5.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList[i] == 6) {
         } else if (analyzer.sensorPositions[i] == 6) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea6.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList[i] == 7) {
         } else if (analyzer.sensorPositions[i] == 7) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
               analyzerSensors.snapArea7.snapArea.Center = analyzerSensors.locationList[i];
             },() => {});
-        //} else if (analyzerSensors.areaList[i] == 8) {
         } else if (analyzer.sensorPositions[i] == 8) {
           UIView.Animate(.3,0, UIViewAnimationOptions.CurveEaseInOut,
             () =>{ 
@@ -1876,8 +1874,10 @@ namespace ION.IOS.ViewController.Analyzer
               	Console.WriteLine("Changed ok");
                 var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"low",View);
                 if (goOn) {
+				          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
                 
 			            if(Sensor.currentSensor != null){
+			            	Sensor.currentSensor.analyzerSlot = areaIndex;
 			            	lowHighSensors.lowArea.currentSensor = Sensor.currentSensor;
 			            	lowHighSensors.lowArea.manifold = new Manifold(Sensor.currentSensor);
 			            	lowHighSensors.lowArea.LabelTop.Text = Sensor.currentSensor.name;
@@ -1886,6 +1886,7 @@ namespace ION.IOS.ViewController.Analyzer
 			            	lowHighSensors.lowArea.LabelMiddle.Text = startMeasurement[0];
 			            	lowHighSensors.lowArea.LabelBottom.Text = Sensor.currentSensor.unit.ToString();
 			            } else {
+			            	Sensor.manualSensor.analyzerSlot = areaIndex;
 			            	lowHighSensors.lowArea.isManual = true;
 			            	lowHighSensors.lowArea.manualGType = Sensor.topLabel.Text;
 			            	lowHighSensors.lowArea.manualSensor = Sensor.manualSensor;
@@ -1918,8 +1919,8 @@ namespace ION.IOS.ViewController.Analyzer
 			            lowHighSensors.showView(lowHighSensors.lowArea);
                 
 				          ///////////////////// change the high manifold to be based on moved location instead of created position
-				          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
 				          Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change highAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
+				          
 				          ion.currentAnalyzer.lowAccessibility = areaIndex.ToString();
                   lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = areaIndex.ToString();				          
 				          /////////////////////                     
@@ -1995,10 +1996,13 @@ namespace ION.IOS.ViewController.Analyzer
 					}
           bool goOn = orderSensors (analyzerSensors, analyzerSensors.areaList.IndexOf (Convert.ToInt32 (Sensor.snapArea.AccessibilityIdentifier)), "low", View);
 					if (goOn) {
+	          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+	          
             Sensor.topLabel.BackgroundColor = UIColor.Blue;
             Sensor.topLabel.TextColor = UIColor.White;
 
             if(Sensor.currentSensor != null){
+            	Sensor.currentSensor.analyzerSlot = areaIndex;
             	lowHighSensors.lowArea.currentSensor = Sensor.currentSensor;
             	lowHighSensors.lowArea.manifold = new Manifold(Sensor.currentSensor);
             	lowHighSensors.lowArea.LabelTop.Text = Sensor.currentSensor.name;
@@ -2007,6 +2011,7 @@ namespace ION.IOS.ViewController.Analyzer
             	lowHighSensors.lowArea.LabelMiddle.Text = startMeasurement[0];
             	lowHighSensors.lowArea.LabelBottom.Text = Sensor.currentSensor.unit.ToString();
             } else {
+            	Sensor.manualSensor.analyzerSlot = areaIndex;
             	lowHighSensors.lowArea.isManual = true;
             	lowHighSensors.lowArea.manualGType = Sensor.manualSensor.type.ToString();
             	lowHighSensors.lowArea.manualSensor = Sensor.manualSensor;
@@ -2037,7 +2042,6 @@ namespace ION.IOS.ViewController.Analyzer
             lowHighSensors.showView(lowHighSensors.lowArea);
 
 	          ///////////////////// change the low manifold to be based on moved location instead of created position
-	          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
 	          Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change lowAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
 	          ion.currentAnalyzer.lowAccessibility = areaIndex.ToString();
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = areaIndex.ToString();	          
@@ -2092,8 +2096,10 @@ namespace ION.IOS.ViewController.Analyzer
               switchSide.AddAction (UIAlertAction.Create (Util.Strings.OK, UIAlertActionStyle.Default, (action) => {
                 var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)),"high",View);
                 if (goOn) {
+				          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
                 
 			            if(Sensor.currentSensor != null){
+			            	Sensor.currentSensor.analyzerSlot = areaIndex;
 			            	lowHighSensors.highArea.currentSensor = Sensor.currentSensor;
 			            	lowHighSensors.highArea.manifold = new Manifold(Sensor.currentSensor);
 			            	lowHighSensors.highArea.LabelTop.Text = Sensor.currentSensor.name;
@@ -2102,6 +2108,7 @@ namespace ION.IOS.ViewController.Analyzer
 			            	lowHighSensors.highArea.LabelMiddle.Text = startMeasurement[0];
 			            	lowHighSensors.highArea.LabelBottom.Text = Sensor.currentSensor.unit.ToString();
 			            } else {
+			            	Sensor.manualSensor.analyzerSlot = areaIndex;
 			            	lowHighSensors.highArea.isManual = true;
 			            	lowHighSensors.highArea.manualGType = Sensor.manualSensor.type.ToString();
 			            	lowHighSensors.highArea.manualSensor = Sensor.manualSensor;
@@ -2134,7 +2141,6 @@ namespace ION.IOS.ViewController.Analyzer
 			            lowHighSensors.showView(lowHighSensors.highArea);
                 
 				          ///////////////////// change the high manifold to be based on moved location instead of created position
-				          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
 				          Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change highAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
 				          ion.currentAnalyzer.highAccessibility = areaIndex.ToString();
                   lowHighSensors.highArea.snapArea.AccessibilityIdentifier = areaIndex.ToString();				          
@@ -2221,10 +2227,13 @@ namespace ION.IOS.ViewController.Analyzer
 					}
           bool goOn = orderSensors (analyzerSensors, analyzerSensors.areaList.IndexOf (Convert.ToInt32 (Sensor.snapArea.AccessibilityIdentifier)), "high", View);
 					if (goOn) {
+	          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+	          
             Sensor.topLabel.BackgroundColor = UIColor.Red;
             Sensor.topLabel.TextColor = UIColor.White;
             
              if(Sensor.currentSensor != null){
+             	Sensor.currentSensor.analyzerSlot = areaIndex;
              	lowHighSensors.highArea.isManual = false;
             	lowHighSensors.highArea.currentSensor = Sensor.currentSensor;
             	lowHighSensors.highArea.manifold = new Manifold(Sensor.currentSensor);
@@ -2234,6 +2243,7 @@ namespace ION.IOS.ViewController.Analyzer
             	lowHighSensors.highArea.LabelMiddle.Text = startMeasurement[0];
             	lowHighSensors.highArea.LabelBottom.Text = Sensor.currentSensor.unit.ToString();
             } else {
+             	Sensor.manualSensor.analyzerSlot = areaIndex;
             	lowHighSensors.highArea.isManual = true;
             	lowHighSensors.highArea.manualGType = Sensor.manualSensor.type.ToString();
             	lowHighSensors.highArea.manualSensor = Sensor.manualSensor;
@@ -2263,7 +2273,6 @@ namespace ION.IOS.ViewController.Analyzer
             
             lowHighSensors.showView(lowHighSensors.highArea);
 	          ///////////////////// change the high manifold to be based on moved location instead of created position
-	          var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
 	          Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change highAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
 	          ion.currentAnalyzer.highAccessibility = areaIndex.ToString();
             lowHighSensors.highArea.snapArea.AccessibilityIdentifier = areaIndex.ToString();	          
@@ -2565,6 +2574,8 @@ namespace ION.IOS.ViewController.Analyzer
     	Console.WriteLine("AnalyzerUtilities replaceLowUnattached. Moving sensor is " + Sensor.topLabel.Text + " and removing sensor is " + removeSensor.topLabel.Text);
       var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "low", View);
       if (goOn) {
+        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+        
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
    
@@ -2572,6 +2583,7 @@ namespace ION.IOS.ViewController.Analyzer
         lhSensor.subviewTable.ReloadData();
      
         if(Sensor.isManual){
+        	Sensor.manualSensor.analyzerSlot = areaIndex;
  					lhSensor.isManual = true;
  					lhSensor.manualGType = Sensor.manualSensor.type.ToString();
         	lhSensor.currentSensor = null;        	
@@ -2583,6 +2595,7 @@ namespace ION.IOS.ViewController.Analyzer
 					lhSensor.connectionColor.Hidden = true;
 					lhSensor.Connection.Hidden = true;
 				} else {
+        	Sensor.currentSensor.analyzerSlot = areaIndex;
  					lhSensor.isManual = false;
         	var holdFluidState = lhSensor.manifold.ptChart.state;
         	lhSensor.manualSensor = null;
@@ -2613,7 +2626,6 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.topLabel.TextColor = UIColor.White;
 
         ///////////////////// change the low manifold to be based on moved location instead of created position
-        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
         Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change lowAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
         ion.currentAnalyzer.lowAccessibility = areaIndex.ToString();
         lhSensor.snapArea.AccessibilityIdentifier = areaIndex.ToString();        
@@ -2639,6 +2651,8 @@ namespace ION.IOS.ViewController.Analyzer
     	Console.WriteLine("AnalyzerUtilities replaceHighUnattached. Moving sensor is " + Sensor.topLabel.Text + " and removing sensor is " + removeSensor.topLabel.Text);
       var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "high", View);
       if (goOn) {
+        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+        
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
  
@@ -2646,6 +2660,7 @@ namespace ION.IOS.ViewController.Analyzer
       	lhSensor.subviewTable.ReloadData();
        
         if(Sensor.isManual){
+        	Sensor.manualSensor.analyzerSlot = areaIndex;
  					lhSensor.isManual = true;
  					lhSensor.manualGType = Sensor.manualSensor.type.ToString();
         	var holdFluidState = lhSensor.manifold.ptChart.state;
@@ -2657,6 +2672,7 @@ namespace ION.IOS.ViewController.Analyzer
 					lhSensor.connectionColor.Hidden = true;
 					lhSensor.Connection.Hidden = true;
 				} else {
+        	Sensor.currentSensor.analyzerSlot = areaIndex;
  					lhSensor.isManual = false;
         	var holdFluidState = lhSensor.manifold.ptChart.state;
         	lhSensor.manualSensor = null;
@@ -2687,7 +2703,6 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.topLabel.TextColor = UIColor.White;
 
         ///////////////////// change the high manifold to be based on moved location instead of created position
-        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
         Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change highAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
         ion.currentAnalyzer.highAccessibility = areaIndex.ToString();
         lhSensor.snapArea.AccessibilityIdentifier = areaIndex.ToString();        
@@ -2715,13 +2730,16 @@ namespace ION.IOS.ViewController.Analyzer
     	Console.WriteLine("AnalyzerUtilities replaceLowAttached. Moving sensor is " + Sensor.topLabel.Text + " and removing sensor is " + removeSensor.topLabel.Text);
       var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "low", View);
       if (goOn) {
+        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+        
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
 				
 				lhAdd.tableSubviews.Clear();
 				lhAdd.subviewTable.ReloadData();
 				
-        if(Sensor.isManual){        	
+        if(Sensor.isManual){
+					Sensor.manualSensor.analyzerSlot = areaIndex;       	
 					lhAdd.isManual = true;
 					lhAdd.manualGType = Sensor.manualSensor.type.ToString();     	
         	var holdFluidState = lhAdd.manifold.ptChart.state;
@@ -2734,6 +2752,7 @@ namespace ION.IOS.ViewController.Analyzer
 					lhAdd.DeviceImage.Image = UIImage.FromBundle("ic_edit");
 					lhAdd.LabelBottom.Text = Sensor.manualSensor.unit.ToString();
 				} else {
+					Sensor.currentSensor.analyzerSlot = areaIndex;       	
 					lhAdd.isManual = false;
         	var holdFluidState = lhAdd.manifold.ptChart.state;
 					lhAdd.currentSensor = Sensor.currentSensor;
@@ -2759,7 +2778,6 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.topLabel.TextColor = UIColor.White;
 
         ///////////////////// change the low manifold to be based on moved location instead of created position
-        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
         Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change lowAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
         ion.currentAnalyzer.lowAccessibility = areaIndex.ToString();
         lhAdd.snapArea.AccessibilityIdentifier = areaIndex.ToString();
@@ -2819,6 +2837,8 @@ namespace ION.IOS.ViewController.Analyzer
     	Console.WriteLine("AnalyzerUtilities replaceHighAttached. Moving sensor is " + Sensor.topLabel.Text + " and removing sensor is " + removeSensor.topLabel.Text);
       var goOn = orderSensors(analyzerSensors, analyzerSensors.areaList.IndexOf(Convert.ToInt32(Sensor.snapArea.AccessibilityIdentifier)), "high", View);
       if (goOn) {
+        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
+        
         removeSensor.topLabel.BackgroundColor = UIColor.Clear;
         removeSensor.topLabel.TextColor = UIColor.Gray;
 				
@@ -2826,6 +2846,7 @@ namespace ION.IOS.ViewController.Analyzer
 				lhAdd.subviewTable.ReloadData();
 				
         if(Sensor.isManual){
+        	Sensor.manualSensor.analyzerSlot = areaIndex;
 					lhAdd.isManual = true;     	
         	var holdFluidState = lhAdd.manifold.ptChart.state;
 					lhAdd.manualSensor = Sensor.manualSensor;
@@ -2838,6 +2859,7 @@ namespace ION.IOS.ViewController.Analyzer
 					lhAdd.LabelMiddle.Text = Sensor.middleLabel.Text;
 					lhAdd.LabelBottom.Text = Sensor.manualSensor.unit.ToString();					
 				} else {
+        	Sensor.currentSensor.analyzerSlot = areaIndex;
 					lhAdd.isManual = false;     	
         	var holdFluidState = lhAdd.manifold.ptChart.state;
 					lhAdd.currentSensor = Sensor.currentSensor;
@@ -2865,7 +2887,6 @@ namespace ION.IOS.ViewController.Analyzer
         Sensor.topLabel.TextColor = UIColor.White;
 
         ///////////////////// change the low manifold to be based on moved location instead of created position
-        var areaIndex = analyzerSensors.viewList.IndexOf(Sensor);
         Console.WriteLine("sensorSwap removeLH doesn't exist on analyzer yet. Should change highAccessibility to " + areaIndex + " instead of " + Sensor.snapArea.AccessibilityIdentifier);
         ion.currentAnalyzer.highAccessibility = areaIndex.ToString();
         lhAdd.snapArea.AccessibilityIdentifier = areaIndex.ToString();
@@ -2959,15 +2980,31 @@ namespace ION.IOS.ViewController.Analyzer
 		/// <summary>
 		/// Shows the low/high area for the active sensor
 		/// </summary>
-		public static void addLHSensorAssociation(string LHArea, sensor activeSensor){
+		public static void addLHSensorAssociation(string LHArea, sensor activeSensor, LowHighArea lhArea){
 			if(LHArea == "low"){
 				Console.WriteLine("Setting low area sensor color for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Blue;
 				activeSensor.topLabel.TextColor = UIColor.White;
+				lhArea.lowArea.currentSensor = activeSensor.currentSensor;
+				lhArea.lowArea.manifold = new Manifold(activeSensor.currentSensor);
+				lhArea.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+				lhArea.lowArea.LabelTop.Text = activeSensor.currentSensor.name;          	
+				lhArea.lowArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
+				lhArea.lowArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();
+				lhArea.lowArea.LabelSubview.Text = " " + lhArea.lowArea.LabelTop.Text + Strings.Analyzer.LHTABLE;
+				lhArea.showView(lhArea.lowArea);
 			} else {
 				Console.WriteLine("AnalyserUtilities Setting high area sensor color for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Red;
 				activeSensor.topLabel.TextColor = UIColor.White;
+				lhArea.highArea.currentSensor = activeSensor.currentSensor;
+				lhArea.highArea.manifold = new Manifold(activeSensor.currentSensor);
+				lhArea.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+				lhArea.highArea.LabelTop.Text = activeSensor.currentSensor.name;          	
+				lhArea.highArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
+				lhArea.highArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();
+				lhArea.highArea.LabelSubview.Text = " " + lhArea.highArea.LabelTop.Text + Strings.Analyzer.LHTABLE;				
+				lhArea.showView(lhArea.highArea);
 			}
 		}
 
