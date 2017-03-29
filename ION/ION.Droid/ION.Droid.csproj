@@ -68,9 +68,6 @@
     <Reference Include="Xamarin.Android.Support.v7.CardView">
       <HintPath>..\packages\Xamarin.Android.Support.v7.CardView.23.1.1.1\lib\MonoAndroid403\Xamarin.Android.Support.v7.CardView.dll</HintPath>
     </Reference>
-    <Reference Include="FlexCel">
-      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
     <Reference Include="Newtonsoft.Json">
@@ -138,6 +135,15 @@
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Pcl">
+      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+    </Reference>
+    <Reference Include="Xfinium.Pdf.Render.Pcl">
+      <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Render.Pcl.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -675,7 +681,6 @@
     <AndroidResource Include="Resources\xml\whats_new_history.xml" />
     <AndroidResource Include="Resources\drawable\ic_record.png" />
     <AndroidResource Include="Resources\drawable\ic_stop.png" />
-    <AndroidResource Include="Resources\drawable\.DS_Store" />
     <AndroidResource Include="Resources\drawable\ic_job.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_reporting.png" />
     <AndroidResource Include="Resources\drawable\ic_nav_analyzer_white.png" />

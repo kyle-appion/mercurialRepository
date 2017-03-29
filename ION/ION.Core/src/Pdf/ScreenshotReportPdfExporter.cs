@@ -14,7 +14,7 @@
   /// Exports a Screenshot report as a PDF.
   /// </summary>
   public class ScreenshotReportPdfExporter {
-    /// <summary>
+    /// <summary>c
     /// Commits the pdf to a stream.
     /// </summary>
     /// <param name="outstream">Outstream.</param>

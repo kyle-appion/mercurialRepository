@@ -112,18 +112,6 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DSoft.Datatypes.Grid">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.Grid.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.Datatypes">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.Themes">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Themes.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.UI">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
-    </Reference>
     <Reference Include="FlexCel">
       <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
     </Reference>
@@ -136,6 +124,18 @@
     </Reference>
     <Reference Include="SWTableViewCell">
       <HintPath>..\packages\SWTableViewCell-0.3.6.1\lib\ios-unified\SWTableViewCell.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes.Grid">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Themes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Themes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.UI">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
