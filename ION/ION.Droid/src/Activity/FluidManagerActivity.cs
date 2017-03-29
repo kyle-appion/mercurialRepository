@@ -13,6 +13,7 @@ namespace ION.Droid.Activity {
   using Android.Support.V4.View;
   using Android.Support.V13.App;
 
+
 	using Appion.Commons.Util;
 
   using ION.Core.App;
@@ -20,7 +21,7 @@ namespace ION.Droid.Activity {
 
   using ION.Droid.Fragments;
 
-  [Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
+	[Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
 	public class FluidManagerActivity : Activity, ViewPager.IOnPageChangeListener {
 
     /// <summary>
@@ -52,7 +53,8 @@ namespace ION.Droid.Activity {
     private View colorView { get; set; }
     private TextView fluidNameView { get; set; }
     private ViewPager pagerView { get; set; }
-		private Switch pageToggle;
+		private Button favoritesButton;
+		private Button libraryButton;
 
     private IION ion { get; set; }
 
@@ -72,13 +74,15 @@ namespace ION.Droid.Activity {
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       pagerView = FindViewById<ViewPager>(Resource.Id.content);
 			pagerView.AddOnPageChangeListener(this);
-			pageToggle = FindViewById<Switch>(Resource.Id.toggle);
-			pageToggle.CheckedChange += (sender, e) => {
-				if (e.IsChecked) {
-					pagerView.SetCurrentItem(1, true);
-				} else {
-					pagerView.SetCurrentItem(0, true);
-				}
+			favoritesButton = FindViewById<Button>(Resource.Id.button1);
+			libraryButton = FindViewById<Button>(Resource.Id.button2);
+
+			favoritesButton.Click += (sender, e) => {
+				pagerView.SetCurrentItem(0, true);
+			};
+
+			libraryButton.Click += (sender, e) => {
+				pagerView.SetCurrentItem(1, true);
 			};
 
       ion = AppState.context;
@@ -121,6 +125,7 @@ namespace ION.Droid.Activity {
     protected override void OnResume() {
       base.OnResume();
       Invalidate();
+			OnPageSelected(0);
     }
 
     // Overridden from Activity
@@ -170,7 +175,13 @@ namespace ION.Droid.Activity {
 		}
 
 		public void OnPageSelected(int position) {
-			pageToggle.Checked = position != 0;
+			if (position == 0) {
+				favoritesButton.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+				libraryButton.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+			} else if (position == 1) {
+				favoritesButton.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+				libraryButton.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+			}
 		}
 
     /// <summary>
