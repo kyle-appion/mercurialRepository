@@ -129,7 +129,7 @@
 				}));
 
 				mvh.onSerialNumberClicked = (obj) => {
-					if (!mr.isExpanded && mr.manifold.sensorPropertyCount > 0) {
+					if (mr.manifold.sensorPropertyCount > 0) {
 						DoToggleManifoldExpanded(mr);
 					}
 				};
@@ -344,9 +344,10 @@
 		}
 
 		private void OnManifoldEvent(ManifoldEvent e) {
+			var aifm = AdapterIndexForManifold(e.manifold);
+			NotifyItemChanged(aifm);
 			switch (e.type) {
 				case ManifoldEvent.EType.SensorPropertyAdded: {
-					var aifm = AdapterIndexForManifold(e.manifold);
 					var mr = records[aifm] as ManifoldRecord;
 					if (mr.manifold.sensorPropertyCount == 1) {
 						mr.isExpanded = true;
@@ -357,14 +358,13 @@
 						records.Insert(i, record);
 						NotifyItemInserted(i);
 						if (mr.manifold.sensorPropertyCount > 1) {
-							NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
-						} else {
-							NotifyItemChanged(aifm - 1);
+								NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
+							} else {
+								NotifyItemChanged(aifm - 1);
+							}
 						}
-					}
 				} break; // ManifoldEvent.EType.SensorPropertyAdded
 				case ManifoldEvent.EType.SensorPropertyRemoved: {
-					var aifm = AdapterIndexForManifold(e.manifold);
 					var i = aifm + e.index + 1;
 					records.RemoveAt(i);
 					NotifyItemRemoved(i);
