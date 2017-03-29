@@ -153,6 +153,10 @@
 
 		// Overridden from Fragment
     public override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
+			if (resultCode == Result.Canceled) {
+				base.OnActivityResult(requestCode, resultCode, data);
+				return;
+			}
       switch (requestCode) {
         case REQUEST_SENSOR:
           if (data != null && data.HasExtra(DeviceManagerActivity.EXTRA_SENSOR)) {
