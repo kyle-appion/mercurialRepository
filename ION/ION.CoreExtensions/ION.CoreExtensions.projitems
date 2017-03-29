@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{CCD6F504-0E93-45CB-8803-52050A76A58D}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>ION.CoreExtensions</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)src\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\IO\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Net\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Threading\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Net\Portal\" />
+    <Folder Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\RequestCalibrationCertificates.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\WebPayload.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Threading\MessageQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\IONPortalService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\ConnectionData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\AccessCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteGaugeDevice.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteGaugeDeviceSensor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\AnalyzerPositions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteManifold.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAppState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteState.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteSensorMount.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAnalyzerLH.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/portal_title_text"
+        android:background="@color/black"
+        android:textColor="@color/gold"
+        android:gravity="center"
+        android:text="@string/portal_remote_viewing_access" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/activity_padding">
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+                    android:id="@id/list"
+                    android:layout_margin="@dimen/padding"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <TextView
+                    android:id="@id/empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textSize="@dimen/text_size_large"
+                    android:gravity="center"
+                    android:text="@string/portal_following_empty" />
+            </FrameLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <Button
+            android:text="@string/portal_remote_mode"
+            android:textSize="@dimen/text_size_xlarge"
+            android:id="@id/button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>
