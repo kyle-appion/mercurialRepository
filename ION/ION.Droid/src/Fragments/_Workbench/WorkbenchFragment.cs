@@ -20,10 +20,14 @@
   // Using ION.Droid
   using Activity;
   using Activity.DeviceManager;
+	using App;
   using Dialog;
   using Sensors;
+	using Widgets.RecyclerViews;
 
   public class WorkbenchFragment : IONFragment {
+		private static TimeSpan GRAPH_WINDOW = TimeSpan.FromMilliseconds(30);
+		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(30);
 
     /// <summary>
     /// The activity request code that will tell us when we return from the device
@@ -37,7 +41,7 @@
     /// The workbench that the fragment is currently working with.
     /// </summary>
     /// <value>The workbench.</value>
-    public Workbench workbench { get; set; }
+		public Workbench workbench { get; set; }
 
     /// <summary>
     /// The listview that will display the Viewers (manifolds) for workbench fragment.
@@ -105,43 +109,41 @@
 				return;
 			}
 #endif
+		}
 
-      if (workbench == null) {
-				workbench = ion.currentWorkbench;
-      }
 
-			if (workbench == null) {
-				workbench = ion.currentWorkbench = new Workbench(ion);
-				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
-			}
-      workbench.onWorkbenchEvent += OnWorkbenchEvent;
-
-      adapter = new WorkbenchAdapter(OnAddViewer);
-			adapter.workbench = ion.currentWorkbench;
-      list.SetAdapter(adapter);
-    }
-
-    /// <Docs>Called when the Fragment is visible to the user.</Docs>
-    /// <summary>
-    /// Raises the start event.
-    /// </summary>
+		// Overridden from Fragment
     public override void OnResume() {
       base.OnResume();
+
+			if (workbench == null || workbench != ion.currentWorkbench) {
+				workbench = ion.currentWorkbench;
+			}
+
+			if (workbench == null) {
+				workbench = ion.LoadWorkbenchAsync().Result;
+//				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
+			}
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+
+			adapter = new WorkbenchAdapter(OnAddViewer, workbench);
+			list.SetAdapter(adapter);
+
       adapter.NotifyDataSetChanged();
 			adapter.onSensorPropertyClicked += OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked += OnManifoldClicked;
     }
 
+		// Overridden from Fragment
 		public override void OnPause() {
 			base.OnPause();
+
+			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
 
-    /// <Docs>Called when the fragment is no longer in use.</Docs>
-    /// <summary>
-    /// Raises the destroy event.
-    /// </summary>
+		// Overridden from Fragment
     public override void OnDestroy() {
       base.OnDestroy();
       if (workbench != null) {
@@ -149,16 +151,7 @@
       }
     }
 
-    /// <Docs>The integer request code originally supplied to
-    ///  startActivityForResult(), allowing you to identify who this
-    ///  result came from.</Docs>
-    /// <param name="data">An Intent, which can return result data to the caller
-    ///  (various data can be attached to Intent "extras").</param>
-    /// <summary>
-    /// Raises the activity result event.
-    /// </summary>
-    /// <param name="requestCode">Request code.</param>
-    /// <param name="resultCode">Result code.</param>
+		// Overridden from Fragment
     public override void OnActivityResult(int requestCode, Result resultCode, Intent data) {
       switch (requestCode) {
         case REQUEST_SENSOR:
@@ -219,14 +212,22 @@
 				var i = new Intent(Activity, typeof(PTChartActivity));
 				i.SetAction(Intent.ActionPick);
 				i.PutExtra(PTChartActivity.EXTRA_WORKBENCH_MANIFOLD, workbench.IndexOf(manifold));
-				StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+				if (ion is RemoteION) {
+					StartActivity(i);
+				} else {
+					StartActivityForResult(i, REQUEST_SHOW_PTCHART);
+				}
 			} else if (sensorProperty is SuperheatSubcoolSensorProperty) {
 				var i = new Intent(Activity, typeof(SuperheatSubcoolActivity));
 				i.SetAction(Intent.ActionPick);
 				i.PutExtra(SuperheatSubcoolActivity.EXTRA_WORKBENCH_MANIFOLD, workbench.IndexOf(manifold));
 				i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_NAME, manifold.ptChart.fluid.name);
 				i.PutExtra(SuperheatSubcoolActivity.EXTRA_FLUID_STATE, (int)manifold.ptChart.state);
-				StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
+				if (ion is RemoteION) {
+					StartActivity(i);
+				} else {
+					StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
+				}
 			}
 		}
 
@@ -235,6 +236,8 @@
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
     private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
+			((SwipeRecyclerView)list).swipingEnabled = workbench.isEditable;
+
       if (IsVisible) {
         switch (workbenchEvent.type) {
           case WorkbenchEvent.EType.Added:
@@ -254,10 +257,8 @@
 		private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
 			switch (manifoldEvent.type) {
 				case ManifoldEvent.EType.SensorPropertyAdded:
-//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, Math.Max(manifoldEvent.index - 1, 0));
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertyRemoved:
-//					adapter.UpdateManifoldSubview(manifoldEvent.manifold, manifoldEvent.manifold.sensorPropertyCount - 1);
 					goto case ManifoldEvent.EType.SensorPropertySwapped;
 				case ManifoldEvent.EType.SensorPropertySwapped:
 					ion.SaveWorkbenchAsync();
@@ -270,6 +271,9 @@
     /// the manifold.
     /// </summary>
     private void ShowManifoldContextDialog(Manifold manifold) {
+			if (!workbench.isEditable) {
+				return;
+			}
       var ldb = new ListDialogBuilder(Activity);
       ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 
@@ -284,7 +288,12 @@
 			}
 
       ldb.AddItem(Resource.String.rename, () => {
-        new RenameDialog(manifold.primarySensor).Show(Activity);
+				if (manifold.primarySensor is GaugeDeviceSensor) {
+					var gds = manifold.primarySensor as GaugeDeviceSensor;
+					new RenameDialog(gds.device).Show(Activity);
+				} else {
+					new RenameDialog(manifold.primarySensor).Show(Activity);
+				}
       });
 
 			if (dgs.device.isConnected) {
@@ -362,7 +371,8 @@
       ldb.SetTitle(GetString(Resource.String.manifold_add_subview));
 			ldb.SetTitle(Resource.String.pick_unit);
 
-			if (manifold.secondarySensor != null) {
+			if ((manifold.primarySensor.type == ESensorType.Pressure ||
+			    manifold.primarySensor.type == ESensorType.Temperature) && manifold.secondarySensor != null) {
 				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
 					var t = manifold.secondarySensor.type;
 					var type = t.GetTypeString();
@@ -384,6 +394,12 @@
           manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
         });
       }
+
+			if (!manifold.HasSensorPropertyOfType(typeof(GraphSensorProperty))) {
+				ldb.AddItem(GetString(Resource.String.workbench_graph), () => {
+					manifold.AddSensorProperty(new GraphSensorProperty(manifold, GRAPH_WINDOW, GRAPH_INTERVAL));
+				});
+			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_min, Resource.String.workbench_min_abrv), () => {
@@ -434,8 +450,10 @@
     /// Attempts to add all of the subviews to the manifold, as long as they aren't already present.
     /// </summary>
     private void AddAllSubviews(Manifold manifold) {
-			if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
-				manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+			if (manifold.primarySensor.type == ESensorType.Pressure || manifold.primarySensor.type == ESensorType.Temperature) {
+				if (!manifold.HasSensorPropertyOfType(typeof(SecondarySensorProperty))) {
+					manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
+				}
 			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
@@ -445,6 +463,10 @@
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
       }
+
+			if (!manifold.HasSensorPropertyOfType(typeof(GraphSensorProperty))) {
+				manifold.AddSensorProperty(new GraphSensorProperty(manifold, GRAPH_WINDOW, GRAPH_INTERVAL));
+			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
@@ -471,8 +493,7 @@
           manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
         }
       }
-
-			adapter.ExpandManifold(manifold);
+//			adapter.ExpandManifold(manifold);
     }
   }
 }

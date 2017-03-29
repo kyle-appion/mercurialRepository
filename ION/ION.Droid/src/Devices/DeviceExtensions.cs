@@ -62,13 +62,13 @@ namespace ION.Droid.Devices {
     /// <param name="device"></param>
     /// <returns></returns>
     public static string GetDeviceProductName(this IDevice device) {
-      var ion = (AndroidION)AppState.context;
+      var ion = (BaseAndroidION)AppState.context;
       switch (device.type) {
         case EDeviceType.Gauge:
           GaugeSerialNumber serialNumber = (GaugeSerialNumber)device.serialNumber;
           return GetTypeString(serialNumber.deviceModel);
         default:
-          return ion.GetString(Resource.String.device_unknown);
+          return ion.context.GetString(Resource.String.device_unknown);
       }
     }
 
@@ -78,26 +78,26 @@ namespace ION.Droid.Devices {
     /// <param name="type"></param>
     /// <returns></returns>
     public static string GetTypeString(this EDeviceModel type) {
-      var ion = (AndroidION)AppState.context;
+			var ion = (BaseAndroidION)AppState.context;
       switch (type) {
         case EDeviceModel.P300:
-          return ion.GetString(Resource.String.device_p300);
+          return ion.context.GetString(Resource.String.device_p300);
         case EDeviceModel.P500:
-          return ion.GetString(Resource.String.device_p500);
+          return ion.context.GetString(Resource.String.device_p500);
         case EDeviceModel.P800:
-          return ion.GetString(Resource.String.device_p800);
+          return ion.context.GetString(Resource.String.device_p800);
         case EDeviceModel.AV760:
-          return ion.GetString(Resource.String.device_av760);
+          return ion.context.GetString(Resource.String.device_av760);
         case EDeviceModel.PT300:
-          return ion.GetString(Resource.String.device_pt300);
+          return ion.context.GetString(Resource.String.device_pt300);
         case EDeviceModel.PT500:
-          return ion.GetString(Resource.String.device_pt500);
+          return ion.context.GetString(Resource.String.device_pt500);
         case EDeviceModel.PT800:
-          return ion.GetString(Resource.String.device_pt800);
+          return ion.context.GetString(Resource.String.device_pt800);
 				case EDeviceModel.WL:
-					return ion.GetString(Resource.String.device_wllibra);
+					return ion.context.GetString(Resource.String.device_wllibra);
         default:
-          return ion.GetString(Resource.String.device_unknown);
+          return ion.context.GetString(Resource.String.device_unknown);
       }
     }
 
@@ -107,20 +107,20 @@ namespace ION.Droid.Devices {
     /// <param name="type"></param>
     /// <returns></returns>
     public static string GetSensorTypeName(this ESensorType type) {
-      var ion = (AndroidION)AppState.context;
+			var ion = (BaseAndroidION)AppState.context;
       switch (type) {
         case ESensorType.Humidity:
-          return ion.GetString(Resource.String.humidity);
+          return ion.context.GetString(Resource.String.humidity);
         case ESensorType.Pressure:
-          return ion.GetString(Resource.String.pressure);
+          return ion.context.GetString(Resource.String.pressure);
         case ESensorType.Temperature:
-          return ion.GetString(Resource.String.temperature);
+          return ion.context.GetString(Resource.String.temperature);
         case ESensorType.Vacuum:
-          return ion.GetString(Resource.String.vacuum);
+          return ion.context.GetString(Resource.String.vacuum);
 				case ESensorType.Weight:
-					return ion.GetString(Resource.String.weight);
+					return ion.context.GetString(Resource.String.weight);
         default:
-          return ion.GetString(Resource.String.unknown);
+          return ion.context.GetString(Resource.String.unknown);
       }
     }
   }

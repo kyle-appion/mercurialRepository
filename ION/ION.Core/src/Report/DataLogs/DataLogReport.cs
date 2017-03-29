@@ -33,6 +33,11 @@
 		/// The devices that produced the session results.
 		/// </summary>
 		public List<IDevice> devices { get; private set; }
+		/// <summary>
+		/// The sensors that were used to make up the report.
+		/// </summary>
+		/// <value>The sensors.</value>
+		public List<GaugeDeviceSensor> sensors { get; private set; }
     /// <summary>
     /// The session results that are making up the current report.
     /// </summary>
@@ -61,6 +66,7 @@
 			var jobs = new List<JobRow>();
 
 			var deviceSet = new HashSet<IDevice>();
+			var sensorSet = new HashSet<GaugeDeviceSensor>();
 			foreach (var results in sessionResults) {
 				foreach (var dsl in results.deviceSensorLogs) {
 					if (SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {

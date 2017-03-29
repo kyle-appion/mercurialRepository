@@ -1,5 +1,4 @@
-﻿using Java.Util;
-namespace ION.Droid.Fragments._Workbench {
+﻿namespace ION.Droid.Fragments._Workbench {
 
 	using System;
 	using System.Collections.Generic;
@@ -23,42 +22,27 @@ namespace ION.Droid.Fragments._Workbench {
 		/// <summary>
 		/// The workbench that the adapter is displaying.
 		/// </summary>
-		public Workbench workbench {
-			get {
-				return __workbench;
-			}
-			set {
-				if (__workbench != null) {
-					__workbench.onWorkbenchEvent -= OnWorkbenchEvent;
-				}
-
-				records.Clear();
-				__workbench = value;
-
-				foreach (var manifold in workbench.manifolds) {
-					var mr = new ManifoldRecord(manifold);
-					records.Add(mr);
-					ExpandManifold(mr);
-				}
-
-				records.Add(new AddViewerRecord(onAddViewer));
-
-				if (__workbench != null) {
-					__workbench.onWorkbenchEvent += OnWorkbenchEvent;
-				}
-
-				NotifyDataSetChanged();
-			}
-		} Workbench __workbench;
+		public Workbench workbench { get; private set; }
 
 		private BitmapCache cache;
 		private Action onAddViewer;
 		private ItemTouchHelper dragger;
 		private HashSet<ManifoldRecord> dragCollapsedManifoldRecords = new HashSet<ManifoldRecord>();
 
-		public WorkbenchAdapter(Action onAddViewer) {
+		public WorkbenchAdapter(Action onAddViewer, Workbench workbench) {
 			this.onAddViewer = onAddViewer;
+			this.workbench = workbench;
 			dragger = new ItemTouchHelper(new Dragger(this));
+
+			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+			foreach (var manifold in workbench.manifolds) {
+				var mr = new ManifoldRecord(manifold);
+				records.Add(mr);
+				ExpandManifold(mr);
+				records.Add(new SpaceRecord());
+			}
+
+			records.Add(new AddViewerRecord(onAddViewer));
 		}
 
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
@@ -66,12 +50,16 @@ namespace ION.Droid.Fragments._Workbench {
 			if (cache == null) {
 				cache = new BitmapCache(recyclerView.Context.Resources);
 			}
-			dragger.AttachToRecyclerView(recyclerView);
+			if (workbench.isEditable) {
+				dragger.AttachToRecyclerView(recyclerView);
+			}
 		}
 
 		public override void OnDetachedFromRecyclerView(RecyclerView recyclerView) {
 			base.OnDetachedFromRecyclerView(recyclerView);
-			dragger.AttachToRecyclerView(null);
+			if (workbench.isEditable) {
+				dragger.AttachToRecyclerView(null);
+			}
 		}
 
 		// Overridden from RecordAdapter
@@ -85,6 +73,9 @@ namespace ION.Droid.Fragments._Workbench {
 			var rv = recyclerView as SwipeRecyclerView;
 
 			switch ((EViewType)viewType) {
+				case EViewType.Space: {
+					return new SpaceViewHolder(parent);
+				} // EViewType.Space
 				case EViewType.Add: {
 					return new AddViewerViewHolder(parent);
 				} // EViewType.Add
@@ -98,6 +89,9 @@ namespace ION.Droid.Fragments._Workbench {
 				case EViewType.ROC: {
 					return new ROCSensorPropertyViewHolder(rv, cache);
 				} // EViewType.ROC
+				case EViewType.Graph: {
+					return new GraphSensorPropertyViewHolder(rv);	
+				} // EViewType.Graph
 				case EViewType.Timer: {
 					return new TimerSensorPropertyViewHolder(rv, cache);
 				} // EViewType.Timer
@@ -135,7 +129,9 @@ namespace ION.Droid.Fragments._Workbench {
 				}));
 
 				mvh.onSerialNumberClicked = (obj) => {
-					DoToggleManifoldExpanded(mr);
+					if (!mr.isExpanded && mr.manifold.sensorPropertyCount > 0) {
+						DoToggleManifoldExpanded(mr);
+					}
 				};
 
 				mvh.record = mr;
@@ -233,7 +229,7 @@ namespace ION.Droid.Fragments._Workbench {
 		/// <returns>The size for manifold.</returns>
 		/// <param name="manifold">Manifold.</param>
 		private int AdapterSizeForManifold(ManifoldRecord mr) {
-			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0);
+			return 1 + (mr.isExpanded ? mr.manifold.sensorPropertyCount : 0) + 1;
 		}
 
 		private IRecord CreateSensorPropertyRecord(Manifold manifold, ISensorProperty sp) {
@@ -244,6 +240,8 @@ namespace ION.Droid.Fragments._Workbench {
 				return new SHSCSensorPropertyRecord(manifold, sp as SuperheatSubcoolSensorProperty);
 			} else if (sp is RateOfChangeSensorProperty) {
 				return new ROCSensorPropertyRecord(manifold, sp as RateOfChangeSensorProperty);
+			} else if (sp is GraphSensorProperty) {
+				return new GraphSensorPropertyRecord(manifold, sp as GraphSensorProperty);
 			} else if (sp is TimerSensorProperty) {
 				return new TimerSensorPropertyRecord(manifold, sp as TimerSensorProperty);
 			} else if (sp is SecondarySensorProperty) {
@@ -293,7 +291,9 @@ namespace ION.Droid.Fragments._Workbench {
 
 		private void PerformSwap(RecyclerView.ViewHolder vh1, RecyclerView.ViewHolder vh2) {
 			if (vh1 is ManifoldViewHolder && vh2 is ManifoldViewHolder) {
-				workbench.Swap(vh1.AdapterPosition, vh2.AdapterPosition);
+				var m1 = ((ManifoldViewHolder)vh1).record.manifold;
+				var m2 = ((ManifoldViewHolder)vh2).record.manifold;
+				workbench.Swap(workbench.IndexOf(m1), workbench.IndexOf(m2));
 			} else if (vh1 is SensorPropertyViewHolder && vh2 is SensorPropertyViewHolder) {
 				var spr1 = records[vh1.AdapterPosition] as SensorPropertyRecord;
 				var spr2 = records[vh2.AdapterPosition] as SensorPropertyRecord;
@@ -310,12 +310,20 @@ namespace ION.Droid.Fragments._Workbench {
 						var i = 0;
 						var mr = new ManifoldRecord(e.manifold);
 						if (e.index == 0) {
+							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
+							NotifyItemRangeInserted(i, 2);
 						} else {
 							i = AdapterIndexForManifold(workbench[e.index - 1]);
+							i += AdapterSizeForManifold(records[i] as ManifoldRecord);
+							records.Insert(i, new SpaceRecord());
 							records.Insert(i, mr);
+							NotifyItemRangeInserted(i, 2);
 						}
-						NotifyItemInserted(i);
+
+						if (mr.manifold.sensorPropertyCount > 0) {
+							ExpandManifold(mr);
+						}
 					}
 				break; // WorkbenchEvent.EType.Added
 				case WorkbenchEvent.EType.ManifoldEvent: {
@@ -323,9 +331,11 @@ namespace ION.Droid.Fragments._Workbench {
 				} break; // WorkbenchEvent.EType.ManifoldEvent
 				case WorkbenchEvent.EType.Removed: {
 					var i = AdapterIndexForManifold(e.manifold);
-					var cnt = AdapterSizeForManifold(records[i] as ManifoldRecord);
-					records.RemoveRange(i, cnt);
-					NotifyItemRangeRemoved(i, cnt);
+					if (i != -1) {
+						var cnt = AdapterSizeForManifold(records[i] as ManifoldRecord);
+						records.RemoveRange(i, cnt);
+						NotifyItemRangeRemoved(i, cnt);
+					}
 				} break; // WorkbenchEvent.EType.Removed
 				case WorkbenchEvent.EType.Swapped: {
 					SwapRecords(AdapterIndexForManifold(workbench[e.index]), AdapterIndexForManifold(workbench[e.otherIndex]));
@@ -338,6 +348,9 @@ namespace ION.Droid.Fragments._Workbench {
 				case ManifoldEvent.EType.SensorPropertyAdded: {
 					var aifm = AdapterIndexForManifold(e.manifold);
 					var mr = records[aifm] as ManifoldRecord;
+					if (mr.manifold.sensorPropertyCount == 1) {
+						mr.isExpanded = true;
+					}
 					if (mr.isExpanded) {
 						var i = aifm + e.index + 1;
 						var record = CreateSensorPropertyRecord(e.manifold, e.manifold[e.index]);
@@ -367,11 +380,12 @@ namespace ION.Droid.Fragments._Workbench {
 					var i1 = mi + e.index;
 					var i2 = mi + e.otherIndex;
 					SwapRecords(i1, i2);
-
+/*
 					var vh1 = recyclerView.FindViewHolderForAdapterPosition(i1) as SensorPropertyViewHolder;
 					var vh2 = recyclerView.FindViewHolderForAdapterPosition(i2) as SensorPropertyViewHolder;
 					vh1.Invalidate();
 					vh2.Invalidate();
+*/
 				} break; // ManifoldEvent.EType.SensorPropertySwapped
 			}
 		}
@@ -389,9 +403,12 @@ namespace ION.Droid.Fragments._Workbench {
 		}
 
 		public enum EViewType {
+			Space,
+
 			Add,
 			Manifold,
 
+			Graph,
 			Secondary,
 			ROC,
 			Timer,

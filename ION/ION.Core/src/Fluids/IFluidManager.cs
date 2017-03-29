@@ -12,7 +12,7 @@ namespace ION.Core.Fluids {
   /// <summary>
   /// The contract for managing a collection of fluids.
   /// </summary>
-  public interface IFluidManager : IIONManager {
+  public interface IFluidManager : IManager {
 
     /// <summary>
     /// The event handler that will be notified when the preferred fluids list changes.
@@ -45,12 +45,12 @@ namespace ION.Core.Fluids {
     /// <returns></returns>
     Task<Fluid> GetFluidAsync(string fluidName);
     
-    /// <summary>
-    /// Loads the fluid async without setting the last know fluid
-    /// </summary>
-    /// <returns>The fluid async.</returns>
-    /// <param name="fluidName">Fluid name.</param>
-    Task<Fluid> LoadFluidAsync(string fluidName);
+		/// <summary>
+		/// Loads a fluid from disk.
+		/// </summary>
+		/// <returns>The fluid asyc.</returns>
+		/// <param name="fluidName">Fluid name.</param>
+		Task<Fluid> LoadFluidAsync(string fluidName);
 
     /// <summary>
     /// Queries whether or not the given fluid is preferred.

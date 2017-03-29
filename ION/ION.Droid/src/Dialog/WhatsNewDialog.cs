@@ -30,7 +30,7 @@
 			this.prefs = prefs;
 			this.oldVersion = oldVersion;
 			this.currentVersion = currentVersion;
-      this.handler = new Handler();
+			this.handler = new Handler(Looper.MainLooper);
     }
 
     /// <summary>

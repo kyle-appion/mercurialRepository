@@ -109,6 +109,10 @@
 			lastNotify = DateTime.Now;
     }
 
+		public override string ToString() {
+			return string.Format("[GaugeDevice: serialNumber={0}, type={1}, name={2}, battery={3}, connection={4}, protocol={5}, isConnected={6}, isNearby={7}, sensors={8}, sensorCount={9}, this[]={10}]", serialNumber, type, name, battery, connection, protocol, isConnected, isNearby, sensors, sensorCount, this.sensors);
+		}
+
     // Overridden from IDevice
     public void Dispose() {
       connection.Disconnect();

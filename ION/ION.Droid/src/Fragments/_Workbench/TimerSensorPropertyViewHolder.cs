@@ -29,7 +29,6 @@
 		private TextView measurement { get; set; }
 
 		private Handler handler;
-		private bool wasStarted;
 
 		public TimerSensorPropertyViewHolder(SwipeRecyclerView recyclerView, BitmapCache cache) : base(recyclerView, Resource.Layout.subview_timer_large) {
 			this.cache = cache;
@@ -54,12 +53,11 @@
 			}));
 
 			play.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_action_play));
-			wasStarted = false;
 		}
 
 		public override void Invalidate() {
 			base.Invalidate();
-			if (record == null) {
+			if (record == null || !recyclerView.IsAttachedToWindow) {
 				return;
 			}
 			var c = foreground.Context;
@@ -79,8 +77,6 @@
 			} else {
 				play.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_action_play));
 			}
-
-			wasStarted = sp.isStarted;
 
 			if (sp.ellapsedTime.Hours > 0) {
 				measurement.Text = sp.ellapsedTime.ToString("h'h 'm'm 's's'");

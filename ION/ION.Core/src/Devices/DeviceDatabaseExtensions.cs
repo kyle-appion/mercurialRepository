@@ -83,7 +83,9 @@
       }
 
       var serialNumber = device.serialNumber.ParseSerialNumber();
-      return Task.FromResult(db.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, (EProtocolVersion)device.protocol));
+			var ret = db.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, (EProtocolVersion)device.protocol);
+			ret.name = device.name;
+      return Task.FromResult(ret);
     }
   }
 }

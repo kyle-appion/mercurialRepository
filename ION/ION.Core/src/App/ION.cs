@@ -1,10 +1,9 @@
-﻿using Appion.Commons.Measure;
-
-namespace ION.Core.App {
+﻿namespace ION.Core.App {
 
 	using System;
 	using System.Threading.Tasks;
 
+	using Appion.Commons.Measure;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -44,6 +43,7 @@ namespace ION.Core.App {
   } // End ION
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);
+	public delegate void OnAnalyzerChanged(Analyzer analyzer);
 
   /// <summary>
   /// The interface that describes an ION application context.
@@ -53,6 +53,10 @@ namespace ION.Core.App {
 		/// The event that is notified when the ion's workbench changes.
 		/// </summary>
 		event OnWorkbenchChanged onWorkbenchChanged;
+		/// <summary>
+		/// The event that is notified when the ion's analyzer changes.
+		/// </summary>
+		event OnAnalyzerChanged onAnalyzerChanged;
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
@@ -145,9 +149,29 @@ namespace ION.Core.App {
     /// <param name="delay">Delay.</param>
     void PostToMainDelayed(Action action, TimeSpan delay);
 
+		/// <summary>
+		/// Saves the current workbench to the primary workbench save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
     Task SaveWorkbenchAsync();
+		/// <summary>
+		/// Saves the current analyzer to the primary analyzer save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
+		Task SaveAnalyzerAsync();
+		/// <summary>
+		/// Loads the current workbench from the primary workbench save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
+		Task<Workbench> LoadWorkbenchAsync();
+		/// <summary>
+		/// Loads the current analyzer from the primary analyzer save location.
+		/// </summary>
+		/// <returns>The workbench async.</returns>
+		Task<Analyzer> LoadAnalyzerAsync();
 
     Task<Workbench> LoadWorkbenchAsync(IFile file);
+		Task<Analyzer> LoadAnalyzerAsync(IFile file);
 
     /// <summary>
     /// Creates a new application dump object.

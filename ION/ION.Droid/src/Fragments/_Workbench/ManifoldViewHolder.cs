@@ -187,6 +187,10 @@
 				} else {
 					serialNumber.Text = record.manifold.primarySensor.name + "'s Subviews";
 				}
+
+				if (this.record.manifold.secondarySensor != null) {
+					serialNumber.Text +=  " (" + c.GetString(Resource.String.workbench_linked) + ")";
+				}
 			}
 
 			InvalidateBattery(d);
@@ -239,7 +243,11 @@
 			switch (e.type) {
 				case ManifoldEvent.EType.Invalidated:
 					Invalidate();
-				break; // ManifoldEvent.EType.Invalidate
+					break;
+				case ManifoldEvent.EType.SensorPropertyAdded:
+				case ManifoldEvent.EType.SensorPropertyRemoved:
+//					Invalidate();
+					break;
 			}
 		}
 	}

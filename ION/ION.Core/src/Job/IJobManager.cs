@@ -8,7 +8,7 @@
   /// <summary>
   /// A contract for the job manager.
   /// </summary>
-  public interface IJobManager : IIONManager {
+  public interface IJobManager : IManager {
     /// <summary>
     /// The active job 
     /// </summary>

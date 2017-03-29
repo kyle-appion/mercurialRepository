@@ -20,6 +20,16 @@
         return false;
       }
     }
+		// Overridden from Sensor
+		public override string name {
+			get {
+				return device.name;
+			}
+			set {
+				device.name = value;
+				NotifySensorStateChanged();
+			}
+		}
     /// <summary>
     /// The device that this sensor belongs to.
     /// </summary>
@@ -46,7 +56,6 @@
       : base(sensorType, relative) {
       this.device = device;
       this.index = index;
-      this.name = device.serialNumber.ToString();
     }
 
     /// <summary>
@@ -56,6 +65,10 @@
     internal void SetMeasurement(Scalar measurement) {
       ForceSetMeasurement(measurement);
     }
+
+		public override string ToString() {
+			return string.Format("[GaugeDeviceSensor: isEditable={0}, device={1}, index={2}, removable={3}, removed={4}]", isEditable, device, index, removable, removed);
+		}
   }
 }
 

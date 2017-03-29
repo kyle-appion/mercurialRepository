@@ -3,9 +3,7 @@
 	using System;
 
 	using Android.Content;
-	using Android.OS;
 	using Android.Support.V7.Widget;
-	using Android.Support.V13.View;
 	using Android.Util;
 	using Android.Views;
 	using Android.Views.Animations;
@@ -38,6 +36,11 @@
 		/// </summary>
 		public event Action<SwipeRecyclerView, int> onSwipeEnd;
 
+		/// <summary>
+		/// Whether or not swiping is enabled for the view.
+		/// </summary>
+		/// <value><c>true</c> if swiping enabled; otherwise, <c>false</c>.</value>
+		public bool swipingEnabled { get; set; }
 		/// <summary>
 		/// The interpolator that will animate the closing of a row.
 		/// </summary>
@@ -94,10 +97,13 @@
 			openInterpolator = new BounceInterpolator();
 			closeInterpolator = new BounceInterpolator();
 			swipeDirection = EDirection.Left;
+			swipingEnabled = true;
 		}
 
 		public override bool OnInterceptTouchEvent(MotionEvent ev) {
 			if (ev.Action != MotionEventActions.Down && touchView == null) {
+				return base.OnInterceptTouchEvent(ev);
+			} else if (!swipingEnabled) {
 				return base.OnInterceptTouchEvent(ev);
 			}
 

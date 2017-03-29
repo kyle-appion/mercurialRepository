@@ -1,40 +1,46 @@
-﻿using ION.Droid.Views;
-namespace ION.Droid.Activity.Portal {
+﻿namespace ION.Droid.Activity.Portal {
 
 	using System;
-	using System.Collections.Generic;
-	using System.Linq;
-	using System.Text;
+	using System.Threading.Tasks;
 
 	using Android.Animation;
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
 	using Android.OS;
-	using Android.Runtime;
 	using Android.Support.Design.Widget;
 	using Android.Views;
 	using Android.Widget;
 
+	using Appion.Commons.Util;
+
+	using ION.Core.App;
+
+	using ION.Droid.App;
 	using ION.Droid.Dialog;
+	using ION.Droid.Views;
 
 	/// <summary>
 	/// This activity is the base activity for Appion portal interactions.
 	/// </summary>
-	[Activity(Label = "@string/portal", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label = "@string/portal", Theme = "@style/TerminalActivityTheme", /*LaunchMode=Android.Content.PM.LaunchMode.SingleTask, */ScreenOrientation=ScreenOrientation.Portrait)]
 	public class PortalActivity : IONActivity {
 
 		private const int REQUEST_LOGIN = 1;
 
-		private TextInputEditText displayName;
-		private TextInputEditText email;
-		private TextInputEditText password;
-		private TextInputEditText passwordConfirm;
+		private EditText displayName;
+		private EditText email;
+		private EditText password;
+		private EditText passwordConfirm;
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
 
-			SetContentView(Resource.Layout.activity_portal);
+			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+				SetContentView(Resource.Layout.activity_portal_4_4);
+			} else {
+				SetContentView(Resource.Layout.activity_portal);
+			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
@@ -59,16 +65,22 @@ namespace ION.Droid.Activity.Portal {
 				StartActivity(i);
 			};
 
+			// TODO-Localize ahodder@appioninc.com:
+			var startRemote = FindViewById<Button>(Resource.Id.button);
+			startRemote.Click += (sender, e) => {
+				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
+			};
+
 			home.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
 				AnimateToSettingsView();
 			};
 
 			// Setup settings Widgets
 			var settings = FindViewById(Resource.Id.settings);
-			displayName = settings.FindViewById<TextInputEditText>(Resource.Id.name);
-			email = settings.FindViewById<TextInputEditText>(Resource.Id.email);
-			password = settings.FindViewById<TextInputEditText>(Resource.Id.password);
-			passwordConfirm = settings.FindViewById<TextInputEditText>(Resource.Id.passwordConfirm);
+			displayName = settings.FindViewById<EditText>(Resource.Id.name);
+			email = settings.FindViewById<EditText>(Resource.Id.email);
+			password = settings.FindViewById<EditText>(Resource.Id.password);
+			passwordConfirm = settings.FindViewById<EditText>(Resource.Id.passwordConfirm);
 			var icon = settings.FindViewById<ImageView>(Resource.Id.icon);
 
 			settings.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
@@ -247,6 +259,5 @@ namespace ION.Droid.Activity.Portal {
 			            .Before(animIn);
 			animationSet.Start();
 		}
-
 	}
 }

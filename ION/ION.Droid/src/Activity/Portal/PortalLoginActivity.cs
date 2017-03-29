@@ -13,23 +13,27 @@
 
 	using ION.Droid.Dialog;
 
-	[Activity(Label = "@string/portal_login", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label = "@string/portal_login", Theme = "@style/TerminalActivityTheme", /*LaunchMode=Android.Content.PM.LaunchMode.SingleTask,*/ ScreenOrientation=ScreenOrientation.Portrait)]
 	public class PortalLoginActivity : IONActivity {
 
-		private TextInputEditText username;
-		private TextInputEditText password;
+		private EditText username;
+		private EditText password;
 		private CheckBox rememberMe;
 
 		protected override void OnCreate(Bundle state) {
 			base.OnCreate(state);
 
-			SetContentView(Resource.Layout.activity_portal_login);
+			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+				SetContentView(Resource.Layout.activity_portal_login_4_4);
+			} else {
+				SetContentView(Resource.Layout.activity_portal_login);
+			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_cloud, Resource.Color.gray));
 
-			username = FindViewById<TextInputEditText>(Resource.Id.login);
-			password = FindViewById<TextInputEditText>(Resource.Id.password);
+			username = FindViewById<EditText>(Resource.Id.login);
+			password = FindViewById<EditText>(Resource.Id.password);
 			rememberMe = FindViewById<CheckBox>(Resource.Id.checkbox);
 
 			FindViewById(Resource.Id.button).Click += (sender, e) => { 
