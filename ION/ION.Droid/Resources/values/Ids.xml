@@ -14,6 +14,7 @@
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
   <item name="button1" type="id"/>
+  <item name="button2" type="id"/>
   <item name="cancel" type="id"/>
   <item name="card" type="id"/>
   <item name="check" type="id"/>

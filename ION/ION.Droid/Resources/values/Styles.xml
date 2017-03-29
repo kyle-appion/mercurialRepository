@@ -51,6 +51,12 @@
     <item name="android:textColor">@drawable/selector_text_blackgold</item>
   </style>
 
+  <style name="IONSwitch" parent="Theme.AppCompat.Light">
+  	<item name="colorPrimary">@color/red</item>
+  	<item name="colorPrimaryDark">@color/light_blue</item>
+  	<item name="colorAccent">@color/gold</item>
+	</style>
+
   <style name="IONSwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
   	<item name="android:textColor">@color/black</item>
 	</style>
