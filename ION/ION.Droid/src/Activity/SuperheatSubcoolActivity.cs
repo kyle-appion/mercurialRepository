@@ -569,6 +569,8 @@
 				return;	
 			}
 
+			ptChart = manifold.ptChart;
+
 			switch (manifold.primarySensor.type) {
 				case ESensorType.Pressure:
 					isPressureLocked = true;
