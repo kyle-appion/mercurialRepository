@@ -118,33 +118,38 @@
 	    private void WriteSensorProperty(ISensorProperty property, BinaryWriter writer) {      
 	      var name = property.GetType();
 	      writer.Write(name.Name);
+
+				if (property is AlternateUnitSensorProperty) {
+					var sp = property as AlternateUnitSensorProperty;
+					writer.Write(UnitLookup.GetCode(sp.unit));
+				}
 	    }
 
 	    private void ReadSensorProperty(Manifold manifold, BinaryReader reader) {
 	      var name = reader.ReadString();
 	     
 	      if (name != null) {
-	        if (name.Equals("MinSensorProperty")) {
+					if (name.Equals(typeof(MinSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
-	        } else if (name.Equals("MaxSensorProperty")) {
+					} else if (name.Equals(typeof(MaxSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new MaxSensorProperty(manifold.primarySensor));
-	        } else if (name.Equals("PTChartSensorProperty")) {
+					} else if (name.Equals(typeof(PTChartSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
-	        } else if (name.Equals("RateOfChangeSensorProperty")) {
+					} else if (name.Equals(typeof(RateOfChangeSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
-	        } else if (name.Equals("SecondarySensorProperty")) {
+					} else if (name.Equals(typeof(SecondarySensorProperty).Name)) {
 	          manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
-	        } else if (name.Equals("SuperheatSubcoolSensorProperty")) {
+					} else if (name.Equals(typeof(SuperheatSubcoolSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new SuperheatSubcoolSensorProperty(manifold));
-	          //Log.D(this,"");
-	        } else if (name.Equals("TimerSensorProperty")) {
+					} else if (name.Equals(typeof(TimerSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
-	        } else if (name.Equals("HoldSensorProperty")) {
+					} else if (name.Equals(typeof(HoldSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
-	        } else if (name.Equals("AlternateUnitSensorProperty")) {
-	          //TODO setup alternate sensor writing with name and unit code 
-	          //This will be reader.ReadString() with reader.ReadInt32() right after
-	          Log.E(this, "Trying to add alternate sensor property. Not implemented yet");
+					} else if (name.Equals(typeof(AlternateUnitSensorProperty).Name)) {
+						var sp = new AlternateUnitSensorProperty(manifold.primarySensor);
+						manifold.AddSensorProperty(sp);
+						var usunit = reader.ReadInt32();
+						sp.unit = UnitLookup.GetUnit(usunit);
 	        } else {
 	          Log.E(this, "Name for sensor property doesn't match an ISensorProperty");
 	        }

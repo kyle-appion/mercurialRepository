@@ -2,7 +2,6 @@
 
 	using System;
 	using System.Collections.Generic;
-	using System.Threading.Tasks;
 
 	using Android.Bluetooth;
 	using Android.Content;
@@ -28,7 +27,7 @@
 			}
 		}
 
-		private AndroidION ion;
+		private BaseAndroidION ion;
 		private BluetoothAdapter adapter;
 		private InternalClassicDeviceFound deviceFound;
 		private Handler handler;
@@ -37,11 +36,11 @@
 		private List<BluetoothDevice> pendingDevices = new List<BluetoothDevice>();
 
 
-		public ClassicScanDelegate(AndroidION ion, BluetoothAdapter adapter, InternalClassicDeviceFound internalDeviceFound) {
+		public ClassicScanDelegate(BaseAndroidION ion, BluetoothAdapter adapter, InternalClassicDeviceFound internalDeviceFound) {
 			this.ion = ion;
 			this.adapter = adapter;
 			this.deviceFound = internalDeviceFound;
-			this.handler = new Handler();
+			this.handler = new Handler(Looper.MainLooper);
 		}
 
 		public bool StartScan() {
@@ -56,7 +55,7 @@
 
 				lock (this) {
 					if (!isBroadcastRegistered) {
-						ion.RegisterReceiver(this, filter);
+						ion.context.RegisterReceiver(this, filter);
 						isBroadcastRegistered = true;
 					}
 				}
@@ -74,7 +73,7 @@
 				try {
 					lock (this) {
 						if (isBroadcastRegistered) {
-							ion.UnregisterReceiver(this);
+							ion.context.UnregisterReceiver(this);
 							isBroadcastRegistered = false;
 						}
 					}

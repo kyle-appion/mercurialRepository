@@ -16,28 +16,33 @@
 
   public class EditJobFragment : IONFragment, IJobPresenter {
 
-    private TextInputEditText name;
-		private TextInputEditText customer;
-		private TextInputEditText dispatch;
-		private TextInputEditText purchaseNo;
-		private TextInputEditText notes;
+    private EditText name;
+		private EditText customer;
+		private EditText dispatch;
+		private EditText purchaseNo;
+		private EditText notes;
 
-		private TextInputEditText technician;
-		private TextInputEditText system;
-		private TextInputEditText address;
+		private EditText technician;
+		private EditText system;
+		private EditText address;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-      var ret = inflater.Inflate(Resource.Layout.fragment_edit_job, container, false);
+			View ret;
+			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+				ret = inflater.Inflate(Resource.Layout.fragment_edit_job_4_4, container, false);
+			} else {
+				ret = inflater.Inflate(Resource.Layout.fragment_edit_job, container, false);
+			}
 
-			name = ret.FindViewById<TextInputEditText>(Resource.Id.name);
-			customer = ret.FindViewById<TextInputEditText>(Resource.Id.customer_no);
-			dispatch = ret.FindViewById<TextInputEditText>(Resource.Id.dispatch_no);
-			purchaseNo = ret.FindViewById<TextInputEditText>(Resource.Id.purchase_no);
-			notes = ret.FindViewById<TextInputEditText>(Resource.Id.notes);
+			name = ret.FindViewById<EditText>(Resource.Id.name);
+			customer = ret.FindViewById<EditText>(Resource.Id.customer_no);
+			dispatch = ret.FindViewById<EditText>(Resource.Id.dispatch_no);
+			purchaseNo = ret.FindViewById<EditText>(Resource.Id.purchase_no);
+			notes = ret.FindViewById<EditText>(Resource.Id.notes);
 
-			technician = ret.FindViewById<TextInputEditText>(Resource.Id.job_technician_name);
-			system = ret.FindViewById<TextInputEditText>(Resource.Id.job_system);
-			address = ret.FindViewById<TextInputEditText>(Resource.Id.address);
+			technician = ret.FindViewById<EditText>(Resource.Id.job_technician_name);
+			system = ret.FindViewById<EditText>(Resource.Id.job_system);
+			address = ret.FindViewById<EditText>(Resource.Id.address);
 
       return ret;
     }

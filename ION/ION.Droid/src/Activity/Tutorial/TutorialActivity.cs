@@ -1,26 +1,16 @@
 ﻿namespace ION.Droid.Activity.Tutorial {
 
-	using System;
 	using System.Collections.Generic;
-	using System.Linq;
-	using System.IO;
-	using System.Text;
 
 	using Android.App;
-	using Android.Content;
 	using Android.Content.PM;
 	using Android.OS;
-	using Android.Runtime;
-	using Android.Support.Design.Widget;
 	using Android.Support.V4.View;
 	using Android.Support.V13.App;
 	using Android.Views;
 	using Android.Widget;
 
-	using Appion.Commons.Util;
-
-	using ION.Core.App;
-
+	using ION.Droid.Net.Portal;
 	using ION.Droid.Util;
 	using ION.Droid.Views;
 
@@ -65,7 +55,7 @@
 			}));
 
 			FindViewById(Resource.Id.help).SetOnClickListener(new ViewClickAction((v) => {
-				ion.SendAppSupportEmail(this);
+				ion.portal.SendAppSupportEmail(ion, this);
 			}));
 
 			pager = FindViewById<ViewPager>(Resource.Id.content);

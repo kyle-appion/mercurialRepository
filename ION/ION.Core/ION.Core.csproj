@@ -101,7 +101,7 @@
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
     <Compile Include="src\Devices\Certificates\ICalibrationCertificateExporter.cs" />
-    <Compile Include="src\Location\PlaceholderLocationManager.cs" />
+    <Compile Include="src\Location\ManualLocationManager.cs" />
     <Compile Include="src\Location\SimpleLocation.cs" />
     <Compile Include="src\Sensors\ManualSensor.cs" />
     <Compile Include="src\Content\Analyzer.cs" />
@@ -155,6 +155,10 @@
     <Compile Include="src\Devices\Protocols\RigadoBroadcastParser.cs" />
     <Compile Include="src\Fluids\FluidExtensions.cs" />
     <Compile Include="src\Content\AppVersion.cs" />
+    <Compile Include="src\Devices\RemoteDeviceManager.cs" />
+    <Compile Include="src\Devices\Connections\RemoteConnectionHelper.cs" />
+    <Compile Include="src\Devices\Connections\RemoteConnectionFactory.cs" />
+    <Compile Include="src\Sensors\Properties\GraphSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -358,6 +362,9 @@
     </Reference>
     <Reference Include="Xfinium.Pdf.Pcl">
       <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Pcl.dll</HintPath>
+    </Reference>
+    <Reference Include="OxyPlot">
+      <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

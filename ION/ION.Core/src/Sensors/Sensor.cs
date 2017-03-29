@@ -230,7 +230,7 @@ namespace ION.Core.Sensors {
 				else if (Units.Vacuum.IN_HG.Equals(unit)) {
 					ret = amount.ToString("0.000");
 				} else if (Units.Vacuum.KILOPASCAL.Equals(unit)) {
-					ret = amount.ToString("00.0000");
+					ret = amount.ToString("0.0000");
 				} else if (Units.Vacuum.MICRON.Equals(unit)) {
 					ret = amount.ToString("###,##0");
 				} else if (Units.Vacuum.MILLITORR.Equals(unit)) {
@@ -240,7 +240,6 @@ namespace ION.Core.Sensors {
 				}
 				// DEFAULT
 				else {
-					//Appion.Commons.Util.Log.D(typeof(SensorUtils).Name, "Could not find format for unit: " + unit);
 					ret = amount.ToString("0.00");
 				}
 			}
@@ -376,7 +375,7 @@ namespace ION.Core.Sensors {
     /// <summary>
     /// The custom name for the specific sensor.
     /// </summary>
-    public string name {
+    public virtual string name {
       get {
         return __name;
       }

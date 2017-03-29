@@ -236,6 +236,11 @@
     /// The array of sensors that comprise the analyzer. Null indicates an empty slot.
     /// </summary>
     private Sensor[] sensors;
+		/// <summary>
+		/// Whether or not the analyzer is editable.
+		/// </summary>
+		/// <value><c>true</c> if is editable; otherwise, <c>false</c>.</value>
+		public bool isEditable { get; set; }
 
     public List<Sensor> sensorList;
 		public List<int> sensorPositions = new List<int>(){1,2,3,4,5,6,7,8};
@@ -277,6 +282,7 @@
       this.sensorsPerSide = sensorsPerSide;
       sensors = new Sensor[sensorsPerSide * 2];
       sensorList = new List<Sensor>();
+			isEditable = true;
     }
 
     /// <summary>
@@ -557,7 +563,7 @@
     /// <returns><c>true</c>, if primary manifold was set, <c>false</c> otherwise.</returns>
     /// <param name="side">Side.</param>
     /// <param name="sensor">Sensor.</param>
-    public bool SetManifoldSensor(ESide side, Sensor sensor) {
+    public bool SetManifold(ESide side, Sensor sensor) {
       var index = IndexOfSensor(sensor);
 
       if (index < 0) {

@@ -7,6 +7,7 @@
 	using ION.Core.Content;
 
 	using ION.Droid.Util;
+	using ION.Droid.Widgets.RecyclerViews;
 
 	public class AnalyzerManifoldViewTemplate : CompactManifoldViewTemplate {
 		public RecyclerView list { get; private set; }
@@ -17,6 +18,7 @@
 
 		private int background;
 		public SubviewAdapter adapter;
+		public Analyzer analyzer;
 		public Analyzer.ESide side;
 
 		public AnalyzerManifoldViewTemplate(View view, BitmapCache cache, int emptyText, int background,
@@ -63,6 +65,10 @@
 				empty.Visibility = ViewStates.Invisible;
 				content.Visibility = ViewStates.Visible;
 				serialNumber.SetBackgroundResource(background);
+			}
+
+			if (analyzer != null) {
+				((SwipeRecyclerView)list).swipingEnabled = analyzer.isEditable;
 			}
 		}
 

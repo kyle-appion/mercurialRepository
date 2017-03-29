@@ -56,19 +56,12 @@
     /// Queries the unique address of the connection.
     /// </summary>
     /// <value>The address.</value>
-    public string address {
-      get {
-        return MOCK_ADDRESS;
-      }
-    }
+		public string address { get; private set; }
     /// <summary>
     /// Queries the current received signal strength of the connection.
     /// </summary>
     /// <value>The signal strength.</value>
-    public ESignalStrength signalStrength { 
-      get {
-        return ESignalStrength.None;
-      }
+    public ESignalStrength signalStrength { get { return ESignalStrength.None; }
     }
     /// <summary>
     /// Queries the last packet that the connection received.
@@ -101,15 +94,13 @@
     /// <value>The connection timeout.</value>
     public TimeSpan connectionTimeout { get; set; }
 
-		public RemoteConnection() : this(MOCK_ADDRESS) {
-		}
-
-		public RemoteConnection(string name) {
+		public RemoteConnection(string address=MOCK_ADDRESS) {
+			this.address = address;
 			this.name = name;
 			connectionState = EConnectionState.Disconnected;
 		}
-		public RemoteConnection(string name, EConnectionState state) {
-			this.name = name;
+
+		public RemoteConnection(string address, EConnectionState state) : this(address) {
 			connectionState = state;
 		}
     /// <summary>

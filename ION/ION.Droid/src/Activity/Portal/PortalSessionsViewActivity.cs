@@ -44,7 +44,7 @@ namespace ION.Droid.Activity.Portal {
 				UploadSessions();
 			};
 
-			handler = new Handler();
+			handler = new Handler(Looper.MainLooper);
 		}
 
 		protected override void OnResume() {
