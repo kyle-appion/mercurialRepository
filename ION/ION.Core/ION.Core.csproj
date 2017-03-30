@@ -158,7 +158,6 @@
     <Compile Include="src\Devices\RemoteDeviceManager.cs" />
     <Compile Include="src\Devices\Connections\RemoteConnectionHelper.cs" />
     <Compile Include="src\Devices\Connections\RemoteConnectionFactory.cs" />
-    <Compile Include="src\Sensors\Properties\GraphSensorProperty.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

@@ -531,6 +531,7 @@
 	-->
 	<string name="time_days_abrv">days</string>
 	<string name="time_hours_abrv">hrs</string>
+	<string name="time_minute_abrv">min</string>
 	<string name="time_minutes_abrv">mins</string>
 	<string name="time_seconds_abrv">secs</string>
 

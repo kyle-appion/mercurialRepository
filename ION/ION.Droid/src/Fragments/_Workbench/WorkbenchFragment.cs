@@ -26,9 +26,6 @@
 	using Widgets.RecyclerViews;
 
   public class WorkbenchFragment : IONFragment {
-		private static TimeSpan GRAPH_WINDOW = TimeSpan.FromMilliseconds(30);
-		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(30);
-
     /// <summary>
     /// The activity request code that will tell us when we return from the device
     /// manager activity.
@@ -395,15 +392,9 @@
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
         });
       }
-
-			if (!manifold.HasSensorPropertyOfType(typeof(GraphSensorProperty))) {
-				ldb.AddItem(GetString(Resource.String.workbench_graph), () => {
-					manifold.AddSensorProperty(new GraphSensorProperty(manifold, GRAPH_WINDOW, GRAPH_INTERVAL));
-				});
-			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_min, Resource.String.workbench_min_abrv), () => {
@@ -465,12 +456,8 @@
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+				manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));;
       }
-
-			if (!manifold.HasSensorPropertyOfType(typeof(GraphSensorProperty))) {
-				manifold.AddSensorProperty(new GraphSensorProperty(manifold, GRAPH_WINDOW, GRAPH_INTERVAL));
-			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));

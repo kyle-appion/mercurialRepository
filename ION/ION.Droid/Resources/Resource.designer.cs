@@ -4661,25 +4661,28 @@ namespace ION.Droid
 			public const int subview_graph_large = 2130903178;
 			
 			// aapt resource value: 0x7f03008b
-			public const int subview_measurement_large = 2130903179;
+			public const int subview_graph_small = 2130903179;
 			
 			// aapt resource value: 0x7f03008c
-			public const int subview_measurement_small = 2130903180;
+			public const int subview_measurement_large = 2130903180;
 			
 			// aapt resource value: 0x7f03008d
-			public const int subview_timer_large = 2130903181;
+			public const int subview_measurement_small = 2130903181;
 			
 			// aapt resource value: 0x7f03008e
-			public const int subview_timer_small = 2130903182;
+			public const int subview_timer_large = 2130903182;
 			
 			// aapt resource value: 0x7f03008f
-			public const int support_simple_spinner_dropdown_item = 2130903183;
+			public const int subview_timer_small = 2130903183;
 			
 			// aapt resource value: 0x7f030090
-			public const int swipe_menu_layout = 2130903184;
+			public const int support_simple_spinner_dropdown_item = 2130903184;
 			
 			// aapt resource value: 0x7f030091
-			public const int viewer_large = 2130903185;
+			public const int swipe_menu_layout = 2130903185;
+			
+			// aapt resource value: 0x7f030092
+			public const int viewer_large = 2130903186;
 			
 			static Layout()
 			{
@@ -6355,82 +6358,85 @@ namespace ION.Droid
 			public const int time_hours_abrv = 2131231272;
 			
 			// aapt resource value: 0x7f080229
-			public const int time_minutes_abrv = 2131231273;
+			public const int time_minute_abrv = 2131231273;
 			
 			// aapt resource value: 0x7f08022a
-			public const int time_seconds_abrv = 2131231274;
+			public const int time_minutes_abrv = 2131231274;
+			
+			// aapt resource value: 0x7f08022b
+			public const int time_seconds_abrv = 2131231275;
 			
 			// aapt resource value: 0x7f0800f1
 			public const int title = 2131230961;
 			
-			// aapt resource value: 0x7f080249
-			public const int tutorial_analyzer = 2131231305;
-			
-			// aapt resource value: 0x7f08024c
-			public const int tutorial_analyzer_actions = 2131231308;
-			
-			// aapt resource value: 0x7f08024b
-			public const int tutorial_analyzer_add = 2131231307;
-			
 			// aapt resource value: 0x7f08024a
-			public const int tutorial_analyzer_description = 2131231306;
+			public const int tutorial_analyzer = 2131231306;
 			
 			// aapt resource value: 0x7f08024d
-			public const int tutorial_device_manager = 2131231309;
+			public const int tutorial_analyzer_actions = 2131231309;
 			
-			// aapt resource value: 0x7f080251
-			public const int tutorial_device_manager_add = 2131231313;
+			// aapt resource value: 0x7f08024c
+			public const int tutorial_analyzer_add = 2131231308;
 			
-			// aapt resource value: 0x7f080250
-			public const int tutorial_device_manager_connect = 2131231312;
+			// aapt resource value: 0x7f08024b
+			public const int tutorial_analyzer_description = 2131231307;
 			
 			// aapt resource value: 0x7f08024e
-			public const int tutorial_device_manager_description = 2131231310;
-			
-			// aapt resource value: 0x7f08024f
-			public const int tutorial_device_manager_scan = 2131231311;
-			
-			// aapt resource value: 0x7f080244
-			public const int tutorial_dont_show = 2131231300;
-			
-			// aapt resource value: 0x7f080245
-			public const int tutorial_introduction = 2131231301;
+			public const int tutorial_device_manager = 2131231310;
 			
 			// aapt resource value: 0x7f080252
-			public const int tutorial_navigation = 2131231314;
+			public const int tutorial_device_manager_add = 2131231314;
 			
-			// aapt resource value: 0x7f080253
-			public const int tutorial_navigation_description = 2131231315;
+			// aapt resource value: 0x7f080251
+			public const int tutorial_device_manager_connect = 2131231313;
 			
-			// aapt resource value: 0x7f080254
-			public const int tutorial_navigation_exit = 2131231316;
+			// aapt resource value: 0x7f08024f
+			public const int tutorial_device_manager_description = 2131231311;
+			
+			// aapt resource value: 0x7f080250
+			public const int tutorial_device_manager_scan = 2131231312;
+			
+			// aapt resource value: 0x7f080245
+			public const int tutorial_dont_show = 2131231301;
 			
 			// aapt resource value: 0x7f080246
-			public const int tutorial_need_more_help = 2131231302;
+			public const int tutorial_introduction = 2131231302;
 			
-			// aapt resource value: 0x7f080247
-			public const int tutorial_skip = 2131231303;
+			// aapt resource value: 0x7f080253
+			public const int tutorial_navigation = 2131231315;
 			
-			// aapt resource value: 0x7f080248
-			public const int tutorial_welcome = 2131231304;
+			// aapt resource value: 0x7f080254
+			public const int tutorial_navigation_description = 2131231316;
 			
 			// aapt resource value: 0x7f080255
-			public const int tutorial_workbench = 2131231317;
+			public const int tutorial_navigation_exit = 2131231317;
+			
+			// aapt resource value: 0x7f080247
+			public const int tutorial_need_more_help = 2131231303;
+			
+			// aapt resource value: 0x7f080248
+			public const int tutorial_skip = 2131231304;
+			
+			// aapt resource value: 0x7f080249
+			public const int tutorial_welcome = 2131231305;
 			
 			// aapt resource value: 0x7f080256
-			public const int tutorial_workbench_actions = 2131231318;
+			public const int tutorial_workbench = 2131231318;
 			
 			// aapt resource value: 0x7f080257
-			public const int tutorial_workbench_add_viewer = 2131231319;
+			public const int tutorial_workbench_actions = 2131231319;
 			
 			// aapt resource value: 0x7f080258
-			public const int tutorial_workbench_data_log = 2131231320;
+			public const int tutorial_workbench_add_viewer = 2131231320;
 			
 			// aapt resource value: 0x7f080259
-			public const int tutorial_workbench_description = 2131231321;
+			public const int tutorial_workbench_data_log = 2131231321;
 			
 			// aapt resource value: 0x7f08025a
-			public const int tutorial_workbench_screenshot = 2131231322;
+			public const int tutorial_workbench_description = 2131231322;
+			
+			// aapt resource value: 0x7f08025b
+			public const int tutorial_workbench_screenshot = 2131231323;
 			
 			// aapt resource value: 0x7f0800f2
 			public const int undo = 2131230962;
@@ -6462,80 +6468,80 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0800f6
 			public const int whats_new_in = 2131230966;
 			
-			// aapt resource value: 0x7f08022b
-			public const int workbench = 2131231275;
-			
-			// aapt resource value: 0x7f08022e
-			public const int workbench_add_all = 2131231278;
+			// aapt resource value: 0x7f08022c
+			public const int workbench = 2131231276;
 			
 			// aapt resource value: 0x7f08022f
-			public const int workbench_add_viewer = 2131231279;
+			public const int workbench_add_all = 2131231279;
 			
 			// aapt resource value: 0x7f080230
-			public const int workbench_add_viewer_sub = 2131231280;
+			public const int workbench_add_viewer = 2131231280;
 			
 			// aapt resource value: 0x7f080231
-			public const int workbench_added_sensor = 2131231281;
+			public const int workbench_add_viewer_sub = 2131231281;
 			
 			// aapt resource value: 0x7f080232
-			public const int workbench_alt = 2131231282;
+			public const int workbench_added_sensor = 2131231282;
 			
 			// aapt resource value: 0x7f080233
-			public const int workbench_alt_abrv = 2131231283;
-			
-			// aapt resource value: 0x7f080236
-			public const int workbench_graph = 2131231286;
+			public const int workbench_alt = 2131231283;
 			
 			// aapt resource value: 0x7f080234
-			public const int workbench_hold = 2131231284;
-			
-			// aapt resource value: 0x7f080235
-			public const int workbench_hold_abrv = 2131231285;
+			public const int workbench_alt_abrv = 2131231284;
 			
 			// aapt resource value: 0x7f080237
-			public const int workbench_linked = 2131231287;
+			public const int workbench_graph = 2131231287;
 			
-			// aapt resource value: 0x7f080241
-			public const int workbench_linked_sensor_2sarg = 2131231297;
+			// aapt resource value: 0x7f080235
+			public const int workbench_hold = 2131231285;
+			
+			// aapt resource value: 0x7f080236
+			public const int workbench_hold_abrv = 2131231286;
 			
 			// aapt resource value: 0x7f080238
-			public const int workbench_max = 2131231288;
-			
-			// aapt resource value: 0x7f080239
-			public const int workbench_max_abrv = 2131231289;
-			
-			// aapt resource value: 0x7f08023a
-			public const int workbench_min = 2131231290;
-			
-			// aapt resource value: 0x7f08023b
-			public const int workbench_min_abrv = 2131231291;
-			
-			// aapt resource value: 0x7f08023e
-			public const int workbench_ptchart = 2131231294;
-			
-			// aapt resource value: 0x7f08022c
-			public const int workbench_remove = 2131231276;
-			
-			// aapt resource value: 0x7f08022d
-			public const int workbench_remove_sensor = 2131231277;
-			
-			// aapt resource value: 0x7f08023f
-			public const int workbench_roc = 2131231295;
-			
-			// aapt resource value: 0x7f080240
-			public const int workbench_roc_abrv = 2131231296;
+			public const int workbench_linked = 2131231288;
 			
 			// aapt resource value: 0x7f080242
-			public const int workbench_shsc = 2131231298;
+			public const int workbench_linked_sensor_2sarg = 2131231298;
 			
-			// aapt resource value: 0x7f080243
-			public const int workbench_shsc_abrv = 2131231299;
+			// aapt resource value: 0x7f080239
+			public const int workbench_max = 2131231289;
+			
+			// aapt resource value: 0x7f08023a
+			public const int workbench_max_abrv = 2131231290;
+			
+			// aapt resource value: 0x7f08023b
+			public const int workbench_min = 2131231291;
 			
 			// aapt resource value: 0x7f08023c
-			public const int workbench_timer = 2131231292;
+			public const int workbench_min_abrv = 2131231292;
+			
+			// aapt resource value: 0x7f08023f
+			public const int workbench_ptchart = 2131231295;
+			
+			// aapt resource value: 0x7f08022d
+			public const int workbench_remove = 2131231277;
+			
+			// aapt resource value: 0x7f08022e
+			public const int workbench_remove_sensor = 2131231278;
+			
+			// aapt resource value: 0x7f080240
+			public const int workbench_roc = 2131231296;
+			
+			// aapt resource value: 0x7f080241
+			public const int workbench_roc_abrv = 2131231297;
+			
+			// aapt resource value: 0x7f080243
+			public const int workbench_shsc = 2131231299;
+			
+			// aapt resource value: 0x7f080244
+			public const int workbench_shsc_abrv = 2131231300;
 			
 			// aapt resource value: 0x7f08023d
-			public const int workbench_timer_abrv = 2131231293;
+			public const int workbench_timer = 2131231293;
+			
+			// aapt resource value: 0x7f08023e
+			public const int workbench_timer_abrv = 2131231294;
 			
 			// aapt resource value: 0x7f0800f7
 			public const int working = 2131230967;
