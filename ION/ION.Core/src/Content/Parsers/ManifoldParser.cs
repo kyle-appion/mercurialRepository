@@ -136,7 +136,7 @@
 					} else if (name.Equals(typeof(PTChartSensorProperty).Name)) {
 	          manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
 					} else if (name.Equals(typeof(RateOfChangeSensorProperty).Name)) {
-	          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+						manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
 					} else if (name.Equals(typeof(SecondarySensorProperty).Name)) {
 	          manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
 					} else if (name.Equals(typeof(SuperheatSubcoolSensorProperty).Name)) {
