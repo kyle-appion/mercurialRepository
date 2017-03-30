@@ -45,6 +45,11 @@
 			records.Add(new AddViewerRecord(onAddViewer));
 		}
 
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+		}
+
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
 			base.OnAttachedToRecyclerView(recyclerView);
 			if (cache == null) {
