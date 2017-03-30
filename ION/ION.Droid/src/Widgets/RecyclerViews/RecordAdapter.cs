@@ -62,6 +62,21 @@
 		}
 
 		// Overridden from RecyclerView.Adapter
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+			for (int i = 0; i < this.ItemCount; i++) {
+				var vh = recyclerView.FindViewHolderForAdapterPosition(i);
+				if (vh is SwipeRecyclerView.ViewHolder) {
+					var v = vh as SwipeRecyclerView.ViewHolder;
+					v.Unbind();
+				} else if (vh is RecordViewHolder) {
+					var v = vh as RecordViewHolder;
+					v.Unbind();
+				}
+			}
+		}
+
+		// Overridden from RecyclerView.Adapter
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
 			base.OnAttachedToRecyclerView(recyclerView);
 			this.recyclerView = recyclerView;

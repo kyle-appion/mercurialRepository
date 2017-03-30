@@ -103,12 +103,16 @@
     /// <see cref="ION.Droid.Location.AndroidLocationManager"/> so the garbage collector can reclaim the memory that the
     /// <see cref="ION.Droid.Location.AndroidLocationManager"/> was occupying.</remarks>
     private void DoDispose() {
-      StopAutomaticLocationPolling();
-      ion.preferences.prefs.UnregisterOnSharedPreferenceChangeListener(this);
-      if (altitudeProvider != null) {
-        altitudeProvider.Dispose();
-      }
-			onLocationChanged = null;
+			try {
+	      StopAutomaticLocationPolling();
+	      ion.preferences.prefs.UnregisterOnSharedPreferenceChangeListener(this);
+	      if (altitudeProvider != null) {
+	        altitudeProvider.Dispose();
+	      }
+				onLocationChanged = null;
+			} catch (Exception e) {
+				Log.E(this, "Failed to dispose", e);
+			}
     }
 
 		protected override void Dispose(bool disposing) {
@@ -180,10 +184,16 @@
     public void StopAutomaticLocationPolling() {
       Log.D(this, "Stopping automatic location polling");
 			if (client != null) {
+				try {
       	LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
+				} catch (Exception) {
+					// TODO ahodder@appioninc.com: This throws a NPE for god know why
+				}
 			}
       isPolling = false;
-			altitudeProvider.StopUpdates();
+			if (altitudeProvider != null) {
+				altitudeProvider.StopUpdates();
+			}
     }
 
 		public bool AttemptSetLocation(Scalar altitude){

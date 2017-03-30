@@ -3,5 +3,6 @@
 	<display version="1.0.0">
 		<new>Added Real Time data logging to Rate of Change</new>
 		<fixed>Fixed some graphical bugs in workbench</fixed>
+		<fixed>Fixed app not completely shutting down</fixed>
 	</display>
 </whatsnew>

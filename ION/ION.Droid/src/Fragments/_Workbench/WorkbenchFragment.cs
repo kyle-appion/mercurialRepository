@@ -135,6 +135,7 @@
 		public override void OnPause() {
 			base.OnPause();
 
+			adapter.Dispose();
 			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
