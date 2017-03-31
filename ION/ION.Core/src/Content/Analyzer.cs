@@ -244,26 +244,29 @@
 		public List<string> highSubviews = new List<string>();
 		public string lowAccessibility ="low";
 		public string highAccessibility ="high";
+		
 		public Fluid lowFluid{ 
 			get{return __lowFluid;} 
 			set {
-				Log.D(this, "setting low fluid in class");
+				Log.D(this, "setting low fluid");
 				if(__lowFluid != null){
 					__lowFluid = null;
 				}
-				__lowFluid = value;
+				__lowFluid = value;   
 			}
 		} Fluid __lowFluid;
+		
 		public Fluid highFluid{ 
 			get{ return __highFluid;} 
 			set {
-				Log.D(this, "setting high fluid in class");
+				Log.D(this, "setting high fluid");
 				if(__highFluid != null){
 					__highFluid = null;
 				}
 				__highFluid = value;
 			}
 		} Fluid __highFluid;
+		
     /// <summary>
     /// Creates a new analyzer.
     /// </summary>
@@ -620,7 +623,7 @@
 		/// <returns><c>true</c>, if remote manifold was set, <c>false</c> otherwise.</returns>
 		/// <param name="side">Side.</param>
 		/// <param name="sensor">Sensor.</param>
-		public bool SetRemoteManifold(ESide side, Sensor sensor){
+		public bool SetRemoteManifold(ESide side, Sensor sensor, Fluid remoteFluid){
 			if(sensor == null){
 				RemoveManifold(side);
 				return false;
@@ -629,13 +632,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble, remoteFluid);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew, remoteFluid);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:

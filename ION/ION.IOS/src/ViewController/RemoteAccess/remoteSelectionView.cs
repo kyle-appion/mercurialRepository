@@ -15,6 +15,10 @@ using Newtonsoft.Json.Linq;
 
 namespace ION.IOS.ViewController.RemoteAccess {
 	public class remoteSelectionView {
+		void HandleAction() {
+
+		}
+
 		public UIView selectionView;
 		public UIButton remoteMenuButton;
 		public UIButton fullMenuButton;
@@ -26,7 +30,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public ObservableCollection<int> selectedUser;
 		public IosION ion;
 		public WebPayload webServices;
-
 		
 		public remoteSelectionView(UIView parentView) {
 			ion = AppState.context as IosION; 
@@ -101,6 +104,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 						webServices.downloading = true;
 						///START THE LAYOUT DOWNLOADING PROCESS
 						startDownloading();
+						onlineTable.ReloadData();
+						webServices.timedOut += timeOutAlert;					
 	        } else {
 						var alert = UIAlertController.Create ("Unable to View", "User is not available. Please try again.", UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -136,10 +141,12 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
 				selectedUser.Clear();
-				onlineTable.ReloadData();
+				onlineTable.ReloadData();						
+				
 				///SET THE APP MENU AND DEVICE MANAGER BACK TO THE LOCAL DEVICE'S SETTINGS
 				await ion.setOriginalDeviceManager();
 				rootVC.setMainMenu();
+				webServices.timedOut -= timeOutAlert;
 			};
 			
 			loadingUsers = new UIActivityIndicatorView(new CGRect(0, 0, parentView.Bounds.Width, parentView.Bounds.Height));
@@ -214,28 +221,30 @@ namespace ION.IOS.ViewController.RemoteAccess {
       }
     }
     
-		public async void timeOutAlert(bool timeout){
-				var window = UIApplication.SharedApplication.KeyWindow;
-	  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-	  		
-				SystemSound sound = new SystemSound(1005);
-				var alert = UIAlertController.Create ("Viewing User", "Are you still viewing the selected user?", UIAlertControllerStyle.Alert);
-				alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-					webServices.downloading = true;
-					sound.Close();
-					var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
-					var loggedUser = KeychainAccess.ValueForKey("userID");
-					var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
-					webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
-				}));
-				alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, (action) => {sound.Close();}));
-				rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-				AbsentRemoteTurnoff(alert);
-				
-				sound.PlaySystemSound();
-				await Task.Delay(TimeSpan.FromSeconds(2));
-				sound.Close();
+		public async void timeOutAlert(string offlineMessage){
+			if(webServices.downloading == false){
+				return;
+			}		
+			webServices.timedOut -= timeOutAlert;
+
+      var window = UIApplication.SharedApplication.KeyWindow;
+      var rootVC = window.RootViewController as IONPrimaryScreenController;
+      
+		 	webServices.downloading = false;
+		 	webServices.remoteViewing = false;
+		 	webServices.paused = null;
+		 	
+			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+
+			await ion.setOriginalDeviceManager();
+			rootVC.setMainMenu();   
+			
+			var alert = UIAlertController.Create ("Viewing User", offlineMessage, UIAlertControllerStyle.Alert);
+
+			alert.AddAction (UIAlertAction.Create ("OK", UIAlertActionStyle.Cancel, (action) => {}));
+			rootVC.PresentViewController (alert, animated: true, completionHandler: null);			
 		}
+		
 		public void startDownloading(){
 			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 			var loggedUser = KeychainAccess.ValueForKey("userID");
@@ -252,15 +261,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 				
 				webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
-			}
-		}
-	
-		public async void AbsentRemoteTurnoff(UIAlertController alert){
-			await Task.Delay(TimeSpan.FromSeconds(15));
-			
-			alert.DismissViewController(false,null);
-			if(!webServices.remoteViewing){
-				Console.WriteLine("dismissed alert and user didn't choose to continue");
 			}
 		}
 	}

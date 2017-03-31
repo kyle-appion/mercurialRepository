@@ -346,6 +346,7 @@
 				} else {
 					currentWorkbench = new Workbench(this);
 				}
+				currentWorkbench.onWorkbenchEvent += onWorkbenchEvent;
 
 				Log.D(this, "Ending ION init");
 			} catch (Exception e) {
@@ -365,6 +366,13 @@
 				return Task.FromResult(new Workbench(this));
       }
     }
+    
+    public void onWorkbenchEvent(WorkbenchEvent e){
+			if(e.type != WorkbenchEvent.EType.ManifoldEvent || (e.manifoldEvent.type != ManifoldEvent.EType.Invalidated)){
+				Log.D(this,"Workbench event saving workbench layout");
+				SaveWorkbenchAsync();
+			}
+		}
     
     /// <summary>
     /// Creates a Device Manager that will deal only with the remote devices another user has uploaded

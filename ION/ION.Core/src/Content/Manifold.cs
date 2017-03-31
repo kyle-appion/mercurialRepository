@@ -322,13 +322,11 @@
 				if (sensorProperty is SecondarySensorProperty) {
 					sensorProperties.Insert(0, sensorProperty);
 					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, 0);
-        	ion.SaveWorkbenchAsync().Wait();
-					
+				
 					return true;
 				} else {
 	        sensorProperties.Add(sensorProperty);
 					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
-        	ion.SaveWorkbenchAsync().Wait();
 					
 					return true;
 				}

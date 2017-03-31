@@ -20,12 +20,13 @@ using ION.IOS.Util;
 using ION.IOS.ViewController.FluidManager;
 using ION.IOS.ViewController.SuperheatSubcool;
 using ION.IOS.ViewController.PressureTemperatureChart;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.Analyzer
 {
 	public class lowHighSensor
 	{
-    public IION ion { get; set; }
+    public IosION ion { get; set; }
     public nfloat cellHeight;
     public UILabel maxReading;
     public double max;
@@ -98,14 +99,13 @@ namespace ION.IOS.ViewController.Analyzer
       get { return __currentSensor; }
       set {if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent -= gaugeUpdating;
+          roc.onSensorPropertyChanged -= DoUpdateRocCell;
           roc = null;
         }
         __currentSensor = value;
         if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
           roc = new RateOfChangeSensorProperty(value);
-          roc.onSensorPropertyChanged -= DoUpdateRocCell;
-          roc.onSensorPropertyChanged += DoUpdateRocCell;
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -196,7 +196,7 @@ namespace ION.IOS.ViewController.Analyzer
       rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
       rocImage = new UIImageView(new CGRect(0, .5 * cellHeight, .2 * tblRect.Width, .5 * cellHeight));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
-      ion = AppState.context;
+      ion = AppState.context as IosION;
       __analyzerviewcontroller = ViewController;
       tUnit = Units.Temperature.FAHRENHEIT;
       pUnit = Units.Pressure.PSIG;
@@ -242,6 +242,9 @@ namespace ION.IOS.ViewController.Analyzer
 		
 		
     private async void DoUpdateRocCell(ISensorProperty property) {
+    	if(!tableSubviews.Contains("Rate")){
+				return;
+			}
     	await Task.Delay(TimeSpan.FromMilliseconds(2));
 			var rocproperty = property as RateOfChangeSensorProperty;
 			
@@ -278,7 +281,7 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="sensor">THE SENSOR THE LOW/HIGH AREA IS MONITORING</param>
     public void gaugeUpdating(Sensor sensor){
-    	Console.WriteLine("lowHighSensor gaugeUpdating called. Sensor name " + manifold.primarySensor.name + " working with fluid " + manifold.ptChart.fluid.name);
+    	//Console.WriteLine("lowHighSensor gaugeUpdating called. Sensor name " + manifold.primarySensor.name + " working with fluid " + manifold.ptChart.fluid.name);
     	
       if (currentSensor.device.isConnected) {
         connectionColor.BackgroundColor = UIColor.Green;
@@ -299,7 +302,7 @@ namespace ION.IOS.ViewController.Analyzer
 
       foreach (string subview in tableSubviews) {
         
-        if (subview.Equals("Maximum")) {       
+        if (subview.Equals("Maximum")) {
 
           if (Convert.ToDouble(LabelMiddle.Text) > max) {
             max = Convert.ToDouble(LabelMiddle.Text);
@@ -311,7 +314,7 @@ namespace ION.IOS.ViewController.Analyzer
             maxReading.Text = max.ToString() + " " + maxType;
           }
         } 
-        if (subview.Equals("Minimum")) {
+        else if (subview.Equals("Minimum")) {
           if (Convert.ToDouble(LabelMiddle.Text) < min) {
             min = Convert.ToDouble(LabelMiddle.Text);
             minType = currentSensor.unit.ToString();
@@ -322,10 +325,10 @@ namespace ION.IOS.ViewController.Analyzer
             minReading.Text = min.ToString() + " " + minType + " ";
           }
         } 
-        if (subview.Equals("Hold")) {          
+        else if (subview.Equals("Hold")) {          
           holdReading.Text = LabelMiddle.Text + " " + LabelBottom.Text + " ";
         }
-        if (subview.Equals("Alternate")) {
+        else if (subview.Equals("Alternate")) {
           
           var tempUnit = alt.unit;
 
@@ -337,14 +340,10 @@ namespace ION.IOS.ViewController.Analyzer
 
           altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
-        if (subview.Equals("Rate")) {
-          
-          //if (roc == null) {
-          //  roc = new RateOfChangeSensorProperty(sensor);
-          //}
-          //DoUpdateRocCell();
-        }
-
+        else if(subview.Equals("Rate")){
+          roc.onSensorPropertyChanged -= DoUpdateRocCell;
+          roc.onSensorPropertyChanged += DoUpdateRocCell;
+				}
       }
     }
     /// <summary>
@@ -355,9 +354,12 @@ namespace ION.IOS.ViewController.Analyzer
       //var manifold = Event.manifold;
       //Console.WriteLine(Event.type);
 			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
+				Console.WriteLine("Adding secondary sensor");
 				var compareSensor = __manifold.secondarySensor;
+				  /////CHECK IF SENSOR IS ON THE ANALYZER ALREADY TO MAKE ASSOCIATION
 					foreach(var slot in sensorList){
 						if(slot.currentSensor != null){
+							////SECONDARY MANIFOLD SENSOR MATCHES THE SENSOR OF A SENSOR MOUNT
 							if(slot.currentSensor == compareSensor){
 					      var window = UIApplication.SharedApplication.KeyWindow;
 					      var vc = window.RootViewController;
@@ -369,8 +371,6 @@ namespace ION.IOS.ViewController.Analyzer
 								Console.WriteLine("Added sensor from location " + location);
 								if(LabelSubview.BackgroundColor == UIColor.Blue && location > 3){
 									Console.WriteLine("blue. Adding sensor from location " + location);
-									__manifold.SetSecondarySensor(null);
-									ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
@@ -378,8 +378,6 @@ namespace ION.IOS.ViewController.Analyzer
 									return;
 								} else if (LabelSubview.BackgroundColor == UIColor.Red && location < 4){
 									Console.WriteLine("red. Adding sensor from location " + location);
-									__manifold.SetSecondarySensor(null);
-									ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null);
 			            UIAlertController noneAvailable;
 			            noneAvailable = UIAlertController.Create(Util.Strings.Analyzer.CANTADD, Util.Strings.Analyzer.SAMESIDE, UIAlertControllerStyle.Alert);
 			            noneAvailable.AddAction(UIAlertAction.Create(Util.Strings.OK, UIAlertActionStyle.Default, (action) => {}));
@@ -393,58 +391,41 @@ namespace ION.IOS.ViewController.Analyzer
 							}
 						}
 					}
-					///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
-					if(LabelSubview.BackgroundColor == UIColor.Blue){
-						Console.WriteLine("lowHighSensor Set low side manifold in Analyzer class");
-						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,__manifold.secondarySensor) ;		
-					} else if (LabelSubview.BackgroundColor == UIColor.Red){
-						Console.WriteLine("lowHighSensor Set high side manifold in Analyzer class");
-						ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,__manifold.secondarySensor);	
+					///SET THE CURRENT ANALYZER MANIFOLD SECONDARY SENSOR TO THE ATTACHED SENSOR FOR REMOTE VIEWING	
+					if(!ion.webServices.downloading){
+						if(LabelSubview.BackgroundColor == UIColor.Blue){
+							if(ion.currentAnalyzer.lowSideManifold == null){
+								Console.WriteLine("lowHighSensor low side manifold was  null when adding a secondary sensor");
+								ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,__manifold.primarySensor,__manifold.ptChart.fluid);
+							}						
+							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(__manifold.secondarySensor);		
+								Console.WriteLine("lowHighSensor set low side secondary sensor to " + __manifold.secondarySensor.name);
+						} else if (LabelSubview.BackgroundColor == UIColor.Red){
+							if(ion.currentAnalyzer.highSideManifold == null){
+							Console.WriteLine("lowHighSensor high side manifold was  null when adding a secondary sensor");
+								ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,__manifold.primarySensor,__manifold.ptChart.fluid);
+							}
+							ion.currentAnalyzer.highSideManifold.SetSecondarySensor(__manifold.secondarySensor);		
+							Console.WriteLine("lowHighSensor set high side secondary sensor to " + __manifold.secondarySensor.name);
+						}
 					}
 					
 			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
-			 var compareSensor = __manifold.secondarySensor;
-				if(currentSensor != compareSensor && attachedSensor != null){
-					foreach(var slot in sensorList){
-						if(slot.currentSensor != null){
-							if(slot.currentSensor == compareSensor){
-								slot.topLabel.BackgroundColor = UIColor.Clear;
-								slot.topLabel.TextColor = UIColor.Black;	
-							}
-							if(slot.currentSensor == currentSensor){    
-								//slot.lowArea.attachedSensor = null;
-								//slot.highArea.attachedSensor = null;
-							}
-						} else if (slot.manualSensor != null){
-							if(slot.manualSensor == compareSensor){
-								slot.topLabel.BackgroundColor = UIColor.Clear;
-								slot.topLabel.TextColor = UIColor.Black;	
-							}
-							if(__manualSensor != null && slot.manualSensor == __manualSensor){
-								//slot.lowArea.attachedSensor = null;
-								//slot.highArea.attachedSensor = null;
-							}
-						}
-					}
+			
+				if(attachedSensor != null){
+					attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+					attachedSensor.topLabel.TextColor = UIColor.Gray;
+					attachedSensor = null;
 				}
 				///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
 				if(LabelSubview.BackgroundColor == UIColor.Blue){
 					Console.WriteLine("lowHighSensor Remove low side manifold in Analyzer class");
-					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null) ;
-					attachedSensor = null;
+					ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(null);
+					
 				} else if (LabelSubview.BackgroundColor == UIColor.Red){
 					Console.WriteLine("lowHighSensor Remove high side manifold in Analyzer class");
-					ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null);
-					attachedSensor = null;
+					ion.currentAnalyzer.highSideManifold.SetSecondarySensor(null);
 				}				
-			}
-			foreach(var slot in sensorList){
-				if(manifold.secondarySensor!=null)
-					if(slot.manualSensor != null && slot.manualSensor == manifold.secondarySensor){											
-						slot.middleLabel.Text = manifold.secondarySensor.measurement.amount.ToString("N");
-						slot.bottomLabel.Text = manifold.secondarySensor.unit.ToString();
-						break;
-				}
 			}
 			
 			subviewTable.ReloadData();
@@ -540,15 +521,15 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void updatePTCell(Manifold manifold){
-    	if(LabelSubview.BackgroundColor == UIColor.Blue){    
-				if(ion.currentAnalyzer.lowFluid != null && ion.currentAnalyzer.lowFluid != manifold.ptChart.fluid){
-					manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.lowFluid);
-				}
-			} else {
-				if(ion.currentAnalyzer.highFluid != null && ion.currentAnalyzer.highFluid != manifold.ptChart.fluid){
-					manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.highFluid);
-				}
-			}
+   // 	if(LabelSubview.BackgroundColor == UIColor.Blue){
+			//	if(ion.currentAnalyzer.lowFluid != null && ion.currentAnalyzer.lowFluid != manifold.ptChart.fluid){
+			//		manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.lowFluid);
+			//	}
+			//} else {
+			//	if(ion.currentAnalyzer.highFluid != null && ion.currentAnalyzer.highFluid != manifold.ptChart.fluid){
+			//		manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.highFluid);
+			//	}
+			//}
     
       if (manifold.primarySensor.type == ESensorType.Pressure && manifold.ptChart != null) {
         ptFluidType.Text = manifold.ptChart.fluid.name;
