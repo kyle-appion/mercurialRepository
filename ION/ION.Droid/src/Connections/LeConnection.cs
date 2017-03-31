@@ -150,7 +150,7 @@
 			connectionState = EConnectionState.Disconnected;
 			connectionTimeout = DEFAULT_TIMEOUT;
 			lastSeen = DateTime.FromFileTimeUtc(0);
-			handler = new Handler(this);
+			handler = new Handler(Looper.MainLooper, this);
 			reconnectAttempts = 0;
 		}
 

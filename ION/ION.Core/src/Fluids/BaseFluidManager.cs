@@ -210,7 +210,7 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
           if (!reference.IsAlive) {
             Log.D(this, "But it was garbage collected so removing key");
             __cache.Remove(fluidName);
-          } else {          
+          } else {
             ret = reference.Target as Fluid;
           }
         }
@@ -221,7 +221,6 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
           ret.color = GetFluidColor(ret.name);
           ret.safety = GetFluidSafety(ret.name);
           __cache.Add(fluidName, new WeakReference(ret));
-          //return ret;
           return ret;
         } else {
           return ret;
@@ -236,7 +235,7 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
 
     // Overridden from IFluidManager
     public int GetFluidColor(string fluidName) {
-      var rawColor = fluidColors[fluidName.ToLower()];  
+      var rawColor = fluidColors[fluidName.ToLower()];
       if (rawColor == null) {
         return DEFAULT_FLUID_COLOR;
       } else {

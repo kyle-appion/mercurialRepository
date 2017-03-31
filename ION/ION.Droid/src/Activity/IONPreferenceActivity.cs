@@ -28,10 +28,7 @@
     /// Queries the current running ion instance.
     /// </summary>
     /// <value>The ion.</value>
-    public AndroidION ion {
-      get {
-        return AppState.context as AndroidION;
-      }
+		public BaseAndroidION ion { get { return AppState.context as BaseAndroidION; }
     }
     /// <summary>
     /// The cache that will store bitmaps.

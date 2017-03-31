@@ -82,10 +82,10 @@
   <item name="record" type="id"/>
   <item name="refresh" type="id"/>
   <item name="reenable" type="id"/>
-  <item name="right" type="id"/>
   <item name="register" type="id"/>
 	<item name="remove" type="id"/>
 	<item name="reset" type="id"/>
+  <item name="right" type="id"/>
   <item name="save" type="id"/>
   <item name="scan" type="id"/>
   <item name="screenshot" type="id"/>

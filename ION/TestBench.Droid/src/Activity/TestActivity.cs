@@ -44,7 +44,7 @@
 			ActionBar.SetHomeButtonEnabled(true);
 
 			SetContentView(Resource.Layout.activity_test);
-			handler = new Handler();
+			handler = new Handler(Looper.MainLooper);
 
 			state = FindViewById<TextView>(Resource.Id.state);
 			startTest = FindViewById<Button>(Resource.Id.startTest);

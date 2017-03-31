@@ -15,7 +15,7 @@
   /// <summary>
   /// The manager that will allow easy interactions with how devices will log there data.
   /// </summary>
-  public class DataLogManager : IIONManager {
+  public class DataLogManager : IManager {
 
     public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 

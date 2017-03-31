@@ -164,6 +164,8 @@
 
       __knownDevices.Clear();
       __foundDevices.Clear();
+
+			onDeviceManagerEvent = null;
     }
 
     // Overridden from IDeviceManager
@@ -232,12 +234,17 @@
     /// <returns>The device.</returns>
     /// <param name="device">Device.</param>
     public async Task<bool> SaveDevice(IDevice device) {
-			Register(device);
-      Log.D(this, "Attempting to save device");
-      var d = await ion.database.DeconstructDevice(device);
-      var ret = await ion.database.SaveAsync<DeviceRow>(d);
-      Log.D(this, "Save device with id: " + d.DID);
-      return ret;
+			try {
+				Register(device);
+	      Log.D(this, "Attempting to save device");
+	      var d = await ion.database.DeconstructDevice(device);
+	      var ret = await ion.database.SaveAsync<DeviceRow>(d);
+	      Log.D(this, "Save device with id: " + d.DID);
+	      return ret;
+			} catch (Exception e) {
+				Log.E(this, "Failed to save device {" + device + "}", e);
+				return false;
+			}
     }
 
     // Overridden from IDeviceManager
@@ -389,6 +396,10 @@
             await SaveDevice(device);
           }
           break;
+
+				case DeviceEvent.EType.NameChanged:
+					await SaveDevice(deviceEvent.device);
+					break;
       }
 
       NotifyOfDeviceEvent(deviceEvent);

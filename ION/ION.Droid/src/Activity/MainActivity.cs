@@ -1,5 +1,4 @@
-﻿using ION.Droid.Preferences;
-namespace ION.Droid.Activity {
+﻿namespace ION.Droid.Activity {
   
   using System;
   using System.Threading.Tasks;
@@ -17,22 +16,29 @@ namespace ION.Droid.Activity {
 
   using ION.Droid.App;
   using ION.Droid.Dialog;
-	using ION.Droid.Util;
 
   /// <summary>
   /// The activity that is responsible for launching the ION app state.
   /// </summary>
   [Activity(Label = "@string/app_name", MainLauncher=true, Icon="@drawable/ic_logo_appiondefault", ScreenOrientation=ScreenOrientation.Portrait)]
-	public class MainActivity : IONActivity {    
+	public class MainActivity : Activity, IServiceConnection {
+
+		/// <summary>
+		/// The request code that is used to request the location permissions from the user.
+		/// </summary>
+		private const int REQUEST_LOCATION_PERMISSIONS = 1;
 
     /// <summary>
     /// The minimum time to wait for the ION context to init.
     /// </summary>
-    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(5);     
+    private static readonly TimeSpan WAIT_TIME = TimeSpan.FromSeconds(5);
+
+		private AppService service;
 
     // Overridden from Activity
 		protected override void OnCreate (Bundle bundle) {
 			base.OnCreate (bundle);
+			Log.D(this, new AndroidPlatformInfo(this).ToString());
       SetContentView(Resource.Layout.activity_main);
       Log.printer = new LogPrinter();
 
@@ -56,6 +62,17 @@ namespace ION.Droid.Activity {
 					base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 					break;
 			}
+		}
+
+		// Implemented from IServiceConnection
+		public void OnServiceConnected(ComponentName name, IBinder service) {
+			var binder = service as AppService.AppBinder;
+			this.service = binder.service;
+		}
+
+		// Implemented from IServiceConnection
+		public void OnServiceDisconnected(ComponentName name) {
+			service = null;
 		}
 
     /// <summary>
@@ -109,13 +126,15 @@ namespace ION.Droid.Activity {
     /// </summary>
     private async Task InitApplication() {
       if (AppState.context == null) {
-        StartService(new Intent(this, typeof(AndroidION)));
+        StartService(new Intent(this, typeof(AppService)));
+				await Task.Delay(TimeSpan.FromMilliseconds(500));
+				BindService(new Intent(this, typeof(AppService)), this, 0);
       }
 
       var success = false;
 
       var start = DateTime.Now;
-      while (AppState.context == null || !(AppState.context as AndroidION).initialized) {
+      while (service == null) {
         if (DateTime.Now - start > WAIT_TIME) {
           success = false;
           break;
@@ -124,7 +143,16 @@ namespace ION.Droid.Activity {
         await Task.Delay(50);
       }
 
-      success = true;
+			if (service != null) {
+				try {
+					success = await service.InitLocalION();
+				} catch (Exception e) {
+					Log.E(this, "Failed to initialize local ion", e);
+					success = false;
+				}
+			} else {
+				success = false;
+			}
 
       if (!success) {
 				string msg = GetString(Resource.String.app_error_failed_to_start_msg);
@@ -134,6 +162,7 @@ namespace ION.Droid.Activity {
         adb.SetMessage(msg);
 
         adb.SetNegativeButton(Android.Resource.String.Cancel, (obj, args) => {
+					StopService(new Intent(this, typeof(AppService)));
           Finish();
         });
 

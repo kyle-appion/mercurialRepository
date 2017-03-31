@@ -1,8 +1,9 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.Core.App {
 
-namespace ION.Core.App {
-  public interface IIONManager : IDisposable {
+	using System;
+	using System.Threading.Tasks;
+
+  public interface IManager : IDisposable {
     /// <summary>
     /// Whether or not the manager is initialized.
     /// </summary>

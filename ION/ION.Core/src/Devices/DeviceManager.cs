@@ -72,7 +72,7 @@
   /// A DeviceManager is a construct that is supposed to manage the lifecycle 
   /// and access of devices within the ION application.
   /// </summary>
-  public interface IDeviceManager : IIONManager {
+  public interface IDeviceManager : IManager {
     /// <summary>
     /// An event handler that will be notified when a device manager or device event is thrown.
     /// </summary>
