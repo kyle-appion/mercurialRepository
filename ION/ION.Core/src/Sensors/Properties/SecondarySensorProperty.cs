@@ -34,7 +34,7 @@
 		/// <value><c>true</c> if has secondary sensor; otherwise, <c>false</c>.</value>
 		public bool hasSecondarySensor { get { return manifold.secondarySensor != null; } }
 
-    public SecondarySensorProperty(Manifold manifold): base(manifold.primarySensor) {
+    public SecondarySensorProperty(Manifold manifold): base(manifold) {
 			this.manifold = manifold;
 			manifold.onManifoldEvent += ManifoldEventListener;
     }

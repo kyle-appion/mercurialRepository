@@ -3,6 +3,9 @@
 	using System;
 
 	using Appion.Commons.Measure;
+
+	using ION.Core.Content;
+
   /// <summary>
   /// The timer sensor property is a sensor property who will maintain an aggragated time.
   /// The timer is wholly used by calling three methods: Start, Stop and Reset.
@@ -48,7 +51,11 @@
 
     private DateTime startTime { get; set; }
 
-    public TimerSensorProperty(Sensor sensor) : base(sensor) {
+		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		public TimerSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		}
+
+    public TimerSensorProperty(Manifold manifold) : base(manifold) {
     }
 
     // Overridden from AbstractSensorProperty
