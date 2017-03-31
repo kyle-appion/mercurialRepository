@@ -130,19 +130,19 @@
 				return new SuperheatSubcoolSensorProperty(manifold);
 
 				case CODE_SP_MIN:
-				return new MinSensorProperty(manifold.primarySensor);
+				return new MinSensorProperty(manifold);
 
 				case CODE_SP_MAX:
-				return new MaxSensorProperty(manifold.primarySensor);
+				return new MaxSensorProperty(manifold);
 
 				case CODE_SP_HOLD:
-				return new HoldSensorProperty(manifold.primarySensor);
+				return new HoldSensorProperty(manifold);
 
 				case CODE_SP_ROC:
-				return new RateOfChangeSensorProperty(manifold.primarySensor);
+				return new RateOfChangeSensorProperty(manifold);
 
 				case CODE_SP_TIMER:
-				return new TimerSensorProperty(manifold.primarySensor);
+				return new TimerSensorProperty(manifold);
 
 				case CODE_SP_SECONDARY:
 				return new SecondarySensorProperty(manifold);

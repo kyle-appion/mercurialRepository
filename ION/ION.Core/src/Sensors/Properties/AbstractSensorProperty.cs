@@ -2,6 +2,8 @@
 
 	using Appion.Commons.Measure;
 
+	using ION.Core.Content;
+
   /// <summary>
   /// A common implementation of a sensor property that will allow for quick
   /// implementation for a sensor property and provides common utility methods.
@@ -12,13 +14,6 @@
   /// you wish to react to changes within the property sensor, simply resolve
   /// them in modifiedMeasurement.set.
   /// </remarks>
-/*
-  [DataContract(Name="AbstractSensorProperty")]
-  [KnownType(typeof(AlternateUnitSensorProperty))]
-  [KnownType(typeof(HoldSensorProperty))]
-  [KnownType(typeof(MinSensorProperty))]
-  [KnownType(typeof(MaxSensorProperty))]
-*/
   public abstract class AbstractSensorProperty : ISensorProperty {
     // Overridden from ISensorProperty
     public event OnSensorPropertyChanged onSensorPropertyChanged;
@@ -73,8 +68,8 @@
       // Nope
     }
 
-    public AbstractSensorProperty(Sensor sensor) {
-      this.sensor = sensor;
+    public AbstractSensorProperty(Manifold manifold) {
+      this.sensor = manifold.primarySensor;
       Reset();
     }
 

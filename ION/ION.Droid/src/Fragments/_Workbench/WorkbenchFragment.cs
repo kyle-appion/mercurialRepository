@@ -135,7 +135,6 @@
 		public override void OnPause() {
 			base.OnPause();
 
-			adapter.Dispose();
 			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
@@ -147,6 +146,9 @@
       if (workbench != null) {
         workbench.onWorkbenchEvent -= OnWorkbenchEvent;
       }
+			if (adapter != null) {
+				adapter.Dispose();
+			}
     }
 
 		// Overridden from Fragment
@@ -387,37 +389,37 @@
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_alt, Resource.String.workbench_alt_abrv), () => {
-          manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));
+					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_min, Resource.String.workbench_min_abrv), () => {
-          manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new MinSensorProperty(manifold));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_max, Resource.String.workbench_max_abrv), () => {
-          manifold.AddSensorProperty(new MaxSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new MaxSensorProperty(manifold));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_hold, Resource.String.workbench_hold_abrv), () => {
-          manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new HoldSensorProperty(manifold));
         });
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_timer, Resource.String.workbench_timer_abrv), () => {
-          manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
+          manifold.AddSensorProperty(new TimerSensorProperty(manifold));
         });
       }
 
@@ -453,27 +455,27 @@
 			}
 
       if (!manifold.HasSensorPropertyOfType(typeof(AlternateUnitSensorProperty))) {
-        manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold.primarySensor));
+        manifold.AddSensorProperty(new AlternateUnitSensorProperty(manifold));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-				manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold.primarySensor));;
+				manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));;
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-        manifold.AddSensorProperty(new MinSensorProperty(manifold.primarySensor));
+        manifold.AddSensorProperty(new MinSensorProperty(manifold));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        manifold.AddSensorProperty(new MaxSensorProperty(manifold.primarySensor));
+        manifold.AddSensorProperty(new MaxSensorProperty(manifold));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
-        manifold.AddSensorProperty(new HoldSensorProperty(manifold.primarySensor));
+        manifold.AddSensorProperty(new HoldSensorProperty(manifold));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
-        manifold.AddSensorProperty(new TimerSensorProperty(manifold.primarySensor));
+        manifold.AddSensorProperty(new TimerSensorProperty(manifold));
       }
 
       if (ESensorType.Pressure == manifold.primarySensor.type || ESensorType.Temperature == manifold.primarySensor.type) {

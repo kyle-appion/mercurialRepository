@@ -226,6 +226,12 @@
       }
     } Manifold __highSideManifold;
 
+		/// <summary>
+		/// This array maintains the history of sensor swaps. This is necessary only for iOS remote viewing.
+		/// </summary>
+		[Obsolete("This array is used as patchwork to bind the iOS and Android remote analyzer comms together.")]
+		public int[] __legacySwaps;
+
 
     /// <summary>
     /// The ion context.
@@ -281,6 +287,10 @@
       this.ion = ion;
       this.sensorsPerSide = sensorsPerSide;
       sensors = new Sensor[sensorsPerSide * 2];
+			this.__legacySwaps = new int[sensors.Length];
+			for (int i = 0; i < __legacySwaps.Length; i++) {
+				__legacySwaps[i] = i + 1;
+			}
       sensorList = new List<Sensor>();
 			isEditable = true;
     }
@@ -791,6 +801,10 @@
 
         sensors[first] = s;
         sensors[second] = f;
+
+				var t = __legacySwaps[first];
+				__legacySwaps[first] = __legacySwaps[second];
+				__legacySwaps[second] = t;
 
         NotifyOfAnalyzerEvent(new AnalyzerEvent(first, second));
       };

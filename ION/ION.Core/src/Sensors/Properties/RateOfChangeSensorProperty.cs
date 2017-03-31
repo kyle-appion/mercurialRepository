@@ -42,10 +42,14 @@
 		/// </summary>
 		private DateTime lastRecord;
 
-		public RateOfChangeSensorProperty(Sensor sensor) : this(sensor, GRAPH_WINDOW, GRAPH_INTERVAL) {
+		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+		public RateOfChangeSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
 		}
 
-		private RateOfChangeSensorProperty(Sensor sensor, TimeSpan window, TimeSpan interval) : base(sensor) {
+		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
+		}
+
+		private RateOfChangeSensorProperty(Manifold manifold, TimeSpan window, TimeSpan interval) : base(manifold) {
 			this.window = window;
 			this.interval = interval;
 			buffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
