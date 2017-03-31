@@ -11,7 +11,7 @@
   /// <summary>
   /// A manager that will abstract a platforms location interfaces.
   /// </summary>
-  public interface ILocationManager : IIONManager {
+  public interface ILocationManager : IManager {
     /// <summary>
     /// The event that will be notified when the location manager's location changes.
     /// </summary>
@@ -58,9 +58,9 @@
     void StopAutomaticLocationPolling();
     
     /// <summary>
-    /// Sets the location from a remote device.
+		/// Attempts to set the location of the location manager. If the set failes, we will return false.
     /// </summary>
-    void setLocationRemote(double remoteAltitude);
+    bool AttemptSetLocation(Scalar remoteAltitude);
 
     /// <summary>
     /// Queries the address of the given location.

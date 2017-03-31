@@ -2,11 +2,8 @@
 
   using System;
 
-  using Android.Content;
   using Android.Media;
-  using Android.OS;
 
-	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
   using ION.Core.Alarms;
@@ -16,14 +13,14 @@
 
   public class ToneAlarmAlert : AbstractAlarmAlert {
 
-    private AndroidION ion;
+		private BaseAndroidION ion;
     private MediaPlayer mp;
     private Android.Net.Uri uri;
 
-    public ToneAlarmAlert(IAlarm alarm, AndroidION ion) : this(alarm, ion, RingtoneManager.GetDefaultUri(RingtoneType.Alarm)) {
+		public ToneAlarmAlert(IAlarm alarm, BaseAndroidION ion) : this(alarm, ion, RingtoneManager.GetDefaultUri(RingtoneType.Alarm)) {
     }
 
-    public ToneAlarmAlert(IAlarm alarm, AndroidION ion, Android.Net.Uri uri) : base(alarm) {
+		public ToneAlarmAlert(IAlarm alarm, BaseAndroidION ion, Android.Net.Uri uri) : base(alarm) {
       this.ion = ion;
       this.uri = uri;
     }
@@ -38,7 +35,7 @@
 
       try {
         mp = new MediaPlayer();
-        mp.SetDataSource(ion, uri);
+        mp.SetDataSource(ion.context, uri);
         mp.SetAudioStreamType(Stream.Alarm);
         mp.Looping = true;
         mp.SetVolume(1.0f, 1.0f);

@@ -436,9 +436,6 @@
 
       try {
         var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
-
-        Log.D(this, "Asserting the acquisition of the unit: " + ret);
-
         return ret;
       } catch (Exception e) {
         Log.E(this, "Failed to retrieve unit for key: " + key, e);

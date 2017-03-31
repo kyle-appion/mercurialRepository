@@ -11,7 +11,7 @@ namespace ION.Core.Alarms {
   /// </summary>
   public delegate IAlarmAlert AlarmAlertFactoryDelegate(IAlarmManager alarmManager, IAlarm alarm);
 
-  public interface IAlarmManager : IIONManager {
+  public interface IAlarmManager : IManager {
     /// <summary>
     /// The factory that will create alarm alerts for alarms that do not
     /// have a custom alert set.

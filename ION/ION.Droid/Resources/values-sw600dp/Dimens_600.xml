@@ -141,7 +141,7 @@ This directory is used to contain older 7 inch tablet sized dimensions. So far t
 	<!-- The height of the banner in the Portal login page. -->
 	<dimen name="portal_landing_button_width">250dp</dimen>
 	<dimen name="portal_landing_button_height">100dp</dimen>
-	<dimen name="portal_landing_text_size">35sp</dimen>
+	<dimen name="portal_landing_text_size">25sp</dimen>
 	<dimen name="portal_title_text">50sp</dimen>
 	<dimen name="portal_icon_size">48dp</dimen>
 

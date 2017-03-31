@@ -18,22 +18,22 @@
     /// <returns>The type string.</returns>
     /// <param name="sensorType">Sensor type.</param>
     public static string GetTypeString(this ESensorType sensorType) {
-      var ion = (AndroidION)AppState.context;
+			var ion = (BaseAndroidION)AppState.context;
       switch (sensorType) {
         case ESensorType.Humidity:
-          return ion.GetString(Resource.String.humidity);
+          return ion.context.GetString(Resource.String.humidity);
         case ESensorType.Length:
-          return ion.GetString(Resource.String.length);
+          return ion.context.GetString(Resource.String.length);
         case ESensorType.Weight:
-          return ion.GetString(Resource.String.weight);
+          return ion.context.GetString(Resource.String.weight);
         case ESensorType.Pressure:
-          return ion.GetString(Resource.String.pressure);
+          return ion.context.GetString(Resource.String.pressure);
         case ESensorType.Temperature:
-          return ion.GetString(Resource.String.temperature);
+          return ion.context.GetString(Resource.String.temperature);
         case ESensorType.Vacuum:
-          return ion.GetString(Resource.String.vacuum);
+          return ion.context.GetString(Resource.String.vacuum);
         default:
-          return ion.GetString(Resource.String.unknown);
+          return ion.context.GetString(Resource.String.unknown);
       }
     }
 
@@ -43,22 +43,22 @@
 		/// <returns>The type abreviation string.</returns>
 		/// <param name="sensorType">Sensor type.</param>
 		public static string GetTypeAbreviationString(this ESensorType sensorType) {
-			var ion = (AndroidION)AppState.context;
+			var ion = (BaseAndroidION)AppState.context;
 			switch (sensorType) {
 				case ESensorType.Humidity:
-					return ion.GetString(Resource.String.humidity_short);
+					return ion.context.GetString(Resource.String.humidity_short);
 				case ESensorType.Length:
-					return ion.GetString(Resource.String.length_short);
+					return ion.context.GetString(Resource.String.length_short);
 				case ESensorType.Weight:
-					return ion.GetString(Resource.String.weight_short);
+					return ion.context.GetString(Resource.String.weight_short);
 				case ESensorType.Pressure:
-					return ion.GetString(Resource.String.pressure_short);
+					return ion.context.GetString(Resource.String.pressure_short);
 				case ESensorType.Temperature:
-					return ion.GetString(Resource.String.temperature_short);
+					return ion.context.GetString(Resource.String.temperature_short);
 				case ESensorType.Vacuum:
-					return ion.GetString(Resource.String.vacuum_short);
+					return ion.context.GetString(Resource.String.vacuum_short);
 				default:
-					return ion.GetString(Resource.String.unknown);
+					return ion.context.GetString(Resource.String.unknown);
 			}
 		}
 

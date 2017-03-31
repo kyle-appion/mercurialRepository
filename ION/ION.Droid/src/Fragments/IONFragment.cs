@@ -27,7 +27,7 @@
     /// The ion context for the fragment.
     /// </summary>
     /// <value>The ion.</value>
-		public AndroidION ion { get { return (AndroidION)AppState.context; } }
+		public BaseAndroidION ion { get { return (BaseAndroidION)AppState.context; } }
 
     /// <summary>
     /// The bitmap cache that will store common bitmaps.
@@ -67,6 +67,7 @@
 
 		public override void OnResume() {
 			base.OnResume();
+			Activity.InvalidateOptionsMenu();
 		}
 
     /// <Docs>The options menu in which you place your items.</Docs>
@@ -76,6 +77,10 @@
     /// </summary>
     /// <param name="menu">Menu.</param>
     public override void OnCreateOptionsMenu(IMenu menu, MenuInflater inflater) {
+			if (ion is RemoteION) {
+				return;
+			}
+
 			inflater.Inflate(Resource.Menu.record, menu);
       inflater.Inflate(Resource.Menu.screenshot, menu);
 
@@ -100,6 +105,10 @@
     /// </summary>
     /// <param name="menu">Menu.</param>
     public override void OnPrepareOptionsMenu(IMenu menu) {
+			if (ion is RemoteION) {
+				return;
+			}
+
       base.OnPrepareOptionsMenu(menu);
 
       menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));

@@ -40,7 +40,7 @@
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
 
-			handler = new Handler();
+			handler = new Handler(Looper.MainLooper);
 
 			// Set our view from the "main" layout resource
 			SetContentView(Resource.Layout.activity_device_selector);
