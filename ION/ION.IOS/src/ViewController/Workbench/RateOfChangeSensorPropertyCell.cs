@@ -65,7 +65,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     private async void DoUpdateCell() {
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
-			var roc = sp.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var roc = sp.GetPrimaryPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
 			var abs = Math.Abs(roc.amount);
       var range = (sp.sensor.maxMeasurement - sp.sensor.minMeasurement) / 10;
 

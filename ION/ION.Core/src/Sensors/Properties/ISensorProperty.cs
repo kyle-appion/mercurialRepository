@@ -4,6 +4,8 @@
 
 	using Appion.Commons.Measure;
 
+	using ION.Core.Content;
+
   /// <summary>
   /// The delegate that is called when the SensorProperty state or content changes.
   /// </summary>
@@ -19,6 +21,11 @@
     /// The event that will be notified when the sensor property changes.
     /// </summary>
     event OnSensorPropertyChanged onSensorPropertyChanged;
+
+		/// <summary>
+		/// The manifold that is driving the sensor property.
+		/// </summary>
+		Manifold manifold { get; }
 
     /// <summary>
     /// The sensor that the property applies to.

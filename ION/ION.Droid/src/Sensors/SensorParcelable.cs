@@ -1,7 +1,5 @@
 ﻿namespace ION.Droid.Sensors {
 
-  using System;
-
   using Android.OS;
 
   using Java.Interop;
@@ -9,8 +7,6 @@
   using ION.Core.App;
   using ION.Core.Devices;
   using ION.Core.Sensors;
-
-  using ION.Droid.Util;
 
   /// <summary>
   /// An android specific construct that will allow a sensor to traverse the activity boundary.

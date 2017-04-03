@@ -315,6 +315,8 @@
     <Compile Include="src\Activity\Portal\PortalRemoteViewingAdapter.cs" />
     <Compile Include="src\Activity\Portal\PortalRemoteViewingManagerActivity.cs" />
     <Compile Include="src\Fragments\_Workbench\SpaceViewHolder.cs" />
+    <Compile Include="src\Activity\RoCActivity.cs" />
+    <Compile Include="src\Content\ManifoldParcelable.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -748,6 +750,7 @@
     <AndroidResource Include="Resources\layout\fragment_edit_job_4_4.axml" />
     <AndroidResource Include="Resources\layout\activity_screenshot_4_4.axml" />
     <AndroidResource Include="Resources\layout\subview_graph_small.axml" />
+    <AndroidResource Include="Resources\layout\activity_roc.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -788,6 +791,7 @@
     <Folder Include="src\Fragments\_Analyzer\" />
     <Folder Include="src\Net\" />
     <Folder Include="src\Net\Portal\" />
+    <Folder Include="src\Content\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
