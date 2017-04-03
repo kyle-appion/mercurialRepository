@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_padding">
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/text_size_title"
+        android:text="@string/settings" />
+    <FrameLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+        <OxyPlot.Xamarin.Android.PlotView
+            android:id="@id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/padding" />
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:id="@id/_1">
+            <ImageView
+                android:id="@id/icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_line_chart"
+                android:scaleType="fitCenter"
+                android:tint="@color/red" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <CheckBox
+                android:id="@id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="US PRIMARY" />
+        </TableRow>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/padding" />
+        <TableRow
+            android:id="@id/_2">
+            <ImageView
+                android:id="@id/icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_line_chart"
+                android:scaleType="fitCenter"
+                android:tint="@color/blue" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <CheckBox
+                android:id="@id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="US SECONDARY" />
+        </TableRow>
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/padding" />
+        <TableRow
+            android:id="@id/_3">
+            <ImageView
+                android:id="@id/icon"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_line_chart"
+                android:scaleType="fitCenter"
+                android:tint="@color/green" />
+            <Space
+                android:layout_width="@dimen/padding"
+                android:layout_height="wrap_content" />
+            <CheckBox
+                android:id="@id/checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="US TERTIARY" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>

@@ -245,7 +245,7 @@ namespace ION.IOS.ViewController.Analyzer
     	await Task.Delay(TimeSpan.FromMilliseconds(2));
 			var rocproperty = property as RateOfChangeSensorProperty;
 
-			var roc = rocproperty.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var roc = rocproperty.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
 			var abs = Math.Abs(roc.amount);
       var range = (rocproperty.sensor.maxMeasurement - rocproperty.sensor.minMeasurement) / 10;
 			Console.WriteLine("Updating rate of change subview. meas: " + roc + " abs: " + abs + " range: " + range);

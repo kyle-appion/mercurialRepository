@@ -114,7 +114,7 @@ namespace ION.Droid.Fragments._Workbench {
 
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
-			var roc = record.sp.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var roc = record.sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
 			var amount = Math.Abs(roc.amount);
 			if (amount == 0) {
 				measurement.Text = c.GetString(Resource.String.stable);
@@ -142,42 +142,23 @@ namespace ION.Droid.Fragments._Workbench {
 			}
 
 
-			var minMax = FindGraphRange();
-			double diff = (minMax.Item2 - minMax.Item1) / 10;
+			var primaryMinMax = record.sp.GetPrimaryMinMax();
+			double diff = primaryMinMax.diff / 10;
 			if (diff == 0) {
 				diff = 1;
 			}
-			yAxis.Minimum = minMax.Item1 - diff;
-			yAxis.Maximum = minMax.Item2 + diff;
+			yAxis.Minimum = primaryMinMax.min.amount - diff;
+			yAxis.Maximum = primaryMinMax.max.amount + diff;
 
 
 			mainSeries.Points.Clear();
-			var buffer = record.sp.points;
-			foreach (var pp in buffer) {
-				var t = record.sp.window - (buffer[0].date - pp.date);
+			var primaryBuffer = record.sp.primarySensorPoints;
+			foreach (var pp in primaryBuffer) {
+				var t = record.sp.window - (primaryBuffer[0].date - pp.date);
 				mainSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
-			Appion.Commons.Util.Log.D(this, "" + (record.sp.window - (buffer[0].date - buffer[buffer.Length - 1].date)));
 			plot.InvalidatePlot();
 			model.ResetAllAxes();
-		}
-
-		/// <summary>
-		/// Returns the minimum and maximum values for the rate of change graph.
-		/// </summary>
-		/// <returns>The tuple contains the min and max as items 0, 1 respectively.</returns>
-		private Tuple<double, double> FindGraphRange() {
-			var points = record.sp.points;
-			double min = double.MaxValue, max = double.MinValue;
-			foreach (var dp in points) {
-				if (dp.measurement < min) {
-					min = dp.measurement;
-				}
-				if (dp.measurement > max) {
-					max = dp.measurement;
-				}
-			}
-			return new Tuple<double, double>(min, max);
 		}
 
 		private void HandleMessage(Message msg) {

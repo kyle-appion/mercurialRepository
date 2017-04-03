@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Fragments._Workbench {
+﻿using ION.Droid.Content;
+namespace ION.Droid.Fragments._Workbench {
 
   using System;
 
@@ -232,6 +233,10 @@
 				} else {
 					StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
 				}
+			} else if (sensorProperty is RateOfChangeSensorProperty) {
+				var i = new Intent(Activity, typeof(RoCActivity));
+				i.PutExtra(RoCActivity.EXTRA_MANIFOLD, new WorkbenchManifoldParcelable(workbench.IndexOf(manifold)));
+				StartActivity(i);
 			}
 		}
 

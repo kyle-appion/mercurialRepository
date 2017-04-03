@@ -112,24 +112,37 @@
 
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
+			InvalidatePrimary();
+
+			plot.InvalidatePlot();
+			model.ResetAllAxes();
+		}
+
+		private void InvalidatePrimary() {
+/*
+			var c = ItemView.Context;
+
 			var roc = record.sp.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-			var amount = Math.Abs(roc.amount);
+			var u = record.sp.manifold.primarySensor.unit;
+			var su = u.standardUnit;
+
+			var amount = Math.Abs(roc);
 			if (amount == 0) {
 				measurement.Text = c.GetString(Resource.String.stable);
 				unit.Visibility = ViewStates.Invisible;
 			} else {
 				var dmax = record.sp.sensor.maxMeasurement.amount / 10;
 				if (amount > dmax) {
-					measurement.Text = "> " + SensorUtils.ToFormattedString(roc.unit.OfScalar(dmax));
+					measurement.Text = "> " + SensorUtils.ToFormattedString(su.OfScalar(dmax).ConvertTo(u));
 				} else {
-					measurement.Text = SensorUtils.ToFormattedString(roc.unit.OfScalar(amount));
+					measurement.Text = SensorUtils.ToFormattedString(su.OfScalar(roc).ConvertTo(u));
 				}
 				unit.Visibility = ViewStates.Visible;
 				unit.Text = c.GetString(Resource.String.time_minute_abrv);
 			}
 
-			var dir = Math.Sign(roc.amount);
-			if (roc.amount == 0) {
+			var dir = Math.Sign(roc);
+			if (roc == 0) {
 				icon.Visibility = ViewStates.Invisible;
 			} else if (dir == 1) {
 				icon.Visibility = ViewStates.Visible;
@@ -140,7 +153,7 @@
 			}
 
 
-			var minMax = FindGraphRange();
+			var minMax = record.sp.primary.minMax;
 			double diff = (minMax.Item2 - minMax.Item1) / 10;
 			if (diff == 0) {
 				diff = 1;
@@ -150,32 +163,12 @@
 
 
 			mainSeries.Points.Clear();
-			var buffer = record.sp.points;
+			var buffer = record.sp.primary.points;
 			foreach (var pp in buffer) {
 				var t = record.sp.window - (buffer[0].date - pp.date);
 				mainSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
-			Appion.Commons.Util.Log.D(this, "" + (record.sp.window - (buffer[0].date - buffer[buffer.Length - 1].date)));
-			plot.InvalidatePlot();
-			model.ResetAllAxes();
-		}
-
-		/// <summary>
-		/// Returns the minimum and maximum values for the rate of change graph.
-		/// </summary>
-		/// <returns>The tuple contains the min and max as items 0, 1 respectively.</returns>
-		private Tuple<double, double> FindGraphRange() {
-			var points = record.sp.points;
-			double min = double.MaxValue, max = double.MinValue;
-			foreach (var dp in points) {
-				if (dp.measurement < min) {
-					min = dp.measurement;
-				}
-				if (dp.measurement > max) {
-					max = dp.measurement;
-				}
-			}
-			return new Tuple<double, double>(min, max);
+*/
 		}
 
 		private void HandleMessage(Message msg) {
