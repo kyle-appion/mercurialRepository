@@ -57,6 +57,7 @@
 
       // make the window visible
       Window.MakeKeyAndVisible();
+			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
       
       var preWalkthrough = NSUserDefaults.StandardUserDefaults.StringForKey("walkthrough_complete");
       

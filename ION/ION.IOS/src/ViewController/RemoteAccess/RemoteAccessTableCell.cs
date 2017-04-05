@@ -25,6 +25,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public void makeCellData(double cellWidth,double cellHeight, accessData user){
 			ion = AppState.context as IosION;
 			webServices = ion.webServices;
+			
+			var currentlyViewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 	
 			header = new UILabel(new CGRect(0,0, .6 * cellWidth, cellHeight));
 			header.TextAlignment = UITextAlignment.Left;
@@ -43,12 +45,15 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			if(Convert.ToInt32(KeychainAccess.ValueForKey("userID")) == user.id){
 				header.Text = " Your Feed";
-				if(webServices.uploading){
+				if(webServices.uploading){   
 					status.TextColor = UIColor.Red;
 					status.Text = "Uploading";
 				} else {
 					status.Text = "Viewable";
 				}
+			} else if (ion.webServices.remoteViewing && !String.IsNullOrEmpty(currentlyViewing) && currentlyViewing == user.id.ToString()){
+				status.Text += "Viewing";
+				status.TextColor = UIColor.Blue;
 			} else {
 				if(user.online == 1){
 					status.Text += "Viewable";

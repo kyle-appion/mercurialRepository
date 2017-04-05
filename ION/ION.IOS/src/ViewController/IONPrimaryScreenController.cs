@@ -345,11 +345,13 @@ namespace ION.IOS.ViewController {
 				remoteWb.remoteMode = true;
 				var remoteAn = InflateViewController<AnalyzerViewController>(BaseIONViewController.VC_ANALYZER);
 				remoteAn.remoteMode = true;
+				var remotePortal = InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING);
 				
 				navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-				navigation.ViewControllers[1] = new UINavigationController(remoteAn);  
+				navigation.ViewControllers[1] = new UINavigationController(remoteAn);
+				navigation.ViewControllers[4] = null;
 				navigation.ViewControllers[5] = null;
-				navigation.ViewControllers[6] = null;
+				navigation.ViewControllers[6] = new UINavigationController(remotePortal);
 				navigation.ViewControllers[7] = null;
 				navigation.ViewControllers[8] = null;
 				navigation.ViewControllers[9] = null;
@@ -439,17 +441,17 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
           new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
         }
+			);
+			navigation.NavigationRoot.Add(
+				new Section("Cloud".ToUpper()){
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+				}
 			);		
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
           new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
           new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
         }
-			);
-			navigation.NavigationRoot.Add(
-				new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
-				}
 			);
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Exit.SHUTDOWN.ToUpper()) {

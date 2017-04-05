@@ -500,6 +500,7 @@ namespace ION.IOS.ViewController.Analyzer
 	        //REMOVE THE LOW SIDE MANIFOLD FOR ANALYZER INSTANCE
 	        Console.WriteLine("AnalyserUtilities RemoveDevice low/high removing analyzer low manifold");
 	        ion.currentAnalyzer.lowFluid = null;
+	        lowHighSensors.lowArea.tableSubviews.Clear();
 	        lowHighSensors.lowArea.currentSensor = null;
 	        lowHighSensors.lowArea.manualSensor = null;
 	        lowHighSensors.lowArea.manifold = null;
@@ -517,6 +518,7 @@ namespace ION.IOS.ViewController.Analyzer
 	        //REMOVE THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
 	        Console.WriteLine("AnalyserUtilities RemoveDevice low/high removing analyzer high manifold");
 	        ion.currentAnalyzer.highFluid = null;
+	        lowHighSensors.highArea.tableSubviews.Clear();
 	        lowHighSensors.highArea.currentSensor = null;
 	        lowHighSensors.highArea.manualSensor = null;
 	        lowHighSensors.highArea.manifold = null;
@@ -536,6 +538,7 @@ namespace ION.IOS.ViewController.Analyzer
 	        //REMOVE THE LOW SIDE MANIFOLD FOR ANALYZER INSTANCE
 	        Console.WriteLine("AnalyserUtilities RemoveDevice low/high removing analyzer low manifold");
 	        ion.currentAnalyzer.lowFluid = null;
+	        lowHighSensors.lowArea.tableSubviews.Clear();
 	        lowHighSensors.lowArea.currentSensor = null;
 	        lowHighSensors.lowArea.manualSensor = null;
 	        lowHighSensors.lowArea.manifold = null;
@@ -553,6 +556,7 @@ namespace ION.IOS.ViewController.Analyzer
 	        //REMOVE THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
 	        Console.WriteLine("AnalyserUtilities RemoveDevice low/high removing analyzer high manifold");
 	        ion.currentAnalyzer.highFluid = null;
+	        lowHighSensors.highArea.tableSubviews.Clear();
 	        lowHighSensors.highArea.currentSensor = null;
 	        lowHighSensors.highArea.manualSensor = null;
 	        lowHighSensors.highArea.manifold = null;
@@ -605,6 +609,7 @@ namespace ION.IOS.ViewController.Analyzer
         ////CHECK IF REMOVING GAUGE SENSOR IS THE LOW SIDE
         if(lowHighSensors.lowArea.currentSensor != null && Sensor.pressedSensor.currentSensor == lowHighSensors.lowArea.currentSensor){
 					lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+					lowHighSensors.lowArea.tableSubviews.Clear();
 	        ion.currentAnalyzer.lowAccessibility = "low";
 	        lowHighSensors.lowArea.LabelMiddle.Text = Strings.Analyzer.LOWUNDEFINED;
 	        //REMOVE THE LOW SIDE MANIFOLD FOR ANALYZER INSTANCE
@@ -636,6 +641,7 @@ namespace ION.IOS.ViewController.Analyzer
         ////CHECK IF REMOVING GAUGE SENSOR IS THE HIGH SIDE
 				else if (lowHighSensors.highArea.currentSensor != null && Sensor.pressedSensor.currentSensor == lowHighSensors.highArea.currentSensor){
 	        lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+					lowHighSensors.highArea.tableSubviews.Clear();
 	        ion.currentAnalyzer.highAccessibility = "high";
 	        lowHighSensors.highArea.LabelMiddle.Text = Strings.Analyzer.LOWUNDEFINED;
 	        //REMOVE THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
@@ -1005,8 +1011,8 @@ namespace ION.IOS.ViewController.Analyzer
 	      		lowHighSensors.highArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
 					}
          
-          ion.currentAnalyzer.highSubviews = new List<string>(lowHighSensors.highArea.tableSubviews);
-          ion.currentAnalyzer.lowSubviews = new List<string>(lowHighSensors.lowArea.tableSubviews);
+          ion.currentAnalyzer.highSubviews = lowHighSensors.highArea.tableSubviews;
+          ion.currentAnalyzer.lowSubviews = lowHighSensors.lowArea.tableSubviews;
 
           SubviewSwap(lowHighSensors.highArea.tableSubviews,lowHighSensors.highArea, lowHighSensors.lowArea);
 
@@ -1167,6 +1173,9 @@ namespace ION.IOS.ViewController.Analyzer
 	      		lowHighSensors.highArea.subviewHide.SetImage(UIImage.FromBundle("ic_arrow_downwhite"), UIControlState.Normal);
 					}
 					
+          ion.currentAnalyzer.highSubviews = lowHighSensors.highArea.tableSubviews;
+          ion.currentAnalyzer.lowSubviews = lowHighSensors.lowArea.tableSubviews;
+					
           SubviewSwap(lowHighSensors.highArea.tableSubviews,lowHighSensors.highArea, lowHighSensors.lowArea);
 
 					//////RELOAD THE SUBVIEW TABLES WITH THEIR NEW SUBVIEW SETUPS
@@ -1249,7 +1258,7 @@ namespace ION.IOS.ViewController.Analyzer
 		        //REMOVE THE LOW SIDE MANIFOLD FOR ANALYZER INSTANCE
         		Console.WriteLine("AnalyserUtilities SensorSwap moving from low manifold to empty high sensor mount");
         		ion.currentAnalyzer.lowFluid = null;
-		        ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null);
+		        ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,null,null);
 						
 						if(lowHighSensors.lowArea.attachedSensor != null){
 	            for (int i = 0; i < 8; i++) {
@@ -1280,7 +1289,7 @@ namespace ION.IOS.ViewController.Analyzer
         		Console.WriteLine("AnalyserUtilities SensorSwap moving from high manifold to empty low manifold");
         		ion.currentAnalyzer.highFluid = null;
 
-		        ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null);
+		        ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,null,null);
 						
 						if(lowHighSensors.highArea.attachedSensor != null){
 	            for (int i = 0; i < 8; i++) {
@@ -1547,29 +1556,29 @@ namespace ION.IOS.ViewController.Analyzer
     public static void confirmLayout(sensorGroup analyzerSensors, UIView View){
     	var analyzer = AppState.context.currentAnalyzer;
    	
-   		Console.WriteLine("revert list");
-   		foreach(var spot in analyzer.revertPositions){
-				Console.Write(spot + " ");
-			}
-			Console.WriteLine(Environment.NewLine);
-   		Console.WriteLine("area list");
-   		foreach(var spot in analyzerSensors.areaList){
-				Console.Write(spot + " ");
-			}
-			Console.WriteLine(Environment.NewLine);
-   		Console.WriteLine("position list");
-   		foreach(var spot in analyzer.sensorPositions){
-				Console.Write(spot + " ");
-			}
-			Console.WriteLine(Environment.NewLine);
-   		Console.WriteLine("view list");
-   		for(int v = 0; v < analyzerSensors.viewList.Count; v++){
-   			if(Convert.ToInt32(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier) != analyzer.sensorPositions[v]){
-					Console.WriteLine("View area " + analyzer.sensorPositions[v] + " should be in the " +v +" spot but " + analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " is instead");
-				}
-				Console.Write(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " ");
-			}
-			Console.WriteLine(Environment.NewLine);
+   //		Console.WriteLine("revert list");
+   //		foreach(var spot in analyzer.revertPositions){
+			//	Console.Write(spot + " ");
+			//}
+			//Console.WriteLine(Environment.NewLine);
+   //		Console.WriteLine("area list");
+   //		foreach(var spot in analyzerSensors.areaList){
+			//	Console.Write(spot + " ");
+			//}
+			//Console.WriteLine(Environment.NewLine);
+   //		Console.WriteLine("position list");
+   //		foreach(var spot in analyzer.sensorPositions){
+			//	Console.Write(spot + " ");
+			//}
+			//Console.WriteLine(Environment.NewLine);
+   //		Console.WriteLine("view list");
+   //		for(int v = 0; v < analyzerSensors.viewList.Count; v++){
+   //			if(Convert.ToInt32(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier) != analyzer.sensorPositions[v]){
+			//		Console.WriteLine("View area " + analyzer.sensorPositions[v] + " should be in the " +v +" spot but " + analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " is instead");
+			//	}
+			//	Console.Write(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier + " ");
+			//}
+			//Console.WriteLine(Environment.NewLine);
       ////MOVE SENSORS BASED ON THEIR LOCATION
       for (int i = 0; i < 8; i++) {
       	
@@ -1902,7 +1911,7 @@ namespace ION.IOS.ViewController.Analyzer
                 	lowHighSensors.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
 
 			            lowHighSensors.lowArea.LabelSubview.Text = " " + lowHighSensors.lowArea.LabelTop.Text + Util.Strings.Analyzer.LHTABLE;   
-									//lowHighSensors.highArea.tableSubviews = new List<string>(lowHighSensors.lowArea.tableSubviews);
+									lowHighSensors.highArea.tableSubviews.Clear();
 			            
 			            if(Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected){
 										lowHighSensors.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
@@ -1930,7 +1939,8 @@ namespace ION.IOS.ViewController.Analyzer
                   //SET THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
         					//Console.WriteLine("AnalyserUtilities updateLowHigh 4 high set to " + Sensor.lowArea.manifold.ptChart.fluid.name + " low removed");
                   ion.currentAnalyzer.lowFluid =  lowHighSensors.highArea.manifold.ptChart.fluid;
-                  ion.currentAnalyzer.highFluid = null;                  
+                  ion.currentAnalyzer.highFluid = null;
+									ion.currentAnalyzer.lowSubviews = lowHighSensors.lowArea.tableSubviews;            
                   
                   Sensor.topLabel.BackgroundColor = UIColor.Blue;
                   Sensor.topLabel.TextColor = UIColor.White;
@@ -2046,7 +2056,7 @@ namespace ION.IOS.ViewController.Analyzer
 	          ion.currentAnalyzer.lowAccessibility = areaIndex.ToString();
             lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = areaIndex.ToString();	          
 	          /////////////////////            
-            //ion.currentAnalyzer.lowSubviews = Sensor.lowArea.tableSubviews;
+            ion.currentAnalyzer.lowSubviews = lowHighSensors.lowArea.tableSubviews;
             //SET THE LOW SIDE MANIFOLD FOR ANALYZER INSTANCE
         		Console.WriteLine("AnalyserUtilities updateLowHigh 3/1 else low set");
         		ion.currentAnalyzer.lowFluid = lowHighSensors.lowArea.manifold.ptChart.fluid;
@@ -2124,7 +2134,7 @@ namespace ION.IOS.ViewController.Analyzer
                 	lowHighSensors.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
 
 			            lowHighSensors.highArea.LabelSubview.Text = " " + lowHighSensors.highArea.LabelTop.Text + Util.Strings.Analyzer.LHTABLE;   
-									//lowHighSensors.highArea.tableSubviews = new List<string>(lowHighSensors.lowArea.tableSubviews);
+									lowHighSensors.lowArea.tableSubviews.Clear();
 			            
 			            if(Sensor.currentSensor != null && Sensor.currentSensor.device.isConnected){
 										lowHighSensors.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
@@ -2150,8 +2160,9 @@ namespace ION.IOS.ViewController.Analyzer
                   ion.currentAnalyzer.lowAccessibility = "low";                  
                   //SET THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
         					//Console.WriteLine("AnalyserUtilities updateLowHigh 4 high set to " + Sensor.lowArea.manifold.ptChart.fluid.name + " low removed");
-                  ion.currentAnalyzer.highFluid =  lowHighSensors.lowArea.manifold.ptChart.fluid;
+									ion.currentAnalyzer.highFluid =  lowHighSensors.lowArea.manifold.ptChart.fluid;
                   ion.currentAnalyzer.lowFluid = null;                  
+                  ion.currentAnalyzer.highSubviews = lowHighSensors.highArea.tableSubviews;
                   
                   Sensor.topLabel.BackgroundColor = UIColor.Red;
                   Sensor.topLabel.TextColor = UIColor.White;
@@ -2183,28 +2194,20 @@ namespace ION.IOS.ViewController.Analyzer
             var highStart = Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
 
             if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "0" && analyzerSensors.viewList.IndexOf(Sensor) != 0) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea1, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);					
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);					
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "1" && analyzerSensors.viewList.IndexOf(Sensor) != 1) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea2, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "2" && analyzerSensors.viewList.IndexOf(Sensor) != 2) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea3, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "3" && analyzerSensors.viewList.IndexOf(Sensor) != 3) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea4, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "4" && analyzerSensors.viewList.IndexOf(Sensor) != 4) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea5, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "5" && analyzerSensors.viewList.IndexOf(Sensor) != 5) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea6, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "6" && analyzerSensors.viewList.IndexOf(Sensor) != 6) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea7, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } else if (lowHighSensors.highArea.snapArea.AccessibilityIdentifier == "7" && analyzerSensors.viewList.IndexOf(Sensor) != 7) {
-              //replaceAlert(message, 2, Sensor, analyzerSensors.snapArea8, lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
               replaceAlert(message, 2, Sensor, analyzerSensors.viewList[highStart], lowHighSensors.highArea, analyzerSensors, View, lowHighSensors);
             } 
           }
@@ -2280,6 +2283,7 @@ namespace ION.IOS.ViewController.Analyzer
           	//Console.WriteLine("In utilities update lowhigh second area and set high accessibility to " + ion.currentAnalyzer.highAccessibility);
             //SET THE HIGH SIDE MANIFOLD FOR ANALYZER INSTANCE
         		Console.WriteLine("AnalyserUtilities updateLowHigh 4/2 else high set");
+        		ion.currentAnalyzer.highSubviews = lowHighSensors.highArea.tableSubviews;
             ion.currentAnalyzer.highFluid =  lowHighSensors.highArea.manifold.ptChart.fluid;
   
             return;
@@ -2619,8 +2623,7 @@ namespace ION.IOS.ViewController.Analyzer
 				lhSensor.LabelTop.Text = Sensor.topLabel.Text;
 				lhSensor.LabelMiddle.Text = Sensor.middleLabel.Text;
 				lhSensor.LabelBottom.Text = Sensor.bottomLabel.Text;
-				lhSensor.LabelSubview.Text = " " + Sensor.topLabel.Text + Strings.Analyzer.LHTABLE;
-				
+				lhSensor.LabelSubview.Text = " " + Sensor.topLabel.Text + Strings.Analyzer.LHTABLE;				
 				
         Sensor.topLabel.BackgroundColor = UIColor.Blue;
         Sensor.topLabel.TextColor = UIColor.White;
@@ -2802,7 +2805,6 @@ namespace ION.IOS.ViewController.Analyzer
 	      lhRemove.headingDivider.Hidden = true;
 	      lhRemove.connectionColor.Hidden = true;
 	      lhRemove.subviewHide.Hidden = true;
-	      lhRemove.tableSubviews = new List<string> ();
 	      lhRemove.tableSubviews.Clear();
 	      lhRemove.subviewTable.Source = null;
 	      lhRemove.subviewTable.ReloadData ();
@@ -2818,7 +2820,8 @@ namespace ION.IOS.ViewController.Analyzer
 	      }
 	      lhRemove.subviewHide.SetImage(null, UIControlState.Normal);
 				lhRemove.currentSensor = null;
-				lhRemove.manualSensor = null;        
+				lhRemove.manualSensor = null; 
+				ion.currentAnalyzer.highSubviews = lhRemove.tableSubviews;       
  				/////////////////////////////////////////////////////////
  				
         Console.WriteLine("Occupied Low side given High side sensor with identifier " + areaIndex + ":" + lhAdd.snapArea.AccessibilityIdentifier);
@@ -2911,7 +2914,6 @@ namespace ION.IOS.ViewController.Analyzer
 	      lhRemove.headingDivider.Hidden = true;
 	      lhRemove.connectionColor.Hidden = true;
 	      lhRemove.subviewHide.Hidden = true;
-	      lhRemove.tableSubviews = new List<string> ();
 	      lhRemove.tableSubviews.Clear();
 	      lhRemove.subviewTable.Source = null;
 	      lhRemove.subviewTable.ReloadData ();
@@ -2928,6 +2930,7 @@ namespace ION.IOS.ViewController.Analyzer
 	      lhRemove.subviewHide.SetImage(null, UIControlState.Normal);
 				lhRemove.currentSensor = null;
 				lhRemove.manualSensor = null;
+        ion.currentAnalyzer.lowSubviews = lhRemove.tableSubviews;
         
         Console.WriteLine("Occupied High side given Low side sensor with identifier " + areaIndex + ":" + lhAdd.snapArea.AccessibilityIdentifier);
         Console.WriteLine("The Low side is currently identified with sensor " + lhRemove.snapArea.AccessibilityIdentifier);
@@ -2982,28 +2985,48 @@ namespace ION.IOS.ViewController.Analyzer
 		/// </summary>
 		public static void addLHSensorAssociation(string LHArea, sensor activeSensor, LowHighArea lhArea){
 			if(LHArea == "low"){
-				Console.WriteLine("Setting low area sensor color for " + activeSensor.topLabel.Text);
+				//Console.WriteLine("Setting low area sensor color for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Blue;
 				activeSensor.topLabel.TextColor = UIColor.White;
 				lhArea.lowArea.currentSensor = activeSensor.currentSensor;
 				lhArea.lowArea.manifold = new Manifold(activeSensor.currentSensor);
-				lhArea.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
-				lhArea.lowArea.LabelTop.Text = activeSensor.currentSensor.name;          	
+				lhArea.lowArea.manifold.SetSecondarySensor(ion.currentAnalyzer.lowSideManifold.secondarySensor);
+				lhArea.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.lowSideManifold.ptChart.fluid);
+				lhArea.lowArea.LabelTop.Text = activeSensor.currentSensor.name;        	
 				lhArea.lowArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
 				lhArea.lowArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();
 				lhArea.lowArea.LabelSubview.Text = " " + lhArea.lowArea.LabelTop.Text + Strings.Analyzer.LHTABLE;
+
+        if(activeSensor.currentSensor.device.isConnected){
+          lhArea.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");              
+          lhArea.lowArea.connectionColor.BackgroundColor = UIColor.Green;          
+        } else {
+          lhArea.lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");              
+          lhArea.lowArea.connectionColor.BackgroundColor = UIColor.Red;
+        }
+				
 				lhArea.showView(lhArea.lowArea);
 			} else {
-				Console.WriteLine("AnalyserUtilities Setting high area sensor color for " + activeSensor.topLabel.Text);
+				//Console.WriteLine("AnalyserUtilities Setting high area sensor color for " + activeSensor.topLabel.Text);
 				activeSensor.topLabel.BackgroundColor = UIColor.Red;
 				activeSensor.topLabel.TextColor = UIColor.White;
 				lhArea.highArea.currentSensor = activeSensor.currentSensor;
 				lhArea.highArea.manifold = new Manifold(activeSensor.currentSensor);
-				lhArea.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+				lhArea.highArea.manifold.SetSecondarySensor(ion.currentAnalyzer.highSideManifold.secondarySensor);
+				lhArea.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.highSideManifold.ptChart.fluid);
 				lhArea.highArea.LabelTop.Text = activeSensor.currentSensor.name;          	
 				lhArea.highArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
 				lhArea.highArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();
-				lhArea.highArea.LabelSubview.Text = " " + lhArea.highArea.LabelTop.Text + Strings.Analyzer.LHTABLE;				
+				lhArea.highArea.LabelSubview.Text = " " + lhArea.highArea.LabelTop.Text + Strings.Analyzer.LHTABLE;
+				
+        if(activeSensor.currentSensor.device.isConnected){
+          lhArea.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");              
+          lhArea.highArea.connectionColor.BackgroundColor = UIColor.Green;          
+        } else {
+          lhArea.highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");              
+          lhArea.highArea.connectionColor.BackgroundColor = UIColor.Red;
+        }
+				
 				lhArea.showView(lhArea.highArea);
 			}
 		}

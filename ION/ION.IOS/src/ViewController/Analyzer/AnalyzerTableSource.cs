@@ -18,12 +18,6 @@ namespace ION.IOS.ViewController.Analyzer
     public AnalyzerTableSource (List<string> items, lowHighSensor lhSensor){
 			tableItems = items;
       tableSensors = lhSensor;
-      
-      if(lhSensor.LabelSubview.BackgroundColor == UIColor.Blue){
-      	tableSensors.manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.lowFluid);
-      } else {
-      	tableSensors.manifold.ptChart.setRemoteFluid(ion.currentAnalyzer.highFluid);
-			}
 		}
 			
 		public override nint RowsInSection (UITableView tableview, nint section)

@@ -348,6 +348,7 @@
 				} else {
 					currentWorkbench = new Workbench(this);
 				}
+				currentWorkbench.onWorkbenchEvent += onWorkbenchEvent;
 
 				Log.D(this, "Ending ION init");
 			} catch (Exception e) {
@@ -382,6 +383,13 @@
 
 		public Task SaveAnalyzerAsync() {
 			return null;
+		}
+    
+    public void onWorkbenchEvent(WorkbenchEvent e){
+			if(e.type != WorkbenchEvent.EType.ManifoldEvent || (e.manifoldEvent.type != ManifoldEvent.EType.Invalidated)){
+				Log.D(this,"Workbench event saving workbench layout");
+				SaveWorkbenchAsync();
+			}
 		}
     
     /// <summary>

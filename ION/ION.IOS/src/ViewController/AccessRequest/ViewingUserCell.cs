@@ -18,8 +18,8 @@ namespace ION.IOS.ViewController.AccessRequest {
 				header.Text ="("+user.displayName+") " + user.userEmail;
 			} else {
 				header.Text = user.displayName;
-
 			}
+			
 			header.AdjustsFontSizeToFitWidth = true;
 			header.TextAlignment = UITextAlignment.Center;
 			

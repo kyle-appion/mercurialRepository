@@ -319,15 +319,17 @@
       if (HasSensorPropertyOfType(sensorProperty.GetType())) {
         return false;
       } else {
-        if (sensorProperty is SecondarySensorProperty) {
-          sensorProperties.Insert(0, sensorProperty);
-          NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, 0);
-          return true;
-        } else {
-          sensorProperties.Add(sensorProperty);
-          NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
-          return true;
-        }
+				if (sensorProperty is SecondarySensorProperty) {
+					sensorProperties.Insert(0, sensorProperty);
+					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, 0);
+
+					return true;
+				} else {
+	        sensorProperties.Add(sensorProperty);
+					NotifyOfEvent(ManifoldEvent.EType.SensorPropertyAdded, sensorProperties.Count - 1);
+					
+					return true;
+				}
       }
     }
 

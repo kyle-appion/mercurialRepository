@@ -255,6 +255,8 @@
         return 10;
       } else if (record is AddRecord){
 			 	return 58;
+			} else if (record is RateOfChangeRecord){
+				return 90;
 			} else {
         return 48;
       }
