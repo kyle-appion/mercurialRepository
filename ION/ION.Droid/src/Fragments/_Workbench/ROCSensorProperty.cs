@@ -39,10 +39,11 @@ namespace ION.Droid.Fragments._Workbench {
 		private LinearAxis xAxis;
 		private LinearAxis primaryAxis;
 		private LinearAxis secondaryAxis;
+		private LinearAxis tertiaryAxis;
 
 		private LineSeries primarySensorSeries;
 		private LineSeries secondarySensorSeries;
-
+		private LineSeries tertiarySeries;
 
 		private Handler handler;
 		private bool isRunning;
@@ -98,6 +99,16 @@ namespace ION.Droid.Fragments._Workbench {
 				Key = "second",
 			};
 
+			tertiaryAxis = new LinearAxis() {
+				Position = AxisPosition.Right,
+				Minimum = 0,
+				Maximum = 100,
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+				Key = "third",
+			};
+
 			primarySensorSeries = new LineSeries() {
 				StrokeThickness = 1,
 				MarkerType = MarkerType.Circle,
@@ -116,11 +127,22 @@ namespace ION.Droid.Fragments._Workbench {
 				YAxisKey = "second",
 			};
 
+			tertiarySeries = new LineSeries() {
+				StrokeThickness = 1,
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 0,
+				MarkerStroke = OxyColors.Transparent,
+				MarkerStrokeThickness = 0,
+				YAxisKey = "third",
+			};
+
 			model.Axes.Add(xAxis);
 			model.Axes.Add(primaryAxis);
 			model.Axes.Add(secondaryAxis);
+			model.Axes.Add(tertiaryAxis);
 			model.Series.Add(primarySensorSeries);
 			model.Series.Add(secondarySensorSeries);
+			model.Series.Add(tertiarySeries);
 			model.DefaultFontSize = 0;
 			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 			plot.Model = model;
@@ -143,6 +165,7 @@ namespace ION.Droid.Fragments._Workbench {
 
 			InvalidatePrimary();
 			InvalidateSecondary();
+			InvalidateTertiary();
 
 			plot.InvalidatePlot();
 			model.InvalidatePlot(true);
@@ -213,6 +236,28 @@ namespace ION.Droid.Fragments._Workbench {
 			foreach (var pp in secondaryBuffer) {
 				var t = record.sp.window - (secondaryBuffer[0].date - pp.date);
 				secondarySensorSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			}
+		}
+
+		private void InvalidateTertiary() {
+			if (!record.sp.hasTertiaryPoints) {
+				return;
+			}
+
+			var minMax = record.sp.GetTertiaryMinMax();
+			double diff = minMax.diff / 10;
+			if (diff == 0) {
+				diff = 1;
+			}
+
+			tertiaryAxis.Minimum = minMax.min.amount - diff;
+			tertiaryAxis.Maximum = minMax.max.amount + diff;
+
+			tertiarySeries.Points.Clear();
+			var tertiaryBuffer = record.sp.tertiaryPoints;
+			foreach (var pp in tertiaryBuffer) {
+				var t = record.sp.window - (tertiaryBuffer[0].date - pp.date);
+				tertiarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
 		}
 
