@@ -12,6 +12,7 @@
 	using OxyPlot.Xamarin.Android;
 
 	using ION.Core.Content;
+	using ION.Core.Devices;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
@@ -163,12 +164,17 @@
 
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
-			InvalidatePrimary();
-			InvalidateSecondary();
-			InvalidateTertiary();
+			var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+			if (device == null || device.isConnected) {
+				InvalidatePrimary();
+				InvalidateSecondary();
+				InvalidateTertiary();
 
-			plot.InvalidatePlot();
-			model.InvalidatePlot(true);
+				plot.InvalidatePlot();
+				model.InvalidatePlot(true);
+			} else {
+				measurement.SetText(Resource.String.na);
+			}
 		}
 
 		private void InvalidatePrimary() {

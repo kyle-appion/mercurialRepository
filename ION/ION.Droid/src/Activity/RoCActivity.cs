@@ -19,6 +19,7 @@
 	using Appion.Commons.Util;
 
 	using ION.Core.Content;
+	using ION.Core.Devices;
 	using ION.Core.Fluids;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
@@ -127,12 +128,15 @@
 		}
 
 		private void Invalidate() {
-			InvalidatePrimary();
-			InvalidateSecondary();
-			InvalidateTertiary();
+			var device = (manifold.primarySensor as GaugeDeviceSensor)?.device;
+			if (device == null || device.isConnected) {
+				InvalidatePrimary();
+				InvalidateSecondary();
+				InvalidateTertiary();
 
-			plot.InvalidatePlot();
-			model.InvalidatePlot(true);
+				plot.InvalidatePlot();
+				model.InvalidatePlot(true);
+			}
 		}
 
 		private void InvalidatePrimary() {
