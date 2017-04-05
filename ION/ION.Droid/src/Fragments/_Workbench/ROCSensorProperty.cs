@@ -30,7 +30,6 @@ namespace ION.Droid.Fragments._Workbench {
 	public class ROCSensorPropertyViewHolder : SensorPropertyViewHolder<RateOfChangeSensorProperty> {
 		private BitmapCache cache;
 		private PlotView plot;
-		private LineSeries mainSeries;
 		private TextView title;
 		private ImageView icon;
 		private TextView measurement;
@@ -38,7 +37,12 @@ namespace ION.Droid.Fragments._Workbench {
 
 		private PlotModel model;
 		private LinearAxis xAxis;
-		private LinearAxis yAxis;
+		private LinearAxis primaryAxis;
+		private LinearAxis secondaryAxis;
+
+		private LineSeries primarySensorSeries;
+		private LineSeries secondarySensorSeries;
+
 
 		private Handler handler;
 		private bool isRunning;
@@ -74,26 +78,49 @@ namespace ION.Droid.Fragments._Workbench {
 			};
 
 			var baseUnit = record.manifold.primarySensor.unit.standardUnit;
-			yAxis = new LinearAxis() {
+			primaryAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = record.manifold.primarySensor.minMeasurement.ConvertTo(baseUnit).amount,
-				Maximum = record.manifold.primarySensor.maxMeasurement.ConvertTo(baseUnit).amount,
+				Minimum = 0,
+				Maximum = 100,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
+				Key = "first",
 			};
 
-			mainSeries = new LineSeries() {
+			secondaryAxis = new LinearAxis() {
+				Position = AxisPosition.Right,
+				Minimum = 0,
+				Maximum = 100,
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+				Key = "second",
+			};
+
+			primarySensorSeries = new LineSeries() {
 				StrokeThickness = 1,
 				MarkerType = MarkerType.Circle,
 				MarkerSize = 0,
 				MarkerStroke = OxyColors.Transparent,
 				MarkerStrokeThickness = 0,
+				YAxisKey = "first",
+			};
+
+			secondarySensorSeries = new LineSeries() {
+				StrokeThickness = 1,
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 0,
+				MarkerStroke = OxyColors.Transparent,
+				MarkerStrokeThickness = 0,
+				YAxisKey = "second",
 			};
 
 			model.Axes.Add(xAxis);
-			model.Axes.Add(yAxis);
-			model.Series.Add(mainSeries);
+			model.Axes.Add(primaryAxis);
+			model.Axes.Add(secondaryAxis);
+			model.Series.Add(primarySensorSeries);
+			model.Series.Add(secondarySensorSeries);
 			model.DefaultFontSize = 0;
 			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 			plot.Model = model;
@@ -114,6 +141,15 @@ namespace ION.Droid.Fragments._Workbench {
 
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
+			InvalidatePrimary();
+			InvalidateSecondary();
+
+			plot.InvalidatePlot();
+			model.InvalidatePlot(true);
+		}
+
+		private void InvalidatePrimary() {
+			var c = title.Context;
 			var roc = record.sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
 			var amount = Math.Abs(roc.amount);
 			if (amount == 0) {
@@ -147,18 +183,40 @@ namespace ION.Droid.Fragments._Workbench {
 			if (diff == 0) {
 				diff = 1;
 			}
-			yAxis.Minimum = primaryMinMax.min.amount - diff;
-			yAxis.Maximum = primaryMinMax.max.amount + diff;
+			primaryAxis.Minimum = primaryMinMax.min.amount - diff;
+			primaryAxis.Maximum = primaryMinMax.max.amount + diff;
 
+			primaryAxis.Minimum = 0;
+			primaryAxis.Maximum = 500;
 
-			mainSeries.Points.Clear();
+			primarySensorSeries.Points.Clear();
 			var primaryBuffer = record.sp.primarySensorPoints;
 			foreach (var pp in primaryBuffer) {
 				var t = record.sp.window - (primaryBuffer[0].date - pp.date);
-				mainSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+				primarySensorSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
-			plot.InvalidatePlot();
-			model.ResetAllAxes();
+		}
+
+		private void InvalidateSecondary() {
+			if (record.manifold.secondarySensor == null) {
+				return;
+			}
+
+			var minMax = record.sp.GetSecondaryMinMax();
+			double diff = minMax.diff / 10;
+			if (diff == 0) {
+				diff = 1;
+			}
+
+			secondaryAxis.Minimum = minMax.min.amount - diff;
+			secondaryAxis.Maximum = minMax.max.amount + diff;
+
+			secondarySensorSeries.Points.Clear();
+			var secondaryBuffer = record.sp.secondarySensorPoints;
+			foreach (var pp in secondaryBuffer) {
+				var t = record.sp.window - (secondaryBuffer[0].date - pp.date);
+				secondarySensorSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			}
 		}
 
 		private void HandleMessage(Message msg) {

@@ -97,7 +97,7 @@
     /// sensor's new reading.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    private void SensorChangeEvent(Sensor sensor) {
+    protected void SensorChangeEvent(Sensor sensor) {
       modifiedMeasurement = sensor.measurement;
 
       OnSensorChanged();
