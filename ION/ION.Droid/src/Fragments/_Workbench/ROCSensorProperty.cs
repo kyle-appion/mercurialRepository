@@ -186,9 +186,6 @@ namespace ION.Droid.Fragments._Workbench {
 			primaryAxis.Minimum = primaryMinMax.min.amount - diff;
 			primaryAxis.Maximum = primaryMinMax.max.amount + diff;
 
-			primaryAxis.Minimum = 0;
-			primaryAxis.Maximum = 500;
-
 			primarySensorSeries.Points.Clear();
 			var primaryBuffer = record.sp.primarySensorPoints;
 			foreach (var pp in primaryBuffer) {
