@@ -1,0 +1,567 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">ION HVAC/R</string>
+  <!-- This is NOT the actual version, just the string "App Version" -->
+  <string name="app_version">App Version</string>
+
+  <!--
+  GENERAL APPLICATION STRINGS
+  -->
+  <string name="actions">Actions</string>
+  <string name="active">Active</string>
+  <string name="add">Add</string>
+	<string name="add_selected">Add Selected</string>
+  <string name="address">Address</string>
+  <string name="alarm">Alarm</string>
+	<string name="alert">Alert</string>
+	<string name="allow">Allow</string>
+  <string name="available">Available</string>
+	<string name="average">Average</string>
+  <string name="cancel">Cancel</string>
+  <string name="city">City</string>
+  <string name="cloud">Cloud</string>
+  <string name="close">Close</string>
+  <string name="connect">Connect</string>
+  <string name="connect_all">Connect All</string>
+  <string name="connected">Connected</string>
+	<string name="coordinates">Coordinates</string>
+  <string name="date">Date</string>
+  <string name="delete">Delete</string>
+  <string name="deleting">Deleting</string>
+  <string name="deny">Deny</string>
+	<string name="deselect_all">Deselect All</string>
+  <string name="disabled">Disabled</string>
+  <string name="disconnect">Disconnect</string>
+  <string name="disconnect_all">Disconnect All</string>
+  <string name="disconnected">Disconnected</string>
+  <string name="download">Download</string>
+  <string name="downloading">Downloading</string>
+  <string name="download_error">Download Error</string>
+  <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="email">Email</string>
+  <string name="enable">Enable</string>
+  <string name="enabling_bluetooth">Enabling Bluetooth...</string>
+  <string name="enable_bluetooth">Enable Bluetooth</string>
+  <string name="enabled">Enabled</string>
+	<string name="end">End</string>
+  <string name="enter_number">Enter a number</string>
+  <string name="exit">Exit</string>
+  <string name="exit_ion">Exit ION</string>
+	<string name="export">Export</string>
+  <string name="favorites">Favorites</string>
+	<string name="finish">Finish</string>
+	<string name="firstName">First Name</string>
+  <string name="_fixed">Fixed</string>
+  <string name="forget">Forget</string>
+  <string name="forget_all">Forget All</string>
+	<string name="graph_information">Graph Information</string>
+  <string name="help">Help</string>
+	<string name="highest">Highest</string>
+  <string name="inactive">Inactive</string>
+	<string name="include">Include</string>
+	<string name="lastName">Last Name</string>
+  <string name="library">Library</string>
+  <string name="link">Link</string>
+	<string name="link_none">Not Linked</string>
+	<string name="loading">Loading...</string>
+	<string name="location">Location</string>
+	<string name="logout">Log Out</string>
+  <string name="long_range_mode">Long-Range Mode</string>
+	<string name="lowest">Lowest</string>
+  <string name="main">Main</string>
+  <string name="measurement">Measurement</string>
+  <string name="manual">Manual</string>
+  <string name="maximum">Maximum</string>
+	<string name="minimum">Minimum</string>
+  <string name="na">N/A</string>
+  <string name="name">Name</string>
+  <string name="navigation">Navigation</string>
+  <string name="_new">New</string>
+  <string name="next">Next</string>
+  <string name="notes">Notes</string>
+  <string name="ok">OK</string>
+  <string name="ok_done">OK - Done</string>
+  <string name="open">Open</string>
+  <string name="open_with">Open With</string>
+  <string name="password">Password</string>
+  <string name="passwordConfirm">Confirm Password</string>
+  <string name="passwords_dont_match">Entered passwords don\'t match</string>
+	<string name="pdf">PDF</string>
+  <string name="pick_time">Pick Time</string>
+  <string name="pick_unit">Pick Unit</string>
+  <string name="please_enter_valid_number">Please enter a valid number</string>
+  <string name="please_wait">Please Wait</string>
+  <string name="reconnect">Reconnect</string>
+  <string name="record">Record</string>
+  <string name="recover">Recover</string>
+  <string name="reenable">Re-enable</string>
+  <string name="refresh">Refresh</string>
+  <string name="refreshing">Refreshing</string>
+  <string name="register">Register</string>
+  <string name="remember_me">Remember Me</string>
+  <string name="remote_change_unit">Remote Change Unit</string>
+  <string name="remove">Remove</string>
+	<string name="remove_selected">Remove Selected</string>
+  <string name="rename">Rename</string>
+  <string name="reports">Reports</string>
+  <string name="request_shutdown">Shutdown ION</string>
+  <string name="request_shutdown_message">Shutting down ION will disconnect all of your devices.</string>
+	<string name="reset">Reset</string>
+  <string name="save">Save</string>
+  <string name="saving">Saving</string>
+  <string name="scan">Scan</string>
+  <string name="scanning">Scanning</string>
+  <string name="screenshot">Screenshot</string>
+	<string name="select_all">Select All</string>
+	<string name="select_a_sensor">Select a Sensor</string>
+  <string name="settings">Settings</string>
+	<string name="spreadsheet">Spreadsheet</string>
+  <string name="stable">Stable</string>
+	<string name="start">Start</string>
+  <string name="state">State</string>
+  <string name="submit">Submit</string>
+  <string name="text">Text</string>
+	<string name="time">Time</string>
+  <string name="title">Title</string>
+  <string name="undo">Undo</string>
+  <string name="unit">Unit</string>
+  <string name="update">Update</string>
+  <string name="updated">Updated</string>
+  <string name="whats_new_in">What\'s New in {0}</string>
+  <string name="working">Working</string>
+  <string name="zip">Zip Code</string>
+
+  <!--
+  ALARM
+  -->
+  <string name="alarm">Alarm</string>
+  <string name="alarm_high">High Alarm</string>
+  <string name="alarm_high_for_1arg">{0}\'s High Alarm</string>
+  <string name="alarm_high_for_summary_2arg">The <b>High Alarm</b> for {0} has risen above {1}.</string>
+  <string name="alarm_high_summary">Trigger a notification when the sensor\'s reading rises above the set value.</string>
+  <string name="alarm_low">Low Alarm</string>
+  <string name="alarm_low_for_1arg">{0}\'s Low Alarm</string>
+  <string name="alarm_low_for_summary_2arg">The <b>Low Alarm</b> for {0} has dropped below {1}.</string>
+  <string name="alarm_low_summary">Trigger a notification when the sensor\'s reading drops below the set value.</string>
+  <string name="alarm_sensor">Sensor Alarms</string>
+  <string name="alarms">Alarms</string>
+
+  <!--
+  ANALYZER
+  -->
+  <string name="analyzer">System Analyzer</string>
+  <string name="analyzer_add_from">Add From...</string>
+  <string name="analyzer_added_to_high">Added Sensor to High Side in the System Analyzer</string>
+  <string name="analyzer_added_to_low">Added Sensor to Low Side in the System Analyzer</string>
+  <string name="analyzer_complete_swap">Complete Swap?</string>
+  <string name="analyzer_create_editable_pressure">Create Editable Pressure Entry</string>
+  <string name="analyzer_create_editable_temperature">Create Editable Temperature Entry</string>
+	<string name="analyzer_drag_to_set_low">Drag to set low side Viewer</string>
+	<string name="analyzer_drag_to_set_high">Drag to set high side Viewer</string>
+  <string name="analyzer_display_link">Display Link</string>
+  <string name="analyzer_error_failed_to_link_sensors">Failed to link sensor</string>
+  <string name="analyzer_error_failed_to_get_viewer_side">Failed to get the analyzer side for the Viewer</string>
+  <string name="analyzer_error_failed_to_launch_ptchart_missing_manifold">Failed to open P/T Chart activity; the manifold is not present in the Analyzer.</string>
+  <string name="analyzer_error_failed_to_launch_shsc_missing_manifold">Failed to open Superheat/Subcool activity; the manifold is not present in the Analyzer.</string>
+  <string name="analyzer_error_failed_to_launch_shsc_analyzer_full_1sarg">We cannot open the Superheat / Subcool activity for the clicked subview.\n\nThe {0} side of the Analyzer is full and cannot accept a sensor that is assigned in the Superheat / Subcool activity. Please remove a sensor from the {0} side of the analyzer to make room.</string> 
+  <string name="analyzer_error_invalid_sensor_type">Cannot start Superheat / Subcool activity: {0} is an invalid sensor type</string>
+  <string name="analyzer_full">Cannot add sensor to the System Analyzer: the System Analyzer is full.</string>
+  <string name="analyzer_remove_sensor">Remove Sensor?</string>
+  <string name="analyzer_remove_sensor_remote">You are about to remove a sensor from the System Analyzer. This may remove preferences and layouts that you have previously made to the System Analyzer. Do you wish to remove the sensor?</string>
+  <string name="analyzer_replace_manifold_sensor">Completing the desired action will change (or remove) one or more viewers and their subviews. Would you like to continue?</string>
+  <string name="analyzer_require_pressure_primary">Pressure must be defined for proper viewer display</string>
+  <string name="analyzer_sensor_already_in_viewer">The sensor is already added to this viewer</string>
+  <string name="analyzer_sensor_incompatible_with_manifold">Cannot link sensor to Viewer: the sensor is not compatible with the Viewer.</string>
+  <string name="analyzer_set_viewer_failed">Failed to change the viewer.</string>
+  <string name="analyzer_side_full_1sarg">Cannot add sensor to {0} side: the side is full.</string>
+  <string name="analyzer_cannot_set_manifold_side_full_1sarg">Cannot set {0} side manifold: the side is full.</string>
+  <string name="analyzer_side_none">Unspecified</string>
+  <string name="analyzer_side_not_defined_1sarg">{0} not defined</string>
+  <string name="analyzer_side_low">Low Side</string>
+  <string name="analyzer_side_high">High Side</string>
+	<string name="analyzer_swap_failed">Failed to swap sensors</string>
+	<string name="analyzer_swap_linked_manifolds">Would you like to swap the linked measurements? Your subviews will remain intact.</string>
+
+	<!--
+	APP
+	-->
+	<string name="app_no_navigation_items">No Items added to the navigation drawer</string>
+	<string name="app_error_failed_to_take_screenshot">Failed to save screenshot</string>
+	<string name="app_error_failed_to_start">Failed to start ION</string>
+	<string name="app_error_failed_to_start_msg">Failed to start ION. Please contact Appion for assistance.</string>
+
+	<!--
+	BLUETOOTH
+	-->
+	<string name="bluetooth_disabled">Bluetooth Disabled</string>
+	<string name="bluetooth_enable_failed">Failed to enable bluetooth</string>
+	<string name="bluetooth_enabled">Enabled bluetooth</string>
+	<string name="bluetooth_location_off">Location Off</string>
+	<string name="bluetooth_requires_location">As of Android version 6, location services are required to be turned on to successfully scan for a bluetooth device. Would you like to enable location services?\n\nDenying this action will prevent your device from finding your gauges.</string>
+
+  <!--
+  CALCULATORS
+  -->
+  <string name="calculators">Calculators</string>
+
+  <!--
+  DEVICE MANAGER
+  -->
+  <string name="device_manager">Device Manager</string>
+  <string name="device_manager_add_all_to_workbench">Add all to Workbench</string>
+  <string name="device_manager_batch_connected_actions">Connected Device Actions</string>
+  <string name="device_manager_batch_long_range_actions">Long Range Device Actions</string>
+  <string name="device_manager_batch_new_device_actions">New Device Found Actions</string>
+  <string name="device_manager_batch_available_actions">Available Device Actions</string>
+  <string name="device_manager_batch_disconnected_actions">Disconnected Device Actions</string>
+  <string name="device_manager_new_devices_found">New Devices Found</string>
+  <string name="device_manager_no_devices_found">No devices available. Press scan to discover available nearby devices.</string>
+
+  <!--
+  DEVICES
+  -->
+  <string name="device_av760">AV760</string>
+  <string name="device_p300">P300</string>
+  <string name="device_pt300">PT300</string>
+  <string name="device_p500">P500</string>
+  <string name="device_pt500">PT500</string>
+  <string name="device_p800">P800</string>
+  <string name="device_pt800">PT800</string>
+	<string name="device_wllibra">Libra</string>
+  <string name="device_serial_number">Serial Number</string>
+  <string name="device_type">Device Type</string>
+  <string name="device_unknown">Unknown Device</string>
+
+  <string name="devices_actions_1arg">{0}\'s Actions</string>
+  <string name="devices_connected_2arg">{0} of {1} devices connected</string>
+  <string name="devices_forget">Forget Device?</string>
+  <string name="devices_forget_warning">If you forget a device, the device will permanently be deleted from the application. You will no longer see the device until you scan for it again. The device\'s reports and certificates will not be deleted.</string>
+
+  <!--
+  ERRORS, GENERAL
+  -->
+  <string name="error">Error</string>
+  <string name="error_bluetooth">Bluetooth Error</string>
+  <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
+  <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
+  <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
+  <string name="error_location_disabled">Location Disabled</string>
+  <string name="error_failed_to_delete">Failed to Delete</string>
+  <string name="error_failed_to_parse_number">Failed to parse number</string>
+  <string name="error_failed_to_open_file">Open File Failed</string>
+  <string name="error_failed_to_set_unit">Failed to set unit</string>
+  <string name="error_failed_to_show_whats_new">Failed to show What\'s New</string>
+  <string name="error_invalid_number_entry">Please enter a real number</string>
+  <string name="error_missing_sensor_for_alarm_activity">Cannot start Sensor Alarm activity: missing the sensor.</string>
+  <string name="error_no_internet_connection">Cannot complete operation: no internet connection available.</string>
+  <string name="error_pdf_viewer_missing">It appears that your device does not have an application capable of viewing PDF files. Please install a PDF application to view the file.</string>
+  <string name="error_excel_viewer_missing">It appears that your device does not have an application capable of viewing Excel files. Please install a Excel application to view the file.</string>
+	<string name="error_start_up_request_location_for_bluetooth">As of Android 6.0, Android requires the Location permission to enable bluetooth scanning operations in the ION HVAC/R app. \n\nWould you like to give ION HVAC/R the Location permission? \n\nDenying the permission will prevent the application from scanning and finding your gauges.</string>
+	<string name="error_start_up_fail">Failed to Launch ION</string>
+	<string name="error_start_up_failed_to_acquire_permissions">ION HVAC/R requires the (<b>{0}</b>) permissions for most of its features. Without these permissions, the ION HVAC/R app cannot be used. Please authorize the application\'s use of these features to use the app.</string>
+	<string name="errror_unknown">An unknown error occured.</string>
+
+  <!--
+  FLUIDS
+  -->
+  <string name="fluid_bubble">Bubble</string>
+  <string name="fluid_bubble_abrv">P/T bub</string>
+  <string name="fluid_dew">Dew</string>
+  <string name="fluid_dew_abrv">P/T dew</string>
+  <string name="fluid_failed_to_load">Failed to load fluid</string>
+  <string name="fluid_empty_library">The ION application failed to load any refrigerants. Please contact Appion for more details.</string>
+  <string name="fluid_empty_preferred">You have no preferred refrigerants.</string>
+  <string name="fluid_help_mixture_clarification"><b>Dew Point</b> is used to calculate Superheat (low side, in vapor).\n\n<b>Bubble Point</b> is used to calculate Subcool (high side, in liquid).\n\nThis affects measurements of <u>blended refrigerants</u>, since these points are usually not the same.</string>
+  <string name="fluid_help_pure_clarification">For single component refrigerants (ie. R22), the saturation temperature is the same for both the dew and bubble point.</string>
+  <string name="fluid_help_select_state">Dew vs Bubble</string>
+  <string name="fluid_manager">Fluid Manager</string>
+  <string name="fluid_nothing_selected">Nothing Selected</string>
+  <string name="fluid_pt_abrv">P/T</string>
+  <string name="fluid_safety">Safety</string>
+  <string name="fluid_safety_help">Safety Help</string>
+  <string name="fluid_safety_help_descriptions">ASHRAE Standard 34 provides refrigerant safety classification according to <b>toxicity</b> and <b>flammability</b>.
+\n\n
+<b><u>Toxicity:</u></b>\n
+	A: Lower Toxicity\n
+  B: Higher Toxicity\n
+\n\n
+<b><u>Flammability:</u></b>\n
+	1: Non-flammable\n
+	2L: Mildly flammable, lower limits\n
+	2: Mildly flammable\n
+	3: Flammable\n
+\n\n
+<b><u>Example:</u></b>\n
+	<b>R410A</b> is classified <b>A1</b> (lower toxicity, non-flammable)\n
+	<b>R32</b> is classified <b>A2L</b> (lower toxicity, mildly flammable, lower limits)
+	</string>
+  <string name="fluid_saturated_temperature">Saturated Temperature</string>
+  <string name="fluid_setup">Setup</string>
+  <string name="fluid_sc">Subcool</string>
+  <string name="fluid_sc_abrv">SC</string>
+  <string name="fluid_sh">Superheat</string>
+  <string name="fluid_sh_sc">SH / SC</string>
+  <string name="fluid_sh_abrv">SH</string>
+
+	<!--
+	JOBS
+	-->
+	<string name="job">Job</string>
+	<string name="job_adding_sessions">Adding sessions to job...</string>
+	<string name="job_available_sessions">Available Sessions</string>
+	<string name="job_available_sessions_warning">(Adding a session in red will remove the association to its current job)</string>
+	<string name="job_current_sessions">Linked Sessions</string>
+	<string name="job_customer_no">Customer #</string>
+	<string name="job_delete">Really delete job?</string>
+	<string name="job_delete_message">Deleting a job is permanent and irreversible. Are you sure that you wish to delete this job?</string>
+	<string name="job_dispatch_no">Dispatch #</string>
+	<string name="job_edit">Edit Job</string>
+	<string name="job_error_failed_to_save">Failed to save job.</string>
+	<string name="job_info">Job Info</string>
+	<string name="job_loading">Loading the job...</string>
+  <string name="job_name">Job Name</string>
+	<string name="job_notes">Job Notes</string>
+	<string name="job_options">Job Options</string>
+	<string name="job_purchase_no">Purchase Order #</string>
+	<string name="job_removing_sessions">Removing sessions from job...</string>
+	<string name="job_saved">Job Saved</string>
+	<string name="job_sessions">Job Sessions</string>
+	<string name="job_settings">Job Settings</string>
+	<string name="job_system">System</string>
+	<string name="job_technician_name">Technician Name</string>
+
+	<string name="jobs_loading">Loading all of the saved jobs.</string>
+	<string name="jobs_saved">Saved Jobs</string>
+
+	<!--
+	LOCATION
+	-->
+	<string name="location_address_1">Address Line 1</string>
+	<string name="location_address_2">Address Line 2</string>
+	<string name="location_city">City</string>
+	<string name="location_state_province_region">State / Province / Region</string>
+	<string name="location_zip_postal_code">ZIP / Postal Code</string>
+	<string name="location_country">Country</string>
+	
+  
+  <!--
+  MANIFOLD
+  -->
+  <string name="manifold_add_subview">Add Subview</string>
+  <string name="manifold_select_action">Select a viewer action</string>
+  <string name="manifold_select_subview">Add Subview</string>
+  <string name="manifold_subviews">Subviews</string>
+
+  <!--
+  MEASUREMENT
+  -->
+  <string name="measurement">Measurement</string>
+  <string name="measurement_short">MEAS</string>
+  <string name="humidity">Humidity</string>
+  <string name="humidity_short">HUM</string>
+  <string name="length">Length</string>
+  <string name="length_short">LEN</string>
+  <string name="pressure">Pressure</string>
+  <string name="pressure_short">PRESS</string>
+  <string name="temperature">Temperature</string>
+  <string name="temperature_short">TEMP</string>
+  <string name="vacuum">Vacuum</string>
+  <string name="vacuum_short">VAC</string>
+  <string name="weight">Weight</string>
+  <string name="weight_short">WT.</string>
+  <string name="unknown">Unknown</string>
+
+  <!--
+  REPORT
+  -->
+  <string name="reports">Reports</string>
+  <string name="report_by_date">By Date</string>
+  <string name="report_by_job">By Job</string>
+  <string name="report_certificates">Calibration Certificates</string>
+  <string name="report_certificates_download">Download Certificates?</string>
+  <string name="report_certificates_downloading">Downloading Certificates</string>
+	<string name="report_certificates_empty">No Calibration Certificates have been downloaded. Click the download icon to download the Calibration Certificates for all of your saved devices.</string>
+  <string name="report_certificates_download_request">Warning! Downloading and saving Calibration Certificates requires an internet connection and may take few minutes to complete. Continue?</string>
+  <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
+	<string name="report_choose_export_format">Choose an Export Format</string>
+	<string name="report_created">Report Created</string>
+  <string name="report_data_logging">Reporting</string>
+  <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
+  <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
+  <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
+  <string name="report_data_logging_highest_measurement">Highest Measurement</string>
+  <string name="report_data_logging_lowest_measurement">Lowest Measurement</string>
+  <string name="report_data_logging_measurement_count">Number of Measurements</string>
+  <string name="report_data_logging_select_start_datetime">Choose a manual start date for the graph</string>
+  <string name="report_data_logging_select_end_datetime">Choose a manual end date for the graph</string>
+  <string name="report_data_logging_step_1">Step 1</string>
+  <string name="report_data_logging_step_2">Step 2</string>
+  <string name="report_data_logging_step_3">Step 3</string>
+  <string name="report_date_created">Date Recorded</string>
+  <string name="report_session_duration">Session Duration</string>
+  <string name="report_dates">Report Dates</string>
+  <string name="report_delete_session">Really delete session?</string>
+  <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
+  <string name="report_devices_used">Devices Used</string>
+	<string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
+  <string name="report_graph">Graph</string>
+	<string name="report_graph_selection">Graph Selection</string>
+  <string name="report_jobs">Jobs</string>
+  <string name="report_job_details">Job Details</string>
+  <string name="report_name">Report Name</string>
+  <string name="report_new">New Report</string>
+  <string name="report_nist_date">Certification Date</string>
+  <string name="report_no_jobs_exist">No jobs exist. Click to create</string>
+	<string name="report_no_sessions_exist">No sessions exist. Click the record button in the Workbench or Analyzer to start recording a new session"</string>
+	<string name="report_no_spreadsheets_exist">No spreadsheet reports exist</string>
+	<string name="report_recording_started">Started Data Logging with an interval of ({0})</string>
+	<string name="report_recording_stopped">Stopped Data Logging. Session can be found in "Reports"</string>
+  <string name="report_saved">Saved Reports</string>
+  <string name="report_screenshot">Screenshot Report</string>
+  <string name="report_screenshot_archive">Screenshot Archive</string>
+  <string name="report_screenshot_empty">No Screenshot Reports have been saved. Click the camera icon in the Workbench or Analyzer to create a Screenshot Report.</string>
+  <string name="report_screenshot_error_export_failed">Failed to export screenshot report.</string>
+  <string name="report_screenshot_error_name_missing">Please enter a name for the report.</string>
+  <string name="report_screenshot_error_screenshot_missing">Failed to export screenshot: missing image data.</string>
+	<string name="report_screenshot_saved">Saved Screenshot Report</string>
+	<string name="report_screenshot_saving">Capturing screen...</string>
+	<string name="report_select_export_data">Select Export Data</string>
+	<string name="report_select_start_time">Select start time for the graph</string>
+	<string name="report_select_end_time">Select end time for the graph</string>
+	<string name="report_selection">Report Selection</string>
+  <string name="report_session_selection">Session Selection</string>
+  <string name="report_sessions">Sessions</string>
+  <string name="report_sessions_loading">Loading Sessions</string>
+  <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
+  <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
+
+  <!--
+  PORTAL
+	-->
+	<string name="portal">Appion Portal</string>
+	<string name="portal_access_code">Access Code</string>
+	<string name="portal_access_code_confirm">Confirm Access</string>
+	<string name="portal_access_code_confirm_access">Do you want to grant this user access to view your data?</string>
+	<string name="portal_access_code_confirming">Confirming Access</string>
+	<string name="portal_access_code_deleting">Deleting Access Code</string>
+	<string name="portal_access_code_enter">Enter Access Code</string>
+	<string name="portal_access_code_generate">Generate Access Code</string>
+	<string name="portal_access_code_manager">Access Code Manager</string>
+	<string name="portal_access_codes">Access Codes</string>
+	<string name="portal_access_requests">Access Requests</string>
+	<string name="portal_access_submitting">Submitting Access Code</string>
+	<string name="portal_account_settings">Account Settings</string>
+	<string name="portal_connections">Connections</string>
+	<string name="portal_display_name">Display Name</string>
+	<string name="portal_error">ION Portal Error</string>
+	<string name="portal_error_access_code_submission_failed">Failed to submit access code</string>
+	<string name="portal_error_access_code_too_many">Too many requests currently open</string>
+	<string name="portal_error_email_invalid">Please provide a valid email</string>
+	<string name="portal_error_failed_to_login">Failed to login.</string>
+	<string name="portal_error_failed_to_query_access_codes">Failed to query pending access codes</string>
+	<string name="portal_error_failed_to_query_following">Failed to query the users you are following</string>
+	<string name="portal_error_general_server">Failed to connect to Appion Portal</string>
+	<string name="portal_error_password_invalid">Please provide a password with at least 8 characters, at least one of which is capitalized</string>
+	<string name="portal_error_passwords_dont_match">The provided passwords do not match</string>
+	<string name="portal_error_remote_access_offline">Cannot remote view an offline contact</string>
+	<string name="portal_error_update_failed">Update Failed</string>
+	<string name="portal_error_upload_sessions_failed">Failed to upload the selected sessions to ION Portal.</string>
+	<string name="portal_following">Following</string>
+	<string name="portal_following_empty">You are not currently following anyone</string>
+	<string name="portal_followers">Followers</string>
+	<string name="portal_followers_empty">No one is currently following you</string>
+	<string name="portal_forgot_password">Forgot Password</string>
+	<string name="portal_local_mode">Local Mode</string>
+	<string name="portal_logging_in">Logging In</string>
+	<string name="portal_logging_out">Logging Out</string>
+	<string name="portal_login">Portal Login</string>
+	<string name="portal_menu">Portal Menu</string>
+	<string name="portal_offline">Offline</string>
+	<string name="portal_password_reset">Password Reset</string>
+	<string name="portal_password_reset_sent">Account password reset request sent. Please check your email for your new password.</string>
+	<string name="portal_pending_access_requests">Pending Access Requests</string>
+	<string name="portal_pending_access_requests_empty">You have no Access Requests Pending</string>
+	<string name="portal_please_enter_email">Please enter your email</string>
+	<string name="portal_register_email_sent">Account Created. An email has been sent to the address provided to activate your account.</string>
+	<string name="portal_remote_mode">Remote Mode</string>
+	<string name="portal_remote_mode_end">Stop Upload</string>
+	<string name="portal_remote_mode_start">Upload Layout</string>
+	<string name="portal_remote_viewing">Remote Viewing</string>
+	<string name="portal_remote_viewing_access">Remote Viewing Access</string>
+	<string name="portal_remote_your_feed">Your feed</string>
+	<string name="portal_session">Sessions</string>
+	<string name="portal_stop_uploading">Stop Uploading</string>
+	<string name="portal_update_successful">Account update successful</string>
+	<string name="portal_upload_layout">Upload Layout</string>
+	<string name="portal_upload_sessions_success">Successfully uploaded sessions</string>
+	<string name="portal_upload_sessions">Upload Sessions</string>
+	<string name="portal_uploading_sessions">Uploading Sessions</string>
+	<string name="portal_view_connections">Manage Access</string>
+	<string name="portal_viewable">Viewable</string>
+	<string name="portal_viewing">Viewing</string>
+	<string name="portal_warning_stars_required">* Items are required</string>
+	<string name="portal_web">Web Portal</string>
+	<string name="portal_welcome_name">Welcome back, {0}!</string>
+
+	<!--
+	PTCHART
+	-->
+	<string name="ptchart">P/T Chart</string>
+	<string name="ptchart_error_invalid_manifold">Cannot start PTChart Calculator: invalid Viewer</string>
+	<string name="ptchart_error_no_manifold">Cannot start PTChart Calculator: failed to get Viewer</string>
+	<string name="ptchart_error_cannot_start_activity_1sarg">Cannot start PT Chart Activity. Expected a pressure or temperature sensor. Received a sensor of type: {0}</string>
+	<string name="ptchart_error_change_unit">Please change the unit for the PT Chart.</string>
+
+	<!--
+	SENSOR
+	-->
+	<string name="sensor_create_manual_entry">Manual Entry</string>
+	<string name="sensor_select_type">Choose Device Type</string>
+
+	<!--
+	SUPERHEAT / SUBCOOL
+	-->
+  <string name="shsc">Superheat / Subcool</string>
+	<string name="shsc_error_failed_to_update_manifold">Failed to update Viewer</string>
+	<string name="shsc_error_invalid_manifold">Cannot start Superheat / Subcool Calculator: invalid Viewer</string>
+	<string name="shsc_error_no_workbench">Cannot start Superheat / Subcool Calculator: failed to get Viewer</string>
+
+	<!--
+	TIME
+	-->
+	<string name="time_days_abrv">days</string>
+	<string name="time_hours_abrv">hrs</string>
+	<string name="time_minute_abrv">min</string>
+	<string name="time_minutes_abrv">mins</string>
+	<string name="time_seconds_abrv">secs</string>
+
+  <!--
+  WORKBENCH
+  -->
+  <string name="workbench">Workbench</string>
+  <string name="workbench_remove">Remove from Workbench</string>
+  <string name="workbench_remove_sensor">You are about to remove a Viewer from the Workbench. Removing the viewer will also remove all of its subviews from the workbench. Do you wish to remove the Viewer?</string>
+
+	<string name="workbench_add_all">Add all Subviews</string>
+  <string name="workbench_add_viewer">Add to Workbench</string>
+  <string name="workbench_add_viewer_sub">Add Subview</string>
+  <string name="workbench_added_sensor">Added Sensor to Workbench</string>
+  <string name="workbench_alt">Alternate Unit</string>
+  <string name="workbench_alt_abrv">ALT</string>
+  <string name="workbench_hold">Hold Reading</string>
+  <string name="workbench_hold_abrv">HOLD</string>
+  <string name="workbench_graph">Live Graph</string>
+  <string name="workbench_linked">Linked</string>
+  <string name="workbench_max">Maximim Reading</string>
+  <string name="workbench_max_abrv">MAX</string>
+  <string name="workbench_min">Minimum Reading</string>
+  <string name="workbench_min_abrv">MIN</string>
+  <string name="workbench_timer">Time Tracker</string>
+  <string name="workbench_timer_abrv">TIMER</string>
+  <string name="workbench_ptchart">Pressure Temperature Chart</string>
+  <string name="workbench_roc">Rate of Change</string>
+  <string name="workbench_roc_abrv">RoC</string>
+  <string name="workbench_linked_sensor_2sarg">Linked {0} ({1})</string>
+  <string name="workbench_shsc">Superheat / Subcool</string>
+  <string name="workbench_shsc_abrv">S/H S/C</string>
+</resources>
