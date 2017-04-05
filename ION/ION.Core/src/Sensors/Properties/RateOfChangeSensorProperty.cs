@@ -8,6 +8,7 @@
 	using ION.Core.Content;
 
 	public class RateOfChangeSensorProperty : AbstractSensorProperty {
+
 		private static TimeSpan GRAPH_WINDOW = TimeSpan.FromSeconds(30);
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
 
@@ -22,6 +23,11 @@
 		/// The minimum interval of time that a sensor should wait before registering a new plot point.
 		/// </summary>
 		public TimeSpan interval { get; private set; }
+		/// <summary>
+		/// The flags for the sensor property.
+		/// </summary>
+		/// <value>The flags.</value>
+		public EFlags flags { get; set; }
 		/// <summary>
 		/// Returns the primary sensor graph points that have been saved in the proprty.
 		/// </summary>
@@ -85,7 +91,8 @@
 		private bool isRegisteredToSecondary;
 
 		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public RateOfChangeSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
+
 		}
 
 		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
@@ -94,6 +101,7 @@
 		private RateOfChangeSensorProperty(Manifold manifold, TimeSpan window, TimeSpan interval) : base(manifold) {
 			this.window = window;
 			this.interval = interval;
+			flags = EFlags.ShowAll;
 			primarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
 			secondarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
 			tertiaryBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
@@ -116,6 +124,7 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		public override void Dispose() {
 			base.Dispose();
 			if (isRegisteredToSecondary) {
@@ -125,6 +134,7 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		protected override void OnManifoldEvent(ManifoldEvent e) {
 			base.OnManifoldEvent(e);
 
@@ -144,9 +154,45 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		protected override void OnSensorChanged() {
 			base.OnSensorChanged();
 			RegisterPoint();
+		}
+
+		/// <summary>
+		/// Removes the given flags from the sensor property.
+		/// </summary>
+		/// <param name="flags">Flags.</param>
+		public void RemoveFlags(EFlags flags) {
+			this.flags &= ~flags;
+		}
+
+		/// <summary>
+		/// Adds the given flags from the sensor property.
+		/// </summary>
+		/// <param name="flags">Flags.</param>
+		public void AddFlags(EFlags flags) {
+			this.flags |= flags;
+		}
+
+		/// <summary>
+		/// Returns true if the sensor property's flags are active.
+		/// </summary>
+		/// <returns><c>true</c>, if flag was hased, <c>false</c> otherwise.</returns>
+		/// <param name="flags">Flags.</param>
+		public bool HasFlag(EFlags flags) {
+			return (this.flags & flags) == flags;
+		}
+
+		/// <summary>
+		/// Toggles the given flags in the sensor property.
+		/// </summary>
+		/// <returns>True if all of the given flags are active for the sensor property.</returns>
+		/// <param name="flags">Flags.</param>
+		public bool ToggleFlags(EFlags flags) {
+			this.flags ^= flags;
+			return (this.flags & flags) == flags; 
 		}
 
 		/// <summary>
@@ -260,6 +306,17 @@
 			var now = DateTime.Now;
 			while (now - primarySensorBuffer.last.date > window && primarySensorBuffer.RemoveLast());
 			while (now - secondarySensorBuffer.last.date > window && secondarySensorBuffer.RemoveLast());
+		}
+
+		/// <summary>
+		/// The flags that maintain the RoC's binary states.
+		/// </summary>
+		[Flags]
+		public enum EFlags {
+			ShowAll = ShowPrimary | ShowSecondary | ShowTertiary,
+			ShowPrimary = 1 << 0,
+			ShowSecondary = 1 << 1,
+			ShowTertiary = 1 << 2,
 		}
 
 		/// <summary>

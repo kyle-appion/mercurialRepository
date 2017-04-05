@@ -41,8 +41,8 @@ namespace ION.Droid.Fragments._Workbench {
 		private LinearAxis secondaryAxis;
 		private LinearAxis tertiaryAxis;
 
-		private LineSeries primarySensorSeries;
-		private LineSeries secondarySensorSeries;
+		private LineSeries primarySeries;
+		private LineSeries secondarySeries;
 		private LineSeries tertiarySeries;
 
 		private Handler handler;
@@ -81,6 +81,7 @@ namespace ION.Droid.Fragments._Workbench {
 			var baseUnit = record.manifold.primarySensor.unit.standardUnit;
 			primaryAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
+				AxislineColor = OxyColors.Red,
 				Minimum = 0,
 				Maximum = 100,
 				IsAxisVisible = false,
@@ -91,6 +92,7 @@ namespace ION.Droid.Fragments._Workbench {
 
 			secondaryAxis = new LinearAxis() {
 				Position = AxisPosition.Right,
+				AxislineColor = OxyColors.Blue,
 				Minimum = 0,
 				Maximum = 100,
 				IsAxisVisible = false,
@@ -101,6 +103,7 @@ namespace ION.Droid.Fragments._Workbench {
 
 			tertiaryAxis = new LinearAxis() {
 				Position = AxisPosition.Right,
+				AxislineColor = OxyColors.Green,
 				Minimum = 0,
 				Maximum = 100,
 				IsAxisVisible = false,
@@ -109,7 +112,7 @@ namespace ION.Droid.Fragments._Workbench {
 				Key = "third",
 			};
 
-			primarySensorSeries = new LineSeries() {
+			primarySeries = new LineSeries() {
 				StrokeThickness = 1,
 				MarkerType = MarkerType.Circle,
 				MarkerSize = 0,
@@ -118,7 +121,7 @@ namespace ION.Droid.Fragments._Workbench {
 				YAxisKey = "first",
 			};
 
-			secondarySensorSeries = new LineSeries() {
+			secondarySeries = new LineSeries() {
 				StrokeThickness = 1,
 				MarkerType = MarkerType.Circle,
 				MarkerSize = 0,
@@ -140,8 +143,8 @@ namespace ION.Droid.Fragments._Workbench {
 			model.Axes.Add(primaryAxis);
 			model.Axes.Add(secondaryAxis);
 			model.Axes.Add(tertiaryAxis);
-			model.Series.Add(primarySensorSeries);
-			model.Series.Add(secondarySensorSeries);
+			model.Series.Add(primarySeries);
+			model.Series.Add(secondarySeries);
 			model.Series.Add(tertiarySeries);
 			model.DefaultFontSize = 0;
 			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
@@ -172,6 +175,10 @@ namespace ION.Droid.Fragments._Workbench {
 		}
 
 		private void InvalidatePrimary() {
+			primarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowPrimary);
+			if (!primarySeries.IsVisible) {
+				return;
+			}
 			var c = title.Context;
 			var roc = record.sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
 			var amount = Math.Abs(roc.amount);
@@ -209,16 +216,21 @@ namespace ION.Droid.Fragments._Workbench {
 			primaryAxis.Minimum = primaryMinMax.min.amount - diff;
 			primaryAxis.Maximum = primaryMinMax.max.amount + diff;
 
-			primarySensorSeries.Points.Clear();
+			primarySeries.Points.Clear();
 			var primaryBuffer = record.sp.primarySensorPoints;
 			foreach (var pp in primaryBuffer) {
 				var t = record.sp.window - (primaryBuffer[0].date - pp.date);
-				primarySensorSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+				primarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
 		}
 
 		private void InvalidateSecondary() {
 			if (record.manifold.secondarySensor == null) {
+				return;
+			}
+
+			secondarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowSecondary);
+			if (!secondarySeries.IsVisible) {
 				return;
 			}
 
@@ -231,16 +243,21 @@ namespace ION.Droid.Fragments._Workbench {
 			secondaryAxis.Minimum = minMax.min.amount - diff;
 			secondaryAxis.Maximum = minMax.max.amount + diff;
 
-			secondarySensorSeries.Points.Clear();
+			secondarySeries.Points.Clear();
 			var secondaryBuffer = record.sp.secondarySensorPoints;
 			foreach (var pp in secondaryBuffer) {
 				var t = record.sp.window - (secondaryBuffer[0].date - pp.date);
-				secondarySensorSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+				secondarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
 		}
 
 		private void InvalidateTertiary() {
 			if (!record.sp.hasTertiaryPoints) {
+				return;
+			}
+
+			tertiarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowTertiary);
+			if (!tertiarySeries.IsVisible) {
 				return;
 			}
 

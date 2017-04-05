@@ -24,11 +24,9 @@
 		}
 	}
 
-
 	public class ROCSensorPropertyViewHolder : SensorPropertyViewHolder<RateOfChangeSensorProperty> {
 		private BitmapCache cache;
 		private PlotView plot;
-		private LineSeries mainSeries;
 		private TextView title;
 		private ImageView icon;
 		private TextView measurement;
@@ -36,7 +34,13 @@
 
 		private PlotModel model;
 		private LinearAxis xAxis;
-		private LinearAxis yAxis;
+		private LinearAxis primaryAxis;
+		private LinearAxis secondaryAxis;
+		private LinearAxis tertiaryAxis;
+
+		private LineSeries primarySeries;
+		private LineSeries secondarySeries;
+		private LineSeries tertiarySeries;
 
 		private Handler handler;
 		private bool isRunning;
@@ -72,26 +76,73 @@
 			};
 
 			var baseUnit = record.manifold.primarySensor.unit.standardUnit;
-			yAxis = new LinearAxis() {
+			primaryAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = record.manifold.primarySensor.minMeasurement.ConvertTo(baseUnit).amount,
-				Maximum = record.manifold.primarySensor.maxMeasurement.ConvertTo(baseUnit).amount,
+				AxislineColor = OxyColors.Red,
+				Minimum = 0,
+				Maximum = 100,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
+				Key = "first",
 			};
 
-			mainSeries = new LineSeries() {
+			secondaryAxis = new LinearAxis() {
+				Position = AxisPosition.Right,
+				AxislineColor = OxyColors.Blue,
+				Minimum = 0,
+				Maximum = 100,
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+				Key = "second",
+			};
+
+			tertiaryAxis = new LinearAxis() {
+				Position = AxisPosition.Right,
+				AxislineColor = OxyColors.Green,
+				Minimum = 0,
+				Maximum = 100,
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+				Key = "third",
+			};
+
+			primarySeries = new LineSeries() {
 				StrokeThickness = 1,
 				MarkerType = MarkerType.Circle,
 				MarkerSize = 0,
 				MarkerStroke = OxyColors.Transparent,
 				MarkerStrokeThickness = 0,
+				YAxisKey = "first",
+			};
+
+			secondarySeries = new LineSeries() {
+				StrokeThickness = 1,
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 0,
+				MarkerStroke = OxyColors.Transparent,
+				MarkerStrokeThickness = 0,
+				YAxisKey = "second",
+			};
+
+			tertiarySeries = new LineSeries() {
+				StrokeThickness = 1,
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 0,
+				MarkerStroke = OxyColors.Transparent,
+				MarkerStrokeThickness = 0,
+				YAxisKey = "third",
 			};
 
 			model.Axes.Add(xAxis);
-			model.Axes.Add(yAxis);
-			model.Series.Add(mainSeries);
+			model.Axes.Add(primaryAxis);
+			model.Axes.Add(secondaryAxis);
+			model.Axes.Add(tertiaryAxis);
+			model.Series.Add(primarySeries);
+			model.Series.Add(secondarySeries);
+			model.Series.Add(tertiarySeries);
 			model.DefaultFontSize = 0;
 			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 			plot.Model = model;
@@ -113,36 +164,37 @@
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
 			InvalidatePrimary();
+			InvalidateSecondary();
+			InvalidateTertiary();
 
 			plot.InvalidatePlot();
-			model.ResetAllAxes();
+			model.InvalidatePlot(true);
 		}
 
 		private void InvalidatePrimary() {
-/*
-			var c = ItemView.Context;
-
-			var roc = record.sp.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-			var u = record.sp.manifold.primarySensor.unit;
-			var su = u.standardUnit;
-
-			var amount = Math.Abs(roc);
+			primarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowPrimary);
+			if (!primarySeries.IsVisible) {
+				return;
+			}
+			var c = title.Context;
+			var roc = record.sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+			var amount = Math.Abs(roc.amount);
 			if (amount == 0) {
 				measurement.Text = c.GetString(Resource.String.stable);
 				unit.Visibility = ViewStates.Invisible;
 			} else {
 				var dmax = record.sp.sensor.maxMeasurement.amount / 10;
 				if (amount > dmax) {
-					measurement.Text = "> " + SensorUtils.ToFormattedString(su.OfScalar(dmax).ConvertTo(u));
+					measurement.Text = "> " + SensorUtils.ToFormattedString(roc.unit.OfScalar(dmax));
 				} else {
-					measurement.Text = SensorUtils.ToFormattedString(su.OfScalar(roc).ConvertTo(u));
+					measurement.Text = SensorUtils.ToFormattedString(roc.unit.OfScalar(amount));
 				}
 				unit.Visibility = ViewStates.Visible;
 				unit.Text = c.GetString(Resource.String.time_minute_abrv);
 			}
 
-			var dir = Math.Sign(roc);
-			if (roc == 0) {
+			var dir = Math.Sign(roc.amount);
+			if (roc.amount == 0) {
 				icon.Visibility = ViewStates.Invisible;
 			} else if (dir == 1) {
 				icon.Visibility = ViewStates.Visible;
@@ -153,22 +205,74 @@
 			}
 
 
-			var minMax = record.sp.primary.minMax;
-			double diff = (minMax.Item2 - minMax.Item1) / 10;
+			var primaryMinMax = record.sp.GetPrimaryMinMax();
+			double diff = primaryMinMax.diff / 10;
 			if (diff == 0) {
 				diff = 1;
 			}
-			yAxis.Minimum = minMax.Item1 - diff;
-			yAxis.Maximum = minMax.Item2 + diff;
+			primaryAxis.Minimum = primaryMinMax.min.amount - diff;
+			primaryAxis.Maximum = primaryMinMax.max.amount + diff;
 
-
-			mainSeries.Points.Clear();
-			var buffer = record.sp.primary.points;
-			foreach (var pp in buffer) {
-				var t = record.sp.window - (buffer[0].date - pp.date);
-				mainSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			primarySeries.Points.Clear();
+			var primaryBuffer = record.sp.primarySensorPoints;
+			foreach (var pp in primaryBuffer) {
+				var t = record.sp.window - (primaryBuffer[0].date - pp.date);
+				primarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
-*/
+		}
+
+		private void InvalidateSecondary() {
+			if (record.manifold.secondarySensor == null) {
+				return;
+			}
+
+			secondarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowSecondary);
+			if (!secondarySeries.IsVisible) {
+				return;
+			}
+
+			var minMax = record.sp.GetSecondaryMinMax();
+			double diff = minMax.diff / 10;
+			if (diff == 0) {
+				diff = 1;
+			}
+
+			secondaryAxis.Minimum = minMax.min.amount - diff;
+			secondaryAxis.Maximum = minMax.max.amount + diff;
+
+			secondarySeries.Points.Clear();
+			var secondaryBuffer = record.sp.secondarySensorPoints;
+			foreach (var pp in secondaryBuffer) {
+				var t = record.sp.window - (secondaryBuffer[0].date - pp.date);
+				secondarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			}
+		}
+
+		private void InvalidateTertiary() {
+			if (!record.sp.hasTertiaryPoints) {
+				return;
+			}
+
+			tertiarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowTertiary);
+			if (!tertiarySeries.IsVisible) {
+				return;
+			}
+
+			var minMax = record.sp.GetTertiaryMinMax();
+			double diff = minMax.diff / 10;
+			if (diff == 0) {
+				diff = 1;
+			}
+
+			tertiaryAxis.Minimum = minMax.min.amount - diff;
+			tertiaryAxis.Maximum = minMax.max.amount + diff;
+
+			tertiarySeries.Points.Clear();
+			var tertiaryBuffer = record.sp.tertiaryPoints;
+			foreach (var pp in tertiaryBuffer) {
+				var t = record.sp.window - (tertiaryBuffer[0].date - pp.date);
+				tertiarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			}
 		}
 
 		private void HandleMessage(Message msg) {
