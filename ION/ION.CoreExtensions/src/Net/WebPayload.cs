@@ -472,7 +472,7 @@ namespace ION.Core.Net {
 				
 				if(remoteAltitude != localAltitude){
 						Console.WriteLine("Updating last known location altitude");
-						ion.locationManager.setLocationRemote(remoteAltitude); 
+						ion.locationManager.AttemptSetLocation(Units.Length.METER.OfScalar(remoteAltitude)); 
 				}
 				////////////////////////////SETTING UP DEVICE MANAGER BASED ON REMOTE DATA
 				var dManager = response.GetValue("known");
