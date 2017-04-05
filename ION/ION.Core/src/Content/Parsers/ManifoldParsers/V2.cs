@@ -229,6 +229,8 @@
 		public ISensorProperty Read(Manifold manifold, BinaryReader reader) {
 			var ret = new RateOfChangeSensorProperty(manifold);
 
+			ret.Resize(TimeSpan.FromMilliseconds(reader.ReadDouble()), TimeSpan.FromMilliseconds(reader.ReadDouble()));
+			ret.flags = (RateOfChangeSensorProperty.EFlags)reader.ReadInt32();
 
 			return ret;
 		}
@@ -237,6 +239,11 @@
 		public bool Write(ISensorProperty sp, BinaryWriter writer) {
 			try {
 				var roc = (RateOfChangeSensorProperty)sp;
+
+				writer.Write(roc.window.TotalMilliseconds);
+				writer.Write(roc.interval.TotalMilliseconds);
+				writer.Write((int)roc.flags);
+
 				return true;
 			} catch (Exception e) {
 				Log.E(this, "Failed to write.", e);
