@@ -53,6 +53,11 @@
 			dragger = new ItemTouchHelper(new Dragger(this));
     }
 
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+			manifold = null;
+		}
+
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
 			base.OnAttachedToRecyclerView(recyclerView);
 			if (cache == null) {

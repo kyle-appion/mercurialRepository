@@ -90,6 +90,10 @@
     private const string JSON_LAYOUT = "layout";
     private const string JSON_UPLOAD_LAYOUTS = "uploadLayouts";
     private const string JSON_LAYOUT_JSON = "layoutJson";
+		private const string JSON_SETUP = "setup";
+		private const string JSON_POSITIONS = "positions";
+		private const string JSON_LOW_FLUID = "lfluid";
+		private const string JSON_HIGH_FLUID = "hfluid";
 
 		private const string JSON_REGISTER_USER = "registerUser";
 		private const string JSON_NEW_USER = "newuser";

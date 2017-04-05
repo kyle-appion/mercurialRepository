@@ -26,6 +26,8 @@
 		public RemoteAnalyzerLH lh;
 		[JsonProperty("version")]
 		public int version;
+		[JsonProperty("setup")]
+		public Setup setup;
 
 
 		public RemoteAppState() {
@@ -88,7 +90,29 @@
 			var state = new RemoteState();
 			state.isDataLogging = ((ion.dataLogManager.isRecording) ? 1 : 0) + "";
 
+			// Commit the legacy setup stuff
+			ret.setup = new Setup();
+			ret.setup.positions = ion.currentAnalyzer.__legacySwaps;
+			string lf = null, hf = null;
+			if (ion.currentAnalyzer.lowSideManifold != null) {
+				lf = ion.currentAnalyzer.lowSideManifold.ptChart.fluid.name;
+			}
+			if (ion.currentAnalyzer.highSideManifold != null) {
+				hf = ion.currentAnalyzer.highSideManifold.ptChart.fluid.name;
+			}
+			ret.setup.lowFluid = lf;
+			ret.setup.highFluid = hf;
+
 			return ret;
 		}
+	}
+
+	public class Setup {
+		[JsonProperty("positions")]
+		public int[] positions;
+		[JsonProperty("lfluid")]
+		public string lowFluid;
+		[JsonProperty("hfluid")]
+		public string highFluid;
 	}
 }

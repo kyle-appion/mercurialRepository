@@ -247,25 +247,25 @@ namespace ION.IOS.ViewController.Analyzer
 			}
     	await Task.Delay(TimeSpan.FromMilliseconds(2));
 			var rocproperty = property as RateOfChangeSensorProperty;
-			
-      var meas = rocproperty.modifiedMeasurement;
-			var abs = Math.Abs(meas.amount);
+
+			var roc = rocproperty.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var abs = Math.Abs(roc.amount);
       var range = (rocproperty.sensor.maxMeasurement - rocproperty.sensor.minMeasurement) / 10;
-			Console.WriteLine("Updating rate of change subview. meas: " + meas + " abs: " + abs + " range: " + range);
+			Console.WriteLine("Updating rate of change subview. meas: " + roc + " abs: " + abs + " range: " + range);
 
 			if (abs > range.magnitude) {
         rocReading.Text = ">" + SensorUtils.ToFormattedString(rocproperty.sensor.type, range, false) + "/min";
       } else {
-				rocReading.Text = SensorUtils.ToFormattedString(rocproperty.sensor.type, meas.unit.OfScalar(abs), false) + "/min";
+				rocReading.Text = SensorUtils.ToFormattedString(rocproperty.sensor.type, roc.unit.OfScalar(abs), false) + "/min";
       }
 
-      if (rocproperty.isStable) {
+      if (roc.amount == 0) {
         rocImage.Hidden = true;
         rocReading.Text = Strings.Workbench.Viewer.ROC_STABLE;
         isUpdating = false;
       } else {
         rocImage.Hidden = false;
-        if (meas < 0) {
+        if (roc.amount < 0) {
           rocImage.Image = UIImage.FromBundle("ic_arrow_trend_down");
         } else {
           rocImage.Image = UIImage.FromBundle("ic_arrow_trend_up");

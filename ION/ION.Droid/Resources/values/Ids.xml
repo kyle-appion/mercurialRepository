@@ -3,6 +3,9 @@
   <!--
   GENERAL APPLICATION ACTIONS
   -->
+  <item name="_1" type="id"/>
+  <item name="_2" type="id"/>
+  <item name="_3" type="id"/>
   <item name="add" type="id"/>
   <item name="address" type="id"/>
   <item name="address1" type="id"/>
@@ -14,6 +17,7 @@
   <item name="battery" type="id"/>
   <item name="button" type="id"/>
   <item name="button1" type="id"/>
+  <item name="button2" type="id"/>
   <item name="cancel" type="id"/>
   <item name="card" type="id"/>
   <item name="check" type="id"/>

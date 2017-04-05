@@ -2,6 +2,8 @@
 
 	using Appion.Commons.Measure;
 
+	using ION.Core.Content;
+
   /// <summary>
   /// A common implementation of a sensor property that will allow for quick
   /// implementation for a sensor property and provides common utility methods.
@@ -12,35 +14,15 @@
   /// you wish to react to changes within the property sensor, simply resolve
   /// them in modifiedMeasurement.set.
   /// </remarks>
-/*
-  [DataContract(Name="AbstractSensorProperty")]
-  [KnownType(typeof(AlternateUnitSensorProperty))]
-  [KnownType(typeof(HoldSensorProperty))]
-  [KnownType(typeof(MinSensorProperty))]
-  [KnownType(typeof(MaxSensorProperty))]
-*/
   public abstract class AbstractSensorProperty : ISensorProperty {
     // Overridden from ISensorProperty
     public event OnSensorPropertyChanged onSensorPropertyChanged;
 
+		// Overridden from ISensorProperty
+		public Manifold manifold { get; private set; }
+
     // Overridden from ISensorProperty
-    public Sensor sensor { 
-			get {
-				return __sensor;
-			}
-			private set {
-				if (__sensor != null) {
-					__sensor.onSensorStateChangedEvent -= SensorChangeEvent;
-				}
-
-				__sensor = value;
-
-				if (__sensor != null) {
-					__sensor.onSensorStateChangedEvent += SensorChangeEvent;
-				}
-			}
-		} Sensor __sensor;
-
+		public Sensor sensor { get { return manifold.primarySensor; } }
     // Overridden from ISensorProperty
     public virtual Scalar modifiedMeasurement {
       get {
@@ -73,14 +55,17 @@
       // Nope
     }
 
-    public AbstractSensorProperty(Sensor sensor) {
-      this.sensor = sensor;
+    public AbstractSensorProperty(Manifold manifold) {
+			this.manifold = manifold;
+			manifold.onManifoldEvent += OnManifoldEvent;
+			manifold.primarySensor.onSensorStateChangedEvent += SensorChangeEvent;
       Reset();
     }
 
     // Overridden from ISensorProperty
     public virtual void Dispose() {
-			sensor = null;
+			manifold.onManifoldEvent -= OnManifoldEvent;
+			manifold.primarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
     }
 
     // Overridden from ISensorProperty
@@ -104,12 +89,15 @@
     protected virtual void OnSensorChanged() {
     }
 
+		protected virtual void OnManifoldEvent(ManifoldEvent e) {
+		}
+
     /// <summary>
     /// The callback that will set the sensor's modified measurement to the
     /// sensor's new reading.
     /// </summary>
     /// <param name="sensor">Sensor.</param>
-    private void SensorChangeEvent(Sensor sensor) {
+    protected void SensorChangeEvent(Sensor sensor) {
       modifiedMeasurement = sensor.measurement;
 
       OnSensorChanged();

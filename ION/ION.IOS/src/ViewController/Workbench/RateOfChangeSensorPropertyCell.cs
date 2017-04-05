@@ -65,23 +65,23 @@ namespace ION.IOS.ViewController.Workbench {
 
     private async void DoUpdateCell() {
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
-      var meas = sp.modifiedMeasurement;
-			var abs = Math.Abs(meas.amount);
+			var roc = sp.GetPrimaryPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var abs = Math.Abs(roc.amount);
       var range = (sp.sensor.maxMeasurement - sp.sensor.minMeasurement) / 10;
 
 			if (abs > range.magnitude) {
         labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + Strings.Measure.PER_MINUTE;
       } else {
-				labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, meas.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
+				labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, roc.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
       }
 
-      if (sp.isStable) {
+			if (roc.amount == 0) {
         buttonIcon.Hidden = true;
         labelMeasurement.Text = Strings.Workbench.Viewer.ROC_STABLE;
         isUpdating = false;
       } else {
         buttonIcon.Hidden = false;
-        if (meas < 0) {
+        if (roc < 0) {
           buttonIcon.SetImage(UIImage.FromBundle("ic_arrow_trend_down"), UIControlState.Normal);
         } else {
           buttonIcon.SetImage(UIImage.FromBundle("ic_arrow_trend_up"), UIControlState.Normal);

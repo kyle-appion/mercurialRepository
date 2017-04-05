@@ -45,6 +45,11 @@
 			records.Add(new AddViewerRecord(onAddViewer));
 		}
 
+		protected override void Dispose(bool disposing) {
+			base.Dispose(disposing);
+			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+		}
+
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {
 			base.OnAttachedToRecyclerView(recyclerView);
 			if (cache == null) {
@@ -89,9 +94,6 @@
 				case EViewType.ROC: {
 					return new ROCSensorPropertyViewHolder(rv, cache);
 				} // EViewType.ROC
-				case EViewType.Graph: {
-					return new GraphSensorPropertyViewHolder(rv);	
-				} // EViewType.Graph
 				case EViewType.Timer: {
 					return new TimerSensorPropertyViewHolder(rv, cache);
 				} // EViewType.Timer
@@ -129,7 +131,7 @@
 				}));
 
 				mvh.onSerialNumberClicked = (obj) => {
-					if (!mr.isExpanded && mr.manifold.sensorPropertyCount > 0) {
+					if (mr.manifold.sensorPropertyCount > 0) {
 						DoToggleManifoldExpanded(mr);
 					}
 				};
@@ -240,8 +242,6 @@
 				return new SHSCSensorPropertyRecord(manifold, sp as SuperheatSubcoolSensorProperty);
 			} else if (sp is RateOfChangeSensorProperty) {
 				return new ROCSensorPropertyRecord(manifold, sp as RateOfChangeSensorProperty);
-			} else if (sp is GraphSensorProperty) {
-				return new GraphSensorPropertyRecord(manifold, sp as GraphSensorProperty);
 			} else if (sp is TimerSensorProperty) {
 				return new TimerSensorPropertyRecord(manifold, sp as TimerSensorProperty);
 			} else if (sp is SecondarySensorProperty) {
@@ -347,6 +347,7 @@
 			switch (e.type) {
 				case ManifoldEvent.EType.SensorPropertyAdded: {
 					var aifm = AdapterIndexForManifold(e.manifold);
+					NotifyItemChanged(aifm);
 					var mr = records[aifm] as ManifoldRecord;
 					if (mr.manifold.sensorPropertyCount == 1) {
 						mr.isExpanded = true;
@@ -357,14 +358,15 @@
 						records.Insert(i, record);
 						NotifyItemInserted(i);
 						if (mr.manifold.sensorPropertyCount > 1) {
-							NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
-						} else {
-							NotifyItemChanged(aifm - 1);
+								NotifyItemChanged(aifm + mr.manifold.sensorPropertyCount);
+							} else {
+								NotifyItemChanged(aifm - 1);
+							}
 						}
-					}
 				} break; // ManifoldEvent.EType.SensorPropertyAdded
 				case ManifoldEvent.EType.SensorPropertyRemoved: {
 					var aifm = AdapterIndexForManifold(e.manifold);
+					NotifyItemChanged(aifm);
 					var i = aifm + e.index + 1;
 					records.RemoveAt(i);
 					NotifyItemRemoved(i);
@@ -408,7 +410,6 @@
 			Add,
 			Manifold,
 
-			Graph,
 			Secondary,
 			ROC,
 			Timer,

@@ -6,6 +6,11 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using OxyPlot;
+	using OxyPlot.Axes;
+	using OxyPlot.Series;
+	using OxyPlot.Xamarin.Android;
+
 	using ION.Core.Content;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
@@ -13,85 +18,163 @@
 	using ION.Droid.Util;
 	using ION.Droid.Sensors.Properties;
 	using ION.Droid.Widgets.RecyclerViews;
-	using ION.Droid.Views;
 
 	public class ROCSensorPropertyRecord : SensorPropertyRecord<RateOfChangeSensorProperty> {
-		public ROCSensorPropertyRecord(Manifold manifold, RateOfChangeSensorProperty sp) : base(manifold, sp, SubviewAdapter.EViewType.ROC){ 
+		public ROCSensorPropertyRecord(Manifold manifold, RateOfChangeSensorProperty sp) : base(manifold, sp, SubviewAdapter.EViewType.ROC) {
 		}
 	}
 
-	public class ROCSensorPropertyViewHolder : SensorPropertyViewHolder<RateOfChangeSensorProperty> {
-		private const int MSG_INVALIDATE = 1;
 
+	public class ROCSensorPropertyViewHolder : SensorPropertyViewHolder<RateOfChangeSensorProperty> {
 		private BitmapCache cache;
+		private PlotView plot;
+		private LineSeries mainSeries;
 		private TextView title;
 		private ImageView icon;
 		private TextView measurement;
+		private TextView unit;
+
+		private PlotModel model;
+		private LinearAxis xAxis;
+		private LinearAxis yAxis;
 
 		private Handler handler;
+		private bool isRunning;
 
-		public ROCSensorPropertyViewHolder(SwipeRecyclerView recyclerView, BitmapCache cache) : base(recyclerView, Resource.Layout.subview_measurement_small) {
+		public ROCSensorPropertyViewHolder(SwipeRecyclerView recyclerView, BitmapCache cache) : base(recyclerView, Resource.Layout.subview_graph_small) {
 			this.cache = cache;
+			plot = this.foreground.FindViewById<PlotView>(Resource.Id.graph);
+			handler = new Handler(HandleMessage);
 			title = foreground.FindViewById<TextView>(Resource.Id.title);
 			icon = foreground.FindViewById<ImageView>(Resource.Id.icon);
 			measurement = foreground.FindViewById<TextView>(Resource.Id.measurement);
+			unit = foreground.FindViewById<TextView>(Resource.Id.unit);
+		}
 
-			handler = new Handler(HandleMessage);
+		public override void Bind() {
+			base.Bind();
+			isRunning = true;
+
+			model = new PlotModel() {
+				Padding = new OxyThickness(3),
+			};
+
+			xAxis = new LinearAxis() {
+				Position = AxisPosition.Bottom,
+				Minimum = 0,
+				Maximum = record.sp.window.TotalMilliseconds,
+
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+				MinimumPadding = 3,
+				MaximumPadding = 3,
+			};
+
+			var baseUnit = record.manifold.primarySensor.unit.standardUnit;
+			yAxis = new LinearAxis() {
+				Position = AxisPosition.Left,
+				Minimum = record.manifold.primarySensor.minMeasurement.ConvertTo(baseUnit).amount,
+				Maximum = record.manifold.primarySensor.maxMeasurement.ConvertTo(baseUnit).amount,
+				IsAxisVisible = false,
+				IsZoomEnabled = false,
+				IsPanEnabled = false,
+			};
+
+			mainSeries = new LineSeries() {
+				StrokeThickness = 1,
+				MarkerType = MarkerType.Circle,
+				MarkerSize = 0,
+				MarkerStroke = OxyColors.Transparent,
+				MarkerStrokeThickness = 0,
+			};
+
+			model.Axes.Add(xAxis);
+			model.Axes.Add(yAxis);
+			model.Series.Add(mainSeries);
+			model.DefaultFontSize = 0;
+			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
+			plot.Model = model;
+
+			handler.SendEmptyMessageDelayed(0, 500);
+		}
+
+		public override void Unbind() {
+			base.Unbind();
+			isRunning = false;
+			handler.RemoveCallbacksAndMessages(null);
 		}
 
 		public override void Invalidate() {
 			base.Invalidate();
-			if (record == null) {
-				return;
-			}
 
-			var c = title.Context;
-			var sp = record.sp;
+			var c = ItemView.Context;
 
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
-			if (sp.isStable) {
+			InvalidatePrimary();
+
+			plot.InvalidatePlot();
+			model.ResetAllAxes();
+		}
+
+		private void InvalidatePrimary() {
+/*
+			var c = ItemView.Context;
+
+			var roc = record.sp.GetAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+			var u = record.sp.manifold.primarySensor.unit;
+			var su = u.standardUnit;
+
+			var amount = Math.Abs(roc);
+			if (amount == 0) {
 				measurement.Text = c.GetString(Resource.String.stable);
-				icon.Visibility = ViewStates.Invisible;
+				unit.Visibility = ViewStates.Invisible;
 			} else {
-				var mod = sp.modifiedMeasurement.amount;
-
-				if (mod < 0) {
-					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+				var dmax = record.sp.sensor.maxMeasurement.amount / 10;
+				if (amount > dmax) {
+					measurement.Text = "> " + SensorUtils.ToFormattedString(su.OfScalar(dmax).ConvertTo(u));
 				} else {
-					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
+					measurement.Text = SensorUtils.ToFormattedString(su.OfScalar(roc).ConvertTo(u));
 				}
-
-				mod = Math.Abs(mod);
-
-				var dmax = sp.sensor.maxMeasurement.amount / 10;
-
-				if (System.Math.Abs(mod) >= dmax) {
-					measurement.Text = ">" + (int)dmax;
-				} else { 
-					measurement.Text = "" + (int)mod;
-				}
-
-				icon.Visibility = ViewStates.Visible;
+				unit.Visibility = ViewStates.Visible;
+				unit.Text = c.GetString(Resource.String.time_minute_abrv);
 			}
+
+			var dir = Math.Sign(roc);
+			if (roc == 0) {
+				icon.Visibility = ViewStates.Invisible;
+			} else if (dir == 1) {
+				icon.Visibility = ViewStates.Visible;
+				icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
+			} else {
+				icon.Visibility = ViewStates.Visible;
+				icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+			}
+
+
+			var minMax = record.sp.primary.minMax;
+			double diff = (minMax.Item2 - minMax.Item1) / 10;
+			if (diff == 0) {
+				diff = 1;
+			}
+			yAxis.Minimum = minMax.Item1 - diff;
+			yAxis.Maximum = minMax.Item2 + diff;
+
+
+			mainSeries.Points.Clear();
+			var buffer = record.sp.primary.points;
+			foreach (var pp in buffer) {
+				var t = record.sp.window - (buffer[0].date - pp.date);
+				mainSeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
+			}
+*/
 		}
 
-		/// <summary>
-		/// Informs the view template that it should unbind itself from its data source.
-		/// </summary>
-		public override void Unbind() {
-			base.Unbind();
-			handler.RemoveMessages(MSG_INVALIDATE);
-		}
-
-		/// <summary>
-		/// Handles the handler message that will update the template.
-		/// </summary>
-		/// <param name="message">Message.</param>
-		private void HandleMessage(Message message) {
+		private void HandleMessage(Message msg) {
 			Invalidate();
-			if (record != null) {
-				handler.SendEmptyMessageDelayed(MSG_INVALIDATE, 333);
+			if (isRunning) {
+				handler.SendEmptyMessageDelayed(0, (long)record.sp.interval.TotalMilliseconds);
 			}
 		}
 	}

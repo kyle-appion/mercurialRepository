@@ -712,27 +712,27 @@ namespace ION.Core.Net {
 					break;
 				case 3:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
-						manualManifold.AddSensorProperty(new MinSensorProperty(manualManifold.primarySensor));
+						manualManifold.AddSensorProperty(new MinSensorProperty(manualManifold));
 					}
 					break;
 				case 4:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-						manualManifold.AddSensorProperty(new MaxSensorProperty(manualManifold.primarySensor));
+						manualManifold.AddSensorProperty(new MaxSensorProperty(manualManifold));
 					}
 					break;
 				case 5:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(HoldSensorProperty))) {
-						manualManifold.AddSensorProperty(new HoldSensorProperty(manualManifold.primarySensor));
+						manualManifold.AddSensorProperty(new HoldSensorProperty(manualManifold));
 					}
 					break;
 				case 6:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-						manualManifold.AddSensorProperty(new RateOfChangeSensorProperty(manualManifold.primarySensor));
+						manualManifold.AddSensorProperty(new RateOfChangeSensorProperty(manualManifold));
 					}
 					break;
 				case 7:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(TimerSensorProperty))) {
-						manualManifold.AddSensorProperty(new TimerSensorProperty(manualManifold.primarySensor));
+						manualManifold.AddSensorProperty(new TimerSensorProperty(manualManifold));
 					}
 					break;
 				case 8:

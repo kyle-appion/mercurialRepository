@@ -22,6 +22,7 @@
   // ION.Droid
 	using ION.Droid.Activity.Tutorial;
 	using ION.Droid.Activity.Portal;
+	using App;
   using Job;
 	using Report;
   using Dialog;
@@ -417,8 +418,12 @@
     /// Terminates the application in a safe way.
     /// </summary>
     private void Shutdown() {
-      AppState.context.Dispose();
       Finish();
+			ion.PostToMainDelayed(() => {
+				AppState.context.Dispose();
+				StopService(new Intent(this, typeof(AppService)));
+			}, TimeSpan.FromSeconds(0.5));
+
     }
 
     /// <summary>

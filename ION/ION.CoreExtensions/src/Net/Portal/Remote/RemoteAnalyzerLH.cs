@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
-namespace ION.CoreExtensions.Net.Portal {
+﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
+	using System.Collections.Generic;
 
 	using Newtonsoft.Json;
 
@@ -124,17 +124,17 @@ namespace ION.CoreExtensions.Net.Portal {
 		public static ISensorProperty ParseSensorPropertyFromCode(Manifold manifold, string code) {
 			switch (code) {
 				case "Alternate":
-					return new AlternateUnitSensorProperty(manifold.primarySensor);
+					return new AlternateUnitSensorProperty(manifold);
 				case "Pressure":
 					return new PTChartSensorProperty(manifold);
 				case "Minimum":
-					return new MinSensorProperty(manifold.primarySensor);
+					return new MinSensorProperty(manifold);
 				case "Maximum":
-					return new MaxSensorProperty(manifold.primarySensor);
+					return new MaxSensorProperty(manifold);
 				case "Hold":
-					return new HoldSensorProperty(manifold.primarySensor);
+					return new HoldSensorProperty(manifold);
 				case "Rate":
-					return new RateOfChangeSensorProperty(manifold.primarySensor);
+					return new RateOfChangeSensorProperty(manifold);
 				case "Superheat":
 					return new SuperheatSubcoolSensorProperty(manifold);
 

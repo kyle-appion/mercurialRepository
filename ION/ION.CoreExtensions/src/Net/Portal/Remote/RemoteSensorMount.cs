@@ -36,6 +36,8 @@
 			serialNumber = gds.device.serialNumber.ToString();
 			sensorIndex = gds.index + "";
 			analyzerIndex = analyzer.IndexOfSensor(sensor) + "";
+			value = sensor.measurement.amount + "";
+			unit = UnitLookup.GetCode(sensor.unit) + "";
 		}
 	}
 }
