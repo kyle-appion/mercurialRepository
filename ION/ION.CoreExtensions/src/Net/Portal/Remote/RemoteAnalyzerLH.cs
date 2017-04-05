@@ -14,19 +14,27 @@
 	public class RemoteAnalyzerLH {
 		[JsonProperty("low")]
 		public string lowAnalyzerIndex;
+		[JsonProperty("lsn")]
+		public string lowSerialNumber;
+		[JsonProperty("lsi")]
+		public string lowSensorIndex;
 		[JsonProperty("las")]
 		public string lowLinkedSerialNumber;
-		[JsonProperty("lsi")]
-		public string lowLinkedIndex;
+		[JsonProperty("lai")]
+		public string lowLinkedSensorIndex;
 		[JsonProperty("lsub")]
 		public string[] lowSubviews;
 
 		[JsonProperty("high")]
 		public string highAnalyzerIndex;
+		[JsonProperty("hsn")]
+		public string highSerialNumber;
+		[JsonProperty("hsi")]
+		public string highSensorIndex;
 		[JsonProperty("has")]
 		public string highLinkedSerialNumber;
-		[JsonProperty("hsi")]
-		public string highLinkedIndex;
+		[JsonProperty("hai")]
+		public string highLinkedSensorIndex;
 		[JsonProperty("hsub")]
 		public string[] highSubviews;
 
@@ -37,18 +45,22 @@
 		public RemoteAnalyzerLH(Analyzer analyzer) {
 			lowAnalyzerIndex = "low";
 			lowLinkedSerialNumber = "null";
-			lowLinkedIndex = 0 + "";
+			lowSensorIndex = 0 + "";
 			lowSubviews = new string[0];
 
 			highAnalyzerIndex = "high";
 			highLinkedSerialNumber = "null";
-			highLinkedIndex = 0 + "";
+			highSensorIndex = 0 + "";
 			highSubviews = new string[0];
 
 			// Commit low side manifold
-			if (analyzer.lowSideManifold != null) {
+			if (analyzer.lowSideManifold != null && analyzer.lowSideManifold.primarySensor is GaugeDeviceSensor) {
 				var m = analyzer.lowSideManifold;
 				var gds = m.primarySensor as GaugeDeviceSensor;
+
+				lowSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
+				lowSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
+
 
 				if (gds != null) {
 					var i = analyzer.IndexOfSensor(gds);
@@ -57,7 +69,7 @@
 					var sgds = m.secondarySensor as GaugeDeviceSensor;
 					if (sgds != null) {
 						lowLinkedSerialNumber = sgds.device.serialNumber.ToString();
-						lowLinkedIndex = sgds.index + "";
+						lowLinkedSensorIndex = sgds.index + "";
 					}
 				}
 
@@ -77,6 +89,9 @@
 				var m = analyzer.highSideManifold;
 				var gds = m.primarySensor as GaugeDeviceSensor;
 
+				highSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
+				highSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
+
 				if (gds != null) {
 					var i = analyzer.IndexOfSensor(gds);
 					highAnalyzerIndex = i + "";
@@ -84,7 +99,7 @@
 					var sgds = m.secondarySensor as GaugeDeviceSensor;
 					if (sgds != null) {
 						highLinkedSerialNumber = sgds.device.serialNumber.ToString();
-						highLinkedIndex = sgds.index + "";
+						highLinkedSensorIndex = sgds.index + "";
 					}
 				}
 
