@@ -39,7 +39,7 @@
 		public PlotPoint[] secondarySensorPoints {
 			get {
 				RegisterPoint();
-				return primarySensorBuffer.ToArray();
+				return secondarySensorBuffer.ToArray();
 			}
 		}
 
@@ -55,6 +55,8 @@
 		/// The last time that a record was added to the buffer.
 		/// </summary>
 		private DateTime lastRecord;
+
+		private bool isRegisteredToSecondary;
 
 		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
 		public RateOfChangeSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
@@ -81,6 +83,38 @@
 				NotifyChanged();
 				secondarySensorBuffer.Clear();
 			}
+
+			if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
+				manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+			}
+		}
+
+		public override void Dispose() {
+			base.Dispose();
+			if (isRegisteredToSecondary) {
+				if (manifold.secondarySensor != null) {
+					manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+				}
+			}
+		}
+
+		protected override void OnManifoldEvent(ManifoldEvent e) {
+			base.OnManifoldEvent(e);
+
+			switch (e.type) {
+				case ManifoldEvent.EType.SecondarySensorAdded: {
+					if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
+						manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+					}
+					break;
+				} // ManifoldEvent.EType.SecondarySensorAdd
+				case ManifoldEvent.EType.SecondarySensorRemoved: {
+					if (manifold.secondarySensor != null && isRegisteredToSecondary) {
+						manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+					}
+					break;
+				} // Manifold.EType.SecondarySensorRemove
+			}
 		}
 
 		protected override void OnSensorChanged() {
@@ -95,23 +129,6 @@
 		/// <param name="window">Window.</param>
 		/// <param name="timeUnit">The unit of time for this rate of change.</param>
 		public Scalar GetPrimaryAverageRateOfChange(TimeSpan window, TimeSpan timeUnit) {
-			var p = primarySensorPoints;
-			var i = 0;
-			// Find the oldest windowed item.
-			while (i < p.Length - 1 && DateTime.Now - p[i].date < window) i++;
-			var pu = sensor.unit.standardUnit;
-			var pmag = (p[0].measurement - p[i].measurement) / (window.TotalMilliseconds / timeUnit.TotalMilliseconds);
-			var ret = pu.OfScalar(pmag).ConvertTo(manifold.primarySensor.unit);
-			return ret;
-		}
-
-		/// <summary>
-		/// Queries the average rate of change of the graph.
-		/// </summary>
-		/// <returns>The average rate of change.</returns>
-		/// <param name="window">Window.</param>
-		/// <param name="timeUnit">The unit of time for this rate of change.</param>
-		public Scalar GetSecondaryAverageRateOfChange(TimeSpan window, TimeSpan timeUnit) {
 			var p = primarySensorPoints;
 			var i = 0;
 			// Find the oldest windowed item.
@@ -143,7 +160,7 @@
 				return null;
 			} else {
 				double min = double.MaxValue, max = double.MinValue;
-				var points = primarySensorPoints;
+				var points = secondarySensorPoints;
 				foreach (var dp in points) {
 					if (dp.measurement < min) {
 						min = dp.measurement;
@@ -153,7 +170,7 @@
 					}
 				}
 
-				var u = manifold.primarySensor.unit;
+				var u = manifold.secondarySensor.unit;
 				return new MinMax(u.OfScalar(min), u.OfScalar(max));
 			}
 		}
@@ -167,13 +184,16 @@
 			var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
 			primarySensorBuffer.Resize(size);
 			secondarySensorBuffer.Resize(size);
-
 		}
 
 		private void RegisterPoint() {
 			Trim();
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+				if (manifold.secondarySensor != null) {
+					var ss = manifold.secondarySensor;
+					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));
+				}
 				lastRecord = DateTime.Now;
 			}
 		}

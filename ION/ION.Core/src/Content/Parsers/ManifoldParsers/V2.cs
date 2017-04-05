@@ -27,8 +27,8 @@
 			Register<HoldSensorProperty>(ECode.Hold);
 
 			Register<RateOfChangeSensorProperty>(ECode.RoC, new RoCParser());
+			Register<SecondarySensorProperty>(ECode.Secondary);
 			Register<TimerSensorProperty>(ECode.Timer);
-
 
 			Register<PTChartSensorProperty>(ECode.Pt);
 			Register<SuperheatSubcoolSensorProperty>(ECode.ShSc);
@@ -146,6 +146,7 @@
 		Hold,
 
 		RoC,
+		Secondary,
 		Timer,
 
 		Pt,
