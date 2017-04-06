@@ -3,6 +3,8 @@
 "settings_screen" = "Screen Settings";
 "settings_screen_leave_on" = "Leave Display On";
 
+"settings_analytics" = "App Analytics";
+
 "settings_units_default" = "Default Units";
 "settings_units_default_length" = "Length";
 "settings_units_default_pressure" = "Pressure";
