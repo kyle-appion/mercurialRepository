@@ -12,6 +12,10 @@
 
   using Appion.Commons.Util;
 
+  using ION.Core.App;
+
+  using ION.IOS.App;
+
   public class IosLogger : ILogger {
     private static string TAG = typeof(IosLogger).Name;
 
@@ -100,7 +104,7 @@
         Log.E(this, "Failed to upload analytics.", e);
       }
     }
-
+/*
     public void TestLoggingSystem() {
       Log.C(this, "here is a critical log... Yay!");
       Log.D(this, "Here is a debig log");
@@ -115,6 +119,26 @@
       Log.V(this, "Verboseness");
 
       Log.UploadLogs();
+    }
+*/
+
+    private void SaveSystemInfo(string dest) {
+      if (AppState.context == null) {
+        return;
+      }
+
+      try {
+        var fn = "SystemInfo.txt";
+        var file = Path.Combine(dest, fn);
+
+        var dump = new BaseAppDump(AppState.context, new IOSPlatformInfo());
+
+        using (var w = new StreamWriter(new FileStream(file, FileMode.OpenOrCreate))) {
+          w.Write(dump.ToString());
+        }
+      } catch (Exception e) {
+        Print(TAG, "Failed to save system info", e);
+      }
     }
 
     private void Print(string tag, string msg, Exception e = null) {

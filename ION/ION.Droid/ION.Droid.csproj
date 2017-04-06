@@ -153,7 +153,6 @@
     <Compile Include="src\Dialog\IONAlertDialog.cs" />
     <Compile Include="src\Dialog\ListDialogBuilder.cs" />
     <Compile Include="src\Util\BitmapCache.cs" />
-    <Compile Include="src\Util\LogPrinter.cs" />
     <Compile Include="src\App\AndroidION.cs" />
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />

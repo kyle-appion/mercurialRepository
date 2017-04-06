@@ -15,6 +15,9 @@
 
 	using Appion.Commons.Util;
 
+  using ION.Core.App;
+
+  using ION.Droid.App;
 	using ION.Droid.Preferences;
 
   public class AndroidLogger : ILogger {
@@ -118,6 +121,8 @@
         var fn = "AnalyticsUpload_" + DateTime.Now.ToUTCMilliseconds();
         var zip = Java.IO.File.CreateTempFile(fn, ".zip");
 
+        SaveSystemInfo(logs);
+
         using (var s = new ZipOutputStream(File.Create(zip.AbsolutePath))) {
           s.SetLevel(9);
           var buffer = new byte[4096];
@@ -153,6 +158,11 @@
         }
 
         if (zip.Exists()) {
+          foreach (var file in zip.ListFiles()) {
+            if (!file.Delete()) {
+              Android.Util.Log.Error(TAG, "Failed to delete log: " + file.Name);
+            }
+          }
           if (!zip.Delete()) {
             Android.Util.Log.Error(TAG, "Failed to delete zipped logs");
           }
@@ -162,6 +172,7 @@
       }
     }
 
+/*
     public void TestLoggingSystem() {
       Log.C(this, "here is a critical log... Yay!");
       Log.D(this, "Here is a debig log");
@@ -176,6 +187,25 @@
       Log.V(this, "Verboseness");
 
       Log.UploadLogs();
+    }
+*/
+
+    private void SaveSystemInfo(Java.IO.File dest) {
+      if (AppState.context == null) {
+        return;
+      }
+      try {
+        var fn = "SystemInfo.txt";
+        var file = new Java.IO.File(dest, fn);
+
+        var dump = new BaseAppDump(AppState.context, new AndroidPlatformInfo(context));
+
+        using (var w = new StreamWriter(new FileStream(file.AbsolutePath, FileMode.OpenOrCreate))) {
+          w.Write(dump.ToString());
+        }
+      } catch (Exception e) {
+        Print(new LogData(Log.Level.Error, TAG, "Failed to save system info", e));
+      }
     }
   }
 }

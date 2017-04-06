@@ -43,8 +43,6 @@
       var l = new AndroidLogger(this);
       Log.logger = l;
 
-      l.TestLoggingSystem();
-
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
 				EnsureBluetoothPermissions();
 			} else {
