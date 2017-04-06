@@ -44,6 +44,10 @@
       deviceInfo = new BaseDeviceInfo(ion);
       platformInfo = pi;
     }
+
+		public override string ToString() {
+			return string.Format("[BaseAppDump: appVersion={0}, deviceInfo={1}, platformInfo={2}]", appVersion, deviceInfo, platformInfo);
+		}
   }
 
   /// <summary>

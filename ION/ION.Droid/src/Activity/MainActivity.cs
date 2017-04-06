@@ -40,7 +40,10 @@
 			base.OnCreate (bundle);
 			Log.D(this, new AndroidPlatformInfo(this).ToString());
       SetContentView(Resource.Layout.activity_main);
-      Log.printer = new LogPrinter();
+      var l = new AndroidLogger(this);
+      Log.logger = l;
+
+      l.TestLoggingSystem();
 
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop) {
 				EnsureBluetoothPermissions();

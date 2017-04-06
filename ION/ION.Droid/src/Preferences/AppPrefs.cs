@@ -147,6 +147,21 @@
 			}
 		}
 
+		/// <summary>
+		/// Queries whether or not the user has enabled app analytics.
+		/// </summary>
+		/// <value><c>true</c> if allow app analytics; otherwise, <c>false</c>.</value>
+		public bool allowAppAnalytics {
+			get {
+				return prefs.GetBoolean(context.GetString(Resource.String.pkey_app_analytics), true);
+			}
+			set {
+				var e = prefs.Edit();
+				e.PutBoolean(context.GetString(Resource.String.pkey_app_analytics), value);
+				e.Commit();
+			}
+		}
+
 		public AppPrefs(Context context, ISharedPreferences prefs) {
       this.context = context;
       this.prefs = prefs;
