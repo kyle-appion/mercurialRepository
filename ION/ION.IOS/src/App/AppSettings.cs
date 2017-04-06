@@ -8,6 +8,9 @@
     const string KEY_KEY = "Key";
     const string KEY_DEFAULT_VALUE = "DefaultValue";
 
+    // App
+    const string KEY_ANALYTICS = "settings_app_analytics";
+
     // Location
     const string KEY_USE_GEO_LOCATION = "settings_location_use_geolocation";
 
@@ -24,6 +27,7 @@
     // Screen Settings
     const string KEY_WAKE_LOCK = "settings_screen_leave_on";
 
+    public readonly App app = new App();
     public readonly Location location = new Location();
     public readonly DefaultUnits units = new DefaultUnits();
     public readonly Alarm alarm = new Alarm();
@@ -62,6 +66,11 @@
         var val = item[KEY_DEFAULT_VALUE];
 
         switch (key.ToString()) { 
+          // App
+          case KEY_ANALYTICS:
+            app.analytics = ((NSNumber)val).BoolValue;
+            break;
+
           // Location
           case KEY_USE_GEO_LOCATION:
             location.useGeoLocation = ((NSNumber)val).BoolValue;
@@ -197,6 +206,10 @@
 				__vacuum = value;
 			}
 		} int __vacuum = 39;
+  }
+
+  public class App {
+    public bool analytics { get; set; }
   }
 
   public class Alarm {

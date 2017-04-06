@@ -22,7 +22,7 @@
     // Implemented for ILogger
     public bool isDiskSaveEnabled {
       get {
-        return true;
+        return new AppSettings().app.analytics;
       }
     }
 
