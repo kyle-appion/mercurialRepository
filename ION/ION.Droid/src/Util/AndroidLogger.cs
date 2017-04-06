@@ -1,5 +1,4 @@
-﻿using Org.Json;
-namespace ION.Droid {
+﻿namespace ION.Droid {
 
 	using System;
 	using System.Diagnostics;
@@ -7,6 +6,8 @@ namespace ION.Droid {
   using System.Net;
   using System.Text;
 	using System.Threading;
+
+  using Newtonsoft.Json.Linq;
 
 	using Android.Content;
 
@@ -83,13 +84,14 @@ namespace ION.Droid {
 		public Stream CreateLogDataStream(LogData data) {
 			try {
 				var date = data.logtime;
-        var filename = "AppionLogFile_" + date.Year + "_" + date.Month + "_" + date.Day;
+        var filename = "AppionLogFile_" + date.Year + "_" + date.Month + "_" + date.Day + ".txt";
 
 				// Create directory
 				var logs = context.GetFileStreamPath("logs");
         if (!logs.Exists()) {
           if (!logs.Mkdir()) {
             Android.Util.Log.Error(TAG, "Failed to make logs dir");
+            return null;
           }
         }
         // Create log file
@@ -143,12 +145,17 @@ namespace ION.Droid {
 
 #if DEBUG
         var sr = Encoding.UTF8.GetString(response);
-        var json = new JSONObject(sr);
-        Android.Util.Log.Debug(TAG, json.GetString("link"));
+        Android.Util.Log.Debug(TAG, sr);
 #endif
 
         if (!logs.Delete()) {
           Android.Util.Log.Error(TAG, "Failed to delete old user logs");
+        }
+
+        if (zip.Exists()) {
+          if (!zip.Delete()) {
+            Android.Util.Log.Error(TAG, "Failed to delete zipped logs");
+          }
         }
       } catch (Exception e) {
         Log.E(this, "Failed to upload analytics.", e);

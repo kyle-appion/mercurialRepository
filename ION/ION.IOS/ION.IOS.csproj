@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
@@ -24,7 +23,6 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n></MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -37,7 +35,6 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution</CodesignKey>
-    <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <MtouchI18n></MtouchI18n>
     <MtouchSdkVersion></MtouchSdkVersion>
     <CodesignProvision></CodesignProvision>
@@ -71,7 +68,6 @@
     <MtouchProfiling>false</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <MtouchUseRefCounting>true</MtouchUseRefCounting>
     <IpaPackageName></IpaPackageName>
     <MtouchFastDev>false</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
@@ -137,6 +133,10 @@
     <Reference Include="DSoft.UI">
       <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -946,6 +946,7 @@
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
     <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\App\IosLogger.cs" />
     <Compile Include="src\Connections\IosRigadoConnection.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.designer.cs">
