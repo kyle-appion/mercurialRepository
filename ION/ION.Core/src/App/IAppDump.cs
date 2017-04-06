@@ -65,6 +65,14 @@
 
       deviceSerials = list.ToArray();
     }
+
+    public override string ToString() {
+      if (deviceSerials == null || deviceSerials.Length <= 0) {
+        return "[BaseDeviceInfo: deviceSerials=[]]";
+      } else {
+        return string.Format("[BaseDeviceInfo: deviceSerials=[{0}]]", deviceSerials);
+      }
+    }
   }
 }
 
