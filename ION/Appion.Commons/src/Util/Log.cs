@@ -98,9 +98,17 @@ namespace Appion.Commons.Util {
     /// <returns>The logs async.</returns>
     public static void UploadLogs() {
       if (pendingTasks == null || pendingTasks.IsCompleted) {
-        pendingTasks = Task.Factory.StartNew(() => logger.UploadLogs());
+        pendingTasks = Task.Factory.StartNew(() => {
+          lock (locker) {
+            logger.UploadLogs();
+          }
+        });
       } else {
-        pendingTasks.ContinueWith((arg) => logger.UploadLogs());
+        pendingTasks.ContinueWith((arg) => {
+          lock (locker) {
+            logger.UploadLogs();
+          }
+        });
       }
     }
 
@@ -109,14 +117,18 @@ namespace Appion.Commons.Util {
 		/// </summary>
 		/// <param name="data">Data.</param>
     private static void SaveLogData(LogData data) {
-      if (pendingTasks == null || pendingTasks.IsCompleted) {
-        pendingTasks = Task.Factory.StartNew(() => {
-          DoSaveLogData(data);
-        });
-      } else {
-        pendingTasks.ContinueWith((task) => {
-          DoSaveLogData(data);
-        });
+      try {
+        if (pendingTasks == null || pendingTasks.IsCompleted) {
+          pendingTasks = Task.Factory.StartNew(() => {
+            DoSaveLogData(data);
+          });
+        } else {
+          pendingTasks.ContinueWith((task) => {
+            DoSaveLogData(data);
+          });
+        }
+      } catch (Exception e) {
+        logger.Print(new LogData(Level.Error, "Log.cs", "Failed to save log data", e));
       }
 		}
 
