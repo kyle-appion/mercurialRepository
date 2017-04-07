@@ -7,22 +7,22 @@ using Appion.Commons.Measure;
 using ION.Core.Fluids;
 using ION.IOS.Util;
 using ION.Core.App;
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.Analyzer {
   public partial class PTTableCell : UITableViewCell {
-    //private UILabel cellHeader = new UILabel(new CGRect(0,0,149, 30));
     private UILabel cellHeader;
-    //private UILabel fluidType = new UILabel(new CGRect(0,30,100,30));
     private UILabel fluidType;
-    //private UILabel tempReading = new UILabel(new CGRect(100,30,49,30));
     private UILabel tempReading;
+    public IosION ion;
 
 
     public PTTableCell(IntPtr handle) {
+    	ion = AppState.context as IosION;
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      if (lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+      if (!ion.webServices.downloading && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
         lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
       }
 

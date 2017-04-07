@@ -46,7 +46,7 @@
 			Appion.Commons.Util.Log.D("AppVersion", "Parsing version: " + version);
 			var parts = version.Split('.');
 			if (parts.Length != 3) {
-				throw new Exception("Cannot parse what's new: invalid version {" + version + "}");
+				//throw new Exception("Cannot parse what's new: invalid version {" + version + "}");
 			}
 
 			return new AppVersion(int.Parse(parts[0]), int.Parse(parts[1]), int.Parse(parts[2]));

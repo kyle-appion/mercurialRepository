@@ -8,20 +8,21 @@ using ION.Core.Fluids;
 using ION.Core.Sensors;
 using ION.IOS.Util;
 using ION.Core.App;
-
+using ION.IOS.App;
 
 namespace ION.IOS.ViewController.Analyzer {
   public partial class SHSCTableCell : UITableViewCell {
     public UILabel cellHeader;
     private UILabel fluidType;
     private UILabel tempReading;
+    public IosION ion;
 
     public SHSCTableCell(IntPtr handle) {
-      
+      ion = AppState.context as IosION;
     }
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
-      if (lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
+      if (!ion.webServices.downloading && lhSensor.manifold.ptChart.fluid != AppState.context.fluidManager.lastUsedFluid) {
         lhSensor.manifold.ptChart = PTChart.New(AppState.context, lhSensor.manifold.ptChart.state);
       }
 

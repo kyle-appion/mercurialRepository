@@ -58,7 +58,7 @@
 				// Read the version of the parser
 				var v = reader.ReadInt32();
 				if (version != v) {
-					throw new Exception("Cannot read analyzer from stream: expected version " + this.version + " received " + v);
+							//throw new Exception("Cannot read analyzer from stream: expected version " + this.version + " received " + v);
 				}
 				// Read the number of sensor per side
 				var sensorsPerSide = reader.ReadInt32();
