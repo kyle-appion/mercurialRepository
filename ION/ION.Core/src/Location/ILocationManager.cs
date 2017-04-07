@@ -68,6 +68,8 @@
     /// <returns>The address from location async.</returns>
     /// <param name="location">Location.</param>
     Task<Address> GetAddressFromLocationAsync(ILocation location);
+    
+    void setLocationRemote(double remoteAltitude);
   }
 
   /// <summary>

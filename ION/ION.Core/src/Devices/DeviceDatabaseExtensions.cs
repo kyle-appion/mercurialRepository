@@ -79,7 +79,7 @@
     /// <param name="device">Device.</param>
     public static Task<IDevice> ReconstructDevice(this IONDatabase db, DeviceRow device) {
       if (!device.serialNumber.IsValidSerialNumber()) {
-        throw new Exception("Failed to parse " + device.serialNumber + " into a serial number");
+        //throw new Exception("Failed to parse " + device.serialNumber + " into a serial number");
       }
 
       var serialNumber = device.serialNumber.ParseSerialNumber();

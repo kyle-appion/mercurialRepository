@@ -359,13 +359,13 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
     // Overridden from ViewController
     public override void ViewWillDisappear(bool animated) {  
-      base.ViewWillDisappear(animated);
+      base.ViewWillDisappear(animated);  
 			
 			if(lowHigh == 0){
-				Console.WriteLine("Set low fluid to " +this.ptChart.fluid.name);
+				Console.WriteLine("PT Set low fluid to " +this.ptChart.fluid.name);
 				ion.currentAnalyzer.lowFluid = this.ptChart.fluid;	
 			} else {
-				Console.WriteLine("Set high fluid to " +this.ptChart.fluid.name);
+				Console.WriteLine("PT Set high fluid to " +this.ptChart.fluid.name);
 				ion.currentAnalyzer.highFluid = this.ptChart.fluid;	
 			}
 			

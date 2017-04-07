@@ -452,7 +452,7 @@ namespace ION.Core.Net {
           {
               new KeyValuePair<string, string>("downloadLayouts", "manager"),          		
               new KeyValuePair<string, string>("userID", viewingID),
-          });  
+          });
           
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(downloadLayoutsUrl,formContent);
@@ -474,8 +474,14 @@ namespace ION.Core.Net {
 						Console.WriteLine("Updating last known location altitude");
 						ion.locationManager.AttemptSetLocation(Units.Length.METER.OfScalar(remoteAltitude)); 
 				}
-				////////////////////////////SETTING UP DEVICE MANAGER BASED ON REMOTE DATA
 				var dManager = response.GetValue("known");
+				var aManager = response.GetValue("alyzer");
+				var sensorOrder = response.GetValue("setup");
+				var aLowHigh = response.GetValue("LH");  
+				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
+				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());				
+				
+				////////////////////////////SETTING UP DEVICE MANAGER BASED ON REMOTE DATA
 				///create and update the device manager devices
 				foreach (var con in dManager) {
 					var deserializedToken = JsonConvert.DeserializeObject<connectedData>(con.ToString());
@@ -502,21 +508,38 @@ namespace ION.Core.Net {
 							newDevice.sensors[i].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
 						}
 						remoteDManager.Register(newDevice);  
-					}  
+					}
 				}
-				////////////////////////////SETTING UP THE ANALYZER BASED ON REMOTE DATA
-				var aManager = response.GetValue("alyzer");
-				var sensorOrder = response.GetValue("setup");
-				var aLowHigh = response.GetValue("LH");  
-				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
-				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());
 				
+				//Console.WriteLine("Low attached: " + deserializedLowHigh.lowAttached);
+				//Console.WriteLine("High attached: " + deserializedLowHigh.highAttached);
 				//////SET THE LOW MANIFOLD BASED ON THE REMOTE DATA
 				if(deserializedLowHigh.lowSerialNumber != "null"){
 					if(ion.currentAnalyzer.lowSideManifold == null || ion.currentAnalyzer.lowSideManifold.primarySensor.name != deserializedLowHigh.lowSerialNumber){
 						var lowISerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowSerialNumber);
 						var lowDevice = remoteDManager[lowISerial] as GaugeDevice;
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,lowDevice.sensors[deserializedLowHigh.lowSerialIndex], ion.fluidManager.LoadFluidAsync(deserializedPositions.lfluid).Result);
+					}
+					////SET THE SECONDARY SENSOR FOR LOW AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
+ 
+					if(deserializedLowHigh.lowAttached != "null"){
+						////LOW SIDE HAS A SECONDARY SENSOR ALREADY
+						if(ion.currentAnalyzer.lowSideManifold.secondarySensor != null ){
+							////CHECK IF LOW SIDE SECONDARY SENSOR HAS CHANGED
+							if(ion.currentAnalyzer.lowSideManifold.secondarySensor.name != deserializedLowHigh.lowAttached){
+								var lowASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowAttached);
+								var lowADevice = remoteDManager[lowASerial] as GaugeDevice;							
+								ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(lowADevice.sensors[deserializedLowHigh.lowAttachedIndex]);
+								Console.WriteLine("Set low secondary sensor to " + lowADevice.serialNumber.rawSerial);
+							}
+						}
+						/////LOW SIDE DOESN'T HAVE A SECONDARY SENSOR YET. AUTOMATICALLY ADD IT
+						else { 
+							var lowASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowAttached);
+							var lowADevice = remoteDManager[lowASerial] as GaugeDevice;
+							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(lowADevice.sensors[deserializedLowHigh.lowAttachedIndex]);
+								Console.WriteLine("Unset Set low secondary sensor to " + lowADevice.serialNumber.rawSerial);
+						}
 					}
 				} else {
 					ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,null,null);
@@ -527,15 +550,36 @@ namespace ION.Core.Net {
 					////HIGH SIDE MANIFOLD IS EMPTY OR DOESN'T MATCH THE REMOTE SERIAL NUMBER
 					if(ion.currentAnalyzer.highSideManifold == null || ion.currentAnalyzer.highSideManifold.primarySensor.name != deserializedLowHigh.highSerialNumber){
 						var highISerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highSerialNumber);
-						var highDevice = remoteDManager[highISerial] as GaugeDevice;											
+						var highDevice = remoteDManager[highISerial] as GaugeDevice;
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,highDevice.sensors[deserializedLowHigh.highSerialIndex], ion.fluidManager.LoadFluidAsync(deserializedPositions.hfluid).Result);
 					}
+					////SET THE SECONDARY SENSOR FOR HIGH AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
+					if(deserializedLowHigh.highAttached != "null"){
+						////HIGH SIDE HAS A SECONDARY SENSOR ALREADY
+						if(ion.currentAnalyzer.highSideManifold.secondarySensor != null){
+							////CHECK IF HIGH SIDE SECONDARY SENSOR HAS CHANGED
+							if(ion.currentAnalyzer.highSideManifold.secondarySensor.name != deserializedLowHigh.highAttached){
+								var highASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highAttached);
+								var highADevice = remoteDManager[highASerial] as GaugeDevice;
+								ion.currentAnalyzer.highSideManifold.SetSecondarySensor(highADevice.sensors[deserializedLowHigh.highAttachedIndex]);
+								Console.WriteLine("Set high secondary sensor to " + highADevice.serialNumber.rawSerial);
+							}
+						}
+						/////HIGH SIDE DOESN'T HAVE A SECONDARY SENSOR YET. AUTOMATICALLY ADD IT
+						else {
+								var highASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highAttached);
+								var highADevice = remoteDManager[highASerial] as GaugeDevice;
+								ion.currentAnalyzer.highSideManifold.SetSecondarySensor(highADevice.sensors[deserializedLowHigh.highAttachedIndex]);
+								Console.WriteLine("Set high secondary sensor to " + highADevice.serialNumber.rawSerial);
+						}
+					}
 				} else {
-					if(ion.currentAnalyzer.highSideManifold != null){				
+					if(ion.currentAnalyzer.highSideManifold != null){
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,null,null);
 					}
 				}
-
+				
+				////////////////////////////SETTING UP THE ANALYZER BASED ON REMOTE DATA
 				foreach (var con in aManager) {
 					var deserializedToken = JsonConvert.DeserializeObject<analyzerSetup>(con.ToString());
 					
@@ -552,18 +596,6 @@ namespace ION.Core.Net {
 						gDevice.sensors[deserializedToken.sensorIndex].analyzerSlot = deserializedToken.position;
 						remoteAnalyzer.sensorList.Add(gDevice.sensors[deserializedToken.sensorIndex]);
 					}
-
-					////SET THE SECONDARY SENSOR FOR LOW AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
-					if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
-						//if(ion.currentAnalyzer.lowSideManifold.secondarySensor != null && ion.currentAnalyzer.lowSideManifold.secondarySensor.name != deserializedLowHigh.lowAttached){
-							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(gDevice.sensors[deserializedLowHigh.lowAttachedIndex]);
-						//}
-					}
-					
-					////SET THE SECONDARY SENSOR FOR HIGH AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
-					if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
-						ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(gDevice.sensors[deserializedLowHigh.lowAttachedIndex]);
-					}
 				}
 				
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
@@ -573,6 +605,7 @@ namespace ION.Core.Net {
 				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;
 				remoteAnalyzer.highSubviews = new List<string>(deserializedLowHigh.highSubviews);
 				
+				////REMOVE ANY SENSORS FROM THE ANALYZER THAT THE REMOTE DEVICE HAS REMOVED
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
@@ -580,8 +613,22 @@ namespace ION.Core.Net {
 					}
 				}
 
+				if(deserializedLowHigh.lowAttached == "null"){
+					////SECONDARY SENSOR SHOULD BE SET TO NULL IF IT ISN'T
+					if(ion.currentAnalyzer.lowSideManifold != null && ion.currentAnalyzer.lowSideManifold.secondarySensor != null){
+						Console.WriteLine("Set low secondary sensor to null");
+						ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(null);
+					}
+				}
+				if(deserializedLowHigh.highAttached == "null"){
+					////SECONDARY SENSOR SHOULD BE SET TO NULL IF IT ISN'T
+					if(ion.currentAnalyzer.highSideManifold != null && ion.currentAnalyzer.highSideManifold.secondarySensor != null){
+						Console.WriteLine("Set high secondary sensor to null");
+						ion.currentAnalyzer.highSideManifold.SetSecondarySensor(null);
+					}
+				}
 				////////////////////////////SETTING UP THE WORKBENCH BASED ON REMOTE DATA			
-				var wManager = response.GetValue("workB");
+				var wManager = response.GetValue("workB");  
 
 				foreach(var con in wManager){
 					var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
@@ -595,11 +642,11 @@ namespace ION.Core.Net {
 					if(existing != -1){
 						Manifold updateManifold = workbench.manifolds[existing];  
 						
-						if(managerSensor.type == updateManifold.primarySensor.type){
-							updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
-							updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						}
+						//if(managerSensor.type == updateManifold.primarySensor.type){
+						//	updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+						//} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
+						//	updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+						//}
 						
 						if(updateManifold.ptChart.fluid.name != deserializedToken.fluidname){
 
@@ -609,7 +656,7 @@ namespace ION.Core.Net {
 							updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
 						}   
 						
-						if(deserializedToken.linkedSerial != "null" ){
+						if(deserializedToken.linkedSerial != "null" ){ 
 							if(updateManifold.secondarySensor != null){
 								///get current secondary sensor
 								var checkSensor = updateManifold.secondarySensor as GaugeDeviceSensor;
@@ -662,7 +709,7 @@ namespace ION.Core.Net {
 						SetupNewManifoldProperties(manualManifold,deserializedToken);
 					}					
 				}
-				
+				///REMOVE ANY WORKBENCH MANIFOLDS THAT ARE NOT IN THE REMOTE LIST
 				foreach(var manifold in workbench.manifolds.ToArray()){
 					if(!activeManifolds.Contains(manifold.primarySensor.name+manifold.primarySensor.type)){
 						workbench.Remove(manifold);
@@ -691,9 +738,11 @@ namespace ION.Core.Net {
 					timedOut = null;
 				}
 			}
+			
 		}  catch (Exception exception){
 			Console.WriteLine("Exception: " + exception);
 		}
+		//Console.WriteLine("Finished layout download");
 	}
 
 	public async void SetupNewManifoldProperties(Manifold manualManifold, workbenchSetup deserializedToken){

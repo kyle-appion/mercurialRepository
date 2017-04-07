@@ -304,7 +304,7 @@
           var msg = BuildErrorHeader(serialNumber, protocolVersion) + ": a device already exists with address " +
             ret.connection.address + " but a new device creation request was made for address " + connectionAddress;
           Log.C(this, msg);
-          throw new Exception(msg);
+          //throw new Exception(msg);
         }
       }
 
@@ -312,7 +312,7 @@
         var msg = BuildErrorHeader(serialNumber, protocolVersion) +
           ": Please ensure that the serial number is resgistered in ION.Core.Devices.Devices.xml";
         Log.C(this, msg);
-        throw new Exception(msg);
+        //throw new Exception(msg);
       }
 
       return ret;

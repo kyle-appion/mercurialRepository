@@ -19,7 +19,6 @@ namespace ION.IOS.ViewController.Analyzer {
 
     public void makeEvents(lowHighSensor lhSensor, CGRect tableRect){
       cellHeader = new UILabel(new CGRect(0, 0, 1.006 * tableRect.Width, .5 * lhSensor.cellHeight));
-      //cellReading = new UILabel(new CGRect(.2 * tableRect.Width, .5 * lhSensor.cellHeight, .8 * tableRect.Width, .5 * lhSensor.cellHeight));
       cellImage = new UIImageView(new CGRect(0, .5 * lhSensor.cellHeight, .2 * tableRect.Width, .5 * lhSensor.cellHeight));
 
       cellHeader.Text = "RoC";

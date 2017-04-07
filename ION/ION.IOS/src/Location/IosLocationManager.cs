@@ -139,6 +139,10 @@
       // TODO ahodder@appioninc.com: Implement get address
       return Task.FromResult(default(Address));
     }
+    
+    public void setLocationRemote(double remoteAltitude){
+			lastKnownLocation = new IosLocation(remoteAltitude);
+		}
 
     /// <summary>
     /// Called when we receive new location data.
