@@ -761,7 +761,7 @@
 		/// <param name="ion">Ion.</param>
 		/// <param name="userId">User identifier.</param>
 		public bool BeginAppStateUpload(IION ion) {
-			lock (this) {
+			lock (web) {
 				if (appStateUploadCancellationToken == null) {
 					appStateUploadCancellationToken = new CancellationTokenSource();
 					uploadLayoutTask = Task.Factory.StartNew(async () => {
@@ -783,7 +783,7 @@
 		/// Safely ends the app state upload task.
 		/// </summary>
 		public void EndAppStateUpload() {
-			lock (this) {
+			lock (web) {
 				if (appStateUploadCancellationToken != null) {
 					appStateUploadCancellationToken.Cancel();
 				}
@@ -900,6 +900,8 @@
 			var analyzer = ion.currentAnalyzer;
 			analyzer.isEditable = false;
 
+      // The set will contain sensor mounts that were present in the analyzer before the sync started that were removed
+      // by the app state. Simply, anything left in here after the following loop is removed from the analyzer.
 			var pendingSensorMountRemovals = new HashSet<Sensor>(analyzer.sensorList);
 
 			foreach (var sm in appState.analyzer) {
@@ -926,6 +928,7 @@
 				}
 			}
 
+      // Remove all pending sensor mounts
 			foreach (var sensor in pendingSensorMountRemovals) {
 				analyzer.RemoveSensor(sensor);
 			}
@@ -934,18 +937,43 @@
 			int index = 0;
 
 			// Sync the low manifold
-			if (int.TryParse(appState.lh.lowAnalyzerIndex, out index)) {
+      var uslpsn = appState.lh.lowSerialNumber;
+      if (uslpsn.IsValidSerialNumber()) {
+        var m = analyzer.lowSideManifold;
+
+        if (!int.TryParse(appState.lh.lowAnalyzerIndex, out index)) {
+          Log.D(this, "Wtf?!");
+          m = null;
+        }
 				// We have a low side manifold
 				var sensor = analyzer[index];
-				var m = analyzer.lowSideManifold;
-
 				if (m == null || !sensor.Equals(m.primarySensor)) {
 					// We need to update the manifold
 					var ret = analyzer.SetManifold(Analyzer.ESide.Low, sensor);
 					m = analyzer.lowSideManifold;
 				}
 
+        // The analyzer has a low side manifold, so lets set its subviews and secondary sensor.
 				if (m != null) {
+          // Start by setting the manifold's secondary sensor.
+          var uslsn = appState.lh.lowLinkedSerialNumber;
+          if (!string.IsNullOrEmpty(uslsn) && !uslsn.Equals("null", StringComparison.OrdinalIgnoreCase)) {
+            var lsn = uslsn.ParseSerialNumber();
+            int li = 0;
+            if (!int.TryParse(appState.lh.lowLinkedSensorIndex, out li)) {
+              Log.D(this, "Failed to parse low side sensor index {" + appState.lh.lowLinkedSensorIndex + "}");
+            } else {
+              var sd = ion.deviceManager[lsn] as GaugeDevice;
+              if (sd != null) {
+                var sds = sd[li];
+                if (m.secondarySensor != sds) {
+                  m.SetSecondarySensor(sds);
+                }
+              }
+            }
+          }
+
+          // Setup the subviews for the manifold.
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.lowSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
@@ -962,14 +990,23 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
-			}
+      } else {
+        if (analyzer.lowSideManifold != null) {
+          analyzer.SetManifold(Analyzer.ESide.Low, (Manifold)null);
+        }
+      }
 
 			// Sync the high manifold
-			if (int.TryParse(appState.lh.highAnalyzerIndex, out index)) {
+      var ushpsn = appState.lh.highSerialNumber;
+      if (ushpsn.IsValidSerialNumber()) {
+        var m = analyzer.highSideManifold;
+
+        if (!int.TryParse(appState.lh.highAnalyzerIndex, out index)) {
+          Log.D(this, "Wtf?!");
+          m = null;
+        }
 				// We have a low side manifold
 				var sensor = analyzer[index];
-				var m = analyzer.highSideManifold;
-
 				if (m == null || !sensor.Equals(m.primarySensor)) {
 					// We need to update the manifold
 					analyzer.SetManifold(Analyzer.ESide.High, sensor);
@@ -977,6 +1014,25 @@
 				}
 
 				if (m != null) {
+          // Start by setting the manifold's secondary sensor.
+          var ushsn = appState.lh.highLinkedSerialNumber;
+          if (!string.IsNullOrEmpty(ushsn) && !ushsn.Equals("null", StringComparison.OrdinalIgnoreCase)) {
+            var hsn = ushsn.ParseSerialNumber();
+            int hi = 0;
+            if (!int.TryParse(appState.lh.highLinkedSensorIndex, out hi)) {
+              Log.D(this, "Failed to parse high side sensor index {" + appState.lh.highLinkedSensorIndex + "}");
+            } else {
+              var sd = ion.deviceManager[hsn] as GaugeDevice;
+              if (sd != null) {
+                var sds = sd[hi];
+                if (m.secondarySensor != sds) {
+                  m.SetSecondarySensor(sds);
+                }
+              }
+            }
+          }
+
+          // Setup the subviews for the manifold.
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.highSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
@@ -993,7 +1049,11 @@
 						m.RemoveSensorProperty(sp);
 					}
 				}
-			}
+      } else {
+        if (analyzer.highSideManifold != null) {
+          analyzer.SetManifold(Analyzer.ESide.High, (Manifold)null);
+        }
+      }
 		}
 		/// <summary>
 		/// Attempts to sync the received uploaded workbench to the local remote workbench.

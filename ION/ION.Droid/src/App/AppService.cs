@@ -21,7 +21,7 @@
 	/// is killed and was not disconnected, then the service is responsible for recreating the application.
 	/// </summary>
 	[Service]
-	public class AppService : Service {
+  public class AppService : Service, Java.Lang.Thread.IUncaughtExceptionHandler {
 		/// <summary>
 		/// The id of that application's notification.
 		/// </summary>
@@ -36,7 +36,16 @@
 		// Overridden from Service
 		public override void OnCreate() {
 			base.OnCreate();
+      Java.Lang.Thread.DefaultUncaughtExceptionHandler = this;
+      AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
+        Log.E(this, "Uncaught Exception", e.ExceptionObject as Exception);
+      };
 		}
+
+    public void UncaughtException(Java.Lang.Thread thread, Java.Lang.Throwable e) {
+      Log.E(this, "Uncaught Exception: for thread: " + thread.Id + "\n" + e.Message + "\n" + e.StackTrace);
+      Java.Lang.JavaSystem.Exit(1);
+    }
 
 		/// <summary>
 		/// Initializes the service to the given ion.
