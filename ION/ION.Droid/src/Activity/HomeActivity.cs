@@ -7,6 +7,7 @@
   using Android.Content;
   using Android.Content.PM;
   using Android.Graphics.Drawables;
+  using Android.Net;
   using Android.OS;
   using Android.Views;
   using Android.Widget;
@@ -407,11 +408,26 @@
         dialog.Dismiss();
       });
       adb.SetPositiveButton(Resource.String.ok, (o, e) => {
+#if DEBUG == false
+        TryUploadLogs();
+#endif
         var dialog = o as Dialog;
         dialog.Dismiss();
         Shutdown();
       });
       adb.Show();
+    }
+
+    /// <summary>
+    /// Tries the upload logs.
+    /// </summary>
+    private void TryUploadLogs() {
+      // TODO ahodder@appioninc.com: Think up a clever way to manage how frequently this fires off.
+      var cm = GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+      var ni = cm.ActiveNetworkInfo;
+      if (ni != null && ni.IsConnected && ni.Type == ConnectivityType.Wifi) {
+        Log.UploadLogs();
+      }
     }
 
     /// <summary>
