@@ -288,7 +288,8 @@
       } else if (record is SpaceRecord) {
         return 5;
       } else {
-        throw new Exception("Cannot get row height for: " + record);
+        return 48;
+        //throw new Exception("Cannot get row height for: " + record);
       }
     }
 
@@ -361,7 +362,8 @@
 
         return cell;
       } else {
-        throw new Exception("Cannot get cell for record: " + record);
+      	return null;
+        //throw new Exception("Cannot get cell for record: " + record);
       }
     }
 

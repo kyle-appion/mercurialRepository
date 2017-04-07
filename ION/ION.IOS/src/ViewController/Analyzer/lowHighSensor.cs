@@ -238,8 +238,7 @@ namespace ION.IOS.ViewController.Analyzer
       changeFluid.TouchUpInside += openSHSC;
       changePTFluid.TouchUpInside += openPTC;
       ion.locationManager.onLocationChanged += OnLocationChanged;
-		}
-		
+		}		
 		
     private async void DoUpdateRocCell(ISensorProperty property) {
     	if(!tableSubviews.Contains("Rate")){
@@ -351,6 +350,20 @@ namespace ION.IOS.ViewController.Analyzer
     /// </summary>
     /// <param name="manifold">Manifold.</param>
     public void manifoldUpdating(ManifoldEvent Event){
+    	////MANIFOLD UPDATES FOR REMOTE VIEWING
+    	if(ion.webServices.downloading){
+	    	if(LabelSubview.BackgroundColor == UIColor.Blue){
+					if(ion.currentAnalyzer.lowSideManifold != null && manifold.ptChart != null &&  manifold.ptChart.fluid != ion.currentAnalyzer.lowSideManifold.ptChart.fluid){
+	    			Console.WriteLine("Manifold is updating low side fluid");
+						manifold.ptChart = PTChart.New(ion, manifold.ptChart.state,ion.currentAnalyzer.lowSideManifold.ptChart.fluid);
+					}
+				} else if (LabelSubview.BackgroundColor == UIColor.Red){
+					if(ion.currentAnalyzer.highSideManifold != null && manifold.ptChart != null && manifold.ptChart.fluid != ion.currentAnalyzer.highSideManifold.ptChart.fluid){
+	    			Console.WriteLine("Manifold is updating high side fluid");
+						manifold.ptChart = PTChart.New(ion, manifold.ptChart.state,ion.currentAnalyzer.highSideManifold.ptChart.fluid);
+					}
+				}
+			}
       //var manifold = Event.manifold;
       //Console.WriteLine(Event.type);
 			if(Event.type == ManifoldEvent.EType.SecondarySensorAdded){
@@ -408,24 +421,35 @@ namespace ION.IOS.ViewController.Analyzer
 							ion.currentAnalyzer.highSideManifold.SetSecondarySensor(__manifold.secondarySensor);		
 							Console.WriteLine("lowHighSensor set high side secondary sensor to " + __manifold.secondarySensor.name);
 						}
+					} else {
+						
 					}
 					
 			} else if ( Event.type == ManifoldEvent.EType.SecondarySensorRemoved){
 			
-				if(attachedSensor != null){
-					attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-					attachedSensor.topLabel.TextColor = UIColor.Gray;
-					attachedSensor = null;
-				}
-				///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
-				if(LabelSubview.BackgroundColor == UIColor.Blue){
-					Console.WriteLine("lowHighSensor Remove low side manifold in Analyzer class");
-					ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(null);
-					
-				} else if (LabelSubview.BackgroundColor == UIColor.Red){
-					Console.WriteLine("lowHighSensor Remove high side manifold in Analyzer class");
-					ion.currentAnalyzer.highSideManifold.SetSecondarySensor(null);
-				}				
+				if(!ion.webServices.downloading){
+					if(attachedSensor != null){
+						attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+						attachedSensor.topLabel.TextColor = UIColor.Gray;
+						attachedSensor = null;
+					}
+					///SET THE CURRENT ANALYZER MANIFOLDS TO THE ATTACHED SENSOR FOR REMOTE VIEWING						
+					if(LabelSubview.BackgroundColor == UIColor.Blue){
+						Console.WriteLine("lowHighSensor Remove low side manifold in Analyzer class");
+						ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(null);
+						
+					} else if (LabelSubview.BackgroundColor == UIColor.Red){
+						Console.WriteLine("lowHighSensor Remove high side manifold in Analyzer class");
+						ion.currentAnalyzer.highSideManifold.SetSecondarySensor(null);
+					}
+				} else {
+					//Console.WriteLine("local manifold secondary sensor removed");
+					if(attachedSensor != null){
+						attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
+						attachedSensor.topLabel.TextColor = UIColor.Gray;
+						attachedSensor = null;
+					}
+				}		
 			}
 			
 			subviewTable.ReloadData();

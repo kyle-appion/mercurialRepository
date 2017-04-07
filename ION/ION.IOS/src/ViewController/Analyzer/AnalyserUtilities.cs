@@ -380,98 +380,25 @@ namespace ION.IOS.ViewController.Analyzer
 		/// Removes 
 		/// </summary>
 		public static void RemoveRemoteDevice(sensor removeSensor, LowHighArea lowHighSensors, sensorGroup analyzerSensors){
-			//Console.WriteLine("Removing Device: " + removeSensor.currentSensor.name);
-      //removeSensor.snapArea.RemoveGestureRecognizer (removeSensor.holdGesture);
-  //    removeSensor.snapArea.RemoveGestureRecognizer(removeSensor.panGesture);
-  //    removeSensor.snapArea.BackgroundColor = UIColor.Clear;
-  //    removeSensor.availableView.Hidden = false;
-  //    removeSensor.sactionView.aView.Hidden = true;
-  //    removeSensor.addIcon.Hidden = false;
-  //    removeSensor.topLabel.Hidden = true;
-  //    removeSensor.topLabel.BackgroundColor = UIColor.Clear;
-  //    removeSensor.topLabel.TextColor = UIColor.Gray;
-  //    removeSensor.middleLabel.Hidden = true;
-  //    removeSensor.bottomLabel.Hidden = true;
-  //    removeSensor.topLabel.Text = "Press ";
-  //    removeSensor.middleLabel.Text = "0.00";
-  //    removeSensor.bottomLabel.Text = "";
-  //    //not sure if removing should disconnect the device.....
-  //    if (removeSensor.isManual.Equals(false)) {
-  //      removeSensor.currentSensor.onSensorStateChangedEvent -= removeSensor.gaugeUpdating;
-  //      removeSensor.sactionView.currentSensor.onSensorStateChangedEvent -= removeSensor.sactionView.gaugeUpdating;
-  //      removeSensor.lowArea.currentSensor.onSensorStateChangedEvent -= removeSensor.lowArea.gaugeUpdating;
-  //      removeSensor.highArea.currentSensor.onSensorStateChangedEvent -= removeSensor.lowArea.gaugeUpdating;
-
-  //      removeSensor.lowArea.manifold.Dispose();
-  //      removeSensor.highArea.manifold.Dispose();
-  //      removeSensor.currentSensor = null;
-  //      removeSensor.sactionView.currentSensor = null;
-  //      removeSensor.lowArea.currentSensor = null;
-  //      removeSensor.highArea.currentSensor = null;
-  //    }
-  //    removeSensor.isManual = false;
-  //    removeSensor.lowArea.snapArea.Hidden = true;
-  //    removeSensor.lowArea.isManual = false;
-  //    removeSensor.lowArea.max = 0;
-  //    removeSensor.lowArea.min = 0;
-  //    removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-  //    removeSensor.lowArea.subviewTable.Source = null;
-  //    removeSensor.lowArea.subviewTable.ReloadData ();
-  //    removeSensor.lowArea.subviewTable.Hidden = true;
-  //    //removeSensor.lowArea.tableSubviews = new List<string> ();
-  //    removeSensor.lowArea.tableSubviews.Clear();
-
-  //    removeSensor.highArea.snapArea.Hidden = true;
-  //    removeSensor.highArea.isManual = false;
-  //    removeSensor.highArea.max = 0;
-  //    removeSensor.highArea.min = 0;
-  //    removeSensor.lowArea.subviewHide.SetImage(null, UIControlState.Normal);
-  //    removeSensor.highArea.subviewTable.Source = null;
-  //    removeSensor.highArea.subviewTable.ReloadData ();
-  //    removeSensor.highArea.subviewTable.Hidden = true;
-  //    //removeSensor.highArea.tableSubviews = new List<string> ();
-  //    removeSensor.highArea.tableSubviews.Clear();
-
-  //    if (removeSensor.lowArea.attachedSensor != null) {
-  //      removeSensor.lowArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-  //     	removeSensor.lowArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-  //      removeSensor.lowArea.attachedSensor = null;
-
-  //      removeSensor.highArea.attachedSensor.topLabel.BackgroundColor = UIColor.Clear;
-  //      removeSensor.highArea.attachedSensor.topLabel.TextColor = UIColor.Gray;     
-  //      removeSensor.highArea.attachedSensor = null;
-  //    } else {
-  //      for (int i = 0; i < 8; i++) {
-  //        if (analyzerSensors.viewList[i].lowArea.attachedSensor != null && analyzerSensors.viewList[i].lowArea.attachedSensor == removeSensor) {
-  //          analyzerSensors.viewList[i].lowArea.attachedSensor = null;
-  //          analyzerSensors.viewList[i].highArea.attachedSensor = null;
-
-  //          if (analyzerSensors.viewList[i].currentSensor != null) {
-  //            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(analyzerSensors.viewList[i].currentSensor);
-  //            analyzerSensors.viewList[i].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
-  //            analyzerSensors.viewList[i].highArea.manifold = new Manifold(analyzerSensors.viewList[i].currentSensor);
-  //            analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
-  //          } else if (analyzerSensors.viewList[i].manualSensor != null) {
-  //            analyzerSensors.viewList[i].lowArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
-  //            analyzerSensors.viewList[i].lowArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
-  //            analyzerSensors.viewList[i].lowArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
-
-  //            analyzerSensors.viewList[i].highArea.manifold = new Manifold(analyzerSensors.viewList[i].manualSensor);
-  //            analyzerSensors.viewList[i].highArea.manifold.primarySensor.unit = analyzerSensors.viewList[i].lowArea.manualSensor.unit;
-  //            analyzerSensors.viewList[i].highArea.manifold.ptChart = PTChart.New(analyzerSensors.viewList[i].lowArea.ion, Fluid.EState.Dew);
-  //          }
-  //        }
-  //      }
-  //    } 
-
-  //    if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.lowArea.snapArea.AccessibilityIdentifier){
-  //      lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
-  //      ion.currentAnalyzer.lowAccessibility = "low";
-  //    }
-  //    else if (removeSensor.snapArea.AccessibilityIdentifier == lowHighSensors.highArea.snapArea.AccessibilityIdentifier){
-  //      lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
-		//		ion.currentAnalyzer.highAccessibility = "high";
-		//	}
+			Console.WriteLine("Removing Device: " + removeSensor.currentSensor.name);
+      removeSensor.snapArea.RemoveGestureRecognizer (removeSensor.holdGesture);
+      removeSensor.snapArea.RemoveGestureRecognizer(removeSensor.panGesture);
+      removeSensor.snapArea.BackgroundColor = UIColor.Clear;
+      removeSensor.availableView.Hidden = false;
+      removeSensor.sactionView.aView.Hidden = true;
+      removeSensor.addIcon.Hidden = false;
+      removeSensor.topLabel.Hidden = true;
+      removeSensor.topLabel.BackgroundColor = UIColor.Clear;
+      removeSensor.topLabel.TextColor = UIColor.Gray;
+      removeSensor.middleLabel.Hidden = true;
+      removeSensor.bottomLabel.Hidden = true;
+      removeSensor.topLabel.Text = "Press ";
+      removeSensor.middleLabel.Text = "0.00";
+      removeSensor.bottomLabel.Text = "";
+      removeSensor.currentSensor = null;
+      removeSensor.manualSensor = null;
+      removeSensor.sactionView.currentSensor = null;
+      removeSensor.isManual = false;
 		}		
 		
 		/// <summary>
@@ -797,11 +724,11 @@ namespace ION.IOS.ViewController.Analyzer
 			int swap = 0;
 			int swap2 = 0;
       bool removeLH = false;
-      Console.WriteLine("layout started");
-      foreach(var spot in analyzerSensors.areaList){
-				Console.WriteLine(spot);
-			}
-			Console.WriteLine(Environment.NewLine);
+   //   Console.WriteLine("layout started");
+   //   foreach(var spot in analyzerSensors.areaList){
+			//	Console.WriteLine(spot);
+			//}
+			//Console.WriteLine(Environment.NewLine);
 
 			////CHECK LOCATION OF SUBVIEW WHEN TOUCH ENDED TO DETERMINE INDEX PLACEMENT
 			if (analyzerSensors.snapRect1.Contains (touchPoint)) {
@@ -912,19 +839,19 @@ namespace ION.IOS.ViewController.Analyzer
 				swap = start;
 			}
       confirmLayout(analyzerSensors, View);
-      Console.WriteLine("layout ended");
+      //Console.WriteLine("layout ended");
    //   foreach(var spot in analyzerSensors.areaList){
 			//	Console.WriteLine(spot);
 			//}
-			Console.WriteLine(Environment.NewLine);
+			//Console.WriteLine(Environment.NewLine);
 			arrangeViews(analyzerSensors);
 			
-			Console.WriteLine("swap ended as " + swap);
+			//Console.WriteLine("swap ended as " + swap);
 			
 			int swapLocation = analyzerSensors.areaList.IndexOf(position);
 
 			//////SENSOR MOVED TO OPPOSITE "SIDE" AND NEEDS TO CHECK IF IT IS ASSOCIATED TO THE CORRESPONDING LOW OR HIGH AREA
-      if (removeLH) {
+      if (removeLH) {   
         if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier == start.ToString() && lowHighSensors.highArea.snapArea.AccessibilityIdentifier == swap.ToString()){
           Console.WriteLine("In utilities low start sensorSwap and set low accessibility to " + start + " and high accessibility to " + swap);
 					//////SWAP THE SENSOR MOUNT COLORS TO CORRESPOND TO THEIR NEW LOW HIGH ASSOCIATIONS
