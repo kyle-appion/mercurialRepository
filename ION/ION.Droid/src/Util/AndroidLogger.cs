@@ -7,8 +7,6 @@
   using System.Text;
 	using System.Threading;
 
-  using Newtonsoft.Json.Linq;
-
 	using Android.Content;
 
   using Java.Util.Zip;
@@ -123,11 +121,17 @@
 
         SaveSystemInfo(logs);
 
+        var files = logs.ListFiles();
+        if (files.Length < 2) {
+          Log.M(TAG, "Not uploading logs: nothing to upload");
+          return;
+        }
+
         using (var s = new ZipOutputStream(File.Create(zip.AbsolutePath))) {
           s.SetLevel(9);
           var buffer = new byte[4096];
 
-          foreach (var file in logs.ListFiles()) {
+          foreach (var file in files) {
             var entry = new ZipEntry(file.Name);
             entry.Time = DateTime.Now.ToUTCMilliseconds();
             s.PutNextEntry(entry);
@@ -153,16 +157,19 @@
         Android.Util.Log.Debug(TAG, sr);
 #endif
 
-        if (!logs.Delete()) {
-          Android.Util.Log.Error(TAG, "Failed to delete old user logs");
+        if (logs.Exists()) {
+          var lfiles = logs.ListFiles();
+          if (lfiles != null) {
+            foreach (var file in lfiles) {
+              file.Delete();
+            }
+          }
+          if (!logs.Delete()) {
+            Android.Util.Log.Error(TAG, "Failed to delete old user logs");
+          }
         }
 
         if (zip.Exists()) {
-          foreach (var file in zip.ListFiles()) {
-            if (!file.Delete()) {
-              Android.Util.Log.Error(TAG, "Failed to delete log: " + file.Name);
-            }
-          }
           if (!zip.Delete()) {
             Android.Util.Log.Error(TAG, "Failed to delete zipped logs");
           }

@@ -1,6 +1,6 @@
 ﻿ namespace ION.IOS.App {
 
-	using System;
+ 	using System;
 
 	using Foundation;
 	using UIKit;
@@ -9,9 +9,10 @@
 
 	using ION.Core.App;
 	using ION.Core.Net;
+
+  using ION.Net;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController;
-	using FlyoutNavigation;
 
 	// The UIApplicationDelegate for the application. This class is responsible for launching the
 	// User Interface of the application, as well as listening (and optionally responding) to application events from iOS.
@@ -202,7 +203,9 @@
       // If the application was previously in the background, optionally refresh the user interface.
     }
 
+
     public override void WillTerminate(UIApplication application) {
+      // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
       try {
         if(ion.dataLogManager.isRecording){
           var done = ion.dataLogManager.StopRecording().Result;
@@ -212,15 +215,23 @@
 					KeychainAccess.SetValueForKey(null,"userName");
 					KeychainAccess.SetValueForKey(null,"userPword");
 				}
-			var userID = KeychainAccess.ValueForKey("userID");
-				
+
+        if (Reachability.LocalWifiConnectionStatus() == NetworkStatus.ReachableViaWiFiNetwork) {
+          try {
+            Log.UploadLogs();
+          } catch (Exception ee) {
+            Log.E(this, "Failed to upload logs", ee);
+          }
+        }
+
+
+  			var userID = KeychainAccess.ValueForKey("userID");
 			  ion.webServices.updateOnlineStatus("0",userID);
         ion.SaveWorkbenchAsync().Wait();
         ion.Dispose();
       } catch (Exception e) {
         Log.E(this, "Failed to terminate ion instance", e);
       }
-      // Called when the application is about to terminate. Save data, if needed. See also DidEnterBackground.
     }
   }
 }
