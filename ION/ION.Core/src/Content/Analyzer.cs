@@ -614,7 +614,7 @@
 				case ESide.Low:
 					RemoveManifold(ESide.Low);
 					lowSideManifold = manifold;
-					if (manifold != null || manifold.ptChart == null) {
+					if (manifold != null && manifold.ptChart == null) {
 						manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
@@ -622,7 +622,7 @@
 				case ESide.High:
 					RemoveManifold(ESide.High);
 					highSideManifold = manifold;
-					if (manifold != null || manifold.ptChart == null) {
+					if (manifold != null && manifold.ptChart == null) {
 						manifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
