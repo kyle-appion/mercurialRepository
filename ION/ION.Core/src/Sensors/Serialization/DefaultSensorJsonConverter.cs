@@ -119,7 +119,8 @@
         if (device != null) {
           return device[index];
         } else {
-          throw new Exception("Failed to convert GaugeDeviceSensorModel to GaugeDeviceSensor");
+        	return null;
+          //throw new Exception("Failed to convert GaugeDeviceSensorModel to GaugeDeviceSensor");
         }
       }
     } // End GaugeDeviceSensorModel

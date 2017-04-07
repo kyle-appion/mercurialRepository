@@ -50,6 +50,9 @@
 		// Implemented from ILocationManager
 		public void StopAutomaticLocationPolling() {
 		}
+		// Implemented from ILocationManager
+		public void setLocationRemote(double remoteAltitude){
+		}
 
 		// Implemented from ILocationManager
 		public bool AttemptSetLocation(Scalar remoteAltitude) {

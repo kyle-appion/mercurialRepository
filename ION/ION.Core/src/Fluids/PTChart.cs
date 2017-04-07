@@ -63,7 +63,8 @@
       if (fluid == null) {
 				fluid = ion.fluidManager.lastUsedFluid;
 				if (fluid == null) {
-        	throw new Exception("Cannot create a PTChart with a null fluid");        
+					fluid = ion.fluidManager.LoadFluidAsync("R22").Result;
+        	//throw new Exception("Cannot create a PTChart with a null fluid");       
 				}
       }
       this.ion = ion;

@@ -91,11 +91,12 @@
 
 			var peripheral = centralManager.RetrievePeripheralsWithIdentifiers(new NSUuid(address))[0];
 			if (peripheral == null) {
-				throw new Exception("Cannot create connection to " + address + ": the address is not valid");
+				
+				//throw new Exception("Cannot create connection to " + address + ": the address is not valid");
 			}
 
 			if (!peripheral.Name.IsValidSerialNumber()) {
-				throw new Exception("Cannot create connection: peripheral does not have a valid serial number.");
+				//throw new Exception("Cannot create connection: peripheral does not have a valid serial number.");
 			}
 
 			var serialNumber = peripheral.Name.ParseSerialNumber();
