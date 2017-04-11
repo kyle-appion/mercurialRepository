@@ -95,12 +95,16 @@ namespace ION.Droid.Fragments._Workbench {
     /// <param name="savedInstanceState">Saved instance state.</param>
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
-      SetHasOptionsMenu(true);
-      AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
-      Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
+      try {
+        SetHasOptionsMenu(true);
+        AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
+      } catch (Exception e) {
+        Log.E(this, "Something failed when starting the workbench fragment", e);
+      }
 /*
 #if DEBUG
 			if (ion == null) {
+        Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
 				StartActivity(new Intent(Activity, typeof(MainActivity)));
 				Activity.Finish();
 				return;
