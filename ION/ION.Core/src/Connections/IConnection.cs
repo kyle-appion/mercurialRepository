@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Connections {
 
+  using System;
 
-namespace ION.Core.Connections {
   /// <summary>
   /// The delegate that is notified when a connection's state is changed.
   /// </summary>
@@ -50,10 +49,6 @@ namespace ION.Core.Connections {
     /// </summary>
     /// <value>The address.</value>
     string address { get; }
-    /// <summary>
-    /// Queries the current received signal strength of the connection.
-    /// </summary>
-    ESignalStrength signalStrength { get; }
     /// <summary>
     /// Queries the last packet that the connection received.
     /// </summary>
