@@ -9,6 +9,7 @@
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
+  using ION.Core.Content;
   using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Fluids;
@@ -70,6 +71,9 @@
 		protected override bool OnPostInit() {
 			context.UpdateNotification();
       isDisposed = false;
+
+      this.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+
 			return base.OnPostInit();
 		}
 
@@ -85,7 +89,29 @@
         isDisposed = true;
       }
 #endif
+    }
 
+    private void OnWorkbenchEvent(WorkbenchEvent e) {
+      switch (e.type) {
+        case WorkbenchEvent.EType.Added:
+        case WorkbenchEvent.EType.Removed:
+        case WorkbenchEvent.EType.Swapped:
+          SaveWorkbenchAsync();
+          break;
+
+        case WorkbenchEvent.EType.ManifoldEvent: {
+            switch (e.manifoldEvent.type) {
+              case ManifoldEvent.EType.SecondarySensorAdded:
+              case ManifoldEvent.EType.SecondarySensorRemoved:
+              case ManifoldEvent.EType.SensorPropertySwapped:
+              case ManifoldEvent.EType.SensorPropertyAdded:
+              case ManifoldEvent.EType.SensorPropertyRemoved:
+                SaveWorkbenchAsync();
+                break;
+            }
+          break;
+        }// WorkbenchEvent.EType.ManifoldEvent
+      }
     }
 
 #if DEBUG

@@ -1,4 +1,3 @@
-using ION.Droid.Content;
 namespace ION.Droid.Fragments._Workbench {
 
   using System;
@@ -18,10 +17,10 @@ namespace ION.Droid.Fragments._Workbench {
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
-  // Using ION.Droid
   using Activity;
   using Activity.DeviceManager;
 	using App;
+  using ION.Droid.Content;
   using Dialog;
   using Sensors;
 	using Widgets.RecyclerViews;
@@ -123,7 +122,7 @@ namespace ION.Droid.Fragments._Workbench {
 				workbench = ion.LoadWorkbenchAsync().Result;
 //				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
-			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+//			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
 			adapter = new WorkbenchAdapter(OnAddViewer, workbench);
 			list.SetAdapter(adapter);
@@ -137,7 +136,7 @@ namespace ION.Droid.Fragments._Workbench {
 		public override void OnPause() {
 			base.OnPause();
 
-			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+//			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
@@ -146,7 +145,7 @@ namespace ION.Droid.Fragments._Workbench {
     public override void OnDestroy() {
       base.OnDestroy();
       if (workbench != null) {
-        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+//        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
       }
 			if (adapter != null) {
 				adapter.Dispose();
@@ -245,6 +244,7 @@ namespace ION.Droid.Fragments._Workbench {
     /// Called when a manifold event is thrown by the manifold.
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
+/*
     private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
 			((SwipeRecyclerView)list).swipingEnabled = workbench.isEditable;
 
@@ -275,6 +275,7 @@ namespace ION.Droid.Fragments._Workbench {
 				break;
 			}
 		}
+*/
 
     /// <summary>
     /// Shows a context dialog for a manifold. This will present all the options that are available for
