@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.ViewController.RemoteAccess {
+namespace ION.IOS.ViewController.RemoteAccess {
 
 	using System;
 	using System.Collections.Generic;
@@ -317,7 +317,7 @@
         // Append gauge device sensor context items
         if (!sensor.device.isConnected) {
           dialog.AddAction(UIAlertAction.Create(Strings.Device.RECONNECT.FromResources(), UIAlertActionStyle.Default, (action) => {
-            sensor.device.connection.ConnectAsync();
+            sensor.device.connection.Connect();
           }));
         }
 #if DEBUG

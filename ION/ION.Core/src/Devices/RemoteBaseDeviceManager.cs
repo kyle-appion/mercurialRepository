@@ -148,6 +148,10 @@
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
+    // Implemented from IDeviceManager
+    public void PostInit() {
+    }
+
     // Overridden from IDeviceManager
     public void Dispose() {
       __connectionHelper.onDeviceFound -= OnDeviceFound;

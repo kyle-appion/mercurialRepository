@@ -155,6 +155,10 @@
       };
     }
 
+    // Implemented for IManager
+    public void PostInit() {
+    }
+
     /// <summary>
     /// Attempts to start automatic location polling.
     /// </summary>

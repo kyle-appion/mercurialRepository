@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid.Devices {
+namespace TestBench.Droid.Devices {
 
 	using System;
 	using System.Collections.Generic;
@@ -57,7 +57,7 @@
 
 			foreach (var device in devices) {
 				var start = DateTime.Now;
-				await device.connection.ConnectAsync();
+				await device.connection.Connect();
 				while (!device.isConnected && DateTime.Now - start < timeout) {
 					await Task.Delay(250);
 				}

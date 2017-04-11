@@ -1,14 +1,7 @@
 ﻿namespace ION.Droid.App {
 
   using System;
-  using System.Collections.Generic;
-  using System.Threading.Tasks;
-
-  using Android.App;
-  using Android.Content;
-  using Android.Content.PM;
-  using Android.OS;
-  using Android.Support.V4.App;
+  using System.IO;
 
 	using Java.IO;
 
@@ -16,23 +9,17 @@
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
-  using ION.Core.App;
-  using ION.Core.Content;
-  using ION.Core.Content.Parsers;
   using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Fluids;
   using ION.Core.IO;
-  using ION.Core.Location;
   using ION.Core.Report.DataLogs;
 
-	using ION.CoreExtensions.Net.Portal;
+  using ION.CoreExtensions.IO;
 
   using ION.Droid.Alarms.Alerts;
-  using ION.Droid.Activity;
   using ION.Droid.Connections;
   using ION.Droid.Location;
-  using ION.Droid.Preferences;
 
   public class AndroidION : BaseAndroidION {
 		public AndroidION(AppService context) : base(context) {
@@ -82,17 +69,26 @@
 
 		protected override bool OnPostInit() {
 			context.UpdateNotification();
+      isDisposed = false;
 			return base.OnPostInit();
 		}
 
 		// Implemented from IION
+    private bool isDisposed = false;
     public override void Dispose() {
 			base.Dispose();
-			#if DEBUG
-			ExportDatabaseToSdCard();
-			#endif
+
+#if DEBUG
+      if (!isDisposed) {
+  			ExportDatabaseToSdCard();
+        ExportLogsToSdCard();
+        isDisposed = true;
+      }
+#endif
+
     }
 
+#if DEBUG
 		private void ExportDatabaseToSdCard() {
 			Log.D(this, "Exporting database");
 			try {
@@ -110,13 +106,28 @@
 					fos.Flush();
 					fos.Close();
 
-					Log.D(this, "Successfully exported the sd card.");
+					Log.D(this, "Successfully exported the database to the sd card.");
 				}
 			} catch (Exception e) {
 				Log.E(this, "Failed to export database to SD card", e);
 			}
 		}
-    
+
+
+    private void ExportLogsToSdCard() {
+      Log.D(this, "Exporting logs");
+      try {
+        var newLocation = new Java.IO.File(context.GetExternalFilesDir(""), "logs");
+        var logs = context.GetFileStreamPath("logs");
+        var dir = new IONFolder(new DirectoryInfo(logs.AbsolutePath));
+        dir.CopyToOrThrow(newLocation.AbsolutePath, true);
+
+        Log.D(this, "Successfully exported logs to the sd card.");
+      } catch (Exception e) {
+        Log.E(this, "Failed to export logs to SD card", e);
+      }
+    }
+#endif
   }
 }
 

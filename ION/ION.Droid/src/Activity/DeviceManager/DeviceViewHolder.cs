@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.DeviceManager {
+namespace ION.Droid.Activity.DeviceManager {
 
   using System;
 
@@ -58,7 +58,7 @@
       connect.SetOnClickListener(new ViewClickAction((v) => {
         switch (record.data.connection.connectionState) {
           case EConnectionState.Disconnected:
-            record.data.connection.ConnectAsync();
+            record.data.connection.Connect();
             break;
           default:
             record.data.connection.Disconnect();

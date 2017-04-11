@@ -121,12 +121,6 @@
 
     DeviceFactory deviceFactory { get; }
 
-    /// <summary>
-    /// Requests that the device manager enable its communication backend.
-    /// </summary>
-    /// <returns>A task that will return true if the backend was enabled,
-    /// false otherwise</returns>
-//    Task<bool> EnableAsync();
 
     /// <summary>
     /// Forgets all devices that the device manager has found, but are not known.
@@ -147,15 +141,6 @@
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
-
-		/// <summary>
-		/// Creates a new device using the provided serial number, connection  and protocol. 
-		/// </summary>
-		/// <returns>The device.</returns>
-		/// <param name="serialNumber">Serial number.</param>
-		/// <param name="connection">Connection.</param>
-		/// <param name="protocol">Protocol.</param>
-//		IDevice CreateDevice(ISerialNumber serialNumber, IConnection connection, EProtocolVersion protocol);
 
     /// <summary>
     /// Queries all of the device that are of the given type.

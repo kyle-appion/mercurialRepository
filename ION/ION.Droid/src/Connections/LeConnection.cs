@@ -1,12 +1,10 @@
 ﻿namespace ION.Droid.Connections {
 
 	using System;
-	using System.Collections.Generic;
-	using System.Threading.Tasks;
 
 	using Android.Bluetooth;
 	using Android.Content;
-	using Android.OS;
+  using Android.OS;
 
 	using Java.Util;
 
@@ -16,7 +14,7 @@
 	using Core.Connections;
 
 
-	public class LeConnection : BluetoothGattCallback, IConnection, Handler.ICallback {
+  public class LeConnection : BluetoothGattCallback, IConnection, Handler.ICallback {
 		/// <summary>
 		/// A utility method used to create the UUIDs necessary for use for the
 		/// bluetooth api.
@@ -46,25 +44,15 @@
 		/// <summary>
 		/// The UUID for the write characteristic.
 		/// </summary>
-		/// <param name="content">Content.</param>
 		private static readonly UUID WRITE_CHARACTERISTIC = Inflate("ffe9");
-		/// <summary>
-		/// The default time that is allowed for a rigado connection attempt.
-		/// </summary>
-		private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
-		/// <summary>
-		/// The delay from a disconnecto to a reconnect attempt.
-		/// </summary>
-		private const long RECONNECT_DELAY = 3000;
-
-		/// <summary>
-		/// The message that is used when a connection of other attempt 
-		/// </summary>
-		private const int MSG_TIMEOUT = -1;
-		/// <summary>
-		/// The message that is used when a connection needs to append a reconnect attempt.
-		/// </summary>
-		private const int MSG_RECONNECT = 1;
+    /// <summary>
+    /// The delay from a disconnecto to a reconnect attempt.
+    /// </summary>
+    private const long PASSIVE_DELAY = 1000 * 30;
+    /// <summary>
+    /// The message that is used to start a passive connection attempt for the connection.
+    /// </summary>
+    private const int MSG_GO_PASSIVE = 1;
 
 		public event OnConnectionStateChanged onStateChanged;
 
@@ -134,62 +122,76 @@
 		/// The characteristic that is used to write to the bluetooth device.
 		/// </summary>
 		private BluetoothGattCharacteristic writeCharacteristic;
-		/// <summary>
-		/// The handler that is responsible for synchronizing and orchestrating connection events.
-		/// </summary>
-		private Handler handler;
-		/// <summary>
-		/// The number of attempted reconnects that the handler has performed.
-		/// </summary>
-		private int reconnectAttempts;
+    /// <summary>
+    /// The object that is locked for multithread synchronization.
+    /// </summary>
+    private object locker = new object();
+    /// <summary>
+    /// The handler that is used to post delayed actions to.
+    /// </summary>
+    private Handler handler;
 
 		public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
 			this.context = context;
 			this.manager = manager;
 			this.device = device;
 			connectionState = EConnectionState.Disconnected;
-			connectionTimeout = DEFAULT_TIMEOUT;
 			lastSeen = DateTime.FromFileTimeUtc(0);
-			handler = new Handler(Looper.MainLooper, this);
-			reconnectAttempts = 0;
+      handler = new Handler(Looper.MainLooper, this);
 		}
 
-		public Task<bool> ConnectAsync() {
-			lock (this) {
-				if (connectionState != EConnectionState.Disconnected || !manager.Adapter.IsEnabled) {
-					return Task.FromResult(false);
-				} else {
-					connectionState = EConnectionState.Connecting;
-				}
-			}
+    // Implemented from IConnection
+    public bool Connect() {
+      lock (locker) {
+        if (gatt == null) {
+          try {
+            connectionState = EConnectionState.Connecting;
+            gatt = device.ConnectGatt(context, false, this);
+            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
+            return true;
+          } catch (Exception e) {
+            Log.E(this, "Failed to start pending gatt connection.", e);
+            return false;
+          }
+        } else {
+          try {
+            Disconnect(true);
+            return true;
+          } catch (Exception e) {
+            Log.E(this, "Failed to attempt connect of pending gatt connection.", e);
+            return false;
+          }
+        }
+      }
+    }
 
-			var start = DateTime.Now;
+    // Implemented from IConnection
+    public void Disconnect(bool reconnect=false) {
+      lock (locker) {
+        handler.RemoveMessages(MSG_GO_PASSIVE);
 
-			gatt = device.ConnectGatt(context, false, this);
+        readCharacteristic = null;
+        writeCharacteristic = null;
 
-			if (gatt == null) {
-				connectionState = EConnectionState.Disconnected;
-				return Task.FromResult(false);
-			} else {
-				return Task.FromResult(true);
-			}
-		}
+        lastSeen = DateTime.Now;
+        connectionState = EConnectionState.Disconnected;
 
-		public void Disconnect() {
-			handler.RemoveMessages(MSG_RECONNECT);
+        // Bounce out early as we have nothing to do.
+        if (gatt == null) {
+          return;
+        }
 
-			if (gatt != null) {
-				gatt.Disconnect();
-				gatt.Close();
-			}
+        gatt.Disconnect();
+        gatt.Close();
+        gatt = null;
 
-			readCharacteristic = null;
-			writeCharacteristic = null;
+        if (reconnect) {
+          handler.PostDelayed(() => Connect(), 1500);
+        }
+      }
+    }
 
-			lastSeen = DateTime.Now;
-			connectionState = EConnectionState.Disconnected;
-		}
-
+    // Implemented from IConnection
 		public bool Write(byte[] packet) {
 			if (!isConnected) {
 				return false;
@@ -199,23 +201,6 @@
 				return gatt.WriteCharacteristic(writeCharacteristic);
 			} else {
 				return false;
-			}
-		}
-
-		public bool HandleMessage(Message msg) {
-			switch (msg.What) {
-				case MSG_TIMEOUT:
-					Disconnect();
-					return true;
-				case MSG_RECONNECT:
-					if (reconnectAttempts < 2) {
-						ConnectAsync();
-					} else {
-						reconnectAttempts = 0;
-					}
-					return true;
-				default:
-					return false;
 			}
 		}
 
@@ -231,31 +216,37 @@
 			}
 		}
 
-		public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
-			switch (newState) {
-				case ProfileState.Connected:
-					connectionState = EConnectionState.Resolving;
-					lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
+    public override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
+      Log.D(this, "The Rigado device is in state: " + newState);
+      switch (newState) {
+        case ProfileState.Connected: {
+          handler.RemoveMessages(MSG_GO_PASSIVE);
+          connectionState = EConnectionState.Resolving;
+          lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
 
-					if (!gatt.DiscoverServices()) {
-						Log.E(this, "Failed to start service discovery for: " + device.Name);
-						Disconnect();
-					} else {
-						reconnectAttempts = 0;
-						connectionState = EConnectionState.Resolving;
-						handler.SendMessageDelayed(handler.ObtainMessage(MSG_TIMEOUT, 0, 0), (long)connectionTimeout.TotalMilliseconds);
-					}
-					break;
-				case ProfileState.Connecting:
-					break;
-				case ProfileState.Disconnected:
-					DoUnexpectedDisconnect();
-					break;
-				case ProfileState.Disconnecting:
-					DoUnexpectedDisconnect();
-					break;
-			}
-		}
+          if (!gatt.DiscoverServices()) {
+            Log.E(this, "Failed to start service discovery for: " + device.Name);
+            Disconnect();
+          } else {
+            connectionState = EConnectionState.Resolving;
+          }
+          break;
+        } // ProfileState.Connected
+
+        case ProfileState.Connecting: {
+          break;
+        } // ProfileState.Connecting
+
+        case ProfileState.Disconnected: {
+          Disconnect(true);
+          break;
+        } // ProfileState.Disconnected
+
+        case ProfileState.Disconnecting: {
+          break;
+        } // ProfileState.Disconnecting
+      }
+    }
 
 		public override void OnServicesDiscovered(BluetoothGatt gatt, GattStatus status) {
 			if (ValidateServices()) {
@@ -265,29 +256,58 @@
 					return;
 				}
 
-				handler.RemoveMessages(MSG_TIMEOUT);
 				connectionState = EConnectionState.Connected;
 			} else {
+        Log.E(this, "Failed to discover services. Disconnecting device.");
+        Disconnect();
+/*
 				connectionState = EConnectionState.Resolving;
 				gatt.DiscoverServices();
+*/
 			}
 		}
 
-		/// <summary>
-		/// Attempts to heal a connection on an unexpected disconnect.
-		/// </summary>
-		private void DoUnexpectedDisconnect() {
-			if (connectionState == EConnectionState.Disconnected) {
-				return;
-			}
+    // Implemented for Handler.ICallback
+    public bool HandleMessage(Message msg) {
+      switch (msg.What) {
+        case MSG_GO_PASSIVE: {
+          if (isConnected) {
+            Disconnect(true);
+          }
 
-			Disconnect();
+          return ConnectPassive();
+        } // MSG_GO_PASSIVE
 
-			if (!handler.HasMessages(MSG_RECONNECT)) {
-				reconnectAttempts++;
-				handler.SendEmptyMessageDelayed(MSG_RECONNECT, RECONNECT_DELAY);
-			}
-		}
+        default: {
+          return false;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Performs a passive connect - meaning that the connection will be established in the furture at an indeterminate
+    /// time when the platform walks into range of the device.
+    /// </summary>
+    /// <returns><c>true</c>, if passive was connected, <c>false</c> otherwise.</returns>
+    private bool ConnectPassive() {
+      lock (locker) {
+        if (isConnected) {
+          return true;
+        }
+
+        if (gatt != null) {
+          Disconnect();
+        }
+
+        try {
+          gatt = device.ConnectGatt(context, true, this);
+          return true;
+        } catch (Exception e) {
+          Log.E(this, string.Format("Failed to start passive connect for device [{0}: {1}]", name, address), e);
+          return false;
+        }
+      }
+    }
 
 		/// <summary>
 		/// Checks the gatt object to see if we have successfully validated the services. If the gatt object is null, then

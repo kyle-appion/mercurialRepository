@@ -57,6 +57,10 @@
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
+    // Implemented for IManager
+    public void PostInit() {
+    }
+
     /// <summary>
     /// Releases all resources used by the <see cref="ION.Core.Logs.DataLogManager"/> object.
     /// </summary>

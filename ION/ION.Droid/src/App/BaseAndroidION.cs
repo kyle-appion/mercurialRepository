@@ -150,6 +150,11 @@
 		/// </summary>
 		protected Handler handler { get; private set; }
 
+    /// <summary>
+    /// The object that we will lock to for multithreading purposes.
+    /// </summary>
+    private object locker = new object();
+
 		public BaseAndroidION(AppService context) {
 			this.context = context;
 			handler = new Handler(Looper.MainLooper);
@@ -211,6 +216,13 @@
 					currentAnalyzer = new Analyzer(this);
 				}
 
+        // Start post initialization
+        database.PostInit();
+        deviceManager.PostInit();
+        fluidManager.PostInit();
+        locationManager.PostInit();
+        dataLogManager.PostInit();
+        alarmManager.PostInit();
 				if (!OnPostInit()) {
 					return false;
 				}
@@ -254,7 +266,7 @@
 		// Implemented from IION
 		public virtual Task SaveWorkbenchAsync() {
 			return Task.Factory.StartNew(() => {
-				lock (this) {
+				lock (locker) {
 					var internalDirectory = fileManager.GetApplicationInternalDirectory();
 					var file = internalDirectory.GetFile(PRIMARY_WORKBENCH_FILENAME, EFileAccessResponse.CreateIfMissing);
 					var parser = new WorkbenchParser();
@@ -283,22 +295,24 @@
 		// Implemented from IION
 		public virtual Task<Workbench> LoadWorkbenchAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
-				try {
-					var parser = new WorkbenchParser();
-					using (var s = file.OpenForReading()) {
-						return parser.ReadFromStream(this, s);
-					}
-				} catch (Exception e) {
-					Log.E(this, "Failed to load workbench. Defaulting to a new one.", e);
-					return new Workbench(this);
-				}
+        lock (locker) {
+  				try {
+  					var parser = new WorkbenchParser();
+  					using (var s = file.OpenForReading()) {
+  						return parser.ReadFromStream(this, s);
+  					}
+  				} catch (Exception e) {
+  					Log.E(this, "Failed to load workbench. Defaulting to a new one.", e);
+  					return new Workbench(this);
+  				}
+        }
 			});
 		}
 
 		// Implemented from IION
 		public virtual Task SaveAnalyzerAsync() {
 			return Task.Factory.StartNew(() => {
-				lock (this) {
+				lock (locker) {
 					var internalDirectory = fileManager.GetApplicationInternalDirectory();
 					var file = internalDirectory.GetFile(PRIMARY_ANALYZER_FILENAME, EFileAccessResponse.CreateIfMissing);
 					var parser = new AnalyzerParser();
@@ -327,15 +341,17 @@
 		// Implemented from IION
 		public virtual Task<Analyzer> LoadAnalyzerAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
-				try {
-					var parser = new AnalyzerParser();
-					using (var s = file.OpenForReading()) {
-						return parser.ReadFromStream(this, s);
-					}
-				} catch (Exception e) {
-					Log.E(this, "Failed to load analyzer. Defaulting to a new one.", e);
-					return new Analyzer(this);
-				}
+        lock (locker) {
+  				try {
+  					var parser = new AnalyzerParser();
+  					using (var s = file.OpenForReading()) {
+  						return parser.ReadFromStream(this, s);
+  					}
+  				} catch (Exception e) {
+  					Log.E(this, "Failed to load analyzer. Defaulting to a new one.", e);
+  					return new Analyzer(this);
+  				}
+        }
 			});
 		}
 

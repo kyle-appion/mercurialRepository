@@ -74,6 +74,10 @@
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
+    // Implemented for IManager
+    public void PostInit() {
+    }
+
     /// <summary>
     /// Releases all resource used by the <see cref="ION.Core.Alarms.BaseAlarmManager"/> object.
     /// </summary>

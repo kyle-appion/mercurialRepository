@@ -38,6 +38,11 @@
 			});
 		}
 
+    // Implemented from ILocationManager
+    public void PostInit() {
+    }
+
+
 		// Implemented from ILocationManager
 		public void Dispose() {
 		}

@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.ViewController.RemoteDeviceManager {
+namespace ION.IOS.ViewController.RemoteDeviceManager {
 
   using System;
   using System.Collections.Generic;
@@ -372,7 +372,7 @@
         cell.UpdateTo(r, tableView.Bounds.Width, () => {
           if (onSensorAddClicked != null) {
             if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {
-              r.sensor.device.connection.ConnectAsync();
+              r.sensor.device.connection.Connect();
             }
             onSensorAddClicked(r.sensor, indexPath);
           }

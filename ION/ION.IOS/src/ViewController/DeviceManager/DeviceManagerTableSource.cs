@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.ViewController.DeviceManager {
+namespace ION.IOS.ViewController.DeviceManager {
 
   using System;
   using System.Collections.Generic;
@@ -347,7 +347,7 @@
         cell.UpdateTo(r, () => {
           if (onSensorAddClicked != null) {
             if (!ion.deviceManager.IsDeviceKnown(r.sensor.device)) {
-              r.sensor.device.connection.ConnectAsync();
+              r.sensor.device.connection.Connect();
             }
             onSensorAddClicked(r.sensor, indexPath);
           }
@@ -548,7 +548,7 @@
               case Actions.ConnectAll:
                 dialog.AddAction(UIAlertAction.Create(Strings.Device.CONNECT_ALL, UIAlertActionStyle.Default, (action) => {
                   foreach (var device in section.devices) {
-                    device.connection.ConnectAsync();
+                    device.connection.Connect();
                   }
                 }));
                 break;

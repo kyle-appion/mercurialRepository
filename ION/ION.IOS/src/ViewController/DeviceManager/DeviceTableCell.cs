@@ -82,7 +82,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         if (record != null) {
           // TODO ahodder@appioninc.com: Unify this connection process.
           if (EConnectionState.Disconnected == record.device.connection.connectionState) {
-            record.device.connection.ConnectAsync();
+            record.device.connection.Connect();
           } else {
             record.device.connection.Disconnect();
           }

@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foundation;
@@ -605,7 +605,7 @@ namespace ION.IOS.ViewController.Analyzer
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
         Connection.Image = Connection.Image;
-       await currentSensor.device.connection.ConnectAsync();
+       await currentSensor.device.connection.Connect();
       }
 
       await Task.Delay(TimeSpan.FromSeconds(2));

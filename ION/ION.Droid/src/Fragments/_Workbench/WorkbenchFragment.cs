@@ -1,4 +1,4 @@
-﻿using ION.Droid.Content;
+using ION.Droid.Content;
 namespace ION.Droid.Fragments._Workbench {
 
   using System;
@@ -98,15 +98,16 @@ namespace ION.Droid.Fragments._Workbench {
       base.OnActivityCreated(savedInstanceState);
       SetHasOptionsMenu(true);
       AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
-
+      Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
+/*
 #if DEBUG
 			if (ion == null) {
-				Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
 				StartActivity(new Intent(Activity, typeof(MainActivity)));
 				Activity.Finish();
 				return;
 			}
 #endif
+*/
 		}
 
 
@@ -291,7 +292,7 @@ namespace ION.Droid.Fragments._Workbench {
 			if (dgs != null) {
 				if (!dgs.device.isConnected) {
 					ldb.AddItem(Resource.String.reconnect, () => {
-						dgs.device.connection.ConnectAsync();
+						dgs.device.connection.Connect();
 					});
 				}
 			}

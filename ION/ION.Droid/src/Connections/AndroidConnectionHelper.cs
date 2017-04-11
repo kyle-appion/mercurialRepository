@@ -106,7 +106,7 @@
 			classicScanDelegate = new ClassicScanDelegate(ion, manager.Adapter, NotifyClassicDeviceFound);
 		}
 
-		public void Dispose() {
+    public void Dispose() {
 			handler.RemoveCallbacksAndMessages(null);
 		}
 

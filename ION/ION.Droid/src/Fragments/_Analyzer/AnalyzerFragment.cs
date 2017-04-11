@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Fragments._Analyzer {
+namespace ION.Droid.Fragments._Analyzer {
 
   using System;
 
@@ -259,7 +259,7 @@
 
       if (dgs != null && !dgs.device.isConnected) {
         ldb.AddItem(Resource.String.reconnect, () => {
-          dgs.device.connection.ConnectAsync();
+          dgs.device.connection.Connect();
         });
       }
 

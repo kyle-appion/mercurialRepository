@@ -145,8 +145,6 @@ namespace Appion.Commons.Util {
             sb.Append(data.exception.ToString());
           }
 
-          logger.Print(new LogData(Level.Debug, "Log.cs", sb.ToString()));
-
           var stream = logger.CreateLogDataStream(data);
           if (stream == null) {
             logger.Print(new LogData(Level.Error, "Log.cs", "Failed to create log data stream."));

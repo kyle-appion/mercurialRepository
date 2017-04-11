@@ -61,7 +61,7 @@
     <Compile Include="src\IO\IParser.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParser.cs" />
     <Compile Include="src\Content\Parsers\WorkbenchParser.cs" />
-    <Compile Include="src\App\IONManager.cs" />
+    <Compile Include="src\App\IManager.cs" />
     <Compile Include="src\Sensors\Properties\AbstractSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\AlternateUnitSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\HoldSensorProperty.cs" />
@@ -134,7 +134,6 @@
     <Compile Include="src\Report\DataLogs\SensorLog.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
-    <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
