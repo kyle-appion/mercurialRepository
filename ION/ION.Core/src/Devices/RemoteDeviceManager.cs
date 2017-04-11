@@ -84,6 +84,10 @@
 			return Task.FromResult(new InitializationResult() { success = true });
 		}
 
+    // Implemented from IDeviceManager
+    public void PostInit() {
+    }
+
 		// Implemented from IDeviceManager
 		public void Dispose() {
 		}

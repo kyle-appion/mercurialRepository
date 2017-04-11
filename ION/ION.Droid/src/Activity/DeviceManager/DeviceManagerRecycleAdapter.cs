@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.DeviceManager {
+namespace ION.Droid.Activity.DeviceManager {
 
 	using System;
 	using System.Collections.Generic;
@@ -544,7 +544,7 @@
 							case EActions.ConnectAll:
 								ldb.AddItem(Resource.String.connect_all, () => {
 									foreach (var device in section.GetDevices()) {
-										device.connection.ConnectAsync();
+										device.connection.Connect();
 									}
 								});
 								break;

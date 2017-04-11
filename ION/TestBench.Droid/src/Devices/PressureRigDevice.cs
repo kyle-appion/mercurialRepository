@@ -1,4 +1,4 @@
-﻿namespace TestBench.Droid.Devices {
+namespace TestBench.Droid.Devices {
 
 	using System;
 	using System.IO;
@@ -74,7 +74,7 @@
 
 		// Implemented from IRig
 		public void Connect() {
-			connection.ConnectAsync();
+			connection.Connect();
 		}
 
 		// Implemented from IRig

@@ -119,10 +119,6 @@
     /// Queries whether or not the device is considered nearby.
     /// </summary>
     bool isNearby { get; }
-    /// <summary>
-    /// Queries whether or not the device is known by it device manager.
-    /// </summary>
-//    bool isKnown { get; }
 
     /// <summary>
     /// Informs the device that is should hanldle the given packet.

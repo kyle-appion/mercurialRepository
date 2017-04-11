@@ -162,6 +162,10 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
       }
     }
 
+    // Implemented for IManager
+    public void PostInit() {
+    }
+
     // Overridden from IFluidManager
     public void Dispose() {
       __cache.Clear();

@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Connections {
+namespace ION.Core.Connections {
 
   using System;
   using System.Threading.Tasks;
@@ -106,17 +106,14 @@
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-		public virtual Task<bool> ConnectAsync() {
-			return Task.FromResult(false);
-		}
-		
-		public virtual void Connect(){
-			connectionState = EConnectionState.Connected;
+		public virtual bool Connect() {
+      connectionState = EConnectionState.Connected;
+			return true;
 		}
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-		public virtual void Disconnect() {
+    public virtual void Disconnect(bool reconnect=false) {
 			connectionState = EConnectionState.Disconnected;
 		}
     /// <summary>

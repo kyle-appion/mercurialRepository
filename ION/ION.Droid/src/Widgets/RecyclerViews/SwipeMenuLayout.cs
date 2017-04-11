@@ -3,8 +3,6 @@
 	using System;
 
 	using Android.Content;
-	using Android.Support.V7.Widget;
-	using Android.Support.V13.View;
 	using Android.OS;
 	using Android.Util; 
 	using Android.Views;

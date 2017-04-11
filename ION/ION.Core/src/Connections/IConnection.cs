@@ -74,11 +74,11 @@ namespace ION.Core.Connections {
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    Task<bool> ConnectAsync();
+    bool Connect();
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-    void Disconnect();
+    void Disconnect(bool reconnect=false);
     /// <summary>
     /// Writes the given packet out to the remote terminus.
     /// </summary>

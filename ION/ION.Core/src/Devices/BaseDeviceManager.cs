@@ -143,13 +143,24 @@
       try {
         var devices = await ion.database.QueryForAllDevicesAsync();
         foreach (IDevice device in devices) {
-          Register(device);
+          try {
+            Register(device);
+          } catch (Exception ee) {
+            Log.E(this, "Failed to register device", ee);
+          }
         } 
       } catch (Exception e) {
         Log.E(this, "Failed to load previous devices", e);
       }
 
       return new InitializationResult() { success = __isInitialized = true };
+    }
+
+    // Implemented for IManager
+    public void PostInit() {
+      foreach (var device in knownDevices) {
+        device.connection.Connect();
+      }
     }
 
     // Overridden from IDeviceManager
