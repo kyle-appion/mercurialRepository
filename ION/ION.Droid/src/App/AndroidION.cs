@@ -72,7 +72,8 @@
 			context.UpdateNotification();
       isDisposed = false;
 
-      this.currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+      currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
+      currentAnalyzer.onAnalyzerEvent += OnAnalyzerEvent;
 
 			return base.OnPostInit();
 		}
@@ -111,6 +112,31 @@
             }
           break;
         }// WorkbenchEvent.EType.ManifoldEvent
+      }
+    }
+
+    private void OnAnalyzerEvent(AnalyzerEvent e) {
+      switch (e.type) {
+        case AnalyzerEvent.EType.Added:
+        case AnalyzerEvent.EType.Removed:
+        case AnalyzerEvent.EType.Swapped:
+        case AnalyzerEvent.EType.ManifoldAdded:
+        case AnalyzerEvent.EType.ManifoldRemoved:
+          SaveAnalyzerAsync();
+          break;
+
+        case AnalyzerEvent.EType.ManifoldEvent: {
+          switch (e.manifoldEvent.type) {
+            case ManifoldEvent.EType.SecondarySensorAdded:
+            case ManifoldEvent.EType.SecondarySensorRemoved:
+            case ManifoldEvent.EType.SensorPropertySwapped:
+            case ManifoldEvent.EType.SensorPropertyAdded:
+            case ManifoldEvent.EType.SensorPropertyRemoved:
+              SaveAnalyzerAsync();
+              break;
+          }
+          break;
+        } // AnalyzerEvent.EType.ManifoldEvent
       }
     }
 
