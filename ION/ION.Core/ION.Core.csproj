@@ -155,13 +155,14 @@
     <Compile Include="src\Fluids\FluidExtensions.cs" />
     <Compile Include="src\Content\AppVersion.cs" />
     <Compile Include="src\Devices\RemoteDeviceManager.cs" />
-    <Compile Include="src\Devices\Connections\RemoteConnectionHelper.cs" />
     <Compile Include="src\Devices\Connections\RemoteConnectionFactory.cs" />
     <Compile Include="src\Content\Parsers\JsonWorkbench.cs" />
     <Compile Include="src\Content\Parsers\JsonManifold.cs" />
     <Compile Include="src\Content\Parsers\JsonSensor.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParsers\V1.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParsers\V2.cs" />
+    <Compile Include="src\Connections\IConnectionManager.cs" />
+    <Compile Include="src\Connections\RemoteConnectionManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>

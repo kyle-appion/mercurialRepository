@@ -1,8 +1,8 @@
-﻿namespace ION.Core.Devices.Connections {
+﻿namespace ION.Core.Connections {
 
-	using System;
+  using ION.Core.Devices.Protocols;
 
-	public class RemoteConnectionHelper : IConnectionHelper {
+	public class RemoteConnectionManager : IConnectionManager {
 
 		// Implemented from IConnectionHelper
 		public event OnScanStateChanged onScanStateChanged;
@@ -16,15 +16,21 @@
 		public bool isScanning { get { return false; } }
 
 
-		public RemoteConnectionHelper() {
+		public RemoteConnectionManager() {
 		}
 
 		// Implemented from IConnectionHelper
 		public void Dispose() {
 		}
 
+    // Implemented for IConnectionHelper
+    public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
+      return null;
+    }
+
+
 		// Implemented from IConnectionHelper
-		public bool StartScan(TimeSpan scanTime) {
+		public bool StartScan() {
 			return false;
 		}
 

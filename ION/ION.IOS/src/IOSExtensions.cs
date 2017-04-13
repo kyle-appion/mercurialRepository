@@ -2,6 +2,7 @@
 
 	using System;
 
+  using CoreFoundation;
 	using Foundation;
 
 	public static class IOSExtensions {
@@ -24,6 +25,10 @@
 			DateTime reference = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(2003, 1, 1, 0, 0, 0));
 			return NSDate.FromTimeIntervalSinceReferenceDate((date - reference).TotalSeconds);
 		}
+
+    public static void DispatchAfter(this DispatchQueue queue, TimeSpan delay, Action action) {
+      queue.DispatchAfter(new DispatchTime(DispatchTime.Now, delay), action);
+    }
 	}
 }
 

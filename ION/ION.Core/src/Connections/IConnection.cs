@@ -82,7 +82,12 @@
   }
 
   /// <summary>
-  /// Enumerates the possible states that a connection can be in.
+  /// Enumerates the possible states that a connection can be in. The life cycle for EConnectionState is as follows:
+  /// 
+  /// Disconnected -> Connecting -> Resolving -> Connected
+  ///     ^               |             |             |
+  ///     |               |             |             |
+  ///     +- Disconnect <-+-------------+-------------+
   /// </summary>
   public enum EConnectionState {
     /// <summary>
@@ -96,13 +101,13 @@
     /// </summary>
     Broadcasting,
     /// <summary>
-    /// The connection is attempting to establish a connection with the remote
-    /// terminus.
+    /// The connection is attempting to establish a connection with the remote terminus.
+    /// Note: this is a pending action (meaning that it will happen in the indeterminate future).
     /// </summary>
     Connecting,
     /// <summary>
-    /// The connection has a connection with the remote terminus, but it is not stable
-    /// yet.
+    /// A connection has been made, not the host and device are resolving any necessary details before communication
+    /// goes live.
     /// </summary>
     Resolving,
     /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Devices {
+namespace ION.Core.Devices {
 
   using System;
   using System.Collections.Generic;
@@ -7,7 +7,6 @@
 
   using ION.Core.App;
 	using ION.Core.Connections;
-  using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
 
@@ -109,15 +108,10 @@
     List<IDevice> foundDevices { get; }
 
     /// <summary>
-    /// The factory that is responsible for creating new connections.
+    /// The manager that is responsible for platform specific management of connections.
     /// </summary>
     /// <value>The connection factory.</value>
-    IConnectionFactory connectionFactory { get; set; }
-    /// <summary>
-    /// The scan mode that delegates out the platform specific scan procedures.
-    /// </summary>
-    /// <value>The scanner.</value>
-    IConnectionHelper connectionHelper { get; set; }
+    IConnectionManager connectionManager { get; set; }
 
     DeviceFactory deviceFactory { get; }
 

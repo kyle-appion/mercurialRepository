@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Devices.Connections {
+﻿namespace ION.Core.Devices.Protocols {
 
 	using Appion.Commons.Util;
 

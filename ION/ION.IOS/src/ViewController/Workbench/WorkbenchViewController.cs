@@ -7,19 +7,12 @@ namespace ION.IOS.ViewController.Workbench {
 	using Foundation;
 	using UIKit;
 
-	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
 	using ION.Core.App;
 	using ION.Core.Content;
 	using ION.Core.Devices;
-	using ION.Core.Pdf;
-	using ION.Core.Report;
-	using ION.Core.Sensors;
 
-	using ION.IOS.Devices;
-	using ION.IOS.Sensors;
-	using ION.IOS.UI;
 	using ION.IOS.Util;
 	using ION.IOS.ViewController.DeviceManager;
 	using ION.IOS.ViewController.ScreenshotReport;
@@ -108,8 +101,8 @@ namespace ION.IOS.ViewController.Workbench {
 				};
 				
 				UIBarButtonItem button = new UIBarButtonItem(remoteButton);
-				this.NavigationItem.RightBarButtonItem = button;
-				this.NavigationController.NavigationBar.BarTintColor = UIColor.Red;
+				NavigationItem.RightBarButtonItem = button;
+				NavigationController.NavigationBar.BarTintColor = UIColor.Red;
 				
 				remoteControl = new RemoteControls(45,View);
 				remoteControl.disconnectButton.TouchUpInside += (sender, e) => {
@@ -168,7 +161,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       tableContent.ReloadData();
       
-      if(!ion.deviceManager.connectionHelper.isEnabled){
+      if(!ion.deviceManager.connectionManager.isEnabled){
 			  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
 	          bluetoothWarning.Clicked += (sender, e) => {
 	            if(e.ButtonIndex.Equals(1)){

@@ -99,6 +99,9 @@
       return new InitializationResult() { success = __isInitialized = true };
     }
 
+    public void PostInit() {
+    }
+
     // Overridden frm ILocationManager
     public void Dispose() {
       StopAutomaticLocationPolling();

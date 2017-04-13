@@ -94,6 +94,8 @@ namespace ION.IOS.ViewController {
         }
       };
 
+      var v = new Section();
+
       navigation.ViewControllers = BuildViewControllers();
       // Create the menu
     }

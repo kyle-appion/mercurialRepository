@@ -133,7 +133,7 @@
     /// </summary>
     /// <param name="dm">Dm.</param>
     private void OnDeviceManagerEvent(DeviceManagerEvent e) {
-      if(ion.deviceManager.connectionHelper.isEnabled){
+      if(ion.deviceManager.connectionManager.isEnabled) {
 
       }
     }
