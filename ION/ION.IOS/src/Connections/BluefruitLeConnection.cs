@@ -1,5 +1,5 @@
 ﻿namespace ION.IOS.Connections {
-  
+/*
   using CoreBluetooth;
   using Foundation;
 
@@ -88,5 +88,6 @@
       return readCharacteristic != null && writeCharacteristic != null;
     }
   }
+*/
 }
 

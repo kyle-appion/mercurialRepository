@@ -952,8 +952,6 @@
       <DependentUpon>WalkthroughScreenshotViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\PressureTemperatureChart\SliderView.cs" />
-    <Compile Include="src\Connections\LeConnectionHelper.cs" />
-    <Compile Include="src\Connections\IosConnectionFactory.cs" />
     <Compile Include="src\Alarms\Alerts\VibrateAlarmAlert.cs" />
     <Compile Include="src\Alarms\Alerts\SoundAlarmAlert.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\PTSlideView.cs" />
@@ -1012,7 +1010,6 @@
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\RemoteControls.cs" />
     <Compile Include="src\ViewController\Logging\ReportType.cs" />
-    <Compile Include="src\Connections\IONBluetoothService.cs" />
     <Compile Include="src\ViewController\ScreenshotReport\AdditionalView.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughHelp.cs" />
     <Compile Include="src\ViewController\RemoteAccess\PortalMenu.cs" />
@@ -1038,6 +1035,7 @@
       <DependentUpon>RemoteViewingViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\Net\Reachability.cs" />
+    <Compile Include="src\Connections\IonCBCentralManagerDelegate.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

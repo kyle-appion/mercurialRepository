@@ -15,6 +15,11 @@
 
   public class Protocol {
     /// <summary>
+    /// The Appion manufacturing id that is used to identify appion products.
+    /// </summary>
+    public const int MANFAC_ID = 0x8c03;
+
+    /// <summary>
     /// The array of supported BLE protocols.
     /// </summary>
     private static IGaugeProtocol[] PROTOCOLS = new IGaugeProtocol[] {

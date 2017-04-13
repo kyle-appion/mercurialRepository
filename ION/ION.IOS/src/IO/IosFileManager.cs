@@ -16,6 +16,10 @@
       return new InitializationResult() { success = __isInitialized = true };
     }
 
+    // Overridden from IManager
+    public void PostInit() {
+    }
+
     // Overridden from IFileManager
     public void Dispose() {
     }

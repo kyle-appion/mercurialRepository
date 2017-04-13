@@ -7,8 +7,8 @@
 	using Appion.Commons.Util;
 
   using ION.Core.App;
+  using ION.Core.Connections;
   using ION.Core.Database;
-  using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.IO;
   using ION.Core.Sensors;
@@ -75,29 +75,7 @@
     // Overridden from IDeviceManager
     public DeviceFactoryDelegate deviceFactoryDelegate { get; protected set; }
     // Overridden from IDeviceManager
-    public IConnectionFactory connectionFactory { get; set; }
-    // Overridden from IDeviceManager
-    public IConnectionHelper connectionHelper {
-      get {
-        return __connectionHelper;
-      }
-      set {
-        if (__connectionHelper != null) {
-          __connectionHelper.onDeviceFound -= OnDeviceFound;
-          __connectionHelper.onScanStateChanged -= OnScanStateChanged;
-        }
-
-        __connectionHelper = value;
-
-        if (__connectionHelper != null) {
-          __connectionHelper.onDeviceFound += OnDeviceFound;
-          __connectionHelper.onScanStateChanged += OnScanStateChanged;
-        } else {
-          	/////should not throw exeptions
-          //throw new ArgumentException(this + " cannot accept a null IScanMode");
-        }
-      }
-    } IConnectionHelper __connectionHelper;
+    public IConnectionManager connectionManager { get; set; }
 
     /// <summary>
     /// The ION instance for the device manager.
@@ -118,10 +96,9 @@
     /// </summary>
     public DeviceFactory deviceFactory { get; internal set; }
 
-    public BaseDeviceManager(IION ion, IConnectionFactory connectionFactory, IConnectionHelper connectionHelper) {
+    public BaseDeviceManager(IION ion, IConnectionManager connectionManager) {
       this.ion = ion;
-      this.connectionFactory = connectionFactory;
-      this.connectionHelper = connectionHelper;
+      this.connectionManager = connectionManager;
     }
 
     // Overridden from IDeviceManager
@@ -161,12 +138,15 @@
       foreach (var device in knownDevices) {
         device.connection.Connect();
       }
+
+      connectionManager.onDeviceFound += OnDeviceFound;
+      connectionManager.onScanStateChanged += OnScanStateChanged;
     }
 
     // Overridden from IDeviceManager
     public void Dispose() {
-      __connectionHelper.onDeviceFound -= OnDeviceFound;
-      __connectionHelper.onScanStateChanged -= OnScanStateChanged;
+      connectionManager.onDeviceFound -= OnDeviceFound;
+      connectionManager.onScanStateChanged -= OnScanStateChanged;
 
       foreach (var device in devices) {
         device.connection.Disconnect();
@@ -195,8 +175,6 @@
     // Overridden from IDeviceManager
     public IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocolVersion) {
       var ret = CreateDeviceInternal(serialNumber, connectionAddress, protocolVersion);
-      // The register proved superfluous. Consider merging this functions with the internal one.
-//      Register(ret);
       return ret;
     }
 
@@ -301,7 +279,7 @@
       IDevice ret = this[serialNumber];
 
       if (ret == null) {
-        var connection = connectionFactory.CreateConnection(connectionAddress, protocolVersion);
+        var connection = connectionManager.CreateConnection(connectionAddress, protocolVersion);
 
         var protocol = Protocol.FindProtocolFromVersion(protocolVersion);
         if (protocol == null) {
@@ -366,7 +344,7 @@
 					try {
           onDeviceManagerEvent(dme);
 					} catch (Exception e) {
-						Appion.Commons.Util.Log.E(this, "Failed to post device manager event", e);
+						Log.E(this, "Failed to post device manager event", e);
 					}
         });
       }
@@ -375,7 +353,7 @@
     /// <summary>
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
-    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
+    private void OnDeviceFound(IConnectionManager cm, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
       var device = this[serialNumber];
 
       if (device == null) {
@@ -398,18 +376,18 @@
     /// Called when a device known by the device manager posts a device event.
     /// </summary>
     /// <param name="deviceEvent">Device event.</param>
-    private async void OnDeviceEvent(DeviceEvent deviceEvent) {
+    private void OnDeviceEvent(DeviceEvent deviceEvent) {
       var device = deviceEvent.device;
 
       switch (deviceEvent.type) {
         case DeviceEvent.EType.ConnectionChange:
           if (device.isConnected) {
-            await SaveDevice(device);
+            SaveDevice(device);
           }
           break;
 
 				case DeviceEvent.EType.NameChanged:
-					await SaveDevice(deviceEvent.device);
+					SaveDevice(deviceEvent.device);
 					break;
       }
 
@@ -419,9 +397,8 @@
     /// <summary>
     /// Called when the connection helper changes state.
     /// </summary>
-    /// <param name="connectionHelper">Connection helper.</param>
-    private void OnScanStateChanged(IConnectionHelper connectionHelper) {
-      if (connectionHelper.isScanning) {
+    private void OnScanStateChanged(IConnectionManager cm) {
+      if (connectionManager.isScanning) {
         NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStarted);
       } else {
         NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStopped);

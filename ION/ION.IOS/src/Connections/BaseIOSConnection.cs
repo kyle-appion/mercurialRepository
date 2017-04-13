@@ -1,9 +1,9 @@
 ﻿namespace ION.IOS.Connections {
   
   using System;
-  using System.Threading.Tasks;
 
   using CoreBluetooth;
+  using CoreFoundation;
   using Foundation;
 
 	using Appion.Commons.Util;
@@ -12,18 +12,12 @@
 
   public abstract class BaseIOSConnection : CBPeripheralDelegate, IConnection {
 
-    /// <summary>
-    /// The event registry that will be notified when the connection's state changes.
-    /// </summary>
+    // Implemented for IConnection
     public event OnConnectionStateChanged onStateChanged;
-    /// <summary>
-    /// Occurs when on data recieved.
-    /// </summary>
+    // Implemented for IConnection
     public event OnDataReceived onDataReceived;
 
-    /// <summary>
-    /// The state of the connection.
-    /// </summary>
+    /// Implemented for IConnection
     public EConnectionState connectionState {
       get {
         return __connectionState;
@@ -38,44 +32,21 @@
         }
       }
     } EConnectionState __connectionState;
-    /// <summary>
-    /// Queries whether or not the connection is connected.
-    /// </summary>
-    /// <value>true</value>
-    /// <c>false</c>
+    // Implemented for IConnection
     public bool isConnected { 
       get {
         return EConnectionState.Connected == connectionState;
       } 
     }
-    /// <summary>
-    /// Queries the name of the connection. For almost every device, this will be the
-    /// device's serial number.
-    /// </summary>
-    /// <value>The name.</value>
+    // Implemented for IConnection
     public string name { get; set; }
-    /// <summary>
-    /// Queries the unique address of the connection.
-    /// </summary>
-    /// <value>The address.</value>
+    // Implemented for IConnection
     public string address { 
       get {
-        return __nativeDevice.Identifier.AsString();
+        return device.Identifier.AsString();
       }
     }
-    /// <summary>
-    /// Queries the current received signal strength of the connection.
-    /// </summary>
-    /// <value>The signal strength.</value>
-    public ESignalStrength signalStrength {
-      get {
-        return ESignalStrength.None;
-      }
-    }
-    /// <summary>
-    /// Queries the last packet that the connection received.
-    /// </summary>
-    /// <value>The last packet.</value>
+    // Implemented for IConnection
     public byte[] lastPacket {
       get {
         return __lastPacket;
@@ -88,123 +59,95 @@
         }
       }
     } byte[] __lastPacket;
-    /// <summary>
-    /// The last time that connection was seen- either through packet resolution or a scan.
-    /// </summary>
-    /// <value>The last seen.</value>
+    // Implemented for IConnection
     public DateTime lastSeen { get; set; }
-    /// <summary>
-    /// Gets the native device.
-    /// </summary>
-    /// <value>The native device.</value>
-    public object nativeDevice {
-      get {
-        return __nativeDevice;
-      }
-    } protected CBPeripheral __nativeDevice;
-    /// <summary>
-    /// The timeout that is applied when connecting to the remote terminal.
-    /// </summary>
-    /// <value>The connection timeout.</value>
+    // Implemented for IConnection
+    public object nativeDevice { get { return device; } }
+    // Implemented for IConnection
     public TimeSpan connectionTimeout { get; set; }
 
     /// <summary>
-    /// The ios central bluetooth manager that is managing this peripheral.
+    /// The native device.
     /// </summary>
-//    protected readonly CBCentralManager centralManager;
+    /// <value>The device.</value>
+    protected CBPeripheral device { get; private set; }
+
+    /// <summary>
+    /// The object used for synchronization (because the bluetooth stack is multithreaded).
+    /// </summary>
+    /// <value>The locker.</value>
+    protected object locker { get; private set; }
 
 		/// <summary>
 		/// The connection helper that created the connection.
 		/// </summary>
-		private LeConnectionHelper connectionHelper;
+		private IonCBCentralManagerDelegate centralDelegate;
+    /// <summary>
+    /// The dispatch queue that will allow us to post actions to the main thread message pump.
+    /// </summary>
+    private DispatchQueue handler;
 
-    public BaseIOSConnection(LeConnectionHelper connectionHelper, CBPeripheral peripheral) {
-			this.connectionHelper = connectionHelper;
-      __nativeDevice = peripheral;
+    public BaseIOSConnection(IonCBCentralManagerDelegate centralDelegate, CBPeripheral peripheral) {
+      this.centralDelegate = centralDelegate;
+      device = peripheral;
+      name = peripheral.Name;
       peripheral.Delegate = this;
 
       connectionState = EConnectionState.Disconnected;
       connectionTimeout = TimeSpan.FromMilliseconds(45 * 1000);
+
+      centralDelegate.onDeviceConnected += (obj) => {
+        OnConnected();
+      };
+      handler = DispatchQueue.MainQueue;
+      locker = new object();
     }
 
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
     /// <returns>The async.</returns>
-    public async virtual Task<bool> ConnectAsync() {
-      if (EConnectionState.Disconnected != connectionState) {
-				Log.D(this, "connection state not disconnected. Returning false");
-        return false;
+    public bool Connect() {
+      lock (locker) {
+        if (EConnectionState.Disconnected != connectionState) {
+          return false;
+        }
+  			try {
+  	      connectionState = EConnectionState.Connecting;
+  	      DateTime start = DateTime.Now;
+
+  	      PeripheralConnectionOptions options = new PeripheralConnectionOptions();
+  	      options.NotifyOnConnection = true;
+  	      options.NotifyOnDisconnection = true;
+  	      options.NotifyOnNotification = true;
+
+  	      centralDelegate.centralManager.ConnectPeripheral(device, options);
+          return true;
+  			} catch (Exception e) {
+  				Log.E(this, "Failed to connect", e);
+  				Disconnect();
+  				return false;
+  			}
       }
-			try {
-				Log.D(this, "BaseIOSConnection is attempting to connect");
-
-	      connectionState = EConnectionState.Connecting;
-	      DateTime start = DateTime.Now;
-
-	      PeripheralConnectionOptions options = new PeripheralConnectionOptions();
-	      options.NotifyOnConnection = true;
-	      options.NotifyOnDisconnection = true;
-	      options.NotifyOnNotification = true;
-
-	      connectionHelper.onPeripheralDisconnected += OnCBPeripheralDisconnected;
-	      connectionHelper.centralManager.ConnectPeripheral(__nativeDevice, options);
-
-	      Log.D(this, "Awaiting physical connection...");
-	      while (CBPeripheralState.Connected != __nativeDevice.State && EConnectionState.Disconnected != connectionState) {
-	        if (DateTime.Now - start > TimeSpan.FromSeconds(5)) {
-	          Log.D(this, "timeout: failed to connect");
-	          Disconnect();
-	          return false;
-	        } else {
-	          await Task.Delay(50);
-	        }
-	      }
-
-	      await Task.Delay(100);
-
-	      __nativeDevice.DiscoverServices((CBUUID[])null);  // DESIRED SERVICES ARRAY
-
-	      Log.D(this, "Awaiting service discovery");
-	      while (EConnectionState.Connected != connectionState && EConnectionState.Disconnected != connectionState && !AreServicesValid()) {
-	        if (DateTime.Now - start > connectionTimeout) {
-	          Log.D(this, "timeout: failed to validate services");
-	          Disconnect();
-	          return false;
-	        } else {
-	          await Task.Delay(50);
-	        }
-	      }
-
-	      if (!AreServicesValid()) {
-	        Log.E(this, "Failed to validate services");
-	        Disconnect();
-	        return false;
-	      }
-
-	      Log.D(this, "Connection success!");
-	      OnConnected();
-	      connectionState = EConnectionState.Connected;
-
-	      return EConnectionState.Connected == connectionState;
-			} catch (Exception e) {
-				Log.E(this, "Failed to connect", e);
-				Disconnect();
-				return false;
-			}
     }
 
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-    public void Disconnect() {
-			if (connectionState == EConnectionState.Disconnected) {
-				return;
-			}
-      Log.D(this, name + " disconnected");
-      connectionHelper.onPeripheralDisconnected -= OnCBPeripheralDisconnected;
-      connectionHelper.centralManager.CancelPeripheralConnection(__nativeDevice);
-      connectionState = EConnectionState.Disconnected;
+    public void Disconnect(bool reconnect=false) {
+      lock (locker) {
+  			if (connectionState == EConnectionState.Disconnected) {
+  				return;
+  			}
+        connectionState = EConnectionState.Disconnected;
+        centralDelegate.centralManager.CancelPeripheralConnection(device);
+
+        OnDisconnect();
+
+        if (reconnect) {
+          handler.DispatchAfter(TimeSpan.FromMilliseconds(1500), () => Connect());
+        }
+      }
     }
 
     /// <summary>
@@ -219,11 +162,11 @@
     /// </summary>
     /// <param name="peripheral">Peripheral.</param>
     /// <param name="error">Error.</param>
-    public override void DiscoveredService(CBPeripheral peripheral, NSError error) {
-      Log.D(this, "Discovered " + __nativeDevice.Services.Length + " Services for device" + name + "...");
-      foreach (var service in __nativeDevice.Services) {
-        Log.D(this, "Service is: " + service.UUID);
-        __nativeDevice.DiscoverCharacteristics(service);
+    public override sealed void DiscoveredService(CBPeripheral peripheral, NSError error) {
+//      Log.D(this, "Discovered " + __nativeDevice.Services.Length + " Services for device" + name + "...");
+      foreach (var service in device.Services) {
+//        Log.D(this, "Service is: " + service.UUID);
+        device.DiscoverCharacteristics(service);
       }
     }
 
@@ -233,39 +176,52 @@
     /// <param name="peripheral">Peripheral.</param>
     /// <param name="service">Service.</param>
     /// <param name="error">Error.</param>
-    public override void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, NSError error) {
-      ValidateServices();
+    public override sealed void DiscoveredCharacteristic(CBPeripheral peripheral, CBService service, NSError error) {
+      if (!AreServicesValid()) {
+        if (ValidateServices()) {
+          if (device.State == CBPeripheralState.Connected && connectionState == EConnectionState.Resolving) {
+            connectionState = EConnectionState.Connected;
+          }
+        }
+      }
     }
 
     /// <summary>
-    /// Called when the connection successfully connects.
+    /// Called when the disconnects. This is where you do any clean up that may need to happen.
     /// </summary>
-    protected virtual void OnConnected() {
+    protected virtual void OnDisconnect() {
     }
 
     /// <summary>
-    /// Called by the BaseIONConnection when new characteristics are discovered. This is where you should attempt to
-    /// find all the characteristics that are necessary for your communication.
+    /// Checks to make sure that the connection has valid serices and characteristics. If the method fails, then the
+    /// connection cannot possibly support stable communication: all attempts will fail.
     /// </summary>
-    protected virtual void ValidateServices() {
-    }
+    protected abstract bool ValidateServices();
 
     /// <summary>
-    /// Queries whether or not the services are valid.
+    /// Whether or not the services are valid for the connection.
     /// </summary>
     /// <returns><c>true</c>, if services valid was ared, <c>false</c> otherwise.</returns>
     protected abstract bool AreServicesValid();
 
     /// <summary>
-    /// Called when the peripheral disconnects.
+    /// Called when we get confirmation that the peripheral has connected.
     /// </summary>
-    /// <param name="sender">Sender.</param>
-    /// <param name="e">E.</param>
-    private void OnCBPeripheralDisconnected(object o, CBPeripheral peripheral) {
-      if (peripheral.Equals(__nativeDevice)) {
-        Disconnect();
+    private void OnConnected() {
+      if (device.State != CBPeripheralState.Connected) {
+        return;
+      }
+
+      if (connectionState != EConnectionState.Connected) {
+        connectionState = EConnectionState.Resolving;
+        device.DiscoverServices();
+        DispatchQueue.MainQueue.DispatchAfter(TimeSpan.FromSeconds(45), () => {
+          if (!AreServicesValid()) {
+            Disconnect(true);
+          }
+        });
       }
     }
+
   }
 }
-
