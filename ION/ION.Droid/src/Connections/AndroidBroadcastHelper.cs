@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Connections {
+﻿/*
+
+namespace ION.Droid.Connections {
 
 	using System;
 	using System.Text;
@@ -239,3 +241,4 @@
 	}
 }
 
+*/

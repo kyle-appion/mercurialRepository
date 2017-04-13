@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Connections {
+﻿/*
+
+namespace ION.Droid.Connections {
 
 	using System;
 	using System.Collections.Generic;
@@ -428,12 +430,12 @@
 
 		private Task ResolveDevice(BluetoothDevice device) {
 			return Task.Factory.StartNew(async () => {
-/*
-				var sn = await ClassicConnection.ResolveSerialNumber(device);
-				if (sn != null) {
-					service.PostDeviceFound(device, BluetoothDeviceType.Classic, null);
-				}
-*/
+//
+//				var sn = await ClassicConnection.ResolveSerialNumber(device);
+//				if (sn != null) {
+//					service.PostDeviceFound(device, BluetoothDeviceType.Classic, null);
+//				}
+
 			});
 		}
 	}
@@ -479,3 +481,4 @@
 		}
 	}
 }
+*/

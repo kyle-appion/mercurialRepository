@@ -1,7 +1,6 @@
 ﻿namespace ION.Droid.Connections {
 
 	using System;
-	using System.Collections.Generic;
 
 	using Android.Bluetooth;
 	using Android.Bluetooth.LE;

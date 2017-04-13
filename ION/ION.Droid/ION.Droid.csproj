@@ -320,6 +320,11 @@
     <Compile Include="src\Util\AndroidLogger.cs" />
     <Compile Include="src\App\IONBroadcastReceiver.cs" />
     <Compile Include="src\Connections\BaseLeConnection.cs" />
+    <Compile Include="src\Connections\Beta\AndroidConnectionManager.cs" />
+    <Compile Include="src\Connections\Beta\IScanMethod.cs" />
+    <Compile Include="src\Connections\Beta\Api18BleScanMethod.cs" />
+    <Compile Include="src\Connections\Beta\Api21BleScanMethod.cs" />
+    <Compile Include="src\Connections\Beta\ClassicScanMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

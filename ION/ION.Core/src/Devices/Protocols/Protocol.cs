@@ -18,6 +18,14 @@
     /// The Appion manufacturing id that is used to identify appion products.
     /// </summary>
     public const int MANFAC_ID = 0x8c03;
+    /// <summary>
+    /// The device name for a broadcasting v4 device.
+    /// </summary>
+    public const string RIGDFU = "RigCom";
+    /// <summary>
+    /// The name of the original appion gauges.
+    /// </summary>
+    public const string APPION_CLASSIC_DEVICE_NAME = "APPION Gauge";
 
     /// <summary>
     /// The array of supported BLE protocols.

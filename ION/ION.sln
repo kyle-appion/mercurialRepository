@@ -181,5 +181,14 @@ Global
 		$0.DotNetNamingPolicy = $8
 		$8.DirectoryNamespaceAssociation = None
 		$8.ResourceNamePolicy = MSBuild
+		$0.TextStylePolicy = $9
+		$9.FileWidth = 120
+		$9.TabWidth = 2
+		$9.IndentWidth = 2
+		$9.NoTabsAfterNonTabs = True
+		$9.EolMarker = Unix
+		$9.inheritsSet = VisualStudio
+		$9.inheritsScope = text/plain
+		$9.scope = text/plain
 	EndGlobalSection
 EndGlobal
