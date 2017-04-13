@@ -118,7 +118,7 @@ namespace ION.IOS.ViewController.Workbench {
       labelMeasurement.Text = sensor.ToFormattedString();
       labelUnit.Text = sensor.unit.ToString();
       labelSerialNumber.Text = device.serialNumber.ToString();
-      activityConnectStatus.Hidden = EConnectionState.Connecting != sensor.device.connection.connectionState;
+      activityConnectStatus.Hidden = EConnectionState.Resolving != sensor.device.connection.connectionState;
       buttonConnection.Hidden = false;
 
       UpdateAlarm(sensor);
