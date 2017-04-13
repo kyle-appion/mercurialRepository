@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Connections {
+﻿/*
+
+namespace ION.Droid.Connections {
 
 	using System;
 	using System.Text;
@@ -114,13 +116,13 @@
 			if (isScanning) {
 				return false;
 			}
-/*
-			broadcasting.StartBroadcastReceiving();
-			if (onScanStateChanged != null) {
-				onScanStateChanged(this);
-			}
-			return true;
-*/
+//
+//			broadcasting.StartBroadcastReceiving();
+//			if (onScanStateChanged != null) {
+//				onScanStateChanged(this);
+//			}
+//			return true;
+//
 			var ret = leScanDelegate.StartScan();
 
 			if (ret) {
@@ -145,12 +147,12 @@
 		}
 
 		public void StopScan() {
-/*
-			broadcasting.StopBroadcastReceiving();
-			if (onScanStateChanged != null) {
-				onScanStateChanged(this);
-			}
-*/
+//
+//			broadcasting.StopBroadcastReceiving();
+//			if (onScanStateChanged != null) {
+//				onScanStateChanged(this);
+//			}
+//
 			handler.RemoveCallbacksAndMessages(null);
 
 			if (isScanning) {
@@ -271,3 +273,4 @@
 	}
 }
 
+*/

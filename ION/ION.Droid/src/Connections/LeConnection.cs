@@ -1,7 +1,6 @@
 ﻿namespace ION.Droid.Connections {
 
 	using Android.Bluetooth;
-	using Android.Content;
 
 	using Java.Util;
 
@@ -48,7 +47,7 @@
     /// </summary>
     private BluetoothGattCharacteristic writeCharacteristic;
 
-    public LeConnection(Context context, BluetoothManager manager, BluetoothDevice device) : base(context, manager, device) {
+    public LeConnection(AndroidConnectionManager manager, BluetoothDevice device) : base(manager, device) {
 		}
 
     // Overridden from BaseLeConnection

@@ -3,7 +3,6 @@
   using System;
 
   using Android.Bluetooth;
-  using Android.Content;
   using Android.OS;
 
   using Appion.Commons.Util;
@@ -86,18 +85,15 @@
     public BluetoothDevice device { get; private set; }
 
     /// <summary>
-    /// The manager that is necessary to glean details about a specific bluetooth device.
+    /// The connection manager that is used to manager connection operations and state.
     /// </summary>
-    protected BluetoothManager manager;
+    /// <value>The manager.</value>
+    protected AndroidConnectionManager manager { get; private set; }
     /// <summary>
     /// The bluetooth gatt that the connection is using to interface with the bluetooth module.
     /// </summary>
     protected BluetoothGatt gatt;
 
-    /// <summary>
-    /// The context that is needed to create modern bluetooth connections.
-    /// </summary>
-    private Context context;
     /// <summary>
     /// The object that is locked for multithread synchronization.
     /// </summary>
@@ -107,8 +103,7 @@
     /// </summary>
     private Handler handler;
 
-    public BaseLeConnection(Context context, BluetoothManager manager, BluetoothDevice device) {
-      this.context = context;
+    public BaseLeConnection(AndroidConnectionManager manager, BluetoothDevice device) {
       this.manager = manager;
       this.device = device;
       connectionState = EConnectionState.Disconnected;
@@ -126,7 +121,7 @@
         if (gatt == null) {
           try {
             Log.D(this, "Device {" + name + "} is performing an active connection");
-            gatt = device.ConnectGatt(context, false, this);
+            gatt = device.ConnectGatt(manager.context, false, this);
             handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
             return true;
           } catch (Exception e) {
@@ -289,7 +284,7 @@
 
         try {
           Log.D(this, "Device {" + name + "} is performing a passive connection");
-          gatt = device.ConnectGatt(context, true, this);
+          gatt = device.ConnectGatt(manager.context, true, this);
           return true;
         } catch (Exception e) {
           Log.E(this, string.Format("Failed to start passive connect for device [{0}: {1}]", name, address), e);

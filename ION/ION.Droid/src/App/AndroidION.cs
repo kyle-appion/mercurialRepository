@@ -37,12 +37,9 @@
 
 			fileManager = new AndroidFileManager(context);
 
-//			var bluetoothService = new IONBluetoothService(this);
-
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this);
-      deviceManager = new BaseDeviceManager(this, new AndroidConnectionFactory(context), new AndroidConnectionHelper(this));
-
+      deviceManager = new BaseDeviceManager(this, new AndroidConnectionManager(context));
       locationManager = new AndroidLocationManager(this);
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);

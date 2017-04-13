@@ -196,6 +196,7 @@
 	<string name="bluetooth_disabled">Bluetooth Disabled</string>
 	<string name="bluetooth_enable_failed">Failed to enable bluetooth</string>
 	<string name="bluetooth_enabled">Enabled bluetooth</string>
+  <string name="bluetooth_error_scan_failed">Failed to start Bluetooth scan</string>
 	<string name="bluetooth_location_off">Location Off</string>
 	<string name="bluetooth_requires_location">As of Android version 6, location services are required to be turned on to successfully scan for a bluetooth device. Would you like to enable location services?\n\nDenying this action will prevent your device from finding your gauges.</string>
 

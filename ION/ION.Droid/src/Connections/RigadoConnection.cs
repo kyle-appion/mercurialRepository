@@ -3,7 +3,6 @@
 	using System.Collections.Generic;
 
 	using Android.Bluetooth;
-	using Android.Content;
 
 	using Java.Util;
 
@@ -44,7 +43,7 @@
 		/// </summary>
 		private BluetoothGattCharacteristic writeCharacteristic;
 
-    public RigadoConnection(Context context, BluetoothManager manager, BluetoothDevice device) : base(context, manager, device) {
+    public RigadoConnection(AndroidConnectionManager manager, BluetoothDevice device) : base(manager, device) {
 		}
 
     // Overridden from BaseLeConnection
