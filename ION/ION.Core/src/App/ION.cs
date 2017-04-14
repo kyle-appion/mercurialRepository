@@ -179,6 +179,12 @@
     /// <returns>The application dump.</returns>
     IAppDump CreateApplicationDump();
     
+    /// <summary>
+    /// Gets the platform specific info.
+    /// </summary>
+    /// <returns>The platform info.</returns>
+    IPlatformInfo GetPlatformInformation();
+    
     Task setRemoteDeviceManager();
     Task setOriginalDeviceManager();
   } // End IION

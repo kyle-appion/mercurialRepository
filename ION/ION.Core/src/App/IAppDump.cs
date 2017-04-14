@@ -29,6 +29,9 @@
     string version { get; }
     string api { get; }
     string chipset { get; }
+    string wifiConnected  { get; }
+    int batteryPercentage { get; }
+    double freeMemory { get; }
   }
 
   /// <summary>

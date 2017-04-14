@@ -421,44 +421,46 @@ namespace ION.IOS.ViewController {
 		/// <returns>The main menu.</returns>
 		public void setMainMenu(){			
 			navigation.NavigationRoot.Clear();
+      navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.BLACK);
+
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
-	        new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
-	        new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
+	        new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.White,},
+	        new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")){textColor = UIColor.White,},
         }
 			);
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
-          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
-          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
+          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")){textColor = UIColor.White,},
+          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")){textColor = UIColor.White,},
         }
 			);
 	
 			navigation.NavigationRoot.Add(
 				new Section(Strings.Report.REPORTS.ToUpper()) {
-          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")),
-          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")),
-          new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")),
-          new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")),
+          new IONElement(Strings.Report.MANAGER, UIImage.FromBundle("ic_job_settings")){textColor = UIColor.White,},
+          new IONElement(Strings.Report.LOGGING, UIImage.FromBundle("ic_graph_menu")){textColor = UIColor.White,},
+          new IONElement(Strings.Report.CALIBRATION_CERTIFICATES, OnCalibrationCertificateClicked, UIImage.FromBundle("ic_nav_certificate")){textColor = UIColor.White,},
+          new IONElement(Strings.Report.SCREENSHOT_ARCHIVE, OnScreenshotArchiveClicked, UIImage.FromBundle("ic_camera")){textColor = UIColor.White,},
         }
 			);
 			navigation.NavigationRoot.Add(
 				new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")){textColor = UIColor.White,},
 				}
 			);		
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
-          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
-          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
+          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")){textColor = UIColor.White,},
+          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")){textColor = UIColor.White,},
         }
 			);
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
-          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
+          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")){textColor = UIColor.White,},
         }
 			);
-			navigation.ViewControllers = BuildViewControllers();
+			navigation.ViewControllers = BuildViewControllers();			
 		}
 		/// <summary>
 		/// Changes the navigation menu when entering remote viewing mode
@@ -467,32 +469,34 @@ namespace ION.IOS.ViewController {
 		
 		public void setRemoteMenu(){
 			navigation.NavigationRoot.Clear();
+      navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.RED);
+
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
-	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")),
-	          new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")),
-	        }
+	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement(Strings.Analyzer.SELF, UIImage.FromBundle("ic_nav_analyzer")){textColor = UIColor.Black,},	          
+	        }	        
 			);
 			navigation.NavigationRoot.Add(
 	         new Section (Strings.Navigation.CALCULATORS.ToUpper()) {
-	          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")),
-	          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")),
+	          new IONElement(Strings.Fluid.PT_CHART, UIImage.FromBundle("ic_nav_pt_chart")){textColor = UIColor.Black,},
+	          new IONElement(Strings.Fluid.SUPERHEAT_SUBCOOL, UIImage.FromBundle("ic_nav_superheat_subcool")){textColor = UIColor.Black,},
 	        }
 			);
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.CONFIGURATION.ToUpper()) {
-	          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")),
-	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")),
+	          new IONElement(Strings.SETTINGS, OnNavSettingsClicked, UIImage.FromBundle("ic_settings")){textColor = UIColor.Black,},
+	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")){textColor = UIColor.Black,},
 	        }
 			);
 			navigation.NavigationRoot.Add(
 				new Section("Cloud".ToUpper()){
-					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")),
+					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")){textColor = UIColor.Black,},
 				}
 			);
 			navigation.NavigationRoot.Add(
 				new Section (Strings.Exit.SHUTDOWN.ToUpper()) {
-          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")),
+          new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")){textColor = UIColor.Black,},
         }
 			);
 			BuildRemoteViewControllers();
@@ -532,7 +536,7 @@ namespace ION.IOS.ViewController {
 
     private string title { get; set; }
     private UIImage image { get; set; }
-
+		public UIColor textColor { get; set; }
     /// <summary>
     /// Initializes a new instance of the <see cref="ION.IOS.ViewController.IONElement"/> class.
     /// </summary>
@@ -560,9 +564,14 @@ namespace ION.IOS.ViewController {
     /// <param name="tv">Tv.</param>
     public override UITableViewCell GetCell(UITableView tv) {
       var ret = IONNavigationCell.Create();
+      
+      /////CREATE A DIFFERENT CELL AT THE TOP OF THE NAVIGATION MENU THAT HOLDS INFORMATION AND OPERATION BUTTONS
+   //   if(title == ""){
+			//	ret = IONRemoteActionCell.Create();
+			//}
 
-      ret.UpdateTo(title, image);
-
+      ret.UpdateTo(title, image, textColor);
+      
       return ret;
     }
   }

@@ -16,7 +16,8 @@ using ION.Core.Fluids;
 using System.Collections.ObjectModel;
 using Appion.Commons.Measure;
 using System.Text.RegularExpressions;
-
+using Foundation;
+using UIKit;
 
 namespace ION.Core.Net {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -64,8 +65,10 @@ namespace ION.Core.Net {
 		public const string downloadLayoutsUrl = "http://portal.appioninc.com/App/downloadLayouts.php";
 		public const string forgotAccountUrl = "http://portal.appioninc.com/App/forgotUserPass.php";
 		public const string updateAccountUrl = "http://portal.appioninc.com/App/updateAccount.php";
+		public const string accountStatusUrl = "http://portal.appioninc.com/App/setAccountStatus.php";
 		public webOfflineEvent timedOut;
 		public webPauseEvent paused;
+		public sessionStateInfo stateInfo;
 		
 		public WebPayload() {
 			ion = AppState.context;
@@ -231,12 +234,38 @@ namespace ION.Core.Net {
 			}				
 	}
 	
+	public async Task<HttpResponseMessage> createSystemLayout(string ID, string uniqueID, string deviceName){
+		Console.WriteLine("Going to grab a layout id or create a new one for the unique device id " + uniqueID + " belonging to account " + ID + " and named " + deviceName);
+			try{
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+      var formContent = new FormUrlEncodedContent(new[]
+          {
+              new KeyValuePair<string, string>("createLayout", "true"),
+              new KeyValuePair<string, string>("userID", ID),
+              new KeyValuePair<string, string>("deviceID", uniqueID),
+              new KeyValuePair<string, string>("deviceName", deviceName),
+          });
+          
+			//////initiate the post request and get the request result
+			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
+			
+			var textReponse = await feedback.Content.ReadAsStringAsync();
+			Console.WriteLine(textReponse);
+			return feedback;
+		}  catch (Exception exception){
+			Console.WriteLine(exception);
+			return null;
+		}	
+		
+	}
+	
 	/// <summary>
 	/// Uploads the devices a user has connected and their relative layout for
 	/// the workbench and analyzer
 	/// </summary>
 	/// <returns>The system layout.</returns>
-	public async Task uploadSystemLayout(string ID){
+	public async Task<HttpResponseMessage> uploadSystemLayout(string ID, string layoutID){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
 		var uploadWorkbench = ion.currentWorkbench;
@@ -274,7 +303,7 @@ namespace ION.Core.Net {
 		string lowAttachedIndex = "0";
 		string highAttachedSN = "null";
 		string highAttachedIndex = "0";
-		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){			
+		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
 			var count = 1;                                                                    
 			foreach(var sensor in uploadAnalyzer.sensorList){
 				var gaugeSensor = sensor as GaugeDeviceSensor;
@@ -403,12 +432,23 @@ namespace ION.Core.Net {
 		}
 			 
     if (ion.locationManager.lastKnownLocation != null) {			      	
-      layoutJson += "],\"alt\":\"" + ion.locationManager.lastKnownLocation.altitude.amount + "\",";
-    }
-    
-    layoutJson += "\"state\":{\"log\":\"" + Convert.ToInt32(ion.dataLogManager.isRecording) + "\"}";
-    
-		layoutJson += "}";  
+      layoutJson += "],\"alt\":\"" + ion.locationManager.lastKnownLocation.altitude.amount + "\"";
+    } else {
+      layoutJson += "],\"alt\":\"0\"";
+		}
+        
+		layoutJson += "}";
+		////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
+		var platformInfo = ion.GetPlatformInformation();
+		
+		stateInfo = new sessionStateInfo(){
+			batteryLevel = platformInfo.batteryPercentage,
+			wifiStatus = Convert.ToInt32(platformInfo.wifiConnected),
+			isRecording = ion.dataLogManager.isRecording ? 1 : 0,
+			remainingMemory = platformInfo.freeMemory,
+		};
+		
+		Console.WriteLine(JsonConvert.SerializeObject(stateInfo));
 		//Console.WriteLine(layoutJson);
 		try{
 			//Create the data package to send for the post request
@@ -418,6 +458,8 @@ namespace ION.Core.Net {
               new KeyValuePair<string, string>("uploadLayouts", "manager"),
               new KeyValuePair<string, string>("layoutJson", layoutJson),
               new KeyValuePair<string, string>("userID", userID),
+              new KeyValuePair<string, string>("layoutID", layoutID),
+              new KeyValuePair<string, string>("status", JsonConvert.SerializeObject(stateInfo)),
           });
           
 			//////initiate the post request and get the request result
@@ -425,8 +467,10 @@ namespace ION.Core.Net {
 
 			var textReponse = await feedback.Content.ReadAsStringAsync();
 			Console.WriteLine(textReponse);
+			return feedback;
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
+			return null;
 		}
 	}
 	/// <summary>
@@ -434,7 +478,7 @@ namespace ION.Core.Net {
 	/// to update the workbench,analyzer, and device manager
 	/// </summary>
 	/// <returns>The layouts.</returns>
-	public async Task DownloadLayouts(string ID, int loggingInterval){
+	public async Task DownloadLayouts(string ID, int loggingInterval, string viewingLayout){
 		//Console.WriteLine("downloading layout");
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var workbench = ion.currentWorkbench.storedWorkbench;
@@ -452,6 +496,7 @@ namespace ION.Core.Net {
           {
               new KeyValuePair<string, string>("downloadLayouts", "manager"),          		
               new KeyValuePair<string, string>("userID", viewingID),
+              new KeyValuePair<string, string>("layoutid", viewingLayout),
           });
           
 			//////initiate the post request and get the request result
@@ -796,7 +841,31 @@ namespace ION.Core.Net {
 					break;
 			}
 		}		
-	}	
+	}
+	
+	public async Task<HttpResponseMessage> SetRemoteDataLog(string viewedUser, string viewedLayout, string islogging){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+
+		try{
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+      var formContent = new FormUrlEncodedContent(new[]
+      {
+          new KeyValuePair<string, string>("updateLogging", "true"),          		
+          new KeyValuePair<string, string>("logStatus", islogging),          		
+          new KeyValuePair<string, string>("viewedUser", viewedUser),    
+          new KeyValuePair<string, string>("viewedLayout", viewedLayout),    
+      });
+          
+			//////initiate the post request and get the request result
+			var feedback = await client.PostAsync(accountStatusUrl,formContent);
+
+			return feedback;
+		}  catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);  
+			return null;
+		}	
+	}
 	/// <summary>
 	/// Queries for everyone a user has viewing access for
 	/// </summary>
@@ -913,9 +982,8 @@ namespace ION.Core.Net {
 	/// <returns>The online status.</returns>
 	/// <param name="status">Status.</param>
 	/// <param name="rootVC">Root vc.</param>
-	public async Task<HttpResponseMessage> updateOnlineStatus(string status, string ID){
+	public async Task<HttpResponseMessage> updateOnlineStatus(string ID, string layoutID){
 			var userID = ID;
-
 	
 			try{
 				//Create the data package to send for the post request
@@ -924,7 +992,7 @@ namespace ION.Core.Net {
           {
               new KeyValuePair<string, string>("changeStatus", "true"),          		
               new KeyValuePair<string, string>("userID", userID),
-              new KeyValuePair<string, string>("status", status), 
+              new KeyValuePair<string, string>("layoutID", layoutID), 
           });
           
 			//////initiate the post request and get the request result
@@ -1072,13 +1140,13 @@ namespace ION.Core.Net {
 	/// <summary>
 	/// Kicks off the download process for remote viewing and manages it based on if a user quits or not
 	/// </summary>
-	public async void StartLayoutDownload(string viewingID, string userID, int loggingInterval){
+	public async void StartLayoutDownload(string viewingID, string userID, int loggingInterval, string viewingLayout){
 		//startedViewing = DateTime.Now;
 		while(downloading){
 		  //var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 
 			if(!string.IsNullOrEmpty(userID)){
-				await DownloadLayouts(viewingID,loggingInterval);
+				await DownloadLayouts(viewingID,loggingInterval,viewingLayout);
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}  else {
 				downloading = false;
@@ -1282,17 +1350,18 @@ namespace ION.Core.Net {
 		[JsonProperty("userID")]
 		public string userID {get;set;}		
 	}
-	[Preserve(AllMembers = true)]
-	public class sessionState {
-		public sessionState(){}
-		public sessionStateInfo info {get;set;}
-	
-	}
+
 	[Preserve(AllMembers = true)]
 	public class sessionStateInfo {
 		public sessionStateInfo(){}
 		[JsonProperty("log")]
-		public bool isRecording {get; set;}		
+		public int isRecording {get; set;}
+		[JsonProperty("battery")]
+		public int batteryLevel {get; set;}
+		[JsonProperty("wifi")]
+		public int wifiStatus {get; set;}
+		[JsonProperty("memory")]
+		public double remainingMemory {get; set;}	
 	}
 }
 

@@ -323,6 +323,14 @@
     public IAppDump CreateApplicationDump() {
       return new BaseAppDump(this, new IOSPlatformInfo());
     }
+    
+    /// <summary>
+    /// Gets the platform information.
+    /// </summary>
+    /// <returns>The platform information.</returns>
+    public IPlatformInfo GetPlatformInformation(){
+			return new IOSPlatformInfo();
+		}
 
     /// <summary>
     /// Initializes the ION instance.
