@@ -40,7 +40,11 @@
       var files = dir.GetFiles();
       foreach (var file in files) {
         var tmpPath = Path.Combine(destPath, file.Name);
-        file.CopyTo(tmpPath);
+        if (File.Exists(tmpPath)) {
+          Path.ChangeExtension(tmpPath, "_" + DateTime.Now.ToFileTimeUtc() + Path.GetExtension(tmpPath));
+        } else {
+          file.CopyTo(tmpPath);
+        }
       }
 
       // Copy the subdirectories

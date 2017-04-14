@@ -47,6 +47,26 @@
 		}
 
     // Overridden from BaseLeConnection
+    protected override bool OnConnectionSuccess() {
+      if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
+        Log.E(this, "Failed to set rigado read characteristic to notify");
+        return false;
+      }
+
+      if (!readCharacteristicDescriptor.SetValue(new List<byte>(BluetoothGattDescriptor.EnableNotificationValue).ToArray())) {
+        Log.E(this, "Failed to set notification to read descriptor");
+        return false;
+      }
+
+      if (!gatt.WriteDescriptor(readCharacteristicDescriptor)) {
+        Log.E(this, "Failed to write read notification descriptor");
+        return false;
+      }
+
+      return base.OnConnectionSuccess();
+    }
+
+    // Overridden from BaseLeConnection
     protected override void OnDisconnect() {
       readCharacteristic = null;
       writeCharacteristic = null;
@@ -101,26 +121,6 @@
 
 			return readCharacteristic != null && readCharacteristicDescriptor != null && writeCharacteristic != null;
 		}
-
-    // Overridden from BaseLeConnection
-    protected override bool OnConnectionSuccess() {
-      if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
-        Log.E(this, "Failed to set rigado read characteristic to notify");
-        return false;
-      }
-
-      if (!readCharacteristicDescriptor.SetValue(new List<byte>(BluetoothGattDescriptor.EnableNotificationValue).ToArray())) {
-        Log.E(this, "Failed to set notification to read descriptor");
-        return false;
-      }
-
-      if (!gatt.WriteDescriptor(readCharacteristicDescriptor)) {
-        Log.E(this, "Failed to write read notification descriptor");
-        return false;
-      }
-
-      return base.OnConnectionSuccess();
-    }
 	}
 }
 

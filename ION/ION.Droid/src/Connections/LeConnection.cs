@@ -51,6 +51,16 @@
 		}
 
     // Overridden from BaseLeConnection
+    protected override bool OnConnectionSuccess() {
+      if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
+        Log.E(this, "Failed to set rigado read characteristic to notify");
+        return false;
+      }
+
+      return base.OnConnectionSuccess();
+    }
+
+    // Overridden from BaseLeConnection
     protected override void OnDisconnect() {
       readCharacteristic = null;
       writeCharacteristic = null;
@@ -104,16 +114,6 @@
 
 			return readCharacteristic != null && writeCharacteristic != null;
 		}
-
-    // Overridden from BaseLeConnection
-    protected override bool OnConnectionSuccess() {
-      if (!gatt.SetCharacteristicNotification(readCharacteristic, true)) {
-        Log.E(this, "Failed to set rigado read characteristic to notify");
-        return false;
-      }
-
-      return base.OnConnectionSuccess();
-    }
 	}
 }
 
