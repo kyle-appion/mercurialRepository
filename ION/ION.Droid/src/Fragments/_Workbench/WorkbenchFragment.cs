@@ -151,6 +151,8 @@ namespace ION.Droid.Fragments._Workbench {
       if (workbench != null) {
 //        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
       }
+
+      list.SetAdapter(null);
 			if (adapter != null) {
 				adapter.Dispose();
 			}

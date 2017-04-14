@@ -65,6 +65,17 @@
 			if (workbench.isEditable) {
 				dragger.AttachToRecyclerView(null);
 			}
+
+      for (int i = 0; i < ItemCount; i++) {
+        var vh = recyclerView.FindViewHolderForAdapterPosition(i);
+        if (vh is SwipeRecyclerView.ViewHolder) {
+          var svh = vh as SwipeRecyclerView.ViewHolder;
+          svh.Unbind();
+        } else if (vh is RecordViewHolder) {
+          var rvh = vh as RecordViewHolder;
+          rvh.Unbind();
+        }
+      }
 		}
 
 		// Overridden from RecordAdapter

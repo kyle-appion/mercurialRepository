@@ -208,9 +208,9 @@
           Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
           Disconnect();
           return;
+        } else {
+          connectionState = EConnectionState.Connected;
         }
-
-        connectionState = EConnectionState.Connected;
       } else {
         Log.E(this, "Failed to discover services. Disconnecting device.");
         Disconnect();
@@ -246,6 +246,15 @@
     public abstract bool Write(byte[] packet);
 
     /// <summary>
+    /// Called after a stable connection is made and the services have been validated. This is were you want to register
+    /// notifications and update any initial connection values. This is the final method that is called in the connection
+    /// sequence that can terminate a connection. If you did not successfully perpare for a connection, return false.
+    /// </summary>
+    protected virtual bool OnConnectionSuccess() {
+      return true;
+    }
+
+    /// <summary>
     /// Called during disconnect to handle implementation specific disconnect procedures.
     /// </summary>
     protected virtual void OnDisconnect() {
@@ -257,15 +266,6 @@
     /// </summary>
     /// <returns><c>true</c>, if services was validated, <c>false</c> otherwise.</returns>
     protected abstract bool ValidateServices();
-
-    /// <summary>
-    /// Called after a stable connection is made and the services have been validated. This is were you want to register
-    /// notifications and update any initial connection values. This is the final method that is called in the connection
-    /// sequence that can terminate a connection. If you did not successfully perpare for a connection, return false.
-    /// </summary>
-    protected virtual bool OnConnectionSuccess() {
-      return true;
-    }
 
     /// <summary>
     /// Performs a passive connect - meaning that the connection will be established in the furture at an indeterminate
