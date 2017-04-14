@@ -30,7 +30,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public override void ViewDidLoad() {
 			base.ViewDidLoad();
 			View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
-      InitNavigationBar("cloud_menu_icon", false);
+      InitNavigationBar("ic_nav_workbench", false);
       backAction = () => {
         root.navigation.ToggleMenu();
       };
