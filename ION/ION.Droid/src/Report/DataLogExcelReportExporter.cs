@@ -135,7 +135,8 @@
 				string date = "N/A";
 				DateTime dt;
 				if (!DateTime.TryParse(ldr.nistDate, out dt)) {
-					Log.D(this, "Failed to parse date time: '" + ldr.nistDate + "'");
+          // TODO ahodder@appioninc.com: Figure out why this is happening
+//					Log.D(this, "Failed to parse date time: '" + ldr.nistDate + "'");
 				}
 
 				file.SetCellValue(curRow, 1, device.serialNumber.ToString());
@@ -273,7 +274,6 @@
 						var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.defaultUnits.DefaultUnitFor(m.sensor.type));
 						var format = sessionBreaks.Contains(dt) ? 3 : 2;
 						file.SetCellValue(2 + y, 2 + x, "" + SensorUtils.ToFormattedString(m.sensor.type, scalar), format);
-						Log.D(this, "X: " + x + " Y: " + y + " value: " + scalar);
 					}
 				}
 
