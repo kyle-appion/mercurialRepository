@@ -239,19 +239,9 @@
     <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
-    <Compile Include="src\Connections\AndroidConnectionHelper.cs" />
-    <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
-    <Compile Include="src\Connections\AndroidBroadcastHelper.cs" />
-    <Compile Include="src\Connections\IScanDelegate.cs" />
-    <Compile Include="src\Connections\Api18ScanDelegate.cs" />
-    <Compile Include="src\Connections\ConnectionDelegates.cs" />
-    <Compile Include="src\Connections\Api21ScanDelegate.cs" />
     <Compile Include="src\App\LocationResolverService.cs" />
-    <Compile Include="src\Connections\ClassicScanDelegate.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
-    <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
-    <Compile Include="src\Connections\BaseScanHelper.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialFragment.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialPage.cs" />
@@ -320,11 +310,11 @@
     <Compile Include="src\Util\AndroidLogger.cs" />
     <Compile Include="src\App\IONBroadcastReceiver.cs" />
     <Compile Include="src\Connections\BaseLeConnection.cs" />
-    <Compile Include="src\Connections\Beta\AndroidConnectionManager.cs" />
-    <Compile Include="src\Connections\Beta\IScanMethod.cs" />
-    <Compile Include="src\Connections\Beta\Api18BleScanMethod.cs" />
-    <Compile Include="src\Connections\Beta\Api21BleScanMethod.cs" />
-    <Compile Include="src\Connections\Beta\ClassicScanMethod.cs" />
+    <Compile Include="src\Connections\AndroidConnectionManager.cs" />
+    <Compile Include="src\Connections\Api18BleScanMethod.cs" />
+    <Compile Include="src\Connections\Api21BleScanMethod.cs" />
+    <Compile Include="src\Connections\ClassicScanMethod.cs" />
+    <Compile Include="src\Connections\IScanMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -792,7 +782,6 @@
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\values-sw480dp\" />
-    <Folder Include="src\Connections\Beta\" />
     <Folder Include="src\Activity\Tutorial\" />
     <Folder Include="src\Activity\Portal\" />
     <Folder Include="src\Fragments\_Workbench\" />

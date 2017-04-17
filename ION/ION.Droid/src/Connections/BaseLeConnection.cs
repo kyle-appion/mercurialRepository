@@ -145,21 +145,18 @@
       Log.D(this, "Waiting on lock to disconnect....");
       lock (locker) {
         Log.D(this, "Got the disconnect lock!");
-        handler.RemoveMessages(MSG_GO_PASSIVE);
+        handler.RemoveCallbacksAndMessages(null);
 
         OnDisconnect();
 
         lastSeen = DateTime.Now;
         connectionState = EConnectionState.Disconnected;
 
-        // Bounce out early as we have nothing to do.
-        if (gatt == null) {
-          return;
+        if (gatt != null) {
+          gatt.Disconnect();
+          gatt.Close();
+          gatt = null;
         }
-
-        gatt.Disconnect();
-        gatt.Close();
-        gatt = null;
 
         if (reconnect) {
           handler.PostDelayed(() => Connect(), 1500);
@@ -169,7 +166,7 @@
 
     // Overridden from BluetoothGattCallback
     public sealed override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
-      Log.D(this, "The Rigado device is in state: " + newState);
+      Log.D(this, "The Le device is in state: " + newState);
       switch (newState) {
         case ProfileState.Connected: {
             handler.RemoveMessages(MSG_GO_PASSIVE);
