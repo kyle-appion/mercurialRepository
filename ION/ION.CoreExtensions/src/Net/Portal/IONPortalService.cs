@@ -795,7 +795,6 @@
 		/// </summary>
 		/// <returns>The from remote.</returns>
 		/// <param name="userId">User identifier.</param>
-		// TODO ahodder@appioninc.com: This method is OMG huge and can be simplified and refactored, likely, into a custom serializer
 		public async Task<PortalResponse> CloneFromRemote(IION ion, string userId) {
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {

@@ -8,7 +8,6 @@ namespace Appion.Commons.Util {
   /// <summary>
   /// A logger class that will manager the application logging and persistence (if enabled).
   /// </summary>
-  // TODO ahodder@appioninc.com: This can be cleaned up a lot using lambdas
   public class Log {
     /// <summary>
     /// The current log level of the log class.

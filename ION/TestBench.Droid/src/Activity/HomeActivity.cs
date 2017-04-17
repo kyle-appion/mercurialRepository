@@ -167,7 +167,7 @@
 			}
 
 			public override Java.Lang.Object GetItem(int position) {
-				throw new NotImplementedException();
+				throw new Exception();
 			}
 
 			public override long GetItemId(int position) {

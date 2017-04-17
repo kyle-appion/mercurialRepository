@@ -152,7 +152,8 @@
 				Array.Copy(buffer, newContent, head - tail);
 			} else {
 				// Otherwise, we need to do two copies as the head wraps the content array.
-				// TODO
+        Array.Copy(buffer, head, newContent, 0, this.count - head);
+        Array.Copy(buffer, 0, newContent, count + head, tail);
 			}
 
 			buffer = newContent;
