@@ -406,6 +406,7 @@
 
 		private void AnimateToGraphView() {
 			FlipView(content, Resource.Id.settings, Resource.Id.graph);
+      InvalidateHandles();
 		}
 
 		/// <summary>
@@ -507,7 +508,7 @@
 			startDateSpinner.Adapter = startTimesAdapter;
 			endDateSpinner.Adapter = endTimesAdapter;
 
-			endDateSpinner.SetSelection(startTimesAdapter.dates.IndexOf(startDate));
+			startDateSpinner.SetSelection(startTimesAdapter.dates.IndexOf(startDate));
 			endDateSpinner.SetSelection(endTimesAdapter.dates.IndexOf(endDate));
 
 			overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
