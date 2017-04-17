@@ -1,5 +1,6 @@
 ﻿namespace TestBench.Droid.Activity {
 
+  using System;
 	using System.Collections.Generic;
 
 	using Android.App;
@@ -397,7 +398,7 @@
 		}
 
 		public override Java.Lang.Object GetItem(int position) {
-			throw new System.NotImplementedException("We are not in java land and cannot cast out C# objects to java.");
+			throw new Exception("We are not in java land and cannot cast out C# objects to java.");
 		}
 
 		public override long GetItemId(int position) {

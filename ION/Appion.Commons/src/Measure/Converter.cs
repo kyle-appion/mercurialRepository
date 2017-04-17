@@ -517,7 +517,7 @@
     }
 
     public override UnitConverter Inverse() {
-      throw new NotImplementedException("There is no inverse to the AdditionOfConvertersConverter");
+      throw new Exception("There is no inverse to the AdditionOfConvertersConverter");
     }
 
     public override UnitConverter Derivative() {
