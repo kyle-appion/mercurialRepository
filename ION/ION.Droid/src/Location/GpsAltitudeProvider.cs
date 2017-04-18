@@ -1,4 +1,5 @@
-﻿namespace ION.Droid.Location {
+﻿using System.Linq;
+namespace ION.Droid.Location {
 
   using System;
   using System.Threading;
@@ -43,6 +44,21 @@
     /// The event that is notified when the altitude manager throws a new event.
     /// </summary>
     public event OnAltitudeEvent onAltitudeEvent;
+    /// <summary>
+    /// Whether or not the altitude finding is supported.
+    /// </summary>
+    /// <value><c>true</c> if is supported; otherwise, <c>false</c>.</value>
+    public bool isSupported {
+      get {
+        foreach (var provider in lm.GetProviders(true)) {
+          var p = lm.GetProvider(provider);
+          if (p.SupportsAltitude()) {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
 
     /// <summary>
     /// Queries whether or not the altitude manager is enabled.
@@ -99,10 +115,12 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
-			Log.D(this, "GpsAltitudeProvider says that it got a new location: " + location + " Supports altitude: " + lp.SupportsAltitude());
-      lastKnownLocation = location;
-      lastLocationReceivedTime = DateTime.Now;
-      NotifyEvent(new AltitudeEvent(AltitudeEvent.EType.NewLocation, location));
+      if (location.HasAltitude) {
+  			Log.V(this, "GpsAltitudeProvider says that it got a new location: " + location + " Supports altitude: " + lp.SupportsAltitude());
+        lastKnownLocation = location;
+        lastLocationReceivedTime = DateTime.Now;
+        NotifyEvent(new AltitudeEvent(AltitudeEvent.EType.NewLocation, location));
+      }
     }
 
     /// <Docs>the name of the location provider associated with this
@@ -146,7 +164,9 @@
     /// Start the location gathering.
     /// </summary>
     public void StartUpdates() {
-      lm.RequestLocationUpdates(LocationManager.GpsProvider, 0, 0, this);
+      foreach (var provider in lm.GetProviders(true)) {
+        lm.RequestLocationUpdates(provider, 0, 0, this);
+      }
     }
 
     /// <summary>
@@ -175,7 +195,10 @@
 
         var start = DateTime.Now;
         while (!disposed && (lastKnownLocation == null || !lastKnownLocation.Equals(old))) {
-          Log.D(this, "gps location not found after " + (DateTime.Now - start));
+          if (DateTime.Now - start > TimeSpan.FromSeconds(30)) {
+            Log.D(this, "Failed to find location within 30 seconds");
+            return null;
+          }
           Thread.Sleep(250);
         }
         var ellapsed = DateTime.Now - start;

@@ -67,7 +67,7 @@
 				}
 			});
 			adb.SetPositiveButton(Resource.String.delete, (sender, e) => {
-				Log.D(this, "Deleted job: " + record.data._id + " = " + AppState.context.database.DeleteAsync<JobRow>(record.data));
+				Log.V(this, "Deleted job: " + record.data._id + " = " + AppState.context.database.DeleteAsync<JobRow>(record.data));
 			});
 
 			adb.Show();
