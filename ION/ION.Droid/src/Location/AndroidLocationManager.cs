@@ -37,7 +37,14 @@
     /// <c>false</c>
     public bool isEnabled {
       get {
-				return ion.preferences.location.allowsGps && (client != null && client.IsConnected);
+        return ion.preferences.location.allowsGps;// && (client != null && client.IsConnected);
+      }
+    }
+
+    // Overridden for ILocationManager
+    public bool supportsAltitudeTracking {
+      get {
+        return altitudeProvider.isSupported;
       }
     }
     /// <summary>
@@ -63,7 +70,18 @@
         if (value == null) {
           value = new SimpleLocation();
         }
-        __lastKnownLocation = value;
+        var old = __lastKnownLocation;
+
+        if (old == null || !old.Equals(value)) {
+          __lastKnownLocation = value;
+
+          ion.preferences.location.customElevation = __lastKnownLocation.altitude;
+          Log.V(this, "Storing altitude: " + lastKnownLocation.altitude);
+
+          if (onLocationChanged != null) {
+            onLocationChanged(this, old, __lastKnownLocation);
+          }
+        }
       }
     } ILocation __lastKnownLocation;
     /// <summary>
@@ -87,10 +105,17 @@
     /// The current running location request. Null is not request is running.
     /// </summary>
     private LocationRequest request;
+    /// <summary>
+    /// The handler that is necessary for pushing events to the main thread.
+    /// </summary>
+    private Handler handler;
 
 		public AndroidLocationManager(BaseAndroidION ion) {
       this.ion = ion;
-      lastKnownLocation = new SimpleLocation();
+      lastKnownLocation = new SimpleLocation() {
+        altitude = ion.preferences.location.customElevation,
+      };
+      handler = new Handler(Looper.MainLooper);
     }
 
     /// <summary>
@@ -127,22 +152,23 @@
     public async Task<InitializationResult> InitAsync() {
 			if (Permission.Granted == ContextCompat.CheckSelfPermission(ion.context, Android.Manifest.Permission.AccessFineLocation)) {
 				altitudeProvider = new GpsAltitudeProvider(ion.context.GetSystemService(Context.LocationService) as LocationManager);
-				altitudeProvider.onAltitudeEvent += (ap, e) => {
-					lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
-					Log.D(this, "The GpsAltitudeProvider sent us a location of: " + lastKnownLocation);
-				};
 
 	      if (IsGooglePlayServicesInstalled()) {
 	        client = InitGooglePlayServices();
 	        client.Connect();
+          var start = DateTime.Now;
 	        while (client.IsConnecting && !client.IsConnected) {
+            if (DateTime.Now - start > TimeSpan.FromSeconds(5)) {
+              Log.E(this, "Failed to connect to google play services: we are shutting them down and running on backup");
+              client.Disconnect();
+              client = null;
+              break;
+            }
 	          await Task.Delay(50);
 	        }
-	        if (client.IsConnected) {
-	          StartAutomaticLocationPolling();
-	        }
 	      }
-	     
+
+        StartAutomaticLocationPolling();
 			} else {
 				Log.E(this, "The user denied the location permission. We will not allow the location to update.");
 				ion.preferences.location.allowsGps = false;
@@ -166,16 +192,9 @@
     /// <c>false</c>
     public bool StartAutomaticLocationPolling() {
 			if (ion.preferences.location.allowsGps) {
-	      Log.D(this, "Startings automatic location polling");
-	      request = new LocationRequest();
-	      request.SetFastestInterval(500);
-	      request.SetInterval(3000);
-	      request.SetNumUpdates(60);
-	      request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
-	      LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
-	      isPolling = true;
-				altitudeProvider.StartUpdates();
-				altitudeProvider.PostRequestSingleLocation();
+        handler.Post(() => {
+          StartGoogleServicesPolling();
+        });
 	      return true;
 			} else {
 				return false;
@@ -187,9 +206,9 @@
     /// </summary>
     public void StopAutomaticLocationPolling() {
       Log.D(this, "Stopping automatic location polling");
-			if (client != null) {
+      if (client != null && client.IsConnected) {
 				try {
-      	LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
+      	  LocationServices.FusedLocationApi.RemoveLocationUpdates(client, this);
 				} catch (Exception) {
 					// TODO ahodder@appioninc.com: This throws a NPE for god know why
 				}
@@ -197,6 +216,7 @@
       isPolling = false;
 			if (altitudeProvider != null) {
 				altitudeProvider.StopUpdates();
+        altitudeProvider.onAltitudeEvent -= OnAltitudeEvent;
 			}
     }
 
@@ -258,6 +278,7 @@
     /// </summary>
     /// <param name="location">Location.</param>
     public void OnLocationChanged(Location location) {
+      Log.V(this, "On Location Change: " + location.ToString());
       var altitude = location.Altitude;
       if (altitude == 0) {
 				// TODO ahodder@appioninc.com: the altitude provider should not be null
@@ -270,11 +291,15 @@
 					Log.E(this, "The altitude provider was null");
 				}
       }
-			Log.D(this, "Location changed: " + location + ", Altitude: " + altitude + ", hasAltitude: " + location.HasAltitude);
 			if (location.HasAltitude) {
 				lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, location.Latitude);
 			} else {
-				lastKnownLocation = new SimpleLocation(true, altitude, location.Longitude, lastKnownLocation.altitude.ConvertTo(Units.Length.METER).amount);
+        var altploc = altitudeProvider.lastKnownLocation;
+        if (altploc == null) {
+          altploc = new Location("");
+        }
+        var alt = Units.Length.METER.OfScalar(altploc.Altitude).ConvertTo(ion.defaultUnits.length);
+        lastKnownLocation = new SimpleLocation(true, alt.amount, location.Longitude, location.Latitude);
 			}
     }
 
@@ -283,7 +308,7 @@
     /// </summary>
     /// <param name="i">The index.</param>
     public void OnConnectionSuspended(int i) {
-      Log.D(this, "GoogleApiClient connection suspended");
+      Log.V(this, "GoogleApiClient connection suspended");
     }
 
     /// <summary>
@@ -299,13 +324,42 @@
         } else {
           StopAutomaticLocationPolling();
           lastKnownLocation = new SimpleLocation() {
-            altitude = ion.preferences.units.length.OfScalar(ion.preferences.location.customElevation),
+            altitude = ion.preferences.location.customElevation,
           };
         }
       } else if (ion.context.GetString(Resource.String.pkey_location_elevation).Equals(key)) {
         lastKnownLocation = new SimpleLocation() {
-          altitude = ion.preferences.units.length.OfScalar(ion.preferences.location.customElevation),
+          altitude = ion.preferences.location.customElevation,
         };
+      }
+    }
+
+    private void OnAltitudeEvent(GpsAltitudeProvider provider, AltitudeEvent e) {
+      Log.V(this, "The GpsAltitudeProvider sent us a location of: " + e);
+      if (lastKnownLocation != null) {
+        var loc = lastKnownLocation;
+        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, loc.longitude.amount, loc.latitude.amount);
+      } else {
+        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+      }
+    }
+
+    /// <summary>
+    /// Starts the google services polling new location events.
+    /// </summary>
+    private void StartGoogleServicesPolling() {
+      Log.V(this, "Starting automatic location polling");
+      isPolling = true;
+      altitudeProvider.StartUpdates();
+      altitudeProvider.onAltitudeEvent += OnAltitudeEvent;
+      altitudeProvider.PostRequestSingleLocation();
+      if (client != null && client.IsConnected) {
+        request = new LocationRequest();
+        request.SetFastestInterval((long)TimeSpan.FromMinutes(0.5).TotalMilliseconds);
+        request.SetInterval((long)TimeSpan.FromMinutes(1.5).TotalMilliseconds);
+        request.SetNumUpdates(60);
+        request.SetPriority(LocationRequest.PriorityBalancedPowerAccuracy);
+        LocationServices.FusedLocationApi.RequestLocationUpdates(client, request, this);
       }
     }
 

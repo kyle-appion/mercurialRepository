@@ -198,7 +198,7 @@
 				ScrollToOffset(newOffset);
 			} else {
 				offset = CalculateOffsetFromTemperature(t);
-				PostInvalidate();
+				Invalidate();
 				NotifyOfScroll(false);
 			}
 		}

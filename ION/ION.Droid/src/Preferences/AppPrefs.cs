@@ -166,7 +166,7 @@
       this.context = context;
       this.prefs = prefs;
       alarm = new AlarmPreferences(context, prefs);
-      location = new LocationPreferences(context, prefs);
+      location = new LocationPreferences(context, this);
       units = new UnitPreferences(context, prefs);
 			reports =  new ReportPreferences(context, prefs);
 			portal = new PortalPreferences(context, prefs);
@@ -329,18 +329,20 @@
     }
 
     /// <summary>
-    /// Queries or sets the user's manually entered elevation.
+    /// Queries or sets the user's manually entered elevation. The returned unit will be the user's set length unit.
     /// </summary>
     /// <value>The custom elevation.</value>
-    public double customElevation {
+    public Scalar customElevation {
       get {
-        return prefs.GetFloat(context.GetString(Resource.String.pkey_location_elevation), 0.0f);
+        var raw = prefs.GetFloat(context.GetString(Resource.String.pkey_location_elevation), 0.0f);
+        return Units.Length.METER.OfScalar(raw).ConvertTo(appPrefs.units.length);
       }
 
       set {
         var e = prefs.Edit();
 
-        e.PutFloat(context.GetString(Resource.String.pkey_location_elevation), (float)value);
+        var raw = value.ConvertTo(Units.Length.METER);
+        e.PutFloat(context.GetString(Resource.String.pkey_location_elevation), (float)raw.amount);
 
         e.Commit();
       }
@@ -363,7 +365,10 @@
 			}
 		}
 
-		public LocationPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+    private AppPrefs appPrefs;
+
+    public LocationPreferences(Context context, AppPrefs prefs) : base(context, prefs.prefs) {
+      this.appPrefs = prefs;
     }
   }
 

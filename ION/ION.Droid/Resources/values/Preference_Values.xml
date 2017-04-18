@@ -76,8 +76,8 @@
 
   <!-- Length Values -->
   <string-array name="preferences_units_length_values">
-    <item>20</item>
     <item>21</item>
+    <item>20</item>
   </string-array>
 
   <!-- Pressure Entries -->

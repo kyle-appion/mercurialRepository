@@ -38,6 +38,8 @@
   <string name="downloading">Downloading</string>
   <string name="download_error">Download Error</string>
   <string name="edit_manual_entry">Edit Manual Entry</string>
+  <string name="elevation">Elevation</string>
+	<string name="elevation_help">Elevation is used in PT calculations. The shown elevation is either the current elevation that your device thinks that it is (if enabled) or your manually entered elevation. If you wish to change your elevation, you can do so in settings.</string>
   <string name="email">Email</string>
   <string name="enable">Enable</string>
   <string name="enabling_bluetooth">Enabling Bluetooth...</string>

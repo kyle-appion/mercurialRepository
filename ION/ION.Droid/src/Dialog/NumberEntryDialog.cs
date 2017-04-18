@@ -54,9 +54,13 @@
         var dialog = obj as Android.App.Dialog;
 
         try {
-          var number = double.Parse(entry.Text);
-          if (handler != null) {
-            handler(ret, number);
+          if (string.IsNullOrEmpty(entry.Text)) {
+            handler(ret, 0);
+          } else {
+            var number = double.Parse(entry.Text);
+            if (handler != null) {
+              handler(ret, number);
+            }
           }
           dialog.Dismiss();
         } catch (Exception e) {

@@ -39,6 +39,7 @@
   <item name="down" type="id"/>
   <item name="download" type="id"/>
   <item name="edit" type="id"/>
+  <item name="elevation" type="id"/>
   <item name="email" type="id"/>
   <item name="empty" type="id"/>
   <item name="end" type="id"/>
