@@ -96,6 +96,10 @@
 				__ptChart = value;
 				slider.ptChart = value;
 
+        if (__ptChart == null) {
+          Log.E(this, "Why was ptchart set to null?");
+        }
+
 				var name = __ptChart.fluid.name;
 				fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
 				fluidNameView.Text = name;
@@ -148,7 +152,7 @@
     /// <summary>
     /// The button that will explain to the user what the elevation is doing to the PT measurements.
     /// </summary>
-    private Button elevationHelp;
+    private ImageButton elevationHelp;
 
 		/// <summary>
 		/// The view that maintains the click events for the pressure sensor interaction.
@@ -331,7 +335,7 @@
 		} Unit __temperatureUnit;
 
 		// Overridden from IONActivity
-		protected override async void OnCreate(Bundle bundle) {
+		protected override void OnCreate(Bundle bundle) {
 			base.OnCreate(bundle);
 
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_ptconversion, Resource.Color.gray));
@@ -375,7 +379,7 @@
       // Init elevation widgets
       var container = FindViewById(Resource.Id.elevation);
       elevation = container.FindViewById<TextView>(Resource.Id.text);
-      elevationHelp = container.FindViewById<Button>(Resource.Id.button);
+      elevationHelp = container.FindViewById<ImageButton>(Resource.Id.button);
       elevationHelp.Click += (sender, e) => {
         var adb = new IONAlertDialog(this);
         adb.SetTitle(Resource.String.help);

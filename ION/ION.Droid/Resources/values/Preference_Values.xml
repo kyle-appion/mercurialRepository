@@ -30,7 +30,7 @@
   <string name="preferences_location_elevation">Custom Elevation</string>
   <string name="preferences_location_elevation_set">Please enter your custom elevation.</string>
   <string name="preferences_location_elevation_summary">Enter the elevation that will be used throughout the application.</string>
-  <string name="preferences_location_gps">Allow Use Of Your Location</string>
+  <string name="preferences_location_gps">Allow GPS</string>
   <string name="preferences_location_gps_on">Use of your location will be used for various features throughout the application.</string>
   <string name="preferences_location_gps_off">Your location will not be explicity accessed by the application.</string>
 

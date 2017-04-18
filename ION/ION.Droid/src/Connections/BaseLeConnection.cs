@@ -112,13 +112,15 @@
       handler = new Handler(Looper.MainLooper, this);
     }
 
-
     // Implemented for IConnection
     public bool Connect() {
-      Log.D(this, "Waiting on lock to connect....");
       lock (locker) {
-        Log.D(this, "Got the connect lock!");
-        if (gatt == null) {
+        if (isConnected) {
+          return true;
+        } else {
+          if (connectionState != EConnectionState.Disconnected) {
+            Disconnect(false);
+          }
           try {
             Log.D(this, "Device {" + name + "} is performing an active connection");
             gatt = device.ConnectGatt(manager.context, false, this);
@@ -128,23 +130,13 @@
             Log.E(this, "Failed to start pending gatt connection.", e);
             return false;
           }
-        } else {
-          try {
-            Disconnect(true);
-            return true;
-          } catch (Exception e) {
-            Log.E(this, "Failed to attempt connect of pending gatt connection.", e);
-            return false;
-          }
         }
       }
     }
 
     // Implemented for IConnection
     public void Disconnect(bool reconnect=false) {
-      Log.D(this, "Waiting on lock to disconnect....");
       lock (locker) {
-        Log.D(this, "Got the disconnect lock!");
         handler.RemoveCallbacksAndMessages(null);
 
         OnDisconnect();
@@ -219,7 +211,7 @@
       switch (msg.What) {
         case MSG_GO_PASSIVE: {
             if (isConnected) {
-              Disconnect(true);
+              Disconnect(false);
             }
 
             return ConnectPassive();
