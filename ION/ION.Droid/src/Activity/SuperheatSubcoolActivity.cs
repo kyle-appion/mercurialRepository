@@ -13,10 +13,9 @@
 
   using Java.Lang;
 
-	using Appion.Commons.Util;
-
 	using ION.Core.Content;
   using ION.Core.Devices;
+  using ION.Core.Location;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
 
@@ -113,6 +112,14 @@
     /// </summary>
     /// <value>The help view.</value>
     private ImageButton helpView { get; set; }
+
+    /// The current elevation that is used for calculations in pt measurements.
+    /// </summary>
+    private TextView elevation;
+    /// <summary>
+    /// The button that will explain to the user what the elevation is doing to the PT measurements.
+    /// </summary>
+    private ImageButton elevationHelp;
 
     /// <summary>
     /// The view that maintains the click events for the pressure sensor interaction.
@@ -400,24 +407,25 @@
       pressureSensor.unit = ion.defaultUnits.pressure;
       temperatureSensor.unit = ion.defaultUnits.temperature;
 
+      // Init elevation widgets
+      var container = FindViewById(Resource.Id.elevation);
+      elevation = container.FindViewById<TextView>(Resource.Id.text);
+      elevationHelp = container.FindViewById<ImageButton>(Resource.Id.button);
+      elevationHelp.Click += (sender, e) => {
+        var adb = new IONAlertDialog(this);
+        adb.SetTitle(Resource.String.help);
+        adb.SetMessage(Resource.String.elevation_help);
+        adb.SetNegativeButton(Resource.String.close, (sender2, e2) => {
+        });
+        adb.SetPositiveButton(Resource.String.settings, (sender2, e2) => {
+          var i = new Intent(this, typeof(AppPreferenceActivity));
+          StartActivity(i);
+        });
+        adb.Show();
+      };
+
 			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
 			ptChart = PTChart.New(ion, Fluid.EState.Dew);
-/*
-      if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
-        var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
-        var fluid = await ion.fluidManager.GetFluidAsync(name);
-
-        var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
-				Log.D(this, "State: " + state);
-
-				var locked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
-				fluidPhaseToggleView.Enabled = !locked;
-
-        ptChart = PTChart.New(ion, state, fluid);
-      } else {
-        ptChart = PTChart.New(ion, Fluid.EState.Dew);
-      }
-*/
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -472,6 +480,13 @@
     /// </summary>
     protected override void OnResume() {
       base.OnResume();
+      ion.locationManager.onLocationChanged += OnLocationChanged;
+      elevation.Text = SensorUtils.ToFormattedString(ion.locationManager.lastKnownLocation.altitude.ConvertTo(ion.defaultUnits.length), true);
+    }
+
+    protected override void OnPause() {
+      base.OnPause();
+      ion.locationManager.onLocationChanged -= OnLocationChanged;
     }
 
     /// <Docs>The options menu in which you place your items.</Docs>
@@ -849,6 +864,16 @@
       temperatureEntryView.Text = text;
 
       temperatureEntryView.AddTextChangedListener(temperatureTextWatcher);
+    }
+
+    /// <summary>
+    /// Called when the application's location changes.
+    /// </summary>
+    /// <param name="lm">Lm.</param>
+    /// <param name="oldLocation">Old location.</param>
+    /// <param name="newLocation">New location.</param>
+    private void OnLocationChanged(ILocationManager lm, ILocation oldLocation, ILocation newLocation) {
+      elevation.Text = SensorUtils.ToFormattedString(newLocation.altitude.ConvertTo(ion.preferences.units.length) , true);
     }
 
     /// <summary>
