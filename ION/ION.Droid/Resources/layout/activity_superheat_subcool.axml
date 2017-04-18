@@ -51,18 +51,6 @@
             android:textOn="@string/fluid_bubble"
             android:textOff="@string/fluid_dew"
             android:thumb="@drawable/selector_fluid_state" />
-        <Space
-            android:layout_width="@dimen/padding"
-            android:layout_height="wrap_content" />
-        <ImageButton
-            android:id="@id/help"
-            android:background="@drawable/selector_button_gold_black"
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_help"
-            android:tint="@color/black"
-            android:layout_gravity="center_vertical"
-            android:layout_width="35dp"
-            android:layout_height="35dp" />
     </LinearLayout>
 <!-- The section that will display the currently used elevation for the user. -->
     <LinearLayout
@@ -82,15 +70,6 @@
             android:paddingRight="@dimen/padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <ImageButton
-            android:id="@id/button"
-            android:scaleType="fitCenter"
-            android:background="@drawable/selector_button_gold_black"
-            android:src="@drawable/ic_help"
-            android:tint="@color/black"
-            android:layout_gravity="center_vertical"
-            android:layout_width="35dp"
-            android:layout_height="35dp" />
     </LinearLayout>
 <!-- Section Divider -->
     <Space

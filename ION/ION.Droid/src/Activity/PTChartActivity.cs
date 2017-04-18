@@ -105,10 +105,8 @@
 				fluidNameView.Text = name;
 				if (__ptChart.fluid.mixture) {
 					fluidPhaseToggleView.Visibility = ViewStates.Visible;
-					helpView.Visibility = ViewStates.Visible;
 				} else {
 					fluidPhaseToggleView.Visibility = ViewStates.Invisible;
-					helpView.Visibility = ViewStates.Invisible;
 				}
 				fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
 
@@ -139,20 +137,11 @@
 		/// </summary>
 		/// <value>The fluid state toggle.</value>
 		private Switch fluidPhaseToggleView { get; set; }
-		/// <summary>
-		/// The button that will show the help dialog.
-		/// </summary>
-		/// <value>The help view.</value>
-		private ImageButton helpView { get; set; }
 
     /// <summary>
     /// The current elevation that is used for calculations in pt measurements.
     /// </summary>
     private TextView elevation;
-    /// <summary>
-    /// The button that will explain to the user what the elevation is doing to the PT measurements.
-    /// </summary>
-    private ImageButton elevationHelp;
 
 		/// <summary>
 		/// The view that maintains the click events for the pressure sensor interaction.
@@ -360,16 +349,6 @@
 					ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
 				}
 			}));
-			helpView = FindViewById<ImageButton>(Resource.Id.help);
-			helpView.SetOnClickListener(new ViewClickAction((v) => {
-				var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
-				ldb.SetMessage(Resource.String.fluid_help_mixture_clarification);
-				ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
-					var dialog = obj as Android.App.Dialog;
-					dialog.Dismiss();
-				});
-				ldb.Show();
-			}));
 
 			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
 
@@ -379,19 +358,6 @@
       // Init elevation widgets
       var container = FindViewById(Resource.Id.elevation);
       elevation = container.FindViewById<TextView>(Resource.Id.text);
-      elevationHelp = container.FindViewById<ImageButton>(Resource.Id.button);
-      elevationHelp.Click += (sender, e) => {
-        var adb = new IONAlertDialog(this);
-        adb.SetTitle(Resource.String.help);
-        adb.SetMessage(Resource.String.elevation_help);
-        adb.SetNegativeButton(Resource.String.close, (sender2, e2) => {
-        });
-        adb.SetPositiveButton(Resource.String.settings, (sender2, e2) => {
-          var i = new Intent(this, typeof(AppPreferenceActivity));
-          StartActivity(i);
-        });
-        adb.Show();
-      };
 
 			InitPressureWidgets();
 			InitTemperatureWidgets();
@@ -467,15 +433,43 @@
       ion.locationManager.onLocationChanged -= OnLocationChanged;
 		}
 
+    // Overridden from Activity
+    public override bool OnCreateOptionsMenu(IMenu menu) {
+      base.OnCreateOptionsMenu(menu);
+
+      MenuInflater.Inflate(Resource.Menu.help, menu);
+
+      var item = menu.FindItem(Resource.Id.help);
+      var view = item.ActionView as Button;
+      view.Text = GetString(Resource.String.help);
+      view.SetOnClickListener(new ViewClickAction((v) => {
+        OnMenuItemSelected(Resource.Id.help, menu.FindItem(Resource.Id.help));
+      }));
+
+      return true;
+    }
+
 		// Overridden from Activity
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
 			switch (item.ItemId) {
 				case Android.Resource.Id.Home:
 					SetResult(Result.Canceled);
 					Finish();
-				return true;
+			  	return true;
+        case Resource.Id.help:
+          var adb = new IONAlertDialog(this);
+          adb.SetTitle(Resource.String.help);
+          adb.SetMessage(Resource.String.fluid_help_mixture_clarification);
+          adb.SetNegativeButton(Resource.String.close, (sender, e) => {
+          });
+          adb.SetPositiveButton(Resource.String.settings, (sender, e) => {
+            var i = new Intent(this, typeof(AppPreferenceActivity));
+            StartActivity(i);
+          });
+          adb.Show();
+          return true;
 				default:
-				return base.OnMenuItemSelected(featureId, item);
+				  return base.OnMenuItemSelected(featureId, item);
 			}
 		}
 
