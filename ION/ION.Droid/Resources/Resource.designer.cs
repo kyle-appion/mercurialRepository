@@ -4719,25 +4719,28 @@ namespace ION.Droid
 			public const int download = 2131689473;
 			
 			// aapt resource value: 0x7f0f0002
-			public const int ok_done = 2131689474;
+			public const int help = 2131689474;
 			
 			// aapt resource value: 0x7f0f0003
-			public const int plus = 2131689475;
+			public const int ok_done = 2131689475;
 			
 			// aapt resource value: 0x7f0f0004
-			public const int record = 2131689476;
+			public const int plus = 2131689476;
 			
 			// aapt resource value: 0x7f0f0005
-			public const int refresh = 2131689477;
+			public const int record = 2131689477;
 			
 			// aapt resource value: 0x7f0f0006
-			public const int save = 2131689478;
+			public const int refresh = 2131689478;
 			
 			// aapt resource value: 0x7f0f0007
-			public const int scan = 2131689479;
+			public const int save = 2131689479;
 			
 			// aapt resource value: 0x7f0f0008
-			public const int screenshot = 2131689480;
+			public const int scan = 2131689480;
+			
+			// aapt resource value: 0x7f0f0009
+			public const int screenshot = 2131689481;
 			
 			static Menu()
 			{

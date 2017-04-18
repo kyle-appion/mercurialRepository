@@ -129,38 +129,12 @@ namespace ION.Droid.Activity {
     }
 
     // Overridden from Activity
-    public override bool OnCreateOptionsMenu(IMenu menu) {
-      base.OnCreateOptionsMenu(menu);
-
-      MenuInflater.Inflate(Resource.Menu.save, menu);
-
-      menu.FindItem(Resource.Id.save).ActionView.Click += (sender, e) => {
-        var res = new Intent();
-        res.PutExtra(EXTRA_SELECTED, selectedFluid);
-        SetResult(Result.Ok, res);
-        Finish();
-      };
-
-      return true;
-    }
-
-    // Overridden from Activity
-    public override bool OnPrepareOptionsMenu(IMenu menu) {
-      base.OnPrepareOptionsMenu(menu);
-      return true;
-    }
-
-    // Overridden from Activity
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
-        case Resource.Id.save:
+        case Android.Resource.Id.Home:
           var res = new Intent();
           res.PutExtra(EXTRA_SELECTED, selectedFluid);
           SetResult(Result.Ok, res);
-          Finish();
-          return true;
-        case Android.Resource.Id.Home:
-          SetResult(Result.Canceled);
           Finish();
           return true;
         default:
