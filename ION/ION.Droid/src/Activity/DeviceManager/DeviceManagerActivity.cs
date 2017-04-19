@@ -221,6 +221,14 @@
 		/// </summary>
 		private void ToggleScanning() {
       if (connectionManager.isScanning) {
+        connectionManager.StopScan();
+        handler.RemoveCallbacksAndMessages(null);
+      } else {
+        connectionManager.StartScan();
+        handler.PostDelayed(() => connectionManager.StopScan(), (long)TimeSpan.FromSeconds(12).TotalMilliseconds);
+      }
+/*
+      if (connectionManager.isScanning) {
         handler.RemoveCallbacksAndMessages(null);
         connectionManager.StopScan();
       } else {
@@ -241,6 +249,7 @@
           });
         }
       }
+*/
 		}
 
 		/// <summary>

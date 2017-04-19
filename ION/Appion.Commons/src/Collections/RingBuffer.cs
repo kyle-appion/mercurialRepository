@@ -151,9 +151,11 @@
 				// The buffer is in order, this is a simple copy.
 				Array.Copy(buffer, newContent, head - tail);
 			} else {
-				// Otherwise, we need to do two copies as the head wraps the content array.
-        Array.Copy(buffer, head, newContent, 0, this.count - head);
-        Array.Copy(buffer, 0, newContent, count + head, tail);
+        // Otherwise, we need to do two copies as the head wraps the content array.
+        if (buffer != null) {
+          Array.Copy(buffer, head, newContent, 0, this.count - head);
+          Array.Copy(buffer, 0, newContent, count + head, tail);
+        }
 			}
 
 			buffer = newContent;

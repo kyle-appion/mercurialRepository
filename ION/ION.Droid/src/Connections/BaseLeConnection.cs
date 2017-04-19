@@ -161,7 +161,7 @@
       Log.D(this, "The Le device is in state: " + newState);
       switch (newState) {
         case ProfileState.Connected: {
-            handler.RemoveMessages(MSG_GO_PASSIVE);
+            handler.RemoveCallbacksAndMessages(null);
             connectionState = EConnectionState.Resolving;
             lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
 
@@ -193,6 +193,7 @@
     // Overridden from BluetoothGattCallback
     public sealed override void OnServicesDiscovered(BluetoothGatt gatt, GattStatus status) {
       if (ValidateServices()) {
+        handler.RemoveCallbacksAndMessages(null);
         if (!OnConnectionSuccess()) {
           Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
           Disconnect();

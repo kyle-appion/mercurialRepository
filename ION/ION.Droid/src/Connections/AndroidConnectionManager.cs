@@ -119,6 +119,7 @@
       return classicScanMethod.StartScan();
     }
 
+
     // Implemented for IConnectionManager
     public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
       var device = bm.Adapter.GetRemoteDevice(address);
@@ -162,6 +163,7 @@
 
       if (!ResolveSerialNumber(device, scanRecord, out sn)) {
         // We could not resolve the device (or it is not ours)
+        Log.V(this, "Ignoring device: " + device.Name);
         return;
       }
 

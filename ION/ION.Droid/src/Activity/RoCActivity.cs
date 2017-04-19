@@ -1,362 +1,380 @@
 ﻿namespace ION.Droid.Activity {
 
-	using System;
+  using System;
+  using System.Collections.Generic;
 
-	using Android.App;
-	using Android.Content;
-	using Android.Content.PM;
-	using Android.Graphics;
-	using Android.OS;
-	using Android.Text;
-	using Android.Views;
-	using Android.Widget;
+  using Android.App;
+  using Android.Content;
+  using Android.Content.PM;
+  using Android.OS;
+  using Android.Views;
+  using Android.Widget;
 
-	using OxyPlot;
-	using OxyPlot.Axes;
-	using OxyPlot.Series;
-	using OxyPlot.Xamarin.Android;
+  using OxyPlot;
+  using OxyPlot.Axes;
+  using OxyPlot.Series;
+  using OxyPlot.Xamarin.Android;
 
-	using Appion.Commons.Util;
+  using Appion.Commons.Measure;
+  using Appion.Commons.Util;
 
-	using ION.Core.Content;
-	using ION.Core.Devices;
-	using ION.Core.Fluids;
-	using ION.Core.Sensors;
-	using ION.Core.Sensors.Properties;
-	using ROCFlags = ION.Core.Sensors.Properties.RateOfChangeSensorProperty.EFlags;
+  using ION.Core.Content;
+  using ION.Core.Devices;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Properties;
+  using ROCFlags = ION.Core.Sensors.Properties.RateOfChangeSensorProperty.EFlags;
 
-	using ION.Droid.Content;
-	using ION.Droid.Devices;
+  using ION.Droid.Content;
+  using ION.Droid.Devices;
 
-	[Activity(Label="US RoC", ScreenOrientation=ScreenOrientation.Portrait)]
-	public class RoCActivity : IONActivity {
-		/// <summary>
-		/// The extra that pulls a ManifoldParcelable from the launching intent.
-		/// </summary>
-		public const string EXTRA_MANIFOLD = "ION.Droid.Activity.Extra.MANIFOLD";
+  [Activity(Label = "US RoC", ScreenOrientation = ScreenOrientation.Portrait)]
+  public class RoCActivity : IONActivity {
+    /// <summary>
+    /// The extra that pulls a ManifoldParcelable from the launching intent.
+    /// </summary>
+    public const string EXTRA_MANIFOLD = "ION.Droid.Activity.Extra.MANIFOLD";
 
-		private PlotView plot;
-		private Manifold manifold;
-		private RateOfChangeSensorProperty roc;
+    private PlotView plot;
+    private Manifold manifold;
+    private RateOfChangeSensorProperty roc;
 
-		private View content1;
-		private View content2;
-		private View content3;
+    private View content1;
+    private View content2;
 
-		private ImageView icon1;
-		private ImageView icon2;
-		private ImageView icon3;
+    private ImageView icon1;
+    private ImageView icon2;
 
-		private CheckBox check1;
-		private CheckBox check2;
-		private CheckBox check3;
+    private CheckBox check1;
+    private CheckBox check2;
 
-		private PlotModel model;
-		private LinearAxis xAxis;
-		private LinearAxis primaryAxis;
-		private LinearAxis secondaryAxis;
-		private LinearAxis tertiaryAxis;
+    private PlotModel model;
+    private LinearAxis xAxis;
+    private LinearAxis primaryAxis;
+    private LinearAxis secondaryAxis;
 
-		private LineSeries primarySeries;
-		private LineSeries secondarySeries;
-		private LineSeries tertiarySeries;
+    private LineSeries primarySeries;
+    private LineSeries secondarySeries;
 
-		private Handler handler;
+    private CanvasRenderContext rc;
 
-		// Overridden from IONActivity
-		protected override void OnCreate(Bundle state) {
-			base.OnCreate(state);
+    private Handler handler;
 
-			ActionBar.SetDisplayHomeAsUpEnabled(true);
+    // Overridden from IONActivity
+    protected override void OnCreate(Bundle state) {
+      base.OnCreate(state);
 
-			SetContentView(Resource.Layout.activity_roc);
+      ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-			plot = FindViewById<PlotView>(Resource.Id.graph);
+      SetContentView(Resource.Layout.activity_roc);
 
-			content1 = FindViewById(Resource.Id._1);
-			content2 = FindViewById(Resource.Id._2);
-			content3 = FindViewById(Resource.Id._3);
+      plot = FindViewById<PlotView>(Resource.Id.graph);
 
-			icon1 = content1.FindViewById<ImageView>(Resource.Id.icon);
-			icon2 = content2.FindViewById<ImageView>(Resource.Id.icon);
-			icon3 = content3.FindViewById<ImageView>(Resource.Id.icon);
+      content1 = FindViewById(Resource.Id._1);
+      content2 = FindViewById(Resource.Id._2);
 
-			check1 = content1.FindViewById<CheckBox>(Resource.Id.checkbox);
-			check2 = content2.FindViewById<CheckBox>(Resource.Id.checkbox);
-			check3 = content3.FindViewById<CheckBox>(Resource.Id.checkbox);
+      icon1 = content1.FindViewById<ImageView>(Resource.Id.icon);
+      icon2 = content2.FindViewById<ImageView>(Resource.Id.icon);
 
-			LoadManifold();
-			InitViews();
+      check1 = content1.FindViewById<CheckBox>(Resource.Id.checkbox);
+      check2 = content2.FindViewById<CheckBox>(Resource.Id.checkbox);
 
-			check1.CheckedChange += (obj, args) => {
-				primarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowPrimary);
-			};
+      LoadManifold();
+      InitViews();
 
-			check2.CheckedChange += (obj, args) => {
-				secondarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowSecondary);
-			};
+      check1.CheckedChange += (obj, args) => {
+        primarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowPrimary);
+      };
 
-			check3.CheckedChange += (obj, args) => {
-				tertiarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowTertiary);
-			};
+      check2.CheckedChange += (obj, args) => {
+        secondarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowSecondary);
+      };
 
-			handler = new Handler(OnHandleMessage);
-		}
+      var dm = Resources.DisplayMetrics;
+      var scale = dm.Density;
+      rc = new CanvasRenderContext(scale, dm.ScaledDensity);
 
-		// Overridden from Activity
-		protected override void OnResume() {
-			base.OnResume();
-			handler.SendEmptyMessageDelayed(0, 100);
-		}
+      handler = new Handler(OnHandleMessage);
+    }
 
-		// Overridden from Activity
-		protected override void OnPause() {
-			base.OnPause();
-			handler.RemoveCallbacksAndMessages(null);
-		}
+    // Overridden from Activity
+    protected override void OnResume() {
+      base.OnResume();
+      handler.SendEmptyMessageDelayed(0, 100);
+    }
 
-		// Overridden from Activity
-		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
-			switch (item.ItemId) {
-				case Android.Resource.Id.Home:
-					SetResult(Result.Canceled);
-					Finish();
-					return true;
-				default:
-					return base.OnMenuItemSelected(featureId, item);          
-			}
-		}
+    // Overridden from Activity
+    protected override void OnPause() {
+      base.OnPause();
+      handler.RemoveCallbacksAndMessages(null);
+    }
 
-		private void Invalidate() {
-			var device = (manifold.primarySensor as GaugeDeviceSensor)?.device;
-			if (device == null || device.isConnected) {
-				InvalidatePrimary();
-				InvalidateSecondary();
-				InvalidateTertiary();
+    // Overridden from Activity
+    public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
+      switch (item.ItemId) {
+        case Android.Resource.Id.Home:
+          SetResult(Result.Canceled);
+          Finish();
+          return true;
+        default:
+          return base.OnMenuItemSelected(featureId, item);
+      }
+    }
 
-				plot.InvalidatePlot();
-				model.InvalidatePlot(true);
-			}
-		}
+    private void Invalidate() {
+      var device = (manifold.primarySensor as GaugeDeviceSensor)?.device;
+      if (device == null || device.isConnected) {
+        InvalidatePrimary();
+        InvalidateSecondary();
+        InvalidateTime();
 
-		private void InvalidatePrimary() {
-			var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+        plot.InvalidatePlot();
+        model.InvalidatePlot(true);
+      }
+    }
 
-			var primaryMinMax = roc.GetPrimaryMinMax();
-			double diff = primaryMinMax.diff / 10;
-			if (diff == 0) {
-				diff = 1;
-			}
-			primaryAxis.Minimum = primaryMinMax.min.amount - diff;
-			primaryAxis.Maximum = primaryMinMax.max.amount + diff;
+    private void InvalidateTime() {
+      var axis = xAxis;
 
-			primarySeries.Points.Clear();
-			var primaryBuffer = roc.primarySensorPoints;
-			foreach (var pp in primaryBuffer) {
-				var t = roc.window - (primaryBuffer[0].date - pp.date);
-				primarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
-			}
-		}
+      var points = roc.primarySensorPoints;
+      var startTime = points[0];
+      var endTime = points[points.Length - 1].date;
 
-		private void InvalidateSecondary() {
-			if (manifold.secondarySensor == null) {
-				return;
-			}
+      axis.Minimum = (startTime.date - roc.window).ToFileTime() - 1000000;
+      axis.Maximum = startTime.date.ToFileTime() + 1000000;
 
-			var minMax = roc.GetSecondaryMinMax();
-			double diff = minMax.diff / 10;
-			if (diff == 0) {
-				diff = 1;
-			}
+      axis.MajorStep = (long)((roc.window.TotalMilliseconds * 1e4) / 2);
+      axis.MinorStep = axis.MajorStep / 5;
+      axis.AxislineStyle = LineStyle.Solid;
+      axis.AxislineThickness = 1;
+    }
 
-			secondaryAxis.Minimum = minMax.min.amount - diff;
-			secondaryAxis.Maximum = minMax.max.amount + diff;
+    private void InvalidatePrimary() {
+      var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
 
-			secondarySeries.Points.Clear();
-			var secondaryBuffer = roc.secondarySensorPoints;
-			foreach (var pp in secondaryBuffer) {
-				var t = roc.window - (secondaryBuffer[0].date - pp.date);
-				secondarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
-			}
-		}
+      var minMax = roc.GetPrimaryMinMax();
 
-		private void InvalidateTertiary() {
-			if (!roc.hasTertiaryPoints) {
-				return;
-			}
+      UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit);
 
-			var minMax = roc.GetTertiaryMinMax();
-			double diff = minMax.diff / 10;
-			if (diff == 0) {
-				diff = 1;
-			}
+      primarySeries.Points.Clear();
+      var primaryBuffer = roc.primarySensorPoints;
+      foreach (var pp in primaryBuffer) {
+        var t = pp.date.ToFileTime();
+        primarySeries.Points.Add(new DataPoint(t, pp.measurement));
+      }
+    }
 
-			tertiaryAxis.Minimum = minMax.min.amount - diff;
-			tertiaryAxis.Maximum = minMax.max.amount + diff;
+    private void InvalidateSecondary() {
+      if (manifold.secondarySensor == null) {
+        return;
+      }
 
-			tertiarySeries.Points.Clear();
-			var tertiaryBuffer = roc.tertiaryPoints;
-			foreach (var pp in tertiaryBuffer) {
-				var t = roc.window - (tertiaryBuffer[0].date - pp.date);
-				tertiarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
-			}
-		}
+      var minMax = roc.GetSecondaryMinMax();
 
-		private void OnHandleMessage(Message message) {
-			Invalidate();
-			handler.SendEmptyMessageDelayed(0, 100);
-		}
+      UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit);
 
-		private void InitViews() {
-			primarySeries.IsVisible = check1.Checked = roc.HasFlag(ROCFlags.ShowPrimary);
-			secondarySeries.IsVisible = check2.Checked = roc.HasFlag(ROCFlags.ShowSecondary);
-			tertiarySeries.IsVisible = check3.Checked = roc.HasFlag(ROCFlags.ShowTertiary);
+      secondarySeries.Points.Clear();
+      var secondaryBuffer = roc.secondarySensorPoints;
+      foreach (var pp in secondaryBuffer) {
+        var t = pp.date.ToFileTime();
+        secondarySeries.Points.Add(new DataPoint(t, pp.measurement));
+      }
+    }
 
-			check1.Text = manifold.primarySensor.type.GetSensorTypeName();
+    /// <summary>
+    /// Updates the axis to the given state.
+    /// </summary>
+    /// <param name="axis">Axis.</param>
+    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Unit u, int major = 3, int minor = 5) {
+      var su = u.standardUnit;
+      var diff = (max - min).ConvertTo(su).magnitude;
 
-			if (manifold.secondarySensor != null) {
-				check2.Text = manifold.secondarySensor.type.GetSensorTypeName();
-			}
+      if (diff != 0) {
+        axis.Minimum = min.ConvertTo(su).amount;
+        axis.Maximum = max.ConvertTo(su).amount;
+      } else {
+        var one = u.OfScalar(1);
+        axis.Minimum = (min - one).ConvertTo(su).magnitude;
+        axis.Maximum = (max + one).ConvertTo(su).magnitude;
+        diff = u.OfScalar(3).ConvertTo(su).amount;
+      }
 
-			if (roc.hasTertiaryPoints) {
-				var amount = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1)).amount;
-				var shsc = manifold.GetSensorPropertyOfType<SuperheatSubcoolSensorProperty>();
-				if (manifold.ptChart.fluid.mixture) {
-					switch (manifold.ptChart.state) {
-						case Fluid.EState.Bubble: {
-							check3.SetText(Resource.String.fluid_sc_abrv);
-							break;
-						} // Fluid.EState.Bubble
-						case Fluid.EState.Dew: {
-							check3.SetText(Resource.String.fluid_sh_abrv);
-							break;
-						} // Fluid.EState.Dew
-					}
-				} else {
-					if (amount < 0) {
-						check3.SetText(Resource.String.fluid_sc_abrv);
-					} else if (amount > 0) {
-						check3.SetText(Resource.String.fluid_sh_abrv);
-					} else {
-						check3.SetText(Resource.String.fluid_sh_sc);
-					}
-				}
-			}
-		}
+      var mod = (int)diff / major;
+      var tmod = mod / (double)minor;
 
-		private void LoadManifold() {
-			var mp = Intent.GetParcelableExtra(EXTRA_MANIFOLD) as ManifoldParcelable;
-			if (mp == null) {
-				// TODO ahodder@appioninc.com: Localize
-				Error("US Manifold was not passed to activity");
-				Finish();
-				return;
-			}
+      axis.MajorStep = mod;
+      axis.MinimumMajorStep = mod;
+      axis.MajorTickSize = 10;
+      axis.TicklineColor = OxyColors.Black;
 
-			manifold = mp.Get(ion);
-			if (manifold == null) {
-				// TODO ahodder@appioninc.com: Localize
-				Error("US Manifold did not load from parcelable");
-				Finish();
-				return;
-			}
+      axis.MinorStep = tmod;
+      axis.MinimumMinorStep = tmod;
+      axis.MinorTickSize = 5;
+      axis.MinorTicklineColor = OxyColors.Black;
 
-			roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-			if (roc == null) {
-				Error("How did you get here if the manifold doesn't have a RateOfChangeSensorProperty");
-				Finish();
-				return;
-			}
+      axis.MinimumPadding = 0.25;
+      axis.MaximumPadding = 0.25;
+      axis.AxislineStyle = LineStyle.Solid;
+      axis.AxislineThickness = 1;
+      axis.AxisTickToLabelDistance = -(MeasureText(axis) + axis.MajorTickSize + 5);
+    }
 
-			// Initialize the plot
-			model = new PlotModel() {
-				Padding = new OxyThickness(3),
-			};
+    /// <summary>
+    /// Measures the largest text size for the axis.
+    /// </summary>
+    /// <returns>The text.</returns>
+    /// <param name="axis">Axis.</param>
+    private double MeasureText(LinearAxis axis) {
+      IList<double> majorLabelValues = new List<double>();
+      IList<double> majorTickValues = new List<double>();
+      IList<double> minorTickValues = new List<double>();
+      axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
-			xAxis = new LinearAxis() {
-				Position = AxisPosition.Bottom,
-				Minimum = 0,
-				Maximum = roc.window.TotalMilliseconds,
+      double bestWidth = 0;
+      foreach (var label in majorLabelValues) {
+        var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
+        if (size.Width > bestWidth) {
+          bestWidth = size.Width;
+        }
+      }
 
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				MinimumPadding = 3,
-				MaximumPadding = 3,
-			};
+      return bestWidth;
+    }
 
-			var baseUnit = manifold.primarySensor.unit.standardUnit;
-			primaryAxis = new LinearAxis() {
-				Position = AxisPosition.Left,
-				Minimum = 0,
-				Maximum = 100,
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				Key = "first",
-			};
+    private void OnHandleMessage(Message message) {
+      Invalidate();
+      handler.SendEmptyMessageDelayed(0, 100);
+    }
 
-			secondaryAxis = new LinearAxis() {
-				Position = AxisPosition.Right,
-				Minimum = 0,
-				Maximum = 100,
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				Key = "second",
-			};
+    private void InitViews() {
+      primarySeries.IsVisible = check1.Checked = roc.HasFlag(ROCFlags.ShowPrimary);
+      secondarySeries.IsVisible = check2.Checked = roc.HasFlag(ROCFlags.ShowSecondary);
 
-			tertiaryAxis = new LinearAxis() {
-				Position = AxisPosition.Right,
-				Minimum = 0,
-				Maximum = 100,
-				IsAxisVisible = false,
-				IsZoomEnabled = false,
-				IsPanEnabled = false,
-				Key = "third",
-			};
+      check1.Text = manifold.primarySensor.type.GetSensorTypeName();
 
-			primarySeries = new LineSeries() {
-				Color = OxyColors.Red,
-				StrokeThickness = 1,
-				MarkerType = MarkerType.None,
-				MarkerSize = 0,
-				MarkerStroke = OxyColors.Transparent,
-				MarkerStrokeThickness = 0,
-				YAxisKey = "first",
-			};
+      if (manifold.secondarySensor != null) {
+        check2.Text = manifold.secondarySensor.type.GetSensorTypeName();
+      }
+    }
 
-			secondarySeries = new LineSeries() {
-				StrokeThickness = 1,
-				Color = OxyColors.Blue,
-				MarkerType = MarkerType.None,
-				MarkerSize = 0,
-				MarkerStroke = OxyColors.Transparent,
-				MarkerStrokeThickness = 0,
-				YAxisKey = "second",
-			};
+    private void LoadManifold() {
+      var mp = Intent.GetParcelableExtra(EXTRA_MANIFOLD) as ManifoldParcelable;
+      if (mp == null) {
+        // TODO ahodder@appioninc.com: Localize
+        Error("US Manifold was not passed to activity");
+        Finish();
+        return;
+      }
 
-			tertiarySeries = new LineSeries() {
-				Color = OxyColors.Green,
-				StrokeThickness = 1,
-				MarkerType = MarkerType.None,
-				MarkerSize = 0,
-				MarkerStroke = OxyColors.Transparent,
-				MarkerStrokeThickness = 0,
-				YAxisKey = "third",
-			};
+      manifold = mp.Get(ion);
+      if (manifold == null) {
+        // TODO ahodder@appioninc.com: Localize
+        Error("US Manifold did not load from parcelable");
+        Finish();
+        return;
+      }
 
+      roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+      if (roc == null) {
+        Error("How did you get here if the manifold doesn't have a RateOfChangeSensorProperty");
+        Finish();
+        return;
+      }
 
-			model.Axes.Add(xAxis);
-			model.Axes.Add(primaryAxis);
-			model.Axes.Add(secondaryAxis);
-			model.Axes.Add(tertiaryAxis);
-			model.Series.Add(primarySeries);
-			model.Series.Add(secondarySeries);
-			model.Series.Add(tertiarySeries);
-			model.DefaultFontSize = 0;
-			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
-			plot.Model = model;
-		}
-	}
+      // Initialize the plot
+      model = new PlotModel() {
+        Padding = new OxyThickness(5),
+      };
+
+      xAxis = new LinearAxis() {
+        Position = AxisPosition.Bottom,
+        Minimum = 0,
+        Maximum = roc.window.TotalMilliseconds,
+
+        IsAxisVisible = true,
+        IsZoomEnabled = false,
+        IsPanEnabled = false,
+        MinimumPadding = 3,
+        MaximumPadding = 3,
+        Key = "time",
+        LabelFormatter = (arg) => {
+          var d = DateTime.FromFileTime((long)arg);
+          return d.Hour.ToString("00") + ":" + d.Minute.ToString("00") + ":" + d.Second.ToString("00");
+        },
+        Font = model.DefaultFont,
+        FontSize = 15,
+        TextColor = OxyColors.Black,
+      };
+
+      var baseUnit = manifold.primarySensor.unit.standardUnit;
+      primaryAxis = new LinearAxis() {
+        Position = AxisPosition.Left,
+        Minimum = 0,
+        Maximum = 100,
+        IsAxisVisible = true,
+        IsZoomEnabled = false,
+        IsPanEnabled = false,
+        Key = "first",
+        LabelFormatter = (arg) => {
+          var u = manifold.primarySensor.unit;
+          var p = SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
+          return p;
+        },
+        Font = model.DefaultFont,
+        FontSize = 15,
+        TextColor = OxyColors.Black,
+      };
+
+      secondaryAxis = new LinearAxis() {
+        Position = AxisPosition.Right,
+        Minimum = 0,
+        Maximum = 100,
+        IsAxisVisible = true,
+        IsZoomEnabled = false,
+        IsPanEnabled = false,
+        Key = "second",
+        LabelFormatter = (arg) => {
+          if (manifold.secondarySensor != null) {
+            var u = manifold.secondarySensor.unit;
+            return SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
+          } else {
+            return "";
+          }
+        },
+        Font = model.DefaultFont,
+        FontSize = 15,
+        TextColor = OxyColors.Black,
+      };
+
+      primarySeries = new LineSeries() {
+        StrokeThickness = 1,
+        Color = OxyColors.Red,
+        MarkerType = MarkerType.None,
+        MarkerSize = 0,
+        MarkerStroke = OxyColors.Transparent,
+        MarkerStrokeThickness = 0,
+        YAxisKey = "first",
+      };
+
+      secondarySeries = new LineSeries() {
+        StrokeThickness = 1,
+        Color = OxyColors.Blue,
+        MarkerType = MarkerType.None,
+        MarkerSize = 0,
+        MarkerStroke = OxyColors.Transparent,
+        MarkerStrokeThickness = 0,
+        YAxisKey = "second",
+      };
+
+      //      model.Title = "RoC";
+      model.PlotType = PlotType.XY;
+      model.Axes.Add(xAxis);
+      model.Axes.Add(primaryAxis);
+      model.Axes.Add(secondaryAxis);
+      model.Series.Add(primarySeries);
+      model.Series.Add(secondarySeries);
+      //			model.DefaultFontSize = 0;
+      //			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
+      plot.Model = model;
+    }
+  }
 }
