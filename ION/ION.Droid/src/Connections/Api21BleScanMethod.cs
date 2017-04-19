@@ -53,6 +53,7 @@
     }
 
     public override void OnScanResult(ScanCallbackType callbackType, ScanResult result) {
+      Log.V(this, "Found le device: " + result.Device.Name);
       manager.OnDeviceFound(result.Device, result.ScanRecord.GetManufacturerSpecificData(Protocol.MANFAC_ID));
     }
   }
