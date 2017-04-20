@@ -32,42 +32,24 @@
 		/// Returns the primary sensor graph points that have been saved in the proprty.
 		/// </summary>
 		/// <value>The points.</value>
-		public PlotPoint[] primarySensorPoints {
+		public Slice<PlotPoint> primarySensorPoints {
 			get {
 				RegisterPoint();
-				return primarySensorBuffer.ToArray();
+				var len = primarySensorBuffer.ToArray(buffer);
+        var ret = new Slice<PlotPoint>(buffer, len - 1);
+        return ret;
 			}
 		}
 		/// <summary>
 		/// Returns the secondary sensor graph points that have been saved in the proprty.
 		/// </summary>
 		/// <value>The points.</value>
-		public PlotPoint[] secondarySensorPoints {
+		public Slice<PlotPoint> secondarySensorPoints {
 			get {
 				RegisterPoint();
-				return secondarySensorBuffer.ToArray();
-			}
-		}
-
-		/// <summary>
-		/// Returns the tertiary sensor graph points that have been generated.
-		/// </summary>
-		/// <value>The tertiary points.</value>
-		public PlotPoint[] tertiaryPoints {
-			get {
-				RegisterPoint();
-				return tertiaryBuffer.ToArray();
-			}
-		}
-
-		/// <summary>
-		/// Returns whether or not the rate of change has a third change plot.
-		/// </summary>
-		/// <value><c>true</c> if has tertiary points; otherwise, <c>false</c>.</value>
-		public bool hasTertiaryPoints {
-			get {
-				return manifold.HasSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty)) &&
-					     manifold.secondarySensor != null;
+				var len = secondarySensorBuffer.ToArray(buffer);
+        var ret = new Slice<PlotPoint>(buffer, len - 1);
+        return ret;
 			}
 		}
 
@@ -79,10 +61,10 @@
 		/// The buffer that will hold the primary sensor's history.
 		/// </summary>
 		private RingBuffer<PlotPoint> secondarySensorBuffer;
-		/// <summary>
-		/// The buffer that will hold the third plot history.
-		/// </summary>
-		private RingBuffer<PlotPoint> tertiaryBuffer;
+    /// <summary>
+    /// The buffer that will act as the buffer for calulcations or returning.
+    /// </summary>
+    private PlotPoint[] buffer;
 		/// <summary>
 		/// The last time that a record was added to the buffer.
 		/// </summary>
@@ -92,7 +74,6 @@
 
 		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
 		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
-
 		}
 
 		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
@@ -102,9 +83,10 @@
 			this.window = window;
 			this.interval = interval;
 			flags = EFlags.ShowAll;
-			primarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
-			secondarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
-			tertiaryBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
+      var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
+			primarySensorBuffer = new RingBuffer<PlotPoint>(size);
+      secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
+      buffer = new PlotPoint[size];
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -205,7 +187,7 @@
 			var p = primarySensorPoints;
 			var i = 0;
 			// Find the oldest windowed item.
-			while (i < p.Length - 1 && DateTime.Now - p[i].date < window) i++;
+			while (i < p.Count - 1 && DateTime.Now - p[i].date < window) i++;
 			var pu = sensor.unit.standardUnit;
 			var pmag = (p[0].measurement - p[i].measurement) / (window.TotalMilliseconds / timeUnit.TotalMilliseconds);
 			var ret = pu.OfScalar(pmag).ConvertTo(manifold.primarySensor.unit);
@@ -248,28 +230,7 @@
 			}
 		}
 
-		public MinMax GetTertiaryMinMax() {
-			if (!hasTertiaryPoints) {
-				return null;
-			} else {
-				double min = double.MaxValue, max = double.MinValue;
-				var points = tertiaryPoints;
-				foreach (var dp in points) {
-					if (dp.measurement < min) {
-						min = dp.measurement;
-					}
-					if (dp.measurement > max) {
-						max = dp.measurement;
-					}
-				}
-
-				var shsc = manifold.GetSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty));
-				var u = shsc.modifiedMeasurement.unit.standardUnit;
-				return new MinMax(u.OfScalar(min), u.OfScalar(max));
-			}
-		}
-
-		/// <summary>
+    /// <summary>
 		/// Sets the new window size for the graph sensor property.
 		/// </summary>
 		/// <param name="window">Window.</param>
@@ -287,13 +248,6 @@
 				if (manifold.secondarySensor != null) {
 					var ss = manifold.secondarySensor;
 					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));
-
-					if (hasTertiaryPoints) {
-						var shsc = manifold.GetSensorPropertyOfType(typeof(SuperheatSubcoolSensorProperty));
-						var meas = shsc.modifiedMeasurement;
-						tertiaryBuffer.Add(new PlotPoint(meas.ConvertTo(meas.unit.standardUnit).amount));
-
-					}
 				}
 				lastRecord = DateTime.Now;
 			}

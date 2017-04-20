@@ -51,6 +51,7 @@
     <Compile Include="src\Math\Regression.cs" />
     <Compile Include="src\Math\Matrix.cs" />
     <Compile Include="src\Collections\RingBuffer.cs" />
+    <Compile Include="src\Collections\Slice.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.md" />
