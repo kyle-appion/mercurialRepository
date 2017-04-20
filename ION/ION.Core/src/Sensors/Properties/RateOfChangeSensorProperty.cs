@@ -224,7 +224,7 @@
 				}
 			}
 				
-			var u = manifold.primarySensor.unit;
+      var u = manifold.primarySensor.unit.standardUnit;
 			return new MinMax(u.OfScalar(min), u.OfScalar(max));
 		}
 

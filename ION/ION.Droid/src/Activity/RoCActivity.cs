@@ -16,7 +16,6 @@
   using OxyPlot.Xamarin.Android;
 
   using Appion.Commons.Measure;
-  using Appion.Commons.Util;
 
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -155,11 +154,21 @@
 
       UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit);
 
-      primarySeries.Points.Clear();
       var primaryBuffer = roc.primarySensorPoints;
-      foreach (var pp in primaryBuffer) {
-        var t = pp.date.ToFileTime();
-        primarySeries.Points.Add(new DataPoint(t, pp.measurement));
+      var l = primaryBuffer.Length;
+      // Resize the points list
+      // Trim down to size
+      while (primarySeries.Points.Count > l) {
+        primarySeries.Points.RemoveAt(primarySeries.Points.Count - 1);
+      }
+      // Add any missing items
+      while (primarySeries.Points.Count < l) {
+        primarySeries.Points.Add(new DataPoint());
+      }
+
+      for (int i = 0; i < primaryBuffer.Length; i++) {
+        var p = primaryBuffer[i];
+        primarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
     }
 
@@ -172,11 +181,21 @@
 
       UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit);
 
-      secondarySeries.Points.Clear();
       var secondaryBuffer = roc.secondarySensorPoints;
-      foreach (var pp in secondaryBuffer) {
-        var t = pp.date.ToFileTime();
-        secondarySeries.Points.Add(new DataPoint(t, pp.measurement));
+      var l = secondaryBuffer.Length;
+      // Resize the points list
+      // Trim down to size
+      while (secondarySeries.Points.Count > l) {
+        secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);
+      }
+      // Add any missing items
+      while (secondarySeries.Points.Count < l) {
+        secondarySeries.Points.Add(new DataPoint());
+      }
+
+      for (int i = 0; i < secondaryBuffer.Length; i++) {
+        var p = secondaryBuffer[i];
+        secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
     }
 
@@ -198,6 +217,10 @@
         diff = u.OfScalar(3).ConvertTo(su).amount;
       }
 
+      var padding = diff * 0.1;
+      axis.Minimum -= padding;
+      axis.Maximum += padding;
+
       var mod = (int)diff / major;
       var tmod = mod / (double)minor;
 
@@ -215,7 +238,7 @@
       axis.MaximumPadding = 0.25;
       axis.AxislineStyle = LineStyle.Solid;
       axis.AxislineThickness = 1;
-      axis.AxisTickToLabelDistance = -(MeasureText(axis) + axis.MajorTickSize + 5);
+      axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
     }
 
     /// <summary>
@@ -223,7 +246,7 @@
     /// </summary>
     /// <returns>The text.</returns>
     /// <param name="axis">Axis.</param>
-    private double MeasureText(LinearAxis axis) {
+    private double MeasureTextWidth(LinearAxis axis) {
       IList<double> majorLabelValues = new List<double>();
       IList<double> majorTickValues = new List<double>();
       IList<double> minorTickValues = new List<double>();
