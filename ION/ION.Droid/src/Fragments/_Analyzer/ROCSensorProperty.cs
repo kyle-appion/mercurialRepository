@@ -168,7 +168,6 @@
 			if (device == null || device.isConnected) {
 				InvalidatePrimary();
 				InvalidateSecondary();
-				InvalidateTertiary();
 
 				plot.InvalidatePlot();
 				model.InvalidatePlot(true);
@@ -251,33 +250,6 @@
 			foreach (var pp in secondaryBuffer) {
 				var t = record.sp.window - (secondaryBuffer[0].date - pp.date);
 				secondarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
-			}
-		}
-
-		private void InvalidateTertiary() {
-			if (!record.sp.hasTertiaryPoints) {
-				return;
-			}
-
-			tertiarySeries.IsVisible = record.sp.HasFlag(RateOfChangeSensorProperty.EFlags.ShowTertiary);
-			if (!tertiarySeries.IsVisible) {
-				return;
-			}
-
-			var minMax = record.sp.GetTertiaryMinMax();
-			double diff = minMax.diff / 10;
-			if (diff == 0) {
-				diff = 1;
-			}
-
-			tertiaryAxis.Minimum = minMax.min.amount - diff;
-			tertiaryAxis.Maximum = minMax.max.amount + diff;
-
-			tertiarySeries.Points.Clear();
-			var tertiaryBuffer = record.sp.tertiaryPoints;
-			foreach (var pp in tertiaryBuffer) {
-				var t = record.sp.window - (tertiaryBuffer[0].date - pp.date);
-				tertiarySeries.Points.Add(new DataPoint(t.TotalMilliseconds, pp.measurement));
 			}
 		}
 

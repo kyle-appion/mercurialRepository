@@ -73,9 +73,7 @@
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
       // Initialize the plot
-      model = new PlotModel() {
-//        Padding = new OxyThickness(5),
-      };
+      model = new PlotModel();
 
       xAxis = new LinearAxis() {
         Position = AxisPosition.Bottom,
@@ -213,7 +211,7 @@
 
       var points = roc.primarySensorPoints;
       var startTime = points[0];
-      var endTime = points[points.Length - 1].date;
+      var endTime = points[points.Count - 1].date;
 
       axis.Minimum = (startTime.date - roc.window).ToFileTime() - 1000000;
       axis.Maximum = startTime.date.ToFileTime() + 1000000;
@@ -226,6 +224,11 @@
 
     private void InvalidatePrimary() {
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
+      if (roc == null) {
+        return;
+      }
+
       var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
       var c = title.Context;
 
@@ -260,7 +263,7 @@
       UpdateAxis(primaryAxis, minMax.min, minMax.max, record.manifold.primarySensor.unit, 1, 5);
 
       var primaryBuffer = roc.primarySensorPoints;
-      var l = primaryBuffer.Length;
+      var l = primaryBuffer.Count;
       // Resize the points list
       // Trim down to size
       while (primarySeries.Points.Count > l) {
@@ -271,7 +274,7 @@
         primarySeries.Points.Add(new DataPoint());
       }
 
-      for (int i = 0; i < primaryBuffer.Length; i++) {
+      for (int i = 0; i < primaryBuffer.Count; i++) {
         var p = primaryBuffer[i];
         primarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
@@ -283,12 +286,17 @@
       }
 
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
+      if (roc == null) {
+        return;
+      }
+
       var minMax = roc.GetSecondaryMinMax();
 
       UpdateAxis(secondaryAxis, minMax.min, minMax.max, record.manifold.secondarySensor.unit, 1, 5);
 
       var secondaryBuffer = roc.secondarySensorPoints;
-      var l = secondaryBuffer.Length;
+      var l = secondaryBuffer.Count;
       // Resize the points list
       // Trim down to size
       while (secondarySeries.Points.Count > l) {
@@ -299,7 +307,7 @@
         secondarySeries.Points.Add(new DataPoint());
       }
 
-      for (int i = 0; i < secondaryBuffer.Length; i++) {
+      for (int i = 0; i < secondaryBuffer.Count; i++) {
         var p = secondaryBuffer[i];
         secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }

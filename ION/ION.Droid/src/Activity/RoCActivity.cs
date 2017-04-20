@@ -136,7 +136,7 @@
 
       var points = roc.primarySensorPoints;
       var startTime = points[0];
-      var endTime = points[points.Length - 1].date;
+      var endTime = points[points.Count - 1].date;
 
       axis.Minimum = (startTime.date - roc.window).ToFileTime() - 1000000;
       axis.Maximum = startTime.date.ToFileTime() + 1000000;
@@ -155,7 +155,7 @@
       UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit);
 
       var primaryBuffer = roc.primarySensorPoints;
-      var l = primaryBuffer.Length;
+      var l = primaryBuffer.Count;
       // Resize the points list
       // Trim down to size
       while (primarySeries.Points.Count > l) {
@@ -166,7 +166,7 @@
         primarySeries.Points.Add(new DataPoint());
       }
 
-      for (int i = 0; i < primaryBuffer.Length; i++) {
+      for (int i = 0; i < primaryBuffer.Count; i++) {
         var p = primaryBuffer[i];
         primarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
@@ -182,7 +182,7 @@
       UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit);
 
       var secondaryBuffer = roc.secondarySensorPoints;
-      var l = secondaryBuffer.Length;
+      var l = secondaryBuffer.Count;
       // Resize the points list
       // Trim down to size
       while (secondarySeries.Points.Count > l) {
@@ -193,7 +193,7 @@
         secondarySeries.Points.Add(new DataPoint());
       }
 
-      for (int i = 0; i < secondaryBuffer.Length; i++) {
+      for (int i = 0; i < secondaryBuffer.Count; i++) {
         var p = secondaryBuffer[i];
         secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
@@ -250,6 +250,11 @@
       IList<double> majorLabelValues = new List<double>();
       IList<double> majorTickValues = new List<double>();
       IList<double> minorTickValues = new List<double>();
+
+      if (axis.ActualMinorStep == 0 || axis.ActualMaximum == 0) {
+        return 0;
+      }
+
       axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
       double bestWidth = 0;
@@ -388,15 +393,12 @@
         YAxisKey = "second",
       };
 
-      //      model.Title = "RoC";
       model.PlotType = PlotType.XY;
       model.Axes.Add(xAxis);
       model.Axes.Add(primaryAxis);
       model.Axes.Add(secondaryAxis);
       model.Series.Add(primarySeries);
       model.Series.Add(secondarySeries);
-      //			model.DefaultFontSize = 0;
-      //			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
       plot.Model = model;
     }
   }
