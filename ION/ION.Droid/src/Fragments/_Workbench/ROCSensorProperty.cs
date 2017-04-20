@@ -5,6 +5,7 @@
 
 	using Android.OS;
 	using Android.Widget;
+  using Android.Views;
 
 	using OxyPlot;
 	using OxyPlot.Axes;
@@ -226,6 +227,33 @@
     private void InvalidatePrimary() {
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
       var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+      var c = title.Context;
+
+      var amount = Math.Abs(averageChange.amount);
+      if (amount == 0) {
+        measurement.Text = c.GetString(Resource.String.stable);
+        unit.Visibility = ViewStates.Invisible;
+      } else {
+        var dmax = record.sp.sensor.maxMeasurement.amount / 10;
+        if (amount > dmax) {
+          measurement.Text = "> " + SensorUtils.ToFormattedString(averageChange.unit.OfScalar(dmax));
+        } else {
+          measurement.Text = SensorUtils.ToFormattedString(averageChange.unit.OfScalar(amount));
+        }
+        unit.Visibility = ViewStates.Visible;
+        unit.Text = c.GetString(Resource.String.time_minute_abrv);
+      }
+
+      var dir = Math.Sign(averageChange.amount);
+      if (averageChange.amount == 0) {
+        icon.Visibility = ViewStates.Invisible;
+      } else if (dir == 1) {
+        icon.Visibility = ViewStates.Visible;
+        icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
+      } else {
+        icon.Visibility = ViewStates.Visible;
+        icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+      }
 
       var minMax = roc.GetPrimaryMinMax();
 
