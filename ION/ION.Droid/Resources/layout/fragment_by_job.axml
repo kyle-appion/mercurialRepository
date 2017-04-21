@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ION.Droid.Widgets.RootFragmentLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+        android:id="@id/list"
+        android:layout_margin="@dimen/padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="@string/report_no_jobs_exist"
+        android:textSize="@dimen/text_size_medium"
+        android:id="@id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</ION.Droid.Widgets.RootFragmentLayout>
