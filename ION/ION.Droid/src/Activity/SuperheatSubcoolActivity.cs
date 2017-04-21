@@ -585,7 +585,7 @@
 						}
 						break;
 					case ESensorType.Temperature:
-						if (!initialManifold.SetSecondarySensor(temperatureSensor)) {
+						if (!initialManifold.SetSecondarySensor(pressureSensor)) {
 							Error(GetString(Resource.String.shsc_error_failed_to_update_manifold));
 						}
 						break;

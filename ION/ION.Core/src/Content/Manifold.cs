@@ -127,6 +127,7 @@
       new OrFilterCollection<ESensorType[]>(
         new ExactSensorTypeFilter(ESensorType.Pressure),
         new ExactSensorTypeFilter(ESensorType.Pressure, ESensorType.Temperature),
+        new ExactSensorTypeFilter(ESensorType.Temperature, ESensorType.Pressure),
         new ExactSensorTypeFilter(ESensorType.Temperature),
         new ExactSensorTypeFilter(ESensorType.Vacuum)
       );
