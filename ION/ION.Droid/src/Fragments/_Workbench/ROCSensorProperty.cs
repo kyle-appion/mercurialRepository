@@ -41,11 +41,9 @@
 		private LinearAxis xAxis;
 		private LinearAxis primaryAxis;
 		private LinearAxis secondaryAxis;
-		private LinearAxis tertiaryAxis;
 
 		private LineSeries primarySeries;
 		private LineSeries secondarySeries;
-		private LineSeries tertiarySeries;
 
     private CanvasRenderContext rc;
 
@@ -209,7 +207,16 @@
       var axis = xAxis;
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
+      if (roc == null) {
+        return;
+      }
+
       var points = roc.primarySensorPoints;
+
+      if (points.Count <= 0) {
+        Log.D(this, "Failed to invalidate time: points.count was " + points.Count);
+        return;
+      }
       var startTime = points[0];
       var endTime = points[points.Count - 1].date;
 
@@ -365,7 +372,7 @@
       IList<double> majorTickValues = new List<double>();
       IList<double> minorTickValues = new List<double>();
 
-      if (axis.ActualMinorStep == 0 || axis.ActualMaximum == 0) {
+      if (axis.ActualMinorStep == 0 || axis.ActualMajorStep == 0) {
         return 0;
       }
 
@@ -392,7 +399,7 @@
       IList<double> majorTickValues = new List<double>();
       IList<double> minorTickValues = new List<double>();
 
-      if (axis.ActualMinorStep == 0 || axis.ActualMaximum == 0) {
+      if (axis.ActualMinorStep == 0 || axis.ActualMajorStep == 0) {
         return 0;
       }
 
