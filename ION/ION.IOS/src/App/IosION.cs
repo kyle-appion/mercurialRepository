@@ -240,6 +240,11 @@
 		/// </summary>
 		/// <value>The web services.</value>
 		public WebPayload webServices { get; set; }
+		
+		///HOLDS THE INFORMATION FOR A DEVICE	
+		public IPlatformInfo localDevice {get; set;}
+		
+		public IPlatformInfo remoteDevice {get; set;}
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>
@@ -329,7 +334,18 @@
     /// </summary>
     /// <returns>The platform information.</returns>
     public IPlatformInfo GetPlatformInformation(){
+    	localDevice = new IOSPlatformInfo();
 			return new IOSPlatformInfo();
+		}
+		
+		public void SetRemotePlatformInformation(Core.App.sessionStateInfo remoteStatus){
+			if(remoteDevice == null){
+				remoteDevice = new IOSPlatformInfo();
+			}
+			remoteDevice.batteryPercentage = remoteStatus.batteryLevel;
+			remoteDevice.wifiConnected = remoteStatus.wifiStatus;
+			remoteDevice.freeMemory = remoteStatus.remainingMemory;
+			remoteDevice.loggingStatus = remoteStatus.isRecording;
 		}
 
     /// <summary>

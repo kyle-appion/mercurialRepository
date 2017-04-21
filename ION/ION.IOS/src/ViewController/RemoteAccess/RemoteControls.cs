@@ -22,6 +22,12 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 				controlView = new UIView(new CGRect(.6 * parentView.Bounds.Width, offset, .4 * parentView.Bounds.Width, .16 * parentView.Bounds.Height));
 				remoteLoggingButton = new UIButton(new CGRect(0,0,controlView.Bounds.Width,.5 * controlView.Bounds.Height));
 				disconnectButton = new UIButton(new CGRect(0, .5 * controlView.Bounds.Height,controlView.Bounds.Width, .5 * controlView.Bounds.Height));
+			
+				remoteLoggingButton.SetTitle("Start Data Logging", UIControlState.Normal);
+				remoteLoggingButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
+				remoteLoggingButton.ClipsToBounds = true;
+				
+				remoteLoggingButton.TouchUpInside += changeLogStatus;
 				
 				controlView.AddSubview(remoteLoggingButton);
 				controlView.AddSubview(disconnectButton);
@@ -59,12 +65,7 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 			//	controlView.Hidden = true;
 			//};
 			//remoteButton.Layer.BorderWidth = 1f;
-			
-			remoteLoggingButton.SetTitle("Start Data Logging", UIControlState.Normal);
-			remoteLoggingButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			remoteLoggingButton.ClipsToBounds = true;
-			
-			remoteLoggingButton.TouchUpInside += changeLogStatus;
+
 			
 			disconnectButton.SetTitle("Disconnect",UIControlState.Normal);
 			disconnectButton.SetTitleColor(UIColor.Black, UIControlState.Normal);

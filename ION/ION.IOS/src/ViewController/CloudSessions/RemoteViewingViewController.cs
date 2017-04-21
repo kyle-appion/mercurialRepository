@@ -12,6 +12,7 @@ using ION.Core.Net;
 using ION.IOS.ViewController.AccessRequest;
 using ION.IOS.ViewController.RemoteAccess;
 using Newtonsoft.Json;
+using Foundation;
 
 namespace ION.IOS.ViewController.CloudSessions {
 	public partial class RemoteViewingViewController : BaseIONViewController {
@@ -192,6 +193,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 					var textResponse = await feedback.Content.ReadAsStringAsync();
 					JObject response = JObject.Parse(textResponse);
 					var success = response.GetValue("success").ToString();
+					var logging = response.GetValue("logging").ToString();
 					
 					if(success.ToString() == "false"){
 						var window = UIApplication.SharedApplication.KeyWindow;
@@ -207,7 +209,20 @@ namespace ION.IOS.ViewController.CloudSessions {
 						selectionView.GetAccessList();
 						uploadButton = new UIBarButtonItem(startButton);
 						this.NavigationItem.RightBarButtonItem = uploadButton;											
-					}					
+					} else {
+						/////CHECK LOGGING STATUS TO BEGIN DATA LOGGING FROM REMOTE CONTROL
+						if(logging == "1"){
+							if(!ion.dataLogManager.isRecording){
+								await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+							}
+						} 
+						/////CHECK LOGGING STATUS TO END DATA LOGGING FROM REMOTE CONTROL
+						else if (logging == "0"){
+							if(ion.dataLogManager.isRecording){
+								await ion.dataLogManager.StopRecording();
+							}
+						}
+					}			
 				} else {
 					webServices.uploading = false;
 				}
@@ -220,7 +235,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 			// Release any cached data, images, etc that aren't in use.
 		}
 		
-		[Preserve(AllMembers = true)]
+		[Foundation.Preserve(AllMembers = true)]
 		public class PhysicalDevice{
 			public PhysicalDevice(){}
 			[JsonProperty("deviceName")]
