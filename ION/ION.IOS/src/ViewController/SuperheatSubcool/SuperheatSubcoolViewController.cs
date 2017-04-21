@@ -27,6 +27,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 	public partial class SuperheatSubcoolViewController : BaseIONViewController {
     private const int SECTION_DEW = 0;
     private const int SECTION_BUBBLE = 1;
+    public int lowHigh = 0;
 
     public IION ion { get; set; }
     public ION.Core.Fluids.PTChart ptChart {
@@ -345,7 +346,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             pressureSensor = new ManualSensor(ESensorType.Pressure, true);
           }
         } else {
-          throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
+        	Log.E(this, "Cannot accept sensor that is not a pressure or temperature sensor");
+          //throw new Exception("Cannot accept sensor that is not a pressure or temperature sensor");
         }
       }
     }
@@ -368,6 +370,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     public override void ViewWillDisappear(bool animated) {
       base.ViewWillDisappear(animated);
 
+			if(lowHigh == 0){
+				Console.WriteLine("SHSC Set low fluid to " +this.ptChart.fluid.name);
+				ion.currentAnalyzer.lowFluid = this.ptChart.fluid;	
+			} else {
+				Console.WriteLine("SHSC Set high fluid to " +this.ptChart.fluid.name);
+				ion.currentAnalyzer.highFluid = this.ptChart.fluid;	
+			}
+			
       if (IsMovingFromParentViewController) {
         if (initialManifold != null) {
           initialManifold.ptChart = ptChart;
@@ -452,7 +462,11 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             labelFluidState.Text = Strings.Fluid.SUPERHEAT;
             break;
           default:
-            throw new Exception("Cannot update delta for state: " + ptChart.state);
+            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+						break;        	
+            //throw new Exception("Cannot update delta for state: " + ptChart.state);
         }
         return;
       }
@@ -475,7 +489,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
             labelFluidState.Text = Strings.Fluid.SUPERHEAT;
             break;
           default:
-            throw new Exception("Cannot update delta for state: " + ptChart.state);
+            labelFluidState.BackgroundColor = new UIColor(Colors.BLUE);
+            switchFluidState.TintColor = new UIColor(Colors.BLUE);
+            labelFluidState.Text = Strings.Fluid.SUPERHEAT;
+						Log.E(this, "Cannot update delta for state: " + ptChart.state);
+						break;          
+            //throw new Exception("Cannot update delta for state: " + ptChart.state);
         }
         if(calculation.magnitude < 0){
 					imageNegativeWarning.Hidden = false;

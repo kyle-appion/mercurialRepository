@@ -171,8 +171,9 @@ namespace ION.IOS.ViewController.Analyzer {
 						
 	   		viewAnalyzerContainer.AddSubview(remoteControl.controlView);
 	      AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
+
 				refreshSensorLayout();
-      	webServices.paused += pauseRemote;
+      	//webServices.paused += pauseRemote;
       	viewAnalyzerContainer.AddSubview(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(blockerView);
       	viewAnalyzerContainer.BringSubviewToFront(remoteControl.controlView);
@@ -1389,88 +1390,110 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public async void refreshSensorLayout(){
-
 			await Task.Delay(TimeSpan.FromMilliseconds(1000));
+			
 			while(webServices.downloading){
-				AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
-				remoteViewOrder();				
-				layoutAnalyzer();
-		
-				for(int a = 0; a < analyzerSensors.viewList.Count; a++){
-					if(analyzerSensors.viewList[a].currentSensor != null && !analyzer.sensorList.Contains(analyzerSensors.viewList[a].currentSensor)){						
-						AnalyserUtilities.RemoveRemoteDevice(analyzerSensors.viewList[a],lowHighSensors,analyzerSensors);
-					}  
-				}
-				
-				if(analyzer.lowAccessibility != "low"){
-					//Console.WriteLine("Low area should be looking at slot " + analyzer.lowAccessibility + " for its attachment");
-					if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
-						//if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != analyzer.lowAccessibility){
-						if(lowHighSensors.lowArea.currentSensor.name != analyzer.lowSideManifold.primarySensor.name){
-							lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
-							var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier)];
-
-							AnalyserUtilities.RemoveLHAssociation(previousSensor);
-							var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
-							AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
-						}
-					} else {
-							lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
-							var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
-							AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
-
+					AnalyserUtilities.confirmLayout(analyzerSensors,viewAnalyzerContainer);
+					remoteViewOrder();				
+					layoutAnalyzer();
+			
+					for(int a = 0; a < analyzerSensors.viewList.Count; a++){
+						if(analyzerSensors.viewList[a].currentSensor != null && !analyzer.sensorList.Contains(analyzerSensors.viewList[a].currentSensor)){						
+							AnalyserUtilities.RemoveRemoteDevice(analyzerSensors.viewList[a],lowHighSensors,analyzerSensors);
+						}  
 					}
-					confirmSubviews("low");
-				} else {
-					if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
-						//Console.WriteLine("Low area should be clearing sensor from slot " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
-						foreach(var clearSensor in analyzerSensors.viewList){
-							if(clearSensor.currentSensor == lowHighSensors.lowArea.currentSensor){
-								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
-								AnalyserUtilities.RemoveLHAssociation(clearSensor);
-								lowHighSensors.hideView(lowHighSensors.lowArea);
-								break;
+					
+					if(analyzer.lowAccessibility != "low"){
+						if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
+							////LOW SIDE ASSOCIATION DOESN'T MATCH THE REMOTE LOW SIDE ASSOCIATION AND NEEDS TO BE SWITCHED
+							if(lowHighSensors.lowArea.currentSensor.name != analyzer.lowSideManifold.primarySensor.name){
+								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
+								var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier)];
+	
+								AnalyserUtilities.RemoveLHAssociation(previousSensor);
+								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
+								AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
 							}
+							
+							//////CHECK IF REMOTE LOW SIDE HAS A SECONDARY SENSOR
+							if(analyzer.lowSideManifold.secondarySensor == null){
+								lowHighSensors.lowArea.manifold.SetSecondarySensor(null);
+							} else if (lowHighSensors.lowArea.manifold.secondarySensor == null){
+								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
+							} else if (lowHighSensors.lowArea.manifold.secondarySensor != analyzer.lowSideManifold.secondarySensor){
+								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
+							}
+						////LOW SIDE IS CURRENTLY UNASSOCIATED AND NEEDS TO MATCH THE REMOTE ASSOCIATION
+						} else {
+								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
+								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
+								AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);	
 						}
-					}
-				}
-				
-				if(analyzer.highAccessibility != "high"){
-					//Console.WriteLine("High area should be looking at slot " + analyzer.highAccessibility + " for its attachment");
-					if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
-						//if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != analyzer.highAccessibility){
-						if(lowHighSensors.highArea.currentSensor.name != analyzer.highSideManifold.primarySensor.name){
-							lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
-							var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier)];
-
-							AnalyserUtilities.RemoveLHAssociation(previousSensor);
-							var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
-							AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
-						}
+						confirmSubviews("low");
 					} else {
-							lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
-							var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
-							AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
-					}
-					confirmSubviews();
-				} else {
-					if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
-						//Console.WriteLine("High area should be clearing sensor from slot " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
-						if(lowHighSensors.highArea.currentSensor != null){
+						if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
+							//Console.WriteLine("Low area should be clearing sensor from slot " + lowHighSensors.lowArea.snapArea.AccessibilityIdentifier);
 							foreach(var clearSensor in analyzerSensors.viewList){
-								if(clearSensor.currentSensor == lowHighSensors.highArea.currentSensor){
-									lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+								if(clearSensor.currentSensor == lowHighSensors.lowArea.currentSensor){
+									lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = "low";
+									lowHighSensors.lowArea.manifold.SetSecondarySensor(null);
+									lowHighSensors.lowArea.LabelMiddle.Text = Strings.Analyzer.HIGHUNDEFINED;
 									AnalyserUtilities.RemoveLHAssociation(clearSensor);
-									lowHighSensors.hideView(lowHighSensors.highArea);
+									lowHighSensors.hideView(lowHighSensors.lowArea);
 									break;
 								}
 							}
 						}
 					}
-				}
-				await Task.Delay(TimeSpan.FromMilliseconds(1000));
-			}
+					//////CHECK IF HIGH SIDE SHOULD HAVE AN ASSOCIATION
+					if(analyzer.highAccessibility != "high"){
+						////CHECK IF HIGH SIDE IS ALREADY ASSOCIATED TO A SENSOR MOUNT
+						if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){						
+							////CHECK IF THE CURRENT HIGH ASSOCIATION DOESN'T MATCH THE REMOTE ASSOCIATION
+							if(lowHighSensors.highArea.currentSensor.name != analyzer.highSideManifold.primarySensor.name){
+								lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
+								var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier)];
+	
+								AnalyserUtilities.RemoveLHAssociation(previousSensor);
+								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
+								AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+							}
 
+							//////CHECK IF REMOTE HIGH SIDE HAS A SECONDARY SENSOR
+							if(analyzer.highSideManifold.secondarySensor == null){
+								lowHighSensors.highArea.manifold.SetSecondarySensor(null);
+							} else if (lowHighSensors.highArea.manifold.secondarySensor == null){
+								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
+							} else if (lowHighSensors.highArea.manifold.secondarySensor != analyzer.highSideManifold.secondarySensor){
+								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
+							}
+						} 
+						////HIGH SIDE IS CURRENTLY UNASSOCIATED AND NEEDS TO MATCH THE REMOTE ASSOCIATION
+						else {
+								lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
+								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
+								AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+						}
+						confirmSubviews();
+					} else {
+						if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){
+							//Console.WriteLine("High area should be clearing sensor from slot " + lowHighSensors.highArea.snapArea.AccessibilityIdentifier);
+							if(lowHighSensors.highArea.currentSensor != null){
+								foreach(var clearSensor in analyzerSensors.viewList){
+									if(clearSensor.currentSensor == lowHighSensors.highArea.currentSensor){
+										lowHighSensors.highArea.snapArea.AccessibilityIdentifier = "high";
+										lowHighSensors.highArea.manifold.SetSecondarySensor(null);
+										lowHighSensors.highArea.LabelMiddle.Text = Strings.Analyzer.HIGHUNDEFINED;
+										AnalyserUtilities.RemoveLHAssociation(clearSensor);
+										lowHighSensors.hideView(lowHighSensors.highArea);
+										break;
+									}
+								}
+							}
+						}
+					}
+					await Task.Delay(TimeSpan.FromMilliseconds(1000));
+			}
 		}
 		
 		public void remoteViewOrder(){
@@ -1500,11 +1523,11 @@ namespace ION.IOS.ViewController.Analyzer {
 			}			
 		}
 		
-		public void pauseRemote(bool paused){
-			if(paused == false){
-				refreshSensorLayout();
-			}
-		}
+		//public void pauseRemote(bool paused){
+		//	if(paused == false){
+		//		refreshSensorLayout();
+		//	}
+		//}
 	
 		public async void disconnectRemoteMode(){
       var window = UIApplication.SharedApplication.KeyWindow;

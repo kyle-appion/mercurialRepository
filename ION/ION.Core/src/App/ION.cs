@@ -14,6 +14,7 @@
 	using ION.Core.Location;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
+	using Newtonsoft.Json;
 
 	/// <summary>
 	/// A utility class that will retain the ION context. We do this because
@@ -179,6 +180,29 @@
     /// <returns>The application dump.</returns>
     IAppDump CreateApplicationDump();
     
+    /// <summary>
+    /// Gets the platform specific info.
+    /// </summary>
+    /// <returns>The platform info.</returns>
+    IPlatformInfo GetPlatformInformation();
+    /// <summary>
+    /// Sets the platform information for a remote device.
+    /// </summary>
+    /// <returns>The remote platform information.</returns>
+    void SetRemotePlatformInformation(sessionStateInfo remoteState);
+    /// <summary>
+    /// Gets or sets the local device platform information.
+    /// </summary>
+    /// <value>The local device.</value>
+    IPlatformInfo localDevice {get; set;}
+    /// <summary>
+    /// Gets or sets the remote device platform information.
+    /// </summary>
+    /// <value>The remote device.</value>
+    IPlatformInfo remoteDevice {get; set;}
+    
+    
+    
     Task setRemoteDeviceManager();
     Task setOriginalDeviceManager();
   } // End IION
@@ -194,5 +218,18 @@
 
     Unit DefaultUnitFor(ESensorType sensorType);
   } // End IUnits
+  
+  	[Preserve(AllMembers = true)]
+	public class sessionStateInfo {
+		public sessionStateInfo(){}
+		[JsonProperty("log")]
+		public int isRecording {get; set;}
+		[JsonProperty("battery")]
+		public int batteryLevel {get; set;}
+		[JsonProperty("wifi")]
+		public int wifiStatus {get; set;}
+		[JsonProperty("memory")]
+		public double remainingMemory {get; set;}	
+	}
 }
 

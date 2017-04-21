@@ -26,13 +26,17 @@
     }
 
     public IONNavigationCell(IntPtr handle) : base(handle) {
+    
     }
 
-    public void UpdateTo(string title, UIImage icon) {
+    public void UpdateTo(string title, UIImage icon, UIColor textColor) {
       this.BackgroundColor = UIColor.Clear;
       labelTitle.Text = title;
       imageIcon.Image = icon;
       imageIcon.TintColor = new UIColor(Colors.LIGHT_GRAY);
+      if(textColor != null){
+      	labelTitle.TextColor = textColor;
+      }
     }
   }
 }
