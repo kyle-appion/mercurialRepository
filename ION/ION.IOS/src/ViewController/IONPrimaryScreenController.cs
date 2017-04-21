@@ -347,14 +347,15 @@ namespace ION.IOS.ViewController {
 				remoteAn.remoteMode = true;
 				var remotePortal = InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING);
 				
-				navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-				navigation.ViewControllers[1] = new UINavigationController(remoteAn);
-				navigation.ViewControllers[4] = null;
+				navigation.ViewControllers[0] = null;
+				navigation.ViewControllers[1] = new UINavigationController(remoteWb);
+				navigation.ViewControllers[2] = new UINavigationController(remoteAn);
 				navigation.ViewControllers[5] = null;
-				navigation.ViewControllers[6] = new UINavigationController(remotePortal);
-				navigation.ViewControllers[7] = null;
+				navigation.ViewControllers[6] = null;
+				navigation.ViewControllers[7] = new UINavigationController(remotePortal);
 				navigation.ViewControllers[8] = null;
 				navigation.ViewControllers[9] = null;
+				navigation.ViewControllers[10] = null;
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -469,8 +470,15 @@ namespace ION.IOS.ViewController {
 		
 		public void setRemoteMenu(){
 			navigation.NavigationRoot.Clear();
-      navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.RED);
+      navigation.NavigationTableView.BackgroundColor = UIColor.FromRGB(255,30,30);
 
+			navigation.NavigationRoot.Add(
+				new Section ("Remote Device") {
+	          new IONElement("platform", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement("platform", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement("platform", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+				}
+			);
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
 	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
@@ -489,7 +497,7 @@ namespace ION.IOS.ViewController {
 	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")){textColor = UIColor.Black,},
 	        }
 			);
-			navigation.NavigationRoot.Add(
+			navigation.NavigationRoot.Add(   
 				new Section("Cloud".ToUpper()){
 					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")){textColor = UIColor.Black,},
 				}
@@ -499,6 +507,15 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")){textColor = UIColor.Black,},
         }
 			);
+			
+			var firstCell = navigation.NavigationTableView.CellAt(NSIndexPath.FromRowSection(0,0));
+			var secondCell = navigation.NavigationTableView.CellAt(NSIndexPath.FromRowSection(1,0));
+			var thirdCell = navigation.NavigationTableView.CellAt(NSIndexPath.FromRowSection(2,0));
+			
+			firstCell.SeparatorInset = new UIEdgeInsets(0f,0f,navigation.NavigationTableView.Bounds.Width,0f);
+			secondCell.SeparatorInset = new UIEdgeInsets(0f,0f,navigation.NavigationTableView.Bounds.Width,0f);
+			thirdCell.SeparatorInset = new UIEdgeInsets(0f,0f,navigation.NavigationTableView.Bounds.Width,0f);
+						
 			BuildRemoteViewControllers();
 		}
 	}
@@ -564,16 +581,19 @@ namespace ION.IOS.ViewController {
     /// <param name="tv">Tv.</param>
     public override UITableViewCell GetCell(UITableView tv) {
       var ret = IONNavigationCell.Create();
-      
+
       /////CREATE A DIFFERENT CELL AT THE TOP OF THE NAVIGATION MENU THAT HOLDS INFORMATION AND OPERATION BUTTONS
-   //   if(title == ""){
-			//	ret = IONRemoteActionCell.Create();
-			//}
+      if(title == "platform"){
+      	var ret2 = IONRemoteStatusCell.Create();
+	      ret2.UpdateTo(title,image, textColor);
+	      return ret2;
+			}
 
       ret.UpdateTo(title, image, textColor);
       
       return ret;
     }
+    
   }
 }
 

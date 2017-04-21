@@ -18,12 +18,18 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 			ion = AppState.context as IosION;
 			////CHECK IF USER IS VIEWING A LAYOUT BEING UPLOADED UNDER THEIR OWN ACCOUNT
 			////USER IS GRANTED REMOTE OPERATION CONTROL FOR SOME THINGS IF THEY OWN THE ACCOUNT
-			if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == NSUserDefaults.StandardUserDefaults.StringForKey("userID")){
+			if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
 				controlView = new UIView(new CGRect(.6 * parentView.Bounds.Width, offset, .4 * parentView.Bounds.Width, .16 * parentView.Bounds.Height));
 				remoteLoggingButton = new UIButton(new CGRect(0,0,controlView.Bounds.Width,.5 * controlView.Bounds.Height));
 				disconnectButton = new UIButton(new CGRect(0, .5 * controlView.Bounds.Height,controlView.Bounds.Width, .5 * controlView.Bounds.Height));
 			
-				remoteLoggingButton.SetTitle("Start Data Logging", UIControlState.Normal);
+				if(ion.remoteDevice.loggingStatus == 1){
+					NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
+					remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
+				} else {
+					NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");					
+					remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
+				}
 				remoteLoggingButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
 				remoteLoggingButton.ClipsToBounds = true;
 				
@@ -77,13 +83,17 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 		
 		public async void changeLogStatus(object sender, EventArgs e){
 			if(String.IsNullOrEmpty(NSUserDefaults.StandardUserDefaults.StringForKey("remoteLogging"))){
-				remoteLoggingButton.SetTitle("Start Data Logging", UIControlState.Normal);
+				remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
 				NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
-				var feedback = await ion.webServices.SetRemoteDataLog(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"), NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout"),"1");				
+				var feedback = await ion.webServices.SetRemoteDataLog(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"), NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout"),"1");
+				var textResponse = feedback.Content.ReadAsStringAsync();
+				Console.WriteLine(textResponse);				
 			} else {
-				remoteLoggingButton.SetTitle("Stop Data Logging", UIControlState.Normal);
-				NSUserDefaults.StandardUserDefaults.SetString(null,"remoteLogging");
+				remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
+				NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");
 				var feedback = await ion.webServices.SetRemoteDataLog(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser"), NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout"),"0");
+				var textResponse = feedback.Content.ReadAsStringAsync();
+				Console.WriteLine(textResponse);
 			}
 		}		
 	}

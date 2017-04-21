@@ -1628,6 +1628,15 @@ namespace ION.IOS.ViewController.Analyzer {
 				} else {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
+				if(remoteControl != null){
+					if(ion.remoteDevice.loggingStatus == 1){
+						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
+						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
+					} else {
+						NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");					
+						remoteControl.remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
+					}
+				}					
 			}
 	    //viewAnalyzerContainer.SetNeedsDisplay();
     }

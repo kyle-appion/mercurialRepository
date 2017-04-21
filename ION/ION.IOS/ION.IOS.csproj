@@ -679,6 +679,7 @@
     <InterfaceDefinition Include="src\Storyboard\IONNavigationCell.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
+    <InterfaceDefinition Include="src\ViewController\IONRemoteStatusCell.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -1035,6 +1036,10 @@
     <Compile Include="src\ViewController\CloudSessions\RemoteViewingViewController.cs" />
     <Compile Include="src\ViewController\CloudSessions\RemoteViewingViewController.designer.cs">
       <DependentUpon>RemoteViewingViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\IONRemoteStatusCell.cs" />
+    <Compile Include="src\ViewController\IONRemoteStatusCell.designer.cs">
+      <DependentUpon>IONRemoteStatusCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />

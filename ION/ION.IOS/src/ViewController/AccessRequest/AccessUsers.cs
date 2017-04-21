@@ -114,7 +114,6 @@ namespace ION.IOS.ViewController.AccessRequest {
 			
 			if(feedback != null){
 				var textResponse = await feedback.Content.ReadAsStringAsync();
-				Console.WriteLine(textResponse);
 				//parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var success = response.GetValue("success");

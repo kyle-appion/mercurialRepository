@@ -179,7 +179,6 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			if(feedback != null){
 			
 				var textResponse = await feedback.Content.ReadAsStringAsync();
-				Console.WriteLine(textResponse);
 				////parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var success = response.GetValue("success");
@@ -246,15 +245,17 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			rootVC.PresentViewController (alert, animated: true, completionHandler: null);			
 		}
 		
-		public void startDownloading(){
+		public async void startDownloading(){
 			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 			var viewingLayout =	NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout");
 				
 			var loggedUser = KeychainAccess.ValueForKey("userID");
 			var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
-		
-			webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
 			webServices.paused += pauseRemote;
+			while(webServices.downloading){
+				await webServices.DownloadLayouts(viewingID, loggingInterval, viewingLayout);
+			}
+			//webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
 		}
 		
 		public void pauseRemote(bool paused){

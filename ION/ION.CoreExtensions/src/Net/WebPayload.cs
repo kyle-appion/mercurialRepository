@@ -256,8 +256,7 @@ namespace ION.Core.Net {
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
 			return null;
-		}	
-		
+		}		
 	}
 	
 	/// <summary>
@@ -273,171 +272,155 @@ namespace ION.Core.Net {
 		
 		var userID = ID;
 		
-	  ///Start packaging all device manager devices	  
-	  var layoutJson = "{\"known\":[";    
-	  var connectedCount = 0;
-	  var totalCount = uploadDeviceManager.knownDevices.Count;
-	  foreach(var device in uploadDeviceManager.knownDevices){
-	  	if(device is GaugeDevice){
-				if(connectedCount < totalCount && connectedCount > 0 ){
-					layoutJson += ",";
-				}
-	  		var gDevice = device as GaugeDevice;
-				layoutJson += "{\"sn\":\""+gDevice.serialNumber + "\",\"sa\":[";
-				var sensorCounter = 1;
-				for(int s = 0; s < gDevice.sensors.Length;s++){
-					layoutJson += "{\"sv\":\""+gDevice.sensors[s].measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(gDevice.sensors[s].unit)+"\",\"si\":\""+gDevice.sensors[s].index+"\"} ";
-					if(sensorCounter < gDevice.sensorCount){
-						layoutJson += ",";
-					}
-					sensorCounter++;
-				}				
-				layoutJson += "], \"on\":\""+Convert.ToInt32(device.isConnected)+"\",\"bat\":\""+gDevice.battery+"\"} ";
-				connectedCount++;
-			}
-		}
-		layoutJson += "],";  
-	  ///Package the analyzer layout  
-		layoutJson += "\"alyzer\":[";
-		string lowAttachedSN= "null";
-		string lowAttachedIndex = "0";
-		string highAttachedSN = "null";
-		string highAttachedIndex = "0";
-		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
-			var count = 1;                                                                    
-			foreach(var sensor in uploadAnalyzer.sensorList){
-				var gaugeSensor = sensor as GaugeDeviceSensor;
-				
-			 	layoutJson += "{\"sn\":\""+sensor.name+"\",\"sa\":\"" + sensor.analyzerArea + "\",\"sl\":\""+sensor.analyzerSlot+"\",\"sv\":\""+sensor.measurement.amount+"\",\"su\":\""+UnitLookup.GetCode(sensor.unit)+"\",\"si\":\"" + gaugeSensor.index + "\"} ";
-				if(count < uploadAnalyzer.sensorList.Count){
-					layoutJson += ",";
-				}
+		//////KNOWN DEVICES PACKAGE
+		connectedData[] knownArray = new connectedData[uploadDeviceManager.knownDevices.Count];
+		
+		for(int k = 0; k < uploadDeviceManager.knownDevices.Count; k++){
+			var g2Device = uploadDeviceManager.knownDevices[k] as GaugeDevice;
 			
-				count++;
-			}		
+			knownArray[k] = new connectedData(){
+				battery = uploadDeviceManager.knownDevices[k].battery,
+				serialNumber = uploadDeviceManager.knownDevices[k].serialNumber.rawSerial,
+				connected = Convert.ToInt32(uploadDeviceManager.knownDevices[k].isConnected),
+			};
+			
+			knownArray[k].sensors = new sensorData[g2Device.sensorCount];
+			for(int s = 0; s < g2Device.sensorCount; s++){
+				knownArray[k].sensors[s] = new sensorData(){
+					measurement = g2Device.sensors[s].measurement.amount,
+					sensorIndex = g2Device.sensors[s].index,
+					unit = UnitLookup.GetCode(g2Device.sensors[s].unit),
+				};
+			}			
 		}
+		  
+	  ///Package the analyzer layout
+		analyzerSetup[] analyzerArray = new analyzerSetup[uploadAnalyzer.sensorList.Count];
+
+		for(int a = 0; a < uploadAnalyzer.sensorList.Count; a++){
+			var gaugeSensor2 = uploadAnalyzer.sensorList[a] as GaugeDeviceSensor;
+			analyzerArray[a] = new analyzerSetup(){
+				serialNumber = uploadAnalyzer.sensorList[a].name,
+				sensorArea = uploadAnalyzer.sensorList[a].analyzerArea,
+				position = uploadAnalyzer.sensorList[a].analyzerSlot,
+				measurement = uploadAnalyzer.sensorList[a].measurement.amount,
+				unit = UnitLookup.GetCode(uploadAnalyzer.sensorList[a].unit),
+				sensorIndex = gaugeSensor2.index,
+			};
+		}
+
+		string lowAttachedSN= "null";
+		int lowAttachedIndex = 0;
+		string highAttachedSN = "null";
+		int highAttachedIndex = 0;
+
+		/////PACKAGE THE ANALYZER SETUP
+		analyzerPositions analyzerSetup = new analyzerPositions(){lfluid = "null", hfluid = "null"};
+		analyzerSetup.sensorPositions = uploadAnalyzer.sensorPositions.ToArray();
+		if(uploadAnalyzer.lowFluid != null){
+			analyzerSetup.lfluid = uploadAnalyzer.lowFluid.name;
+		}
+		if(uploadAnalyzer.highFluid != null){
+			analyzerSetup.hfluid = uploadAnalyzer.highFluid.name;
+		}
+				
 		////GET LOW SIDE ATTACHED SENSOR
 		if(uploadAnalyzer.lowSideManifold != null && uploadAnalyzer.lowSideManifold.secondarySensor is GaugeDeviceSensor){
 			var attachedGaugeSensor = uploadAnalyzer.lowSideManifold.secondarySensor as GaugeDeviceSensor;
 			lowAttachedSN = attachedGaugeSensor.device.serialNumber.rawSerial;
-			lowAttachedIndex = attachedGaugeSensor.index.ToString();
+			lowAttachedIndex = attachedGaugeSensor.index;
 		}
 		////GET HIGH SIDE ATTACHED SENSOR
 		if(uploadAnalyzer.highSideManifold != null && uploadAnalyzer.highSideManifold.secondarySensor is GaugeDeviceSensor){
 			var attachedGaugeSensor = uploadAnalyzer.highSideManifold.secondarySensor as GaugeDeviceSensor;
 			highAttachedSN = attachedGaugeSensor.device.serialNumber.rawSerial;
-			highAttachedIndex = attachedGaugeSensor.index.ToString();
+			highAttachedIndex = attachedGaugeSensor.index;
 		}		
-		layoutJson += "],\"setup\":{\"positions\":["+string.Join(",",uploadAnalyzer.sensorPositions)+"],\"lfluid\":\"";
-		///SEND THE LOW SIDE MANIFOLD FLUID
-		if(uploadAnalyzer.lowFluid != null){
-			layoutJson += uploadAnalyzer.lowFluid.name+"\",\"hfluid\":\"";
-		} else {
-			layoutJson += "null\",\"hfluid\":\"";
-		}
-		///SEND THE HIGH SIDE MANIFOLD FLUID
-		if(uploadAnalyzer.highFluid != null){
-			layoutJson += uploadAnalyzer.highFluid.name + "\"} ,\"LH\":{";
-		} else {
-			layoutJson += "null\"} ,\"LH\":{";
-		}
-		///SEND THE LOW SIDE SLOT AREA AND ATTACHED SENSOR
+
+		//////PACKAGE LOW AND HIGH SIDE INFORMATION
+		analyzerLowHigh lowhighArea = new analyzerLowHigh(){
+			lowAttached = lowAttachedSN,
+			lowAttachedIndex = lowAttachedIndex,
+			lowSerialNumber = "null",
+			lowSerialIndex = 0,
+			highAttached = highAttachedSN,
+			highAttachedIndex = highAttachedIndex,
+			highSerialNumber = "null",
+			highSerialIndex = 0,
+			lowAccessibility = uploadAnalyzer.lowAccessibility,
+			highAccessibility = uploadAnalyzer.highAccessibility,
+			lowSubviews = uploadAnalyzer.lowSubviews.ToArray(),		
+			highSubviews = uploadAnalyzer.highSubviews.ToArray(),		
+		};
+		//////SET LOW SIDE ATTACHED SENSOR		
 		if(uploadAnalyzer.lowAccessibility != "low"){
-			//Console.WriteLine("Uploading low area accessibility identifier " + uploadAnalyzer.lowAccessibility);
 			GaugeDeviceSensor lssensor = null;
 			foreach(var area in uploadAnalyzer.sensorList){
 				//Console.WriteLine("Looking for a match in the active sensor of the analyzer. area location: " + area.analyzerSlot);
 				if(area.analyzerSlot == Convert.ToInt32(uploadAnalyzer.lowAccessibility)){
 					lssensor = area as GaugeDeviceSensor;
+					break;
 				}
-			}
-			if(lssensor != null){
-				layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\",\"lsn\":\"" + lssensor.device.serialNumber.rawSerial + "\",\"lsi\":\""  + lssensor.index + "\",\"las\":\"" + lowAttachedSN + "\",\"lai\":\""+lowAttachedIndex +"\", \"lsub\":[";
-			} else {
-				Console.WriteLine("Low side not empty but couldn't find a gauge sensor match");
-				layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"lsn\":\"null\",\"lsi\":\"0\",\"las\":\"null\", \"lsub\":[";
 			}			
-		}  else {
-			layoutJson += "\"low\":\""+uploadAnalyzer.lowAccessibility+"\", \"lsn\":\"null\",\"lsi\":\"0\",\"las\":\"null\", \"lsub\":[";
-		}
-		///SEND THE LOW SIDE SUBVIEW LIST
-		for(int s = 0; s < uploadAnalyzer.lowSubviews.Count;s++){
-			layoutJson += "\""+uploadAnalyzer.lowSubviews[s]+"\"";
-			if(s < uploadAnalyzer.lowSubviews.Count - 1){
-				layoutJson += ",";
+			if(lssensor != null){
+				lowhighArea.lowSerialNumber = lssensor.device.serialNumber.rawSerial;
+				lowhighArea.lowSerialIndex = lssensor.index;
 			}
-		}
-		///SEND THE HIGH SIDE SLOT AREA AND ATTACHED SENSOR
+		}		
+
+		//////SET HIGH SIDE ATTACHED SENSOR		
 		if(uploadAnalyzer.highAccessibility != "high"){
-			//Console.WriteLine("Uploading high area accessibility identifier " + uploadAnalyzer.highAccessibility);
-			GaugeDeviceSensor hssensor = null;
+			GaugeDeviceSensor lssensor = null;
 			foreach(var area in uploadAnalyzer.sensorList){
 				//Console.WriteLine("Looking for a match in the active sensor of the analyzer. area location: " + area.analyzerSlot);
 				if(area.analyzerSlot == Convert.ToInt32(uploadAnalyzer.highAccessibility)){
-					hssensor = area as GaugeDeviceSensor;
+					lssensor = area as GaugeDeviceSensor;
+					break;
 				}
+			}			
+			if(lssensor != null){
+				lowhighArea.highSerialNumber = lssensor.device.serialNumber.rawSerial;
+				lowhighArea.highSerialIndex = lssensor.index;
 			}
-			if(hssensor != null){
-				layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\",\"hsn\":\"" + hssensor.device.serialNumber.rawSerial + "\",\"hsi\":\""  + hssensor.index + "\", \"has\":\"" + highAttachedSN + "\",\"hai\":\""+highAttachedIndex +"\", \"hsub\":[";
-			}	else {
-				Console.WriteLine("High side not empty but couldn't find a gauge sensor match");
-				layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"hsn\":\"null\",\"hsi\":\"0\",\"has\":\"null\", \"hsub\":[";
-			}
-		}  else {
-			layoutJson += "],\"high\":\""+uploadAnalyzer.highAccessibility+"\", \"hsn\":\"null\",\"hsi\":\"0\",\"has\":\"null\", \"hsub\":[";
-		}
-		///SEND THE HIGH SIDE SUBVIEW LIST
-		for(int s = 0; s < uploadAnalyzer.highSubviews.Count;s++){
-			layoutJson += "\""+uploadAnalyzer.highSubviews[s]+"\"";
-			if(s < uploadAnalyzer.highSubviews.Count - 1){
-				layoutJson += ",";
-			}
-		}
-		layoutJson += "]},";
+		}		
 		
-		///Package the workbench layout
-		layoutJson += "\"workB\" : [";
-		if(uploadWorkbench != null && uploadWorkbench.manifolds != null){
-			var count = 1;  
-			foreach(var manifold in uploadWorkbench.manifolds){
-				var primarySensor = manifold.primarySensor as GaugeDeviceSensor;
-				layoutJson += "{\"sn\":\""+manifold.primarySensor.name+"\",\"si\":\"" + primarySensor.index + "\",";
-				//layoutJson += "\"amount\":\""+manifold.primarySensor.measurement.amount+"\",\"unit\":\""+UnitLookup.GetCode(manifold.primarySensor.unit)+"\",";
-				if(manifold.secondarySensor != null && manifold.secondarySensor is GaugeDeviceSensor){
-					var deviceSensor = manifold.secondarySensor as GaugeDeviceSensor;
-					layoutJson += "\"lsn\":\"" +deviceSensor.device.serialNumber.rawSerial + "\",\"lsi\":\"" + deviceSensor.index + "\",";
-				} else {
-					layoutJson += "\"lsn\":\"null\",\"lsi\":\"-1\",";
-				}
-				layoutJson += "\"fl\":\"" + manifold.ptChart.fluid.name + "\",\"fls\":\""; 
+		///PACKAGE THE WORKBENCH LAYOUT
+		workbenchSetup[] workbenchArray = new workbenchSetup[uploadWorkbench.manifolds.Count];
+		
+		for(int w = 0; w < uploadWorkbench.manifolds.Count; w++){
+			var primarySensor = uploadWorkbench.manifolds[w].primarySensor as GaugeDeviceSensor;
 	
-				layoutJson += (int)manifold.ptChart.state+ "\",";
-
-				layoutJson += "\"sub\":[";
-				var subcount = 1;
-				foreach(var sub in manifold.sensorProperties){
-					var sensorEnum = GetSensorPropertyEnum(sub);
-					layoutJson += sensorEnum;
-					if(subcount < manifold.sensorProperties.Count){
-						layoutJson += ",";
-					}
-					subcount++;
-				}
-				layoutJson += "]}";
-				if(count < uploadWorkbench.manifolds.Count){
-					layoutJson += ",";
-				}
-				count++;
+			workbenchArray[w] = new workbenchSetup(){
+				serialNumber = primarySensor.name,
+				sensorIndex = primarySensor.index,
+				fluidname = uploadWorkbench.manifolds[w].ptChart.fluid.name,
+				fluidState = (int)uploadWorkbench.manifolds[w].ptChart.state,
+				linkedSerial = "null",
+				linkedIndex = -1,
+				subviews = new int[uploadWorkbench.manifolds[w].sensorProperties.Count],
+			};
+			
+			if(uploadWorkbench.manifolds[w].secondarySensor != null && uploadWorkbench.manifolds[w].secondarySensor is GaugeDeviceSensor){
+				var deviceSensor = uploadWorkbench.manifolds[w].secondarySensor as GaugeDeviceSensor;
+				workbenchArray[w].linkedSerial = deviceSensor.device.serialNumber.rawSerial;
+				workbenchArray[w].linkedIndex = deviceSensor.index;
 			}
+			
+			for(int s = 0; s < uploadWorkbench.manifolds[w].sensorProperties.Count; s++){
+				var sensorEnum = GetSensorPropertyEnum(uploadWorkbench.manifolds[w].sensorProperties[s]);
+				workbenchArray[w].subviews[s] = sensorEnum;
+			}			
 		}
-			 
-    if (ion.locationManager.lastKnownLocation != null) {			      	
-      layoutJson += "],\"alt\":\"" + ion.locationManager.lastKnownLocation.altitude.amount + "\"";
-    } else {
-      layoutJson += "],\"alt\":\"0\"";
-		}
-        
-		layoutJson += "}";
+		/////BIND EACH SECTION TOGETHER FOR SERIALIZING
+		boundLayout completedLayout = new boundLayout(){
+			known = knownArray,
+			analyzer = analyzerArray,
+			Setup = analyzerSetup,
+			lowhigh = lowhighArea,
+			workbench = workbenchArray,
+			altitude = ion.locationManager.lastKnownLocation.altitude.amount
+		};
+		Console.WriteLine(JsonConvert.SerializeObject(completedLayout));
 		////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
 		var platformInfo = ion.GetPlatformInformation();
 		
@@ -448,15 +431,13 @@ namespace ION.Core.Net {
 			remainingMemory = platformInfo.freeMemory,
 		};
 		
-		//Console.WriteLine(JsonConvert.SerializeObject(stateInfo));
-		//Console.WriteLine(layoutJson);
 		try{
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
       var formContent = new FormUrlEncodedContent(new[]
           {
               new KeyValuePair<string, string>("uploadLayouts", "manager"),
-              new KeyValuePair<string, string>("layoutJson", layoutJson),
+              new KeyValuePair<string, string>("layoutJson", JsonConvert.SerializeObject(completedLayout)),
               new KeyValuePair<string, string>("userID", userID),
               new KeyValuePair<string, string>("layoutID", layoutID),
               new KeyValuePair<string, string>("status", JsonConvert.SerializeObject(stateInfo)),
@@ -465,8 +446,8 @@ namespace ION.Core.Net {
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 
-			var textReponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textReponse);
+			//var textReponse = await feedback.Content.ReadAsStringAsync();
+			//Console.WriteLine(textReponse);
 			return feedback;
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
@@ -509,6 +490,7 @@ namespace ION.Core.Net {
 			var retrieved = response.GetValue("success").ToString();
 						
 			if(retrieved == "true"){
+				///GET THE COMMAND STATE INFORMATION ABOUT A REMOTE DEVICE I.E. DATA LOGGING, WIFI STATUS, DEVICE BATTERY LEVEL				
 				var remoteStatus = JsonConvert.DeserializeObject<sessionStateInfo>(response.GetValue("status").ToString());
 				ion.SetRemotePlatformInformation(remoteStatus);
 				/////GRAB THE LAYOUT JSON
@@ -646,6 +628,7 @@ namespace ION.Core.Net {
 					}
 				}
 				
+				//////SET POSITIONS FOR ANALYZER SETUP AND LOW HIGH AREA
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.revertPositions = new List<int>(deserializedPositions.sensorPositions);
 				remoteAnalyzer.lowAccessibility = deserializedLowHigh.lowAccessibility;
@@ -677,107 +660,93 @@ namespace ION.Core.Net {
 				}
 				////////////////////////////SETTING UP THE WORKBENCH BASED ON REMOTE DATA			
 				var wManager = response.GetValue("workB");  
-
-				foreach(var con in wManager){
-					var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
-					var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
-					var managerDevice = remoteDManager[iserial] as GaugeDevice;
-					var managerSensor = managerDevice.sensors[deserializedToken.sensorIndex];
-
-					activeManifolds.Add(deserializedToken.serialNumber+managerSensor.type);
-
-					var existing = workbench.GetDeviceIndex(iserial,deserializedToken.sensorIndex);
-					if(existing != -1){
-						Manifold updateManifold = workbench.manifolds[existing];  
-						
-						//if(managerSensor.type == updateManifold.primarySensor.type){
-						//	updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						//} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
-						//	updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						//}
-						
-						if(updateManifold.ptChart.fluid.name != deserializedToken.fluidname){
-
-							var	ptstate = (Fluid.EState)deserializedToken.fluidState;
-
-							var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
-							updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
-						}   
-						
-						if(deserializedToken.linkedSerial != "null" ){ 
-							if(updateManifold.secondarySensor != null){
-								///get current secondary sensor
-								var checkSensor = updateManifold.secondarySensor as GaugeDeviceSensor;
-								///check if current secondary is the same linked sensor;
-								if(checkSensor.device.serialNumber.rawSerial != deserializedToken.linkedSerial){
-									///find the secondary sensor in known devices that matches the linked serial and is the opposite unit type of the parent
-									///create an iserial
-									var linkedSerial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.linkedSerial);
-									var linkedDevice = remoteDManager[linkedSerial] as GaugeDevice;
-									var linkedSensor = linkedDevice.sensors[deserializedToken.linkedIndex];
-									updateManifold.SetSecondarySensor(linkedSensor);
-								}
-							} else {
+				if(workbench != null){
+					foreach(var con in wManager){
+						var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
+						var iserial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.serialNumber);
+						var managerDevice = remoteDManager[iserial] as GaugeDevice;
+						var managerSensor = managerDevice.sensors[deserializedToken.sensorIndex];
+	
+						activeManifolds.Add(deserializedToken.serialNumber+managerSensor.type);
+	
+						var existing = workbench.GetDeviceIndex(iserial,deserializedToken.sensorIndex);
+						if(existing != -1){
+							Manifold updateManifold = workbench.manifolds[existing];  
 							
-									var linkedSerial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.linkedSerial);
-									var linkedDevice = remoteDManager[linkedSerial] as GaugeDevice;
-									var linkedSensor = linkedDevice.sensors[deserializedToken.linkedIndex];
-									updateManifold.SetSecondarySensor(linkedSensor);
-							} 
-						} else {
-							if(updateManifold.secondarySensor != null){
-								updateManifold.SetSecondarySensor(null);
+							//if(managerSensor.type == updateManifold.primarySensor.type){
+							//	updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+							//} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
+							//	updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+							//}
+							
+							if(updateManifold.ptChart.fluid.name != deserializedToken.fluidname){
+	
+								var	ptstate = (Fluid.EState)deserializedToken.fluidState;
+	
+								var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
+								updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
+							}   
+							
+							if(deserializedToken.linkedSerial != "null" ){ 
+								if(updateManifold.secondarySensor != null){
+									///get current secondary sensor
+									var checkSensor = updateManifold.secondarySensor as GaugeDeviceSensor;
+									///check if current secondary is the same linked sensor;
+									if(checkSensor.device.serialNumber.rawSerial != deserializedToken.linkedSerial){
+										///find the secondary sensor in known devices that matches the linked serial and is the opposite unit type of the parent
+										///create an iserial
+										var linkedSerial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.linkedSerial);
+										var linkedDevice = remoteDManager[linkedSerial] as GaugeDevice;
+										var linkedSensor = linkedDevice.sensors[deserializedToken.linkedIndex];
+										updateManifold.SetSecondarySensor(linkedSensor);
+									}
+								} else {
+								
+										var linkedSerial = SerialNumberExtensions.ParseSerialNumber(deserializedToken.linkedSerial);
+										var linkedDevice = remoteDManager[linkedSerial] as GaugeDevice;
+										var linkedSensor = linkedDevice.sensors[deserializedToken.linkedIndex];
+										updateManifold.SetSecondarySensor(linkedSensor);
+								} 
+							} else {
+								if(updateManifold.secondarySensor != null){
+									updateManifold.SetSecondarySensor(null);
+								}
+							}				
+							////////
+							/// add any sensor properties that a remote user has added only if they don't exist already
+							SetupNewManifoldProperties(updateManifold,deserializedToken);			
+	
+							///Remove any subviews a remote user has removed
+							foreach(var sp in updateManifold.sensorProperties.ToArray()){
+								var propertyIndex = GetSensorPropertyEnum(sp);
+								var exists = Array.IndexOf(deserializedToken.subviews,propertyIndex); 
+								if(exists == -1){
+									updateManifold.RemoveSensorProperty(sp);
+								}
 							}
-						}				
-						////////
-						/// add any sensor properties that a remote user has added only if they don't exist already
-						SetupNewManifoldProperties(updateManifold,deserializedToken);			
-
-						///Remove any subviews a remote user has removed
-						foreach(var sp in updateManifold.sensorProperties.ToArray()){
-							var propertyIndex = GetSensorPropertyEnum(sp);
-							var exists = Array.IndexOf(deserializedToken.subviews,propertyIndex); 
-							if(exists == -1){
-								updateManifold.RemoveSensorProperty(sp);
-							}
+						}  else {
+	
+							///manifold has been added by the remote user but doesn't exist for viewing user so create it and add it's sensor properties
+							var newIdevice = remoteDManager[iserial];
+							var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, newIdevice.isConnected) as GaugeDevice;
+	
+							var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[deserializedToken.sensorIndex]);
+							
+							var	ptstate = (Fluid.EState)deserializedToken.fluidState;  
+	
+							var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
+							manualManifold.ptChart = PTChart.New(AppState.context,ptstate,manifoldFluid);
+							workbench.Add(manualManifold);
+							SetupNewManifoldProperties(manualManifold,deserializedToken);
+						}					
+					}
+					///REMOVE ANY WORKBENCH MANIFOLDS THAT ARE NOT IN THE REMOTE LIST
+					foreach(var manifold in workbench.manifolds.ToArray()){
+						if(!activeManifolds.Contains(manifold.primarySensor.name+manifold.primarySensor.type)){
+							workbench.Remove(manifold);
 						}
-					}  else {
-
-						///manifold has been added by the remote user but doesn't exist for viewing user so create it and add it's sensor properties
-						var newIdevice = remoteDManager[iserial];
-						var manualDevice = remoteDManager.CreateDevice(iserial, ION.Core.Devices.Protocols.EProtocolVersion.V4, newIdevice.isConnected) as GaugeDevice;
-
-						var manualManifold = new ION.Core.Content.Manifold(manualDevice.sensors[deserializedToken.sensorIndex]);
-						
-						var	ptstate = (Fluid.EState)deserializedToken.fluidState;  
-
-						var manifoldFluid = await ion.fluidManager.LoadFluidAsync(deserializedToken.fluidname);
-						manualManifold.ptChart = PTChart.New(AppState.context,ptstate,manifoldFluid);
-						workbench.Add(manualManifold);
-						SetupNewManifoldProperties(manualManifold,deserializedToken);
-					}					
-				}
-				///REMOVE ANY WORKBENCH MANIFOLDS THAT ARE NOT IN THE REMOTE LIST
-				foreach(var manifold in workbench.manifolds.ToArray()){
-					if(!activeManifolds.Contains(manifold.primarySensor.name+manifold.primarySensor.type)){
-						workbench.Remove(manifold);
 					}
 				}
-				///GET THE COMMAND STATE INFORMATION ABOUT A REMOTE DEVICE I.E. DATA LOGGING, WIFI STATUS, DEVICE BATTERY LEVEL
-				//var stateManager = response.GetValue("state");
-				
-				//foreach(var state in stateManager){
-				//	var deserializedState = JsonConvert.DeserializeObject<sessionStateInfo>(state.ToString());
-					
-				//	if(deserializedState.isRecording){
-				//		if(!ion.dataLogManager.isRecording){
-				//			await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(loggingInterval));
-				//		}
-				//	} else {
-				//		await ion.dataLogManager.StopRecording();
-				//	}
-				//}
-				
 			} else {
 				var message = response.GetValue("message").ToString();
 				Console.WriteLine("The respone message is:" + message);
@@ -1353,19 +1322,23 @@ namespace ION.Core.Net {
 		[JsonProperty("userID")]
 		public string userID {get;set;}		
 	}
-
-	//[Preserve(AllMembers = true)]
-	//public class sessionStateInfo {
-	//	public sessionStateInfo(){}
-	//	[JsonProperty("log")]
-	//	public int isRecording {get; set;}
-	//	[JsonProperty("battery")]
-	//	public int batteryLevel {get; set;}
-	//	[JsonProperty("wifi")]
-	//	public int wifiStatus {get; set;}
-	//	[JsonProperty("memory")]
-	//	public double remainingMemory {get; set;}	
-	//}
+	
+	[Preserve(AllMembers = true)]
+	public class boundLayout{
+		public boundLayout(){}
+		[JsonProperty("known")]
+		public connectedData [] known {get;set;}
+		[JsonProperty("alyzer")]
+		public analyzerSetup[] analyzer {get;set;}
+		[JsonProperty("setup")]
+		public analyzerPositions Setup {get;set;}
+		[JsonProperty("LH")]
+		public analyzerLowHigh lowhigh {get;set;}
+		[JsonProperty("workB")]
+		public workbenchSetup[] workbench {get;set;}
+		[JsonProperty("alt")]
+		public double altitude {get;set;}
+	}
 }
 
 

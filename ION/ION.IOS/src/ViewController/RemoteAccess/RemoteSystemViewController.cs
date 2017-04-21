@@ -115,6 +115,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			portalControl.uploadButton.TouchUpInside -= showUploads;
 			portalControl.codeButton.TouchUpInside -= showCodeManager;
 			portalControl.accessButton.TouchUpInside -= showAccessManager;
+			portalControl.remoteButton.TouchUpInside -= showRemoteViewing;
 			
 			portalControl = null;
 
@@ -210,7 +211,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					portalControl.uploadButton.TouchUpInside += showUploads;
 					portalControl.codeButton.TouchUpInside += showCodeManager;
 					portalControl.accessButton.TouchUpInside += showAccessManager;   
-					
+					portalControl.remoteButton.TouchUpInside -= showRemoteViewing;
+					portalControl.remoteButton.TouchUpInside += showRemoteViewing;
+				
 					remoteHolderView.AddSubview(portalControl.portalView);
 					profileView = new RemoteUserProfileView(remoteHolderView, KeychainAccess.ValueForKey("userDisplay"), KeychainAccess.ValueForKey("userEmail"),webServices);
 					profileView.logoutButton.TouchUpInside += LogOutUser;
@@ -220,6 +223,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					loginView.loginView.RemoveFromSuperview();
 					loginView = null;
 					this.NavigationItem.RightBarButtonItem = settingsButton;
+
+
+
 				} else {
 					loginView.loadingLogin.StopAnimating();
 					var failMessage = response.GetValue("message").ToString();
@@ -377,6 +383,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	
 		public override void ViewWillAppear(bool animated) {
 			base.ViewWillAppear(animated);
+
 			var loggedIn = KeychainAccess.ValueForKey("userID");
 			if(!string.IsNullOrEmpty(loggedIn)){
 				//if(remoteView != null && remoteView.fullMenuButton.Hidden){

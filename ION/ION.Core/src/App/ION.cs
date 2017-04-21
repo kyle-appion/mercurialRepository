@@ -45,6 +45,7 @@
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);
 	public delegate void OnAnalyzerChanged(Analyzer analyzer);
+	public delegate void RemotePlatformChanged(IPlatformInfo platformInfo);
 
   /// <summary>
   /// The interface that describes an ION application context.
@@ -58,6 +59,11 @@
 		/// The event that is notified when the ion's analyzer changes.
 		/// </summary>
 		event OnAnalyzerChanged onAnalyzerChanged;
+		/// <summary>
+		/// The event that is notified when remote viewing platform information is updated
+		/// </summary>
+		event RemotePlatformChanged remotePlatformChanged;
+		
     /// <summary>
     /// Queries the build name of the ion instance. (ie. ION HVAC/r for android of ION Viewer for iOS)
     /// </summary>
@@ -199,9 +205,7 @@
     /// Gets or sets the remote device platform information.
     /// </summary>
     /// <value>The remote device.</value>
-    IPlatformInfo remoteDevice {get; set;}
-    
-    
+    IPlatformInfo remoteDevice {get; set;}   
     
     Task setRemoteDeviceManager();
     Task setOriginalDeviceManager();
