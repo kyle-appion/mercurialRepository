@@ -181,7 +181,17 @@ namespace ION.IOS.ViewController.Workbench {
 					remoteTitle.Text = "Workbench\nRemote Viewing";
 				} else {
 					remoteTitle.Text = "Workbench\nRemote Editing";
-				}  
+				}
+				
+				if(remoteControl != null && remoteControl.remoteLoggingButton != null){
+					if(ion.remoteDevice.loggingStatus == 1){
+						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
+						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
+					} else {
+						NSUserDefaults.StandardUserDefaults.SetString("","remoteLogging");					
+						remoteControl.remoteLoggingButton.SetTitle("Start Logging", UIControlState.Normal);
+					}
+				}			
 			}
     }
 

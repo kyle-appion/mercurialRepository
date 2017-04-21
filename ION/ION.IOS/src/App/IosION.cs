@@ -58,6 +58,8 @@
 		public event OnWorkbenchChanged onWorkbenchChanged;
 
 		public event OnAnalyzerChanged onAnalyzerChanged;
+		
+		public event RemotePlatformChanged remotePlatformChanged;
 
     // Overridden from IION
     public string name { get { return GetDisplayName(); } }
@@ -246,7 +248,18 @@
 		///HOLDS THE INFORMATION FOR A DEVICE	
 		public IPlatformInfo localDevice {get; set;}
 		
-		public IPlatformInfo remoteDevice {get; set;}
+		public IPlatformInfo remoteDevice 
+		{
+			get{
+				return __remoteDevice;
+			} 
+			set{
+				__remoteDevice = value;
+				if(__remoteDevice != null){
+					remotePlatformChanged(value);
+				}
+			}
+		} IPlatformInfo __remoteDevice;
     /// <summary>
     /// The list of managers that are present in the ion context.
     /// </summary>

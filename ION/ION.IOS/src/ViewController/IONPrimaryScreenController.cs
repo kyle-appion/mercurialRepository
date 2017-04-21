@@ -349,14 +349,16 @@ namespace ION.IOS.ViewController {
 				remoteAn.remoteMode = true;
 				var remotePortal = InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING);
 				
-				navigation.ViewControllers[0] = new UINavigationController(remoteWb);
-				navigation.ViewControllers[1] = new UINavigationController(remoteAn);
-				navigation.ViewControllers[4] = null;
-				navigation.ViewControllers[5] = null;
-				navigation.ViewControllers[6] = new UINavigationController(remotePortal);
-				navigation.ViewControllers[7] = null;
+        navigation.ViewControllers[0] = null; /// logging
+        navigation.ViewControllers[1] = null; /// wireless
+        navigation.ViewControllers[2] = null; /// battery
+				navigation.ViewControllers[3] = null; /// memory
+				navigation.ViewControllers[4] = new UINavigationController(remoteWb); /// workbench
+				navigation.ViewControllers[5] = new UINavigationController(remoteAn); /// analyzer
 				navigation.ViewControllers[8] = null;
 				navigation.ViewControllers[9] = null;
+				navigation.ViewControllers[10] = new UINavigationController(remotePortal);
+				navigation.ViewControllers[11] = null;
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -471,8 +473,16 @@ namespace ION.IOS.ViewController {
 		
 		public void setRemoteMenu(){
 			navigation.NavigationRoot.Clear();
-      navigation.NavigationTableView.BackgroundColor = new UIColor(Colors.RED);
+      navigation.NavigationTableView.BackgroundColor = UIColor.FromRGB(255,30,30);
 
+			navigation.NavigationRoot.Add(
+				new Section ("Remote Device") {
+            new IONElement("logging", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement("wireless", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement("battery", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+	          new IONElement("memory", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+				}
+			);
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
 	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
@@ -491,7 +501,7 @@ namespace ION.IOS.ViewController {
 	          new IONElement(Strings.HELP, OnHelpClicked, UIImage.FromBundle("ic_help")){textColor = UIColor.Black,},
 	        }
 			);
-			navigation.NavigationRoot.Add(
+			navigation.NavigationRoot.Add(   
 				new Section("Cloud".ToUpper()){
 					new IONElement("Appion Portal", UIImage.FromBundle("cloud_menu_icon")){textColor = UIColor.Black,},
 				}
@@ -501,6 +511,7 @@ namespace ION.IOS.ViewController {
           new IONElement(Strings.Exit.SHUTDOWN, OnShutdownClicked, UIImage.FromBundle("ic_nav_power")){textColor = UIColor.Black,},
         }
 			);
+								
 			BuildRemoteViewControllers();
 		}
 	}
@@ -565,17 +576,34 @@ namespace ION.IOS.ViewController {
     /// </summary>
     /// <param name="tv">Tv.</param>
     public override UITableViewCell GetCell(UITableView tv) {
-      var ret = IONNavigationCell.Create();
-      
-      /////CREATE A DIFFERENT CELL AT THE TOP OF THE NAVIGATION MENU THAT HOLDS INFORMATION AND OPERATION BUTTONS
-   //   if(title == ""){
-			//	ret = IONRemoteActionCell.Create();
-			//}
 
-      ret.UpdateTo(title, image, textColor);
-      
-      return ret;
+      /////CREATE A DIFFERENT CELL AT THE TOP OF THE NAVIGATION MENU THAT HOLDS INFORMATION AND OPERATION BUTTONS
+      if(title == "wireless"){
+      	var ret = IONRemoteWirelessCell.Create();
+	      ret.UpdateTo(title,image, textColor);
+	      return ret;
+			} else if (title == "battery"){
+        var ret = IONRemoteBatteryCell.Create();
+        ret.UpdateTo(title,image, textColor);
+        return ret;
+      } else if (title == "memory"){
+        var ret = IONRemoteMemoryCell.Create();
+        ret.UpdateTo(title,image, textColor);
+        return ret;
+      } else if (title == "logging"){
+        var ret = IONRemoteStatusCell.Create();
+        ret.UpdateTo(title,image, textColor);
+        return ret;
+      } else {
+        var ret = IONNavigationCell.Create();
+        ret.UpdateTo(title, image, textColor);
+        
+        return ret;
+      }
+
+
     }
+    
   }
 }
 
