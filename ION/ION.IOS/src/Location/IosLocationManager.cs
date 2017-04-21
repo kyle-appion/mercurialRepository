@@ -46,6 +46,13 @@
       }
     }
 
+    // Implemented from ILocationManager
+    public bool supportsAltitudeTracking {
+      get {
+        return ion.settings.location.useGeoLocation;
+      }
+    }
+
     // Overridden from ILocationManager
     public ILocation lastKnownLocation {
       get {
@@ -97,6 +104,9 @@
       }
 //      }
       return new InitializationResult() { success = __isInitialized = true };
+    }
+
+    public void PostInit() {
     }
 
     // Overridden frm ILocationManager

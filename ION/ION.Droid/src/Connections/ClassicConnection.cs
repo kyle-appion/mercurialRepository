@@ -154,8 +154,8 @@
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
     /// <returns>The async.</returns>
-    public Task<bool> ConnectAsync() {
-      return Task.Factory.StartNew(() => {
+    public bool Connect() {
+      Task.Factory.StartNew(() => {
         if (EConnectionState.Connected == connectionState) {
           return true;
         } else if (EConnectionState.Disconnected != connectionState) {
@@ -180,12 +180,13 @@
 
         return true;
       });
+      return true;
     }
 
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-    public void Disconnect() {
+    public void Disconnect(bool reconnect=false) {
 			handler.RemoveCallbacksAndMessages(null);
 
 			Log.D(this, "Disconnected");
@@ -254,7 +255,7 @@
 					DoRequestPacket();
 					return true;
 				case MSG_RECONNECT:
-					ConnectAsync();
+					Connect();
 					return true;
 			}
 

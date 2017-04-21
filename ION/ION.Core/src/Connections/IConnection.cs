@@ -1,8 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿namespace ION.Core.Connections {
 
+  using System;
 
-namespace ION.Core.Connections {
   /// <summary>
   /// The delegate that is notified when a connection's state is changed.
   /// </summary>
@@ -51,10 +50,6 @@ namespace ION.Core.Connections {
     /// <value>The address.</value>
     string address { get; }
     /// <summary>
-    /// Queries the current received signal strength of the connection.
-    /// </summary>
-    ESignalStrength signalStrength { get; }
-    /// <summary>
     /// Queries the last packet that the connection received.
     /// </summary>
 		byte[] lastPacket { get; set; }
@@ -74,11 +69,11 @@ namespace ION.Core.Connections {
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    Task<bool> ConnectAsync();
+    bool Connect();
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
-    void Disconnect();
+    void Disconnect(bool reconnect=false);
     /// <summary>
     /// Writes the given packet out to the remote terminus.
     /// </summary>
@@ -87,7 +82,12 @@ namespace ION.Core.Connections {
   }
 
   /// <summary>
-  /// Enumerates the possible states that a connection can be in.
+  /// Enumerates the possible states that a connection can be in. The life cycle for EConnectionState is as follows:
+  /// 
+  /// Disconnected -> Connecting -> Resolving -> Connected
+  ///     ^               |             |             |
+  ///     |               |             |             |
+  ///     +- Disconnect <-+-------------+-------------+
   /// </summary>
   public enum EConnectionState {
     /// <summary>
@@ -101,13 +101,13 @@ namespace ION.Core.Connections {
     /// </summary>
     Broadcasting,
     /// <summary>
-    /// The connection is attempting to establish a connection with the remote
-    /// terminus.
+    /// The connection is attempting to establish a connection with the remote terminus.
+    /// Note: this is a pending action (meaning that it will happen in the indeterminate future).
     /// </summary>
     Connecting,
     /// <summary>
-    /// The connection has a connection with the remote terminus, but it is not stable
-    /// yet.
+    /// A connection has been made, not the host and device are resolving any necessary details before communication
+    /// goes live.
     /// </summary>
     Resolving,
     /// <summary>

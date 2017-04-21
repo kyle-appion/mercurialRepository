@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Foundation;
@@ -289,6 +289,20 @@ namespace ION.IOS.ViewController.Analyzer
         connectionColor.BackgroundColor = UIColor.Red;
         Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       }
+
+      if (currentSensor.device.connection.connectionState == EConnectionState.Connecting) {
+        activityConnectStatus.StartAnimating();
+      } else {
+        activityConnectStatus.StopAnimating();      
+      }
+
+/*
+      if (currentSensor != null && currentSensor.device.isConnected) {
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
+      } else {
+        Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+      }
+*/
 
       if (currentSensor.unit != Units.Vacuum.MICRON) {
         LabelMiddle.Text = " " + sensor.measurement.amount.ToString("N");
@@ -622,23 +636,13 @@ namespace ION.IOS.ViewController.Analyzer
       tUnit = unit;
     }
 
-    public async void connectionSpinner(int conn){
-      activityConnectStatus.StartAnimating();
+    public void connectionSpinner(int conn){
       if (conn == 1) {
         Connection.Image = Connection.Image;
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
         Connection.Image = Connection.Image;
-       await currentSensor.device.connection.ConnectAsync();
-      }
-
-      await Task.Delay(TimeSpan.FromSeconds(2));
-      activityConnectStatus.StopAnimating();			
-						
-      if (currentSensor != null && currentSensor.device.isConnected) {
-        Connection.Image = UIImage.FromBundle("ic_bluetooth_connected");
-      } else {
-        Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
+        currentSensor.device.connection.Connect();
       }
     }
 

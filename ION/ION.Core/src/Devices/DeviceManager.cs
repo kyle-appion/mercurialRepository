@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Devices {
+namespace ION.Core.Devices {
 
   using System;
   using System.Collections.Generic;
@@ -7,7 +7,6 @@
 
   using ION.Core.App;
 	using ION.Core.Connections;
-  using ION.Core.Devices.Connections;
   using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
 
@@ -109,24 +108,13 @@
     List<IDevice> foundDevices { get; }
 
     /// <summary>
-    /// The factory that is responsible for creating new connections.
+    /// The manager that is responsible for platform specific management of connections.
     /// </summary>
     /// <value>The connection factory.</value>
-    IConnectionFactory connectionFactory { get; set; }
-    /// <summary>
-    /// The scan mode that delegates out the platform specific scan procedures.
-    /// </summary>
-    /// <value>The scanner.</value>
-    IConnectionHelper connectionHelper { get; set; }
+    IConnectionManager connectionManager { get; set; }
 
     DeviceFactory deviceFactory { get; }
 
-    /// <summary>
-    /// Requests that the device manager enable its communication backend.
-    /// </summary>
-    /// <returns>A task that will return true if the backend was enabled,
-    /// false otherwise</returns>
-//    Task<bool> EnableAsync();
 
     /// <summary>
     /// Forgets all devices that the device manager has found, but are not known.
@@ -147,15 +135,6 @@
     /// <param name="connectionAddress">Connection address.</param>
     /// <param name="protocol">Protocol.</param>
     IDevice CreateDevice(ISerialNumber serialNumber, string connectionAddress, EProtocolVersion protocol);
-
-		/// <summary>
-		/// Creates a new device using the provided serial number, connection  and protocol. 
-		/// </summary>
-		/// <returns>The device.</returns>
-		/// <param name="serialNumber">Serial number.</param>
-		/// <param name="connection">Connection.</param>
-		/// <param name="protocol">Protocol.</param>
-//		IDevice CreateDevice(ISerialNumber serialNumber, IConnection connection, EProtocolVersion protocol);
 
     /// <summary>
     /// Queries all of the device that are of the given type.

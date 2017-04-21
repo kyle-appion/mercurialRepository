@@ -161,9 +161,9 @@ Global
 		Policies = $0
 		$0.TextStylePolicy = $6
 		$6.FileWidth = 120
-		$6.inheritsSet = Mono
+		$6.inheritsSet = null
 		$6.inheritsScope = text/plain
-		$6.scope = text/plain
+		$6.scope = text/x-csharp
 		$6.TabWidth = 2
 		$6.IndentWidth = 2
 		$6.EolMarker = Unix
@@ -177,8 +177,18 @@ Global
 		$7.inheritsScope = text/x-csharp
 		$7.scope = text/x-csharp
 		$7.IndentSwitchSection = True
+		$7.IndentSwitchCaseSection = False
 		$0.DotNetNamingPolicy = $8
 		$8.DirectoryNamespaceAssociation = None
 		$8.ResourceNamePolicy = MSBuild
+		$0.TextStylePolicy = $9
+		$9.FileWidth = 120
+		$9.TabWidth = 2
+		$9.IndentWidth = 2
+		$9.NoTabsAfterNonTabs = True
+		$9.EolMarker = Unix
+		$9.inheritsSet = VisualStudio
+		$9.inheritsScope = text/plain
+		$9.scope = text/plain
 	EndGlobalSection
 EndGlobal

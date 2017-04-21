@@ -61,7 +61,7 @@
     <Compile Include="src\IO\IParser.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParser.cs" />
     <Compile Include="src\Content\Parsers\WorkbenchParser.cs" />
-    <Compile Include="src\App\IONManager.cs" />
+    <Compile Include="src\App\IManager.cs" />
     <Compile Include="src\Sensors\Properties\AbstractSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\AlternateUnitSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\HoldSensorProperty.cs" />
@@ -134,7 +134,6 @@
     <Compile Include="src\Report\DataLogs\SensorLog.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
-    <Compile Include="src\Connections\MockConnection.cs" />
     <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
@@ -156,13 +155,14 @@
     <Compile Include="src\Fluids\FluidExtensions.cs" />
     <Compile Include="src\Content\AppVersion.cs" />
     <Compile Include="src\Devices\RemoteDeviceManager.cs" />
-    <Compile Include="src\Devices\Connections\RemoteConnectionHelper.cs" />
     <Compile Include="src\Devices\Connections\RemoteConnectionFactory.cs" />
     <Compile Include="src\Content\Parsers\JsonWorkbench.cs" />
     <Compile Include="src\Content\Parsers\JsonManifold.cs" />
     <Compile Include="src\Content\Parsers\JsonSensor.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParsers\V1.cs" />
     <Compile Include="src\Content\Parsers\ManifoldParsers\V2.cs" />
+    <Compile Include="src\Connections\IConnectionManager.cs" />
+    <Compile Include="src\Connections\RemoteConnectionManager.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -370,6 +370,9 @@
     </Reference>
     <Reference Include="OxyPlot">
       <HintPath>..\packages\OxyPlot.Core.1.0.0\lib\portable-net45+netcore45+wpa81+wp8+MonoAndroid1+MonoTouch1+Xamarin.iOS10\OxyPlot.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

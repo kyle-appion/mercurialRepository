@@ -119,8 +119,10 @@
 					touchPosition = GetChildAdapterPosition(FindChildViewUnder(downX, downY));
 
 					if (touchPosition == oldPos && touchView != null && touchView.isOpen) {
-						touchState = ETouchState.X;
-						touchView.OnSwipe(ev);
+            if (!touchView.OnTouchEvent(ev)) {
+  						touchState = ETouchState.X;
+  						touchView.OnSwipe(ev);
+            }
 					}
 
 					// Find the touched child view
@@ -198,9 +200,7 @@
 							var mv = upView.background;
 							var tx = mv.TranslationY;
 							var ty = mv.TranslationX;
-							if (! (x >= mv.Left + tx && x <= mv.Right + tx &&
-							       y >= mv.Top + ty && y <= mv.Bottom + ty) &&
-							    isCloseOnUpEvent) {
+							if (! (x >= mv.Left + tx && x <= mv.Right + tx && y >= mv.Top + ty && y <= mv.Bottom + ty) && isCloseOnUpEvent) {
 								return true;
 							}
 						}

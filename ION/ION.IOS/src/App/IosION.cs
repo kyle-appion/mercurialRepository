@@ -205,7 +205,9 @@
 
 				__workbench = value;
 
-				onWorkbenchChanged(value);
+        if (onWorkbenchChanged != null) {
+				  onWorkbenchChanged(value);
+        }
 			}
 		} Workbench __workbench;
 
@@ -264,19 +266,12 @@
     private readonly List<IManager> managers = new List<IManager>();
 
     public IosION() {
-      // Order matters - Manager's with no dependencies should come first such
-      // that later manager's may depend on them.
-      var ch = new LeConnectionHelper();
-
       var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ION.database");
-
-			var handler = new IONBluetoothService();
 
       database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this);
       fileManager = new IosFileManager();
       locationManager = new IosLocationManager(this);
-//      deviceManager = new BaseDeviceManager(this, new IosConnectionFactory(ch), ch);
-			deviceManager = new BaseDeviceManager(this, handler, handler);
+      deviceManager = new BaseDeviceManager(this, new IonCBCentralManagerDelegate()); 
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
@@ -334,6 +329,7 @@
         }
       });
     }
+
     /// <summary>
     /// Creates a new application dump object.
     /// </summary>
@@ -386,6 +382,10 @@
 					currentWorkbench = new Workbench(this);
 				}
 				currentWorkbench.onWorkbenchEvent += onWorkbenchEvent;
+
+        foreach (var im in managers) {
+          im.PostInit();
+        }
 
 				Log.D(this, "Ending ION init");
 			} catch (Exception e) {
@@ -451,8 +451,7 @@
 				remoteDManager.InitAsync().Wait();
 				remoteDManager.storedDeviceManager = (BaseDeviceManager)deviceManager;
 				deviceManager = remoteDManager;
-				deviceManager.connectionFactory = remoteDManager.storedDeviceManager.connectionFactory;
-				deviceManager.connectionHelper = remoteDManager.storedDeviceManager.connectionHelper;
+				deviceManager.connectionManager = remoteDManager.storedDeviceManager.connectionManager;
       });
 		}
 

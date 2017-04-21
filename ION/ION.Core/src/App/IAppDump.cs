@@ -48,6 +48,10 @@
       deviceInfo = new BaseDeviceInfo(ion);
       platformInfo = pi;
     }
+
+		public override string ToString() {
+			return string.Format("[BaseAppDump: appVersion={0}, deviceInfo={1}, platformInfo={2}]", appVersion, deviceInfo, platformInfo);
+		}
   }
 
   /// <summary>
@@ -64,6 +68,14 @@
       }
 
       deviceSerials = list.ToArray();
+    }
+
+    public override string ToString() {
+      if (deviceSerials == null || deviceSerials.Length <= 0) {
+        return "[BaseDeviceInfo: deviceSerials=[]]";
+      } else {
+        return string.Format("[BaseDeviceInfo: deviceSerials=[{0}]]", deviceSerials);
+      }
     }
   }
 }

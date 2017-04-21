@@ -179,7 +179,7 @@
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_large">36dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_huge">72dp</dimen>
+  <dimen name="viewer_subview_huge">90dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_large_icon_size">32dp</dimen>
   <!-- The text size for the unit view in the viewer's footer. -->

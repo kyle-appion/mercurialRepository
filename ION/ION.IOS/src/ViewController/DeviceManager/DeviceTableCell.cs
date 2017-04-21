@@ -82,7 +82,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         if (record != null) {
           // TODO ahodder@appioninc.com: Unify this connection process.
           if (EConnectionState.Disconnected == record.device.connection.connectionState) {
-            record.device.connection.ConnectAsync();
+            record.device.connection.Connect();
           } else {
             record.device.connection.Disconnect();
           }
@@ -147,7 +147,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       var device = record.device;
       var state = device.connection.connectionState;
 
-      if (EConnectionState.Connecting == state) {
+      if (EConnectionState.Resolving == state) {
         buttonConnect.SetImage(null, UIControlState.Normal);
         activityConnectStatus.Hidden = false;
       } else {

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Xamarin.Build.Download.0.4.2\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.2\build\Xamarin.Build.Download.props')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.4.3\build\Xamarin.Build.Download.props" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.3\build\Xamarin.Build.Download.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -70,9 +70,6 @@
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\portable-net45+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="SQLite.Net">
       <HintPath>..\packages\SQLite.Net.Core-PCL.3.1.1\lib\portable-win8+net45+wp8+wpa81+MonoAndroid1+MonoTouch1\SQLite.Net.dll</HintPath>
     </Reference>
@@ -145,6 +142,10 @@
     <Reference Include="Xfinium.Pdf.Render.Pcl">
       <HintPath>..\packages\Xfinium\XfiniumPdf540PclProCommercial\Xfinium.Pdf.Render.Pcl.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\Activity\MainActivity.cs" />
@@ -152,7 +153,6 @@
     <Compile Include="src\Dialog\IONAlertDialog.cs" />
     <Compile Include="src\Dialog\ListDialogBuilder.cs" />
     <Compile Include="src\Util\BitmapCache.cs" />
-    <Compile Include="src\Util\LogPrinter.cs" />
     <Compile Include="src\App\AndroidION.cs" />
     <Compile Include="src\IO\AndroidFileManager.cs" />
     <Compile Include="src\Location\AndroidLocationManager.cs" />
@@ -239,19 +239,9 @@
     <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
-    <Compile Include="src\Connections\AndroidConnectionHelper.cs" />
-    <Compile Include="src\Connections\AndroidConnectionFactory.cs" />
-    <Compile Include="src\Connections\AndroidBroadcastHelper.cs" />
-    <Compile Include="src\Connections\IScanDelegate.cs" />
-    <Compile Include="src\Connections\Api18ScanDelegate.cs" />
-    <Compile Include="src\Connections\ConnectionDelegates.cs" />
-    <Compile Include="src\Connections\Api21ScanDelegate.cs" />
     <Compile Include="src\App\LocationResolverService.cs" />
-    <Compile Include="src\Connections\ClassicScanDelegate.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
-    <Compile Include="src\Connections\Beta\IONBluetoothService.cs" />
-    <Compile Include="src\Connections\BaseScanHelper.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialFragment.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialPage.cs" />
@@ -317,6 +307,14 @@
     <Compile Include="src\Fragments\_Workbench\SpaceViewHolder.cs" />
     <Compile Include="src\Activity\RoCActivity.cs" />
     <Compile Include="src\Content\ManifoldParcelable.cs" />
+    <Compile Include="src\Util\AndroidLogger.cs" />
+    <Compile Include="src\App\IONBroadcastReceiver.cs" />
+    <Compile Include="src\Connections\BaseLeConnection.cs" />
+    <Compile Include="src\Connections\AndroidConnectionManager.cs" />
+    <Compile Include="src\Connections\Api18BleScanMethod.cs" />
+    <Compile Include="src\Connections\Api21BleScanMethod.cs" />
+    <Compile Include="src\Connections\ClassicScanMethod.cs" />
+    <Compile Include="src\Connections\IScanMethod.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -751,6 +749,7 @@
     <AndroidResource Include="Resources\layout\activity_screenshot_4_4.axml" />
     <AndroidResource Include="Resources\layout\subview_graph_small.axml" />
     <AndroidResource Include="Resources\layout\activity_roc.axml" />
+    <AndroidResource Include="Resources\menu\help.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -784,7 +783,6 @@
     <Folder Include="Resources\drawable-mdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\values-sw480dp\" />
-    <Folder Include="src\Connections\Beta\" />
     <Folder Include="src\Activity\Tutorial\" />
     <Folder Include="src\Activity\Portal\" />
     <Folder Include="src\Fragments\_Workbench\" />
@@ -806,7 +804,6 @@
   <ItemGroup>
     <AndroidEnvironment Include="environment.txt" />
   </ItemGroup>
-  <Import Project="..\packages\Xamarin.Build.Download.0.4.2\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.2\build\Xamarin.Build.Download.targets')" />
   <Import Project="..\packages\Xamarin.Android.Support.Compat.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Compat.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Compat.targets')" />
   <Import Project="..\packages\Xamarin.Android.Support.Core.UI.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.UI.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Core.UI.targets')" />
   <Import Project="..\packages\Xamarin.Android.Support.Core.Utils.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets" Condition="Exists('..\packages\Xamarin.Android.Support.Core.Utils.25.1.1\build\MonoAndroid70\Xamarin.Android.Support.Core.Utils.targets')" />
@@ -824,4 +821,15 @@
   <Import Project="..\packages\Xamarin.GooglePlayServices.Tasks.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Tasks.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Tasks.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Tasks.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Base.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Base.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Base.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Base.targets')" />
   <Import Project="..\packages\Xamarin.GooglePlayServices.Location.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Location.targets" Condition="Exists('..\packages\Xamarin.GooglePlayServices.Location.42.1001.0\build\MonoAndroid70\Xamarin.GooglePlayServices.Location.targets')" />
+  <Import Project="..\packages\Xamarin.Build.Download.0.4.3\build\Xamarin.Build.Download.targets" Condition="Exists('..\packages\Xamarin.Build.Download.0.4.3\build\Xamarin.Build.Download.targets')" />
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <TextStylePolicy inheritsSet="null" scope="text/x-csharp" />
+          <CSharpFormattingPolicy IndentBlock="True" IndentBraces="False" IndentSwitchCaseSection="True" NewLinesForBracesInProperties="False" NewLinesForBracesInAccessors="False" NewLinesForBracesInAnonymousMethods="False" NewLinesForBracesInControlBlocks="False" NewLinesForBracesInAnonymousTypes="False" NewLinesForBracesInObjectCollectionArrayInitializers="False" NewLinesForBracesInLambdaExpressionBody="False" NewLineForElse="False" NewLineForCatch="False" NewLineForFinally="False" NewLineForMembersInObjectInit="False" NewLineForMembersInAnonymousTypes="False" NewLineForClausesInQuery="False" SpaceWithinMethodDeclarationParenthesis="False" SpaceBetweenEmptyMethodDeclarationParentheses="False" SpaceWithinMethodCallParentheses="False" SpaceBetweenEmptyMethodCallParentheses="False" SpaceAfterControlFlowStatementKeyword="True" SpaceWithinExpressionParentheses="False" SpaceWithinCastParentheses="False" SpaceWithinOtherParentheses="False" SpaceAfterCast="False" SpacesIgnoreAroundVariableDeclaration="False" SpaceBetweenEmptySquareBrackets="False" SpaceWithinSquareBrackets="False" SpaceAfterColonInBaseTypeDeclaration="True" SpaceAfterComma="True" SpaceAfterDot="False" SpaceAfterSemicolonsInForStatement="True" SpaceBeforeColonInBaseTypeDeclaration="True" SpaceBeforeComma="False" SpaceBeforeDot="False" SpaceBeforeSemicolonsInForStatement="False" SpacingAroundBinaryOperator="Single" WrappingPreserveSingleLine="True" WrappingKeepStatementsOnSingleLine="True" PlaceSystemDirectiveFirst="True" IndentSwitchSection="True" LabelPositioning="LeftMost" NewLinesForBracesInTypes="False" NewLinesForBracesInMethods="False" SpacingAfterMethodDeclarationName="False" SpaceAfterMethodCallName="False" SpaceBeforeOpenSquareBracket="False" inheritsSet="Mono" inheritsScope="text/x-csharp" scope="text/x-csharp" />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

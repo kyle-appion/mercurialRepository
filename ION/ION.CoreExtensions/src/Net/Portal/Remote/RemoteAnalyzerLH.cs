@@ -14,19 +14,27 @@
 	public class RemoteAnalyzerLH {
 		[JsonProperty("low")]
 		public string lowAnalyzerIndex;
+		[JsonProperty("lsn")]
+		public string lowSerialNumber;
+		[JsonProperty("lsi")]
+		public string lowSensorIndex;
 		[JsonProperty("las")]
 		public string lowLinkedSerialNumber;
-		[JsonProperty("lsi")]
-		public string lowLinkedIndex;
+		[JsonProperty("lai")]
+		public string lowLinkedSensorIndex;
 		[JsonProperty("lsub")]
 		public string[] lowSubviews;
 
 		[JsonProperty("high")]
 		public string highAnalyzerIndex;
+		[JsonProperty("hsn")]
+		public string highSerialNumber;
+		[JsonProperty("hsi")]
+		public string highSensorIndex;
 		[JsonProperty("has")]
 		public string highLinkedSerialNumber;
-		[JsonProperty("hsi")]
-		public string highLinkedIndex;
+		[JsonProperty("hai")]
+		public string highLinkedSensorIndex;
 		[JsonProperty("hsub")]
 		public string[] highSubviews;
 
@@ -36,68 +44,84 @@
 
 		public RemoteAnalyzerLH(Analyzer analyzer) {
 			lowAnalyzerIndex = "low";
-			lowLinkedSerialNumber = "null";
-			lowLinkedIndex = 0 + "";
+      lowSerialNumber = "null";
+			lowSensorIndex = 0 + "";
+      lowLinkedSerialNumber = "null";
+      lowLinkedSensorIndex = "null";
 			lowSubviews = new string[0];
 
 			highAnalyzerIndex = "high";
-			highLinkedSerialNumber = "null";
-			highLinkedIndex = 0 + "";
+      highSerialNumber = "null";
+			highSensorIndex = 0 + "";
+      highLinkedSerialNumber = "null";
+      lowLinkedSensorIndex = "null";
 			highSubviews = new string[0];
 
 			// Commit low side manifold
-			if (analyzer.lowSideManifold != null) {
+			if (analyzer.lowSideManifold != null && analyzer.lowSideManifold.primarySensor is GaugeDeviceSensor) {
 				var m = analyzer.lowSideManifold;
 				var gds = m.primarySensor as GaugeDeviceSensor;
 
 				if (gds != null) {
+          // Commit primary sensor stuff
+          lowSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
+          lowSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
+
 					var i = analyzer.IndexOfSensor(gds);
 					lowAnalyzerIndex = i + "";
 
+          // Commit primary sensor stuff
 					var sgds = m.secondarySensor as GaugeDeviceSensor;
 					if (sgds != null) {
 						lowLinkedSerialNumber = sgds.device.serialNumber.ToString();
-						lowLinkedIndex = sgds.index + "";
+						lowLinkedSensorIndex = sgds.index + "";
 					}
-				}
 
-				var ussp = new List<string>();
-				foreach (var sp in m.sensorProperties) {
-					try {
-						ussp.Add(GetCodeFromSensorProperty(sp));
-					} catch (Exception e) {
-						Log.E(this, "Failed to get code for sensor property", e);
-					}
+          // Commit subviews
+          var ussp = new List<string>();
+          foreach (var sp in m.sensorProperties) {
+            try {
+              ussp.Add(GetCodeFromSensorProperty(sp));
+            } catch (Exception e) {
+              Log.E(this, "Failed to get code for sensor property", e);
+            }
+          }
+          lowSubviews = ussp.ToArray();
 				}
-				lowSubviews = ussp.ToArray();
 			}
 
-			// Commit high side manifold
-			if (analyzer.highSideManifold != null) {
-				var m = analyzer.highSideManifold;
-				var gds = m.primarySensor as GaugeDeviceSensor;
+      // Commit high side manifold
+      if (analyzer.highSideManifold != null && analyzer.highSideManifold.primarySensor is GaugeDeviceSensor) {
+        var m = analyzer.highSideManifold;
+        var gds = m.primarySensor as GaugeDeviceSensor;
 
-				if (gds != null) {
-					var i = analyzer.IndexOfSensor(gds);
-					highAnalyzerIndex = i + "";
+        if (gds != null) {
+          // Commit primary sensor stuff
+          highSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
+          highSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
 
-					var sgds = m.secondarySensor as GaugeDeviceSensor;
-					if (sgds != null) {
-						highLinkedSerialNumber = sgds.device.serialNumber.ToString();
-						highLinkedIndex = sgds.index + "";
-					}
-				}
+          var i = analyzer.IndexOfSensor(gds);
+          highAnalyzerIndex = i + "";
 
-				var ussp = new List<string>();
-				foreach (var sp in m.sensorProperties) {
-					try {
-						ussp.Add(GetCodeFromSensorProperty(sp));
-					} catch (Exception e) {
-						Log.E(this, "Failed to get code for sensor property", e);
-					}
-				}
-				highSubviews = ussp.ToArray();
-			}
+          // Commit primary sensor stuff
+          var sgds = m.secondarySensor as GaugeDeviceSensor;
+          if (sgds != null) {
+            highLinkedSerialNumber = sgds.device.serialNumber.ToString();
+            highLinkedSensorIndex = sgds.index + "";
+          }
+
+          // Commit subviews
+          var ussp = new List<string>();
+          foreach (var sp in m.sensorProperties) {
+            try {
+              ussp.Add(GetCodeFromSensorProperty(sp));
+            } catch (Exception e) {
+              Log.E(this, "Failed to get code for sensor property", e);
+            }
+          }
+          highSubviews = ussp.ToArray();
+        }
+      }
 		}
 
 		public static string GetCodeFromSensorProperty(ISensorProperty sp) {

@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Devices {
+namespace ION.Core.Devices {
 
 	using System;
 	using System.Collections.Generic;
@@ -78,29 +78,7 @@
       }
     }
     // Overridden from IDeviceManager
-    public IConnectionFactory connectionFactory { get; set; }
-    // Overridden from IDeviceManager
-    public IConnectionHelper connectionHelper {
-      get {
-        return __connectionHelper;
-      }
-      set {
-        if (__connectionHelper != null) {
-          __connectionHelper.onDeviceFound -= OnDeviceFound;
-          __connectionHelper.onScanStateChanged -= OnScanStateChanged;
-        }
-
-        __connectionHelper = value;
-
-        if (__connectionHelper != null) {
-          __connectionHelper.onDeviceFound += OnDeviceFound;
-          __connectionHelper.onScanStateChanged += OnScanStateChanged;
-        } else {
-        //should not throw exceptions
-          //throw new ArgumentException(this + " cannot accept a null IScanMode");
-        }
-      }
-    } IConnectionHelper __connectionHelper;
+    public IConnectionManager connectionManager { get; set; }
 
     /// <summary>
     /// The ION instance for the device manager.
@@ -148,10 +126,16 @@
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
+    // Implemented from IDeviceManager
+    public void PostInit() {
+      connectionManager.onDeviceFound += OnDeviceFound;
+      connectionManager.onScanStateChanged += OnScanStateChanged;
+    }
+
     // Overridden from IDeviceManager
     public void Dispose() {
-      __connectionHelper.onDeviceFound -= OnDeviceFound;
-      __connectionHelper.onScanStateChanged -= OnScanStateChanged;
+      connectionManager.onDeviceFound -= OnDeviceFound;
+      connectionManager.onScanStateChanged -= OnScanStateChanged;
 
       foreach (var device in devices) {
         device.connection.Disconnect();
@@ -352,7 +336,7 @@
     /// The delegate that is called when a device is found by the device manager's scan mode.
     /// </summary>
     /// <param name="device">Device.</param>
-    private void OnDeviceFound(IConnectionHelper scanner, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
+    private void OnDeviceFound(IConnectionManager cm, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocol) {
       var device = this[serialNumber];
 
       if (device == null) {
@@ -375,7 +359,7 @@
     /// Called when a device known by the device manager posts a device event.
     /// </summary>
     /// <param name="deviceEvent">Device event.</param>
-    private async void OnDeviceEvent(DeviceEvent deviceEvent) {
+    private void OnDeviceEvent(DeviceEvent deviceEvent) {
       var device = deviceEvent.device;
 
       switch (deviceEvent.type) {
@@ -394,12 +378,7 @@
     /// Called when the connection helper changes state.
     /// </summary>
     /// <param name="connectionHelper">Connection helper.</param>
-    private void OnScanStateChanged(IConnectionHelper connectionHelper) {
-      //if (connectionHelper.isScanning) {
-      //  NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStarted);
-      //} else {
-      //  NotifyOfDeviceManagerEvent(DeviceManagerEvent.EType.ScanStopped);
-      //}
+    private void OnScanStateChanged(IConnectionManager cm) {
     }
 
     /// <summary>

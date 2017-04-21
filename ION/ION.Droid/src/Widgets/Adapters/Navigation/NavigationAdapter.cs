@@ -54,7 +54,7 @@
 
     // Overridden from BaseAdapter
     public override Java.Lang.Object GetItem(int position) {
-      throw new NotImplementedException();
+      return null;
     }
 
     // Overridden from BaseAdapter

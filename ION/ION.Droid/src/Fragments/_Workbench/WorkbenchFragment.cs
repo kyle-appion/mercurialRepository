@@ -1,4 +1,3 @@
-﻿using ION.Droid.Content;
 namespace ION.Droid.Fragments._Workbench {
 
   using System;
@@ -18,10 +17,10 @@ namespace ION.Droid.Fragments._Workbench {
   using ION.Core.Sensors;
   using ION.Core.Sensors.Properties;
 
-  // Using ION.Droid
   using Activity;
   using Activity.DeviceManager;
 	using App;
+  using ION.Droid.Content;
   using Dialog;
   using Sensors;
 	using Widgets.RecyclerViews;
@@ -96,17 +95,22 @@ namespace ION.Droid.Fragments._Workbench {
     /// <param name="savedInstanceState">Saved instance state.</param>
     public override void OnActivityCreated(Bundle savedInstanceState) {
       base.OnActivityCreated(savedInstanceState);
-      SetHasOptionsMenu(true);
-      AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
-
+      try {
+        SetHasOptionsMenu(true);
+        AddFlags(EFlags.AllowScreenshot | EFlags.StartRecording);
+      } catch (Exception e) {
+        Log.E(this, "Something failed when starting the workbench fragment", e);
+      }
+/*
 #if DEBUG
 			if (ion == null) {
-				Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
+        Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
 				StartActivity(new Intent(Activity, typeof(MainActivity)));
 				Activity.Finish();
 				return;
 			}
 #endif
+*/
 		}
 
 
@@ -122,7 +126,7 @@ namespace ION.Droid.Fragments._Workbench {
 				workbench = ion.LoadWorkbenchAsync().Result;
 //				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
-			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+//			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
 			adapter = new WorkbenchAdapter(OnAddViewer, workbench);
 			list.SetAdapter(adapter);
@@ -136,7 +140,7 @@ namespace ION.Droid.Fragments._Workbench {
 		public override void OnPause() {
 			base.OnPause();
 
-			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+//			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
@@ -145,8 +149,10 @@ namespace ION.Droid.Fragments._Workbench {
     public override void OnDestroy() {
       base.OnDestroy();
       if (workbench != null) {
-        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+//        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
       }
+
+      list.SetAdapter(null);
 			if (adapter != null) {
 				adapter.Dispose();
 			}
@@ -244,6 +250,7 @@ namespace ION.Droid.Fragments._Workbench {
     /// Called when a manifold event is thrown by the manifold.
     /// </summary>
     /// <param name="manifoldEvent">Manifold event.</param>
+/*
     private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
 			((SwipeRecyclerView)list).swipingEnabled = workbench.isEditable;
 
@@ -274,6 +281,7 @@ namespace ION.Droid.Fragments._Workbench {
 				break;
 			}
 		}
+*/
 
     /// <summary>
     /// Shows a context dialog for a manifold. This will present all the options that are available for
@@ -291,7 +299,7 @@ namespace ION.Droid.Fragments._Workbench {
 			if (dgs != null) {
 				if (!dgs.device.isConnected) {
 					ldb.AddItem(Resource.String.reconnect, () => {
-						dgs.device.connection.ConnectAsync();
+						dgs.device.connection.Connect();
 					});
 				}
 			}

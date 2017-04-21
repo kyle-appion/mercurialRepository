@@ -2,7 +2,11 @@
 <whatsnew>
 	<display version="1.0.0">
 		<new>Added Real Time data logging to Rate of Change</new>
+		<new>Added optional app analytics (found in preferences)</new>
+		<new>Known gauges will now automatically connect when in range</new>
+		<new>Added current elevation display to PTChart and Superheat/Subcool calculators</new>
 		<fixed>Fixed some graphical bugs in workbench</fixed>
 		<fixed>Fixed app not completely shutting down</fixed>
+		<fixed>Fixed bug the prevented tutorial from closing</fixed>
 	</display>
 </whatsnew>

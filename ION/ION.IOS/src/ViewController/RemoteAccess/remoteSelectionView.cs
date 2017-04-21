@@ -179,6 +179,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			if(feedback != null){
 			
 				var textResponse = await feedback.Content.ReadAsStringAsync();
+        Console.WriteLine("RV access users " + textResponse);
 				////parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var success = response.GetValue("success");
@@ -187,8 +188,10 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					var viewing = response.GetValue("online");
 
 					foreach(var user in viewing){
-						var deserializedToken = JsonConvert.DeserializeObject<accessData>(user.ToString());					
-							onlineUsers.Add(deserializedToken);
+						var deserializedToken = JsonConvert.DeserializeObject<accessData>(user.ToString());	
+              if(deserializedToken.online	== 1){			
+							  onlineUsers.Add(deserializedToken);
+              }
 					}
 				}  else {
 					var errorMessage = response.GetValue("message").ToString();

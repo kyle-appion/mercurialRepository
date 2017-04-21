@@ -76,7 +76,6 @@
       var high = FindTime(et, 0, l - 1);
 
 			if (low < 0 || high < 0) {
-				Log.E(this, "StartTime: " + st + " EndTime: " + et);
 				Log.E(this, "Cannot subset: start time is greater than or equal to end time");
 				return new DeviceSensorLogs(deviceSerialNumber, index, st, et);
 			}
@@ -120,7 +119,6 @@
 				return endInclusive;
 			} else {
 				var i = (startInclusive + endInclusive) / 2;
-				Log.D(this, "timeToFind: " + timeToFind + " i: " + i + " startInclusive: " + startInclusive + " endInclusive: " + endInclusive);
 	      if (logs[i].recordedDate == timeToFind) {
 	        return i;
 	      }

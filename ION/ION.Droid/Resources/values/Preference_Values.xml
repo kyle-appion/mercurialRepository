@@ -6,9 +6,11 @@
   <string name="preferences">ION Preferences</string>
   <string name="preferences_about_ion">About ION</string>
   <string name="preferences_app_version">App Version</string>
+	<string name="preferences_app_analytics">App Analytics</string>
+	<string name="preferences_app_analytics_summary">Enable anonymous data collection by Appion Inc to improve ION HVAC/R.</string>
   <string name="preferences_send_feedback">Send Feeback</string>
   <string name="preferences_send_feedback_failed">It appears you do not have an e-mail application. Would you like to go use Google Play instead?</string>
-  <string name="preferences_show_whats_new">Show What\'s New on startup?</string>
+  <string name="preferences_show_whats_new">Show What\'s New?</string>
   <string name="preferences_show_whats_new_summary">Shows a dialog when the application first launches a new version describing what has changed.</string>
   <string name="preferences_videos">Videos and Tutorials</string>
 
@@ -28,7 +30,7 @@
   <string name="preferences_location_elevation">Custom Elevation</string>
   <string name="preferences_location_elevation_set">Please enter your custom elevation.</string>
   <string name="preferences_location_elevation_summary">Enter the elevation that will be used throughout the application.</string>
-  <string name="preferences_location_gps">Allow Use Of Your Location</string>
+  <string name="preferences_location_gps">Allow GPS</string>
   <string name="preferences_location_gps_on">Use of your location will be used for various features throughout the application.</string>
   <string name="preferences_location_gps_off">Your location will not be explicity accessed by the application.</string>
 
@@ -74,8 +76,8 @@
 
   <!-- Length Values -->
   <string-array name="preferences_units_length_values">
-    <item>20</item>
     <item>21</item>
+    <item>20</item>
   </string-array>
 
   <!-- Pressure Entries -->

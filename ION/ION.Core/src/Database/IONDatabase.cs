@@ -82,6 +82,10 @@
       return Task.FromResult(new InitializationResult() { success = __isInitialized = true });
     }
 
+    // Implemented for IManager
+    public void PostInit() {
+    }
+
 		protected override void Dispose(bool disposing) {
 			base.Dispose(disposing);
 

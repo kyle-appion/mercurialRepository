@@ -111,7 +111,7 @@
 
       tableContent.ReloadData();
       
-      if(!ion.deviceManager.connectionHelper.isEnabled){
+      if(!ion.deviceManager.connectionManager.isEnabled){
 			  UIAlertView bluetoothWarning = new UIAlertView("Bluetooth Disconnected", "Bluetooth needs to be connected to work with peripherals", null,"Close","Settings");
 	          bluetoothWarning.Clicked += (sender, e) => {
 	            if(e.ButtonIndex.Equals(1)){

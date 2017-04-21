@@ -8,6 +8,7 @@
   -->
 
   <string name="pkey_app_version">app_version</string>
+	<string name="pkey_app_analytics">app_analytics</string>
   <string name="pkey_first_launch">first_launch"</string>
   <string name="pkey_send_feedback">send_feedback</string>
   <string name="pkey_wake_lock">wake_lock</string>

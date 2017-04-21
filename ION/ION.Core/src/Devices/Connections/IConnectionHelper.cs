@@ -1,5 +1,5 @@
 ﻿namespace ION.Core.Devices.Connections {
-
+/*
   using System;
 
 	using Appion.Commons.Util;
@@ -64,5 +64,6 @@
     /// </summary>
     void StopScan();
   } // End IScanMode
+*/
 }
 

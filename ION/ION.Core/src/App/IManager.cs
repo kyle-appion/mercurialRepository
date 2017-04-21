@@ -11,9 +11,18 @@
     bool isInitialized { get; }
 
     /// <summary>
-    /// Initializes the IIONManager to the given IION.
+    /// Initializes the IIONManager to the given IION. This is where all of the initial loading of content and
+    /// preparation for use will occur for the manager.
+    /// Note: the manager will receive a call to PostInit one all managers have performed their InitAsync(), so delay
+    /// any operations that depend on other managers or ion state until then.
     /// </summary>
     Task<InitializationResult> InitAsync();
+
+    /// <summary>
+    /// Called after the ION instance has initialized. This allows the manager to complete any further instantiation
+    /// that depended on another manager being initialized.
+    /// </summary>
+    void PostInit();
   }
 
   /// <summary>

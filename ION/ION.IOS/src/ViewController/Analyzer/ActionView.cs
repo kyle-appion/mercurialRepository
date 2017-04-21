@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UIKit;
 using CoreGraphics;
 using Appion.Commons.Measure;
@@ -162,7 +162,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (conn == 1) {
         currentSensor.device.connection.Disconnect();
       } else if (conn == 2) {
-        currentSensor.device.connection.ConnectAsync();
+        currentSensor.device.connection.Connect();
       }
 
       await Task.Delay(TimeSpan.FromSeconds(2));

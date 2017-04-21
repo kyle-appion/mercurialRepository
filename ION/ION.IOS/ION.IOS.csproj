@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -71,7 +71,7 @@
     <MtouchDebug>true</MtouchDebug>
     <IpaPackageName></IpaPackageName>
     <MtouchFastDev>false</MtouchFastDev>
-    <MtouchExtraArgs>-v -v -v -v</MtouchExtraArgs>
+    <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
     <MtouchLink>Full</MtouchLink>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
   </PropertyGroup>
@@ -124,6 +124,9 @@
     <Reference Include="FlexCel">
       <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib.Portable">
+      <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
     <Reference Include="Xfinium.Pdf.Xamarin.iOS">
       <HintPath>..\packages\Xfinium\XFINIUM.PDF 5.4.0 Mobile Professional Edition Commercial Version\Redist\iOS-Unified\Xfinium.Pdf.Xamarin.iOS.dll</HintPath>
@@ -136,6 +139,7 @@
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
@@ -680,6 +684,9 @@
     <InterfaceDefinition Include="Resources\src\ViewController\JobManager\EditJobViewController.xib" />
     <InterfaceDefinition Include="Resources\src\ViewController\Walkthrough\WalkthroughScreenshotViewController.xib" />
     <InterfaceDefinition Include="src\ViewController\IONRemoteStatusCell.xib" />
+    <InterfaceDefinition Include="src\ViewController\IONRemoteWirelessCell.xib" />
+    <InterfaceDefinition Include="src\ViewController\IONRemoteBatteryCell.xib" />
+    <InterfaceDefinition Include="src\ViewController\IONRemoteMemoryCell.xib" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -689,7 +696,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />
-    <Compile Include="src\Util\LogPrinter.cs" />
     <Compile Include="src\Util\Strings.cs" />
     <Compile Include="src\Util\Colors.cs" />
     <Compile Include="src\IO\IosFileManager.cs" />
@@ -946,14 +952,13 @@
     <Compile Include="src\ViewController\Analyzer\sensor.cs" />
     <Compile Include="src\ViewController\JobManager\JobNotesView.cs" />
     <Compile Include="src\App\AppDelegate.cs" />
+    <Compile Include="src\App\IosLogger.cs" />
     <Compile Include="src\Connections\IosRigadoConnection.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughScreenshotViewController.designer.cs">
       <DependentUpon>WalkthroughScreenshotViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="src\ViewController\PressureTemperatureChart\SliderView.cs" />
-    <Compile Include="src\Connections\LeConnectionHelper.cs" />
-    <Compile Include="src\Connections\IosConnectionFactory.cs" />
     <Compile Include="src\Alarms\Alerts\VibrateAlarmAlert.cs" />
     <Compile Include="src\Alarms\Alerts\SoundAlarmAlert.cs" />
     <Compile Include="src\ViewController\PressureTemperatureChart\PTSlideView.cs" />
@@ -1012,7 +1017,6 @@
     </Compile>
     <Compile Include="src\ViewController\RemoteAccess\RemoteControls.cs" />
     <Compile Include="src\ViewController\Logging\ReportType.cs" />
-    <Compile Include="src\Connections\IONBluetoothService.cs" />
     <Compile Include="src\ViewController\ScreenshotReport\AdditionalView.cs" />
     <Compile Include="src\ViewController\Walkthrough\WalkthroughHelp.cs" />
     <Compile Include="src\ViewController\RemoteAccess\PortalMenu.cs" />
@@ -1040,6 +1044,20 @@
     <Compile Include="src\ViewController\IONRemoteStatusCell.cs" />
     <Compile Include="src\ViewController\IONRemoteStatusCell.designer.cs">
       <DependentUpon>IONRemoteStatusCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\Net\Reachability.cs" />
+    <Compile Include="src\Connections\IonCBCentralManagerDelegate.cs" />
+    <Compile Include="src\ViewController\IONRemoteWirelessCell.cs" />
+    <Compile Include="src\ViewController\IONRemoteWirelessCell.designer.cs">
+      <DependentUpon>IONRemoteWirelessCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\IONRemoteBatteryCell.cs" />
+    <Compile Include="src\ViewController\IONRemoteBatteryCell.designer.cs">
+      <DependentUpon>IONRemoteBatteryCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="src\ViewController\IONRemoteMemoryCell.cs" />
+    <Compile Include="src\ViewController\IONRemoteMemoryCell.designer.cs">
+      <DependentUpon>IONRemoteMemoryCell.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
@@ -1143,8 +1161,6 @@
     <BundleResource Include="Resources\en.lproj\InfoPlist.strings" />
     <BundleResource Include="Resources\Images.xcassets\Contents.json" />
     <BundleResource Include="Resources\xml\whats_new.xml" />
-    <BundleResource Include="Resources\.DS_Store" />
-    <BundleResource Include="Resources\src\.DS_Store" />
     <BundleResource Include="Resources\xml\VersionUpdateLog.txt" />
   </ItemGroup>
   <ItemGroup>

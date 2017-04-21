@@ -151,8 +151,11 @@
 				// The buffer is in order, this is a simple copy.
 				Array.Copy(buffer, newContent, head - tail);
 			} else {
-				// Otherwise, we need to do two copies as the head wraps the content array.
-				// TODO
+        // Otherwise, we need to do two copies as the head wraps the content array.
+        if (buffer != null) {
+          Array.Copy(buffer, head, newContent, 0, this.count - head);
+          Array.Copy(buffer, 0, newContent, count + head, tail);
+        }
 			}
 
 			buffer = newContent;
@@ -162,35 +165,36 @@
 
 		/// <summary>
 		/// Queries an array of the contents within the ring buffer sorted from newest to oldest point.
+    /// Note: if the container is too small to fit the entire contents, only the newest contents will fill the container.
 		/// </summary>
-		/// <returns>The array.</returns>
-		public T[] ToArray() {
-			var ret = new T[count];
+    /// <param name="container">The container that will contain the contents of the buffer.</param>
+		/// <returns>The number of items written to the container.</returns>
+		public int ToArray(T[] container) {
 			var j = 0;
 
 			if (count > 0) {
 				if (head > tail) {
-					for (int i = head - 1; i >= tail; i--) {
-						ret[j++] = buffer[i];
+          for (int i = head - 1; i >= tail && j < container.Length; i--) {
+						container[j++] = buffer[i];
 					}
 				} else {
 					if (head == 0) {
-						for (int i = buffer.Length - 1; i >= tail; i--) {
-							ret[j++] = buffer[i];
+            for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
+							container[j++] = buffer[i];
 						}
 					} else {
-						for (int i = head - 1; i >= 0; i--) {
-							ret[j++] = buffer[i];
+            for (int i = head - 1; i >= 0 && j < container.Length; i--) {
+							container[j++] = buffer[i];
 						}
 
-						for (int i = buffer.Length - 1; i >= tail; i--) {
-							ret[j++] = buffer[i];
+            for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
+							container[j++] = buffer[i];
 						}
 					}
 				}
 			}
 
-			return ret;
+      return j;
 		}
 
 		// Overridden from object

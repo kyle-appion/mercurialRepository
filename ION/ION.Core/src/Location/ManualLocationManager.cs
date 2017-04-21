@@ -18,6 +18,8 @@
 
 		// Implemented from ILocationManager
 		public bool isEnabled { get { return true; } } 
+    // Implemented from ILocationManager
+    public bool supportsAltitudeTracking { get { return false; } }
 		// Implemented from ILocationManager
 		public bool allowLocationTracking { get { return true; } set {} } 
 		// Implemented from ILocationManager
@@ -37,6 +39,11 @@
 				success = true,
 			});
 		}
+
+    // Implemented from ILocationManager
+    public void PostInit() {
+    }
+
 
 		// Implemented from ILocationManager
 		public void Dispose() {

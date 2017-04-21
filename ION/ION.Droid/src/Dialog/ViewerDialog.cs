@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Dialog {
+namespace ION.Droid.Dialog {
 
   using Android.Content;
   using Android.Views;
@@ -75,7 +75,7 @@
 
 					if (dgs != null && !dgs.device.isConnected) {
 						ldb.AddItem(Resource.String.reconnect, () => {
-							dgs.device.connection.ConnectAsync();
+							dgs.device.connection.Connect();
 						});
 					}
 

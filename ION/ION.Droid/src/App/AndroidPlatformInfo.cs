@@ -30,18 +30,9 @@
       version = Build.VERSION.Release;
       api = Build.VERSION.SdkInt + "";
       chipset = Build.Board;
+
+			GetScreenDetails(context);
 		}
-
-		public AndroidPlatformInfo(Activity activity) {
-			manufacturer = Build.Manufacturer;
-			deviceName = Build.Product;
-			model = Build.Model;
-			version = Build.VERSION.Release;
-			api = Build.VERSION.SdkInt + "";
-			chipset = Build.Board;
-
-			GetScreenDetails(activity);
-    }
 
 		public override string ToString() {
 			var sb = new StringBuilder();
@@ -60,10 +51,14 @@
 			return sb.ToString();
 		}
 
-		private void GetScreenDetails(Activity activity) {
+		private void GetScreenDetails(Context context) {
+			var wm = context.GetSystemService(Context.WindowService) as IWindowManager;
+			if (wm == null) {
+				return;
+			}
+
 			var dm = new DisplayMetrics();
 
-			var wm = activity.WindowManager;
 			wm.DefaultDisplay.GetMetrics(dm);
 
 			density = dm.Density;

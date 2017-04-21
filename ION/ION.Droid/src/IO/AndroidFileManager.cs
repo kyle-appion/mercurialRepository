@@ -31,6 +31,10 @@
       return Task.FromResult(new InitializationResult() { success = true });
     }
 
+    // Implemented for IFileManager
+    public void PostInit() {
+    }
+
     // Overridden from IFileManager
     public void Dispose() {
     }

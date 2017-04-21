@@ -1,4 +1,4 @@
-﻿namespace ION.Core.Devices {
+namespace ION.Core.Devices {
 
 	using System;
 	using System.Collections.Generic;
@@ -10,7 +10,6 @@
 	using ION.Core.IO;
 
 	using ION.Core.Connections;
-	using ION.Core.Devices.Connections;
 	using ION.Core.Devices.Protocols;
 	using ION.Core.Sensors;
 
@@ -48,9 +47,7 @@
 		// Implemented from IDeviceManager
 
 		// Implemented from IDeviceManager
-		public IConnectionFactory connectionFactory { get; set; }
-		// Implemented from IDeviceManager
-		public IConnectionHelper connectionHelper { get; set; }
+		public IConnectionManager connectionManager { get; set; }
 
 		// Implemented from IDeviceManager
 		public DeviceFactory deviceFactory { get; set; }
@@ -61,8 +58,7 @@
 
 		public RemoteDeviceManager(IION ion) {
 			this.ion = ion;
-			this.connectionHelper = new RemoteConnectionHelper();
-			this.connectionFactory = new RemoteConnectionFactory();
+			this.connectionManager = new RemoteConnectionManager();
 		}
 
 		// Implemented from IDeviceManager
@@ -83,6 +79,10 @@
 
 			return Task.FromResult(new InitializationResult() { success = true });
 		}
+
+    // Implemented from IDeviceManager
+    public void PostInit() {
+    }
 
 		// Implemented from IDeviceManager
 		public void Dispose() {
@@ -206,7 +206,7 @@
 					try {
 						onDeviceManagerEvent(dme);
 					} catch (Exception e) {
-						Appion.Commons.Util.Log.E(this, "Failed to post device manager event", e);
+						Log.E(this, "Failed to post device manager event", e);
 					}
 				});
 			}

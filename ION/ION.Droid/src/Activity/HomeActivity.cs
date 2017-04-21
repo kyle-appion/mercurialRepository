@@ -7,6 +7,7 @@
   using Android.Content;
   using Android.Content.PM;
   using Android.Graphics.Drawables;
+  using Android.Net;
   using Android.OS;
   using Android.Views;
   using Android.Widget;
@@ -132,25 +133,26 @@
           DisplayWorkbench();
           break;
       }
+
+      if (ion.preferences.showTutorial) {
+        StartActivity(new Intent(this, typeof(TutorialActivity)));
+      } else if (!ion.version.Equals(ion.preferences.appVersion)/* && !ion.preferences.firstLaunch*/) {
+        if (!"0.0.0".Equals(ion.preferences.appVersion)) {
+          if (ion.preferences.showWhatsNew) {
+            try {
+              new WhatsNewDialog(this, ion.preferences, AppVersion.ParseOrThrow(ion.preferences.appVersion), AppVersion.ParseOrThrow(ion.version)).Show();
+            } catch (Exception e) {
+              Log.E(this, "Failed to parse current app version {" + ion.version + "}", e);
+              Toast.MakeText(this, Resource.String.error_failed_to_show_whats_new, ToastLength.Long).Show();
+            }
+          }
+        }
+        ion.preferences.appVersion = ion.version;
+      }
     }
 
 		protected override void OnResume() {
 			base.OnResume();
-			if (ion.preferences.showTutorial) {
-				StartActivity(new Intent(this, typeof(TutorialActivity)));
-			} else if (!ion.version.Equals(ion.preferences.appVersion)/* && !ion.preferences.firstLaunch*/) {
-				if (!"0.0.0".Equals(ion.preferences.appVersion)) {
-					if (ion.preferences.showWhatsNew) {
-						try {
-							new WhatsNewDialog(this, ion.preferences, AppVersion.ParseOrThrow(ion.preferences.appVersion), AppVersion.ParseOrThrow(ion.version)).Show();
-						} catch (Exception e) {
-							Log.E(this, "Failed to parse current app version {" + ion.version + "}", e);
-							Toast.MakeText(this, Resource.String.error_failed_to_show_whats_new, ToastLength.Long).Show();
-						}
-					}
-				}
-				ion.preferences.appVersion = ion.version;
-			}
 		}
 
 		// Overridden from Activity
@@ -407,11 +409,26 @@
         dialog.Dismiss();
       });
       adb.SetPositiveButton(Resource.String.ok, (o, e) => {
+#if DEBUG == false
+        TryUploadLogs();
+#endif
         var dialog = o as Dialog;
         dialog.Dismiss();
         Shutdown();
       });
       adb.Show();
+    }
+
+    /// <summary>
+    /// Tries the upload logs.
+    /// </summary>
+    private void TryUploadLogs() {
+      // TODO ahodder@appioninc.com: Think up a clever way to manage how frequently this fires off.
+      var cm = GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+      var ni = cm.ActiveNetworkInfo;
+      if (ni != null && ni.IsConnected && ni.Type == ConnectivityType.Wifi) {
+        Log.UploadLogs();
+      }
     }
 
     /// <summary>

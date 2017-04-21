@@ -13,10 +13,9 @@
 
   using Java.Lang;
 
-	using Appion.Commons.Util;
-
 	using ION.Core.Content;
   using ION.Core.Devices;
+  using ION.Core.Location;
   using ION.Core.Fluids;
   using ION.Core.Sensors;
 
@@ -108,11 +107,10 @@
     /// </summary>
     /// <value>The fluid state toggle.</value>
     private Switch fluidPhaseToggleView { get; set; }
-    /// <summary>
-    /// The button that will show the help dialog.
+
+    /// The current elevation that is used for calculations in pt measurements.
     /// </summary>
-    /// <value>The help view.</value>
-    private ImageButton helpView { get; set; }
+    private TextView elevation;
 
     /// <summary>
     /// The view that maintains the click events for the pressure sensor interaction.
@@ -343,7 +341,7 @@
     /// Raises the create event.
     /// </summary>
     /// <param name="savedInstanceState">Saved instance state.</param>
-    protected override async void OnCreate(Bundle savedInstanceState) {
+    protected override void OnCreate(Bundle savedInstanceState) {
       base.OnCreate(savedInstanceState);
 
       SetContentView(Resource.Layout.activity_superheat_subcool);
@@ -366,21 +364,6 @@
         StartActivityForResult(i, REQUEST_FLUID);
       }));
 
-      helpView = FindViewById<ImageButton>(Resource.Id.help);
-      helpView.SetOnClickListener(new ViewClickAction((v) => {
-        var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
-				if (this.ptChart.fluid.mixture) {
-        	ldb.SetMessage(Resource.String.fluid_help_mixture_clarification);
-				} else {
-					ldb.SetMessage(Resource.String.fluid_help_pure_clarification);
-				}
-        ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
-          var dialog = obj as Android.App.Dialog;
-          dialog.Dismiss();
-        });
-        ldb.Show();
-      }));
-
       fluidColorView = FindViewById(Resource.Id.color);
       fluidNameView = FindViewById<TextView>(Resource.Id.name);
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
@@ -400,24 +383,12 @@
       pressureSensor.unit = ion.defaultUnits.pressure;
       temperatureSensor.unit = ion.defaultUnits.temperature;
 
+      // Init elevation widgets
+      var container = FindViewById(Resource.Id.elevation);
+      elevation = container.FindViewById<TextView>(Resource.Id.text);
+
 			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
 			ptChart = PTChart.New(ion, Fluid.EState.Dew);
-/*
-      if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
-        var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
-        var fluid = await ion.fluidManager.GetFluidAsync(name);
-
-        var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
-				Log.D(this, "State: " + state);
-
-				var locked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
-				fluidPhaseToggleView.Enabled = !locked;
-
-        ptChart = PTChart.New(ion, state, fluid);
-      } else {
-        ptChart = PTChart.New(ion, Fluid.EState.Dew);
-      }
-*/
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -472,41 +443,52 @@
     /// </summary>
     protected override void OnResume() {
       base.OnResume();
+      ion.locationManager.onLocationChanged += OnLocationChanged;
+      var loc = ion.locationManager.lastKnownLocation;
+      if (loc == null) {
+        loc = new SimpleLocation();
+      }
+      elevation.Text = SensorUtils.ToFormattedString(loc.altitude.ConvertTo(ion.defaultUnits.length), true);
     }
 
-    /// <Docs>The options menu in which you place your items.</Docs>
-    /// <returns>To be added.</returns>
-    /// <summary>
-    /// Raises the create options menu event.
-    /// </summary>
-    /// <param name="menu">Menu.</param>
+    protected override void OnPause() {
+      base.OnPause();
+      ion.locationManager.onLocationChanged -= OnLocationChanged;
+    }
+
+    // Overridden from Activity
     public override bool OnCreateOptionsMenu(IMenu menu) {
       base.OnCreateOptionsMenu(menu);
 
-      MenuInflater.Inflate(Resource.Menu.ok_done, menu);
+      MenuInflater.Inflate(Resource.Menu.help, menu);
 
-      var item = menu.FindItem(Resource.Id.ok_done);
-      item.ActionView.SetOnClickListener(new ViewClickAction((v) => {
-        ReturnWithResult();
+      var item = menu.FindItem(Resource.Id.help);
+      var view = item.ActionView as Button;
+      view.Text = GetString(Resource.String.help);
+      view.SetOnClickListener(new ViewClickAction((v) => {
+        OnMenuItemSelected(Resource.Id.help, menu.FindItem(Resource.Id.help));
       }));
 
       return true;
     }
 
-    /// <Docs>The panel that the menu is in.</Docs>
-    /// <summary>
-    /// Raises the menu item selected event.
-    /// </summary>
-    /// <param name="featureId">Feature identifier.</param>
-    /// <param name="item">Item.</param>
+    // Overridden from Activity
     public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
       switch (item.ItemId) {
         case Android.Resource.Id.Home:
-          SetResult(Result.Canceled);
-          Finish();
-          return true;
-        case Resource.Id.ok_done:
           ReturnWithResult();
+          return true;
+        case Resource.Id.help:
+          var adb = new IONAlertDialog(this);
+          adb.SetTitle(Resource.String.help);
+          adb.SetMessage(Resource.String.fluid_help_mixture_clarification);
+          adb.SetNegativeButton(Resource.String.close, (sender, e) => {
+          });
+          adb.SetPositiveButton(Resource.String.settings, (sender, e) => {
+            var i = new Intent(this, typeof(AppPreferenceActivity));
+            StartActivity(i);
+          });
+          adb.Show();
           return true;
         default:
           return base.OnMenuItemSelected(featureId, item);
@@ -603,7 +585,7 @@
 						}
 						break;
 					case ESensorType.Temperature:
-						if (!initialManifold.SetSecondarySensor(temperatureSensor)) {
+						if (!initialManifold.SetSecondarySensor(pressureSensor)) {
 							Error(GetString(Resource.String.shsc_error_failed_to_update_manifold));
 						}
 						break;
@@ -849,6 +831,16 @@
       temperatureEntryView.Text = text;
 
       temperatureEntryView.AddTextChangedListener(temperatureTextWatcher);
+    }
+
+    /// <summary>
+    /// Called when the application's location changes.
+    /// </summary>
+    /// <param name="lm">Lm.</param>
+    /// <param name="oldLocation">Old location.</param>
+    /// <param name="newLocation">New location.</param>
+    private void OnLocationChanged(ILocationManager lm, ILocation oldLocation, ILocation newLocation) {
+      elevation.Text = SensorUtils.ToFormattedString(newLocation.altitude.ConvertTo(ion.preferences.units.length) , true);
     }
 
     /// <summary>

@@ -133,24 +133,6 @@
           }
         }
 
-        // TODO ahodder@appioninc.com: Fix initialize app when a fluid is missing
-        // I didn't have time at the moment to fix this, so here is the trace from the moment. This will only occur when
-        // the user has a fluid saved as the last used or in the perferred that was renamed or removed.
-/*
-System.IO.IOException: Could not load resource of name R601A.fluid: doesn't exist
-E    at ION.Core.IO.EmbeddedResource.Load (System.Reflection.Assembly assembly, System.String filename) [0x0004e] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/IO/EmbeddedResource.cs:34
-E    at ION.Core.IO.EmbeddedResource.Load (System.String filename) [0x00016] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/IO/EmbeddedResource.cs:20
-E    at ION.Core.Fluids.BaseFluidManager.LoadFluidAsync (System.String fluidName) [0x00011] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Fluids/BaseFluidManager.cs:251
-E    at ION.Core.Fluids.BaseFluidManager+<GetFluidAsync>c__async1.MoveNext () [0x000d0] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Fluids/BaseFluidManager.cs:173
-E  --- End of stack trace from previous location where exception was thrown ---
-E    at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x0000c] in /Users/builder/data/lanes/3819/96c7ba6c/source/mono/mcs/class/referencesource/mscorlib/system/runtime/exceptionservices/exceptionservicescommon.cs:143
-E    at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00047] in /Users/builder/data/lanes/3819/96c7ba6c/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:187
-E    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification (System.Threading.Tasks.Task task) [0x0002e] in /Users/builder/data/lanes/3819/96c7ba6c/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:156
-E    at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd (System.Threading.Tasks.Task task) [0x0000b] in /Users/builder/data/lanes/3819/96c7ba6c/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:128
-E    at System.Runtime.CompilerServices.TaskAwaiter`1[TResult].GetResult () [0x00000] in /Users/builder/data/lanes/3819/96c7ba6c/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:357
-E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x0020b] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Fluids/BaseFluidManager.cs:126
-
-*/
         await GetFluidAsync(fluidName);
         return new InitializationResult() { success = __isInitialized = true };
       } catch (Exception e) {
@@ -160,6 +142,10 @@ E    at ION.Core.Fluids.BaseFluidManager+<InitAsync>c__async0.MoveNext () [0x002
           errorMessage = "Failed to initialize fluid manager: " + e.Message
         };
       }
+    }
+
+    // Implemented for IManager
+    public void PostInit() {
     }
 
     // Overridden from IFluidManager

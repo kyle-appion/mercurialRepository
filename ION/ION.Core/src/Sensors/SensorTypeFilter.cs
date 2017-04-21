@@ -15,7 +15,8 @@
     /// </summary>
     /// <param name="flags">Flags.</param>
     public SensorTypeFilter(params ESensorType[] sensorTypes) {
-      this.filterTypes = Sort(sensorTypes);
+//      this.filterTypes = Sort(sensorTypes);
+      this.filterTypes = sensorTypes;
     }
 
     /// <summary>

@@ -20,6 +20,7 @@
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
 
+  using ION.Droid.Connections;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
@@ -59,11 +60,6 @@
 		private const int STATE_REQUESTED_LOCATION_PERM = 1 << 2;
 
     /// <summary>
-    /// The default time that the activity will be scanning for.
-    /// </summary>
-    private const long DEFAULT_SCAN_TIME = 15000;
-
-    /// <summary>
     /// The view that will display all of the devices for the activity.
     /// </summary>
     /// <value>The list.</value>
@@ -83,15 +79,19 @@
     /// The filter for the activity.
     /// </summary>
     private EDeviceFilter filter;
-    /// <summary>
-    /// The connection helper that the application was using before the activity started.
-    /// </summary>
-    private IConnectionHelper previousHelper;
 		/// <summary>
 		/// Holds the current state of permissions requests. This is used to prevent the activity from requesting permissions
 		/// everytime the activity gains focus.
 		/// </summary>
 		private int permissionStates;
+    /// <summary>
+    /// The scanner that will search for classic devices.
+    /// </summary>
+    private AndroidConnectionManager connectionManager;
+    /// <summary>
+    /// The handler that we will post scan actions to.
+    /// </summary>
+    private Handler handler = new Handler();
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
@@ -127,26 +127,24 @@
 			adapter.emptyView = empty;
 
       list.SetAdapter(adapter);
+      connectionManager = ion.deviceManager.connectionManager as AndroidConnectionManager;
     }
 
-    /// <summary>
-    /// Raises the resume event.
-    /// </summary>
+    // Overridden from Activity
+    protected override void OnStart() {
+      base.OnStart();
+      connectionManager.StartScan();
+      handler.PostDelayed(() => connectionManager.StopScan(), 10000);
+    }
+
+    // Overridden from Activity
     protected override void OnResume() {
       base.OnResume();
-
-			previousHelper = ion.deviceManager.connectionHelper;
-			var bm = (BluetoothManager)GetSystemService(BluetoothService);
 
 			ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
 			InvalidateOptionsMenu();
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
-
-			var connectionHelper = ion.deviceManager.connectionHelper;
-
-			// Check permissions
-//			CheckPermissionsAndStates();
 
       adapter.Reload();
     }
@@ -156,17 +154,19 @@
       base.OnPause();
 
 			ion.deviceManager.ForgetFoundDevices();
-      ion.deviceManager.connectionHelper.Dispose();
-      ion.deviceManager.connectionHelper = previousHelper;
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
-      ion.deviceManager.connectionHelper.StopScan();
+      ion.deviceManager.connectionManager.StopScan();
+      handler.RemoveCallbacksAndMessages(null);
     }
 
-    /// <Docs>Perform any final cleanup before an activity is destroyed.</Docs>
-    /// <summary>
-    /// Raises the destroy event.
-    /// </summary>
+    // Overridden from Activity
+    protected override void OnStop() {
+      base.OnStop();
+      ion.deviceManager.connectionManager.StopScan();
+    }
+
+    // Overridden from Activity
     protected override void OnDestroy() {
       base.OnDestroy();
 
@@ -193,7 +193,7 @@
 				ToggleScanning();
       }));
 
-      if (ion.deviceManager.connectionHelper.isScanning) {
+      if (ion.deviceManager.connectionManager.isScanning) {
         scanView.SetText(Resource.String.scanning);
         SetProgressBarIndeterminateVisibility(true);
       } else {
@@ -220,16 +220,36 @@
 		/// Toggles whether or not the activity should perform a scan operation.
 		/// </summary>
 		private void ToggleScanning() {
-			var scanHelper = ion.deviceManager.connectionHelper;
-
-			if (scanHelper.isScanning) {
-				scanHelper.StopScan();
-			} else {
-				ClearPermissionStates();
-				if (CheckPermissionsAndStates()) {
-					scanHelper.StartScan(TimeSpan.FromMilliseconds(DEFAULT_SCAN_TIME));
-				}
-			}
+      if (connectionManager.isScanning) {
+        connectionManager.StopScan();
+        handler.RemoveCallbacksAndMessages(null);
+      } else {
+        connectionManager.StartScan();
+        handler.PostDelayed(() => connectionManager.StopScan(), (long)TimeSpan.FromSeconds(12).TotalMilliseconds);
+      }
+/*
+      if (connectionManager.isScanning) {
+        handler.RemoveCallbacksAndMessages(null);
+        connectionManager.StopScan();
+      } else {
+        ClearPermissionStates();
+        if (CheckPermissionsAndStates()) {
+          handler.Post(() => {
+            if (!connectionManager.StartScan()) {
+              Error(GetString(Resource.String.bluetooth_error_scan_failed));
+            } else {
+              handler.PostDelayed(() => {
+                connectionManager.StopScan();
+                if (HasWindowFocus) {
+                  connectionManager.StartClassicScan();
+                  handler.PostDelayed(() => connectionManager.StopScan(), 12000);
+                }
+              }, 8000);
+            }
+          });
+        }
+      }
+*/
 		}
 
 		/// <summary>

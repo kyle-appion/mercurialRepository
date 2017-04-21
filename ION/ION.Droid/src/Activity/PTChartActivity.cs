@@ -1,5 +1,7 @@
 ﻿namespace ION.Droid.Activity {
 
+  using System;
+
 	using Android.App;
 	using Android.Content;
 	using Android.Content.PM;
@@ -9,14 +11,13 @@
 	using Android.Views;
 	using Android.Widget;
 
-	using Java.Lang;
-
 	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
 	using ION.Core.Content;
 	using ION.Core.Devices;
 	using ION.Core.Fluids;
+  using ION.Core.Location;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
@@ -95,15 +96,17 @@
 				__ptChart = value;
 				slider.ptChart = value;
 
+        if (__ptChart == null) {
+          Log.E(this, "Why was ptchart set to null?");
+        }
+
 				var name = __ptChart.fluid.name;
 				fluidColorView.SetBackgroundColor(new Color(ion.fluidManager.GetFluidColor(name)));
 				fluidNameView.Text = name;
 				if (__ptChart.fluid.mixture) {
 					fluidPhaseToggleView.Visibility = ViewStates.Visible;
-					helpView.Visibility = ViewStates.Visible;
 				} else {
 					fluidPhaseToggleView.Visibility = ViewStates.Invisible;
-					helpView.Visibility = ViewStates.Invisible;
 				}
 				fluidPhaseToggleView.Checked = __ptChart.state == Fluid.EState.Bubble;
 
@@ -134,11 +137,12 @@
 		/// </summary>
 		/// <value>The fluid state toggle.</value>
 		private Switch fluidPhaseToggleView { get; set; }
-		/// <summary>
-		/// The button that will show the help dialog.
-		/// </summary>
-		/// <value>The help view.</value>
-		private ImageButton helpView { get; set; }
+
+    /// <summary>
+    /// The current elevation that is used for calculations in pt measurements.
+    /// </summary>
+    private TextView elevation;
+
 		/// <summary>
 		/// The view that maintains the click events for the pressure sensor interaction.
 		/// </summary>
@@ -313,14 +317,14 @@
 				return __temperatureUnit;
 			}
 			set  {
-				Log.E(this, "Settings temperature unit to: " + value);
+				Log.E(this, "Setting temperature unit to: " + value);
 				__temperatureUnit = value;
 				slider.temperatureUnit = value;
 			}
 		} Unit __temperatureUnit;
 
 		// Overridden from IONActivity
-		protected override async void OnCreate(Bundle bundle) {
+		protected override void OnCreate(Bundle bundle) {
 			base.OnCreate(bundle);
 
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_ptconversion, Resource.Color.gray));
@@ -345,21 +349,15 @@
 					ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
 				}
 			}));
-			helpView = FindViewById<ImageButton>(Resource.Id.help);
-			helpView.SetOnClickListener(new ViewClickAction((v) => {
-				var ldb = new IONAlertDialog(this, Resource.String.fluid_help_select_state);
-				ldb.SetMessage(Resource.String.fluid_help_mixture_clarification);
-				ldb.SetNegativeButton(Resource.String.ok, (obj, args) => {
-					var dialog = obj as Android.App.Dialog;
-					dialog.Dismiss();
-				});
-				ldb.Show();
-			}));
 
 			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
 
 			pressureUnit = ion.defaultUnits.pressure;
 			temperatureUnit = ion.defaultUnits.temperature;
+
+      // Init elevation widgets
+      var container = FindViewById(Resource.Id.elevation);
+      elevation = container.FindViewById<TextView>(Resource.Id.text);
 
 			InitPressureWidgets();
 			InitTemperatureWidgets();
@@ -368,21 +366,6 @@
 
 			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
 			ptChart = PTChart.New(ion, Fluid.EState.Dew);
-/*
-			if (Intent.HasExtra(EXTRA_FLUID_NAME)) {
-				var name = Intent.GetStringExtra(EXTRA_FLUID_NAME);
-				var fluid = await ion.fluidManager.GetFluidAsync(name);
-
-				var state = (Fluid.EState)Intent.GetIntExtra(EXTRA_FLUID_STATE, (int)Fluid.EState.Dew);
-
-				var locked = Intent.GetBooleanExtra(EXTRA_LOCK_FLUID, false);
-				fluidPhaseToggleView.Enabled = !locked;
-
-				ptChart = PTChart.New(ion, state, fluid);
-			} else {
-				ptChart = PTChart.New(ion, Fluid.EState.Dew);
-			}
-*/
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -429,14 +412,42 @@
 		// Overridden from IONActivity
 		protected override void OnResume() {
 			base.OnResume();
+      if (!sensorLocked) {
+        var s = new ManualSensor(ESensorType.Pressure, false);
+        s.unit = ion.defaultUnits.pressure;
+        s.ForceSetMeasurement(ion.defaultUnits.pressure.OfScalar(0));
+        OnSensorChanged(s);
+        ion.PostToMainDelayed(() => {
+          slider.ScrollToPressure(s.measurement, true);
+        }, TimeSpan.FromMilliseconds(500));
+      }
 			Refresh();
 			slider.onScroll += OnSliderScroll;
+      ion.locationManager.onLocationChanged += OnLocationChanged;
+      elevation.Text = SensorUtils.ToFormattedString(ion.locationManager.lastKnownLocation.altitude.ConvertTo(ion.defaultUnits.length), true);
 		}
 
 		protected override void OnPause() {
 			base.OnPause();
 			slider.onScroll -= OnSliderScroll;
+      ion.locationManager.onLocationChanged -= OnLocationChanged;
 		}
+
+    // Overridden from Activity
+    public override bool OnCreateOptionsMenu(IMenu menu) {
+      base.OnCreateOptionsMenu(menu);
+
+      MenuInflater.Inflate(Resource.Menu.help, menu);
+
+      var item = menu.FindItem(Resource.Id.help);
+      var view = item.ActionView as Button;
+      view.Text = GetString(Resource.String.help);
+      view.SetOnClickListener(new ViewClickAction((v) => {
+        OnMenuItemSelected(Resource.Id.help, menu.FindItem(Resource.Id.help));
+      }));
+
+      return true;
+    }
 
 		// Overridden from Activity
 		public override bool OnMenuItemSelected(int featureId, IMenuItem item) {
@@ -444,9 +455,21 @@
 				case Android.Resource.Id.Home:
 					SetResult(Result.Canceled);
 					Finish();
-				return true;
+			  	return true;
+        case Resource.Id.help:
+          var adb = new IONAlertDialog(this);
+          adb.SetTitle(Resource.String.help);
+          adb.SetMessage(Resource.String.fluid_help_mixture_clarification);
+          adb.SetNegativeButton(Resource.String.close, (sender, e) => {
+          });
+          adb.SetPositiveButton(Resource.String.settings, (sender, e) => {
+            var i = new Intent(this, typeof(AppPreferenceActivity));
+            StartActivity(i);
+          });
+          adb.Show();
+          return true;
 				default:
-				return base.OnMenuItemSelected(featureId, item);
+				  return base.OnMenuItemSelected(featureId, item);
 			}
 		}
 
@@ -485,6 +508,16 @@
 			Refresh();
 			ClearInput();
 		}
+
+    /// <summary>
+    /// Called when the application's location changes.
+    /// </summary>
+    /// <param name="lm">Lm.</param>
+    /// <param name="oldLocation">Old location.</param>
+    /// <param name="newLocation">New location.</param>
+    private void OnLocationChanged(ILocationManager lm, ILocation oldLocation, ILocation newLocation) {
+      elevation.Text = SensorUtils.ToFormattedString(newLocation.altitude.ConvertTo(ion.preferences.units.length) , true);
+    }
 
 		/// <summary>
 		/// Initializes the activity using the given manifold.
@@ -559,7 +592,7 @@
 				if (ptchart != null) {
 					ptchart.unit = unit;
 				}
-			} catch (Exception e) {
+			} catch (System.Exception e) {
 				Appion.Commons.Util.Log.E(this, "Failed to update manifold", e);
 			}
 		}
@@ -821,11 +854,11 @@
 				}
 			}
 			// Overridden from ITextWatcher
-			public void BeforeTextChanged(ICharSequence text, int start, int count, int after) {
+      public void BeforeTextChanged(Java.Lang.ICharSequence text, int start, int count, int after) {
 			}
 
 			// Overridden from ITextWatcher
-			public void OnTextChanged(ICharSequence text, int start, int before, int count) {
+      public void OnTextChanged(Java.Lang.ICharSequence text, int start, int before, int count) {
 			}
 		}
 	}

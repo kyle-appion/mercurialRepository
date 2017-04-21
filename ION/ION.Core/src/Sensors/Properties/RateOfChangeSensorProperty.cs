@@ -8,6 +8,7 @@
 	using ION.Core.Content;
 
 	public class RateOfChangeSensorProperty : AbstractSensorProperty {
+
 		private static TimeSpan GRAPH_WINDOW = TimeSpan.FromSeconds(30);
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
 
@@ -23,23 +24,32 @@
 		/// </summary>
 		public TimeSpan interval { get; private set; }
 		/// <summary>
+		/// The flags for the sensor property.
+		/// </summary>
+		/// <value>The flags.</value>
+		public EFlags flags { get; set; }
+		/// <summary>
 		/// Returns the primary sensor graph points that have been saved in the proprty.
 		/// </summary>
 		/// <value>The points.</value>
-		public PlotPoint[] primarySensorPoints {
+		public Slice<PlotPoint> primarySensorPoints {
 			get {
 				RegisterPoint();
-				return primarySensorBuffer.ToArray();
+				var len = primarySensorBuffer.ToArray(buffer);
+        var ret = new Slice<PlotPoint>(buffer, len - 1);
+        return ret;
 			}
 		}
 		/// <summary>
 		/// Returns the secondary sensor graph points that have been saved in the proprty.
 		/// </summary>
 		/// <value>The points.</value>
-		public PlotPoint[] secondarySensorPoints {
+		public Slice<PlotPoint> secondarySensorPoints {
 			get {
 				RegisterPoint();
-				return secondarySensorBuffer.ToArray();
+				var len = secondarySensorBuffer.ToArray(buffer);
+        var ret = new Slice<PlotPoint>(buffer, len - 1);
+        return ret;
 			}
 		}
 
@@ -51,6 +61,10 @@
 		/// The buffer that will hold the primary sensor's history.
 		/// </summary>
 		private RingBuffer<PlotPoint> secondarySensorBuffer;
+    /// <summary>
+    /// The buffer that will act as the buffer for calulcations or returning.
+    /// </summary>
+    private PlotPoint[] buffer;
 		/// <summary>
 		/// The last time that a record was added to the buffer.
 		/// </summary>
@@ -59,7 +73,7 @@
 		private bool isRegisteredToSecondary;
 
 		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public RateOfChangeSensorProperty(Sensor sensor) : base(new Manifold(sensor)) {
+		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
 		}
 
 		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
@@ -68,8 +82,11 @@
 		private RateOfChangeSensorProperty(Manifold manifold, TimeSpan window, TimeSpan interval) : base(manifold) {
 			this.window = window;
 			this.interval = interval;
-			primarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
-			secondarySensorBuffer = new RingBuffer<PlotPoint>((int)(window.TotalMilliseconds / interval.TotalMilliseconds));
+			flags = EFlags.ShowAll;
+      var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
+			primarySensorBuffer = new RingBuffer<PlotPoint>(size);
+      secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
+      buffer = new PlotPoint[size];
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -89,6 +106,7 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		public override void Dispose() {
 			base.Dispose();
 			if (isRegisteredToSecondary) {
@@ -98,6 +116,7 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		protected override void OnManifoldEvent(ManifoldEvent e) {
 			base.OnManifoldEvent(e);
 
@@ -117,9 +136,45 @@
 			}
 		}
 
+		// Overridden from AbstractSensorProperty
 		protected override void OnSensorChanged() {
 			base.OnSensorChanged();
 			RegisterPoint();
+		}
+
+		/// <summary>
+		/// Removes the given flags from the sensor property.
+		/// </summary>
+		/// <param name="flags">Flags.</param>
+		public void RemoveFlags(EFlags flags) {
+			this.flags &= ~flags;
+		}
+
+		/// <summary>
+		/// Adds the given flags from the sensor property.
+		/// </summary>
+		/// <param name="flags">Flags.</param>
+		public void AddFlags(EFlags flags) {
+			this.flags |= flags;
+		}
+
+		/// <summary>
+		/// Returns true if the sensor property's flags are active.
+		/// </summary>
+		/// <returns><c>true</c>, if flag was hased, <c>false</c> otherwise.</returns>
+		/// <param name="flags">Flags.</param>
+		public bool HasFlag(EFlags flags) {
+			return (this.flags & flags) == flags;
+		}
+
+		/// <summary>
+		/// Toggles the given flags in the sensor property.
+		/// </summary>
+		/// <returns>True if all of the given flags are active for the sensor property.</returns>
+		/// <param name="flags">Flags.</param>
+		public bool ToggleFlags(EFlags flags) {
+			this.flags ^= flags;
+			return (this.flags & flags) == flags; 
 		}
 
 		/// <summary>
@@ -132,7 +187,7 @@
 			var p = primarySensorPoints;
 			var i = 0;
 			// Find the oldest windowed item.
-			while (i < p.Length - 1 && DateTime.Now - p[i].date < window) i++;
+			while (i < p.Count - 1 && DateTime.Now - p[i].date < window) i++;
 			var pu = sensor.unit.standardUnit;
 			var pmag = (p[0].measurement - p[i].measurement) / (window.TotalMilliseconds / timeUnit.TotalMilliseconds);
 			var ret = pu.OfScalar(pmag).ConvertTo(manifold.primarySensor.unit);
@@ -151,7 +206,7 @@
 				}
 			}
 				
-			var u = manifold.primarySensor.unit;
+      var u = manifold.primarySensor.unit.standardUnit;
 			return new MinMax(u.OfScalar(min), u.OfScalar(max));
 		}
 
@@ -170,12 +225,12 @@
 					}
 				}
 
-				var u = manifold.secondarySensor.unit;
+        var u = manifold.secondarySensor.unit.standardUnit;
 				return new MinMax(u.OfScalar(min), u.OfScalar(max));
 			}
 		}
 
-		/// <summary>
+    /// <summary>
 		/// Sets the new window size for the graph sensor property.
 		/// </summary>
 		/// <param name="window">Window.</param>
@@ -205,6 +260,17 @@
 			var now = DateTime.Now;
 			while (now - primarySensorBuffer.last.date > window && primarySensorBuffer.RemoveLast());
 			while (now - secondarySensorBuffer.last.date > window && secondarySensorBuffer.RemoveLast());
+		}
+
+		/// <summary>
+		/// The flags that maintain the RoC's binary states.
+		/// </summary>
+		[Flags]
+		public enum EFlags {
+			ShowAll = ShowPrimary | ShowSecondary | ShowTertiary,
+			ShowPrimary = 1 << 0,
+			ShowSecondary = 1 << 1,
+			ShowTertiary = 1 << 2,
 		}
 
 		/// <summary>

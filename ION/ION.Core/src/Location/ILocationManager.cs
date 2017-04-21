@@ -24,6 +24,12 @@
     bool isEnabled { get; }
 
     /// <summary>
+    /// Whether or not the location manager supports traking the user's altitude.
+    /// </summary>
+    /// <value><c>true</c> if supports altitude tracking; otherwise, <c>false</c>.</value>
+    bool supportsAltitudeTracking { get; }
+
+    /// <summary>
     /// Whether or not the location manager should track locations.
     /// </summary>
     /// <value><c>true</c> if allow location tracking; otherwise, <c>false</c>.</value>
