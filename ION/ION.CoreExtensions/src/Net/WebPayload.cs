@@ -448,7 +448,7 @@ namespace ION.Core.Net {
 			remainingMemory = platformInfo.freeMemory,
 		};
 		
-		Console.WriteLine(JsonConvert.SerializeObject(stateInfo));
+		//Console.WriteLine(JsonConvert.SerializeObject(stateInfo));
 		//Console.WriteLine(layoutJson);
 		try{
 			//Create the data package to send for the post request
@@ -507,11 +507,13 @@ namespace ION.Core.Net {
 			//parse the text string into a json object to be deserialized
 			JObject response = JObject.Parse(textResponse);
 			var retrieved = response.GetValue("success").ToString();
-			
+						
 			if(retrieved == "true"){
+				var remoteStatus = JsonConvert.DeserializeObject<sessionStateInfo>(response.GetValue("status").ToString());
+				ion.SetRemotePlatformInformation(remoteStatus);
 				/////GRAB THE LAYOUT JSON
-				response = response.GetValue("layout") as JObject;
-				
+				response = JObject.Parse(response.GetValue("layout").ToString());
+			
 				var remoteAltitude = System.Math.Round(Convert.ToDouble(response.GetValue("alt").ToString()),2,MidpointRounding.AwayFromZero);
 				var localAltitude = System.Math.Round(ion.locationManager.lastKnownLocation.altitude.amount,2,MidpointRounding.AwayFromZero);
 				
@@ -519,6 +521,7 @@ namespace ION.Core.Net {
 						Console.WriteLine("Updating last known location altitude");
 						ion.locationManager.AttemptSetLocation(Units.Length.METER.OfScalar(remoteAltitude)); 
 				}
+				
 				var dManager = response.GetValue("known");
 				var aManager = response.GetValue("alyzer");
 				var sensorOrder = response.GetValue("setup");
@@ -1351,18 +1354,18 @@ namespace ION.Core.Net {
 		public string userID {get;set;}		
 	}
 
-	[Preserve(AllMembers = true)]
-	public class sessionStateInfo {
-		public sessionStateInfo(){}
-		[JsonProperty("log")]
-		public int isRecording {get; set;}
-		[JsonProperty("battery")]
-		public int batteryLevel {get; set;}
-		[JsonProperty("wifi")]
-		public int wifiStatus {get; set;}
-		[JsonProperty("memory")]
-		public double remainingMemory {get; set;}	
-	}
+	//[Preserve(AllMembers = true)]
+	//public class sessionStateInfo {
+	//	public sessionStateInfo(){}
+	//	[JsonProperty("log")]
+	//	public int isRecording {get; set;}
+	//	[JsonProperty("battery")]
+	//	public int batteryLevel {get; set;}
+	//	[JsonProperty("wifi")]
+	//	public int wifiStatus {get; set;}
+	//	[JsonProperty("memory")]
+	//	public double remainingMemory {get; set;}	
+	//}
 }
 
 

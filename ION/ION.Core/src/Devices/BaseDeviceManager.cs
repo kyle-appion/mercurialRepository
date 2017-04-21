@@ -393,7 +393,7 @@
       switch (deviceEvent.type) {
         case DeviceEvent.EType.ConnectionChange:
           if (device.isConnected) {
-            await SaveDevice(device);
+            var temp = SaveDevice(device).Result;
           }
           break;
 
