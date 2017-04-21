@@ -15,7 +15,6 @@ namespace ION.IOS.ViewController.AccessRequest {
 	public class AccessSettings {
 		public UIView settingsView;
 		public UILabel uploadHeader;
-		public UIButton onlineButton;
 		public UIButton sessionButton;
 		public UITableView sessionTable;
     public UIRefreshControl refreshSessions;
@@ -38,15 +37,6 @@ namespace ION.IOS.ViewController.AccessRequest {
 			
       selectedSessions.CollectionChanged += checkForSelected;
 			cellHeight = .07f * settingsView.Bounds.Height;
-
-			onlineButton = new UIButton(new CGRect(.15 * settingsView.Bounds.Width, .05 * settingsView.Bounds.Height, .7 * settingsView.Bounds.Width, .1 * settingsView.Bounds.Height));
-			onlineButton.Layer.CornerRadius = 5f;
-			onlineButton.Layer.BorderWidth = 1f;
-			onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
-			onlineButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-			onlineButton.TouchDown += (sender, e) => {onlineButton.BackgroundColor = UIColor.Blue;};
-			onlineButton.TouchUpOutside += (sender, e) => {onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);};
 			
 			uploadHeader = new UILabel(new CGRect(0,0,settingsView.Bounds.Width, .1 * settingsView.Bounds.Height));
 			uploadHeader.BackgroundColor = UIColor.Black;
@@ -86,7 +76,6 @@ namespace ION.IOS.ViewController.AccessRequest {
 			settingsView.AddSubview(sessionTable);
 			settingsView.AddSubview(sessionButton);
 			settingsView.AddSubview(uploadHeader);
-			//settingsView.AddSubview(onlineButton);
 			refreshSessions.SendActionForControlEvents(UIControlEvent.ValueChanged);
 		}
 		

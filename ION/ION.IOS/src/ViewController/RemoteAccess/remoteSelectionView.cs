@@ -27,7 +27,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public UIActivityIndicatorView loadingUsers;
 		public UIRefreshControl reloadOnline;
 		public List<accessData> onlineUsers;
-		public ObservableCollection<int> selectedUser;
+		public ObservableCollection<accessData> selectedUser;
 		public IosION ion;
 		public WebPayload webServices;
 		
@@ -37,7 +37,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
       this.webServices = ion.webServices;
       webServices.timedOut += timeOutAlert;
 			// Perform any additional setup after loading the view, typically from a nib.
-			selectedUser = new ObservableCollection<int>();
+			selectedUser = new ObservableCollection<accessData>();
 			selectedUser.CollectionChanged += checkForSelected;
 			selectionView = new UIView(new CGRect(0,0,parentView.Bounds.Width, parentView.Bounds.Height));
 			selectionView.BackgroundColor = UIColor.White;
@@ -78,7 +78,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			remoteMenuButton.TouchUpInside += async (sender, e) => {
 				remoteMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				var checkSource = onlineTable.Source as RemoteAccessTableSource;
-				if(webServices.uploading && checkSource.selectedUser.Contains(Convert.ToInt32(KeychainAccess.ValueForKey("userID")))){
+				if(webServices.uploading && checkSource.selectedUser[0].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString()){
 					checkSource.selectedUser.Clear();
 					var alert = UIAlertController.Create ("Unable to View", "You cannot view your current layout while uploading from the same device", UIAlertControllerStyle.Alert);
 					alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -86,7 +86,8 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				} else {				
 					await Task.Delay(TimeSpan.FromMilliseconds(1));
 					var viewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
-	
+					//var viewingLayout = NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout");
+					
 					if(!string.IsNullOrEmpty(viewing)){
 					  ///TURN OFF ANY LOCATION POLLING TO ALLOW FOR REMOTE LOCATION BEING USED
 			      if (ion.settings.location.useGeoLocation) {			      	
@@ -140,6 +141,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				await Task.Delay(TimeSpan.FromMilliseconds(1));
 				
 				NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+				NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 				selectedUser.Clear();
 				onlineTable.ReloadData();						
 				
@@ -168,9 +170,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			await Task.Delay(TimeSpan.FromMilliseconds(1));
 			onlineUsers = new List<accessData>();
 			var ID = KeychainAccess.ValueForKey("userID");
-			var userName = KeychainAccess.ValueForKey("userDisplay");
-			var userEmail = KeychainAccess.ValueForKey("userEmail");
-	
+
 			var feedback = await webServices.GetAccessList(ID);
 			
 			var window = UIApplication.SharedApplication.KeyWindow;
@@ -180,13 +180,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 				var textResponse = await feedback.Content.ReadAsStringAsync();
 				Console.WriteLine(textResponse);
-				//parse the text string into a json object to be deserialized
+				////parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var success = response.GetValue("success");
 	
 				if(success.ToString() == "true"){
-					var viewing = response.GetValue("viewing");
-					onlineUsers.Add(new accessData(){displayName = userName, email = userEmail, id = Convert.ToInt32(ID), online = 1});
+					var viewing = response.GetValue("online");
+
 					foreach(var user in viewing){
 						var deserializedToken = JsonConvert.DeserializeObject<accessData>(user.ToString());					
 							onlineUsers.Add(deserializedToken);
@@ -235,6 +235,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		 	webServices.paused = null;
 		 	
 			NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+			NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();   
@@ -247,20 +248,25 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		
 		public void startDownloading(){
 			var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+			var viewingLayout =	NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout");
+				
 			var loggedUser = KeychainAccess.ValueForKey("userID");
 			var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 		
-			webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
+			webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
 			webServices.paused += pauseRemote;
 		}
+		
 		public void pauseRemote(bool paused){
 			if(paused == false){
 				Console.WriteLine("Should be starting the download now");
 				var viewingID = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
+				var viewingLayout =	NSUserDefaults.StandardUserDefaults.StringForKey("viewedLayout");
+				
 				var loggedUser = KeychainAccess.ValueForKey("userID");
 				var loggingInterval = Convert.ToInt32(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval"));
 				
-				webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval);
+				webServices.StartLayoutDownload(viewingID,loggedUser,loggingInterval,viewingLayout);
 			}
 		}
 	}
@@ -276,5 +282,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		public int id { get; set; }
 		[JsonProperty("online")]
 		public int online { get; set; }
+		[JsonProperty("devicename")]
+		public string deviceName { get; set; }
+		[JsonProperty("deviceid")]
+		public string deviceID { get; set; }		
+		[JsonProperty("layoutid")]
+		public int layoutid { get; set; }
 	}
 }

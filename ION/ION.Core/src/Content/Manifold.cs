@@ -182,7 +182,6 @@
         }
 
         __secondarySensor = value;
-
         if (__secondarySensor != null) {
 					var s = __secondarySensor as GaugeDeviceSensor;
 					if (s != null) {
@@ -192,7 +191,7 @@
           __secondarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
           OnManifoldSensorChanged(__secondarySensor);
           NotifyOfEvent(ManifoldEvent.EType.SecondarySensorAdded);
-        }
+        } 
 
         //NotifyOfEvent(ManifoldEvent.EType.Invalidated);
       }
@@ -288,6 +287,10 @@
     /// <returns><c>true</c>, if secondary sensor was set, <c>false</c> otherwise.</returns>
     /// <param name="sensor">Sensor.</param>
     public bool SetSecondarySensor(Sensor sensor) {
+    	if(sensor == null){
+				secondarySensor = null;
+				return true;
+			}
       if (!WillAcceptSecondarySensor(sensor)) {
         return false;
       }

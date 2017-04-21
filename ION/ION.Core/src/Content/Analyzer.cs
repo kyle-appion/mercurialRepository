@@ -741,7 +741,9 @@
         case ESide.High:
           return highSideManifold;
         default:
-          throw new Exception("Failed to get manifold from side: " + side);
+        Log.E(this,"Failed to get manifold from side: " + side);
+        return null;
+          //throw new Exception("Failed to get manifold from side: " + side);
       }
     }
 
@@ -757,7 +759,9 @@
         case ESide.High:
           return ESide.Low;
         default:
-          throw new Exception("Cannot get opposite side for side: " + side);
+        	Log.E(this, "Cannot get opposite side for side: " + side);
+        	return ESide.Low;
+          //throw new Exception("Cannot get opposite side for side: " + side);
       }
     }
 
@@ -916,7 +920,9 @@
         case ESide.High:
           return Fluid.EState.Bubble;
         default:
-          throw new Exception("Cannot get fluid state from side: " + side);
+        	Log.E(this, "Cannot get fluid state from side: " + side);
+        	return Fluid.EState.Dew;
+          //throw new Exception("Cannot get fluid state from side: " + side);
       }
     }
 

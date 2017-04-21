@@ -50,9 +50,6 @@ namespace ION.IOS.ViewController.AccessRequest {
       
   		requestManager = new AccessRequestManager(accessHolderView);
     	settingsManager = new AccessSettings(accessHolderView);
-    	settingsManager.onlineButton.TouchUpInside += (sender, e) => {
-				uploadTimer();
-			};
     	
 			if(string.IsNullOrEmpty(KeychainAccess.ValueForKey("userID"))){
 				requestManager.accessView.Hidden = true;
@@ -121,73 +118,7 @@ namespace ION.IOS.ViewController.AccessRequest {
 				loggedOutLabel.Hidden = true;
 			}
 		}
-		
-		public async void uploadTimer(){			
-			settingsManager.onlineButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
-			startedViewing = DateTime.Now;
-			var userID = KeychainAccess.ValueForKey("userID");
-			
-			if(!webServices.uploading){
-				webServices.uploading = true;
-				settingsManager.onlineButton.SetTitle("Stop Remote", UIControlState.Normal);
 				
-				await webServices.updateOnlineStatus("1",userID);
-			} else {
-				webServices.uploading = false;
-				settingsManager.onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
-				await webServices.updateOnlineStatus("0",userID);
-			}
-			
-			while(webServices.uploading){
-			  var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
-			 	SystemSound newSound = new SystemSound (1005);
-				if(timeDifference < 30){
-					if(!string.IsNullOrEmpty(userID)){
-						if(!webServices.webClient.IsBusy){					
-							await webServices.uploadSystemLayout(userID);
-							await Task.Delay(TimeSpan.FromMilliseconds(1500));
-						} else {
-							await Task.Delay(TimeSpan.FromMilliseconds(500)); 
-						}
-					} else {
-						webServices.uploading = false;
-					}
-				} else {
-					webServices.uploading = false;
-					settingsManager.onlineButton.SetTitle("Allow Remote", UIControlState.Normal);
-					var window = UIApplication.SharedApplication.KeyWindow;
-		  		var rootVC = window.RootViewController as IONPrimaryScreenController;
-					
-					var alert = UIAlertController.Create ("Uploading Layout", "Are you still uploading your layout?", UIAlertControllerStyle.Alert);
-					alert.AddAction (UIAlertAction.Create ("Yes", UIAlertActionStyle.Default, (action) => {
-						uploadTimer();
-						newSound.Close();
-					}));
-					alert.AddAction (UIAlertAction.Create ("No", UIAlertActionStyle.Cancel, async (action) => {
-						newSound.Close();
-						await webServices.updateOnlineStatus("0",userID);
-					}));
-					rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-					AbsentRemoteTurnoff(alert);
-
-					newSound.PlaySystemSound();
-					await Task.Delay(TimeSpan.FromSeconds(2));
-					newSound.Close();
-				}
-			}
-		}
-		
-		public async void AbsentRemoteTurnoff(UIAlertController alert){
-			await Task.Delay(TimeSpan.FromSeconds(15));
-			var userID = KeychainAccess.ValueForKey("userID");
-			
-			alert.DismissViewController(false,null);
-			if(!webServices.uploading){
-				Console.WriteLine("dismissed alert and user didn't choose to continue uploading");
-				await webServices.updateOnlineStatus("0",userID);
-			}
-		}
-		
 		public override void DidReceiveMemoryWarning() {
 			base.DidReceiveMemoryWarning();
 			// Release any cached data, images, etc that aren't in use.

@@ -19,11 +19,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 		List<accessData> tableItems;
     nfloat cellHeight;
 		IosION ion;
-    public ObservableCollection<int> selectedUser;
+    public ObservableCollection<accessData> selectedUser;
     WebClient webServices;
     public const string deleteUserUrl = "http://portal.appioninc.com/App/deleteAccess.php";
     
-		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<int> selected, WebClient webClient) {
+		public RemoteAccessTableSource(List<accessData> accessItems, ObservableCollection<accessData> selected, WebClient webClient) {
 			tableItems = accessItems;
 			selectedUser = selected;
 			ion = AppState.context as IosION;
@@ -42,14 +42,35 @@ namespace ION.IOS.ViewController.RemoteAccess {
 
     // Overriden from UITableViewSource
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
-    	//Console.WriteLine("Cell height will be " + (tableItems[indexPath.Row].description.Count * 40) + " for update " + tableItems[indexPath.Row].title);
-      //return tableItems[indexPath.Row].description.Count * 40;
-      return 50;
+      return 75;
     }
+    
     // Overriden from UITableViewSource
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
-      return new UIView(new CGRect(0,0,0,0));
+    	////SECTION HEADER TO PROVIDE A DESCRTIPTION OF WHAT THE TABLE IS DISPLAYING
+    	var headerView = new UIView(new CGRect(0,0,tableView.Bounds.Width, 37));
+    	headerView.BackgroundColor = UIColor.Black;
+    	////LABEL DESCRIBING WHO THE LAYOUT BELONGS TO AND WHICH DEVICE IS UPLOADING
+    	var layoutLabel = new UILabel(new CGRect(0,0,.5 *headerView.Bounds.Width, headerView.Bounds.Height));
+    	layoutLabel.Text = "Remote Layouts";
+    	layoutLabel.TextAlignment = UITextAlignment.Left;
+    	layoutLabel.TextColor = UIColor.White;
+    	////LABEL DESCRIBING THE REMOTE VIEWING STATUS OF A LAYOUT
+    	var statusLabel = new UILabel(new CGRect(.5 * headerView.Bounds.Width,0,.5 * headerView.Bounds.Width, headerView.Bounds.Height));
+    	statusLabel.Text = "Status";
+    	statusLabel.TextAlignment = UITextAlignment.Left;
+    	statusLabel.TextColor = UIColor.White;    	
+    	
+    	headerView.AddSubview(layoutLabel);
+    	headerView.AddSubview(statusLabel);
+    	
+      return headerView;
     }
+    
+    public override nfloat GetHeightForHeader(UITableView tableView, nint section) {
+    	////NEEDS TO BE HALF THE SIZE OF A NORMAL CELL TO HELP DISTINGUISH FUNCTIONALITY
+			return 37.5f;
+		}
     // Overriden from UITableViewSource
     public override UIView GetViewForFooter (UITableView tableView, nint section)
     {
@@ -62,15 +83,14 @@ namespace ION.IOS.ViewController.RemoteAccess {
       if (cell == null){
         cell = new UITableViewCell(UITableViewCellStyle.Default, "remoteAccessCell") as RemoteAccessTableCell;
       }
-    	cellHeight = 50;
+    	cellHeight = 75;
     	
     	cell.Layer.BorderWidth = 1f;
       cell.makeCellData(tableView.Bounds.Width,cellHeight, tableItems[indexPath.Row]);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
       
-      if(selectedUser != null && selectedUser.Contains(tableItems[indexPath.Row].id)){
+      if(selectedUser != null && selectedUser.Contains(tableItems[indexPath.Row])){
         cell.Accessory = UITableViewCellAccessory.Checkmark;
-        //cell.BackgroundColor = UIColor.LightGray;
       }
       return cell;
     }
@@ -84,9 +104,9 @@ namespace ION.IOS.ViewController.RemoteAccess {
       switch (editingStyle) {
         case UITableViewCellEditingStyle.Delete:
 					await DeleteUserAccess(tableView, indexPath);
-          // remove the item from the underlying data source
+          //// remove the item from the underlying data source
           tableItems.RemoveAt(indexPath.Row);
-          // delete the row from the table
+          //// delete the row from the table
           tableView.DeleteRows(new NSIndexPath[] { indexPath }, UITableViewRowAnimation.Fade);
           break;
         case UITableViewCellEditingStyle.None:
@@ -103,16 +123,19 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				var userID = KeychainAccess.ValueForKey("userID");
 
 	    	if(selectedUser != null){
-	    		if(tableItems[indexPath.Row].id == Convert.ToInt32(userID) && ion.webServices.uploading){
+	    		if(tableItems[indexPath.Row].deviceID == UIDevice.CurrentDevice.IdentifierForVendor.ToString() && ion.webServices.uploading){
 						return;
 					}
-					if(selectedUser.Contains(tableItems[indexPath.Row].id)){
+					
+					if(selectedUser.Contains(tableItems[indexPath.Row])){
 						selectedUser.Clear();
 						NSUserDefaults.StandardUserDefaults.SetString("","viewedUser");
+						NSUserDefaults.StandardUserDefaults.SetString("","viewedLayout");
 					} else if (tableItems[indexPath.Row].online == 1) {
 						selectedUser.Clear();
-						selectedUser.Add(tableItems[indexPath.Row].id);
+						selectedUser.Add(tableItems[indexPath.Row]);
 						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].id.ToString(),"viewedUser");
+						NSUserDefaults.StandardUserDefaults.SetString(tableItems[indexPath.Row].layoutid.ToString(),"viewedLayout");
 					}
 					
 					tableView.ReloadData();
@@ -131,13 +154,13 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			data.Add("userID", userID);
 			data.Add("accessID", tableItems[indexPath.Row].id.ToString());
 			try{
-				//initiate the post request and get the request result in a byte array 
+				//// initiate the post request and get the request result in a byte array 
 				byte[] result = webServices.UploadValues(deleteUserUrl,data);
 				
-				//get the string conversion for the byte array
+				////get the string conversion for the byte array
 				var textResponse = Encoding.UTF8.GetString(result);
 				Console.WriteLine(textResponse);
-				//parse the text string into a json object to be deserialized
+				////parse the text string into a json object to be deserialized
 				JObject response = JObject.Parse(textResponse);
 				var success = response.GetValue("success");
 				

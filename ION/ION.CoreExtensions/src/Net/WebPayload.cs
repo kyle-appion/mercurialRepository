@@ -16,7 +16,8 @@ using ION.Core.Fluids;
 using System.Collections.ObjectModel;
 using Appion.Commons.Measure;
 using System.Text.RegularExpressions;
-
+using Foundation;
+using UIKit;
 
 namespace ION.Core.Net {
 	public sealed class PreserveAttribute : System.Attribute 
@@ -64,8 +65,10 @@ namespace ION.Core.Net {
 		public const string downloadLayoutsUrl = "http://portal.appioninc.com/App/downloadLayouts.php";
 		public const string forgotAccountUrl = "http://portal.appioninc.com/App/forgotUserPass.php";
 		public const string updateAccountUrl = "http://portal.appioninc.com/App/updateAccount.php";
+		public const string accountStatusUrl = "http://portal.appioninc.com/App/setAccountStatus.php";
 		public webOfflineEvent timedOut;
 		public webPauseEvent paused;
+		public sessionStateInfo stateInfo;
 		
 		public WebPayload() {
 			ion = AppState.context;
@@ -231,12 +234,38 @@ namespace ION.Core.Net {
 			}				
 	}
 	
+	public async Task<HttpResponseMessage> createSystemLayout(string ID, string uniqueID, string deviceName){
+		Console.WriteLine("Going to grab a layout id or create a new one for the unique device id " + uniqueID + " belonging to account " + ID + " and named " + deviceName);
+			try{
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+      var formContent = new FormUrlEncodedContent(new[]
+          {
+              new KeyValuePair<string, string>("createLayout", "true"),
+              new KeyValuePair<string, string>("userID", ID),
+              new KeyValuePair<string, string>("deviceID", uniqueID),
+              new KeyValuePair<string, string>("deviceName", deviceName),
+          });
+          
+			//////initiate the post request and get the request result
+			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
+			
+			var textReponse = await feedback.Content.ReadAsStringAsync();
+			Console.WriteLine(textReponse);
+			return feedback;
+		}  catch (Exception exception){
+			Console.WriteLine(exception);
+			return null;
+		}	
+		
+	}
+	
 	/// <summary>
 	/// Uploads the devices a user has connected and their relative layout for
 	/// the workbench and analyzer
 	/// </summary>
 	/// <returns>The system layout.</returns>
-	public async Task uploadSystemLayout(string ID){
+	public async Task<HttpResponseMessage> uploadSystemLayout(string ID, string layoutID){
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var uploadAnalyzer = ion.currentAnalyzer;
 		var uploadWorkbench = ion.currentWorkbench;
@@ -274,7 +303,7 @@ namespace ION.Core.Net {
 		string lowAttachedIndex = "0";
 		string highAttachedSN = "null";
 		string highAttachedIndex = "0";
-		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){			
+		if(uploadAnalyzer != null && uploadAnalyzer.sensorList != null){
 			var count = 1;                                                                    
 			foreach(var sensor in uploadAnalyzer.sensorList){
 				var gaugeSensor = sensor as GaugeDeviceSensor;
@@ -403,12 +432,23 @@ namespace ION.Core.Net {
 		}
 			 
     if (ion.locationManager.lastKnownLocation != null) {			      	
-      layoutJson += "],\"alt\":\"" + ion.locationManager.lastKnownLocation.altitude.amount + "\",";
-    }
-    
-    layoutJson += "\"state\":{\"log\":\"" + Convert.ToInt32(ion.dataLogManager.isRecording) + "\"}";
-    
-		layoutJson += "}";  
+      layoutJson += "],\"alt\":\"" + ion.locationManager.lastKnownLocation.altitude.amount + "\"";
+    } else {
+      layoutJson += "],\"alt\":\"0\"";
+		}
+        
+		layoutJson += "}";
+		////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
+		var platformInfo = ion.GetPlatformInformation();
+		
+		stateInfo = new sessionStateInfo(){
+			batteryLevel = platformInfo.batteryPercentage,
+			wifiStatus = Convert.ToInt32(platformInfo.wifiConnected),
+			isRecording = ion.dataLogManager.isRecording ? 1 : 0,
+			remainingMemory = platformInfo.freeMemory,
+		};
+		
+		//Console.WriteLine(JsonConvert.SerializeObject(stateInfo));
 		//Console.WriteLine(layoutJson);
 		try{
 			//Create the data package to send for the post request
@@ -418,6 +458,8 @@ namespace ION.Core.Net {
               new KeyValuePair<string, string>("uploadLayouts", "manager"),
               new KeyValuePair<string, string>("layoutJson", layoutJson),
               new KeyValuePair<string, string>("userID", userID),
+              new KeyValuePair<string, string>("layoutID", layoutID),
+              new KeyValuePair<string, string>("status", JsonConvert.SerializeObject(stateInfo)),
           });
           
 			//////initiate the post request and get the request result
@@ -425,8 +467,10 @@ namespace ION.Core.Net {
 
 			var textReponse = await feedback.Content.ReadAsStringAsync();
 			Console.WriteLine(textReponse);
+			return feedback;
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
+			return null;
 		}
 	}
 	/// <summary>
@@ -434,7 +478,7 @@ namespace ION.Core.Net {
 	/// to update the workbench,analyzer, and device manager
 	/// </summary>
 	/// <returns>The layouts.</returns>
-	public async Task DownloadLayouts(string ID, int loggingInterval){
+	public async Task DownloadLayouts(string ID, int loggingInterval, string viewingLayout){
 		//Console.WriteLine("downloading layout");
 		await Task.Delay(TimeSpan.FromMilliseconds(1));
 		var workbench = ion.currentWorkbench.storedWorkbench;
@@ -452,7 +496,8 @@ namespace ION.Core.Net {
           {
               new KeyValuePair<string, string>("downloadLayouts", "manager"),          		
               new KeyValuePair<string, string>("userID", viewingID),
-          });  
+              new KeyValuePair<string, string>("layoutid", viewingLayout),
+          });
           
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(downloadLayoutsUrl,formContent);
@@ -462,11 +507,13 @@ namespace ION.Core.Net {
 			//parse the text string into a json object to be deserialized
 			JObject response = JObject.Parse(textResponse);
 			var retrieved = response.GetValue("success").ToString();
-			
+						
 			if(retrieved == "true"){
+				var remoteStatus = JsonConvert.DeserializeObject<sessionStateInfo>(response.GetValue("status").ToString());
+				ion.SetRemotePlatformInformation(remoteStatus);
 				/////GRAB THE LAYOUT JSON
-				response = response.GetValue("layout") as JObject;
-				
+				response = JObject.Parse(response.GetValue("layout").ToString());
+			
 				var remoteAltitude = System.Math.Round(Convert.ToDouble(response.GetValue("alt").ToString()),2,MidpointRounding.AwayFromZero);
 				var localAltitude = System.Math.Round(ion.locationManager.lastKnownLocation.altitude.amount,2,MidpointRounding.AwayFromZero);
 				
@@ -474,8 +521,15 @@ namespace ION.Core.Net {
 						Console.WriteLine("Updating last known location altitude");
 						ion.locationManager.AttemptSetLocation(Units.Length.METER.OfScalar(remoteAltitude)); 
 				}
-				////////////////////////////SETTING UP DEVICE MANAGER BASED ON REMOTE DATA
+				
 				var dManager = response.GetValue("known");
+				var aManager = response.GetValue("alyzer");
+				var sensorOrder = response.GetValue("setup");
+				var aLowHigh = response.GetValue("LH");  
+				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
+				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());				
+				
+				////////////////////////////SETTING UP DEVICE MANAGER BASED ON REMOTE DATA
 				///create and update the device manager devices
 				foreach (var con in dManager) {
 					var deserializedToken = JsonConvert.DeserializeObject<connectedData>(con.ToString());
@@ -502,21 +556,38 @@ namespace ION.Core.Net {
 							newDevice.sensors[i].ForceSetMeasurement(new Scalar(UnitLookup.GetUnit(deserializedToken.sensors[i].unit),deserializedToken.sensors[i].measurement));
 						}
 						remoteDManager.Register(newDevice);  
-					}  
+					}
 				}
-				////////////////////////////SETTING UP THE ANALYZER BASED ON REMOTE DATA
-				var aManager = response.GetValue("alyzer");
-				var sensorOrder = response.GetValue("setup");
-				var aLowHigh = response.GetValue("LH");  
-				var deserializedPositions = JsonConvert.DeserializeObject<analyzerPositions>(sensorOrder.ToString());
-				var deserializedLowHigh = JsonConvert.DeserializeObject<analyzerLowHigh>(aLowHigh.ToString());
 				
+				//Console.WriteLine("Low attached: " + deserializedLowHigh.lowAttached);
+				//Console.WriteLine("High attached: " + deserializedLowHigh.highAttached);
 				//////SET THE LOW MANIFOLD BASED ON THE REMOTE DATA
 				if(deserializedLowHigh.lowSerialNumber != "null"){
 					if(ion.currentAnalyzer.lowSideManifold == null || ion.currentAnalyzer.lowSideManifold.primarySensor.name != deserializedLowHigh.lowSerialNumber){
 						var lowISerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowSerialNumber);
 						var lowDevice = remoteDManager[lowISerial] as GaugeDevice;
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,lowDevice.sensors[deserializedLowHigh.lowSerialIndex], ion.fluidManager.LoadFluidAsync(deserializedPositions.lfluid).Result);
+					}
+					////SET THE SECONDARY SENSOR FOR LOW AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
+ 
+					if(deserializedLowHigh.lowAttached != "null"){
+						////LOW SIDE HAS A SECONDARY SENSOR ALREADY
+						if(ion.currentAnalyzer.lowSideManifold.secondarySensor != null ){
+							////CHECK IF LOW SIDE SECONDARY SENSOR HAS CHANGED
+							if(ion.currentAnalyzer.lowSideManifold.secondarySensor.name != deserializedLowHigh.lowAttached){
+								var lowASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowAttached);
+								var lowADevice = remoteDManager[lowASerial] as GaugeDevice;							
+								ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(lowADevice.sensors[deserializedLowHigh.lowAttachedIndex]);
+								Console.WriteLine("Set low secondary sensor to " + lowADevice.serialNumber.rawSerial);
+							}
+						}
+						/////LOW SIDE DOESN'T HAVE A SECONDARY SENSOR YET. AUTOMATICALLY ADD IT
+						else { 
+							var lowASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.lowAttached);
+							var lowADevice = remoteDManager[lowASerial] as GaugeDevice;
+							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(lowADevice.sensors[deserializedLowHigh.lowAttachedIndex]);
+								Console.WriteLine("Unset Set low secondary sensor to " + lowADevice.serialNumber.rawSerial);
+						}
 					}
 				} else {
 					ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.Low,null,null);
@@ -527,15 +598,36 @@ namespace ION.Core.Net {
 					////HIGH SIDE MANIFOLD IS EMPTY OR DOESN'T MATCH THE REMOTE SERIAL NUMBER
 					if(ion.currentAnalyzer.highSideManifold == null || ion.currentAnalyzer.highSideManifold.primarySensor.name != deserializedLowHigh.highSerialNumber){
 						var highISerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highSerialNumber);
-						var highDevice = remoteDManager[highISerial] as GaugeDevice;											
+						var highDevice = remoteDManager[highISerial] as GaugeDevice;
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,highDevice.sensors[deserializedLowHigh.highSerialIndex], ion.fluidManager.LoadFluidAsync(deserializedPositions.hfluid).Result);
 					}
+					////SET THE SECONDARY SENSOR FOR HIGH AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
+					if(deserializedLowHigh.highAttached != "null"){
+						////HIGH SIDE HAS A SECONDARY SENSOR ALREADY
+						if(ion.currentAnalyzer.highSideManifold.secondarySensor != null){
+							////CHECK IF HIGH SIDE SECONDARY SENSOR HAS CHANGED
+							if(ion.currentAnalyzer.highSideManifold.secondarySensor.name != deserializedLowHigh.highAttached){
+								var highASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highAttached);
+								var highADevice = remoteDManager[highASerial] as GaugeDevice;
+								ion.currentAnalyzer.highSideManifold.SetSecondarySensor(highADevice.sensors[deserializedLowHigh.highAttachedIndex]);
+								Console.WriteLine("Set high secondary sensor to " + highADevice.serialNumber.rawSerial);
+							}
+						}
+						/////HIGH SIDE DOESN'T HAVE A SECONDARY SENSOR YET. AUTOMATICALLY ADD IT
+						else {
+								var highASerial = SerialNumberExtensions.ParseSerialNumber(deserializedLowHigh.highAttached);
+								var highADevice = remoteDManager[highASerial] as GaugeDevice;
+								ion.currentAnalyzer.highSideManifold.SetSecondarySensor(highADevice.sensors[deserializedLowHigh.highAttachedIndex]);
+								Console.WriteLine("Set high secondary sensor to " + highADevice.serialNumber.rawSerial);
+						}
+					}
 				} else {
-					if(ion.currentAnalyzer.highSideManifold != null){				
+					if(ion.currentAnalyzer.highSideManifold != null){
 						ion.currentAnalyzer.SetRemoteManifold(Analyzer.ESide.High,null,null);
 					}
 				}
-
+				
+				////////////////////////////SETTING UP THE ANALYZER BASED ON REMOTE DATA
 				foreach (var con in aManager) {
 					var deserializedToken = JsonConvert.DeserializeObject<analyzerSetup>(con.ToString());
 					
@@ -552,18 +644,6 @@ namespace ION.Core.Net {
 						gDevice.sensors[deserializedToken.sensorIndex].analyzerSlot = deserializedToken.position;
 						remoteAnalyzer.sensorList.Add(gDevice.sensors[deserializedToken.sensorIndex]);
 					}
-
-					////SET THE SECONDARY SENSOR FOR LOW AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
-					if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
-						//if(ion.currentAnalyzer.lowSideManifold.secondarySensor != null && ion.currentAnalyzer.lowSideManifold.secondarySensor.name != deserializedLowHigh.lowAttached){
-							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(gDevice.sensors[deserializedLowHigh.lowAttachedIndex]);
-						//}
-					}
-					
-					////SET THE SECONDARY SENSOR FOR HIGH AREA (CURRENTLY WILL ONLY BE A TEMPERATURE SENSOR)
-					if(device.serialNumber.rawSerial == deserializedLowHigh.lowAttached){
-						ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(gDevice.sensors[deserializedLowHigh.lowAttachedIndex]);
-					}
 				}
 				
 				remoteAnalyzer.sensorPositions = new List<int>(deserializedPositions.sensorPositions);
@@ -573,6 +653,7 @@ namespace ION.Core.Net {
 				remoteAnalyzer.highAccessibility = deserializedLowHigh.highAccessibility;
 				remoteAnalyzer.highSubviews = new List<string>(deserializedLowHigh.highSubviews);
 				
+				////REMOVE ANY SENSORS FROM THE ANALYZER THAT THE REMOTE DEVICE HAS REMOVED
 				foreach(var aSensor in remoteAnalyzer.sensorList.ToArray()){
 					if(!activeAnalyzerSensors.Contains(aSensor.name+aSensor.type)){
 						remoteAnalyzer.sensorList.Remove(aSensor);
@@ -580,8 +661,22 @@ namespace ION.Core.Net {
 					}
 				}
 
+				if(deserializedLowHigh.lowAttached == "null"){
+					////SECONDARY SENSOR SHOULD BE SET TO NULL IF IT ISN'T
+					if(ion.currentAnalyzer.lowSideManifold != null && ion.currentAnalyzer.lowSideManifold.secondarySensor != null){
+						Console.WriteLine("Set low secondary sensor to null");
+						ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(null);
+					}
+				}
+				if(deserializedLowHigh.highAttached == "null"){
+					////SECONDARY SENSOR SHOULD BE SET TO NULL IF IT ISN'T
+					if(ion.currentAnalyzer.highSideManifold != null && ion.currentAnalyzer.highSideManifold.secondarySensor != null){
+						Console.WriteLine("Set high secondary sensor to null");
+						ion.currentAnalyzer.highSideManifold.SetSecondarySensor(null);
+					}
+				}
 				////////////////////////////SETTING UP THE WORKBENCH BASED ON REMOTE DATA			
-				var wManager = response.GetValue("workB");
+				var wManager = response.GetValue("workB");  
 
 				foreach(var con in wManager){
 					var deserializedToken = JsonConvert.DeserializeObject<workbenchSetup>(con.ToString());
@@ -595,11 +690,11 @@ namespace ION.Core.Net {
 					if(existing != -1){
 						Manifold updateManifold = workbench.manifolds[existing];  
 						
-						if(managerSensor.type == updateManifold.primarySensor.type){
-							updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
-							updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
-						}
+						//if(managerSensor.type == updateManifold.primarySensor.type){
+						//	updateManifold.primarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+						//} else if (updateManifold.secondarySensor != null && managerSensor.type == updateManifold.secondarySensor.type) {
+						//	updateManifold.secondarySensor.ForceSetMeasurement(new Scalar(managerSensor.unit,managerSensor.measurement.amount));
+						//}
 						
 						if(updateManifold.ptChart.fluid.name != deserializedToken.fluidname){
 
@@ -609,7 +704,7 @@ namespace ION.Core.Net {
 							updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
 						}   
 						
-						if(deserializedToken.linkedSerial != "null" ){
+						if(deserializedToken.linkedSerial != "null" ){ 
 							if(updateManifold.secondarySensor != null){
 								///get current secondary sensor
 								var checkSensor = updateManifold.secondarySensor as GaugeDeviceSensor;
@@ -662,7 +757,7 @@ namespace ION.Core.Net {
 						SetupNewManifoldProperties(manualManifold,deserializedToken);
 					}					
 				}
-				
+				///REMOVE ANY WORKBENCH MANIFOLDS THAT ARE NOT IN THE REMOTE LIST
 				foreach(var manifold in workbench.manifolds.ToArray()){
 					if(!activeManifolds.Contains(manifold.primarySensor.name+manifold.primarySensor.type)){
 						workbench.Remove(manifold);
@@ -691,9 +786,11 @@ namespace ION.Core.Net {
 					timedOut = null;
 				}
 			}
+			
 		}  catch (Exception exception){
 			Console.WriteLine("Exception: " + exception);
 		}
+		//Console.WriteLine("Finished layout download");
 	}
 
 	public async void SetupNewManifoldProperties(Manifold manualManifold, workbenchSetup deserializedToken){
@@ -747,7 +844,31 @@ namespace ION.Core.Net {
 					break;
 			}
 		}		
-	}	
+	}
+	
+	public async Task<HttpResponseMessage> SetRemoteDataLog(string viewedUser, string viewedLayout, string islogging){
+		await Task.Delay(TimeSpan.FromMilliseconds(1));
+
+		try{
+			//Create the data package to send for the post request
+			//Key value pair for post variable check
+      var formContent = new FormUrlEncodedContent(new[]
+      {
+          new KeyValuePair<string, string>("updateLogging", "true"),          		
+          new KeyValuePair<string, string>("logStatus", islogging),          		
+          new KeyValuePair<string, string>("viewedUser", viewedUser),    
+          new KeyValuePair<string, string>("viewedLayout", viewedLayout),    
+      });
+          
+			//////initiate the post request and get the request result
+			var feedback = await client.PostAsync(accountStatusUrl,formContent);
+
+			return feedback;
+		}  catch (Exception exception){
+			Console.WriteLine("Exception: " + exception);  
+			return null;
+		}	
+	}
 	/// <summary>
 	/// Queries for everyone a user has viewing access for
 	/// </summary>
@@ -864,9 +985,8 @@ namespace ION.Core.Net {
 	/// <returns>The online status.</returns>
 	/// <param name="status">Status.</param>
 	/// <param name="rootVC">Root vc.</param>
-	public async Task<HttpResponseMessage> updateOnlineStatus(string status, string ID){
+	public async Task<HttpResponseMessage> updateOnlineStatus(string ID, string layoutID){
 			var userID = ID;
-
 	
 			try{
 				//Create the data package to send for the post request
@@ -875,7 +995,7 @@ namespace ION.Core.Net {
           {
               new KeyValuePair<string, string>("changeStatus", "true"),          		
               new KeyValuePair<string, string>("userID", userID),
-              new KeyValuePair<string, string>("status", status), 
+              new KeyValuePair<string, string>("layoutID", layoutID), 
           });
           
 			//////initiate the post request and get the request result
@@ -1023,13 +1143,13 @@ namespace ION.Core.Net {
 	/// <summary>
 	/// Kicks off the download process for remote viewing and manages it based on if a user quits or not
 	/// </summary>
-	public async void StartLayoutDownload(string viewingID, string userID, int loggingInterval){
+	public async void StartLayoutDownload(string viewingID, string userID, int loggingInterval, string viewingLayout){
 		//startedViewing = DateTime.Now;
 		while(downloading){
 		  //var timeDifference = DateTime.Now.Subtract(startedViewing).Minutes;
 
 			if(!string.IsNullOrEmpty(userID)){
-				await DownloadLayouts(viewingID,loggingInterval);
+				await DownloadLayouts(viewingID,loggingInterval,viewingLayout);
 				await Task.Delay(TimeSpan.FromSeconds(1));
 			}  else {
 				downloading = false;
@@ -1233,18 +1353,19 @@ namespace ION.Core.Net {
 		[JsonProperty("userID")]
 		public string userID {get;set;}		
 	}
-	[Preserve(AllMembers = true)]
-	public class sessionState {
-		public sessionState(){}
-		public sessionStateInfo info {get;set;}
-	
-	}
-	[Preserve(AllMembers = true)]
-	public class sessionStateInfo {
-		public sessionStateInfo(){}
-		[JsonProperty("log")]
-		public bool isRecording {get; set;}		
-	}
+
+	//[Preserve(AllMembers = true)]
+	//public class sessionStateInfo {
+	//	public sessionStateInfo(){}
+	//	[JsonProperty("log")]
+	//	public int isRecording {get; set;}
+	//	[JsonProperty("battery")]
+	//	public int batteryLevel {get; set;}
+	//	[JsonProperty("wifi")]
+	//	public int wifiStatus {get; set;}
+	//	[JsonProperty("memory")]
+	//	public double remainingMemory {get; set;}	
+	//}
 }
 
 

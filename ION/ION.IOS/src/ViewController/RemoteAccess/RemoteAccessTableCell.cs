@@ -12,6 +12,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 	public class RemoteAccessTableCell : UITableViewCell{
 	
 		public UILabel header;
+		public UILabel deviceInfo;
 		public UILabel status;
 		IosION ion;
 		WebPayload webServices;		
@@ -28,24 +29,25 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			
 			var currentlyViewing = NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser");
 	
-			header = new UILabel(new CGRect(0,0, .6 * cellWidth, cellHeight));
+			header = new UILabel(new CGRect(0,0, .5 * cellWidth, .5 * cellHeight));
 			header.TextAlignment = UITextAlignment.Left;
 			header.AdjustsFontSizeToFitWidth = true;
+
+			deviceInfo = new UILabel(new CGRect(0,.5 * cellHeight, .5 * cellWidth, .5 * cellHeight));
+			deviceInfo.Font = UIFont.ItalicSystemFontOfSize(18f);
+			deviceInfo.Text = user.deviceName;
+			deviceInfo.AdjustsFontSizeToFitWidth = true;
 			
-			status = new UILabel(new CGRect(.6 * cellWidth,0, .3 * cellWidth, cellHeight));
+			status = new UILabel(new CGRect(.5 * cellWidth,0, .3 * cellWidth, cellHeight));
 			status.TextAlignment = UITextAlignment.Left;
 			status.TextColor = UIColor.FromRGB(49, 111, 18);
 			status.AdjustsFontSizeToFitWidth = true;
 			
-			if(string.IsNullOrEmpty(user.displayName)){
-				header.Text = " " + user.email;
-			} else {
-				header.Text = " " + user.displayName;
-			}
+			header.Text = " " + user.displayName;
 			
 			if(Convert.ToInt32(KeychainAccess.ValueForKey("userID")) == user.id){
-				header.Text = " Your Feed";
-				if(webServices.uploading){   
+				header.Text = " Your Account";
+				if(webServices.uploading && UIDevice.CurrentDevice.IdentifierForVendor.ToString() == user.deviceID){   
 					status.TextColor = UIColor.Red;
 					status.Text = "Uploading";
 				} else {
@@ -57,13 +59,11 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			} else {
 				if(user.online == 1){
 					status.Text += "Viewable";
-				} else {
-					status.Text += "Offline";
-					status.TextColor = UIColor.Red;
 				}
 			}
 	
 			this.AddSubview(header);
+			this.AddSubview(deviceInfo);
 			this.AddSubview(status);
 		}
 		
