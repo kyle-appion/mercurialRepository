@@ -62,7 +62,6 @@
     <Compile Include="src\Measure\TestUnitSerialization.cs" />
     <Compile Include="src\Measure\TestVacuumUnits.cs" />
     <Compile Include="src\Fluid\TestPTChart.cs" />
-    <Compile Include="src\App\MockION.cs" />
     <Compile Include="src\Connections\MockConnectionHelper.cs" />
     <Compile Include="src\Measure\BaseTest.cs" />
     <Compile Include="src\Measure\TestPressure.cs" />
@@ -85,6 +84,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <Folder Include="src\App" />
     <Folder Include="src\Content\" />
     <Folder Include="src\Connections\" />
     <Folder Include="src\Sensors\Serialization\" />

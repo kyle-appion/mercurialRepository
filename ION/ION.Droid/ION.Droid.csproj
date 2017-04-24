@@ -315,6 +315,7 @@
     <Compile Include="src\Connections\Api21BleScanMethod.cs" />
     <Compile Include="src\Connections\ClassicScanMethod.cs" />
     <Compile Include="src\Connections\IScanMethod.cs" />
+    <Compile Include="src\App\BatteryBroadcastReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

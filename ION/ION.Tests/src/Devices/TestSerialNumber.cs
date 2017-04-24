@@ -44,7 +44,7 @@ namespace ION.TestFixtures.Devices {
     }
 //    */
 
-
+/*
     [Test]
     public void TestGaugeSerialNumber_BuildManufactureDate_Valid() {
       DateTime expected = new DateTime(2015, 6, 1);

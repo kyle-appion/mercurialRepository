@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net;
-using CoreFoundation;
-using SystemConfiguration;
-
-namespace ION.IOS.App {
+﻿namespace ION.IOS.App {
 
 using System;
 using System.Net;
@@ -22,9 +17,9 @@ using CoreFoundation;
     public string version { get; set; }
     public string api { get; set; }
     public string chipset { get; set; }
-    public int wifiConnected { get; set; }
+    public bool wifiConnected { get; set; }
     public int batteryPercentage { get; set; }
-    public double freeMemory { get; set; }
+    public long freeMemory { get; set; }
     public int loggingStatus { get; set; }
 
     public IOSPlatformInfo() {
@@ -39,21 +34,13 @@ using CoreFoundation;
       
 			NetworkReachabilityFlags flag;      
       Reachability.IsAdHocWiFiNetworkAvailable(out flag);
-      
-      if(flag == NetworkReachabilityFlags.Reachable){
-      	wifiConnected = 1;
-      } else {
-      	wifiConnected = 0;
-			}
-						
+
+      wifiConnected = flag == NetworkReachabilityFlags.Reachable;
       batteryPercentage = (int)(UIDevice.CurrentDevice.BatteryLevel * 100);
       
-			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
-			//freeSpace /= 1024;
-			//freeSpace /= 1024;
-			//freeSpace /= 1000;
-			
-    	freeMemory = Math.Round(freeSpace,2);
+			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes(Environment.GetFolderPath(Environment.SpecialFolder.Personal)).FreeSize;
+
+    	freeMemory = (long)Math.Round(freeSpace,2);
     }      
   }
   

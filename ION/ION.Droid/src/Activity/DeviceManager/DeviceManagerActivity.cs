@@ -220,6 +220,7 @@
 		/// Toggles whether or not the activity should perform a scan operation.
 		/// </summary>
 		private void ToggleScanning() {
+/*
       if (connectionManager.isScanning) {
         connectionManager.StopScan();
         handler.RemoveCallbacksAndMessages(null);
@@ -227,29 +228,26 @@
         connectionManager.StartScan();
         handler.PostDelayed(() => connectionManager.StopScan(), (long)TimeSpan.FromSeconds(12).TotalMilliseconds);
       }
-/*
+*/
       if (connectionManager.isScanning) {
         handler.RemoveCallbacksAndMessages(null);
         connectionManager.StopScan();
       } else {
         ClearPermissionStates();
         if (CheckPermissionsAndStates()) {
-          handler.Post(() => {
-            if (!connectionManager.StartScan()) {
-              Error(GetString(Resource.String.bluetooth_error_scan_failed));
-            } else {
+          if (!connectionManager.StartScan()) {
+            Error(GetString(Resource.String.bluetooth_error_scan_failed));
+          } else {
+            handler.PostDelayed(() => {
+              connectionManager.StopScan();
               handler.PostDelayed(() => {
-                connectionManager.StopScan();
-                if (HasWindowFocus) {
-                  connectionManager.StartClassicScan();
-                  handler.PostDelayed(() => connectionManager.StopScan(), 12000);
-                }
-              }, 8000);
-            }
-          });
+                connectionManager.StartClassicScan();
+                handler.PostDelayed(() => connectionManager.StopScan(), 12000);
+              }, 500);
+            }, 8000);
+          }
         }
       }
-*/
 		}
 
 		/// <summary>

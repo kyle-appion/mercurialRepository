@@ -22,7 +22,7 @@
     /// <summary>
     /// The delay before the connection disconnects because the service scan timed out.
     /// </summary>
-    private const long SERVICES_DELAY = 1000 * 45;
+    private const long SERVICES_DELAY = 1000 * 20;
     /// <summary>
     /// The message that is used to start a passive connection attempt for the connection.
     /// </summary>
@@ -158,59 +158,64 @@
 
     // Overridden from BluetoothGattCallback
     public sealed override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
-      Log.D(this, "The Le device is in state: " + newState);
-      switch (newState) {
-        case ProfileState.Connected: {
-            handler.RemoveCallbacksAndMessages(null);
-            connectionState = EConnectionState.Resolving;
-            lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
-
-            if (!gatt.DiscoverServices()) {
-              Log.E(this, "Failed to start service discovery for: " + device.Name);
-              Disconnect();
-            } else {
+      lock (locker) {
+        Log.D(this, "The Le device is in state: " + newState);
+        switch (newState) {
+          case ProfileState.Connected: {
+              handler.RemoveCallbacksAndMessages(null);
               connectionState = EConnectionState.Resolving;
-              handler.SendEmptyMessageDelayed(MSG_CHECK_SERVICES, SERVICES_DELAY);
-            }
-            break;
-          } // ProfileState.Connected
+              lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
 
-        case ProfileState.Connecting: {
-            break;
-          } // ProfileState.Connecting
+              if (!gatt.DiscoverServices()) {
+                Log.E(this, "Failed to start service discovery for: " + device.Name);
+                Disconnect();
+              } else {
+                connectionState = EConnectionState.Resolving;
+                handler.SendEmptyMessageDelayed(MSG_CHECK_SERVICES, SERVICES_DELAY);
+              }
+              break;
+            } // ProfileState.Connected
 
-        case ProfileState.Disconnected: {
-            Disconnect(true);
-            break;
-          } // ProfileState.Disconnected
+          case ProfileState.Connecting: {
+              break;
+            } // ProfileState.Connecting
 
-        case ProfileState.Disconnecting: {
-            break;
-          } // ProfileState.Disconnecting
+          case ProfileState.Disconnected: {
+              Disconnect(true);
+              break;
+            } // ProfileState.Disconnected
+
+          case ProfileState.Disconnecting: {
+              break;
+            } // ProfileState.Disconnecting
+        }
       }
     }
 
     // Overridden from BluetoothGattCallback
     public sealed override void OnServicesDiscovered(BluetoothGatt gatt, GattStatus status) {
-      if (ValidateServices()) {
-        handler.RemoveCallbacksAndMessages(null);
-        if (!OnConnectionSuccess()) {
-          Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
-          Disconnect();
-          return;
+      lock (locker) {
+        if (ValidateServices()) {
+          handler.RemoveCallbacksAndMessages(null);
+          if (!OnConnectionSuccess()) {
+            Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
+            Disconnect();
+            return;
+          } else {
+            connectionState = EConnectionState.Connected;
+          }
         } else {
-          connectionState = EConnectionState.Connected;
+          Log.E(this, "Failed to discover services. Disconnecting device.");
+          Disconnect();
         }
-      } else {
-        Log.E(this, "Failed to discover services. Disconnecting device.");
-        Disconnect();
       }
     }
 
     // Implemented for Handler.ICallback
     public bool HandleMessage(Message msg) {
-      switch (msg.What) {
-        case MSG_GO_PASSIVE: {
+      lock (locker) {
+        switch (msg.What) {
+          case MSG_GO_PASSIVE: {
             if (isConnected) {
               Disconnect(false);
             }
@@ -218,17 +223,18 @@
             return ConnectPassive();
           } // MSG_GO_PASSIVE
 
-        case MSG_CHECK_SERVICES: {
+          case MSG_CHECK_SERVICES: {
             if (!ValidateServices()) {
               Log.E(this, "Failed to validate services; disconnecting with intention of an immediate reconnect");
-              Disconnect(true);
+              Disconnect(false);
             }
             return true;
           } // MSG_CHECK_SERVICES
 
-        default: {
+          default: {
             return false;
           }
+        }
       }
     }
 

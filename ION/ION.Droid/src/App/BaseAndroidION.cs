@@ -135,15 +135,12 @@
 
 		// Implemented from IION
 		public IONPortalService portal { get; set; }
-/*
-			get {
-				if (__portal == null) {
-					__portal = new IONPortalService();
-				}
-				return __portal;
-			}
-		} IONPortalService __portal;
-*/
+
+    // Implemented for IION
+    public IPlatformInfo localDevice { get; set; }
+    // Implemented for IION
+    public IPlatformInfo remoteDevice { get; set; }
+
 
 		/// <summary>
 		/// The handler that actions are posted to the main thread with.
@@ -359,6 +356,15 @@
 		public IAppDump CreateApplicationDump() {
 			return new BaseAppDump(this, new AndroidPlatformInfo(context));
 		}
+
+    // Implemented for IION
+    public IPlatformInfo GetPlatformInformation() {
+      return new AndroidPlatformInfo(context);
+    }
+
+    // Implemented for IION
+    public void SetRemotePlatformInformation(sessionStateInfo pi) {
+    }
 
 		// TODO ahodder@appioninc.com: Implement? See kyle@appioninc.com for more info
 		public Task setRemoteDeviceManager() {

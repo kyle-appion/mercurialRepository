@@ -5,6 +5,7 @@
 
 	using Android.App;
 	using Android.Content;
+  using Android.Net;
   using Android.OS;
 	using Android.Views;
 	using Android.Util;
@@ -19,6 +20,10 @@
     public string api { get; set; }
     public string chipset { get; set; }
 
+    public bool wifiConnected { get; set; }
+    public int batteryPercentage { get; set; }
+    public long freeMemory { get; set; }
+
 		public float density { get; set; }
 		public float dpWidth { get; set; }
 		public float dpHeight { get; set; }
@@ -30,6 +35,10 @@
       version = Build.VERSION.Release;
       api = Build.VERSION.SdkInt + "";
       chipset = Build.Board;
+
+      var cm = context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+
+      wifiConnected = cm.ActiveNetworkInfo.Type == ConnectivityType.Wifi;
 
 			GetScreenDetails(context);
 		}
@@ -65,6 +74,28 @@
 			dpWidth = dm.WidthPixels / density;
 			dpHeight = dm.HeightPixels / density;
 		}
+/*
+    private int GetBatteryLevelApi21(Context context) {
+      var bm = context.GetSystemService(Context.BatteryService) as BatteryManager;
+      return bm.GetIntProperty(BatteryManager.BatteryPropertyCapacity);
+    }
+
+    private int GetBatteryLevelViaBroadcast(Context context) {
+//      var br = new BroadcastReceiver(
+    }
+
+    private class BatteryBroadcastReceiver : BroadcastReceiver {
+      public int battery;
+
+      public override void OnReceive(Context context, Intent intent) {
+        var level = intent.GetIntExtra(BatteryManager.ExtraLevel, -1);
+        if (level != -1) {
+          battery = level;
+          found = true;
+        }
+      }
+    }
+*/
   }
 }
 
