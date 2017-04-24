@@ -27,20 +27,6 @@
     /// </summary>
     /// <value>The App.</value>
     public static IION context { get; set; }
-      /*
-      get {
-        if (__context == null) {
-          string msg = "Critical failure: Application attempted to retrieve ION context, yet the application was not running.";
-          Log.C("AppState.ION", msg);
-          throw new Exception(msg);
-        }
-        return __context;
-      }
-      set {
-        __context = value;
-      }
-    } private static IION __context;
-    */
   } // End ION
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);

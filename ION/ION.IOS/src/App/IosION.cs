@@ -339,9 +339,9 @@
 				remoteDevice = new IOSPlatformInfo();
 			}
 			remoteDevice.batteryPercentage = remoteStatus.batteryLevel;
-			remoteDevice.wifiConnected = remoteStatus.wifiStatus;
-			remoteDevice.freeMemory = remoteStatus.remainingMemory;
-			remoteDevice.loggingStatus = remoteStatus.isRecording;
+			remoteDevice.wifiConnected = remoteStatus.wifiStatus == 1;
+      remoteDevice.freeMemory = (long)remoteStatus.remainingMemory;
+			remoteDevice.loggingStatus = remoteStatus.isRecording == 1;
 		}
 
     /// <summary>

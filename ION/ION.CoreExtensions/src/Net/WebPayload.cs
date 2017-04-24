@@ -15,9 +15,6 @@ using ION.Core.Sensors.Properties;
 using ION.Core.Fluids;
 using System.Collections.ObjectModel;
 using Appion.Commons.Measure;
-using System.Text.RegularExpressions;
-using Foundation;
-using UIKit;
 
 namespace ION.Core.Net {
 	public sealed class PreserveAttribute : System.Attribute 

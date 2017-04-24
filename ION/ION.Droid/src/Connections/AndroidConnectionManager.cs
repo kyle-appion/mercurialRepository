@@ -24,7 +24,17 @@
     // Implemented for IConnectionManager
     public bool isEnabled { get { return bm.Adapter.IsEnabled; } }
     // Implemented for IConnectionManager
-    public bool isScanning { get { return bleScanMethod.isScanning || classicScanMethod.isScanning; } }
+    public bool isScanning { 
+      get {
+        return __isScanning;
+      }
+      private set {
+        __isScanning = value;
+        if (onScanStateChanged != null) {
+          onScanStateChanged(this);
+        }
+      }
+    } bool __isScanning;
 
     /// <summary>
     /// The application context.
@@ -86,9 +96,7 @@
     public bool StartScan() {
       lock (locker) {
         if (bleScanMethod.StartScan()) {
-          if (onScanStateChanged != null) {
-            onScanStateChanged(this);
-          }
+          isScanning = true;
           return true;
         } else {
           return false;
@@ -101,9 +109,7 @@
       lock (locker) {
         bleScanMethod.StopScan();
         classicScanMethod.StopScan();
-        if (onScanStateChanged != null) {
-          onScanStateChanged(this);
-        }
+        isScanning = false;
       }
     }
 
@@ -116,7 +122,12 @@
         bleScanMethod.StopScan();
       }
 
-      return classicScanMethod.StartScan();
+      if (classicScanMethod.StartScan()) {
+        isScanning = true;
+        return true;
+      } else {
+        return false;
+      }
     }
 
 
