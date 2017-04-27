@@ -35,11 +35,7 @@ namespace ION.IOS.ViewController.Workbench {
 		public PlotView plotView;
 		public CategoryAxis BAX;
 		public LinearAxis LAX;
-    
-    public List<double> primaryPoints;
-    public List<double> secondaryPoints;
-    public List<DateTime> timeRange;
-		
+    		
     private RateOfChangeRecord record {
       get {
         return __record;
@@ -71,7 +67,7 @@ namespace ION.IOS.ViewController.Workbench {
       
       ///SETUP THE TRENDING GRAPH
 			plotView = new PlotView(new CGRect(0,35, this.Bounds.Width, 55)){
-				Model = CreatePlotModel(),
+				Model = CreatePlotModel(record.sensorProperty as RateOfChangeSensorProperty),
         BackgroundColor = UIColor.Clear,
 			};      
       plotView.Layer.BorderWidth = 1f;
@@ -114,9 +110,9 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
     
-    public PlotModel CreatePlotModel(){
+    public PlotModel CreatePlotModel(RateOfChangeSensorProperty roc){
     	Console.WriteLine("Creating roc plotmodel");
-				var plotModel = new PlotModel();
+			var plotModel = new PlotModel();
 
 			plotModel.Background = OxyColors.Transparent;
 			plotModel.PlotAreaBackground = OxyColors.White;
@@ -126,13 +122,20 @@ namespace ION.IOS.ViewController.Workbench {
 
 			/// The bottom axis of the graph will be index based. Each measurement is one "tick"
       /// Corresponsding date indexes will provide the plot points
+      DateTime BMAX;
+      DateTime BMIN = roc.primarySensorPoints[0].date;
+      if(roc.primarySensorPoints.Count > 0){
+        BMAX = roc.primarySensorPoints[(roc.primarySensorPoints.Count - 1)].date;
+      } else {
+        BMAX = DateTime.Now;
+      }
 
       BAX = new CategoryAxis {
         Position = AxisPosition.Bottom,
-        Maximum = 50,
-        AbsoluteMaximum = 50,
-        Minimum = 0,
-        AbsoluteMinimum = -1,
+        Maximum = BMAX.ToFileTime() - 1000000,
+        AbsoluteMaximum = BMAX.ToFileTime() - 1000000,
+        Minimum = BMIN.ToFileTime() - 1000000,
+        AbsoluteMinimum = BMIN.ToFileTime() - 1000000,
         IntervalLength = 1,
         IsAxisVisible = false,
         IsZoomEnabled = false,
@@ -170,6 +173,7 @@ namespace ION.IOS.ViewController.Workbench {
 			};			
 
     	var markSize = 0.0;
+      
       var primarySeries = new LineSeries {
         MarkerType = MarkerType.Circle,
         MarkerSize = markSize,
@@ -182,18 +186,14 @@ namespace ION.IOS.ViewController.Workbench {
       var secondarySeries = new LineSeries {
         MarkerType = MarkerType.Circle,
         MarkerSize = markSize,
-        MarkerStroke = OxyColors.Blue,
-        MarkerFill = OxyColors.Blue,
+        MarkerStroke = OxyColors.Red,
+        MarkerFill = OxyColors.Red,
         LineStyle = LineStyle.Solid,
-        Color = OxyColors.Blue,
+        Color = OxyColors.Red,
       };
-
-     for(int v = 0, index = 1; v < 51; v+=2, index++){
-
-        primarySeries.Points.Add(new DataPoint(index,v));
-      }
       
       plotModel.Series.Add (primarySeries);
+      plotModel.Series.Add (secondarySeries);
       
 			plotModel.Axes.Add(BAX);      
 			plotModel.Axes.Add(LAX);			
