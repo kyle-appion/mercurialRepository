@@ -23,7 +23,7 @@ namespace ION.IOS.Viewcontroller.RemoteAccess {
 				remoteLoggingButton = new UIButton(new CGRect(0,0,controlView.Bounds.Width,.5 * controlView.Bounds.Height));
 				disconnectButton = new UIButton(new CGRect(0, .5 * controlView.Bounds.Height,controlView.Bounds.Width, .5 * controlView.Bounds.Height));
 			
-				if(ion.remoteDevice.loggingStatus == 1){
+				if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus == 1){
 					NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
 					remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
 				} else {

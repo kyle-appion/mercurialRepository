@@ -193,7 +193,6 @@ namespace ION.IOS.ViewController.CloudSessions {
 					var textResponse = await feedback.Content.ReadAsStringAsync();
 					JObject response = JObject.Parse(textResponse);
 					var success = response.GetValue("success").ToString();
-					var logging = response.GetValue("logging").ToString();
 					
 					if(success.ToString() == "false"){
 						var window = UIApplication.SharedApplication.KeyWindow;
@@ -201,7 +200,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 					
 						webServices.uploading = false;
 						
-						var errorMessage = response.GetValue("message").ToString();
+						var errorMessage = response.GetValue("message").ToString();   
 						
 						var alert = UIAlertController.Create ("End Upload", errorMessage, UIAlertControllerStyle.Alert);
 						alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
@@ -210,17 +209,15 @@ namespace ION.IOS.ViewController.CloudSessions {
 						uploadButton = new UIBarButtonItem(startButton);
 						this.NavigationItem.RightBarButtonItem = uploadButton;											
 					} else {
+            var logging = response.GetValue("logging").ToString();
+          
 						/////CHECK LOGGING STATUS TO BEGIN DATA LOGGING FROM REMOTE CONTROL
-						if(logging == "1"){
-							if(!ion.dataLogManager.isRecording){
-								await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-							}
+						if(logging == "1" && !ion.dataLogManager.isRecording){
+							await ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
 						} 
 						/////CHECK LOGGING STATUS TO END DATA LOGGING FROM REMOTE CONTROL
-						else if (logging == "0"){
-							if(ion.dataLogManager.isRecording){
-								await ion.dataLogManager.StopRecording();
-							}
+						else if (logging == "0" && ion.dataLogManager.isRecording){
+							await ion.dataLogManager.StopRecording();
 						}
 					}			
 				} else {

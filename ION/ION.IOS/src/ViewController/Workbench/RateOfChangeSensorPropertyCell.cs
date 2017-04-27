@@ -1,23 +1,24 @@
 namespace ION.IOS.ViewController.Workbench {
 
-	using System;
-	using System.Threading.Tasks;
+  using System;
+  using System.Threading.Tasks;
 
-	using Foundation;
-	using UIKit;
+  using Foundation;
+  using UIKit;
 
-	using ION.Core.Content;
-	using ION.Core.Sensors;
-	using ION.Core.Sensors.Properties;
+  using ION.Core.Content;
+  using ION.Core.Sensors;
+  using ION.Core.Sensors.Properties;
 
-	using ION.IOS.Util;
-	using OxyPlot.Xamarin.iOS;
-	using CoreGraphics;
-	using OxyPlot;
-	using OxyPlot.Axes;
-	using OxyPlot.Series;
+  using ION.IOS.Util;
+  using OxyPlot.Xamarin.iOS;
+  using CoreGraphics;
+  using OxyPlot;
+  using OxyPlot.Axes;
+  using OxyPlot.Series;
+  using System.Collections.Generic;
 
-	public class RateOfChangeRecord : SensorPropertyRecord {
+  public class RateOfChangeRecord : SensorPropertyRecord {
     public override WorkbenchTableSource.ViewType viewType {
       get {
         return WorkbenchTableSource.ViewType.RateOfChange;
@@ -34,6 +35,10 @@ namespace ION.IOS.ViewController.Workbench {
 		public PlotView plotView;
 		public CategoryAxis BAX;
 		public LinearAxis LAX;
+    
+    public List<double> primaryPoints;
+    public List<double> secondaryPoints;
+    public List<DateTime> timeRange;
 		
     private RateOfChangeRecord record {
       get {
@@ -165,7 +170,16 @@ namespace ION.IOS.ViewController.Workbench {
 			};			
 
     	var markSize = 0.0;
-      var series = new LineSeries {
+      var primarySeries = new LineSeries {
+        MarkerType = MarkerType.Circle,
+        MarkerSize = markSize,
+        MarkerStroke = OxyColors.Blue,
+        MarkerFill = OxyColors.Blue,
+        LineStyle = LineStyle.Solid,
+        Color = OxyColors.Blue,
+      };
+      
+      var secondarySeries = new LineSeries {
         MarkerType = MarkerType.Circle,
         MarkerSize = markSize,
         MarkerStroke = OxyColors.Blue,
@@ -176,10 +190,10 @@ namespace ION.IOS.ViewController.Workbench {
 
      for(int v = 0, index = 1; v < 51; v+=2, index++){
 
-        series.Points.Add(new DataPoint(index,v));
+        primarySeries.Points.Add(new DataPoint(index,v));
       }
       
-      plotModel.Series.Add (series);
+      plotModel.Series.Add (primarySeries);
       
 			plotModel.Axes.Add(BAX);      
 			plotModel.Axes.Add(LAX);			

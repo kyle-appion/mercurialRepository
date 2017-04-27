@@ -19,17 +19,17 @@ namespace ION.IOS.ViewController.Analyzer
 		
     public LowHighArea (UIView mainView, AnalyzerViewController ViewController, sensorGroup analyzerSensors)
 		{
-      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.27 * mainView.Bounds.Height), ViewController, analyzerSensors.viewList);
+      lowArea = new lowHighSensor(new CGRect(.028 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.028 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.25 * mainView.Bounds.Height), ViewController, analyzerSensors.viewList);
       lowArea.location = "low";
       lowArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       lowArea.LabelSubview.BackgroundColor = UIColor.Blue;
       
-			highArea = new lowHighSensor (new CGRect (.507 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.507 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.27 * mainView.Bounds.Height), ViewController, analyzerSensors.viewList);
+			highArea = new lowHighSensor (new CGRect (.507 * mainView.Bounds.Width, .45 * mainView.Bounds.Height, .465 * mainView.Bounds.Width, .202 * mainView.Bounds.Height), new CGRect(.507 * mainView.Bounds.Width,.652 * mainView.Bounds.Height,.465 * mainView.Bounds.Width,.25 * mainView.Bounds.Height), ViewController, analyzerSensors.viewList);
 			highArea.location = "high";
 			highArea.Connection.Image = UIImage.FromBundle("ic_bluetooth_disconnected");
       highArea.LabelSubview.BackgroundColor = UIColor.Red;
       
-      hideView(lowArea);
+      hideView(lowArea);  
       hideView(highArea);
 		}
 		

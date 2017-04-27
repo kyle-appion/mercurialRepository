@@ -102,10 +102,12 @@ namespace ION.IOS.Connections {
           foreach (CBCharacteristic characteristic in service.Characteristics) {
             if (READ_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               readCharacteristic = characteristic;
+              device.SetNotifyValue(true, readCharacteristic);
             } else if (WRITE_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               writeCharacteristic = characteristic;
             } else if (NAME_CHARACTERISTIC.characteristic.Equals(characteristic.UUID)) {
               nameCharacteristic = characteristic;
+              device.SetNotifyValue(true, nameCharacteristic);
             }
           }
         }

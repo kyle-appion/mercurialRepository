@@ -4,7 +4,7 @@
   using System.Collections.Generic;
   using System.Threading.Tasks;
 
-	using Appion.Commons.Util;
+  using Appion.Commons.Util;
 
   using ION.Core.Database;
   using ION.Core.Devices.Protocols;
@@ -20,11 +20,15 @@
     public static async Task<List<IDevice>> QueryForAllDevicesAsync(this IONDatabase db) {
       var ret = new List<IDevice>();
 
-	      var devices = await db.QueryForAllAsync<DeviceRow>();
-	      Log.D("DeviceDatabaseExtensions", "got all devices");
-	      foreach (var d in devices) {
-	        ret.Add(await db.ReconstructDevice(d));
-	      }
+      var devices = await db.QueryForAllAsync<DeviceRow>();
+      Log.D("DeviceDatabaseExtensions", "got all devices");
+      foreach (var d in devices) {
+        try {
+          ret.Add(await db.ReconstructDevice(d));
+        } catch (Exception e) {
+          Log.E(typeof(DeviceDatabaseExtensions).Name, "Failed to resonstruct device", e);
+        }
+      }
 
       return ret;
     }    
@@ -83,10 +87,9 @@
       }
 
       var serialNumber = device.serialNumber.ParseSerialNumber();
-			var ret = db.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, (EProtocolVersion)device.protocol);
-			ret.name = device.name;
+      var ret = db.ion.deviceManager.CreateDevice(serialNumber, device.connectionAddress, (EProtocolVersion)device.protocol);
+      ret.name = device.name;
       return Task.FromResult(ret);
     }
   }
 }
-

@@ -243,11 +243,12 @@
     /// <param name="primarySensor">Primary sensor.</param>
     public Manifold(Sensor primarySensor) {
       this.primarySensor = primarySensor;
-      this.primarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
-
+      //this.primarySensor.onSensorStateChangedEvent += OnManifoldSensorChanged;
+      
 			var s = primarySensor as GaugeDeviceSensor;
 			if (s != null) {
 				s.device.onDeviceEvent += OnDeviceEvent;
+        s.onSensorStateChangedEvent += OnManifoldSensorChanged;
 			}
     }
 
