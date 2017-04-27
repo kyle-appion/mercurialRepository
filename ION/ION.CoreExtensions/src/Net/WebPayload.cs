@@ -68,7 +68,7 @@ namespace ION.Core.Net {
 		public const string accountStatusUrl = "http://portal.appioninc.com/App/setAccountStatus.php";
 		public webOfflineEvent timedOut;
 		public webPauseEvent paused;
-		public sessionStateInfo stateInfo;
+		public sessionStateInfo stateInfo; 
 		
 		public WebPayload() {
 			ion = AppState.context;
