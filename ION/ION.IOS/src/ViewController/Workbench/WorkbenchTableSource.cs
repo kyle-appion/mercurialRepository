@@ -256,7 +256,7 @@ namespace ION.IOS.ViewController.Workbench {
       } else if (record is AddRecord){
 			 	return 58;
 			} else if (record is RateOfChangeRecord){
-				return 90;
+				return 120;
 			} else {
         return 48;
       }
