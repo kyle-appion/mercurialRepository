@@ -237,6 +237,16 @@ namespace ION.Core.Net {
 	public async Task<HttpResponseMessage> createSystemLayout(string ID, string uniqueID, string deviceName){
 		Console.WriteLine("Going to grab a layout id or create a new one for the unique device id " + uniqueID + " belonging to account " + ID + " and named " + deviceName);
 			try{
+      ////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
+      var platformInfo = ion.GetPlatformInformation();
+      
+      stateInfo = new sessionStateInfo(){
+        batteryLevel = platformInfo.batteryPercentage,
+        wifiStatus = Convert.ToInt32(platformInfo.wifiConnected),
+        isRecording = ion.dataLogManager.isRecording ? 1 : 0,
+        remainingMemory = platformInfo.freeMemory,
+      };
+    
 			//Create the data package to send for the post request
 			//Key value pair for post variable check
       var formContent = new FormUrlEncodedContent(new[]
@@ -245,13 +255,14 @@ namespace ION.Core.Net {
               new KeyValuePair<string, string>("userID", ID),
               new KeyValuePair<string, string>("deviceID", uniqueID),
               new KeyValuePair<string, string>("deviceName", deviceName),
+              new KeyValuePair<string, string>("status", JsonConvert.SerializeObject(stateInfo)),
           });
           
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 			
 			var textReponse = await feedback.Content.ReadAsStringAsync();
-			Console.WriteLine(textReponse);
+			//Console.WriteLine(textReponse);
 			return feedback;
 		}  catch (Exception exception){
 			Console.WriteLine(exception);
@@ -420,7 +431,7 @@ namespace ION.Core.Net {
 			workbench = workbenchArray,
 			altitude = ion.locationManager.lastKnownLocation.altitude.amount
 		};
-		Console.WriteLine(JsonConvert.SerializeObject(completedLayout));
+		//Console.WriteLine(JsonConvert.SerializeObject(completedLayout));
 		////UPDATE THE DEVICE INFORMATION BEFORE SENDING UP REMOTE STATE INFORMATION
 		var platformInfo = ion.GetPlatformInformation();
 		
@@ -493,6 +504,7 @@ namespace ION.Core.Net {
 				///GET THE COMMAND STATE INFORMATION ABOUT A REMOTE DEVICE I.E. DATA LOGGING, WIFI STATUS, DEVICE BATTERY LEVEL				
 				var remoteStatus = JsonConvert.DeserializeObject<sessionStateInfo>(response.GetValue("status").ToString());
 				ion.SetRemotePlatformInformation(remoteStatus);
+
 				/////GRAB THE LAYOUT JSON
 				response = JObject.Parse(response.GetValue("layout").ToString());
 			

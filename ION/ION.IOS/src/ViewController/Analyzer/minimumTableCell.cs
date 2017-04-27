@@ -29,8 +29,8 @@ namespace ION.IOS.ViewController.Analyzer {
       cellHeader.AdjustsFontSizeToFitWidth = true;
 
       cellReading = lhSensor.minReading;
-      if (lhSensor.minType.Equals("hold")) {
-        lhSensor.min = Convert.ToDouble(lhSensor.LabelMiddle.Text);
+      if (lhSensor.minType.Equals("hold") && lhSensor.currentSensor != null) {
+        lhSensor.min = lhSensor.currentSensor.measurement.amount;
         lhSensor.minType = lhSensor.LabelBottom.Text;
       }
 

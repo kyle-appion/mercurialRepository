@@ -5,18 +5,19 @@
   using System.Linq;
   using System.Threading.Tasks;
 
-	using MoreLinq;
+  using MoreLinq;
 
-	using Appion.Commons.Util;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Database;
+  using ION.Core.Content;
 
   /// <summary>
   /// The manager that will allow easy interactions with how devices will log there data.
   /// </summary>
   public class DataLogManager : IManager {
-
+  
     public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 
     /// <summary>
@@ -28,6 +29,8 @@
         return currentSession != null;
       }
     }
+    
+    public TimeSpan defaultInterval;
 
     /// <summary>
     /// The application context that this manager lives in.
@@ -75,11 +78,11 @@
         }
       }
     }
-
+    
     /// <summary>
     /// Informs the DataLogManager that is should begin a new recording session.
     /// </summary>
-    public Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {
+    public Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {      
       return Task.Factory.StartNew(() => {
         if (currentSession != null) {
           return false;
@@ -100,7 +103,7 @@
         }
 
         currentSession = new LoggingSession(ion, session, interval);
-
+        ion.NotifyStateChanged(IonState.EType.DataLog); 
         return true;      
       });
     }
@@ -110,7 +113,7 @@
     /// </summary>
     /// <returns>True if a session was saved, false otherwise. Note: we will return false if the manager was not
     /// currently recording.</returns>
-    public Task<bool> StopRecording() {
+    public Task<bool> StopRecording() {      
       return Task.Factory.StartNew(() => {
         Log.D(this, "Stopping Recording");
         if (currentSession == null) {
@@ -136,7 +139,7 @@
 				Log.D(this, "Disposing current session");
       	currentSession.Dispose();
       	currentSession = null;
-				
+        ion.NotifyStateChanged(IonState.EType.DataLog);				
       	return ret;
       });
     }

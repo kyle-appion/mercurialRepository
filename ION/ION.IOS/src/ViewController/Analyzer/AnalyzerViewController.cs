@@ -206,7 +206,7 @@ namespace ION.IOS.ViewController.Analyzer {
 	      NavigationItem.RightBarButtonItems = new UIBarButtonItem[]{button2,button};
 				layoutAnalyzer();
 			}
-
+      ion.onIonStateChanged += updateLogging;
 			viewAnalyzerContainer.AddSubview(blockerView);
     }
 
@@ -216,18 +216,30 @@ namespace ION.IOS.ViewController.Analyzer {
     /// </summary>
     /// <param name="sender">Sender.</param>
     /// <param name="e">E.</param>
-    public void recordDevices(){
+    public async void recordDevices(){
       var recordingMessage = "";
-      if (ion.dataLogManager.isRecording) {
-        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.StopRecording();
-        recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
-      } else {
-        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-        dataRecord.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
+      if(webServices.uploading){
+        if (ion.dataLogManager.isRecording) {
+          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+          ion.dataLogManager.StopRecording();
+          recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
+        } else {
+          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
+          ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+          recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
+        }
+      } else {      
+        if (ion.dataLogManager.isRecording) {
+          dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+          dataRecord.BackgroundColor = UIColor.Clear;
+          ion.dataLogManager.StopRecording();
+          recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
+        } else {
+          dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+          dataRecord.BackgroundColor = UIColor.Clear;
+          ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+          recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
+        }
       }
       showRecordingToast(recordingMessage);
     }
@@ -1403,31 +1415,39 @@ namespace ION.IOS.ViewController.Analyzer {
 						}  
 					}
 					
-					if(analyzer.lowAccessibility != "low"){
+					if(analyzer.lowAccessibility != "low" && analyzer.lowSideManifold != null){
 						if(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier != "low"){
 							////LOW SIDE ASSOCIATION DOESN'T MATCH THE REMOTE LOW SIDE ASSOCIATION AND NEEDS TO BE SWITCHED
-							if(lowHighSensors.lowArea.currentSensor.name != analyzer.lowSideManifold.primarySensor.name){
+							if(analyzer.lowSideManifold != null && lowHighSensors.lowArea.currentSensor != null && lowHighSensors.lowArea.currentSensor.name != analyzer.lowSideManifold.primarySensor.name){
 								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
 								var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.lowArea.snapArea.AccessibilityIdentifier)];
 	
 								AnalyserUtilities.RemoveLHAssociation(previousSensor);
 								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
-								AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
+                ///ONLY IF REMOTE SENSOR IS A GAUGE SENSOR DO WE ADD IT TO THE LOW AREA
+                if(newSensor.currentSensor != null){                
+								  AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
+                }
 							}
 							
 							//////CHECK IF REMOTE LOW SIDE HAS A SECONDARY SENSOR
-							if(analyzer.lowSideManifold.secondarySensor == null){
-								lowHighSensors.lowArea.manifold.SetSecondarySensor(null);
-							} else if (lowHighSensors.lowArea.manifold.secondarySensor == null){
-								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
-							} else if (lowHighSensors.lowArea.manifold.secondarySensor != analyzer.lowSideManifold.secondarySensor){
-								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
-							}
+              if(analyzer.lowSideManifold != null && lowHighSensors.lowArea.manifold != null){
+  							if(analyzer.lowSideManifold.secondarySensor == null){
+  								lowHighSensors.lowArea.manifold.SetSecondarySensor(null);
+  							} else if (lowHighSensors.lowArea.manifold.secondarySensor == null){
+  								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
+  							} else if (lowHighSensors.lowArea.manifold.secondarySensor != analyzer.lowSideManifold.secondarySensor){
+  								lowHighSensors.lowArea.manifold.SetSecondarySensor(analyzer.lowSideManifold.secondarySensor);
+  							}
+              }
 						////LOW SIDE IS CURRENTLY UNASSOCIATED AND NEEDS TO MATCH THE REMOTE ASSOCIATION
 						} else {
 								lowHighSensors.lowArea.snapArea.AccessibilityIdentifier = analyzer.lowAccessibility;
 								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.lowAccessibility)];
-								AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);	
+                ///ONLY IF REMOTE SENSOR IS A GAUGE SENSOR DO WE ADD IT TO THE LOW AREA
+                if(newSensor.currentSensor != null){                
+								  AnalyserUtilities.addLHSensorAssociation("low",newSensor, lowHighSensors);
+                }	
 						}
 						confirmSubviews("low");
 					} else {
@@ -1439,40 +1459,48 @@ namespace ION.IOS.ViewController.Analyzer {
 									lowHighSensors.lowArea.manifold.SetSecondarySensor(null);
 									lowHighSensors.lowArea.LabelMiddle.Text = Strings.Analyzer.HIGHUNDEFINED;
 									AnalyserUtilities.RemoveLHAssociation(clearSensor);
-									lowHighSensors.hideView(lowHighSensors.lowArea);
+									lowHighSensors.hideView(lowHighSensors.lowArea);   
 									break;
 								}
 							}
 						}
 					}
 					//////CHECK IF HIGH SIDE SHOULD HAVE AN ASSOCIATION
-					if(analyzer.highAccessibility != "high"){
+					if(analyzer.highAccessibility != "high" && analyzer.highSideManifold != null){
 						////CHECK IF HIGH SIDE IS ALREADY ASSOCIATED TO A SENSOR MOUNT
 						if(lowHighSensors.highArea.snapArea.AccessibilityIdentifier != "high"){						
 							////CHECK IF THE CURRENT HIGH ASSOCIATION DOESN'T MATCH THE REMOTE ASSOCIATION
-							if(lowHighSensors.highArea.currentSensor.name != analyzer.highSideManifold.primarySensor.name){
+							if(analyzer.highSideManifold != null && lowHighSensors.highArea.currentSensor != null && lowHighSensors.highArea.currentSensor.name != analyzer.highSideManifold.primarySensor.name){
 								lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
 								var previousSensor = analyzerSensors.viewList[Convert.ToInt32(lowHighSensors.highArea.snapArea.AccessibilityIdentifier)];
 	
 								AnalyserUtilities.RemoveLHAssociation(previousSensor);
 								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
-								AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+                ///ONLY IF REMOTE SENSOR IS A GAUGE SENSOR DO WE ADD IT TO THE HIGH AREA
+                if(newSensor.currentSensor != null){                
+								  AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+                }
 							}
 
 							//////CHECK IF REMOTE HIGH SIDE HAS A SECONDARY SENSOR
-							if(analyzer.highSideManifold.secondarySensor == null){
-								lowHighSensors.highArea.manifold.SetSecondarySensor(null);
-							} else if (lowHighSensors.highArea.manifold.secondarySensor == null){
-								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
-							} else if (lowHighSensors.highArea.manifold.secondarySensor != analyzer.highSideManifold.secondarySensor){
-								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
-							}
+              if(analyzer.highSideManifold != null && lowHighSensors.highArea.manifold != null){
+  							if(analyzer.highSideManifold.secondarySensor == null){
+  								lowHighSensors.highArea.manifold.SetSecondarySensor(null);
+  							} else if (lowHighSensors.highArea.manifold.secondarySensor == null){
+  								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
+  							} else if (lowHighSensors.highArea.manifold.secondarySensor != analyzer.highSideManifold.secondarySensor){
+  								lowHighSensors.highArea.manifold.SetSecondarySensor(analyzer.highSideManifold.secondarySensor);
+  							}
+              }
 						} 
 						////HIGH SIDE IS CURRENTLY UNASSOCIATED AND NEEDS TO MATCH THE REMOTE ASSOCIATION
 						else {
 								lowHighSensors.highArea.snapArea.AccessibilityIdentifier = analyzer.highAccessibility;
 								var newSensor = analyzerSensors.viewList[Convert.ToInt32(analyzer.highAccessibility)];
-								AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+                ///ONLY IF REMOTE SENSOR IS A GAUGE SENSOR DO WE ADD IT TO THE HIGH AREA
+                if(newSensor.currentSensor != null){
+								  AnalyserUtilities.addLHSensorAssociation("high",newSensor, lowHighSensors);
+                }
 						}
 						confirmSubviews();
 					} else {
@@ -1612,16 +1640,32 @@ namespace ION.IOS.ViewController.Analyzer {
         Log.E(this, "Failed to create pdf", e);
       }
     }
+    
+    public void updateLogging(IonState.EType eventType){   
+      InvokeOnMainThread ( () => {        
+        if (ion.dataLogManager.isRecording) {
+          dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+          dataRecord.BackgroundColor = UIColor.Clear;
+          var recordingMessage = Util.Strings.Analyzer.RECORDINGSTARTED;
+          showRecordingToast(recordingMessage);
+        } else {
+          dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+          dataRecord.BackgroundColor = UIColor.Clear;
+          var recordingMessage = Util.Strings.Analyzer.RECORDINGSTOPPED;
+          showRecordingToast(recordingMessage);
+        }
+      });
+    }
 		
     public override void ViewDidAppear(bool animated) {
 	    if(!remoteMode){
-	      if (ion.dataLogManager.isRecording) {
-	        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-	        dataRecord.BackgroundColor = UIColor.Clear;
-	      } else {
-	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-	        dataRecord.BackgroundColor = UIColor.Clear;
-	      }
+  	      if (ion.dataLogManager.isRecording) {
+  	        dataRecord.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+  	        dataRecord.BackgroundColor = UIColor.Clear;
+  	      } else {
+  	        dataRecord.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+  	        dataRecord.BackgroundColor = UIColor.Clear;
+  	      }
 	    } else {
 				if(webServices.downloading){
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEVIEW;
@@ -1638,7 +1682,6 @@ namespace ION.IOS.ViewController.Analyzer {
 					}
 				}					
 			}
-	    //viewAnalyzerContainer.SetNeedsDisplay();
     }
 	}
 }

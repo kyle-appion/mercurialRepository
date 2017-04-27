@@ -60,6 +60,8 @@
 		public event OnAnalyzerChanged onAnalyzerChanged;
 		
 		public event RemotePlatformChanged remotePlatformChanged;
+    
+    public event OnIonStateChanged onIonStateChanged;
 
     // Overridden from IION
     public string name { get { return GetDisplayName(); } }
@@ -255,9 +257,6 @@
 			} 
 			set{
 				__remoteDevice = value;
-				if(__remoteDevice != null){
-					remotePlatformChanged(value);
-				}
 			}
 		} IPlatformInfo __remoteDevice;
     /// <summary>
@@ -350,11 +349,24 @@
 		public void SetRemotePlatformInformation(Core.App.sessionStateInfo remoteStatus){
 			if(remoteDevice == null){
 				remoteDevice = new IOSPlatformInfo();
+        remotePlatformChanged(remoteDevice);
 			}
-			remoteDevice.batteryPercentage = remoteStatus.batteryLevel;
-			remoteDevice.wifiConnected = remoteStatus.wifiStatus;
-			remoteDevice.freeMemory = remoteStatus.remainingMemory;
-			remoteDevice.loggingStatus = remoteStatus.isRecording;
+      if(remoteDevice.batteryPercentage != remoteStatus.batteryLevel){
+			  remoteDevice.batteryPercentage = remoteStatus.batteryLevel;
+        remotePlatformChanged(remoteDevice);
+      }
+      if(remoteDevice.wifiConnected != remoteStatus.wifiStatus){
+			  remoteDevice.wifiConnected = remoteStatus.wifiStatus;
+        remotePlatformChanged(remoteDevice);
+      }
+      if(Math.Round(remoteDevice.freeMemory,2) != Math.Round(remoteStatus.remainingMemory,2)){
+			  remoteDevice.freeMemory = remoteStatus.remainingMemory;
+        remotePlatformChanged(remoteDevice);
+      }
+      if(remoteDevice.loggingStatus != remoteStatus.isRecording){
+			  remoteDevice.loggingStatus = remoteStatus.isRecording;
+        remotePlatformChanged(remoteDevice);
+      }
 		}
 
     /// <summary>
@@ -494,6 +506,10 @@
 				locationManager.StopAutomaticLocationPolling();
 			}
 		}
+    
+    public void NotifyStateChanged(IonState.EType e){
+      onIonStateChanged(e);
+    }
   } // End IosION
 
   internal class IosUnits : IUnits {

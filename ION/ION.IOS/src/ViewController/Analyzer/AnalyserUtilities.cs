@@ -2917,8 +2917,10 @@ namespace ION.IOS.ViewController.Analyzer
 				activeSensor.topLabel.TextColor = UIColor.White;
 				lhArea.lowArea.currentSensor = activeSensor.currentSensor;
 				lhArea.lowArea.manifold = new Manifold(activeSensor.currentSensor);
-				lhArea.lowArea.manifold.SetSecondarySensor(ion.currentAnalyzer.lowSideManifold.secondarySensor);
-				lhArea.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.lowSideManifold.ptChart.fluid);
+        if(ion.currentAnalyzer.lowSideManifold != null){
+  				lhArea.lowArea.manifold.SetSecondarySensor(ion.currentAnalyzer.lowSideManifold.secondarySensor);
+  				lhArea.lowArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.lowSideManifold.ptChart.fluid);
+        }
 				lhArea.lowArea.LabelTop.Text = activeSensor.currentSensor.name;        	
 				lhArea.lowArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
 				lhArea.lowArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();
@@ -2939,8 +2941,12 @@ namespace ION.IOS.ViewController.Analyzer
 				activeSensor.topLabel.TextColor = UIColor.White;
 				lhArea.highArea.currentSensor = activeSensor.currentSensor;
 				lhArea.highArea.manifold = new Manifold(activeSensor.currentSensor);
-				lhArea.highArea.manifold.SetSecondarySensor(ion.currentAnalyzer.highSideManifold.secondarySensor);
-				lhArea.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.highSideManifold.ptChart.fluid);
+        
+        if(ion.currentAnalyzer.highSideManifold != null){
+  				lhArea.highArea.manifold.SetSecondarySensor(ion.currentAnalyzer.highSideManifold.secondarySensor);
+  				lhArea.highArea.manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew,ion.currentAnalyzer.highSideManifold.ptChart.fluid);
+        }
+        
 				lhArea.highArea.LabelTop.Text = activeSensor.currentSensor.name;          	
 				lhArea.highArea.LabelMiddle.Text = SensorUtils.ToFormattedString(activeSensor.currentSensor.type, activeSensor.currentSensor.measurement, false);
 				lhArea.highArea.LabelBottom.Text = activeSensor.currentSensor.unit.ToString();

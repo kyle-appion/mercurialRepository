@@ -167,7 +167,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="dm">Dm.</param>
     private void OnDeviceManagerEvent(DeviceManagerEvent e) {
-      Log.D(this, "OnDeviceManagerEvent");
+      //Log.D(this, "OnDeviceManagerEvent");
       switch (e.type) {
         case DeviceManagerEvent.EType.ScanStarted: // Fallthrough
         case DeviceManagerEvent.EType.ScanStopped: {

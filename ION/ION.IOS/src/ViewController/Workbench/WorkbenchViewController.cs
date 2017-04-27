@@ -153,6 +153,8 @@ namespace ION.IOS.ViewController.Workbench {
 				Console.WriteLine("workbench for ion isn't created for some reason");
 			}
 			workbench.onWorkbenchEvent += OnWorkbenchEvent;
+      ion.onIonStateChanged += updateLogging;
+      
     }    
 
     // Overridden from BaseIONViewController
@@ -260,19 +262,32 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
 
-    private void RecordDevices(){
+    private async void RecordDevices(){
       var recordingMessage = "";
-      if (ion.dataLogManager.isRecording) {
-        recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
-        recordButton.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.StopRecording();
-        recordingMessage = "Session recording has stopped";
+      if(webServices.uploading){
+        Console.WriteLine("Workbench currently uploading and want to update datalogging for userid " + KeychainAccess.ValueForKey("userID") + " and layoutid " + KeychainAccess.ValueForKey("layoutid"));
+        if (ion.dataLogManager.isRecording) {
+          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"0");
+          ion.dataLogManager.StopRecording();
+          recordingMessage = "Session recording has stopped";
+        } else {
+          await webServices.SetRemoteDataLog(KeychainAccess.ValueForKey("userID"),KeychainAccess.ValueForKey("layoutid"),"1");
+          ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+          recordingMessage = "Session recording has started";
+        }
       } else {
-        recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
-        recordButton.BackgroundColor = UIColor.Clear;
-        ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
-        recordingMessage = "Session recording has started";
-      }
+        if (ion.dataLogManager.isRecording) {
+          recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+          recordButton.BackgroundColor = UIColor.Clear;
+          ion.dataLogManager.StopRecording();
+          recordingMessage = "Session recording has stopped";
+        } else {
+          recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+          recordButton.BackgroundColor = UIColor.Clear;
+          ion.dataLogManager.BeginRecording(TimeSpan.FromSeconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval")));
+          recordingMessage = "Session recording has started";
+        }
+       }
       showRecordingToast(recordingMessage);
     }
 
@@ -325,5 +340,19 @@ namespace ION.IOS.ViewController.Workbench {
 			await ion.setOriginalDeviceManager();
 			rootVC.setMainMenu();
 		}
+    
+     public void updateLogging(IonState.EType eventType){
+      InvokeOnMainThread ( () => {
+        if (ion.dataLogManager.isRecording) {
+          recordButton.SetImage(UIImage.FromBundle("ic_stop"), UIControlState.Normal);
+          var recordingMessage = "Session recording has started";
+          showRecordingToast(recordingMessage);
+        } else {
+          var recordingMessage = "Session recording has stopped";
+          recordButton.SetImage(UIImage.FromBundle("ic_record"), UIControlState.Normal);
+          showRecordingToast(recordingMessage);
+        }
+      });
+    }
   }
 }

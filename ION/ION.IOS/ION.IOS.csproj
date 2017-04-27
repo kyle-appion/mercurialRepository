@@ -675,6 +675,10 @@
     <ImageAsset Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\ic_arrow_leftwhite_long.pdf" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_power.imageset\Contents.json" />
     <ImageAsset Include="Resources\Images.xcassets\ic_nav_power.imageset\ic_nav_power.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\wireless_connected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\Contents.json" />
+    <ImageAsset Include="Resources\Images.xcassets\wireless_connected.imageset\wifi-256.pdf" />
+    <ImageAsset Include="Resources\Images.xcassets\wireless_disconnected.imageset\wifi-1-bar-256.pdf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
@@ -1144,6 +1148,8 @@
     <Folder Include="Resources\Images.xcassets\ic_arrow_rightwhite_long.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_arrow_leftwhite_long.imageset\" />
     <Folder Include="Resources\Images.xcassets\ic_nav_power.imageset\" />
+    <Folder Include="Resources\Images.xcassets\wireless_connected.imageset\" />
+    <Folder Include="Resources\Images.xcassets\wireless_disconnected.imageset\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
