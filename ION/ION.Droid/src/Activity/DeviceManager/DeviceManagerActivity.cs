@@ -15,7 +15,6 @@
 	using Appion.Commons.Util;
 
   using ION.Core.Devices;
-  using ION.Core.Devices.Connections;
   using ION.Core.Devices.Filters;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
@@ -133,8 +132,6 @@
     // Overridden from Activity
     protected override void OnStart() {
       base.OnStart();
-      connectionManager.StartScan();
-      handler.PostDelayed(() => connectionManager.StopScan(), 10000);
     }
 
     // Overridden from Activity
@@ -147,6 +144,8 @@
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
       adapter.Reload();
+
+      connectionManager.StartScan();
     }
 
     // Overridden from Activity
@@ -156,7 +155,7 @@
 			ion.deviceManager.ForgetFoundDevices();
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
-      ion.deviceManager.connectionManager.StopScan();
+      connectionManager.StopScan();
       handler.RemoveCallbacksAndMessages(null);
     }
 
@@ -190,10 +189,10 @@
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
-				ToggleScanning();
+				ToggleClassicScan();
       }));
 
-      if (ion.deviceManager.connectionManager.isScanning) {
+      if (connectionManager.isClassicScanning) {
         scanView.SetText(Resource.String.scanning);
         SetProgressBarIndeterminateVisibility(true);
       } else {
@@ -219,32 +218,28 @@
 		/// <summary>
 		/// Toggles whether or not the activity should perform a scan operation.
 		/// </summary>
-		private void ToggleScanning() {
-/*
-      if (connectionManager.isScanning) {
-        connectionManager.StopScan();
-        handler.RemoveCallbacksAndMessages(null);
-      } else {
-        connectionManager.StartScan();
-        handler.PostDelayed(() => connectionManager.StopScan(), (long)TimeSpan.FromSeconds(12).TotalMilliseconds);
-      }
-*/
-      if (connectionManager.isScanning) {
-        handler.RemoveCallbacksAndMessages(null);
-        connectionManager.StopScan();
-      } else {
-        ClearPermissionStates();
-        if (CheckPermissionsAndStates()) {
-          if (!connectionManager.StartScan()) {
-            Error(GetString(Resource.String.bluetooth_error_scan_failed));
-          } else {
+    private void ToggleClassicScan() {
+      ClearPermissionStates();
+      if (CheckPermissionsAndStates()) {
+        if (!connectionManager.StartScan()) {
+          Error(GetString(Resource.String.bluetooth_error_scan_failed));
+        } else {
+          if (connectionManager.isClassicScanning) {
+            connectionManager.StopScan();
             handler.PostDelayed(() => {
-              connectionManager.StopScan();
+              connectionManager.StartScan();
+            }, 500);
+          } else {
+            connectionManager.StopScan();
+            handler.PostDelayed(() => {
+              connectionManager.StartClassicScan();
               handler.PostDelayed(() => {
-                connectionManager.StartClassicScan();
-                handler.PostDelayed(() => connectionManager.StopScan(), 12000);
-              }, 500);
-            }, 8000);
+                connectionManager.StopScan();
+                handler.PostDelayed(() => {
+                  connectionManager.StopScan();
+                }, 500);
+              }, 12000);
+            }, 500);
           }
         }
       }

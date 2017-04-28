@@ -63,6 +63,8 @@
     public string name { get { return GetDisplayName(); } }
     // Overridden from IION
     public string version { get { return GetVersion(); } }
+    // Overridden for IION
+    public Guid applicationIdentifier { get { return Guid.Empty; } }
 
     // Overridden from IION
     public IONDatabase database {

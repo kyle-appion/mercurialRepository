@@ -21,7 +21,7 @@
     /// <summary>
     /// The status of the remote device.
     /// </summary>
-		[JsonProperty("state")]
+		[JsonProperty("status")]
     public RemoteStatus status;
 		[JsonProperty("alyzer")]
 		public RemoteSensorMount[] analyzer;

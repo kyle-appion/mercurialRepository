@@ -22,6 +22,8 @@
 
   using ION.Core.App;
 
+  using ION.CoreExtensions.Net.Portal;
+
   using ION.Droid.App;
   using ION.Droid.Dialog;
   using ION.Droid.Fragments;
@@ -390,11 +392,11 @@
 		/// The test function that is used to create a remote ion for testing and development puposes.
 		/// </summary>
 		/// <returns>The remote.</returns>
-		public async Task<bool> StartRemoteIONAsync(string userId) {
+		public async Task<bool> StartRemoteIONAsync(ConnectionData connectionData) {
 			bool result = false;
 
 			try {
-				result = await service.InitRemoteION(userId);
+				result = await service.InitRemoteION(connectionData);
 			} catch (Exception e) {
 				Log.E(this, "Failed to start RemoteION", e);
 			}

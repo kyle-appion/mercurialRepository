@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.App {
+namespace ION.Droid.App {
 
 	using System;
 	using System.Threading.Tasks;
@@ -36,10 +36,10 @@
 		private const long REQUEST_LAYOUT_INTERVAL = 1000;
 
 		/// <summary>
-		/// The id of the user that we are downloading from.
+		/// The connection data describing the connection that we are remoting from.
 		/// </summary>
 		/// <value>The user identifier.</value>
-		public string userId { get; set; }
+		public ConnectionData connectionData { get; set; }
 		/// <summary>
 		/// Whether or not the app is currently uploading its state to the server.
 		/// </summary>
@@ -49,8 +49,8 @@
 		private HandlerThread handlerThread;
 		private Handler remoteHandler;
 
-		public RemoteION(AppService context, string userId) : base(context) {
-			this.userId = userId;
+		public RemoteION(AppService context, ConnectionData connectionData) : base(context) {
+      this.connectionData = connectionData;
 		}
 
 		// Overridden from BaseAndroidION
@@ -86,7 +86,7 @@
 			handlerThread.Start();
 			remoteHandler = new Handler(handlerThread.Looper);
 
-			remoteHandler.PostDelayed(async () => await CloneRemote(), REQUEST_LAYOUT_INTERVAL);
+			remoteHandler.PostDelayed(async () => await CloneRemote(connectionData), REQUEST_LAYOUT_INTERVAL);
 
 			return true;
 		}
@@ -101,12 +101,12 @@
 			remoteHandler = null;
 		}
 
-		private async Task CloneRemote() {
-			await portal.CloneFromRemote(this, userId);
+		private async Task CloneRemote(ConnectionData connection) {
+			await portal.RequestCloneFromRemote(this, connection);
 			// TODO ahodder@appioninc.com: Sometimes the user would dispose the remote instance in the middle of a remote download
 			if (remoteHandler != null) {
 				remoteHandler.PostDelayed(async () => {
-					await CloneRemote();
+					await CloneRemote(connection);
 				}, REQUEST_LAYOUT_INTERVAL);
 			}
 		}

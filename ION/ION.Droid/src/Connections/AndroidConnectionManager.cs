@@ -35,6 +35,11 @@
         }
       }
     } bool __isScanning;
+    /// <summary>
+    /// Queries whether or not the connection manager is performing a classic scan.
+    /// </summary>
+    /// <value><c>true</c> if is classic scanning; otherwise, <c>false</c>.</value>
+    public bool isClassicScanning { get { return classicScanMethod.isScanning; } }
 
     /// <summary>
     /// The application context.

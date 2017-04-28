@@ -58,9 +58,9 @@
 			return await SetION(new AndroidION(this));
 		}
 
-		public async Task<bool> InitRemoteION(string userId) {
+		public async Task<bool> InitRemoteION(ConnectionData connectionData) {
 			Log.D(this, "Creating the RemoteION");
-			return await SetION(new RemoteION(this, userId));
+			return await SetION(new RemoteION(this, connectionData));
 		}
 
 		// Overridden from Service

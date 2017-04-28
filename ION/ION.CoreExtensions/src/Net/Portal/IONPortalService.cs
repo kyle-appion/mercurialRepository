@@ -111,6 +111,11 @@
     private const string JSON_ACCESS_CODE_DELETE_USER = "deleteUserAccess";
     private const string JSON_ACCESS_CODE_DELETE_VIEWER = "deleteViewerAccess";
 
+    private const string JSON_CREATE_LAYOUT = "createLayout";
+    private const string JSON_DEVICE_ID = "deviceID";
+    private const string JSON_DEVICE_NAME = "deviceName";
+    private const string JSON_LAYOUT_ID = "layoutid";
+
     private const string JSON_ACTION_CLONE_REMOTE = "downloadLayouts";
 
 		private const string PORTAL_DATE_FORMAT = "yy-MM-dd HH:mm:ss";
@@ -134,6 +139,48 @@
 		/// <value><c>true</c> if is uploading; otherwise, <c>false</c>.</value>
 		public bool isUploading { get { return appStateUploadCancellationToken != null; } }
 
+    /// <summary>
+    /// The connections that the currently logged in user is following.
+    /// </summary>
+    /// <value>The following connections.</value>
+    public IEnumerable<ConnectionData> followingConnections {
+      get {
+        return __followingConnections.AsReadOnly();
+      }
+      set {
+        __followingConnections.Clear();
+        __followingConnections.AddRange(value);
+      }
+    } List<ConnectionData> __followingConnections = new List<ConnectionData>();
+
+    /// <summary>
+    /// The connections that are currently following the currently logged in user;
+    /// </summary>
+    /// <value>The following connections.</value>
+    public IEnumerable<ConnectionData> followerConnections {
+      get {
+        return __followerConnections.AsReadOnly();
+      }
+      set {
+        __followerConnections.Clear();
+        __followerConnections.AddRange(value);
+      }
+    } List<ConnectionData> __followerConnections = new List<ConnectionData>();
+
+    /// <summary>
+    /// The connections known by the currently logged in user that are online.
+    /// </summary>
+    /// <value>The following connections.</value>
+    public IEnumerable<ConnectionData> onlineConnections {
+      get {
+        return __onlineConnections.AsReadOnly();
+      }
+      set {
+        __onlineConnections.Clear();
+        __onlineConnections.AddRange(value);
+      }
+    } List<ConnectionData> __onlineConnections = new List<ConnectionData>();
+
 		public string loginPortalUrl {
 			get {
 				if (isLoggedIn) {
@@ -151,7 +198,16 @@
 		public string displayName { get; private set; }
 		public string userEmail { get; private set; }
 
-		private string userPassword { get; set; }
+    /// <summary>
+    /// The user's password. 
+    /// </summary>
+    // TODO ahodder@appioninc.com: think of a way to get rid of this.
+    private string userPassword;
+    /// <summary>
+    /// The current layout if for the device. Used to identify the current layout for the user.
+    /// If null, then RequestLayoutIdAsync must be called.
+    /// </summary>
+    private string layoutId;
 		private CancellationTokenSource appStateUploadCancellationToken;
 		private Task uploadLayoutTask;
 
@@ -235,8 +291,7 @@
 		/// </summary>
 		/// <param name="username">Username.</param>
 		/// <param name="password">Password.</param>
-		public async Task<PortalResponse> LoginAsync(string username, string password) {
-			Log.D(this, "Attempting to login to the portal server {username: " + username + ", password: " + password + "}");
+		public async Task<PortalResponse> RequestLoginAsync(string username, string password) {
 			// The form that is used to login to the remote server
 			var formContent = new FormUrlEncodedContent(new[] {
 				new KeyValuePair<string, string>(LOGIN_USER, RETURNING),
@@ -246,9 +301,7 @@
 
 			try {
 				var response = await client.PostAsync(URL_LOGIN_USER, formContent);
-				Log.D(this, "now we have a response from the internet");
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "LoginAsync:\n" + content);
 				var json = JObject.Parse(content);
 				var isUserFound = json[JSON_FOUND].ToString();
 
@@ -261,7 +314,7 @@
 					isLoggedIn = true;
 					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
 				} else {
-					Log.D(this, "Failed to log user into the portal: " + json[JSON_MESSAGE].ToString());
+					Log.E(this, "Failed to log user into the portal: " + json[JSON_MESSAGE].ToString());
 					// We did not find the user
 					isLoggedIn = false;
 					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString(), EError.ServerError);
@@ -277,7 +330,7 @@
 		/// </summary>
 		/// <returns>The user password async.</returns>
 		/// <param name="email">Email.</param>
-		public async Task<PortalResponse> ResetUserPasswordAsync(string email) {
+		public async Task<PortalResponse> RequestResetUserPasswordAsync(string email) {
 			try {
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_FORGOT_PASSWORD, TRUE),
@@ -286,7 +339,6 @@
 
 				var response = await client.PostAsync(URL_FORGOT_ACCOUNT, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "ResetUserPasswordAsync:\n" + content);
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -306,7 +358,7 @@
 		/// </summary>
 		/// <returns>The password.</returns>
 		/// <param name="newPassword">New password.</param>
-		public async Task<PortalResponse> UpdatePassword(string newPassword) {
+		public async Task<PortalResponse> RequestUpdatePassword(string newPassword) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -315,12 +367,11 @@
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_UPDATE_PASSWORD, NEW),
 					new KeyValuePair<string, string>(JSON_NEW_PASSWORD, newPassword),
-					new KeyValuePair<string, string>(JSON_USER_ID, this.loginId),
+					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
 				});
 
 				var response = await client.PostAsync(URL_UPDATE_ACCOUNT, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "UpdatePassword:\n" + content);
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -340,7 +391,7 @@
 		/// </summary>
 		/// <returns>The sessions.</returns>
 		/// <param name="sessions">Sessions.</param>
-		public async Task<PortalResponse> UploadSessionsAsync(IION ion, IEnumerable<SessionRow> sessions) {
+		public async Task<PortalResponse> RequestUploadSessionsAsync(IION ion, IEnumerable<SessionRow> sessions) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -410,7 +461,7 @@
 		/// <returns>The access code async.</returns>
 		// TODO ahodder@appioninc.com: This query could use error codes.
 		// Ie. currently, if the user mashes generate new access codes, then we will fail with no relavent [localized] message.
-		public async Task<PortalResponse> GenerateAccessCodeAsync() {
+		public async Task<PortalResponse> RequestAccessCodeAsync() {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -424,7 +475,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_CREATE, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "GenerateAccessCodeAsync:\n" + content);
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -442,7 +492,7 @@
 		/// Queries all of the access codes that are pending access from the user.
 		/// </summary>
 		/// <returns>The pending access codes async.</returns>
-		public async Task<PortalResponse<List<AccessCode>>> QueryPendingAccessCodesAsync() {
+		public async Task<PortalResponse<List<AccessCode>>> RequestPendingAccessCodesAsync() {
 			if (!isLoggedIn) {
 				return new PortalResponse<List<AccessCode>>(null, "", EError.NotLoggedIn);
 			}
@@ -455,7 +505,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_PENDING, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "QueryPendingAccessCodeAsync:\n" + content);
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -491,7 +540,7 @@
 		/// </summary>
 		/// <returns>The access code async.</returns>
 		/// <param name="accessCode">Access code.</param>
-		public async Task<PortalResponse> DeleteAccessCodeAsync(string accessCode) {
+		public async Task<PortalResponse> RequestDeleteAccessCodeAsync(string accessCode) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -505,7 +554,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_DELETE, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "DeleteAccessCodeAsync:\n" + content);
 				var json = JObject.Parse(content);
 				if (CheckResponseForSuccess(json)) {
 					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
@@ -538,7 +586,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_CONFIRM, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "SubmitAccessCodeAsync:\n" + content);
 				var json = JObject.Parse(content);
 				if (CheckResponseForSuccess(json)) {
 					return new PortalResponse(response, json.GetValue(JSON_MESSAGE).ToString());
@@ -556,7 +603,7 @@
 		/// </summary>
 		/// <returns>The access code async.</returns>
 		/// <param name="code">Code.</param>
-		public async Task<PortalResponse> ConfirmAccessCodeAsync(AccessCode code) {
+		public async Task<PortalResponse> RequestConfirmAccessCodeAsync(AccessCode code) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -571,7 +618,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_CONFIRM, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "ConfirmAccessCodeAsync:\n");
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json) || "duplicate".Equals(json.GetValue(JSON_SUCCESS).ToString())) {
@@ -586,63 +632,11 @@
 		}
 
 		/// <summary>
-		/// Queries the list of users of whom the current user is following.
-		/// </summary>
-		/// <returns>The following async.</returns>
-		public async Task<PortalResponse<List<ConnectionData>>> QueryFollowingAsync() {
-			if (!isLoggedIn) {
-				return new PortalResponse<List<ConnectionData>>(null, "", EError.NotLoggedIn);
-			}
-
-			try {
-				var formContent = new FormUrlEncodedContent(new [] {
-					new KeyValuePair<string, string>(JSON_RETRIEVE_ACCESS, JSON_MANAGER),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
-				});
-
-				var response = await client.PostAsync(URL_RETRIEVE_ACCESS, formContent);
-				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "QueryFollowingAsync:\n" + content);
-				var json = JObject.Parse(content);
-
-				if (CheckResponseForSuccess(json)) {
-					var ret = new List<ConnectionData>();
-
-					foreach (var userTok in json.GetValue(JSON_VIEWING)) {
-						try {
-							var user = userTok as JObject;
-
-							var usid = user.GetValue(JSON_ID_CAP).ToString();
-
-							int id = int.Parse(usid);
-
-							ret.Add(new ConnectionData() {
-								id = id,
-								displayName = user.GetValue(JSON_DISPLAY).ToString(),
-								email = user.GetValue(JSON_EMAIL).ToString(),
-								isUserOnline = int.Parse(user.GetValue(JSON_ONLINE).ToString()) != 0,
-							});
-						} catch (Exception e) {
-							Log.E(this, "Failed to parse user data:\n" + userTok, e);
-						}
-					}
-
-					return new PortalResponse<List<ConnectionData>>(response, "", ret, EError.Success);
-				} else {
-					return new PortalResponse<List<ConnectionData>>(response, "", EError.ServerError);
-				}
-			} catch (Exception e) {
-				Log.E(this, "Failed to query user's connections", e);
-				return new PortalResponse<List<ConnectionData>>(null, "", EError.InternalError);
-			}
-		}
-
-		/// <summary>
 		/// Removes a following connection data.
 		/// </summary>
 		/// <returns>The following async.</returns>
 		/// <param name="data">Data.</param>
-		public async Task<PortalResponse> RemoveFollowingAsync(ConnectionData data) {
+		public async Task<PortalResponse> RequestRemoveFollowingAsync(ConnectionData data) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -656,7 +650,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_DELETE, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "RemoveFollowingAsync:\n");
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -675,7 +668,7 @@
 		/// </summary>
 		/// <returns>The following async.</returns>
 		/// <param name="data">Data.</param>
-		public async Task<PortalResponse> RemoveFollowerAsync(ConnectionData data) {
+		public async Task<PortalResponse> RequestRemoveFollowerAsync(ConnectionData data) {
 			if (!isLoggedIn) {
 				return new PortalResponse(null, "", EError.NotLoggedIn);
 			}
@@ -689,7 +682,6 @@
 
 				var response = await client.PostAsync(URL_ACCESS_CODE_DELETE, formContent);
 				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "RemoveFollowerAsync:\n");
 				var json = JObject.Parse(content);
 
 				if (CheckResponseForSuccess(json)) {
@@ -703,103 +695,121 @@
 			}
 		}
 
-		/// <summary>
-		/// Queries the list of users of whom are following the current user.
-		/// </summary>
-		/// <returns>The followers async.</returns>
-		public async Task<PortalResponse<List<ConnectionData>>> QueryFollowersAsync() {
-			if (!isLoggedIn) {
-				return new PortalResponse<List<ConnectionData>>(null, "", EError.NotLoggedIn);
-			}
+    /// <summary>
+    /// Downloads the latest connection data state from the server.
+    /// </summary>
+    /// <returns>The connection data.</returns>
+    public async Task<PortalResponse> RequestConnectionData() {
+      if (!isLoggedIn) {
+        return new PortalResponse(null, null, EError.NotLoggedIn);
+      }
 
-			try {
-				var formContent = new FormUrlEncodedContent(new [] {
-					new KeyValuePair<string, string>(JSON_RETRIEVE_ACCESS, JSON_MANAGER),
-					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
-				});
+      try {
+        var formContent = new FormUrlEncodedContent(new [] {
+          new KeyValuePair<string, string>(JSON_RETRIEVE_ACCESS, JSON_MANAGER),
+          new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+        });
 
-				var response = await client.PostAsync(URL_RETRIEVE_ACCESS, formContent);
-				var content = await response.Content.ReadAsStringAsync();
-				Log.D(this, "QueryFollowersAsync:\n" + content);
-				var json = JObject.Parse(content);
+        var response = await client.PostAsync(URL_RETRIEVE_ACCESS, formContent);
+        var content = await response.Content.ReadAsStringAsync();
 
-				if (CheckResponseForSuccess(json)) {
-					var ret = new List<ConnectionData>();
+        var json = JObject.Parse(content);
 
-					foreach (var userTok in json.GetValue(JSON_ALLOWING)) {
-						try {
-							var user = userTok as JObject;
+        if (CheckResponseForSuccess(json)) {
+          JToken viewingToken;
+          if (json.TryGetValue(JSON_VIEWING, out viewingToken)) {
+            var data = JsonConvert.DeserializeObject<List<ConnectionData>>(viewingToken.ToString());
+            followingConnections = data;
+          }
 
-							var usid = user.GetValue(JSON_ID_CAP).ToString();
+          JToken allowingToken;
+          if (json.TryGetValue(JSON_ALLOWING, out allowingToken)) {
+            var data = JsonConvert.DeserializeObject<List<ConnectionData>>(allowingToken.ToString());
+            followerConnections = data;
+          }
 
-							int id = int.Parse(usid);
+          JToken onlineToken;
+          if (json.TryGetValue(JSON_ONLINE, out onlineToken)) {
+            var data = JsonConvert.DeserializeObject<List<ConnectionData>>(onlineToken.ToString());
+            onlineConnections = data;
+          }
 
-							ret.Add(new ConnectionData() {
-								id = id,
-								displayName = user.GetValue(JSON_DISPLAY).ToString(),
-								email = user.GetValue(JSON_EMAIL).ToString(),
-							});
-						} catch (Exception e) {
-							Log.E(this, "Failed to parse user data:\n" + userTok, e);
-						}
-					}
+          return new PortalResponse(response, null, EError.Success);
+        } else {
+          return new PortalResponse(response, null, EError.ServerError);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to RequestConnectionData.", e);
+        return new PortalResponse(null, null, EError.InternalError);
+      }
+    }
 
-					return new PortalResponse<List<ConnectionData>>(response, "", ret, EError.Success);
-				} else {
-					return new PortalResponse<List<ConnectionData>>(response, "", EError.ServerError);
-				}
-			} catch (Exception e) {
-				Log.E(this, "Failed to query user's connections", e);
-				return new PortalResponse<List<ConnectionData>>(null, "", EError.InternalError);
-			}
-		}
+    /// <summary>
+    /// Requests that the server return or create a layout id for this device for the logged in user. This layout id
+    /// is what is used to identify the user's remote session.
+    /// </summary>
+    /// <returns>The create layout identifier.</returns>
+    // TODO Refer to line ION.CoreExtensions.Net.WebPayload#478
+    // TODO Refer to line ION.CoreExtensions.Net.WebPayload#234
+    // TODO Refer to line ION.IOS.ViewController.RemoteViewingViewController#97
+    public async Task<PortalResponse<string>> RequestLayoutIdAsync(IION ion) {
+      try {
+        var platformInfo = ion.GetPlatformInformation();
 
-		/// <summary>
-		/// Uploads the current user's applications state for remote viewing.
-		/// </summary>
-		/// <returns>The app state.</returns>
-		/// <param name="ion">Ion.</param>
-		/// <param name="userId">User identifier.</param>
-		public bool BeginAppStateUpload(IION ion) {
-			lock (web) {
-				if (appStateUploadCancellationToken == null) {
-					appStateUploadCancellationToken = new CancellationTokenSource();
-					uploadLayoutTask = Task.Factory.StartNew(async () => {
-						while (!appStateUploadCancellationToken.Token.IsCancellationRequested) {
-							var appState = RemoteAppState.CreateOrThrow(ion);
-							await PerformAppStateUpload(ion, appState);
-							await Task.Delay(TimeSpan.FromSeconds(1));
-						}
-						appStateUploadCancellationToken = null;
-					}, appStateUploadCancellationToken.Token);
-					return true;
-				} else {
-					return false;
-				}
-			}
-		}
+        var formContent = new FormUrlEncodedContent(new[] {
+          new KeyValuePair<string, string>(JSON_CREATE_LAYOUT, TRUE),
+          new KeyValuePair<string, string>(JSON_USER_ID, loginId),
+          new KeyValuePair<string, string>(JSON_DEVICE_ID, platformInfo.model),
+          new KeyValuePair<string, string>(JSON_DEVICE_NAME, platformInfo.GetDeviceName()),
+        });
 
-		/// <summary>
-		/// Safely ends the app state upload task.
-		/// </summary>
-		public void EndAppStateUpload() {
-			lock (web) {
-				if (appStateUploadCancellationToken != null) {
-					appStateUploadCancellationToken.Cancel();
-				}
-			}
-		}
+        var response = await client.PostAsync(URL_UPLOAD_LAYOUTS, formContent);
+        var content = await response.Content.ReadAsStringAsync();
+        var json = JObject.Parse(content);
+
+        if (CheckResponseForSuccess(json)) {
+          JToken errorMessage;
+          if (!json.TryGetValue(JSON_MESSAGE, out errorMessage)) {
+            Log.E(this, "Did not receive an error message from RequestLayoutIdAsync");
+            return new PortalResponse<string>(response, null, EError.ServerError);
+          }
+
+          JToken layoutIdToken;
+          if (!json.TryGetValue(JSON_LAYOUT_ID, out layoutIdToken)) {
+            Log.E(this, "Did not receive a layout id from RequestLayoutIdAsync");
+            return new PortalResponse<string>(response, null, EError.ServerError);
+          } else {
+            layoutId = layoutIdToken.ToString();
+          }
+
+          return new PortalResponse<string>(response, layoutId, EError.Success);
+        } else {
+          // We did not get a valid response from the server.
+          return new PortalResponse<string>(response, null, EError.ServerError);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to request layout id.", e);
+        return new PortalResponse<string>(null, null, EError.InternalError);
+      }
+    }
 
 		/// <summary>
 		/// Downloads and inflates the given remote user's ION instance into this instance.
 		/// </summary>
 		/// <returns>The from remote.</returns>
 		/// <param name="userId">User identifier.</param>
-		public async Task<PortalResponse> CloneFromRemote(IION ion, string userId) {
+		public async Task<PortalResponse> RequestCloneFromRemote(IION ion, ConnectionData connection) {
 			try {
+        // Try and resolve the layout id of the service.
+        var layoutResponse = await RequestLayoutIdAsync(ion);
+        if (!layoutResponse.success) {
+          Log.E(this, "RequestCloneFromRemote(ion, " + connection.id + ": Failed to resolve the service's layout id");
+          return new PortalResponse(null, null, EError.InternalError);
+        }
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACTION_CLONE_REMOTE, JSON_MANAGER),
-					new KeyValuePair<string, string>(JSON_USER_ID, userId),
+          new KeyValuePair<string, string>(JSON_USER_ID, connection.id + ""),
+          new KeyValuePair<string, string>(JSON_LAYOUT_ID, connection.layoutId),
 				});
 
 				var response = await client.PostAsync(URL_CLONE_REMOTE, formContent);
@@ -807,7 +817,7 @@
 
 				var json = JObject.Parse(content);
 				string layout;
-				if (TRUE.Equals(json.GetValue(JSON_SUCCESS)) || CheckResponseForSuccess(json)) {
+				if (CheckResponseForSuccess(json)) {
 					layout = json.GetValue(JSON_LAYOUT).ToString();
 
 					var appState = JsonConvert.DeserializeObject<RemoteAppState>(layout);
@@ -830,6 +840,46 @@
 			}
 		}
 
+    /// <summary>
+    /// Uploads the current user's applications state for remote viewing.
+    /// </summary>
+    /// <returns>The app state.</returns>
+    /// <param name="ion">Ion.</param>
+    public bool BeginAppStateUpload(IION ion) {
+      lock (web) {
+        if (appStateUploadCancellationToken == null) {
+          appStateUploadCancellationToken = new CancellationTokenSource();
+          uploadLayoutTask = Task.Factory.StartNew(async () => {
+            while (!appStateUploadCancellationToken.Token.IsCancellationRequested) {
+              try {
+                var appState = RemoteAppState.CreateOrThrow(ion);
+                await PerformAppStateUpload(ion, appState);
+              } catch (Exception e) {
+                Log.E(this, "Failed to upload app state", e);
+                EndAppStateUpload();
+              }
+              await Task.Delay(TimeSpan.FromSeconds(1));
+            }
+            appStateUploadCancellationToken = null;
+          }, appStateUploadCancellationToken.Token);
+          return true;
+        } else {
+          return false;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Safely ends the app state upload task.
+    /// </summary>
+    public void EndAppStateUpload() {
+      lock (web) {
+        if (appStateUploadCancellationToken != null) {
+          appStateUploadCancellationToken.Cancel();
+        }
+      }
+    }
+
 		/// <summary>
 		/// Uploads the given app state to the appion server.
 		/// </summary>
@@ -839,10 +889,20 @@
 			try {
 				var layout = JsonConvert.SerializeObject(appState);
 
+        if (layoutId == null) {
+          // Attempt to get out layout id.
+          var layoutResponse = await RequestLayoutIdAsync(ion);
+          if (!layoutResponse.success) {
+            Log.E(this, "PerformAppStateUpload: failed to get layout id: cannot upload layout.");
+            return new PortalResponse(layoutResponse.response, null, EError.InternalError);
+          }
+        }
+
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_UPLOAD_LAYOUTS, JSON_MANAGER),
 					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
 					new KeyValuePair<string, string>(JSON_LAYOUT_JSON, layout.ToString()),
+          new KeyValuePair<string, string>(JSON_LAYOUT_ID, layoutId),
 				});
 
 				var response = await client.PostAsync(URL_UPLOAD_LAYOUTS, formContent);
@@ -941,14 +1001,13 @@
         var m = analyzer.lowSideManifold;
 
         if (!int.TryParse(appState.lh.lowAnalyzerIndex, out index)) {
-          Log.D(this, "Wtf?!");
           m = null;
         }
 				// We have a low side manifold
 				var sensor = analyzer[index];
 				if (m == null || !sensor.Equals(m.primarySensor)) {
 					// We need to update the manifold
-					var ret = analyzer.SetManifold(Analyzer.ESide.Low, sensor);
+					analyzer.SetManifold(Analyzer.ESide.Low, sensor);
 					m = analyzer.lowSideManifold;
 				}
 
@@ -960,7 +1019,7 @@
             var lsn = uslsn.ParseSerialNumber();
             int li = 0;
             if (!int.TryParse(appState.lh.lowLinkedSensorIndex, out li)) {
-              Log.D(this, "Failed to parse low side sensor index {" + appState.lh.lowLinkedSensorIndex + "}");
+              Log.E(this, "Failed to parse low side sensor index {" + appState.lh.lowLinkedSensorIndex + "}");
             } else {
               var sd = ion.deviceManager[lsn] as GaugeDevice;
               if (sd != null) {
@@ -1001,7 +1060,6 @@
         var m = analyzer.highSideManifold;
 
         if (!int.TryParse(appState.lh.highAnalyzerIndex, out index)) {
-          Log.D(this, "Wtf?!");
           m = null;
         }
 				// We have a low side manifold
@@ -1019,7 +1077,7 @@
             var hsn = ushsn.ParseSerialNumber();
             int hi = 0;
             if (!int.TryParse(appState.lh.highLinkedSensorIndex, out hi)) {
-              Log.D(this, "Failed to parse high side sensor index {" + appState.lh.highLinkedSensorIndex + "}");
+              Log.E(this, "Failed to parse high side sensor index {" + appState.lh.highLinkedSensorIndex + "}");
             } else {
               var sd = ion.deviceManager[hsn] as GaugeDevice;
               if (sd != null) {
@@ -1058,7 +1116,6 @@
 		/// Attempts to sync the received uploaded workbench to the local remote workbench.
 		/// </summary>
 		/// <param name="ion">Ion.</param>
-		/// <param name="workbenchClone">Workbench clone.</param>
 		private void SyncWorkbench(IION ion, RemoteAppState state) {
 			var wb = ion.currentWorkbench;
 			wb.isEditable = false;

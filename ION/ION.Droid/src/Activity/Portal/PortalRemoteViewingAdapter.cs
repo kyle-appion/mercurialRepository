@@ -57,14 +57,11 @@ namespace ION.Droid.Activity.Portal {
 			var ion = AppState.context as RemoteION;
 			var r = records[position] as PortalRemoteViewingRecord;
 
-//			if (r.data.id == int.Parse(ion.portal.loginId)) {
-//			} else {
-				if (ion != null) {
-					r.isBeingDownloaded = (r.data.id + "").Equals(ion.userId);
-				} else {
-					r.isBeingDownloaded = false;
-				}
-//			}
+			if (ion != null) {
+        r.isBeingDownloaded = r.data.Equals(ion.connectionData);
+			} else {
+				r.isBeingDownloaded = false;
+			}
 			base.OnBindViewHolder(holder, position);
 		}
 
@@ -94,7 +91,7 @@ namespace ION.Droid.Activity.Portal {
 		/// Sets the connection data as the content of the list.
 		/// </summary>
 		/// <param name="content">Content.</param>
-		public void SetContent(List<ConnectionData> content) {
+		public void SetContent(IEnumerable<ConnectionData> content) {
 			var ion = AppState.context as BaseAndroidION;
 			var newRecords = new List<IRecord>();
 

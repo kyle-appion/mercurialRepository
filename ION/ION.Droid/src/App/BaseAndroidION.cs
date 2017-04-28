@@ -1,19 +1,9 @@
 ﻿namespace ION.Droid.App {
 
 	using System;
-	using System.Collections.Generic;
-	using System.IO;
 	using System.Threading.Tasks;
 
-	using Android.App;
-	using Android.Content;
-	using Android.Content.PM;
 	using Android.OS;
-	using Android.Support.V4.App;
-
-	using Java.IO;
-
-	using Newtonsoft.Json;
 
 	using Appion.Commons.Util;
 
@@ -30,11 +20,6 @@
 
 	using ION.CoreExtensions.Net.Portal;
 
-	using ION.Droid.Alarms.Alerts;
-	using ION.Droid.Activity;
-	using ION.Droid.Connections;
-	using ION.Droid.Dialog;
-	using ION.Droid.Location;
 	using ION.Droid.Preferences;
 
 	/// <summary>
@@ -73,6 +58,8 @@
 		public string name { get { return context.GetString(Resource.String.app_name); } }
 		// Implemented from IION
 		public string version { get { return context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.MetaData).VersionName; } }
+    // Implemented from IION
+    public Guid applicationIdentifier { get { return preferences.appId; } }
 
 		// Implemented From IION
 		public IONDatabase database { get; protected set; }
