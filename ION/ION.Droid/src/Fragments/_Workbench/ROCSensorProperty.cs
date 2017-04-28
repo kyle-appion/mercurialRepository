@@ -307,7 +307,7 @@
       // Resize the points list
       // Trim down to size
       while (secondarySeries.Points.Count > l) {
-        secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);
+        secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);  
       }
       // Add any missing items
       while (secondarySeries.Points.Count < l) {

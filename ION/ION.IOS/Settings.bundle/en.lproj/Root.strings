@@ -21,4 +21,7 @@
 "settings_logging" = "Logging Settings";
 "settings_default_logging_interval" = "Interval";
 
+"settings_reconnect" = "Auto Reconnect";
+"auto_reconnect_on" = "Enable";
+
 "use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";
