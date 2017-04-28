@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.App {
+namespace ION.IOS.App {
 
 using System;
 using System.Net;
@@ -12,7 +12,7 @@ using CoreFoundation;
 
   public class IOSPlatformInfo : IPlatformInfo {  
     public string manufacturer { get; set; }
-    public string deviceName { get; set; }
+    public string hardwareName { get; set; }
     public string model { get; set; }
     public string version { get; set; }
     public string api { get; set; }
@@ -20,13 +20,13 @@ using CoreFoundation;
     public bool wifiConnected { get; set; }
     public int batteryPercentage { get; set; }
     public long freeMemory { get; set; }
-    public int loggingStatus { get; set; }
+    public bool loggingStatus { get; set; }
 
     public IOSPlatformInfo() {
     	UIDevice.CurrentDevice.BatteryMonitoringEnabled = true;
       	
       manufacturer = "Apple Inc.";
-      deviceName = UIDevice.CurrentDevice.Model;
+      hardwareName = UIDevice.CurrentDevice.Model;
       model = UIDevice.CurrentDevice.LocalizedModel;
       version = UIDevice.CurrentDevice.SystemVersion;
       api = UIDevice.CurrentDevice.SystemName;
@@ -41,7 +41,11 @@ using CoreFoundation;
 			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes(Environment.GetFolderPath(Environment.SpecialFolder.Personal)).FreeSize;
 
     	freeMemory = (long)Math.Round(freeSpace,2);
-    }      
+    }
+
+    public string GetDeviceName() {
+      return "unnamed";
+    }
   }
   
 	public enum NetworkStatus {

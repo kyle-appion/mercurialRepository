@@ -20,11 +20,15 @@
     public static async Task<List<IDevice>> QueryForAllDevicesAsync(this IONDatabase db) {
       var ret = new List<IDevice>();
 
-	      var devices = await db.QueryForAllAsync<DeviceRow>();
-	      Log.D("DeviceDatabaseExtensions", "got all devices");
-	      foreach (var d in devices) {
+      var devices = await db.QueryForAllAsync<DeviceRow>();
+      Log.D("DeviceDatabaseExtensions", "got all devices");
+      foreach (var d in devices) {
+        try {
 	        ret.Add(await db.ReconstructDevice(d));
-	      }
+        } catch (Exception e) {
+          Log.E(typeof(DeviceDatabaseExtensions).Name, "Failed to resonstruct device", e);
+        }
+      }
 
       return ret;
     }    

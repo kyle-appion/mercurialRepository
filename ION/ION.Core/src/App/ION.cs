@@ -54,6 +54,12 @@
     /// </summary>
     /// <value>The version.</value>
     string version { get; }
+    /// <summary>
+    /// Queries the application's globally uinque identifier. This identifier is used to identify the current
+    /// application install. 
+    /// </summary>
+    /// <value>The GUID.</value>
+    Guid applicationIdentifier { get; }
 
     /// <summary>
     /// The database that will store all of the application data.

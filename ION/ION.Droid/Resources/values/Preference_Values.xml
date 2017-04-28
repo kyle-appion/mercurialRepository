@@ -22,6 +22,10 @@
   <string name="preferences_alarm_vibrate_on">The device will vibrate [if able] when an alarm is fired.</string>
   <string name="preferences_alarm_vibrate_off">Alarms will not cause the device to vibrate.</string>
 
+  <string name="preferences_device">Device Preferences</string>
+  <string name="preferences_device_auto_connect">Whether or not ION will attempt to automatically connect to devices.</string>
+  <string name="preferences_device_auto_connect_title">Auto-connect Device</string>
+
   <string name="preferences_display_wakelock">Keep Screen On</string>
   <string name="preferences_display_wakelock_on">Your device\'s screen will not turn off while ION is displayed. WARNING: This may reduce battery life.</string>
   <string name="preferences_display_wakelock_off">Your device\'s screen will turn off normally.</string>

@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.Portal {
+namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Threading.Tasks;
@@ -43,10 +43,10 @@
 				var ri = ion as RemoteION;
 				var i = adapter.IndexOfRecord(adapter.checkedRecord);
 
-				if (ri != null && ri.userId.Equals(adapter.checkedRecord.data.id + "")) {
+        if (ri != null && ri.connectionData.Equals(adapter.checkedRecord.data)) {
 					await StartLocalIONAsync();
 				} else {
-					await StartRemoteIONAsync(adapter.checkedRecord.data.id + "");
+					await StartRemoteIONAsync(adapter.checkedRecord.data);
 				}
 
 				ion.PostToMainDelayed(() => {
@@ -71,7 +71,7 @@
 				var ri = ion as RemoteION;
 				var r = adapter[obj] as PortalRemoteViewingRecord;
 				if (r.isChecked) {
-					if (ri != null && ri.userId.Equals(r.data.id + "")) {
+					if (ri != null && ri.connectionData.Equals(r.data)) {
 						button.SetText(Resource.String.portal_local_mode);
 					} else {
 						button.SetText(Resource.String.portal_remote_mode);
@@ -128,15 +128,15 @@
 		}
 
 		public void OnRefresh() {
-			GetContactsAsync();
+      Task.Factory.StartNew(GetContactsAsync);
 		}
 
 		private async Task GetContactsAsync() {
 			refresh.Refreshing = true;
 
-			var result = await ion.portal.QueryFollowingAsync();
+      var result = await ion.portal.RequestConnectionData();
 			if (result.success) {
-				adapter.SetContent(result.result);
+        adapter.SetContent(ion.portal.onlineConnections);
 			} else {
 				Log.E(this, result.message);
 				Toast.MakeText(this, Resource.String.portal_error_failed_to_query_following, ToastLength.Long).Show();

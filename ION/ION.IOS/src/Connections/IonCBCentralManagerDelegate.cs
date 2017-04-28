@@ -125,7 +125,7 @@
       var data = advertisementData[CBAdvertisement.DataManufacturerDataKey];
 
       if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-//        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
+        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
         return;
       }
 
@@ -169,7 +169,7 @@
             }
           }
         } else {
-          //Log.D(this, "Ignoring non-appion device: " + name);
+          Log.D(this, "Ignoring non-appion device: " + name);
         }
       }
     }

@@ -10,8 +10,6 @@
   using ION.Core.App;
   using ION.Core.Sensors;
 
-  using ION.Droid.App;
-
   /// <summary>
   /// A simple class that is used to access the android applications preferences.
   /// </summary>
@@ -80,6 +78,35 @@
         var e = prefs.Edit();
         e.PutString(context.GetString(Resource.String.pkey_app_version), value);
         e.Commit();
+      }
+    }
+    /// <summary>
+    /// The unique identifier for this application install. This is used to identiy the device for various portal and
+    /// networking actions.
+    /// </summary>
+    /// <value>The app identifier.</value>
+    public Guid appId {
+      get {
+        lock (PREFS) {
+          var key = context.GetString(Resource.String.pkey_id);
+          var id = prefs.GetString(key, null);
+
+          if (id == null) {
+            var guid = Guid.NewGuid();
+            id = guid.ToString();
+            var e = prefs.Edit();
+            e.PutString(key, id);
+            e.Commit();
+            return guid;
+          } else {
+            try {
+              return Guid.Parse(id);
+            } catch (Exception e) {
+              Log.E(this, "Failed to parse Guid.", e);
+              return Guid.Empty;
+            }
+          }
+        }
       }
     }
 
