@@ -77,7 +77,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			webPortalButton.TouchUpInside += (sender, e) => {
 				webPortalButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 				var uEmail = KeychainAccess.ValueForKey("userEmail");
-				var uPword = KeychainAccess.ValueForKey("userPword");
+				var uPword = KeychainAccess.ValueForKey("userPword");   
 				
 				var url = "http://portal.appioninc.com/joomla/modules/mod_processing/appWebLogin.php?usrEmail=" + uEmail + "&usrPass=" + uPword;
 				
@@ -92,7 +92,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			portalView.AddSubview(uploadButton);
 			portalView.AddSubview(codeButton);
 			portalView.AddSubview(accessButton);
-			//portalView.AddSubview(remoteButton);
+			portalView.AddSubview(remoteButton);
 			portalView.AddSubview(webPortalButton);
 		}
 	}

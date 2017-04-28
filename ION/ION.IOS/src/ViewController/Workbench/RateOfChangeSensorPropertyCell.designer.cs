@@ -32,24 +32,9 @@ namespace ION.IOS.ViewController.Workbench
 		
 		void ReleaseDesignerOutlets ()
 		{
-			if (viewBackground != null) {
-				viewBackground.Dispose ();
-				viewBackground = null;
-			}
-
-			if (labelTitle != null) {
-				labelTitle.Dispose ();
-				labelTitle = null;
-			}
-
-			if (viewDivider != null) {
-				viewDivider.Dispose ();
-				viewDivider = null;
-			}
-
-			if (labelMeasurement != null) {
-				labelMeasurement.Dispose ();
-				labelMeasurement = null;
+			if (button != null) {
+				button.Dispose ();
+				button = null;
 			}
 
 			if (buttonIcon != null) {
@@ -57,9 +42,24 @@ namespace ION.IOS.ViewController.Workbench
 				buttonIcon = null;
 			}
 
-			if (button != null) {
-				button.Dispose ();
-				button = null;
+			if (labelMeasurement != null) {
+				labelMeasurement.Dispose ();
+				labelMeasurement = null;
+			}
+
+			if (labelTitle != null) {
+				labelTitle.Dispose ();
+				labelTitle = null;
+			}
+
+			if (viewBackground != null) {
+				viewBackground.Dispose ();
+				viewBackground = null;
+			}
+
+			if (viewDivider != null) {
+				viewDivider.Dispose ();
+				viewDivider = null;
 			}
 		}
 	}
