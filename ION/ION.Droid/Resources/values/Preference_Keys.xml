@@ -20,6 +20,7 @@
   <string name="pkey_alarm_sound">alarm_sound</string>
 
   <string name="pkey_device_auto_connect">device_auto_connect</string>
+	<string name="pkey_device_long_range">device_long_range</string>
 
   <string name="pkey_help_walkthrough">help_walkthrough</string>
 

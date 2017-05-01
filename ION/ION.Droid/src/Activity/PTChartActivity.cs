@@ -352,8 +352,8 @@
 
 			slider = FindViewById<FluidSliderView>(Resource.Id.ptchart);
 
-			pressureUnit = ion.defaultUnits.pressure;
-			temperatureUnit = ion.defaultUnits.temperature;
+      pressureUnit = ion.preferences.units.pressure;
+      temperatureUnit = ion.preferences.units.temperature;
 
       // Init elevation widgets
       var container = FindViewById(Resource.Id.elevation);
@@ -414,8 +414,8 @@
 			base.OnResume();
       if (!sensorLocked) {
         var s = new ManualSensor(ESensorType.Pressure, false);
-        s.unit = ion.defaultUnits.pressure;
-        s.ForceSetMeasurement(ion.defaultUnits.pressure.OfScalar(0));
+        s.unit = ion.preferences.units.pressure;
+        s.ForceSetMeasurement(ion.preferences.units.pressure.OfScalar(0));
         OnSensorChanged(s);
         ion.PostToMainDelayed(() => {
           slider.ScrollToPressure(s.measurement, true);
@@ -424,7 +424,7 @@
 			Refresh();
 			slider.onScroll += OnSliderScroll;
       ion.locationManager.onLocationChanged += OnLocationChanged;
-      elevation.Text = SensorUtils.ToFormattedString(ion.locationManager.lastKnownLocation.altitude.ConvertTo(ion.defaultUnits.length), true);
+      elevation.Text = SensorUtils.ToFormattedString(ion.locationManager.lastKnownLocation.altitude.ConvertTo(ion.preferences.units.length), true);
 		}
 
 		protected override void OnPause() {

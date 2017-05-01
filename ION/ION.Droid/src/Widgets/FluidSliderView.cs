@@ -130,8 +130,10 @@
 		public FluidSliderView(Context context, Android.Util.IAttributeSet attrs) : base(context, attrs) {
 			InitPaints();
 
-			__pressureUnit = AppState.context.defaultUnits.pressure;
-			__temperatureUnit = AppState.context.defaultUnits.temperature;
+      var ion = AppState.context;
+
+      __pressureUnit = ion.preferences.units.pressure;
+      __temperatureUnit = ion.preferences.units.temperature;
 			ptChart = PTChart.New(AppState.context, Fluid.EState.Bubble);
 			isTouchLocked = false;
 		}

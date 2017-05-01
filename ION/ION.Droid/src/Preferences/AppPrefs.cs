@@ -13,7 +13,7 @@
   /// <summary>
   /// A simple class that is used to access the android applications preferences.
   /// </summary>
-  public class AppPrefs {
+  public class AppPrefs : IIONPreferences {
 		/// <summary>
 		/// The name of the general ion preferences.
 		/// </summary>
@@ -28,48 +28,8 @@
 			return PREFS;
 		}
 
-    /// <summary>
-    /// The alarm preferences.
-    /// </summary>
-    /// <value>The alarm.</value>
-    public AlarmPreferences alarm { get; private set; }
-    /// <summary>
-    /// The location preferences.
-    /// </summary>
-    /// <value>The location.</value>
-    public LocationPreferences location { get; private set; }
-    /// <summary>
-    /// The unit preferences.
-    /// </summary>
-    /// <value>The units.</value>
-    public UnitPreferences units { get; private set; }
-		/// <summary>
-		/// The report preferences.
-		/// </summary>
-		/// <value>The reports.</value>
-		public ReportPreferences reports { get; private set; }
-		/// <summary>
-		/// The Appion Portal preferences.
-		/// </summary>
-		/// <value>The portal.</value>
-		public PortalPreferences portal { get; private set; }
-
-    /// <summary>
-    /// The android context that is used to get the preferences.
-    /// </summary>
-    /// <value>The ion.</value>
-		public Context context { get; private set; }
-    /// <summary>
-    /// The application's preferences.
-    /// </summary>
-    /// <value>The prefs.</value>
-    public ISharedPreferences prefs { get; set; }
-
-    /// <summary>
-    /// The version of the application.
-    /// </summary>
-    /// <value>The app version.</value>
-    public string appVersion {
+    // Implemented for IPreferences
+    public string lastKnownAppVersion {
       get {
         return prefs.GetString(context.GetString(Resource.String.pkey_app_version), "0.0.0");
       }
@@ -80,11 +40,8 @@
         e.Commit();
       }
     }
-    /// <summary>
-    /// The unique identifier for this application install. This is used to identiy the device for various portal and
-    /// networking actions.
-    /// </summary>
-    /// <value>The app identifier.</value>
+
+    // Implemented for IPreferences
     public Guid appId {
       get {
         lock (PREFS) {
@@ -107,6 +64,18 @@
             }
           }
         }
+      }
+    }
+
+    // Implemented for IPreferences
+    public bool allowAppAnalytics {
+      get {
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_app_analytics), true);
+      }
+      set {
+        var e = prefs.Edit();
+        e.PutBoolean(context.GetString(Resource.String.pkey_app_analytics), value);
+        e.Commit();
       }
     }
 
@@ -144,68 +113,62 @@
       }
     }
 
-		/// <summary>
-		/// Queries whether or not the application should show the tutorial walkthrough.
-		/// </summary>
-		/// <value><c>true</c> if show tutorial; otherwise, <c>false</c>.</value>
-		public bool showTutorial {
-			get {
-				return prefs.GetBoolean(context.GetString(Resource.String.pkey_help_walkthrough), true);
-			}
-			set {
-				var e = prefs.Edit();
-				e.PutBoolean(context.GetString(Resource.String.pkey_help_walkthrough), value);
-				e.Commit();
-			}
-		}
-
-		/// <summary>
-		/// Queries whether or not the wake lock is set in preferences.
-		/// </summary>
-		/// <value><c>true</c> if is wake locked; otherwise, <c>false</c>.</value>
-		public bool isWakeLocked {
-			get {
-				return prefs.GetBoolean(context.GetString(Resource.String.pkey_wake_lock), true);
-			}
-			set {
-				var e = prefs.Edit();
-				e.PutBoolean(context.GetString(Resource.String.pkey_wake_lock), value);
-				e.Commit();
-			}
-		}
-
-		/// <summary>
-		/// Queries whether or not the user has enabled app analytics.
-		/// </summary>
-		/// <value><c>true</c> if allow app analytics; otherwise, <c>false</c>.</value>
-		public bool allowAppAnalytics {
-			get {
-				return prefs.GetBoolean(context.GetString(Resource.String.pkey_app_analytics), true);
-			}
-			set {
-				var e = prefs.Edit();
-				e.PutBoolean(context.GetString(Resource.String.pkey_app_analytics), value);
-				e.Commit();
-			}
-		}
-
-		public AppPrefs(Context context, ISharedPreferences prefs) {
-      this.context = context;
-      this.prefs = prefs;
-      alarm = new AlarmPreferences(context, prefs);
-      location = new LocationPreferences(context, this);
-      units = new UnitPreferences(context, prefs);
-			reports =  new ReportPreferences(context, prefs);
-			portal = new PortalPreferences(context, prefs);
-    }
-  }
-
-  /// <summary>
-  /// A simple wrapper that will provide convenience methods for preferences.
-  /// </summary>
-  public class BasePreferences {
     /// <summary>
-    /// The ion instance as a context.
+    /// Queries whether or not the application should show the tutorial walkthrough.
+    /// </summary>
+    /// <value><c>true</c> if show tutorial; otherwise, <c>false</c>.</value>
+    public bool showTutorial {
+      get {
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_help_walkthrough), true);
+      }
+      set {
+        var e = prefs.Edit();
+        e.PutBoolean(context.GetString(Resource.String.pkey_help_walkthrough), value);
+        e.Commit();
+      }
+    }
+
+    /// <summary>
+    /// Queries whether or not the wake lock is set in preferences.
+    /// </summary>
+    /// <value><c>true</c> if is wake locked; otherwise, <c>false</c>.</value>
+    public bool isWakeLocked {
+      get {
+        return prefs.GetBoolean(context.GetString(Resource.String.pkey_wake_lock), true);
+      }
+      set {
+        var e = prefs.Edit();
+        e.PutBoolean(context.GetString(Resource.String.pkey_wake_lock), value);
+        e.Commit();
+      }
+    }
+
+    public DevicePreferences _device { get; private set; }
+    // Implemented for IPreferences
+    public IDevicePreferences device { get { return _device; } }
+
+    public AlarmPreferences _alarm { get; private set; }
+    // Implemented for IPreferences
+    public IAlarmPreferences alarm { get { return _alarm; } }
+
+    public LocationPreferences _location { get; private set; }
+    // Implemented for IPreferences
+    public ILocationPreferences location { get { return _location; } }
+
+    public UnitPreferences _units { get; private set; }
+    // Implemented for IPreferences
+    public IUnitPreferences units { get { return _units; } }
+
+    public ReportPreferences _report { get; private set; }
+    // Implemented for IPreferences
+    public IReportPreferences report { get { return _report; } }
+
+    public PortalPreferences _portal { get; private set; }
+    // Implemented for IPreferences
+    public IPortalPreferences portal { get { return _portal; } }
+
+    /// <summary>
+    /// The android context that is used to get the preferences.
     /// </summary>
     /// <value>The ion.</value>
 		public Context context { get; private set; }
@@ -215,9 +178,40 @@
     /// <value>The prefs.</value>
     public ISharedPreferences prefs { get; set; }
 
-		protected BasePreferences(Context context, ISharedPreferences prefs) {
+		public AppPrefs(Context context, ISharedPreferences prefs) {
       this.context = context;
       this.prefs = prefs;
+      _device = new DevicePreferences(this);
+      _alarm = new AlarmPreferences(this);
+      _location = new LocationPreferences(this);
+      _units = new UnitPreferences(this);
+      _report =  new ReportPreferences(this);
+      _portal = new PortalPreferences(this);
+    }
+  }
+
+  /// <summary>
+  /// A simple wrapper that will provide convenience methods for preferences.
+  /// </summary>
+  public class BasePreferences {
+    /// <summary>
+    /// The application's preferences.
+    /// </summary>
+    /// <value>The prefs.</value>
+    protected AppPrefs appPrefs { get; private set; }
+    /// <summary>
+    /// The ion instance as a context.
+    /// </summary>
+    /// <value>The ion.</value>
+    protected Context context { get { return appPrefs.context; } }
+    /// <summary>
+    /// The preferences provided by the app prefs.
+    /// </summary>
+    /// <value>The prefs.</value>
+    protected ISharedPreferences prefs { get { return appPrefs.prefs; } }
+
+		protected BasePreferences(AppPrefs prefs) {
+      appPrefs = prefs;
     }
 
 		/// <summary>
@@ -241,6 +235,16 @@
 		public bool GetBool(int key, bool fallback) {
 			return prefs.GetBoolean(context.GetString(key), fallback);
 		}
+
+    /// <summary>
+    /// Queries a float from preferences.
+    /// </summary>
+    /// <returns>The float.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="fallback">Fallback.</param>
+    public float GetFloat(int key, float fallback) {
+      return prefs.GetFloat(context.GetString(key), fallback);
+    }
 
 		/// <summary>
 		/// Queries an integer from a string preference. If the preference doesn't exist or can't be retrieved, we will
@@ -309,17 +313,43 @@
 		}
   }
 
+  public class DevicePreferences : BasePreferences, IDevicePreferences {
+    // Implemented for IPreferences
+    public bool allowDeviceAutoConnect {
+      get {
+        return GetBool(Resource.String.pkey_device_auto_connect, true);
+      }
+      set {
+        PutBool(Resource.String.pkey_device_auto_connect, value);
+      }
+    }
+
+    // Implemented for IPreferences
+    public bool allowLongRangeMode {
+      get {
+        return GetBool(Resource.String.pkey_device_long_range, true);
+      }
+
+      set {
+        PutBool(Resource.String.pkey_device_long_range, value);
+      }
+    }
+
+    public DevicePreferences(AppPrefs prefs) : base(prefs) {
+    }
+  }
+
   /// <summary>
   /// The preferences that are used to query the application's alarm preferences.
   /// </summary>
-  public class AlarmPreferences : BasePreferences {
+  public class AlarmPreferences : BasePreferences, IAlarmPreferences {
     /// <summary>
     /// Queries whether or not the user will allow the application to vibrate for alarms.
     /// </summary>
     /// <value><c>true</c> if allows vibrate; otherwise, <c>false</c>.</value>
     public bool allowsVibrate {
       get {
-        return prefs.GetBoolean(context.GetString(Resource.String.pkey_alarm_vibrate), true);
+        return GetBool(Resource.String.pkey_alarm_vibrate, true);
       }
     }
 
@@ -329,49 +359,38 @@
     /// <value><c>true</c> if allows sounds; otherwise, <c>false</c>.</value>
     public bool allowsSounds {
       get {
-        return prefs.GetBoolean(context.GetString(Resource.String.pkey_alarm_sound), true);
+        return GetBool(Resource.String.pkey_alarm_sound, true);
       }
     }
 
-		public AlarmPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+		public AlarmPreferences(AppPrefs prefs) : base(prefs) {
     }
   }
 
-  public class LocationPreferences : BasePreferences {
+  public class LocationPreferences : BasePreferences, ILocationPreferences {
     /// <summary>
     /// Queries whether or not the user will allow the application to use the device's GPS.
     /// </summary>
     /// <value><c>true</c> if allows gps; otherwise, <c>false</c>.</value>
     public bool allowsGps {
       get {
-        return prefs.GetBoolean(context.GetString(Resource.String.pkey_location_gps), false);
+        return GetBool(Resource.String.pkey_location_gps, false);
       }
       set {
-        var e = prefs.Edit();
-
-        e.PutBoolean(context.GetString(Resource.String.pkey_location_gps), value);
-
-        e.Commit();
+        PutBool(Resource.String.pkey_location_gps, value);
       }
     }
 
-    /// <summary>
-    /// Queries or sets the user's manually entered elevation. The returned unit will be the user's set length unit.
-    /// </summary>
-    /// <value>The custom elevation.</value>
+    // Implemented for ILocationPreferences
     public Scalar customElevation {
       get {
-        var raw = prefs.GetFloat(context.GetString(Resource.String.pkey_location_elevation), 0.0f);
+        var raw = GetFloat(Resource.String.pkey_location_elevation, 0.0f);
         return Units.Length.METER.OfScalar(raw).ConvertTo(appPrefs.units.length);
       }
 
       set {
-        var e = prefs.Edit();
-
         var raw = value.ConvertTo(Units.Length.METER);
-        e.PutFloat(context.GetString(Resource.String.pkey_location_elevation), (float)raw.amount);
-
-        e.Commit();
+        PutFloat(Resource.String.pkey_location_elevation, (float)raw.amount);
       }
     }
 
@@ -381,28 +400,21 @@
 		/// <value><c>true</c> if ask for permissions; otherwise, <c>false</c>.</value>
 		public bool askForPermissions {
 			get {
-				return prefs.GetBoolean(context.GetString(Resource.String.pkey_location_ask_for_permissions), true);
+				return GetBool(Resource.String.pkey_location_ask_for_permissions, true);
 			}
 			set {
-				var e = prefs.Edit();
-
-				e.PutBoolean(context.GetString(Resource.String.pkey_location_ask_for_permissions), value);
-
-				e.Commit();
+				PutBool(Resource.String.pkey_location_ask_for_permissions, value);
 			}
 		}
 
-    private AppPrefs appPrefs;
-
-    public LocationPreferences(Context context, AppPrefs prefs) : base(context, prefs.prefs) {
-      this.appPrefs = prefs;
+    public LocationPreferences(AppPrefs prefs) : base(prefs) {
     }
   }
 
   /// <summary>
   /// The preferences that are used to query the application's default unit preferences.
   /// </summary>
-  public class UnitPreferences : BasePreferences, IUnits { 
+  public class UnitPreferences : BasePreferences, IUnitPreferences { 
     // Overridden from IUnits
     public Unit length {
       get {
@@ -453,7 +465,7 @@
 			}
 		}
 
-		public UnitPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+		public UnitPreferences(AppPrefs prefs) : base(prefs) {
     }
 
     public Unit DefaultUnitFor(ESensorType sensorType) {
@@ -495,7 +507,6 @@
     /// Safely attempts to set the unit for the given key.
     /// </summary>
     /// <returns>The unit set.</returns>
-    /// <param name="prefernceKey">Prefernce key.</param>
     private void AssertUnitSet(int preferenceKey, Quantity quantity, Unit unit) {
       var key = context.GetString(preferenceKey);
       try {
@@ -514,11 +525,13 @@
     }
   }
 
-	public class ReportPreferences : BasePreferences {
-		public TimeSpan DataLoggingInterval {
+	public class ReportPreferences : BasePreferences, IReportPreferences {
+    // Implemented for IReportPreferences
+		public TimeSpan dataLoggingInterval {
 			get {
 				return TimeSpan.FromSeconds(GetIntFromString(Resource.String.pkey_reporting_data_log_interval, 60));
 			}
+
 /*
 			set {
 				SetStringFromInt((int)value.TotalMilliseconds);
@@ -526,11 +539,12 @@
 */
 		}
 
-		public ReportPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+    public ReportPreferences(AppPrefs prefs) : base(prefs) {
 		}
 	}
 
-	public class PortalPreferences : BasePreferences {
+	public class PortalPreferences : BasePreferences, IPortalPreferences {
+    // Implemented for IPortalPreferences
 		public bool rememberMe {
 			get {
 				return GetBool(Resource.String.pkey_portal_rememberme, false);
@@ -540,6 +554,7 @@
 			}
 		}
 
+    // Implemented for IPortalPreferences
 		public string username {
 			get {
 				return GetString(Resource.String.pkey_portal_username, "");
@@ -550,6 +565,7 @@
 			}
 		}
 
+    // Implemented for IPortalPreferences
 		public string password {
 			get {
 				return GetString(Resource.String.pkey_portal_password, "");
@@ -560,7 +576,7 @@
 			}
 		}
 
-		public PortalPreferences(Context context, ISharedPreferences prefs) : base(context, prefs) {
+    public PortalPreferences(AppPrefs prefs) : base(prefs) {
 		}
 	}
 }

@@ -39,7 +39,7 @@
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this);
-      deviceManager = new BaseDeviceManager(this, new AndroidConnectionManager(context));
+      deviceManager = new BaseDeviceManager(this, new AndroidConnectionManager(this));
       locationManager = new AndroidLocationManager(this);
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);

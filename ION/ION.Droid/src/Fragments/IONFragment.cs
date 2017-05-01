@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Fragments {
+namespace ION.Droid.Fragments {
 
   using System;
   using System.IO;
@@ -270,14 +270,14 @@
 				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
 				Alert(Resource.String.report_recording_stopped);
       } else {
-				var interval = ion.preferences.reports.DataLoggingInterval;
+        var interval = ion.preferences.report.dataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
 
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
 				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
-				Alert(string.Format(GetString(Resource.String.report_recording_started), ion.preferences.reports.DataLoggingInterval.ToFriendlyString(Activity)));
+				Alert(string.Format(GetString(Resource.String.report_recording_started), ion.preferences.report.dataLoggingInterval.ToFriendlyString(Activity)));
       }
     }
 

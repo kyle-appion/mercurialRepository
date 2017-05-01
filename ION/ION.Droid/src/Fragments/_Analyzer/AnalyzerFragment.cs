@@ -11,6 +11,7 @@ namespace ION.Droid.Fragments._Analyzer {
 	using L = Appion.Commons.Util.Log;
 
   using ION.Core.Content;
+  using ION.Core.Connections;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
@@ -257,7 +258,7 @@ namespace ION.Droid.Fragments._Analyzer {
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
-      if (dgs != null && !dgs.device.isConnected) {
+      if (dgs != null && dgs.device.connection.connectionState == EConnectionState.Disconnected) {
         ldb.AddItem(Resource.String.reconnect, () => {
           dgs.device.connection.Connect();
         });
@@ -306,7 +307,7 @@ namespace ION.Droid.Fragments._Analyzer {
         StartActivity(i);
       });
 
-      if (dgs != null && dgs.device.isConnected) {
+      if (dgs != null && dgs.device.connection.connectionState != EConnectionState.Disconnected) {
         ldb.AddItem(Resource.String.disconnect, () => {
           dgs.device.connection.Disconnect();
         });

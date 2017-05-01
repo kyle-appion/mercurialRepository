@@ -20,7 +20,6 @@
 
     // Implemented for IScanMethod
     public bool StartScan() {
-      Log.D(this, "Starting Scan!");
       lock (manager.locker) {
         if (isScanning) {
           return true;
@@ -29,6 +28,7 @@
         try {
           isScanning = true;
           manager.bm.Adapter.BluetoothLeScanner.StartScan(this);
+          Log.D(this, "Starting Scan!");
           return true;
         } catch (Exception e) {
           Log.E(this, "Failed to start api 21 scan.", e);

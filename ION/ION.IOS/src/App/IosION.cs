@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.App {
+namespace ION.IOS.App {
 
 	using System;
 	using System.Collections.Generic;
@@ -212,7 +212,7 @@
 		} Workbench __workbench;
 
     // Overridden from IION
-    public IUnits defaultUnits { get; private set; }
+    public IUnitPreferences defaultUnits { get; private set; }
 
     // Overridden from IION
     public IFolder screenshotReportFolder {
@@ -485,7 +485,7 @@
 		}
   } // End IosION
 
-  internal class IosUnits : IUnits {
+  internal class IosUnits : IUnitPreferences {
     // Overridden from IUnits
     public Unit length {
       get {

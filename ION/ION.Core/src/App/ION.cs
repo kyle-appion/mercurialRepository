@@ -3,7 +3,7 @@
 	using System;
 	using System.Threading.Tasks;
 
-	using Appion.Commons.Measure;
+  using Newtonsoft.Json;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -13,8 +13,6 @@
 	using ION.Core.IO;
 	using ION.Core.Location;
 	using ION.Core.Report.DataLogs;
-	using ION.Core.Sensors;
-	using Newtonsoft.Json;
 
 	/// <summary>
 	/// A utility class that will retain the ION context. We do this because
@@ -50,16 +48,15 @@
     /// <value>The name.</value>
     string name { get; }
     /// <summary>
-    /// Queries the full version of the ion instance.
+    /// The current application version.
     /// </summary>
     /// <value>The version.</value>
-    string version { get; }
+    string version { get; } 
     /// <summary>
-    /// Queries the application's globally uinque identifier. This identifier is used to identify the current
-    /// application install. 
+    /// Queries the user and common app preferences for the ION application.
     /// </summary>
-    /// <value>The GUID.</value>
-    Guid applicationIdentifier { get; }
+    /// <value>The preferences.</value>
+    IIONPreferences preferences { get; }
 
     /// <summary>
     /// The database that will store all of the application data.
@@ -109,12 +106,6 @@
     /// </summary>
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; set; }
-
-    /// <summary>
-    /// The default units for the ION instance.
-    /// </summary>
-    /// <value>The default units.</value>
-    IUnits defaultUnits { get; }
 
     /// <summary>
     /// Queries the screenshot report folder.
@@ -199,18 +190,6 @@
     Task setOriginalDeviceManager();
   } // End IION
 
-  /// <summary>
-  /// The interface that describes the default units for the application.
-  /// </summary>
-  public interface IUnits { 
-    Unit length { get; set; }
-    Unit pressure { get; set; }
-    Unit temperature { get; set; }
-    Unit vacuum { get; set; }
-
-    Unit DefaultUnitFor(ESensorType sensorType);
-  } // End IUnits
-  
   	[Preserve(AllMembers = true)]
 	public class sessionStateInfo {
 		public sessionStateInfo(){}

@@ -25,6 +25,8 @@
   <string name="preferences_device">Device Preferences</string>
   <string name="preferences_device_auto_connect">Whether or not ION will attempt to automatically connect to devices.</string>
   <string name="preferences_device_auto_connect_title">Auto-connect Device</string>
+  <string name="preferences_device_long_range">Whether or not ION should use long-range mode. Note: this will use more of your device\'s battery while enabled.</string>
+  <string name="preferences_device_long_range_title">Use Long-Range Mode</string>
 
   <string name="preferences_display_wakelock">Keep Screen On</string>
   <string name="preferences_display_wakelock_on">Your device\'s screen will not turn off while ION is displayed. WARNING: This may reduce battery life.</string>

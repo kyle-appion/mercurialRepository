@@ -123,8 +123,8 @@
           }
           try {
             Log.D(this, "Device {" + name + "} is performing an active connection");
-            gatt = device.ConnectGatt(manager.context, false, this);
-            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
+            gatt = device.ConnectGatt(manager.context, true, this);
+//            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
             return true;
           } catch (Exception e) {
             Log.E(this, "Failed to start pending gatt connection.", e);
@@ -148,10 +148,10 @@
           gatt.Disconnect();
           gatt.Close();
           gatt = null;
-        }
 
-        if (reconnect) {
-          handler.PostDelayed(() => Connect(), 1500);
+          if (reconnect) {
+            handler.PostDelayed(() => Connect(), 1500);
+          }
         }
       }
     }
@@ -181,7 +181,7 @@
             } // ProfileState.Connecting
 
           case ProfileState.Disconnected: {
-              Disconnect(true);
+              Disconnect(manager.ion.preferences.device.allowDeviceAutoConnect);
               break;
             } // ProfileState.Disconnected
 

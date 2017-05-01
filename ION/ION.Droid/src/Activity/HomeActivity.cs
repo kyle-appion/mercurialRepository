@@ -134,20 +134,20 @@
           break;
       }
 
-      if (ion.preferences.showTutorial) {
+      if (ion.appPrefs.showTutorial) {
         StartActivity(new Intent(this, typeof(TutorialActivity)));
-      } else if (!ion.version.Equals(ion.preferences.appVersion)/* && !ion.preferences.firstLaunch*/) {
-        if (!"0.0.0".Equals(ion.preferences.appVersion)) {
-          if (ion.preferences.showWhatsNew) {
+      } else if (!ion.version.Equals(ion.preferences.lastKnownAppVersion)/* && !ion.preferences.firstLaunch*/) {
+        if (!"0.0.0".Equals(ion.preferences.lastKnownAppVersion)) {
+          if (ion.appPrefs.showWhatsNew) {
             try {
-              new WhatsNewDialog(this, ion.preferences, AppVersion.ParseOrThrow(ion.preferences.appVersion), AppVersion.ParseOrThrow(ion.version)).Show();
+              new WhatsNewDialog(this, ion.appPrefs, AppVersion.ParseOrThrow(ion.preferences.lastKnownAppVersion), AppVersion.ParseOrThrow(ion.version)).Show();
             } catch (Exception e) {
               Log.E(this, "Failed to parse current app version {" + ion.version + "}", e);
               Toast.MakeText(this, Resource.String.error_failed_to_show_whats_new, ToastLength.Long).Show();
             }
           }
         }
-        ion.preferences.appVersion = ion.version;
+        ion.preferences.lastKnownAppVersion = ion.version;
       }
     }
 

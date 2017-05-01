@@ -12,6 +12,7 @@ namespace ION.Droid.Fragments._Workbench {
 	using Appion.Commons.Util;
 
   using ION.Core.Content;
+  using ION.Core.Connections;
   using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
   using ION.Core.Sensors;
@@ -296,12 +297,10 @@ namespace ION.Droid.Fragments._Workbench {
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
 
-			if (dgs != null) {
-				if (!dgs.device.isConnected) {
-					ldb.AddItem(Resource.String.reconnect, () => {
-						dgs.device.connection.Connect();
-					});
-				}
+      if (dgs != null && dgs.device.connection.connectionState == EConnectionState.Disconnected) {
+				ldb.AddItem(Resource.String.reconnect, () => {
+					dgs.device.connection.Connect();
+				});
 			}
 
       ldb.AddItem(Resource.String.rename, () => {
@@ -313,7 +312,7 @@ namespace ION.Droid.Fragments._Workbench {
 				}
       });
 
-			if (dgs.device.isConnected) {
+      if (dgs.device.isConnected) {
 				ldb.AddItem(GetString(Resource.String.remote_change_unit), () => {
 					var device = dgs.device;
 
@@ -345,7 +344,7 @@ namespace ION.Droid.Fragments._Workbench {
         StartActivity(i);
       });
 
-      if (dgs != null && dgs.device.isConnected) {
+      if (dgs != null && dgs.device.connection.connectionState != EConnectionState.Disconnected) {
         ldb.AddItem(Resource.String.disconnect, () => {
           dgs.device.connection.Disconnect();
         });

@@ -205,7 +205,7 @@
 		protected override void OnPause() {
 			base.OnPause();
 			var cb = FindViewById<CheckBox>(Resource.Id.check);
-			ion.preferences.showTutorial = !cb.Checked;
+			ion.appPrefs.showTutorial = !cb.Checked;
 		}
 
 		// Overridden from Activity
