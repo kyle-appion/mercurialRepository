@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.App {
+namespace ION.Droid.App {
 
 	using System;
 	using System.Threading.Tasks;
@@ -56,10 +56,10 @@
 
 		// Implemented from IION
 		public string name { get { return context.GetString(Resource.String.app_name); } }
+    // Implemented from IION
+    public IIONPreferences preferences { get { return appPrefs; } }
 		// Implemented from IION
 		public string version { get { return context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.MetaData).VersionName; } }
-    // Implemented from IION
-    public Guid applicationIdentifier { get { return preferences.appId; } }
 
 		// Implemented From IION
 		public IONDatabase database { get; protected set; }
@@ -100,8 +100,6 @@
 				}
 			}
 		} Workbench __workbench;
-		// Implemented from IION
-		public IUnits defaultUnits { get { return preferences.units; } }
 
 		// Implemented From IION
 		public IFolder screenshotReportFolder { get; protected set; }
@@ -114,11 +112,12 @@
 		/// The backing android context.
 		/// </summary>
 		public AppService context;
-		/// <summary>
-		/// The user's application preferences.
-		/// </summary>
-		/// <value>The preferences.</value>
-		public AppPrefs preferences { get { return AppPrefs.Get(context); } }
+
+    /// <summary>
+    /// The top level application preferences.
+    /// </summary>
+    /// <value>The app prefs.</value>
+    public AppPrefs appPrefs { get { return AppPrefs.Get(context); } }
 
 		// Implemented from IION
 		public IONPortalService portal { get; set; }
@@ -150,7 +149,7 @@
 		/// <returns>The init.</returns>
 		public async Task<bool> InitAsync() {
 			try {
-				var _ = preferences.appVersion; // Sets the current application version.
+        var _ = preferences.lastKnownAppVersion; // Sets the current application version.
 
 				if (!OnPreInit()) {
 					return false;

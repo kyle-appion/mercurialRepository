@@ -135,16 +135,24 @@
 
     // Implemented for IManager
     public void PostInit() {
-      foreach (var device in knownDevices) {
-        device.connection.Connect();
+      if (ion.preferences.device.allowDeviceAutoConnect) {
+        foreach (var device in knownDevices) {
+          device.connection.Connect();
+        }
       }
 
       connectionManager.onDeviceFound += OnDeviceFound;
       connectionManager.onScanStateChanged += OnScanStateChanged;
+
+      if (ion.preferences.device.allowLongRangeMode) {
+        connectionManager.StartBroadcastScan();
+      }
     }
 
     // Overridden from IDeviceManager
     public void Dispose() {
+      connectionManager.StopScan();
+
       connectionManager.onDeviceFound -= OnDeviceFound;
       connectionManager.onScanStateChanged -= OnScanStateChanged;
 
@@ -153,6 +161,7 @@
         Unregister(device);
       }
 
+      connectionManager.Dispose();
       __knownDevices.Clear();
       __foundDevices.Clear();
 

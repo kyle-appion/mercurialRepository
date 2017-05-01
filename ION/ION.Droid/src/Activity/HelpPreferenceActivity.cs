@@ -23,7 +23,7 @@
 			FindPreference(GetString(Resource.String.pkey_help_walkthrough)).OnPreferenceClickListener = this;
 
       var preference = FindPreference(GetString(Resource.String.pkey_app_version));
-      preference.Summary = ion.preferences.appVersion;
+      preference.Summary = ion.preferences.lastKnownAppVersion;
     }
 
     public bool OnPreferenceClick(Preference preference) {

@@ -68,6 +68,11 @@
       android:key="@string/pkey_device_auto_connect"
       android:summary="@string/preferences_device_auto_connect"
       android:defaultValue="true"/>
+		<SwitchPreference
+      android:title="@string/preferences_device_long_range_title"
+      android:key="@string/pkey_device_long_range"
+      android:summary="@string/preferences_device_long_range"
+      android:defaultValue="true"/>
 	</PreferenceCategory>
 
 	<!--

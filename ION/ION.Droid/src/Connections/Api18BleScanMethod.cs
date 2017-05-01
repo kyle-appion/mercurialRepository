@@ -23,7 +23,6 @@
 
     // Implemented for IScanMethod
     public bool StartScan() {
-      Log.D(this, "Starting Scan!");
       lock (manager.locker) {
         if (isScanning) {
           return true;
@@ -31,6 +30,7 @@
 
         try {
           isScanning = manager.bm.Adapter.StartLeScan(this);
+          Log.D(this, "Starting Scan!");
           return isScanning;
         } catch (Exception e) { 
           Log.E(this, "Failed to start scan", e);
@@ -43,6 +43,7 @@
     public void StopScan() {
       Log.D(this, "Stopping Scan!");
       lock (manager.locker) {
+        isScanning = false;
         manager.bm.Adapter.StopLeScan(this);
       }
     }
@@ -65,17 +66,18 @@
       byte[] ret = null;
 
       var i = 0;
+
       while (i < scanRecord.Length) {
-        var len = scanRecord[i++];
-        var type = scanRecord[i++];
+        var len = scanRecord[i];
+        var type = scanRecord[i + 1];
         if (type == 0xff) {
-          var companyCode = scanRecord[i] << 8 | scanRecord[i + 1];
+          var companyCode = scanRecord[i + 2] << 8 | scanRecord[i + 3];
           if (companyCode == Protocol.MANFAC_ID) {
-            ret = new byte[19];
-            Array.Copy(scanRecord, i + 10, ret, 0, 19);
+            ret = new byte[len - 2];
+            Array.Copy(scanRecord, i + 4, ret, 0, ret.Length);
           }
         }
-        i += len - 2; // We already incremented for the len and type
+        i += len; // We already incremented for the len and type
       }
 
       return ret;

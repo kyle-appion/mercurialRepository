@@ -29,7 +29,7 @@
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
-      if (!ion.preferences.alarm.allowsSounds) {
+      if (!ion.appPrefs._alarm.allowsSounds) {
         return false;
       }
 

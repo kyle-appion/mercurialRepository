@@ -163,6 +163,7 @@
     <Compile Include="src\Content\Parsers\ManifoldParsers\V2.cs" />
     <Compile Include="src\Connections\IConnectionManager.cs" />
     <Compile Include="src\Connections\RemoteConnectionManager.cs" />
+    <Compile Include="src\App\IIONPreferences.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
