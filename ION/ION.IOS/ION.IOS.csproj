@@ -794,7 +794,6 @@
     <Compile Include="src\ViewController\Workbench\FluidSubviewCell.designer.cs">
       <DependentUpon>FluidSubviewCell.cs</DependentUpon>
     </Compile>
-    <Compile Include="src\App\AppSettings.cs" />
     <Compile Include="src\ViewController\IONPrimaryScreenController.cs" />
     <Compile Include="src\ViewController\IONPrimaryScreenController.designer.cs">
       <DependentUpon>IONPrimaryScreenController.cs</DependentUpon>
@@ -1039,6 +1038,7 @@
     </Compile>
     <Compile Include="src\Net\Reachability.cs" />
     <Compile Include="src\Connections\IonCBCentralManagerDelegate.cs" />
+    <Compile Include="src\App\AppPrefs.cs" />
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />

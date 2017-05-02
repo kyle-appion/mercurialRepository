@@ -3,8 +3,6 @@
   using System;
 
   using AudioToolbox;
-  using Foundation;
-  using UIKit;
 
   using ION.Core.Alarms;
   using ION.Core.Alarms.Alerts;
@@ -23,7 +21,7 @@
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
-      if (!ion.settings.alarm.sound || sound != null) {
+      if (!ion.settings._alarm.allowsSounds || sound != null) {
         return false;
       }
 

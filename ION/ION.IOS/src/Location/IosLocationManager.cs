@@ -1,10 +1,8 @@
 ﻿namespace ION.IOS.Location {
 
-  using System;
   using System.Threading.Tasks;
 
   using CoreLocation;
-  using UIKit;
 
 	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
@@ -39,17 +37,17 @@
     // Overridden from ILocationManager
     public bool allowLocationTracking { 
       get {
-        return ion.settings.location.useGeoLocation;
+        return ion.settings._location.allowsGps;
       }
       set {
-        ion.settings.location.useGeoLocation = value;
+        ion.settings._location.allowsGps = value;
       }
     }
 
     // Implemented from ILocationManager
     public bool supportsAltitudeTracking {
       get {
-        return ion.settings.location.useGeoLocation;
+        return ion.settings._location.allowsGps;
       }
     }
 
@@ -91,7 +89,7 @@
     public async Task<InitializationResult> InitAsync() {
       native = new CLLocationManager();
 
-      if (ion.settings.location.useGeoLocation) {
+      if (ion.settings._location.allowsGps) {
         // We should assert that the application will always be compiled to 8.0
 //      if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0)) {
         // But just in case, be safe.

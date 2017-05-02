@@ -10,7 +10,6 @@
 	using ION.Core.App;
 	using ION.Core.Net;
 
-  using ION.Net;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController;
 
@@ -172,7 +171,6 @@
       // Called as part of the transiton from background to active state.
       // Here you can undo many of the changes made on entering the background.
 			var ion = AppState.context as IosION;
-			ion.InitSettings();
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {
@@ -186,10 +184,10 @@
         }
       } 
 
-      if (ion.settings.screen.leaveOn) {
+      if (ion.settings.leaveScreenOn) {
         UIApplication.SharedApplication.IdleTimerDisabled = true;
       }
-      if (ion.settings.location.useGeoLocation) {
+      if (ion.settings._location.allowsGps) {
       	Console.WriteLine("Came back and using geolocation");
         ion.locationManager.StartAutomaticLocationPolling();
       }else {
