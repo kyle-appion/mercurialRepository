@@ -215,11 +215,12 @@
     // Implemented for IPreferences
     public bool allowLongRangeMode {
       get {
-        return GetBool(KEY_LONG_RANGE);
+        return false;
+//        return GetBool(KEY_LONG_RANGE);
       }
 
       set {
-        PutBool(KEY_LONG_RANGE, value);
+//        PutBool(KEY_LONG_RANGE, value);
       }
     }
 
