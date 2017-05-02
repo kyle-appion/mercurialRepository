@@ -50,11 +50,43 @@
     }
 
     public override void OnScanFailed(ScanFailure errorCode) {
+      Log.D(this, "Scan failed with error code: " + errorCode);
     }
 
     public override void OnScanResult(ScanCallbackType callbackType, ScanResult result) {
-      Log.V(this, "Found le device: " + result.Device.Name);
-      manager.OnDeviceFound(result.Device, result.ScanRecord.GetManufacturerSpecificData(Protocol.MANFAC_ID));
+//      var scanData = result.ScanRecord.GetManufacturerSpecificData(Protocol.MANFAC_ID);
+      var bytes = result.ScanRecord.GetBytes();
+      manager.OnDeviceFound(result.Device, ParseBroadcastPayloadFromScanRecord(bytes));
+    }
+
+    /// <summary>
+    /// Parses the broadcast payload from the scan record.
+    /// </summary>
+    /// <returns>The scan record for payload.</returns>
+    /// <param name="scanRecord">Scan record.</param>
+    private byte[] ParseBroadcastPayloadFromScanRecord(byte[] scanRecord) {
+      if (scanRecord == null) {
+        return null;
+      }
+
+      byte[] ret = null;
+
+      var i = 0;
+
+      while (i < scanRecord.Length) {
+        var len = scanRecord[i];
+        var type = scanRecord[i + 1];
+        if (type == 0xff) {
+          var companyCode = scanRecord[i + 2] << 8 | scanRecord[i + 3];
+          if (companyCode == Protocol.MANFAC_ID) {
+            ret = new byte[len - 2];
+            Array.Copy(scanRecord, i + 4, ret, 0, ret.Length);
+          }
+        }
+        i += len; // We already incremented for the len and type
+      }
+
+      return ret;
     }
   }
 }

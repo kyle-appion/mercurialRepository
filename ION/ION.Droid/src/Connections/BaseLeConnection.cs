@@ -15,6 +15,8 @@
     /// The default time that is allowed for a rigado connection attempt.
     /// </summary>
     private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
+    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(
+      (AndroidConnectionManager.DOWN_TIME + AndroidConnectionManager.SCAN_TIME).TotalMilliseconds * 3);
     /// <summary>
     /// The delay from a disconnecto to a reconnect attempt.
     /// </summary>
@@ -31,6 +33,10 @@
     /// The message that is used to check whether or not the connection has successfully found its services.
     /// </summary>
     private const int MSG_CHECK_SERVICES = 2;
+    /// <summary>
+    /// The message that is used to check whether or not the connection is still in long range mode.
+    /// </summary>
+    private const int MSG_CHECK_LONG_RANGE = 3;
 
     // Implemented for IConnection
     public event OnConnectionStateChanged onStateChanged;
@@ -40,7 +46,19 @@
     // Implemented for IConnection
     public EConnectionState connectionState {
       get {
-        return __connectionState;
+        if (__connectionState == EConnectionState.Disconnected) {
+          var dtime = DateTime.Now - lastPacketTime;
+          if (dtime <= LONG_RANGE_TIMEOUT && lastPacket != null) {
+            handler.RemoveMessages(MSG_CHECK_LONG_RANGE);
+            handler.PostDelayed(() => handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds), 500);
+//            handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds);
+            return EConnectionState.Broadcasting;
+          } else {
+            return __connectionState;
+          }
+        } else {
+          return __connectionState;
+        }
       }
       private set {
         var oldState = __connectionState;
@@ -65,6 +83,7 @@
       set {
         __lastPacket = value;
         lastSeen = DateTime.Now;
+        lastPacketTime = DateTime.Now;
         if (onDataReceived != null) {
           onDataReceived(this, __lastPacket);
         }
@@ -94,6 +113,10 @@
     /// </summary>
     protected BluetoothGatt gatt;
 
+    /// <summary>
+    /// The last time we received a packet.
+    /// </summary>
+    private DateTime lastPacketTime;
     /// <summary>
     /// The object that is locked for multithread synchronization.
     /// </summary>
@@ -142,6 +165,7 @@
         OnDisconnect();
 
         lastSeen = DateTime.Now;
+        lastPacketTime = DateTime.MaxValue;
         connectionState = EConnectionState.Disconnected;
 
         if (gatt != null) {
@@ -230,6 +254,13 @@
             }
             return true;
           } // MSG_CHECK_SERVICES
+
+          case MSG_CHECK_LONG_RANGE: { 
+            if (DateTime.Now - lastPacketTime > LONG_RANGE_TIMEOUT) {
+              connectionState = EConnectionState.Disconnected;
+            }
+            return true;
+          } // MSG_CHECK_LONG_RANGE
 
           default: {
             return false;

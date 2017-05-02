@@ -146,11 +146,12 @@
 					  break;
           } // EConnectionState.Connected
           case EConnectionState.Broadcasting: {
-						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+              measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+//						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+//						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
 
-						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
-						status.Text = c.GetString(Resource.String.disconnected);
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_nearby));
+            status.Text = c.GetString(Resource.String.long_range_mode);
 						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
 					  break;
           } // EConnectionState.Broadcasting
