@@ -35,6 +35,8 @@
         }
       }
     } bool __isScanning;
+    // Implemented for IConnectionManager
+    public bool isBroadcastScanning { get; } 
 
     /// <summary>
     /// The central manager for interacting with the bluetooth stack.
@@ -76,7 +78,12 @@
       }
     }
 
-    // Implemented fro IConnectionManager
+    // Implemented for IConnectionManager
+    public bool StartBroadcastScan() {
+      return false;
+    }
+
+    // Implemented for IConnectionManager
     public void StopScan() {
       lock (centralManager) {
         isScanning = false;
