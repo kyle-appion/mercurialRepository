@@ -157,6 +157,9 @@
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       connectionManager.StopScan();
       handler.RemoveCallbacksAndMessages(null);
+      if (ion.preferences.device.allowLongRangeMode) {
+        connectionManager.StartBroadcastScan();
+      }
     }
 
     // Overridden from Activity

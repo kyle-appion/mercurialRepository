@@ -30,7 +30,9 @@
 
         try {
           isScanning = manager.bm.Adapter.StartLeScan(this);
-          Log.D(this, "Starting Scan!");
+          if (isScanning) {
+            Log.D(this, "Starting Scan!");
+          }
           return isScanning;
         } catch (Exception e) { 
           Log.E(this, "Failed to start scan", e);

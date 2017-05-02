@@ -3,17 +3,12 @@ namespace ION.Core.Devices {
 	using System;
 	using System.Collections.Generic;
 	using System.Threading.Tasks;
-	using System.Net.Http;
-	using Newtonsoft.Json.Linq;
-	using Newtonsoft.Json;
 
-	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 	
 	using ION.Core.App;
 	using ION.Core.Connections;
 	using ION.Core.Database;
-	using ION.Core.Devices.Connections;
 	using ION.Core.Devices.Protocols;
 	using ION.Core.IO;
 	using ION.Core.Sensors;

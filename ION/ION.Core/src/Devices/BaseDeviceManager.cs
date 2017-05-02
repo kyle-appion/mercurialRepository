@@ -370,12 +370,18 @@
         __foundDevices[serialNumber] = device;
       }
 
+      if (packet != null) {
+        device.connection.lastPacket = packet;
+      }
+
+/*
       if (device.protocol is IGaugeProtocol) {
         var gp = device.protocol as IGaugeProtocol;
         if (gp.supportsBroadcasting) {
           device.HandlePacket(packet);
         }
       }
+*/
       device.connection.lastSeen = DateTime.Now;
 
       NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);

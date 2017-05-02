@@ -21,8 +21,8 @@
 
   public class AndroidConnectionManager : Java.Lang.Object, IConnectionManager, ISharedPreferencesOnSharedPreferenceChangeListener {
 
-    private static TimeSpan SCAN_TIME = TimeSpan.FromMilliseconds(750);
-    private static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(1500);
+    internal static TimeSpan SCAN_TIME = TimeSpan.FromMilliseconds(1500);
+    internal static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(1500);
 
     // Implemented for IConnectionManager
     public event OnScanStateChanged onScanStateChanged;
@@ -254,7 +254,6 @@
 
       if (!ResolveSerialNumber(device, scanRecord, out sn)) {
         // We could not resolve the device (or it is not ours)
-        Log.V(this, "Ignoring device: " + device.Name);
         return;
       }
 
@@ -279,7 +278,6 @@
     /// <param name="scanRecord">Scan record.</param>
     /// <param name="sn">Sn.</param>
     private bool ResolveSerialNumber(BluetoothDevice device, byte[] scanRecord, out ISerialNumber sn) {
-      Log.D(this, "Found device: " + device.Name + " with sr:\n{" + scanRecord?.ToByteString() + "}");
       if (device.Name.IsValidSerialNumber()) {
         sn = device.Name.ParseSerialNumber();
         return true;
@@ -336,12 +334,8 @@
 
           while (!source.Token.IsCancellationRequested) {
             if (!bleScanMethod.isScanning) {
-              Log.D(this, "Starting broadcast scan");
               if (!bleScanMethod.StartScan()) {
                 Log.E(this, "Failed to start ble scan for broadcasting");
-              }
-              lock (locker) {
-                Monitor.Wait(locker, scanTime);
               }
               await Task.Delay(scanTime, source.Token);
             } else {
