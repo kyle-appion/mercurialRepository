@@ -1,0 +1,97 @@
+TODOS
+
+CORE
+  UnitLookup
+    * Using Unitlookup to find the code of a pressure kPa returns the vacuum kPa
+      unit code. This is easily replicated by Adding a manual sensor to the
+      analyzer, setting its unit to kPa and adding and alarm to it.
+
+IOS
+  Device Manager
+    * Fix the connection spinner.
+    * Let the user cancel a connection attempt (related to the spinner)
+    * Fix the issue that connecting to a device marks all other devices (known
+      or not) as disconnected
+
+ANDROID
+  Alarm
+    * Manual sensors should not be allowed to have alarms
+
+  Application APK / Runtime
+    * Clearing the cache destroys the application (ie. the application will not
+      start). This appears to be because the cache contained important non-apk
+      dlls that are necessary for the c# runtime.
+
+  Screenshot Activity
+    * Allow screenshot to expand
+
+  Analyzer Fragment
+    - Sensor Mount
+      * Fix swap animation
+        ** Works for requested swap (dialog yes), but not normal swap
+
+    - Manifold
+      * Show "Linked sensor as secondary" toast when a secondary sensor is added
+      * swapping a manifold with subviews to other empty doesn't ask to break subviews
+      * adding a secondary sensor from across section boundary request swap when doesn't need to and replaces primary sensor
+
+  Calibration Certificate Activity
+    * add empty list TextView
+
+  Workbench
+    * Changing fluids isn't reflected in subview when back or arrow is clicked. Ok done works for superheat and subcool
+
+  Report Manager
+    * XML and PDF reports are not exported correctly
+
+DEVICE SPECIFIC (Samsung Tablet 7 (found in the warehouse))
+  Workbench
+  	* The manifolds sometimes don't update when a device is connected / reconnected.
+  		(could not reproduce)
+
+  * Out of memory when reconnect goes into a weird loop
+
+
+
+CURRENT BUILD ISSUES (0.9.37) ::
+
+  Workbench
+    * If all subviews are added to a manifold, when add subview is clicked, display a full toast.
+
+    System Analyzer
+      * Layout not saved on change
+      * Adding a gauge to opposite empty manifold does not bring sensor properties with the manifold
+      * Clearing current secondary for pressure gauge in shsc doesnt cause an error or warning when side is full
+      * Adding a shsc sensor property to a manifold that already has a secondary sensor does not setup the sensor property correctly
+      * Not checking for a breaking swap
+
+    Device Manager
+      * A forgotten device still appears in the device manager as new
+      * Connect all does not work at all on nexus 7
+      * Connected to vacuum gauge after disconnect and got a
+[MonoDroid] System.InvalidOperationException: Cannot begin a transaction while already in a transaction.
+[MonoDroid]   at SQLite.Net.SQLiteConnection.BeginTransaction () [0x00079] in <8f2bb39aeff94a30a8628064be9c7efe>:0
+[MonoDroid]   at ION.Core.Database.IONDatabase.SaveAsync[T] (T t) [0x00004] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Database/IONDatabase.cs:130
+[MonoDroid]   at ION.Core.Devices.BaseDeviceManager+<SaveDevice>c__async1.MoveNext () [0x000ad] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/BaseDeviceManager.cs:237
+[MonoDroid] --- End of stack trace from previous location where exception was thrown ---
+[MonoDroid]   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/exceptionservices/exceptionservicescommon.cs:143
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess (System.Threading.Tasks.Task task) [0x00047] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:187
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification (System.Threading.Tasks.Task task) [0x0002e] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:156
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd (System.Threading.Tasks.Task task) [0x0000b] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:128
+[MonoDroid]   at System.Runtime.CompilerServices.TaskAwaiter`1[TResult].GetResult () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/TaskAwaiter.cs:357
+[MonoDroid]   at ION.Core.Devices.BaseDeviceManager+<OnDeviceEvent>c__async3.MoveNext () [0x00066] in /Users/ahodder/Documents/code_space/ion_universe/ION/ION.Core/src/Devices/BaseDeviceManager.cs:388
+[MonoDroid] --- End of stack trace from previous location where exception was thrown ---
+[MonoDroid]   at System.Runtime.ExceptionServices.ExceptionDispatchInfo.Throw () [0x0000c] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/exceptionservices/exceptionservicescommon.cs:143
+[MonoDroid]   at System.Runtime.CompilerServices.AsyncMethodBuilderCore.<ThrowAsync>m__0 (System.Object state) [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/mono/mcs/class/referencesource/mscorlib/system/runtime/compilerservices/AsyncMethodBuilder.cs:1018
+[MonoDroid]   at Android.App.SyncContext+<Post>c__AnonStorey0.<>m__0 () [0x00000] in /Users/builder/data/lanes/3511/501e63ce/source/xamarin-android/src/Mono.Android/Android.App/SyncContext.cs:18
+[MonoDroid]   at Java.Lang.Thread+RunnableImplementor.Run () [0x0000b] in /Users/builder/data/lanes/3511/501e63ce/source/xamarin-android/src/Mono.Android/Java.Lang/Thread.cs:36
+[MonoDroid]   at Java.Lang.IRunnableInvoker.n_Run (System.IntPtr jnienv, System.IntPtr native__this) [0x00009] in /Users/builder/data/lanes/3511/501e63ce/source/monodroid/src/Mono.Android/platforms/android-24/src/generated/Java.Lang.IRunnable.cs:81
+[MonoDroid]   at (wrapper dynamic-method) System.Object:4884311f-cfdc-480f-b466-6b1e1cfaf8a8 (intptr,intptr
+
+    * Clicking disconnect on a connecting device right as it connects caused a crash
+
+
+  Select Export Data
+    * The drag handles for the graph selection are a little off from what the data says. To repeat this,
+    simply drag the selection to a break in the graph. The speculated reason is that the adapter lookup
+    is not considering the "empty" records that are used for padding.
