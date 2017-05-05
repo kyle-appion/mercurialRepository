@@ -219,7 +219,7 @@ namespace ION.IOS.ViewController.CloudSessions {
 						else if (logging == "0" && ion.dataLogManager.isRecording){
 							await ion.dataLogManager.StopRecording();
 						}
-					}			
+					}
 				} else {
 					webServices.uploading = false;
 				}

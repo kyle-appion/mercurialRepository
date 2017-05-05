@@ -29,10 +29,10 @@
     string version { get; }
     string api { get; }
     string chipset { get; }
-    int wifiConnected  { get; set; }
+    bool wifiConnected  { get; set; }
     int batteryPercentage { get; set; }
-    double freeMemory { get; set; }
-    int loggingStatus { get; set; }
+    long freeMemory { get; set; }
+    bool loggingStatus { get; set; }
   }
 
   /// <summary>

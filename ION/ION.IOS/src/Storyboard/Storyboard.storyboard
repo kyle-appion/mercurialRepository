@@ -2802,6 +2802,67 @@
             </objects>
             <point key="canvasLocation" x="2405.5999999999999" y="1104.1979010494754"/>
         </scene>
+        <!--Rateof Change Settings View Controller-->
+        <scene sceneID="ak8-Iq-EVq">
+            <objects>
+                <viewController storyboardIdentifier="viewControllerRoCSettings" id="Ur0-K8-IZK" customClass="RateofChangeSettingsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="T9i-vv-ZPS"/>
+                        <viewControllerLayoutGuide type="bottom" id="9Zf-Qe-ALh"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="gTq-rU-TEa">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cmg-8A-l0L">
+                                <rect key="frame" x="20" y="28" width="374" height="316.66666666666669"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Actual" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="owv-V9-vpL">
+                                <rect key="frame" x="20" y="386" width="106" height="31"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Superheat/Subcool" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o6V-sK-mRx">
+                                <rect key="frame" x="223.66666666666666" y="386" width="169.33333333333331" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="35" id="Chh-5L-alh"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BZA-7W-cbP">
+                                <rect key="frame" x="134" y="386" width="51" height="31"/>
+                            </switch>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="cmg-8A-l0L" firstAttribute="top" secondItem="T9i-vv-ZPS" secondAttribute="bottom" constant="8" id="4cW-Et-FSb"/>
+                            <constraint firstItem="o6V-sK-mRx" firstAttribute="leading" secondItem="BZA-7W-cbP" secondAttribute="trailing" constant="40.666666666666657" id="FF7-7m-IPd"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="cmg-8A-l0L" secondAttribute="leading" id="HJ9-46-35k"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="owv-V9-vpL" secondAttribute="leading" id="NaJ-7c-6mR"/>
+                            <constraint firstItem="9Zf-Qe-ALh" firstAttribute="top" secondItem="owv-V9-vpL" secondAttribute="bottom" constant="319" id="fl7-Rq-VLl"/>
+                            <constraint firstItem="BZA-7W-cbP" firstAttribute="top" secondItem="cmg-8A-l0L" secondAttribute="bottom" constant="41.333333333333314" id="l2Y-k0-Ohv"/>
+                            <constraint firstItem="owv-V9-vpL" firstAttribute="top" secondItem="cmg-8A-l0L" secondAttribute="bottom" constant="52" id="msD-Re-AQh"/>
+                            <constraint firstItem="o6V-sK-mRx" firstAttribute="top" secondItem="cmg-8A-l0L" secondAttribute="bottom" constant="41.333333333333314" id="nD4-uu-eN3"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="cmg-8A-l0L" secondAttribute="trailing" id="rIC-Tq-v4m"/>
+                            <constraint firstItem="BZA-7W-cbP" firstAttribute="leading" secondItem="gTq-rU-TEa" secondAttribute="leadingMargin" constant="114" id="tA2-SE-owd"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="o6V-sK-mRx" secondAttribute="trailing" constant="1" id="xUs-Oa-4xm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="actualLabel" destination="owv-V9-vpL" id="asb-Op-fnp"/>
+                        <outlet property="graphView" destination="cmg-8A-l0L" id="gWk-Zc-cij"/>
+                        <outlet property="secondaryToggle" destination="BZA-7W-cbP" id="gVp-tf-DOx"/>
+                        <outlet property="shscLabel" destination="o6V-sK-mRx" id="x86-rU-d15"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="7al-RN-AOj" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3050.7246376811595" y="1104.6195652173915"/>
+        </scene>
     </scenes>
     <resources>
         <image name="ButtonGold" width="32" height="32"/>

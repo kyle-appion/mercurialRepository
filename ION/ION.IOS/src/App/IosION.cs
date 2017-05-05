@@ -359,7 +359,7 @@
 			  remoteDevice.wifiConnected = remoteStatus.wifiStatus;
         remotePlatformChanged(remoteDevice);
       }
-      if(Math.Round(remoteDevice.freeMemory,2) != Math.Round(remoteStatus.remainingMemory,2)){
+      if(remoteDevice.freeMemory != remoteStatus.remainingMemory){
 			  remoteDevice.freeMemory = remoteStatus.remainingMemory;
         remotePlatformChanged(remoteDevice);
       }

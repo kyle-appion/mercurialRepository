@@ -1,178 +1,89 @@
+﻿using System;
+using CoreGraphics;
+using UIKit;
+
+using OxyPlot;
+using OxyPlot.Xamarin.iOS;
+
+using ION.Core.Content;
+using ION.Core.Devices;
+using ION.Core.Sensors.Properties;
+using System.Threading.Tasks;
+using OxyPlot.Axes;
+using OxyPlot.Series;
+using Appion.Commons.Measure;
+using ION.Core.Sensors;
+
 namespace ION.IOS.ViewController.Workbench {
-
-  using System;
-  using System.Threading.Tasks;
-  using System.Collections.Generic;
-
-  using Appion.Commons.Measure;
-  using Foundation;
-  using UIKit;
-  using CoreGraphics;
-
-  using ION.Core.Content;
-  using ION.Core.Sensors;
-  using ION.Core.Sensors.Properties;
-
-  using ION.IOS.Util;
-
-  using OxyPlot;
-  using OxyPlot.Axes;
-  using OxyPlot.Series;
-  using OxyPlot.Xamarin.iOS;
-  using ION.Core.Devices;
-
-  public class RateOfChangeRecord : SensorPropertyRecord {
-    public override WorkbenchTableSource.ViewType viewType {
-      get {
-        return WorkbenchTableSource.ViewType.RateOfChange;
-      }
-    }
-
-    public RateOfChangeSensorProperty roc { get; set; }
-
-    public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
-    }
-  }
-
-	public partial class RateOfChangeSensorPropertyCell : UITableViewCell {
   
-		public PlotView plotView;
-		public LinearAxis BAX;
+  public partial class RateofChangeSettingsViewController : BaseIONViewController {
+    public RateOfChangeRecord initialRecord {
+      get {
+        return __initialRecord;
+      }
+      set {
+        if (__initialRecord != null) {
+          __initialRecord.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
+        }
+
+        __initialRecord = value;
+
+        if (__initialRecord != null) {
+          __initialRecord.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
+        }
+      }
+    } RateOfChangeRecord __initialRecord;
+    
+    public PlotView plotView;
+    public LinearAxis BAX;
     public LinearAxis LAX;
-		public LinearAxis RAX;
+    public LinearAxis RAX;
     
     public LineSeries primarySeries;
     public LineSeries secondarySeries;
-    
-    public UILabel TLMeasurement;
-    public UILabel BLMeasurement;
-    public UILabel TRMeasurement;
-    public UILabel BRMeasurement;
-    
     public GaugeDeviceSensor gaugeSensor;
     
-    public bool isConnected = false;
-   		
-    private RateOfChangeRecord record {
-      get {
-        return __record;
-      }
-      set {
-        if (__record != null) {
-          __record.sensorProperty.onSensorPropertyChanged -= OnSensorPropertyChanged;
-        }
-
-        __record = value;
-
-        if (__record != null) {
-          __record.sensorProperty.onSensorPropertyChanged += OnSensorPropertyChanged;
-          OnSensorPropertyChanged(__record.sensorProperty);
-        }
-      }
-    } RateOfChangeRecord __record;
-
+    public bool actualSecondary = true;
     private bool isUpdating { get; set; }
-
-		public RateOfChangeSensorPropertyCell (IntPtr handle) : base (handle) {
-		}
-
-    public async void UpdateTo(RateOfChangeRecord record) {
-      await Task.Delay(TimeSpan.FromMilliseconds(200));
-      gaugeSensor = record.manifold.primarySensor  as GaugeDeviceSensor;
-      
-    	this.Layer.BorderWidth = 1f;  
-      this.record = record;
-      labelTitle.Text = Strings.Workbench.Viewer.ROC;
-      buttonIcon.Layer.BorderWidth = 1f;
-      
-      ///SETUP THE TRENDING GRAPH
-      if(plotView == null){      
-  			plotView = new PlotView(new CGRect(0,35, viewBackground.Bounds.Width, 85)){
-  				Model = CreatePlotModel(),
-          BackgroundColor = UIColor.Clear,
-  			};
-        
-        TLMeasurement = new UILabel(new CGRect(10,0,.5 * plotView.Bounds.Width,20));
-        TLMeasurement.AdjustsFontSizeToFitWidth = true;
-        TLMeasurement.TextAlignment = UITextAlignment.Left;
-        TLMeasurement.BackgroundColor = UIColor.Clear;
-        
-        BLMeasurement = new UILabel(new CGRect(10,30,.5 * plotView.Bounds.Width,20));
-        BLMeasurement.AdjustsFontSizeToFitWidth = true;
-        BLMeasurement.TextAlignment = UITextAlignment.Left;
-        BLMeasurement.BackgroundColor = UIColor.Clear;
-        
-        TRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,0,.5 * plotView.Bounds.Width - 10,20));
-        TRMeasurement.AdjustsFontSizeToFitWidth = true;
-        TRMeasurement.TextAlignment = UITextAlignment.Right;
-        TRMeasurement.BackgroundColor = UIColor.Clear;
-        
-        BRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,30,.5 * plotView.Bounds.Width - 10,20));
-        BRMeasurement.AdjustsFontSizeToFitWidth = true;
-        BRMeasurement.TextAlignment = UITextAlignment.Right;
-        BRMeasurement.BackgroundColor = UIColor.Clear;
-        
-        plotView.AddSubview(TLMeasurement);
-        plotView.AddSubview(BLMeasurement);
-        plotView.AddSubview(TRMeasurement);
-        plotView.AddSubview(BRMeasurement);
-
-        plotView.Layer.BorderWidth = 1f;
-        plotView.UserInteractionEnabled = false;
-        viewBackground.AddSubview(plotView);
-        updateCellGraph();
-      }
+  
+    public RateofChangeSettingsViewController(IntPtr handle) : base (handle) {
     }
 
-    private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
-      if (!isUpdating) {
-        isUpdating = true;
-        DoUpdateCell();
-      }
-    }
-
-    private async void DoUpdateCell() {
-      var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
-      
-      if(device != null && device.isConnected && isConnected == false){
-        isConnected = true;
-        updateCellGraph();
-      }
-      
-      var sp = record.sensorProperty as RateOfChangeSensorProperty;
-			var roc = sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-			var abs = Math.Abs(roc.amount);
-      var range = (sp.sensor.maxMeasurement - sp.sensor.minMeasurement) / 10;
-
-			if (abs > range.magnitude) {
-        labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + Strings.Measure.PER_MINUTE;
-      } else {
-				labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, roc.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
-      }
-
-			if (roc.amount == 0) {
-        buttonIcon.Hidden = true;
-        labelMeasurement.Text = Strings.Workbench.Viewer.ROC_STABLE;
-        isUpdating = false;
-      } else {
-        buttonIcon.Hidden = false;
-        if (roc < 0) {
-          buttonIcon.SetImage(UIImage.FromBundle("ic_arrow_trend_down"), UIControlState.Normal);
-        } else {
-          buttonIcon.SetImage(UIImage.FromBundle("ic_arrow_trend_up"), UIControlState.Normal);
-        }
-
-        await Task.Delay(100);
-        DoUpdateCell();
-      }
+    public override void ViewDidLoad() {
+      base.ViewDidLoad();
+      setupSettings();
     }
     
+    public async void setupSettings(){
+      await Task.Delay(TimeSpan.FromMilliseconds(2));
+        graphView.Layer.BorderWidth = 1f;
+        
+        plotView = new PlotView(new CGRect(0,0, graphView.Bounds.Width, graphView.Bounds.Height)){
+          Model = CreatePlotModel(),
+          BackgroundColor = UIColor.Clear,
+        };    
+        
+        shscLabel.AdjustsFontSizeToFitWidth = true;
+        secondaryToggle.On = actualSecondary;        
+        secondaryToggle.ValueChanged += toggleSwitched;
+        
+        graphView.AddSubview(plotView);
+        updateCellGraph();
+    }
+ 
+    private void OnSensorPropertyChanged(ISensorProperty sensorProperty) {
+      var device = (initialRecord.manifold.primarySensor as GaugeDeviceSensor)?.device;
+      
+      if(device != null && device.isConnected){
+        updateCellGraph();
+      }
+    }
+ 
     public async void updateCellGraph(){
       if(plotView == null){
         return;
-      }
-      
-      var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+      }           
+      var device = (initialRecord.manifold.primarySensor as GaugeDeviceSensor)?.device;
       if (device == null || device.isConnected) {
           InvalidatePrimary();
           InvalidateSecondary();
@@ -183,17 +94,22 @@ namespace ION.IOS.ViewController.Workbench {
           plotView.Model.InvalidatePlot(true);
         });
       } else {
-        isConnected = false;
         plotView.Model.PlotMargins = new OxyThickness(0,double.NaN,0,0);
         return;
       }
       await Task.Delay(TimeSpan.FromMilliseconds(100));
       updateCellGraph();   
     }
-    
+  
+    public void toggleSwitched(object sender, EventArgs e){    
+      actualSecondary = secondaryToggle.On;
+      
+      Console.WriteLine("toggled switch to state: " + actualSecondary);
+    }
+
     private void InvalidateTime() {
       var axis = BAX;
-      var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+      var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
       if (roc == null) {
         return;
@@ -218,17 +134,20 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void InvalidatePrimary() {
-      var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+      var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
-      if (roc == null || TLMeasurement == null || BLMeasurement == null) {
-        return;
+      if(roc == null){
+         return;
       }
+      //if (roc == null || TLMeasurement == null || BLMeasurement == null) {
+      //  return;
+      //}
 
       var minMax = roc.GetPrimaryMinMax();
-      TLMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.primarySensor.unit),true);
-      BLMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.primarySensor.unit),true);
+      //TLMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.primarySensor.unit),true);
+      //BLMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.primarySensor.unit),true);
       
-      UpdateAxis(LAX, minMax.min, minMax.max, record.manifold.primarySensor.unit, 1, 5);      
+      UpdateAxis(LAX, minMax.min, minMax.max, initialRecord.manifold.primarySensor.unit, 1, 5);      
       
       var primaryBuffer = roc.primarySensorPoints;
       var l = primaryBuffer.Count;
@@ -249,30 +168,32 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void InvalidateSecondary() {
-      if (record.manifold.secondarySensor == null) {  
+      if (initialRecord.manifold.secondarySensor == null) {  
         return;
       }
 
-      var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-
-      if (roc == null || TRMeasurement == null || BRMeasurement == null) {
+      var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+      if(roc == null){
         return;
       }
+      //if (roc == null || TRMeasurement == null || BRMeasurement == null) {
+      //  return;
+      //}
 
       var minMax = roc.GetSecondaryMinMax();
       
-      if(roc.manifold.secondarySensor != null){
-        TRMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.secondarySensor.unit),true);
-        BRMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.secondarySensor.unit),true);
-      }
+      //if(roc.manifold.secondarySensor != null){
+      //  TRMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.secondarySensor.unit),true);
+      //  BRMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.secondarySensor.unit),true);
+      //}
       
-      UpdateAxis(RAX, minMax.min, minMax.max, record.manifold.secondarySensor.unit, 1, 5);
+      UpdateAxis(RAX, minMax.min, minMax.max, initialRecord.manifold.secondarySensor.unit, 1, 5);
 
       var secondaryBuffer = roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
       // Resize the points list
       // Trim down to size
-      while (secondarySeries.Points.Count > l) {   
+      while (secondarySeries.Points.Count > l) {
         secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);
       }
       // Add any missing items
@@ -280,10 +201,26 @@ namespace ION.IOS.ViewController.Workbench {
         secondarySeries.Points.Add(new DataPoint());
       }
 
+      /////FIND START POINT IN PRIMARY POINTS THAT THE SECONDARY HAS STARTED FROM
+      var secondStartDate = secondaryBuffer[0].date;
+      var primaryIndex = 0;
+
+      while(secondStartDate < roc.primarySensorPoints[primaryIndex].date){
+        primaryIndex++;
+      }
       for (int i = 0; i < secondaryBuffer.Count; i++) {
         var p = secondaryBuffer[i];
-        secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
-      }
+        //var s = roc.primarySensorPoints[primaryIndex];
+        
+        //if(secondaryToggle.On){
+          
+        //  secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), roc.manifold.ptChart.CalculateSystemTemperatureDelta(new Scalar(roc.manifold.primarySensor.unit.standardUnit,s.measurement),new Scalar(roc.manifold.secondarySensor.unit.standardUnit,p.measurement)).magnitude);
+        //  Console.WriteLine("SHSC " +i+" data point X: " + secondarySeries.Points[i].X + " Y: " + secondarySeries.Points[i].Y);
+        //  primaryIndex++;
+        //} else {
+          secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
+        //}
+      } 
     }
  
     /// <summary>
@@ -330,16 +267,15 @@ namespace ION.IOS.ViewController.Workbench {
       axis.MaximumPadding = 0.25;
       axis.AxislineStyle = LineStyle.Solid;
       axis.AxislineThickness = 1;
-        plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);
-      
+      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);      
     }
-   
-    public PlotModel CreatePlotModel(){
-    	Console.WriteLine("Creating roc plotmodel");
+    
+    public PlotModel CreatePlotModel(){    
+      Console.WriteLine("Creating rocvc plotmodel");
       var model = new PlotModel();
       
-      var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-
+      var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+      
       var primaryColor = OxyColors.Blue;
       var secondaryColor = OxyColors.Red;
       
@@ -373,7 +309,7 @@ namespace ION.IOS.ViewController.Workbench {
         MinorGridlineStyle = LineStyle.None,
       };
 
-      var baseUnit = record.manifold.primarySensor.unit.standardUnit;
+      var baseUnit = initialRecord.manifold.primarySensor.unit.standardUnit;
       LAX = new LinearAxis() {
         Position = AxisPosition.Left,
         Minimum = 0,
@@ -383,7 +319,7 @@ namespace ION.IOS.ViewController.Workbench {
         IsPanEnabled = false,
         Key = "first",
         LabelFormatter = (arg) => {
-          var u = record.manifold.primarySensor.unit;
+          var u = initialRecord.manifold.primarySensor.unit;
           var p = SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
           return p;
         },
@@ -405,8 +341,8 @@ namespace ION.IOS.ViewController.Workbench {
         IsPanEnabled = false,
         Key = "second",
         LabelFormatter = (arg) => {
-          if (record.manifold.secondarySensor != null) {
-            var u = record.manifold.secondarySensor.unit;
+          if (initialRecord.manifold.secondarySensor != null) {
+            var u = initialRecord.manifold.secondarySensor.unit;
             return SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
           } else {
             return "";
@@ -423,6 +359,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       primarySeries = new LineSeries() {
         StrokeThickness = 1,
+        //Color = OxyColors.Red,
         Color = primaryColor,
         MarkerType = MarkerType.None,
         MarkerSize = 0,
@@ -450,9 +387,15 @@ namespace ION.IOS.ViewController.Workbench {
       model.Series.Add(primarySeries);
       model.Series.Add(secondarySeries);
       model.PlotAreaBorderThickness = new OxyThickness(0);
-      model.PlotAreaBorderColor = OxyColors.Transparent;	
-			
-			return model;
-		}
-	}
+      model.PlotAreaBorderColor = OxyColors.Transparent;  
+      
+      return model;
+    }
+
+    public override void DidReceiveMemoryWarning() {
+      base.DidReceiveMemoryWarning();
+      // Release any cached data, images, etc that aren't in use.
+    }
+  }
 }
+

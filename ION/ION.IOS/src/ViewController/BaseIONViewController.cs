@@ -23,6 +23,7 @@
     public const string VC_SETTINGS = "viewControllerSettings";
     public const string VC_SUPERHEAT_SUBCOOL = "viewControllerSuperheatSubcool";
     public const string VC_WORKBENCH = "viewControllerWorkbench";
+    public const string VC_RATEOFCHANGE = "viewControllerRoCSettings";
     public const string VC_PDF_VIEWER = "viewControllerPdfViewer";
     public const string VC_LOGGING = "viewControllerLogging";
     public const string VC_JOB_MANAGER = "viewControllerJobManager";

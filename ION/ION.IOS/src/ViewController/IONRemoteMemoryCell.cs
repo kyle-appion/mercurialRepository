@@ -40,7 +40,7 @@ namespace ION.IOS {
       this.Layer.BorderColor = UIColor.FromRGB(255,30,30).CGColor;
       
       if(ion.remoteDevice != null){
-        labelTitle.Text = Math.Round((((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000),3) + " GB ";
+        labelTitle.Text = Math.Round((((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000.0),3) + " GB ";
       } else {
         labelTitle.Text = "N/A";
       }
@@ -52,7 +52,7 @@ namespace ION.IOS {
 
     public void updateMemory(IPlatformInfo remoteInfo){
       if(ion.remoteDevice != null){
-        labelTitle.Text = Math.Round((((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000),3) + " GB ";
+        labelTitle.Text = Math.Round((((ion.remoteDevice.freeMemory / 1024) / 1024) / 1000.0),3) + " GB ";
       } else {
         labelTitle.Text = "N/A";
       }

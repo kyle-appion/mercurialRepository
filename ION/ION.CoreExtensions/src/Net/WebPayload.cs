@@ -231,7 +231,7 @@ namespace ION.Core.Net {
 				//var alert = UIAlertController.Create ("Access Code", "There was no response. Please try again.", UIAlertControllerStyle.Alert);
 				//alert.AddAction (UIAlertAction.Create ("Ok", UIAlertActionStyle.Cancel, null));
 				//rootVC.PresentViewController (alert, animated: true, completionHandler: null);
-			}				
+			}
 	}
 	
 	public async Task<HttpResponseMessage> createSystemLayout(string ID, string uniqueID, string deviceName){
@@ -242,8 +242,8 @@ namespace ION.Core.Net {
       
       stateInfo = new sessionStateInfo(){
         batteryLevel = platformInfo.batteryPercentage,
-        wifiStatus = Convert.ToInt32(platformInfo.wifiConnected),
-        isRecording = ion.dataLogManager.isRecording ? 1 : 0,
+        wifiStatus = platformInfo.wifiConnected,
+        isRecording = ion.dataLogManager.isRecording,
         remainingMemory = platformInfo.freeMemory,
       };
     
@@ -261,7 +261,7 @@ namespace ION.Core.Net {
 			//////initiate the post request and get the request result
 			var feedback = await client.PostAsync(uploadLayoutsUrl,formContent);
 			
-			var textReponse = await feedback.Content.ReadAsStringAsync();
+			//var textReponse = await feedback.Content.ReadAsStringAsync();
 			//Console.WriteLine(textReponse);
 			return feedback;
 		}  catch (Exception exception){
@@ -437,8 +437,8 @@ namespace ION.Core.Net {
 		
 		stateInfo = new sessionStateInfo(){
 			batteryLevel = platformInfo.batteryPercentage,
-			wifiStatus = Convert.ToInt32(platformInfo.wifiConnected),
-			isRecording = ion.dataLogManager.isRecording ? 1 : 0,
+			wifiStatus = platformInfo.wifiConnected,
+			isRecording = ion.dataLogManager.isRecording,
 			remainingMemory = platformInfo.freeMemory,
 		};
 		
@@ -845,10 +845,10 @@ namespace ION.Core.Net {
 			var feedback = await client.PostAsync(accountStatusUrl,formContent);
 
 			return feedback;
-		}  catch (Exception exception){
+		}  catch (Exception exception){  
 			Console.WriteLine("Exception: " + exception);  
 			return null;
-		}	
+		}
 	}
 	/// <summary>
 	/// Queries for everyone a user has viewing access for

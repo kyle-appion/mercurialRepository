@@ -1063,6 +1063,10 @@
     <Compile Include="src\ViewController\IONRemoteMemoryCell.designer.cs">
       <DependentUpon>IONRemoteMemoryCell.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\ViewController\RateofChangeSettings\RateofChangeSettingsViewController.cs" />
+    <Compile Include="src\ViewController\RateofChangeSettings\RateofChangeSettingsViewController.designer.cs">
+      <DependentUpon>RateofChangeSettingsViewController.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="..\ION.CoreExtensions\ION.CoreExtensions.projitems" Label="Shared" Condition="Exists('..\ION.CoreExtensions\ION.CoreExtensions.projitems')" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
@@ -1150,6 +1154,7 @@
     <Folder Include="Resources\Images.xcassets\ic_nav_power.imageset\" />
     <Folder Include="Resources\Images.xcassets\wireless_connected.imageset\" />
     <Folder Include="Resources\Images.xcassets\wireless_disconnected.imageset\" />
+    <Folder Include="src\ViewController\RateofChangeSettings\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

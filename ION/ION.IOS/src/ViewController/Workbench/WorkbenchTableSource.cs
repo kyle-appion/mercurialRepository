@@ -220,8 +220,7 @@ namespace ION.IOS.ViewController.Workbench {
           shvc.initialManifold = fr.manifold;
           vc.NavigationController.PushViewController(shvc, true);
         }
-      }
-      if (record is MeasurementRecord){
+      } else if (record is MeasurementRecord){
 				var property = ((MeasurementRecord)record).sensorProperty as AlternateUnitSensorProperty;
 				if(property != null){
 					var dialog = UIAlertController.Create("Choose Unit", null, UIAlertControllerStyle.Alert);
@@ -236,7 +235,12 @@ namespace ION.IOS.ViewController.Workbench {
  					dialog.AddAction(UIAlertAction.Create(Strings.CANCEL, UIAlertActionStyle.Cancel, null));
 					vc.PresentViewController(dialog, false, null);
 				}
-			}
+			} else if (record is RateOfChangeRecord){
+          Console.WriteLine("Workbench table source clicked the rate of change cell. Sending record of " + ((RateOfChangeRecord)record).manifold.primarySensor.name);
+          var rocvc = vc.InflateViewController<RateofChangeSettingsViewController>(BaseIONViewController.VC_RATEOFCHANGE);
+          rocvc.initialRecord = record as RateOfChangeRecord;
+          vc.NavigationController.PushViewController(rocvc, true);
+      }
     }
 
     // Overridden from UITableViewSource

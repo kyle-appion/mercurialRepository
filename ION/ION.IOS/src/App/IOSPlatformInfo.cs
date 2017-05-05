@@ -22,10 +22,10 @@ using CoreFoundation;
     public string version { get; set; }
     public string api { get; set; }
     public string chipset { get; set; }
-    public int wifiConnected { get; set; }
+    public bool wifiConnected { get; set; }
     public int batteryPercentage { get; set; }
-    public double freeMemory { get; set; }
-    public int loggingStatus { get; set; }
+    public long freeMemory { get; set; }
+    public bool loggingStatus { get; set; }
 
     public IOSPlatformInfo() {
     	UIDevice.CurrentDevice.BatteryMonitoringEnabled = true;
@@ -41,19 +41,19 @@ using CoreFoundation;
       Reachability.IsAdHocWiFiNetworkAvailable(out flag);
       
       if(flag == NetworkReachabilityFlags.Reachable){
-      	wifiConnected = 1;
+      	wifiConnected = true;
       } else {
-      	wifiConnected = 0;
+      	wifiConnected = false;
 			}
 						
       batteryPercentage = (int)(UIDevice.CurrentDevice.BatteryLevel * 100);
       
-			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
+			long freeSpace = (long)NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
 			//freeSpace /= 1024;
 			//freeSpace /= 1024;
 			//freeSpace /= 1000;
 			
-    	freeMemory = Math.Round(freeSpace,2);
+    	freeMemory = freeSpace;
     }      
   }
   

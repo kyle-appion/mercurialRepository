@@ -235,13 +235,13 @@
 	public class sessionStateInfo {
 		public sessionStateInfo(){}
 		[JsonProperty("log")]
-		public int isRecording {get; set;}
+		public bool isRecording {get; set;}
 		[JsonProperty("battery")]
 		public int batteryLevel {get; set;}
 		[JsonProperty("wifi")]
-		public int wifiStatus {get; set;}
+		public bool wifiStatus {get; set;}
 		[JsonProperty("memory")]
-		public double remainingMemory {get; set;}	
+		public long remainingMemory {get; set;}	
 	}
 }
 

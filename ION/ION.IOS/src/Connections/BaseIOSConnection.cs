@@ -217,7 +217,7 @@
         device.DiscoverServices();
         DispatchQueue.MainQueue.DispatchAfter(TimeSpan.FromSeconds(45), () => {
           if (!AreServicesValid()) {
-            Disconnect(true);
+              Disconnect(true);
           }
         });
       }
