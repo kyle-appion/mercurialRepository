@@ -114,18 +114,8 @@
         filter = EDeviceFilter.All;
       }
 
-      adapter = new DeviceManagerRecycleAdapter(ion, cache);
-      adapter.deviceFilter = BuildDeviceFilter(filter);
-      adapter.sensorFilter = BuildSensorFilter(filter);
-      if (Intent.ActionPick.Equals(Intent.Action)) {
-        adapter.onSensorReturnClicked = OnSensorReturnClicked;
-      }
-
       empty.Visibility = ViewStates.Gone;
       list.Visibility = ViewStates.Visible;
-			adapter.emptyView = empty;
-
-      list.SetAdapter(adapter);
       connectionManager = ion.deviceManager.connectionManager as AndroidConnectionManager;
     }
 
@@ -143,6 +133,14 @@
 			InvalidateOptionsMenu();
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
+      adapter = new DeviceManagerRecycleAdapter(ion, cache);
+      adapter.deviceFilter = BuildDeviceFilter(filter);
+      adapter.sensorFilter = BuildSensorFilter(filter);
+      if (Intent.ActionPick.Equals(Intent.Action)) {
+        adapter.onSensorReturnClicked = OnSensorReturnClicked;
+      }
+      adapter.emptyView = empty;
+      list.SetAdapter(adapter);
       adapter.Reload();
 
       connectionManager.StartScan();
@@ -160,6 +158,8 @@
       if (ion.preferences.device.allowLongRangeMode) {
         connectionManager.StartBroadcastScan();
       }
+      adapter.Release();
+      list.SetAdapter(null);
     }
 
     // Overridden from Activity

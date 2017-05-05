@@ -6,6 +6,7 @@ namespace ION.Core.Sensors {
   using Newtonsoft.Json;
 
 	using Appion.Commons.Measure;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Sensors.Serialization;
@@ -34,7 +35,7 @@ namespace ION.Core.Sensors {
     /// <param name="sensorType">Sensor type.</param>
     public static Unit GetDefaultUnit(this ESensorType sensorType) {
       switch (sensorType) {
-        /*
+/*
         case ESensorType.Humidity: {
           return DEFAULT_HUMIDITY_UNITS[0];
         }

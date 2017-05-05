@@ -123,8 +123,7 @@
   /// </description>
   public class Manifold : IDisposable {
 
-    private static readonly IFilter<ESensorType[]> ALLOWED_SECONDARY_SENSORS =
-      new OrFilterCollection<ESensorType[]>(
+    private static readonly IFilter<ESensorType[]> ALLOWED_SECONDARY_SENSORS = new OrFilterCollection<ESensorType[]>(
         new ExactSensorTypeFilter(ESensorType.Pressure),
         new ExactSensorTypeFilter(ESensorType.Pressure, ESensorType.Temperature),
         new ExactSensorTypeFilter(ESensorType.Temperature, ESensorType.Pressure),
