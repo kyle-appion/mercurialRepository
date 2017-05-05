@@ -8,8 +8,6 @@
   using System.Text;
   using System.Threading;
 
-  using Newtonsoft.Json.Linq;
-
   using Appion.Commons.Util;
 
   using ION.Core.App;
@@ -22,7 +20,7 @@
     // Implemented for ILogger
     public bool isDiskSaveEnabled {
       get {
-        return new AppSettings().app.analytics;
+        return AppPrefs.Get().allowAppAnalytics;
       }
     }
 

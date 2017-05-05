@@ -87,7 +87,6 @@
     <Compile Include="src\Devices\BaseDeviceManager.cs" />
     <Compile Include="src\Devices\DeviceFactory.cs" />
     <Compile Include="src\IO\EmbeddedResource.cs" />
-    <Compile Include="src\Devices\Connections\BaseConnectionHelper.cs" />
     <Compile Include="src\Sensors\Properties\PTChartSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\SuperheatSubcoolSensorProperty.cs" />
     <Compile Include="src\Content\Properties\AbstractManifoldSensorProperty.cs" />
@@ -137,8 +136,6 @@
     <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
-    <Compile Include="src\Devices\Connections\IConnectionFactory.cs" />
-    <Compile Include="src\Devices\Connections\IConnectionHelper.cs" />
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
     <Compile Include="src\Devices\Sorters\SerialNumberSorter.cs" />
     <Compile Include="src\Devices\Sorters\DeviceSerialNumberSorter.cs" />
@@ -155,7 +152,6 @@
     <Compile Include="src\Fluids\FluidExtensions.cs" />
     <Compile Include="src\Content\AppVersion.cs" />
     <Compile Include="src\Devices\RemoteDeviceManager.cs" />
-    <Compile Include="src\Devices\Connections\RemoteConnectionFactory.cs" />
     <Compile Include="src\Content\Parsers\JsonWorkbench.cs" />
     <Compile Include="src\Content\Parsers\JsonManifold.cs" />
     <Compile Include="src\Content\Parsers\JsonSensor.cs" />
@@ -163,6 +159,7 @@
     <Compile Include="src\Content\Parsers\ManifoldParsers\V2.cs" />
     <Compile Include="src\Connections\IConnectionManager.cs" />
     <Compile Include="src\Connections\RemoteConnectionManager.cs" />
+    <Compile Include="src\App\IIONPreferences.cs" />
     <Compile Include="src\Content\IonState.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
@@ -329,7 +326,6 @@
     <Folder Include="src\Alarms\Alerts\" />
     <Folder Include="src\Sensors\Alarms\" />
     <Folder Include="src\Sensors\Serialization\" />
-    <Folder Include="src\Devices\Connections\" />
     <Folder Include="src\Content\Properties\" />
     <Folder Include="src\Devices\Certificates\" />
     <Folder Include="src\Sensors\Alarms\Serialization\" />

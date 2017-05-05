@@ -136,36 +136,42 @@
 				progress.Visibility = ViewStates.Invisible;
 				connection.Visibility = ViewStates.Visible;
 				switch (d.connection.connectionState) {
-					case EConnectionState.Connected:
+          case EConnectionState.Connected: {
 						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
 						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_connected));
 						status.Text = c.GetString(Resource.String.connected);
 						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.green)));
-					break;
-					case EConnectionState.Broadcasting:
-						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+					  break;
+          } // EConnectionState.Connected
+          case EConnectionState.Broadcasting: {
+              measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.black)));
+//						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
+//						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
 
-						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_c3_broadcast));
-						status.Text = c.GetString(Resource.String.disconnected);
+            connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_nearby));
+            status.Text = c.GetString(Resource.String.long_range_mode);
 						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.light_blue)));
-					break;
-					case EConnectionState.Disconnected:
+					  break;
+          } // EConnectionState.Broadcasting
+          case EConnectionState.Disconnected: {
 						measurement.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
 						unit.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.gray)));
 
 						connection.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_bluetooth_disconnected));
 						status.Text = c.GetString(Resource.String.disconnected);
 						status.SetTextColor(new Android.Graphics.Color(c.Resources.GetColor(Resource.Color.red)));
-					break;
-					case EConnectionState.Connecting:
-					goto case EConnectionState.Resolving;
-					case EConnectionState.Resolving:
+					  break;
+          } // EConnectionState.Disconnected
+          case EConnectionState.Connecting: {
+					  goto case EConnectionState.Disconnected;
+          } // EConnectionState.Connecting:
+          case EConnectionState.Resolving: {
 						progress.Visibility = ViewStates.Visible;
 						connection.Visibility = ViewStates.Invisible;
-					break;
+					  break;
+          } // EConnectionState.Resolving
 				}
 
 				icon.SetImageBitmap(cache.GetBitmap(d.GetDeviceIcon()));

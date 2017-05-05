@@ -2,6 +2,8 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   using Android.Bluetooth;
   using Android.Content;
@@ -15,7 +17,13 @@
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
 
-  public class AndroidConnectionManager : IConnectionManager {
+  using ION.Droid.App;
+
+  public class AndroidConnectionManager : Java.Lang.Object, IConnectionManager, ISharedPreferencesOnSharedPreferenceChangeListener {
+
+    internal static TimeSpan SCAN_TIME = TimeSpan.FromMilliseconds(1500);
+    internal static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(1500);
+
     // Implemented for IConnectionManager
     public event OnScanStateChanged onScanStateChanged;
     // Implemented for IConnectionManager
@@ -24,12 +32,34 @@
     // Implemented for IConnectionManager
     public bool isEnabled { get { return bm.Adapter.IsEnabled; } }
     // Implemented for IConnectionManager
-    public bool isScanning { get { return bleScanMethod.isScanning || classicScanMethod.isScanning; } }
+    public bool isScanning { 
+      get {
+        return __isScanning;
+      }
+      private set {
+        __isScanning = value;
+        if (onScanStateChanged != null) {
+          onScanStateChanged(this);
+        }
+      }
+    } bool __isScanning;
+    // Implemented for IConnectionManager
+    public bool isBroadcastScanning { get { return broadcastTask != null; } }
+    /// <summary>
+    /// Queries whether or not the connection manager is performing a classic scan.
+    /// </summary>
+    /// <value><c>true</c> if is classic scanning; otherwise, <c>false</c>.</value>
+    public bool isClassicScanning { get { return classicScanMethod.isScanning; } }
 
+    /// <summary>
+    /// The ion instance that create this manager.
+    /// </summary>
+    /// <value>The ion.</value>
+    public BaseAndroidION ion { get; private set; }
     /// <summary>
     /// The application context.
     /// </summary>
-    public  Context context { get; private set; }
+    public  Context context { get { return ion.context; } }
     /// <summary>
     /// The android native bluetooth manager that gives us access to the bluetooth stack.
     /// </summary>
@@ -60,9 +90,17 @@
     /// The scan method used to perform classic scans.
     /// </summary>
     private IScanMethod classicScanMethod;
+    /// <summary>
+    /// The token source that will cancel the broadcast task.
+    /// </summary>
+    private CancellationTokenSource broadcastTokenSource;
+    /// <summary>
+    /// The task that references a running broadcast action.
+    /// </summary>
+    private Task broadcastTask;
 
-    public AndroidConnectionManager(Context context) {
-      this.context = context;
+    public AndroidConnectionManager(BaseAndroidION ion) {
+      this.ion = ion;
       bm = context.GetSystemService(Context.BluetoothService) as BluetoothManager;
 
       handler = new Handler(Looper.MainLooper);
@@ -80,15 +118,29 @@
 
       // Create classic scan method.
       classicScanMethod = new ClassicScanMethod(this);
+
+      ion.appPrefs.prefs.RegisterOnSharedPreferenceChangeListener(this);
+    }
+
+    // Implemented for IConnectionManager
+    public void Dispose() {
+      if (broadcastTask != null) {
+        broadcastTokenSource.Cancel();
+        broadcastTask.Wait();
+      }
+
+      broadcastTokenSource = null;
+      broadcastTask = null;
+
+      ion.appPrefs.prefs.UnregisterOnSharedPreferenceChangeListener(this);
+      StopScan();
     }
 
     // Implemented for IConnectionManager
     public bool StartScan() {
       lock (locker) {
         if (bleScanMethod.StartScan()) {
-          if (onScanStateChanged != null) {
-            onScanStateChanged(this);
-          }
+          isScanning = true;
           return true;
         } else {
           return false;
@@ -97,12 +149,54 @@
     }
 
     // Implemented for IConnectionManager
+    public bool StartBroadcastScan() {
+      lock (locker) {
+        if (isBroadcastScanning) {
+          return true;
+        }
+
+        if (isScanning) {
+          StopScan();
+        }
+
+        handler.PostDelayed(() => {
+          broadcastTokenSource = new CancellationTokenSource();
+          broadcastTask = StartBroadcastTask(broadcastTokenSource, SCAN_TIME, DOWN_TIME);
+        }, 1000);
+        return true;
+      }
+    }
+
+    // Implemented for IConnectionManager
     public void StopScan() {
       lock (locker) {
+        if (broadcastTokenSource != null) {
+          broadcastTokenSource.Cancel();
+        }
+
+        Monitor.PulseAll(locker);
+        handler.RemoveCallbacksAndMessages(null);
         bleScanMethod.StopScan();
         classicScanMethod.StopScan();
-        if (onScanStateChanged != null) {
-          onScanStateChanged(this);
+
+        if (broadcastTask != null) {
+          broadcastTask.Wait();
+          broadcastTask = null;
+          broadcastTokenSource.Dispose();
+          broadcastTokenSource = null;
+        }
+
+        isScanning = false;
+      }
+    }
+
+    // Implemented for OnSharedPreferenceChangeListener
+    public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
+      if (context.GetString(Resource.String.pkey_device_long_range).Equals(key)) {
+        if (ion.preferences.device.allowLongRangeMode) {
+          StartBroadcastScan();
+        } else {
+          StopScan();
         }
       }
     }
@@ -116,7 +210,12 @@
         bleScanMethod.StopScan();
       }
 
-      return classicScanMethod.StartScan();
+      if (classicScanMethod.StartScan()) {
+        isScanning = true;
+        return true;
+      } else {
+        return false;
+      }
     }
 
 
@@ -163,7 +262,6 @@
 
       if (!ResolveSerialNumber(device, scanRecord, out sn)) {
         // We could not resolve the device (or it is not ours)
-        Log.V(this, "Ignoring device: " + device.Name);
         return;
       }
 
@@ -191,8 +289,21 @@
       if (device.Name.IsValidSerialNumber()) {
         sn = device.Name.ParseSerialNumber();
         return true;
+      } else if (scanRecord != null) {
+        var ussn = System.Text.Encoding.UTF8.GetString(scanRecord, 0, 8);
+        if (ussn.IsValidSerialNumber()) {
+          sn = ussn.ParseSerialNumber();
+          // We need to format the scan record.
+          var buffer = new byte[20];
+          Array.Copy(scanRecord, 8, buffer, 0, buffer.Length);
+          Array.Clear(scanRecord, 0, scanRecord.Length);
+          Array.Copy(buffer, scanRecord, buffer.Length);
+          return true;
+        } else {
+          sn = null;
+          return false;
+        }
       } else {
-        // TODO ahodder@appioninc.com:
         sn = null;
         return false;
       }
@@ -218,6 +329,34 @@
           return EProtocolVersion.V1;
         }
       }
+    }
+
+    /// <summary>
+    /// Toggles whether or not we are performing a scan for broadcasting.
+    /// </summary>
+    private Task StartBroadcastTask(CancellationTokenSource source, TimeSpan scanTime, TimeSpan downTime) {
+      return Task.Factory.StartNew(async () => {
+        try {
+          var sleepTime = downTime;
+          var lastTime = DateTime.Now;
+
+          while (!source.Token.IsCancellationRequested) {
+            if (!bleScanMethod.isScanning) {
+              if (!bleScanMethod.StartScan()) {
+                Log.E(this, "Failed to start ble scan for broadcasting");
+              }
+              await Task.Delay(scanTime, source.Token);
+            } else {
+              bleScanMethod.StopScan();
+              await Task.Delay(downTime, source.Token);
+            }
+          }
+        } catch (Exception e) {
+          Log.E(this, "Unexpected failure in executing broadcast task.", e);
+        } finally {
+          StopScan();
+        }
+      });
     }
   }
 }

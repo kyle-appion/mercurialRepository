@@ -315,6 +315,7 @@
     <Compile Include="src\Connections\Api21BleScanMethod.cs" />
     <Compile Include="src\Connections\ClassicScanMethod.cs" />
     <Compile Include="src\Connections\IScanMethod.cs" />
+    <Compile Include="src\App\BatteryBroadcastReceiver.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -750,6 +751,7 @@
     <AndroidResource Include="Resources\layout\subview_graph_small.axml" />
     <AndroidResource Include="Resources\layout\activity_roc.axml" />
     <AndroidResource Include="Resources\menu\help.xml" />
+    <AndroidResource Include="Resources\values\Plurals.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

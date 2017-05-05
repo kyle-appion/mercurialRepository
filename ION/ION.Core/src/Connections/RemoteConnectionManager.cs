@@ -14,6 +14,8 @@
 
 		// Implemented from IConnectionHelper
 		public bool isScanning { get { return false; } }
+    // Implemented for IConnectionManager
+    public bool isBroadcastScanning { get { return false; } }
 
 
 		public RemoteConnectionManager() {
@@ -33,6 +35,11 @@
 		public bool StartScan() {
 			return false;
 		}
+
+    // Implemented for IConnectionManager
+    public bool StartBroadcastScan() {
+      return false;
+    }
 
 		// Implemented from IConnectionHelper
 		public void StopScan() {

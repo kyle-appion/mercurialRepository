@@ -13,11 +13,28 @@
   using ION.Core.Database;
   using ION.Core.Content;
 
+  public class DataLogManagerEvent {
+    public EType type { get; private set; }
+
+    public DataLogManagerEvent(EType type) {
+      this.type = type;
+    }
+
+    public enum EType {
+      RecordingStarted,
+      RecordingEnded,
+    }
+  }
+
   /// <summary>
   /// The manager that will allow easy interactions with how devices will log there data.
   /// </summary>
   public class DataLogManager : IManager {
-  
+    /// <summary>
+    /// The event handler that is called when the datalog manager throws a new event.
+    /// </summary>
+    public event Action<DataLogManager, DataLogManagerEvent> onDataLogManagerEvent;
+
     public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 
     /// <summary>
@@ -29,8 +46,11 @@
         return currentSession != null;
       }
     }
-    
-    public TimeSpan defaultInterval;
+    /// <summary>
+    /// The interval inbetween recording events.
+    /// </summary>
+    /// <value>The recording interval.</value>
+    public TimeSpan recordingInterval { get; private set; }
 
     /// <summary>
     /// The application context that this manager lives in.
@@ -78,11 +98,11 @@
         }
       }
     }
-    
+
     /// <summary>
     /// Informs the DataLogManager that is should begin a new recording session.
     /// </summary>
-    public Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {      
+    public Task<bool> BeginRecording(TimeSpan interval, JobRow job = null) {
       return Task.Factory.StartNew(() => {
         if (currentSession != null) {
           return false;
@@ -103,7 +123,10 @@
         }
 
         currentSession = new LoggingSession(ion, session, interval);
-        ion.NotifyStateChanged(IonState.EType.DataLog); 
+
+        recordingInterval = interval;
+        NotifyEvent(DataLogManagerEvent.EType.RecordingStarted);
+
         return true;      
       });
     }
@@ -113,7 +136,7 @@
     /// </summary>
     /// <returns>True if a session was saved, false otherwise. Note: we will return false if the manager was not
     /// currently recording.</returns>
-    public Task<bool> StopRecording() {      
+    public Task<bool> StopRecording() {
       return Task.Factory.StartNew(() => {
         Log.D(this, "Stopping Recording");
         if (currentSession == null) {
@@ -139,7 +162,9 @@
 				Log.D(this, "Disposing current session");
       	currentSession.Dispose();
       	currentSession = null;
-        ion.NotifyStateChanged(IonState.EType.DataLog);				
+
+        NotifyEvent(DataLogManagerEvent.EType.RecordingEnded);
+
       	return ret;
       });
     }
@@ -200,6 +225,12 @@
           endTime = end,
         };
       });
+    }
+
+    private void NotifyEvent(DataLogManagerEvent.EType type) {
+      if (onDataLogManagerEvent != null) {
+        onDataLogManagerEvent(this, new DataLogManagerEvent(type));
+      }
     }
   }
 }

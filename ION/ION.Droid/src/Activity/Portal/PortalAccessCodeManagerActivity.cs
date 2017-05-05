@@ -1,4 +1,4 @@
-﻿using ION.Droid.Dialog;
+using ION.Droid.Dialog;
 namespace ION.Droid.Activity.Portal {
 
 	using System;
@@ -48,7 +48,7 @@ namespace ION.Droid.Activity.Portal {
 
 			FindViewById(Resource.Id.button).Click += async (sender, e) => {
 				// TODO dialog
-				var response = await ion.portal.GenerateAccessCodeAsync();
+				var response = await ion.portal.RequestAccessCodeAsync();
 				if (response.success) {
 					await QueryPendingAccessCodesAsync();
 				} else {
@@ -109,7 +109,7 @@ namespace ION.Droid.Activity.Portal {
 			QueryPendingAccessCodesAsync();
 		}
 
-		private async void RequestConfirmAccess(int index, AccessCode code) {
+		private void RequestConfirmAccess(int index, AccessCode code) {
 			var adb = new IONAlertDialog(this);
 			adb.SetTitle(Resource.String.portal_access_code_confirm);
 			adb.SetMessage(Resource.String.portal_access_code_confirm_access);
@@ -122,7 +122,7 @@ namespace ION.Droid.Activity.Portal {
 				pd.SetCancelable(false);
 				pd.Show();
 
-				var response = await ion.portal.ConfirmAccessCodeAsync(code);
+				var response = await ion.portal.RequestConfirmAccessCodeAsync(code);
 				if (response.success) {
 					Toast.MakeText(this, Resource.String.portal_update_successful, ToastLength.Short).Show();
 					adapter.RemoveRecord(index);
@@ -143,7 +143,7 @@ namespace ION.Droid.Activity.Portal {
 			pd.SetCancelable(false);
 			pd.Show();
 
-			var response = await ion.portal.DeleteAccessCodeAsync(code.code);
+      var response = await ion.portal.RequestDeleteAccessCodeAsync(code.code);
 			if (response.success) {
 				adapter.RemoveRecord(index);
 			} else {
@@ -175,7 +175,7 @@ namespace ION.Droid.Activity.Portal {
 			swiper.Refreshing = true;
 			InvalidateOptionsMenu();
 
-			var results = await ion.portal.QueryPendingAccessCodesAsync();
+			var results = await ion.portal.RequestPendingAccessCodesAsync();
 
 			if (results.success) {
 				var codes = new List<AccessCodeRecord>();

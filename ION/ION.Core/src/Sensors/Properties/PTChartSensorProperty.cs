@@ -45,11 +45,11 @@
       } else {
 				switch (sensor.type) {
 					case ESensorType.Pressure:
-						__unit = AppState.context.defaultUnits.temperature;
-					break;
+            __unit = AppState.context.preferences.units.temperature;
+  					break;
 					case ESensorType.Temperature:
-						__unit = AppState.context.defaultUnits.pressure;
-					break;
+            __unit = AppState.context.preferences.units.pressure;
+  					break;
 				}
       }
     }

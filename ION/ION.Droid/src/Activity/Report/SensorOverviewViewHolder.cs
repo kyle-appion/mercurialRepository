@@ -51,9 +51,9 @@
 			var avg = tot / cnt;
 
 
-			highest = sensor.unit.standardUnit.OfScalar(h).ConvertTo(ion.defaultUnits.DefaultUnitFor(sensor.type));
-			lowest = sensor.unit.standardUnit.OfScalar(l).ConvertTo(ion.defaultUnits.DefaultUnitFor(sensor.type));
-			average = sensor.unit.standardUnit.OfScalar(avg).ConvertTo(ion.defaultUnits.DefaultUnitFor(sensor.type));
+      highest = sensor.unit.standardUnit.OfScalar(h).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
+      lowest = sensor.unit.standardUnit.OfScalar(l).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
+      average = sensor.unit.standardUnit.OfScalar(avg).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
 		}
 	}
 

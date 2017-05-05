@@ -25,7 +25,7 @@
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
-      if (!ion.preferences.alarm.allowsVibrate) {
+      if (!ion.appPrefs._alarm.allowsVibrate) {
         return false;
       }
 

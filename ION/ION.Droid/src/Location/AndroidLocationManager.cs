@@ -37,7 +37,7 @@
     /// <c>false</c>
     public bool isEnabled {
       get {
-        return ion.preferences.location.allowsGps;// && (client != null && client.IsConnected);
+        return ion.appPrefs._location.allowsGps;// && (client != null && client.IsConnected);
       }
     }
 
@@ -130,7 +130,7 @@
     private void DoDispose() {
 			try {
 	      StopAutomaticLocationPolling();
-	      ion.preferences.prefs.UnregisterOnSharedPreferenceChangeListener(this);
+        ion.appPrefs.prefs.UnregisterOnSharedPreferenceChangeListener(this);
 	      if (altitudeProvider != null) {
 	        altitudeProvider.Dispose();
 	      }
@@ -171,10 +171,10 @@
         StartAutomaticLocationPolling();
 			} else {
 				Log.E(this, "The user denied the location permission. We will not allow the location to update.");
-				ion.preferences.location.allowsGps = false;
+				ion.appPrefs._location.allowsGps = false;
 			}
 
-			ion.preferences.prefs.RegisterOnSharedPreferenceChangeListener(this);
+			ion.appPrefs.prefs.RegisterOnSharedPreferenceChangeListener(this);
 
       return new InitializationResult() {
         success = true,
@@ -191,7 +191,7 @@
     /// <returns>true</returns>
     /// <c>false</c>
     public bool StartAutomaticLocationPolling() {
-			if (ion.preferences.location.allowsGps) {
+			if (ion.appPrefs._location.allowsGps) {
         handler.Post(() => {
           StartGoogleServicesPolling();
         });
@@ -298,7 +298,7 @@
         if (altploc == null) {
           altploc = new Location("");
         }
-        var alt = Units.Length.METER.OfScalar(altploc.Altitude).ConvertTo(ion.defaultUnits.length);
+        var alt = Units.Length.METER.OfScalar(altploc.Altitude).ConvertTo(ion.preferences.units.length);
         lastKnownLocation = new SimpleLocation(true, alt.amount, location.Longitude, location.Latitude);
 			}
     }
@@ -319,7 +319,7 @@
     public async void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
       if (ion.context.GetString(Resource.String.pkey_location_gps).Equals(key)) {
         if (prefs.GetBoolean(key, false)) {
-					ion.preferences.location.askForPermissions = true;
+					ion.appPrefs._location.askForPermissions = true;
           await InitAsync();
         } else {
           StopAutomaticLocationPolling();

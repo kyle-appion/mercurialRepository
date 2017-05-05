@@ -1,9 +1,4 @@
-﻿using System;
-using System.Net;
-using CoreFoundation;
-using SystemConfiguration;
-
-namespace ION.IOS.App {
+﻿namespace ION.IOS.App {
 
 using System;
 using System.Net;
@@ -52,7 +47,7 @@ using CoreFoundation;
 			//freeSpace /= 1024;
 			//freeSpace /= 1024;
 			//freeSpace /= 1000;
-			
+
     	freeMemory = freeSpace;
     }      
   }

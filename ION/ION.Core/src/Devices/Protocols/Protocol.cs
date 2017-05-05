@@ -21,7 +21,7 @@
     /// <summary>
     /// The device name for a broadcasting v4 device.
     /// </summary>
-    public const string RIGDFU = "RigCom";
+    public const string RIGDFU = "RigDfu";
     /// <summary>
     /// The name of the original appion gauges.
     /// </summary>

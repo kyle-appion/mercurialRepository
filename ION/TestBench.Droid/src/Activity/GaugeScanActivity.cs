@@ -141,7 +141,7 @@
 					return base.OnMenuItemSelected(featureId, item);
 			}
 		}
-
+/*
 		public override void OnServiceBound() {
 			base.OnServiceBound();
 			InvalidateProgress();
@@ -152,6 +152,7 @@
 			Clear();
 			spinner.SetSelection(0);
 		}
+*/
 
 		public override void OnScanStateChanged(AppService service) {
 			base.OnScanStateChanged(service);
