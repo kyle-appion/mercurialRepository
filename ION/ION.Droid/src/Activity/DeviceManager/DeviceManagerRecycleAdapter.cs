@@ -219,6 +219,10 @@ namespace ION.Droid.Activity.DeviceManager {
 			NotifyDataSetChanged();
 		}
 
+    public void Release() {
+      ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
+    }
+
 		/// <summary>
 		/// Requests the delete devices.
 		/// </summary>

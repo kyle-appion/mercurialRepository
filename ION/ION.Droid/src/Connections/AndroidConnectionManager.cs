@@ -22,7 +22,7 @@
   public class AndroidConnectionManager : Java.Lang.Object, IConnectionManager, ISharedPreferencesOnSharedPreferenceChangeListener {
 
     internal static TimeSpan SCAN_TIME = TimeSpan.FromMilliseconds(1500);
-    internal static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(1500);
+    internal static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(3500);
 
     // Implemented for IConnectionManager
     public event OnScanStateChanged onScanStateChanged;
@@ -218,7 +218,6 @@
       }
     }
 
-
     // Implemented for IConnectionManager
     public IConnection CreateConnection(string address, EProtocolVersion protocolVersion) {
       var device = bm.Adapter.GetRemoteDevice(address);
@@ -265,10 +264,31 @@
         return;
       }
 
-      var pv = ResolveProtocolVersion(device, sn, scanRecord);
+      // Note: gauges that have a scan record come with an interesting issue. There are two radios on those devices. As
+      // such, the radio that would actually provide a scan record is NOT the radio that accepts connections. So, we
+      // must filter out the connections that are providing scan records and only pass empty scan record connections to
+      // device manager.
 
-      if (onDeviceFound != null) {
-        onDeviceFound(this, sn, device.Address, scanRecord, pv);
+      if (scanRecord == null) {
+        // Notify the device manager a newly found device.
+        var pv = ResolveProtocolVersion(device, sn, scanRecord);
+
+        if (onDeviceFound != null) {
+          onDeviceFound(this, sn, device.Address, scanRecord, pv);
+        }
+      } else {
+        // We need to simply get the ACTUAL connection and pass it the scan record.
+        var idevice = ion.deviceManager[sn];
+        if (idevice == null) {
+          // The device manager does not know about this device. This is actually an issue as we can't create the device
+          // with the current bluetooth device that we were given. So we must ignore the device until we can get in
+          // enough in range to discover the actual connectable bluetoothdevice.
+          Log.E(this, "Received a broadcast packet for an unknown device. Ignoring device");
+        } else {
+          // The application is aware of the device, this is great. Just simply set the connection's last packet to
+          // perform the broadcast update.
+          idevice.connection.lastPacket = scanRecord;
+        }
       }
     }
 

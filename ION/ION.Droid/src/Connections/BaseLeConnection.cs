@@ -15,8 +15,7 @@
     /// The default time that is allowed for a rigado connection attempt.
     /// </summary>
     private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
-    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(
-      (AndroidConnectionManager.DOWN_TIME + AndroidConnectionManager.SCAN_TIME).TotalMilliseconds * 3);
+    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(7500);
     /// <summary>
     /// The delay from a disconnecto to a reconnect attempt.
     /// </summary>
@@ -46,19 +45,24 @@
     // Implemented for IConnection
     public EConnectionState connectionState {
       get {
-        if (__connectionState == EConnectionState.Disconnected) {
-          var dtime = DateTime.Now - lastPacketTime;
-          if (dtime <= LONG_RANGE_TIMEOUT && lastPacket != null) {
-            handler.RemoveMessages(MSG_CHECK_LONG_RANGE);
-            handler.PostDelayed(() => handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds), 500);
+/*
+//        if (__connectionState == EConnectionState.Disconnected) {
+//          var dtime = DateTime.Now - lastPacketTime;
+//          handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds);
+//          if (dtime <= LONG_RANGE_TIMEOUT && lastPacket != null) {
+//            if (handler.HasMessages(MSG_CHECK_LONG_RANGE)) {
+//              handler.RemoveMessages(MSG_CHECK_LONG_RANGE);
+//            }
 //            handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds);
-            return EConnectionState.Broadcasting;
-          } else {
-            return __connectionState;
-          }
-        } else {
-          return __connectionState;
-        }
+//            return EConnectionState.Broadcasting;
+//          } else {
+//            return __connectionState;
+//          }
+//        } else {
+//          return __connectionState;
+//        }
+*/
+        return __connectionState;
       }
       private set {
         var oldState = __connectionState;
@@ -111,7 +115,14 @@
     /// <summary>
     /// The bluetooth gatt that the connection is using to interface with the bluetooth module.
     /// </summary>
-    protected BluetoothGatt gatt;
+    protected BluetoothGatt gatt {
+      get {
+        return __gatt;
+      }
+      set {
+        __gatt = value;
+      }
+    } BluetoothGatt __gatt;
 
     /// <summary>
     /// The last time we received a packet.
@@ -147,7 +158,6 @@
           try {
             Log.D(this, "Device {" + name + "} is performing an active connection");
             gatt = device.ConnectGatt(manager.context, true, this);
-//            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
             return true;
           } catch (Exception e) {
             Log.E(this, "Failed to start pending gatt connection.", e);
@@ -183,7 +193,6 @@
     // Overridden from BluetoothGattCallback
     public sealed override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
       lock (locker) {
-        Log.D(this, "The Le device is in state: " + newState);
         switch (newState) {
           case ProfileState.Connected: {
               handler.RemoveCallbacksAndMessages(null);
@@ -254,13 +263,15 @@
             }
             return true;
           } // MSG_CHECK_SERVICES
-
+/*
           case MSG_CHECK_LONG_RANGE: { 
+            Log.D(this, "long range mode check");
             if (DateTime.Now - lastPacketTime > LONG_RANGE_TIMEOUT) {
               connectionState = EConnectionState.Disconnected;
             }
             return true;
           } // MSG_CHECK_LONG_RANGE
+*/
 
           default: {
             return false;
