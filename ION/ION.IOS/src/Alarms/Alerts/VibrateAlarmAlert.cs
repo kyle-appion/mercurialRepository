@@ -25,7 +25,7 @@
     /// Called by the alert when it is started.
     /// </summary>
     protected override bool OnStart() {
-      if (!ion.settings.alarm.haptic) {
+      if (!ion.settings._alarm.allowsVibrate) {
         return false;
       }
 

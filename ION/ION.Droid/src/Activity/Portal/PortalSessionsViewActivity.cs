@@ -1,4 +1,4 @@
-﻿using ION.Droid.Dialog;
+using ION.Droid.Dialog;
 namespace ION.Droid.Activity.Portal {
 
 	using System;
@@ -87,7 +87,7 @@ namespace ION.Droid.Activity.Portal {
 			foreach (var sr in adapter.GetCheckedSessions()) {
 				sessions.Add(sr.data);
 			}
-			var result = await ion.portal.UploadSessionsAsync(ion, sessions);
+			var result = await ion.portal.RequestUploadSessionsAsync(ion, sessions);
 
 			pd.Dismiss();
 

@@ -135,16 +135,24 @@
 
     // Implemented for IManager
     public void PostInit() {
-      foreach (var device in knownDevices) {
-        device.connection.Connect();
+      if (ion.preferences.device.allowDeviceAutoConnect) {
+        foreach (var device in knownDevices) {
+          device.connection.Connect();
+        }
       }
 
       connectionManager.onDeviceFound += OnDeviceFound;
       connectionManager.onScanStateChanged += OnScanStateChanged;
+
+      if (ion.preferences.device.allowLongRangeMode) {
+        connectionManager.StartBroadcastScan();
+      }
     }
 
     // Overridden from IDeviceManager
     public void Dispose() {
+      connectionManager.StopScan();
+
       connectionManager.onDeviceFound -= OnDeviceFound;
       connectionManager.onScanStateChanged -= OnScanStateChanged;
 
@@ -153,6 +161,7 @@
         Unregister(device);
       }
 
+      connectionManager.Dispose();
       __knownDevices.Clear();
       __foundDevices.Clear();
 
@@ -342,7 +351,7 @@
       if (onDeviceManagerEvent != null) {
         ion.PostToMain(() => {
 					try {
-          onDeviceManagerEvent(dme);
+            onDeviceManagerEvent(dme);
 					} catch (Exception e) {
 						Log.E(this, "Failed to post device manager event", e);
 					}
@@ -361,12 +370,18 @@
         __foundDevices[serialNumber] = device;
       }
 
+      if (packet != null) {
+        device.connection.lastPacket = packet;
+      }
+
+/*
       if (device.protocol is IGaugeProtocol) {
         var gp = device.protocol as IGaugeProtocol;
         if (gp.supportsBroadcasting) {
           device.HandlePacket(packet);
         }
       }
+*/
       device.connection.lastSeen = DateTime.Now;
 
       NotifyOfDeviceEvent(DeviceEvent.EType.Found, device);

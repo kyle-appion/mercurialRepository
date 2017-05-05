@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Fragments {
+namespace ION.Droid.Fragments {
 
   using System;
   using System.IO;
@@ -16,6 +16,7 @@
 	using Appion.Commons.Util;
 
   using ION.Core.App;
+  using ION.Core.Report.DataLogs;
 
   using ION.Droid.Activity;
 	using ION.Droid.App;
@@ -68,7 +69,13 @@
 		public override void OnResume() {
 			base.OnResume();
 			Activity.InvalidateOptionsMenu();
+      ion.dataLogManager.onDataLogManagerEvent += OnDataLogManagerEvent;
 		}
+
+    public override void OnPause() {
+      base.OnPause();
+      ion.dataLogManager.onDataLogManagerEvent -= OnDataLogManagerEvent;
+    }
 
     /// <Docs>The options menu in which you place your items.</Docs>
     /// <returns>To be added.</returns>
@@ -112,7 +119,14 @@
       base.OnPrepareOptionsMenu(menu);
 
       menu.FindItem(Resource.Id.screenshot).SetVisible(HasFlags(EFlags.AllowScreenshot));
-			menu.FindItem(Resource.Id.record).SetVisible(HasFlags(EFlags.StartRecording));
+
+      var recordItem = menu.FindItem(Resource.Id.record);
+      recordItem.SetVisible(HasFlags(EFlags.StartRecording));
+      if (ion.dataLogManager.isRecording) {
+        recordItem.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
+      } else {
+        recordItem.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
+      }
     }
 
     /// <Docs>The menu item that was selected.</Docs>
@@ -267,17 +281,13 @@
         if (!await ion.dataLogManager.StopRecording()) {
           Log.D(this, "Failed to stop recording");
         }
-				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_record, Resource.Color.red));
-				Alert(Resource.String.report_recording_stopped);
       } else {
-				var interval = ion.preferences.reports.DataLoggingInterval;
+        var interval = ion.preferences.report.dataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
 
 				if (!await ion.dataLogManager.BeginRecording(interval)) {
           Log.D(this, "Failed to begin recording");
         }
-				item.SetIcon(GetColoredDrawable(Resource.Drawable.ic_stop, Resource.Color.light_gray));
-				Alert(string.Format(GetString(Resource.String.report_recording_started), ion.preferences.reports.DataLoggingInterval.ToFriendlyString(Activity)));
       }
     }
 
@@ -286,7 +296,9 @@
     /// </summary>
     /// <param name="stringResource">String resource.</param>
     public void Alert(int stringResource) {
-      Alert(GetString(stringResource));
+      ion.PostToMain(() => {
+        Alert(GetString(stringResource));
+      });
     }
 
     /// <summary>
@@ -294,7 +306,9 @@
     /// </summary>
     /// <param name="message">Message.</param>
     public void Alert(string message) {
-      Toast.MakeText(Activity, message, ToastLength.Short).Show();
+      ion.PostToMain(() => {
+        Toast.MakeText(Activity, message, ToastLength.Short).Show();
+      });
     }
 
     /// <summary>
@@ -302,8 +316,25 @@
     /// </summary>
     /// <param name="message">Message.</param>
     public void Error(string message, Exception e = null) {
-      Log.E(this, message, e);
-      Toast.MakeText(Activity, message, ToastLength.Long).Show();
+      ion.PostToMain(() => {
+        Log.E(this, message, e);
+        Toast.MakeText(Activity, message, ToastLength.Long).Show();
+      });
+    }
+
+    private void OnDataLogManagerEvent(DataLogManager dlm, DataLogManagerEvent e) {
+      Activity.InvalidateOptionsMenu();
+
+      switch (e.type) {
+        case DataLogManagerEvent.EType.RecordingStarted: {
+          Alert(string.Format(GetString(Resource.String.report_recording_started), dlm.recordingInterval.ToFriendlyString(Activity)));
+          break;
+        } // DataLogManagerEvent.EType.RecordingStarted
+        case DataLogManagerEvent.EType.RecordingEnded: {
+          Alert(Resource.String.report_recording_stopped);
+          break;
+        } // DataLogManagerEvent.EType.RecordingEnded
+      }
     }
   }
 

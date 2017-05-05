@@ -1,5 +1,7 @@
 ﻿namespace ION.Core.Connections {
 
+  using System;
+
   using ION.Core.Devices;
   using ION.Core.Devices.Protocols;
 
@@ -16,7 +18,7 @@
   public delegate void OnDeviceFound(IConnectionManager connectionManager, ISerialNumber serialNumber, string address, byte[] packet, EProtocolVersion protocolVersion);
 
 
-  public interface IConnectionManager {
+  public interface IConnectionManager : IDisposable {
     /// <summary>
     /// The event pool that is notified when the connection helper state changes.
     /// </summary>
@@ -36,12 +38,23 @@
     /// </summary>
     /// <value><c>true</c> if is scanning; otherwise, <c>false</c>.</value>
     bool isScanning { get; }
+    /// <summary>
+    /// Whether or not the connection manager is broadcast scanning.
+    /// </summary>
+    /// <value><c>true</c> if is broadcast scanning; otherwise, <c>false</c>.</value>
+    bool isBroadcastScanning { get; }
 
     /// <summary>
-    /// Starts an asyncrhonous scan for new devices.
+    /// Starts an asynchronous scan for new devices.
     /// </summary>
-    /// <returns><c>true</c>, if scan was started, <c>false</c> otherwise.</returns>
     bool StartScan();
+    /// <summary>
+    /// Starts an ascynhronous scan for new or far away devices. Broadcast scanning is used to periodically scan for
+    /// devices that are outside of connection range but still in scan range. This allows the system to read the
+    /// broadcast packet to pull gauge data.
+    /// </summary>
+    /// <returns><c>true</c>, if broadcast scan was started, <c>false</c> otherwise.</returns>
+    bool StartBroadcastScan();
     /// <summary>
     /// Stops any running scan.
     /// </summary>

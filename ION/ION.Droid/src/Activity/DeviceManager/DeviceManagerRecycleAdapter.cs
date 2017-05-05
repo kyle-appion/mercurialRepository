@@ -10,7 +10,6 @@ namespace ION.Droid.Activity.DeviceManager {
 	using Android.Views;
 
 	using Appion.Commons.Util;
-	using L = Appion.Commons.Util.Log;
 
 	using ION.Core.App;
 	using ION.Core.Connections;
@@ -20,7 +19,6 @@ namespace ION.Droid.Activity.DeviceManager {
 
 	using ION.Droid.Dialog;
 	using ION.Droid.Util;
-	using ION.Droid.Views;
 	using ION.Droid.Widgets.RecyclerViews;
 
 	internal enum EViewType {

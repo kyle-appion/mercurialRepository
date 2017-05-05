@@ -1,19 +1,9 @@
-﻿namespace ION.Droid.App {
+namespace ION.Droid.App {
 
 	using System;
-	using System.Collections.Generic;
-	using System.IO;
 	using System.Threading.Tasks;
 
-	using Android.App;
-	using Android.Content;
-	using Android.Content.PM;
 	using Android.OS;
-	using Android.Support.V4.App;
-
-	using Java.IO;
-
-	using Newtonsoft.Json;
 
 	using Appion.Commons.Util;
 
@@ -30,11 +20,6 @@
 
 	using ION.CoreExtensions.Net.Portal;
 
-	using ION.Droid.Alarms.Alerts;
-	using ION.Droid.Activity;
-	using ION.Droid.Connections;
-	using ION.Droid.Dialog;
-	using ION.Droid.Location;
 	using ION.Droid.Preferences;
 
 	/// <summary>
@@ -64,14 +49,20 @@
 		public const string FOLDER_CERTIFICATES = "certificates";
 		public const string FOLDER_DATALOGS = "dataLogs";
 
-		// Implemented from IION
+		// Implemented for IION
 		public event OnWorkbenchChanged onWorkbenchChanged;
-		// Implemented from IION
+		// Implemented for IION
 		public event OnAnalyzerChanged onAnalyzerChanged;
+    // Implemented for IION
+    public event RemotePlatformChanged remotePlatformChanged;
+    // Implemented for IION
+    public event OnIonStateChanged onIonStateChanged;
 
-		// Implemented from IION
+		// Implemented for IION
 		public string name { get { return context.GetString(Resource.String.app_name); } }
-		// Implemented from IION
+    // Implemented for IION
+    public IIONPreferences preferences { get { return appPrefs; } }
+		// Implemented for IION
 		public string version { get { return context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.MetaData).VersionName; } }
 
 		// Implemented From IION
@@ -113,12 +104,10 @@
 				}
 			}
 		} Workbench __workbench;
-		// Implemented from IION
-		public IUnits defaultUnits { get { return preferences.units; } }
 
 		// Implemented From IION
 		public IFolder screenshotReportFolder { get; protected set; }
-		// Implemented from IION
+		// Implemented for IION
 		public IFolder calibrationCertificateFolder { get; protected set; } 
 		// Implemented from 
 		public IFolder dataLogReportFolder { get; protected set; }
@@ -127,23 +116,21 @@
 		/// The backing android context.
 		/// </summary>
 		public AppService context;
-		/// <summary>
-		/// The user's application preferences.
-		/// </summary>
-		/// <value>The preferences.</value>
-		public AppPrefs preferences { get { return AppPrefs.Get(context); } }
 
-		// Implemented from IION
-		public IONPortalService portal { get; set; }
-/*
-			get {
-				if (__portal == null) {
-					__portal = new IONPortalService();
-				}
-				return __portal;
-			}
-		} IONPortalService __portal;
-*/
+    /// <summary>
+    /// The top level application preferences.
+    /// </summary>
+    /// <value>The app prefs.</value>
+    public AppPrefs appPrefs { get { return AppPrefs.Get(context); } }
+
+		// Implemented for IION
+    public IONPortalService portal { get { return context.portal; } }
+
+    // Implemented for IION
+    public IPlatformInfo localDevice { get; set; }
+    // Implemented for IION
+    public IPlatformInfo remoteDevice { get; set; }
+
 
 		/// <summary>
 		/// The handler that actions are posted to the main thread with.
@@ -166,9 +153,9 @@
 		/// <returns>The init.</returns>
 		public async Task<bool> InitAsync() {
 			try {
-				var _ = preferences.appVersion; // Sets the current application version.
+        var _ = preferences.lastKnownAppVersion; // Sets the current application version.
 
-				if (!OnPreInit()) {
+				if (!await OnPreInitAsync()) {
 					return false;
 				}
 
@@ -223,7 +210,7 @@
         locationManager.PostInit();
         dataLogManager.PostInit();
         alarmManager.PostInit();
-				if (!OnPostInit()) {
+				if (!await OnPostInitAsync()) {
 					return false;
 				}
 
@@ -236,7 +223,7 @@
 			}
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual void Dispose() {
 			try {
 				SaveWorkbenchAsync().Wait();
@@ -253,17 +240,17 @@
 			}
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public void PostToMain(Action action) {
 			handler.Post(action);
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public void PostToMainDelayed(Action action, TimeSpan delay) {
 			handler.PostDelayed(action, (long)delay.TotalMilliseconds);
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task SaveWorkbenchAsync() {
 			return Task.Factory.StartNew(() => {
 				lock (locker) {
@@ -281,7 +268,7 @@
 			});
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task<Workbench> LoadWorkbenchAsync() {
 			var internalDir = fileManager.GetApplicationInternalDirectory();
 			if (internalDir.ContainsFile(FILE_WORKBENCH)) {
@@ -292,7 +279,7 @@
 			}
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task<Workbench> LoadWorkbenchAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
         lock (locker) {
@@ -309,7 +296,7 @@
 			});
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task SaveAnalyzerAsync() {
 			return Task.Factory.StartNew(() => {
 				lock (locker) {
@@ -327,7 +314,7 @@
 			});
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task<Analyzer> LoadAnalyzerAsync() {
 			var internalDir = fileManager.GetApplicationInternalDirectory();
 			if (internalDir.ContainsFile(FILE_ANALYZER)) {
@@ -338,7 +325,7 @@
 			}
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public virtual Task<Analyzer> LoadAnalyzerAsync(IFile file) {
 			return Task.Factory.StartNew(() => {
         lock (locker) {
@@ -355,10 +342,19 @@
 			});
 		}
 
-		// Implemented from IION
+		// Implemented for IION
 		public IAppDump CreateApplicationDump() {
 			return new BaseAppDump(this, new AndroidPlatformInfo(context));
 		}
+
+    // Implemented for IION
+    public IPlatformInfo GetPlatformInformation() {
+      return new AndroidPlatformInfo(context);
+    }
+
+    // Implemented for IION
+    public void SetRemotePlatformInformation(sessionStateInfo pi) {
+    }
 
 		// TODO ahodder@appioninc.com: Implement? See kyle@appioninc.com for more info
 		public Task setRemoteDeviceManager() {
@@ -370,20 +366,27 @@
 			return null;
 		}
 
+    // Implemented for IION
+    public void NotifyStateChanged(IonState.EType e) {
+      if (onIonStateChanged != null) {
+        onIonStateChanged(e);
+      }
+    }
+
 		/// <summary>
 		/// Override this methos to initialize entities that have no dependencies.
 		/// </summary>
 		/// <returns>The pre init async.</returns>
-		protected virtual bool OnPreInit() {
-			return true;
+		protected virtual Task<bool> OnPreInitAsync() {
+      return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Override this method to initialize entities that depend on other data structures.
 		/// </summary>
 		/// <returns>The post init async.</returns>
-		protected virtual bool OnPostInit() {
-			return true;
+		protected virtual Task<bool> OnPostInitAsync() {
+      return Task.FromResult(true);
 		}
 
 		private async Task VerifyManagerOrThrow(IManager manager) {

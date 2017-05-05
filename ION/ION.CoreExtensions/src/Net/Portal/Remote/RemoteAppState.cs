@@ -18,8 +18,6 @@
 		public RemoteManifold[] workbench;
 		[JsonProperty("alt")]
 		public string altitude;
-		[JsonProperty("state")]
-		public RemoteState state;
 		[JsonProperty("alyzer")]
 		public RemoteSensorMount[] analyzer;
 		[JsonProperty("LH")]
@@ -86,9 +84,6 @@
 
 			// Commit the current state of the ion
 			ret.altitude = ion.locationManager.lastKnownLocation.altitude.ConvertTo(Units.Length.METER).amount + "";
-
-			var state = new RemoteState();
-			state.isDataLogging = ((ion.dataLogManager.isRecording) ? 1 : 0) + "";
 
 			// Commit the legacy setup stuff
 			ret.setup = new Setup();
