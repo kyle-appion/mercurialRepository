@@ -1,4 +1,4 @@
-﻿namespace ION.IOS.App {
+namespace ION.IOS.App {
 
 	using System;
 	using System.Collections.Generic;
@@ -9,7 +9,6 @@
 	using Foundation;
 	using UIKit;
 
-	using Appion.Commons.Measure;
 	using Appion.Commons.Util;
 
 	using ION.Core.Alarms;
@@ -23,7 +22,6 @@
 	using ION.Core.IO;
 	using ION.Core.Location;
 	using ION.Core.Report.DataLogs;
-	using ION.Core.Sensors;
 
 	using ION.IOS.Alarms.Alerts;
 	using ION.IOS.IO;
@@ -52,21 +50,28 @@
       return ((NSString)version).ToString();
     }
 
-		/// <summary>
-		/// Occurs when on workbench changed.
-		/// </summary>
-		public event OnWorkbenchChanged onWorkbenchChanged;
+    /// <summary>
+    /// Occurs when on workbench changed.
+    /// </summary>
+    public event OnWorkbenchChanged onWorkbenchChanged;
 
-		public event OnAnalyzerChanged onAnalyzerChanged;
-		
-		public event RemotePlatformChanged remotePlatformChanged;
-    
+    public event OnAnalyzerChanged onAnalyzerChanged;
+
+    public event RemotePlatformChanged remotePlatformChanged;
+
     public event OnIonStateChanged onIonStateChanged;
 
     // Overridden from IION
     public string name { get { return GetDisplayName(); } }
     // Overridden from IION
     public string version { get { return GetVersion(); } }
+    // Overridden for IION
+    public IIONPreferences preferences { get { return AppPrefs.Get(); } }
+    /// <summary>
+    /// The mapping to the type secured settings.
+    /// </summary>
+    /// <value>The settings.</value>
+    public AppPrefs settings { get { return AppPrefs.Get(); } }
 
     // Overridden from IION
     public IONDatabase database {
@@ -214,9 +219,6 @@
 		} Workbench __workbench;
 
     // Overridden from IION
-    public IUnits defaultUnits { get; private set; }
-
-    // Overridden from IION
     public IFolder screenshotReportFolder {
       get {
         var d = fileManager.GetApplicationExternalDirectory();
@@ -235,12 +237,6 @@
         return d;
       }
     }
-
-    /// <summary>
-    /// The ios application settings.
-    /// </summary>
-    /// <value>The settings.</value>
-    public AppSettings settings { get; private set; }
 		/// <summary>
 		/// Handles all the Amazon Web Service calls
 		/// </summary>
@@ -250,11 +246,11 @@
 		///HOLDS THE INFORMATION FOR A DEVICE	
 		public IPlatformInfo localDevice {get; set;}
 		
-		public IPlatformInfo remoteDevice 
+		public IPlatformInfo remoteDevice
 		{
 			get{
 				return __remoteDevice;
-			} 
+			}
 			set{
 				__remoteDevice = value;
 			}
@@ -355,16 +351,16 @@
 			  remoteDevice.batteryPercentage = remoteStatus.batteryLevel;
         remotePlatformChanged(remoteDevice);
       }
-      if(remoteDevice.wifiConnected != remoteStatus.wifiStatus){
-			  remoteDevice.wifiConnected = remoteStatus.wifiStatus;
+      if(remoteDevice.wifiConnected != (remoteStatus.wifiStatus != 0)){
+			  remoteDevice.wifiConnected = remoteStatus.wifiStatus != 0;
         remotePlatformChanged(remoteDevice);
       }
-      if(Math.Round(remoteDevice.freeMemory,2) != Math.Round(remoteStatus.remainingMemory,2)){
-			  remoteDevice.freeMemory = remoteStatus.remainingMemory;
+      if(remoteDevice.freeMemory != remoteStatus.remainingMemory) {
+        remoteDevice.freeMemory = remoteStatus.remainingMemory;
         remotePlatformChanged(remoteDevice);
       }
-      if(remoteDevice.loggingStatus != remoteStatus.isRecording){
-			  remoteDevice.loggingStatus = remoteStatus.isRecording;
+      if(remoteDevice.loggingStatus != (remoteStatus.isRecording != 0)){
+        remoteDevice.loggingStatus = (remoteStatus.isRecording != 0);
         remotePlatformChanged(remoteDevice);
       }
 		}
@@ -373,9 +369,7 @@
     /// Initializes the ION instance.
     /// </summary>
     public async Task Init() {
-      settings = new AppSettings();
-      defaultUnits = new IosUnits(settings);
-
+      AppPrefs.Get();
 
       try {
 				Log.D(this, "Starting ION init");
@@ -384,7 +378,6 @@
 					await im.InitAsync();
 				}
 				Log.D(this, "Finished loading the things");
-				InitSettings();
 
 				var internalDir = fileManager.GetApplicationInternalDirectory();
 				if (internalDir.ContainsFile(FILE_WORKBENCH)) {
@@ -485,87 +478,8 @@
       });
 		}
 
-
-		public void InitSettings() {
-			settings.screen.leaveOn = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_screen_leave_on");
-			settings.location.useGeoLocation = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_location_use_geolocation");
-			settings.alarm.haptic = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_haptic");
-			settings.alarm.sound = NSUserDefaults.StandardUserDefaults.BoolForKey("settings_alarm_sound");
-
-			if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") <= 0) {
-				NSUserDefaults.StandardUserDefaults.SetInt(30, "settings_default_logging_interval");
-			}
-
-			if (settings.screen.leaveOn) {
-				UIApplication.SharedApplication.IdleTimerDisabled = true;
-			}
-
-			if (settings.location.useGeoLocation) {
-				locationManager.StartAutomaticLocationPolling();
-			} else {
-				locationManager.StopAutomaticLocationPolling();
-			}
-		}
-    
     public void NotifyStateChanged(IonState.EType e){
-      onIonStateChanged(e);
-    }
+          onIonStateChanged(e);
+        }
   } // End IosION
-
-  internal class IosUnits : IUnits {
-    // Overridden from IUnits
-    public Unit length {
-      get {
-        return UnitLookup.GetUnit(settings.units.length);
-      }
-      set {
-      }
-    }
-    // Overridden from IUnits
-    public Unit pressure {
-      get {
-        return UnitLookup.GetUnit(settings.units.pressure);
-      }
-      set {
-      }
-    }
-    // Overridden from IUnits
-    public Unit temperature {
-      get {
-        return UnitLookup.GetUnit(settings.units.temperature);
-      }
-      set {
-      }
-    }
-    // Overridden from IUnits
-    public Unit vacuum {
-      get {
-        return UnitLookup.GetUnit(settings.units.vacuum);
-      }
-      set {
-      }
-    }
-
-    private AppSettings settings { get; set; }
-
-    public IosUnits(AppSettings settings) {
-      this.settings = settings;
-    }
-
-    // Overridden from IUnits
-    public Unit DefaultUnitFor(ESensorType sensorType) {
-      switch (sensorType) {
-        case ESensorType.Length:
-          return length;
-        case ESensorType.Pressure:
-          return pressure;
-        case ESensorType.Temperature:
-          return temperature;
-        case ESensorType.Vacuum:
-          return vacuum;
-        default:
-          return sensorType.GetDefaultUnit();
-      }
-    }
-  }
 }

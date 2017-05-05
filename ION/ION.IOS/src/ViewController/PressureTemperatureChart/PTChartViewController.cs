@@ -355,6 +355,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       if (ptChart != null) {
         ptChart = PTChart.New(ion, ptChart.state);
       }
+
+      if (!pressureSensorLocked) {
+        pressureUnit = ion.preferences.units.pressure;
+      }
+
+      if (!temperatureSensorLocked) {
+        temperatureUnit = ion.preferences.units.temperature;
+      }
     }
 
     // Overridden from ViewController
@@ -407,7 +415,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 						break;
 				}
 			}
-
 		}
 
     /// <summary>

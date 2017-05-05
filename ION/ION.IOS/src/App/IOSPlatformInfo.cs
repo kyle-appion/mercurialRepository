@@ -1,8 +1,3 @@
-﻿using System;
-using System.Net;
-using CoreFoundation;
-using SystemConfiguration;
-
 namespace ION.IOS.App {
 
 using System;
@@ -17,21 +12,21 @@ using CoreFoundation;
 
   public class IOSPlatformInfo : IPlatformInfo {  
     public string manufacturer { get; set; }
-    public string deviceName { get; set; }
+    public string hardwareName { get; set; }
     public string model { get; set; }
     public string version { get; set; }
     public string api { get; set; }
     public string chipset { get; set; }
-    public int wifiConnected { get; set; }
+    public bool wifiConnected { get; set; }
     public int batteryPercentage { get; set; }
-    public double freeMemory { get; set; }
-    public int loggingStatus { get; set; }
+    public long freeMemory { get; set; }
+    public bool loggingStatus { get; set; }
 
     public IOSPlatformInfo() {
     	UIDevice.CurrentDevice.BatteryMonitoringEnabled = true;
       	
       manufacturer = "Apple Inc.";
-      deviceName = UIDevice.CurrentDevice.Model;
+      hardwareName = UIDevice.CurrentDevice.Model;
       model = UIDevice.CurrentDevice.LocalizedModel;
       version = UIDevice.CurrentDevice.SystemVersion;
       api = UIDevice.CurrentDevice.SystemName;
@@ -39,22 +34,18 @@ using CoreFoundation;
       
 			NetworkReachabilityFlags flag;      
       Reachability.IsAdHocWiFiNetworkAvailable(out flag);
-      
-      if(flag == NetworkReachabilityFlags.Reachable){
-      	wifiConnected = 1;
-      } else {
-      	wifiConnected = 0;
-			}
-						
+
+      wifiConnected = flag == NetworkReachabilityFlags.Reachable;
       batteryPercentage = (int)(UIDevice.CurrentDevice.BatteryLevel * 100);
       
-			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
-			//freeSpace /= 1024;
-			//freeSpace /= 1024;
-			//freeSpace /= 1000;
-			
-    	freeMemory = Math.Round(freeSpace,2);
-    }      
+			double freeSpace = NSFileManager.DefaultManager.GetFileSystemAttributes(Environment.GetFolderPath(Environment.SpecialFolder.Personal)).FreeSize;
+
+    	freeMemory = (long)Math.Round(freeSpace,2);
+    }
+
+    public string GetDeviceName() {
+      return "unnamed";
+    }
   }
   
 	public enum NetworkStatus {

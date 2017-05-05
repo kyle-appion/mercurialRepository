@@ -1673,7 +1673,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					remoteTitle.Text = Util.Strings.Analyzer.ANALYZERREMOTEEDIT;
 				}
 				if(remoteControl != null && remoteControl.remoteLoggingButton != null){
-					if(ion.remoteDevice.loggingStatus == 1){
+					if(ion.remoteDevice.loggingStatus){
 						NSUserDefaults.StandardUserDefaults.SetString("1","remoteLogging");
 						remoteControl.remoteLoggingButton.SetTitle("Stop Logging", UIControlState.Normal);
 					} else {

@@ -380,8 +380,8 @@
       InitSaturatedTemperatureWidgets();
       InitTemperatureWidgets();
 
-      pressureSensor.unit = ion.defaultUnits.pressure;
-      temperatureSensor.unit = ion.defaultUnits.temperature;
+      pressureSensor.unit = ion.preferences.units.pressure;
+      temperatureSensor.unit = ion.preferences.units.temperature;
 
       // Init elevation widgets
       var container = FindViewById(Resource.Id.elevation);
@@ -448,7 +448,7 @@
       if (loc == null) {
         loc = new SimpleLocation();
       }
-      elevation.Text = SensorUtils.ToFormattedString(loc.altitude.ConvertTo(ion.defaultUnits.length), true);
+      elevation.Text = SensorUtils.ToFormattedString(loc.altitude.ConvertTo(ion.preferences.units.length), true);
     }
 
     protected override void OnPause() {

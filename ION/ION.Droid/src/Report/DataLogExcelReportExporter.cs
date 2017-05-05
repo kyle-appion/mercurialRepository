@@ -271,7 +271,7 @@
 					var su = m.sensor.unit.standardUnit;
 					var dt = masterDates[y];
 					if (m.measurements.ContainsKey(dt)) {
-						var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.defaultUnits.DefaultUnitFor(m.sensor.type));
+            var scalar = su.OfScalar(m.measurements[dt]).ConvertTo(ion.preferences.units.DefaultUnitFor(m.sensor.type));
 						var format = sessionBreaks.Contains(dt) ? 3 : 2;
 						file.SetCellValue(2 + y, 2 + x, "" + SensorUtils.ToFormattedString(m.sensor.type, scalar), format);
 					}
@@ -319,7 +319,7 @@
 			if (serialNumber.deviceModel == EDeviceModel.P500) {
 				return serialNumber + " (" + Units.Pressure.IN_HG + "/" + Units.Pressure.PSIG + ")";
 			} else {
-				return serialNumber + " (" + ion.defaultUnits.DefaultUnitFor(sensor.type) + ")";
+        return serialNumber + " (" + ion.preferences.units.DefaultUnitFor(sensor.type) + ")";
 			}
 		}
 

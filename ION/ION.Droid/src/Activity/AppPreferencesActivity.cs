@@ -38,7 +38,7 @@
           message = GetString(Resource.String.preferences_location_elevation_set),
           initialValue = ion.preferences.location.customElevation.amount,
           handler = (o, d) => {
-            ion.preferences.location.customElevation = ion.defaultUnits.length.OfScalar(d);
+            ion.preferences.location.customElevation = ion.preferences.units.length.OfScalar(d);
           },
         }.Show(this);
       };
@@ -54,7 +54,7 @@
       base.OnSharedPreferenceChanged(prefs, key);
 
       if (GetString(Resource.String.pkey_location_gps).Equals(key)) {
-        if (ion.locationManager.isEnabled && ion.preferences.location.allowsGps && !ion.locationManager.supportsAltitudeTracking) {
+        if (ion.locationManager.isEnabled && ion.appPrefs._location.allowsGps && !ion.locationManager.supportsAltitudeTracking) {
           // TODO ahodder@appioninc.com: implement a dialog that will let the user know that they are not getting live updates
           var adb = new IONAlertDialog(this);
           adb.SetTitle("US HELP");

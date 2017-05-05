@@ -24,7 +24,7 @@
       Log.D("DeviceDatabaseExtensions", "got all devices");
       foreach (var d in devices) {
         try {
-          ret.Add(await db.ReconstructDevice(d));
+	        ret.Add(await db.ReconstructDevice(d));
         } catch (Exception e) {
           Log.E(typeof(DeviceDatabaseExtensions).Name, "Failed to resonstruct device", e);
         }
@@ -93,3 +93,4 @@
     }
   }
 }
+

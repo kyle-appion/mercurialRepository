@@ -15,6 +15,8 @@
     /// The default time that is allowed for a rigado connection attempt.
     /// </summary>
     private static readonly TimeSpan DEFAULT_TIMEOUT = TimeSpan.FromSeconds(45);
+    private static readonly TimeSpan LONG_RANGE_TIMEOUT = TimeSpan.FromMilliseconds(
+      (AndroidConnectionManager.DOWN_TIME + AndroidConnectionManager.SCAN_TIME).TotalMilliseconds * 3);
     /// <summary>
     /// The delay from a disconnecto to a reconnect attempt.
     /// </summary>
@@ -22,7 +24,7 @@
     /// <summary>
     /// The delay before the connection disconnects because the service scan timed out.
     /// </summary>
-    private const long SERVICES_DELAY = 1000 * 45;
+    private const long SERVICES_DELAY = 1000 * 20;
     /// <summary>
     /// The message that is used to start a passive connection attempt for the connection.
     /// </summary>
@@ -31,6 +33,10 @@
     /// The message that is used to check whether or not the connection has successfully found its services.
     /// </summary>
     private const int MSG_CHECK_SERVICES = 2;
+    /// <summary>
+    /// The message that is used to check whether or not the connection is still in long range mode.
+    /// </summary>
+    private const int MSG_CHECK_LONG_RANGE = 3;
 
     // Implemented for IConnection
     public event OnConnectionStateChanged onStateChanged;
@@ -40,7 +46,19 @@
     // Implemented for IConnection
     public EConnectionState connectionState {
       get {
-        return __connectionState;
+        if (__connectionState == EConnectionState.Disconnected) {
+          var dtime = DateTime.Now - lastPacketTime;
+          if (dtime <= LONG_RANGE_TIMEOUT && lastPacket != null) {
+            handler.RemoveMessages(MSG_CHECK_LONG_RANGE);
+            handler.PostDelayed(() => handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds), 500);
+//            handler.SendEmptyMessageDelayed(MSG_CHECK_LONG_RANGE, (long)LONG_RANGE_TIMEOUT.TotalMilliseconds);
+            return EConnectionState.Broadcasting;
+          } else {
+            return __connectionState;
+          }
+        } else {
+          return __connectionState;
+        }
       }
       private set {
         var oldState = __connectionState;
@@ -65,6 +83,7 @@
       set {
         __lastPacket = value;
         lastSeen = DateTime.Now;
+        lastPacketTime = DateTime.Now;
         if (onDataReceived != null) {
           onDataReceived(this, __lastPacket);
         }
@@ -95,6 +114,10 @@
     protected BluetoothGatt gatt;
 
     /// <summary>
+    /// The last time we received a packet.
+    /// </summary>
+    private DateTime lastPacketTime;
+    /// <summary>
     /// The object that is locked for multithread synchronization.
     /// </summary>
     private object locker = new object();
@@ -123,8 +146,8 @@
           }
           try {
             Log.D(this, "Device {" + name + "} is performing an active connection");
-            gatt = device.ConnectGatt(manager.context, false, this);
-            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
+            gatt = device.ConnectGatt(manager.context, true, this);
+//            handler.SendEmptyMessageDelayed(MSG_GO_PASSIVE, PASSIVE_DELAY);
             return true;
           } catch (Exception e) {
             Log.E(this, "Failed to start pending gatt connection.", e);
@@ -142,75 +165,81 @@
         OnDisconnect();
 
         lastSeen = DateTime.Now;
+        lastPacketTime = DateTime.MaxValue;
         connectionState = EConnectionState.Disconnected;
 
         if (gatt != null) {
           gatt.Disconnect();
           gatt.Close();
           gatt = null;
-        }
 
-        if (reconnect) {
-          handler.PostDelayed(() => Connect(), 1500);
+          if (reconnect) {
+            handler.PostDelayed(() => Connect(), 1500);
+          }
         }
       }
     }
 
     // Overridden from BluetoothGattCallback
     public sealed override void OnConnectionStateChange(BluetoothGatt gatt, GattStatus status, ProfileState newState) {
-      Log.D(this, "The Le device is in state: " + newState);
-      switch (newState) {
-        case ProfileState.Connected: {
-            handler.RemoveCallbacksAndMessages(null);
-            connectionState = EConnectionState.Resolving;
-            lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
-
-            if (!gatt.DiscoverServices()) {
-              Log.E(this, "Failed to start service discovery for: " + device.Name);
-              Disconnect();
-            } else {
+      lock (locker) {
+        Log.D(this, "The Le device is in state: " + newState);
+        switch (newState) {
+          case ProfileState.Connected: {
+              handler.RemoveCallbacksAndMessages(null);
               connectionState = EConnectionState.Resolving;
-              handler.SendEmptyMessageDelayed(MSG_CHECK_SERVICES, SERVICES_DELAY);
-            }
-            break;
-          } // ProfileState.Connected
+              lastSeen = DateTime.Now; // We at least know that the device is nearby at this point.
 
-        case ProfileState.Connecting: {
-            break;
-          } // ProfileState.Connecting
+              if (!gatt.DiscoverServices()) {
+                Log.E(this, "Failed to start service discovery for: " + device.Name);
+                Disconnect();
+              } else {
+                connectionState = EConnectionState.Resolving;
+                handler.SendEmptyMessageDelayed(MSG_CHECK_SERVICES, SERVICES_DELAY);
+              }
+              break;
+            } // ProfileState.Connected
 
-        case ProfileState.Disconnected: {
-            Disconnect(true);
-            break;
-          } // ProfileState.Disconnected
+          case ProfileState.Connecting: {
+              break;
+            } // ProfileState.Connecting
 
-        case ProfileState.Disconnecting: {
-            break;
-          } // ProfileState.Disconnecting
+          case ProfileState.Disconnected: {
+              Disconnect(manager.ion.preferences.device.allowDeviceAutoConnect);
+              break;
+            } // ProfileState.Disconnected
+
+          case ProfileState.Disconnecting: {
+              break;
+            } // ProfileState.Disconnecting
+        }
       }
     }
 
     // Overridden from BluetoothGattCallback
     public sealed override void OnServicesDiscovered(BluetoothGatt gatt, GattStatus status) {
-      if (ValidateServices()) {
-        handler.RemoveCallbacksAndMessages(null);
-        if (!OnConnectionSuccess()) {
-          Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
-          Disconnect();
-          return;
+      lock (locker) {
+        if (ValidateServices()) {
+          handler.RemoveCallbacksAndMessages(null);
+          if (!OnConnectionSuccess()) {
+            Log.E(this, "Failed to successfully handle post connection procedures for {" + name + "}");
+            Disconnect();
+            return;
+          } else {
+            connectionState = EConnectionState.Connected;
+          }
         } else {
-          connectionState = EConnectionState.Connected;
+          Log.E(this, "Failed to discover services. Disconnecting device.");
+          Disconnect();
         }
-      } else {
-        Log.E(this, "Failed to discover services. Disconnecting device.");
-        Disconnect();
       }
     }
 
     // Implemented for Handler.ICallback
     public bool HandleMessage(Message msg) {
-      switch (msg.What) {
-        case MSG_GO_PASSIVE: {
+      lock (locker) {
+        switch (msg.What) {
+          case MSG_GO_PASSIVE: {
             if (isConnected) {
               Disconnect(false);
             }
@@ -218,17 +247,25 @@
             return ConnectPassive();
           } // MSG_GO_PASSIVE
 
-        case MSG_CHECK_SERVICES: {
+          case MSG_CHECK_SERVICES: {
             if (!ValidateServices()) {
               Log.E(this, "Failed to validate services; disconnecting with intention of an immediate reconnect");
-              Disconnect(true);
+              Disconnect(false);
             }
             return true;
           } // MSG_CHECK_SERVICES
 
-        default: {
+          case MSG_CHECK_LONG_RANGE: { 
+            if (DateTime.Now - lastPacketTime > LONG_RANGE_TIMEOUT) {
+              connectionState = EConnectionState.Disconnected;
+            }
+            return true;
+          } // MSG_CHECK_LONG_RANGE
+
+          default: {
             return false;
           }
+        }
       }
     }
 

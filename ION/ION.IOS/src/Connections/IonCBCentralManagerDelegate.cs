@@ -2,6 +2,8 @@
 
   using System;
   using System.Collections.Generic;
+  using System.Threading;
+  using System.Threading.Tasks;
 
   using CoreBluetooth;
   using CoreFoundation;
@@ -14,6 +16,9 @@
   using ION.Core.Devices.Protocols;
 
   public class IonCBCentralManagerDelegate : CBCentralManagerDelegate, IConnectionManager {
+    internal static TimeSpan SCAN_TIME = TimeSpan.FromMilliseconds(5000);
+    internal static TimeSpan DOWN_TIME = TimeSpan.FromMilliseconds(1500);
+
     // Implemented from IConnectionManager
     public event OnScanStateChanged onScanStateChanged;
     // Implemented from IConnectionManager
@@ -35,6 +40,8 @@
         }
       }
     } bool __isScanning;
+    // Implemented for IConnectionManager
+    public bool isBroadcastScanning { get { return broadcastTask != null; } }
 
     /// <summary>
     /// The central manager for interacting with the bluetooth stack.
@@ -47,6 +54,14 @@
     /// Note: this list may be independent of the device manager.
     /// </summary>
     private Dictionary<CBUUID, IConnection> connectionLookup = new Dictionary<CBUUID, IConnection>();
+    /// <summary>
+    /// The token source that will cancel the broadcast task.
+    /// </summary>
+    private CancellationTokenSource broadcastTokenSource;
+    /// <summary>
+    /// The task that references a running broadcast action.
+    /// </summary>
+    private Task broadcastTask;
 
     public IonCBCentralManagerDelegate() {
       var options = new CBCentralInitOptions();
@@ -76,7 +91,24 @@
       }
     }
 
-    // Implemented fro IConnectionManager
+    // Implemented for IConnectionManager
+    public bool StartBroadcastScan() {
+      lock (centralManager) {
+        if (isBroadcastScanning) {
+          return true;
+        }
+
+        if (isScanning) {
+          StopScan();
+        }
+
+        broadcastTokenSource = new CancellationTokenSource();
+        broadcastTask = StartBroadcastTask(broadcastTokenSource, SCAN_TIME, DOWN_TIME);
+        return true;
+      }
+    }
+
+    // Implemented for IConnectionManager
     public void StopScan() {
       lock (centralManager) {
         isScanning = false;
@@ -122,10 +154,13 @@
     public override void DiscoveredPeripheral(CBCentralManager central, CBPeripheral peripheral, NSDictionary advertisementData, NSNumber RSSI) {
       string name = null;
 
+      var values = advertisementData.Values;
+      Log.V(this, "" + advertisementData);
+
       var data = advertisementData[CBAdvertisement.DataManufacturerDataKey];
 
       if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-//        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
+        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
         return;
       }
 
@@ -169,7 +204,7 @@
             }
           }
         } else {
-          //Log.D(this, "Ignoring non-appion device: " + name);
+          Log.D(this, "Ignoring non-appion device: " + name);
         }
       }
     }
@@ -214,6 +249,34 @@
 
     // Overridden from CBCentralManagerDelegate
     public override void UpdatedState(CBCentralManager central) {
+    }
+
+    /// <summary>
+    /// Toggles whether or not we are performing a scan for broadcasting.
+    /// </summary>
+    private Task StartBroadcastTask(CancellationTokenSource source, TimeSpan scanTime, TimeSpan downTime) {
+      return Task.Factory.StartNew(async () => {
+        try {
+          var sleepTime = downTime;
+          var lastTime = DateTime.Now;
+
+          while (!source.Token.IsCancellationRequested) {
+            if (!isScanning) {
+              if (!StartScan()) {
+                Log.E(this, "Failed to start ble scan for broadcasting");
+              }
+              await Task.Delay(scanTime, source.Token);
+            } else {
+              StopScan();
+              await Task.Delay(downTime, source.Token);
+            }
+          }
+        } catch (Exception e) {
+          Log.E(this, "Unexpected failure in executing broadcast task.", e);
+        } finally {
+          StopScan();
+        }
+      });
     }
 
     /// <summary>
