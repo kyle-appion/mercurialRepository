@@ -49,13 +49,13 @@ namespace ION.Droid.App {
 		private HandlerThread handlerThread;
 		private Handler remoteHandler;
 
-		public RemoteION(AppService context, ConnectionData connectionData) : base(context) {
+    public RemoteION(AppService context, ConnectionData connectionData) : base(context) {
       this.connectionData = connectionData;
 		}
 
 		// Overridden from BaseAndroidION
-		protected override bool OnPreInit() {
-			if (!base.OnPreInit()) {
+		protected async override Task<bool> OnPreInitAsync() {
+			if (!await base.OnPreInitAsync()) {
 				return false;
 			}
 
@@ -73,12 +73,12 @@ namespace ION.Droid.App {
 			};
 			fluidManager = new BaseFluidManager(this);
 
-			return true;
+      return true;
 		}
 
 		// Overridden from BaseAndroidION
-		protected override bool OnPostInit() {
-			if (!base.OnPostInit()) {
+		protected async override Task<bool> OnPostInitAsync() {
+			if (!await base.OnPostInitAsync()) {
 				return false;
 			}
 

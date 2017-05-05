@@ -12,10 +12,27 @@
   using ION.Core.App;
   using ION.Core.Database;
 
+  public class DataLogManagerEvent {
+    public EType type { get; private set; }
+
+    public DataLogManagerEvent(EType type) {
+      this.type = type;
+    }
+
+    public enum EType {
+      RecordingStarted,
+      RecordingEnded,
+    }
+  }
+
   /// <summary>
   /// The manager that will allow easy interactions with how devices will log there data.
   /// </summary>
   public class DataLogManager : IManager {
+    /// <summary>
+    /// The event handler that is called when the datalog manager throws a new event.
+    /// </summary>
+    public event Action<DataLogManager, DataLogManagerEvent> onDataLogManagerEvent;
 
     public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 
@@ -28,6 +45,11 @@
         return currentSession != null;
       }
     }
+    /// <summary>
+    /// The interval inbetween recording events.
+    /// </summary>
+    /// <value>The recording interval.</value>
+    public TimeSpan recordingInterval { get; private set; }
 
     /// <summary>
     /// The application context that this manager lives in.
@@ -101,6 +123,9 @@
 
         currentSession = new LoggingSession(ion, session, interval);
 
+        recordingInterval = interval;
+        NotifyEvent(DataLogManagerEvent.EType.RecordingStarted);
+
         return true;      
       });
     }
@@ -136,6 +161,8 @@
 				Log.D(this, "Disposing current session");
       	currentSession.Dispose();
       	currentSession = null;
+
+        NotifyEvent(DataLogManagerEvent.EType.RecordingEnded);
 				
       	return ret;
       });
@@ -197,6 +224,12 @@
           endTime = end,
         };
       });
+    }
+
+    private void NotifyEvent(DataLogManagerEvent.EType type) {
+      if (onDataLogManagerEvent != null) {
+        onDataLogManagerEvent(this, new DataLogManagerEvent(type));
+      }
     }
   }
 }

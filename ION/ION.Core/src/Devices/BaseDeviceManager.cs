@@ -351,7 +351,7 @@
       if (onDeviceManagerEvent != null) {
         ion.PostToMain(() => {
 					try {
-          onDeviceManagerEvent(dme);
+            onDeviceManagerEvent(dme);
 					} catch (Exception e) {
 						Log.E(this, "Failed to post device manager event", e);
 					}

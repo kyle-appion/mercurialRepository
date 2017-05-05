@@ -32,10 +32,16 @@
 		/// </summary>
 		/// <value>The ion.</value>
 		public IION ion { get; private set; }
+    /// <summary>
+    /// The service that provides access to the ion cloud service.
+    /// </summary>
+    /// <value>The portal.</value>
+    public IONPortalService portal { get; private set; }
 
 		// Overridden from Service
 		public override void OnCreate() {
 			base.OnCreate();
+      portal = new IONPortalService();
       Java.Lang.Thread.DefaultUncaughtExceptionHandler = this;
       AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
         Log.E(this, "Uncaught Exception", e.ExceptionObject as Exception);
@@ -67,7 +73,7 @@
 		public override StartCommandResult OnStartCommand(Intent intent, StartCommandFlags flags, int startId) {
 			base.OnStartCommand(intent, flags, startId);
 
-			return StartCommandResult.Sticky;
+      return StartCommandResult.NotSticky;
 		}
 
 		// Overridden from Service
@@ -89,18 +95,21 @@
 
 		private async Task<bool> SetION(BaseAndroidION newIon) {
 			try {
-				var old = AppState.context as BaseAndroidION;
-				ion = AppState.context = newIon;
-				var ret = await newIon.InitAsync();
+        var old = AppState.context;
+        ion = AppState.context = newIon;
 
-				if (old != null) {
-					newIon.portal = old.portal;
-					old.Dispose();
-				} else {
-					newIon.portal = new IONPortalService();
-				}
-
-				return ret;
+        var ret = await newIon.InitAsync();
+        if (ret) {
+          if (old != null) {
+            old.Dispose();
+          }
+          ion = AppState.context = newIon;
+          return true;
+        } else {
+          // Revert to previous ion.
+          ion = AppState.context = null;
+          return false;
+        }
 			} catch (Exception e) {
 				Log.E(this, "Failed to create remote ion", e);
 				return false;

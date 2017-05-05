@@ -15,7 +15,8 @@ namespace ION.CoreExtensions.Net.Portal.Remote {
     /// Whether or not the remote device is data logging.
     /// </summary>
 		[JsonProperty("log")]
-		public bool isDataLogging;
+    private int __isDataLogging;
+    public bool isDataLogging { get { return __isDataLogging == 1; } }
     /// <summary>
     /// The battery level for the remote device.
     /// </summary>
@@ -25,12 +26,14 @@ namespace ION.CoreExtensions.Net.Portal.Remote {
     /// Whether or not the wifi is enabled for the remote device.
     /// </summary>
     [JsonProperty("wifi")]
-    public bool wifiStatus;
+    private int __wifiStatus;
+    public bool wifiStatus { get { return __wifiStatus == 1; } }
     /// <summary>
     /// The memory remaining on the remote device in bytes.
     /// </summary>
     [JsonProperty("memory")]
-    public long remainingMemory;
+    public double __remainingMemory;
+    public long remainingMemory { get { return (long)__remainingMemory; } }
 
     public RemoteStatus() {
     }
@@ -38,10 +41,10 @@ namespace ION.CoreExtensions.Net.Portal.Remote {
     public RemoteStatus(IION ion) {
       var pi = ion.GetPlatformInformation();
 
-      isDataLogging = ion.dataLogManager.isRecording;
+      __isDataLogging = ion.dataLogManager.isRecording ? 1 : 0;
       batteryLevel = pi.batteryPercentage;
-      wifiStatus = pi.wifiConnected;
-      remainingMemory = pi.freeMemory;
+      __wifiStatus = pi.wifiConnected ? 1 : 0;
+      __remainingMemory = pi.freeMemory;
     }
 	}
 }

@@ -54,7 +54,7 @@
 				if (onChecked != null) {
 					onChecked(record);
 				}
-			}));;
+			}));
     }
 
     public override void Invalidate() {

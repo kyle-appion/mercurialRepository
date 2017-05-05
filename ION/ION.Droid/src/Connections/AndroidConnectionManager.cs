@@ -124,6 +124,14 @@
 
     // Implemented for IConnectionManager
     public void Dispose() {
+      if (broadcastTask != null) {
+        broadcastTokenSource.Cancel();
+        broadcastTask.Wait();
+      }
+
+      broadcastTokenSource = null;
+      broadcastTask = null;
+
       ion.appPrefs.prefs.UnregisterOnSharedPreferenceChangeListener(this);
       StopScan();
     }

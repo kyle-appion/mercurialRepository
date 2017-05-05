@@ -17,11 +17,11 @@
 		[JsonProperty("lsn")]
 		public string lowSerialNumber;
 		[JsonProperty("lsi")]
-		public string lowSensorIndex;
+		public int lowSensorIndex;
 		[JsonProperty("las")]
 		public string lowLinkedSerialNumber;
 		[JsonProperty("lai")]
-		public string lowLinkedSensorIndex;
+		public int lowLinkedSensorIndex;
 		[JsonProperty("lsub")]
 		public string[] lowSubviews;
 
@@ -30,11 +30,11 @@
 		[JsonProperty("hsn")]
 		public string highSerialNumber;
 		[JsonProperty("hsi")]
-		public string highSensorIndex;
+		public int highSensorIndex;
 		[JsonProperty("has")]
 		public string highLinkedSerialNumber;
 		[JsonProperty("hai")]
-		public string highLinkedSensorIndex;
+		public int highLinkedSensorIndex;
 		[JsonProperty("hsub")]
 		public string[] highSubviews;
 
@@ -45,16 +45,16 @@
 		public RemoteAnalyzerLH(Analyzer analyzer) {
 			lowAnalyzerIndex = "low";
       lowSerialNumber = "null";
-			lowSensorIndex = 0 + "";
+      lowSensorIndex = 0;
       lowLinkedSerialNumber = "null";
-      lowLinkedSensorIndex = "null";
+      lowLinkedSensorIndex = -1;
 			lowSubviews = new string[0];
 
 			highAnalyzerIndex = "high";
       highSerialNumber = "null";
-			highSensorIndex = 0 + "";
+      highSensorIndex = 0;
       highLinkedSerialNumber = "null";
-      lowLinkedSensorIndex = "null";
+      lowLinkedSensorIndex = -1;
 			highSubviews = new string[0];
 
 			// Commit low side manifold
@@ -65,7 +65,7 @@
 				if (gds != null) {
           // Commit primary sensor stuff
           lowSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
-          lowSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
+          lowSensorIndex = analyzer.IndexOfSensor(m.primarySensor);
 
 					var i = analyzer.IndexOfSensor(gds);
 					lowAnalyzerIndex = i + "";
@@ -74,7 +74,7 @@
 					var sgds = m.secondarySensor as GaugeDeviceSensor;
 					if (sgds != null) {
 						lowLinkedSerialNumber = sgds.device.serialNumber.ToString();
-						lowLinkedSensorIndex = sgds.index + "";
+            lowLinkedSensorIndex = sgds.index;
 					}
 
           // Commit subviews
@@ -98,7 +98,7 @@
         if (gds != null) {
           // Commit primary sensor stuff
           highSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
-          highSensorIndex = analyzer.IndexOfSensor(m.primarySensor) + "";
+          highSensorIndex = analyzer.IndexOfSensor(m.primarySensor);
 
           var i = analyzer.IndexOfSensor(gds);
           highAnalyzerIndex = i + "";
@@ -107,7 +107,7 @@
           var sgds = m.secondarySensor as GaugeDeviceSensor;
           if (sgds != null) {
             highLinkedSerialNumber = sgds.device.serialNumber.ToString();
-            highLinkedSensorIndex = sgds.index + "";
+            highLinkedSensorIndex = sgds.index;
           }
 
           // Commit subviews
