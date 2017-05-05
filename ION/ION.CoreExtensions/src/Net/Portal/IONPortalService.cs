@@ -114,13 +114,20 @@
     private const string JSON_CREATE_LAYOUT = "createLayout";
     private const string JSON_DEVICE_ID = "deviceID";
     private const string JSON_DEVICE_NAME = "deviceName";
-    private const string JSON_LAYOUT_ID = "layoutid";
+    private const string JSON_LAYOUT_ID = "layoutID";
+    private const string JSON_LAYOUT_ID_LOWER = "layoutid";
+    private const string JSON_LOGGING = "logging";
 
     private const string JSON_ACTION_CLONE_REMOTE = "downloadLayouts";
 
 		private const string PORTAL_DATE_FORMAT = "yy-MM-dd HH:mm:ss";
 
 		private const string MIME_JSON = "application/json";
+
+    /// <summary>
+    /// The event that will alert subscribers when the portal's state changes in a meaningful way.
+    /// </summary>
+    public event Action<IONPortalService, PortalEvent> onPortalEvent;
 
 
 		/// <summary>
@@ -754,13 +761,12 @@
     // TODO Refer to line ION.IOS.ViewController.RemoteViewingViewController#97
     public async Task<PortalResponse<string>> RequestLayoutIdAsync(IION ion) {
       try {
-        var platformInfo = ion.GetPlatformInformation();
-
         var formContent = new FormUrlEncodedContent(new[] {
           new KeyValuePair<string, string>(JSON_CREATE_LAYOUT, TRUE),
           new KeyValuePair<string, string>(JSON_USER_ID, loginId),
-          new KeyValuePair<string, string>(JSON_DEVICE_ID, platformInfo.model),
-          new KeyValuePair<string, string>(JSON_DEVICE_NAME, platformInfo.GetDeviceName()),
+          new KeyValuePair<string, string>(JSON_DEVICE_ID, ion.preferences.appId.ToString()),
+          new KeyValuePair<string, string>(JSON_DEVICE_NAME, ion.GetPlatformInformation().GetDeviceName()),
+          new KeyValuePair<string, string>(JSON_STATUS, JsonConvert.SerializeObject(new RemoteStatus(ion))),
         });
 
         var response = await client.PostAsync(URL_UPLOAD_LAYOUTS, formContent);
@@ -775,7 +781,7 @@
           }
 
           JToken layoutIdToken;
-          if (!json.TryGetValue(JSON_LAYOUT_ID, out layoutIdToken)) {
+          if (!json.TryGetValue(JSON_LAYOUT_ID_LOWER, out layoutIdToken)) {
             Log.E(this, "Did not receive a layout id from RequestLayoutIdAsync");
             return new PortalResponse<string>(response, null, EError.ServerError);
           } else {
@@ -800,16 +806,10 @@
 		/// <param name="userId">User identifier.</param>
 		public async Task<PortalResponse> RequestCloneFromRemote(IION ion, ConnectionData connection) {
 			try {
-        // Try and resolve the layout id of the service.
-        var layoutResponse = await RequestLayoutIdAsync(ion);
-        if (!layoutResponse.success) {
-          Log.E(this, "RequestCloneFromRemote(ion, " + connection.id + ": Failed to resolve the service's layout id");
-          return new PortalResponse(null, null, EError.InternalError);
-        }
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_ACTION_CLONE_REMOTE, JSON_MANAGER),
           new KeyValuePair<string, string>(JSON_USER_ID, connection.id + ""),
-          new KeyValuePair<string, string>(JSON_LAYOUT_ID, connection.layoutId),
+          new KeyValuePair<string, string>(JSON_LAYOUT_ID_LOWER, connection.layoutId),
 				});
 
 				var response = await client.PostAsync(URL_CLONE_REMOTE, formContent);
@@ -853,7 +853,10 @@
             while (!appStateUploadCancellationToken.Token.IsCancellationRequested) {
               try {
                 var appState = RemoteAppState.CreateOrThrow(ion);
-                await PerformAppStateUpload(ion, appState);
+                var response = await PerformAppStateUpload(ion, appState);
+                if (!response.success) {
+                  Log.E(this, "Failed to upload state. Message: {" + response.message + "}");
+                }
               } catch (Exception e) {
                 Log.E(this, "Failed to upload app state", e);
                 EndAppStateUpload();
@@ -874,6 +877,7 @@
     /// </summary>
     public void EndAppStateUpload() {
       lock (web) {
+        layoutId = null;
         if (appStateUploadCancellationToken != null) {
           appStateUploadCancellationToken.Cancel();
         }
@@ -898,17 +902,39 @@
           }
         }
 
+        var status = new RemoteStatus(ion);
+
 				var formContent = new FormUrlEncodedContent(new[] {
 					new KeyValuePair<string, string>(JSON_UPLOAD_LAYOUTS, JSON_MANAGER),
 					new KeyValuePair<string, string>(JSON_USER_ID, loginId),
 					new KeyValuePair<string, string>(JSON_LAYOUT_JSON, layout.ToString()),
           new KeyValuePair<string, string>(JSON_LAYOUT_ID, layoutId),
+          new KeyValuePair<string, string>(JSON_STATUS, JsonConvert.SerializeObject(new RemoteStatus(ion))),
 				});
 
 				var response = await client.PostAsync(URL_UPLOAD_LAYOUTS, formContent);
 				var content = await response.Content.ReadAsStringAsync();
+        var json = JObject.Parse(content);
 
-				Log.E(this, content);
+        var loggingStatus = json.GetValue(JSON_LOGGING);
+        var shouldBeLogging = loggingStatus.Value<int>() != 0 ? true : false;
+
+        if (shouldBeLogging) {
+          if (!ion.dataLogManager.isRecording) {
+            var result = await ion.dataLogManager.BeginRecording(ion.preferences.report.dataLoggingInterval);
+            if (!result) {
+              Log.E(this, "Failed to save data logging session.");
+            }
+          }
+        } else {
+          if (ion.dataLogManager.isRecording) {
+            var result = await ion.dataLogManager.StopRecording();
+            if (!result) {
+              Log.E(this, "Failed to end datalogging by remote command.");
+            }
+          }
+        }
+
 				return new PortalResponse(response, "Ok", EError.Success);
 			} catch (Exception e) {
 				Log.E(this, "Failed to perform app state upload", e);
@@ -1017,16 +1043,11 @@
           var uslsn = appState.lh.lowLinkedSerialNumber;
           if (!string.IsNullOrEmpty(uslsn) && !uslsn.Equals("null", StringComparison.OrdinalIgnoreCase)) {
             var lsn = uslsn.ParseSerialNumber();
-            int li = 0;
-            if (!int.TryParse(appState.lh.lowLinkedSensorIndex, out li)) {
-              Log.E(this, "Failed to parse low side sensor index {" + appState.lh.lowLinkedSensorIndex + "}");
-            } else {
-              var sd = ion.deviceManager[lsn] as GaugeDevice;
-              if (sd != null) {
-                var sds = sd[li];
-                if (m.secondarySensor != sds) {
-                  m.SetSecondarySensor(sds);
-                }
+            var sd = ion.deviceManager[lsn] as GaugeDevice;
+            if (sd != null) {
+              var sds = sd[appState.lh.lowLinkedSensorIndex];
+              if (m.secondarySensor != sds) {
+                m.SetSecondarySensor(sds);
               }
             }
           }
@@ -1075,16 +1096,11 @@
           var ushsn = appState.lh.highLinkedSerialNumber;
           if (!string.IsNullOrEmpty(ushsn) && !ushsn.Equals("null", StringComparison.OrdinalIgnoreCase)) {
             var hsn = ushsn.ParseSerialNumber();
-            int hi = 0;
-            if (!int.TryParse(appState.lh.highLinkedSensorIndex, out hi)) {
-              Log.E(this, "Failed to parse high side sensor index {" + appState.lh.highLinkedSensorIndex + "}");
-            } else {
-              var sd = ion.deviceManager[hsn] as GaugeDevice;
-              if (sd != null) {
-                var sds = sd[hi];
-                if (m.secondarySensor != sds) {
-                  m.SetSecondarySensor(sds);
-                }
+            var sd = ion.deviceManager[hsn] as GaugeDevice;
+            if (sd != null) {
+              var sds = sd[appState.lh.highLinkedSensorIndex];
+              if (m.secondarySensor != sds) {
+                m.SetSecondarySensor(sds);
               }
             }
           }

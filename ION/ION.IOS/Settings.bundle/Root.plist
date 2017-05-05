@@ -272,7 +272,6 @@
 			<key>FalseValue</key>
 			<false/>
 		</dict>
-<!--
     <dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
@@ -287,7 +286,6 @@
 			<key>FalseValue</key>
 			<false/>
 		</dict>
--->
 	</array>
 </dict>
 </plist>

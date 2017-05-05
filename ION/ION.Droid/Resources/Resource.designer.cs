@@ -143,41 +143,41 @@ namespace ION.Droid
 		public partial class Array
 		{
 			
-			// aapt resource value: 0x7f0e000a
-			public const int preferences_reporting_data_log_interval_entries = 2131623946;
+			// aapt resource value: 0x7f0f000a
+			public const int preferences_reporting_data_log_interval_entries = 2131689482;
 			
-			// aapt resource value: 0x7f0e000b
-			public const int preferences_reporting_data_log_interval_values = 2131623947;
+			// aapt resource value: 0x7f0f000b
+			public const int preferences_reporting_data_log_interval_values = 2131689483;
 			
-			// aapt resource value: 0x7f0e0000
-			public const int preferences_units_length_entries = 2131623936;
+			// aapt resource value: 0x7f0f0000
+			public const int preferences_units_length_entries = 2131689472;
 			
-			// aapt resource value: 0x7f0e0001
-			public const int preferences_units_length_values = 2131623937;
+			// aapt resource value: 0x7f0f0001
+			public const int preferences_units_length_values = 2131689473;
 			
-			// aapt resource value: 0x7f0e0002
-			public const int preferences_units_pressure_entries = 2131623938;
+			// aapt resource value: 0x7f0f0002
+			public const int preferences_units_pressure_entries = 2131689474;
 			
-			// aapt resource value: 0x7f0e0003
-			public const int preferences_units_pressure_values = 2131623939;
+			// aapt resource value: 0x7f0f0003
+			public const int preferences_units_pressure_values = 2131689475;
 			
-			// aapt resource value: 0x7f0e0004
-			public const int preferences_units_temperature_entries = 2131623940;
+			// aapt resource value: 0x7f0f0004
+			public const int preferences_units_temperature_entries = 2131689476;
 			
-			// aapt resource value: 0x7f0e0005
-			public const int preferences_units_temperature_values = 2131623941;
+			// aapt resource value: 0x7f0f0005
+			public const int preferences_units_temperature_values = 2131689477;
 			
-			// aapt resource value: 0x7f0e0006
-			public const int preferences_units_vacuum_entries = 2131623942;
+			// aapt resource value: 0x7f0f0006
+			public const int preferences_units_vacuum_entries = 2131689478;
 			
-			// aapt resource value: 0x7f0e0007
-			public const int preferences_units_vacuum_values = 2131623943;
+			// aapt resource value: 0x7f0f0007
+			public const int preferences_units_vacuum_values = 2131689479;
 			
-			// aapt resource value: 0x7f0e0008
-			public const int preferences_units_weight_entries = 2131623944;
+			// aapt resource value: 0x7f0f0008
+			public const int preferences_units_weight_entries = 2131689480;
 			
-			// aapt resource value: 0x7f0e0009
-			public const int preferences_units_weight_values = 2131623945;
+			// aapt resource value: 0x7f0f0009
+			public const int preferences_units_weight_values = 2131689481;
 			
 			static Array()
 			{
@@ -4712,35 +4712,35 @@ namespace ION.Droid
 		public partial class Menu
 		{
 			
-			// aapt resource value: 0x7f0f0000
-			public const int button = 2131689472;
+			// aapt resource value: 0x7f100000
+			public const int button = 2131755008;
 			
-			// aapt resource value: 0x7f0f0001
-			public const int download = 2131689473;
+			// aapt resource value: 0x7f100001
+			public const int download = 2131755009;
 			
-			// aapt resource value: 0x7f0f0002
-			public const int help = 2131689474;
+			// aapt resource value: 0x7f100002
+			public const int help = 2131755010;
 			
-			// aapt resource value: 0x7f0f0003
-			public const int ok_done = 2131689475;
+			// aapt resource value: 0x7f100003
+			public const int ok_done = 2131755011;
 			
-			// aapt resource value: 0x7f0f0004
-			public const int plus = 2131689476;
+			// aapt resource value: 0x7f100004
+			public const int plus = 2131755012;
 			
-			// aapt resource value: 0x7f0f0005
-			public const int record = 2131689477;
+			// aapt resource value: 0x7f100005
+			public const int record = 2131755013;
 			
-			// aapt resource value: 0x7f0f0006
-			public const int refresh = 2131689478;
+			// aapt resource value: 0x7f100006
+			public const int refresh = 2131755014;
 			
-			// aapt resource value: 0x7f0f0007
-			public const int save = 2131689479;
+			// aapt resource value: 0x7f100007
+			public const int save = 2131755015;
 			
-			// aapt resource value: 0x7f0f0008
-			public const int scan = 2131689480;
+			// aapt resource value: 0x7f100008
+			public const int scan = 2131755016;
 			
-			// aapt resource value: 0x7f0f0009
-			public const int screenshot = 2131689481;
+			// aapt resource value: 0x7f100009
+			public const int screenshot = 2131755017;
 			
 			static Menu()
 			{
@@ -4748,6 +4748,31 @@ namespace ION.Droid
 			}
 			
 			private Menu()
+			{
+			}
+		}
+		
+		public partial class Plurals
+		{
+			
+			// aapt resource value: 0x7f0e0000
+			public const int time_days = 2131623936;
+			
+			// aapt resource value: 0x7f0e0001
+			public const int time_hours = 2131623937;
+			
+			// aapt resource value: 0x7f0e0002
+			public const int time_mins = 2131623938;
+			
+			// aapt resource value: 0x7f0e0003
+			public const int time_secs = 2131623939;
+			
+			static Plurals()
+			{
+				global::Android.Runtime.ResourceIdManager.UpdateIdValues();
+			}
+			
+			private Plurals()
 			{
 			}
 		}

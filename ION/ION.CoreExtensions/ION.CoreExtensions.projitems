@@ -34,6 +34,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteSensorMount.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAnalyzerLH.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolderExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\PortalEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />

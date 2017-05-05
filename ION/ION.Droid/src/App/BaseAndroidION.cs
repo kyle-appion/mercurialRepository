@@ -120,7 +120,7 @@ namespace ION.Droid.App {
     public AppPrefs appPrefs { get { return AppPrefs.Get(context); } }
 
 		// Implemented from IION
-		public IONPortalService portal { get; set; }
+    public IONPortalService portal { get { return context.portal; } }
 
     // Implemented for IION
     public IPlatformInfo localDevice { get; set; }
@@ -151,7 +151,7 @@ namespace ION.Droid.App {
 			try {
         var _ = preferences.lastKnownAppVersion; // Sets the current application version.
 
-				if (!OnPreInit()) {
+				if (!await OnPreInitAsync()) {
 					return false;
 				}
 
@@ -206,7 +206,7 @@ namespace ION.Droid.App {
         locationManager.PostInit();
         dataLogManager.PostInit();
         alarmManager.PostInit();
-				if (!OnPostInit()) {
+				if (!await OnPostInitAsync()) {
 					return false;
 				}
 
@@ -366,16 +366,16 @@ namespace ION.Droid.App {
 		/// Override this methos to initialize entities that have no dependencies.
 		/// </summary>
 		/// <returns>The pre init async.</returns>
-		protected virtual bool OnPreInit() {
-			return true;
+		protected virtual Task<bool> OnPreInitAsync() {
+      return Task.FromResult(true);
 		}
 
 		/// <summary>
 		/// Override this method to initialize entities that depend on other data structures.
 		/// </summary>
 		/// <returns>The post init async.</returns>
-		protected virtual bool OnPostInit() {
-			return true;
+		protected virtual Task<bool> OnPostInitAsync() {
+      return Task.FromResult(true);
 		}
 
 		private async Task VerifyManagerOrThrow(IManager manager) {

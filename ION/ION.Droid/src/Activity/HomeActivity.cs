@@ -409,9 +409,9 @@
         dialog.Dismiss();
       });
       adb.SetPositiveButton(Resource.String.ok, (o, e) => {
-#if DEBUG == false
+//#if DEBUG == false
         TryUploadLogs();
-#endif
+//#endif
         var dialog = o as Dialog;
         dialog.Dismiss();
         Shutdown();
