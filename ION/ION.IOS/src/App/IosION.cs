@@ -366,7 +366,7 @@
       if(remoteDevice.loggingStatus != remoteStatus.isRecording){
 			  remoteDevice.loggingStatus = remoteStatus.isRecording;
         remotePlatformChanged(remoteDevice);
-      }
+      }    
 		}
 
     /// <summary>
