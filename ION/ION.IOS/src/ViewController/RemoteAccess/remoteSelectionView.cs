@@ -90,7 +90,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 					
 					if(!string.IsNullOrEmpty(viewing)){
 					  ///TURN OFF ANY LOCATION POLLING TO ALLOW FOR REMOTE LOCATION BEING USED
-			      if (ion.settings.location.useGeoLocation) {			      	
+            if (ion.settings._location.allowsGps) {			      	
 			        ion.locationManager.StopAutomaticLocationPolling();
 			      }
 					
@@ -128,7 +128,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 				fullMenuButton.BackgroundColor = UIColor.FromRGB(255, 215, 101);
 	
 			  ///TURN BACK ON ANY LOCATION POLLING THE LOCAL DEVICE WAS USING
-	      if (ion.settings.location.useGeoLocation) {			      	
+        if (ion.settings._location.allowsGps) {			      	
 	        ion.locationManager.StartAutomaticLocationPolling();
 	      }
 			

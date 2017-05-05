@@ -1,7 +1,8 @@
-﻿namespace ION.Droid.App {
+namespace ION.Droid.App {
 
   using System;
   using System.IO;
+  using System.Threading.Tasks;
 
 	using Java.IO;
 
@@ -30,8 +31,8 @@
 		/// Initializes the ion instance.
 		/// </summary>
 		/// <returns>The async.</returns>
-    protected override bool OnPreInit() {
-			if (!base.OnPreInit()) {
+    protected async override Task<bool> OnPreInitAsync() {
+			if (!await base.OnPreInitAsync()) {
 				return false;
 			}
 
@@ -39,7 +40,7 @@
 
       var path = System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.MyDocuments), "ION.database");
       database = new IONDatabase(new SQLite.Net.Platform.XamarinAndroid.SQLitePlatformAndroid(), path, this);
-      deviceManager = new BaseDeviceManager(this, new AndroidConnectionManager(context));
+      deviceManager = new BaseDeviceManager(this, new AndroidConnectionManager(this));
       locationManager = new AndroidLocationManager(this);
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);
@@ -54,25 +55,16 @@
       fluidManager = new BaseFluidManager(this);
 
 			return true;
-/*
-// TODO ahodder@appioninc.com: Remove
-			var ar = new GoogleMapsAltitudeRetriever();
-			if (ar.IsNetworkAvailable(this)) {
-				var result = ar.FetchAltitudeFromLatitudeLongitude(39.74, -104.98);
-			} else {
-				Log.E(this, "Cannot fetch elevation: network is not available");
-			}
-*/
     }
 
-		protected override bool OnPostInit() {
+		protected async override Task<bool> OnPostInitAsync() {
 			context.UpdateNotification();
       isDisposed = false;
 
       currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
       currentAnalyzer.onAnalyzerEvent += OnAnalyzerEvent;
 
-			return base.OnPostInit();
+			return await base.OnPostInitAsync();
 		}
 
 		// Implemented from IION

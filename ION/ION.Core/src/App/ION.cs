@@ -3,7 +3,7 @@
 	using System;
 	using System.Threading.Tasks;
 
-	using Appion.Commons.Measure;
+  using Newtonsoft.Json;
 
 	using ION.Core.Alarms;
 	using ION.Core.Content;
@@ -13,8 +13,6 @@
 	using ION.Core.IO;
 	using ION.Core.Location;
 	using ION.Core.Report.DataLogs;
-	using ION.Core.Sensors;
-	using Newtonsoft.Json;
 
 	/// <summary>
 	/// A utility class that will retain the ION context. We do this because
@@ -27,20 +25,6 @@
     /// </summary>
     /// <value>The App.</value>
     public static IION context { get; set; }
-      /*
-      get {
-        if (__context == null) {
-          string msg = "Critical failure: Application attempted to retrieve ION context, yet the application was not running.";
-          Log.C("AppState.ION", msg);
-          throw new Exception(msg);
-        }
-        return __context;
-      }
-      set {
-        __context = value;
-      }
-    } private static IION __context;
-    */
   } // End ION
 
 	public delegate void OnWorkbenchChanged(Workbench workbench);
@@ -75,10 +59,15 @@
     /// <value>The name.</value>
     string name { get; }
     /// <summary>
-    /// Queries the full version of the ion instance.
+    /// The current application version.
     /// </summary>
     /// <value>The version.</value>
-    string version { get; }
+    string version { get; } 
+    /// <summary>
+    /// Queries the user and common app preferences for the ION application.
+    /// </summary>
+    /// <value>The preferences.</value>
+    IIONPreferences preferences { get; }
 
     /// <summary>
     /// The database that will store all of the application data.
@@ -128,12 +117,6 @@
     /// </summary>
     /// <value>The current workbench.</value>
     Workbench currentWorkbench { get; set; }
-
-    /// <summary>
-    /// The default units for the ION instance.
-    /// </summary>
-    /// <value>The default units.</value>
-    IUnits defaultUnits { get; }
 
     /// <summary>
     /// Queries the screenshot report folder.
@@ -219,29 +202,17 @@
     void NotifyStateChanged(IonState.EType eventType);
   } // End IION
 
-  /// <summary>
-  /// The interface that describes the default units for the application.
-  /// </summary>
-  public interface IUnits { 
-    Unit length { get; set; }
-    Unit pressure { get; set; }
-    Unit temperature { get; set; }
-    Unit vacuum { get; set; }
-
-    Unit DefaultUnitFor(ESensorType sensorType);
-  } // End IUnits
-  
   	[Preserve(AllMembers = true)]
 	public class sessionStateInfo {
 		public sessionStateInfo(){}
 		[JsonProperty("log")]
-		public int isRecording {get; set;}
+		public int isRecording { get; set; }
 		[JsonProperty("battery")]
-		public int batteryLevel {get; set;}
+		public int batteryLevel { get; set; }
 		[JsonProperty("wifi")]
-		public int wifiStatus {get; set;}
+		public int wifiStatus { get; set; }
 		[JsonProperty("memory")]
-		public double remainingMemory {get; set;}	
+		public long remainingMemory { get; set; }	
 	}
 }
 

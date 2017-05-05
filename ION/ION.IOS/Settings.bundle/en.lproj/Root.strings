@@ -1,4 +1,4 @@
-﻿
+
 /* Application Strings */
 "settings_screen" = "Screen Settings";
 "settings_screen_leave_on" = "Leave Display On";
@@ -21,7 +21,8 @@
 "settings_logging" = "Logging Settings";
 "settings_default_logging_interval" = "Interval";
 
-"settings_reconnect" = "Auto Reconnect";
-"auto_reconnect_on" = "Enable";
+"settings_device" = "Device Settings";
+"settings_device_auto_connect" = "Auto Connect";
+"settings_device_long_range" = "Long Range Mode";
 
 "use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";

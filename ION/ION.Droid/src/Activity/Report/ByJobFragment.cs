@@ -21,6 +21,7 @@
 	using Job;
 	using Fragments;
 	using Views;
+  using Util;
 	using Widgets.RecyclerViews;
 
 	public class ByJobFragment : IONFragment {
@@ -220,22 +221,9 @@
 				}
 
 				date.Text = dateString;
-				duration.Text = ToFriendlyString(record.data.sessionEnd - record.data.sessionStart);
+        duration.Text = (record.data.sessionEnd - record.data.sessionStart).ToFriendlyString(date.Context);
 				devicesUsed.Text = "" + record.devicesCount;
 				check.Checked = record.isChecked;
-			}
-
-			private string ToFriendlyString(TimeSpan timeSpan) {
-				var c = foreground.Context;
-				if (timeSpan.TotalHours > 24) {
-					return timeSpan.TotalDays.ToString("#.#") + " " + c.GetString(Resource.String.time_days_abrv);
-				} else if (timeSpan.TotalMinutes > 60) {
-					return timeSpan.TotalHours.ToString("#.#") + " " + c.GetString(Resource.String.time_hours_abrv);
-				} else if (timeSpan.TotalSeconds > 60) {
-					return timeSpan.TotalMinutes.ToString("#.#") + " " + c.GetString(Resource.String.time_minutes_abrv);
-				} else {
-					return timeSpan.TotalSeconds.ToString("#.#") + " " + c.GetString(Resource.String.time_seconds_abrv);
-				}
 			}
 		}
 

@@ -10,6 +10,7 @@
   <string name="pkey_app_version">app_version</string>
 	<string name="pkey_app_analytics">app_analytics</string>
   <string name="pkey_first_launch">first_launch"</string>
+  <string name="pkey_id">app_id</string>
   <string name="pkey_send_feedback">send_feedback</string>
   <string name="pkey_wake_lock">wake_lock</string>
   <string name="pkey_whats_new">whats_new</string>
@@ -17,6 +18,9 @@
 
   <string name="pkey_alarm_vibrate">alarm_vibrate</string>
   <string name="pkey_alarm_sound">alarm_sound</string>
+
+  <string name="pkey_device_auto_connect">device_auto_connect</string>
+	<string name="pkey_device_long_range">device_long_range</string>
 
   <string name="pkey_help_walkthrough">help_walkthrough</string>
 

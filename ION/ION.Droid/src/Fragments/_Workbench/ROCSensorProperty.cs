@@ -12,6 +12,7 @@
 	using OxyPlot.Series;
 	using OxyPlot.Xamarin.Android;
 
+  using Appion.Commons.Math;
 	using Appion.Commons.Measure;
   using Appion.Commons.Util;
 
@@ -39,12 +40,15 @@
 
 		private PlotModel model;
 		private LinearAxis xAxis;
-		private LinearAxis primaryAxis;
-		private LinearAxis secondaryAxis;
+    private MinMaxLineSeries primaryAxis;
+    private MinMaxLineSeries secondaryAxis;
 
 		private LineSeries primarySeries;
 		private LineSeries secondarySeries;
 
+    /// <summary>
+    /// Used to measure the labels for the graph so that the labels can be lain out correctly.
+    /// </summary>
     private CanvasRenderContext rc;
 
 		private Handler handler;
@@ -97,7 +101,7 @@
       };
 
       var baseUnit = record.manifold.primarySensor.unit.standardUnit;
-      primaryAxis = new LinearAxis() {
+      primaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Left,
         Minimum = 0,
         Maximum = 100,
@@ -119,7 +123,7 @@
         MinorGridlineStyle = LineStyle.None,
       };
 
-      secondaryAxis = new LinearAxis() {
+      secondaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Right,
         Minimum = 0,
         Maximum = 100,
@@ -191,7 +195,9 @@
 			title.Text = record.sp.GetLocalizedStringAbreviation(c);
 
 			var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
-			if (device == null || device.isConnected) {
+			if (device != null && device.isConnected) {
+        plot.Visibility = ViewStates.Visible;
+
 				InvalidatePrimary();
 				InvalidateSecondary();
         InvalidateTime();
@@ -200,6 +206,7 @@
 				model.InvalidatePlot(true);
 			} else {
 				measurement.SetText(Resource.String.na);
+        plot.Visibility = ViewStates.Invisible;
 			}
 		}
 
@@ -324,36 +331,51 @@
     /// Updates the axis to the given state.
     /// </summary>
     /// <param name="axis">Axis.</param>
-    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Unit u, int major = 3, int minor = 5) {
+    private void UpdateAxis(MinMaxLineSeries axis, Scalar min, Scalar max, Unit u, int major = 2, int minor = 5) {
       var su = u.standardUnit;
-      var diff = (max - min).ConvertTo(su).magnitude;
 
-      if (diff != 0) {
-        axis.Minimum = min.ConvertTo(su).amount;
-        axis.Maximum = max.ConvertTo(su).amount;
-      } else {
-        var one = u.OfScalar(1);
-        axis.Minimum = (min - one).ConvertTo(su).magnitude;
-        axis.Maximum = (max + one).ConvertTo(su).magnitude;
-        diff = u.OfScalar(3).ConvertTo(su).amount;
+      var minMag = min.ConvertTo(u).amount;
+      var maxMag = max.ConvertTo(u).amount;
+
+      minMag = minMag.TruncateToSignifiantDigits(2);
+      maxMag = maxMag.RoundToSignificantDigits(2);
+
+
+      if (maxMag - minMag == 0) {
+        if (minMag == 0) {
+          minMag -= u.OfScalar(1).amount;
+          maxMag += u.OfScalar(1).amount;
+        } else {
+          var del = Math.Pow(10, Math.Floor(Math.Log10(minMag)) - 1);
+          minMag -= del;
+          maxMag += del;
+        }
       }
 
-      var padding = diff * 0.1;
+      minMag = u.OfScalar(minMag).ConvertTo(su).amount;
+      maxMag = u.OfScalar(maxMag).ConvertTo(su).amount;
+      var diff = (maxMag - minMag);
+      var mod = diff / major;
+
+      axis.SetMinMax(minMag, maxMag);
+
+      axis.Minimum = minMag;
+      axis.Maximum = maxMag;
+
+      var padding = diff * 0.20;
       axis.Minimum -= padding;
       axis.Maximum += padding;
-
-      var mod = (int)diff / major;
-      var tmod = mod / (double)minor;
 
       axis.MajorStep = mod;
       axis.MinimumMajorStep = mod;
       axis.MajorTickSize = 10;
       axis.TicklineColor = OxyColors.Black;
-
+/*
       axis.MinorStep = tmod;
       axis.MinimumMinorStep = tmod;
       axis.MinorTickSize = 5;
       axis.MinorTicklineColor = OxyColors.Black;
+*/
 
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
@@ -376,17 +398,22 @@
         return 0;
       }
 
-      axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
+      try {
+        axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
-      double bestWidth = 0;
-      foreach (var label in majorLabelValues) {
-        var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
-        if (size.Width > bestWidth) {
-          bestWidth = size.Width;
+        double bestWidth = 0;
+        foreach (var label in majorLabelValues) {
+          var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
+          if (size.Width > bestWidth) {
+            bestWidth = size.Width;
+          }
         }
-      }
 
-      return bestWidth;
+        return bestWidth;
+      } catch (Exception e) {
+        Log.E(this, "Failing to measure text width", e);
+        return 0;
+      }
     }
 
     /// <summary>
@@ -423,4 +450,21 @@
 			}
 		}
 	}
+
+  internal class MinMaxLineSeries : LinearAxis {
+    private double min;
+    private double max;
+
+    public void SetMinMax(double min, double max) {
+      this.min = min;
+      this.max = max;
+    }
+
+    protected override IList<double> CreateTickValues(double from, double to, double step, int maxTicks) {
+      var list = new List<double>();
+      list.Add(min);
+      list.Add(max);
+      return list;
+    }
+  }
 }

@@ -1,6 +1,5 @@
 ﻿namespace ION.Core.App {
 
-  using System;
   using System.Collections.Generic;
 
   /// <summary>
@@ -24,15 +23,17 @@
   /// </summary>
   public interface IPlatformInfo {
     string manufacturer { get; }
-    string deviceName { get; }
+    string hardwareName { get; }
     string model { get; }
     string version { get; }
     string api { get; }
     string chipset { get; }
-    int wifiConnected  { get; set; }
+    bool wifiConnected  { get; set; }
     int batteryPercentage { get; set; }
-    double freeMemory { get; set; }
-    int loggingStatus { get; set; }
+    long freeMemory { get; set; }
+    bool loggingStatus { get; set; }
+
+    string GetDeviceName();
   }
 
   /// <summary>
@@ -63,7 +64,7 @@
     public BaseDeviceInfo(IION ion) {
       var list = new List<string>();
 
-      foreach (var d in ion.deviceManager.knownDevices) {
+      foreach (var d in ion.deviceManager.devices) {
         list.Add(d.serialNumber.ToString());
       }
 

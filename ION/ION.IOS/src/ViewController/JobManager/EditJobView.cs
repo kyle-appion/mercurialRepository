@@ -276,8 +276,8 @@ namespace ION.IOS.ViewController.JobManager  {
 			loadingCoordinates.StartAnimating();
 			
 			if(string.IsNullOrEmpty(jobAddress.Text)){
-				var settings = new AppSettings();
-				if(settings.location.useGeoLocation){
+        var iosIon = ion as IosION;
+        if(iosIon.settings._location.allowsGps){
 					var latlong = ion.locationManager.lastKnownLocation.latitude.amount.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.amount.ToString("0.000000");
 					coordinateButton.Enabled = false;
 					coordinateLabel.Text = latlong;			

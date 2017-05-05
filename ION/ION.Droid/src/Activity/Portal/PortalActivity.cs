@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.Portal {
+namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Threading.Tasks;
@@ -193,7 +193,7 @@
 			pd.SetCancelable(false);
 			pd.Show();
 
-			var response = await ion.portal.UpdatePassword(passwordConfirm.Text);
+			var response = await ion.portal.RequestUpdatePassword(passwordConfirm.Text);
 			if (response.success) {
 				if (ion.preferences.portal.rememberMe) {
 					ion.preferences.portal.password = password.Text;

@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.Portal {
+namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Linq;
@@ -92,7 +92,7 @@
 					pd.SetCancelable(false);
 				  pd.Show();
 
-					var response = await ion.portal.ResetUserPasswordAsync(edit.Text);
+					var response = await ion.portal.RequestResetUserPasswordAsync(edit.Text);
 					if (response.success) {
 						Toast.MakeText(this, Resource.String.portal_password_reset_sent, ToastLength.Long).Show();
 						d.Dismiss();
@@ -213,7 +213,7 @@
 			pd.Indeterminate = true;
 			pd.Show();
 
-			var res = await ion.portal.LoginAsync(username.Text, password.Text);
+			var res = await ion.portal.RequestLoginAsync(username.Text, password.Text);
 
 			if (res.success) {
 				SetResult(Result.Ok);

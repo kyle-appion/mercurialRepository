@@ -16,6 +16,7 @@
 	using ION.Core.Database;
 
 	using Dialog;
+  using ION.Droid.Views;
 	using ION.Droid.Widgets.RecyclerViews;
 
 	public class SessionAdapter : RecordAdapter {
@@ -76,6 +77,11 @@
 							onSessionRowChecked(this, sr);
 						}
 					});
+          var button = ret.background as TextView;
+          button.SetText(Resource.String.remove);
+          button.SetOnClickListener(new ViewClickAction((view) => {
+            RequestDeleteSession(ret.record);
+          }));
 					return ret;
 				default:
 					throw new Exception("Cannot create view for " + (EViewType)viewType);

@@ -273,10 +273,12 @@
 			}
 		}
 
+/*
 		public override void OnServiceBound() {
 			base.OnServiceBound();
 			Initialize();
 		}
+*/
 
 		private void Initialize() {
 			var rawSerials = Intent.GetStringArrayExtra(EXTRA_SERIALS);

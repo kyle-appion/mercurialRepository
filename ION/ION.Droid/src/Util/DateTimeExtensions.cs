@@ -15,14 +15,15 @@
     }
 
 		public static string ToFriendlyString(this TimeSpan timeSpan, Context context) {
+      var r = context.Resources;
 			if (timeSpan.TotalHours > 24) {
-				return timeSpan.TotalDays.ToString("#.#") + " " + context.GetString(Resource.String.time_days_abrv);
+        return timeSpan.TotalDays.ToString("#.#") + " " + r.GetQuantityString(Resource.Plurals.time_days, (int)timeSpan.TotalDays);
 			} else if (timeSpan.TotalMinutes > 60) {
-				return timeSpan.TotalHours.ToString("#.#") + " " + context.GetString(Resource.String.time_hours_abrv);
+        return timeSpan.TotalHours.ToString("#.#") + " " + r.GetQuantityString(Resource.Plurals.time_hours, (int)timeSpan.TotalHours);
 			} else if (timeSpan.TotalSeconds > 60) {
-				return timeSpan.TotalMinutes.ToString("#.#") + " " + context.GetString(Resource.String.time_minutes_abrv);
+        return timeSpan.TotalMinutes.ToString("#.#") + " " + r.GetQuantityString(Resource.Plurals.time_mins, (int)timeSpan.TotalMinutes);
 			} else {
-				return timeSpan.TotalSeconds.ToString("#.#") + " " + context.GetString(Resource.String.time_seconds_abrv);
+        return timeSpan.TotalSeconds.ToString("#.#") + " " + r.GetQuantityString(Resource.Plurals.time_secs, (int)timeSpan.TotalSeconds);
 			}
 		}
   }

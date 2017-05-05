@@ -16,7 +16,7 @@
 				if (isValid) {
 					return temperatureDelta.unit.OfScalar(temperatureDelta.magnitude);
 				} else {
-					return AppState.context.defaultUnits.temperature.OfScalar(0);
+          return AppState.context.preferences.units.temperature.OfScalar(0);
 				}
       }
     }
@@ -65,7 +65,7 @@
 				if (isValid) {
 					return manifold.ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
 				} else {
-					return AppState.context.defaultUnits.temperature.OfSpan(0);
+          return AppState.context.preferences.units.temperature.OfSpan(0);
 				}
 			}
 		}

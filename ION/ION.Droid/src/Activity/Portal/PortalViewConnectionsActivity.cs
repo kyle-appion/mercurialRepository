@@ -1,4 +1,4 @@
-﻿namespace ION.Droid.Activity.Portal {
+namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -22,7 +22,7 @@
 		private RecyclerView followersList;
 
 		private Adapter followingAdapter;
-		private Adapter followersAdapter;
+		private Adapter followerAdapter;
 
 		protected override void OnCreate(Bundle savedInstanceState) {
 			base.OnCreate(savedInstanceState);
@@ -44,9 +44,9 @@
 			followingAdapter.emptyView = followingEmpty;
 			followingAdapter.deleteAction = OnDeleteFollowing;
 
-			followersList.SetAdapter(followersAdapter = new Adapter());
-			followersAdapter.emptyView = followersEmpty;
-			followersAdapter.deleteAction = OnDeleteFollower;
+			followersList.SetAdapter(followerAdapter = new Adapter());
+			followerAdapter.emptyView = followersEmpty;
+			followerAdapter.deleteAction = OnDeleteFollower;
 		}
 
 		protected override void OnResume() {
@@ -93,7 +93,7 @@
 			pd.SetCancelable(false);
 			pd.Show();
 
-			var response = await ion.portal.RemoveFollowerAsync(data);
+			var response = await ion.portal.RequestRemoveFollowerAsync(data);
 
 			pd.Dismiss();
 		}
@@ -105,7 +105,7 @@
 			pd.SetCancelable(false);
 			pd.Show();
 
-			var response = await ion.portal.RemoveFollowingAsync(data);
+			var response = await ion.portal.RequestRemoveFollowingAsync(data);
 
 			pd.Dismiss();
 		}
@@ -114,27 +114,23 @@
 		/// Refreshes the content of the activity.
 		/// </summary>
 		private async void OnRefresh() {
-			var followingTask = ion.portal.QueryFollowingAsync();
-			var followersTask = ion.portal.QueryFollowersAsync();
+      var result = await ion.portal.RequestConnectionData();
 
-			var following = new List<ConnectionRecord>();
-			var followingResult = await followingTask;
-			if (followingResult.result != null) {
-				foreach (var data in followingResult.result) {
-					following.Add(new ConnectionRecord(data));
-				}
-				followingAdapter.Set(following);
-			}
+      if (result.success) {
+        var tmp = new List<ConnectionRecord>();
+        foreach (var data in ion.portal.followingConnections) {
+          tmp.Add(new ConnectionRecord(data));
+        }
+        followingAdapter.Set(tmp);
 
-
-			var followers = new List<ConnectionRecord>();
-			var followersResult = await followersTask;
-			if (followersResult.result != null) {
-				foreach (var data in followersResult.result) {
-					followers.Add(new ConnectionRecord(data));
-				}
-				followersAdapter.Set(followers);
-			}
+        tmp.Clear();
+        foreach (var data in ion.portal.followerConnections) {
+          tmp.Add(new ConnectionRecord(data));
+        }
+        followerAdapter.Set(tmp);
+      } else {
+        Error(GetString(Resource.String.portal_error_failed_to_query_following));
+      }
 		}
 
 		private class Adapter : RecordAdapter {
