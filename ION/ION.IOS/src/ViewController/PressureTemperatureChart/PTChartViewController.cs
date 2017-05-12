@@ -212,7 +212,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
     // Overridden from BaseIONViewController
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-
+      
       NavigationItem.Title = Strings.Fluid.PT_CALCULATOR;
 
       NavigationItem.RightBarButtonItem = new UIBarButtonItem(Strings.HELP, UIBarButtonItemStyle.Plain, delegate {
@@ -233,9 +233,13 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       ptChart = PTChart.New(ion, Fluid.EState.Dew);
 
-      pressureUnit = Units.Pressure.PSIG;
-      temperatureUnit = Units.Temperature.FAHRENHEIT;
+      //pressureUnit = Units.Pressure.PSIG;
+      //temperatureUnit = Units.Temperature.FAHRENHEIT;
 
+      pressureUnit = ion.preferences.units.pressure;
+
+      temperatureUnit = ion.preferences.units.temperature;
+      
       InitPTChartWidgets();
       InitPressureWidgets();
       InitTemperatureWidgets();
@@ -243,7 +247,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       ClearPressureInput();
       ClearTemperatureInput(); 
 
-      temperatureSensor = new ManualSensor(ESensorType.Temperature, true);
+      temperatureSensor = new ManualSensor(new Scalar(temperatureUnit,0.0),ESensorType.Temperature, true);
 
       if (initialManifold != null) {
         ptChart = initialManifold.ptChart;
@@ -257,12 +261,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           Log.E(this,"Cannot accept sensor that is not a pressure or temperature sensor");
         }
       }
-			 var manualEdit = false;
-			 var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1, 310, 1,128 + 20));
+      
+		 var manualEdit = false;
+		 var topMark = new UILabel(new CGRect(.5 * View.Bounds.Width - 1, 310, 1,128 + 20));
+     
 			if(initialManifold == null){	      
 	      topMark.BackgroundColor = UIColor.Black; 
 		  	if(temperatureSensor == null){
-					temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+					temperatureSensor = new ManualSensor(new Scalar(temperatureUnit,0.0),ESensorType.Temperature,true);
 		  	}
 	      ptSlider = new SliderView(View,ptChart, pressureUnit, temperatureUnit, temperatureSensor, entryMode);
 	
@@ -273,7 +279,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 		  	ptSlider.ptScroller.Scrolled += (sender, e) => {
 		  		if(!(pressureSensor is GaugeDeviceSensor) && !(temperatureSensor is GaugeDeviceSensor) & manualEdit == false){
 						if(temperatureSensor == null){
-					 		temperatureSensor = new ManualSensor(ESensorType.Temperature,true);
+					 		temperatureSensor = new ManualSensor(new Scalar(temperatureUnit,0.0),ESensorType.Temperature,true);
 						}
 						setTemperatureValueFromSlider();
 					}
@@ -355,14 +361,6 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       if (ptChart != null) {
         ptChart = PTChart.New(ion, ptChart.state);
       }
-
-      if (!pressureSensorLocked) {
-        pressureUnit = ion.preferences.units.pressure;
-      }
-
-      if (!temperatureSensorLocked) {
-        temperatureUnit = ion.preferences.units.temperature;
-      }
     }
 
     // Overridden from ViewController
@@ -428,31 +426,34 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           if(ptSlider != null){
 		  			ptSlider.Chart = ptChart;
 		  		}
-          if (pressureSensor is GaugeDeviceSensor) {
+          if (pressureSensor != null && pressureSensor is GaugeDeviceSensor) {
             entryMode = new SensorEntryMode(this,pressureSensor, temperatureUnit, ptChart, editPressure, editTemperature);
-          } else if (temperatureSensor is GaugeDeviceSensor){
+          } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
             entryMode = new SensorEntryMode(this, temperatureSensor, pressureUnit, ptChart, editTemperature, editPressure);
-		  } else {
-			if(pressureSensor != null){
-				entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
-			} else {
-				entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
-			}
-		  }
+    		  } else {
+      			if(pressureSensor != null){
+      				entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
+      			} else {
+              if(temperatureSensor == null){
+                temperatureSensor = new ManualSensor(new Scalar(temperatureUnit,0.0),ESensorType.Temperature,true);
+              }
+      				entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
+      			}
+    		  }
 
-		  if(pressureSensor != null && pressureSensor is GaugeDeviceSensor){
-		  	if(ptSlider != null){
-					ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
-					ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
-					}
-		  } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
-		  	if(ptSlider != null){
-					ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
-					ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
-				}
-		  } else {
-					recalculateSlider(pressureUnit,temperatureUnit);
-		  }
+    		  if(pressureSensor != null && pressureSensor is GaugeDeviceSensor){
+    		  	if(ptSlider != null){
+    					ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
+    					ptSlider.setOffsetFromSensorMeasurement(pressureSensor);
+    					}
+    		  } else if (temperatureSensor != null && temperatureSensor is GaugeDeviceSensor){
+    		  	if(ptSlider != null){
+    					ptSlider.ptView.resetData(ptChart,pressureUnit,temperatureUnit);
+    					ptSlider.setOffsetFromSensorMeasurement(temperatureSensor);
+    				}
+    		  } else {
+    				recalculateSlider(pressureUnit,temperatureUnit);
+    		  }
           InvalidateViewController();		  
         };
         NavigationController.PushViewController(sb, true);
@@ -518,7 +519,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       editPressure.EditingDidEnd += (s, e) => {
 	      if (string.IsNullOrEmpty(editPressure.Text)) {
 	      	if(pressureSensor == null){
-						pressureSensor = new ManualSensor(ESensorType.Temperature);
+						pressureSensor = new ManualSensor(new Scalar(pressureUnit,0.0),ESensorType.Pressure);
 					}
 	      	pressureSensor.measurement = pressureSensor.unit.OfScalar(0);
 	      }
@@ -544,9 +545,9 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       editPressure.AddTarget((object obj, EventArgs args) => {
         if (pressureSensor == null) {
 	      	var oldUnit = pressureUnit;
-          pressureSensor = new ManualSensor(ESensorType.Pressure, true);
-          	pressureUnit = oldUnit;
-			pressureSensor.unit = oldUnit;
+          pressureSensor = new ManualSensor( new Scalar(oldUnit,0.0),ESensorType.Pressure, true);
+          pressureUnit = oldUnit;
+			    pressureSensor.unit = oldUnit;
         }
 
         SetPressureMeasurementFromEditText();
@@ -562,12 +563,14 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             	ptSlider.ptView.lookup = unit;
             }
             if(pressureSensor != null){
+              pressureSensor.unit = unit;
               entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
             } else {
               if(temperatureSensor == null){
-						temperatureSensor = new ManualSensor(ESensorType.Temperature);
-					  }
-		              entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
+						    temperatureSensor = new ManualSensor(new Scalar(temperatureUnit,0.0),ESensorType.Temperature);
+                temperatureSensor.unit = temperatureUnit;
+					    }
+		          entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
             }
             SetPressureMeasurementFromEditText();
             if(ptSlider != null){
@@ -620,7 +623,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
       editTemperature.AddTarget((object obj, EventArgs args) => {
         if (temperatureSensor == null) {
-          temperatureSensor = new ManualSensor(ESensorType.Temperature, true);
+          temperatureSensor = new ManualSensor( new Scalar(temperatureUnit, 0.0), ESensorType.Temperature,true);
         }
 
         SetTemperatureMeasurementFromEditText();
@@ -638,6 +641,10 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
             if(pressureSensor != null){
               entryMode = new SensorEntryMode(this,pressureSensor,temperatureUnit,ptChart,editPressure,editTemperature);
             } else {
+              if(temperatureSensor == null){
+                temperatureSensor = new ManualSensor(new Scalar(temperatureUnit, 0.0),ESensorType.Temperature);
+                temperatureSensor.unit = temperatureUnit;
+              }            
               entryMode = new SensorEntryMode(this,temperatureSensor,pressureUnit,ptChart,editTemperature,editPressure);
             }
             SetTemperatureMeasurementFromEditText();

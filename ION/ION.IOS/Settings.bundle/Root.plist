@@ -272,7 +272,7 @@
 			<key>FalseValue</key>
 			<false/>
 		</dict>
-    <dict>
+		<dict>
 			<key>Type</key>
 			<string>PSToggleSwitchSpecifier</string>
 			<key>Key</key>
@@ -285,6 +285,36 @@
 			<true/>
 			<key>FalseValue</key>
 			<false/>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>settings_trending</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSMultiValueSpecifier</string>
+			<key>Key</key>
+			<string>settings_default_trending_interval</string>
+			<key>Title</key>
+			<string>settings_default_trending_interval</string>
+			<key>DefaultValue</key>
+			<string>100</string>
+			<key>Titles</key>
+			<array>
+				<string>10x /second</string>
+				<string>1 second</string>
+				<string>10 seconds</string>
+				<string>30 seconds</string>
+			</array>
+			<key>Values</key>
+			<array>
+				<integer>100</integer>
+				<integer>1000</integer>
+				<integer>10000</integer>
+				<integer>30000</integer>
+			</array>
 		</dict>
 	</array>
 </dict>

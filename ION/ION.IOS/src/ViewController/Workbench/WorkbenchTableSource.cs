@@ -238,7 +238,8 @@ namespace ION.IOS.ViewController.Workbench {
 			} else if (record is RateOfChangeRecord){
           Console.WriteLine("Workbench table source clicked the rate of change cell. Sending record of " + ((RateOfChangeRecord)record).manifold.primarySensor.name);
           var rocvc = vc.InflateViewController<RateofChangeSettingsViewController>(BaseIONViewController.VC_RATEOFCHANGE);
-          rocvc.initialRecord = record as RateOfChangeRecord;
+          var passingRecord = record as RateOfChangeRecord;
+          rocvc.initialRecord = passingRecord;
           vc.NavigationController.PushViewController(rocvc, true);
       }
     }

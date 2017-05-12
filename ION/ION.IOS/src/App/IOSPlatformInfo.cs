@@ -49,7 +49,11 @@ using CoreFoundation;
 			//freeSpace /= 1000;
 
     	freeMemory = freeSpace;
-    }      
+    }
+    
+    public string GetDeviceName(){
+      return UIDevice.CurrentDevice.Model;
+    }     
   }
   
 	public enum NetworkStatus {
@@ -57,6 +61,8 @@ using CoreFoundation;
 		ReachableViaCarrierDataNetwork,
 		ReachableViaWiFiNetwork
 	}
+  
+
 
 	public static class Reachability {
 		public static string HostName = "www.google.com";

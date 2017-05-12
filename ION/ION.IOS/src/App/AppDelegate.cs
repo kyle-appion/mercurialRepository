@@ -127,7 +127,13 @@
 				Console.WriteLine("Set blank user pdf setting to " + NSUserDefaults.StandardUserDefaults.StringForKey("user_spreadsheet_default"));
 			}
       //************************************************************************
-
+      /*********************CHECK TRENDING DEFAULTS***************************/
+      var defaultTrending = NSUserDefaults.StandardUserDefaults.StringForKey("settings_default_trending_interval");
+      if(string.IsNullOrEmpty(defaultTrending)){
+        NSUserDefaults.StandardUserDefaults.SetInt(100,"settings_default_trending_interval");
+        Console.WriteLine("No trending default was set so it is now");        
+      }
+      //************************************************************************
 			//**********CHECK RSS FEED UPDATES!!!!!!!!
 			/*
         string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");

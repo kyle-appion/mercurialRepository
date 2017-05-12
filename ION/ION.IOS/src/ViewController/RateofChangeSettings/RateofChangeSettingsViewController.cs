@@ -13,6 +13,8 @@ using OxyPlot.Axes;
 using OxyPlot.Series;
 using Appion.Commons.Measure;
 using ION.Core.Sensors;
+using System.Collections.Generic;
+using Foundation;
 
 namespace ION.IOS.ViewController.Workbench {
   
@@ -42,7 +44,7 @@ namespace ION.IOS.ViewController.Workbench {
     public LineSeries primarySeries;
     public LineSeries secondarySeries;
     public GaugeDeviceSensor gaugeSensor;
-    
+        
     public bool actualSecondary = true;
     private bool isUpdating { get; set; }
   
@@ -51,21 +53,91 @@ namespace ION.IOS.ViewController.Workbench {
 
     public override void ViewDidLoad() {
       base.ViewDidLoad();
-      setupSettings();
+      View.BackgroundColor = UIColor.FromPatternImage (UIImage.FromBundle ("CarbonBackground"));
+      
+      if(plotView == null){
+        setupSettings();
+      }
     }
     
     public async void setupSettings(){
       await Task.Delay(TimeSpan.FromMilliseconds(2));
+      
         graphView.Layer.BorderWidth = 1f;
+        legendView.Layer.BorderWidth = 1f;
         
         plotView = new PlotView(new CGRect(0,0, graphView.Bounds.Width, graphView.Bounds.Height)){
           Model = CreatePlotModel(),
           BackgroundColor = UIColor.Clear,
-        };    
+        };
+        ////FOUR CORNER MIN AND MAX MEASUREMENT LABELS
+        TLMeasurement.AdjustsFontSizeToFitWidth = true;
+        BLMeasurement.AdjustsFontSizeToFitWidth = true;
+        TRMeasurement.AdjustsFontSizeToFitWidth = true;
+        BRMeasurement.AdjustsFontSizeToFitWidth = true;
         
-        shscLabel.AdjustsFontSizeToFitWidth = true;
-        secondaryToggle.On = actualSecondary;        
-        secondaryToggle.ValueChanged += toggleSwitched;
+        ////SHOWS THE UPDATE INTERVAL A USER HAS CREATED
+        var tinfoText = "";
+        if(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval") == 100){
+          tinfoText += "10x /second";
+        } else if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval") == 1000){
+          tinfoText += "1 second";
+        } else if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval") == 10000){
+          tinfoText += "10 seconds";
+        } else if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval") == 30000){
+          tinfoText += "30 seconds";
+        }
+        trendInfoHeader.Text = "Update Interval: ";
+        trendInfoHeader.Font = UIFont.BoldSystemFontOfSize(20);
+        trendInfoInterval.Text = tinfoText;
+        
+        trendIntervalSettings.Text = "This interval can be changed in the App Settings";
+        trendIntervalSettings.Font = UIFont.ItalicSystemFontOfSize(14);
+        trendIntervalSettings.AdjustsFontSizeToFitWidth = true;
+        
+        /////SAYS WHAT KIND OF SENSOR AND SERIAL NUMBER IS BEING GRAPHED
+        primaryLegendLabel.Text = initialRecord.manifold.primarySensor.type + " " + initialRecord.manifold.primarySensor.name;
+        primaryLegendLabel.AdjustsFontSizeToFitWidth = true;
+        linkedLegendLabel.AdjustsFontSizeToFitWidth = true;
+        
+        switch(initialRecord.manifold.primarySensor.type){
+          case ESensorType.Pressure:
+            primaryLegendImage.Image = UIImage.FromBundle("img_blue_plot");
+            break;
+            
+          case ESensorType.Temperature:
+            primaryLegendImage.Image = UIImage.FromBundle("img_red_plot");          
+            break;
+            
+          case ESensorType.Vacuum:
+            primaryLegendImage.Image = UIImage.FromBundle("img_burgundy_plot");          
+            break;        
+        }
+        /////SETUP LINKED SENSOR LEGEND INFORMATION
+        if(initialRecord.manifold.secondarySensor != null){
+          linkedLegendLabel.Text = initialRecord.manifold.secondarySensor.type + " " + initialRecord.manifold.secondarySensor.name;
+          switch(initialRecord.manifold.secondarySensor.type){
+            case ESensorType.Pressure:
+              linkedLegendImage.Image = UIImage.FromBundle("img_blue_plot");
+              break;
+              
+            case ESensorType.Temperature:
+              linkedLegendImage.Image = UIImage.FromBundle("img_red_plot");          
+              break;
+              
+            case ESensorType.Vacuum:
+              linkedLegendImage.Image = UIImage.FromBundle("img_burgundy_plot");          
+              break;        
+          }          
+          
+          
+          linkedLegendLabel.Hidden = false;
+          linkedLegendImage.Hidden = false; 
+        } else {
+          linkedLegendLabel.Hidden = true;
+          linkedLegendImage.Hidden = true;
+        }
+        
         
         graphView.AddSubview(plotView);
         updateCellGraph();
@@ -100,12 +172,6 @@ namespace ION.IOS.ViewController.Workbench {
       await Task.Delay(TimeSpan.FromMilliseconds(100));
       updateCellGraph();   
     }
-  
-    public void toggleSwitched(object sender, EventArgs e){    
-      actualSecondary = secondaryToggle.On;
-      
-      Console.WriteLine("toggled switch to state: " + actualSecondary);
-    }
 
     private void InvalidateTime() {
       var axis = BAX;
@@ -135,19 +201,16 @@ namespace ION.IOS.ViewController.Workbench {
 
     private void InvalidatePrimary() {
       var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-
       if(roc == null){
          return;
       }
-      //if (roc == null || TLMeasurement == null || BLMeasurement == null) {
-      //  return;
-      //}
 
       var minMax = roc.GetPrimaryMinMax();
-      //TLMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.primarySensor.unit),true);
-      //BLMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.primarySensor.unit),true);
+      var rangeAmount = roc.manifold.primarySensor.maxMeasurement.ConvertTo(roc.manifold.primarySensor.unit.standardUnit).amount * .05;
+      var sensorRange = new Scalar(roc.manifold.primarySensor.unit.standardUnit,rangeAmount);
+      var sensorMin = roc.manifold.primarySensor.minMeasurement.ConvertTo(roc.manifold.primarySensor.unit.standardUnit);
       
-      UpdateAxis(LAX, minMax.min, minMax.max, initialRecord.manifold.primarySensor.unit, 1, 5);      
+      UpdateAxis(LAX, minMax.min, minMax.max,sensorRange, roc.manifold.primarySensor.unit,TLMeasurement,BLMeasurement, sensorMin);      
       
       var primaryBuffer = roc.primarySensorPoints;
       var l = primaryBuffer.Count;
@@ -176,18 +239,13 @@ namespace ION.IOS.ViewController.Workbench {
       if(roc == null){
         return;
       }
-      //if (roc == null || TRMeasurement == null || BRMeasurement == null) {
-      //  return;
-      //}
 
       var minMax = roc.GetSecondaryMinMax();
+      var rangeAmount = roc.manifold.secondarySensor.maxMeasurement.ConvertTo(roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
+      var sensorRange = new Scalar(roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
+      var sensorMin = roc.manifold.secondarySensor.minMeasurement.ConvertTo(roc.manifold.secondarySensor.unit.standardUnit);
       
-      //if(roc.manifold.secondarySensor != null){
-      //  TRMeasurement.Text = SensorUtils.ToFormattedString(minMax.max.ConvertTo(roc.manifold.secondarySensor.unit),true);
-      //  BRMeasurement.Text = SensorUtils.ToFormattedString(minMax.min.ConvertTo(roc.manifold.secondarySensor.unit),true);
-      //}
-      
-      UpdateAxis(RAX, minMax.min, minMax.max, initialRecord.manifold.secondarySensor.unit, 1, 5);
+      UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,roc.manifold.secondarySensor.unit,TRMeasurement,BRMeasurement,sensorMin);
 
       var secondaryBuffer = roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
@@ -200,26 +258,10 @@ namespace ION.IOS.ViewController.Workbench {
       while (secondarySeries.Points.Count < l) {
         secondarySeries.Points.Add(new DataPoint());
       }
-
-      /////FIND START POINT IN PRIMARY POINTS THAT THE SECONDARY HAS STARTED FROM
-      var secondStartDate = secondaryBuffer[0].date;
-      var primaryIndex = 0;
-
-      while(secondStartDate < roc.primarySensorPoints[primaryIndex].date){
-        primaryIndex++;
-      }
+      
       for (int i = 0; i < secondaryBuffer.Count; i++) {
         var p = secondaryBuffer[i];
-        //var s = roc.primarySensorPoints[primaryIndex];
-        
-        //if(secondaryToggle.On){
-          
-        //  secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), roc.manifold.ptChart.CalculateSystemTemperatureDelta(new Scalar(roc.manifold.primarySensor.unit.standardUnit,s.measurement),new Scalar(roc.manifold.secondarySensor.unit.standardUnit,p.measurement)).magnitude);
-        //  Console.WriteLine("SHSC " +i+" data point X: " + secondarySeries.Points[i].X + " Y: " + secondarySeries.Points[i].Y);
-        //  primaryIndex++;
-        //} else {
-          secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
-        //}
+        secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       } 
     }
  
@@ -227,41 +269,28 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the axis to the given state.
     /// </summary>
     /// <param name="axis">Axis.</param>
-    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Unit u, int major = 3, int minor = 5) {
-      var su = u.standardUnit;
-      var diff = (max - min).ConvertTo(su).magnitude;
-
-      if (Math.Abs(diff)/major > 1) {
-        axis.Minimum = min.ConvertTo(su).amount;
-        axis.Maximum = max.ConvertTo(su).amount;
+    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Scalar range, Unit u, UILabel topLabel, UILabel bottomLabel, Scalar sensorMin) {
+      if(max.amount < sensorMin.amount){
+        return;
+      }      
+      if((min.amount - range.amount) < sensorMin.amount){
+        axis.Minimum = sensorMin.amount;
+        bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u),true);
       } else {
-        var one = u.OfScalar(1);
-        axis.Minimum = (min - one).ConvertTo(su).magnitude;
-        axis.Maximum = (max + one).ConvertTo(su).magnitude;
-        diff = u.OfScalar(3).ConvertTo(su).amount;
-      }
-
-      var padding = diff * 0.1;
-      axis.Minimum -= padding;
-      axis.Maximum += padding;
-
-      var mod = diff / major;
-      var tmod = mod / (double)minor;
-      
-      if(tmod == 0){
-        tmod = 1;
-      }
-      if(mod == 0){
-        mod = 1;
+        axis.Minimum = min.amount - (range.amount / 2);
+        var minScalar = new Scalar(u.standardUnit,(min.amount - (range.amount / 2)));
+        bottomLabel.Text = SensorUtils.ToFormattedString(minScalar.ConvertTo(u),true);
       }
       
-      axis.MajorStep = mod;
-      axis.MajorTickSize = 10;
-      axis.TicklineColor = OxyColors.Black;
-
-      axis.MinorStep = tmod;
-      axis.MinorTickSize = 5;
-      axis.TicklineColor = OxyColors.Black;
+      if(max.amount < (sensorMin.amount + range.amount)){
+        axis.Maximum = sensorMin.amount + range.amount;
+        var maxScalar = new Scalar(u.standardUnit,(sensorMin.amount + range.amount));
+        topLabel.Text = SensorUtils.ToFormattedString(maxScalar.ConvertTo(u),true);       
+      } else {
+        axis.Maximum = max.amount + (range.amount / 2);
+        var maxScalar = new Scalar(u.standardUnit,(max.amount + (range.amount / 2)));
+        topLabel.Text = SensorUtils.ToFormattedString(maxScalar.ConvertTo(u),true);        
+      }  
 
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
@@ -273,6 +302,7 @@ namespace ION.IOS.ViewController.Workbench {
     public PlotModel CreatePlotModel(){    
       Console.WriteLine("Creating rocvc plotmodel");
       var model = new PlotModel();
+      model.Background = OxyColors.Transparent;
       
       var roc = initialRecord.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
       

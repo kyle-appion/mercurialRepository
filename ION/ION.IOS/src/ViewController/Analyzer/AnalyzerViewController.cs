@@ -487,11 +487,11 @@ namespace ION.IOS.ViewController.Analyzer {
 
       ///CREATE MANUAL MANIFOLDS
       if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Pressure);     
+        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure);     
       } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Temperature);
+        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature);
       } else {
-        start.pressedSensor.manualSensor = new ManualSensor(ESensorType.Vacuum);
+        start.pressedSensor.manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0),ESensorType.Vacuum);
       }
 
       ///SET MANUALSENSOR MEASUREMENT AND UNIT TYPE
@@ -748,11 +748,11 @@ namespace ION.IOS.ViewController.Analyzer {
           analyzerSensors.viewList[i].isManual = true;
           
           if(mentryView.dtypeButton.AccessibilityIdentifier.Equals("Pressure")){
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Pressure);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure);
           } else if (mentryView.dtypeButton.AccessibilityIdentifier.Equals("Temperature")) {
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Temperature);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature);
           } else {
-            analyzerSensors.viewList[i].manualSensor = new ManualSensor(ESensorType.Vacuum);
+            analyzerSensors.viewList[i].manualSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0),ESensorType.Vacuum);
           }
           analyzerSensors.viewList[i].manualSensor.name = analyzerSensors.viewList[i].topLabel.Text;
           analyzerSensors.viewList[i].manualSensor.unit = AnalyserUtilities.getManualUnit(analyzerSensors.viewList[i].manualSensor.type,mentryView.mbuttonText.Text.ToLower());

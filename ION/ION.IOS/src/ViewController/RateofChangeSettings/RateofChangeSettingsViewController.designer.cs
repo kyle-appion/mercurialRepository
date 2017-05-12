@@ -13,16 +13,43 @@ namespace ION.IOS.ViewController.Workbench
 	partial class RateofChangeSettingsViewController
 	{
 		[Outlet]
-		UIKit.UILabel actualLabel { get; set; }
+		UIKit.UILabel BLMeasurement { get; set; }
+
+		[Outlet]
+		UIKit.UILabel BRMeasurement { get; set; }
 
 		[Outlet]
 		UIKit.UIView graphView { get; set; }
 
 		[Outlet]
-		UIKit.UISwitch secondaryToggle { get; set; }
+		UIKit.UIView legendView { get; set; }
 
 		[Outlet]
-		UIKit.UILabel shscLabel { get; set; }
+		UIKit.UIImageView linkedLegendImage { get; set; }
+
+		[Outlet]
+		UIKit.UILabel linkedLegendLabel { get; set; }
+
+		[Outlet]
+		UIKit.UIImageView primaryLegendImage { get; set; }
+
+		[Outlet]
+		UIKit.UILabel primaryLegendLabel { get; set; }
+
+		[Outlet]
+		UIKit.UILabel TLMeasurement { get; set; }
+
+		[Outlet]
+		UIKit.UILabel trendInfoHeader { get; set; }
+
+		[Outlet]
+		UIKit.UILabel trendInfoInterval { get; set; }
+
+		[Outlet]
+		UIKit.UILabel trendIntervalSettings { get; set; }
+
+		[Outlet]
+		UIKit.UILabel TRMeasurement { get; set; }
 		
 		void ReleaseDesignerOutlets ()
 		{
@@ -31,19 +58,64 @@ namespace ION.IOS.ViewController.Workbench
 				graphView = null;
 			}
 
-			if (actualLabel != null) {
-				actualLabel.Dispose ();
-				actualLabel = null;
+			if (legendView != null) {
+				legendView.Dispose ();
+				legendView = null;
 			}
 
-			if (shscLabel != null) {
-				shscLabel.Dispose ();
-				shscLabel = null;
+			if (TLMeasurement != null) {
+				TLMeasurement.Dispose ();
+				TLMeasurement = null;
 			}
 
-			if (secondaryToggle != null) {
-				secondaryToggle.Dispose ();
-				secondaryToggle = null;
+			if (TRMeasurement != null) {
+				TRMeasurement.Dispose ();
+				TRMeasurement = null;
+			}
+
+			if (BRMeasurement != null) {
+				BRMeasurement.Dispose ();
+				BRMeasurement = null;
+			}
+
+			if (BLMeasurement != null) {
+				BLMeasurement.Dispose ();
+				BLMeasurement = null;
+			}
+
+			if (primaryLegendLabel != null) {
+				primaryLegendLabel.Dispose ();
+				primaryLegendLabel = null;
+			}
+
+			if (linkedLegendLabel != null) {
+				linkedLegendLabel.Dispose ();
+				linkedLegendLabel = null;
+			}
+
+			if (primaryLegendImage != null) {
+				primaryLegendImage.Dispose ();
+				primaryLegendImage = null;
+			}
+
+			if (linkedLegendImage != null) {
+				linkedLegendImage.Dispose ();
+				linkedLegendImage = null;
+			}
+
+			if (trendInfoHeader != null) {
+				trendInfoHeader.Dispose ();
+				trendInfoHeader = null;
+			}
+
+			if (trendInfoInterval != null) {
+				trendInfoInterval.Dispose ();
+				trendInfoInterval = null;
+			}
+
+			if (trendIntervalSettings != null) {
+				trendIntervalSettings.Dispose ();
+				trendIntervalSettings = null;
 			}
 		}
 	}
