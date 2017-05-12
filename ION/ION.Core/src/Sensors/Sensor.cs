@@ -472,8 +472,9 @@ namespace ION.Core.Sensors {
     /// </summary>
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    protected Sensor(ESensorType sensorType, bool isRelative=true)
-      : this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0), isRelative) {
+    //protected Sensor(ESensorType sensorType, bool isRelative=true) : this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative) {
+    protected Sensor(Scalar defaultScalar, ESensorType sensorType,  bool isRelative=true) : this(sensorType, defaultScalar, isRelative) {
+      
     }
     /// <summary>
     /// Creates a new sensor.

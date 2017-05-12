@@ -25,4 +25,7 @@
 "settings_device_auto_connect" = "Auto Connect";
 "settings_device_long_range" = "Long Range Mode";
 
+"settings_trending" = "Live Trending";
+"settings_default_trending_interval" = "Update Interval";
+
 "use_geolocation" = "Use GPS to gain access to current altitude (used in PT calculations)?";

@@ -213,8 +213,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
-      pressureSensor = new ManualSensor(ESensorType.Pressure, true);
-      temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+      pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
+      temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
 
       pressureSensor.unit = pressureUnit;
       temperatureSensor.unit = temperatureUnit;
@@ -271,7 +271,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
           ////if user removes a pressure sensor, they need to be able to create a new manual sensor
           if (pressureSensor == null){
-            pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+            pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
             var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
             pressureSensor.measurement = measurement;
           }
@@ -311,7 +311,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
           ////if user removes a temperature sensor, they need to be able to create a new manual sensor
           if (temperatureSensor == null){
-            temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+            temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
             var measurement = temperatureUnit.OfScalar(double.Parse("0.00"));
             temperatureSensor.measurement = measurement;
           }
@@ -336,14 +336,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           if (initialManifold.secondarySensor != null) {
             temperatureSensor = initialManifold.secondarySensor;
           } else {
-            temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
+            temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
           }
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
           if (initialManifold.secondarySensor != null) {
             pressureSensor = initialManifold.secondarySensor;
           } else {
-            pressureSensor = new ManualSensor(ESensorType.Pressure, true);
+            pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
           }
         } else {
         	Log.E(this, "Cannot accept sensor that is not a pressure or temperature sensor");

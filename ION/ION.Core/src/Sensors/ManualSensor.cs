@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Sensors {
 
   using System;
+  using Appion.Commons.Measure;
 
   /// <summary>
   /// A sensor that reprents a manually entered sensor value.
@@ -18,7 +19,7 @@
       }
     }
 
-    public ManualSensor(ESensorType sensorType, bool isRelative=true) : base(sensorType, isRelative) {
+    public ManualSensor(Scalar manualScalar, ESensorType sensorType, bool isRelative=true) : base(manualScalar, sensorType, isRelative) {
     }
   }
 }

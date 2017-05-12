@@ -19,7 +19,7 @@
       try {
        UIApplication.Main(args, null, "AppDelegate");
       } catch (Exception e) {
-        Log.E(typeof(Application).Name, "Some nasty shit just happend", e);
+        Log.E("Main.cs", "Some nasty shit just happend", e);
       }
        
 			 AppDomain.CurrentDomain.UnhandledException += (o, e) => 

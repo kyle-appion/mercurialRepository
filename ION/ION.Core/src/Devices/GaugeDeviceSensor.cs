@@ -1,10 +1,10 @@
 ﻿namespace ION.Core.Devices {
 
-	using System;
+  using System;
 
-	using Appion.Commons.Measure;
-
-	using ION.Core.Sensors;
+  using Appion.Commons.Measure;
+  using ION.Core.App;
+  using ION.Core.Sensors;
 
   /// <summary>
   /// A Type of sensor that exists within a GaugeDevice.
@@ -53,7 +53,7 @@
     public bool removed { get; internal set; }
 
     public GaugeDeviceSensor(GaugeDevice device, int index, ESensorType sensorType, bool relative = true)
-      : base(sensorType, relative) {
+      : base(AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0),sensorType, relative) {
       this.device = device;
       this.index = index;
     }
