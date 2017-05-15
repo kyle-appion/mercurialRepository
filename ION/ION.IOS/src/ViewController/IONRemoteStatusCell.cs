@@ -39,7 +39,7 @@ namespace ION.IOS {
       this.Layer.BorderWidth = 2f;
 			this.Layer.BorderColor = UIColor.FromRGB(255,30,30).CGColor;
 
-      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus == 1){
+      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus){
         labelTitle.Text = "Data Logging: Active";
       } else {
         labelTitle.Text = "Data Logging: Inactive";
@@ -51,7 +51,7 @@ namespace ION.IOS {
     }  
 
     public void updateLogging(IPlatformInfo remoteInfo){
-      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus == 1){
+      if(ion.remoteDevice != null && ion.remoteDevice.loggingStatus){
         labelTitle.Text = "Data Logging: Active";
       } else {
         labelTitle.Text = "Data Logging: Inactive";
