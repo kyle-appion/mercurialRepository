@@ -372,10 +372,11 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
 
     private NSObject settingsObserver;
     private void OnSettingsChanged(NSNotification defaults) {
-      if (!pressureSensorLocked) {
+      bool hasSensor = initialManifold != null;
+      if (!hasSensor) {
         pressureUnit = ion.preferences.units.pressure;
       }
-      if (!temperatureSensorLocked) {
+      if (!hasSensor) {
         temperatureUnit = ion.preferences.units.temperature;
       }
 

@@ -153,7 +153,7 @@ namespace ION.IOS.ViewController.Workbench {
       
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
 			var roc = sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-			var abs = Math.Abs(roc.amount);
+      var abs = Math.Abs(roc.magnitude);
       var range = (sp.sensor.maxMeasurement - sp.sensor.minMeasurement) / 10;
 
 			if (abs > range.magnitude) {
@@ -162,7 +162,7 @@ namespace ION.IOS.ViewController.Workbench {
 				labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, roc.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
       }
 
-			if (roc.amount == 0) {
+      if (roc.magnitude == 0) {
         buttonIcon.Hidden = true;
         labelMeasurement.Text = Strings.Workbench.Viewer.ROC_STABLE;
         isUpdating = false;
