@@ -183,14 +183,14 @@
 		/// <returns>The average rate of change.</returns>
 		/// <param name="window">Window.</param>
 		/// <param name="timeUnit">The unit of time for this rate of change.</param>
-		public Scalar GetPrimaryAverageRateOfChange(TimeSpan window, TimeSpan timeUnit) {
+		public ScalarSpan GetPrimaryAverageRateOfChange(TimeSpan window, TimeSpan timeUnit) {
 			var p = primarySensorPoints;
 			var i = 0;
 			// Find the oldest windowed item.
 			while (i < p.Count - 1 && DateTime.Now - p[i].date < window) i++;
 			var pu = sensor.unit.standardUnit;
 			var pmag = (p[0].measurement - p[i].measurement) / (window.TotalMilliseconds / timeUnit.TotalMilliseconds);
-			var ret = pu.OfScalar(pmag).ConvertTo(manifold.primarySensor.unit);
+			var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
 			return ret;
 		}
 
