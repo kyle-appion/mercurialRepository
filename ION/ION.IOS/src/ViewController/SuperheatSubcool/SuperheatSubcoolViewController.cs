@@ -3,6 +3,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
   using System;
 
+  using CoreFoundation;
+  using Foundation;
   using UIKit;
 
 	using Appion.Commons.Measure;
@@ -364,6 +366,24 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if (ptChart != null) {
         ptChart = PTChart.New(ion, ptChart.state);
       }
+
+      OnSettingsChanged(null);
+      settingsObserver = NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
+    }
+
+    private NSObject settingsObserver;
+    private void OnSettingsChanged(NSNotification defaults) {
+      if (!pressureSensorLocked) {
+        pressureUnit = ion.preferences.units.pressure;
+        pressureSensor.unit = pressureUnit;
+        OnPressureSensorChanged(pressureSensor);
+      }
+      if (!temperatureSensorLocked) {
+        temperatureUnit = ion.preferences.units.temperature;
+        temperatureSensor.unit = temperatureUnit;
+        OnTemperatureSensorChanged(temperatureSensor);
+      }
+      UpdateDelta();
     }
 
     // Overridden from BaseIONViewController
@@ -398,6 +418,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
         }
       }
+
+      NSNotificationCenter.DefaultCenter.RemoveObserver(settingsObserver);
     }
 
     /// <summary>

@@ -40,7 +40,7 @@ namespace ION.IOS {
       this.Layer.BorderColor = UIColor.FromRGB(255,30,30).CGColor;
       cellImage.BackgroundColor = UIColor.Clear;
       
-      if(ion.remoteDevice != null && ion.remoteDevice.wifiConnected == 1){
+      if(ion.remoteDevice != null && ion.remoteDevice.wifiConnected){
         cellImage.Image = UIImage.FromBundle("wireless_connected");
         labelTitle.Text = "Connected";
       } else {
@@ -54,7 +54,7 @@ namespace ION.IOS {
     }
 
     public void updateWireless(IPlatformInfo remoteInfo){
-        if(ion.remoteDevice != null && ion.remoteDevice.wifiConnected == 1){
+        if(ion.remoteDevice != null && ion.remoteDevice.wifiConnected){
         cellImage.Image = UIImage.FromBundle("wireless_connected");
         labelTitle.Text = "Connected";
       } else {
