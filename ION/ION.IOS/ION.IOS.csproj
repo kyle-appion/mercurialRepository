@@ -109,21 +109,6 @@
     <Reference Include="DocumentFormat.OpenXml">
       <HintPath>..\packages\DocumentFormat.OpenXml.2.5\lib\DocumentFormat.OpenXml.dll</HintPath>
     </Reference>
-    <Reference Include="DSoft.Datatypes.Grid">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.Grid.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.Datatypes">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.Themes">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Themes.dll</HintPath>
-    </Reference>
-    <Reference Include="DSoft.UI">
-      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="FlexCel">
-      <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
     </Reference>
@@ -140,6 +125,21 @@
       <HintPath>..\packages\Newtonsoft.Json.10.0.2\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="DSoft.Datatypes.Grid">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.Grid.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Datatypes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Datatypes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.Themes">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.Themes.dll</HintPath>
+    </Reference>
+    <Reference Include="DSoft.UI">
+      <HintPath>..\Components\dsgridview-3.0.2\lib\ios-unified\DSoft.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\ios-unified\FlexCel.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ImageAsset Include="Resources\Images.xcassets\ButtonGold.imageset\Contents.json">
