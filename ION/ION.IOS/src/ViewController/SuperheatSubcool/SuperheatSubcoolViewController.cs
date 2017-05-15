@@ -3,6 +3,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
   using System;
 
+  using CoreFoundation;
+  using Foundation;
   using UIKit;
 
 	using Appion.Commons.Measure;
@@ -213,8 +215,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       pressureUnit = Units.Pressure.PSIG;
       temperatureUnit = Units.Temperature.FAHRENHEIT;
 
-      pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
-      temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
+      pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
+      temperatureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
 
       pressureSensor.unit = pressureUnit;
       temperatureSensor.unit = temperatureUnit;
@@ -271,7 +273,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
           ////if user removes a pressure sensor, they need to be able to create a new manual sensor
           if (pressureSensor == null){
-            pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
+            pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
             var measurement = pressureUnit.OfScalar(double.Parse("0.00"));
             pressureSensor.measurement = measurement;
           }
@@ -311,7 +313,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
           ////if user removes a temperature sensor, they need to be able to create a new manual sensor
           if (temperatureSensor == null){
-            temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
+            temperatureSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
             var measurement = temperatureUnit.OfScalar(double.Parse("0.00"));
             temperatureSensor.measurement = measurement;
           }
@@ -336,14 +338,14 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           if (initialManifold.secondarySensor != null) {
             temperatureSensor = initialManifold.secondarySensor;
           } else {
-            temperatureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature, false);
+            temperatureSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0), false);
           }
         } else if (ESensorType.Temperature == sensor.type) {
           temperatureSensor = sensor;
           if (initialManifold.secondarySensor != null) {
             pressureSensor = initialManifold.secondarySensor;
           } else {
-            pressureSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure, true);
+            pressureSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0), true);
           }
         } else {
         	Log.E(this, "Cannot accept sensor that is not a pressure or temperature sensor");
@@ -364,6 +366,24 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       if (ptChart != null) {
         ptChart = PTChart.New(ion, ptChart.state);
       }
+
+      OnSettingsChanged(null);
+      settingsObserver = NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
+    }
+
+    private NSObject settingsObserver;
+    private void OnSettingsChanged(NSNotification defaults) {
+      if (pressureSensor == null) {
+        pressureUnit = ion.preferences.units.pressure;
+        pressureSensor.unit = pressureUnit;
+        OnPressureSensorChanged(pressureSensor);
+      }
+      if (temperatureSensor == null) {
+        temperatureUnit = ion.preferences.units.temperature;
+        temperatureSensor.unit = temperatureUnit;
+        OnTemperatureSensorChanged(temperatureSensor);
+      }
+      UpdateDelta();
     }
 
     // Overridden from BaseIONViewController
@@ -398,6 +418,8 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           }
         }
       }
+
+      NSNotificationCenter.DefaultCenter.RemoveObserver(settingsObserver);
     }
 
     /// <summary>
@@ -604,10 +626,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
       var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
-/*
-      labelSatTempMeasurement.Text = temp.amount.ToString("0.00");
       labelSatTempUnit.Text = temp.unit.ToString();
-*/
 
       UpdateDelta();
     }

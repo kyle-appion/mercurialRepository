@@ -19,7 +19,10 @@
       }
     }
 
-    public ManualSensor(Scalar manualScalar, ESensorType sensorType, bool isRelative=true) : base(manualScalar, sensorType, isRelative) {
+    public ManualSensor(ESensorType sensorType, Scalar manualScalar, bool isRelative=true) : base(sensorType, manualScalar, isRelative) {
+    }
+
+    public ManualSensor(ESensorType sensorType, bool isRelative=true) : base(sensorType, isRelative) {
     }
   }
 }

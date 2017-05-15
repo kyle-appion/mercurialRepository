@@ -6,6 +6,7 @@ namespace ION.Core.Sensors {
   using Newtonsoft.Json;
 
 	using Appion.Commons.Measure;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
   using ION.Core.Sensors.Serialization;
@@ -34,7 +35,7 @@ namespace ION.Core.Sensors {
     /// <param name="sensorType">Sensor type.</param>
     public static Unit GetDefaultUnit(this ESensorType sensorType) {
       switch (sensorType) {
-        /*
+/*
         case ESensorType.Humidity: {
           return DEFAULT_HUMIDITY_UNITS[0];
         }
@@ -147,57 +148,6 @@ namespace ION.Core.Sensors {
 		[Obsolete("Use 'ToFormattedString(Scalar measurement, bool includeUnit = false)' instead")]
     public static string ToFormattedString(ESensorType sensorType, Scalar measurement, bool includeUnit = false) {
 			return ToFormattedString(measurement, includeUnit);
-/*
-      var unit = measurement.unit;
-      var amount = measurement.amount;
-
-      string ret = "";
-
-      if (double.IsNaN(amount)) {
-        ret = "---";
-      } else {
-        // PRESSURE UNITS
-        if (Units.Pressure.PASCAL.Equals(unit)) {
-          ret = amount.ToString("0");
-        } else if (Units.Pressure.KILOPASCAL.Equals(unit)) {
-          if (ESensorType.Vacuum == sensorType) {
-            ret = amount.ToString("0.0000");
-          } else {
-            ret = amount.ToString("0");
-          }
-        } else if (Units.Pressure.MEGAPASCAL.Equals(unit)) {
-          ret = amount.ToString("0.000");
-        } else if (Units.Pressure.MILLIBAR.Equals(unit)) {
-          ret = amount.ToString("0.000");
-        } else if (Units.Pressure.PSIG.Equals(unit)) {
-          ret = amount.ToString("0.0");
-        } else if (Units.Pressure.PSIA.Equals(unit)) {
-          ret = amount.ToString("0.0000");
-        } else if (Units.Pressure.IN_HG.Equals(unit)) {
-          if (ESensorType.Vacuum == sensorType) {
-            ret = amount.ToString("0.000");
-          } else {
-            ret = amount.ToString("0.00");
-          }
-        }
-      // VACUUM PRESSURE
-      else if (Units.Vacuum.MICRON.Equals(unit)) {
-          ret = amount.ToString("###,##0");
-        } else if (Units.Vacuum.MILLITORR.Equals(unit)) {
-          ret = amount.ToString("###,##0");
-        }
-      // DEFAULT
-      else {
-          ret = amount.ToString("0.00");
-        }
-      }
-
-      if (includeUnit) {
-        ret += " " + unit.ToString();
-      }
-
-      return ret;
-*/
     }
 
 		public static string ToFormattedString(Scalar measurement, bool includeUnit = false) {
@@ -472,9 +422,7 @@ namespace ION.Core.Sensors {
     /// </summary>
     /// <param name="sensorType">Sensor type.</param>
     /// <param name="isRelative">If set to <c>true</c> is relative.</param>
-    //protected Sensor(ESensorType sensorType, bool isRelative=true) : this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative) {
-    protected Sensor(Scalar defaultScalar, ESensorType sensorType,  bool isRelative=true) : this(sensorType, defaultScalar, isRelative) {
-      
+    protected Sensor(ESensorType sensorType, bool isRelative=true) : this(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), isRelative) {
     }
     /// <summary>
     /// Creates a new sensor.

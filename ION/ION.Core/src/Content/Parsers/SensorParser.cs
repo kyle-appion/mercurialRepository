@@ -177,7 +177,7 @@
 
 				var name = reader.ReadString();
 
-				var ret = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0),sensorType, relative);
+        var ret = new ManualSensor(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), relative);
 				ret.measurement = UnitLookup.GetUnit(rawUnit).OfScalar(amount);
 
 				if (rawMinUnit != 0) {

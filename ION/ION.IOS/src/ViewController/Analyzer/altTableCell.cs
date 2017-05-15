@@ -46,17 +46,17 @@ namespace ION.IOS.ViewController.Analyzer {
       if (lhSensor.isManual) {
 
         if (lhSensor.manifold.primarySensor.type == ESensorType.Pressure) {
-          manSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0),ESensorType.Pressure);
+          manSensor = new ManualSensor(ESensorType.Pressure, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Pressure).OfScalar(0.0));
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Pressure, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         } else if (lhSensor.manifold.primarySensor.type == ESensorType.Temperature) {
-          manSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0),ESensorType.Temperature);
+          manSensor = new ManualSensor(ESensorType.Temperature, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Temperature).OfScalar(0.0));
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Temperature, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
         } else if (lhSensor.manifold.primarySensor.type == ESensorType.Vacuum){
-          manSensor = new ManualSensor(AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0),ESensorType.Vacuum);
+          manSensor = new ManualSensor(ESensorType.Vacuum, AppState.context.preferences.units.DefaultUnitFor(ESensorType.Vacuum).OfScalar(0.0));
           manSensor.unit = AnalyserUtilities.getManualUnit(ESensorType.Vacuum, lhSensor.LabelBottom.Text.ToLower());
           manSensor.measurement = manSensor.unit.OfScalar(Convert.ToDouble(lhSensor.LabelMiddle.Text));
           lhSensor.alt = new AlternateUnitSensorProperty(manSensor);
