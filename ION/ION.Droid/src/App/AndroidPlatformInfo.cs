@@ -15,6 +15,7 @@ namespace ION.Droid.App {
 
   public class AndroidPlatformInfo : IPlatformInfo {
     public string manufacturer { get; set; }
+    public string deviceName { get; set; }
     public string hardwareName { get; set; }
     public string model { get; set; }
     public string version { get; set; }
@@ -34,7 +35,9 @@ namespace ION.Droid.App {
 
     public AndroidPlatformInfo(Context context) {
       this.context = context;
+      var bm = context.GetSystemService(Context.BluetoothService) as BluetoothManager;
       manufacturer = Build.Manufacturer;
+      deviceName = bm.Adapter.Name;
       hardwareName = Build.Product;
       model = Build.Model;
       version = Build.VERSION.Release;
