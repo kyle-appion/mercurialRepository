@@ -373,12 +373,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
     private NSObject settingsObserver;
     private void OnSettingsChanged(NSNotification defaults) {
-      if (!pressureSensorLocked) {
+      if (pressureSensor == null) {
         pressureUnit = ion.preferences.units.pressure;
         pressureSensor.unit = pressureUnit;
         OnPressureSensorChanged(pressureSensor);
       }
-      if (!temperatureSensorLocked) {
+      if (temperatureSensor == null) {
         temperatureUnit = ion.preferences.units.temperature;
         temperatureSensor.unit = temperatureUnit;
         OnTemperatureSensorChanged(temperatureSensor);
@@ -626,10 +626,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
 
       var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
-/*
-      labelSatTempMeasurement.Text = temp.amount.ToString("0.00");
       labelSatTempUnit.Text = temp.unit.ToString();
-*/
 
       UpdateDelta();
     }
