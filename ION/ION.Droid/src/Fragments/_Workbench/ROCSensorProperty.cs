@@ -246,7 +246,7 @@
       var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
       var c = title.Context;
 
-      var amount = Math.Abs(averageChange.amount);
+      var amount = Math.Abs(averageChange.magnitude);
       if (amount == 0) {
         measurement.Text = c.GetString(Resource.String.stable);
         unit.Visibility = ViewStates.Invisible;
@@ -261,8 +261,8 @@
         unit.Text = c.GetString(Resource.String.time_minute_abrv);
       }
 
-      var dir = Math.Sign(averageChange.amount);
-      if (averageChange.amount == 0) {
+      var dir = Math.Sign(averageChange.magnitude);
+      if (averageChange.magnitude == 0) {
         icon.Visibility = ViewStates.Invisible;
       } else if (dir == 1) {
         icon.Visibility = ViewStates.Visible;
