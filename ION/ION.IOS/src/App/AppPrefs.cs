@@ -32,6 +32,8 @@
     private const string KEY_KEEP_SCREEN_ON = "settings_screen_leave_on";
 
 
+    // Implemented for IIONPreferences
+    public event Action onPreferencesChanged;
 
     // Implemented for IIONPreferences
     public string lastKnownAppVersion { get; set; }
@@ -94,6 +96,14 @@
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
       _portal = new PortalPreferences(this);
+
+      NSNotificationCenter.DefaultCenter.AddObserver(NSUserDefaults.DidChangeNotification, OnSettingsChanged);
+    }
+
+    private void OnSettingsChanged(NSNotification defaults) {
+      if (onPreferencesChanged != null) {
+        onPreferencesChanged();
+      }      
     }
   }
 
@@ -201,6 +211,7 @@
   public class DevicePreferences : DerivedPreferences, IDevicePreferences {
     private const string KEY_AUTO_CONNECT = "settings_device_auto_connect";
     private const string KEY_LONG_RANGE = "settings_device_long_range";
+    private const string KEY_TREND_INTERVAL = "settings_default_trending_interval";
 
     // Implemented for IPreferences
     public bool allowDeviceAutoConnect {
@@ -221,6 +232,15 @@
 
       set {
 //        PutBool(KEY_LONG_RANGE, value);
+      }
+    }
+
+    public TimeSpan trendInterval {
+      get {
+        return TimeSpan.FromMilliseconds(GetInt(KEY_TREND_INTERVAL));
+      }
+      set {
+        PutInt(KEY_TREND_INTERVAL, (int)value.TotalMilliseconds);
       }
     }
 

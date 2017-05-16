@@ -225,7 +225,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
       
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
-      var rocScalar = sp.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
+      var rocScalar = sp.GetPrimaryAverageRateOfChange();
       var abs = Math.Abs(rocScalar.magnitude);
       var range = (sp.sensor.maxMeasurement.ConvertTo(rocScalar.unit) - sp.sensor.minMeasurement.ConvertTo(rocScalar.unit)) / 10;
 

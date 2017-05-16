@@ -349,12 +349,12 @@
     // Implemented for IIONPreferences
     public TimeSpan rateOfChangeWindow {
       get {
-        return TimeSpan.FromMilliseconds(rateOfChangeInterval.TotalMilliseconds * 300);
+        return TimeSpan.FromMilliseconds(trendInterval.TotalMilliseconds * 300);
       }
     }
 
     // Implemented for IDevicePreferences
-    public TimeSpan rateOfChangeInterval {
+    public TimeSpan trendInterval {
       get {
         return TimeSpan.FromMilliseconds(GetIntFromString(Resource.String.pkey_device_trend_interval, 1000));
       }

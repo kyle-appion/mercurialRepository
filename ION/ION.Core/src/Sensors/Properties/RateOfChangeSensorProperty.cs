@@ -292,7 +292,7 @@
 
     private void OnPreferencesChanged() {
       var ion = AppState.context;
-      this.Resize(ion.preferences.device.rateOfChangeInterval);
+      this.Resize(ion.preferences.device.trendInterval);
     }
 
 		/// <summary>

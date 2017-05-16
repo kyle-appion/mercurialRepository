@@ -227,9 +227,9 @@
 
 		// Implemented for ISubviewParser
 		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
-      var ret = new RateOfChangeSensorProperty(manifold, ion.preferences.device.rateOfChangeInterval);
+      var ret = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
 
-      ret.Resize(ion.preferences.device.rateOfChangeInterval);
+      ret.Resize(ion.preferences.device.trendInterval);
 			ret.flags = (RateOfChangeSensorProperty.EFlags)reader.ReadInt32();
 
 			return ret;

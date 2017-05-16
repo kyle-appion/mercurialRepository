@@ -803,7 +803,7 @@ namespace ION.Core.Net {
 					break;
 				case 6:
 					if (!manualManifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-            manualManifold.AddSensorProperty(new RateOfChangeSensorProperty(manualManifold, ion.preferences.device.rateOfChangeInterval));
+            manualManifold.AddSensorProperty(new RateOfChangeSensorProperty(manualManifold, ion.preferences.device.trendInterval));
 					}
 					break;
 				case 7:
