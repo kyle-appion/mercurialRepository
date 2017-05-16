@@ -103,13 +103,11 @@
 
     // Overridden from IDeviceManager
     public async Task<InitializationResult> InitAsync() {
-    	Log.D(this, "loading the base device manager");
 			try {
       	deviceFactory = DeviceFactory.CreateFromStream(EmbeddedResource.Load(DEVICES_XML));
 			} catch (Exception e) {
 				Log.E(this, "Failed from device factor", e);
 			}
-			Log.D(this, "device factory set");
       if (deviceFactory == null) {
         return new InitializationResult() {
           success = false,
@@ -234,10 +232,8 @@
     public async Task<bool> SaveDevice(IDevice device) {
 			try {
 				Register(device);
-	      Log.D(this, "Attempting to save device");
 	      var d = await ion.database.DeconstructDevice(device);
 	      var ret = await ion.database.SaveAsync<DeviceRow>(d);
-	      Log.D(this, "Save device with id: " + d.DID);
 	      return ret;
 			} catch (Exception e) {
 				Log.E(this, "Failed to save device {" + device + "}", e);
@@ -369,10 +365,11 @@
         device = CreateDeviceInternal(serialNumber, address, protocol);
         __foundDevices[serialNumber] = device;
       }
-
+/*
       if (packet != null) {
         device.connection.lastPacket = packet;
       }
+*/
 
 /*
       if (device.protocol is IGaugeProtocol) {

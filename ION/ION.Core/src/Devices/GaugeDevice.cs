@@ -140,7 +140,6 @@
         return;
       }
       try {
-//				Log.D(this, this.serialNumber + " " + BitConverter.ToString(packet));
 				GaugePacket gp = __protocol.ParsePacket(packet);
 
         int oldBattery = battery;

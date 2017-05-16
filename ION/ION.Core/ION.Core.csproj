@@ -48,7 +48,6 @@
     <Compile Include="src\Devices\SerialNumber.cs" />
     <Compile Include="src\Sensors\Sensor.cs" />
     <Compile Include="src\App\ION.cs" />
-    <Compile Include="src\App\Viewer.cs" />
     <Compile Include="src\IO\IFileManager.cs" />
     <Compile Include="src\IO\IFolder.cs" />
     <Compile Include="src\IO\BinaryReaderExtension.cs" />

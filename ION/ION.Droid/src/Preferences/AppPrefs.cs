@@ -327,7 +327,7 @@
     // Implemented for IPreferences
     public bool allowLongRangeMode {
       get {
-        return GetBool(Resource.String.pkey_device_long_range, true);
+        return GetBool(Resource.String.pkey_device_long_range, false);
       }
 
       set {
