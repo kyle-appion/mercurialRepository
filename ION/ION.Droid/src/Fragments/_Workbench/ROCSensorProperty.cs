@@ -205,8 +205,9 @@
 				plot.InvalidatePlot();
 				model.InvalidatePlot(true);
 			} else {
-				measurement.SetText(Resource.String.na);
-        plot.Visibility = ViewStates.Invisible;
+//				measurement.SetText(Resource.String.na);
+				measurement.Text = "";
+				plot.Visibility = ViewStates.Invisible;
 			}
 		}
 
@@ -243,7 +244,7 @@
         return;
       }
 
-      var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+      var averageChange = roc.GetPrimaryAverageRateOfChange();
       var c = title.Context;
 
       var amount = Math.Abs(averageChange.magnitude);

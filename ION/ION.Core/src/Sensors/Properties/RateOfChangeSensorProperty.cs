@@ -5,12 +5,16 @@
 	using Appion.Commons.Collections;
 	using Appion.Commons.Measure;
 
+  using ION.Core.App;
 	using ION.Core.Content;
+  using ION.Core.Devices;
 
 	public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
-		private static TimeSpan GRAPH_WINDOW = TimeSpan.FromSeconds(30);
+    private static int POINT_LIMIT = 300;
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
+    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(2);
+    private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
 		// Overridden from AbstractSensorProperty
 		public override Scalar modifiedMeasurement { get { return base.modifiedMeasurement; } }
@@ -53,6 +57,10 @@
 			}
 		}
 
+    /// <summary>
+    /// The buffer that will hold the rate of change.
+    /// </summary>
+    private RingBuffer<PlotPoint> rocBuffer;
 		/// <summary>
 		/// The buffer that will hold the primary sensor's history.
 		/// </summary>
@@ -72,21 +80,23 @@
 
 		private bool isRegisteredToSecondary;
 
-		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
-		}
+//		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+//		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
+//		}
 
-		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
-		}
+//		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_INTERVAL) {
+//		}
 
-		private RateOfChangeSensorProperty(Manifold manifold, TimeSpan window, TimeSpan interval) : base(manifold) {
-			this.window = window;
-			this.interval = interval;
+		public RateOfChangeSensorProperty(Manifold manifold, TimeSpan interval) : base(manifold) {
+      this.interval = interval;
+      window = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * POINT_LIMIT);
 			flags = EFlags.ShowAll;
-      var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
+      var size = POINT_LIMIT;
+      rocBuffer = new RingBuffer<PlotPoint>((int)(ROC_WINDOW.TotalMilliseconds / ROC_INTERVAL.TotalMilliseconds));
 			primarySensorBuffer = new RingBuffer<PlotPoint>(size);
       secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
       buffer = new PlotPoint[size];
+      AppState.context.preferences.onPreferencesChanged += OnPreferencesChanged;
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -101,6 +111,11 @@
 				secondarySensorBuffer.Clear();
 			}
 
+      // Clear the rate of change buffer
+      if (rocBuffer != null) {
+        rocBuffer.Clear();
+      }
+
 			if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
 				manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
 			}
@@ -114,6 +129,7 @@
 					manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
 				}
 			}
+			AppState.context.preferences.onPreferencesChanged -= OnPreferencesChanged;
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -183,13 +199,15 @@
 		/// <returns>The average rate of change.</returns>
 		/// <param name="window">Window.</param>
 		/// <param name="timeUnit">The unit of time for this rate of change.</param>
-		public ScalarSpan GetPrimaryAverageRateOfChange(TimeSpan window, TimeSpan timeUnit) {
-			var p = primarySensorPoints;
-			var i = 0;
-			// Find the oldest windowed item.
-			while (i < p.Count - 1 && DateTime.Now - p[i].date < window) i++;
+		public ScalarSpan GetPrimaryAverageRateOfChange() {
+      TrimRoc();
+      var p = new PlotPoint[rocBuffer.count];
 			var pu = sensor.unit.standardUnit;
-			var pmag = (p[0].measurement - p[i].measurement) / (window.TotalMilliseconds / timeUnit.TotalMilliseconds);
+      var cnt = rocBuffer.ToArray(p);
+			if (cnt == 0) {
+        return pu.OfSpan(0);
+      }
+      var pmag = (p[0].measurement - p[cnt - 1].measurement) / (ROC_WINDOW.TotalMilliseconds / TimeSpan.FromSeconds(60).TotalMilliseconds);
 			var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
 			return ret;
 		}
@@ -234,8 +252,9 @@
 		/// Sets the new window size for the graph sensor property.
 		/// </summary>
 		/// <param name="window">Window.</param>
-		public void Resize(TimeSpan window, TimeSpan interval) {
-			this.window = window;
+		public void Resize(TimeSpan interval) {
+      this.interval = interval;
+			window = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * POINT_LIMIT);
 			var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
 			primarySensorBuffer.Resize(size);
 			secondarySensorBuffer.Resize(size);
@@ -243,6 +262,10 @@
 
 		private void RegisterPoint() {
 			Trim();
+      var gds = sensor as GaugeDeviceSensor;
+      if (gds != null && gds.device.isConnected) {
+        rocBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+      }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
 				if (manifold.secondarySensor != null) {
@@ -261,6 +284,16 @@
 			while (now - primarySensorBuffer.last.date > window && primarySensorBuffer.RemoveLast());
 			while (now - secondarySensorBuffer.last.date > window && secondarySensorBuffer.RemoveLast());
 		}
+
+    private void TrimRoc() {
+      var now = DateTime.Now;
+      while (now - rocBuffer.last.date > ROC_WINDOW && rocBuffer.RemoveLast());
+    }
+
+    private void OnPreferencesChanged() {
+      var ion = AppState.context;
+      this.Resize(ion.preferences.device.rateOfChangeInterval);
+    }
 
 		/// <summary>
 		/// The flags that maintain the RoC's binary states.

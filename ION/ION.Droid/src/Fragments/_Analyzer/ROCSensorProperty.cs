@@ -230,7 +230,7 @@
         return;
       }
 
-      var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+      var averageChange = roc.GetPrimaryAverageRateOfChange();
       var c = title.Context;
 
       var amount = Math.Abs(averageChange.magnitude);

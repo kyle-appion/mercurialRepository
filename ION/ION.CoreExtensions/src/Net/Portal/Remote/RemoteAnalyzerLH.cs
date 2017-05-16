@@ -157,8 +157,8 @@
 					return new MaxSensorProperty(manifold);
 				case "Hold":
 					return new HoldSensorProperty(manifold);
-				case "Rate":
-					return new RateOfChangeSensorProperty(manifold);
+//				case "Rate":
+//					return new RateOfChangeSensorProperty(manifold);
 				case "Superheat":
 					return new SuperheatSubcoolSensorProperty(manifold);
 
