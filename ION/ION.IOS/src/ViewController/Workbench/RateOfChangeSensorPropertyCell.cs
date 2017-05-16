@@ -29,11 +29,11 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public RateOfChangeSensorProperty roc { get; set; }
-  
+
     
     public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
     }
-    
+
     /// <summary>
     /// A structure representing the x,y points on the graph.
     /// </summary>
@@ -51,12 +51,12 @@ namespace ION.IOS.ViewController.Workbench {
         date = DateTime.Now;
         this.measurement = measurement;
       }
-      
+
       // Overridden from object
       public override string ToString() {
         return string.Format("[TrendPoint: date={0}, measurement={1}]", date, measurement);
       }
-    }   
+    }
   }
 
 	public partial class RateOfChangeSensorPropertyCell : UITableViewCell {
@@ -70,11 +70,11 @@ namespace ION.IOS.ViewController.Workbench {
     public LineSeries secondarySeries;
     public OxyColor primaryColor;
     public OxyColor secondaryColor;
-    
+
     public UILabel TLMeasurement;
     public UILabel BLMeasurement;
     public UILabel TRMeasurement;
-    public UILabel BRMeasurement;   
+    public UILabel BRMeasurement;
     
     public GaugeDeviceSensor gaugeSensor;
     
@@ -99,7 +99,7 @@ namespace ION.IOS.ViewController.Workbench {
     } RateOfChangeRecord __record;
 
     private bool isUpdating { get; set; }
-    
+
     /*
       Put the legend in a table(bordered box) FINISHED
       heading for the top of the graph Live Trending FINISHED
@@ -120,7 +120,7 @@ namespace ION.IOS.ViewController.Workbench {
       buttonIcon.Layer.BorderWidth = 1f;
       
       ///SETUP THE TRENDING GRAPH
-      if(plotView == null){  
+      if(plotView == null){
   			plotView = new PlotView(new CGRect(0,.5 * viewBackground.Bounds.Height, viewBackground.Bounds.Width, .5 * viewBackground.Bounds.Height)){
   				Model = CreatePlotModel(),
           BackgroundColor = UIColor.Clear,
@@ -153,7 +153,7 @@ namespace ION.IOS.ViewController.Workbench {
 
         plotView.Layer.BorderWidth = 1f;
         plotView.UserInteractionEnabled = false;
-        viewBackground.AddSubview(plotView);        
+        viewBackground.AddSubview(plotView);
       }
     }
 
@@ -177,13 +177,13 @@ namespace ION.IOS.ViewController.Workbench {
 			var abs = Math.Abs(rocScalar.magnitude);
       var range = (sp.sensor.maxMeasurement.ConvertTo(rocScalar.unit) - sp.sensor.minMeasurement.ConvertTo(rocScalar.unit)) / 10;
 
-			if (abs > range.magnitude) {
+      if (abs > range.magnitude) {
         labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + Strings.Measure.PER_MINUTE;
       } else {
 				labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, rocScalar.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
       }
 
-			if (rocScalar.magnitude == 0) {
+      if (rocScalar.magnitude == 0) {
         buttonIcon.Hidden = true;
         labelMeasurement.Text = Strings.Workbench.Viewer.ROC_STABLE;
         isUpdating = false;
@@ -199,13 +199,13 @@ namespace ION.IOS.ViewController.Workbench {
         DoUpdateCell();
       }
     }
-    
+
     public async void updateCellGraph(){
       record.roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
       if(plotView == null){
         return;
       }
-     
+
       var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
       if (device == null || device.isConnected) {
           InvalidatePrimary();
@@ -264,7 +264,7 @@ namespace ION.IOS.ViewController.Workbench {
       var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit,rangeAmount);
       var sensorUnit = record.roc.manifold.primarySensor.unit;
       var sensorMin = record.roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
-      
+
       UpdateAxis(LAX, minMax.min, minMax.max, sensorRange,sensorUnit,TRMeasurement,BRMeasurement,sensorMin);
       var primaryBuffer = record.roc.primarySensorPoints;
       var l = primaryBuffer.Count;
@@ -298,7 +298,7 @@ namespace ION.IOS.ViewController.Workbench {
       var sensorRange = new Scalar(record.roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
       var sensorUnit = record.roc.manifold.secondarySensor.unit;
       var sensorMin = record.roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
-      
+
       UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,sensorUnit,TRMeasurement,BRMeasurement,sensorMin);
 
       var secondaryBuffer = record.roc.secondarySensorPoints;
@@ -316,7 +316,7 @@ namespace ION.IOS.ViewController.Workbench {
       for (int i = 0; i < secondaryBuffer.Count; i++) {
         var p = secondaryBuffer[i];
         secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
-      }  
+      }
     }
  
     /// <summary>
@@ -339,18 +339,18 @@ namespace ION.IOS.ViewController.Workbench {
       if(max <= (sensorMin.ConvertTo(u).amount + range.amount)){
         axis.Maximum = sensorMin.ConvertTo(u).amount + range.amount;
         var maxScalar = new Scalar(u,(max));
-        topLabel.Text = SensorUtils.ToFormattedString(maxScalar.ConvertTo(u),true);       
+        topLabel.Text = SensorUtils.ToFormattedString(maxScalar.ConvertTo(u),true);
       } else {
         axis.Maximum = max + (range.amount / 2);
         var maxScalar = new Scalar(u,(max + (range.amount / 2)));
-        topLabel.Text = SensorUtils.ToFormattedString(maxScalar,true);        
-      }      
-           
+        topLabel.Text = SensorUtils.ToFormattedString(maxScalar,true);
+      }
+
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
       axis.AxislineStyle = LineStyle.Solid;
       axis.AxislineThickness = 1;
-      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);      
+      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);
     }
 
     /// <summary>
@@ -368,14 +368,14 @@ namespace ION.IOS.ViewController.Workbench {
         axis.Minimum = min.amount - (range.amount / 2);
         bottomLabel.Text = (min.ConvertTo(u).amount - (range.ConvertTo(u).amount / 2)) + u.ToString();
       }
-      
+
       if(max.amount + (range.amount / 2) < sensorMin.amount + range.amount){
         axis.Maximum = sensorMin.amount + range.amount;
         topLabel.Text = SensorUtils.ToFormattedString(range.ConvertTo(u),true);
       } else {
         axis.Maximum = max.amount + (range.amount / 2);
         topLabel.Text = SensorUtils.ToFormattedString(new Scalar(u,(max.ConvertTo(u).amount + (range.ConvertTo(u).amount / 2))),true);       
-      }     
+      }
       
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
@@ -388,9 +388,9 @@ namespace ION.IOS.ViewController.Workbench {
     /// Sets up the graph for live trending
     /// </summary>
     /// <returns>The plot model.</returns>
-    public PlotModel CreatePlotModel(){      
+    public PlotModel CreatePlotModel(){
       record.roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-     
+
       var model = new PlotModel();      
 
       primaryColor = OxyColors.Blue;
@@ -417,8 +417,8 @@ namespace ION.IOS.ViewController.Workbench {
         LabelFormatter = (arg) => {
           var d = DateTime.FromFileTime((long)arg);
           return d.Hour.ToString("00") + ":" + d.Minute.ToString("00") + ":" + d.Second.ToString("00");
-                    
-        },        
+
+        },
         Font = model.DefaultFont,
         FontSize = 14,
         TextColor = OxyColors.Black,

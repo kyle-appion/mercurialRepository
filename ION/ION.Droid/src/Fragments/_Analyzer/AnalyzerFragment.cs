@@ -257,8 +257,9 @@ namespace ION.Droid.Fragments._Analyzer {
       ldb.SetTitle(string.Format(GetString(Resource.String.devices_actions_1arg), manifold.primarySensor.name));
 
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
+      var connectionState = dgs.device.connection.connectionState;
 
-      if (dgs != null && dgs.device.connection.connectionState == EConnectionState.Disconnected) {
+      if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
         ldb.AddItem(Resource.String.reconnect, () => {
           dgs.device.connection.Connect();
         });
@@ -307,7 +308,7 @@ namespace ION.Droid.Fragments._Analyzer {
         StartActivity(i);
       });
 
-      if (dgs != null && dgs.device.connection.connectionState != EConnectionState.Disconnected) {
+      if (dgs != null && connectionState != EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
         ldb.AddItem(Resource.String.disconnect, () => {
           dgs.device.connection.Disconnect();
         });

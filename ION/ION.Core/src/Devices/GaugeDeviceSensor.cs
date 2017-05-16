@@ -53,7 +53,7 @@
     public bool removed { get; internal set; }
 
     public GaugeDeviceSensor(GaugeDevice device, int index, ESensorType sensorType, bool relative = true)
-      : base(AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0),sensorType, relative) {
+      : base(sensorType, AppState.context.preferences.units.DefaultUnitFor(sensorType).OfScalar(0.0), relative) {
       this.device = device;
       this.index = index;
     }
