@@ -9,7 +9,7 @@ using System.IO;
 
 namespace ION.IOS.ViewController.RssFeed {
 	public class RssFeedCheck {
-		public const string FEEDURL = "http://www.buildtechhere.com/RSS/feed.xml";
+		public const string FEEDURL = "http://portal.appioninc.com/RSS/feed.xml";
 		
 		public RssFeedCheck() {
 		
@@ -38,7 +38,6 @@ namespace ION.IOS.ViewController.RssFeed {
         IsReadingXML = true; 
 
         HttpWebResponse httpResponse = (result.AsyncState as HttpWebRequest).EndGetResponse(result) as HttpWebResponse;
-		var returnView = new UIView();
         if (httpResponse.StatusCode == HttpStatusCode.OK)
         {
             Stream httpResponseStream = httpResponse.GetResponseStream();
@@ -114,22 +113,24 @@ namespace ION.IOS.ViewController.RssFeed {
             }
         }
         //Done
-		string lastTitle = NSUserDefaults.StandardUserDefaults.StringForKey("rssTitle");
-		if(string.IsNullOrEmpty(lastTitle) || lastTitle != lastFeed.title){
-			using(var pool = new NSAutoreleasePool())
-			{
-				try
-				{
-					pool.InvokeOnMainThread (delegate{
-						createRssPopup(lastFeed);
-					});
-				} catch (Exception e){
-					Console.WriteLine("Error: " + e);
-				}
-			}
-		}
-        IsReadingXML = false;
-       
+  		string lastTitle = NSUserDefaults.StandardUserDefaults.StringForKey("rssTitle");
+  		if(string.IsNullOrEmpty(lastTitle) || lastTitle != lastFeed.title){
+  			using(var pool = new NSAutoreleasePool())
+  			{
+  				try
+  				{
+  					pool.InvokeOnMainThread (delegate{
+  						createRssPopup(lastFeed);
+  					});
+  				} catch (Exception e){
+  					Console.WriteLine("Error: " + e);
+  				}
+  			}
+  		} else {
+          var newTime = DateTime.Now.ToLocalTime().ToString();
+          NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
+      }
+        IsReadingXML = false;       
 		}
 		public async void createRssPopup(Update feed){
 			await Task.Delay(TimeSpan.FromSeconds(2));
@@ -173,17 +174,17 @@ namespace ION.IOS.ViewController.RssFeed {
 					
 			  rssContent.AddGestureRecognizer(linkTapGesture); 
 					
-		      var closeButton = new UIButton(new CGRect(0,.9 * rssView.Bounds.Height,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
-		      closeButton.BackgroundColor = UIColor.White;
-		      closeButton.Layer.BorderWidth = 1f;
-		      closeButton.ClipsToBounds = true;
+	      var closeButton = new UIButton(new CGRect(0,.9 * rssView.Bounds.Height,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
+	      closeButton.BackgroundColor = UIColor.White;
+	      closeButton.Layer.BorderWidth = 1f;
+	      closeButton.ClipsToBounds = true;
 			  closeButton.SetTitle("Close",UIControlState.Normal);
 			  closeButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
 		      
 		      //closeButton.TouchDown += (sender, e) => {closeButton.BackgroundColor = UIColor.Blue;};
 		      //closeButton.TouchUpOutside += (sender, e) => {closeButton.BackgroundColor = UIColor.White;};
-		      closeButton.TouchUpInside += (sender, e) => {
-				rssView.RemoveFromSuperview();
+		    closeButton.TouchUpInside += (sender, e) => {
+				  rssView.RemoveFromSuperview();
 			  };
 			  var newTime = DateTime.Now.ToLocalTime().ToString();
 

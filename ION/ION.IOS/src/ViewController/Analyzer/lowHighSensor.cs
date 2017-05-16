@@ -247,8 +247,8 @@ namespace ION.IOS.ViewController.Analyzer
     	await Task.Delay(TimeSpan.FromMilliseconds(2));
 			var rocproperty = property as RateOfChangeSensorProperty;
 
-			var roc = rocproperty.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1));
-			var abs = Math.Abs(roc.amount);
+			var roc = rocproperty.GetPrimaryAverageRateOfChange();
+			var abs = Math.Abs(roc.magnitude);
       var range = (rocproperty.sensor.maxMeasurement - rocproperty.sensor.minMeasurement) / 10;
 			Console.WriteLine("Updating rate of change subview. meas: " + roc + " abs: " + abs + " range: " + range);
 
@@ -258,13 +258,13 @@ namespace ION.IOS.ViewController.Analyzer
 				rocReading.Text = SensorUtils.ToFormattedString(rocproperty.sensor.type, roc.unit.OfScalar(abs), false) + "/min";
       }
 
-      if (roc.amount == 0) {
+      if (roc.magnitude == 0) {
         rocImage.Hidden = true;
         rocReading.Text = Strings.Workbench.Viewer.ROC_STABLE;
         isUpdating = false;
       } else {
         rocImage.Hidden = false;
-        if (roc.amount < 0) {
+        if (roc.magnitude < 0) {
           rocImage.Image = UIImage.FromBundle("ic_arrow_trend_down");
         } else {
           rocImage.Image = UIImage.FromBundle("ic_arrow_trend_up");

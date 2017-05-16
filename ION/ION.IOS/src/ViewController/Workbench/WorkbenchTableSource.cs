@@ -261,7 +261,7 @@ namespace ION.IOS.ViewController.Workbench {
       } else if (record is AddRecord){
 			 	return 58;
 			} else if (record is RateOfChangeRecord){
-				return 120;
+				return 96;
 			} else {
         return 48;
       }
@@ -601,6 +601,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
+          //manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor,TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("")),TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey(""))));
           manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
         });
       }

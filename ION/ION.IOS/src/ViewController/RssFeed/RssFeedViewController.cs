@@ -34,7 +34,7 @@ namespace ION.IOS.ViewController.RssFeed {
 		public UITableView rssTable;
 		public UIActivityIndicatorView loadingFeed;
 		public UIRefreshControl refreshFeed;
-		public const string FEEDURL = "http://www.buildtechhere.com/RSS/feed.xml";
+    public const string FEEDURL = "http://portal.appioninc.com/RSS/feed.xml";
 		
 		public RssFeedViewController(IntPtr handle) : base(handle) {
 		}
@@ -45,33 +45,38 @@ namespace ION.IOS.ViewController.RssFeed {
 			base.ViewDidLoad();
 			// Perform any additional setup after loading the view, typically from a nib.
       AutomaticallyAdjustsScrollViewInsets = false; 
+      feedItems = new List<Update>();
+      feedHeader = new RssHeader();     
+
+      setupRSSFeed();
+		}
+    
+    public async void setupRSSFeed(){
+      await Task.Delay(TimeSpan.FromMilliseconds(100));
+
+      loadingFeed = new UIActivityIndicatorView(new CGRect(0,45,View.Bounds.Width, View.Bounds.Height - 45));
       
-			feedItems = new List<Update>();
-			feedHeader = new RssHeader();
-			loadingFeed = new UIActivityIndicatorView(new CGRect(0,45,View.Bounds.Width, View.Bounds.Height - 45));
-			
-			rssTable = new UITableView(new CGRect(0,45,View.Bounds.Width,View.Bounds.Height - 45));
-			rssTable.RegisterClassForCellReuse(typeof(RssFeedCell),"rssFeedCell");
-			rssTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
-			rssTable.AlwaysBounceVertical = true;
-			
-			refreshFeed = new UIRefreshControl();
+      rssTable = new UITableView(new CGRect(0,45,View.Bounds.Width,View.Bounds.Height - 45));
+      rssTable.RegisterClassForCellReuse(typeof(RssFeedCell),"rssFeedCell");
+      rssTable.SeparatorStyle = UITableViewCellSeparatorStyle.None;
+      rssTable.AlwaysBounceVertical = true;
+      
+      refreshFeed = new UIRefreshControl();
       refreshFeed.ValueChanged += (sender, e) => {
-      		feedItems = new List<Update>();
-       		loadingFeed.StartAnimating();
+          feedItems = new List<Update>();
+          loadingFeed.StartAnimating();
           BeginReadXMLStream();
       };
       rssTable.InsertSubview(refreshFeed,0);
       rssTable.SendSubviewToBack(refreshFeed);
-			
-			View.AddSubview(rssTable);
-			View.AddSubview(loadingFeed);
-			View.BringSubviewToFront(loadingFeed);
-			
-			loadingFeed.StartAnimating();
-			BeginReadXMLStream();
-
-		}
+      
+      View.AddSubview(rssTable);
+      View.AddSubview(loadingFeed);
+      View.BringSubviewToFront(loadingFeed);
+      
+      loadingFeed.StartAnimating();
+      BeginReadXMLStream();
+    }
 		/// <summary>
 		/// Begins the read XMLS stream for entire rss feed.
 		/// </summary>
