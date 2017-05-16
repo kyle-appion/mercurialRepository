@@ -21,6 +21,7 @@
 
   <string name="pkey_device_auto_connect">device_auto_connect</string>
 	<string name="pkey_device_long_range">device_long_range</string>
+	<string name="pkey_device_trend_interval">device_trend_interval</string>
 
   <string name="pkey_help_walkthrough">help_walkthrough</string>
 

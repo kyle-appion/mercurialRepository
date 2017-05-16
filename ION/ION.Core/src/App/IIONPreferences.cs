@@ -7,6 +7,11 @@
   using ION.Core.Sensors;
 
   public interface IIONPreferences {
+		/// <summary>
+		/// The event that is notified when the backing preferences changed. Because preferences are different on various
+		/// platforms, we cannot really adequately provide a way to say what preference changed.
+		/// </summary>
+		event Action onPreferencesChanged;
     /// <summary>
     /// Queries the last known app version.
     /// </summary>
@@ -71,6 +76,18 @@
     /// </summary>
     /// <value><c>true</c> if allow long range mode; otherwise, <c>false</c>.</value>
     bool allowLongRangeMode { get; set; }
+    /// <summary>
+    /// The window (length of time) that the rate of change will record data points for.
+    /// </summary>
+    /// <value>The rate of change window.</value>
+    TimeSpan rateOfChangeWindow { get; }
+    /// <summary>
+    /// The interval between rate of change data logs.
+    /// Note: The total number of points is calculated by window / interval, that is to say, that interval more than
+    /// window, affects that total memory used by the rate of change component.
+    /// </summary>
+    /// <value>The rate of change interval.</value>
+    TimeSpan rateOfChangeInterval { get; set; }
   }
 
   /// <summary>

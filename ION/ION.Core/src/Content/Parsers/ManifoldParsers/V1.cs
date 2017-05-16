@@ -71,8 +71,8 @@
 			// Read sensor properties
 			var propCount = reader.ReadInt32();
 
-			for(int i = 0; i < propCount; i++){
-				ReadSensorProperty(ret, reader);
+			for(int i = 0; i < propCount; i++) {
+				ReadSensorProperty(ion, ret, reader);
 			}
 
 			return ret;
@@ -88,7 +88,7 @@
 			}
 		}
 
-		private void ReadSensorProperty(Manifold manifold, BinaryReader reader) {
+		private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader) {
 			var name = reader.ReadString();
 
 			if (name != null) {
@@ -99,7 +99,7 @@
 				} else if (name.Equals(typeof(PTChartSensorProperty).Name)) {
 					manifold.AddSensorProperty(new PTChartSensorProperty(manifold));
 				} else if (name.Equals(typeof(RateOfChangeSensorProperty).Name)) {
-					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.rateOfChangeInterval));
 				} else if (name.Equals(typeof(SecondarySensorProperty).Name)) {
 					manifold.AddSensorProperty(new SecondarySensorProperty(manifold));
 				} else if (name.Equals(typeof(SuperheatSubcoolSensorProperty).Name)) {

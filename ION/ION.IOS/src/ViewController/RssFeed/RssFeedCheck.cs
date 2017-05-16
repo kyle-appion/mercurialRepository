@@ -9,7 +9,7 @@ using System.IO;
 
 namespace ION.IOS.ViewController.RssFeed {
 	public class RssFeedCheck {
-		public const string FEEDURL = "http://www.buildtechhere.com/RSS/feed.xml";
+    public const string FEEDURL = "http://portal.appioninc.com/RSS/feed.xml";
 		
 		public RssFeedCheck() {
 		
