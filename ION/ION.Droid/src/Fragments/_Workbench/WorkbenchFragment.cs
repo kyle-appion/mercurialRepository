@@ -366,7 +366,7 @@ namespace ION.Droid.Fragments._Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.rateOfChangeInterval));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
       }
 
@@ -430,7 +430,7 @@ namespace ION.Droid.Fragments._Workbench {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.rateOfChangeInterval));
+        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {

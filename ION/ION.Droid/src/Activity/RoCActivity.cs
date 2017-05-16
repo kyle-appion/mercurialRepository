@@ -372,7 +372,7 @@
       // Title
       var values = Resources.GetStringArray(Resource.Array.preferences_device_trend_interval_values);
       var entries = Resources.GetStringArray(Resource.Array.preferences_device_trend_interval_entries);
-      var interval = ion.preferences.device.rateOfChangeInterval;
+      var interval = ion.preferences.device.trendInterval;
 
       var index = -1;
       for (int i = 0; i < values.Length; i++) {
