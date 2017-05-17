@@ -66,7 +66,7 @@
             <OxyPlot.Xamarin.Android.PlotView
                 android:id="@id/graph"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="@dimen/viewer_subview_huge" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

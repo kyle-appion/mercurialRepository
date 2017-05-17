@@ -19,23 +19,21 @@ namespace ION.IOS.ViewController.RssFeed {
     /// Begins the read XMLS stream for the last rss feed item.
     /// </summary>
     /// <returns>The read XMLS tream single.</returns>
-    public async void BeginReadXMLStreamSingle()
-    {
-    	await Task.Delay(TimeSpan.FromMilliseconds(1));
-        IsReadingXML = true;
+    public async void BeginReadXMLStreamSingle() {
+      await Task.Delay(TimeSpan.FromMilliseconds(1));
+      IsReadingXML = true;
 
-        HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(FEEDURL);
-        httpRequest.BeginGetResponse(new AsyncCallback(FinishWebRequestSingle), httpRequest);
+      HttpWebRequest httpRequest = (HttpWebRequest)WebRequest.Create(FEEDURL);
+      httpRequest.BeginGetResponse(new AsyncCallback(FinishWebRequestSingle), httpRequest);
     }
-		/// <summary>
-		/// Finishs the web request for the last rss feed item.
-		/// </summary>
-		/// <returns>The web request single.</returns>
-		/// <param name="result">Result.</param>
-    public async void FinishWebRequestSingle(IAsyncResult result)
-    {
-    		await Task.Delay(TimeSpan.FromMilliseconds(1));
-        IsReadingXML = true; 
+    /// <summary>
+    /// Finishs the web request for the last rss feed item.
+    /// </summary>
+    /// <returns>The web request single.</returns>
+    /// <param name="result">Result.</param>
+    public async void FinishWebRequestSingle(IAsyncResult result) {
+      await Task.Delay(TimeSpan.FromMilliseconds(1));
+      IsReadingXML = true;
 
         HttpWebResponse httpResponse = (result.AsyncState as HttpWebRequest).EndGetResponse(result) as HttpWebResponse;
         if (httpResponse.StatusCode == HttpStatusCode.OK)
@@ -50,59 +48,57 @@ namespace ION.IOS.ViewController.RssFeed {
     /// </summary>
     /// <returns>The last feed.</returns>
     /// <param name="xmlStream">Xml stream.</param>
-    public async void ReturnLastFeed(Stream xmlStream){
-    		await Task.Delay(TimeSpan.FromMilliseconds(1));
-    		Update lastFeed = new Update();
-        using (XmlReader myXMLReader = XmlReader.Create((xmlStream)))
-        {
-            while (myXMLReader.Read())
-            {
-				while(myXMLReader.Name != "title"){
-					myXMLReader.Read();
-				}
+    public async void ReturnLastFeed(Stream xmlStream) {
+      await Task.Delay(TimeSpan.FromMilliseconds(1));
+      Update lastFeed = new Update();
+      using (XmlReader myXMLReader = XmlReader.Create((xmlStream))) {
+        while (myXMLReader.Read()) {
+          while (myXMLReader.Name != "title") {
+            myXMLReader.Read();
+          }
 
-				var hTitle = myXMLReader.ReadElementContentAsString();
-				//feedHeader.title = hTitle;
+          var hTitle = myXMLReader.ReadElementContentAsString();
+          //feedHeader.title = hTitle;
 
-				myXMLReader.Read();
+          myXMLReader.Read();
 
-				var hLink = myXMLReader.ReadElementContentAsString();
-				//feedHeader.link = hLink;
+          var hLink = myXMLReader.ReadElementContentAsString();
+          //feedHeader.link = hLink;
 
-				myXMLReader.Read();
+          myXMLReader.Read();
 
-				var hDescription = myXMLReader.ReadElementContentAsString();
-				myXMLReader.Read();
+          var hDescription = myXMLReader.ReadElementContentAsString();
+          myXMLReader.Read();
 
-				var hLanguage = myXMLReader.ReadElementContentAsString();
-				myXMLReader.Read();
+          var hLanguage = myXMLReader.ReadElementContentAsString();
+          myXMLReader.Read();
 
-				var hCopyright = myXMLReader.ReadElementContentAsString();
-				myXMLReader.Read();
+          var hCopyright = myXMLReader.ReadElementContentAsString();
+          myXMLReader.Read();
 
-				var hPubdate = myXMLReader.ReadElementContentAsString();							
-				while(myXMLReader.Name != "item"){
-					myXMLReader.Read();
-				}
-				
-				while(myXMLReader.Read() && myXMLReader.Name != "rss"){
+          var hPubdate = myXMLReader.ReadElementContentAsString();
+          while (myXMLReader.Name != "item") {
+            myXMLReader.Read();
+          }
 
-					if(myXMLReader.Name == "title" && myXMLReader.NodeType == XmlNodeType.Element){
-						var item = new Update();
-						var fTitle = myXMLReader.ReadElementContentAsString();
+          while (myXMLReader.Read() && myXMLReader.Name != "rss") {
 
-						item.title = fTitle;
-						myXMLReader.Read();
-						var fLink = myXMLReader.ReadElementContentAsString();
+            if (myXMLReader.Name == "title" && myXMLReader.NodeType == XmlNodeType.Element) {
+              var item = new Update();
+              var fTitle = myXMLReader.ReadElementContentAsString();
 
-						item.link = fLink;
-						myXMLReader.Read();
-						var fDescription = myXMLReader.ReadElementContentAsString();
+              item.title = fTitle;
+              myXMLReader.Read();
+              var fLink = myXMLReader.ReadElementContentAsString();
 
-						item.description = fDescription;
-						myXMLReader.Read();
+              item.link = fLink;
+              myXMLReader.Read();
+              var fDescription = myXMLReader.ReadElementContentAsString();
 
-						var fPubdate = myXMLReader.ReadElementContentAsString();
+              item.description = fDescription;
+              myXMLReader.Read();
+
+              var fPubdate = myXMLReader.ReadElementContentAsString();
 
 						item.pubDate = fPubdate;
 						lastFeed = item;
@@ -181,7 +177,7 @@ namespace ION.IOS.ViewController.RssFeed {
 	      closeButton.ClipsToBounds = true;
 			  closeButton.SetTitle("Close",UIControlState.Normal);
 			  closeButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
-		      
+
 		      //closeButton.TouchDown += (sender, e) => {closeButton.BackgroundColor = UIColor.Blue;};
 		      //closeButton.TouchUpOutside += (sender, e) => {closeButton.BackgroundColor = UIColor.White;};
 		    closeButton.TouchUpInside += (sender, e) => {
@@ -189,19 +185,19 @@ namespace ION.IOS.ViewController.RssFeed {
 			  };
 			  var newTime = DateTime.Now.ToLocalTime().ToString();
 
-			  NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
-			  NSUserDefaults.StandardUserDefaults.SetString(feed.title, "rssTitle");
-		      
-		      rssView.AddSubview(rssHeader);
-		      rssView.AddSubview(rssContent);
-		      rssView.AddSubview(closeButton);
-		      vc.View.AddSubview(rssView);
-		      vc.View.BringSubviewToFront(rssView);
+        NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
+        NSUserDefaults.StandardUserDefaults.SetString(feed.title, "rssTitle");
 
-			} catch (Exception e){
-				Console.WriteLine("Error: " + e);
-			}     
-		} 
-	}
+        rssView.AddSubview(rssHeader);
+        rssView.AddSubview(rssContent);
+        rssView.AddSubview(closeButton);
+        vc.View.AddSubview(rssView);
+        vc.View.BringSubviewToFront(rssView);
+
+      } catch (Exception e) {
+        Console.WriteLine("Error: " + e);
+      }
+    }
+  }
 }
 

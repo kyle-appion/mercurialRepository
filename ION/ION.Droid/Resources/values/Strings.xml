@@ -446,6 +446,12 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="report_spans_no_jobs">No Jobs Attached To Report</string>
   <string name="report_spans_multiple_jobs">Spans Mulitple Jobs</string>
 
+
+	<!--
+  RSS
+	-->
+  <string name="rss">RSS Update</string>
+
   <!--
   PORTAL
 	-->
