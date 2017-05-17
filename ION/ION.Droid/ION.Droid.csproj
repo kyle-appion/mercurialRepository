@@ -317,6 +317,8 @@
     <Compile Include="src\Connections\IScanMethod.cs" />
     <Compile Include="src\App\BatteryBroadcastReceiver.cs" />
     <Compile Include="src\Dialog\RssDialog.cs" />
+    <Compile Include="src\App\RssBroadcastReceiver.cs" />
+    <Compile Include="src\Rss\RssHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -794,6 +796,7 @@
     <Folder Include="src\Net\" />
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
+    <Folder Include="src\Rss\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />

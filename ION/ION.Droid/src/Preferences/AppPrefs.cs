@@ -152,6 +152,7 @@
       }
     }
 
+
     public DevicePreferences _device { get; private set; }
     // Implemented for IIONPreferences
     public IDevicePreferences device { get { return _device; } }
@@ -436,6 +437,39 @@
 		}
 
     public LocationPreferences(AppPrefs prefs) : base(prefs) {
+    }
+  }
+
+  /// <summary>
+  /// The preferences that are used to store the local application's network preferences.
+  /// </summary>
+  public class NetworkPreferences : BasePreferences {
+
+    /// <summary>
+    /// The last date that we checked the rss feed.
+    /// </summary>
+    /// <value>The last rss check date.</value>
+    public DateTime lastRssCheckDate {
+      get {
+        var usDateString = GetString(Resource.String.pkey_network_last_rss_check_date, null);
+        if (usDateString == null) {
+          return new DateTime(1, 1, 1);
+        } else {
+          try {
+            return DateTime.Parse(usDateString);
+          } catch (Exception e) {
+            var key = context.GetString(Resource.String.pkey_network_last_rss_check_date);
+            Log.E(this, "Failed to DateTime parse preference: " + key + " {" + usDateString + "}", e);
+            return new DateTime(1, 1, 1);
+          }
+        }
+      }
+      set {
+        PutString(Resource.String.pkey_network_last_rss_check_date, value.ToLongDateString());
+      }
+    }
+
+    public NetworkPreferences(AppPrefs prefs) : base(prefs) {
     }
   }
 
