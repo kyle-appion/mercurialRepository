@@ -132,6 +132,7 @@ namespace ION.IOS.ViewController.RssFeed {
       }
         IsReadingXML = false;       
 		}
+
 		public async void createRssPopup(Update feed){
 			await Task.Delay(TimeSpan.FromSeconds(2));
       		try{

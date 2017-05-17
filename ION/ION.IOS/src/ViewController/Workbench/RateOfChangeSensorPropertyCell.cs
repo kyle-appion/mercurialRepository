@@ -33,30 +33,6 @@ namespace ION.IOS.ViewController.Workbench {
     
     public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
     }
-
-    /// <summary>
-    /// A structure representing the x,y points on the graph.
-    /// </summary>
-    public struct TrendPoint {
-      /// <summary>
-      /// The time that the measurement was made.
-      /// </summary>
-      public DateTime date { get; private set; }
-      /// <summary>
-      /// The measurement of a point on the graph. The measurement's unit is the base unit for the sensor.
-      /// </summary>
-      public double measurement { get; private set; }
-
-      public TrendPoint(double measurement) {
-        date = DateTime.Now;
-        this.measurement = measurement;
-      }
-
-      // Overridden from object
-      public override string ToString() {
-        return string.Format("[TrendPoint: date={0}, measurement={1}]", date, measurement);
-      }
-    }
   }
 
 	public partial class RateOfChangeSensorPropertyCell : UITableViewCell {
@@ -420,12 +396,13 @@ namespace ION.IOS.ViewController.Workbench {
 
         },
         Font = model.DefaultFont,
-        FontSize = 14,
+        FontSize = 10,
         TextColor = OxyColors.Black,
         AxislineThickness = 0,
         AxislineStyle = LineStyle.None,
         MajorGridlineStyle = LineStyle.None,
         MinorGridlineStyle = LineStyle.None,
+        AxisTickToLabelDistance = 0.0,
       };
 
       var baseUnit = record.manifold.primarySensor.unit.standardUnit;
@@ -433,7 +410,7 @@ namespace ION.IOS.ViewController.Workbench {
         Position = AxisPosition.Left,
         Minimum = 0,
         Maximum = 100,
-        IsAxisVisible = true,
+        IsAxisVisible = false,
         IsZoomEnabled = false,
         IsPanEnabled = false,
         Key = "first",
@@ -455,7 +432,7 @@ namespace ION.IOS.ViewController.Workbench {
         Position = AxisPosition.Right,
         Minimum = 0,
         Maximum = 100,
-        IsAxisVisible = true,
+        IsAxisVisible = false,
         IsZoomEnabled = false,
         IsPanEnabled = false,
         Key = "second",
@@ -496,7 +473,7 @@ namespace ION.IOS.ViewController.Workbench {
         YAxisKey = "second",
       };
       
-      model.PlotMargins = new OxyThickness(0,double.NaN,0,0);
+      model.PlotMargins = new OxyThickness(0,double.NaN,0,-5);
 
       model.PlotType = PlotType.XY;
       model.Axes.Add(BAX);
