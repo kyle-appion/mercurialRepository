@@ -105,7 +105,7 @@ namespace ION.IOS.ViewController.Analyzer
         __currentSensor = value;
         if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-          roc = new RateOfChangeSensorProperty(value);
+          roc = new RateOfChangeSensorProperty(__manifold, TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("default_settings_trending_interval")));
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -248,7 +248,7 @@ namespace ION.IOS.ViewController.Analyzer
 			var rocproperty = property as RateOfChangeSensorProperty;
 
 			var roc = rocproperty.GetPrimaryAverageRateOfChange();
-      var abs = Math.Abs(roc.magnitude);
+			var abs = Math.Abs(roc.magnitude);
       var range = (rocproperty.sensor.maxMeasurement - rocproperty.sensor.minMeasurement) / 10;
 			Console.WriteLine("Updating rate of change subview. meas: " + roc + " abs: " + abs + " range: " + range);
 

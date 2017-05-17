@@ -135,18 +135,10 @@
       }
       //************************************************************************
 			//**********CHECK RSS FEED UPDATES!!!!!!!!
-			/*
-        string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");
-				
-        if (string.IsNullOrEmpty(lastDate)){
-            var feedPull = new ViewController.RssFeed.RssFeedCheck();
-            feedPull.BeginReadXMLStreamSingle();
-        }
-        else if (DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()){
-            var feedPull = new ViewController.RssFeed.RssFeedCheck();
-            feedPull.BeginReadXMLStreamSingle();
-		}
-		*/  
+			
+        var feedPull = new ViewController.RssFeed.RssFeedCheck();
+        feedPull.BeginReadXMLStreamSingle();
+		  
 			//************************************************************************
       return true;
     }
@@ -200,6 +192,13 @@
       	Console.WriteLine("Came back and not using geolocation");
         ion.locationManager.StopAutomaticLocationPolling();
       }
+      
+        string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");
+        
+        if (!string.IsNullOrEmpty(lastDate) && DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()){
+            var feedPull = new ViewController.RssFeed.RssFeedCheck();
+            feedPull.BeginReadXMLStreamSingle();
+        }      
     }
 
     public override void OnActivated(UIApplication application) {

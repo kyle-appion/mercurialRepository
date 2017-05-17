@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Visual Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -40,6 +40,9 @@ namespace ION.IOS.ViewController.Workbench
 		UIKit.UILabel TLMeasurement { get; set; }
 
 		[Outlet]
+		UIKit.UILabel trendGraphHeader { get; set; }
+
+		[Outlet]
 		UIKit.UILabel trendInfoHeader { get; set; }
 
 		[Outlet]
@@ -53,6 +56,16 @@ namespace ION.IOS.ViewController.Workbench
 		
 		void ReleaseDesignerOutlets ()
 		{
+			if (BLMeasurement != null) {
+				BLMeasurement.Dispose ();
+				BLMeasurement = null;
+			}
+
+			if (BRMeasurement != null) {
+				BRMeasurement.Dispose ();
+				BRMeasurement = null;
+			}
+
 			if (graphView != null) {
 				graphView.Dispose ();
 				graphView = null;
@@ -63,29 +76,9 @@ namespace ION.IOS.ViewController.Workbench
 				legendView = null;
 			}
 
-			if (TLMeasurement != null) {
-				TLMeasurement.Dispose ();
-				TLMeasurement = null;
-			}
-
-			if (TRMeasurement != null) {
-				TRMeasurement.Dispose ();
-				TRMeasurement = null;
-			}
-
-			if (BRMeasurement != null) {
-				BRMeasurement.Dispose ();
-				BRMeasurement = null;
-			}
-
-			if (BLMeasurement != null) {
-				BLMeasurement.Dispose ();
-				BLMeasurement = null;
-			}
-
-			if (primaryLegendLabel != null) {
-				primaryLegendLabel.Dispose ();
-				primaryLegendLabel = null;
+			if (linkedLegendImage != null) {
+				linkedLegendImage.Dispose ();
+				linkedLegendImage = null;
 			}
 
 			if (linkedLegendLabel != null) {
@@ -98,9 +91,14 @@ namespace ION.IOS.ViewController.Workbench
 				primaryLegendImage = null;
 			}
 
-			if (linkedLegendImage != null) {
-				linkedLegendImage.Dispose ();
-				linkedLegendImage = null;
+			if (primaryLegendLabel != null) {
+				primaryLegendLabel.Dispose ();
+				primaryLegendLabel = null;
+			}
+
+			if (TLMeasurement != null) {
+				TLMeasurement.Dispose ();
+				TLMeasurement = null;
 			}
 
 			if (trendInfoHeader != null) {
@@ -116,6 +114,16 @@ namespace ION.IOS.ViewController.Workbench
 			if (trendIntervalSettings != null) {
 				trendIntervalSettings.Dispose ();
 				trendIntervalSettings = null;
+			}
+
+			if (TRMeasurement != null) {
+				TRMeasurement.Dispose ();
+				TRMeasurement = null;
+			}
+
+			if (trendGraphHeader != null) {
+				trendGraphHeader.Dispose ();
+				trendGraphHeader = null;
 			}
 		}
 	}

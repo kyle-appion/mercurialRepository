@@ -289,11 +289,11 @@ namespace ION.IOS.ViewController {
     		.Link(Util.Strings.Walkthrough.INTRODUCTORY,(object obj, HelpViewController ovc) => {
     			OpenWalkthroughSections();
     		} )
-#if DEBUG 
 
-    //		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
-				//	ShowRSSFeed();
-				//} )
+    		.Link("RSS Feed", (object obj, HelpViewController ovc) => {
+					ShowRSSFeed();
+				} )
+#if DEBUG 
 #endif
         .Link(Strings.Help.SEND_FEEDBACK, (object obj, HelpViewController ovc) => {
 	        if (!MFMailComposeViewController.CanSendMail) {
@@ -404,10 +404,10 @@ namespace ION.IOS.ViewController {
     /// Opens up a list of options for walkthroughs. They are broken up between the main
     /// sections of the app
     /// </summary>
-    //private void ShowRSSFeed() {  
-    //  var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
-    //  PresentViewControllerFromSelected(wvc);
-    //}
+    private void ShowRSSFeed() {  
+      var wvc = InflateViewController<RssFeedViewController>(BaseIONViewController.VC_RSS_FEED);
+      PresentViewControllerFromSelected(wvc);
+    }
 
     /// <summary>
     /// Presents a new view controller using the current navigation view

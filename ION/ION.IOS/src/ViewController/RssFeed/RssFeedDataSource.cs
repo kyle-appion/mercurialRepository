@@ -28,7 +28,7 @@ namespace ION.IOS.ViewController.RssFeed {
     public override nfloat GetHeightForRow(UITableView tableView, NSIndexPath indexPath) {
     	//Console.WriteLine("Cell height will be " + (tableItems[indexPath.Row].description.Count * 40) + " for update " + tableItems[indexPath.Row].title);
       //return tableItems[indexPath.Row].description.Count * 40;
-      return 280;
+      return 110;
     }
     // Overriden from UITableViewSource
     public override UIView GetViewForHeader(UITableView tableView, nint section) {
@@ -46,7 +46,7 @@ namespace ION.IOS.ViewController.RssFeed {
       if (cell == null)
         cell = new UITableViewCell(UITableViewCellStyle.Default, "rssFeedCell") as RssFeedCell;
         
-    	cellHeight = 280;
+    	cellHeight = 110;
       cell.makeCellData(tableItems[indexPath.Row],cellHeight, tableView);
       cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 

@@ -8,13 +8,13 @@ using System.Xml;
 using System.IO;
 
 namespace ION.IOS.ViewController.RssFeed {
-  public class RssFeedCheck {
-    public const string FEEDURL = "http://portal.appioninc.com/RSS/feed.xml";
-
-    public RssFeedCheck() {
-
-    }
-    public static bool IsReadingXML { get; set; }
+	public class RssFeedCheck {
+		public const string FEEDURL = "http://portal.appioninc.com/RSS/feed.xml";
+		
+		public RssFeedCheck() {
+		
+		}
+		public static bool IsReadingXML { get; set; }
     /// <summary>
     /// Begins the read XMLS stream for the last rss feed item.
     /// </summary>
@@ -35,13 +35,13 @@ namespace ION.IOS.ViewController.RssFeed {
       await Task.Delay(TimeSpan.FromMilliseconds(1));
       IsReadingXML = true;
 
-      HttpWebResponse httpResponse = (result.AsyncState as HttpWebRequest).EndGetResponse(result) as HttpWebResponse;
-      var returnView = new UIView();
-      if (httpResponse.StatusCode == HttpStatusCode.OK) {
-        Stream httpResponseStream = httpResponse.GetResponseStream();
-        ReturnLastFeed(httpResponseStream);
-      }
-    }
+        HttpWebResponse httpResponse = (result.AsyncState as HttpWebRequest).EndGetResponse(result) as HttpWebResponse;
+        if (httpResponse.StatusCode == HttpStatusCode.OK)
+        {
+            Stream httpResponseStream = httpResponse.GetResponseStream();
+            ReturnLastFeed(httpResponseStream);
+        }
+    } 
 
     /// <summary>
     /// Returns the last feed item only.
@@ -100,85 +100,90 @@ namespace ION.IOS.ViewController.RssFeed {
 
               var fPubdate = myXMLReader.ReadElementContentAsString();
 
-              item.pubDate = fPubdate;
-              lastFeed = item;
-              break;
+						item.pubDate = fPubdate;
+						lastFeed = item;
+						break;
+					}
+				}
+				break;				
             }
-          }
-          break;
         }
+        //Done
+  		string lastTitle = NSUserDefaults.StandardUserDefaults.StringForKey("rssTitle");
+  		if(string.IsNullOrEmpty(lastTitle) || lastTitle != lastFeed.title){
+  			using(var pool = new NSAutoreleasePool())
+  			{
+  				try
+  				{
+  					pool.InvokeOnMainThread (delegate{
+  						createRssPopup(lastFeed);
+  					});
+  				} catch (Exception e){
+  					Console.WriteLine("Error: " + e);
+  				}
+  			}
+  		} else {
+          var newTime = DateTime.Now.ToLocalTime().ToString();
+          NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
       }
-      //Done
-      string lastTitle = NSUserDefaults.StandardUserDefaults.StringForKey("rssTitle");
-      if (string.IsNullOrEmpty(lastTitle) || lastTitle != lastFeed.title) {
-        using (var pool = new NSAutoreleasePool()) {
-          try {
-            pool.InvokeOnMainThread(delegate {
-              createRssPopup(lastFeed);
-            });
-          } catch (Exception e) {
-            Console.WriteLine("Error: " + e);
-          }
-        }
-      }
-      IsReadingXML = false;
+        IsReadingXML = false;
+		}
 
-    }
-    public async void createRssPopup(Update feed) {
-      await Task.Delay(TimeSpan.FromSeconds(2));
-      try {
-        var window = UIApplication.SharedApplication.KeyWindow;
-        var vc = window.RootViewController;
-        while (vc.PresentedViewController != null) {
-          vc = vc.PresentedViewController;
-        }
-        var rssView = new UIView(new CGRect(.05 * vc.View.Bounds.Width, .11 * vc.View.Bounds.Height, .9 * vc.View.Bounds.Width, .78 * vc.View.Bounds.Height));
+		public async void createRssPopup(Update feed){
+			await Task.Delay(TimeSpan.FromSeconds(2));
+      		try{
+			     var window = UIApplication.SharedApplication.KeyWindow;
+			      var vc = window.RootViewController;
+			      while (vc.PresentedViewController != null) {
+			        vc = vc.PresentedViewController;
+			      }
+		      	var rssView = new UIView(new CGRect(.05 * vc.View.Bounds.Width,.11 * vc.View.Bounds.Height,.9 * vc.View.Bounds.Width, .78 * vc.View.Bounds.Height));
 
-        rssView.Layer.CornerRadius = 5f;
-        rssView.ClipsToBounds = true;
-        rssView.Layer.BorderWidth = 1f;
+				rssView.Layer.CornerRadius = 5f;
+				rssView.ClipsToBounds = true;
+				rssView.Layer.BorderWidth = 1f;
+				
+				var rssHeader = new UILabel(new CGRect(0,0,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
+				rssHeader.BackgroundColor = UIColor.FromRGB(9,211,255);
+				rssHeader.ClipsToBounds = true;
+				rssHeader.Text = "New Update";
+				rssHeader.AdjustsFontSizeToFitWidth = true;
+				rssHeader.TextAlignment = UITextAlignment.Center;
+				
+					
+			  var linkTapGesture = new UITapGestureRecognizer(() => {
+		    	if(!String.IsNullOrEmpty(feed.link)){
+		      		UIApplication.SharedApplication.OpenUrl(new NSUrl(feed.link));
+		      	}
+			  });
+					
+			  var rssContent = new UITextView(new CGRect(0,.1 * rssView.Bounds.Height,rssView.Bounds.Width,rssView.Bounds.Height));
+			  rssContent.Font = UIFont.BoldSystemFontOfSize (18f);
+	
+			  NSError error = null;
+		      var htmlString = new NSAttributedString (
+					NSData.FromString("<div style=\"font-size: 150%\">" +feed.title + "</br>" + feed.description +"</div>"),
+					new NSAttributedStringDocumentAttributes{ DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8},
+					ref error
+			  );
+				
+			  rssContent.AttributedText = htmlString;
+					
+			  rssContent.AddGestureRecognizer(linkTapGesture); 
+					
+	      var closeButton = new UIButton(new CGRect(0,.9 * rssView.Bounds.Height,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
+	      closeButton.BackgroundColor = UIColor.White;
+	      closeButton.Layer.BorderWidth = 1f;
+	      closeButton.ClipsToBounds = true;
+			  closeButton.SetTitle("Close",UIControlState.Normal);
+			  closeButton.SetTitleColor(UIColor.Black,UIControlState.Normal);
 
-        var rssHeader = new UILabel(new CGRect(0, 0, rssView.Bounds.Width, .1 * rssView.Bounds.Height));
-        rssHeader.BackgroundColor = UIColor.FromRGB(9, 211, 255);
-        rssHeader.ClipsToBounds = true;
-        rssHeader.Text = "New Update";
-        rssHeader.AdjustsFontSizeToFitWidth = true;
-        rssHeader.TextAlignment = UITextAlignment.Center;
-
-
-        var linkTapGesture = new UITapGestureRecognizer(() => {
-          if (!String.IsNullOrEmpty(feed.link)) {
-            UIApplication.SharedApplication.OpenUrl(new NSUrl(feed.link));
-          }
-        });
-
-        var rssContent = new UITextView(new CGRect(0, .1 * rssView.Bounds.Height, rssView.Bounds.Width, rssView.Bounds.Height));
-        rssContent.Font = UIFont.BoldSystemFontOfSize(18f);
-
-        NSError error = null;
-        var htmlString = new NSAttributedString(
-        NSData.FromString("<div style=\"font-size: 150%\">" + feed.title + "</br>" + feed.description + "</div>"),
-        new NSAttributedStringDocumentAttributes { DocumentType = NSDocumentType.HTML, StringEncoding = NSStringEncoding.UTF8 },
-        ref error
-      );
-
-        rssContent.AttributedText = htmlString;
-
-        rssContent.AddGestureRecognizer(linkTapGesture);
-
-        var closeButton = new UIButton(new CGRect(0, .9 * rssView.Bounds.Height, rssView.Bounds.Width, .1 * rssView.Bounds.Height));
-        closeButton.BackgroundColor = UIColor.White;
-        closeButton.Layer.BorderWidth = 1f;
-        closeButton.ClipsToBounds = true;
-        closeButton.SetTitle("Close", UIControlState.Normal);
-        closeButton.SetTitleColor(UIColor.Black, UIControlState.Normal);
-
-        //closeButton.TouchDown += (sender, e) => {closeButton.BackgroundColor = UIColor.Blue;};
-        //closeButton.TouchUpOutside += (sender, e) => {closeButton.BackgroundColor = UIColor.White;};
-        closeButton.TouchUpInside += (sender, e) => {
-          rssView.RemoveFromSuperview();
-        };
-        var newTime = DateTime.Now.ToLocalTime().ToString();
+		      //closeButton.TouchDown += (sender, e) => {closeButton.BackgroundColor = UIColor.Blue;};
+		      //closeButton.TouchUpOutside += (sender, e) => {closeButton.BackgroundColor = UIColor.White;};
+		    closeButton.TouchUpInside += (sender, e) => {
+				  rssView.RemoveFromSuperview();
+			  };
+			  var newTime = DateTime.Now.ToLocalTime().ToString();
 
         NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
         NSUserDefaults.StandardUserDefaults.SetString(feed.title, "rssTitle");
