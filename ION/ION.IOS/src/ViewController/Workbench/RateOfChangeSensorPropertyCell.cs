@@ -55,7 +55,7 @@ namespace ION.IOS.ViewController.Workbench {
     public GaugeDeviceSensor gaugeSensor;
     
     public bool isConnected = false;
-   		
+    		
     private RateOfChangeRecord record {
       get {
         return __record;
@@ -138,16 +138,14 @@ namespace ION.IOS.ViewController.Workbench {
         isUpdating = true;
         DoUpdateCell();
       }
-      updateCellGraph();
+      if (!isConnected) {
+        updateCellGraph();
+      }
     }
 
     private async void DoUpdateCell() {
       var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
-      
-      if(device != null && device.isConnected && isConnected == false){
-        isConnected = true;
-      }
-      
+
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
       var rocScalar = sp.GetPrimaryAverageRateOfChange();
       var abs = Math.Abs(rocScalar.magnitude);
@@ -177,12 +175,14 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public async void updateCellGraph(){
-      record.roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
       if(plotView == null){
         return;
       }
 
       var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
+      isConnected = device.isConnected;
+
       if (device == null || device.isConnected) {
           InvalidatePrimary();
           if(record.manifold.secondarySensor != null){
@@ -194,23 +194,23 @@ namespace ION.IOS.ViewController.Workbench {
           plotView.InvalidatePlot();
           plotView.Model.InvalidatePlot(true);
         });
-      } else {
-        isConnected = false;
-        plotView.Model.PlotMargins = new OxyThickness(0,double.NaN,0,0);
-        return;
-      }
+      } 
+
       await Task.Delay(TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval")));
-      updateCellGraph();   
+      if (isConnected) {
+        updateCellGraph();
+      }
     }
     
     private void InvalidateTime() {
       var axis = BAX;
+			var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
-      if (record.roc == null) {
+			if (roc == null) {
         return;
       }
 
-      var points = record.roc.primarySensorPoints;
+      var points = roc.primarySensorPoints;
 
       if (points.Count <= 0) {
         Console.WriteLine("Failed to invalidate time: points.count was " + points.Count);
@@ -219,30 +219,32 @@ namespace ION.IOS.ViewController.Workbench {
       var startTime = points[0];
       var endTime = points[points.Count - 1].date;
 
-      axis.Minimum = (startTime.date - record.roc.window).ToFileTime() - 1000000;
+      axis.Minimum = (startTime.date - roc.window).ToFileTime() - 1000000;
       axis.Maximum = startTime.date.ToFileTime() + 1000000;
 
-      axis.MajorStep = (long)((record.roc.window.TotalMilliseconds * 1e4) / 2);
+      axis.MajorStep = (long)((roc.window.TotalMilliseconds * 1e4) / 2);
+			axis.PlotModel.PlotMargins = new OxyThickness(-7, -7, -7, 3);
 
-      axis.MinorStep = axis.MajorStep / 5;
+			axis.MinorStep = axis.MajorStep / 5;
       axis.AxislineStyle = LineStyle.Solid;
       axis.AxislineThickness = 1;
     }
 
     private void InvalidatePrimary() {
+			var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
-      if (record.roc == null || TLMeasurement == null || BLMeasurement == null) {
+			if (roc == null || TLMeasurement == null || BLMeasurement == null) {
         return;
       }
       
-      var minMax = record.roc.GetPrimaryMinMax();
-      var rangeAmount = record.roc.manifold.primarySensor.maxMeasurement.ConvertTo(record.roc.manifold.primarySensor.unit.standardUnit).amount * .05;
-      var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit,rangeAmount);
-      var sensorUnit = record.roc.manifold.primarySensor.unit;
-      var sensorMin = record.roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+      var minMax = roc.GetPrimaryMinMax();
+      var rangeAmount = roc.manifold.primarySensor.maxMeasurement.ConvertTo(roc.manifold.primarySensor.unit.standardUnit).amount * .05;
+      var sensorRange = new Scalar(roc.manifold.primarySensor.unit.standardUnit,rangeAmount);
+      var sensorUnit = roc.manifold.primarySensor.unit;
+      var sensorMin = roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
       UpdateAxis(LAX, minMax.min, minMax.max, sensorRange,sensorUnit,TRMeasurement,BRMeasurement,sensorMin);
-      var primaryBuffer = record.roc.primarySensorPoints;
+      var primaryBuffer = roc.primarySensorPoints;
       var l = primaryBuffer.Count;
       // Resize the points list
       // Trim down to size
@@ -261,23 +263,24 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     private void InvalidateSecondary() {
-      if (record.manifold.secondarySensor == null) {  
+			var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+			if (record.manifold.secondarySensor == null) {  
         return;
       }
 
-      if (record.roc == null || TRMeasurement == null || BRMeasurement == null) {
+      if (roc == null || TRMeasurement == null || BRMeasurement == null) {
         return;
       }
 
-      var minMax = record.roc.GetSecondaryMinMax();
-      var rangeAmount = record.roc.manifold.secondarySensor.maxMeasurement.ConvertTo(record.roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
-      var sensorRange = new Scalar(record.roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
-      var sensorUnit = record.roc.manifold.secondarySensor.unit;
-      var sensorMin = record.roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+      var minMax = roc.GetSecondaryMinMax();
+      var rangeAmount = roc.manifold.secondarySensor.maxMeasurement.ConvertTo(roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
+      var sensorRange = new Scalar(roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
+      var sensorUnit = roc.manifold.secondarySensor.unit;
+      var sensorMin = roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
       UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,sensorUnit,TRMeasurement,BRMeasurement,sensorMin);
 
-      var secondaryBuffer = record.roc.secondarySensorPoints;
+      var secondaryBuffer = roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
       // Resize the points list
       // Trim down to size
@@ -294,41 +297,6 @@ namespace ION.IOS.ViewController.Workbench {
         secondarySeries.Points[i] = new DataPoint(p.date.ToFileTime(), p.measurement);
       }
     }
- 
-    /// <summary>
-    /// Updates the axis for non RoC based measurements.
-    /// </summary>
-    /// <param name="axis">Axis.</param>
-    private void UpdateAxis(LinearAxis axis, double min, double max, Scalar range, Unit u, UILabel topLabel, UILabel bottomLabel, Scalar sensorMin) {
-      if(max < sensorMin.amount){
-        return;
-      }
-      if((min - (range.amount / 2)) < sensorMin.ConvertTo(u).amount){
-        axis.Minimum = sensorMin.ConvertTo(u).amount;
-        bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u),true);
-      } else {
-        axis.Minimum = min - (range.amount / 2);
-        var minScalar = new Scalar(u,(min - (range.amount / 2)));
-        bottomLabel.Text = SensorUtils.ToFormattedString(minScalar,true);
-      }
-      
-      if(max <= (sensorMin.ConvertTo(u).amount + range.amount)){
-        axis.Maximum = sensorMin.ConvertTo(u).amount + range.amount;
-        var maxScalar = new Scalar(u,(max));
-        topLabel.Text = SensorUtils.ToFormattedString(maxScalar.ConvertTo(u),true);
-      } else {
-        axis.Maximum = max + (range.amount / 2);
-        var maxScalar = new Scalar(u,(max + (range.amount / 2)));
-        topLabel.Text = SensorUtils.ToFormattedString(maxScalar,true);
-      }
-
-      axis.MinimumPadding = 0.25;
-      axis.MaximumPadding = 0.25;
-      axis.AxislineStyle = LineStyle.Solid;
-      axis.AxislineThickness = 1;
-      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);
-    }
-
     /// <summary>
     /// Updates the axis to the given state for RoC based measurements.
     /// </summary>
@@ -355,9 +323,8 @@ namespace ION.IOS.ViewController.Workbench {
 
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
-      //axis.AxislineStyle = LineStyle.Solid;
-      //axis.AxislineThickness = 1;
-      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);
+      axis.AxislineStyle = LineStyle.Solid;
+      axis.AxislineThickness = 1;
     }
 
     /// <summary>
@@ -365,21 +332,21 @@ namespace ION.IOS.ViewController.Workbench {
     /// </summary>
     /// <returns>The plot model.</returns>
     public PlotModel CreatePlotModel(){
-      record.roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+			var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
       var model = new PlotModel();
 
       primaryColor = OxyColors.Blue;
       secondaryColor = OxyColors.Red;
       
-      if(record.roc.manifold.primarySensor.type == ESensorType.Temperature){
+      if(roc.manifold.primarySensor.type == ESensorType.Temperature){
         primaryColor = OxyColors.Red;
         secondaryColor = OxyColors.Blue;
-      } else if (record.roc.manifold.primarySensor.type == ESensorType.Vacuum){
+      } else if (roc.manifold.primarySensor.type == ESensorType.Vacuum){
         primaryColor = OxyColors.Maroon;
       }
-      Console.WriteLine("Creating roc plotmodel for " + record.roc.manifold.primarySensor.type+ " sensor with primary color " + primaryColor + " and secondary color " + secondaryColor);
-      
+      Console.WriteLine("Creating roc plotmodel for " + roc.manifold.primarySensor.type+ " sensor with primary color " + primaryColor + " and secondary color " + secondaryColor);
+
       BAX = new LinearAxis() {
         Position = AxisPosition.Bottom,
         Minimum = DateTime.Now.AddSeconds(-30).ToFileTime() - 100000,
@@ -387,8 +354,6 @@ namespace ION.IOS.ViewController.Workbench {
         IsAxisVisible = true,
         IsZoomEnabled = false,
         IsPanEnabled = false,
-        MinimumPadding = 3,
-        MaximumPadding = 3,
         Key = "time",
         LabelFormatter = (arg) => {
           var d = DateTime.FromFileTime((long)arg);
@@ -403,6 +368,7 @@ namespace ION.IOS.ViewController.Workbench {
         MajorGridlineStyle = LineStyle.None,
         MinorGridlineStyle = LineStyle.None,
         AxisTickToLabelDistance = 0.0,
+        TickStyle = TickStyle.None,
       };
 
       var baseUnit = record.manifold.primarySensor.unit.standardUnit;
@@ -425,8 +391,10 @@ namespace ION.IOS.ViewController.Workbench {
         AxislineThickness = 0,
         AxislineStyle = LineStyle.None,
         MajorGridlineStyle = LineStyle.None,
-        MinorGridlineStyle = LineStyle.None,        
-      };           
+        MinorGridlineStyle = LineStyle.None,
+        AxisTickToLabelDistance = 0.0,
+		    TickStyle = TickStyle.None,
+	    };
       
       RAX = new LinearAxis() {
         Position = AxisPosition.Right,
@@ -451,7 +419,9 @@ namespace ION.IOS.ViewController.Workbench {
         AxislineStyle = LineStyle.None,
         MajorGridlineStyle = LineStyle.None,
         MinorGridlineStyle = LineStyle.None,
-      };
+		    AxisTickToLabelDistance = 0.0,
+		    TickStyle = TickStyle.None,
+	    };
 
       primarySeries = new LineSeries() {
         StrokeThickness = 1,
@@ -473,7 +443,8 @@ namespace ION.IOS.ViewController.Workbench {
         YAxisKey = "second",
       };
       
-      model.PlotMargins = new OxyThickness(0,double.NaN,0,-5);
+      model.PlotMargins = new OxyThickness(-7,-7,-7,-5);
+      model.TitlePadding = 0.0;
 
       model.PlotType = PlotType.XY;
       model.Axes.Add(BAX);
@@ -481,6 +452,7 @@ namespace ION.IOS.ViewController.Workbench {
       model.Axes.Add(RAX);
       model.Series.Add(primarySeries);
       model.Series.Add(secondarySeries);
+
       model.PlotAreaBorderThickness = new OxyThickness(0);
       model.PlotAreaBorderColor = OxyColors.Transparent;	
 			
