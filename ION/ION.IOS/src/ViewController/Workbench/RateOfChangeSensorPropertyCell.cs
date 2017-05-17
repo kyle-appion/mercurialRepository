@@ -30,7 +30,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     public RateOfChangeSensorProperty roc { get; set; }
 
-    
+
     public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
     }
   }
@@ -149,8 +149,8 @@ namespace ION.IOS.ViewController.Workbench {
       }
       
       var sp = record.sensorProperty as RateOfChangeSensorProperty;
-			var rocScalar = sp.GetPrimaryAverageRateOfChange();
-			var abs = Math.Abs(rocScalar.magnitude);
+      var rocScalar = sp.GetPrimaryAverageRateOfChange();
+      var abs = Math.Abs(rocScalar.magnitude);
       var range = (sp.sensor.maxMeasurement.ConvertTo(rocScalar.unit) - sp.sensor.minMeasurement.ConvertTo(rocScalar.unit)) / 10;
 
       if (abs > range.magnitude) {
@@ -350,14 +350,14 @@ namespace ION.IOS.ViewController.Workbench {
         topLabel.Text = SensorUtils.ToFormattedString(range.ConvertTo(u),true);
       } else {
         axis.Maximum = max.amount + (range.amount / 2);
-        topLabel.Text = SensorUtils.ToFormattedString(new Scalar(u,(max.ConvertTo(u).amount + (range.ConvertTo(u).amount / 2))),true);       
+        topLabel.Text = SensorUtils.ToFormattedString(new Scalar(u,(max.ConvertTo(u).amount + (range.ConvertTo(u).amount / 2))),true);
       }
-      
+
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
       //axis.AxislineStyle = LineStyle.Solid;
       //axis.AxislineThickness = 1;
-      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);      
+      plotView.Model.PlotMargins = new OxyThickness(0,double.NaN, 0, double.NaN);
     }
 
     /// <summary>
@@ -367,7 +367,7 @@ namespace ION.IOS.ViewController.Workbench {
     public PlotModel CreatePlotModel(){
       record.roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
-      var model = new PlotModel();      
+      var model = new PlotModel();
 
       primaryColor = OxyColors.Blue;
       secondaryColor = OxyColors.Red;

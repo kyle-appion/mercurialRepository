@@ -105,7 +105,7 @@
 			var propCount = reader.ReadInt32();
 
 			for(int i = 0; i < propCount; i++){
-				ReadSensorProperty(ret, reader);
+				ReadSensorProperty(ion, ret, reader);
 			}
 
 			return ret;
@@ -128,11 +128,11 @@
 			}
 		}
 
-		private void ReadSensorProperty(Manifold manifold, BinaryReader reader) {
+		private void ReadSensorProperty(IION ion, Manifold manifold, BinaryReader reader) {
 			var code = (ECode)reader.ReadInt32();
 
 			var parser = parsers[code];
-			var sp = parser.Read(manifold, reader);
+			var sp = parser.Read(ion, manifold, reader);
 			if (sp != null) {
 				manifold.AddSensorProperty(sp);
 			}
@@ -162,7 +162,7 @@
 		/// <returns>The read.</returns>
 		/// <param name="manifold">Manifold.</param>
 		/// <param name="reader">Reader.</param>
-		ISensorProperty Read(Manifold manifold, BinaryReader reader);
+		ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader);
 		/// <summary>
 		/// Called to let the subview parser write its own data.
 		/// Note: you only need to write the subviews data, not its type information unless the subview needs if for its
@@ -183,7 +183,7 @@
 		}
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(Manifold manifold, BinaryReader reader) {
+		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
 			return (ISensorProperty)Activator.CreateInstance(typeof(T), manifold);
 		}
 
@@ -198,7 +198,7 @@
 		public ECode type { get { return ECode.AlternateUnit; } }
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(Manifold manifold, BinaryReader reader) {
+		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
 			var ret = new AlternateUnitSensorProperty(manifold);
 
 			var usunit = reader.ReadInt32();
@@ -226,10 +226,10 @@
 		public ECode type { get { return ECode.RoC; } }
 
 		// Implemented for ISubviewParser
-		public ISensorProperty Read(Manifold manifold, BinaryReader reader) {
-			var ret = new RateOfChangeSensorProperty(manifold);
+		public ISensorProperty Read(IION ion, Manifold manifold, BinaryReader reader) {
+      var ret = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
 
-			ret.Resize(TimeSpan.FromMilliseconds(reader.ReadDouble()), TimeSpan.FromMilliseconds(reader.ReadDouble()));
+      ret.Resize(ion.preferences.device.trendInterval);
 			ret.flags = (RateOfChangeSensorProperty.EFlags)reader.ReadInt32();
 
 			return ret;

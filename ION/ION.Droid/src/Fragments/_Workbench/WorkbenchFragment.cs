@@ -8,6 +8,7 @@ namespace ION.Droid.Fragments._Workbench {
   using Android.Support.V7.Widget;
   using Android.Support.V7.Widget.Helper;
   using Android.Views;
+  using Android.Widget;
 
 	using Appion.Commons.Util;
 
@@ -102,18 +103,7 @@ namespace ION.Droid.Fragments._Workbench {
       } catch (Exception e) {
         Log.E(this, "Something failed when starting the workbench fragment", e);
       }
-/*
-#if DEBUG
-			if (ion == null) {
-        Log.E(this, "ION was null at WorkbenchFragment.OnActivityCreated");
-				StartActivity(new Intent(Activity, typeof(MainActivity)));
-				Activity.Finish();
-				return;
-			}
-#endif
-*/
-		}
-
+    }
 
 		// Overridden from Fragment
     public override void OnResume() {
@@ -241,48 +231,16 @@ namespace ION.Droid.Fragments._Workbench {
 					StartActivityForResult(i, REQUEST_SHOW_SUPERHEAT_SUBCOOL);
 				}
 			} else if (sensorProperty is RateOfChangeSensorProperty) {
-				var i = new Intent(Activity, typeof(RoCActivity));
-				i.PutExtra(RoCActivity.EXTRA_MANIFOLD, new WorkbenchManifoldParcelable(workbench.IndexOf(manifold)));
-				StartActivity(i);
-			}
-		}
-
-    /// <summary>
-    /// Called when a manifold event is thrown by the manifold.
-    /// </summary>
-    /// <param name="manifoldEvent">Manifold event.</param>
-/*
-    private void OnWorkbenchEvent(WorkbenchEvent workbenchEvent) {
-			((SwipeRecyclerView)list).swipingEnabled = workbench.isEditable;
-
-      if (IsVisible) {
-        switch (workbenchEvent.type) {
-          case WorkbenchEvent.EType.Added:
-            goto case WorkbenchEvent.EType.Swapped;
-          case WorkbenchEvent.EType.Removed:
-            goto case WorkbenchEvent.EType.Swapped;
-          case WorkbenchEvent.EType.Swapped:
-            ion.SaveWorkbenchAsync();
-            break;
-          case WorkbenchEvent.EType.ManifoldEvent:
-						OnManifoldEvent(workbenchEvent.manifoldEvent);
-            break;
+        var ps = manifold.primarySensor as GaugeDeviceSensor;
+        if (ps != null && !ps.device.isConnected) {
+          Toast.MakeText(Activity, Resource.String.devices_error_connect_for_roc, ToastLength.Long).Show();
+        } else {
+          var i = new Intent(Activity, typeof(RoCActivity));
+          i.PutExtra(RoCActivity.EXTRA_MANIFOLD, new WorkbenchManifoldParcelable(workbench.IndexOf(manifold)));
+          StartActivity(i);
         }
-      }
-    }
-
-		private void OnManifoldEvent(ManifoldEvent manifoldEvent) {
-			switch (manifoldEvent.type) {
-				case ManifoldEvent.EType.SensorPropertyAdded:
-					goto case ManifoldEvent.EType.SensorPropertySwapped;
-				case ManifoldEvent.EType.SensorPropertyRemoved:
-					goto case ManifoldEvent.EType.SensorPropertySwapped;
-				case ManifoldEvent.EType.SensorPropertySwapped:
-					ion.SaveWorkbenchAsync();
-				break;
 			}
 		}
-*/
 
     /// <summary>
     /// Shows a context dialog for a manifold. This will present all the options that are available for
@@ -408,7 +366,7 @@ namespace ION.Droid.Fragments._Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
       }
 
@@ -472,7 +430,7 @@ namespace ION.Droid.Fragments._Workbench {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-				manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));;
+        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {

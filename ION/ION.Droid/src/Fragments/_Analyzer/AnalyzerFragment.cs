@@ -21,6 +21,7 @@ namespace ION.Droid.Fragments._Analyzer {
   using Activity;
   using Activity.DeviceManager;
 	using App;
+  using Content;
   using Dialog;
   using Sensors;
 
@@ -369,7 +370,7 @@ namespace ION.Droid.Fragments._Analyzer {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         ldb.AddItem(format(Resource.String.workbench_roc, Resource.String.workbench_roc_abrv), () => {
-					manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
       }
 
@@ -427,7 +428,7 @@ namespace ION.Droid.Fragments._Analyzer {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
-        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold));
+        manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MinSensorProperty))) {
@@ -598,7 +599,16 @@ namespace ION.Droid.Fragments._Analyzer {
 				ViewInPtChartActivity(manifold, sensorProperty);
       } else if (sensorProperty is SuperheatSubcoolSensorProperty) {
         ViewInSuperheatSubcoolActivity(manifold, sensorProperty);
-      }
+			} else if (sensorProperty is RateOfChangeSensorProperty) {
+				var ps = manifold.primarySensor as GaugeDeviceSensor;
+				if (ps != null && !ps.device.isConnected) {
+					Toast.MakeText(Activity, Resource.String.devices_error_connect_for_roc, ToastLength.Long).Show();
+				} else {
+					var i = new Intent(Activity, typeof(RoCActivity));
+          i.PutExtra(RoCActivity.EXTRA_MANIFOLD, new AnalyzerManifoldParcelable(analyzer.lowSideManifold == manifold));
+					StartActivity(i);
+				}
+			}
     }
 
 		private void ViewInPtChartActivity(Manifold manifold, ISensorProperty sensorProperty) {

@@ -5,13 +5,14 @@
   using Appion.Commons.Collections;
   using Appion.Commons.Measure;
 
-  using ION.Core.Content;
+  using ION.Core.App;
+	using ION.Core.Content;
   using ION.Core.Devices;
 
   public class RateOfChangeSensorProperty : AbstractSensorProperty {
 
-    private static TimeSpan GRAPH_WINDOW = TimeSpan.FromSeconds(30);
-    private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
+    private static int POINT_LIMIT = 300;
+		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
     private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(2);
     private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
@@ -60,14 +61,14 @@
     /// The buffer that will hold the rate of change.
     /// </summary>
     private RingBuffer<PlotPoint> rocBuffer;
-    /// <summary>
-    /// The buffer that will hold the primary sensor's history.
-    /// </summary>
-    private RingBuffer<PlotPoint> primarySensorBuffer;
-    /// <summary>
-    /// The buffer that will hold the primary sensor's history.
-    /// </summary>
-    private RingBuffer<PlotPoint> secondarySensorBuffer;
+		/// <summary>
+		/// The buffer that will hold the primary sensor's history.
+		/// </summary>
+		private RingBuffer<PlotPoint> primarySensorBuffer;
+		/// <summary>
+		/// The buffer that will hold the primary sensor's history.
+		/// </summary>
+		private RingBuffer<PlotPoint> secondarySensorBuffer;
     /// <summary>
     /// The buffer that will act as the buffer for calulcations or returning.
     /// </summary>
@@ -79,23 +80,24 @@
 
     private bool isRegisteredToSecondary;
 
-    [Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
-    public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
-    }
+//		[Obsolete("Don't call this constructor. It is only used for the analyzer (and remote) in iOS and needs to be removed")]
+//		public RateOfChangeSensorProperty(Sensor sensor) : this(new Manifold(sensor)) {
+//		}
 
-    public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_WINDOW, GRAPH_INTERVAL) {
-    }
+//		public RateOfChangeSensorProperty(Manifold manifold) : this(manifold, GRAPH_INTERVAL) {
+//		}
 
-    public RateOfChangeSensorProperty(Manifold manifold, TimeSpan window, TimeSpan interval) : base(manifold) {
-      this.window = window;
+		public RateOfChangeSensorProperty(Manifold manifold, TimeSpan interval) : base(manifold) {
       this.interval = interval;
-      flags = EFlags.ShowAll;
-      var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
+      window = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * POINT_LIMIT);
+			flags = EFlags.ShowAll;
+      var size = POINT_LIMIT;
       rocBuffer = new RingBuffer<PlotPoint>((int)(ROC_WINDOW.TotalMilliseconds / ROC_INTERVAL.TotalMilliseconds));
-      primarySensorBuffer = new RingBuffer<PlotPoint>(size);
+			primarySensorBuffer = new RingBuffer<PlotPoint>(size);
       secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
       buffer = new PlotPoint[size];
-    }
+      AppState.context.preferences.onPreferencesChanged += OnPreferencesChanged;
+		}
 
     // Overridden from AbstractSensorProperty
     public override void Reset() {
@@ -114,20 +116,21 @@
         rocBuffer.Clear();
       }
 
-      if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
-        manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
-      }
-    }
+			if (manifold.secondarySensor != null && !isRegisteredToSecondary) {
+				manifold.secondarySensor.onSensorStateChangedEvent += SensorChangeEvent;
+			}
+		}
 
-    // Overridden from AbstractSensorProperty
-    public override void Dispose() {
-      base.Dispose();
-      if (isRegisteredToSecondary) {
-        if (manifold.secondarySensor != null) {
-          manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
-        }
-      }
-    }
+		// Overridden from AbstractSensorProperty
+		public override void Dispose() {
+			base.Dispose();
+			if (isRegisteredToSecondary) {
+				if (manifold.secondarySensor != null) {
+					manifold.secondarySensor.onSensorStateChangedEvent -= SensorChangeEvent;
+				}
+			}
+			AppState.context.preferences.onPreferencesChanged -= OnPreferencesChanged;
+		}
 
     // Overridden from AbstractSensorProperty
     protected override void OnManifoldEvent(ManifoldEvent e) {
@@ -187,27 +190,27 @@
     /// <param name="flags">Flags.</param>
     public bool ToggleFlags(EFlags flags) {
       this.flags ^= flags;
-      return (this.flags & flags) == flags; 
+      return (this.flags & flags) == flags;
     }
 
-    /// <summary>
-    /// Queries the average rate of change of the graph.
-    /// </summary>
-    /// <returns>The average rate of change.</returns>
-    /// <param name="window">Window.</param>
-    /// <param name="timeUnit">The unit of time for this rate of change.</param>
-    public ScalarSpan GetPrimaryAverageRateOfChange() {
+		/// <summary>
+		/// Queries the average rate of change of the graph.
+		/// </summary>
+		/// <returns>The average rate of change.</returns>
+		/// <param name="window">Window.</param>
+		/// <param name="timeUnit">The unit of time for this rate of change.</param>
+		public ScalarSpan GetPrimaryAverageRateOfChange() {
       TrimRoc();
       var p = new PlotPoint[rocBuffer.count];
-      var pu = sensor.unit.standardUnit;
+			var pu = sensor.unit.standardUnit;
       var cnt = rocBuffer.ToArray(p);
-      if (cnt == 0) {
+			if (cnt == 0) {
         return pu.OfSpan(0);
       }
       var pmag = (p[0].measurement - p[cnt - 1].measurement) / (ROC_WINDOW.TotalMilliseconds / TimeSpan.FromSeconds(60).TotalMilliseconds);
-      var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
-      return ret;
-    }
+			var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
+			return ret;
+		}
 
     public MinMax GetPrimaryMinMax() {
       double min = double.MaxValue, max = double.MinValue;
@@ -220,7 +223,7 @@
           max = dp.measurement;
         }
       }
-        
+
       var u = manifold.primarySensor.unit.standardUnit;
       return new MinMax(u.OfScalar(min), u.OfScalar(max));
     }
@@ -246,31 +249,32 @@
     }
 
     /// <summary>
-    /// Sets the new window size for the graph sensor property.
-    /// </summary>
-    /// <param name="window">Window.</param>
-    public void Resize(TimeSpan window, TimeSpan interval) {
-      this.window = window;
-      var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
-      primarySensorBuffer.Resize(size);
-      secondarySensorBuffer.Resize(size);
-    }
+		/// Sets the new window size for the graph sensor property.
+		/// </summary>
+		/// <param name="window">Window.</param>
+		public void Resize(TimeSpan interval) {
+      this.interval = interval;
+			window = TimeSpan.FromMilliseconds(interval.TotalMilliseconds * POINT_LIMIT);
+			var size = (int)(window.TotalMilliseconds / interval.TotalMilliseconds);
+			primarySensorBuffer.Resize(size);
+			secondarySensorBuffer.Resize(size);
+		}
 
-    private void RegisterPoint() {
-      Trim();
+		private void RegisterPoint() {
+			Trim();
       var gds = sensor as GaugeDeviceSensor;
       if (gds != null && gds.device.isConnected) {
         rocBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
       }
-      if (DateTime.Now - lastRecord >= interval) {
-        primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
-        if (manifold.secondarySensor != null) {
-          var ss = manifold.secondarySensor;
-          secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));
-        }
-        lastRecord = DateTime.Now;
-      }
-    }
+			if (DateTime.Now - lastRecord >= interval) {
+				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+				if (manifold.secondarySensor != null) {
+					var ss = manifold.secondarySensor;
+					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));
+				}
+				lastRecord = DateTime.Now;
+			}
+		}
 
     /// <summary>
     /// Ensure that the content of the buffer is up to date.
@@ -286,16 +290,21 @@
       while (now - rocBuffer.last.date > ROC_WINDOW && rocBuffer.RemoveLast());
     }
 
-    /// <summary>
-    /// The flags that maintain the RoC's binary states.
-    /// </summary>
-    [Flags]
-    public enum EFlags {
-      ShowAll = ShowPrimary | ShowSecondary | ShowTertiary,
-      ShowPrimary = 1 << 0,
-      ShowSecondary = 1 << 1,
-      ShowTertiary = 1 << 2,
+    private void OnPreferencesChanged() {
+      var ion = AppState.context;
+      this.Resize(ion.preferences.device.trendInterval);
     }
+
+		/// <summary>
+		/// The flags that maintain the RoC's binary states.
+		/// </summary>
+		[Flags]
+		public enum EFlags {
+			ShowAll = ShowPrimary | ShowSecondary | ShowTertiary,
+			ShowPrimary = 1 << 0,
+			ShowSecondary = 1 << 1,
+			ShowTertiary = 1 << 2,
+		}
 
     /// <summary>
     /// A structure representing the x,y points on the graph.
