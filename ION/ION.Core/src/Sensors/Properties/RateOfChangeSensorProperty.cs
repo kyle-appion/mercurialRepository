@@ -13,7 +13,7 @@
 
     private static int POINT_LIMIT = 300;
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
-    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(2);
+    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(5);
     private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
     // Overridden from AbstractSensorProperty
@@ -268,6 +268,7 @@
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+        Appion.Commons.Util.Log.D(this, "Added primary sensor buffer" + lastRecord);
 				if (manifold.secondarySensor != null) {
 					var ss = manifold.secondarySensor;
 					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));

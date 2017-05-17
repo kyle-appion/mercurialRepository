@@ -6,7 +6,7 @@
   public class Slice<T> : IList<T> {
 
     // Implemented from IList
-    public int Count { get { return endIndex - startIndex; } }
+    public int Count { get { return endIndex - startIndex + 1; } }
     // Implemented from IList
     public bool IsFixedSize { get { return true; } }
     // Implemented from IList
