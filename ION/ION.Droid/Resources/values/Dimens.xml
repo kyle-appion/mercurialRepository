@@ -177,7 +177,7 @@
   <!-- The text size for the measurement view in the viewer's content. -->
   <dimen name="viewer_measurement_text_size">64sp</dimen>
   <!-- The size of the icons in the large subview list item. -->
-  <dimen name="viewer_subview_large">36dp</dimen>
+  <dimen name="viewer_subview_large">48dp</dimen>
   <!-- The size of the icons in the large subview list item. -->
   <dimen name="viewer_subview_huge">90dp</dimen>
   <!-- The size of the icons in the large subview list item. -->

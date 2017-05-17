@@ -22,6 +22,7 @@
 	using ION.Core.Devices;
 	using ION.Core.Devices.Protocols;
 	using ION.Core.Fluids;
+  using ION.Core.IO;
 	using ION.Core.Sensors;
 	using ION.Core.Sensors.Properties;
 
@@ -45,6 +46,8 @@
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
 		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
+//    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
+    private const string URL_RSS_FEED = "http://www.buildtechhere.com/RSS/feed.xml";
 		private const string URL_UPDATE_ACCOUNT = "http://portal.appioninc.com/App/updateAccount.php";
 		private const string URL_FORGOT_ACCOUNT = "http://portal.appioninc.com/App/forgotUserPass.php";
 		private const string URL_LOGIN_USER = "http://portal.appioninc.com/App/applogin.php";
@@ -224,6 +227,31 @@
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
 		}
+
+    /// <summary>
+    /// Downloads the current rss feed from the appion server.
+    /// </summary>
+    /// <returns>The rss async.</returns>
+    public Task<Rss> DownloadRssAsync() {
+      return Task.Factory.StartNew(() => {
+        var request = WebRequest.Create(URL_RSS_FEED);
+        var response = request.GetResponse() as HttpWebResponse;
+        if (response.StatusCode == HttpStatusCode.OK) {
+          var stream = response.GetResponseStream();
+          using (stream) {
+            try {
+              return RssParser.ParseFeedOrThrow(stream);
+            } catch (Exception e) {
+              Log.E(this, "Failed to parse rss feed", e);
+              return null;
+            }
+          }
+        } else {
+          Log.E(this, "Failed to resolve rss feed from server");
+          return (Rss)null;
+        }
+      });
+    }
 
 		/// <summary>
 		/// Logs the current user out.

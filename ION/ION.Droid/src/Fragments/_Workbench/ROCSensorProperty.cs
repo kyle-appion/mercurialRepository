@@ -84,23 +84,26 @@
         IsAxisVisible = true,
         IsZoomEnabled = false,
         IsPanEnabled = false,
-        MinimumPadding = 3,
-        MaximumPadding = 3,
+        MinimumPadding = 0,
+        MaximumPadding = 0,
         Key = "time",
         LabelFormatter = (arg) => {
           var d = DateTime.FromFileTime((long)arg);
           return d.Hour.ToString("00") + ":" + d.Minute.ToString("00") + ":" + d.Second.ToString("00");
         },
         Font = model.DefaultFont,
-        FontSize = 15,
+        FontSize = 10,
         TextColor = OxyColors.Black,
         AxislineThickness = 0,
         AxislineStyle = LineStyle.None,
         MajorGridlineStyle = LineStyle.None,
         MinorGridlineStyle = LineStyle.None,
+        AxisTickToLabelDistance = 0,
       };
+ //     xAxis.AxisTickToLabelDistance = -1000; //-(MeasureTextHeight(xAxis) + xAxis.majorTickSize + 5);
+			//       axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
 
-      var baseUnit = record.manifold.primarySensor.unit.standardUnit;
+			var baseUnit = record.manifold.primarySensor.unit.standardUnit;
       primaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Left,
         Minimum = 0,
@@ -109,19 +112,21 @@
         IsZoomEnabled = false,
         IsPanEnabled = false,
         Key = "first",
+/*
         LabelFormatter = (arg) => {
           var u = record.manifold.primarySensor.unit;
           var p = SensorUtils.ToFormattedString(u.standardUnit.OfScalar(arg).ConvertTo(u), true);
           return p;
         },
+*/
         Font = model.DefaultFont,
-        FontSize = 15,
+        FontSize = 7,
         TextColor = OxyColors.Black,
         AxislineThickness = 0,
         AxislineStyle = LineStyle.None,
         MajorGridlineStyle = LineStyle.None,
         MinorGridlineStyle = LineStyle.None,
-      };
+		};
 
       secondaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Right,
@@ -131,6 +136,7 @@
         IsZoomEnabled = false,
         IsPanEnabled = false,
         Key = "second",
+/*  
         LabelFormatter = (arg) => {
           if (record.manifold.secondarySensor != null) {
             var u = record.manifold.secondarySensor.unit;
@@ -139,8 +145,9 @@
             return "";
           }
         },
+*/
         Font = model.DefaultFont,
-        FontSize = 15,
+        FontSize = 7,
         TextColor = OxyColors.Black,
         AxislineThickness = 0,
         AxislineStyle = LineStyle.None,
@@ -168,6 +175,7 @@
         YAxisKey = "second",
       };
 
+      model.PlotMargins = new OxyThickness(-7, -7, -7, 2);
       model.PlotType = PlotType.XY;
       model.Axes.Add(xAxis);
       model.Axes.Add(primaryAxis);
@@ -234,6 +242,7 @@
       axis.MajorStep = (long)((roc.window.TotalMilliseconds * 1e4) / 2);
       axis.MinorStep = axis.MajorStep / 5;
       axis.AxislineStyle = LineStyle.Solid;
+      axis.TickStyle = TickStyle.None;
       axis.AxislineThickness = 1;
     }
 
@@ -369,20 +378,15 @@
 
       axis.MajorStep = mod;
       axis.MinimumMajorStep = mod;
-      axis.MajorTickSize = 10;
-      axis.TicklineColor = OxyColors.Black;
-/*
-      axis.MinorStep = tmod;
-      axis.MinimumMinorStep = tmod;
-      axis.MinorTickSize = 5;
-      axis.MinorTicklineColor = OxyColors.Black;
-*/
+      axis.TickStyle = TickStyle.None;
+//      axis.MajorTickSize = 10;
+//      axis.TicklineColor = OxyColors.Black;
 
-      axis.MinimumPadding = 0.25;
-      axis.MaximumPadding = 0.25;
-      axis.AxislineStyle = LineStyle.Solid;
-      axis.AxislineThickness = 1;
-      axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
+//      axis.MinimumPadding = 0.25;
+//      axis.MaximumPadding = 0.25;
+//      axis.AxislineStyle = LineStyle.Solid;
+//      axis.AxislineThickness = 1;
+//      axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
     }
 
     /// <summary>
