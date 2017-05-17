@@ -268,7 +268,6 @@
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
-        Appion.Commons.Util.Log.D(this, "Added primary sensor buffer" + lastRecord);
 				if (manifold.secondarySensor != null) {
 					var ss = manifold.secondarySensor;
 					secondarySensorBuffer.Add(new PlotPoint(ss.measurement.ConvertTo(ss.unit.standardUnit).amount));

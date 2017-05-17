@@ -51,9 +51,7 @@ namespace ION.IOS.ViewController.Workbench {
     public UILabel BLMeasurement;
     public UILabel TRMeasurement;
     public UILabel BRMeasurement;
-    
-    public GaugeDeviceSensor gaugeSensor;
-    
+
     public bool isConnected = false;
     		
     private RateOfChangeRecord record {
@@ -88,8 +86,7 @@ namespace ION.IOS.ViewController.Workbench {
 
     public async void UpdateTo(RateOfChangeRecord record) {
       await Task.Delay(TimeSpan.FromMilliseconds(200));
-      gaugeSensor = record.manifold.primarySensor  as GaugeDeviceSensor;
-      
+
     	this.Layer.BorderWidth = 1f;  
       this.record = record;
       labelTitle.Text = Strings.Workbench.Viewer.ROC;
