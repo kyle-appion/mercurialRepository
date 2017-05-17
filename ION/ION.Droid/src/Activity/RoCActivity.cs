@@ -15,7 +15,9 @@
   using OxyPlot.Series;
   using OxyPlot.Xamarin.Android;
 
+  using Appion.Commons.Math;
   using Appion.Commons.Measure;
+  using Appion.Commons.Util;
 
   using ION.Core.Content;
   using ION.Core.Devices;
@@ -25,8 +27,11 @@
 
   using ION.Droid.Content;
   using ION.Droid.Devices;
+  using ION.Droid.Util;
+  using ION.Droid.Sensors.Properties;
+  using ION.Droid.Widgets.RecyclerViews;
 
-  [Activity(Label = "US RoC", ScreenOrientation = ScreenOrientation.Portrait)]
+  [Activity(Label = "@string/live_trending", ScreenOrientation = ScreenOrientation.Portrait)]
   public class RoCActivity : IONActivity {
     /// <summary>
     /// The extra that pulls a ManifoldParcelable from the launching intent.
@@ -37,19 +42,21 @@
     private Manifold manifold;
     private RateOfChangeSensorProperty roc;
 
+    private TextView title;
+
     private View content1;
     private View content2;
+
+    private TextView text1;
+    private TextView text2;
 
     private ImageView icon1;
     private ImageView icon2;
 
-    private CheckBox check1;
-    private CheckBox check2;
-
     private PlotModel model;
     private LinearAxis xAxis;
-    private LinearAxis primaryAxis;
-    private LinearAxis secondaryAxis;
+    private MinMaxLineSeries primaryAxis;
+    private MinMaxLineSeries secondaryAxis;
 
     private LineSeries primarySeries;
     private LineSeries secondarySeries;
@@ -68,25 +75,18 @@
 
       plot = FindViewById<PlotView>(Resource.Id.graph);
 
+      title = FindViewById<TextView>(Resource.Id.title);
+
       content1 = FindViewById(Resource.Id._1);
       content2 = FindViewById(Resource.Id._2);
 
-      icon1 = content1.FindViewById<ImageView>(Resource.Id.icon);
+			text1 = content1.FindViewById<TextView>(Resource.Id.text);
+			text2 = content2.FindViewById<TextView>(Resource.Id.text);
+
+			icon1 = content1.FindViewById<ImageView>(Resource.Id.icon);
       icon2 = content2.FindViewById<ImageView>(Resource.Id.icon);
 
-      check1 = content1.FindViewById<CheckBox>(Resource.Id.checkbox);
-      check2 = content2.FindViewById<CheckBox>(Resource.Id.checkbox);
-
       LoadManifold();
-      InitViews();
-
-      check1.CheckedChange += (obj, args) => {
-        primarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowPrimary);
-      };
-
-      check2.CheckedChange += (obj, args) => {
-        secondarySeries.IsVisible = roc.ToggleFlags(ROCFlags.ShowSecondary);
-      };
 
       var dm = Resources.DisplayMetrics;
       var scale = dm.Density;
@@ -133,8 +133,18 @@
 
     private void InvalidateTime() {
       var axis = xAxis;
+      var roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
+      if (roc == null) {
+        return;
+      }
 
       var points = roc.primarySensorPoints;
+
+      if (points.Count <= 0) {
+        Log.D(this, "Failed to invalidate time: points.count was " + points.Count);
+        return;
+      }
       var startTime = points[0];
       var endTime = points[points.Count - 1].date;
 
@@ -148,11 +158,15 @@
     }
 
     private void InvalidatePrimary() {
-      var averageChange = roc.GetPrimaryAverageRateOfChange(TimeSpan.FromSeconds(2), TimeSpan.FromMinutes(1));
+      var roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
+      if (roc == null) {
+        return;
+      }
 
       var minMax = roc.GetPrimaryMinMax();
 
-      UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit);
+      UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit, 1, 5);
 
       var primaryBuffer = roc.primarySensorPoints;
       var l = primaryBuffer.Count;
@@ -177,16 +191,22 @@
         return;
       }
 
+      var roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
+
+      if (roc == null) {
+        return;
+      }
+
       var minMax = roc.GetSecondaryMinMax();
 
-      UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit);
+      UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit, 1, 5);
 
       var secondaryBuffer = roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
       // Resize the points list
       // Trim down to size
       while (secondarySeries.Points.Count > l) {
-        secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);
+        secondarySeries.Points.RemoveAt(secondarySeries.Points.Count - 1);  
       }
       // Add any missing items
       while (secondarySeries.Points.Count < l) {
@@ -203,36 +223,51 @@
     /// Updates the axis to the given state.
     /// </summary>
     /// <param name="axis">Axis.</param>
-    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Unit u, int major = 3, int minor = 5) {
+    private void UpdateAxis(MinMaxLineSeries axis, Scalar min, Scalar max, Unit u, int major = 2, int minor = 5) {
       var su = u.standardUnit;
-      var diff = (max - min).ConvertTo(su).magnitude;
 
-      if (diff != 0) {
-        axis.Minimum = min.ConvertTo(su).amount;
-        axis.Maximum = max.ConvertTo(su).amount;
-      } else {
-        var one = u.OfScalar(1);
-        axis.Minimum = (min - one).ConvertTo(su).magnitude;
-        axis.Maximum = (max + one).ConvertTo(su).magnitude;
-        diff = u.OfScalar(3).ConvertTo(su).amount;
+      var minMag = min.ConvertTo(u).amount;
+      var maxMag = max.ConvertTo(u).amount;
+
+      minMag = minMag.TruncateToSignifiantDigits(2);
+      maxMag = maxMag.RoundToSignificantDigits(2);
+
+
+      if (maxMag - minMag == 0) {
+        if (minMag == 0) {
+          minMag -= u.OfScalar(1).amount;
+          maxMag += u.OfScalar(1).amount;
+        } else {
+          var del = Math.Pow(10, Math.Floor(Math.Log10(minMag)) - 1);
+          minMag -= del;
+          maxMag += del;
+        }
       }
 
-      var padding = diff * 0.1;
+      minMag = u.OfScalar(minMag).ConvertTo(su).amount;
+      maxMag = u.OfScalar(maxMag).ConvertTo(su).amount;
+      var diff = (maxMag - minMag);
+      var mod = diff / major;
+
+      axis.SetMinMax(minMag, maxMag);
+
+      axis.Minimum = minMag;
+      axis.Maximum = maxMag;
+
+      var padding = diff * 0.20;
       axis.Minimum -= padding;
       axis.Maximum += padding;
-
-      var mod = (int)diff / major;
-      var tmod = mod / (double)minor;
 
       axis.MajorStep = mod;
       axis.MinimumMajorStep = mod;
       axis.MajorTickSize = 10;
       axis.TicklineColor = OxyColors.Black;
-
+/*
       axis.MinorStep = tmod;
       axis.MinimumMinorStep = tmod;
       axis.MinorTickSize = 5;
       axis.MinorTicklineColor = OxyColors.Black;
+*/
 
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;
@@ -251,37 +286,58 @@
       IList<double> majorTickValues = new List<double>();
       IList<double> minorTickValues = new List<double>();
 
-      if (axis.ActualMinorStep == 0 || axis.ActualMaximum == 0) {
+      if (axis.ActualMinorStep == 0 || axis.ActualMajorStep == 0) {
+        return 0;
+      }
+
+      try {
+        axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
+
+        double bestWidth = 0;
+        foreach (var label in majorLabelValues) {
+          var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
+          if (size.Width > bestWidth) {
+            bestWidth = size.Width;
+          }
+        }
+
+        return bestWidth;
+      } catch (Exception e) {
+        Log.E(this, "Failing to measure text width", e);
+        return 0;
+      }
+    }
+
+    /// <summary>
+    /// Measures the height of the text.
+    /// </summary>
+    /// <returns>The text height.</returns>
+    /// <param name="axis">Axis.</param>
+    private double MeasureTextHeight(LinearAxis axis) {
+      IList<double> majorLabelValues = new List<double>();
+      IList<double> majorTickValues = new List<double>();
+      IList<double> minorTickValues = new List<double>();
+
+      if (axis.ActualMinorStep == 0 || axis.ActualMajorStep == 0) {
         return 0;
       }
 
       axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
-      double bestWidth = 0;
+      double bestHeight = 0;
       foreach (var label in majorLabelValues) {
         var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
-        if (size.Width > bestWidth) {
-          bestWidth = size.Width;
+        if (size.Width > bestHeight) {
+          bestHeight = size.Height;
         }
       }
 
-      return bestWidth;
+      return bestHeight;
     }
 
     private void OnHandleMessage(Message message) {
       Invalidate();
       handler.SendEmptyMessageDelayed(0, 100);
-    }
-
-    private void InitViews() {
-      primarySeries.IsVisible = check1.Checked = roc.HasFlag(ROCFlags.ShowPrimary);
-      secondarySeries.IsVisible = check2.Checked = roc.HasFlag(ROCFlags.ShowSecondary);
-
-      check1.Text = manifold.primarySensor.type.GetSensorTypeName();
-
-      if (manifold.secondarySensor != null) {
-        check2.Text = manifold.secondarySensor.type.GetSensorTypeName();
-      }
     }
 
     private void LoadManifold() {
@@ -301,6 +357,36 @@
         return;
       }
 
+      // Primary sensor
+      var ps = manifold.primarySensor;
+      text1.Text = ps.type.GetSensorTypeName() + " " + ps.name;
+
+      // Secondary sensor
+      if (manifold.secondarySensor != null) {
+        var ss = manifold.secondarySensor;
+        text2.Text = ss.type.GetSensorTypeName() + " " + ss.name;
+      } else {
+        content2.Visibility = ViewStates.Gone;
+      }
+
+      // Title
+      var values = Resources.GetStringArray(Resource.Array.preferences_device_trend_interval_values);
+      var entries = Resources.GetStringArray(Resource.Array.preferences_device_trend_interval_entries);
+      var interval = ion.preferences.device.trendInterval;
+
+      var index = -1;
+      for (int i = 0; i < values.Length; i++) {
+        if (values[i].Equals((int)interval.TotalMilliseconds + "")) {
+          index = i;
+        }        
+      }
+
+      if (index == -1) {
+        Log.E(this, "Failed to find text for interval: " + interval);
+      } else {
+        title.Text = string.Format(GetString(Resource.String.trend_update_1arg), entries[index]);
+      }
+
       roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
       if (roc == null) {
         Error("How did you get here if the manifold doesn't have a RateOfChangeSensorProperty");
@@ -309,15 +395,12 @@
       }
 
       // Initialize the plot
-      model = new PlotModel() {
-        Padding = new OxyThickness(5),
-      };
+      model = new PlotModel();
 
       xAxis = new LinearAxis() {
         Position = AxisPosition.Bottom,
         Minimum = 0,
         Maximum = roc.window.TotalMilliseconds,
-
         IsAxisVisible = true,
         IsZoomEnabled = false,
         IsPanEnabled = false,
@@ -331,10 +414,14 @@
         Font = model.DefaultFont,
         FontSize = 15,
         TextColor = OxyColors.Black,
+        AxislineThickness = 0,
+        AxislineStyle = LineStyle.None,
+        MajorGridlineStyle = LineStyle.None,
+        MinorGridlineStyle = LineStyle.None,
       };
 
       var baseUnit = manifold.primarySensor.unit.standardUnit;
-      primaryAxis = new LinearAxis() {
+      primaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Left,
         Minimum = 0,
         Maximum = 100,
@@ -350,9 +437,13 @@
         Font = model.DefaultFont,
         FontSize = 15,
         TextColor = OxyColors.Black,
+        AxislineThickness = 0,
+        AxislineStyle = LineStyle.None,
+        MajorGridlineStyle = LineStyle.None,
+        MinorGridlineStyle = LineStyle.None,
       };
 
-      secondaryAxis = new LinearAxis() {
+      secondaryAxis = new MinMaxLineSeries() {
         Position = AxisPosition.Right,
         Minimum = 0,
         Maximum = 100,
@@ -371,6 +462,10 @@
         Font = model.DefaultFont,
         FontSize = 15,
         TextColor = OxyColors.Black,
+        AxislineThickness = 0,
+        AxislineStyle = LineStyle.None,
+        MajorGridlineStyle = LineStyle.None,
+        MinorGridlineStyle = LineStyle.None,
       };
 
       primarySeries = new LineSeries() {
@@ -399,7 +494,26 @@
       model.Axes.Add(secondaryAxis);
       model.Series.Add(primarySeries);
       model.Series.Add(secondarySeries);
+      model.PlotAreaBorderThickness = new OxyThickness(0);
+      model.PlotAreaBorderColor = OxyColors.Transparent;
       plot.Model = model;
+    }
+  }
+
+  internal class MinMaxLineSeries : LinearAxis {
+    private double min;
+    private double max;
+
+    public void SetMinMax(double min, double max) {
+      this.min = min;
+      this.max = max;
+    }
+
+    protected override IList<double> CreateTickValues(double from, double to, double step, int maxTicks) {
+      var list = new List<double>();
+      list.Add(min);
+      list.Add(max);
+      return list;
     }
   }
 }

@@ -138,8 +138,8 @@
 				case CODE_SP_HOLD:
 				return new HoldSensorProperty(manifold);
 
-				case CODE_SP_ROC:
-				return new RateOfChangeSensorProperty(manifold);
+//				case CODE_SP_ROC:
+//				return new RateOfChangeSensorProperty(manifold);
 
 				case CODE_SP_TIMER:
 				return new TimerSensorProperty(manifold);
@@ -164,8 +164,8 @@
 				return CODE_SP_MAX;
 			} else if (sp is HoldSensorProperty) {
 				return CODE_SP_HOLD;
-			} else if (sp is RateOfChangeSensorProperty) {
-				return CODE_SP_ROC;
+//			} else if (sp is RateOfChangeSensorProperty) {
+//				return CODE_SP_ROC;
 			} else if (sp is TimerSensorProperty) {
 				return CODE_SP_TIMER;
 			} else if (sp is SecondarySensorProperty) {

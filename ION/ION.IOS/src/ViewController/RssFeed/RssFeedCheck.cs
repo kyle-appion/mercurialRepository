@@ -130,7 +130,7 @@ namespace ION.IOS.ViewController.RssFeed {
           var newTime = DateTime.Now.ToLocalTime().ToString();
           NSUserDefaults.StandardUserDefaults.SetString(newTime, "rssCheck");
       }
-        IsReadingXML = false;       
+        IsReadingXML = false;
 		}
 
 		public async void createRssPopup(Update feed){

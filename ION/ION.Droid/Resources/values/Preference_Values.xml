@@ -27,6 +27,9 @@
   <string name="preferences_device_auto_connect_title">Auto-connect Device</string>
   <string name="preferences_device_long_range">Whether or not ION should use long-range mode. Note: this will use more of your device\'s battery while enabled.</string>
   <string name="preferences_device_long_range_title">Use Long-Range Mode</string>
+  <string name="preferences_device_trend_interval">The interval that Rate of Change data points are recorded.</string>
+  <string name="preferences_device_trend_interval_title">RoC Update Interval</string>
+
 
   <string name="preferences_display_wakelock">Keep Screen On</string>
   <string name="preferences_display_wakelock_on">Your device\'s screen will not turn off while ION is displayed. WARNING: This may reduce battery life.</string>
@@ -63,6 +66,7 @@
   <!--
   INTEGERS
   -->
+  <integer name="preferences_device_trend_interval_default">1000</integer>
   <integer name="preferences_units_length_default">21</integer>
   <integer name="preferences_units_pressure_default">7</integer>
   <integer name="preferences_units_temperature_default">18</integer>
@@ -70,6 +74,24 @@
   <integer name="preferences_units_weight_default">24</integer>
 
 	<integer name="preferences_reporting_data_log_interval_default">60</integer>
+
+  <!--
+  DEVICE
+	-->
+  <string-array name="preferences_device_trend_interval_entries">
+    <item>10x second</item>
+    <item>1 second</item>
+    <item>10 seconds</item>
+    <item>30 seconds</item>
+	</string-array>
+
+  <!-- Mapped to an enumeration found in AppPrefs.cs -->
+  <string-array name="preferences_device_trend_interval_values">
+    <item>100</item>
+    <item>1000</item>
+    <item>10000</item>
+    <item>30000</item>
+	</string-array>
 
   <!--
   DEFAULT UNITS
