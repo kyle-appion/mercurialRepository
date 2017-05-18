@@ -1,5 +1,5 @@
 ﻿namespace ION.Droid.Preferences {
-  
+
   using System;
 
   using Android.Content;
@@ -94,7 +94,7 @@
     /// <value><c>true</c> if first launch; otherwise, <c>false</c>.</value>
     public bool firstLaunch {
       get {
-        var ret = prefs.GetBoolean(context.GetString(Resource.String.pkey_first_launch), true);        
+        var ret = prefs.GetBoolean(context.GetString(Resource.String.pkey_first_launch), true);
 
         if (ret) {
           var e = prefs.Edit();
@@ -451,21 +451,21 @@
     /// <value>The last rss check date.</value>
     public DateTime lastRssCheckDate {
       get {
-        var usDateString = GetString(Resource.String.pkey_network_last_rss_check_date, null);
+        var usDateString = GetString(Resource.String.pkey_rss_last_check_date, null);
         if (usDateString == null) {
           return new DateTime(1, 1, 1);
         } else {
           try {
             return DateTime.Parse(usDateString);
           } catch (Exception e) {
-            var key = context.GetString(Resource.String.pkey_network_last_rss_check_date);
+            var key = context.GetString(Resource.String.pkey_rss_last_check_date);
             Log.E(this, "Failed to DateTime parse preference: " + key + " {" + usDateString + "}", e);
             return new DateTime(1, 1, 1);
           }
         }
       }
       set {
-        PutString(Resource.String.pkey_network_last_rss_check_date, value.ToLongDateString());
+        PutString(Resource.String.pkey_rss_last_check_date, value.ToLongDateString());
       }
     }
 
@@ -476,7 +476,7 @@
   /// <summary>
   /// The preferences that are used to query the application's default unit preferences.
   /// </summary>
-  public class UnitPreferences : BasePreferences, IUnitPreferences { 
+  public class UnitPreferences : BasePreferences, IUnitPreferences {
     // Overridden from IUnits
     public Unit length {
       get {
@@ -556,7 +556,7 @@
       var key = context.GetString(preferenceKey);
 
       try {
-        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));  
+        var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));
         return ret;
       } catch (Exception e) {
         Log.E(this, "Failed to retrieve unit for key: " + key, e);
@@ -642,4 +642,3 @@
 		}
 	}
 }
-

@@ -451,6 +451,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   RSS
 	-->
   <string name="rss">RSS Update</string>
+	<string name="rss_feed">RSS Feed</string>
 
   <!--
   PORTAL

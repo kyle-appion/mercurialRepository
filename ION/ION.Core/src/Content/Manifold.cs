@@ -453,7 +453,11 @@
 		/// <returns>The device event.</returns>
 		/// <param name="de">De.</param>
 		private void OnDeviceEvent(DeviceEvent de) {
-			NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+      if (de.type == DeviceEvent.EType.NameChanged || de.type == DeviceEvent.EType.ConnectionChange) {
+        NotifyOfEvent(ManifoldEvent.EType.Invalidated);
+      } else if (de.type == DeviceEvent.EType.Deleted) {
+        Log.E(this, "Not responding to device being deleted from workbench");
+      }
 		}
 
     /// <summary>

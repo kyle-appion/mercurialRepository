@@ -77,6 +77,10 @@
 		/// The last time that a record was added to the buffer.
 		/// </summary>
 		private DateTime lastRecord;
+    /// <summary>
+    /// The last time that the roc buffer was updated.
+    /// </summary>
+    private DateTime lastRocRecord;
 
 		private bool isRegisteredToSecondary;
 
@@ -263,8 +267,9 @@
 		private void RegisterPoint() {
 			Trim();
       var gds = sensor as GaugeDeviceSensor;
-      if (gds != null && gds.device.isConnected) {
+      if (gds != null && gds.device.isConnected && (DateTime.Now - lastRocRecord) >= TimeSpan.FromMilliseconds(100)) {
         rocBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+        lastRocRecord = DateTime.Now;
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));

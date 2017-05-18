@@ -266,7 +266,7 @@
       database = new IONDatabase(new SQLite.Net.Platform.XamarinIOS.SQLitePlatformIOS(), path, this);
       fileManager = new IosFileManager();
       locationManager = new IosLocationManager(this);
-      deviceManager = new BaseDeviceManager(this, new IonCBCentralManagerDelegate()); 
+      deviceManager = new BaseDeviceManager(this, new IonCBCentralManagerDelegate(this)); 
       alarmManager = new BaseAlarmManager(this);
       dataLogManager = new DataLogManager(this);
       alarmManager.alertFactory = (IAlarmManager am, IAlarm alarm) => {
