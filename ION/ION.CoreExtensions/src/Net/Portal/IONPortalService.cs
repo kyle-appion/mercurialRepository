@@ -232,7 +232,7 @@
     /// Downloads the current rss feed from the appion server.
     /// </summary>
     /// <returns>The rss async.</returns>
-    public Task<Rss> DownloadRssAsync() {
+    public Task<Rss> DownloadRssOrThrowAsync() {
       return Task.Factory.StartNew(() => {
         var request = WebRequest.Create(URL_RSS_FEED);
         var response = request.GetResponse() as HttpWebResponse;

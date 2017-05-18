@@ -12,6 +12,8 @@ namespace ION.Droid.Activity.Rss {
   using Android.Views;
   using Android.Widget;
 
+  using Appion.Commons.Util;
+
   using ION.Core.App;
   using ION.Core.IO;
 
@@ -44,9 +46,7 @@ namespace ION.Droid.Activity.Rss {
 
     protected override void OnResume() {
       base.OnResume();
-      task = new DownloadRssTask(this.ion, this, (obj) => {
-        adapter.SetItems(obj.channelFeed.items);
-      });
+      task = new DownloadRssTask(this.ion, this, OnSuccess, OnFailure);
       task.Execute();
     }
 
@@ -71,18 +71,29 @@ namespace ION.Droid.Activity.Rss {
       }
     }
 
+    private void OnSuccess(Rss rss) {
+			adapter.SetItems(rss.channelFeed.items);
+		}
+
+    private void OnFailure() {
+      Finish();
+      Toast.MakeText(this, Resource.String.rss_error_download_failure, ToastLength.Long).Show();
+    }
+
     private class DownloadRssTask : AsyncTask {
       private BaseAndroidION ion;
       private Context context;
       private Action<Rss> onComplete;
+      private Action onFailure;
       private ProgressDialog dialog;
 
       private Rss rss;
 
-      public DownloadRssTask(BaseAndroidION ion, Context context, Action<Rss> onComplete) {
+      public DownloadRssTask(BaseAndroidION ion, Context context, Action<Rss> onComplete, Action onFailure) {
         this.ion = ion;
         this.context = context;
         this.onComplete = onComplete;
+        this.onFailure = onFailure;
       }
 
       protected override void OnPreExecute() {
@@ -94,7 +105,11 @@ namespace ION.Droid.Activity.Rss {
       }
 
       protected override Java.Lang.Object DoInBackground(params Java.Lang.Object[] native_parms) {
-        rss = ion.portal.DownloadRssAsync().Result;
+        try {
+          rss = ion.portal.DownloadRssOrThrowAsync().Result;
+        } catch (Exception e) {
+          Log.E(this, "Failed to download the rss feed.", e);
+        }
         return null;
       }
 
@@ -105,7 +120,11 @@ namespace ION.Droid.Activity.Rss {
 
       protected override void OnPostExecute(Java.Lang.Object result) {
         dialog.Dismiss();
-        onComplete(rss);
+        if (rss != null) {
+          onComplete(rss);
+        } else {
+					onFailure();
+				}
       }
     }
   }

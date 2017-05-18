@@ -64,6 +64,13 @@ namespace ION.Droid.App {
       currentWorkbench.onWorkbenchEvent += OnWorkbenchEvent;
       currentAnalyzer.onAnalyzerEvent += OnAnalyzerEvent;
 
+      if (appPrefs.portal.rememberMe) {
+        var result = await portal.RequestLoginAsync(appPrefs.portal.username, appPrefs.portal.password);
+        if (!result.success) {
+          Log.E(this, "Failed to automatically log into to ION Portal: {" + result.message + "}");
+        }
+      }
+
 			return await base.OnPostInitAsync();
 		}
 
