@@ -171,8 +171,8 @@
       lock (this) {
         foreach (var device in foundDevices) {
           device.Dispose();
-          Unregister(device);
 					device.onDeviceEvent -= OnDeviceEvent;
+          __foundDevices.Remove(device.serialNumber);
         }
       }
 
@@ -399,7 +399,9 @@
           break;
 
 				case DeviceEvent.EType.NameChanged:
-					SaveDevice(deviceEvent.device);
+          if (this.IsDeviceKnown(device)) {
+  					SaveDevice(deviceEvent.device);
+          }
 					break;
       }
 

@@ -30,7 +30,8 @@
   <string name="pkey_location_gps">location_gps</string>
   <string name="pkey_location_gps_error">location_gps_error</string>
 
-	<string name="pkey_network_last_rss_check_date">network_last_rss_check_date</string>
+	<string name="pkey_rss_last_check_date">rss_last_check_date</string>
+  <string name="pkey_rss_list">rss_list</string>
 
 	<string name="pkey_portal_rememberme">portal_rememberme</string>
 	<string name="pkey_portal_username">portal_username</string>
