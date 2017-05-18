@@ -154,7 +154,7 @@
       // Show the rss feed.
       Task.Factory.StartNew(async () => {
         try {
-          var rss = await ion.portal.DownloadRssAsync();
+          var rss = await ion.portal.DownloadRssOrThrowAsync();
           ion.PostToMain(() => {
 //            new RssDialog(this, rss).Show();
           });
