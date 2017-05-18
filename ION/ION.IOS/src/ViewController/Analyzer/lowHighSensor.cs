@@ -105,7 +105,7 @@ namespace ION.IOS.ViewController.Analyzer
         __currentSensor = value;
         if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-          roc = new RateOfChangeSensorProperty(value);
+          roc = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
         }
       }
     } GaugeDeviceSensor __currentSensor;

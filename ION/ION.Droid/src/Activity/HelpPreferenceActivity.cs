@@ -5,6 +5,7 @@
   using Android.OS;
   using Android.Preferences;
 
+  using ION.Droid.Activity.Rss;
 	using ION.Droid.Activity.Tutorial;
 	using ION.Droid.Net.Portal;
 	using ION.Droid.Preferences;
@@ -21,6 +22,7 @@
 
       FindPreference(GetString(Resource.String.pkey_send_feedback)).OnPreferenceClickListener = this;
 			FindPreference(GetString(Resource.String.pkey_help_walkthrough)).OnPreferenceClickListener = this;
+      FindPreference(GetString(Resource.String.pkey_rss_list)).OnPreferenceClickListener = this;
 
       var preference = FindPreference(GetString(Resource.String.pkey_app_version));
       preference.Summary = ion.preferences.lastKnownAppVersion;
@@ -33,6 +35,9 @@
 			} else if (GetString(Resource.String.pkey_help_walkthrough).Equals(preference.Key)) {
 				LaunchWalkthrough();
 				return true;
+      } else if (GetString(Resource.String.pkey_rss_list).Equals(preference.Key)) {
+        LaunchRssList();
+        return true;
       } else {
         return false;
       }
@@ -45,6 +50,14 @@
 			var i = new Intent(this, typeof(TutorialActivity));
 			StartActivity(i);
 		}
+
+    /// <summary>
+    /// Launches the app rss feed.
+    /// </summary>
+    private void LaunchRssList() {
+      var i = new Intent(this, typeof(RssActivity));
+      StartActivity(i);
+    }
   }
 }
 

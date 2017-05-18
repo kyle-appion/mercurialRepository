@@ -47,6 +47,9 @@
   <string name="preferences_help_walkthrough">App Walkthrough</string>
   <string name="preferences_help_walkthrough_show">Show Walkthrough on application startup?</string>
 
+  <string name="preferences_rss_list">Shows the complete Appion RSS feed.</string>
+  <string name="preferences_rss_list_title">RSS Feed</string>
+
   <string name="preferences_units_default">Default Units</string>
   <string name="preferences_units_length">Default Length Unit</string>
   <string name="preferences_units_length_title">Select a new default length</string>
