@@ -166,7 +166,7 @@
 
       var minMax = roc.GetPrimaryMinMax();
 
-      UpdateAxis(primaryAxis, minMax.min, minMax.max, manifold.primarySensor.unit, 1, 5);
+      UpdateAxis(primaryAxis, manifold.primarySensor, minMax.min, minMax.max, manifold.primarySensor.unit, 1, 5);
 
       var primaryBuffer = roc.primarySensorPoints;
       var l = primaryBuffer.Count;
@@ -199,7 +199,7 @@
 
       var minMax = roc.GetSecondaryMinMax();
 
-      UpdateAxis(secondaryAxis, minMax.min, minMax.max, manifold.secondarySensor.unit, 1, 5);
+      UpdateAxis(secondaryAxis, manifold.secondarySensor, minMax.min, minMax.max, manifold.secondarySensor.unit, 1, 5);
 
       var secondaryBuffer = roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
@@ -223,7 +223,7 @@
     /// Updates the axis to the given state.
     /// </summary>
     /// <param name="axis">Axis.</param>
-    private void UpdateAxis(MinMaxLineSeries axis, Scalar min, Scalar max, Unit u, int major = 2, int minor = 5) {
+    private void UpdateAxis(MinMaxLineSeries axis, Sensor sensor, Scalar min, Scalar max, Unit u, int major = 2, int minor = 5) {
       var su = u.standardUnit;
 
       var minMag = min.ConvertTo(u).amount;
@@ -247,6 +247,17 @@
       minMag = u.OfScalar(minMag).ConvertTo(su).amount;
       maxMag = u.OfScalar(maxMag).ConvertTo(su).amount;
       var diff = (maxMag - minMag);
+
+      if (minMag < sensor.minMeasurement.ConvertTo(su).amount) {
+        minMag = sensor.minMeasurement.ConvertTo(su).amount;
+      }
+
+      var range = sensor.range.ConvertTo(su) * 0.025;
+      if (diff < range.magnitude) {
+        diff = range.magnitude;
+        maxMag = minMag + diff;
+      }
+
       var mod = diff / major;
 
       axis.SetMinMax(minMag, maxMag);
@@ -255,8 +266,8 @@
       axis.Maximum = maxMag;
 
       var padding = diff * 0.20;
-      axis.Minimum -= padding;
-      axis.Maximum += padding;
+      //      axis.Minimum -= padding;
+      //      axis.Maximum += padding;
 
       axis.MajorStep = mod;
       axis.MinimumMajorStep = mod;

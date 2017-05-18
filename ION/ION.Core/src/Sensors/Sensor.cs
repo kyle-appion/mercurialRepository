@@ -371,6 +371,15 @@ namespace ION.Core.Sensors {
     /// </summary>
     public Scalar minMeasurement { get; set; }
     /// <summary>
+    /// The measurement range for the sensor.
+    /// </summary>
+    /// <value>The range.</value>
+    public ScalarSpan range {
+      get {
+        return maxMeasurement - minMeasurement;
+      }
+    }
+    /// <summary>
     /// Whether or not the sensor is overloaded. The reading cannot be regarded
     /// as reliable if the measurement is overloaded.
     /// </summary>

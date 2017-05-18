@@ -13,6 +13,7 @@ namespace ION.IOS.ViewController.DeviceManager {
   using ION.Core.Devices;
   using ION.Core.Sensors;
 
+  using ION.IOS.Connections;
   using ION.IOS.UI;
   using ION.IOS.Util;
 
@@ -117,6 +118,7 @@ namespace ION.IOS.ViewController.DeviceManager {
       allowRefresh = true;
       StartScan();
       deviceSource.Reload();
+//      PostUpdate();
     }
 
     public override void ViewWillDisappear(bool animated) {
@@ -124,6 +126,8 @@ namespace ION.IOS.ViewController.DeviceManager {
       allowRefresh = false;
       ion.deviceManager.connectionManager.StopScan();
       deviceSource.Release();
+      var cm = ion.deviceManager.connectionManager as IonCBCentralManagerDelegate;
+      cm.ClearUnusedConnections();
       ion.deviceManager.ForgetFoundDevices();
     }
 

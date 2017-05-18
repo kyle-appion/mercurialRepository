@@ -601,8 +601,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold,TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("default_settings_trending_interval"))));
-          //manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval));
         });
       }
 
@@ -674,7 +673,9 @@ namespace ION.IOS.ViewController.Workbench {
           break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
-          OnManifoldEvent(workbenchEvent.manifoldEvent);
+          if (workbenchEvent.manifoldEvent.type != ManifoldEvent.EType.Invalidated) {
+            OnManifoldEvent(workbenchEvent.manifoldEvent);
+          }
           break;
 
         case WorkbenchEvent.EType.Removed:
