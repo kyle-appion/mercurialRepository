@@ -48,6 +48,7 @@
 		protected override void Dispose(bool disposing) {
 			base.Dispose(disposing);
 			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
+      cache.Clear();
 		}
 
 		public override void OnAttachedToRecyclerView(RecyclerView recyclerView) {

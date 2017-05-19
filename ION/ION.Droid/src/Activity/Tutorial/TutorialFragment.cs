@@ -67,6 +67,11 @@
 			}, 500);
 		}
 
+    public override void OnPause() {
+      base.OnPause();
+      cache.Clear();
+    }
+
 		private void Update() {
 			if (isCreated && page != null) {
 				titleView.SetText(page.titleResource);
