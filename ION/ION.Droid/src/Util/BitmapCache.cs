@@ -1,11 +1,12 @@
-using System;
-
-using Android.Content;
-using Android.Content.Res;
-using Android.Graphics;
-using Android.OS;
-
 namespace ION.Droid.Util {
+
+	using System;
+
+	using Android.Content;
+	using Android.Content.Res;
+	using Android.Graphics;
+	using Android.OS;
+
   /// <summary>
   /// BitmapCache is an extremely useful util object that will allow us to cache
   /// bitmaps in a friendly fashion. Using this cache dramatically increased the
@@ -15,7 +16,7 @@ namespace ION.Droid.Util {
   public class BitmapCache : Android.Util.LruCache {
     private Resources res { get; set; }
 
-    public BitmapCache(Resources res, int size=32) : base(32) {
+    public BitmapCache(Resources res, int size=8) : base(size) {
       this.res = res;
     }
 
@@ -35,6 +36,13 @@ namespace ION.Droid.Util {
       }
 
       return ret;
+    }
+
+    /// <summary>
+    /// Clears the cache allowing for the memory to be garbage collected.
+    /// </summary>
+    public void Clear() {
+      EvictAll();
     }
   }
 }

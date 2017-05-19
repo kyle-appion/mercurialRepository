@@ -66,7 +66,7 @@
 		/// </summary>
 		private Button graphButtonButton;
 
-		private List<int> checkedSessions = new List<int>();
+		private HashSet<int> checkedSessions = new HashSet<int>();
 
 		protected override void OnCreate(Bundle state) {
 			base.OnCreate(state);
@@ -95,7 +95,7 @@
 
 			graphButtonButton.Click += (sender, e) => {
 				var i = new Intent(this, typeof(GraphReportSessionsActivity));
-				i.PutExtra(GraphReportSessionsActivity.EXTRA_SESSIONS, checkedSessions.ToArray());
+        i.PutExtra(GraphReportSessionsActivity.EXTRA_SESSIONS, new List<int>(checkedSessions).ToArray());
 				StartActivityForResult(i, REQUEST_EXPORT);
 			};
 
