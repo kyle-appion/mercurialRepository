@@ -35,4 +35,8 @@
         android:minLines="3"
         android:maxLines="3"
         android:ellipsize="end" />
+    <View
+        android:background="@color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp" />
 </LinearLayout>

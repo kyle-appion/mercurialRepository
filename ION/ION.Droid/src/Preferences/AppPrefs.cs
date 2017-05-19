@@ -152,6 +152,26 @@
       }
     }
 
+    /// <summary>
+    /// The date of the last most recent read rss item.
+    /// </summary>
+    /// <value><c>true</c> if last rss date; otherwise, <c>false</c>.</value>
+    public string lastRssDate {
+      get {
+        var usDate = prefs.GetString(context.GetString(Resource.String.pkey_rss_last_check_date), null);
+        if (usDate == null) {
+          return DateTime.Now.ToString();
+        } else {
+          return usDate;          
+        }
+      }
+      set {
+        var e = prefs.Edit();
+        e.PutString(context.GetString(Resource.String.pkey_rss_last_check_date), value);
+        e.Commit();
+      }      
+    }
+
 
     public DevicePreferences _device { get; private set; }
     // Implemented for IIONPreferences

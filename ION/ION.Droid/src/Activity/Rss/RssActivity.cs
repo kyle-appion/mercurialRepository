@@ -41,7 +41,7 @@ namespace ION.Droid.Activity.Rss {
         i.AddFlags(ActivityFlags.NewTask);
         StartActivity(i);
       });
-      list.SetAdapter(adapter); 
+      list.SetAdapter(adapter);
     }
 
     protected override void OnResume() {
