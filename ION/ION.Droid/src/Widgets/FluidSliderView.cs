@@ -226,7 +226,12 @@
 
 			canvas.ClipRect(rect);
 
-			// Draw the window
+      // Draw the window
+
+      rect.Left += 1;
+      rect.Top += 1;
+      rect.Right -= 1;
+      rect.Bottom -= 1;
 			canvas.DrawRoundRect(rect, 7, 7, windowPaint);
 			// Draw the selection line
 			canvas.DrawLine(cx, 0, cx, MeasuredHeight, windowPaint);

@@ -1,7 +1,9 @@
 ﻿namespace ION.Droid.Activity.Job {
 
+  using System;
   using System.Threading.Tasks;
 
+  using Android.App;
 	using Android.Locations;
   using Android.OS;
   using Android.Support.Design.Widget;
@@ -13,6 +15,7 @@
 
   // Using ION.Droid
   using Fragments;
+  using ION.Droid.Views;
 
   public class EditJobFragment : IONFragment, IJobPresenter {
 
@@ -25,6 +28,7 @@
 		private EditText technician;
 		private EditText system;
 		private EditText address;
+    private View getAddress;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 			View ret;
@@ -43,6 +47,9 @@
 			technician = ret.FindViewById<EditText>(Resource.Id.job_technician_name);
 			system = ret.FindViewById<EditText>(Resource.Id.job_system);
 			address = ret.FindViewById<EditText>(Resource.Id.address);
+      getAddress = ret.FindViewById<ImageView>(Resource.Id.icon);
+      getAddress.Visibility = ViewStates.Gone;
+      getAddress.SetOnClickListener(new ViewClickAction((v) => GetAddress()));
 
       return ret;
     }
@@ -80,6 +87,29 @@
 			job.jobAddress = address.Text;
 
       return await ion.database.SaveAsync<JobRow>(job);
+    }
+
+    private async Task GetAddress() {
+      var handler = new Handler();
+      var dialog = new ProgressDialog(Activity);
+      dialog.SetTitle(Resource.String.please_wait);
+      dialog.SetMessage(GetString(Resource.String.location_determining_address));
+      dialog.Show();
+
+      var task = ion.locationManager.GetAddressFromLocationAsync(ion.locationManager.lastKnownLocation);
+/*
+    var done = false;
+    var start = DateTime.Now;
+    handler.Post(() => {
+      if (!done) {
+
+      }
+    });
+*/
+
+      var ret = await task;
+      dialog.Dismiss();
+      address.Text = ret.address1 + " " + ret.address2;
     }
 
 		private async Task<Address> PollGecode(string address) {
