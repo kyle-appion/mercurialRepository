@@ -378,17 +378,21 @@
 			}
 
 			try {
-				axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
+        if (axis.LabelFormatter != null) {
+          axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
-				double bestWidth = 0;
-				foreach (var label in majorLabelValues) {
-					var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
-					if (size.Width > bestWidth) {
-						bestWidth = size.Width;
-					}
-				}
+          double bestWidth = 0;
+          foreach (var label in majorLabelValues) {
+            var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
+            if (size.Width > bestWidth) {
+              bestWidth = size.Width;
+            }
+          }
 
-				return bestWidth;
+          return bestWidth;
+        } else {
+          return 0;
+        }
 			} catch (Exception e) {
 				Log.E(this, "Failing to measure text width", e);
 				return 0;
