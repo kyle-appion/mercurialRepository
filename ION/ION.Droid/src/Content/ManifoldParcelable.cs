@@ -48,7 +48,7 @@
 	public class AnalyzerManifoldParcelable : ManifoldParcelable {
 		[ExportField("CREATOR")]
 		public static IParcelableCreator GetCreator() {
-			return new GenericParcelableCreator<WorkbenchManifoldParcelable>();
+			return new GenericParcelableCreator<AnalyzerManifoldParcelable>();
 		}
 
 		private bool isLow;
