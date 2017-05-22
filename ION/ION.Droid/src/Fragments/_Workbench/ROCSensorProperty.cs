@@ -59,7 +59,7 @@
 			isRunning = true;
 
       var roc = record.manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
-      rocManager = new RocWidgetManager(roc.manifold, plot);
+      rocManager = new RocWidgetManager(roc.manifold, plot, false);
       rocManager.Initialize();
 
 			handler.SendEmptyMessageDelayed(0, 500);
