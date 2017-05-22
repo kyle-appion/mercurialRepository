@@ -349,6 +349,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	-->
 	<string name="location_address_1">Address Line 1</string>
 	<string name="location_address_2">Address Line 2</string>
+	<string name="location_determining_address">Determining best address...</string>
 	<string name="location_city">City</string>
 	<string name="location_state_province_region">State / Province / Region</string>
 	<string name="location_zip_postal_code">ZIP / Postal Code</string>
