@@ -383,7 +383,13 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="weight_short">WT.</string>
   <string name="unknown">Unknown</string>
 
-  <!--
+	<!--
+  NETWORK
+  -->
+  <string name="network_error">Network Error</string>
+  <string name="network_no_connection">Unable to reach server. Please check your internet connection.</string>
+
+	<!--
   REPORT
   -->
   <string name="reports">Reports</string>

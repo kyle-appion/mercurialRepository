@@ -105,8 +105,12 @@
     /// </summary>
     /// <value>The data log manager.</value>
     DataLogManager dataLogManager { get; }
-		
-		
+    /// <summary>
+    /// Whether or not the ion instance has access to the network.
+    /// </summary>
+    /// <value><c>true</c> if has network connection; otherwise, <c>false</c>.</value>
+    bool hasNetworkConnection { get; }
+
     /// <summary>
     /// The current primary analyzer for the ion context.
     /// </summary>

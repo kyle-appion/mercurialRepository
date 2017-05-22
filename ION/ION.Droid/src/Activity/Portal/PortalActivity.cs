@@ -130,6 +130,18 @@ namespace ION.Droid.Activity.Portal {
 			displayName.Text = ion.portal.displayName;
 			email.Text = ion.portal.userEmail;
 
+      if (!ion.hasNetworkConnection) {
+        var adb = new IONAlertDialog(this);
+        adb.SetTitle(Resource.String.network_error);
+        adb.SetMessage(Resource.String.network_no_connection);
+        adb.SetPositiveButton(Resource.String.ok, (sender, e) => {
+          SetResult(Result.Canceled);
+          Finish();
+        });
+        adb.Show();
+        return;
+      }
+
 			if (!ion.portal.isLoggedIn) {
 				var i = new Intent(this, typeof(PortalLoginActivity));
 				StartActivityForResult(i, REQUEST_LOGIN);
