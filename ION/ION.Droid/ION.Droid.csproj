@@ -321,6 +321,7 @@
     <Compile Include="src\Activity\Rss\RssActivity.cs" />
     <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
+    <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -760,6 +761,7 @@
     <AndroidResource Include="Resources\layout\dialog_rss.axml" />
     <AndroidResource Include="Resources\layout\activity_rss.axml" />
     <AndroidResource Include="Resources\layout\list_rss_item.axml" />
+    <AndroidResource Include="Resources\layout\list_item_tutorial.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

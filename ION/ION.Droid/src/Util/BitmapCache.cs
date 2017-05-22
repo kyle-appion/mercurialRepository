@@ -22,6 +22,7 @@ namespace ION.Droid.Util {
       this.res = res;
     }
 
+/*
     protected override void EntryRemoved(bool evicted, Java.Lang.Object key, Java.Lang.Object oldValue, Java.Lang.Object newValue) {
       base.EntryRemoved(evicted, key, oldValue, newValue);
 
@@ -30,6 +31,7 @@ namespace ION.Droid.Util {
         bitmap.Recycle();
       }
     }
+*/
 
     /// <summary>
     /// Queries the given drawable from the bitmap cache. If the drawable is not
@@ -37,7 +39,7 @@ namespace ION.Droid.Util {
     /// </summary>
     /// <param name="drawableRes"></param>
     /// <returns></returns>
-    public Bitmap GetBitmap(int drawableRes, bool tryAgain=false) {
+    public Bitmap GetBitmap(int drawableRes, bool tryAgain = false) {
       try {
         Java.Lang.Integer id = new Java.Lang.Integer(drawableRes);
         Bitmap ret = (Bitmap)Get(id);
