@@ -343,6 +343,7 @@ file.
 "workbench_subview_shsc_setup" = "Setup";
 "workbench_subview_timer" = "TIME";
 "workbench_subview_timer_desc" = "Time Tracker (TIME)";
+"workbench_subview_roc_trend" = "TREND";
 "workbench_subview_linked_desc" = "Linked Sensor (Linked)";
 
 /*WALKTHROUGH*/

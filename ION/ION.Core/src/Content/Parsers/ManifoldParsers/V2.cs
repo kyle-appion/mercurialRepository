@@ -240,8 +240,8 @@
 			try {
 				var roc = (RateOfChangeSensorProperty)sp;
 
-				writer.Write(roc.window.TotalMilliseconds);
-				writer.Write(roc.interval.TotalMilliseconds);
+				//writer.Write(roc.window.TotalMilliseconds);
+				//writer.Write(roc.interval.TotalMilliseconds);
 				writer.Write((int)roc.flags);
 
 				return true;

@@ -414,6 +414,14 @@
                                                                 <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                             </state>
                                                         </button>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="OPl-PV-f3b">
+                                                            <rect key="frame" x="0.0" y="47" width="374" height="1"/>
+                                                            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="1" id="c5T-60-acz"/>
+                                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="1" id="hFz-0c-q0Y"/>
+                                                            </constraints>
+                                                        </view>
                                                     </subviews>
                                                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <constraints>
@@ -422,12 +430,16 @@
                                                         <constraint firstAttribute="trailing" secondItem="1t6-LJ-Xc0" secondAttribute="trailing" constant="8" id="9HR-sG-FkT"/>
                                                         <constraint firstItem="jcc-H1-GK5" firstAttribute="leading" secondItem="F90-PE-WzI" secondAttribute="trailing" id="Auq-Gg-xoR"/>
                                                         <constraint firstItem="F90-PE-WzI" firstAttribute="top" secondItem="SfD-gl-7p7" secondAttribute="top" id="BOb-Qa-xN6"/>
+                                                        <constraint firstAttribute="trailing" secondItem="OPl-PV-f3b" secondAttribute="trailing" id="Gh0-uI-JBZ"/>
                                                         <constraint firstItem="vFI-D9-Ib8" firstAttribute="top" secondItem="SfD-gl-7p7" secondAttribute="top" id="OxP-mO-HTj"/>
+                                                        <constraint firstItem="OPl-PV-f3b" firstAttribute="top" secondItem="SfD-gl-7p7" secondAttribute="top" constant="47" id="Q6s-98-i5X"/>
                                                         <constraint firstItem="dwn-Y2-82j" firstAttribute="leading" secondItem="jcc-H1-GK5" secondAttribute="trailing" constant="9" id="R9z-VX-g0b"/>
                                                         <constraint firstItem="jcc-H1-GK5" firstAttribute="top" secondItem="SfD-gl-7p7" secondAttribute="top" id="aT8-yx-SfB"/>
                                                         <constraint firstItem="F90-PE-WzI" firstAttribute="leading" secondItem="SfD-gl-7p7" secondAttribute="leading" id="exB-WG-SYY"/>
                                                         <constraint firstItem="vFI-D9-Ib8" firstAttribute="leading" secondItem="jcc-H1-GK5" secondAttribute="trailing" id="qoe-jf-hxf"/>
+                                                        <constraint firstItem="OPl-PV-f3b" firstAttribute="leading" secondItem="SfD-gl-7p7" secondAttribute="leading" id="t3T-T3-g8e"/>
                                                         <constraint firstItem="1t6-LJ-Xc0" firstAttribute="top" secondItem="SfD-gl-7p7" secondAttribute="top" id="tev-vR-Ni0"/>
+                                                        <constraint firstAttribute="bottom" secondItem="OPl-PV-f3b" secondAttribute="bottom" constant="48" id="yHh-86-f0T"/>
                                                     </constraints>
                                                 </view>
                                             </subviews>
@@ -446,6 +458,7 @@
                                             <outlet property="labelMeasurement" destination="1t6-LJ-Xc0" id="jR9-62-Wnp"/>
                                             <outlet property="labelTitle" destination="F90-PE-WzI" id="333-sV-N3u"/>
                                             <outlet property="viewBackground" destination="SfD-gl-7p7" id="rYe-yI-bb7"/>
+                                            <outlet property="viewBottomDivider" destination="OPl-PV-f3b" id="Jal-3R-Xyu"/>
                                             <outlet property="viewDivider" destination="vFI-D9-Ib8" id="baH-Vi-EnE"/>
                                         </connections>
                                     </tableViewCell>

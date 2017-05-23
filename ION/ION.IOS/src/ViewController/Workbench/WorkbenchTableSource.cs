@@ -180,7 +180,8 @@ namespace ION.IOS.ViewController.Workbench {
 					this.workbench.onWorkbenchEvent -= OnManifoldEvent;
 					SetWorkbench(workbench);		
 				}
-
+        tableView.ReloadData();
+      Console.WriteLine("reloading data");
     }
     // Overridden from UITableViewSource
     public override string TitleForDeleteConfirmation(UITableView tableView, NSIndexPath indexPath) {
@@ -341,12 +342,11 @@ namespace ION.IOS.ViewController.Workbench {
 
         return cell;
       } else if (record is RateOfChangeRecord) {
-        var rr = record as RateOfChangeRecord;
+        var rr = record as RateOfChangeRecord;  
         var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
-
-        cell.UpdateTo(rr);
-
-        return cell;
+        Console.WriteLine("Dequeued cell at index " + indexPath.Row);
+				cell.UpdateTo(rr);
+				return cell;	
       } else if (record is FluidRecord) {
         var fr = record as FluidRecord;
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
@@ -369,7 +369,7 @@ namespace ION.IOS.ViewController.Workbench {
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
 
         return cell;
-      }else {
+      } else {
         Log.E(this,"Cannot get cell: " + record.viewType + " is not a supported record type.");
         return null;
       }
@@ -388,7 +388,7 @@ namespace ION.IOS.ViewController.Workbench {
     public int IndexOfManifold(Manifold manifold) {
       for (var i = 0; i < records.Count; i++) {
         var record = records[i] as ViewerRecord;
-        if (record?.manifold == manifold) {
+        if (record?.manifold == manifold) { 
           return i;
         }
       }
@@ -588,7 +588,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
+        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {  
           manifold.AddSensorProperty(new MaxSensorProperty(sensor));
         });
       }
@@ -601,7 +601,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (!manifold.HasSensorPropertyOfType(typeof(RateOfChangeSensorProperty))) {
         addAction(Strings.Workbench.Viewer.ROC_DESC, (UIAlertAction action) => {
-          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold,TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("default_settings_trending_interval"))));
+          manifold.AddSensorProperty(new RateOfChangeSensorProperty(manifold,ion.preferences.device.trendInterval));
           //manifold.AddSensorProperty(new RateOfChangeSensorProperty(sensor));
         });
       }
@@ -674,7 +674,9 @@ namespace ION.IOS.ViewController.Workbench {
           break;
 
         case WorkbenchEvent.EType.ManifoldEvent:
-          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	        if (workbenchEvent.manifoldEvent.type != ManifoldEvent.EType.Invalidated) {
+	          OnManifoldEvent(workbenchEvent.manifoldEvent);
+	        }
           break;
 
         case WorkbenchEvent.EType.Removed:

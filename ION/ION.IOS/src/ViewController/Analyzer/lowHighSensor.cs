@@ -105,7 +105,6 @@ namespace ION.IOS.ViewController.Analyzer
         __currentSensor = value;
         if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-          roc = new RateOfChangeSensorProperty(__manifold, TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("default_settings_trending_interval")));
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -126,7 +125,8 @@ namespace ION.IOS.ViewController.Analyzer
         __manifold = value;
         if (__manifold != null) {
           __manifold.onManifoldEvent += manifoldUpdating;
-        }
+					roc = new RateOfChangeSensorProperty(__manifold, TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("default_settings_trending_interval")));
+				}
       }
     } Manifold __manifold;
 

@@ -939,7 +939,7 @@ namespace ION.IOS.ViewController.DeviceManager {
         return EDeviceState.New;
       } else if ((ion.deviceManager.IsDeviceKnown(device) && device.isNearby) || EConnectionState.Connecting == connectionState) {
         return EDeviceState.Available;
-      } else {
+      } else { 
         return EDeviceState.Disconnected;
       }
     }
