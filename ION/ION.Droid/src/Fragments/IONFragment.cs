@@ -77,6 +77,11 @@ namespace ION.Droid.Fragments {
       ion.dataLogManager.onDataLogManagerEvent -= OnDataLogManagerEvent;
     }
 
+    public override void OnStop() {
+      base.OnStop();
+      cache.Clear();
+    }
+
     /// <Docs>The options menu in which you place your items.</Docs>
     /// <returns>To be added.</returns>
     /// <summary>

@@ -342,11 +342,12 @@ namespace ION.IOS.ViewController.Workbench {
 
         return cell;
       } else if (record is RateOfChangeRecord) {
-        var rr = record as RateOfChangeRecord;  
+        var rr = record as RateOfChangeRecord;
         var cell = tableView.DequeueReusableCell(CELL_ROC_SUBVIEW) as RateOfChangeSensorPropertyCell;
-        Console.WriteLine("Dequeued cell at index " + indexPath.Row);
-				cell.UpdateTo(rr);
-				return cell;	
+
+        cell.UpdateTo(rr);
+
+        return cell;
       } else if (record is FluidRecord) {
         var fr = record as FluidRecord;
         var cell = tableView.DequeueReusableCell(CELL_FLUID_SUBVIEW) as FluidSubviewCell;
@@ -388,7 +389,7 @@ namespace ION.IOS.ViewController.Workbench {
     public int IndexOfManifold(Manifold manifold) {
       for (var i = 0; i < records.Count; i++) {
         var record = records[i] as ViewerRecord;
-        if (record?.manifold == manifold) { 
+        if (record?.manifold == manifold) {
           return i;
         }
       }
@@ -588,7 +589,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       if (!manifold.HasSensorPropertyOfType(typeof(MaxSensorProperty))) {
-        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {  
+        addAction(Strings.Workbench.Viewer.MAX_DESC, (UIAlertAction action) => {
           manifold.AddSensorProperty(new MaxSensorProperty(sensor));
         });
       }

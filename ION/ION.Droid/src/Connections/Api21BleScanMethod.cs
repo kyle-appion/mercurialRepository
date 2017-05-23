@@ -65,10 +65,11 @@
     /// <returns>The scan record for payload.</returns>
     /// <param name="scanRecord">Scan record.</param>
     private byte[] ParseBroadcastPayloadFromScanRecord(byte[] scanRecord) {
+      Log.D(this, "ParseBroadcastPayloadFromScanRecord");
       if (scanRecord == null) {
         return null;
       }
-
+/*
       byte[] ret = null;
 
       var i = 0;
@@ -87,6 +88,8 @@
       }
 
       return ret;
+*/
+      return null;
     }
   }
 }

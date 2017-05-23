@@ -398,6 +398,7 @@ namespace ION.IOS.ViewController.DeviceManager {
     /// </summary>
     /// <param name="de">De.</param>
     private void OnDeviceManagerEvent(DeviceManagerEvent de) {
+      Log.D(this, "DeviceEvent of type: " + de.type);
       lock (this) {
         if (DeviceManagerEvent.EType.DeviceEvent == de.type) {
           var eventType = de.deviceEvent.type;

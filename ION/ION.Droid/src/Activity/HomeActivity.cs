@@ -154,10 +154,15 @@
       // Show the rss feed.
       Task.Factory.StartNew(async () => {
         try {
-          var rss = await ion.portal.DownloadRssAsync();
-          ion.PostToMain(() => {
-//            new RssDialog(this, rss).Show();
-          });
+          var rss = await ion.portal.DownloadRssOrThrowAsync();
+
+          var usDate = rss.channelFeed.items[0].publishDate;
+          if (!ion.appPrefs.lastRssDate.Equals(usDate)) {
+						ion.PostToMain(() => {
+							new RssDialog(this, rss).Show();
+              ion.appPrefs.lastRssDate = usDate;
+						});            
+          }
         } catch (Exception e) {
           Log.E(this, "Failed to download rss feed", e);
         }

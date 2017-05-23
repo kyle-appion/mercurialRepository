@@ -288,7 +288,6 @@
     <Compile Include="src\Activity\Job\EViewType.cs" />
     <Compile Include="src\Activity\Job\SessionAdapter.cs" />
     <Compile Include="src\Activity\Job\SessionRecord.cs" />
-    <Compile Include="src\Activity\Report\JobAdapter.cs" />
     <Compile Include="src\Activity\Report\JobViewHolder.cs" />
     <Compile Include="src\Activity\Report\SessionAdapter.cs" />
     <Compile Include="src\Activity\Report\SessionViewHolder.cs" />
@@ -319,6 +318,10 @@
     <Compile Include="src\Dialog\RssDialog.cs" />
     <Compile Include="src\App\RssBroadcastReceiver.cs" />
     <Compile Include="src\Rss\RssHelper.cs" />
+    <Compile Include="src\Activity\Rss\RssActivity.cs" />
+    <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
+    <Compile Include="src\Widgets\RocWidgetManager.cs" />
+    <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -756,6 +759,9 @@
     <AndroidResource Include="Resources\menu\help.xml" />
     <AndroidResource Include="Resources\values\Plurals.xml" />
     <AndroidResource Include="Resources\layout\dialog_rss.axml" />
+    <AndroidResource Include="Resources\layout\activity_rss.axml" />
+    <AndroidResource Include="Resources\layout\list_rss_item.axml" />
+    <AndroidResource Include="Resources\layout\list_item_tutorial.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -797,6 +803,7 @@
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
     <Folder Include="src\Rss\" />
+    <Folder Include="src\Activity\Rss\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
