@@ -1,0 +1,214 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- 
+  STRINGS
+  -->
+  <string name="preferences">ION Preferences</string>
+  <string name="preferences_about_ion">About ION</string>
+  <string name="preferences_app_version">App Version</string>
+	<string name="preferences_app_analytics">App Analytics</string>
+	<string name="preferences_app_analytics_summary">Enable anonymous data collection by Appion Inc to improve ION HVAC/R.</string>
+  <string name="preferences_send_feedback">Send Feeback</string>
+  <string name="preferences_send_feedback_failed">It appears you do not have an e-mail application. Would you like to go use Google Play instead?</string>
+  <string name="preferences_show_whats_new">Show What\'s New?</string>
+  <string name="preferences_show_whats_new_summary">Shows a dialog when the application first launches a new version describing what has changed.</string>
+  <string name="preferences_videos">Videos and Tutorials</string>
+
+  <string name="preferences_alarm">General Alarm Preferences</string>
+  <string name="preferences_alarm_sound">Sound</string>
+  <string name="preferences_alarm_sound_on">The device will play [if able] a sound when the alarm is fired.</string>
+  <string name="preferences_alarm_sound_off">Alarms will not cause the device to play sounds.</string>
+  <string name="preferences_alarm_vibrate">Vibrate</string>
+  <string name="preferences_alarm_vibrate_on">The device will vibrate [if able] when an alarm is fired.</string>
+  <string name="preferences_alarm_vibrate_off">Alarms will not cause the device to vibrate.</string>
+
+  <string name="preferences_device">Device Preferences</string>
+  <string name="preferences_device_auto_connect">Whether or not ION will attempt to automatically connect to devices.</string>
+  <string name="preferences_device_auto_connect_title">Auto-connect Device</string>
+  <string name="preferences_device_long_range">Whether or not ION should use long-range mode. Note: this will use more of your device\'s battery while enabled.</string>
+  <string name="preferences_device_long_range_title">Use Long-Range Mode</string>
+  <string name="preferences_device_trend_interval">The interval that Rate of Change data points are recorded.</string>
+  <string name="preferences_device_trend_interval_title">RoC Update Interval</string>
+
+
+  <string name="preferences_display_wakelock">Keep Screen On</string>
+  <string name="preferences_display_wakelock_on">Your device\'s screen will not turn off while ION is displayed. WARNING: This may reduce battery life.</string>
+  <string name="preferences_display_wakelock_off">Your device\'s screen will turn off normally.</string>
+
+  <string name="preferences_location">Location Preferences</string>
+  <string name="preferences_location_elevation">Custom Elevation</string>
+  <string name="preferences_location_elevation_set">Please enter your custom elevation.</string>
+  <string name="preferences_location_elevation_summary">Enter the elevation that will be used throughout the application.</string>
+  <string name="preferences_location_gps">Allow GPS</string>
+  <string name="preferences_location_gps_on">Use of your location will be used for various features throughout the application.</string>
+  <string name="preferences_location_gps_off">Your location will not be explicity accessed by the application.</string>
+
+  <string name="preferences_help">Help</string>
+  <string name="preferences_help_walkthrough">App Walkthrough</string>
+  <string name="preferences_help_walkthrough_show">Show Walkthrough on application startup?</string>
+
+  <string name="preferences_units_default">Default Units</string>
+  <string name="preferences_units_length">Default Length Unit</string>
+  <string name="preferences_units_length_title">Select a new default length</string>
+  <string name="preferences_units_pressure">Default Pressure Unit</string>
+  <string name="preferences_units_pressure_title">Select a new default pressure</string>
+  <string name="preferences_units_temperature">Default Temperature Unit</string>
+  <string name="preferences_units_temperature_title">Select a new default temperature</string>
+  <string name="preferences_units_vacuum">Default Vacuum Unit</string>
+  <string name="preferences_units_vacuum_title">Select a new default vacuum</string>
+	<string name="preferences_units_weight">Default Weight Unit</string>
+  <string name="preferences_units_weight_title">Select a new default weight</string>
+
+	<string name="preferences_reporting">Reporting Preferences</string>
+	<string name="preferences_reporting_data_log_interval">Data Logging Interval</string>
+	<string name="preferences_reporting_data_log_interval_title">Select the data logging interval</string>
+
+  <!--
+  INTEGERS
+  -->
+  <integer name="preferences_device_trend_interval_default">1000</integer>
+  <integer name="preferences_units_length_default">21</integer>
+  <integer name="preferences_units_pressure_default">7</integer>
+  <integer name="preferences_units_temperature_default">18</integer>
+  <integer name="preferences_units_vacuum_default">39</integer>
+  <integer name="preferences_units_weight_default">24</integer>
+
+	<integer name="preferences_reporting_data_log_interval_default">60</integer>
+
+  <!--
+  DEVICE
+	-->
+  <string-array name="preferences_device_trend_interval_entries">
+    <item>10x second</item>
+    <item>1 second</item>
+    <item>10 seconds</item>
+    <item>30 seconds</item>
+	</string-array>
+
+  <!-- Mapped to an enumeration found in AppPrefs.cs -->
+  <string-array name="preferences_device_trend_interval_values">
+    <item>100</item>
+    <item>1000</item>
+    <item>10000</item>
+    <item>30000</item>
+	</string-array>
+
+  <!--
+  DEFAULT UNITS
+  -->
+  <!-- Length Entries -->
+  <string-array name="preferences_units_length_entries">
+    <item>m</item>
+    <item>ft</item>
+  </string-array>
+
+  <!-- Length Values -->
+  <string-array name="preferences_units_length_values">
+    <item>21</item>
+    <item>20</item>
+  </string-array>
+
+  <!-- Pressure Entries -->
+  <string-array name="preferences_units_pressure_entries">
+    <item>kPa</item>
+    <item>MPa</item>
+    <item>bar</item>
+    <item>cmHg</item>
+    <item>inHg</item>
+    <item>PSIa</item>
+    <item>PSIg</item>
+    <item>kg/cm²</item>
+  </string-array>
+
+  <!-- Pressure Values -->
+  <string-array name="preferences_units_pressure_values">
+    <item>1</item>
+    <item>2</item>
+    <item>3</item>
+    <item>4</item>
+    <item>5</item>
+    <item>6</item>
+    <item>7</item>
+    <item>8</item>
+  </string-array>
+
+  <!-- Temperature Entries -->
+  <string-array name="preferences_units_temperature_entries">
+    <item>°K</item>
+    <item>°C</item>
+    <item>°F</item>
+  </string-array>
+
+  <!-- Temperature Values -->
+  <string-array name="preferences_units_temperature_values">
+  <!-- Yes, this backwards order is correct. Don't fucking touch it! -->
+    <item>17</item>
+    <item>16</item>
+    <item>18</item>
+  </string-array>
+
+  <!-- Vacuum Entries -->
+  <string-array name="preferences_units_vacuum_entries">
+    <item>Pa</item>
+    <item>kPa</item>
+    <item>MPa</item>
+    <item>mbar</item>
+    <item>cmHg</item>
+    <item>inHg</item>
+    <item>PSIa</item>
+    <item>micron</item>
+    <item>torr</item>
+    <item>mtorr</item>
+  </string-array>
+
+  <!-- Vacuum Values -->
+  <string-array name="preferences_units_vacuum_values">
+    <item>32</item>
+    <item>33</item>
+    <item>34</item>
+    <item>35</item>
+    <item>36</item>
+    <item>37</item>
+    <item>38</item>
+    <item>39</item>
+    <item>40</item>
+    <item>41</item>
+  </string-array>
+
+	<!-- Vacuum Entries -->
+  <string-array name="preferences_units_weight_entries">
+    <item>kgf</item>
+    <item>lbf</item>
+    <item>lbf/oz</item>
+  </string-array>
+
+  <!-- Vacuum Values -->
+  <string-array name="preferences_units_weight_values">
+    <item>24</item>
+    <item>25</item>
+    <item>26</item>
+  </string-array>
+
+	<!-- Data Log Reporting Intervals -->
+	<string-array name="preferences_reporting_data_log_interval_entries">
+		<item>1 second</item>
+		<item>30 seconds</item>
+		<item>1 minute</item>
+		<item>5 minutes</item>
+		<item>10 minutes</item>
+		<item>15 minutes</item>
+		<item>30 minutes</item>
+		<item>60 minutes</item>
+	</string-array>
+	
+	<string-array name="preferences_reporting_data_log_interval_values">
+		<item>1</item>
+		<item>30</item>
+		<item>60</item>
+		<item>300</item>
+		<item>600</item>
+		<item>900</item>
+		<item>1800</item>
+		<item>3600</item>
+	</string-array>
+</resources>

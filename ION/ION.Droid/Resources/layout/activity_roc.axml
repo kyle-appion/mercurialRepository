@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_padding">
+    <FrameLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+        <OxyPlot.Xamarin.Android.PlotView
+            android:id="@id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/padding" />
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@id/title"
+            android:textSize="@dimen/text_size_title"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/live_trending" />
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableRow
+                android:id="@id/_1">
+                <TextView
+                    android:id="@id/text"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Space
+                    android:layout_width="@dimen/padding"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@id/icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_line_chart"
+                    android:scaleType="fitCenter"
+                    android:tint="@color/red" />
+            </TableRow>
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/padding" />
+            <TableRow
+                android:id="@id/_2">
+                <TextView
+                    android:id="@id/text"
+                    android:textColor="@color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Space
+                    android:layout_width="@dimen/padding"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@id/icon"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_line_chart"
+                    android:scaleType="fitCenter"
+                    android:tint="@color/blue" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</LinearLayout>

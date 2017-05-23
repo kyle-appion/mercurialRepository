@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<targetPointTest deviceModel="PT800" sensorType="pressure">
+	<targetPoints>
+    <targetPoint amount="75" unit="psig"/>
+    <targetPoint amount="100" unit="psig"/>
+    <targetPoint amount="150" unit="psig"/>
+    <targetPoint amount="200" unit="psig"/>
+    <targetPoint amount="225" unit="psig"/>
+    <targetPoint amount="270" unit="psig"/>
+    <targetPoint amount="300" unit="psig"/>
+    <targetPoint amount="400" unit="psig"/>
+    <targetPoint amount="450" unit="psig"/>
+    <targetPoint amount="600" unit="psig"/>
+    <targetPoint amount="720" unit="psig"/>
+	</targetPoints>
+
+	<gradeScale>
+    <grade relativeError="0.005" name="A" passable="true"/>
+    <grade relativeError="0.008" name="B" passable="true"/>
+    <grade relativeError="0.010" name="C" passable="true"/>
+    <grade relativeError="1.000" name="F" passable="false"/>
+	</gradeScale>
+</targetPointTest>
