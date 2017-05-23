@@ -159,11 +159,12 @@
       string name = null;
 
       var values = advertisementData.Values;
+      //Log.V(this, "" + advertisementData);
 
       var data = advertisementData[CBAdvertisement.DataManufacturerDataKey];
 
       if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-//        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
+        //Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
         return;
       }
 

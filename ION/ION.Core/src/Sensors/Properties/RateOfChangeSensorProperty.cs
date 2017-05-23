@@ -194,7 +194,7 @@
 		/// <param name="flags">Flags.</param>
 		public bool ToggleFlags(EFlags flags) {
 			this.flags ^= flags;
-			return (this.flags & flags) == flags; 
+			return (this.flags & flags) == flags;
 		}
 
 		/// <summary>
@@ -227,7 +227,7 @@
 					max = dp.measurement;
 				}
 			}
-				
+
       var u = manifold.primarySensor.unit.standardUnit;
 			return new MinMax(u.OfScalar(min), u.OfScalar(max));
 		}
