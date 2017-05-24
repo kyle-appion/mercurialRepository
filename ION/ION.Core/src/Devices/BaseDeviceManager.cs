@@ -135,7 +135,7 @@
     public void PostInit() {
       if (ion.preferences.device.allowDeviceAutoConnect) {
         foreach (var device in knownDevices) {
-          device.connection.Connect();
+          device.connection.Connect(true);
         }
       }
 

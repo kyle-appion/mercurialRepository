@@ -106,7 +106,7 @@ namespace ION.Core.Connections {
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-		public virtual bool Connect() {
+		public virtual bool Connect(bool passive = false) {
       connectionState = EConnectionState.Connected;
 			return true;
 		}

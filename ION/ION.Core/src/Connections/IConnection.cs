@@ -69,7 +69,7 @@
     /// <summary>
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
-    bool Connect();
+    bool Connect(bool passive = false);
     /// <summary>
     /// Disconnects the connection from the remote terminus.
     /// </summary>
