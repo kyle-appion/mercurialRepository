@@ -85,7 +85,7 @@
 			this.head = other.head;
 			this.tail = other.tail;
 
-			Array.Copy(buffer, other.buffer, buffer.Length);
+      Array.Copy(other.buffer, buffer, buffer.Length);
 		}
 
 		public RingBuffer(int size) {
@@ -153,8 +153,16 @@
 			} else {
         // Otherwise, we need to do two copies as the head wraps the content array.
         if (buffer != null) {
-          Array.Copy(buffer, head, newContent, 0, this.count - head);
-          Array.Copy(buffer, 0, newContent, count + head, tail);
+          // The number of head items written
+          // If head items < 0, then the new content buffer is that many items too short.
+          // Otherwise, we can write that many items from the tail portion
+          var headItems = cnt - head;
+          var tailWritten = Math.Max(headItems, 0);
+
+          // Copy anything from the tail that we can.
+          Array.Copy(buffer, buffer.Length - tailWritten - 1, newContent, 0, tailWritten);
+          // Copy anything from the head that we can.
+          Array.Copy(buffer, Math.Max(head - cnt, 0), newContent, tailWritten, head + headItems);
         }
 			}
 
@@ -201,6 +209,22 @@
 		public override string ToString() {
 			return string.Format("[RingBuffer: isEmpty={0}, first={1}, last={2}, count={3}, capacity={4}]", isEmpty, first, last, count, capacity);
 		}
+
+    public static void TestResize() {
+      var source = new RingBuffer<int>(10);
+      for (int i = 0; i < 15; i++) {
+        source.Add(i);
+      }
+
+
+      // Test Expanding
+      var expand = new RingBuffer<int>(source);
+      expand.Resize(15);
+
+      // Test Shrink
+      var shrink = new RingBuffer<int>(source);
+      shrink.Resize(5);
+    }
 
 		/// <summary>
 		/// The enumerator that will index items from the RingBuffer.
