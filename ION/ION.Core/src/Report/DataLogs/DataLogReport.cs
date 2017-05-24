@@ -14,7 +14,25 @@
 	/// A small data object that holds all of the data that is used when generating a data log report.
 	/// </summary>
   public class DataLogReport {
-
+    /// <summary>
+    /// The name for the data log report.
+    /// </summary>
+    /// <value>The name of the report.</value>
+    public string reportName { get; private set; }
+    /// <summary>
+    /// The localization object for the report.
+    /// </summary>
+    /// <value>The localization.</value>
+    public ILocalization localization { get; private set; }
+    /// <summary>
+    /// The bytes that make up the appion logo.
+    /// </summary>
+    /// <value>The appion logo png.</value>
+    public byte[] appionLogoPng { get; private set; }
+		/// <summary>
+		/// The Dictionary that maps sensors to their exported graph png image. 
+		/// </summary>
+		public Dictionary<GaugeDeviceSensor, byte[]> graphImages { get; set; }
 		/// <summary>
 		/// The date that the report was started.
 		/// </summary>
@@ -43,11 +61,6 @@
     /// </summary>
     /// <value>The results.</value>
 		public List<SessionResults> sessionResults { get; private set; }
-		/// <summary>
-		/// The Dictionary that maps sensors to their epxorted graph png image. 
-		/// </summary>
-		public Dictionary<GaugeDeviceSensor, Stream> graphImages { get; set; }
-
 
 		/// <summary>
 		/// Creates a new DataLogReport based on the given jobs and session results.
@@ -87,6 +100,70 @@
 
 			return new DataLogReport(start, end, jobs, new List<IDevice>(deviceSet), sessionResults);
 		}
+
+    /// <summary>
+    /// The localization object that provides localized strings for the report.
+    /// </summary>
+    public interface ILocalization {
+      /// <summary>
+      /// The localized string for "SerialNumber" used in section headers.
+      /// </summary>
+      /// <value>The serial number.</value>
+      string serialNumber { get; }
+      /// <summary>
+      /// The localized string for "Name" used for device names in section headers.
+      /// </summary>
+      /// <value>The name.</value>
+      string name { get; }
+      /// <summary>
+      /// The localized string for "Certificated Date" used for the last time a device was certified in section headers.
+      /// </summary>
+      /// <value>The certification date.</value>
+      string certificationDate { get; }
+      /// <summary>
+      /// The localized string for "Device Model" used in section headers.
+      /// </summary>
+      /// <value>The device model.</value>
+      string deviceModel { get; }
+      /// <summary>
+      /// The localized string for "Report Created" used in section headers.
+      /// </summary>
+      /// <value>The report created.</value>
+      string reportCreated { get; }
+      /// <summary>
+      /// The localized string for "Report Dates" used in section headers.
+      /// </summary>
+      /// <value>The report dates.</value>
+      string reportDates { get; }
+      /// <summary>
+      /// The localized string for "Minimum" used in section headers.
+      /// </summary>
+      /// <value>The minimum.</value>
+      string minimum { get; }
+      /// <summary>
+      /// The localized string for "Maximum" used in section headers.
+      /// </summary>
+      /// <value>The maximum.</value>
+      string maximum { get; }
+      /// <summary>
+      /// The localized string for "Average" used in section headers.
+      /// </summary>
+      /// <value>The average.</value>
+      string average { get; }
+
+      /// <summary>
+      /// Queries the type safe string for the given device model;
+      /// </summary>
+      /// <returns>The device model string.</returns>
+      /// <param name="deviceModel">Device model.</param>
+      string GetDeviceModelString(EDeviceModel deviceModel);
+      /// <summary>
+      /// Queries the type safe string for the given sensor type.
+      /// </summary>
+      /// <returns>The sensor type string.</returns>
+      /// <param name="sensorType">Sensor type.</param>
+      string GetSensorTypeString(Sensors.ESensorType sensorType);
+    }
   }
 }
 

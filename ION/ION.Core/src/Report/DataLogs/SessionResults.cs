@@ -3,10 +3,12 @@
   using System;
 	using System.Collections.Generic;
 
+  using ION.Core.Devices;
+
   /// <summary>
   /// The class that holds the results of a session.
   /// </summary>
-  public class SessionResults {
+  public class SessionResults : IComparable<SessionResults> {
     /// <summary>
     /// Whether or not this object represents the complete results of the session.
     /// </summary>
@@ -49,6 +51,21 @@
 		}
 
     /// <summary>
+    /// Queries the device sensor logs for the given sensor. If the sensor is not present in the session results, then
+    /// we will return null.
+    /// </summary>
+    /// <returns>The device sensor logs for.</returns>
+    /// <param name="sensor">Sensor.</param>
+    public DeviceSensorLogs GetDeviceSensorLogsFor(GaugeDeviceSensor sensor) {
+      foreach (var dsl in deviceSensorLogs) {
+        if (dsl.deviceSerialNumber.Equals(sensor.device.serialNumber.ToString()) && dsl.index == sensor.index) {
+          return dsl;
+        }
+      }
+      return null;
+    }
+
+    /// <summary>
     /// Returns a subset of this session result that will fit within the given date range.
     /// </summary>
     /// <returns>The set.</returns>
@@ -68,6 +85,11 @@
         startTime = this.startTime,
         endTime = this.endTime,
       };
+    }
+
+    // Implemented for IComparable
+    public int CompareTo(SessionResults sr) {
+      return startTime.CompareTo(sr.startTime);
     }
   }
 }

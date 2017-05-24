@@ -571,6 +571,17 @@
 		}
 
 		private void Export() {
+			var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
+			var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
+			var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
+
+			var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
+			var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+			var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+
+
+      var dialog = new DialogExportReportChooser(ion, this, dlr).Show();
+/*
 			var dialog = new ListDialogBuilder(this);
 			dialog.SetTitle(Resource.String.report_choose_export_format);
 
@@ -588,6 +599,7 @@
 			});
 
 			dialog.Show();
+*/
 		}
 
 		/// <summary>

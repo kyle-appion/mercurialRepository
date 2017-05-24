@@ -19,6 +19,7 @@
     <TargetFrameworkVersion>v7.1</TargetFrameworkVersion>
     <AndroidUseSharedRuntime>false</AndroidUseSharedRuntime>
     <AndroidTlsProvider></AndroidTlsProvider>
+    <JavaMaximumHeapSize>8G</JavaMaximumHeapSize>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +39,8 @@
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <JavaMaximumHeapSize>8G</JavaMaximumHeapSize>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
@@ -322,6 +325,9 @@
     <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
+    <Compile Include="src\Activity\Report\DialogExportReportChooser.cs" />
+    <Compile Include="src\Report\DataLogReportPdfSummaryExporter.cs" />
+    <Compile Include="src\Report\IDataLogExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -762,6 +768,8 @@
     <AndroidResource Include="Resources\layout\activity_rss.axml" />
     <AndroidResource Include="Resources\layout\list_rss_item.axml" />
     <AndroidResource Include="Resources\layout\list_item_tutorial.axml" />
+    <AndroidResource Include="Resources\layout\dialog_report_export_chooser.axml" />
+    <AndroidResource Include="Resources\values\Strings_Report.xml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

@@ -161,6 +161,10 @@
     <Compile Include="src\App\IIONPreferences.cs" />
     <Compile Include="src\Content\IonState.cs" />
     <Compile Include="src\IO\RssParser.cs" />
+    <Compile Include="src\Report\DataLogs\Exporter\BaseFormattedFlexCelDataLogExporter.cs" />
+    <Compile Include="src\Report\DataLogs\Exporter\IDataLogExporter.cs" />
+    <Compile Include="src\Report\DataLogs\Exporter\SummaryPdfReportExporter.cs" />
+    <Compile Include="src\Report\DataLogs\Exporter\DataLogReportExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -339,6 +343,7 @@
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Content\Parsers\ManifoldParsers\" />
+    <Folder Include="src\Report\DataLogs\Exporter\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">
@@ -370,6 +375,9 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
