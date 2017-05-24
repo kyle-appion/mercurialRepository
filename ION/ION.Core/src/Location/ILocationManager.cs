@@ -94,12 +94,12 @@
     /// The longitude of the location.
     /// </summary>
     /// <value>The longitude.</value>
-    Scalar longitude { get; }
+    double longitude { get; }
     /// <summary>
     /// The latitude of the location.
     /// </summary>
     /// <value>The latitude.</value>
-    Scalar latitude { get; }
+    double latitude { get; }
   }
 }
 
