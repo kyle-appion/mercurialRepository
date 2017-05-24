@@ -1,0 +1,131 @@
+#include <string.h>
+
+#include "Appion.h"
+#include "Fluke700G.h"
+
+#define LED 13
+
+void setup() {
+  pinMode(LED, OUTPUT);
+
+  Serial.begin(9600);
+  Serial3.begin(9600);
+/*
+  soft.begin(9600);
+  soft.setTimeout(10 * 1000);
+*/
+}
+
+
+void loop() {
+  char buffer[128];
+  int cnt = 0;
+/*
+  Serial3.println("PRES_UNIT Bar");
+  Serial.println("PRES_UNIT Bar");
+  delay(1000);
+  Serial3.println("PRES_UNIT Psi");
+  Serial.println("PRES_UNIT Psi");
+  delay(1000);
+  Serial3.println("PRES_UNIT Kg/cm2");
+  Serial.println("PRES_UNIT Kg/cm2");
+  delay(1000);
+  Serial3.println("*IDN?");
+  Serial.println("*IDN?");
+  delay(100);
+
+  if (Serial3.available()) {
+    cnt = Serial3.readBytes(buffer, 128);
+    if (cnt > 0) {
+      Serial.write(buffer, cnt);
+      Serial.println();
+      digitalWrite(LED, !digitalRead(LED));
+    }
+  }
+  */
+
+  if (Serial.available()) {
+    Serial.println();
+    cnt = Serial.readBytes(buffer, 128);
+    Serial3.write(buffer, cnt);
+    Serial3.println();
+    Serial3.flush();
+    Serial.write("<< ");
+    Serial.write(" {");
+    Serial.print(cnt);
+    Serial.write("} ");
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+
+  if (Serial3.available()) {
+    cnt = Serial3.readBytes(buffer, 128);
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+}
+
+
+/*
+  if (Serial.available()) {
+    Serial.println();
+    cnt = Serial.readBytes(buffer, 128);
+    soft.write(buffer, cnt);
+    soft.println();
+    soft.flush();
+    Serial.write("<< ");
+    Serial.write(" {");
+    Serial.print(cnt);
+    Serial.write("} ");
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+
+  if (soft.available()) {
+    cnt = soft.readBytes(buffer, 128);
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+*/
+
+/*
+  cnt = soft.readBytes(buffer, 128);
+  if (cnt) {
+    Serial.write(">> ");
+    Serial.write(" {");
+    Serial.print(cnt);
+    Serial.write("} ");
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+
+}
+/*
+  Serial.println("Writing VAL?");
+  soft.println("VAL?\r");
+  soft.flush();
+  char buffer[32];
+  int cnt = ReadLine1(buffer, 32);
+  Serial.write(buffer, cnt);
+  Serial.write("\r\n");
+  delay(2500);
+*/
+/*
+  char buffer[32];
+  Serial.println("Reading line from input...");
+  int cnt = ReadLine(buffer, 32);
+  Serial.write("ACK: ");
+  Serial.write(buffer, cnt);
+  Serial.write("\r\n");
+  soft.write(buffer, cnt);
+//  soft.write("HC_OFF\r\n");
+  soft.flush();
+  cnt = ReadLine1(buffer, 32);
+  if (cnt == 0) {
+    Serial.println("Failed to read anything from the fluke");
+  } else {
+    Serial.print("Read ");
+    Serial.write(buffer, cnt);
+    Serial.println(" from Fluke");
+  }
+*/

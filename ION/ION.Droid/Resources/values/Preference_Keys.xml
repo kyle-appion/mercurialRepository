@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--
+                                      ATTENTION! ATTENTION! ATTENTION!
+
+  DO NOT TRANSLATE THIS FILE! ALL STRINGS PRESENTED WITHIN THIS FILE ARE CRITICAL TO APPLICATION OPERATION IN THE FORM
+  THAT THEY ARE GIVEN. ANY CHANGE TO THESE STRINGS WILL BREAK A FEATURE WITHIN THE APPLICATION.
+  -->
+
+  <string name="pkey_app_version">app_version</string>
+	<string name="pkey_app_analytics">app_analytics</string>
+  <string name="pkey_first_launch">first_launch"</string>
+  <string name="pkey_id">app_id</string>
+  <string name="pkey_send_feedback">send_feedback</string>
+  <string name="pkey_wake_lock">wake_lock</string>
+  <string name="pkey_whats_new">whats_new</string>
+  <string name="pkey_youtube">youtube</string>
+
+  <string name="pkey_alarm_vibrate">alarm_vibrate</string>
+  <string name="pkey_alarm_sound">alarm_sound</string>
+
+  <string name="pkey_device_auto_connect">device_auto_connect</string>
+	<string name="pkey_device_long_range">device_long_range</string>
+	<string name="pkey_device_trend_interval">device_trend_interval</string>
+
+  <string name="pkey_help_walkthrough">help_walkthrough</string>
+
+	<string name="pkey_location_ask_for_permissions">location_ask_for_permissions</string>
+  <string name="pkey_location_elevation">location_elevation</string>
+  <string name="pkey_location_gps">location_gps</string>
+  <string name="pkey_location_gps_error">location_gps_error</string>
+
+	<string name="pkey_rss_last_check_date">rss_last_check_date</string>
+  <string name="pkey_rss_list">rss_list</string>
+
+	<string name="pkey_portal_rememberme">portal_rememberme</string>
+	<string name="pkey_portal_username">portal_username</string>
+	<string name="pkey_portal_password">portal_password</string>
+
+  <string name="pkey_unit_length">unit_length</string>
+  <string name="pkey_unit_pressure">unit_pressure</string>
+  <string name="pkey_unit_temperature">unit_temperature</string>
+  <string name="pkey_unit_vacuum">unit_vacuum</string>
+  <string name="pkey_unit_weight">unit_weight</string>
+
+	<string name="pkey_reporting_data_log_interval">reporting_data_log_interval</string>
+</resources>
