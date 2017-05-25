@@ -120,6 +120,16 @@ namespace ION.IOS.ViewController.Workbench {
       labelSerialNumber.Text = device.serialNumber.ToString();
       activityConnectStatus.Hidden = EConnectionState.Resolving != sensor.device.connection.connectionState;
       buttonConnection.Hidden = false;
+			buttonConnection.TouchUpInside += delegate {
+        var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+        activityConnectStatus.StartAnimating();
+        if(gaugeSensor.device.isConnected){
+          gaugeSensor.device.connection.Disconnect();          
+        } else {
+          gaugeSensor.device.connection.Connect();
+        }
+			  activityConnectStatus.StopAnimating();
+			};
 
       UpdateAlarm(sensor);
 

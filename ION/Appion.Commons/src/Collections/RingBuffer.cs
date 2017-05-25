@@ -158,7 +158,7 @@
 					// Otherwise, we can write that many items from the tail portion
 					var headItems = cnt - head;
 					var tailWritten = Math.Max(headItems, 0);
-					var headWritten = Math.Max(cnt - tailWritten, cnt);
+					var headWritten = Math.Min(cnt - tailWritten, cnt);
 
 					// Copy anything from the tail that we can.
 					Array.Copy(buffer, buffer.Length - tailWritten, newContent, 0, tailWritten);
