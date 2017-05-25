@@ -98,7 +98,7 @@
         return;
       }
 
-      var averageChange = roc.GetPrimaryAverageRateOfChange();
+      var averageChange = roc.GetPrimaryAverageRateOfChange().ConvertTo(record.sp.sensor.unit);
       var c = title.Context;
 
       var amount = Math.Abs(averageChange.magnitude);
@@ -106,9 +106,11 @@
         measurement.Text = c.GetString(Resource.String.stable);
         unit.Visibility = ViewStates.Invisible;
       } else {
-        var dmax = record.sp.sensor.maxMeasurement.amount / 10;
+        var sensor = record.sp.sensor;
+        var max = sensor.maxMeasurement;
+        var dmax = max.amount / 1;
         if (amount > dmax) {
-          measurement.Text = "> " + SensorUtils.ToFormattedString(averageChange.unit.OfScalar(dmax));
+          measurement.Text = "> " + SensorUtils.ToFormattedString(sensor.unit.OfSpan(dmax));
         } else {
           measurement.Text = SensorUtils.ToFormattedString(averageChange.unit.OfScalar(amount));
         }

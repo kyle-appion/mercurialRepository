@@ -4,8 +4,9 @@
 
 	using Appion.Commons.Collections;
 	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
-  using ION.Core.App;
+	using ION.Core.App;
 	using ION.Core.Content;
   using ION.Core.Devices;
 
@@ -13,7 +14,7 @@
 
     private static int POINT_LIMIT = 300;
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
-    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(2);
+    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(60);
     private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
 		// Overridden from AbstractSensorProperty
@@ -206,15 +207,14 @@
 		public ScalarSpan GetPrimaryAverageRateOfChange() {
       TrimRoc();
       var p = new PlotPoint[rocBuffer.count];
-			var pu = sensor.unit.standardUnit;
+      var su = sensor.unit.standardUnit;
       var cnt = rocBuffer.ToArray(p);
-			if (cnt == 0) {
-        return pu.OfSpan(0);
+			if (cnt <= 2) {
+        return su.OfSpan(0);
       }
-      var pmag = (p[0].measurement - p[cnt - 1].measurement) / (ROC_WINDOW.TotalMilliseconds / TimeSpan.FromSeconds(60).TotalMilliseconds);
-			var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
-			return ret;
-		}
+
+      return CalculateExponetialWeightedMovingAverage(p);
+    }
 
 		public MinMax GetPrimaryMinMax() {
 			double min = double.MaxValue, max = double.MinValue;
@@ -293,6 +293,30 @@
     private void TrimRoc() {
       var now = DateTime.Now;
       while (now - rocBuffer.last.date > ROC_WINDOW && rocBuffer.RemoveLast());
+    }
+
+		/// <summary>
+		/// Performs an exponetial weighted moving average calculation on the primary sensor's rate of change buffer.
+		/// This algorithm is described here: http://www.statsref.com/HTML/index.html?moving_averages.html.
+		/// </summary>
+		/// <returns>The exponetial weighted moving average.</returns>
+    private ScalarSpan CalculateExponetialWeightedMovingAverage(PlotPoint[] buffer) {
+
+      var sum = 0.0;
+      var initial = buffer[0];
+      for (int i = 1; i < buffer.Length; i++) {
+        var dt = (initial.date - buffer[i].date).TotalMilliseconds / ROC_WINDOW.TotalMilliseconds;
+
+        var wi = 1 / dt;
+        var xi = initial.measurement - buffer[i].measurement;
+
+        sum += wi * xi;
+      }
+      sum /= buffer.Length;
+
+      sum /= (initial.date - buffer[buffer.Length - 1].date).TotalMilliseconds / TimeSpan.FromMinutes(1).TotalMilliseconds;
+
+      return sensor.unit.standardUnit.OfSpan(sum).ConvertTo(sensor.unit);
     }
 
     private void OnPreferencesChanged() {

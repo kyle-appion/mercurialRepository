@@ -154,6 +154,10 @@ namespace ION.Core.Sensors {
 			return ToFormattedString(measurement.amount, measurement.unit, includeUnit);
 		}
 
+    public static string ToFormattedString(ScalarSpan measurement, bool includeUnit = false) {
+      return ToFormattedString(measurement.magnitude, measurement.unit, includeUnit);
+    }
+
 		public static string ToFormattedString(double amount, Unit unit, bool includeUnit = false) {
 			string ret = "";
 
