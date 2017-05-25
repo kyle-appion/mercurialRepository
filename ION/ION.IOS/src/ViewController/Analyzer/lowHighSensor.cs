@@ -196,7 +196,7 @@ namespace ION.IOS.ViewController.Analyzer
       altReading = new UILabel(new CGRect(0, .5 * cellHeight, .99 * tblRect.Width, .5 * cellHeight));
       rocReading = new UILabel(new CGRect(.2 * tblRect.Width, 36, .79 * tblRect.Width, 36));
       rocReading.AdjustsFontSizeToFitWidth = true;
-      rocImage = new UIImageView(new CGRect(0, 36, .15 * tblRect.Width, 36));
+      rocImage = new UIImageView(new CGRect(0, 36, 36, 36));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
       ion = AppState.context as IosION;
       __analyzerviewcontroller = ViewController;

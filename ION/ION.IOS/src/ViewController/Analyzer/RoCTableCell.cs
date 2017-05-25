@@ -63,7 +63,7 @@ namespace ION.IOS.ViewController.Analyzer {
 			}
       Console.WriteLine("Cell height: " + this.Bounds.Height);
       cellHeader = new UILabel(new CGRect(0, 0, tableRect.Width, 36));
-      cellImage = new UIImageView(new CGRect(0, 36, .15 * tableRect.Width, 36));
+      cellImage = new UIImageView(new CGRect(0, 36, 36, 36));
       graphView = new UIView(new CGRect(0, 72, tableRect.Width, 72));
       graphView.BackgroundColor = UIColor.Clear;
 

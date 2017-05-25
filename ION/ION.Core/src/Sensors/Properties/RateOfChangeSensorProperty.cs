@@ -13,7 +13,7 @@
 
     private static int POINT_LIMIT = 300;
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
-    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(15);
+    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(10);
     private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
 		// Overridden from AbstractSensorProperty
