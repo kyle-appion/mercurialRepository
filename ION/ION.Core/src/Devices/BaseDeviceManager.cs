@@ -245,6 +245,9 @@
     public async Task<bool> DeleteDevice(ISerialNumber serialNumber) {
       var device = this[serialNumber];
       if (device != null) {
+        ion.currentWorkbench.RemoveUsesOfDevice(device);
+        ion.currentAnalyzer.RemoveUsesOfDevice(device);
+
         device.Dispose();
         Unregister(device);
         var db = ion.database;

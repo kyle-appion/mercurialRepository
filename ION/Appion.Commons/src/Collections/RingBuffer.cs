@@ -158,11 +158,12 @@
           // Otherwise, we can write that many items from the tail portion
           var headItems = cnt - head;
           var tailWritten = Math.Max(headItems, 0);
+          var headWritten = Math.Min(cnt - tailWritten, cnt);
 
           // Copy anything from the tail that we can.
-          Array.Copy(buffer, buffer.Length - tailWritten - 1, newContent, 0, tailWritten);
+          Array.Copy(buffer, buffer.Length - tailWritten, newContent, 0, tailWritten);
           // Copy anything from the head that we can.
-          Array.Copy(buffer, Math.Max(head - cnt, 0), newContent, tailWritten, head + headItems);
+          Array.Copy(buffer, head - headWritten, newContent, tailWritten, headWritten);
         }
 			}
 
@@ -211,12 +212,18 @@
 		}
 
     public static void TestResize() {
-      var source = new RingBuffer<int>(10);
-      for (int i = 0; i < 15; i++) {
-        source.Add(i);
+      var source = new RingBuffer<int>(300);
+      for (int i = 0; i <= source.capacity; i++) {
+        source.buffer[i] = i;
       }
 
+      source.head = 227;
+      source.tail = 257;
 
+      var work = new RingBuffer<int>(source);
+      work.Resize(300);
+
+/*  
       // Test Expanding
       var expand = new RingBuffer<int>(source);
       expand.Resize(15);
@@ -224,6 +231,7 @@
       // Test Shrink
       var shrink = new RingBuffer<int>(source);
       shrink.Resize(5);
+*/
     }
 
 		/// <summary>
