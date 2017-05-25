@@ -166,7 +166,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (device == null || device.isConnected) {
           InvalidatePrimary();
-          if (initialRecord.manifold.secondarySensor != null) {
+          if (initialRecord.manifold.secondarySensor != null && !(initialRecord.manifold.secondarySensor is ManualSensor)) {
             InvalidateSecondary();
           }
           InvalidateTime();

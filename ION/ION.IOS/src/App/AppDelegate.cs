@@ -9,7 +9,7 @@
 
 	using ION.Core.App;
 	using ION.Core.Net;
-
+  using ION.IOS.UI;
 	using ION.IOS.ViewController.Walkthrough;
 	using ION.IOS.ViewController;
 
@@ -90,7 +90,6 @@
 					    }
 					    var updateView = new WhatsNewView(vc.View,vc);			    
 					    vc.View.AddSubview(updateView.infoView);
-						//KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 						NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
 					}
 					////////USE THIS TO RESET VERSION NUMBER FOR TESTING WHAT'S NEW POPUP/////////
@@ -107,7 +106,13 @@
 		    	vc.View.AddSubview(updateView.infoView);
 					//KeychainAccess.SetValueForKey(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(),"lastUsedVersion");
 					NSUserDefaults.StandardUserDefaults.SetString(NSBundle.MainBundle.InfoDictionary["CFBundleVersion"].ToString(), "lastUsedVersion");
-				}			
+				}
+				//**********CHECK RSS FEED UPDATES!!!!!!!!
+
+				var feedPull = new ViewController.RssFeed.RssFeedCheck();
+				feedPull.BeginReadXMLStreamSingle();
+
+				//************************************************************************
 			}
 			
 			/*********************CHECK REPORTING DEFAULTS***************************/
@@ -134,12 +139,7 @@
         Console.WriteLine("No trending default was set so it is now");        
       }
       //************************************************************************
-			//**********CHECK RSS FEED UPDATES!!!!!!!!
-			
-        var feedPull = new ViewController.RssFeed.RssFeedCheck();
-        feedPull.BeginReadXMLStreamSingle();
-		  
-			//************************************************************************
+
       return true;
     }
 
@@ -172,12 +172,17 @@
 
       if (NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_logging_interval") == 1) {
         if (intervalWarning == true) {
-          UIAlertView loggingWarning = new UIAlertView(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, null,Util.Strings.CLOSE, Util.Strings.RETURNSETTINGS);
-          loggingWarning.Clicked += (sender, e) => {
-            if(e.ButtonIndex.Equals(1)){
-              UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-            }
-          };
+					//UIAlertView loggingWarning = new UIAlertView(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, null, Util.Strings.CLOSE, Util.Strings.RETURNSETTINGS);
+					UIAlertController loggingWarning = UIAlertController.Create(Util.Strings.Report.LOGGINGINTERVAL, Util.Strings.Report.LOWINTERVAL, UIAlertControllerStyle.Alert);
+					
+          loggingWarning.AddAction(UIAlertAction.Create(Util.Strings.SETTINGS, UIAlertActionStyle.Default, (action) => {
+						UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
+					}));
+					
+          loggingWarning.AddAction(UIAlertAction.Create(Util.Strings.CLOSE, UIAlertActionStyle.Default, (action) => {
+
+					}));
+
           loggingWarning.Show();
         }
       } 
@@ -192,13 +197,16 @@
       	Console.WriteLine("Came back and not using geolocation");
         ion.locationManager.StopAutomaticLocationPolling();
       }
-      
+			var preWalkthrough = NSUserDefaults.StandardUserDefaults.StringForKey("walkthrough_complete");
+
+      if (string.IsNullOrEmpty(preWalkthrough)) {
         string lastDate = NSUserDefaults.StandardUserDefaults.StringForKey("rssCheck");
-        
-        if (!string.IsNullOrEmpty(lastDate) && DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()){
-            var feedPull = new ViewController.RssFeed.RssFeedCheck();
-            feedPull.BeginReadXMLStreamSingle();
-        }      
+
+        if (!string.IsNullOrEmpty(lastDate) && DateTime.Parse(lastDate).ToLocalTime().AddHours(24) <= DateTime.Now.ToLocalTime()) {
+          var feedPull = new ViewController.RssFeed.RssFeedCheck();
+          feedPull.BeginReadXMLStreamSingle();
+        }
+      }
     }
 
     public override void OnActivated(UIApplication application) {
