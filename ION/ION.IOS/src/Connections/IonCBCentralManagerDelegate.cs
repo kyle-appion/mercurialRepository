@@ -206,8 +206,10 @@
             } else {
               // The connection already exists. Update the last time that it was seen.
               var d = ion.deviceManager[sn];
-              NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
-              connection.lastSeen = DateTime.Now;
+              if (d != null) {
+                NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
+                connection.lastSeen = DateTime.Now;
+              }
             }
           }
         } else {

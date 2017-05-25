@@ -87,13 +87,9 @@ namespace ION.IOS.ViewController.Workbench {
 			if (record.roc.manifold.primarySensor.type == ESensorType.Temperature) {
 				primaryColor = OxyColors.Red;
 				secondaryColor = OxyColors.Blue;
-				Console.WriteLine("Creating roc plotmodel for temperature sensor " + record.manifold.primarySensor.name);
 			} else if (record.roc.manifold.primarySensor.type == ESensorType.Vacuum) {
 				primaryColor = OxyColors.Maroon;
-				Console.WriteLine("Creating roc plotmodel for vacuum sensor " + record.manifold.primarySensor.name);
-			} else {
-				Console.WriteLine("Creating roc plotmodel for pressure sensor " + record.manifold.primarySensor.name);
-			}
+			} 
 
     	this.Layer.BorderWidth = 1f;
       this.record = record;
@@ -152,6 +148,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
     }
 
+
     private async void DoUpdateCell() {
       var device = (record.manifold.primarySensor as GaugeDeviceSensor)?.device;
 
@@ -161,9 +158,9 @@ namespace ION.IOS.ViewController.Workbench {
       var range = (sp.sensor.maxMeasurement.ConvertTo(rocScalar.unit) - sp.sensor.minMeasurement.ConvertTo(rocScalar.unit)) / 10;
 
       if (abs > range.magnitude) {
-        labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + Strings.Measure.PER_MINUTE;
+        labelMeasurement.Text = ">" + SensorUtils.ToFormattedString(sp.sensor.type, range) + " " + rocScalar.unit.ToString() + Strings.Measure.PER_MINUTE;
       } else {
-        labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, rocScalar.unit.OfScalar(abs)) + Strings.Measure.PER_MINUTE;
+        labelMeasurement.Text = SensorUtils.ToFormattedString(sp.sensor.type, rocScalar.unit.OfScalar(abs)) + " " + rocScalar.unit.ToString() + Strings.Measure.PER_MINUTE;
       }
 
       if (rocScalar.magnitude == 0) {
@@ -194,7 +191,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (device == null || device.isConnected) {
         InvalidatePrimary();
-        if(record.manifold.secondarySensor != null){
+        if(record.manifold.secondarySensor != null && !(record.manifold.secondarySensor is ManualSensor)){
           InvalidateSecondary();
         }
         InvalidateTime();
@@ -294,6 +291,7 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       var minMax = record.roc.GetSecondaryMinMax();
+
       var rangeAmount = record.roc.manifold.secondarySensor.maxMeasurement.ConvertTo(record.roc.manifold.secondarySensor.unit.standardUnit).amount * .05;
       var sensorRange = new Scalar(record.roc.manifold.secondarySensor.unit.standardUnit,rangeAmount);
       var sensorUnit = record.roc.manifold.secondarySensor.unit;
@@ -327,25 +325,24 @@ namespace ION.IOS.ViewController.Workbench {
         return;
       }
       if(min.amount - (range.amount / 2) < sensorMin.amount){
-        axis.Minimum = sensorMin.amount;
-		bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u), true);
-	  } else {
-        axis.Minimum = min.amount - (range.amount / 2);
-		var diffScalar = new Scalar(u.standardUnit, (min.amount - (range.amount / 2)));
-		bottomLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+	      axis.Minimum = sensorMin.amount;
+			  bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u), true);
+		  } else {
+	      axis.Minimum = min.amount - (range.amount / 2);
+			  var diffScalar = new Scalar(u.standardUnit, (min.amount - (range.amount / 2)));
+			  bottomLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       }
-
       if(max.amount + (range.amount / 2) < sensorMin.amount + range.amount){
         axis.Maximum = sensorMin.amount + range.amount;
-		var diffScalar = new Scalar(u.standardUnit, sensorMin.amount + range.amount);
-		topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+			  var diffScalar = new Scalar(u.standardUnit, sensorMin.amount + range.amount);
+			  topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       } else {
         axis.Maximum = max.amount + (range.amount / 2);
-		var diffScalar = new Scalar(u.standardUnit, (max.amount + (range.amount / 2)));
-		topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+			  var diffScalar = new Scalar(u.standardUnit, (max.amount + (range.amount / 2)));
+			  topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       }
-	  primarySeries.Color = primaryColor;
-	  secondarySeries.Color = secondaryColor;
+		  primarySeries.Color = primaryColor;
+		  secondarySeries.Color = secondaryColor;
 
       axis.MinimumPadding = 0.25;
       axis.MaximumPadding = 0.25;

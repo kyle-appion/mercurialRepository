@@ -22,7 +22,7 @@
 		/// Note: you should check if the buffer is empty before getting the first item or you may get undefined results.
 		/// </summary>
 		/// <value>The first.</value>
-		public T first { 
+		public T first {
 			get {
 				if (isEmpty) {
 					return default(T);
@@ -85,7 +85,7 @@
 			this.head = other.head;
 			this.tail = other.tail;
 
-			Array.Copy(buffer, other.buffer, buffer.Length);
+			Array.Copy(other.buffer, buffer, buffer.Length);
 		}
 
 		public RingBuffer(int size) {
@@ -151,55 +151,81 @@
 				// The buffer is in order, this is a simple copy.
 				Array.Copy(buffer, newContent, head - tail);
 			} else {
-        // Otherwise, we need to do two copies as the head wraps the content array.
-        if (buffer != null) {
-          Array.Copy(buffer, head, newContent, 0, this.count - head);
-          Array.Copy(buffer, 0, newContent, count + head, tail);
-        }
+				// Otherwise, we need to do two copies as the head wraps the content array.
+				if (buffer != null) {
+					// The number of head items written
+					// If head items < 0, then the new content buffer is that many items too short.
+					// Otherwise, we can write that many items from the tail portion
+					var headItems = cnt - head;
+					var tailWritten = Math.Max(headItems, 0);
+
+					// Copy anything from the tail that we can.
+					Array.Copy(buffer, buffer.Length - tailWritten - 1, newContent, 0, tailWritten);
+					// Copy anything from the head that we can.
+					Array.Copy(buffer, Math.Max(head - cnt, 0), newContent, tailWritten, head + headItems);
+				}
 			}
 
 			buffer = newContent;
 			head = cnt;
-			tail = 0; 
+			tail = 0;
 		}
 
 		/// <summary>
 		/// Queries an array of the contents within the ring buffer sorted from newest to oldest point.
-    /// Note: if the container is too small to fit the entire contents, only the newest contents will fill the container.
+		/// Note: if the container is too small to fit the entire contents, only the newest contents will fill the container.
 		/// </summary>
-    /// <param name="container">The container that will contain the contents of the buffer.</param>
+		/// <param name="container">The container that will contain the contents of the buffer.</param>
 		/// <returns>The number of items written to the container.</returns>
 		public int ToArray(T[] container) {
 			var j = 0;
 
 			if (count > 0) {
 				if (head > tail) {
-          for (int i = head - 1; i >= tail && j < container.Length; i--) {
+					for (int i = head - 1; i >= tail && j < container.Length; i--) {
 						container[j++] = buffer[i];
 					}
 				} else {
 					if (head == 0) {
-            for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
+						for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
 							container[j++] = buffer[i];
 						}
 					} else {
-            for (int i = head - 1; i >= 0 && j < container.Length; i--) {
+						for (int i = head - 1; i >= 0 && j < container.Length; i--) {
 							container[j++] = buffer[i];
 						}
 
-            for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
+						for (int i = buffer.Length - 1; i >= tail && j < container.Length; i--) {
 							container[j++] = buffer[i];
 						}
 					}
 				}
 			}
 
-      return j;
+			return j;
 		}
 
 		// Overridden from object
 		public override string ToString() {
 			return string.Format("[RingBuffer: isEmpty={0}, first={1}, last={2}, count={3}, capacity={4}]", isEmpty, first, last, count, capacity);
+		}
+
+		public static void TestResize() {
+			var source = new RingBuffer<int>(10);
+			for (int i = 0; i < 15; i++) {
+				source.Add(i);
+			}
+
+
+			// Test Expanding
+			var expand = new RingBuffer<int>(source);
+			expand.Resize(15);
+
+			// Test Shrink
+			var shrink = new RingBuffer<int>(source);
+			shrink.Resize(5);
+
+			;
 		}
 
 		/// <summary>
