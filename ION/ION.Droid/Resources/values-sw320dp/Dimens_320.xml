@@ -136,16 +136,6 @@ This directory is used to contain phone sized dimensions. So far this file affec
   <!-- The size of an icon in the fluid dialog manager. -->
   <dimen name="fluid_icon_size">64dp</dimen>
 
-	<!--
-	Portal
-	-->
-	<!-- The height of the banner in the Portal login page. -->
-	<dimen name="portal_landing_button_width">150dp</dimen>
-	<dimen name="portal_landing_button_height">60dp</dimen>
-	<dimen name="portal_landing_text_size">20sp</dimen>
-	<dimen name="portal_title_text">30sp</dimen>
-	<dimen name="portal_icon_size">48dp</dimen>
-
   <!--
   PTChart dimensions
   -->
