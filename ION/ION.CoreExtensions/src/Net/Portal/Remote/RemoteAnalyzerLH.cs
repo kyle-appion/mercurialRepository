@@ -147,7 +147,7 @@
 			} else if (typeof(SuperheatSubcoolSensorProperty).Equals(type)) {
 				return "Superheat";
 			} else {
-        Log.D(typeof(RemoteAnalyzerLH).Name, "Cannot find code for sensor property: " + sp.GetType().Name + ". Returning null.");
+//        Log.D(typeof(RemoteAnalyzerLH).Name, "Cannot find code for sensor property: " + sp.GetType().Name + ". Returning null.");
         return null;
 			}
 		}
@@ -170,7 +170,7 @@
 					return new SuperheatSubcoolSensorProperty(manifold);
 
 				default:
-          Log.D(typeof(RemoteAnalyzerLH).Name, "Cannot parse sensor property from code: " + code + ". Returning null.");
+//          Log.D(typeof(RemoteAnalyzerLH).Name, "Cannot parse sensor property from code: " + code + ". Returning null.");
           return null;
 			}
 		}
