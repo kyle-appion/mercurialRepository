@@ -459,7 +459,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
           } else {
             if (pressureSensor != null) {
               entryMode = new SensorEntryMode(this, pressureSensor, temperatureUnit, ptChart, editPressure, editTemperature);
-            } else {
+            } else if (temperatureSensor != null){
               entryMode = new SensorEntryMode(this, temperatureSensor, pressureUnit, ptChart, editTemperature, editPressure);
             }
           }
@@ -542,7 +542,7 @@ namespace ION.IOS.ViewController.PressureTemperatureChart {
       editPressure.EditingDidEnd += (s, e) => {
         if (string.IsNullOrEmpty(editPressure.Text)) {
           if (pressureSensor == null) {
-            pressureSensor = new ManualSensor(ESensorType.Temperature);
+            pressureSensor = new ManualSensor(ESensorType.Pressure);
           }
           pressureSensor.measurement = pressureSensor.unit.OfScalar(0);
         }
