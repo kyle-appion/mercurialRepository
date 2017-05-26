@@ -58,6 +58,38 @@
 			}
 		}
 
+		/// <summary>
+		/// Whether or not the roc of change property is considered to be stable.
+		/// </summary>
+		/// <value><c>true</c> if is stable; otherwise, <c>false</c>.</value>
+		public bool isStable {
+			get {
+				var scale = sensor.maxMeasurement.ConvertTo(sensor.unit).amount;
+        var rocMag = primaryRateOfChange.ConvertTo(sensor.unit).magnitude;
+				var now = DateTime.Now;
+
+        var percent = Math.Abs(rocMag / scale);
+
+				if (percent > 0.1) {
+					percent = 0.1;
+				} else if (percent < 0.02) {
+					percent = 0.02;
+				}
+
+				var mag = percent * 100;
+
+        var dt = now - lastRocChange;
+        var ret = dt >= TimeSpan.FromSeconds(mag);
+				return ret;
+			}
+		}
+
+    /// <summary>
+    /// Gets the primary rate of change.
+    /// </summary>
+    /// <value>The primary rate of change.</value>
+    public ScalarSpan primaryRateOfChange { get; private set; }
+
     /// <summary>
     /// The buffer that will hold the rate of change.
     /// </summary>
@@ -82,6 +114,10 @@
     /// The last time that the roc buffer was updated.
     /// </summary>
     private DateTime lastRocRecord;
+    /// <summary>
+    /// The last time that the roc changed.
+    /// </summary>
+    private DateTime lastRocChange;
 
 		private bool isRegisteredToSecondary;
 
@@ -102,6 +138,7 @@
       secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
       buffer = new PlotPoint[size];
       AppState.context.preferences.onPreferencesChanged += OnPreferencesChanged;
+      primaryRateOfChange = sensor.unit.OfSpan(0);
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -267,9 +304,19 @@
 		private void RegisterPoint() {
 			Trim();
       var gds = sensor as GaugeDeviceSensor;
+      var su = gds.unit.standardUnit;
       if (gds != null && gds.device.isConnected && (DateTime.Now - lastRocRecord) >= TimeSpan.FromMilliseconds(100)) {
-        rocBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+        var meas = gds.measurement;
+
+        if (!rocBuffer.isEmpty && !rocBuffer.first.measurement.DEquals(meas.ConvertTo(su).amount)) {
+          lastRocChange = DateTime.Now;
+        }
+
+        rocBuffer.Add(new PlotPoint(meas.ConvertTo(sensor.unit.standardUnit).amount));
+
         lastRocRecord = DateTime.Now;
+
+        this.primaryRateOfChange = GetPrimaryAverageRateOfChange();
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
