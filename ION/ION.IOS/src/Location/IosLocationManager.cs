@@ -66,6 +66,8 @@
         }
       }
     } ILocation __lastKnownLocation;
+		// Implemented for ILocationManager
+		public DateTime lastTimeLocationChanged { get; private set; }
     // Overridden from ILocationManager
     public bool isPolling { get; private set; }
 

@@ -12,6 +12,7 @@
     public string state { get; set; }
 		public string country { get; set; }
     public string zip { get; set; }
+    public ILocation location { get; set; }
 
     public Address() {
       this.address1 = "";

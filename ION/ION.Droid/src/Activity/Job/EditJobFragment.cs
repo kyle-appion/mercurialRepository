@@ -112,7 +112,6 @@
         return;
       }
 
-
 			var dialog = new ProgressDialog(Activity);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.location_determining_address));
@@ -131,7 +130,11 @@
       } else {
         // Get coordinates based on given address
         var address = await PollGeocode(usAddress);
-				coordinates.Text = address.Latitude + ", " + address.Longitude;  
+        if (address == null) {
+          Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
+        } else {
+          coordinates.Text = address.Latitude + ", " + address.Longitude;
+        }
       }
 
       dialog.Dismiss();
@@ -142,7 +145,7 @@
 
       var start = DateTime.Now;
       var task = geo.GetFromLocationNameAsync(address, 1);
-      while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(10)) {
+      while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
         await Task.Delay(100);
       }
 
@@ -160,7 +163,7 @@
 
 			var start = DateTime.Now;
 			var task = geo.GetFromLocationAsync(loc.latitude, loc.longitude, 1);
-			while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(10)) {
+			while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
 				await Task.Delay(100);
 			}
 
