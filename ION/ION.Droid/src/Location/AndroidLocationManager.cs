@@ -67,6 +67,7 @@
         return __lastKnownLocation;
       }
       internal set {
+        lastTimeLocationChanged = DateTime.Now;
         if (value == null) {
           value = new SimpleLocation();
         }
@@ -84,6 +85,8 @@
         }
       }
     } ILocation __lastKnownLocation;
+
+    public DateTime lastTimeLocationChanged { get; private set; }
     /// <summary>
     /// Whether or not the location manager is polling locations.
     /// </summary>
@@ -116,6 +119,7 @@
         altitude = ion.preferences.location.customElevation,
       };
       handler = new Handler(Looper.MainLooper);
+      lastTimeLocationChanged = new DateTime(1, 1, 1);
     }
 
     /// <summary>
@@ -252,11 +256,11 @@
       }
     }
 
-    /// <summary>
-    /// Called when connected to the GoogleApiClient.
-    /// </summary>
-    /// <param name="bundle">Bundle.</param>
-    public void OnConnected(Bundle bundle) {
+		/// <summary>
+		/// Called when connected to the GoogleApiClient.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
+		public void OnConnected(Bundle bundle) {
       Log.D(this, "OnConnected to the GoogleApiClient");
     }
 
