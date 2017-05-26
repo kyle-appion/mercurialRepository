@@ -98,35 +98,36 @@
         return;
       }
 
-      var averageChange = roc.GetPrimaryAverageRateOfChange().ConvertTo(record.sp.sensor.unit);
       var c = title.Context;
 
-      var amount = Math.Abs(averageChange.magnitude);
-      if (amount == 0) {
+      if (roc.isStable) {
         measurement.Text = c.GetString(Resource.String.stable);
         unit.Visibility = ViewStates.Invisible;
-      } else {
+				icon.Visibility = ViewStates.Invisible;
+			} else {
+				var averageChange = roc.primaryRateOfChange;
+				var amount = Math.Abs(averageChange.magnitude);
+
         var sensor = record.sp.sensor;
         var max = sensor.maxMeasurement;
-        var dmax = max.amount / 1;
+        var dmax = max.amount / 12.5;
         if (amount > dmax) {
           measurement.Text = "> " + SensorUtils.ToFormattedString(sensor.unit.OfSpan(dmax));
         } else {
           measurement.Text = SensorUtils.ToFormattedString(averageChange.unit.OfScalar(amount));
         }
         unit.Visibility = ViewStates.Visible;
-        unit.Text = c.GetString(Resource.String.time_minute_abrv);
-      }
+				unit.Text = sensor.unit + "/" + c.GetString(Resource.String.time_minute_abrv);
 
-      var dir = Math.Sign(averageChange.magnitude);
-      if (averageChange.magnitude == 0) {
-        icon.Visibility = ViewStates.Invisible;
-      } else if (dir == 1) {
-        icon.Visibility = ViewStates.Visible;
-        icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
-      } else {
-        icon.Visibility = ViewStates.Visible;
-        icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+				var dir = Math.Sign(averageChange.magnitude);
+				if (averageChange.magnitude == 0) {
+				} else if (dir == 1) {
+					icon.Visibility = ViewStates.Visible;
+					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trendup));
+				} else {
+					icon.Visibility = ViewStates.Visible;
+					icon.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_arrow_trenddown));
+				}
       }
     }
 
