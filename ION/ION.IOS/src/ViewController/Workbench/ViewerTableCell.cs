@@ -107,6 +107,9 @@ namespace ION.IOS.ViewController.Workbench {
       this.manifold = manifold;
       this.onBackgroundClicked = backgroundClicked;
       this.labelLinked.Hidden = !(manifold.secondarySensor is GaugeDeviceSensor);
+
+      buttonConnection.TouchUpInside -= changeConnectionStatus;
+      buttonConnection.TouchUpInside += changeConnectionStatus;
     }
 
     public void UpdateFromGaugeSensor(GaugeDeviceSensor sensor) {
@@ -120,16 +123,6 @@ namespace ION.IOS.ViewController.Workbench {
       labelSerialNumber.Text = device.serialNumber.ToString();
       activityConnectStatus.Hidden = EConnectionState.Resolving != sensor.device.connection.connectionState;
       buttonConnection.Hidden = false;
-			buttonConnection.TouchUpInside += delegate {
-        var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
-        activityConnectStatus.StartAnimating();
-        if(gaugeSensor.device.isConnected){
-          gaugeSensor.device.connection.Disconnect();          
-        } else {
-          gaugeSensor.device.connection.Connect();
-        }
-			  activityConnectStatus.StopAnimating();
-			};
 
       UpdateAlarm(sensor);
 
@@ -190,7 +183,7 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the battery icon. -1 will hide the image.
     /// </summary>
     /// <param name="percent">Percent.</param>
-    private void UpdateBatteryIcon(int percent) {
+    private void UpdateBatteryIcon(int percent) {   
       if (lastBatteryLevel == percent && percent != -1 && lastBatteryLevel != -1) {
         return;
       }
@@ -215,6 +208,18 @@ namespace ION.IOS.ViewController.Workbench {
       }
 
       lastBatteryLevel = percent;
+    }
+
+   public void changeConnectionStatus(object sender, EventArgs eww){
+      Console.WriteLine("conDis button clicked");
+      var gaugeSensor = manifold.primarySensor as GaugeDeviceSensor;
+	    activityConnectStatus.StartAnimating();
+      if (gaugeSensor.device.isConnected) {
+        gaugeSensor.device.connection.Disconnect();
+      } else {
+        gaugeSensor.device.connection.Connect();
+      }
+      activityConnectStatus.StopAnimating();
     }
 
     private void UpdateAlarm(Sensor sensor) {
