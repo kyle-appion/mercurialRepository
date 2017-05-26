@@ -81,7 +81,10 @@
           var ussp = new List<string>();
           foreach (var sp in m.sensorProperties) {
             try {
-              ussp.Add(GetCodeFromSensorProperty(sp));
+              var code = GetCodeFromSensorProperty(sp);
+              if (code != null) {
+								ussp.Add(code);
+							}
             } catch (Exception e) {
               Log.E(this, "Failed to get code for sensor property", e);
             }
@@ -114,7 +117,10 @@
           var ussp = new List<string>();
           foreach (var sp in m.sensorProperties) {
             try {
-              ussp.Add(GetCodeFromSensorProperty(sp));
+              var code = GetCodeFromSensorProperty(sp);
+              if (code != null) {
+                ussp.Add(code);
+              }
             } catch (Exception e) {
               Log.E(this, "Failed to get code for sensor property", e);
             }
@@ -141,7 +147,8 @@
 			} else if (typeof(SuperheatSubcoolSensorProperty).Equals(type)) {
 				return "Superheat";
 			} else {
-				throw new Exception("Cannot create code for sensor property {" + type.Name + "}");
+        Log.E(typeof(RemoteAnalyzerLH).Name, "Cannot find code for sensor property: " + sp.GetType().Name + ". Returning null.");
+        return null;
 			}
 		}
 
@@ -163,7 +170,8 @@
 					return new SuperheatSubcoolSensorProperty(manifold);
 
 				default:
-					throw new Exception("Cannot create sensor property: " + code);
+          Log.E(typeof(RemoteAnalyzerLH).Name, "Cannot parse sensor property from code: " + code + ". Returning null.");
+          return null;
 			}
 		}
 	}
