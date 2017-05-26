@@ -71,7 +71,7 @@ namespace ION.Droid.Activity.Portal {
 				var ri = ion as RemoteION;
 				var r = adapter[obj] as PortalRemoteViewingRecord;
 				if (r.isChecked) {
-					if (ri != null && ri.connectionData.Equals(r.data)) {
+          if (ri != null && ri.connectionData.id == r.data.id) {
 						button.SetText(Resource.String.portal_local_mode);
 					} else {
 						button.SetText(Resource.String.portal_remote_mode);
@@ -89,6 +89,9 @@ namespace ION.Droid.Activity.Portal {
 		protected override void OnResume() {
 			base.OnResume();
 			GetContactsAsync();
+      if (ion is RemoteION) {
+        button.SetText(Resource.String.portal_local_mode);
+      }
 		}
 
 		public override bool OnCreateOptionsMenu(IMenu menu) {
