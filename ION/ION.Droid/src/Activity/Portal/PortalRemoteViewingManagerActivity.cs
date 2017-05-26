@@ -43,7 +43,7 @@ namespace ION.Droid.Activity.Portal {
 				var ri = ion as RemoteION;
 				var i = adapter.IndexOfRecord(adapter.checkedRecord);
 
-        if (ri != null && ri.connectionData.Equals(adapter.checkedRecord.data)) {
+        if (ri != null && ri.connectionData.id == adapter.checkedRecord.data.id) {
 					await StartLocalIONAsync();
 				} else {
 					await StartRemoteIONAsync(adapter.checkedRecord.data);
