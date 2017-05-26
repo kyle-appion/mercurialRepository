@@ -159,12 +159,11 @@
       string name = null;
 
       var values = advertisementData.Values;
-      //Log.V(this, "" + advertisementData);
 
       var data = advertisementData[CBAdvertisement.DataManufacturerDataKey];
 
       if (!AttemptNameFetch(peripheral, advertisementData, out name)) {
-        //Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
+//        Log.E(this, "Failed to resolve peripheral name '" + name + "'. The peripheral will not be presented to the application.");
         return;
       }
 
@@ -206,10 +205,12 @@
             } else {
               // The connection already exists. Update the last time that it was seen.
               var d = ion.deviceManager[sn];
-              if (d != null) {
-                NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
-                connection.lastSeen = DateTime.Now;
+              if (d == null) {
+                Log.E(this, "Failed to get device from device manager");
+                return;
               }
+              NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
+              connection.lastSeen = DateTime.Now;
             }
           }
         } else {

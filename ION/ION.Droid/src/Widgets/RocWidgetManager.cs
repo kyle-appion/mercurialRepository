@@ -47,7 +47,7 @@
 		/// </summary>
 		private CanvasRenderContext rc;
 
-    public RocWidgetManager(Manifold manifold, PlotView plot, bool showLabels=false) {
+    public RocWidgetManager(Manifold manifold, PlotView plot, bool showLabels) {
       this.manifold = manifold;
       this.plot = plot;
       this.showLabels = showLabels;
@@ -83,6 +83,7 @@
 				MajorGridlineStyle = LineStyle.None,
 				MinorGridlineStyle = LineStyle.None,
 				AxisTickToLabelDistance = 0,
+        AxisTitleDistance = 0,
 			};
 
 			var baseUnit = manifold.primarySensor.unit.standardUnit;
@@ -162,15 +163,16 @@
 				YAxisKey = "second",
 			};
 
-      model.PlotMargins = new OxyThickness(-7, -5, -7, 2 + (showLabels ? xAxis.FontSize : 10) - 10);
+      // model.PlotMargins = new OxyThickness(0, -5, 0, 2 + (showLabels ? xAxis.FontSize : 10) - 10);
+      model.PlotMargins = new OxyThickness(0, -7, 0, 2 + (showLabels ? xAxis.FontSize : 10) - 10);
 			model.PlotType = PlotType.XY;
 			model.Axes.Add(xAxis);
 			model.Axes.Add(primaryAxis);
 			model.Axes.Add(secondaryAxis);
 			model.Series.Add(primarySeries);
 			model.Series.Add(secondarySeries);
-			model.PlotAreaBorderThickness = new OxyThickness(0);
-			model.PlotAreaBorderColor = OxyColors.Transparent;
+      model.PlotAreaBorderThickness = new OxyThickness(1);
+      model.PlotAreaBorderColor = OxyColors.Black;
 			plot.Model = model;
     }
 
@@ -181,8 +183,11 @@
 				InvalidateSecondary();
 				InvalidateTime();
 
-				plot.InvalidatePlot();
+				var height = MeasureTextHeight(xAxis);
+//				model.PlotMargins = new OxyThickness(double.NaN, double.NaN, -height, double.NaN);
+
 				model.InvalidatePlot(true);
+				plot.InvalidatePlot();
 			} else {
 				plot.Visibility = ViewStates.Invisible;
 			}
@@ -218,6 +223,7 @@
 		private void InvalidatePrimary() {
 			var roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
 
+			primaryAxis.IsAxisVisible = showLabels;
 			if (roc == null) {
 				return;
 			}
@@ -246,6 +252,7 @@
 		}
 
 		private void InvalidateSecondary() {
+			secondaryAxis.IsAxisVisible = showLabels;
 			if (manifold.secondarySensor == null) {
 				return;
 			}
@@ -329,19 +336,17 @@
 
 			axis.MajorStep = mod;
 			axis.MinimumMajorStep = mod;
-			axis.TickStyle = TickStyle.None;
-      if (showLabels) {
-				axis.Minimum -= padding;
-				axis.Maximum += padding;
-				axis.MajorTickSize = 10;
-        axis.TicklineColor = OxyColors.Black;
 
-        axis.MinimumPadding = 0.25;
-        axis.MaximumPadding = 0.25;
-        axis.AxislineStyle = LineStyle.Solid;
-        axis.AxislineThickness = 1;
-        axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
-      }
+      axis.Minimum -= padding;
+			axis.Maximum += padding;
+			axis.MajorTickSize = 10;
+      axis.TicklineColor = OxyColors.Black;
+
+      axis.MinimumPadding = 0.25;
+      axis.MaximumPadding = 0.25;
+      axis.AxislineStyle = LineStyle.Solid;
+      axis.AxislineThickness = 1;
+      axis.AxisTickToLabelDistance = -(MeasureTextWidth(axis) + axis.MajorTickSize + 5);
 		}
 
     private ScalarSpan DetermineMinimumBounds(Sensor sensor) {
@@ -373,17 +378,21 @@
 			}
 
 			try {
-				axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
+        if (axis.LabelFormatter != null) {
+          axis.GetTickValues(out majorLabelValues, out majorTickValues, out minorTickValues);
 
-				double bestWidth = 0;
-				foreach (var label in majorLabelValues) {
-					var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
-					if (size.Width > bestWidth) {
-						bestWidth = size.Width;
-					}
-				}
+          double bestWidth = 0;
+          foreach (var label in majorLabelValues) {
+            var size = rc.MeasureText(axis.LabelFormatter(label), axis.Font, axis.FontSize, axis.FontWeight);
+            if (size.Width > bestWidth) {
+              bestWidth = size.Width;
+            }
+          }
 
-				return bestWidth;
+          return bestWidth;
+        } else {
+          return 0;
+        }
 			} catch (Exception e) {
 				Log.E(this, "Failing to measure text width", e);
 				return 0;

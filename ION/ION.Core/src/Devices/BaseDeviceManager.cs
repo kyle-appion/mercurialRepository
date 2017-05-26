@@ -135,7 +135,7 @@
     public void PostInit() {
       if (ion.preferences.device.allowDeviceAutoConnect) {
         foreach (var device in knownDevices) {
-          device.connection.Connect();
+          device.connection.Connect(true);
         }
       }
 
@@ -245,6 +245,9 @@
     public async Task<bool> DeleteDevice(ISerialNumber serialNumber) {
       var device = this[serialNumber];
       if (device != null) {
+        ion.currentWorkbench.RemoveUsesOfDevice(device);
+        ion.currentAnalyzer.RemoveUsesOfDevice(device);
+
         device.Dispose();
         Unregister(device);
         var db = ion.database;

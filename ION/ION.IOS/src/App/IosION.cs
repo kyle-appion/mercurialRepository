@@ -195,6 +195,14 @@
 				}
 			}
 		} private DataLogManager __dataLogManager;
+    // Implemented from IION
+    public bool hasNetworkConnection {
+      get {
+        return Reachability.IsReachableWithoutRequiringConnection(SystemConfiguration.NetworkReachabilityFlags.Reachable);
+      }
+    }
+
+
     /// <summary>
     /// The current primary analyzer for the ion context.
     /// </summary>
