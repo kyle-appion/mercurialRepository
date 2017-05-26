@@ -262,6 +262,12 @@ namespace ION.Droid.Fragments._Workbench {
 				});
 			}
 
+      if (dgs != null && (connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
+				ldb.AddItem(Resource.String.disconnect, () => {
+					dgs.device.connection.Disconnect();
+				});
+			}
+
       ldb.AddItem(Resource.String.rename, () => {
 				if (manifold.primarySensor is GaugeDeviceSensor) {
 					var gds = manifold.primarySensor as GaugeDeviceSensor;
@@ -302,12 +308,6 @@ namespace ION.Droid.Fragments._Workbench {
         i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
         StartActivity(i);
       });
-
-      if (dgs != null && connectionState != EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-        ldb.AddItem(Resource.String.disconnect, () => {
-          dgs.device.connection.Disconnect();
-        });
-      }
 
       ldb.AddItem(Resource.String.workbench_remove, () => {
         workbench.Remove(manifold);
