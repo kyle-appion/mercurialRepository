@@ -1,0 +1,79 @@
+#include <string.h>
+
+#include "Appion.h"
+#include "Fluke700G.h"
+
+#define LED 13
+
+Fluke700G fluke(&Serial3, 10000);
+
+void setup() {
+  pinMode(LED, OUTPUT);
+
+  Serial.begin(9600);
+  Serial3.begin(9600);
+/*
+  soft.begin(9600);
+  soft.setTimeout(10 * 1000);
+*/
+  fluke.ClearErrorQueue();
+}
+
+
+void loop() {
+  char buffer[128];
+  int cnt = 0;
+
+  f32 pressure;
+  EFlukeUnit unit;
+  EFlukeError err;
+
+  if (Serial.available()) {
+    Serial.readBytes(buffer, 128);
+    switch (buffer[0]) {
+      case '1':
+        if (fluke.GetIdn(buffer, 128)) {
+          Serial.write(buffer);
+        }
+        break;
+      case '2':
+        err = fluke.GetPressure(&pressure);
+        if (err == Fl_Err_Ok) {
+          Serial.print("Received a pressure of: ");
+          Serial.println(pressure);
+        } else {
+          Serial.print("Failed to resolve pressure with error: ");
+          Serial.println((int)err);
+        }
+        break;
+      case '3':
+        err = fluke.GetPressureUnit(&unit);
+        if (err == Fl_Err_Ok) {
+          Serial.print("Received a unit of: ");
+          Serial.println((int)unit);
+        } else {
+          Serial.print("Failed to resolve pressure unit with error: ");
+          Serial.println((int)err);
+        }
+        case '4':
+          err = fluke.GetPressureAndUnit(&pressure, &unit);
+          if (err == Fl_Err_Ok) {
+            Serial.print("Received a pressure of: ");
+            Serial.print(pressure);
+            Serial.print(" and unit of: ");
+            Serial.print((int)unit);
+          } else {
+            Serial.print("Failed to resolve pressure with error: ");
+            Serial.println((int)err);
+          }
+          break;
+    }
+  }
+/*
+  if (Serial3.available()) {
+    cnt = Serial3.readBytes(buffer, 128);
+    Serial.write(buffer, cnt);
+    Serial.println();
+  }
+*/
+}

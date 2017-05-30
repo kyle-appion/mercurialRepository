@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:id="@id/button"
+    android:actionLayout="@layout/button"
+    android:title="@string/unknown"
+    android:icon="@drawable/ic_action_accept"
+    android:visible="true"
+    android:showAsAction="always|withText"/>
+</menu>

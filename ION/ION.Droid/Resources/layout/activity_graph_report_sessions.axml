@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_padding">
+    <TextView
+        android:id="@id/empty"
+        android:text="@string/report_data_logging_empty"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_xlarge"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@id/content"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0px">
+    <!-- The graph part of the fragment. -->
+        <LinearLayout
+            android:id="@id/graph"
+            android:background="@drawable/shape_rounded_content_white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@id/date"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@id/icon"
+                    android:src="@drawable/ic_settings"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </RelativeLayout>
+            <FrameLayout
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp">
+                <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+                    android:id="@id/list"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </FrameLayout>
+            <AbsoluteLayout
+                android:id="@id/view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@id/left"
+                    android:scaleType="fitStart"
+                    android:layout_width="30dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_drag_arrow_left" />
+                <ImageView
+                    android:id="@id/right"
+                    android:scaleType="fitEnd"
+                    android:layout_width="30dp"
+                    android:layout_height="45dp"
+                    android:src="@drawable/ic_drag_arrow_right" />
+            </AbsoluteLayout>
+        </LinearLayout>
+    <!-- The settings part of the fragment. -->
+        <LinearLayout
+            android:id="@id/settings"
+            android:background="@drawable/shape_rounded_content_white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="match_parent">
+            <RelativeLayout
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="@string/graph_information"
+                    android:textSize="@dimen/text_size_large"
+                    android:textStyle="bold"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <ImageView
+                    android:id="@id/icon"
+                    android:src="@drawable/ic_settings"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp" />
+            </RelativeLayout>
+            <TableLayout
+                android:id="@id/table"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TableRow
+                    android:id="@id/pressure">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_line_chart"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/blue" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="@string/pressure"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </TableRow>
+                <TableRow
+                    android:id="@id/temperature">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_line_chart"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/red" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="@string/temperature"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </TableRow>
+                <TableRow
+                    android:id="@id/vacuum">
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/ic_line_chart"
+                        android:scaleType="fitCenter"
+                        android:tint="@color/maroon" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:text="@string/vacuum"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <Space
+                        android:layout_width="@dimen/padding"
+                        android:layout_height="wrap_content" />
+                    <Button
+                        android:id="@id/unit"
+                        android:textSize="@dimen/text_size_large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </TableRow>
+            </TableLayout>
+            <LinearLayout
+                android:id="@id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+                <Space
+                    android:layout_height="@dimen/padding"
+                    android:layout_width="wrap_content" />
+                <TextView
+                    android:text="@string/report_select_start_time"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Spinner
+                    android:id="@id/start_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:text="@string/report_select_end_time"
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Spinner
+                    android:id="@id/end_times"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <Space
+                    android:layout_height="@dimen/padding"
+                    android:layout_width="wrap_content" />
+            </LinearLayout>
+            <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+                android:id="@id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+    </FrameLayout>
+    <RelativeLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@id/reset"
+            android:background="@drawable/np_rounded_rect_red"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:textStyle="italic"
+            android:textSize="@dimen/text_size_xlarge"
+            android:text="@string/reset" />
+        <Button
+            android:id="@id/export"
+            android:background="@drawable/np_rounded_rect_green"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="top"
+            android:textStyle="bold"
+            android:textSize="@dimen/text_size_xlarge"
+            android:text="@string/export" />
+    </RelativeLayout>
+</LinearLayout>

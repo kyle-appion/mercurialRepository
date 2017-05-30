@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<whatsnew>
+	<display version="1.8.41">
+		<new>Added default "Unassigned" job categorizing for improved session tracking</new>
+		<update>Updated PDF reporting to include more information on a cover page</update>
+		<update>Updated session list to be more descriptive</update>
+		<fixed>Fixed issue with some fluid ranges for P/T Chart</fixed>
+		<fixed>Fixed time display difference between job manager and reporting</fixed>
+		<fixed>Fixed Job Manager layout for new job</fixed>
+  </display>
+	<display version="1.8.4">
+		<new>Added default "Unassigned" job categorizing for improved session tracking</new>
+		<update>Updated PDF reporting to include more information on a cover page</update>
+		<update>Updated session list to be more descriptive</update>
+		<fixed>Fixed issue with some fluid ranges for P/T Chart</fixed>
+		<fixed>Fixed time display difference between job manager and reporting</fixed>
+		<fixed>Fixed Job Manager layout for new job</fixed>
+  </display>
+	<display version="1.8.3">
+		<new>Added job and session info to spreadsheets</new>
+		<new>Added Screenshot functionality to analyzer</new>
+		<new>Added Workbench device swapping by long pressing device</new>
+		<new>Added default unit change option to graphing setting view</new>
+		<new>Added warning image for superheat/subcool calculations</new>		
+		<update>Updated analyzer subviews responsiveness</update>
+		<update>Updated wording and information for reporting</update>
+  </display>
+	<display version="1.8.2">		
+		<update>Updated analyzer sensor linking</update>
+		<update>Updated spreadsheets to show precision for whole numbers</update>
+    <fixed>Fixed reporting not showing devices as selected</fixed>
+    <fixed>Fixed job manager tab bar alignment</fixed>
+  </display>
+	<display version="1.8.1">
+		<new>Added option to change gauge units remotely</new>
+		<update>Updated workbench to include alternate unit subview</update>
+		<update>Updated linked sensor subview to display pressure or temperature</update>
+    <fixed>Fixed temperature conversion values for reports</fixed>
+    <fixed>Fixed measurements displayed for unit changes</fixed>
+  </display>	
+	<display version="1.7.2">
+		<new>Added an introductory walkthrough in help menu</new>
+    <update>Updated graphing subsection selection precision</update>
+    <update>Updated various state checks to improve performance</update>
+    <fixed>Fixed analyzer subview arrow in certain cases where all subviews were removed</fixed>
+    <fixed>Fixed calibration certificate download issue</fixed>
+  </display>
+	<display version="1.6.4">
+    <new>Added Data Logging Feature</new>
+    <new>Added Data Log Reporting</new>
+    <new>Added Job Manager Feature</new>
+    <new>Added Pressure/Temperature Slider</new>
+		<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
+		<fixed>Fixed Device Manager connection menu for device sections on Ipad</fixed>
+		<fixed>Fixed backend math</fixed>
+		<fixed>Fixed PTChart Subview unit not updating when changed when in PTChart</fixed>
+		<fixed>Fixed Manifolds showing incorrect battery icon</fixed>
+		<fixed>Fixed Superheat / Subcool saturated temperature unit not changing</fixed> 
+    <fixed>Fixed manual sensor options for low/high areas</fixed>
+  </display>
+	<display version="1.6.3">
+		<fixed>Fixed PT Gauges not correctly updating in Device Manager</fixed>
+		<fixed>Fixed job notes being covered by the keyboard</fixed>
+		<fixed>Fixed bug when updating job information</fixed>
+	</display>
+  <display version="1.6.2">
+		<fixed>Fixed changing units in settings preventing devices from being loaded</fixed>
+		<fixed>Fixed PT Slider affecting PT Chart subview values</fixed>
+		<fixed>Fixed Device Manager connection menu for device sections on Ipad</fixed>
+		<fixed>Fixed backend math.</fixed>
+		<fixed>Fixed PTChart Subview unit not updating when changed when in PTChart</fixed>
+		<fixed>Fixed Manifolds showing incorrect battery icon</fixed>
+		<fixed>Fixed Superheat / Subcool saturated temperature unit not changing</fixed> 
+  </display>
+  <display version="1.6.1">
+    <new>Added Data Logging Feature</new>
+    <new>Added Data Log Reporting</new>
+    <new>Added Job Manager Feature</new>
+    <new>Added Pressure/Temperature Slider</new>
+    <fixed>Fixed manual sensor options for low/high areas</fixed>
+  </display>
+  <display version="1.5.4">
+    <new>Added alarms alerts with sound and vibrations</new>
+    <update>Updated workbench loadout to save subview configurations</update>
+    <update>Updated calculations when activating or deactivating location services</update>
+    <fixed>Fixed device manager animations</fixed>
+    <fixed>Fixed general UI text</fixed>
+    <fixed>Fixed bugs with analyzer</fixed>
+    <fixed>Fixed bug when using app and bluetooth is not enabled</fixed>
+  </display>
+</whatsnew>
