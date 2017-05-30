@@ -188,9 +188,13 @@ namespace ION.IOS.ViewController.Analyzer {
 			/// 15K -> 1K microns(134 Pa) = 500 BUFFER
 			/// 1K -> 1 micron = 50 BUFFER
 			if (cellManifold.primarySensor.type == ESensorType.Vacuum) {
-				////set minimum
-				/// set maximum
-				/// set range
+				if (minMax.max >= 2000) {
+					rangeAmount = 2666.45;
+				} else if (minMax.max >= 134) {
+					rangeAmount = 133.32;
+				} else {
+					rangeAmount = 7.0;
+				}
 			}
 			var sensorUnit = cellRoc.manifold.primarySensor.unit;
 			var sensorMin = cellRoc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
