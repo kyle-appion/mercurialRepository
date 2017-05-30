@@ -375,12 +375,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
     private void OnSettingsChanged(NSNotification defaults) {
       if (pressureSensor != null) {
         pressureUnit = ion.preferences.units.pressure;
-        pressureSensor.unit = pressureUnit;
+        //pressureSensor.unit = pressureUnit;
         OnPressureSensorChanged(pressureSensor);
       }
       if (temperatureSensor != null) {
         temperatureUnit = ion.preferences.units.temperature;
-        temperatureSensor.unit = temperatureUnit;
+        //temperatureSensor.unit = temperatureUnit;
         OnTemperatureSensorChanged(temperatureSensor);
       }
       UpdateDelta();
@@ -538,7 +538,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           labelFluidState.Text = Strings.Fluid.SUBCOOL;
           //should never show a negative temperature so multiply by -1
           calculation = calculation * -1;  
-        }
+        }  
       }  
       labelFluidDelta.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
     }

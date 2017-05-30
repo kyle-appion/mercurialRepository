@@ -20,6 +20,7 @@ namespace ION.IOS.ViewController.Workbench {
   using OxyPlot.Series;
   using OxyPlot.Xamarin.iOS;
   using ION.Core.Devices;
+  using ION.Core.App;
 
   public class RateOfChangeRecord : SensorPropertyRecord {
     public override WorkbenchTableSource.ViewType viewType {
@@ -29,7 +30,6 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public RateOfChangeSensorProperty roc { get; set; }
-
 
     public RateOfChangeRecord(Manifold manifold, ISensorProperty sensorProperty) : base(manifold, sensorProperty) {
       roc = manifold.GetSensorPropertyOfType<RateOfChangeSensorProperty>();
@@ -52,6 +52,7 @@ namespace ION.IOS.ViewController.Workbench {
     public UILabel BLMeasurement;
     public UILabel TRMeasurement;
     public UILabel BRMeasurement;
+    public IION ion;
 
     public bool isConnected = false;
     		
@@ -79,6 +80,7 @@ namespace ION.IOS.ViewController.Workbench {
 		}
 
     public async void UpdateTo(RateOfChangeRecord record) {
+      ion = AppState.context;
       await Task.Delay(TimeSpan.FromMilliseconds(200));
 
 			primaryColor = OxyColors.Blue;
@@ -103,25 +105,25 @@ namespace ION.IOS.ViewController.Workbench {
           BackgroundColor = UIColor.Clear,
         };
 
-        TLMeasurement = new UILabel(new CGRect(10,0,.5 * plotView.Bounds.Width,20));
-        TLMeasurement.AdjustsFontSizeToFitWidth = true;
-        TLMeasurement.TextAlignment = UITextAlignment.Left;
-        TLMeasurement.BackgroundColor = UIColor.Clear;
+        //TLMeasurement = new UILabel(new CGRect(10,0,.5 * plotView.Bounds.Width,20));
+        //TLMeasurement.AdjustsFontSizeToFitWidth = true;
+        //TLMeasurement.TextAlignment = UITextAlignment.Left;
+        //TLMeasurement.BackgroundColor = UIColor.Clear;
         
-        BLMeasurement = new UILabel(new CGRect(10,25,.5 * plotView.Bounds.Width,20));
-        BLMeasurement.AdjustsFontSizeToFitWidth = true;
-        BLMeasurement.TextAlignment = UITextAlignment.Left;
-        BLMeasurement.BackgroundColor = UIColor.Clear;
+        //BLMeasurement = new UILabel(new CGRect(10,25,.5 * plotView.Bounds.Width,20));
+        //BLMeasurement.AdjustsFontSizeToFitWidth = true;
+        //BLMeasurement.TextAlignment = UITextAlignment.Left;
+        //BLMeasurement.BackgroundColor = UIColor.Clear;
         
-        TRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,0,.5 * plotView.Bounds.Width - 10,20));
-        TRMeasurement.AdjustsFontSizeToFitWidth = true;
-        TRMeasurement.TextAlignment = UITextAlignment.Right;
-        TRMeasurement.BackgroundColor = UIColor.Clear;
+        //TRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,0,.5 * plotView.Bounds.Width - 10,20));
+        //TRMeasurement.AdjustsFontSizeToFitWidth = true;
+        //TRMeasurement.TextAlignment = UITextAlignment.Right;
+        //TRMeasurement.BackgroundColor = UIColor.Clear;
 
-        BRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,30,.5 * plotView.Bounds.Width - 10,20));
-        BRMeasurement.AdjustsFontSizeToFitWidth = true;
-        BRMeasurement.TextAlignment = UITextAlignment.Right;
-        BRMeasurement.BackgroundColor = UIColor.Clear;
+        //BRMeasurement = new UILabel(new CGRect(.5 * plotView.Bounds.Width,30,.5 * plotView.Bounds.Width - 10,20));
+        //BRMeasurement.AdjustsFontSizeToFitWidth = true;
+        //BRMeasurement.TextAlignment = UITextAlignment.Right;
+        //BRMeasurement.BackgroundColor = UIColor.Clear;
         
         //plotView.AddSubview(TLMeasurement);
         //plotView.AddSubview(BLMeasurement);
@@ -181,8 +183,7 @@ namespace ION.IOS.ViewController.Workbench {
     }
 
     public async void updateCellGraph(){
-
-      if(plotView == null){
+			if(plotView == null){
         return;
       }
 
@@ -202,14 +203,14 @@ namespace ION.IOS.ViewController.Workbench {
         });
       } 
 
-      await Task.Delay(TimeSpan.FromMilliseconds(NSUserDefaults.StandardUserDefaults.IntForKey("settings_default_trending_interval")));
+      await Task.Delay(TimeSpan.FromMilliseconds(ion.preferences.device.trendInterval.TotalMilliseconds));
       if (isConnected) {
         labelMeasurement.Hidden = false;
-		plotView.Hidden = false;
+		    plotView.Hidden = false;
         updateCellGraph();
       } else {
-		labelMeasurement.Hidden = true;
-		plotView.Hidden = true;
+				labelMeasurement.Hidden = true;
+				plotView.Hidden = true;
       }
     }
 
@@ -243,26 +244,31 @@ namespace ION.IOS.ViewController.Workbench {
     private void InvalidatePrimary() {
       var holderRoc = record.roc;
 
-	  if (record.roc == null || TLMeasurement == null || BLMeasurement == null) {
+	    if (record.roc == null) {
         return;
       }
       
       var minMax = record.roc.GetPrimaryMinMax();
       var rangeAmount = record.roc.manifold.primarySensor.maxMeasurement.ConvertTo(record.roc.manifold.primarySensor.unit.standardUnit).amount * .05;
-      var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit,rangeAmount);
 			//////VACUUM READINGS WILL HAVE 3 TIERS
 			/// ATM-> 15K microns(2000 Pa) = 10,000 BUFFER
 			/// 15K -> 1K microns(134 Pa) = 500 BUFFER
 			/// 1K -> 1 micron = 50 BUFFER
 			if(record.manifold.primarySensor.type == ESensorType.Vacuum){
-        ////set minimum
-        /// set maximum
-        /// set range
+        if(minMax.max >= 2000){
+					rangeAmount = 2666.45;
+        } else if (minMax.max >= 134){
+          rangeAmount = 133.32; 
+        } else {
+          rangeAmount = 7.0;
+        }
       }
-      var sensorUnit = record.roc.manifold.primarySensor.unit;
+			var sensorRange = new Scalar(record.roc.manifold.primarySensor.unit.standardUnit, rangeAmount);
+			var sensorUnit = record.roc.manifold.primarySensor.unit;
       var sensorMin = record.roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
-      UpdateAxis(LAX, minMax.min, minMax.max, sensorRange,sensorUnit,TLMeasurement,BLMeasurement,sensorMin);
+			//UpdateAxis(LAX, minMax.min, minMax.max, sensorRange, sensorUnit, TLMeasurement, BLMeasurement, sensorMin);
+			UpdateAxis(LAX, minMax.min, minMax.max, sensorRange,sensorUnit,sensorMin);
       var primaryBuffer = record.roc.primarySensorPoints;
       var l = primaryBuffer.Count;
       // Resize the points list
@@ -286,7 +292,7 @@ namespace ION.IOS.ViewController.Workbench {
         return;
       }
 
-      if (record.roc == null || TRMeasurement == null || BRMeasurement == null) {
+      if (record.roc == null) {
         return;
       }
 
@@ -297,7 +303,8 @@ namespace ION.IOS.ViewController.Workbench {
       var sensorUnit = record.roc.manifold.secondarySensor.unit;
       var sensorMin = record.roc.manifold.secondarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
 
-      UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,sensorUnit,TRMeasurement,BRMeasurement,sensorMin);
+			//UpdateAxis(RAX, minMax.min, minMax.max, sensorRange, sensorUnit, TRMeasurement, BRMeasurement, sensorMin);
+			UpdateAxis(RAX, minMax.min, minMax.max, sensorRange,sensorUnit,sensorMin);
 
       var secondaryBuffer = record.roc.secondarySensorPoints;
       var l = secondaryBuffer.Count;
@@ -320,26 +327,26 @@ namespace ION.IOS.ViewController.Workbench {
     /// Updates the axis to the given state for RoC based measurements.
     /// </summary>
     /// <param name="axis">Axis.</param>
-    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Scalar range, Unit u, UILabel topLabel, UILabel bottomLabel, Scalar sensorMin) {
+    private void UpdateAxis(LinearAxis axis, Scalar min, Scalar max, Scalar range, Unit u, Scalar sensorMin) {
       if(max.amount < sensorMin.amount){
         return;
       }
       if(min.amount - (range.amount / 2) < sensorMin.amount){
 	      axis.Minimum = sensorMin.amount;
-			  bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u), true);
+			  //bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u), true);
 		  } else {
 	      axis.Minimum = min.amount - (range.amount / 2);
-			  var diffScalar = new Scalar(u.standardUnit, (min.amount - (range.amount / 2)));
-			  bottomLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+			  //var diffScalar = new Scalar(u.standardUnit, (min.amount - (range.amount / 2)));
+			  //bottomLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       }
       if(max.amount + (range.amount / 2) < sensorMin.amount + range.amount){
         axis.Maximum = sensorMin.amount + range.amount;
-			  var diffScalar = new Scalar(u.standardUnit, sensorMin.amount + range.amount);
-			  topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+			  //var diffScalar = new Scalar(u.standardUnit, sensorMin.amount + range.amount);
+			  //topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       } else {
         axis.Maximum = max.amount + (range.amount / 2);
-			  var diffScalar = new Scalar(u.standardUnit, (max.amount + (range.amount / 2)));
-			  topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
+			  //var diffScalar = new Scalar(u.standardUnit, (max.amount + (range.amount / 2)));
+			  //topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
       }
 		  primarySeries.Color = primaryColor;
 		  secondarySeries.Color = secondaryColor;
