@@ -148,11 +148,11 @@
             }
           }
         }
-        ion.preferences.lastKnownAppVersion = ion.version;
       }
+			ion.preferences.lastKnownAppVersion = ion.version;
 
-      // Show the rss feed.
-      Task.Factory.StartNew(async () => {
+			// Show the rss feed.
+			Task.Factory.StartNew(async () => {
         try {
           var rss = await ion.portal.DownloadRssOrThrowAsync();
 
