@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <whatsnew>
-	<display version="0.9.50">
+	<display version="0.9.51">
 		<new>Added Real Time TREND logging to Rate of Change</new>
 		<new>Added optional app analytics (found in settings)</new>
 		<new>Known gauges will now automatically connect when in range (if enabled in settings)</new>
