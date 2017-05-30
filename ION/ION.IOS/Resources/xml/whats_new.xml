@@ -6,9 +6,10 @@
     <new>Added auto connect option in settings for gauges</new>
 		<new>Added RSS feed information alerts</new>
 		<update>Updated system analyzer measurement text to be larger</update>
-		<update>Updated app menu order to accomodate new features</update>
+    <update>Updated app menu order to accomodate new features</update>
 		<fixed>Fixed Bluetooth connection status not updating from manual device changes</fixed>
     <fixed>Fixed report exporting not using the manually chosen start time/date</fixed>
-		<fixed>Fixed report timestamp issue when moving from am to pm</fixed>
+    <fixed>Fixed report timestamp issue when moving between am to pm</fixed>
+		<fixed>Fixed additional information not saving when first creating a job</fixed>
   </display>
 </whatsnew>

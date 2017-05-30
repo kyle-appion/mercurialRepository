@@ -97,9 +97,10 @@ namespace ION.IOS.ViewController.Workbench {
       this.record = record;
       labelTitle.Text = Strings.Workbench.Viewer.TREND;
       buttonIcon.Layer.BorderWidth = 1f;
+			labelMeasurement.Hidden = true;
 
-      ///SETUP THE TRENDING GRAPH
-      if(plotView == null){
+			///SETUP THE TRENDING GRAPH
+			if(plotView == null){
         plotView = new PlotView(new CGRect(0,.5 * viewBackground.Bounds.Height, viewBackground.Bounds.Width, .5 * viewBackground.Bounds.Height)){
           Model = CreatePlotModel(),
           BackgroundColor = UIColor.Clear,
@@ -259,7 +260,7 @@ namespace ION.IOS.ViewController.Workbench {
 					rangeAmount = 2666.45;
         } else if (minMax.max >= 134){
           rangeAmount = 133.32; 
-        } else {
+        } else {   
           rangeAmount = 7.0;
         }
       }
