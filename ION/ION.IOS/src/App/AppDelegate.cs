@@ -179,13 +179,11 @@
 						UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
 					}));
 					
-          loggingWarning.AddAction(UIAlertAction.Create(Util.Strings.CLOSE, UIAlertActionStyle.Default, (action) => {
-
-					}));
+          loggingWarning.AddAction(UIAlertAction.Create(Util.Strings.CLOSE, UIAlertActionStyle.Default, (action) => {}));
 
           loggingWarning.Show();
         }
-      } 
+      }
 
       if (ion.settings.leaveScreenOn) {
         UIApplication.SharedApplication.IdleTimerDisabled = true;
