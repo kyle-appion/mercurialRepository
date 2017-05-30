@@ -120,7 +120,7 @@ namespace ION.IOS.ViewController.Workbench {
           break;        
       }
       /////SETUP LINKED SENSOR LEGEND INFORMATION
-      if(initialRecord.manifold.secondarySensor != null){
+      if(initialRecord.manifold.secondarySensor != null && !(initialRecord.manifold.secondarySensor is ManualSensor)){
         linkedLegendLabel.Text = initialRecord.manifold.secondarySensor.type + " " + initialRecord.manifold.secondarySensor.name;
         switch(initialRecord.manifold.secondarySensor.type){
           case ESensorType.Pressure:
@@ -224,9 +224,23 @@ namespace ION.IOS.ViewController.Workbench {
 
 			var minMax = roc.GetPrimaryMinMax();
 			var rangeAmount = roc.manifold.primarySensor.maxMeasurement.ConvertTo(roc.manifold.primarySensor.unit.standardUnit).amount * .05;
-			var sensorRange = new Scalar(roc.manifold.primarySensor.unit.standardUnit, rangeAmount);
 			var sensorUnit = roc.manifold.primarySensor.unit;
 			var sensorMin = roc.manifold.primarySensor.minMeasurement.ConvertTo(sensorUnit.standardUnit);
+
+			//////VACUUM READINGS WILL HAVE 3 TIERS
+			/// ATM-> 15K microns(2000 Pa) = 10,000 BUFFER
+			/// 15K -> 1K microns(134 Pa) = 500 BUFFER
+			/// 1K -> 1 micron = 50 BUFFER
+			if (initialRecord.manifold.primarySensor.type == ESensorType.Vacuum) {
+				if (minMax.max >= 2000) {
+					rangeAmount = 2666.45;
+				} else if (minMax.max >= 134) {
+					rangeAmount = 133.32;
+				} else {
+					rangeAmount = 7.0;
+				}
+			}
+			var sensorRange = new Scalar(roc.manifold.primarySensor.unit.standardUnit, rangeAmount);
 
 			UpdateAxis(LAX, minMax.min, minMax.max, sensorRange, sensorUnit, TLMeasurement, BLMeasurement, sensorMin);
 			var primaryBuffer = roc.primarySensorPoints;
