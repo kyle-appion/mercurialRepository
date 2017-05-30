@@ -1,3 +1,5 @@
+using Android.Util;
+
 namespace ION.Droid.Activity.Portal {
 
 	using System;
@@ -23,10 +25,15 @@ namespace ION.Droid.Activity.Portal {
 		protected override void OnCreate(Bundle state) {
 			base.OnCreate(state);
 
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+			try {
+				if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+					SetContentView(Resource.Layout.activity_portal_login_4_4);
+				} else {
+					SetContentView(Resource.Layout.activity_portal_login);
+				}
+			} catch (Exception e) {
+				Appion.Commons.Util.Log.E(this, "Failed to set layout. Defaulting to old version", e);
 				SetContentView(Resource.Layout.activity_portal_login_4_4);
-			} else {
-				SetContentView(Resource.Layout.activity_portal_login);
 			}
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
