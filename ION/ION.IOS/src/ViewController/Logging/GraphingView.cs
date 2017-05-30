@@ -560,7 +560,7 @@ namespace ION.IOS.ViewController.Logging
         if (certInfo.Count > 0) {
         	//Console.WriteLine("Pulled device: " + certInfo[0].name + " with nist date: " + certInfo[0].nistDate);
           package.nistDate = certInfo[0].nistDate;
-          package.name = certInfo[0].name;
+          package.name = certInfo[0].name;  
         }
 
         var timesReadings = ion.database.Query<SensorMeasurementRow>("SELECT recordedDate, measurement FROM SensorMeasurementRow WHERE serialNumber = ? and sensorIndex = ?  AND frn_SID in (" + string.Join(",",paramList.ToArray()) + ") AND recordedDate >=? AND recordedDate <= ? ORDER BY MID ASC",package.serialNumber, sIndex,ChosenDates.subLeft, ChosenDates.subRight);
@@ -588,7 +588,7 @@ namespace ION.IOS.ViewController.Logging
           if(MID.measurement < package.min){
 						package.min = MID.measurement;
 					}
-					if(MID.measurement > package.max){
+					if(MID.measurement > package.max){  
 						package.max = MID.measurement;						
 					}
 					package.avg += MID.measurement;

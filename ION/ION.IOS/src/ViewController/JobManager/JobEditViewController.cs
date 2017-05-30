@@ -44,11 +44,11 @@ namespace ION.IOS.ViewController.JobManager {
           return;
         }
 
-        if(frnJID.Equals(0)){   
+        if(frnJID.Equals(0)){
           var jobCheck = ion.database.Query<ION.Core.Database.JobRow>("SELECT JID FROM JobRow WHERE jobName = ?",editView.jobName.Text);
 
           if(jobCheck.Count == 0){
-            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text};         
+            var job = new ION.Core.Database.JobRow(){jobName = editView.jobName.Text, customerNumber = editView.customerNumber.Text, dispatchNumber = editView.dispatchNumber.Text, poNumber = editView.prodOrderNumber.Text, techName = editView.techName.Text, systemType = editView.systemName.Text, jobAddress = editView.jobAddress.Text, jobLocation = editView.coordinateLabel.Text};         
             ion.database.Insert(job);
             this.NavigationController.PopViewController(true);
           } else {

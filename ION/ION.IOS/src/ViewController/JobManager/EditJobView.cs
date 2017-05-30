@@ -278,11 +278,11 @@ namespace ION.IOS.ViewController.JobManager  {
 			if(string.IsNullOrEmpty(jobAddress.Text)){
         var iosIon = ion as IosION;
         if(iosIon.settings._location.allowsGps){
-					var latlong = ion.locationManager.lastKnownLocation.latitude.amount.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.amount.ToString("0.000000");
+					var latlong = ion.locationManager.lastKnownLocation.latitude.ToString("0.000000") + "," + ion.locationManager.lastKnownLocation.longitude.ToString("0.000000");
 					coordinateButton.Enabled = false;
 					coordinateLabel.Text = latlong;			
 					
-					var placemarks = await geoCoder.ReverseGeocodeLocationAsync(new CLLocation(ion.locationManager.lastKnownLocation.latitude.amount,ion.locationManager.lastKnownLocation.longitude.amount));
+					var placemarks = await geoCoder.ReverseGeocodeLocationAsync(new CLLocation(ion.locationManager.lastKnownLocation.latitude,ion.locationManager.lastKnownLocation.longitude));
 					var address = "";
 			    foreach (var placemark in placemarks) {
 	          address = placemark.Name + " " + placemark.Locality + ", " + placemark.AdministrativeArea + " " + placemark.PostalCode;
