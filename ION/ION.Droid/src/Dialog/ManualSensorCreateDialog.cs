@@ -38,10 +38,15 @@
 			this.context = context;
 			this.options = options;
 
-      if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+			try {
+				if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+					content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create_4_4, null, false);
+				} else {
+					content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create, null, false);
+				}
+			} catch (Exception e) {
+				Log.E(this, "Failed to set layout. Defaulting to old version", e);
 				content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create_4_4, null, false);
-			} else {
-				content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create, null, false);
 			}
 
 			name = content.FindViewById<EditText>(Resource.Id.name);
