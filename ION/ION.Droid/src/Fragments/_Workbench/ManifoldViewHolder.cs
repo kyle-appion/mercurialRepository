@@ -165,7 +165,7 @@
 					  break;
           } // EConnectionState.Disconnected
           case EConnectionState.Connecting: {
-					  goto case EConnectionState.Disconnected;
+            goto case EConnectionState.Resolving;
           } // EConnectionState.Connecting:
           case EConnectionState.Resolving: {
 						progress.Visibility = ViewStates.Visible;

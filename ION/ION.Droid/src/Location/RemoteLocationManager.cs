@@ -20,6 +20,8 @@
 		public bool allowLocationTracking { get { return true; } set {} } 
 		// Implemented from ILocationManager
 		public ILocation lastKnownLocation { get; private set; }
+		// Implemented for ILocationManager
+		public DateTime lastTimeLocationChanged { get; private set; }
 		// Implemented from ILocationManager
 		public bool isPolling { get { return true; } }
 		// Implemented from ILocationManager

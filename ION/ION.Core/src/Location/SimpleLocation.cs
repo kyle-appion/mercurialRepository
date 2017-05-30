@@ -21,12 +21,12 @@
     /// The longitude of the location.
     /// </summary>
     /// <value>The longitude.</value>
-    public Scalar longitude { get; set; }
+    public double longitude { get; set; }
     /// <summary>
     /// The latitude of the location.
     /// </summary>
     /// <value>The latitude.</value>
-    public Scalar latitude { get; set; }
+    public double latitude { get; set; }
     /// <summary>
     /// The last known address the device was located in.
     /// </summary>
@@ -74,8 +74,8 @@
     /// <param name="latitude">Latitude.</param>
     protected void Init(double altitude, double longitude, double latitude) {
       this.altitude = Units.Length.METER.OfScalar(altitude);
-      this.longitude = Units.Angle.DEGREE.OfScalar(longitude);
-      this.latitude = Units.Angle.DEGREE.OfScalar(latitude);
+      this.longitude = longitude;
+      this.latitude = latitude;
     }
   }
 }

@@ -2,8 +2,11 @@
 
 	using System;
 	using System.Collections.Generic;
+
 	using Appion.Commons.Util;
+
 	using ION.Core.App;
+  using ION.Core.Devices;
 	using ION.Core.Fluids;
 	using ION.Core.Sensors;
 
@@ -567,6 +570,19 @@
       NotifyOfAnalyzerEvent(ae);
 
       return true;
+    }
+
+    /// <summary>
+    /// Removes all occurances of the given device from the analyzer.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    public void RemoveUsesOfDevice(IDevice device) {
+      foreach (var sensor in sensors) {
+        var gds = sensor as GaugeDeviceSensor;
+        if (gds != null && gds.device.Equals(device)) {
+          RemoveSensor(sensor);
+        }
+      }
     }
 
     /// <summary>

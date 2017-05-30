@@ -4,6 +4,7 @@
 
 	using Appion.Commons.Collections;
 	using Appion.Commons.Measure;
+	using Appion.Commons.Util;
 
   using ION.Core.App;
 	using ION.Core.Content;
@@ -13,7 +14,7 @@
 
     private static int POINT_LIMIT = 300;
 		private static TimeSpan GRAPH_INTERVAL = TimeSpan.FromMilliseconds(100);
-    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(10);
+    private static TimeSpan ROC_WINDOW = TimeSpan.FromSeconds(30);
     private static TimeSpan ROC_INTERVAL = TimeSpan.FromMilliseconds(100);
 
 		// Overridden from AbstractSensorProperty
@@ -57,6 +58,38 @@
 			}
 		}
 
+		/// <summary>
+		/// Whether or not the roc of change property is considered to be stable.
+		/// </summary>
+		/// <value><c>true</c> if is stable; otherwise, <c>false</c>.</value>
+		public bool isStable {
+			get {
+				var scale = sensor.maxMeasurement.ConvertTo(sensor.unit).amount;
+        var rocMag = primaryRateOfChange.ConvertTo(sensor.unit).magnitude;
+				var now = DateTime.Now;
+
+        var percent = Math.Abs(rocMag / scale);
+
+				if (percent > 0.1) {
+					percent = 0.1;
+				} else if (percent < 0.02) {
+					percent = 0.02;
+				}
+
+				var mag = percent * 100;
+
+        var dt = now - lastRocChange;
+        var ret = dt >= TimeSpan.FromSeconds(mag);
+				return ret;
+			}
+		}
+
+    /// <summary>
+    /// Gets the primary rate of change.
+    /// </summary>
+    /// <value>The primary rate of change.</value>
+    public ScalarSpan primaryRateOfChange { get; private set; }
+
     /// <summary>
     /// The buffer that will hold the rate of change.
     /// </summary>
@@ -81,6 +114,10 @@
     /// The last time that the roc buffer was updated.
     /// </summary>
     private DateTime lastRocRecord;
+    /// <summary>
+    /// The last time that the roc changed.
+    /// </summary>
+    private DateTime lastRocChange;
 
 		private bool isRegisteredToSecondary;
 
@@ -101,6 +138,7 @@
       secondarySensorBuffer = new RingBuffer<PlotPoint>(size);
       buffer = new PlotPoint[size];
       AppState.context.preferences.onPreferencesChanged += OnPreferencesChanged;
+      primaryRateOfChange = sensor.unit.OfSpan(0);
 		}
 
 		// Overridden from AbstractSensorProperty
@@ -194,7 +232,7 @@
 		/// <param name="flags">Flags.</param>
 		public bool ToggleFlags(EFlags flags) {
 			this.flags ^= flags;
-			return (this.flags & flags) == flags;
+			return (this.flags & flags) == flags; 
 		}
 
 		/// <summary>
@@ -206,15 +244,14 @@
 		public ScalarSpan GetPrimaryAverageRateOfChange() {
       TrimRoc();
       var p = new PlotPoint[rocBuffer.count];
-			var pu = sensor.unit.standardUnit;
+      var su = sensor.unit.standardUnit;
       var cnt = rocBuffer.ToArray(p);
-			if (cnt == 0) {
-        return pu.OfSpan(0);
+			if (cnt <= 2) {
+        return su.OfSpan(0);
       }
-      var pmag = (p[0].measurement - p[cnt - 1].measurement) / (ROC_WINDOW.TotalMilliseconds / TimeSpan.FromSeconds(60).TotalMilliseconds);
-			var ret = pu.OfSpan(pmag).ConvertTo(manifold.primarySensor.unit);
-			return ret;
-		}
+
+      return CalculateExponetialWeightedMovingAverage(p);
+    }
 
 		public MinMax GetPrimaryMinMax() {
 			double min = double.MaxValue, max = double.MinValue;
@@ -227,7 +264,7 @@
 					max = dp.measurement;
 				}
 			}
-
+				
       var u = manifold.primarySensor.unit.standardUnit;
 			return new MinMax(u.OfScalar(min), u.OfScalar(max));
 		}
@@ -267,9 +304,19 @@
 		private void RegisterPoint() {
 			Trim();
       var gds = sensor as GaugeDeviceSensor;
+      var su = gds.unit.standardUnit;
       if (gds != null && gds.device.isConnected && (DateTime.Now - lastRocRecord) >= TimeSpan.FromMilliseconds(100)) {
-        rocBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
+        var meas = gds.measurement;
+
+        if (!rocBuffer.isEmpty && !rocBuffer.first.measurement.DEquals(meas.ConvertTo(su).amount)) {
+          lastRocChange = DateTime.Now;
+        }
+
+        rocBuffer.Add(new PlotPoint(meas.ConvertTo(sensor.unit.standardUnit).amount));
+
         lastRocRecord = DateTime.Now;
+
+        this.primaryRateOfChange = GetPrimaryAverageRateOfChange();
       }
 			if (DateTime.Now - lastRecord >= interval) {
 				primarySensorBuffer.Add(new PlotPoint(sensor.measurement.ConvertTo(sensor.unit.standardUnit).amount));
@@ -293,6 +340,30 @@
     private void TrimRoc() {
       var now = DateTime.Now;
       while (now - rocBuffer.last.date > ROC_WINDOW && rocBuffer.RemoveLast());
+    }
+
+		/// <summary>
+		/// Performs an exponetial weighted moving average calculation on the primary sensor's rate of change buffer.
+		/// This algorithm is described here: http://www.statsref.com/HTML/index.html?moving_averages.html.
+		/// </summary>
+		/// <returns>The exponetial weighted moving average.</returns>
+    private ScalarSpan CalculateExponetialWeightedMovingAverage(PlotPoint[] buffer) {
+
+      var sum = 0.0;
+      var initial = buffer[0];
+      for (int i = 1; i < buffer.Length; i++) {
+        var dt = (initial.date - buffer[i].date).TotalMilliseconds / ROC_WINDOW.TotalMilliseconds;
+
+        var wi = 1 / dt;
+        var xi = initial.measurement - buffer[i].measurement;
+
+        sum += wi * xi;
+      }
+      sum /= buffer.Length;
+
+      sum /= (initial.date - buffer[buffer.Length - 1].date).TotalMilliseconds / TimeSpan.FromMinutes(1).TotalMilliseconds;
+
+      return sensor.unit.standardUnit.OfSpan(sum).ConvertTo(sensor.unit);
     }
 
     private void OnPreferencesChanged() {

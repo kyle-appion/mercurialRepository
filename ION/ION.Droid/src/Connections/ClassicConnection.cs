@@ -154,7 +154,7 @@
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
     /// <returns>The async.</returns>
-    public bool Connect() {
+    public bool Connect(bool passive) {
       Task.Factory.StartNew(() => {
         if (EConnectionState.Connected == connectionState) {
           return true;
@@ -255,7 +255,7 @@
 					DoRequestPacket();
 					return true;
 				case MSG_RECONNECT:
-					Connect();
+					Connect(false);
 					return true;
 			}
 
