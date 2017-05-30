@@ -537,7 +537,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           labelFluidState.BackgroundColor = new UIColor(Colors.RED);
           labelFluidState.Text = Strings.Fluid.SUBCOOL;
           //should never show a negative temperature so multiply by -1
-          calculation = calculation * -1;
+          calculation = calculation * -1;  
         }
       }  
       labelFluidDelta.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
@@ -609,7 +609,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 	      labelSatTempUnit.Text = temp.unit.ToString();
 			}
 
-			UpdateDelta();
+			UpdateDelta();   
     }
 
     /// <summary>
@@ -625,7 +625,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       temperatureUnit = measurement.unit;
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
-
+      if(pressureSensor == null){
+        pressureSensor = new ManualSensor(ESensorType.Pressure, new Scalar(pressureUnit, 0.0));
+      }
       var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
       labelSatTempUnit.Text = temp.unit.ToString();
 
