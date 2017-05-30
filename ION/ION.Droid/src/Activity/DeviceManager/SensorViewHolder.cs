@@ -106,6 +106,12 @@
       } else {
 				analyzer.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_nav_analyzer));
       }
+
+      if (!ion.deviceManager.IsDeviceKnown(gds.device)) {
+        add.Visibility = ViewStates.Invisible;
+      } else {
+        add.Visibility = ViewStates.Visible;
+      }
     }
 
     private void OnSensorEvent(Sensor sensorEvent) {

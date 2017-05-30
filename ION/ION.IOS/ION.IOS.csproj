@@ -24,12 +24,14 @@
     <MtouchDebug>true</MtouchDebug>
     <MtouchProfiling>true</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchI18n></MtouchI18n>
+    <MtouchI18n>
+    </MtouchI18n>
     <MtouchNoSymbolStrip>true</MtouchNoSymbolStrip>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
-    <DebugType></DebugType>
+    <DebugType>
+    </DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\iPhone\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
@@ -38,10 +40,14 @@
     <MtouchArch>ARMv7, ARM64</MtouchArch>
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Developer</CodesignKey>
-    <MtouchI18n></MtouchI18n>
-    <MtouchSdkVersion></MtouchSdkVersion>
-    <CodesignProvision></CodesignProvision>
-    <IpaPackageName></IpaPackageName>
+    <MtouchI18n>
+    </MtouchI18n>
+    <MtouchSdkVersion>
+    </MtouchSdkVersion>
+    <CodesignProvision>
+    </CodesignProvision>
+    <IpaPackageName>
+    </IpaPackageName>
     <MtouchUseLlvm>false</MtouchUseLlvm>
     <MtouchLink>Full</MtouchLink>
     <MtouchFloat32>false</MtouchFloat32>
@@ -71,7 +77,8 @@
     <MtouchProfiling>false</MtouchProfiling>
     <CodesignKey>iPhone Developer</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
-    <IpaPackageName></IpaPackageName>
+    <IpaPackageName>
+    </IpaPackageName>
     <MtouchFastDev>false</MtouchFastDev>
     <MtouchExtraArgs>-v -v -v</MtouchExtraArgs>
     <MtouchLink>Full</MtouchLink>
@@ -1095,7 +1102,6 @@
     <Folder Include="Settings.bundle\en.lproj\" />
     <Folder Include="src\Net\" />
     <Folder Include="src\Location\" />
-    <Folder Include="src\Report\" />
     <Folder Include="src\ViewController\FileManager\" />
     <Folder Include="src\ViewController\ScreenshotReport\" />
     <Folder Include="src\ViewController\Help\" />

@@ -762,6 +762,7 @@
     <AndroidResource Include="Resources\layout\activity_rss.axml" />
     <AndroidResource Include="Resources\layout\list_rss_item.axml" />
     <AndroidResource Include="Resources\layout\list_item_tutorial.axml" />
+    <AndroidResource Include="Resources\layout\dialog_manual_sensor_create_4_4.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
