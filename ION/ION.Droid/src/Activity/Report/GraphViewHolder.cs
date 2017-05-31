@@ -108,13 +108,15 @@
 	}
 
 	public class GraphViewHolder : RecordAdapter.RecordViewHolder<GraphRecord> {
-		private PlotView plot;
-		private TextView title;
-		private CheckBox check;
+		public PlotView plot;
+		public TextView title;
+    public View checkContainer;
+		public CheckBox check;
 
 		public GraphViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
 			plot = ItemView.FindViewById<PlotView>(Resource.Id.graph);
 			title = ItemView.FindViewById<TextView>(Resource.Id.name);
+      checkContainer = ItemView.FindViewById(Resource.Id.view);
 			check = ItemView.FindViewById<CheckBox>(Resource.Id.check);
 
 			check.CheckedChange += (sender, e) => {

@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Report.DataLogs.Exporter {
 
   using System;
+  using System.IO;
   using System.Threading.Tasks;
 
   using FlexCel.Core;
@@ -24,7 +25,7 @@
     protected int sectionContentFormat;
 
     // Implemented for IDataLogExporter
-    public abstract Task<bool> Export(DataLogReport dlr);
+    public abstract Task<bool> Export(Stream stream, DataLogReport dlr);
 
     /// <summary>
     /// Initializes the formats for the given file.

@@ -237,6 +237,8 @@
   <string name="device_type">Device Type</string>
   <string name="device_unknown">Unknown Device</string>
 
+  <string name="device_model">Device Model</string>
+
   <string name="devices_actions_1arg">{0}\'s Actions</string>
   <string name="devices_connected_2arg">{0} of {1} devices connected</string>
   <string name="devices_error_connect_for_roc">Please connect the device before trying to view Live Trending</string>

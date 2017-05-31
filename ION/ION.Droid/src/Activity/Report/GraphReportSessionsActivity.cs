@@ -577,8 +577,16 @@
 
 			var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 			var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-			var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+			var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
+      dlr.reportName = GetString(Resource.String.report_data_logging_title);
 
+      var drawable = Resources.GetDrawable(Resource.Drawable.img_logo_appionblack) as BitmapDrawable;
+
+      using (var ms = new MemoryStream(512)) {
+        drawable.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+        dlr.appionLogoPng = ms.ToArray();
+        dlr.graphImages = CaptureGraphs();
+      }
 
       var dialog = new DialogExportReportChooser(ion, this, dlr).Show();
 /*
@@ -605,14 +613,18 @@
 		/// <summary>
 		/// Captures all of the graph selected graph views and converts them into a png for exporting.
 		/// </summary>
-		private Dictionary<GaugeDeviceSensor, Stream> CaptureGraphs() {
-			var ret = new Dictionary<GaugeDeviceSensor, Stream>();
+		private Dictionary<GaugeDeviceSensor, byte[]> CaptureGraphs() {
+			var ret = new Dictionary<GaugeDeviceSensor, byte[]>();
 
 			for (int i = 0; i < graphAdapter.ItemCount; i++) {
 				var record = graphAdapter[i] as GraphRecord;
 				if (record.isChecked) {
-					var view = list.GetLayoutManager().FindViewByPosition(i);
+          var vh = list.FindViewHolderForAdapterPosition(i) as GraphViewHolder;
+          var view = vh.ItemView;
+          var oldVisibility = vh.checkContainer.Visibility;
+          vh.checkContainer.Visibility = ViewStates.Gone;
 					ret[record.data] = view.ToPng();
+          vh.checkContainer.Visibility = oldVisibility;
 				}
 			}
 
@@ -633,7 +645,7 @@
 
 					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
 //					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();
@@ -677,7 +689,7 @@
 
 					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-					var dlr = DataLogReport.BuildFromSessionResults(ion, start, end, results);
+					var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
 //					dlr.graphImages = CaptureGraphs();
 
 					var dateString = DateTime.Now.ToFullShortString();

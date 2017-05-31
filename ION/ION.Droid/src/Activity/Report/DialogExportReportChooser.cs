@@ -1,9 +1,13 @@
 ﻿namespace ION.Droid.Activity.Report {
 
   using System;
+  using System.IO;
+  using System.Threading.Tasks;
 
 	using Android.App;
 	using Android.Content;
+  using Android.Graphics;
+  using Android.Graphics.Drawables;
 	using Android.Views;
 	using Android.Widget;
 
@@ -12,8 +16,9 @@
   using ION.Core.App;
   using ION.Core.IO;
   using ION.Core.Report.DataLogs;
+  using ION.Core.Report.DataLogs.Exporter;
 
-  using ION.Droid.App;
+	using ION.Droid.App;
 	using ION.Droid.Dialog;
   using ION.Droid.Report;
   using ION.Droid.Util;
@@ -36,7 +41,7 @@
 
 
 			var logo = context.Resources.GetDrawable(Resource.Drawable.img_appion_logo_mountain) as BitmapDrawable;
-			logo.SetTint(Colors.Black.ToArgb());
+      logo.SetTint(Color.Black.ToArgb());
 			var bitmap = logo.Bitmap;
 			byte[] bytes = null;
 			using (var ms = new MemoryStream(1024)) {
@@ -82,90 +87,59 @@
 
 			});
 			adb.SetPositiveButton(Resource.String.export, (sender, e) => {
+        string filename = null;
+        IDataLogExporter exporter = null;
+
+				var dateString = DateTime.Now.ToFullShortString();
+				dateString = dateString.Replace('\\', '-');
+				dateString = dateString.Replace('/', '-');
+
         if (showingPdf) {
+					filename = FILE_NAME + "_" + dateString + PDF_EXT;
+
           var radio = tab1.FindViewById<RadioGroup>(Resource.Id.content);
           var checkbox = tab1.FindViewById<CheckBox>(Resource.Id.checkbox);
           switch (radio.CheckedRadioButtonId) {
             case Resource.Id._1:
-              PerformDetailedPdfExport(checkbox.Checked);
+              exporter = new SummaryPdfReportExporter(ion, checkbox.Checked);
               break;
             case Resource.Id._2:
-              PerformDetailedPdfExport(checkbox.Checked);
               break;
           }
         } else {
 					var radio = tab2.FindViewById<RadioGroup>(Resource.Id.content);
 					switch (radio.CheckedRadioButtonId) {
 						case Resource.Id._1:
-              PerformXlsxExport();
+              filename = FILE_NAME + "_" + dateString + EXCEL_EXT;
 							break;
 						case Resource.Id._2:
-              PerformCsvExport();
+							filename = FILE_NAME + "_" + dateString + CSV_EXT;
 							break;
 					}
 				}
+
+        Export(filename, exporter);
 			});
 			var ret = adb.Create();
 			ret.Show();
 			return ret;
 		}
 
-    private void PerformOnePagePdfExport(bool detailed) {
-			var dateString = DateTime.Now.ToFullShortString();
-			dateString = dateString.Replace('\\', '-');
-			dateString = dateString.Replace('/', '-');
-			var filename = FILE_NAME + "_" + dateString + PDF_EXT;
-
-			var folder = ion.dataLogReportFolder;
-			var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
-
-      var success = DataLogPdfReportExporter.Export(context, ion, file.fullPath, report);
-    }
-
-    private void PerformDetailedPdfExport(bool detailed) {
-			var dateString = DateTime.Now.ToFullShortString();
-			dateString = dateString.Replace('\\', '-');
-			dateString = dateString.Replace('/', '-');
-			var filename = FILE_NAME + "_" + dateString + PDF_EXT;
-
-			var folder = ion.dataLogReportFolder;
-			var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
-
-			var success = DataLogPdfReportExporter.Export(context, ion, file.fullPath, report);
-		}
-
-    private void PerformXlsxExport() {
-			var dateString = DateTime.Now.ToFullShortString();
-			dateString = dateString.Replace('\\', '-');
-			dateString = dateString.Replace('/', '-');
-
-
+    private async Task<bool> Export(string filename, IDataLogExporter exporter) {
       var folder = ion.dataLogReportFolder;
-      var file = folder.GetFile(FILE_NAME + "_" + dateString + EXCEL_EXT, EFileAccessResponse.ReplaceIfExists);
+      var file = folder.GetFile(filename, EFileAccessResponse.ReplaceIfExists);
 
-      try {
-        DataLogExcelReportExporter.Export(context, ion, "", report);
-      } catch (Exception e) {
-        Log.E(this, "Failed to export xlsx data", e);
-      }
-    }
-
-    private void PerformCsvExport() {
-			var dateString = DateTime.Now.ToFullShortString();
-			dateString = dateString.Replace('\\', '-');
-			dateString = dateString.Replace('/', '-');
-
-
-			var folder = ion.dataLogReportFolder;
-			var file = folder.GetFile(FILE_NAME + "_" + dateString + CSV_EXT, EFileAccessResponse.ReplaceIfExists);
-
-			try {
-				DataLogExcelReportExporter.Export(context, ion, "", report);
-			} catch (Exception e) {
-				Log.E(this, "Failed to export xlsx data", e);
+      bool success = false;
+      using (var stream = file.OpenForWriting()) {
+				success = await exporter.Export(stream, report);
 			}
-    }
 
+      if (!success) {
+        file.Delete();
+      }
+
+      return success;
+		}
 
 		private enum ExportType {
 			PdfOnePage,
