@@ -12,6 +12,7 @@
   <string name="report_choose_export_format">Choose an Export Format</string>
   <string name="report_created">Report Created</string>
   <string name="report_data_logging">Reporting</string>
+  <string name="report_data_logging_title">Data Logging Report</string>
   <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>

@@ -2,7 +2,7 @@
 
 	using System;
   using System.Collections.Generic;
-	using System.IO;
+  using System.IO;
 
 	using Appion.Commons.Util;
 
@@ -12,23 +12,26 @@
 
 	/// <summary>
 	/// A small data object that holds all of the data that is used when generating a data log report.
+  /// Note: A DataLogReport requires one contract class that will bind the host platform to the report itself. This
+  /// contract is the ILocationzation class. It defines some strings and other things that are needed for the report
+  /// to be generated cleanly.
 	/// </summary>
   public class DataLogReport {
     /// <summary>
     /// The name for the data log report.
     /// </summary>
     /// <value>The name of the report.</value>
-    public string reportName { get; private set; }
+    public string reportName { get; set; }
     /// <summary>
     /// The localization object for the report.
     /// </summary>
     /// <value>The localization.</value>
-    public ILocalization localization { get; private set; }
+    public ILocalization localization { get; set; }
     /// <summary>
     /// The bytes that make up the appion logo.
     /// </summary>
     /// <value>The appion logo png.</value>
-    public byte[] appionLogoPng { get; private set; }
+    public byte[] appionLogoPng { get; set; }
 		/// <summary>
 		/// The Dictionary that maps sensors to their exported graph png image. 
 		/// </summary>
@@ -46,7 +49,7 @@
 		/// <summary>
 		/// The jobs that are attached to the report.
 		/// </summary>
-		public List<JobRow> jobs { get; private set; }
+		public HashSet<JobRow> jobs { get; private set; }
 		/// <summary>
 		/// The devices that produced the session results.
 		/// </summary>
@@ -55,9 +58,9 @@
 		/// The sensors that were used to make up the report.
 		/// </summary>
 		/// <value>The sensors.</value>
-		public List<GaugeDeviceSensor> sensors { get; private set; }
+		public HashSet<GaugeDeviceSensor> sensors { get; private set; }
     /// <summary>
-    /// The session results that are making up the current report.
+    /// The sorted by start date session results that are making up the current report.
     /// </summary>
     /// <value>The results.</value>
 		public List<SessionResults> sessionResults { get; private set; }
@@ -67,19 +70,32 @@
 		/// </summary>
 		/// <param name="jobs">Jobs.</param>
 		/// <param name="sessionResults">Session results.</param>
-		public DataLogReport(DateTime start, DateTime end, List<JobRow> jobs, List<IDevice> devices, List<SessionResults> sessionResults) {
+		private DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, List<IDevice> devices, List<SessionResults> sessionResults) {
+      this.localization = local;
 			this.start = start;
 			this.end = end;
 			this.jobs = jobs;
 			this.devices = devices;
 			this.sessionResults = sessionResults;
+
+      graphImages = new Dictionary<GaugeDeviceSensor, byte[]>();
 		}
 
-		public static DataLogReport BuildFromSessionResults(IION ion, DateTime start, DateTime end, List<SessionResults> sessionResults) {
-			var jobs = new List<JobRow>();
+    /// <summary>
+    /// Creates a new DataLogReport.
+    /// </summary>
+    /// <returns>The from session results.</returns>
+    /// <param name="ion">Ion.</param>
+    /// <param name="start">Start.</param>
+    /// <param name="end">End.</param>
+    /// <param name="sessionResults">Session results.</param>
+    public static DataLogReport BuildFromSessionResults(IION ion, ILocalization local, DateTime start, DateTime end, List<SessionResults> sessionResults) {
+      sessionResults.Sort();
 
-			var deviceSet = new HashSet<IDevice>();
+			var jobs = new HashSet<JobRow>();
+			var deviceSet = new List<IDevice>();
 			var sensorSet = new HashSet<GaugeDeviceSensor>();
+
 			foreach (var results in sessionResults) {
 				foreach (var dsl in results.deviceSensorLogs) {
 					if (SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
@@ -98,7 +114,33 @@
 				}
 			}
 
-			return new DataLogReport(start, end, jobs, new List<IDevice>(deviceSet), sessionResults);
+      var ret = new DataLogReport(local, start, end, jobs, deviceSet, sessionResults);
+
+      ret.sensors = GetUsedSensors(ion, sessionResults);
+
+      return ret;
+		}
+
+		/// <summary>
+		/// Builds a collection of all of the GaugeDeviceSensors that are apart of the session results.
+		/// </summary>
+		/// <returns>The used sensors.</returns>
+		/// <param name="ion">Ion.</param>
+		/// <param name="sessionResults">Session results.</param>
+		private static HashSet<GaugeDeviceSensor> GetUsedSensors(IION ion, IEnumerable<SessionResults> sessionResults) {
+			var sensors = new HashSet<GaugeDeviceSensor>();
+
+			foreach (var session in sessionResults) {
+				foreach (var dsl in session.deviceSensorLogs) {
+					var sn = dsl.deviceSerialNumber.ParseSerialNumber();
+					var device = ion.deviceManager[sn] as GaugeDevice;
+					if (device != null) {
+						sensors.Add(device[dsl.index]);
+					}
+				}
+			}
+
+			return sensors;
 		}
 
     /// <summary>
@@ -163,6 +205,11 @@
       /// <returns>The sensor type string.</returns>
       /// <param name="sensorType">Sensor type.</param>
       string GetSensorTypeString(Sensors.ESensorType sensorType);
+      /// <summary>
+      /// Queries the stream for the font that is used for the data log report.
+      /// </summary>
+      /// <returns>The font stream.</returns>
+      Stream GetFontStream();
     }
   }
 }
