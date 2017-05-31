@@ -75,6 +75,7 @@ namespace ION.Droid.Activity.Portal {
 			startRemote.Click += (sender, e) => {
 				StartActivity(new Intent(this, typeof(PortalRemoteViewingManagerActivity)));
 			};
+      startRemote.Visibility = ViewStates.Invisible;
 
 			home.FindViewById(Resource.Id.toggle).Click += (sender, args) => {
 				AnimateToSettingsView();

@@ -28,6 +28,9 @@
 
 	using ION.CoreExtensions.Net.Portal.Remote;
 
+  /// <summary>
+  /// An interface object that is used to communicate with the ION portal web service.
+  /// </summary>
 	public class IONPortalService {
 
 		private const string LOGIN_USER = "loginUser";
@@ -226,6 +229,7 @@
 			web.Proxy = null;
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
+      client.Timeout = TimeSpan.FromSeconds(10);
 		}
 
     /// <summary>
