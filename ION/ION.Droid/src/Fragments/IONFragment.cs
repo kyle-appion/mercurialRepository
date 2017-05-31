@@ -20,6 +20,7 @@ namespace ION.Droid.Fragments {
 
   using ION.Droid.Activity;
 	using ION.Droid.App;
+  using ION.Droid.Dialog;
   using ION.Droid.Util;
 
   public class IONFragment : Fragment {
@@ -287,6 +288,15 @@ namespace ION.Droid.Fragments {
           Log.D(this, "Failed to stop recording");
         }
       } else {
+        if (ion.currentWorkbench.isEmpty && ion.currentAnalyzer.isEmpty) {
+          var adb = new IONAlertDialog(Activity);
+          adb.SetTitle(Resource.String.report_data_logging);
+          adb.SetMessage(Resource.String.report_error_workbench_and_analyzer_empty);
+          adb.SetPositiveButton(Resource.String.close, (sender, e) => { });
+          adb.Show();
+          return;
+        }
+
         var interval = ion.preferences.report.dataLoggingInterval;
 				Log.D(this, "Starting record with an interval of: " + interval.ToString());
 

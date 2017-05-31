@@ -318,7 +318,7 @@
           },
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
-            title = GetString(Resource.String.report_data_logging),
+            title = GetString(Resource.String.reporting),
 						icon = Resource.Drawable.ic_nav_reporting,
             action = () => {
 							StartActivity(typeof(ReportActivity));
