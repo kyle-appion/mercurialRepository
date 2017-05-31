@@ -166,7 +166,7 @@ namespace ION.IOS.ViewController.Workbench {
 
       if (device == null || device.isConnected) {
           InvalidatePrimary();
-          if (initialRecord.manifold.secondarySensor != null) {
+          if (initialRecord.manifold.secondarySensor != null && !(initialRecord.manifold.secondarySensor is ManualSensor)) {
             InvalidateSecondary();
           }
           InvalidateTime();
@@ -296,18 +296,21 @@ namespace ION.IOS.ViewController.Workbench {
 			}
 			if (min.amount - (range.amount / 2) < sensorMin.amount) {
 				axis.Minimum = sensorMin.amount;
-				bottomLabel.Text = sensorMin.ConvertTo(u).amount + u.ToString();
+				bottomLabel.Text = SensorUtils.ToFormattedString(sensorMin.ConvertTo(u), true);
 			} else {
 				axis.Minimum = min.amount - (range.amount / 2);
-				bottomLabel.Text = (min.ConvertTo(u).amount - (range.ConvertTo(u).amount / 2)) + u.ToString();
+				var diffScalar = new Scalar(u.standardUnit, (min.amount - (range.amount / 2)));
+				bottomLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
 			}
 
 			if (max.amount + (range.amount / 2) < sensorMin.amount + range.amount) {
 				axis.Maximum = sensorMin.amount + range.amount;
-				topLabel.Text = SensorUtils.ToFormattedString(range.ConvertTo(u), true);
+        var diffScalar = new Scalar(u.standardUnit, sensorMin.amount + range.amount);
+				topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
 			} else {
 				axis.Maximum = max.amount + (range.amount / 2);
-				topLabel.Text = SensorUtils.ToFormattedString(new Scalar(u, (max.ConvertTo(u).amount + (range.ConvertTo(u).amount / 2))), true);
+				var diffScalar = new Scalar(u.standardUnit, (max.amount + (range.amount / 2)));
+				topLabel.Text = SensorUtils.ToFormattedString(diffScalar.ConvertTo(u), true);
 			}
 
 			axis.MinimumPadding = 0.25;

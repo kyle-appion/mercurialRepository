@@ -373,12 +373,12 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
     private NSObject settingsObserver;
     private void OnSettingsChanged(NSNotification defaults) {
-      if (pressureSensor == null) {
+      if (pressureSensor != null) {
         pressureUnit = ion.preferences.units.pressure;
         pressureSensor.unit = pressureUnit;
         OnPressureSensorChanged(pressureSensor);
       }
-      if (temperatureSensor == null) {
+      if (temperatureSensor != null) {
         temperatureUnit = ion.preferences.units.temperature;
         temperatureSensor.unit = temperatureUnit;
         OnTemperatureSensorChanged(temperatureSensor);
@@ -537,7 +537,7 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
           labelFluidState.BackgroundColor = new UIColor(Colors.RED);
           labelFluidState.Text = Strings.Fluid.SUBCOOL;
           //should never show a negative temperature so multiply by -1
-          calculation = calculation * -1;
+          calculation = calculation * -1;  
         }
       }  
       labelFluidDelta.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, calculation, true);
@@ -603,12 +603,13 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       pressureUnit = measurement.unit;
 
-      var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
+      if (sensor != null) {
+        var temp = ptChart.GetTemperature(sensor).ConvertTo(temperatureUnit);
+	      labelSatTempMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, false);
+	      labelSatTempUnit.Text = temp.unit.ToString();
+			}
 
-      labelSatTempMeasurement.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, temp, false);
-      labelSatTempUnit.Text = temp.unit.ToString();
-
-      UpdateDelta();
+			UpdateDelta();   
     }
 
     /// <summary>
@@ -624,7 +625,9 @@ namespace ION.IOS.ViewController.SuperheatSubcool {
 
       temperatureUnit = measurement.unit;
       buttonTemperatureUnit.SetTitle(measurement.unit.ToString(), UIControlState.Normal);
-
+      if(pressureSensor == null){
+        pressureSensor = new ManualSensor(ESensorType.Pressure, new Scalar(pressureUnit, 0.0));
+      }
       var temp = ptChart.GetTemperature(pressureSensor).ConvertTo(temperatureUnit);
       labelSatTempUnit.Text = temp.unit.ToString();
 

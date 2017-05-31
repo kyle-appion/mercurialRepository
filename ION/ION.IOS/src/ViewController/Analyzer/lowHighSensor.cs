@@ -67,7 +67,7 @@ namespace ION.IOS.ViewController.Analyzer
     public UIImageView Connection;
     public UIImageView DeviceImage;
     public UIButton conDisButton;
-    private AnalyzerViewController __analyzerviewcontroller;
+    public AnalyzerViewController __analyzerviewcontroller;
     public Unit tUnit;
     public Unit pUnit;
     public UIActivityIndicatorView activityConnectStatus;
@@ -76,13 +76,13 @@ namespace ION.IOS.ViewController.Analyzer
     public List<string> tempUnits = new List<string>{"celsius","fahrenheit","kelvin"};
     public List<string> vacUnits = new List<string>{ "pa", "kpa","bar", "millibar","atmo", "inhg", "cmhg", "kg/cm","psia", "torr","millitorr", "micron",};
     public List<string> availableSubviews = new List<string> {
-      "Linked Sensor (Linked)","Pressure / Temperature (P/T)","Superheat / Subcool (S/H or S/C)", "Minimum Reading (MIN)","Maximum Reading (MAX)", "Hold Reading (HOLD)",  "Rate of Change (RoC)", "Alternate Unit(ALT)" 
+      "Linked Sensor (Linked)","Pressure / Temperature (P/T)","Superheat / Subcool (S/H or S/C)", "Minimum Reading (MIN)","Maximum Reading (MAX)", "Hold Reading (HOLD)",  "Trending Rate of Change (TREND)", "Alternate Unit(ALT)" 
     };
     private bool isUpdating { get; set; }
     public bool isManual;
     public bool isLinked;
     public string location;
-    private RateOfChangeSensorProperty roc;
+    public RateOfChangeSensorProperty roc;
     public AlternateUnitSensorProperty alt;
     public List<sensor> sensorList;
     List<int> locationList;
@@ -105,7 +105,6 @@ namespace ION.IOS.ViewController.Analyzer
         __currentSensor = value;
         if (__currentSensor != null) {
           __currentSensor.onSensorStateChangedEvent += gaugeUpdating;
-          roc = new RateOfChangeSensorProperty(manifold, ion.preferences.device.trendInterval);
         }
       }
     } GaugeDeviceSensor __currentSensor;
@@ -126,7 +125,9 @@ namespace ION.IOS.ViewController.Analyzer
         __manifold = value;
         if (__manifold != null) {
           __manifold.onManifoldEvent += manifoldUpdating;
-        }
+					roc = new RateOfChangeSensorProperty(__manifold, ion.preferences.device.trendInterval);
+          __manifold.AddSensorProperty(roc);
+				}
       }
     } Manifold __manifold;
 
@@ -136,7 +137,7 @@ namespace ION.IOS.ViewController.Analyzer
 			locationList = areaList;
 			snapArea = new UIView (areaRect);
 			this.areaRect = areaRect;
-      cellHeight = .521f * snapArea.Bounds.Height;
+      cellHeight = 72;
       subviewTable = new UITableView (tblRect);
       subviewTable.Bounces = false;
       
@@ -193,14 +194,15 @@ namespace ION.IOS.ViewController.Analyzer
       changePTFluid.Layer.BorderWidth = 1f;
       changePTFluid.BackgroundColor = UIColor.Clear;
       altReading = new UILabel(new CGRect(0, .5 * cellHeight, .99 * tblRect.Width, .5 * cellHeight));
-      rocReading = new UILabel(new CGRect(.2 * tblRect.Width, .5 * cellHeight, .79 * tblRect.Width, .5 * cellHeight));
-      rocImage = new UIImageView(new CGRect(0, .5 * cellHeight, .2 * tblRect.Width, .5 * cellHeight));
+      rocReading = new UILabel(new CGRect(.2 * tblRect.Width, 36, .79 * tblRect.Width, 36));
+      rocReading.AdjustsFontSizeToFitWidth = true;
+      rocImage = new UIImageView(new CGRect(0, 36, 36, 36));
       secondaryReading = new UILabel(new CGRect(0, .5 * cellHeight, tblRect.Width, .5 * cellHeight));
       ion = AppState.context as IosION;
       __analyzerviewcontroller = ViewController;
       tUnit = Units.Temperature.FAHRENHEIT;
       pUnit = Units.Pressure.PSIG;
-      maxType = "hold";
+      maxType = "hold";  
       minType = "hold";
       holdType = "hold";
       isManual = false;
@@ -241,7 +243,7 @@ namespace ION.IOS.ViewController.Analyzer
 		}		
 		
     private async void DoUpdateRocCell(ISensorProperty property) {
-    	if(!tableSubviews.Contains("Rate")){
+    	if(!tableSubviews.Contains("Trending")){
 				return;
 			}
     	await Task.Delay(TimeSpan.FromMilliseconds(2));
@@ -250,12 +252,11 @@ namespace ION.IOS.ViewController.Analyzer
 			var roc = rocproperty.GetPrimaryAverageRateOfChange();
 			var abs = Math.Abs(roc.magnitude);
       var range = (rocproperty.sensor.maxMeasurement - rocproperty.sensor.minMeasurement) / 10;
-			Console.WriteLine("Updating rate of change subview. meas: " + roc + " abs: " + abs + " range: " + range);
 
 			if (abs > range.magnitude) {
-        rocReading.Text = ">" + SensorUtils.ToFormattedString(rocproperty.sensor.type, range, false) + "/min";
+        rocReading.Text = ">" + SensorUtils.ToFormattedString(rocproperty.sensor.type, range, false) + " " + roc.unit.ToString() +"/min";
       } else {
-				rocReading.Text = SensorUtils.ToFormattedString(rocproperty.sensor.type, roc.unit.OfScalar(abs), false) + "/min";
+				rocReading.Text = SensorUtils.ToFormattedString(rocproperty.sensor.type, roc.unit.OfScalar(abs), false) + " " + roc.unit.ToString() + "/min";
       }
 
       if (roc.magnitude == 0) {
@@ -353,7 +354,7 @@ namespace ION.IOS.ViewController.Analyzer
 
           altReading.Text = SensorUtils.ToFormattedString(alt.sensor.type, alt.modifiedMeasurement, true);      
         }
-        else if(subview.Equals("Rate")){
+        else if(subview.Equals("Trending")){
           roc.onSensorPropertyChanged -= DoUpdateRocCell;
           roc.onSensorPropertyChanged += DoUpdateRocCell;
 				}
@@ -465,9 +466,7 @@ namespace ION.IOS.ViewController.Analyzer
 					}
 				}		
 			}
-			
-			subviewTable.ReloadData();
-			
+				
       updateSHSCCell(manifold);
 
       updatePTCell(manifold);

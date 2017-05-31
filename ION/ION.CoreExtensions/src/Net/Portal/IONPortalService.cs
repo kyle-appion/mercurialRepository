@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -909,7 +909,8 @@
         if (appStateUploadCancellationToken != null) {
           appStateUploadCancellationToken.Cancel();
         }
-      }
+				appStateUploadCancellationToken = null;
+			}
     }
 
 		/// <summary>
@@ -1084,13 +1085,15 @@
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.lowSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
-						var type = newSp.GetType();
-						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
-							m.AddSensorProperty(newSp);
-						} else {
-							var sp = m.GetSensorPropertyOfType(type);
-							pendingSubviewRemovals.Remove(sp);
-						}
+            if (newSp != null) {
+              var type = newSp.GetType();
+              if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+                m.AddSensorProperty(newSp);
+              } else {
+                var sp = m.GetSensorPropertyOfType(type);
+                pendingSubviewRemovals.Remove(sp);
+              }
+            }
 					}
 
 					foreach (var sp in pendingSubviewRemovals) {
@@ -1137,13 +1140,15 @@
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.highSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
-						var type = newSp.GetType();
-						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
-							m.AddSensorProperty(newSp);
-						} else {
-							var sp = m.GetSensorPropertyOfType(type);
-							pendingSubviewRemovals.Remove(sp);
-						}
+            if (newSp != null) {
+              var type = newSp.GetType();
+              if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+                m.AddSensorProperty(newSp);
+              } else {
+                var sp = m.GetSensorPropertyOfType(type);
+                pendingSubviewRemovals.Remove(sp);
+              }
+            }
 					}
 
 					foreach (var sp in pendingSubviewRemovals) {

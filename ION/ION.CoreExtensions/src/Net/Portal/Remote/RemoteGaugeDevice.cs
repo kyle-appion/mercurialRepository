@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal.Remote {
+﻿﻿namespace ION.CoreExtensions.Net.Portal.Remote {
 
 	using Newtonsoft.Json;
 
@@ -25,6 +25,7 @@
 			for (int i = 0; i < sensors.Length; i++) {
 				sensors[i] = new RemoteGaugeDeviceSensor(device[i]);
 			}
+      connected = device.isConnected ? 1 : 0;
 			battery = device.battery;
 		}
 	}

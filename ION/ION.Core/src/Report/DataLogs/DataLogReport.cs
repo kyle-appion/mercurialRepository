@@ -9,6 +9,7 @@
 	using ION.Core.App;
   using ION.Core.Database;
 	using ION.Core.Devices;
+  using ION.Core.UI;
 
 	/// <summary>
 	/// A small data object that holds all of the data that is used when generating a data log report.
@@ -35,7 +36,7 @@
 		/// <summary>
 		/// The Dictionary that maps sensors to their exported graph png image. 
 		/// </summary>
-		public Dictionary<GaugeDeviceSensor, byte[]> graphImages { get; set; }
+		public Dictionary<GaugeDeviceSensor, Image[]> graphImages { get; set; }
 		/// <summary>
 		/// The date that the report was started.
 		/// </summary>
@@ -78,7 +79,7 @@
 			this.devices = devices;
 			this.sessionResults = sessionResults;
 
-      graphImages = new Dictionary<GaugeDeviceSensor, byte[]>();
+      graphImages = new Dictionary<GaugeDeviceSensor, Image[]>();
 		}
 
     /// <summary>

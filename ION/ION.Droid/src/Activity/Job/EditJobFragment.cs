@@ -4,20 +4,26 @@
   using System.Threading.Tasks;
 
   using Android.App;
+  using Android.Content;
 	using Android.Locations;
   using Android.OS;
   using Android.Support.Design.Widget;
   using Android.Views;
   using Android.Widget;
 
+  using Appion.Commons.Util;
+
   // Using ION
   using Core.Database;
 
   // Using ION.Droid
+  using Dialog;
   using Fragments;
   using ION.Droid.Views;
 
   public class EditJobFragment : IONFragment, IJobPresenter {
+
+    private Handler handler = new Handler();
 
     private EditText name;
 		private EditText customer;
@@ -27,7 +33,8 @@
 
 		private EditText technician;
 		private EditText system;
-		private EditText address;
+		private EditText addressView;
+    private TextView coordinates;
     private View getAddress;
 
     public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,9 +53,9 @@
 
 			technician = ret.FindViewById<EditText>(Resource.Id.job_technician_name);
 			system = ret.FindViewById<EditText>(Resource.Id.job_system);
-			address = ret.FindViewById<EditText>(Resource.Id.address);
+			addressView = ret.FindViewById<EditText>(Resource.Id.address);
+      coordinates = ret.FindViewById<TextView>(Resource.Id.coordinates);
       getAddress = ret.FindViewById<ImageView>(Resource.Id.icon);
-      getAddress.Visibility = ViewStates.Gone;
       getAddress.SetOnClickListener(new ViewClickAction((v) => GetAddress()));
 
       return ret;
@@ -72,7 +79,8 @@
 
 			technician.Text = job.techName;
 			system.Text = job.systemType;
-			address.Text = job.jobAddress;
+			addressView.Text = job.jobAddress;
+      coordinates.Text = job.jobLocation;
     }
 
     public async Task<bool> SaveAsync(JobRow job) {
@@ -84,44 +92,87 @@
 
 			job.techName = technician.Text;
 			job.systemType = system.Text;
-			job.jobAddress = address.Text;
+			job.jobAddress = addressView.Text;
 
       return await ion.database.SaveAsync<JobRow>(job);
     }
 
     private async Task GetAddress() {
-      var handler = new Handler();
-      var dialog = new ProgressDialog(Activity);
-      dialog.SetTitle(Resource.String.please_wait);
-      dialog.SetMessage(GetString(Resource.String.location_determining_address));
-      dialog.Show();
+      if (!ion.appPrefs._location.allowsGps) {
+        var adb = new IONAlertDialog(Activity);
+        adb.SetTitle(Resource.String.location_settings_not_enabled);
+        adb.SetMessage(Resource.String.location_settings_enabled_required);
 
-      var task = ion.locationManager.GetAddressFromLocationAsync(ion.locationManager.lastKnownLocation);
-/*
-    var done = false;
-    var start = DateTime.Now;
-    handler.Post(() => {
-      if (!done) {
+        adb.SetNegativeButton(Resource.String.cancel, (sender, e) => { });
+				adb.SetPositiveButton(Resource.String.allow, (sender, e) => {
+          ion.appPrefs._location.allowsGps = true;
+        });
 
+				adb.Show();
+        return;
       }
-    });
-*/
 
-      var ret = await task;
+			var dialog = new ProgressDialog(Activity);
+			dialog.SetTitle(Resource.String.please_wait);
+			dialog.SetMessage(GetString(Resource.String.location_determining_address));
+			dialog.Show();
+
+      var usAddress = addressView.Text.Trim();
+      if (string.IsNullOrEmpty(usAddress)) {
+        // Get current address based on coordinates
+        var address = await PollGeocode();
+				if (address == null) {
+					Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
+				} else {
+					addressView.Text = address.GetAddressLine(0);
+					coordinates.Text = address.Latitude + ", " + address.Longitude;
+				}
+      } else {
+        // Get coordinates based on given address
+        var address = await PollGeocode(usAddress);
+        if (address == null) {
+          Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
+        } else {
+          coordinates.Text = address.Latitude + ", " + address.Longitude;
+        }
+      }
+
       dialog.Dismiss();
-      address.Text = ret.address1 + " " + ret.address2;
     }
 
-		private async Task<Address> PollGecode(string address) {
+		private async Task<Address> PollGeocode(string address) {
 			var geo = new Geocoder(Activity);
 
-			var addresses = await geo.GetFromLocationNameAsync(address, 1);
-			if (addresses.Count > 0) {
-				return addresses[0];
-			} else {
-				return null;
-			}
+      var start = DateTime.Now;
+      var task = geo.GetFromLocationNameAsync(address, 1);
+      while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+        await Task.Delay(100);
+      }
+
+      if (task.IsCompleted) {
+        return task.Result[0];
+      } else {
+        return null;
+      }
 		}
+
+    private async Task<Address> PollGeocode() {
+      var loc = ion.locationManager.lastKnownLocation;
+
+      var geo = new Geocoder(Activity);
+
+			var start = DateTime.Now;
+			var task = geo.GetFromLocationAsync(loc.latitude, loc.longitude, 1);
+			while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+				await Task.Delay(100);
+			}
+
+      if (task.IsCompleted) {
+        return task.Result[0];
+      } else {
+        return null;
+      }
+    }
   }
 }
 

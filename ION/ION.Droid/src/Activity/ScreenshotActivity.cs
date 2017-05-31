@@ -1,4 +1,6 @@
-﻿namespace ION.Droid.Activity {
+﻿using Java.Lang;
+
+namespace ION.Droid.Activity {
 
   using System;
   using System.Threading.Tasks;
@@ -58,11 +60,16 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_screenshot, Resource.Color.gray));
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-			if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
-				SetContentView(Resource.Layout.activity_screenshot_4_4);
-			} else {
-				SetContentView(Resource.Layout.activity_screenshot);
-			}
+      try {
+        if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+          SetContentView(Resource.Layout.activity_screenshot_4_4);
+        } else {
+          SetContentView(Resource.Layout.activity_screenshot);
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to set layout. Defaulting to old version", e);
+        SetContentView(Resource.Layout.activity_screenshot_4_4);
+      }
 
       imageView = FindViewById<ImageView>(Resource.Id.content);
 			nameView = FindViewById<EditText>(Resource.Id.name);

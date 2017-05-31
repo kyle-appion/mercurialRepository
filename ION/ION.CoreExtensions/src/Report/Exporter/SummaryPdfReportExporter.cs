@@ -286,22 +286,28 @@
 		/// <param name="col">The y coordinate.</param>
     private Tuple<int, int> DrawSmallGraphs(XlsFile file, DataLogReport dlr, int row, int col) {
 			var l = dlr.localization;
+      var imageCellWidth = 4;
+      var imageCellHeight = 3;
 
-			var index = 0;
+      var index = 0;
 			foreach (var sensor in dlr.sensors) {
+        if (!dlr.graphImages.ContainsKey(sensor)) {
+          Log.E(this, "Failed to export sensor graph");
+          continue;          
+        }
 				// The shift that is used to stagger the graphs down the pages.
-        var xoff = col + (index / 2);
-				var yoff = index % 2 == 0 ? 4 : 0;
+        var xoff = col + (index % 2 == 0 ? imageCellWidth : 0);
+        var yoff = row + (index / 2 * imageCellHeight);
 
 				var image = new TImageProperties();
-				image.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, xoff, 0, yoff, 0, xoff + 5, 255, yoff + 2, 1024);
+        image.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, yoff + imageCellHeight, 255, xoff + imageCellWidth, 1024);
         file.AddImage(dlr.graphImages[sensor], image);
 
-				file.SetCellValue(xoff, yoff, sensor.device.serialNumber + "\n" + l.GetSensorTypeString(sensor.type), sectionContentFormat);
+				file.SetCellValue(yoff, xoff, sensor.device.serialNumber + "\n" + l.GetSensorTypeString(sensor.type), sectionContentFormat);
 				index++;
 			}
 
-      return new Tuple<int, int>(12, (int)Math.Ceiling(index / 2.0) * 3);
+      return new Tuple<int, int>((imageCellWidth + 1) * 2, (int)Math.Ceiling(index / 2.0) * (imageCellHeight + 1));
 		}
 
 		/// <summary>

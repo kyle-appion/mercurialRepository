@@ -135,8 +135,8 @@
 	Portal
 	-->
 	<!-- The height of the banner in the Portal login page. -->
-	<dimen name="portal_landing_button_width">150dp</dimen>
-	<dimen name="portal_landing_button_height">60dp</dimen>
+	<dimen name="portal_landing_button_width">100dp</dimen>
+	<dimen name="portal_landing_button_height">100dp</dimen>
 	<dimen name="portal_landing_text_size">20sp</dimen>
 	<dimen name="portal_title_text">30sp</dimen>
 	<dimen name="portal_icon_size">48dp</dimen>

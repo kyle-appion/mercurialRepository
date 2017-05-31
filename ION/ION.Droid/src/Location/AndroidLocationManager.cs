@@ -67,6 +67,7 @@
         return __lastKnownLocation;
       }
       internal set {
+        lastTimeLocationChanged = DateTime.Now;
         if (value == null) {
           value = new SimpleLocation();
         }
@@ -84,6 +85,8 @@
         }
       }
     } ILocation __lastKnownLocation;
+
+    public DateTime lastTimeLocationChanged { get; private set; }
     /// <summary>
     /// Whether or not the location manager is polling locations.
     /// </summary>
@@ -116,6 +119,7 @@
         altitude = ion.preferences.location.customElevation,
       };
       handler = new Handler(Looper.MainLooper);
+      lastTimeLocationChanged = new DateTime(1, 1, 1);
     }
 
     /// <summary>
@@ -193,7 +197,9 @@
     public bool StartAutomaticLocationPolling() {
 			if (ion.appPrefs._location.allowsGps) {
         handler.Post(() => {
-          StartGoogleServicesPolling();
+  			  altitudeProvider.RequestSingleLocation();
+          altitudeProvider.StartUpdates();
+    			StartGoogleServicesPolling();
         });
 	      return true;
 			} else {
@@ -230,8 +236,8 @@
     /// <returns>The address from location async.</returns>
     /// <param name="location">Location.</param>
     public async Task<ION.Core.Location.Address> GetAddressFromLocationAsync(ILocation location) {
-      var lat = location.latitude.amount;
-      var lng = location.longitude.amount;
+      var lat = location.latitude;
+      var lng = location.longitude;
       var geocoder = new Geocoder(ion.context, Java.Util.Locale.Default);
       var addresses = await geocoder.GetFromLocationAsync(lat, lng, 1);
       if (addresses == null || addresses.Count <= 0) {
@@ -250,11 +256,11 @@
       }
     }
 
-    /// <summary>
-    /// Called when connected to the GoogleApiClient.
-    /// </summary>
-    /// <param name="bundle">Bundle.</param>
-    public void OnConnected(Bundle bundle) {
+		/// <summary>
+		/// Called when connected to the GoogleApiClient.
+		/// </summary>
+		/// <param name="bundle">Bundle.</param>
+		public void OnConnected(Bundle bundle) {
       Log.D(this, "OnConnected to the GoogleApiClient");
     }
 
@@ -298,7 +304,7 @@
         if (altploc == null) {
           altploc = new Location("");
         }
-        var alt = Units.Length.METER.OfScalar(altploc.Altitude).ConvertTo(ion.preferences.units.length);
+        var alt = Units.Length.FOOT.OfScalar(altploc.Altitude).ConvertTo(ion.preferences.units.length);
         lastKnownLocation = new SimpleLocation(true, alt.amount, location.Longitude, location.Latitude);
 			}
     }
@@ -338,7 +344,7 @@
       Log.V(this, "The GpsAltitudeProvider sent us a location of: " + e);
       if (lastKnownLocation != null) {
         var loc = lastKnownLocation;
-        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, loc.longitude.amount, loc.latitude.amount);
+        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, loc.longitude, loc.latitude);
       } else {
         lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
       }

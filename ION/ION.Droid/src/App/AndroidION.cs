@@ -71,6 +71,8 @@ namespace ION.Droid.App {
         }
       }
 
+      var _ = preferences.lastKnownAppVersion;
+
 			return await base.OnPostInitAsync();
 		}
 
