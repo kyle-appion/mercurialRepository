@@ -176,6 +176,11 @@
 			}
 		}
     /// <summary>
+    /// Whether or not the analyzer is empty.
+    /// </summary>
+    /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+    public bool isEmpty { get { return count <= 0; } }
+    /// <summary>
     /// The number of sensors that the analyzer supports per side.
     /// </summary>
     /// <value>The sensors per side.</value>

@@ -397,6 +397,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   REPORT
   -->
   <string name="reports">Reports</string>
+	<string name="reporting">Reporting</string>
   <string name="report_by_date">By Date</string>
   <string name="report_by_job">By Job</string>
   <string name="report_certificates">Calibration Certificates</string>
@@ -407,7 +408,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="report_certificates_error_download_fails_1sarg">Some certificates failed to download. If this problem persists, please contact Appion. \n\n Affected Serial Numbers:\n%1$s</string>
 	<string name="report_choose_export_format">Choose an Export Format</string>
 	<string name="report_created">Report Created</string>
-  <string name="report_data_logging">Reporting</string>
+  <string name="report_data_logging">Data Logging</string>
   <string name="report_data_logging_empty">The session(s) you have selected contain no recorded data. To export a session report, please select a session with at least one data point.</string>
   <string name="report_data_logging_error_setting_time_to_lowest">Setting time to the first data log time.</string>
   <string name="report_data_logging_error_setting_time_to_highest">Setting time to the last data log time.</string>
@@ -426,6 +427,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
   <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
   <string name="report_devices_used">Devices Used</string>
 	<string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
+  <string name="report_error_workbench_and_analyzer_empty">Recording not started. Please add Viewers to either your Workbench or Analyzer to start recording.</string>
   <string name="report_graph">Graph</string>
 	<string name="report_graph_selection">Graph Selection</string>
   <string name="report_jobs">Jobs</string>
