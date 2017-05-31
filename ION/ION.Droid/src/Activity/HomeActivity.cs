@@ -148,11 +148,11 @@
             }
           }
         }
-        ion.preferences.lastKnownAppVersion = ion.version;
       }
+			ion.preferences.lastKnownAppVersion = ion.version;
 
-      // Show the rss feed.
-      Task.Factory.StartNew(async () => {
+			// Show the rss feed.
+			Task.Factory.StartNew(async () => {
         try {
           var rss = await ion.portal.DownloadRssOrThrowAsync();
 
@@ -318,7 +318,7 @@
           },
           new NavigationIconItem() {
             id = Resource.Id.report_data_logging,
-            title = GetString(Resource.String.report_data_logging),
+            title = GetString(Resource.String.reporting),
 						icon = Resource.Drawable.ic_nav_reporting,
             action = () => {
 							StartActivity(typeof(ReportActivity));

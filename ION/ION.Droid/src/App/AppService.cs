@@ -107,6 +107,7 @@
           return true;
         } else {
           // Revert to previous ion.
+          Log.E(this, "Ion failed to init async...");
           ion = AppState.context = null;
           return false;
         }

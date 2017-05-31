@@ -38,6 +38,8 @@
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <AndroidSupportedAbis>arm64-v8a;armeabi;armeabi-v7a;x86;x86_64</AndroidSupportedAbis>
     <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
+    <JavaMaximumHeapSize>8G</JavaMaximumHeapSize>
+    <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType></DebugType>
@@ -317,7 +319,6 @@
     <Compile Include="src\App\BatteryBroadcastReceiver.cs" />
     <Compile Include="src\Dialog\RssDialog.cs" />
     <Compile Include="src\App\RssBroadcastReceiver.cs" />
-    <Compile Include="src\Rss\RssHelper.cs" />
     <Compile Include="src\Activity\Rss\RssActivity.cs" />
     <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
@@ -716,7 +717,6 @@
     <AndroidResource Include="Resources\layout\activity_portal_login.axml" />
     <AndroidResource Include="Resources\layout\activity_portal.xml" />
     <AndroidResource Include="Resources\layout\activity_portal_sessions_view.axml" />
-    <AndroidResource Include="Resources\layout\activity_access_code_management.axml" />
     <AndroidResource Include="Resources\layout\activity_portal_access_code_manager.axml" />
     <AndroidResource Include="Resources\menu\refresh.xml" />
     <AndroidResource Include="Resources\layout\button_refresh.axml">
@@ -762,6 +762,10 @@
     <AndroidResource Include="Resources\layout\activity_rss.axml" />
     <AndroidResource Include="Resources\layout\list_rss_item.axml" />
     <AndroidResource Include="Resources\layout\list_item_tutorial.axml" />
+    <AndroidResource Include="Resources\layout\dialog_manual_sensor_create_4_4.axml" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugept500.png" />
+    <AndroidResource Include="Resources\drawable\ic_render_gaugept800.png" />
+    <AndroidResource Include="Resources\layout\activity_portal_access_code_manager_4_4.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">
@@ -802,7 +806,6 @@
     <Folder Include="src\Net\" />
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
-    <Folder Include="src\Rss\" />
     <Folder Include="src\Activity\Rss\" />
   </ItemGroup>
   <ItemGroup>

@@ -2,8 +2,11 @@
 
 	using System;
 	using System.Collections.Generic;
+
 	using Appion.Commons.Util;
+
 	using ION.Core.App;
+  using ION.Core.Devices;
 	using ION.Core.Fluids;
 	using ION.Core.Sensors;
 
@@ -172,6 +175,11 @@
 				return GetSensorsInSideCount(ESide.Low) + GetSensorsInSideCount(ESide.High);
 			}
 		}
+    /// <summary>
+    /// Whether or not the analyzer is empty.
+    /// </summary>
+    /// <value><c>true</c> if is empty; otherwise, <c>false</c>.</value>
+    public bool isEmpty { get { return count <= 0; } }
     /// <summary>
     /// The number of sensors that the analyzer supports per side.
     /// </summary>
@@ -567,6 +575,19 @@
       NotifyOfAnalyzerEvent(ae);
 
       return true;
+    }
+
+    /// <summary>
+    /// Removes all occurances of the given device from the analyzer.
+    /// </summary>
+    /// <param name="device">Device.</param>
+    public void RemoveUsesOfDevice(IDevice device) {
+      foreach (var sensor in sensors) {
+        var gds = sensor as GaugeDeviceSensor;
+        if (gds != null && gds.device.Equals(device)) {
+          RemoveSensor(sensor);
+        }
+      }
     }
 
     /// <summary>

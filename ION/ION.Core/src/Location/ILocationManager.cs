@@ -1,5 +1,6 @@
 ﻿namespace ION.Core.Location {
 
+  using System;
   using System.Threading.Tasks;
 
 	using Appion.Commons.Measure;
@@ -48,6 +49,12 @@
     ILocation lastKnownLocation { get; }
 
     /// <summary>
+    /// The last time that the location was changed. This is used to determine how relevant a location is.
+    /// </summary>
+    /// <value>The last time location changed.</value>
+    DateTime lastTimeLocationChanged { get; }
+
+    /// <summary>
     /// Whether or not the location manager is polling locations.
     /// </summary>
     bool isPolling { get; }
@@ -94,12 +101,12 @@
     /// The longitude of the location.
     /// </summary>
     /// <value>The longitude.</value>
-    Scalar longitude { get; }
+    double longitude { get; }
     /// <summary>
     /// The latitude of the location.
     /// </summary>
     /// <value>The latitude.</value>
-    Scalar latitude { get; }
+    double latitude { get; }
   }
 }
 

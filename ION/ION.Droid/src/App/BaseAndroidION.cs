@@ -3,6 +3,8 @@ namespace ION.Droid.App {
 	using System;
 	using System.Threading.Tasks;
 
+  using Android.Content;
+  using Android.Net;
 	using Android.OS;
 
 	using Appion.Commons.Util;
@@ -79,6 +81,14 @@ namespace ION.Droid.App {
 		public ILocationManager locationManager { get; protected set; }
 		// Implemented From IION
 		public DataLogManager dataLogManager { get; protected set; }
+    // Implemented from IION
+    public bool hasNetworkConnection {
+      get {
+        var cm = context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
+        var activeNetwork = cm.ActiveNetworkInfo;
+        return activeNetwork != null && activeNetwork.IsConnected;
+      }
+    }
 
 		// Implemented From IION
 		public virtual Analyzer currentAnalyzer { 

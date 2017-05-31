@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -28,6 +28,9 @@
 
 	using ION.CoreExtensions.Net.Portal.Remote;
 
+  /// <summary>
+  /// An interface object that is used to communicate with the ION portal web service.
+  /// </summary>
 	public class IONPortalService {
 
 		private const string LOGIN_USER = "loginUser";
@@ -46,8 +49,7 @@
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
 		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
-//    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
-    private const string URL_RSS_FEED = "http://www.buildtechhere.com/RSS/feed.xml";
+    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
 		private const string URL_UPDATE_ACCOUNT = "http://portal.appioninc.com/App/updateAccount.php";
 		private const string URL_FORGOT_ACCOUNT = "http://portal.appioninc.com/App/forgotUserPass.php";
 		private const string URL_LOGIN_USER = "http://portal.appioninc.com/App/applogin.php";
@@ -226,6 +228,7 @@
 			web.Proxy = null;
 			client = new HttpClient();
 			client.MaxResponseContentBufferSize = 256000;
+      client.Timeout = TimeSpan.FromSeconds(10);
 		}
 
     /// <summary>
@@ -909,7 +912,8 @@
         if (appStateUploadCancellationToken != null) {
           appStateUploadCancellationToken.Cancel();
         }
-      }
+				appStateUploadCancellationToken = null;
+			}
     }
 
 		/// <summary>
@@ -1084,13 +1088,15 @@
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.lowSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
-						var type = newSp.GetType();
-						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
-							m.AddSensorProperty(newSp);
-						} else {
-							var sp = m.GetSensorPropertyOfType(type);
-							pendingSubviewRemovals.Remove(sp);
-						}
+            if (newSp != null) {
+              var type = newSp.GetType();
+              if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+                m.AddSensorProperty(newSp);
+              } else {
+                var sp = m.GetSensorPropertyOfType(type);
+                pendingSubviewRemovals.Remove(sp);
+              }
+            }
 					}
 
 					foreach (var sp in pendingSubviewRemovals) {
@@ -1137,13 +1143,15 @@
 					var pendingSubviewRemovals = new HashSet<ISensorProperty>(m.sensorProperties);
 					foreach (var subCode in appState.lh.highSubviews) {
 						var newSp = RemoteAnalyzerLH.ParseSensorPropertyFromCode(m, subCode);
-						var type = newSp.GetType();
-						if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
-							m.AddSensorProperty(newSp);
-						} else {
-							var sp = m.GetSensorPropertyOfType(type);
-							pendingSubviewRemovals.Remove(sp);
-						}
+            if (newSp != null) {
+              var type = newSp.GetType();
+              if (!m.HasSensorPropertyOfType(type) && !type.Equals(typeof(RateOfChangeSensorProperty))) {
+                m.AddSensorProperty(newSp);
+              } else {
+                var sp = m.GetSensorPropertyOfType(type);
+                pendingSubviewRemovals.Remove(sp);
+              }
+            }
 					}
 
 					foreach (var sp in pendingSubviewRemovals) {

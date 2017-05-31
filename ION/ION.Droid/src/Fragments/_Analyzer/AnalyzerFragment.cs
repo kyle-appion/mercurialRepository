@@ -260,11 +260,17 @@ namespace ION.Droid.Fragments._Analyzer {
       var dgs = manifold.primarySensor as GaugeDeviceSensor;
       var connectionState = dgs.device.connection.connectionState;
 
-      if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-        ldb.AddItem(Resource.String.reconnect, () => {
-          dgs.device.connection.Connect();
-        });
-      }
+			if (dgs != null && connectionState == EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
+				ldb.AddItem(Resource.String.reconnect, () => {
+					dgs.device.connection.Connect();
+				});
+			}
+
+			if (dgs != null && (connectionState != EConnectionState.Disconnected && connectionState != EConnectionState.Broadcasting)) {
+				ldb.AddItem(Resource.String.disconnect, () => {
+					dgs.device.connection.Disconnect();
+				});
+			}
 
       ldb.AddItem(Resource.String.rename, () => {
 				ldb.AddItem(Resource.String.rename, () => {
@@ -308,12 +314,6 @@ namespace ION.Droid.Fragments._Analyzer {
         i.PutExtra(SensorAlarmActivity.EXTRA_SENSOR, manifold.primarySensor.ToParcelable());
         StartActivity(i);
       });
-
-      if (dgs != null && connectionState != EConnectionState.Disconnected || connectionState == EConnectionState.Broadcasting) {
-        ldb.AddItem(Resource.String.disconnect, () => {
-          dgs.device.connection.Disconnect();
-        });
-      }
 
       ldb.AddItem(Resource.String.remove, () => {
         analyzer.RemoveManifold(manifold);
