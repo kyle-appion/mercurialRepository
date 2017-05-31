@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -909,7 +909,8 @@
         if (appStateUploadCancellationToken != null) {
           appStateUploadCancellationToken.Cancel();
         }
-      }
+				appStateUploadCancellationToken = null;
+			}
     }
 
 		/// <summary>
