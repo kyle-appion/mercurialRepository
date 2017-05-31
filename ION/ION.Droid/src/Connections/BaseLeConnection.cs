@@ -32,6 +32,10 @@
     /// The message that is used to check whether or not the connection is still in long range mode.
     /// </summary>
     private const int MSG_CHECK_LONG_RANGE = 3;
+    /// <summary>
+    /// The maximum attempts to resolve a connection.
+    /// </summary>
+    private const int MAX_CONNECTION_ATTEMPTS = 3;
 
     // Implemented for IConnection
     public event OnConnectionStateChanged onStateChanged;
@@ -122,6 +126,10 @@
     /// The handler that is used to post delayed actions to.
     /// </summary>
     private Handler handler;
+    /// <summary>
+    /// The number of connection attempts that have been made.
+    /// </summary>
+    private int attempts;
 
     public BaseLeConnection(AndroidConnectionManager manager, BluetoothDevice device) {
       this.manager = manager;
@@ -247,7 +255,15 @@
           case MSG_CHECK_SERVICES: {
               if (!ValidateServices()) {
                 Log.E(this, "Failed to validate services; disconnecting with intention of an immediate reconnect");
-                Disconnect(false);
+                if (attempts <= MAX_CONNECTION_ATTEMPTS) {
+                  Disconnect(true);
+									attempts++;
+                } else {
+                  Disconnect(false);
+                  attempts = 0;
+                }
+              } else {
+                attempts = 0;
               }
               return true;
             } // MSG_CHECK_SERVICES
