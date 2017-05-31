@@ -1,4 +1,4 @@
-﻿namespace ION.CoreExtensions.Net.Portal {
+﻿﻿namespace ION.CoreExtensions.Net.Portal {
 
 	using System;
 	using System.Collections.Generic;
@@ -64,8 +64,9 @@
 
 				if (gds != null) {
           // Commit primary sensor stuff
-          lowSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
-          lowSensorIndex = analyzer.IndexOfSensor(m.primarySensor);
+          var ps = (GaugeDeviceSensor)m.primarySensor;
+          lowSerialNumber = ps.device.serialNumber.ToString();
+          lowSensorIndex = ps.index;
 
 					var i = analyzer.IndexOfSensor(gds);
 					lowAnalyzerIndex = i + "";
@@ -100,8 +101,9 @@
 
         if (gds != null) {
           // Commit primary sensor stuff
-          highSerialNumber = ((GaugeDeviceSensor)m.primarySensor).device.serialNumber.ToString();
-          highSensorIndex = analyzer.IndexOfSensor(m.primarySensor);
+          var ps = (GaugeDeviceSensor)m.primarySensor;
+          highSerialNumber = ps.device.serialNumber.ToString();
+          highSensorIndex = ps.index;
 
           var i = analyzer.IndexOfSensor(gds);
           highAnalyzerIndex = i + "";
