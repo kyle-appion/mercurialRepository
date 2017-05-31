@@ -27,6 +27,7 @@
   using Dialog;
   using Sensors;
   using Views;
+  using Util;
 
   [Activity(Label = "@string/shsc", Icon = "@drawable/ic_nav_supersub", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
   public class SuperheatSubcoolActivity : IONActivity {
@@ -256,15 +257,22 @@
           OnPressureSensorChanged(__pressureSensor);
 
           if (value is GaugeDeviceSensor) {
-            pressureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
+            pressureSensorIconView.SetImageBitmap(cache.GetBitmap(value.GetIcon()));
             pressureEntryView.Enabled = false;
             pressureClearView.Visibility = ViewStates.Gone;
-          } else {
-            pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
+						SetPressureInputQuietly(SensorUtils.ToFormattedString(value.measurement));
+					} else {
+            pressureSensorIconView.SetImageBitmap(cache.GetBitmap(value.GetIcon()));
             pressureEntryView.Enabled = !isPressureLocked;
             pressureClearView.Visibility = ViewStates.Visible;
           }
-        }
+          pressureUnit = value.unit;
+				} else {
+					pressureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
+					SetPressureInputQuietly("");
+          pressureEntryView.Enabled = true;
+					pressureClearView.Visibility = ViewStates.Gone;
+				}
       }
     } Sensor __pressureSensor;
     /// <summary>
@@ -287,20 +295,51 @@
           OnTemperatureSensorChanged(__temperatureSensor);
 
           if (value is GaugeDeviceSensor) {
-            temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(((GaugeDeviceSensor)value).device.GetDeviceIcon()));
+						temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(value.GetIcon()));
             temperatureEntryView.Enabled = false;
             temperatureClearView.Visibility = ViewStates.Gone;
-          } else {
-            temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
-            temperatureEntryView.Enabled = !isTemperatureLocked;
+						SetTemperatureInputQuietly(SensorUtils.ToFormattedString(value.measurement));
+					} else {
+						temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(value.GetIcon()));
+						temperatureEntryView.Enabled = !isTemperatureLocked;
             temperatureClearView.Visibility = ViewStates.Visible;
           }
+					temperatureUnit = value.unit;
+        } else {
+					temperatureSensorIconView.SetImageBitmap(cache.GetBitmap(Resource.Drawable.ic_devices_add));
+					SetTemperatureInputQuietly("");
+          temperatureEntryView.Enabled = true;
+          temperatureClearView.Visibility = ViewStates.Gone;
         }
       }
     } Sensor __temperatureSensor;
-
-    private Unit pressureUnit;
-    private Unit temperatureUnit;
+    /// <summary>
+    /// The unit container for the pressure sensor.
+    /// </summary>
+    /// <value>The pressure unit.</value>
+    private Unit pressureUnit {
+      get {
+        return __pressureUnit;
+      }
+      set {
+        __pressureUnit = value;
+        pressureUnitView.Text = value.ToString();
+				UpdateCalculationMeasurements();
+			}
+    } Unit __pressureUnit;
+    /// <summary>
+    /// The unit container for the temperature sensor.
+    /// </summary>
+    private Unit temperatureUnit {
+      get {
+        return __temperatureUnit;
+      }
+      set {
+        __temperatureUnit = value;
+        temperatureUnitView.Text = value.ToString();
+        UpdateCalculationMeasurements();
+      }
+    } Unit __temperatureUnit;
 
     /// <summary>
     /// Whether or not the pressure sensor is locked.
@@ -348,8 +387,8 @@
       ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_supersub, Resource.Color.gray));
       ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-      pressureUnit = ion.preferences.units.pressure;
-      temperatureUnit = ion.preferences.units.temperature;
+      __pressureUnit = ion.preferences.units.pressure;
+      __temperatureUnit = ion.preferences.units.temperature;
 
       FindViewById(Resource.Id.fluid).SetOnClickListener(new ViewClickAction((view) => {
         var i = new Intent(this, typeof(FluidManagerActivity));
@@ -635,7 +674,6 @@
 
       pressureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!isPressureLocked) {
-          pressureEntryView.Text = "";
           pressureSensor = null;
         }
       }));
@@ -646,7 +684,8 @@
 
       pressureUnitView.Text = pressureUnit.ToString();
       pressureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-        UnitDialog.Create(this, pressureSensor.supportedUnits, (obj, unit) => {
+		  var units = pressureSensor != null ? pressureSensor.supportedUnits : SensorUtils.DEFAULT_PRESSURE_UNITS;
+		  UnitDialog.Create(this, units, (obj, unit) => {
           pressureUnit = unit;
 				  pressureEntryView.ClearFocus();
           if (pressureSensor != null && pressureSensor.isEditable) {
@@ -691,7 +730,7 @@
             temperatureSensor = new ManualSensor(ESensorType.Temperature, false);
             temperatureSensor.name = GetString(Resource.String.name);
             temperatureSensor.unit = temperatureUnit;
-          }
+			  }
           if (!"".Equals(text)) {
             temperatureSensor.measurement = temperatureSensor.unit.OfScalar(double.Parse(text));
           }
@@ -710,7 +749,6 @@
 
       temperatureAddView.SetOnLongClickListener(new ViewLongClickAction((view) => {
 				if (!isTemperatureLocked) {
-          temperatureEntryView.Text = "";
           temperatureSensor = null;
         }
       }));
@@ -721,7 +759,8 @@
 
       temperatureUnitView.Text = temperatureUnit.ToString();
       temperatureUnitView.SetOnClickListener(new ViewClickAction((v) => {
-        UnitDialog.Create(this, temperatureSensor.supportedUnits, (obj, unit) => {
+        var units = temperatureSensor != null ? temperatureSensor.supportedUnits : SensorUtils.DEFAULT_TEMPERATURE_UNITS;
+        UnitDialog.Create(this, units, (obj, unit) => {
           temperatureUnit = unit;
 					temperatureEntryView.ClearFocus();
           if (temperatureSensor != null && temperatureSensor.isEditable) {

@@ -86,7 +86,7 @@ namespace ION.Droid.App {
       get {
         var cm = context.GetSystemService(Context.ConnectivityService) as ConnectivityManager;
         var activeNetwork = cm.ActiveNetworkInfo;
-        return activeNetwork != null && activeNetwork.IsConnectedOrConnecting;
+        return activeNetwork != null && activeNetwork.IsConnected;
       }
     }
 

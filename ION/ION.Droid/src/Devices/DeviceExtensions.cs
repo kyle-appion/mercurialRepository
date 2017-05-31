@@ -45,12 +45,10 @@ namespace ION.Droid.Devices {
           return Resource.Drawable.ic_render_gaugep800;
         case EDeviceModel.AV760:
           return Resource.Drawable.ic_render_gaugeav760;
-        case EDeviceModel.PT300:
-          return Resource.Drawable.ic_render_gaugep300;
         case EDeviceModel.PT500:
-          return Resource.Drawable.ic_render_gaugep500;
+          return Resource.Drawable.ic_render_gaugept500;
         case EDeviceModel.PT800:
-          return Resource.Drawable.ic_render_gaugep800;
+          return Resource.Drawable.ic_render_gaugept800;
         default:
           return Resource.Drawable.ic_logo_appiondefault;
       }
