@@ -160,7 +160,7 @@ namespace ION.IOS.ViewController.Workbench {
     // Overridden from BaseIONViewController
     public override void ViewDidAppear(bool animated) {
       base.ViewDidAppear(animated);
-
+      Console.WriteLine("Workbench view did appear");
       tableContent.ReloadData();
       
       if(!ion.deviceManager.connectionManager.isEnabled){

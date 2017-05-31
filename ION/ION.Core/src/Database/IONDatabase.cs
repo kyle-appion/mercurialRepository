@@ -158,7 +158,7 @@
 
         if (affected > 0) {
           Commit();
-          Log.D(this, "finished save async");
+          //Log.D(this, "finished save async");
           return Task.FromResult(true);
         } else {
         	try {

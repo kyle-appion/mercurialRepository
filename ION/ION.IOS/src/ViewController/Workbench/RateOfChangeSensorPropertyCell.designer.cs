@@ -1,6 +1,6 @@
 // WARNING
 //
-// This file has been generated automatically by Xamarin Studio to store outlets and
+// This file has been generated automatically by Visual Studio to store outlets and
 // actions made in the UI designer. If it is removed, they will be lost.
 // Manual changes to this file may not be handled correctly.
 //
@@ -26,6 +26,9 @@ namespace ION.IOS.ViewController.Workbench
 
 		[Outlet]
 		UIKit.UIView viewBackground { get; set; }
+
+		[Outlet]
+		UIKit.UIView viewBottomDivider { get; set; }
 
 		[Outlet]
 		UIKit.UIView viewDivider { get; set; }
@@ -60,6 +63,11 @@ namespace ION.IOS.ViewController.Workbench
 			if (viewDivider != null) {
 				viewDivider.Dispose ();
 				viewDivider = null;
+			}
+
+			if (viewBottomDivider != null) {
+				viewBottomDivider.Dispose ();
+				viewBottomDivider = null;
 			}
 		}
 	}

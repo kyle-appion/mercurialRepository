@@ -163,10 +163,12 @@
     /// <param name="peripheral">Peripheral.</param>
     /// <param name="error">Error.</param>
     public override sealed void DiscoveredService(CBPeripheral peripheral, NSError error) {
-//      Log.D(this, "Discovered " + __nativeDevice.Services.Length + " Services for device" + name + "...");
-      foreach (var service in device.Services) {
-//        Log.D(this, "Service is: " + service.UUID);
-        device.DiscoverCharacteristics(service);
+      //      Log.D(this, "Discovered " + __nativeDevice.Services.Length + " Services for device" + name + "...");
+      if (device.Services != null) {
+        foreach (var service in device.Services) {
+          //        Log.D(this, "Service is: " + service.UUID);
+          device.DiscoverCharacteristics(service);
+        }
       }
     }
 

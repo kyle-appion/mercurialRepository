@@ -30,15 +30,17 @@
 
 		public double min { get; private set; }
 		public double max { get; private set; }
-
 		public LineSeries[] series { get; private set; }
 		public bool isChecked { get; set; }
-		
-		public GraphRecord(GaugeDeviceSensor sensor, DateIndexLookup dil, PointSeries[] pointSeries) : base(sensor) {
-			this.dil = dil;
-			this.pointSeries = pointSeries;
-			isChecked = true;
 
+    public GraphRecord(GaugeDeviceSensor sensor, DateIndexLookup dil, PointSeries[] pointSeries) : base(sensor) {
+      this.dil = dil;
+      this.pointSeries = pointSeries;
+      isChecked = true;
+      RegenerateSeries();
+    }
+
+    public void RegenerateSeries() {
 			var list = new List<LineSeries>();
 
 			foreach (var s in pointSeries) {
@@ -65,11 +67,9 @@
 					}
 				}
 
-				var span = sensor.maxMeasurement.ConvertTo(sensor.unit.standardUnit).amount * 0.05;
+        var span = data.maxMeasurement.ConvertTo(data.unit.standardUnit).amount * 0.05;
 				min -= span;
 				max += span;
-
-				Log.D(this, "Series has: " + lineSeries.Points.Count + " points");
 
 				list.Add(lineSeries);
 			}
@@ -113,6 +113,10 @@
     public View checkContainer;
 		public CheckBox check;
 
+    private PlotModel model;
+    private LinearAxis xAxis;
+    private LinearAxis yAxis;
+
 		public GraphViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
 			plot = ItemView.FindViewById<PlotView>(Resource.Id.graph);
 			title = ItemView.FindViewById<TextView>(Resource.Id.name);
@@ -126,33 +130,15 @@
 			};
 		}
 
-		public override void Invalidate() {
-			var ion = AppState.context;
-			var serial = record.data.device.serialNumber;
+    public override void Bind() {
+      base.Bind();
 
-			check.Checked = record.isChecked;
-
-			var sensor = record.data;
-			var u = sensor.unit.standardUnit;
-
-			foreach (var series in record.series) {
-				var c = sensor.GetChartColor(ItemView.Context);
-
-				series.Color = OxyColor.FromUInt32((uint)c.ToArgb());
-			}
-
-			var model = new PlotModel() {
-				Title = serial.ToString(),
-				Subtitle = sensor.type.GetTypeString(),
+			model = new PlotModel() {
 				Padding = new OxyThickness(0),
 			};
 
-			var indices = record.dil.dateSpan;
-
-			var xAxis = new LinearAxis() {
+			xAxis = new LinearAxis() {
 				Position = AxisPosition.Bottom,
-				Minimum = 0,
-				Maximum = indices - 1,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
@@ -160,34 +146,50 @@
 				MaximumPadding = 3,
 			};
 
-			var standardUnit = record.data.unit.standardUnit;
-			var yAxis = new LinearAxis() {
+			yAxis = new LinearAxis() {
 				Position = AxisPosition.Left,
-				Minimum = record.min,//t.sensor.minMeasurement.ConvertTo(standardUnit).amount,
-				Maximum = record.max,//t.sensor.maxMeasurement.ConvertTo(standardUnit).amount,
 				IsAxisVisible = false,
 				IsZoomEnabled = false,
 				IsPanEnabled = false,
-				MinimumPadding = 3, 
+				MinimumPadding = 3,
 				MaximumPadding = 3,
 			};
 
-			var plots = new List<LineSeries>();
-
-			foreach (var s in record.series) {
-				plots.Add(s);
-			}
-
 			model.Axes.Add(xAxis);
 			model.Axes.Add(yAxis);
-			foreach (var series in plots) {
-				model.Series.Add(series);
-			}
+
 			model.Background = OxyColors.Transparent;
 			model.DefaultFontSize = 0;
 			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 
 			plot.Model = model;
+		}
+
+		public override void Invalidate() {
+			var ion = AppState.context;
+			var serial = record.data.device.serialNumber;
+			var indices = record.dil.dateSpan;
+			var sensor = record.data;
+			record.RegenerateSeries();
+
+			model.Title = serial.ToString();
+      model.Subtitle = sensor.type.GetTypeString();
+
+      xAxis.Minimum = 0;
+      xAxis.Maximum = indices - 1;
+
+      yAxis.Minimum = record.min;
+      yAxis.Maximum = record.max;
+
+			check.Checked = record.isChecked;
+
+      model.Series.Clear();
+      foreach (var series in record.series) {
+        var c = sensor.GetChartColor(ItemView.Context);
+        series.Color = OxyColor.FromUInt32((uint)c.ToArgb());
+				model.Series.Add(series);
+			}
+			model.InvalidatePlot(true);
 		}
 	}
 }

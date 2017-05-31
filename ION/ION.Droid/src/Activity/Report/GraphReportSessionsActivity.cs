@@ -616,19 +616,39 @@
 		private Dictionary<GaugeDeviceSensor, byte[]> CaptureGraphs() {
 			var ret = new Dictionary<GaugeDeviceSensor, byte[]>();
 
+      int templateIndex = -1;
+			var lm = list.GetLayoutManager() as LinearLayoutManager;
+      // Find the first visible graph view holder
+      for (int i = lm.FindFirstVisibleItemPosition(); i < lm.FindLastVisibleItemPosition(); i++) {
+        var tvh = list.FindViewHolderForAdapterPosition(i) as GraphViewHolder;
+        if (tvh != null) {
+          templateIndex = i;
+          break;
+        }
+      }
+
+      if (templateIndex == -1) {
+        Log.E(this, "Failed to capture graphs for recycler view: no view holders found in range");
+        return ret;
+      }
+
+			var vh = list.FindViewHolderForAdapterPosition(templateIndex) as GraphViewHolder;
+
 			for (int i = 0; i < graphAdapter.ItemCount; i++) {
-				var record = graphAdapter[i] as GraphRecord;
-				if (record.isChecked) {
-          var vh = list.FindViewHolderForAdapterPosition(i) as GraphViewHolder;
+        var record = graphAdapter[i] as GraphRecord;
+        if (record.isChecked) {
           var view = vh.ItemView;
+          graphAdapter.BindViewHolder(vh, i);
           var oldVisibility = vh.checkContainer.Visibility;
           vh.checkContainer.Visibility = ViewStates.Gone;
-					ret[record.data] = view.ToPng();
+          ret[record.data] = view.ToPng();
           vh.checkContainer.Visibility = oldVisibility;
-				}
-			}
+        }
+      }
 
-			return ret;
+      graphAdapter.BindViewHolder(vh, templateIndex);
+
+      return ret;
 		}
 
 		private async Task ExportExcel() {

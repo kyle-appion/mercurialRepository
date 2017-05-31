@@ -38,17 +38,6 @@
       this.ion = ion;
       this.context = context;
       this.report = report;
-
-
-			var logo = context.Resources.GetDrawable(Resource.Drawable.img_appion_logo_mountain) as BitmapDrawable;
-      logo.SetTint(Color.Black.ToArgb());
-			var bitmap = logo.Bitmap;
-			byte[] bytes = null;
-			using (var ms = new MemoryStream(1024)) {
-				bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
-				bytes = ms.ToArray();
-			}
-
 		}
 
 		public Dialog Show() {

@@ -6,6 +6,7 @@
 
 	using Android.Content;
 	using Android.Support.Design.Widget;
+  using Android.OS;
 	using Android.Views;
 	using Android.Widget;
 
@@ -24,8 +25,8 @@
 
 		private View content;
 
-		private TextInputEditText name;
-		private TextInputEditText measurement;
+		private EditText name;
+		private EditText measurement;
 
 		private Button type;
 		private Button unit;
@@ -37,10 +38,19 @@
 			this.context = context;
 			this.options = options;
 
-			content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create, null, false);
+			try {
+				if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+					content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create_4_4, null, false);
+				} else {
+					content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create, null, false);
+				}
+			} catch (Exception e) {
+				Log.E(this, "Failed to set layout. Defaulting to old version", e);
+				content = LayoutInflater.From(context).Inflate(Resource.Layout.dialog_manual_sensor_create_4_4, null, false);
+			}
 
-			name = content.FindViewById<TextInputEditText>(Resource.Id.name);
-			measurement = content.FindViewById<TextInputEditText>(Resource.Id.measurement);
+			name = content.FindViewById<EditText>(Resource.Id.name);
+			measurement = content.FindViewById<EditText>(Resource.Id.measurement);
 
 			type = content.FindViewById<Button>(Resource.Id.type);
 			unit = content.FindViewById<Button>(Resource.Id.unit);

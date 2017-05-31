@@ -56,6 +56,7 @@
   <string name="_fixed">Fixed</string>
   <string name="forget">Forget</string>
   <string name="forget_all">Forget All</string>
+  <string name="goto_settings">Goto Settings</string>
 	<string name="graph_information">Graph Information</string>
   <string name="help">Help</string>
 	<string name="highest">Highest</string>
@@ -353,6 +354,9 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	<string name="location_address_2">Address Line 2</string>
 	<string name="location_determining_address">Determining best address...</string>
 	<string name="location_city">City</string>
+  <string name="location_undetermined">Unable to determine current location.</string>
+  <string name="location_settings_not_enabled">Location Not Enabled</string>
+  <string name="location_settings_enabled_required">Allow GPS must be enabled in settings to perform GPS actions. Would you like to enable GPS Actions? You can change this in settings.</string>
 	<string name="location_state_province_region">State / Province / Region</string>
 	<string name="location_zip_postal_code">ZIP / Postal Code</string>
 	<string name="location_country">Country</string>
