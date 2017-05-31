@@ -49,8 +49,7 @@
 		private const string URL_ACCESS_CODE_PENDING = "http://portal.appioninc.com/App/getRequests.php";
 		private const string URL_CHANGE_STATUS = "http://portal.appioninc.com/App/changeOnlineStatus.php";
 		private const string URL_CLONE_REMOTE = "http://portal.appioninc.com/App/downloadLayouts.php";
-//    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
-    private const string URL_RSS_FEED = "http://www.buildtechhere.com/RSS/feed.xml";
+    private const string URL_RSS_FEED = "http://portal.appioninc.com/RSS/feed.xml";
 		private const string URL_UPDATE_ACCOUNT = "http://portal.appioninc.com/App/updateAccount.php";
 		private const string URL_FORGOT_ACCOUNT = "http://portal.appioninc.com/App/forgotUserPass.php";
 		private const string URL_LOGIN_USER = "http://portal.appioninc.com/App/applogin.php";
