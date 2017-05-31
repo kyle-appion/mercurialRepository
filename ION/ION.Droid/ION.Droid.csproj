@@ -319,7 +319,6 @@
     <Compile Include="src\App\BatteryBroadcastReceiver.cs" />
     <Compile Include="src\Dialog\RssDialog.cs" />
     <Compile Include="src\App\RssBroadcastReceiver.cs" />
-    <Compile Include="src\Rss\RssHelper.cs" />
     <Compile Include="src\Activity\Rss\RssActivity.cs" />
     <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
@@ -807,7 +806,6 @@
     <Folder Include="src\Net\" />
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
-    <Folder Include="src\Rss\" />
     <Folder Include="src\Activity\Rss\" />
   </ItemGroup>
   <ItemGroup>
