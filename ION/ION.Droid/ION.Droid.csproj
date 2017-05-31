@@ -717,7 +717,6 @@
     <AndroidResource Include="Resources\layout\activity_portal_login.axml" />
     <AndroidResource Include="Resources\layout\activity_portal.xml" />
     <AndroidResource Include="Resources\layout\activity_portal_sessions_view.axml" />
-    <AndroidResource Include="Resources\layout\activity_access_code_management.axml" />
     <AndroidResource Include="Resources\layout\activity_portal_access_code_manager.axml" />
     <AndroidResource Include="Resources\menu\refresh.xml" />
     <AndroidResource Include="Resources\layout\button_refresh.axml">
@@ -766,6 +765,7 @@
     <AndroidResource Include="Resources\layout\dialog_manual_sensor_create_4_4.axml" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugept500.png" />
     <AndroidResource Include="Resources\drawable\ic_render_gaugept800.png" />
+    <AndroidResource Include="Resources\layout\activity_portal_access_code_manager_4_4.axml" />
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\values\Strings.xml">

@@ -18,6 +18,8 @@ namespace ION.Droid.Activity.Portal {
 	using Android.Views;
 	using Android.Widget;
 
+  using Appion.Commons.Util;
+
 	using ION.CoreExtensions.Net.Portal;
 
 	using ION.Droid.Views;
@@ -26,7 +28,7 @@ namespace ION.Droid.Activity.Portal {
 	[Activity(Label = "@string/portal_access_code_manager", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
 	public class PortalAccessCodeManagerActivity : IONActivity, SwipeRefreshLayout.IOnRefreshListener {
 
-		private TextInputEditText entry;
+		private EditText entry;
 		private SwipeRefreshLayout swiper;
 		private RecyclerView list;
 		private Adapter adapter;
@@ -36,9 +38,18 @@ namespace ION.Droid.Activity.Portal {
 
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 
-			SetContentView(Resource.Layout.activity_portal_access_code_manager);
+      try {
+        if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+          SetContentView(Resource.Layout.activity_portal_access_code_manager);
+        } else {
+					SetContentView(Resource.Layout.activity_portal_access_code_manager_4_4);
+				}
+      } catch (Exception e) {
+        Log.E(this, "Failed to set layout. Defaulting to old version", e);
+        SetContentView(Resource.Layout.activity_portal_access_code_manager_4_4);
+      }
 
-			entry = FindViewById<TextInputEditText>(Resource.Id.entry);
+			entry = FindViewById<EditText>(Resource.Id.entry);
 			swiper = FindViewById<SwipeRefreshLayout>(Resource.Id.swiper);
 			list = FindViewById<RecyclerView>(Resource.Id.list);
 

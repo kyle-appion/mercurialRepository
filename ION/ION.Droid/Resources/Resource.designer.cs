@@ -4352,46 +4352,46 @@ namespace ION.Droid
 			public const int abc_select_dialog_material = 2130903066;
 			
 			// aapt resource value: 0x7f03001b
-			public const int activity_access_code_management = 2130903067;
+			public const int activity_alarm_popup = 2130903067;
 			
 			// aapt resource value: 0x7f03001c
-			public const int activity_alarm_popup = 2130903068;
+			public const int activity_calibration_certificate_archive = 2130903068;
 			
 			// aapt resource value: 0x7f03001d
-			public const int activity_calibration_certificate_archive = 2130903069;
+			public const int activity_device_manager = 2130903069;
 			
 			// aapt resource value: 0x7f03001e
-			public const int activity_device_manager = 2130903070;
+			public const int activity_edit_job = 2130903070;
 			
 			// aapt resource value: 0x7f03001f
-			public const int activity_edit_job = 2130903071;
+			public const int activity_fluid_manager = 2130903071;
 			
 			// aapt resource value: 0x7f030020
-			public const int activity_fluid_manager = 2130903072;
+			public const int activity_graph_report_sessions = 2130903072;
 			
 			// aapt resource value: 0x7f030021
-			public const int activity_graph_report_sessions = 2130903073;
+			public const int activity_home = 2130903073;
 			
 			// aapt resource value: 0x7f030022
-			public const int activity_home = 2130903074;
+			public const int activity_ion_preference = 2130903074;
 			
 			// aapt resource value: 0x7f030023
-			public const int activity_ion_preference = 2130903075;
+			public const int activity_job = 2130903075;
 			
 			// aapt resource value: 0x7f030024
-			public const int activity_job = 2130903076;
+			public const int activity_main = 2130903076;
 			
 			// aapt resource value: 0x7f030025
-			public const int activity_main = 2130903077;
+			public const int activity_portal = 2130903077;
 			
 			// aapt resource value: 0x7f030026
-			public const int activity_portal = 2130903078;
+			public const int activity_portal_4_4 = 2130903078;
 			
 			// aapt resource value: 0x7f030027
-			public const int activity_portal_4_4 = 2130903079;
+			public const int activity_portal_access_code_manager = 2130903079;
 			
 			// aapt resource value: 0x7f030028
-			public const int activity_portal_access_code_manager = 2130903080;
+			public const int activity_portal_access_code_manager_4_4 = 2130903080;
 			
 			// aapt resource value: 0x7f030029
 			public const int activity_portal_login = 2130903081;
