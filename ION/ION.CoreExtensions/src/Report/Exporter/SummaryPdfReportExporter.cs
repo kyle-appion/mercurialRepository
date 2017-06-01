@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.Report.DataLogs.Exporter {
 
   using System;
+  using System.Collections.Generic;
 	using System.IO;
 	using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@
 	using ION.Core.Database;
 	using ION.Core.Devices;
 	using ION.Core.Sensors;
+  using ION.Core.UI;
 
 	public class SummaryPdfReportExporter : BaseFormattedFlexCelDataLogExporter {
 
@@ -32,9 +34,8 @@
 				// TODO ahodder@appioninc.com: Not necessary
 				var scaleReduction = 60; // TODO DEFINE
 
-				var file = new XlsFile(2, TExcelFileFormat.v2013, true);
+				var file = new XlsFile(detailed ? 2 : 1, TExcelFileFormat.v2013, true);
 				file.AllowOverwritingFiles = true;
-				file.ActiveSheet = 1;
 				file.PrintScale = scaleReduction;
 				// Note: ahodder@appioninc.com: Per kyle's original writing
 				// SET A UNIFORM CELL WIDTH FOR COVER PAGE ITEMS. DEFAULT COLUMN WIDTH = 3189 AND SETTING IT TO 1.3x RESULTING IN 4317
@@ -58,7 +59,14 @@
             ms.Dispose();
 					};
 
-          pdf.Export(stream);          
+					pdf.BeginExport(stream);
+
+					for (int i = 1; i <= file.SheetCount; i++) {
+            file.ActiveSheet = i;
+            pdf.ExportSheet();
+          }
+
+          pdf.EndExport();
         }
 
 				return true;
@@ -77,7 +85,11 @@
 			// Cell coordinates
       var row = 1;
 			Tuple<int, int> size;
+      file.ActiveSheet = 1;
 
+      ////////////
+      // SHEET 1
+      ////////////
 			// Draw the report header
 			size = DrawAppionLogo(file, dlr);
       row += size.Item2;
@@ -102,6 +114,16 @@
       size = DrawSmallGraphs(file, dlr, row, 1);
       row += size.Item2;
       row += 2;
+
+      ////////////
+      // SHEET 2
+      ////////////
+      row = 1;
+      // Draw raw data
+      if (detailed) {
+        file.ActiveSheet = 2;
+        size = DrawAllMeasurements(file, dlr, ion, row, 1);
+      }
 		}
 
 		/// <summary>
@@ -236,47 +258,6 @@
 		}
 
 		/// <summary>
-		/// Draws all of the session's sensor measurement data. This is done in a fairly simple, yet tedious way. Across
-		/// the section header, we will list all of the sensors in the report. The left-most column will show all of the
-		/// sorted dates in all of the sessions. Then, for each sensor, it will list all of its session measurements. When
-		/// a session is complete, we will the bottom of that session's measurement column with a red border.
-		/// </summary>
-		/// <returns>The all measurements.</returns>
-		/// <param name="file">File.</param>
-		/// <param name="dlr">Dlr.</param>
-		/// <param name="row">The x coordinate.</param>
-		/// <param name="col">The y coordinate.</param>
-    private Tuple<int, int> DrawAllMeasurements(XlsFile file, DataLogReport dlr, int row, int col) {
-			var l = dlr.localization;
-			var sensors = dlr.sensors;
-			var srs = dlr.sessionResults;
-			srs.Sort();
-
-			// Draw Header Padding
-			file.SetCellValue(row, col, "", sectionHeaderFormat);
-			file.SetCellValue(row, col + 1, "", sectionHeaderFormat);
-
-			var sxoff = 2; // header sensor index x offset
-						   // Draw Header
-			foreach (var sensor in sensors) {
-				var yoff = col + sxoff;
-				var u = ion.preferences.units.DefaultUnitFor(sensor.type);
-
-				file.SetCellValue(sxoff, col, l.GetSensorTypeString(sensor.type) + "(" + u + ")", sectionHeaderFormat);
-				file.SetCellValue(sxoff, col + 1, sensor.device.serialNumber, sectionContentFormat);
-				sxoff++;
-			}
-
-			var index = 2;
-			// Render SessionsResults measurement data
-			foreach (var sr in srs) {
-
-			}
-
-      return new Tuple<int, int>(0, 0);
-		}
-
-		/// <summary>
 		/// Draws the graphs for each of the devices.
 		/// </summary>
 		/// <returns>The graphs.</returns>
@@ -296,14 +277,27 @@
           continue;          
         }
 				// The shift that is used to stagger the graphs down the pages.
-        var xoff = col + (index % 2 == 0 ? imageCellWidth : 0);
-        var yoff = row + (index / 2 * imageCellHeight);
+        var xoff = col + (index % 2 == 1 ? imageCellWidth + 1 : 0);
+        var yoff = (int)(row + (index / 2 * imageCellHeight));
 
-				var image = new TImageProperties();
-        image.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, yoff + imageCellHeight, 255, xoff + imageCellWidth, 1024);
-        file.AddImage(dlr.graphImages[sensor], image);
+				var image = dlr.graphImages[sensor];
+        file.MergeCells(yoff, xoff, yoff + imageCellHeight, xoff + imageCellWidth);
 
-				file.SetCellValue(yoff, xoff, sensor.device.serialNumber + "\n" + l.GetSensorTypeString(sensor.type), sectionContentFormat);
+        file.SetRowHeight(yoff, (int)(image.height * FlxConsts.RowMult));
+        TClientAnchor anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, yoff + imageCellHeight, 0, xoff + imageCellWidth, 0);
+        double width = 0.0, height = 0.0;
+
+        anchor.CalcImageCoords(ref height, ref width, file);
+        // Width should always be greater than the height.
+        anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, (int)height, (int)width, file);
+
+
+				var imageProperties = new TImageProperties();
+        imageProperties.Anchor = anchor;
+//        imageProperties.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, imageCellHeight, 0, imageCellWidth, 0);
+// Works good for render        imageProperties.Anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, image.height, image.width, file);
+        file.AddImage(image.data, TXlsImgType.Png, imageProperties);
+//				file.SetCellValue(yoff, xoff, "" + l.GetSensorTypeString(sensor.type), sectionContentFormat);
 				index++;
 			}
 

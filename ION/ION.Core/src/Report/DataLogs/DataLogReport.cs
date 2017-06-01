@@ -36,7 +36,7 @@
 		/// <summary>
 		/// The Dictionary that maps sensors to their exported graph png image. 
 		/// </summary>
-		public Dictionary<GaugeDeviceSensor, Image[]> graphImages { get; set; }
+		public Dictionary<GaugeDeviceSensor, IonImage> graphImages { get; set; }
 		/// <summary>
 		/// The date that the report was started.
 		/// </summary>
@@ -79,7 +79,7 @@
 			this.devices = devices;
 			this.sessionResults = sessionResults;
 
-      graphImages = new Dictionary<GaugeDeviceSensor, Image[]>();
+      graphImages = new Dictionary<GaugeDeviceSensor, IonImage>();
 		}
 
     /// <summary>

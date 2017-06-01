@@ -25,7 +25,7 @@
     /// The aspect ratio of the image.
     /// </summary>
     /// <value>The aspect ratio.</value>
-    public float aspectRatio { get { return width / height; } }
+    public float aspectRatio { get { return width / (float)height; } }
 
     /// <summary>
     /// The data that makes up the image.
