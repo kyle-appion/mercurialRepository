@@ -25,6 +25,7 @@
 	using ION.Core.IO;
 	using ION.Core.Report.DataLogs;
 	using ION.Core.Sensors;
+  using ION.Core.UI;
 
 	using ION.Droid.Dialog;
 	using ION.Droid.Report;
@@ -613,8 +614,8 @@
 		/// <summary>
 		/// Captures all of the graph selected graph views and converts them into a png for exporting.
 		/// </summary>
-		private Dictionary<GaugeDeviceSensor, byte[]> CaptureGraphs() {
-			var ret = new Dictionary<GaugeDeviceSensor, byte[]>();
+		private Dictionary<GaugeDeviceSensor, IonImage> CaptureGraphs() {
+			var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
 
       int templateIndex = -1;
 			var lm = list.GetLayoutManager() as LinearLayoutManager;
@@ -637,12 +638,10 @@
 			for (int i = 0; i < graphAdapter.ItemCount; i++) {
         var record = graphAdapter[i] as GraphRecord;
         if (record.isChecked) {
-          var view = vh.ItemView;
+          var view = vh.contentContainer;
           graphAdapter.BindViewHolder(vh, i);
-          var oldVisibility = vh.checkContainer.Visibility;
-          vh.checkContainer.Visibility = ViewStates.Gone;
-          ret[record.data] = view.ToPng();
-          vh.checkContainer.Visibility = oldVisibility;
+          var image = new IonImage(IonImage.EType.Png, view.Width, view.Height, view.ToPng());
+          ret[vh.record.data] = image;
         }
       }
 

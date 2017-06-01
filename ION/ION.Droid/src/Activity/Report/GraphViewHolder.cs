@@ -108,6 +108,7 @@
 	}
 
 	public class GraphViewHolder : RecordAdapter.RecordViewHolder<GraphRecord> {
+    public View contentContainer;
 		public PlotView plot;
 		public TextView title;
     public View checkContainer;
@@ -118,6 +119,7 @@
     private LinearAxis yAxis;
 
 		public GraphViewHolder(ViewGroup parent, int viewResource) : base(parent, viewResource) {
+      contentContainer = ItemView.FindViewById(Resource.Id.content);
 			plot = ItemView.FindViewById<PlotView>(Resource.Id.graph);
 			title = ItemView.FindViewById<TextView>(Resource.Id.name);
       checkContainer = ItemView.FindViewById(Resource.Id.view);
@@ -160,7 +162,7 @@
 
 			model.Background = OxyColors.Transparent;
 			model.DefaultFontSize = 0;
-			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
+//			model.PlotAreaBorderThickness = new OxyThickness(1, 1, 1, 1);
 
 			plot.Model = model;
 		}
