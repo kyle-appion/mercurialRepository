@@ -23,7 +23,7 @@
 	/// <summary>
 	/// The activity that will walk a user through viewing and selecting reports for export.
 	/// </summary>
-	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
 	public class ReportActivity : IONActivity {
 
 		public const string EXTRA_SHOW_SAVED_SPREADSHEETS = "ION.Droid.Activity.Report.extra.SHOW_SAVED_SPREADSHEETS";

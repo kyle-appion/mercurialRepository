@@ -307,15 +307,11 @@
 				var table = ion.database.Table<LoggingDeviceRow>();
 				var sn = device.serialNumber.ToString();
 				var row = table.Where(ldr => ldr.serialNumber.Equals(sn)).FirstOrDefault();
-				if (row == null) {
+        if (row == null || row.nistDate == null || string.IsNullOrEmpty(row.nistDate.Trim())) {
 					Log.D(this, "Device{" + device.serialNumber + "} does not have a calibration date");
 					return "N/A";
 				} else {
-					if (string.IsNullOrEmpty(row.nistDate.Trim())) {
-						return row.nistDate;
-					} else {
-						return "N/A";
-					}
+					return row.nistDate;
 				}
 			} catch (Exception e) {
 				Log.E(this, "Failed to resolve device's last calibration time", e);

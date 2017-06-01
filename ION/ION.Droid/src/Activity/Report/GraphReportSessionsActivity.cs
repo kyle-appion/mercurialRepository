@@ -35,7 +35,7 @@
 	using ION.Droid.Util;
 	using ION.Droid.Views;
 
-	[Activity(Label="@string/report_select_export_data", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/report_select_export_data", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
 	public class GraphReportSessionsActivity : IONActivity {
 		/// <summary>
 		/// The extra that will retrieve an integer array from the starting Intent. This list is what is used to populate the
@@ -584,34 +584,14 @@
 			var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
       dlr.reportName = GetString(Resource.String.report_data_logging_title);
 
-      var drawable = Resources.GetDrawable(Resource.Drawable.img_logo_appionblack) as BitmapDrawable;
-
-      using (var ms = new MemoryStream(512)) {
-        drawable.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
-        dlr.appionLogoPng = ms.ToArray();
-        dlr.graphImages = CaptureGraphs();
-      }
-
-      var dialog = new DialogExportReportChooser(ion, this, dlr).Show();
-/*
-			var dialog = new ListDialogBuilder(this);
-			dialog.SetTitle(Resource.String.report_choose_export_format);
-
-			dialog.AddItem(Resource.String.spreadsheet, () => {
-				ExportExcel();
-			});
-
-			dialog.AddItem(Resource.String.pdf, () => {
-				ExportPdf();
-			});
-
-			dialog.SetNegativeButton(Resource.String.cancel, (sender, e) => {
-				var d = sender as Dialog;
-				d.Dismiss();
-			});
-
-			dialog.Show();
-*/
+      var dialog = new DialogExportReportChooser(ion, this, dlr, (success, intent) => {
+        if (success) {
+			    SetResult(Result.Ok, intent);
+			    Finish();
+        } else {
+          Toast.MakeText(this, Resource.String.report_screenshot_error_export_failed, ToastLength.Long).Show();
+        }
+      }).Show();
 		}
 
 		/// <summary>
@@ -666,97 +646,6 @@
 
       return null;
     }
-
-		private async Task ExportExcel() {
-			var dialog = new ProgressDialog(this);
-			dialog.SetTitle(Resource.String.please_wait);
-			dialog.SetMessage(GetString(Resource.String.saving));
-			dialog.Show();
-
-			var task = Task.Factory.StartNew(() => {
-				try {
-					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
-					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
-					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
-
-					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
-					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-					var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
-//					dlr.graphImages = CaptureGraphs();
-
-					var dateString = DateTime.Now.ToFullShortString();
-					dateString = dateString.Replace('\\', '-');
-					dateString = dateString.Replace('/', '-');
-
-					var folder = ion.dataLogReportFolder;
-					var file = folder.GetFile(FILE_NAME + "_" + dateString + EXCEL_EXT, EFileAccessResponse.ReplaceIfExists);
-
-					if (DataLogExcelReportExporter.Export(this, ion, file.fullPath, dlr)) {
-						Log.D(this, "Succeeded in exporting the results");
-					} else {
-						Log.D(this, "Failed to export the results.");
-					}
-				} catch (Exception e) {
-					Log.E(this, "Failed to export report", e);
-				}
-			});
-
-			await task;
-
-			var data = new Intent();
-			data.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_SPREADSHEETS, true);
-			SetResult(Result.Ok, data);
-			Finish();
-
-			dialog.Dismiss();
-		}
-
-		private async Task ExportPdf() {
-			var dialog = new ProgressDialog(this);
-			dialog.SetTitle(Resource.String.please_wait);
-			dialog.SetMessage(GetString(Resource.String.saving));
-			dialog.Show();
-
-			var task = Task.Factory.StartNew(() => {
-				try {
-					var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
-					var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
-					var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
-
-					var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
-					var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-					var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
-//					dlr.graphImages = CaptureGraphs();
-
-					var dateString = DateTime.Now.ToFullShortString();
-					dateString = dateString.Replace('\\', '-');
-					dateString = dateString.Replace('/', '-');
-					var filename = FILE_NAME + "_" + dateString + PDF_EXT;
-
-					var folder = ion.dataLogReportFolder;
-					var file = folder.GetFile(FILE_NAME + "_" + dateString + PDF_EXT, EFileAccessResponse.ReplaceIfExists);
-
-					var success = DataLogPdfReportExporter.Export(this, ion, file.fullPath, dlr);
-
-					if (success) {
-						Log.D(this, "Succeeded in exporting the results");
-					} else {
-						Log.D(this, "Failed to export the results.");
-					}
-				} catch (Exception e) {
-					Log.E(this, "Failed to export report", e);
-				}
-			});
-
-			await task;
-
-			var data = new Intent();
-			data.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
-			SetResult(Result.Ok, data);
-			Finish();
-
-			dialog.Dismiss();
-		}
 	}
 
 	class SelectionDrawable : Drawable {
