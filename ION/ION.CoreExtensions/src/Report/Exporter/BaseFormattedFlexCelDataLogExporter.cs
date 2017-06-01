@@ -13,10 +13,16 @@
   using Appion.Commons.Measure;
 
   using ION.Core.App;
+  using ION.Core.Database;
   using ION.Core.Devices;
   using ION.Core.Sensors;
 
   public abstract class BaseFormattedFlexCelDataLogExporter : IDataLogExporter {
+    /// <summary>
+    /// The ion instance used for this exporter.
+    /// </summary>
+    /// <value>The ion.</value>
+    protected IION ion { get; private set; }
     /// <summary>
     /// The format that is used to render the title.
     /// </summary>
@@ -34,6 +40,10 @@
     /// </summary>
     protected int sessionBreakFormat;
 
+    public BaseFormattedFlexCelDataLogExporter(IION ion) {
+      this.ion = ion;
+    }
+
     // Implemented for IDataLogExporter
     public abstract Task<bool> Export(Stream stream, DataLogReport dlr);
 
@@ -49,6 +59,121 @@
     }
 
 		/// <summary>
+		/// Draws the used devices section to the file.
+		/// </summary>
+		/// <param name="file">The file that is drawn to.</param>
+		/// <param name="dlr">The report being drawn.</param>
+		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
+		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
+		/// <returns>A Tuple contining the width and height respectively of the drawn section.</returns>
+		protected Tuple<int, int> DrawUsedDevices(XlsFile file, DataLogReport dlr, int row, int col) {
+			var l = dlr.localization;
+
+			// Draw the header
+			file.SetCellValue(row, col, l.serialNumber, sectionHeaderFormat);
+			file.SetCellValue(row, col + 1, l.name, sectionHeaderFormat);
+			file.SetCellValue(row, col + 2, l.certificationDate, sectionHeaderFormat);
+			file.SetCellValue(row, col + 3, l.deviceModel, sectionHeaderFormat);
+
+			// Draw the content
+			var offset = 1;
+			foreach (var device in dlr.devices) {
+				var rowoff = row + offset;
+				file.SetCellValue(rowoff, col, device.serialNumber, sectionContentFormat);
+				file.SetCellValue(rowoff, col + 1, device.name, sectionContentFormat);
+				file.SetCellValue(rowoff, col + 2, GetDeviceCalibrationTime(device), sectionContentFormat);
+				file.SetCellValue(rowoff, col + 3, l.GetDeviceModelString(device.serialNumber.deviceModel), sectionContentFormat);
+				offset++;
+			}
+
+			return new Tuple<int, int>(4, offset);
+		}
+
+		/// <summary>
+		/// Draws the important dates for the report.
+		/// </summary>
+		/// <returns>The report dates.</returns>
+		/// <param name="file">The file that is drawn to.</param>
+		/// <param name="dlr">The report being drawn.</param>
+		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
+		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
+		protected Tuple<int, int> DrawReportDates(XlsFile file, DataLogReport dlr, int row, int col) {
+			var l = dlr.localization;
+
+			// Draw the header
+			// Merge the header cells
+			file.MergeCells(row, col + 1, row, col + 3);
+			file.MergeCells(row + 1, col + 1, row + 1, col + 3);
+			// Set the cell format for the merged cells (without this the merged cell doesn't have a format and is white)
+			for (int i = 1; i < 4; i++) {
+				file.SetCellFormat(row, col + i, sectionContentFormat);
+			}
+
+			file.SetCellValue(row, col, l.reportCreated, sectionHeaderFormat);
+			file.SetCellValue(row, col + 1, DateTime.Now.ToLongDateString(), sectionContentFormat);
+			file.SetCellValue(row + 1, col, l.reportDates, sectionHeaderFormat);
+			file.SetCellValue(row + 1, col + 1, "", sectionHeaderFormat);
+
+			var offset = 2;
+			// Draw the dates
+			foreach (var sr in dlr.sessionResults) {
+				var rowOffset = row + offset;
+				// Merge content cells
+				file.MergeCells(rowOffset, col, rowOffset, col + 3);
+				file.SetCellValue(rowOffset, col, sr.startTime.ToLongDateString() + "-" + sr.endTime.ToLongDateString(), sectionContentFormat);
+				// Set the cell format for the merged cells (without this the merged cell doesn't have a format and is white)
+				for (int i = 0; i < 4; i++) {
+					file.SetCellFormat(rowOffset, col + i, sectionContentFormat);
+				}
+				offset++;
+			}
+
+			return new Tuple<int, int>(2, offset);
+		}
+
+		/// <summary>
+		/// Draws the reports device measurement statistics to the file.
+		/// </summary>
+		/// <returns>A Tuple containing the width and height respectively of the drawn section.</returns>
+		/// <param name="file">The file that is drawn to.</param>
+		/// <param name="dlr">The report being drawn.</param>
+		/// <param name="row">The x coordinate to start drawing the section in cells.</param>
+		/// <param name="col">The y coordinate to start drawing the section in cells.</param>
+		protected Tuple<int, int> DrawDeviceAverages(XlsFile file, DataLogReport dlr, int row, int col) {
+			var l = dlr.localization;
+			// Draw header
+			file.SetCellValue(row, col, l.serialNumber, sectionHeaderFormat);
+			file.SetCellValue(row, col + 1, l.minimum, sectionHeaderFormat);
+			file.SetCellValue(row, col + 2, l.maximum, sectionHeaderFormat);
+			file.SetCellValue(row, col + 3, l.average, sectionHeaderFormat);
+
+			// Draw the content
+			var offset = 1;
+			foreach (var sensor in dlr.sensors) {
+				var rowoff = row + offset;
+				var u = ion.preferences.units.DefaultUnitFor(sensor.type);
+
+        Scalar min, max, avg;
+				dlr.CalculateDeviceMetrics(sensor, out min, out max, out avg);
+
+        var type = sensor.type;
+        min = min.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
+				max = max.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
+				avg = avg.ConvertTo(ion.preferences.units.DefaultUnitFor(type));
+
+				file.SetCellValue(rowoff, col, sensor.device.serialNumber, sectionContentFormat);
+				file.SetCellValue(rowoff, col + 1, SensorUtils.ToFormattedString(min, true), sectionContentFormat);
+				file.SetCellValue(rowoff, col + 2, SensorUtils.ToFormattedString(max, true), sectionContentFormat);
+				file.SetCellValue(rowoff, col + 3, SensorUtils.ToFormattedString(avg, true), sectionContentFormat);
+
+				offset++;
+			}
+
+			return new Tuple<int, int>(4, offset);
+		}
+
+
+		/// <summary>
 		/// Draws all of the session's sensor measurement data. This is done in a fairly simple, yet tedious way. Across
 		/// the section header, we will list all of the sensors in the report. The left-most column will show all of the
 		/// sorted dates in all of the sessions. Then, for each sensor, it will list all of its session measurements. When
@@ -59,7 +184,7 @@
 		/// <param name="dlr">Dlr.</param>
 		/// <param name="row">The x coordinate.</param>
 		/// <param name="col">The y coordinate.</param>
-		protected Tuple<int, int> DrawAllMeasurements(XlsFile file, DataLogReport dlr, IION ion, int row, int col) {
+		protected Tuple<int, int> DrawAllMeasurements(XlsFile file, DataLogReport dlr, int row, int col) {
 			var l = dlr.localization;
 			var sensors = dlr.sensors;
 			var srs = dlr.sessionResults;
@@ -169,6 +294,32 @@
 				return serialNumber + " (" + Units.Pressure.IN_HG + "/" + Units.Pressure.PSIG + ")";
 			} else {
 				return serialNumber + " (" + ion.preferences.units.DefaultUnitFor(sensor.type) + ")";
+			}
+		}
+
+		/// <summary>
+		/// Attempts to query that last calibration time for the given device.
+		/// </summary>
+		/// <returns>The device calibration time.</returns>
+		/// <param name="device">Device.</param>
+		private string GetDeviceCalibrationTime(IDevice device) {
+			try {
+				var table = ion.database.Table<LoggingDeviceRow>();
+				var sn = device.serialNumber.ToString();
+				var row = table.Where(ldr => ldr.serialNumber.Equals(sn)).FirstOrDefault();
+				if (row == null) {
+					Log.D(this, "Device{" + device.serialNumber + "} does not have a calibration date");
+					return "N/A";
+				} else {
+					if (string.IsNullOrEmpty(row.nistDate.Trim())) {
+						return row.nistDate;
+					} else {
+						return "N/A";
+					}
+				}
+			} catch (Exception e) {
+				Log.E(this, "Failed to resolve device's last calibration time", e);
+				return "N/A";
 			}
 		}
 

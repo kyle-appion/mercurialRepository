@@ -16,6 +16,9 @@
 	using Android.Views;
 	using Android.Widget;
 
+	using OxyPlot;
+	using OxyPlot.Axes;
+	using OxyPlot.Series;
 	using OxyPlot.Xamarin.Android;
 
 	using Appion.Commons.Measure;
@@ -649,6 +652,20 @@
 
       return ret;
 		}
+
+    /// <summary>
+    /// Creates detailed graphs for the the reports.
+    /// </summary>
+    /// <returns>The detailed graphs.</returns>
+    private Dictionary<GaugeDeviceSensor, IonImage> CaptureDetailedGraphs() {
+      var bitmap = Bitmap.CreateBitmap(800, 400, Bitmap.Config.Argb8888);
+      var canvas = new Canvas(bitmap);
+
+      var plotView = new PlotView(this);
+      var model = new PlotModel();
+
+      return null;
+    }
 
 		private async Task ExportExcel() {
 			var dialog = new ProgressDialog(this);

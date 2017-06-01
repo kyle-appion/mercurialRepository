@@ -41,7 +41,7 @@
 
 		// Implemented for DataLogReport.ILocalization
     public string GetDeviceModelString(EDeviceModel deviceModel) {
-      return deviceModel.GetModelCode();
+      return deviceModel.GetTypeString();
     }
 
 		// Implemented for DataLogReport.ILocalization

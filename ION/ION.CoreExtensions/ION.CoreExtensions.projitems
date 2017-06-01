@@ -37,10 +37,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\Remote\RemoteAnalyzerLH.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\IO\IONFolderExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Net\Portal\PortalEvent.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\SummaryPdfReportExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\PdfReportExporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\BaseFormattedFlexCelDataLogExporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\DataLogReportExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\IDataLogExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\CsvExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\ExcelReportExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />
