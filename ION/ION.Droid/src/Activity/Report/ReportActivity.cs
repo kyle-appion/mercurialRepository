@@ -17,6 +17,7 @@
 	using ION.Droid.Activity;
 	using ION.Droid.Dialog;
 	using ION.Droid.Fragments;
+  using ION.Droid.IO;
 	using ION.Droid.Views;
 
 	/// <summary>
@@ -223,7 +224,7 @@
 			savedReportsTab.Select();
 			var frag = new FileViewerFragment();
 			frag.folder = ion.dataLogReportFolder;
-			frag.filter = new FileExtensionFilter(true, new string[] { ".xlsx" });
+			frag.filter = new FileExtensionFilter(true, new string[] { FileExtensions.EXT_EXCEL, FileExtensions.EXT_CSV });
 			frag.onFileClicked = (file) => {
 				try {
 					var i = new Intent(Intent.ActionView);

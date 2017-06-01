@@ -22,10 +22,10 @@
 		/// </summary>
 		/// <returns>The device metrics.</returns>
     public static bool CalculateDeviceMetrics(this DataLogReport dlr, GaugeDeviceSensor sensor,
-                                              out ScalarSpan minimum, out ScalarSpan maximum, out ScalarSpan average) {
+                                              out Scalar minimum, out Scalar maximum, out Scalar average) {
 			var su = sensor.unit.standardUnit;
-			var min = su.OfSpan(double.MaxValue);
-      var max = su.OfSpan(double.MinValue);
+			var min = double.MaxValue;
+      var max = double.MinValue;
       double totalMagnitude = 0;
       int items = 0;
 
@@ -33,7 +33,7 @@
         var dsl = sr.GetDeviceSensorLogsFor(sensor);
         if (dsl != null) {
           foreach (var log in dsl.logs) {
-            var meas = su.OfSpan(log.measurement);
+            var meas = log.measurement;
             if (meas > max) {
               max = meas;
             }
@@ -46,12 +46,12 @@
         }
       }
 
-      minimum = min;
-      maximum = max;
+      minimum = su.OfScalar(min);
+      maximum = su.OfScalar(max);
       if (items > 0) {
-        average = su.OfSpan(totalMagnitude / items);
+        average = su.OfScalar(totalMagnitude / items);
       } else {
-        average = su.OfSpan(0);
+        average = su.OfScalar(0);
       }
       return true;
 		}

@@ -20,15 +20,13 @@
 
 	using ION.Droid.App;
 	using ION.Droid.Dialog;
+  using ION.Droid.IO;
   using ION.Droid.Report;
   using ION.Droid.Util;
 
 	public class DialogExportReportChooser {
 
 		private const string FILE_NAME = "DataLogReport";
-		private const string EXCEL_EXT = ".xlsx";
-		private const string CSV_EXT = ".xlsx";
-		private const string PDF_EXT = ".pdf";
 
     private BaseAndroidION ion;
 		private Context context;
@@ -75,7 +73,7 @@
 			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
 
 			});
-			adb.SetPositiveButton(Resource.String.export, (sender, e) => {
+			adb.SetPositiveButton(Resource.String.export, async (sender, e) => {
         string filename = null;
         IDataLogExporter exporter = null;
 
@@ -84,13 +82,13 @@
 				dateString = dateString.Replace('/', '-');
 
         if (showingPdf) {
-					filename = FILE_NAME + "_" + dateString + PDF_EXT;
+          filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_PDF;
 
           var radio = tab1.FindViewById<RadioGroup>(Resource.Id.content);
           var checkbox = tab1.FindViewById<CheckBox>(Resource.Id.checkbox);
           switch (radio.CheckedRadioButtonId) {
             case Resource.Id._1:
-              exporter = new SummaryPdfReportExporter(ion, checkbox.Checked);
+              exporter = new PdfReportExporter(ion, checkbox.Checked);
               break;
             case Resource.Id._2:
               break;
@@ -99,19 +97,28 @@
 					var radio = tab2.FindViewById<RadioGroup>(Resource.Id.content);
 					switch (radio.CheckedRadioButtonId) {
 						case Resource.Id._1:
-              filename = FILE_NAME + "_" + dateString + EXCEL_EXT;
+              filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_EXCEL;
+              exporter = new ExcelReportExporter(ion);
 							break;
 						case Resource.Id._2:
-							filename = FILE_NAME + "_" + dateString + CSV_EXT;
+							filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_CSV;
+              exporter = new CsvExporter(ion);
 							break;
 					}
 				}
 
-        Export(filename, exporter);
+        var progress = new ProgressDialog(context);
+        progress.SetTitle(Resource.String.please_wait);
+        progress.SetMessage(context.GetString(Resource.String.saving));
+        progress.Show();
+
+        var result = await Export(filename, exporter);
+
+        progress.Dismiss();
 			});
 			var ret = adb.Create();
 			ret.Show();
-			return ret;
+      return ret;
 		}
 
     private async Task<bool> Export(string filename, IDataLogExporter exporter) {

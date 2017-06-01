@@ -329,6 +329,7 @@
     <Compile Include="src\Report\DataLogReportPdfSummaryExporter.cs" />
     <Compile Include="src\Report\IDataLogExporter.cs" />
     <Compile Include="src\Report\DataLogReportLocalization.cs" />
+    <Compile Include="src\Activity\Report\DetailedGraphGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
