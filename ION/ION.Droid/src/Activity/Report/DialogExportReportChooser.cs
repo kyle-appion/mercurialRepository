@@ -31,11 +31,13 @@
     private BaseAndroidION ion;
 		private Context context;
     private DataLogReport report;
+    private Action<bool, Intent> onExportResult;
 
-		public DialogExportReportChooser(BaseAndroidION ion, Context context, DataLogReport report) {
+		public DialogExportReportChooser(BaseAndroidION ion, Context context, DataLogReport report, Action<bool, Intent> onExportResult) {
       this.ion = ion;
       this.context = context;
       this.report = report;
+      this.onExportResult = onExportResult;
 		}
 
 		public Dialog Show() {
@@ -76,6 +78,7 @@
 			adb.SetPositiveButton(Resource.String.export, async (sender, e) => {
         string filename = null;
         IDataLogExporter exporter = null;
+        var successIntent = new Intent();
 
 				var dateString = DateTime.Now.ToFullShortString();
 				dateString = dateString.Replace('\\', '-');
@@ -93,7 +96,8 @@
             case Resource.Id._2:
               break;
           }
-        } else {
+          successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
+				} else {
 					var radio = tab2.FindViewById<RadioGroup>(Resource.Id.content);
 					switch (radio.CheckedRadioButtonId) {
 						case Resource.Id._1:
@@ -105,6 +109,7 @@
               exporter = new CsvExporter(ion);
 							break;
 					}
+					successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_SPREADSHEETS, true);
 				}
 
         var progress = new ProgressDialog(context);
@@ -113,8 +118,10 @@
         progress.Show();
 
         var result = await Export(filename, exporter);
-
         progress.Dismiss();
+
+				onExportResult(true, successIntent);
+
 			});
 			var ret = adb.Create();
 			ret.Show();
