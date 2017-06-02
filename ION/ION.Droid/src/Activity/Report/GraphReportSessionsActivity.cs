@@ -27,10 +27,13 @@
 	using ION.Core.Devices;
 	using ION.Core.IO;
 	using ION.Core.Report.DataLogs;
+	using ION.Core.Report.DataLogs.Exporter;
 	using ION.Core.Sensors;
   using ION.Core.UI;
 
+  using ION.Droid.App;
 	using ION.Droid.Dialog;
+  using ION.Droid.IO;
 	using ION.Droid.Report;
 	using ION.Droid.Util;
 	using ION.Droid.Views;
@@ -376,7 +379,7 @@
 				ion.preferences.units.pressure = unit;
 			}
 			if (graphAdapter.dil != null) {
-				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+        overviewAdapter.NotifyDataSetChanged();
 			}
 		}
 
@@ -388,7 +391,7 @@
 				ion.preferences.units.temperature = unit;
 			}
 			if (graphAdapter.dil != null) {
-				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+				overviewAdapter.NotifyDataSetChanged();
 			}
 		}
 
@@ -400,7 +403,7 @@
 				ion.preferences.units.vacuum = unit;
 			}
 			if (graphAdapter.dil != null) {
-				overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+				overviewAdapter.NotifyDataSetChanged();
 			}
 		}
 
@@ -515,7 +518,8 @@
 			startDateSpinner.SetSelection(startTimesAdapter.dates.IndexOf(startDate));
 			endDateSpinner.SetSelection(endTimesAdapter.dates.IndexOf(endDate));
 
-			overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+			var tuple = BuildSensorReportEncapsulations(graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+			overviewAdapter.SetLogs(tuple.Item2);
 		}
 
 		/// <summary>
@@ -524,10 +528,62 @@
 		/// <param name="startDate">Start date.</param>
 		/// <param name="endDate">End date.</param>
 		private void UpdateDates() {
-			overviewAdapter.SetLogs(ion, graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+      var tuple = BuildSensorReportEncapsulations(graphAdapter.GatherSelectedLogs(leftOverlay.percent, rightOverlay.percent));
+      overviewAdapter.SetLogs(tuple.Item2);
 			dateRangeView.Text = GetString(Resource.String.start) + ": " + startDate.ToShortDateString() + " " + startDate.ToLongTimeString() + "\n" +
 				GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
 		}
+
+    /// <summary>
+    /// Creates a complete representation of sensor graphs.
+    /// </summary>
+    /// <returns>The sensor report encapsulations.</returns>
+    // TODO ahodder@appioninc.com: This needs to be optimized as we are allocating a truely fucktastic amount of memory to make this work.
+    private Tuple<DateIndexLookup, List<SensorReportEncapsulation>> BuildSensorReportEncapsulations(List<SessionResults> sessionResults) {
+      var dateLookupTable = new List<DateTime>();
+      var map = new Dictionary<GaugeDeviceSensor, List<PointSeries>>();
+
+      foreach (var sr in sessionResults) {
+        foreach (var dsl in sr.deviceSensorLogs) {
+          // Find the gauge device sensor.
+          if (!dsl.deviceSerialNumber.IsValidSerialNumber()) {
+            Log.E(this, "Failed to parse serial number {" + dsl.deviceSerialNumber + "} for report");
+            continue;
+          }
+
+          var sn = dsl.deviceSerialNumber.ParseSerialNumber();
+          var device = ion.deviceManager[sn] as GaugeDevice;
+          if (device == null) {
+            Log.E(this, "Failed to find gauge device {" + sn + "} in device manager");
+            continue;
+          }
+
+          var sensor = device[dsl.index];
+
+          // Gather the dates and measurements
+          for (int i = 0; i < dsl.logs.Length; i++) {
+            dateLookupTable.Add(dsl.logs[i].recordedDate);
+          }
+
+          List<PointSeries> list;
+          map.TryGetValue(sensor, out list);
+          if (list == null) {
+            list = new List<PointSeries>();
+            map[sensor] = list;
+          }
+
+          list.Add(new PointSeries(dsl));
+        }
+      }
+
+      var dil = new DateIndexLookup(dateLookupTable);
+      var encaps = new List<SensorReportEncapsulation>();
+      foreach (var sensor in map.Keys) {
+        encaps.Add(new SensorReportEncapsulation(sensor, dil, map[sensor].ToArray()));
+      }
+
+      return new Tuple<DateIndexLookup, List<SensorReportEncapsulation>>(dil, encaps);
+    }
 
 		private async Task RefreshGraphList() {
 			var dialog = new ProgressDialog(this);
@@ -540,15 +596,16 @@
 
 			foreach (var id in sessions) {
 				try {
-					var sessionData = await ion.dataLogManager.QuerySessionDataAsync(id);
-					sessionResults.Add(sessionData);
+					sessionResults.Add(await ion.dataLogManager.QuerySessionDataAsync(id));
 				} catch (Exception e) {
-					Log.E(this, "Failed to query session data", e);
+					Log.E(this, "Failed to query session data for id {" + id + "}", e);
 				}
 			}
 
-			graphAdapter.SetRecords(ion, sessionResults);
-			overviewAdapter.SetLogs(ion, sessionResults);
+      var tuple = BuildSensorReportEncapsulations(sessionResults);
+
+      graphAdapter.SetRecords(sessionResults, tuple.Item1, tuple.Item2);
+			overviewAdapter.SetLogs(tuple.Item2);
 
 			dialog.Dismiss();
 			InvalidateGraphViews();
@@ -581,17 +638,19 @@
 
 			var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
 			var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
+
 			var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
       dlr.reportName = GetString(Resource.String.report_data_logging_title);
 
-      var dialog = new DialogExportReportChooser(ion, this, dlr, (success, intent) => {
-        if (success) {
-			    SetResult(Result.Ok, intent);
-			    Finish();
-        } else {
-          Toast.MakeText(this, Resource.String.report_screenshot_error_export_failed, ToastLength.Long).Show();
-        }
-      }).Show();
+			var drawable = Resources.GetDrawable(Resource.Drawable.img_logo_appionblack) as BitmapDrawable;
+
+			using (var ms = new MemoryStream(512)) {
+				drawable.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+				dlr.appionLogoPng = ms.ToArray();
+				dlr.graphImages = CaptureGraphs();
+			}
+
+      ShowExportDialog(dlr);
 		}
 
 		/// <summary>
@@ -637,15 +696,153 @@
     /// Creates detailed graphs for the the reports.
     /// </summary>
     /// <returns>The detailed graphs.</returns>
-    private Dictionary<GaugeDeviceSensor, IonImage> CaptureDetailedGraphs() {
-      var bitmap = Bitmap.CreateBitmap(800, 400, Bitmap.Config.Argb8888);
-      var canvas = new Canvas(bitmap);
+    private Dictionary<GaugeDeviceSensor, IonImage> CaptureDetailedGraphs(DataLogReport dlr) {
+      var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
 
-      var plotView = new PlotView(this);
-      var model = new PlotModel();
+      var tuple = BuildSensorReportEncapsulations(dlr.sessionResults);
+      var renderer = new DetailedGraphGenerator(this, ion);
 
-      return null;
+
+			foreach (var encap in tuple.Item2) {
+				var bitmap = Bitmap.CreateBitmap(800, 400, Bitmap.Config.Argb8888);
+        try {
+          var canvas = new Canvas(bitmap);
+          renderer.Render(canvas, encap);
+
+          using (var ms = new MemoryStream(128)) {
+            bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+            ret[encap.sensor] = new IonImage(IonImage.EType.Png, bitmap.Width, bitmap.Height, ms.ToArray());
+          }
+        } finally {
+          bitmap.Recycle();
+          bitmap.Dispose();
+        }
+      }
+
+      return ret;
     }
+
+    /// <summary>
+    /// Shows the dialog that will allow the user to select the type of report that they are going to export.
+    /// </summary>
+    /// <param name="dlr">Dlr.</param>
+    private void ShowExportDialog(DataLogReport dlr) {
+      var view = LayoutInflater.From(this).Inflate(Resource.Layout.dialog_report_export_chooser, null, false);
+
+			var tabBar = view.FindViewById(Resource.Id.title);
+			var pdfBuffer = tabBar.FindViewById(Resource.Id._1);
+			var spreadsheetBuffer = tabBar.FindViewById(Resource.Id._2);
+
+			var tab1 = view.FindViewById(Resource.Id.tab_1);
+			var tab2 = view.FindViewById(Resource.Id.tab_2);
+			var showingPdf = true;
+
+			pdfBuffer.Click += (sender, e) => {
+				tab1.Visibility = ViewStates.Visible;
+				tab2.Visibility = ViewStates.Invisible;
+				pdfBuffer.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+				spreadsheetBuffer.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+				showingPdf = true;
+			};
+
+			spreadsheetBuffer.Click += (sender, e) => {
+				tab1.Visibility = ViewStates.Invisible;
+				tab2.Visibility = ViewStates.Visible;
+				pdfBuffer.SetBackgroundResource(Resource.Drawable.tab_unselected_ion_action_bar);
+				spreadsheetBuffer.SetBackgroundResource(Resource.Drawable.tab_selected_ion_action_bar);
+				showingPdf = false;
+			};
+
+			pdfBuffer.PerformClick();
+
+			var adb = new IONAlertDialog(this);
+			adb.SetTitle(Resource.String.report_choose_export_format);
+			adb.SetView(view);
+			adb.SetNegativeButton(Resource.String.cancel, (sender, e) => {
+
+			});
+
+			adb.SetPositiveButton(Resource.String.export, async (sender, e) => {
+				string filename = null;
+				IDataLogExporter exporter = null;
+				var successIntent = new Intent();
+
+				var dateString = DateTime.Now.ToFullShortString();
+				dateString = dateString.Replace('\\', '-');
+				dateString = dateString.Replace('/', '-');
+
+				var progress = new ProgressDialog(this);
+				progress.SetTitle(Resource.String.please_wait);
+				progress.SetMessage(GetString(Resource.String.saving));
+				progress.Show();
+
+        bool result = false;
+
+        try {
+          if (showingPdf) {
+            filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_PDF;
+
+            var radio = tab1.FindViewById<RadioGroup>(Resource.Id.content);
+            var checkbox = tab1.FindViewById<CheckBox>(Resource.Id.checkbox);
+            switch (radio.CheckedRadioButtonId) {
+              case Resource.Id._1:
+                exporter = new PdfReportExporter(ion, checkbox.Checked);
+                dlr.graphImages = CaptureGraphs();
+                break;
+              case Resource.Id._2:
+                exporter = new PdfDetailedReportExporter(ion, checkbox.Checked);
+                dlr.graphImages = CaptureDetailedGraphs(dlr);
+                break;
+            }
+            successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
+          } else {
+            var radio = tab2.FindViewById<RadioGroup>(Resource.Id.content);
+            switch (radio.CheckedRadioButtonId) {
+              case Resource.Id._1:
+                filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_EXCEL;
+                exporter = new ExcelReportExporter(ion);
+                break;
+              case Resource.Id._2:
+                filename = FILE_NAME + "_" + dateString + FileExtensions.EXT_CSV;
+                exporter = new CsvExporter(ion);
+                break;
+            }
+            successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_SPREADSHEETS, true);
+          }
+
+					result = await PerformDataLogExport(filename, dlr, exporter);
+				} catch (Exception ex) {
+					Log.E(this, "Failed to export", ex);
+				}
+
+				progress.Dismiss();
+
+				if (result) {
+          SetResult(Result.Ok, successIntent);
+					Finish();
+				} else {
+					Toast.MakeText(this, Resource.String.report_screenshot_error_export_failed, ToastLength.Long).Show();
+				}
+
+			});
+      adb.Show();
+    }
+
+    private async Task<bool> PerformDataLogExport(string filename, DataLogReport dlr, IDataLogExporter exporter) {
+			var folder = ion.dataLogReportFolder;
+			var file = folder.GetFile(filename, EFileAccessResponse.ReplaceIfExists);
+
+			bool success = false;
+			using (var stream = file.OpenForWriting()) {
+				success = await exporter.Export(stream, dlr);
+			}
+
+			if (!success) {
+				file.Delete();
+			}
+
+			return success;
+		}
 	}
 
 	class SelectionDrawable : Drawable {

@@ -43,6 +43,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\IDataLogExporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\CsvExporter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\ExcelReportExporter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)src\Report\Exporter\PdfDetailedReportExporter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="$(MSBuildThisFileDirectory)ReadMe.txt" />
