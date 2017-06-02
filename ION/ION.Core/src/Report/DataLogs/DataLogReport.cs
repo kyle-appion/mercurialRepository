@@ -54,7 +54,7 @@
 		/// <summary>
 		/// The devices that produced the session results.
 		/// </summary>
-		public List<IDevice> devices { get; private set; }
+		public HashSet<IDevice> devices { get; private set; }
 		/// <summary>
 		/// The sensors that were used to make up the report.
 		/// </summary>
@@ -71,7 +71,7 @@
 		/// </summary>
 		/// <param name="jobs">Jobs.</param>
 		/// <param name="sessionResults">Session results.</param>
-		private DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, List<IDevice> devices, List<SessionResults> sessionResults) {
+		private DataLogReport(ILocalization local, DateTime start, DateTime end, HashSet<JobRow> jobs, HashSet<IDevice> devices, List<SessionResults> sessionResults) {
       this.localization = local;
 			this.start = start;
 			this.end = end;
@@ -94,7 +94,7 @@
       sessionResults.Sort();
 
 			var jobs = new HashSet<JobRow>();
-			var deviceSet = new List<IDevice>();
+			var deviceSet = new HashSet<IDevice>();
 			var sensorSet = new HashSet<GaugeDeviceSensor>();
 
 			foreach (var results in sessionResults) {

@@ -120,7 +120,8 @@
 				var rowOffset = row + offset;
 				// Merge content cells
 				file.MergeCells(rowOffset, col, rowOffset, col + 3);
-				file.SetCellValue(rowOffset, col, sr.startTime.ToLongDateString() + "-" + sr.endTime.ToLongDateString(), sectionContentFormat);
+        file.SetCellValue(rowOffset, col, sr.startTime.ToShortDateString() + " " + sr.startTime.ToShortTimeString() + " - "
+                          + sr.endTime.ToShortDateString() + " " + sr.endTime.ToShortTimeString(), sectionContentFormat);
 				// Set the cell format for the merged cells (without this the merged cell doesn't have a format and is white)
 				for (int i = 0; i < 4; i++) {
 					file.SetCellFormat(rowOffset, col + i, sectionContentFormat);
