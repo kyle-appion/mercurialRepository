@@ -18,11 +18,11 @@
 	using ION.Core.Sensors;
   using ION.Core.UI;
 
-	public class PdfReportExporter : BaseFormattedFlexCelDataLogExporter {
+	public class PdfDetailedReportExporter : BaseFormattedFlexCelDataLogExporter {
 
     private bool showAllData;
 
-		public PdfReportExporter(IION ion, bool showAllData) : base(ion) {
+		public PdfDetailedReportExporter(IION ion, bool showAllData) : base(ion) {
       this.showAllData = showAllData;
 		}
 
@@ -32,7 +32,7 @@
           // TODO ahodder@appioninc.com: Not necessary
           var scaleReduction = 60; // TODO DEFINE
 
-          var file = new XlsFile(showAllData ? 2 : 1, TExcelFileFormat.v2013, true);
+          var file = new XlsFile((showAllData ? 2 : 1) + dlr.graphImages.Count, TExcelFileFormat.v2013, true);
           file.AllowOverwritingFiles = true;
           file.PrintScale = scaleReduction;
           // Note: ahodder@appioninc.com: Per kyle's original writing
@@ -110,7 +110,7 @@
 			row += 2;
 
       // Draw the graph content
-      size = DrawSmallGraphs(file, dlr, row, 1);
+      size = DrawGraphs(file, dlr, row, 1);
       row += size.Item2;
       row += 2;
 
@@ -120,7 +120,7 @@
       row = 1;
       // Draw raw data
       if (showAllData) {
-        file.ActiveSheet = 2;
+        file.ActiveSheet++;;
         size = DrawAllMeasurements(file, dlr, row, 1);
       }
 		}
@@ -155,10 +155,10 @@
 		/// <param name="dlr">Dlr.</param>
 		/// <param name="row">The x coordinate.</param>
 		/// <param name="col">The y coordinate.</param>
-    private Tuple<int, int> DrawSmallGraphs(XlsFile file, DataLogReport dlr, int row, int col) {
+    private Tuple<int, int> DrawGraphs(XlsFile file, DataLogReport dlr, int row, int col) {
 			var l = dlr.localization;
-      var imageCellWidth = 4;
-      var imageCellHeight = 3;
+      var imageCellWidth = 8;
+      var imageCellHeight = 4;
 
       var index = 0;
 			foreach (var sensor in dlr.sensors) {
@@ -167,30 +167,36 @@
           continue;          
         }
 
-        int xoff = 0, yoff = 0;
-        // The shift that is used to stagger the graphs down the pages.
-        xoff = col + (index % 2 == 1 ? imageCellWidth + 1 : 0);
-        yoff = (int)(row + (index / 2 * imageCellHeight));
+				int xoff = 0, yoff = 0;
+
+				if (index > 0) {
+          xoff = 1;
+					yoff = 1;
+				} else {
+          xoff = col;
+					yoff = row;
+        }
 
 				var image = dlr.graphImages[sensor];
-        file.MergeCells(yoff, xoff, yoff + imageCellHeight, xoff + imageCellWidth);
+				file.MergeCells(yoff, xoff, yoff + imageCellHeight, xoff + imageCellWidth);
 
-        file.SetRowHeight(yoff, (int)(image.height * FlxConsts.RowMult));
-        TClientAnchor anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, yoff + imageCellHeight, 0, xoff + imageCellWidth, 0);
-        double width = 0.0, height = 0.0;
+				file.SetRowHeight(yoff, (int)(image.height * FlxConsts.RowMult));
+				TClientAnchor anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, yoff + imageCellHeight, 0, xoff + imageCellWidth, 0);
+				double width = 0.0, height = 0.0;
 
-        anchor.CalcImageCoords(ref height, ref width, file);
-        // Width should always be greater than the height.
-        anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, (int)height, (int)width, file);
+				anchor.CalcImageCoords(ref height, ref width, file);
+				// Width should always be greater than the height.
+				anchor = new TClientAnchor(TFlxAnchorType.MoveAndDontResize, yoff, 0, xoff, 0, (int)height, (int)width, file);
 
 
 				var imageProperties = new TImageProperties();
-        imageProperties.Anchor = anchor;
-        file.AddImage(image.data, TXlsImgType.Png, imageProperties);
+				imageProperties.Anchor = anchor;
+				file.AddImage(image.data, TXlsImgType.Png, imageProperties);
 				index++;
+				file.ActiveSheet++;
 			}
 
-      return new Tuple<int, int>((imageCellWidth + 1) * 2, (int)Math.Ceiling(index / 2.0) * (imageCellHeight + 1));
+      return new Tuple<int, int>(imageCellWidth, index * (imageCellHeight + 1));
 		}
 	}
 }

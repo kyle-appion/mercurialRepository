@@ -19,14 +19,14 @@
 	public class SensorOverviewRecord : RecordAdapter.Record<GaugeDeviceSensor> {
 		public override int viewType { get { return 0; } }
 
-		public IEnumerable<DeviceSensorLogs> logs { get; private set; }
+    public SensorReportEncapsulation encap { get; private set; }
 
 		public Scalar lowest { get; private set; }
 		public Scalar highest { get; private set; }
 		public Scalar average { get; private set; }
 
-		public SensorOverviewRecord(IION ion, GaugeDeviceSensor sensor, IEnumerable<DeviceSensorLogs> logs) : base(sensor) {
-			this.logs = logs;
+    public SensorOverviewRecord(SensorReportEncapsulation encap) : base(encap.sensor) {
+			this.encap = encap;
 
 			var cnt = 0;
 			var tot = 0.0;
@@ -34,26 +34,26 @@
 			var h = double.MinValue;
 			var l = double.MaxValue;
 
-			foreach (var log in logs) {
-				foreach (var sl in log.logs) {
-					if (sl.measurement > h) {
-						h = sl.measurement;
-					}
+      foreach (var sr in encap.pointSeries) {
+        foreach (var meas in sr.measurements) {
+          if (meas > h) {
+            h = meas;
+          }
 
-					if (sl.measurement < l) {
-						l = sl.measurement;
-					}
+          if (meas < l) {
+            l = meas;  
+          }
 
-					tot += sl.measurement;
-					cnt++;
-				}
+          tot += meas;
+          cnt++;
+        }
 			}
+
 			var avg = tot / cnt;
-
-
-      highest = sensor.unit.standardUnit.OfScalar(h).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
-      lowest = sensor.unit.standardUnit.OfScalar(l).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
-      average = sensor.unit.standardUnit.OfScalar(avg).ConvertTo(ion.preferences.units.DefaultUnitFor(sensor.type));
+      var sensor = encap.sensor;
+      highest = sensor.unit.standardUnit.OfScalar(h);
+      lowest = sensor.unit.standardUnit.OfScalar(l);
+      average = sensor.unit.standardUnit.OfScalar(avg);
 		}
 	}
 
@@ -73,9 +73,11 @@
 		public override void Invalidate() {
 			header.Text = record.data.device.serialNumber + " (" + record.data.type.GetTypeString() + ")";
 
-			lowest.Text = SensorUtils.ToFormattedString(record.lowest);
-			highest.Text = SensorUtils.ToFormattedString(record.highest);
-			average.Text = SensorUtils.ToFormattedString(record.average);
+      var ion = AppState.context;
+      var u = ion.preferences.units.DefaultUnitFor(record.encap.sensor.type);
+      lowest.Text = SensorUtils.ToFormattedString(record.lowest.ConvertTo(u));
+      highest.Text = SensorUtils.ToFormattedString(record.highest.ConvertTo(u));
+      average.Text = SensorUtils.ToFormattedString(record.average.ConvertTo(u));
 		}
 	}
 }
