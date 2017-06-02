@@ -103,7 +103,7 @@ namespace ION.IOS.ViewController.Analyzer
         cell.SelectionStyle = UITableViewCellSelectionStyle.None;
         cell.Layer.BorderWidth = 1f;
         return cell;
-      } else if (tableItems[indexPath.Row].Contains("Trending")) {
+      } else if (tableItems[indexPath.Row].Contains("Trending") || tableItems[indexPath.Row].Contains("Rate")) {
         var cell = tableView.DequeueReusableCell("Rate") as RoCTableCell;
         if (cell == null)
           cell = new UITableViewCell(UITableViewCellStyle.Default, "Rate") as RoCTableCell;

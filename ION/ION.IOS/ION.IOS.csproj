@@ -44,8 +44,7 @@
     </MtouchI18n>
     <MtouchSdkVersion>
     </MtouchSdkVersion>
-    <CodesignProvision>
-    </CodesignProvision>
+    <CodesignProvision>ION Testo Cert</CodesignProvision>
     <IpaPackageName>
     </IpaPackageName>
     <MtouchUseLlvm>false</MtouchUseLlvm>
@@ -1163,6 +1162,7 @@
     <Folder Include="Resources\Images.xcassets\wireless_connected.imageset\" />
     <Folder Include="Resources\Images.xcassets\wireless_disconnected.imageset\" />
     <Folder Include="src\ViewController\RateofChangeSettings\" />
+    <Folder Include="Resources\Fonts\" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -1181,6 +1181,12 @@
     <BundleResource Include="Resources\Images.xcassets\Contents.json" />
     <BundleResource Include="Resources\xml\whats_new.xml" />
     <BundleResource Include="Resources\xml\VersionUpdateLog.txt" />
+    <BundleResource Include="Resources\Fonts\DroidSans-Bold.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+    <BundleResource Include="Resources\Fonts\DroidSans.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ION.Core\ION.Core.csproj">

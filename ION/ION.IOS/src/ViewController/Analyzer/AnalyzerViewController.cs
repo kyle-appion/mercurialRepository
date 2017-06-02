@@ -1534,7 +1534,7 @@ namespace ION.IOS.ViewController.Analyzer {
 				}
 			}
 			
-			////TODO NEED TO FIGURE OUT A NON INTENSIVE WAY TO SORT THE VIEW LIST BASED ON THE SENSOR LAYOUT IF THEY DIFFER
+			////TODO NEED TO FIGURE OUT A LESS INTENSIVE WAY TO SORT THE VIEW LIST BASED ON THE SENSOR LAYOUT IF THEY DIFFER
 			if(unordered){
 				for(int v = 0; v < 8; v++){
 					if(analyzerSensors.viewList[v].snapArea.AccessibilityIdentifier != analyzer.sensorPositions[v].ToString()){
@@ -1574,6 +1574,7 @@ namespace ION.IOS.ViewController.Analyzer {
 		}
 		
 		public void confirmSubviews(string section = "high"){
+      bool subviewsChanged = false;
 			//Console.WriteLine(section + " section");
 			if(section == "low"){
 				////SETUP HIGH AREA TABLE SOURCE IF NULL
@@ -1586,6 +1587,7 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!lowHighSensors.lowArea.tableSubviews.Contains(existing)){
 						Console.WriteLine("Added low area subview " + existing);   
 						lowHighSensors.lowArea.tableSubviews.Add(existing);
+            subviewsChanged = true;
 					}
 				}
 				
@@ -1594,13 +1596,16 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!analyzer.lowSubviews.Contains(removal)){
 						Console.WriteLine("Removed low area subview" + removal);
 						lowHighSensors.lowArea.tableSubviews.Remove(removal);
+            subviewsChanged = true;
 					}
 				}
 
 
 				lowHighSensors.lowArea.subviewTable.Hidden = false;
 				viewAnalyzerContainer.BringSubviewToFront(lowHighSensors.lowArea.subviewTable);
-				lowHighSensors.lowArea.subviewTable.ReloadData();
+        if (subviewsChanged) {
+          lowHighSensors.lowArea.subviewTable.ReloadData();
+        }
 			} else {
 				////SETUP HIGH AREA TABLE SOURCE IF NULL
 				if(lowHighSensors.highArea.subviewTable.Source == null){
@@ -1611,19 +1616,23 @@ namespace ION.IOS.ViewController.Analyzer {
 					if(!lowHighSensors.highArea.tableSubviews.Contains(existing)){
 						Console.WriteLine("Added high area subview " + existing);
 						lowHighSensors.highArea.tableSubviews.Add(existing);
+            subviewsChanged = true;
 					}
 				}
 				////REMOVE ANY SUBVIEWS THAT ARE NO LONGER SENT FROM THE REMOTE LAYOUT
 				foreach(var removal in lowHighSensors.highArea.tableSubviews.ToArray()){
-					if(!analyzer.highSubviews.Contains(removal)){
+					if(!analyzer.highSubviews.Contains(removal)){   
 						Console.WriteLine("Removed high area subview" + removal);
 						lowHighSensors.highArea.tableSubviews.Remove(removal);
+            subviewsChanged = true;
 					}
 				}
 							
 				lowHighSensors.highArea.subviewTable.Hidden = false;
 				viewAnalyzerContainer.BringSubviewToFront(lowHighSensors.highArea.subviewTable);
-				lowHighSensors.highArea.subviewTable.ReloadData();
+				if (subviewsChanged) {
+					lowHighSensors.highArea.subviewTable.ReloadData();
+				}
 			}
 		}
 		

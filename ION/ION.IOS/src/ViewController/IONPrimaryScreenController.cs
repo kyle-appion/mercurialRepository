@@ -348,21 +348,21 @@ namespace ION.IOS.ViewController {
 			remoteAn.remoteMode = true;
 			var remotePortal = InflateViewController<RemoteSystemViewController>(BaseIONViewController.VC_REMOTE_VIEWING);
 			
-      /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
-      if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
-        navigation.ViewControllers[0] = null; /// logging
-        navigation.ViewControllers[1] = null; /// wireless
-        navigation.ViewControllers[2] = null; /// battery
-				navigation.ViewControllers[3] = null; /// memory
-				navigation.ViewControllers[4] = new UINavigationController(remoteWb); /// workbench
-        navigation.ViewControllers[5] = new UINavigationController(remoteAn); /// analyzer
-        navigation.ViewControllers[6] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
-				navigation.ViewControllers[7] = new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)); /// superheat/subcool
-				navigation.ViewControllers[8] = null; /// settings
-				navigation.ViewControllers[9] = null; /// help
-				navigation.ViewControllers[10] = new UINavigationController(remotePortal); /// appion portal
-				navigation.ViewControllers[11] = null; /// shutdown
-      } else {
+    //  /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
+    //  if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
+    //    navigation.ViewControllers[0] = null; /// logging
+    //    navigation.ViewControllers[1] = null; /// wireless
+    //    navigation.ViewControllers[2] = null; /// battery
+				//navigation.ViewControllers[3] = null; /// memory
+				//navigation.ViewControllers[4] = new UINavigationController(remoteWb); /// workbench
+    //    navigation.ViewControllers[5] = new UINavigationController(remoteAn); /// analyzer
+    //    navigation.ViewControllers[6] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
+				//navigation.ViewControllers[7] = new UINavigationController(InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL)); /// superheat/subcool
+				//navigation.ViewControllers[8] = null; /// settings
+				//navigation.ViewControllers[9] = null; /// help
+				//navigation.ViewControllers[10] = new UINavigationController(remotePortal); /// appion portal
+				//navigation.ViewControllers[11] = null; /// shutdown
+      //} else {
         navigation.ViewControllers[0] = new UINavigationController(remoteWb); /// workbench
         navigation.ViewControllers[1] = new UINavigationController(remoteAn); /// analyzer
         navigation.ViewControllers[2] = new UINavigationController(InflateViewController<PTChartViewController>(BaseIONViewController.VC_PT_CHART)); /// ptchart
@@ -371,7 +371,7 @@ namespace ION.IOS.ViewController {
         navigation.ViewControllers[5] = null; /// help
         navigation.ViewControllers[6] = new UINavigationController(remotePortal); /// appion portal
         navigation.ViewControllers[7] = null; /// shutdown
-      }
+      //}
     }
     /// <summary>
     /// Prepares and displays an email resolver such that the user can fire
@@ -488,17 +488,17 @@ namespace ION.IOS.ViewController {
 			navigation.NavigationRoot.Clear();
       navigation.NavigationTableView.BackgroundColor = UIColor.FromRGB(255,30,30);
       
-      /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
-      if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
-  			navigation.NavigationRoot.Add(
-  				new Section ("Remote Device") {
-              new IONElement("logging", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("wireless", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("battery", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  	          new IONElement("memory", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
-  				}
-  			);
-      }
+     // /////ONLY LET SOMEONE VIEW THE REMOTE DEVICE INFORMATION IF IT IS THEIR ACCOUNT AS WELL. CAN'T JUST BE SHOWING PEOPLES INFORMATION LIKE THAT!
+     // if(NSUserDefaults.StandardUserDefaults.StringForKey("viewedUser") == KeychainAccess.ValueForKey("userID")){
+  			//navigation.NavigationRoot.Add(
+  			//	new Section ("Remote Device") {
+     //         new IONElement("logging", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("wireless", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("battery", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  	  //        new IONElement("memory", UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},
+  			//	}
+  			//);
+      //}
 			navigation.NavigationRoot.Add(
 	        new Section (Strings.Navigation.MAIN.ToUpper()) {
 	          new IONElement(Strings.Workbench.SELF, UIImage.FromBundle("ic_nav_workbench")){textColor = UIColor.Black,},

@@ -92,7 +92,7 @@ namespace ION.IOS.ViewController.RemoteAccess {
 			portalView.AddSubview(uploadButton);
 			portalView.AddSubview(codeButton);
 			portalView.AddSubview(accessButton);
-			//portalView.AddSubview(remoteButton);
+			portalView.AddSubview(remoteButton);
 			portalView.AddSubview(webPortalButton);
 		}
 	}

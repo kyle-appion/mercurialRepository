@@ -550,9 +550,7 @@ namespace ION.Core.Net {
 						remoteDManager.Register(newDevice);  
 					}
 				}
-				
-				//Console.WriteLine("Low attached: " + deserializedLowHigh.lowAttached);
-				//Console.WriteLine("High attached: " + deserializedLowHigh.highAttached);
+				///////SET UP THE ANALYZER LOW AND HIGH SIDE
 				//////SET THE LOW MANIFOLD BASED ON THE REMOTE DATA
 				if(deserializedLowHigh.lowSerialNumber != "null"){
 					if(ion.currentAnalyzer.lowSideManifold == null || ion.currentAnalyzer.lowSideManifold.primarySensor.name != deserializedLowHigh.lowSerialNumber){
@@ -697,7 +695,7 @@ namespace ION.Core.Net {
 								updateManifold.ptChart = PTChart.New(ion,ptstate,manifoldFluid);
 							}   
 							
-							if(deserializedToken.linkedSerial != "null" ){ 
+							if(deserializedToken.linkedSerial != null && deserializedToken.linkedSerial != "null" ){ 
 								if(updateManifold.secondarySensor != null){
 									///get current secondary sensor
 									var checkSensor = updateManifold.secondarySensor as GaugeDeviceSensor;
@@ -1065,10 +1063,10 @@ namespace ION.Core.Net {
 
 			return feedback;
 		}  catch (Exception exception){
-			Console.WriteLine("Exception: " + exception);
+			Console.WriteLine("Exception: " + exception); 
 
 			return null;
-		}			
+		}
 	}
 	/// <summary>
 	/// Updates the email.
@@ -1170,7 +1168,7 @@ namespace ION.Core.Net {
 			return 4;
 		}  else if (property == "Hold"){
 			return 5;
-		}  else if (property == "Rate"){
+		}  else if (property == "Rate" || property == "Trending"){
 			return 6;
 		}  else if (property == "Alternate"){
 			return 7;
@@ -1190,7 +1188,8 @@ namespace ION.Core.Net {
 		}  else if (subviewCode == 5){
 			return "Hold";
 		}  else if (subviewCode == 6){
-			return "Rate";
+			//return "Rate";
+			return "Trending";
 		}  else if (subviewCode == 7){
 			return "Alternate";
 		}  else {
