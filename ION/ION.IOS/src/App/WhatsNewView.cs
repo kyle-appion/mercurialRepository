@@ -88,7 +88,8 @@ namespace ION.IOS.App {
 			infoView.BackgroundColor = UIColor.White;
 			infoView.Layer.BorderWidth = 1f;
 
-			viewHeader = new UILabel(new CGRect(0,0,infoView.Bounds.Width,.12 * parentView.Bounds.Height));
+			//viewHeader = new UILabel(new CGRect(0, 0, infoView.Bounds.Width, .12 * parentView.Bounds.Height));
+			viewHeader = new UILabel(new CGRect(0,0,infoView.Bounds.Width,70));
 			viewHeader.Lines = 0;
 			viewHeader.BackgroundColor = UIColor.FromRGB(9,211,255);
 			viewHeader.ClipsToBounds = true;
@@ -117,7 +118,7 @@ namespace ION.IOS.App {
 			closeBottom.ClipsToBounds = true;
 			closeBottom.BackgroundColor = UIColor.White;
 			closeBottom.SetTitle("Close",UIControlState.Normal);
-			closeBottom.SetTitleColor(UIColor.Black,UIControlState.Normal);
+			closeBottom.SetTitleColor(UIColor.Black,UIControlState.Normal);   
 			closeBottom.Layer.BorderWidth = 1f;
 			closeBottom.Layer.BorderColor = UIColor.LightGray.CGColor; 
 			closeBottom.TouchUpInside += (sender, e) => {

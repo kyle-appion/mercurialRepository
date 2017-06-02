@@ -7,9 +7,9 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.appioninc.ionremote</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.9.30</string>
+	<string>1.9.40</string>
 	<key>CFBundleVersion</key>
-	<string>1.9.30</string>
+	<string>1.9.40</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -44,6 +44,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>
+		<string>audio</string>
 	</array>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>NSLocationAlwaysUsageDescription</string>
@@ -51,5 +52,10 @@
 	<string>en</string>
 	<key>CFBundleName</key>
 	<string>ION HVAC/R</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Fonts/DroidSans.ttf</string>
+		<string>Fonts/DroidSans-Bold.ttf</string>
+	</array>
 </dict>
 </plist>

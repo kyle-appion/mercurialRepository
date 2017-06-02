@@ -100,14 +100,14 @@ namespace ION.IOS.ViewController.RssFeed {
 
               var fPubdate = myXMLReader.ReadElementContentAsString();
 
-						item.pubDate = fPubdate;
-						lastFeed = item;
-						break;
-					}
-				}
-				break;				
-            }
+							item.pubDate = fPubdate;
+							lastFeed = item;
+							break;
+					  }
+				  }
+				  break;				
         }
+      }
         //Done
   		string lastTitle = NSUserDefaults.StandardUserDefaults.StringForKey("rssTitle");
   		if(string.IsNullOrEmpty(lastTitle) || lastTitle != lastFeed.title){
@@ -131,24 +131,26 @@ namespace ION.IOS.ViewController.RssFeed {
 
 		public async void createRssPopup(Update feed){
 			await Task.Delay(TimeSpan.FromSeconds(2));
-      		try{
-			     var window = UIApplication.SharedApplication.KeyWindow;
-			      var vc = window.RootViewController;
-			      while (vc.PresentedViewController != null) {
-			        vc = vc.PresentedViewController;
-			      }
-		      	var rssView = new UIView(new CGRect(.05 * vc.View.Bounds.Width,.11 * vc.View.Bounds.Height,.9 * vc.View.Bounds.Width, .78 * vc.View.Bounds.Height));
+      try{
+	      var window = UIApplication.SharedApplication.KeyWindow;
+	      var vc = window.RootViewController;
+	      while (vc.PresentedViewController != null) {
+	        vc = vc.PresentedViewController;
+	      }
+      	var rssView = new UIView(new CGRect(.05 * vc.View.Bounds.Width,.11 * vc.View.Bounds.Height,.9 * vc.View.Bounds.Width, .78 * vc.View.Bounds.Height));
 
 				rssView.Layer.CornerRadius = 5f;
 				rssView.ClipsToBounds = true;
 				rssView.Layer.BorderWidth = 1f;
-				
-				var rssHeader = new UILabel(new CGRect(0,0,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
+
+				//var rssHeader = new UILabel(new CGRect(0, 0, rssView.Bounds.Width, .1 * rssView.Bounds.Height));
+				var rssHeader = new UILabel(new CGRect(0,0,rssView.Bounds.Width,70));
 				rssHeader.BackgroundColor = UIColor.FromRGB(9,211,255);
 				rssHeader.ClipsToBounds = true;
-				rssHeader.Text = "New Update";
+				rssHeader.Text = "Message from Appion";
 				rssHeader.AdjustsFontSizeToFitWidth = true;
 				rssHeader.TextAlignment = UITextAlignment.Center;
+        rssHeader.Font = UIFont.FromName("DroidSans", 20f);
 				
 					
 			  var linkTapGesture = new UITapGestureRecognizer(() => {
@@ -169,9 +171,10 @@ namespace ION.IOS.ViewController.RssFeed {
 				
 			  rssContent.AttributedText = htmlString;
 					
-			  rssContent.AddGestureRecognizer(linkTapGesture); 
-					
-	      var closeButton = new UIButton(new CGRect(0,.9 * rssView.Bounds.Height,rssView.Bounds.Width,.1 * rssView.Bounds.Height));
+			  rssContent.AddGestureRecognizer(linkTapGesture);
+
+				//var closeButton = new UIButton(new CGRect(0, , rssView.Bounds.Width, .1 * rssView.Bounds.Height));
+				var closeButton = new UIButton(new CGRect(0,.9 * rssView.Bounds.Height,rssView.Bounds.Width,70));
 	      closeButton.BackgroundColor = UIColor.White;
 	      closeButton.Layer.BorderWidth = 1f;
 	      closeButton.ClipsToBounds = true;
