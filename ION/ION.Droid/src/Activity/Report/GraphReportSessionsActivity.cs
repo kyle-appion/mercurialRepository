@@ -540,7 +540,7 @@
     /// <returns>The sensor report encapsulations.</returns>
     // TODO ahodder@appioninc.com: This needs to be optimized as we are allocating a truely fucktastic amount of memory to make this work.
     private Tuple<DateIndexLookup, List<SensorReportEncapsulation>> BuildSensorReportEncapsulations(List<SessionResults> sessionResults) {
-      var dateLookupTable = new List<DateTime>();
+      var dateLookupTable = new HashSet<DateTime>();
       var map = new Dictionary<GaugeDeviceSensor, List<PointSeries>>();
 
       foreach (var sr in sessionResults) {
@@ -576,7 +576,9 @@
         }
       }
 
-      var dil = new DateIndexLookup(dateLookupTable);
+      var sortedDates = new List<DateTime>(dateLookupTable);
+      sortedDates.Sort();
+      var dil = new DateIndexLookup(sortedDates);
       var encaps = new List<SensorReportEncapsulation>();
       foreach (var sensor in map.Keys) {
         encaps.Add(new SensorReportEncapsulation(sensor, dil, map[sensor].ToArray()));

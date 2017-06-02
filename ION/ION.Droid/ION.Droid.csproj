@@ -235,9 +235,6 @@
     <Compile Include="src\Activity\Report\GraphRecordAdapter.cs" />
     <Compile Include="src\Util\DateTimeExtensions.cs" />
     <Compile Include="src\Activity\Report\DateIndexLookup.cs" />
-    <Compile Include="src\Report\DataLogExcelReportExporter.cs" />
-    <Compile Include="src\Report\DataLogReportTable.cs" />
-    <Compile Include="src\Report\DataLogPdfReportExporter.cs" />
     <Compile Include="src\Fragments\FileExtensionFilter.cs" />
     <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
@@ -325,8 +322,6 @@
     <Compile Include="src\Activity\Rss\FeedItemRecord.cs" />
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
-    <Compile Include="src\Report\DataLogReportPdfSummaryExporter.cs" />
-    <Compile Include="src\Report\IDataLogExporter.cs" />
     <Compile Include="src\Report\DataLogReportLocalization.cs" />
     <Compile Include="src\Activity\Report\DetailedGraphGenerator.cs" />
     <Compile Include="src\Activity\Report\PointSeries.cs" />
