@@ -7,6 +7,7 @@
     <TextView
         android:id="@id/empty"
         android:text="@string/report_data_logging_empty"
+        android:visibility="gone"
         android:gravity="center"
         android:textStyle="bold"
         android:textColor="@color/white"
@@ -47,34 +48,35 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp" />
             </RelativeLayout>
-            <FrameLayout
-                android:layout_weight="1"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
                 <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
                     android:id="@id/list"
+                    android:layout_weight="1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </FrameLayout>
-            <AbsoluteLayout
-                android:id="@id/view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@id/left"
-                    android:scaleType="fitStart"
-                    android:layout_width="30dp"
-                    android:layout_height="45dp"
-                    android:src="@drawable/ic_drag_arrow_left" />
-                <ImageView
-                    android:id="@id/right"
-                    android:scaleType="fitEnd"
-                    android:layout_width="30dp"
-                    android:layout_height="45dp"
-                    android:src="@drawable/ic_drag_arrow_right" />
-            </AbsoluteLayout>
+                    android:layout_height="0dp" />
+                <AbsoluteLayout
+                    android:id="@id/view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@id/left"
+                        android:scaleType="fitStart"
+                        android:layout_width="30dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_drag_arrow_left" />
+                    <ImageView
+                        android:id="@id/right"
+                        android:scaleType="fitEnd"
+                        android:layout_width="30dp"
+                        android:layout_height="45dp"
+                        android:src="@drawable/ic_drag_arrow_right" />
+                </AbsoluteLayout>
+            </LinearLayout>
         </LinearLayout>
     <!-- The settings part of the fragment. -->
         <LinearLayout
