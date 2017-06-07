@@ -46,6 +46,10 @@
       AppDomain.CurrentDomain.UnhandledException += (sender, e) => {
         Log.E(this, "Uncaught Exception", e.ExceptionObject as Exception);
       };
+      Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, e) => {
+        Log.E(this, "Unhandled exception", e.Exception);
+        e.Handled = true;
+      };
 		}
 
     public void UncaughtException(Java.Lang.Thread thread, Java.Lang.Throwable e) {

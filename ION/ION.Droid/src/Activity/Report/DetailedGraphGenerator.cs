@@ -97,7 +97,7 @@
       xAxis.MajorStep = Math.Round((xAxis.Maximum - xAxis.Minimum) / 10);
       xAxis.LabelFormatter = (arg) => {
         var date = encap.dil.DateFromIndex((int)arg);
-        return /* date.ToShortDateString() + "\n" + */ date.ToShortTimeString();
+        return /* date.ToShortDateString() + "\n" + */ date.ToLongTimeString();
       };
 
 			yAxis.Minimum = encap.min;

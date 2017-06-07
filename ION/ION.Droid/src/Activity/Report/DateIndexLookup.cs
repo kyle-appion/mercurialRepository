@@ -27,11 +27,10 @@
     /// </summary>
     private Dictionary<DateTime, int> lookup;
 
-		public DateIndexLookup(List<DateTime> dates) {
-			this.dates = dates;
-			dates.Sort();
-
+    public DateIndexLookup(List<DateTime> lookupDates) {
 			lookup = new Dictionary<DateTime, int>();
+      this.dates = new List<DateTime>(lookupDates);
+      this.dates.Sort();
 
 			for (var i = 0; i < dates.Count; i++) {
 				lookup[dates[i]] = i;

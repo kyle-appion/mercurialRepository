@@ -111,8 +111,9 @@
 		/// <returns>The percent from date time.</returns>
 		/// <param name="date">Date.</param>
 		public float FindPercentFromDateTime(DateTime date) {
-			var i = dil.IndexOfDate(date);
-			return i / (float)dil.dateSpan; 
+      // Index is 0 indexed, yet we need a real fraction. Add one to line up to count.
+			var i = dil.IndexOfDate(date) + 1;
+      return i / (float)dil.dateSpan; 
 		}
 
 		/// <summary>

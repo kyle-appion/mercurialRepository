@@ -326,6 +326,7 @@
     <Compile Include="src\Activity\Report\DetailedGraphGenerator.cs" />
     <Compile Include="src\Activity\Report\PointSeries.cs" />
     <Compile Include="src\Activity\Report\SensorReportEncapsulation.cs" />
+    <Compile Include="src\Activity\Report\ReportOverlay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
