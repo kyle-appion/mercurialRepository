@@ -38,7 +38,7 @@
                     android:layout_height="match_parent"
                     android:textSize="@dimen/text_size_large"
                     android:gravity="center"
-                    android:text="@string/portal_following_empty" />
+                    android:text="@string/portal_remote_viewing_empty" />
             </FrameLayout>
         </android.support.v4.widget.SwipeRefreshLayout>
         <Button

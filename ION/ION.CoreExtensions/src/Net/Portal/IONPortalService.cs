@@ -1234,7 +1234,10 @@
 			}
 
 			foreach (var code in codes) {
-				manifold.AddSensorProperty(RemoteManifold.ParseSensorPropertyFromCode(manifold, code));
+        var sp = RemoteManifold.ParseSensorPropertyFromCode(manifold, code);
+        if (sp != null) {
+          manifold.AddSensorProperty(sp);
+        }
 			}
 		}
 

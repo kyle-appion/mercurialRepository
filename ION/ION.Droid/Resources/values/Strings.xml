@@ -456,6 +456,7 @@ This affects measurements of <u>blended refrigerants</u>, since these points are
 	<string name="portal_remote_mode_start">Upload Layout</string>
 	<string name="portal_remote_viewing">Remote Viewing</string>
 	<string name="portal_remote_viewing_access">Remote Viewing Access</string>
+  <string name="portal_remote_viewing_empty">No remote device(s) online</string>
 	<string name="portal_remote_your_feed">Your feed</string>
 	<string name="portal_session">Sessions</string>
 	<string name="portal_stop_uploading">Stop Uploading</string>
