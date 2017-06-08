@@ -94,7 +94,6 @@
     <Compile Include="src\Location\ILocationManager.cs" />
     <Compile Include="src\Sensors\Properties\RateOfChangeSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\TimerSensorProperty.cs" />
-    <Compile Include="src\Pdf\PDFTest.cs" />
     <Compile Include="src\Report\ScreenshotReport.cs" />
     <Compile Include="src\Pdf\ScreenshotReportPdfExporter.cs" />
     <Compile Include="src\Sensors\UnitLookup.cs" />
@@ -113,8 +112,6 @@
     <Compile Include="src\Location\Address.cs" />
     <Compile Include="src\App\IAppDump.cs" />
     <Compile Include="src\App\AppionConstants.cs" />
-    <Compile Include="src\App\Constants.cs" />
-    <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
     <Compile Include="src\Database\ITableRow.cs" />
     <Compile Include="src\Devices\DeviceDatabaseExtensions.cs" />
