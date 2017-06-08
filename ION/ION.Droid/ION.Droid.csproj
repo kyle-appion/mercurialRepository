@@ -21,6 +21,7 @@
     <AndroidTlsProvider></AndroidTlsProvider>
     <JavaMaximumHeapSize>8G</JavaMaximumHeapSize>
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
+    <AndroidLintEnabled>true</AndroidLintEnabled >
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
