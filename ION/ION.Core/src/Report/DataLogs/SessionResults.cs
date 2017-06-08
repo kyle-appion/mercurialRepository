@@ -41,7 +41,7 @@
 		public bool isEmpty {
 			get {
 				foreach (var dsl in deviceSensorLogs) {
-					if (dsl.logs.Length > 0) {
+					if (dsl.logs.Count > 0) {
 						return false;
 					}
 				}
@@ -82,8 +82,8 @@
         complete = false,
 				sessionId = this.sessionId,
         deviceSensorLogs = dsl,
-        startTime = this.startTime,
-        endTime = this.endTime,
+        startTime = startTime,
+        endTime = endTime,
       };
     }
 

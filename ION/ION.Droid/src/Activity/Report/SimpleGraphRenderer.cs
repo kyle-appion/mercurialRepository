@@ -20,7 +20,7 @@
 
 	using ION.Droid.Sensors;
 
-  public class DetailedGraphGenerator {
+  public class SimpleGraphRenderer : IGraphRenderer {
 
     private Context context;
     private IION ion;
@@ -30,7 +30,7 @@
     private LinearAxis xAxis;
     private LinearAxis yAxis;
 
-    public DetailedGraphGenerator(Context context, IION ion) {
+    public SimpleGraphRenderer(Context context, IION ion) {
       this.context = context;
       this.ion = ion;
       plot = new PlotView(context);
@@ -43,16 +43,13 @@
         IsPanEnabled = false,
         MinimumPadding = 3,
         MaximumPadding = 3,
-        AxisTickToLabelDistance = 1,
+        AxisTickToLabelDistance = 0,
         AxislineColor = OxyColors.Black,
         AxislineStyle = LineStyle.Solid,
         MinorGridlineStyle = LineStyle.None,
-        MajorGridlineStyle = LineStyle.Solid,
-        AxisTitleDistance = 5,
-        TickStyle = TickStyle.Outside,
-        TextColor = OxyColors.Black,
-        FontSize = 7,
-  		  Angle = 90,
+        MajorGridlineStyle = LineStyle.None,
+        AxisTitleDistance = 0,
+        TickStyle = TickStyle.None,
 	  };
 
 			yAxis = new LinearAxis() {
@@ -63,16 +60,11 @@
 				MinimumPadding = 3,
 				MaximumPadding = 3,
 				AxisTitleDistance = 20,
-				AxislineThickness = 2,
 				AxislineColor = OxyColors.Black,
 				AxislineStyle = LineStyle.Solid,
         MinorGridlineStyle = LineStyle.None,
-				MajorGridlineStyle = LineStyle.Solid,
-				MinorGridlineThickness = 1,
-				MajorGridlineThickness = 1,
-        TickStyle = TickStyle.Outside,
-				TextColor = OxyColors.Black,
-				FontSize = 7,
+				MajorGridlineStyle = LineStyle.None,
+        TickStyle = TickStyle.None,
 			};
 
 			model.Axes.Add(xAxis);
@@ -84,33 +76,26 @@
 			plot.Model = model;
     }
 
+    // Implemented for IGraphRenderer
     public void Render(Canvas canvas, SensorReportEncapsulation encap) {
       var sensor = encap.sensor;
 			var serial = sensor.device.serialNumber;
 			var indices = encap.dil.dateSpan;
 			var series = encap.CreateSeries();
 
-      model.Subtitle = serial.ToString() + "(" + sensor.type.GetTypeString() + ")";
+      model.Title = serial.ToString();
+      model.Subtitle = "(" + sensor.type.GetTypeString() + ")";
 
 			xAxis.Minimum = 0;
 			xAxis.Maximum = indices - 1;
-      xAxis.MajorStep = Math.Round((xAxis.Maximum - xAxis.Minimum) / 10);
-      xAxis.LabelFormatter = (arg) => {
-        var date = encap.dil.DateFromIndex((int)arg);
-        return /* date.ToShortDateString() + "\n" + */ date.ToLongTimeString();
-      };
+      xAxis.MajorStep = (xAxis.Maximum - xAxis.Minimum) / Math.Min(10, encap.dil.dateSpan);
 
 			yAxis.Minimum = encap.min;
 			yAxis.Maximum = encap.max;
-      yAxis.MajorStep = (yAxis.Maximum - yAxis.Minimum) / 10;
+      yAxis.MajorStep = (yAxis.Maximum - yAxis.Minimum) / 5;
       if (yAxis.MajorStep == 0) {
         yAxis.MajorStep = 1;
       }
-      yAxis.LabelFormatter = (arg) => {
-        var su = sensor.unit.standardUnit;
-        return SensorUtils.ToFormattedString(su.OfScalar(arg).ConvertTo(sensor.unit));
-      };
-      yAxis.Title = sensor.type.GetTypeString() + " (" + sensor.unit.ToString() + ")";
 
       model.Series.Clear();
 			foreach (var s in series) {

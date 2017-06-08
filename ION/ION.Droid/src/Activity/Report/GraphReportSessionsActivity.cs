@@ -89,13 +89,9 @@
 		/// </summary>
 		private DateTimeAdapter endTimesAdapter;
 		/// <summary>
-		/// The drawable that shows the ignored content of the left selection.
+		/// The drawable that shows the ignored content of the handle selections.
 		/// </summary>
-		private ReportOverlay leftOverlay;
-		/// <summary>
-		/// The drawable that shows the ignored content of the right selection.
-		/// </summary>
-		private ReportOverlay rightOverlay;
+		private ReportOverlay overlay;
 		/// <summary>
 		/// The base rect that is used to measure the plot sizes of the graphs
 		/// </summary>
@@ -174,35 +170,14 @@
 			graphAdapter = new GraphRecordAdapter();
 			list.SetAdapter(graphAdapter);
 
-      var color = Android.Graphics.Color.Green;
-			leftOverlay = new ReportOverlay(container, leftHandle, ReportOverlay.EAlign.Left, color, 0);
-      rightOverlay = new ReportOverlay(container, rightHandle, ReportOverlay.EAlign.Right, color, 0);
+      var color = Android.Graphics.Color.Gray;
+      color.A = (byte)(.3f * 0xff);
+      overlay = new ReportOverlay(list, container, leftHandle, rightHandle, color);
+      overlay.OnOverlayDragEvent += () => {
+        UpdateDates();
+      };
 
-			list.Overlay.Add(leftOverlay);
-			list.Overlay.Add(rightOverlay);
-
-			// Initialize all of the views and their actions
-			leftHandle.Touch += (sender, e) => {
-				switch (e.Event.Action) {
-          case MotionEventActions.Down:
-            leftOverlay.lastX = e.Event.GetX();
-            break;
-
-					case MotionEventActions.Move:
-						break;
-					case MotionEventActions.Up:
-						break;
-				}
-			};
-
-			rightHandle.Touch += (sender, e) => {
-				switch (e.Event.Action) {
-					case MotionEventActions.Move:
-						break;
-					case MotionEventActions.Up:
-						break;
-				}
-			};
+			list.Overlay.Add(overlay);
 		}
 
 		private void InitOptionsViews() {
@@ -216,8 +191,10 @@
 			var vacuumUnitButton = vacuum.FindViewById<Button>(Resource.Id.unit);
 
 			var icon = settingsView.FindViewById(Resource.Id.icon);
-
 			var list = settingsView.FindViewById<RecyclerView>(Resource.Id.list);
+
+			startDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.start_times);
+			endDateSpinner = settingsView.FindViewById<Spinner>(Resource.Id.end_times);
 
       // Initialize unit buttons
 			pressureUnitButton.Text = ion.preferences.units.pressure.ToString();
@@ -246,17 +223,65 @@
 				AnimateToGraphView();
 			}));
 
-      // Initialize the options date spinners
-			startDateSpinner.ItemSelected += (sender, e) => {
-			};
-
-			endDateSpinner.ItemSelected += (sender, e) => {
-			};
-
       // Initialize adapter.
 			overviewAdapter = new OverviewAdapter();
 			list.SetAdapter(overviewAdapter);
 		}
+
+    /// <summary>
+    /// Updates the date time text view and the adapters for the date spinner
+    /// </summary>
+    private void UpdateDates() {
+      var dil = graphAdapter.dil;
+
+      var startIndex = (int)Math.Max(overlay.leftPercent * (dil.dateSpan - 1), 0);
+      var endIndex = (int)Math.Max((1 - overlay.rightPercent) * (dil.dateSpan - 1), 0);
+      var noMansIndices = overlay.CalculateNoMansIndices(dil);
+
+      startDate = dil.DateFromIndex(startIndex);
+			endDate = dil.DateFromIndex(endIndex);
+
+      // Update the dates for the date spinners
+      var startDates = dil.Subset(0, endIndex - noMansIndices);
+      var endDates = dil.Subset(startIndex + noMansIndices + 1, dil.dateSpan - 1);
+
+			startDates.Sort();
+      endDates.Sort();
+
+      // Update the options spinners
+      startDateSpinner.ItemSelected -= OnDateSpinnerChanged;
+      endDateSpinner.ItemSelected -= OnDateSpinnerChanged;
+
+      startDateSpinner.Adapter = startTimesAdapter = new DateTimeAdapter(this, startDates);
+			endDateSpinner.Adapter = endTimesAdapter = new DateTimeAdapter(this, endDates);
+
+      startDateSpinner.SetSelection(startDates.IndexOf(startDate));
+			endDateSpinner.SetSelection(endDates.IndexOf(endDate));
+
+			startDateSpinner.ItemSelected += OnDateSpinnerChanged;
+			endDateSpinner.ItemSelected += OnDateSpinnerChanged;
+
+      UpdateDateViews();
+		}
+
+    /// <summary>
+    /// Updates the graphing date range view to the new start and end dates.
+    /// </summary>
+    private void UpdateDateViews() {
+			var encaps = BuildSensorReportEncapsulations(graphAdapter.GatherSelectedLogs(startDate, endDate));
+			overviewAdapter.SetLogs(encaps.Item2);
+
+			dateRangeView.Text = GetString(Resource.String.start) + ": " + startDate.ToShortDateString() + " " + startDate.ToLongTimeString() + "\n" +
+			  GetString(Resource.String.finish) + ": " + endDate.ToShortDateString() + " " + endDate.ToLongTimeString();
+    }
+
+    private void OnDateSpinnerChanged(object sender, AdapterView.ItemSelectedEventArgs args) {
+      startDate = startTimesAdapter[startDateSpinner.SelectedItemPosition];
+      endDate = endTimesAdapter[endDateSpinner.SelectedItemPosition];
+      UpdateDateViews();
+      // Update the handles to reflect the new start and end dates
+      overlay.UpdateHandlesTo(graphAdapter.dil, startDate, endDate);
+    }
 
     private async Task ReloadGraphList() {
 			var dialog = new ProgressDialog(this);
@@ -292,8 +317,7 @@
 
 			dialog.Dismiss();
 
-			startDate = graphAdapter.dil.DateFromIndex(0);
-			endDate = graphAdapter.dil.DateFromIndex(graphAdapter.dil.dateSpan - 1);
+			UpdateDates();
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -327,7 +351,7 @@
 					var sensor = device[dsl.index];
 
 					// Gather the dates and measurements
-					for (int i = 0; i < dsl.logs.Length; i++) {
+					for (int i = 0; i < dsl.logs.Count; i++) {
 						dateLookupTable.Add(dsl.logs[i].recordedDate);
 					}
 
@@ -354,14 +378,8 @@
 		}
 
 		private void Export() {
-			var leftSelection = leftOverlay.width / (float)leftOverlay.plotWidth;
-			var rightSelection = 1 - (rightOverlay.width / (float)rightOverlay.plotWidth);
-			var results = graphAdapter.GatherSelectedLogs(leftSelection, rightSelection);
-
-			var start = graphAdapter.FindDateTimeFromSelection(leftSelection);
-			var end = graphAdapter.FindDateTimeFromSelection(rightSelection);
-
-			var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), start, end, results);
+      var results = graphAdapter.GatherSelectedLogs(startDate, endDate);
+      var dlr = DataLogReport.BuildFromSessionResults(ion, new DataLogReportLocalization(this), startDate, endDate, results);
 			dlr.reportName = GetString(Resource.String.report_data_logging_title);
 
 			try {
@@ -370,7 +388,6 @@
 				using (var ms = new MemoryStream(512)) {
 					drawable.Bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
 					dlr.appionLogoPng = ms.ToArray();
-					dlr.graphImages = CaptureGraphs();
 				}
 
 				drawable.Bitmap.Recycle();
@@ -383,74 +400,32 @@
 		}
 
 		/// <summary>
-		/// Captures all of the graph selected graph views and converts them into a png for exporting.
+		/// Creates simple graphs for the the reports.
 		/// </summary>
-		private Dictionary<GaugeDeviceSensor, IonImage> CaptureGraphs() {
-			var list = FindViewById<RecyclerView>(Resource.Id.list);
+		/// <returns>The detailed graphs.</returns>
+    private Dictionary<GaugeDeviceSensor, IonImage> CaptureGraphs(DataLogReport dlr, IGraphRenderer renderer) {
 			var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
 
-      int templateIndex = -1;
-			var lm = list.GetLayoutManager() as LinearLayoutManager;
-      // Find the first visible graph view holder
-      for (int i = lm.FindFirstVisibleItemPosition(); i < lm.FindLastVisibleItemPosition(); i++) {
-        var tvh = list.FindViewHolderForAdapterPosition(i) as GraphViewHolder;
-        if (tvh != null) {
-          templateIndex = i;
-          break;
-        }
-      }
-
-      if (templateIndex == -1) {
-        Log.E(this, "Failed to capture graphs for recycler view: no view holders found in range");
-        return ret;
-      }
-
-			var vh = list.FindViewHolderForAdapterPosition(templateIndex) as GraphViewHolder;
-
-			for (int i = 0; i < graphAdapter.ItemCount; i++) {
-        var record = graphAdapter[i] as GraphRecord;
-        if (record.isChecked) {
-          var view = vh.contentContainer;
-          graphAdapter.BindViewHolder(vh, i);
-          var image = new IonImage(IonImage.EType.Png, view.Width, view.Height, view.ToPng());
-          ret[vh.record.data] = image;
-        }
-      }
-
-      graphAdapter.BindViewHolder(vh, templateIndex);
-
-      return ret;
-		}
-
-    /// <summary>
-    /// Creates detailed graphs for the the reports.
-    /// </summary>
-    /// <returns>The detailed graphs.</returns>
-    private Dictionary<GaugeDeviceSensor, IonImage> CaptureDetailedGraphs(DataLogReport dlr) {
-      var ret = new Dictionary<GaugeDeviceSensor, IonImage>();
-
-      var tuple = BuildSensorReportEncapsulations(dlr.sessionResults);
-      var renderer = new DetailedGraphGenerator(this, ion);
-
+			var tuple = BuildSensorReportEncapsulations(dlr.sessionResults);
 
 			foreach (var encap in tuple.Item2) {
 				var bitmap = Bitmap.CreateBitmap(800, 400, Bitmap.Config.Argb8888);
-        try {
-          var canvas = new Canvas(bitmap);
-          renderer.Render(canvas, encap);
+				try {
+					var canvas = new Canvas(bitmap);
+					renderer.Render(canvas, encap);
 
-          using (var ms = new MemoryStream(128)) {
-            bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
-            ret[encap.sensor] = new IonImage(IonImage.EType.Png, bitmap.Width, bitmap.Height, ms.ToArray());
-          }
-        } finally {
-          bitmap.Recycle();
-          bitmap.Dispose();
-        }
-      }
+					using (var ms = new MemoryStream(128)) {
+						bitmap.Compress(Bitmap.CompressFormat.Png, 100, ms);
+						ret[encap.sensor] = new IonImage(IonImage.EType.Png, bitmap.Width, bitmap.Height, ms.ToArray());
+					}
+				} finally {
+					bitmap.Recycle();
+					bitmap.Dispose();
+				}
+			}
 
-      return ret;
-    }
+			return ret;
+		}
 
     /// <summary>
     /// Shows the dialog that will allow the user to select the type of report that they are going to export.
@@ -517,12 +492,12 @@
             switch (radio.CheckedRadioButtonId) {
               case Resource.Id._1:
                 exporter = new PdfReportExporter(ion, checkbox.Checked);
-                dlr.graphImages = CaptureGraphs();
+                dlr.graphImages = CaptureGraphs(dlr, new SimpleGraphRenderer(this, ion));
                 break;
               case Resource.Id._2:
                 exporter = new PdfDetailedReportExporter(ion, checkbox.Checked);
-                dlr.graphImages = CaptureDetailedGraphs(dlr);
-                break;
+								dlr.graphImages = CaptureGraphs(dlr, new DetailedGraphRenderer(this, ion));
+								break;
             }
             successIntent.PutExtra(ReportActivity.EXTRA_SHOW_SAVED_PDF, true);
           } else {
@@ -625,10 +600,11 @@
 		}
 	}
 
-	class DateTimeAdapter : ArrayAdapter<string> {
-		public List<DateTime> dates;
+  class DateTimeAdapter : ArrayAdapter<string> {
+    public List<DateTime> dates;
+    public DateTime this[int position] { get { return dates[position]; } }
 
-		public DateTimeAdapter(Context context, List<DateTime> dates) : base(context, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(dates)) {
+    public DateTimeAdapter(Context context, List<DateTime> dates) : base(context, Android.Resource.Layout.SimpleSpinnerItem, DatesToStrings(dates)) {
 			this.dates = dates;
 		}
 

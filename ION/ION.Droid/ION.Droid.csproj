@@ -323,10 +323,12 @@
     <Compile Include="src\Widgets\RocWidgetManager.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialViewHolder.cs" />
     <Compile Include="src\Report\DataLogReportLocalization.cs" />
-    <Compile Include="src\Activity\Report\DetailedGraphGenerator.cs" />
+    <Compile Include="src\Activity\Report\DetailedGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\PointSeries.cs" />
     <Compile Include="src\Activity\Report\SensorReportEncapsulation.cs" />
     <Compile Include="src\Activity\Report\ReportOverlay.cs" />
+    <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
+    <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
