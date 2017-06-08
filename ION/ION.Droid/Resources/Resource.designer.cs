@@ -1812,11 +1812,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0a00ad
 			public const int analyzer_icon_size = 2131361965;
 			
-			// aapt resource value: 0x7f0a00d2
-			public const int analyzer_sensor_mount_header = 2131362002;
-			
 			// aapt resource value: 0x7f0a00d3
-			public const int analyzer_sensor_mount_measurement = 2131362003;
+			public const int analyzer_sensor_mount_header = 2131362003;
+			
+			// aapt resource value: 0x7f0a00d4
+			public const int analyzer_sensor_mount_measurement = 2131362004;
 			
 			// aapt resource value: 0x7f0a00b0
 			public const int analyzer_viewer_measurement_text_size = 2131361968;
@@ -2145,6 +2145,9 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0a00c4
 			public const int ptchart_unit_width = 2131361988;
 			
+			// aapt resource value: 0x7f0a00c6
+			public const int report_check_area_size = 2131361990;
+			
 			// aapt resource value: 0x7f0a0096
 			public const int text_size_large = 2131361942;
 			
@@ -2175,41 +2178,41 @@ namespace ION.Droid
 			// aapt resource value: 0x7f0a00a0
 			public const int toast_icon_width = 2131361952;
 			
-			// aapt resource value: 0x7f0a00cb
-			public const int viewer_alarm_icon_size = 2131361995;
-			
-			// aapt resource value: 0x7f0a00c6
-			public const int viewer_association_width = 2131361990;
+			// aapt resource value: 0x7f0a00cc
+			public const int viewer_alarm_icon_size = 2131361996;
 			
 			// aapt resource value: 0x7f0a00c7
-			public const int viewer_battery_icon_height = 2131361991;
+			public const int viewer_association_width = 2131361991;
 			
 			// aapt resource value: 0x7f0a00c8
-			public const int viewer_battery_icon_width = 2131361992;
+			public const int viewer_battery_icon_height = 2131361992;
 			
 			// aapt resource value: 0x7f0a00c9
-			public const int viewer_connection_icon_size = 2131361993;
+			public const int viewer_battery_icon_width = 2131361993;
 			
 			// aapt resource value: 0x7f0a00ca
-			public const int viewer_device_icon_size = 2131361994;
+			public const int viewer_connection_icon_size = 2131361994;
 			
-			// aapt resource value: 0x7f0a00cd
-			public const int viewer_measurement_text_size = 2131361997;
-			
-			// aapt resource value: 0x7f0a00cc
-			public const int viewer_name_text_size = 2131361996;
-			
-			// aapt resource value: 0x7f0a00cf
-			public const int viewer_subview_huge = 2131361999;
+			// aapt resource value: 0x7f0a00cb
+			public const int viewer_device_icon_size = 2131361995;
 			
 			// aapt resource value: 0x7f0a00ce
-			public const int viewer_subview_large = 2131361998;
+			public const int viewer_measurement_text_size = 2131361998;
+			
+			// aapt resource value: 0x7f0a00cd
+			public const int viewer_name_text_size = 2131361997;
 			
 			// aapt resource value: 0x7f0a00d0
-			public const int viewer_subview_large_icon_size = 2131362000;
+			public const int viewer_subview_huge = 2131362000;
+			
+			// aapt resource value: 0x7f0a00cf
+			public const int viewer_subview_large = 2131361999;
 			
 			// aapt resource value: 0x7f0a00d1
-			public const int viewer_text_size = 2131362001;
+			public const int viewer_subview_large_icon_size = 2131362001;
+			
+			// aapt resource value: 0x7f0a00d2
+			public const int viewer_text_size = 2131362002;
 			
 			static Dimension()
 			{

@@ -29,7 +29,7 @@
 		public PointSeries(DeviceSensorLogs logs) {
 			this.logs = logs;
 
-			var len = logs.logs.Length;
+			var len = logs.logs.Count;
 			times = new DateTime[len];
 			measurements = new double[len];
 

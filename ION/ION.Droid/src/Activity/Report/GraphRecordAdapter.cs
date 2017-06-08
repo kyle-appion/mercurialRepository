@@ -39,20 +39,17 @@
 			}
 		}
 
-		public List<SessionResults> GatherSelectedLogs(float leftPercent, float rightPercent) {
+		public List<SessionResults> GatherSelectedLogs(DateTime startDate, DateTime endDate) {
+			var ion = AppState.context;
+			var sensors = GetCheckedSensors();
+
 			var ret = new List<SessionResults>();
 
-			var startTime = FindDateTimeFromSelection(leftPercent);
-			var endTime = FindDateTimeFromSelection(rightPercent);
-
 			foreach (var sr in sessionResults) {
-				var nsr = sr.SubSet(startTime, endTime);
+				var nsr = sr.SubSet(startDate, endDate);
 				if (!nsr.isEmpty) {
-					var ion = AppState.context;
-					var sensors = GetCheckedSensors();
-
-					for (int i = sr.deviceSensorLogs.Count - 1; i >= 0; i--) {
-						var dsl = sr.deviceSensorLogs[i];
+					for (int i = nsr.deviceSensorLogs.Count - 1; i >= 0; i--) {
+						var dsl = nsr.deviceSensorLogs[i];
 						// Find the gauge device sensor.
 						if (!SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
 							Log.E(this, "Failed to parse serial number: " + dsl.deviceSerialNumber);
@@ -68,12 +65,12 @@
 						var sensor = device[dsl.index];
 
 						if (!sensors.Contains(sensor)) {
-							sr.deviceSensorLogs.RemoveAt(i);
+							nsr.deviceSensorLogs.RemoveAt(i);
 						}
 					}
 
 					if (sr.deviceSensorLogs.Count > 0) {
-						ret.Add(sr);
+						ret.Add(nsr);
 					}
 				}
 			}
@@ -88,21 +85,6 @@
 		/// <param name="date">Date.</param>
 		public int IndexOfDateTime(DateTime date) {
 			return dil.IndexOfDate(date);
-		}
-
-		/// <summary>
-		/// Finds the date time
-		/// </summary>
-		/// <returns>The date time from selection.</returns>
-		/// <param name="percent">Percent.</param>
-		public DateTime FindDateTimeFromSelection(float percent) {
-			var index = (int)(percent * (dil.dateSpan - 1));
-			if (index >= dil.dateSpan) {
-				return DateTime.FromFileTime(0);
-			} else {
-				var ret = dil.DateFromIndex(index);
-				return ret;
-			}
 		}
 
 		/// <summary>

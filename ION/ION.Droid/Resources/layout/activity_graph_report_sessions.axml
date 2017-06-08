@@ -48,35 +48,51 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp" />
             </RelativeLayout>
-            <LinearLayout
-                android:orientation="vertical"
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp">
-                <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
-                    android:id="@id/list"
-                    android:layout_weight="1"
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp" />
-                <AbsoluteLayout
-                    android:id="@id/view"
+                    android:layout_height="match_parent">
+                    <ION.Droid.Widgets.RecyclerViews.SwipeRecyclerView
+                        android:id="@id/list"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp" />
+                    <Space
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <ImageView
-                        android:id="@id/left"
-                        android:scaleType="fitStart"
-                        android:layout_width="30dp"
-                        android:layout_height="45dp"
-                        android:src="@drawable/ic_drag_arrow_left" />
-                    <ImageView
-                        android:id="@id/right"
-                        android:scaleType="fitEnd"
-                        android:layout_width="30dp"
-                        android:layout_height="45dp"
-                        android:src="@drawable/ic_drag_arrow_right" />
-                </AbsoluteLayout>
-            </LinearLayout>
+                    android:layout_height="match_parent">
+                    <AbsoluteLayout
+                        android:id="@id/view"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:id="@id/left"
+                            android:scaleType="fitStart"
+                            android:layout_width="30dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/ic_drag_arrow_left" />
+                        <ImageView
+                            android:id="@id/right"
+                            android:scaleType="fitEnd"
+                            android:layout_width="30dp"
+                            android:layout_height="45dp"
+                            android:src="@drawable/ic_drag_arrow_right" />
+                    </AbsoluteLayout>
+                    <Space
+                        android:layout_width="@dimen/report_check_area_size"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </FrameLayout>
         </LinearLayout>
     <!-- The settings part of the fragment. -->
         <LinearLayout
