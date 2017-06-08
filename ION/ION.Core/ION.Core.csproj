@@ -131,7 +131,6 @@
     <Compile Include="src\Report\DataLogs\SensorLog.cs" />
     <Compile Include="src\Report\DataLogs\DeviceSensorLogs.cs" />
     <Compile Include="src\Report\DataLogs\SessionResults.cs" />
-    <Compile Include="src\Database\Deprecated\Device.cs" />
     <Compile Include="src\Database\LoggingDeviceRow.cs" />
     <Compile Include="src\Content\WhatsNew.cs" />
     <Compile Include="src\Devices\GaugeSerialNumber.cs" />
@@ -335,7 +334,6 @@
     <Folder Include="src\Devices\Filters\" />
     <Folder Include="src\Report\DataLogs\" />
     <Folder Include="src\Job\" />
-    <Folder Include="src\Database\Deprecated\" />
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Content\Parsers\ManifoldParsers\" />
