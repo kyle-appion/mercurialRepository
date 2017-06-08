@@ -238,7 +238,6 @@
     <Compile Include="src\Activity\Report\SensorOverviewViewHolder.cs" />
     <Compile Include="src\Activity\Report\OverviewAdapter.cs" />
     <Compile Include="src\Activity\Report\SensorExtensions.cs" />
-    <Compile Include="src\App\LocationResolverService.cs" />
     <Compile Include="src\Views\ClearFocusListener.cs" />
     <Compile Include="src\Views\ViewExtensions.cs" />
     <Compile Include="src\Activity\Tutorial\TutorialActivity.cs" />
@@ -306,7 +305,6 @@
     <Compile Include="src\Activity\RoCActivity.cs" />
     <Compile Include="src\Content\ManifoldParcelable.cs" />
     <Compile Include="src\Util\AndroidLogger.cs" />
-    <Compile Include="src\App\IONBroadcastReceiver.cs" />
     <Compile Include="src\Connections\BaseLeConnection.cs" />
     <Compile Include="src\Connections\AndroidConnectionManager.cs" />
     <Compile Include="src\Connections\Api18BleScanMethod.cs" />
