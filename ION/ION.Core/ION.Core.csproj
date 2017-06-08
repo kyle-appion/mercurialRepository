@@ -114,7 +114,6 @@
     <Compile Include="src\App\IAppDump.cs" />
     <Compile Include="src\App\AppionConstants.cs" />
     <Compile Include="src\App\Constants.cs" />
-    <Compile Include="src\Report\DataLoggingReport.cs" />
     <Compile Include="src\Pdf\DataLoggingReportPdfExporter.cs" />
     <Compile Include="src\Devices\Protocols\ClassicProtocol.cs" />
     <Compile Include="src\Database\ITableRow.cs" />
@@ -161,6 +160,7 @@
     <Compile Include="src\App\IIONPreferences.cs" />
     <Compile Include="src\Content\IonState.cs" />
     <Compile Include="src\IO\RssParser.cs" />
+    <Compile Include="src\UI\IonImage.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
@@ -339,6 +339,7 @@
     <Folder Include="src\Devices\Sorters\" />
     <Folder Include="src\IO\Exporter\" />
     <Folder Include="src\Content\Parsers\ManifoldParsers\" />
+    <Folder Include="src\UI\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SQLite.Net">
@@ -370,6 +371,9 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib.Portable">
       <HintPath>..\packages\SharpZipLib.Portable.0.86.0.0003\lib\portable-net45+netcore45+wp8+win8+wpa81+MonoTouch+MonoAndroid+Xamarin.iOS10\ICSharpCode.SharpZipLib.Portable.dll</HintPath>
+    </Reference>
+    <Reference Include="FlexCel">
+      <HintPath>..\Components\FlexCel-6.8.0\lib\android\FlexCel.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

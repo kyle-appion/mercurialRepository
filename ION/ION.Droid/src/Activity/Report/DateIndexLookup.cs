@@ -18,24 +18,22 @@
 			}
 		}
 
-		/// <summary>
-		/// The list of sorted dates that are present in the lookup.
-		/// </summary>
-		private List<DateTime> dates;
-		/// <summary>
-		/// The dictionary that maps dates to their index.
-		/// </summary>
-		public Dictionary<DateTime, int> lookup;
+    /// <summary>
+    /// The list of sorted dates that are present in the lookup.
+    /// </summary>
+    private List<DateTime> dates;
+    /// <summary>
+    /// The dictionary that maps dates to their index.
+    /// </summary>
+    private Dictionary<DateTime, int> lookup;
 
-		public DateIndexLookup(List<DateTime> dates) {
-			this.dates = dates;
-			dates.Sort();
-
+    public DateIndexLookup(List<DateTime> lookupDates) {
 			lookup = new Dictionary<DateTime, int>();
+      this.dates = new List<DateTime>(lookupDates);
+      this.dates.Sort();
 
 			for (var i = 0; i < dates.Count; i++) {
 				lookup[dates[i]] = i;
-				Log.D(this, "Date is: " + dates[i].ToFullShortString());
 			}
 		}
 

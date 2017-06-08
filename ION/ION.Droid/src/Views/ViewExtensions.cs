@@ -28,11 +28,12 @@ namespace ION.Droid.Views {
 		/// </summary>
 		/// <returns>The png.</returns>
 		/// <param name="view">View.</param>
-		public static Stream ToPng(this View view) {
+		public static byte[] ToPng(this View view) {
 			var b = view.CaptureViewToBitmap();
 
-			var ret = new MemoryStream();
-			b.Compress(Bitmap.CompressFormat.Png, 100, ret);
+      var ms = new MemoryStream();
+			b.Compress(Bitmap.CompressFormat.Png, 100, ms);
+      var ret = ms.ToArray();
 			b.Recycle();
 			b.Dispose();
 
