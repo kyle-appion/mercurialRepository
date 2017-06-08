@@ -115,11 +115,9 @@ namespace ION.Droid.Fragments._Workbench {
 
 			if (workbench == null) {
 				workbench = ion.LoadWorkbenchAsync().Result;
-//				Log.E(this, "Failed to load previous workbench. Defaulting to a new empty one");
 			}
-//			workbench.onWorkbenchEvent += OnWorkbenchEvent;
 
-			adapter = new WorkbenchAdapter(OnAddViewer, workbench);
+			adapter = new WorkbenchAdapter(OnAddViewer, workbench, ion is RemoteION);
 			list.SetAdapter(adapter);
 
       adapter.NotifyDataSetChanged();
@@ -131,7 +129,6 @@ namespace ION.Droid.Fragments._Workbench {
 		public override void OnPause() {
 			base.OnPause();
 
-//			workbench.onWorkbenchEvent -= OnWorkbenchEvent;
 			adapter.onSensorPropertyClicked -= OnOnSensorPropertyClicked;
 			adapter.onManifoldClicked -= OnManifoldClicked;
 		}
@@ -139,9 +136,6 @@ namespace ION.Droid.Fragments._Workbench {
 		// Overridden from Fragment
     public override void OnDestroy() {
       base.OnDestroy();
-      if (workbench != null) {
-//        workbench.onWorkbenchEvent -= OnWorkbenchEvent;
-      }
 
       list.SetAdapter(null);
 			if (adapter != null) {

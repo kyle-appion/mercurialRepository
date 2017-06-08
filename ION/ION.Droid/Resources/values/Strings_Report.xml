@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <resources>
 	<string name="reports">Reports</string>
+	<string name="reporting">Reporting</string>
   <string name="report_by_date">By Date</string>
   <string name="report_by_job">By Job</string>
   <string name="report_certificates">Calibration Certificates</string>
@@ -30,7 +31,9 @@
   <string name="report_delete_session">Really delete session?</string>
   <string name="report_delete_session_message">Deleting a session is permanent and irreversible. Are you sure you wish to delete the session?</string>
   <string name="report_devices_used">Devices Used</string>
+
   <string name="report_error_graph_no_sessions_provided">Failed to start session graphing: not sessions were selected.</string>
+  <string name="report_error_workbench_and_analyzer_empty">Recording not started. Please add Viewers to either your Workbench or Analyzer to start recording.</string>
 
   <string name="report_export_select_type">Select Export Type</string>
   <string name="report_export_xlsx">XSLX</string>

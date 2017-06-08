@@ -6,6 +6,7 @@
   <item name="_1" type="id"/>
   <item name="_2" type="id"/>
   <item name="_3" type="id"/>
+	<item name="account" type="id"/>
   <item name="add" type="id"/>
   <item name="address" type="id"/>
   <item name="address1" type="id"/>
