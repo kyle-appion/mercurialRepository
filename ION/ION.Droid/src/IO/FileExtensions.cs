@@ -7,6 +7,7 @@
   /// </summary>
   public static class FileExtensions {
 		public const string EXT_EXCEL = ".xlsx";
+    public const string EXT_CSV = ".csv";
     public const string EXT_PDF = ".pdf";
 
     /// <summary>
@@ -16,8 +17,9 @@
     /// <param name="file">File.</param>
     public static int GetIcon(this IFile file) {
 			switch (file.extension.ToLower()) {
+        case EXT_CSV:
 				case EXT_EXCEL:
-				return Resource.Drawable.ic_spreadsheet;
+				  return Resource.Drawable.ic_spreadsheet;
         case EXT_PDF:
           return Resource.Drawable.ic_pdf;
         default:

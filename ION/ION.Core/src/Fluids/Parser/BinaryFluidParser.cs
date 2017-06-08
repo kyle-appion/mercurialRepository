@@ -35,7 +35,6 @@
 
         // Reads whether or not the fluid is a mixture
         var mixture = !reader.ReadBoolean();
-        Log.D(this, "Is Mixture: " + mixture);
 
         // Prepare for table construction
         var temps = new double[rowCount];

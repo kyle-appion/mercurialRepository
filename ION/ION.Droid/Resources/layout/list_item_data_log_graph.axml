@@ -5,15 +5,23 @@
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/padding"
     android:paddingBottom="@dimen/padding">
-    <oxyplot.xamarin.android.PlotView
-        android:id="@id/graph"
+    <FrameLayout
+        android:id="@id/content"
+        android:background="@drawable/xml_white_bordered_background"
+        android:padding="2dp"
         android:layout_width="0dp"
         android:layout_height="125dp"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+        <oxyplot.xamarin.android.PlotView
+            android:id="@id/graph"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
     <LinearLayout
+        android:id="@id/view"
         android:orientation="vertical"
         android:background="@color/yellow"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/report_check_area_size"
         android:layout_height="match_parent">
         <TextView
             android:id="@id/title"
@@ -22,7 +30,7 @@
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_medium"
             android:padding="@dimen/padding"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Space
             android:layout_weight="1"

@@ -143,7 +143,6 @@
 				if (value == null) {
 					value = "";
 				}
-        Log.D(this, "Adding value " + value);
 				cols.Add(value);
 				return this;
 			}
