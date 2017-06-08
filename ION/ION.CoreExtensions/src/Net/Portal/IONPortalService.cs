@@ -1106,6 +1106,12 @@
       } else {
         if (analyzer.lowSideManifold != null) {
           analyzer.SetManifold(Analyzer.ESide.Low, (Manifold)null);
+          if (analyzer.lowSideManifold != null) {
+            if (!analyzer.lowSideManifold.ptChart.fluid.name.Equals(appState.setup.lowFluid)) {
+              var fluid = ion.fluidManager.GetFluidAsync(appState.setup.lowFluid).Result;
+              analyzer.lowSideManifold.ptChart = PTChart.New(ion, analyzer.lowSideManifold.ptChart.state, fluid);
+            }
+          }
         }
       }
 
@@ -1161,6 +1167,12 @@
       } else {
         if (analyzer.highSideManifold != null) {
           analyzer.SetManifold(Analyzer.ESide.High, (Manifold)null);
+					if (analyzer.highSideManifold != null) {
+						if (!analyzer.highSideManifold.ptChart.fluid.name.Equals(appState.setup.highFluid)) {
+							var fluid = ion.fluidManager.GetFluidAsync(appState.setup.highFluid).Result;
+							analyzer.highSideManifold.ptChart = PTChart.New(ion, analyzer.highSideManifold.ptChart.state, fluid);
+						}
+					}
         }
       }
 		}
