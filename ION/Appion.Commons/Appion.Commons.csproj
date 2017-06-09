@@ -32,7 +32,6 @@
     <Compile Include="src\Measure\Converter.cs" />
     <Compile Include="src\Measure\Dimension.cs" />
     <Compile Include="src\Measure\Quantity.cs" />
-    <Compile Include="src\Measure\RateOfChange.cs" />
     <Compile Include="src\Measure\Scalar.cs" />
     <Compile Include="src\Measure\ScalarSpan.cs" />
     <Compile Include="src\Measure\Unit.cs" />

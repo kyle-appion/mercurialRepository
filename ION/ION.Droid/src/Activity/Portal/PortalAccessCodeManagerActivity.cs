@@ -39,7 +39,7 @@ namespace ION.Droid.Activity.Portal {
 			ActionBar.SetDisplayHomeAsUpEnabled(true);
 
       try {
-        if (Build.VERSION.SdkInt < BuildVersionCodes.Lollipop) {
+        if (Build.VERSION.SdkInt > BuildVersionCodes.Lollipop) {
           SetContentView(Resource.Layout.activity_portal_access_code_manager);
         } else {
 					SetContentView(Resource.Layout.activity_portal_access_code_manager_4_4);
@@ -223,11 +223,11 @@ namespace ION.Droid.Activity.Portal {
 			public AccessCodeRecord(AccessCode code) : base(code) { }
 		}
 
-		private class AccessCodeViewHolder : RecordAdapter.SwipeRecordViewHolder<AccessCodeRecord> {
+    private class AccessCodeViewHolder : RecordAdapter.RecordViewHolder<AccessCodeRecord> {
 			private TextView text;
 
-			public AccessCodeViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection, Resource.Layout.list_item_button) {
-				text = foreground.FindViewById<TextView>(Resource.Id.text);
+      public AccessCodeViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection) {
+				text = ItemView.FindViewById<TextView>(Resource.Id.text);
 			}
 
 			public override void Invalidate() {
