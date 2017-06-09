@@ -1358,11 +1358,14 @@ namespace ION.Droid
 			// aapt resource value: 0x7f090007
 			public const int common_google_signin_btn_text_light_pressed = 2131296263;
 			
+			// aapt resource value: 0x7f090073
+			public const int common_google_signin_btn_tint = 2131296371;
+			
 			// aapt resource value: 0x7f090043
 			public const int design_bottom_navigation_shadow_color = 2131296323;
 			
-			// aapt resource value: 0x7f090073
-			public const int design_error = 2131296371;
+			// aapt resource value: 0x7f090074
+			public const int design_error = 2131296372;
 			
 			// aapt resource value: 0x7f090044
 			public const int design_fab_shadow_end_color = 2131296324;
@@ -1394,8 +1397,8 @@ namespace ION.Droid
 			// aapt resource value: 0x7f09004d
 			public const int design_textinput_error_color_light = 2131296333;
 			
-			// aapt resource value: 0x7f090074
-			public const int design_tint_password_toggle = 2131296372;
+			// aapt resource value: 0x7f090075
+			public const int design_tint_password_toggle = 2131296373;
 			
 			// aapt resource value: 0x7f09001b
 			public const int dim_foreground_disabled_material_dark = 2131296283;
@@ -1544,11 +1547,11 @@ namespace ION.Droid
 			// aapt resource value: 0x7f090040
 			public const int switch_thumb_disabled_material_light = 2131296320;
 			
-			// aapt resource value: 0x7f090075
-			public const int switch_thumb_material_dark = 2131296373;
-			
 			// aapt resource value: 0x7f090076
-			public const int switch_thumb_material_light = 2131296374;
+			public const int switch_thumb_material_dark = 2131296374;
+			
+			// aapt resource value: 0x7f090077
+			public const int switch_thumb_material_light = 2131296375;
 			
 			// aapt resource value: 0x7f090041
 			public const int switch_thumb_normal_material_dark = 2131296321;
@@ -2543,79 +2546,79 @@ namespace ION.Droid
 			public const int common_google_signin_btn_icon_dark = 2130837608;
 			
 			// aapt resource value: 0x7f020069
-			public const int common_google_signin_btn_icon_dark_disabled = 2130837609;
+			public const int common_google_signin_btn_icon_dark_focused = 2130837609;
 			
 			// aapt resource value: 0x7f02006a
-			public const int common_google_signin_btn_icon_dark_focused = 2130837610;
+			public const int common_google_signin_btn_icon_dark_normal = 2130837610;
 			
 			// aapt resource value: 0x7f02006b
-			public const int common_google_signin_btn_icon_dark_normal = 2130837611;
+			public const int common_google_signin_btn_icon_dark_normal_background = 2130837611;
 			
 			// aapt resource value: 0x7f02006c
-			public const int common_google_signin_btn_icon_dark_pressed = 2130837612;
+			public const int common_google_signin_btn_icon_disabled = 2130837612;
 			
 			// aapt resource value: 0x7f02006d
 			public const int common_google_signin_btn_icon_light = 2130837613;
 			
 			// aapt resource value: 0x7f02006e
-			public const int common_google_signin_btn_icon_light_disabled = 2130837614;
+			public const int common_google_signin_btn_icon_light_focused = 2130837614;
 			
 			// aapt resource value: 0x7f02006f
-			public const int common_google_signin_btn_icon_light_focused = 2130837615;
+			public const int common_google_signin_btn_icon_light_normal = 2130837615;
 			
 			// aapt resource value: 0x7f020070
-			public const int common_google_signin_btn_icon_light_normal = 2130837616;
+			public const int common_google_signin_btn_icon_light_normal_background = 2130837616;
 			
 			// aapt resource value: 0x7f020071
-			public const int common_google_signin_btn_icon_light_pressed = 2130837617;
+			public const int common_google_signin_btn_text_dark = 2130837617;
 			
 			// aapt resource value: 0x7f020072
-			public const int common_google_signin_btn_text_dark = 2130837618;
+			public const int common_google_signin_btn_text_dark_focused = 2130837618;
 			
 			// aapt resource value: 0x7f020073
-			public const int common_google_signin_btn_text_dark_disabled = 2130837619;
+			public const int common_google_signin_btn_text_dark_normal = 2130837619;
 			
 			// aapt resource value: 0x7f020074
-			public const int common_google_signin_btn_text_dark_focused = 2130837620;
+			public const int common_google_signin_btn_text_dark_normal_background = 2130837620;
 			
 			// aapt resource value: 0x7f020075
-			public const int common_google_signin_btn_text_dark_normal = 2130837621;
+			public const int common_google_signin_btn_text_disabled = 2130837621;
 			
 			// aapt resource value: 0x7f020076
-			public const int common_google_signin_btn_text_dark_pressed = 2130837622;
+			public const int common_google_signin_btn_text_light = 2130837622;
 			
 			// aapt resource value: 0x7f020077
-			public const int common_google_signin_btn_text_light = 2130837623;
+			public const int common_google_signin_btn_text_light_focused = 2130837623;
 			
 			// aapt resource value: 0x7f020078
-			public const int common_google_signin_btn_text_light_disabled = 2130837624;
+			public const int common_google_signin_btn_text_light_normal = 2130837624;
 			
 			// aapt resource value: 0x7f020079
-			public const int common_google_signin_btn_text_light_focused = 2130837625;
+			public const int common_google_signin_btn_text_light_normal_background = 2130837625;
 			
 			// aapt resource value: 0x7f02007a
-			public const int common_google_signin_btn_text_light_normal = 2130837626;
+			public const int design_bottom_navigation_item_background = 2130837626;
 			
 			// aapt resource value: 0x7f02007b
-			public const int common_google_signin_btn_text_light_pressed = 2130837627;
+			public const int design_fab_background = 2130837627;
 			
 			// aapt resource value: 0x7f02007c
-			public const int design_bottom_navigation_item_background = 2130837628;
+			public const int design_ic_visibility = 2130837628;
 			
 			// aapt resource value: 0x7f02007d
-			public const int design_fab_background = 2130837629;
+			public const int design_ic_visibility_off = 2130837629;
 			
 			// aapt resource value: 0x7f02007e
-			public const int design_ic_visibility = 2130837630;
+			public const int design_password_eye = 2130837630;
 			
 			// aapt resource value: 0x7f02007f
-			public const int design_ic_visibility_off = 2130837631;
+			public const int design_snackbar_background = 2130837631;
 			
 			// aapt resource value: 0x7f020080
-			public const int design_password_eye = 2130837632;
+			public const int googleg_disabled_color_18 = 2130837632;
 			
 			// aapt resource value: 0x7f020081
-			public const int design_snackbar_background = 2130837633;
+			public const int googleg_standard_color_18 = 2130837633;
 			
 			// aapt resource value: 0x7f020082
 			public const int hidden_button_selector = 2130837634;
