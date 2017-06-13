@@ -17,12 +17,13 @@
 	using ION.Droid.Activity;
 	using ION.Droid.Dialog;
 	using ION.Droid.Fragments;
+  using ION.Droid.IO;
 	using ION.Droid.Views;
 
 	/// <summary>
 	/// The activity that will walk a user through viewing and selecting reports for export.
 	/// </summary>
-	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", LaunchMode=LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
+	[Activity(Label="@string/reports", Icon="@drawable/ic_nav_reporting", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
 	public class ReportActivity : IONActivity {
 
 		public const string EXTRA_SHOW_SAVED_SPREADSHEETS = "ION.Droid.Activity.Report.extra.SHOW_SAVED_SPREADSHEETS";
@@ -223,7 +224,7 @@
 			savedReportsTab.Select();
 			var frag = new FileViewerFragment();
 			frag.folder = ion.dataLogReportFolder;
-			frag.filter = new FileExtensionFilter(true, new string[] { ".xlsx" });
+			frag.filter = new FileExtensionFilter(true, new string[] { FileExtensions.EXT_EXCEL, FileExtensions.EXT_CSV });
 			frag.onFileClicked = (file) => {
 				try {
 					var i = new Intent(Intent.ActionView);

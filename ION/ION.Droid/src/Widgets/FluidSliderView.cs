@@ -5,10 +5,8 @@
 	using Android.Content;
 	using Android.Graphics;
 	using Android.Views;
-  using Android.Util;
 
 	using Appion.Commons.Measure;
-	using Appion.Commons.Util;
 
 	using ION.Core.App;
 	using ION.Core.Fluids;

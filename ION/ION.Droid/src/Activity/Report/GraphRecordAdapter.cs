@@ -39,20 +39,17 @@
 			}
 		}
 
-		public List<SessionResults> GatherSelectedLogs(float leftPercent, float rightPercent) {
+		public List<SessionResults> GatherSelectedLogs(DateTime startDate, DateTime endDate) {
+			var ion = AppState.context;
+			var sensors = GetCheckedSensors();
+
 			var ret = new List<SessionResults>();
 
-			var startTime = FindDateTimeFromSelection(leftPercent);
-			var endTime = FindDateTimeFromSelection(rightPercent);
-
 			foreach (var sr in sessionResults) {
-				var nsr = sr.SubSet(startTime, endTime);
+				var nsr = sr.SubSet(startDate, endDate);
 				if (!nsr.isEmpty) {
-					var ion = AppState.context;
-					var sensors = GetCheckedSensors();
-
-					for (int i = sr.deviceSensorLogs.Count - 1; i >= 0; i--) {
-						var dsl = sr.deviceSensorLogs[i];
+					for (int i = nsr.deviceSensorLogs.Count - 1; i >= 0; i--) {
+						var dsl = nsr.deviceSensorLogs[i];
 						// Find the gauge device sensor.
 						if (!SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
 							Log.E(this, "Failed to parse serial number: " + dsl.deviceSerialNumber);
@@ -68,12 +65,12 @@
 						var sensor = device[dsl.index];
 
 						if (!sensors.Contains(sensor)) {
-							sr.deviceSensorLogs.RemoveAt(i);
+							nsr.deviceSensorLogs.RemoveAt(i);
 						}
 					}
 
 					if (sr.deviceSensorLogs.Count > 0) {
-						ret.Add(sr);
+						ret.Add(nsr);
 					}
 				}
 			}
@@ -91,28 +88,14 @@
 		}
 
 		/// <summary>
-		/// Finds the date time
-		/// </summary>
-		/// <returns>The date time from selection.</returns>
-		/// <param name="percent">Percent.</param>
-		public DateTime FindDateTimeFromSelection(float percent) {
-			var index = (int)(percent * (dil.dateSpan - 1));
-			if (index >= dil.dateSpan) {
-				return DateTime.FromFileTime(0);
-			} else {
-				var ret = dil.DateFromIndex(index);
-				return ret;
-			}
-		}
-
-		/// <summary>
 		/// Queries the percent within the date spand that the given date is
 		/// </summary>
 		/// <returns>The percent from date time.</returns>
 		/// <param name="date">Date.</param>
 		public float FindPercentFromDateTime(DateTime date) {
-			var i = dil.IndexOfDate(date);
-			return i / (float)dil.dateSpan; 
+      // Index is 0 indexed, yet we need a real fraction. Add one to line up to count.
+			var i = dil.IndexOfDate(date) + 1;
+      return i / (float)dil.dateSpan; 
 		}
 
 		/// <summary>
@@ -155,55 +138,14 @@
 			return ret;
 		}
 
-		public void SetRecords(IION ion, List<SessionResults> sessionResults) {
-			// Because we want to pad out empty time spans, and show dates in a non-linear fashion, we must map the dates to
-			// in index. For simplicity, we will map the dates to their index within the date lookup table.
-			var dateLookupTable = new List<DateTime>();
-			var map = new Dictionary<GaugeDeviceSensor, List<GraphRecord.PointSeries>>();
-
-			this.sessionResults = sessionResults;
-
-			foreach (var sr in sessionResults) {
-				foreach (var dsl in sr.deviceSensorLogs) {
-					// Find the gauge device sensor.
-					if (!SerialNumberExtensions.IsValidSerialNumber(dsl.deviceSerialNumber)) {
-						Log.E(this, "Failed to parse serial number: " + dsl.deviceSerialNumber);
-						continue;
-					}
-
-					var sn = SerialNumberExtensions.ParseSerialNumber(dsl.deviceSerialNumber);
-					var device = ion.deviceManager[sn] as GaugeDevice;
-					if (device == null) {
-						Log.E(this, "Failed to find gauge device: " + sn);
-						continue;
-					}
-					var sensor = device[dsl.index];
-
-					// Gather the dates and measurements.
-					for (int i = 0; i < dsl.logs.Length; i++) {
-						dateLookupTable.Add(dsl.logs[i].recordedDate);
-					}
-
-					List<GraphRecord.PointSeries> list;
-
-					map.TryGetValue(sensor, out list);
-					if (list == null) {
-						list = new List<GraphRecord.PointSeries>();
-						map[sensor] = list;
-					}
-
-					// Allocate the record contents.
-					list.Add(new GraphRecord.PointSeries(dsl));
-				}
-			}
-
+    public void SetRecords(List<SessionResults> sessionResults, DateIndexLookup dil, List<SensorReportEncapsulation> encaps) {
 			records.Clear();
 
-			dil = new DateIndexLookup(dateLookupTable);
-
-			foreach (var sensor in map.Keys) {
-				records.Add(new GraphRecord(sensor, dil, map[sensor].ToArray()));
-			}
+      this.sessionResults = sessionResults;
+      this.dil = dil;
+      foreach (var encap in encaps) {
+        records.Add(new GraphRecord(encap));
+      }
 
 			NotifyDataSetChanged();
 		}
