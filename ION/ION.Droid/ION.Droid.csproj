@@ -329,6 +329,7 @@
     <Compile Include="src\Activity\Report\ReportOverlay.cs" />
     <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
+    <Compile Include="src\Activity\DeviceGrid\DeviceGridActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -815,6 +816,7 @@
     <Folder Include="src\Net\Portal\" />
     <Folder Include="src\Content\" />
     <Folder Include="src\Activity\Rss\" />
+    <Folder Include="src\Activity\DeviceGrid\" />
   </ItemGroup>
   <ItemGroup>
     <AndroidAsset Include="Assets\fonts\DroidSans-Bold.ttf" />
