@@ -103,6 +103,28 @@
     }
 
     /// <summary>
+    /// Queries the minimum pressure of the fluid regardless of state.
+    /// </summary>
+    /// <returns>The minimum pressure.</returns>
+    public Scalar GetMinimumPressure() {
+      var dewLow = GetMinimumPressure(EState.Dew);
+			var bubLow = GetMinimumPressure(EState.Bubble);
+
+      return Scalar.Min(dewLow, bubLow);
+		}
+
+		/// <summary>
+		/// Queries the maximum pressure of the fluid regardless of state.
+		/// </summary>
+		/// <returns>The maximum pressure.</returns>
+		public Scalar GetMaximumPressure() {
+			var dewLow = GetMaximumPressure(EState.Dew);
+			var bubLow = GetMaximumPressure(EState.Bubble);
+
+			return Scalar.Max(dewLow, bubLow);
+		}
+
+    /// <summary>
     /// Queries the minimum pressure of the fluid in the given state.
     /// </summary>
     /// <returns>The pressure.</returns>

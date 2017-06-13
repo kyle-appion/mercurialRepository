@@ -4,16 +4,19 @@
 	using System.Collections.Generic;
 	using System.IO;
 
+  using Appion.Commons.Collections;
 	using Appion.Commons.Measure;
 
+	using ION.Core.Fluids;
 	using ION.Core.IO;
+  using ION.Core.Math;
 	using ION.Core.Sensors;
 
 	/// <summary>
 	/// The protocol that is used to communicate with the Rigado bluetooth chipset based devices. This protocol allows
 	/// for variable sized gauge packets.
 	/// </summary>
-	public class RidgadoV4Protocol : BaseBinaryProtocol {
+	public class RidgadoV5Protocol : BaseBinaryProtocol {
 		/// <summary>
 		/// The mask that is used to retrieve a unit code from a definition byte.
 		/// </summary>
@@ -115,6 +118,89 @@
 			var msb = (byte)((v >> 8) & 0xff);
 			var lsb = (byte)(v & 0xff);
 			return new byte[] { 0x04, msb, lsb, (byte)UnitLookup.GetCode(altitude.unit) };
+		}
+
+		/// <summary>
+		/// Serializes the given fluid into an enumerable set of 20 bytes chunks.
+    /// Note: The elevation assumed for this procedure is sea level or 0m.
+		/// </summary>
+		/// <returns>The fluid.</returns>
+		/// <param name="fluid">Fluid.</param>
+    public FluidUploadContainer SerializeFluid(Fluid fluid, SensorDefinition sensorDefinition) {
+      Func<Scalar, Scalar> ToAbs = (Scalar s) => {
+        return Physics.ConvertRelativePressureToAbsolute(s, Units.Length.METER.OfScalar(0));
+      };
+
+      var ms = new MemoryStream(64);
+
+      var fluidMin = fluid.GetMinimumPressure();
+      var fluidMax = fluid.GetMaximumPressure();
+
+      var kpa = Units.Pressure.KILOPASCAL;
+      var seaLevel = ToAbs(Units.Pressure.PSIG.OfScalar(0));
+      var minPressure = Scalar.Max(ToAbs(sensorDefinition.minimumMeasurement), fluidMin, seaLevel).ConvertTo(kpa);
+      var maxPressure = Scalar.Min(ToAbs(sensorDefinition.maximumMeasurement), fluidMax, seaLevel).ConvertTo(kpa);
+
+      var interval = Units.Pressure.PSIG.OfSpan(0.5).ConvertTo(kpa);
+
+      var steps = (int)((maxPressure.amount - minPressure.amount) / interval.magnitude);
+      maxPressure = kpa.OfScalar(minPressure.amount + interval.magnitude * steps);
+
+      using (var w = new BinaryWriter(ms)) {
+        // Commit the fluid data to the stream
+        w.Write((byte)1); // The file version
+        w.Write((int)(minPressure.amount * 10)); // Write the minimum pressure
+        w.Write((int)(maxPressure.amount * 10)); // Write the maximum pressure
+
+        for (int i = 0; i < steps; i++) {
+          var bub = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Bubble, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+          var dew = fluid.GetTemperatureFromAbsolutePressure(Fluid.EState.Dew, kpa.OfScalar(minPressure.amount + i * interval.magnitude));
+          w.Write((int)(bub.amount * 10)); // Write the bubble temperature
+          w.Write((int)(dew.amount * 10)); // Write the dew temperature
+        }
+      }
+
+      return new FluidUploadContainer(ms.ToArray());
+		}
+
+    public class FluidUploadContainer {
+      public byte[] buffer;
+
+      public FluidUploadContainer(byte[] buffer) {
+        this.buffer = buffer;
+      }
+
+      public IEnumerable<FluidFragmentPacket> GetFragmentPackets() {
+        var i = 0;
+        var pid = 1;
+
+        while (i < buffer.Length) {
+          var cnt = Math.Min(18, buffer.Length - i);
+
+          var packet = new FluidFragmentPacket((short)pid++, new Slice<byte>(buffer, i, i + cnt));
+          yield return packet;
+        }
+      }
+    }
+
+		/// <summary>
+		/// A structure that contains parts of a fluid's lookup table for transfer to a PT Gauge.
+		/// </summary>
+		public struct FluidFragmentPacket {
+			/// <summary>
+			/// The id for the packet.
+			/// </summary>
+			public short pid { get; private set; }
+			/// <summary>
+			/// The payload contained within the packet.
+			/// </summary>
+			/// <value>The payload.</value>
+			public Slice<byte> payload { get; private set; }
+
+			public FluidFragmentPacket(short pid, Slice<byte> payload) {
+				this.pid = pid;
+				this.payload = payload;
+			}
 		}
 
 		/// <summary>
