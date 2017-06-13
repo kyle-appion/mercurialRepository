@@ -44,7 +44,7 @@
 
 			i.SetFlags(ActivityFlags.NewTask | ActivityFlags.NoHistory);
 			i.PutExtra(Intent.ExtraEmail, new string[] { AppionConstants.EMAIL_SUPPORT });
-			i.SetType(Constants.MIME_RFC822);
+			i.SetType(AppionConstants.MIME_RFC822);
 
 			try {
 				var chooser = Intent.CreateChooser(i, activity.GetString(Resource.String.preferences_send_feedback));

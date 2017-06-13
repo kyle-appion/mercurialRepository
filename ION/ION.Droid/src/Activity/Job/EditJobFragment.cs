@@ -113,6 +113,7 @@
       }
 
 			var dialog = new ProgressDialog(Activity);
+      dialog.SetCanceledOnTouchOutside(false);
 			dialog.SetTitle(Resource.String.please_wait);
 			dialog.SetMessage(GetString(Resource.String.location_determining_address));
 			dialog.Show();
@@ -124,8 +125,12 @@
 				if (address == null) {
 					Toast.MakeText(Activity, Resource.String.location_undetermined, ToastLength.Long).Show();
 				} else {
-					addressView.Text = address.GetAddressLine(0);
-					coordinates.Text = address.Latitude + ", " + address.Longitude;
+          try {
+            addressView.Text = address.GetAddressLine(0) + ", " + address.GetAddressLine(1);
+            coordinates.Text = address.Latitude + ", " + address.Longitude;
+          } catch (Exception e) {
+            Log.E(this, "Failed to set address content", e);
+          }
 				}
       } else {
         // Get coordinates based on given address
@@ -137,41 +142,45 @@
         }
       }
 
+
+      await Task.Delay(500);
       dialog.Dismiss();
     }
 
 		private async Task<Address> PollGeocode(string address) {
 			var geo = new Geocoder(Activity);
+      var timeout = TimeSpan.FromSeconds(15);
 
       var start = DateTime.Now;
       var task = geo.GetFromLocationNameAsync(address, 1);
-      while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+      while (!task.IsCompleted && DateTime.Now - start <= timeout) {
         await Task.Delay(100);
       }
 
-      if (task.IsCompleted) {
-        return task.Result[0];
-      } else {
-        return null;
+      if (DateTime.Now - start > timeout) {
+				return null;
+			} else {
+				return task.Result[0];
       }
 		}
 
     private async Task<Address> PollGeocode() {
       var loc = ion.locationManager.lastKnownLocation;
+			var timeout = TimeSpan.FromSeconds(15);
 
-      var geo = new Geocoder(Activity);
+			var geo = new Geocoder(Activity);
 
 			var start = DateTime.Now;
 			var task = geo.GetFromLocationAsync(loc.latitude, loc.longitude, 1);
-			while (!task.IsCompleted && DateTime.Now - start <= TimeSpan.FromSeconds(5)) {
+			while (!task.IsCompleted && DateTime.Now - start <= timeout) {
 				await Task.Delay(100);
 			}
 
-      if (task.IsCompleted) {
-        return task.Result[0];
-      } else {
-        return null;
-      }
+			if (DateTime.Now - start > timeout) {
+				return null;
+			} else {
+				return task.Result[0];
+			}
     }
   }
 }

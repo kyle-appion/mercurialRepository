@@ -4,6 +4,7 @@
 
   using Appion.Commons.Measure;
 
+  using ION.Core.Fluids;
   using ION.Core.Sensors;
 
   public interface IIONPreferences {
@@ -99,6 +100,13 @@
 
   public interface IAlarmPreferences {
   }
+
+/*
+  public interface IFluidPreferences {
+    Fluid current { get; set; }
+    Fluid[] favorites { get; set; }
+  }
+*/
 
   public interface ILocationPreferences {
     Scalar customElevation { get; set; }

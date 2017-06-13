@@ -194,7 +194,6 @@
         if (__cache.ContainsKey(fluidName)) {
           var reference = __cache[fluidName];
           if (!reference.IsAlive) {
-            Log.D(this, "But it was garbage collected so removing key");
             __cache.Remove(fluidName);
           } else {
             ret = reference.Target as Fluid;
@@ -203,7 +202,6 @@
 
         if (ret == null && HasFluid(fluidName)) {
           ret = new BinaryFluidParser().ParseFluid(EmbeddedResource.Load(fluidName + EXT_FLUID));
-          Log.D(this, "got the binary fluid stuff");
           ret.color = GetFluidColor(ret.name);
           ret.safety = GetFluidSafety(ret.name);
           __cache.Add(fluidName, new WeakReference(ret));

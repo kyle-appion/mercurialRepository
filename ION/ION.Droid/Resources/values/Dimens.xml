@@ -157,6 +157,12 @@
   <!-- The width and height of the clear button in the ptchart activity. -->
   <dimen name="ptchart_clear_size">12dp</dimen>
 
+	<!--
+  Report dimensions
+	-->
+  <!-- The width of the check area used in report graphing. -->
+  <dimen name="report_check_area_size">64dp</dimen>
+
   <!--
   Viewer dimensions
   -->

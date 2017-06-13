@@ -2,10 +2,13 @@ namespace ION.Droid.Activity.Portal {
 
 	using System;
 	using System.Collections.Generic;
+  using System.Threading.Tasks;
 
 	using Android.App;
 	using Android.Content.PM;
 	using Android.OS;
+  using Android.Support.Design.Widget;
+  using Android.Support.V4.Widget;
 	using Android.Support.V7.Widget;
 	using Android.Views;
 	using Android.Widget;
@@ -16,10 +19,11 @@ namespace ION.Droid.Activity.Portal {
 	using ION.Droid.Widgets.RecyclerViews;
 
 	[Activity(Label = "@string/portal_view_connections", Theme = "@style/TerminalActivityTheme", LaunchMode=Android.Content.PM.LaunchMode.SingleTask, ScreenOrientation=ScreenOrientation.Portrait)]
-	public class PortalViewConnectionsActivity : IONActivity {
+	public class PortalViewConnectionsActivity : IONActivity, SwipeRefreshLayout.IOnRefreshListener {
 
 		private RecyclerView followingList;
 		private RecyclerView followersList;
+		private SwipeRefreshLayout swiper;
 
 		private Adapter followingAdapter;
 		private Adapter followerAdapter;
@@ -34,6 +38,8 @@ namespace ION.Droid.Activity.Portal {
 			var following = FindViewById(Resource.Id.portal_following);
 			followingList = following.FindViewById<RecyclerView>(Resource.Id.list);
 			var followingEmpty = following.FindViewById(Resource.Id.empty);
+			swiper = FindViewById<SwipeRefreshLayout>(Resource.Id.swiper);
+      swiper.SetOnRefreshListener(this);
 
 			var followers = FindViewById(Resource.Id.portal_followers);
 			followersList = followers.FindViewById<RecyclerView>(Resource.Id.list);
@@ -113,7 +119,8 @@ namespace ION.Droid.Activity.Portal {
 		/// <summary>
 		/// Refreshes the content of the activity.
 		/// </summary>
-		private async void OnRefresh() {
+		public async void OnRefresh() {
+      swiper.Refreshing = true;
       var result = await ion.portal.RequestConnectionData();
 
       if (result.success) {
@@ -131,6 +138,9 @@ namespace ION.Droid.Activity.Portal {
       } else {
         Error(GetString(Resource.String.portal_error_failed_to_query_following));
       }
+
+      await Task.Delay(1500);
+      swiper.Refreshing = false;
 		}
 
 		private class Adapter : RecordAdapter {
@@ -151,11 +161,11 @@ namespace ION.Droid.Activity.Portal {
 			public ConnectionRecord(ConnectionData data) : base(data) { }
 		}
 
-		private class ConnectionViewHolder : RecordAdapter.SwipeRecordViewHolder<ConnectionRecord> {
+		private class ConnectionViewHolder : RecordAdapter.RecordViewHolder<ConnectionRecord> {
 			private TextView text;
 
-			public ConnectionViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection, Resource.Layout.list_item_button) {
-				text = foreground.FindViewById<TextView>(Resource.Id.text);
+      public ConnectionViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_item_portal_connection) {
+				text = ItemView.FindViewById<TextView>(Resource.Id.text);
 			}
 
 			public override void Invalidate() {

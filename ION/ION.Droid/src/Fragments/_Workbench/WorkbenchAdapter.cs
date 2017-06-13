@@ -29,7 +29,7 @@
 		private ItemTouchHelper dragger;
 		private HashSet<ManifoldRecord> dragCollapsedManifoldRecords = new HashSet<ManifoldRecord>();
 
-		public WorkbenchAdapter(Action onAddViewer, Workbench workbench) {
+    public WorkbenchAdapter(Action onAddViewer, Workbench workbench, bool hideAdd) {
 			this.onAddViewer = onAddViewer;
 			this.workbench = workbench;
 			dragger = new ItemTouchHelper(new Dragger(this));
@@ -42,7 +42,9 @@
 				records.Add(new SpaceRecord());
 			}
 
-			records.Add(new AddViewerRecord(onAddViewer));
+      if (!hideAdd) {
+        records.Add(new AddViewerRecord(onAddViewer));
+      }
 		}
 
 		protected override void Dispose(bool disposing) {

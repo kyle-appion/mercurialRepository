@@ -3,6 +3,8 @@
 	using System;
 	using System.Collections.Generic;
 
+  using Appion.Commons.Util;
+
 	using Android.Graphics;
 	using Android.OS;
 	using Android.Support.V7.Widget;
@@ -61,20 +63,24 @@
 			RegisterAdapterDataObserver(new InternalObserver(this));
 		}
 
-		// Overridden from RecyclerView.Adapter
-		protected override void Dispose(bool disposing) {
-			base.Dispose(disposing);
-      if (recyclerView != null && recyclerView.ChildCount > 0) {
-  			for (int i = 0; i < this.ItemCount; i++) {
-  				var vh = recyclerView.FindViewHolderForAdapterPosition(i);
-  				if (vh is SwipeRecyclerView.ViewHolder) {
-  					var v = vh as SwipeRecyclerView.ViewHolder;
-  					v.Unbind();
-  				} else if (vh is RecordViewHolder) {
-  					var v = vh as RecordViewHolder;
-  					v.Unbind();
-  				}
-  			}
+    // Overridden from RecyclerView.Adapter
+    protected override void Dispose(bool disposing) {
+      base.Dispose(disposing);
+      try {
+        if (recyclerView != null && recyclerView.ChildCount > 0) {
+          for (int i = 0; i < this.ItemCount; i++) {
+            var vh = recyclerView.FindViewHolderForAdapterPosition(i);
+            if (vh is SwipeRecyclerView.ViewHolder) {
+              var v = vh as SwipeRecyclerView.ViewHolder;
+              v.Unbind();
+            } else if (vh is RecordViewHolder) {
+              var v = vh as RecordViewHolder;
+              v.Unbind();
+            }
+          }
+        }
+      } catch (Exception e) {
+        Log.E(this, "Failed to dispose RecordAdapter", e);
       }
 		}
 

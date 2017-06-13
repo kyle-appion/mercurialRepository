@@ -19,28 +19,31 @@
 		}
 	}
 
-	public class PortalRemoteViewingViewHolder : RecordAdapter.SwipeRecordViewHolder<PortalRemoteViewingRecord> {
+  public class PortalRemoteViewingViewHolder : RecordAdapter.RecordViewHolder<PortalRemoteViewingRecord> {
+    private TextView account;
 		private TextView name;
 		private TextView status;
 		private CheckBox check;
 
-		public PortalRemoteViewingViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_portal_remote_view_item, Resource.Layout.list_item_button) {
-			name = foreground.FindViewById<TextView>(Resource.Id.name);
-			status = foreground.FindViewById<TextView>(Resource.Id.status);
-			check = foreground.FindViewById<CheckBox>(Resource.Id.check);
+		public PortalRemoteViewingViewHolder(SwipeRecyclerView rv) : base(rv, Resource.Layout.list_portal_remote_view_item) {
+			account = ItemView.FindViewById<TextView>(Resource.Id.account);
+			name = ItemView.FindViewById<TextView>(Resource.Id.name);
+			status = ItemView.FindViewById<TextView>(Resource.Id.status);
+			check = ItemView.FindViewById<CheckBox>(Resource.Id.check);
 			check.Enabled = false;
 			check.Focusable = false;
-//			check.SetOnTouchListener(new ViewActionTouchListener());
-
+/*
 			var delete = background as TextView;
 			delete.SetText(Resource.String.delete);
+*/
 		}
 
 		public override void Invalidate() {
 			var c = ItemView.Context;
 			base.Invalidate();
 
-			name.Text = record.data.displayName;
+			account.Text = record.data.displayName;
+      name.Text = record.data.deviceName;
 
 			if (record.isBeingDownloaded) {
 				status.SetText(Resource.String.portal_viewing);
