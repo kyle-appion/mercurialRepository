@@ -1,0 +1,194 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<resources>
+  <!--
+  START MATERIAL DESIGN DIMENSIONS
+  These dimensions are the constant dimensions that android recommends for good
+  material design.
+  -->
+
+  <!--
+  MD: ACTIVITY ALIGNMENT
+  NOTE: The following section is used for standard display layouts such as the
+  PTChart activity, ShSc activity or a job editor. This should not necessarily
+  apply to the ViewerFragment or the AnalyzerFragment.
+  -->
+  <!-- The universal padding for activity content. -->
+  <dimen name="keyline_1">16dp</dimen>
+  <!-- The universal padding for activity content where the activity is starved for space. -->
+  <dimen name="keyline_1_minus_8">8dp</dimen>
+  <!-- The universal left justified line that content (not title) should align to. -->
+  <dimen name="keyline_2_content">72dp</dimen>
+  <!-- The universal left justified line that titles of content should align to. -->
+  <dimen name="keyline_2_title">56dp</dimen>
+
+  <!-- GENERAL DIMENSIONS -->
+  <dimen name="padding">5dp</dimen>
+  <dimen name="nav_padding">10dp</dimen>
+  <dimen name="thin_separator">1dp</dimen>
+  <dimen name="thick_separator">2dp</dimen>
+
+  <!--
+  MD: TEXT SIZE
+  NOTE: The following section is used EXPLICITLY for general content text sizing.
+  -->
+  <!-- The text size for super small text that the user should almost never need. -->
+  <dimen name="text_size_tiny">10sp</dimen>
+  <!-- The text size for small text. -->
+  <dimen name="text_size_small">12sp</dimen>
+  <!-- The text size for medium text. This is generally content text. -->
+  <dimen name="text_size_medium">14sp</dimen>
+  <!-- The text size for large text. This is generally header text. -->
+  <dimen name="text_size_large">16sp</dimen>
+  <!-- The text size for a very large text. This is generally header text. -->
+  <dimen name="text_size_xlarge">20sp</dimen>
+  <!-- The text size for very large text. This is generally title text. -->
+  <dimen name="text_size_title">24sp</dimen>
+
+  <!--
+  Navigation Drawer Dimensions
+  -->
+  <dimen name="navigation_drawer_width">320dp</dimen>
+
+  <!--
+  END MATERIAL DESIGN DIMENSIONS
+  -->
+
+  <!-- Content dimensions -->
+  <dimen name="icon_very_large">55dp</dimen>
+  <dimen name="icon_large">45dp</dimen>
+  <dimen name="icon_medium">30dp</dimen>
+  <dimen name="icon_small">20dp</dimen>
+  <dimen name="icon_very_small">15dp</dimen>
+
+  <dimen name="nav_icon">60dp</dimen>
+
+  <!--
+  General App Dimensions
+  -->
+  <dimen name="toast_icon_width">48dp</dimen>
+  <dimen name="toast_icon_height">48dp</dimen>
+  <dimen name="arrow_width">24dp</dimen>
+  <dimen name="arrow_height">24dp</dimen>
+
+  <!--
+  Activity Dimensions
+  -->
+  <!-- The width and Height that and activity will use to pad it's content. -->
+  <dimen name="activity_padding">16dp</dimen>
+  <!-- The width of the navigation drawer for the home activity. -->
+  <dimen name="drawer_width">300dp</dimen>
+  <!-- The width and height of the icon in a drawer's navigation item. -->
+  <dimen name="drawer_navigation_icon_size">36dp</dimen>
+  <!-- The text size for the title of a navigation drawer's category title. -->
+  <dimen name="drawer_navigation_category_text_size">24sp</dimen>
+  <!-- The text size for the title of a navigation drawer's item title. -->
+  <dimen name="drawer_navigation_item_text_size">36sp</dimen>
+  <!-- The height for the "divider" view for the navigation drawer's large separator view. -->
+  <dimen name="drawer_navigation_separator_large_height">2dp</dimen>
+  <!-- The height for the "divider" view for the navigation drawer's small separator view. -->
+  <dimen name="drawer_navigation_separator_small_height">1dp</dimen>
+
+  <!--
+  Analyzer Dimensions
+  -->
+  <!-- The icon width for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_width">14dp</dimen>
+  <!-- The icon height for the battery icon within the manifold for the analyzer. -->
+  <dimen name="analyzer_battery_icon_height">24dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_icon_size">24dp</dimen>
+  <!-- The icon size for the device icon in the manifold within the anlyzer. -->
+  <dimen name="analyzer_device_icon_size">32dp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_text_size">18sp</dimen>
+  <!-- The text size for the measurement text view in the manifold within the analyzer. -->
+  <dimen name="analyzer_viewer_measurement_text_size">24sp</dimen>
+
+  <!--
+  Device Manager dimensions
+  -->
+  <!-- The width and height of the a connect icon in the device manager. -->
+  <dimen name="device_manager_connect_icon_size">64dp</dimen>
+  <!-- The width and height of the a device icon in the device manager. -->
+  <dimen name="device_manager_device_icon_size">48dp</dimen>
+  <!-- The width and height of the a sensor icon in the device manager. -->
+  <dimen name="device_manager_sensor_icon_size">48dp</dimen>
+
+  <!--
+  Fluid
+  -->
+  <!-- The general width of the the fuid color. -->
+  <dimen name="fluid_color_width">64dp</dimen>
+  <!-- The general height of the the fuid color. -->
+  <dimen name="fluid_color_height">48dp</dimen>
+  <!-- The size of the text view that is to display the name of the fluid -->
+  <dimen name="fluid_text_width">100dp</dimen>
+  <!-- The size of an icon in the fluid dialog manager. -->
+  <dimen name="fluid_icon_size">64dp</dimen>
+  <!-- The "padding" inset that is applied to the fluid manager to align some components -->
+	<dimen name="fluid_inset">64dp</dimen>
+	<!-- The size of the fluid text. -->
+	<dimen name="fluid_saftey_text_size">24sp</dimen>
+	<dimen name="fluid_indicator_size">8dp</dimen>
+
+	<!--
+	Portal
+	-->
+	<!-- The height of the banner in the Portal login page. -->
+	<dimen name="portal_landing_button_width">100dp</dimen>
+	<dimen name="portal_landing_button_height">100dp</dimen>
+	<dimen name="portal_landing_text_size">20sp</dimen>
+	<dimen name="portal_title_text">30sp</dimen>
+	<dimen name="portal_icon_size">48dp</dimen>
+
+  <!--
+  PTChart dimensions
+  -->
+  <!-- The height of the fluid color view in the ptchart activity. -->
+  <dimen name="ptchart_fluid_color_height">48dp</dimen>
+  <!-- The width of the fluid color view in the ptchart activity. -->
+  <dimen name="ptchart_fluid_color_width">64dp</dimen>
+  <!-- The width and height of an icon in the ptchart activity. -->
+  <dimen name="ptchart_icon_size">64dp</dimen>
+  <!-- The height of the view that divides the sections within the ptchart activity. -->
+  <dimen name="ptchart_section_divider_height">2dp</dimen>
+  <!-- The width of the unit button in the ptchart activity. -->
+  <dimen name="ptchart_unit_width">64dp</dimen>
+  <!-- The width and height of the clear button in the ptchart activity. -->
+  <dimen name="ptchart_clear_size">12dp</dimen>
+
+	<!--
+  Report dimensions
+	-->
+  <!-- The width of the check area used in report graphing. -->
+  <dimen name="report_check_area_size">64dp</dimen>
+
+  <!--
+  Viewer dimensions
+  -->
+  <!-- The width of the gold association line. -->
+  <dimen name="viewer_association_width">12dp</dimen>
+  <!-- The height of the battery icon. -->
+  <dimen name="viewer_battery_icon_height">24dp</dimen>
+  <!-- The width of the battery icon. -->
+  <dimen name="viewer_battery_icon_width">48dp</dimen>
+  <!-- The width and hieght of the connection icon in the viewer's header. -->
+  <dimen name="viewer_connection_icon_size">32dp</dimen>
+  <!-- The width and height of the device icon in the viewer's content. -->
+  <dimen name="viewer_device_icon_size">64dp</dimen>
+  <!-- The width and height of the alarm icon in the viewer's footer. -->
+  <dimen name="viewer_alarm_icon_size">32dp</dimen>
+  <!-- The text size for the name view in the viewer' content. -->
+  <dimen name="viewer_name_text_size">30dp</dimen>
+  <!-- The text size for the measurement view in the viewer's content. -->
+  <dimen name="viewer_measurement_text_size">64sp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_large">48dp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_huge">90dp</dimen>
+  <!-- The size of the icons in the large subview list item. -->
+  <dimen name="viewer_subview_large_icon_size">32dp</dimen>
+  <!-- The text size for the unit view in the viewer's footer. -->
+  <dimen name="viewer_text_size">24sp</dimen>
+
+</resources>

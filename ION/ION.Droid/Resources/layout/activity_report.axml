@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Space
+        android:layout_height="10dp"
+        android:layout_width="wrap_content" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <TextView
+            android:background="@drawable/shape_rounded_title_green"
+            android:text="@string/report_session_selection"
+            android:gravity="center"
+            android:id="@id/text"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_large"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:background="@drawable/tab_indicator_ab_ion_action_bar"
+                android:id="@id/tab_1"
+                android:text="@string/report_by_job"
+                android:textSize="@dimen/text_size_large"
+                android:textColor="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/padding" />
+            <Button
+                android:background="@drawable/tab_indicator_ab_ion_action_bar"
+                android:id="@id/tab_2"
+                android:text="@string/report_by_date"
+                android:textSize="@dimen/text_size_large"
+                android:textColor="@color/black"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="@dimen/padding" />
+        </LinearLayout>
+        <FrameLayout
+            android:id="@id/content"
+            android:background="@drawable/shape_rounded_content_white"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+    <Button
+        android:id="@id/report_graph"
+        android:text="@string/report_graph_selection"
+        android:textSize="@dimen/text_size_large"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>
