@@ -81,14 +81,12 @@ namespace ION.Droid.Dialog {
 					}
 
 					ldb.AddItem(Resource.String.rename, () => {
-						ldb.AddItem(Resource.String.rename, () => {
-							if (sensor is GaugeDeviceSensor) {
-								var gds = sensor as GaugeDeviceSensor;
-								new RenameDialog(gds.device).Show(context);
-							} else {
-								new RenameDialog(sensor).Show(context);
-							}
-						});
+						if (sensor is GaugeDeviceSensor) {
+							var gds = sensor as GaugeDeviceSensor;
+							new RenameDialog(gds.device).Show(context);
+						} else {
+							new RenameDialog(sensor).Show(context);
+						}
 					});
 
 					ldb.AddItem(Resource.String.alarm, () => {

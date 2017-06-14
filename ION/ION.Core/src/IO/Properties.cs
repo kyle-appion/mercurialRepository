@@ -39,23 +39,25 @@
     /// </summary>
     /// <returns>The file.</returns>
     /// <param name="file">File.</param>
-    public async static Task<Properties> FromFileAsync(IFile file) {
-      using (var reader = new System.IO.StreamReader(file.OpenForReading())) { 
-        var dict = new Dictionary<string, string>();
+    public static Task<Properties> FromFileAsync(IFile file) {
+      return Task.Factory.StartNew(() => {
+        using (var reader = new System.IO.StreamReader(file.OpenForReading())) {
+          var dict = new Dictionary<string, string>();
 
-        string line = null;
-        var lineNumber = 1;
-        while ((line = reader.ReadLine()) != null) {
-          var parts = line.Split(':');
-          if (parts.Length != 2) {
-            throw new System.IO.IOException("Cannot load properties: invalid property definition at line " + lineNumber);
+          string line = null;
+          var lineNumber = 1;
+          while ((line = reader.ReadLine()) != null) {
+            var parts = line.Split(':');
+            if (parts.Length != 2) {
+              throw new System.IO.IOException("Cannot load properties: invalid property definition at line " + lineNumber);
+            }
+            dict[parts[0].Trim()] = parts[1].Trim();
+            lineNumber++;
           }
-          dict[parts[0].Trim()] = parts[1].Trim();
-          lineNumber++;
-        }
 
-        return new Properties(dict);
-      }
+          return new Properties(dict);
+        }
+      });
     }
 
     /// <summary>
@@ -64,24 +66,26 @@
     /// </summary>
     /// <returns>The stream async.</returns>
     /// <param name="stream">Stream.</param>
-    public async static Task<Properties> FromStreamAsync(Stream stream) {
-      using (var reader = new StreamReader(stream)) {
-        var dict = new Dictionary<string, string>();
+    public static Task<Properties> FromStreamAsync(Stream stream) {
+      return Task.Factory.StartNew(() => {
+        using (var reader = new StreamReader(stream)) {
+          var dict = new Dictionary<string, string>();
 
-        string line = null;
-        var lineNumber = 1;
-        while ((line = reader.ReadLine()) != null) {
-          var parts = line.Split(':');
-          if (parts.Length != 2) {
-            throw new System.IO.IOException("Cannot load properties: invalid property definition at line " + lineNumber);
+          string line = null;
+          var lineNumber = 1;
+          while ((line = reader.ReadLine()) != null) {
+            var parts = line.Split(':');
+            if (parts.Length != 2) {
+              throw new System.IO.IOException("Cannot load properties: invalid property definition at line " + lineNumber);
+            }
+            dict[parts[0].Trim()] = parts[1].Trim();
+            lineNumber++;
           }
-          dict[parts[0].Trim()] = parts[1].Trim();
-          lineNumber++;
-        }
 
-        return new Properties(dict);
-      }
-    }
+          return new Properties(dict);
+        }
+      });
+  	}
   }
 }
 

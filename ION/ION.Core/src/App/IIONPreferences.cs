@@ -1,6 +1,7 @@
 ﻿namespace ION.Core.App {
 
   using System;
+  using System.Threading.Tasks;
 
   using Appion.Commons.Measure;
 
@@ -40,6 +41,11 @@
     /// </summary>
     /// <value>The alarm.</value>
     IAlarmPreferences alarm { get; }
+    /// <summary>
+    /// Queries the fluid preferences.
+    /// </summary>
+    /// <value>The fluid.</value>
+    IFluidPreferences fluid { get; }
     /// <summary>
     /// Queries the location preferences.
     /// </summary>
@@ -101,12 +107,10 @@
   public interface IAlarmPreferences {
   }
 
-/*
   public interface IFluidPreferences {
-    Fluid current { get; set; }
-    Fluid[] favorites { get; set; }
+    string preferredFluid { get; set; }
+    string[] favorites { get; set; }
   }
-*/
 
   public interface ILocationPreferences {
     Scalar customElevation { get; set; }

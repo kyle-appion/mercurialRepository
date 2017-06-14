@@ -91,7 +91,7 @@
       } else if (sensor is ManualSensor) {
         return new ManualSensorParcelable(sensor as ManualSensor);
       } else {
-        throw new Exception("Cannot get sensor parcelable for sensor: " + sensor);
+        return null;
       }
     }
   }

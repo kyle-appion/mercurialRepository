@@ -19,10 +19,6 @@
   /// </summary>
   public class BaseFluidManager : IFluidManager {
     /// <summary>
-    /// The file name for the fluid manager's preferences.
-    /// </summary>
-    private const string PREFERENCE_FILE = "fluid_manager.preferences";
-    /// <summary>
     /// The asset file path for the refrigerant colors.
     /// </summary>
     private const string FLUID_COLORS_FILE = "refrigerantcolors.properties";
@@ -30,14 +26,6 @@
     /// The asset file path for the refrigerant safety.
     /// </summary>
     private const string FLUID_SAFETY_FILE = "refrigerantsafety.properties";
-    /// <summary>
-    /// The preference key that is used to retrieve the last used fluid for the fluid manager.
-    /// </summary>
-    private const string KEY_LAST_USED_FLUID = "last_used_fluid";
-    /// <summary>
-    /// The key that is used to retrieve the preferred fluids from preferences.
-    /// </summary>
-    private const string KEY_PREFERRED_FLUIDS = "preferred_fluids";
     /// <summary>
     /// The name of the asset directory that fluids are contained.
     /// </summary>
@@ -53,7 +41,7 @@
     /// <summary>
     /// The default preferred fluids.
     /// </summary>
-    private const string DEFAULT_FLUIDS = "R22,R134a,R407C,R410A";
+    private static string[] DEFAULT_FLUIDS = new string[] { "R22", "R134a", "R407C", "R410A" };
     /// <summary>
     /// The default fluid color.
     /// </summary>
@@ -68,22 +56,15 @@
     public Fluid lastUsedFluid { get; private set; }
 
     // Overridden from IFluidManager
-    public List<string> preferredFluids {
+    public HashSet<string> preferredFluids {
       get {
-        return new List<string>(__preferredFluids);
+        return new HashSet<string>(__preferredFluids);
       }
-      private set {
-        __preferredFluids = value;
-      }
-    } List<string> __preferredFluids;
+    } HashSet<string> __preferredFluids;
     /// <summary>
     /// The backing ION context for the fluid manager.
     /// </summary>
     public IION ion { get; private set; }
-    /// <summary>
-    /// The preference for the fluid manager.
-    /// </summary>
-    private IPreferences preferences;
     /// <summary>
     /// The properties that contains the known fluid colors.
     /// </summary>
@@ -99,38 +80,28 @@
 
     public BaseFluidManager(IION ion) {
       this.ion = ion;
-      preferredFluids = new List<string>();
     }
 
     // Overridden from IFluidManager
     public async Task<InitializationResult> InitAsync() {
       try {
-//        var names = GetAvailableFluidNames();
         var dir = ion.fileManager.GetApplicationInternalDirectory();
-        preferences = await BasePreferences.OpenAsync(dir.GetFile(PREFERENCE_FILE, EFileAccessResponse.CreateIfMissing));
         var propStream = EmbeddedResource.Load(FLUID_COLORS_FILE);
         fluidColors = await Properties.FromStreamAsync(propStream);
 
         var fsStream = EmbeddedResource.Load(FLUID_SAFETY_FILE);
         fluidSafety = await Properties.FromStreamAsync(fsStream);
 
-        preferredFluids = new List<string>();
-        var preferred = preferences.GetString(KEY_PREFERRED_FLUIDS, DEFAULT_FLUIDS);
-        if (preferred != null) {
-          var parts = preferred.Split(',');
-          if (parts.Length > 0) {
-            preferredFluids = parts.ToList();
-          }
+        var favoriteFluids = ion.preferences.fluid.favorites;
+        if (favoriteFluids == null) {
+          ion.preferences.fluid.favorites = favoriteFluids = DEFAULT_FLUIDS;
         }
 
-        preferredFluids.Sort(new AlphabeticalStringComparer());
+        __preferredFluids = new HashSet<string>(favoriteFluids);
 
-        var fluidName = preferences.GetString(KEY_LAST_USED_FLUID, DEFAULT_FLUID);
+        var fluidName = ion.preferences.fluid.preferredFluid;
         if (fluidName == null) {
-          var fluidNames = GetAvailableFluidNames();
-          if (fluidNames.Count > 0) {
-            fluidName = fluidNames[0];
-          }
+          fluidName = DEFAULT_FLUID;
         }
 
         await GetFluidAsync(fluidName);
@@ -155,8 +126,8 @@
     }
 
     // Overridden from IFluidManager
-    public List<string> GetAvailableFluidNames() {
-      var ret = new List<string>();
+    public HashSet<string> GetAvailableFluidNames() {
+      var ret = new HashSet<string>();
 
       foreach (var filename in EmbeddedResource.GetResourcesOfExtension(EXT_FLUID)) {
         if (!FLUID_COLORS_FILE.Equals(filename)) {
@@ -164,8 +135,6 @@
           ret.Add(fluidName);
         }
       }
-
-      ret.Sort(new AlphabeticalStringComparer());
 
       return ret;
     }
@@ -180,15 +149,14 @@
       }
 
       lastUsedFluid = ret;
-      preferences.SetString(KEY_LAST_USED_FLUID, fluidName);
-      await preferences.Commit();
+      ion.preferences.fluid.preferredFluid = fluidName;
 
       return ret;
     }
 
     // Implemented from IFluidManager
-    public async Task<Fluid> LoadFluidAsync(string fluidName) {
-      //return Task.Factory.StartNew(() => {
+    public Task<Fluid> LoadFluidAsync(string fluidName) {
+      return Task.Factory.StartNew(() => {
         Fluid ret = null;
 
         if (__cache.ContainsKey(fluidName)) {
@@ -209,7 +177,7 @@
         } else {
           return ret;
         }
-      //});
+      });
     }
 
     // Overridden from IFluidManager
@@ -252,18 +220,16 @@
       }
 
       if (preferred) {
-        if (!__preferredFluids.Contains(fluidName)) {
-          __preferredFluids.Add(fluidName);
-        }
+				__preferredFluids.Add(fluidName);
       } else {
-        __preferredFluids.Remove(fluidName);
-      }
+				__preferredFluids.Remove(fluidName);
+			}
+
+      ion.preferences.fluid.favorites = __preferredFluids.ToArray();
 
       if (onFluidPreferenceChanged != null) {
         onFluidPreferenceChanged(this, fluidName);
       }
-
-      CommitPreferredFluids();
     }
 
     /// <summary>
@@ -290,23 +256,6 @@
       var fm = ion.fileManager;
       var dir = fm.GetAssetDirectory();
       return dir.GetFolder(PATH_FLUIDS);
-    }
-
-    /// <summary>
-    /// Commits the preferred fluids for the manager.
-    /// </summary>
-    private void CommitPreferredFluids() {
-      if (preferredFluids.Count > 0) {
-        var len = preferredFluids.Count;
-        var sb = new StringBuilder();
-        for (int i = 0; i < len - 1; i++) {
-          sb.Append(preferredFluids[i]).Append(",");
-        }
-        sb.Append(preferredFluids[len - 1]);
-
-        preferences.SetString(KEY_PREFERRED_FLUIDS, sb.ToString());
-        preferences.Commit();
-      }
     }
   }
 }

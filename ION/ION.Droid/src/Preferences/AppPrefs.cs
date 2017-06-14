@@ -1,32 +1,35 @@
 ﻿namespace ION.Droid.Preferences {
 
   using System;
+  using System.Text;
+  using System.Threading.Tasks;
 
   using Android.Content;
 
-	using Appion.Commons.Measure;
-	using Appion.Commons.Util;
+  using Appion.Commons.Measure;
+  using Appion.Commons.Util;
 
   using ION.Core.App;
+  using ION.Core.Fluids;
   using ION.Core.Sensors;
 
   /// <summary>
   /// A simple class that is used to access the android applications preferences.
   /// </summary>
   public class AppPrefs : Java.Lang.Object, IIONPreferences, ISharedPreferencesOnSharedPreferenceChangeListener {
-		/// <summary>
-		/// The name of the general ion preferences.
-		/// </summary>
-		public const string PREFERENCES_GENERAL = "ion.preferences";
+    /// <summary>
+    /// The name of the general ion preferences.
+    /// </summary>
+    public const string PREFERENCES_GENERAL = "ion.preferences";
 
-		private static AppPrefs PREFS;
-		public static AppPrefs Get(Context context) {
-			if (PREFS == null) {
-				PREFS = new AppPrefs(context, context.GetSharedPreferences(PREFERENCES_GENERAL, FileCreationMode.Private));
-			}
+    private static AppPrefs PREFS;
+    public static AppPrefs Get(Context context) {
+      if (PREFS == null) {
+        PREFS = new AppPrefs(context, context.GetSharedPreferences(PREFERENCES_GENERAL, FileCreationMode.Private));
+      }
 
-			return PREFS;
-		}
+      return PREFS;
+    }
 
     public void OnSharedPreferenceChanged(ISharedPreferences prefs, string key) {
       if (onPreferencesChanged != null) {
@@ -162,14 +165,14 @@
         if (usDate == null) {
           return DateTime.Now.ToString();
         } else {
-          return usDate;          
+          return usDate;
         }
       }
       set {
         var e = prefs.Edit();
         e.PutString(context.GetString(Resource.String.pkey_rss_last_check_date), value);
         e.Commit();
-      }      
+      }
     }
 
 
@@ -180,6 +183,10 @@
     public AlarmPreferences _alarm { get; private set; }
     // Implemented for IIONPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
+
+    public FluidPreferences _fluid { get; private set; }
+    // Implemented for IIONPreferences
+    public IFluidPreferences fluid { get { return _fluid; } }
 
     public LocationPreferences _location { get; private set; }
     // Implemented for IIONPreferences
@@ -208,14 +215,15 @@
     /// <value>The prefs.</value>
     public ISharedPreferences prefs { get; set; }
 
-		public AppPrefs(Context context, ISharedPreferences prefs) {
+    public AppPrefs(Context context, ISharedPreferences prefs) {
       this.context = context;
       this.prefs = prefs;
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
+      _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
-      _report =  new ReportPreferences(this);
+      _report = new ReportPreferences(this);
       _portal = new PortalPreferences(this);
 
       prefs.RegisterOnSharedPreferenceChangeListener(this);
@@ -242,31 +250,31 @@
     /// <value>The prefs.</value>
     protected ISharedPreferences prefs { get { return appPrefs.prefs; } }
 
-		protected BasePreferences(AppPrefs prefs) {
+    protected BasePreferences(AppPrefs prefs) {
       appPrefs = prefs;
     }
 
-		/// <summary>
-		/// Queries the preference string with the given key. If the preference doesn't exist or can't be retrieved, we will
-		/// return fallback.
-		/// </summary>
-		/// <returns>The string.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="fallback">Fallback.</param>
-		public string GetString(int key, string fallback) {
-			return prefs.GetString(context.GetString(key), fallback);
-		}
+    /// <summary>
+    /// Queries the preference string with the given key. If the preference doesn't exist or can't be retrieved, we will
+    /// return fallback.
+    /// </summary>
+    /// <returns>The string.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="fallback">Fallback.</param>
+    public string GetString(int key, string fallback) {
+      return prefs.GetString(context.GetString(key), fallback);
+    }
 
-		/// <summary>
-		/// Queries a boolean from a string preference. If the preference doesn't exist or can't be retrieved, we will
-		/// return fallback.
-		/// </summary>
-		/// <returns>The int from string.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="fallback">Fallback.</param>
-		public bool GetBool(int key, bool fallback) {
-			return prefs.GetBoolean(context.GetString(key), fallback);
-		}
+    /// <summary>
+    /// Queries a boolean from a string preference. If the preference doesn't exist or can't be retrieved, we will
+    /// return fallback.
+    /// </summary>
+    /// <returns>The int from string.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="fallback">Fallback.</param>
+    public bool GetBool(int key, bool fallback) {
+      return prefs.GetBoolean(context.GetString(key), fallback);
+    }
 
     /// <summary>
     /// Queries a float from preferences.
@@ -278,71 +286,71 @@
       return prefs.GetFloat(context.GetString(key), fallback);
     }
 
-		/// <summary>
-		/// Queries an integer from a string preference. If the preference doesn't exist or can't be retrieved, we will
-		/// return fallback.
-		/// </summary>
-		/// <returns>The int from string.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="fallback">Fallback.</param>
-		public int GetIntFromString(int key, int fallback) {
-			var str = GetString(key, fallback + "");
+    /// <summary>
+    /// Queries an integer from a string preference. If the preference doesn't exist or can't be retrieved, we will
+    /// return fallback.
+    /// </summary>
+    /// <returns>The int from string.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="fallback">Fallback.</param>
+    public int GetIntFromString(int key, int fallback) {
+      var str = GetString(key, fallback + "");
 
-			try {
-				return int.Parse(str);
-			} catch (Exception e) {
-				Log.E(this, "Failed to retrieve int from string preference: " + context.GetString(key), e);
-	      return fallback;
-			}
-		}
+      try {
+        return int.Parse(str);
+      } catch (Exception e) {
+        Log.E(this, "Failed to retrieve int from string preference: " + context.GetString(key), e);
+        return fallback;
+      }
+    }
 
-		/// <summary>
-		/// Puts the string into the preferences.
-		/// </summary>
-		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public bool PutString(int key, string value) {
-			var e = prefs.Edit();
-			e.PutString(context.GetString(key), value);
-			return e.Commit();
-		}
+    /// <summary>
+    /// Puts the string into the preferences.
+    /// </summary>
+    /// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="value">Value.</param>
+    public bool PutString(int key, string value) {
+      var e = prefs.Edit();
+      e.PutString(context.GetString(key), value);
+      return e.Commit();
+    }
 
-		/// <summary>
-		/// Puts the bool into the preferences.
-		/// </summary>
-		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public bool PutBool(int key, bool value) {
-			var e = prefs.Edit();
-			e.PutBoolean(context.GetString(key), value);
-			return e.Commit();
-		}
+    /// <summary>
+    /// Puts the bool into the preferences.
+    /// </summary>
+    /// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="value">Value.</param>
+    public bool PutBool(int key, bool value) {
+      var e = prefs.Edit();
+      e.PutBoolean(context.GetString(key), value);
+      return e.Commit();
+    }
 
-		/// <summary>
-		/// Puts the int into the preferences.
-		/// </summary>
-		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public bool PutInt(int key, int value) {
-			var e = prefs.Edit();
-			e.PutInt(context.GetString(key), value);
-			return e.Commit();
-		}
+    /// <summary>
+    /// Puts the int into the preferences.
+    /// </summary>
+    /// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="value">Value.</param>
+    public bool PutInt(int key, int value) {
+      var e = prefs.Edit();
+      e.PutInt(context.GetString(key), value);
+      return e.Commit();
+    }
 
-		/// <summary>
-		/// Puts the float into the preferences.
-		/// </summary>
-		/// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
-		/// <param name="key">Key.</param>
-		/// <param name="value">Value.</param>
-		public bool PutFloat(int key, float value) {
-			var e = prefs.Edit();
-			e.PutFloat(context.GetString(key), value);
-			return e.Commit();
-		}
+    /// <summary>
+    /// Puts the float into the preferences.
+    /// </summary>
+    /// <returns><c>true</c>, if string was put, <c>false</c> otherwise.</returns>
+    /// <param name="key">Key.</param>
+    /// <param name="value">Value.</param>
+    public bool PutFloat(int key, float value) {
+      var e = prefs.Edit();
+      e.PutFloat(context.GetString(key), value);
+      return e.Commit();
+    }
   }
 
   public class DevicePreferences : BasePreferences, IDevicePreferences {
@@ -412,7 +420,38 @@
       }
     }
 
-		public AlarmPreferences(AppPrefs prefs) : base(prefs) {
+    public AlarmPreferences(AppPrefs prefs) : base(prefs) {
+    }
+  }
+
+  public class FluidPreferences : BasePreferences, IFluidPreferences {
+    public string preferredFluid {
+      get {
+        return GetString(Resource.String.pkey_fluid_preferred, null);
+      }
+      set {
+        PutString(Resource.String.pkey_fluid_preferred, value);
+      }
+    }
+
+    public string[] favorites {
+      get {
+        var tok = GetString(Resource.String.pkey_fluid_favorites, null);
+
+        if (tok != null) {
+          var ret = tok.Split(new char[] { ',' });
+          return ret;
+        } else {
+          return null;
+        }
+      }
+      set {
+        var data = string.Join(",", value);
+        PutString(Resource.String.pkey_fluid_favorites, data);
+      }
+    }
+
+    public FluidPreferences(AppPrefs prefs) : base(prefs) {
     }
   }
 

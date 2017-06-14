@@ -138,49 +138,51 @@
     }
 
     // Overridden from IPreferences
-    public async Task<bool> Commit() {
-      try {
-        using (BinaryWriter writer = new BinaryWriter(__file.OpenForWriting())) {
-          // Write the preference serialization version
-          writer.Write(CURRENT_VERSION);
-          // Write the number of items that we will be persiting
-          writer.Write(__content.Count);
+    public Task<bool> Commit() {
+      return Task.Factory.StartNew(() => {
+        try {
+          using (BinaryWriter writer = new BinaryWriter(__file.OpenForWriting())) {
+            // Write the preference serialization version
+            writer.Write(CURRENT_VERSION);
+            // Write the number of items that we will be persiting
+            writer.Write(__content.Count);
 
-          foreach (string key in __content.Keys) {
-            object value = __content[key];
-            writer.Write(key);
+            foreach (string key in __content.Keys) {
+              object value = __content[key];
+              writer.Write(key);
 
-            if (value is bool) {
-              writer.Write((byte)Type.Bool);
-              writer.Write((bool)value);
-            } else if (value is int) {
-              writer.Write((byte)Type.I32);
-              writer.Write((int)value);
-            } else if (value is long) {
-              writer.Write((byte)Type.I64);
-              writer.Write((long)value);
-            } else if (value is float) {
-              writer.Write((byte)Type.F32);
-              writer.Write((float)value);
-            } else if (value is double) {
-              writer.Write((byte)Type.F64);
-              writer.Write((double)value);
-            } else if (value is string) {
-              writer.Write((byte)Type.String);
-              writer.Write((string)value);
-            } else {
-              throw new IOException("Cannot commit preferences: type " + value.GetType().Name + " is not allowed");
+              if (value is bool) {
+                writer.Write((byte)Type.Bool);
+                writer.Write((bool)value);
+              } else if (value is int) {
+                writer.Write((byte)Type.I32);
+                writer.Write((int)value);
+              } else if (value is long) {
+                writer.Write((byte)Type.I64);
+                writer.Write((long)value);
+              } else if (value is float) {
+                writer.Write((byte)Type.F32);
+                writer.Write((float)value);
+              } else if (value is double) {
+                writer.Write((byte)Type.F64);
+                writer.Write((double)value);
+              } else if (value is string) {
+                writer.Write((byte)Type.String);
+                writer.Write((string)value);
+              } else {
+                throw new IOException("Cannot commit preferences: type " + value.GetType().Name + " is not allowed");
+              }
             }
+
+            writer.Flush();
           }
 
-          writer.Flush();
+          return true;
+        } catch (Exception e) {
+          Log.E(this, "Failed to persist preferences", e);
+          return false;
         }
-
-        return true;
-      } catch (Exception e) {
-        Log.E(this, "Failed to persist preferences", e);
-        return false;
-      }
+      });
     }
 
     /// <summary>
@@ -188,8 +190,8 @@
     /// </summary>
     /// <param name="file"></param>
     /// <returns></returns>
-    public static async Task<BasePreferences> OpenAsync(IFile file) {
-//      return Task.Factory.StartNew(() => {
+    public static Task<BasePreferences> OpenAsync(IFile file) {
+      return Task.Factory.StartNew(() => {
         if (file.GetSize() <= 0) {
           Log.D(typeof(BasePreferences).Name, "File returned size as empty. Creating new preference file");
           return new BasePreferences(file);
@@ -249,7 +251,7 @@
 
           return new BasePreferences(file, content);
         }
-//      });
+      });
     }
 
     /// <summary>

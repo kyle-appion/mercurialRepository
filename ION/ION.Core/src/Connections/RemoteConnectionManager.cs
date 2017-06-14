@@ -44,5 +44,17 @@
 		// Implemented from IConnectionHelper
 		public void StopScan() {
 		}
+
+    public void NotifyOnScanStateChanged() {
+      if (onScanStateChanged != null) {
+        onScanStateChanged(this);
+      }
+    }
+
+    public void NotifyOnDeviceFound() {
+      if (onDeviceFound != null) {
+        onDeviceFound(this, null, null, null, EProtocolVersion.V4);
+      }
+    }
 	}
 }

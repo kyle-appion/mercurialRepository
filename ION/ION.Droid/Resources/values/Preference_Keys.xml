@@ -25,6 +25,9 @@
 
   <string name="pkey_help_walkthrough">help_walkthrough</string>
 
+	<string name="pkey_fluid_preferred">fluid_last</string>
+	<string name="pkey_fluid_favorites">fluid_favorites</string>
+
 	<string name="pkey_location_ask_for_permissions">location_ask_for_permissions</string>
   <string name="pkey_location_elevation">location_elevation</string>
   <string name="pkey_location_gps">location_gps</string>

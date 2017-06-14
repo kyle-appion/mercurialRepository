@@ -202,7 +202,7 @@
         return false;
       } else {
         var m = new Manifold(sensor);
-        m.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+        m.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
         return Add(m);
       }
     }

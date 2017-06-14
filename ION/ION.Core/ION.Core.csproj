@@ -67,7 +67,6 @@
     <Compile Include="src\Sensors\Properties\ISensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MaxSensorProperty.cs" />
     <Compile Include="src\Sensors\Properties\MinSensorProperty.cs" />
-    <Compile Include="src\Fluids\PTChart.cs" />
     <Compile Include="src\Math\Physics.cs" />
     <Compile Include="src\Alarms\IAlarm.cs" />
     <Compile Include="src\Alarms\AbstractAlarm.cs" />
@@ -158,6 +157,7 @@
     <Compile Include="src\IO\RssParser.cs" />
     <Compile Include="src\UI\IonImage.cs" />
     <Compile Include="src\Devices\Protocols\RidgadoV5Protocol.cs" />
+    <Compile Include="src\Fluids\PTChart.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <ItemGroup>
