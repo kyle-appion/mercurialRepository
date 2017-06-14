@@ -1,7 +1,7 @@
-﻿using System;
-namespace ION.Droid {
-  public class DeviceGridActivity {
-    public DeviceGridActivity() {
-    }
+﻿namespace ION.Droid.Activity.DeviceGrid {
+
+  using System;
+
+	public class DeviceGridActivity : IONActivity {
   }
 }
