@@ -88,7 +88,7 @@
 		/// The pt chart that will perform the calculations for the fluid.
 		/// </summary>
 		/// <value>The point chart.</value>
-		public PTChart ptChart {
+    public PTChart ptChart {
 			get {
 				return __ptChart;
 			}
@@ -116,7 +116,7 @@
 				if (sensor != null) {
 					OnSensorChanged(sensor);
 				} else {
-					var pressure = ION.Core.Math.Physics.ConvertAbsolutePressureToRelative(ptChart.fluid.GetMedianAbsolutePressure(ptChart.state), ptChart.elevation);
+          var pressure = Units.Pressure.PSIG.OfScalar(0);
 					slider.ScrollToPressure(pressure, true);
 				}
 			}
@@ -344,9 +344,9 @@
 			fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
 			fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((button, isChecked) => {
 				if (isChecked) {
-					ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
+          ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
 				} else {
-					ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
+          ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Dew);
 				}
 			}));
 
@@ -365,7 +365,7 @@
 			contentView.SetOnTouchListener(new ClearFocusListener(pressureEntryView, temperatureEntryView));
 
 			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
-			ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -486,7 +486,7 @@
 						// TODO ahodder@appioninc.com: loading dialog?
 						var fluid = await ion.fluidManager.GetFluidAsync(fluidName);
 						var state = (ptChart == null) ? Fluid.EState.Bubble : ptChart.state;
-						ptChart = PTChart.New(ion, state, fluid);
+            ptChart = fluid.GetPtChart(state);
 					}
 				break;
 
@@ -618,7 +618,7 @@
 					if (!"".Equals(text) && sensor == null) {
 						var amount = double.Parse(text);
 						var ps = pressureUnit.OfScalar(amount);
-						var temp = ptChart.GetTemperature(ps).ConvertTo(temperatureUnit);
+            var temp = ptChart.GetTemperature(ps, true).ConvertTo(temperatureUnit);
 						SetTemperatureInputQuietly(temp.amount.ToString("#.##"));
 						slider.ScrollToPressure(ps, false);
 					} else {
@@ -699,7 +699,7 @@
 					double amount = 0;
 					if (double.TryParse(text, out amount)) {
 						var ts = temperatureUnit.OfScalar(amount);
-						var press = ptChart.GetPressure(ts).ConvertTo(pressureUnit);
+            var press = ptChart.GetRelativePressure(ts).ConvertTo(pressureUnit);
 						SetPressureInputQuietly(press.amount.ToString("#.##"));
 						slider.ScrollToTemperature(ts, false);
 					}
@@ -765,14 +765,14 @@
 		private void OnSensorChanged(Sensor sensor) {
 			switch (sensor.type) {
 				case ESensorType.Pressure:
-					var temp = ptChart.GetTemperature(sensor.measurement).ConvertTo(temperatureUnit);
+          var temp = ptChart.GetTemperature(sensor.measurement, sensor.isRelative).ConvertTo(temperatureUnit);
 					SetTemperatureInputQuietly(temp.amount.ToString("#.##") + "");
 					SetPressureInputQuietly(sensor.ToFormattedString(false));
 					slider.ScrollToTemperature(temp, false);
 					break;
 
 				case ESensorType.Temperature:
-					var press = ptChart.GetPressure(sensor.measurement).ConvertTo(pressureUnit);
+          var press = ptChart.GetRelativePressure(sensor.measurement).ConvertTo(pressureUnit);
 					SetPressureInputQuietly(press.amount.ToString("#.##") + "");
 					SetTemperatureInputQuietly(sensor.ToFormattedString(false));
 					slider.ScrollToTemperature(sensor.measurement, false);

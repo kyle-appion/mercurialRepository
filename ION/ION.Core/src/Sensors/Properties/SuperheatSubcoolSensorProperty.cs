@@ -63,7 +63,11 @@
 		public ScalarSpan temperatureDelta {
 			get {
 				if (isValid) {
-					return manifold.ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement, temperatureSensor.measurement, pressureSensor.isRelative);
+          if (pressureSensor.isRelative) {
+            return manifold.ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);            
+          } else {
+            return manifold.ptChart.CalculateTemperatureDeltaAbsolute(pressureSensor.measurement, temperatureSensor.measurement);
+          }
 				} else {
           return AppState.context.preferences.units.temperature.OfSpan(0);
 				}

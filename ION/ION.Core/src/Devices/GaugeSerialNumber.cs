@@ -125,7 +125,7 @@
     public static bool IsValid(string serial) {
       try {
         return Parse(serial) != null;
-      } catch (ArgumentException e) {
+      } catch (ArgumentException) {
         return false;
       }
     }
@@ -141,23 +141,6 @@
         //throw new ArgumentException("Cannot parse serial: serial is null");
         return null;
       }
-
-      // TODO ahodder@appioninc.com: remove this
-/*
-      if ("P516E003".Equals(serial) || "RigCom".Equals(serial)) {
-        return new GaugeSerialNumber(EDeviceModel.PT500, "PT8", serial, BuildManufactureDate("16", 'E'), (ushort)3);
-      }
-*/
-			// TODO ahodder@appioninc.com: The new short serial number format of TTYYM### needs to be implemented
-/*
-      if (serial.StartsWith("S8")) {
-        return new GaugeSerialNumber(EDeviceModel.PT800, "PT8", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
-      } else if (serial.StartsWith("S5")) {
-        return new GaugeSerialNumber(EDeviceModel.PT500, "PT5", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
-			} else if (serial.StartsWith("T1")) {
-				return new GaugeSerialNumber(EDeviceModel._1XTM, "T1", serial, BuildManufactureDate(serial.Substring(2, 2), serial.ToCharArray()[4]), ushort.Parse(serial.Substring(5)));
-			}
-*/
 
       // This check is not ideal, but at the time of writing the serial numbers were not solidified. I hate
       // this project.
@@ -206,12 +189,6 @@
       if (year < 2013 || year > 2099) {
         throw new ArgumentException("Cannot build manufacture date: year " + yearCode + " is out of range, expected [14, 99]");
       }
-
-      /*
-      if (monthCode == null) {
-        throw new ArgumentException("Cannot build manufacture date: null month code");
-      }
-      */
 
       int month = monthCode - 'A' + 1;
 

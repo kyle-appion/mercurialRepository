@@ -402,9 +402,9 @@
       fluidPhaseToggleView = FindViewById<Switch>(Resource.Id.state);
       fluidPhaseToggleView.SetOnCheckedChangeListener(new ViewCheckChangedAction((v, isChecked) => {
         if (isChecked) {
-          ptChart = PTChart.New(ion, Fluid.EState.Bubble, ptChart.fluid);
+          ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
         } else {
-          ptChart = PTChart.New(ion, Fluid.EState.Dew, ptChart.fluid);
+          ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Dew);
         }
       }));
 
@@ -418,7 +418,7 @@
       elevation = container.FindViewById<TextView>(Resource.Id.text);
 
 			// Note: ahodder@appioninc.com: apparently we want to always change the fluid to the last used fluid per christian and kyle 1 Feb 2017
-			ptChart = PTChart.New(ion, Fluid.EState.Dew);
+      ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
 
 			if (Intent.HasExtra(EXTRA_WORKBENCH_MANIFOLD)) {
 				var index = Intent.GetIntExtra(EXTRA_WORKBENCH_MANIFOLD, -1);
@@ -548,7 +548,7 @@
             // TODO ahodder@appioninc.com: loading dialog?
             var fluid = await ion.fluidManager.GetFluidAsync(fluidName);
             var state = (ptChart == null) ? Fluid.EState.Dew : ptChart.state;
-            ptChart = PTChart.New(ion, state, fluid);
+            ptChart = fluid.GetPtChart(state);
           }
           break;
 
@@ -652,7 +652,7 @@
         var text = editable.ToString();
         try {
 				  if (pressureSensor == null) {
-					  pressureSensor = new ManualSensor(ESensorType.Temperature, false);
+					  pressureSensor = new ManualSensor(ESensorType.Pressure, true);
 					  pressureSensor.name = GetString(Resource.String.name);
 					  pressureSensor.unit = pressureUnit;
 				  }
@@ -807,8 +807,9 @@
 
       var tu = temperatureUnit;
 
-      var satTemp = ptChart.GetTemperature(pressureSensor).ConvertTo(tu);
-      saturatedTemperatureTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, satTemp);
+      var satTemp = ptChart.GetTemperature(pressureSensor.measurement, pressureSensor.isRelative);
+      satTemp = satTemp.ConvertTo(tu);
+      saturatedTemperatureTextView.Text = SensorUtils.ToFormattedString(satTemp);
       saturatedTemperatureUnitView.Text = temperatureUnit.ToString();
 
 			switch (ptChart.state) {
@@ -822,11 +823,17 @@
 					break;
 			}
 
-      if (pressureSensor == null || temperatureSensor == null) {
+      if (temperatureSensor == null) {
         return;
       }
-      var delta = ptChart.CalculateSystemTemperatureDelta(pressureSensor.measurement,
-			                                                    temperatureSensor.measurement.ConvertTo(tu), pressureSensor.isRelative);
+
+      ScalarSpan delta;
+      if (pressureSensor.isRelative) {
+        delta = ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);
+      } else {
+				delta = ptChart.CalculateTemperatureDeltaAbsolute(pressureSensor.measurement, temperatureSensor.measurement);
+			}
+      delta = delta.ConvertTo(temperatureUnit);
 
 			if (ptChart.fluid.mixture && delta.magnitude < 0) {
 				warning.Visibility = ViewStates.Visible;
@@ -836,11 +843,11 @@
 
       if (!ptChart.fluid.mixture) {
 				if (delta.magnitude < 0) {
-          // Bubble
-          ptChart.state = Fluid.EState.Bubble;
+          // dew
+          __ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Dew);
         } else {
-          // Dew
-          ptChart.state = Fluid.EState.Dew;
+          // bubble
+          __ptChart = ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
         }
 				calculationTextView.Text = SensorUtils.ToFormattedString(ESensorType.Temperature, delta.Abs(), true);
       } else {

@@ -87,6 +87,16 @@
     }
 
     /// <summary>
+    /// Wraps the fluid in a pt chart.
+    /// </summary>
+    /// <returns>The point chart.</returns>
+    /// <param name="state">State.</param>
+    /// <param name="elevationProvider">Elevation provider.</param>
+    public PTChart GetPtChart(EState state, ElevationProvider elevationProvider = null) {
+      return new PTChart(this, state, elevationProvider);
+    }
+
+    /// <summary>
     /// Queries the minimum temperature of the fluid.
     /// </summary>
     /// <returns>The minimum temperature.</returns>

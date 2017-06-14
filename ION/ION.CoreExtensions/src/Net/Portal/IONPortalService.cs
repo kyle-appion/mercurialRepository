@@ -1107,7 +1107,7 @@
 					if (analyzer.lowSideManifold != null) {
 						if (!analyzer.lowSideManifold.ptChart.fluid.name.Equals(appState.setup.lowFluid)) {
 							var fluid = ion.fluidManager.GetFluidAsync(appState.setup.lowFluid).Result;
-							analyzer.lowSideManifold.ptChart = PTChart.New(ion, analyzer.lowSideManifold.ptChart.state, fluid);
+              analyzer.lowSideManifold.ptChart = new PTChart(fluid, analyzer.lowSideManifold.ptChart.state);
 						}
 					}
 				}
@@ -1169,7 +1169,7 @@
 					if (analyzer.highSideManifold != null) {
 						if (!analyzer.highSideManifold.ptChart.fluid.name.Equals(appState.setup.highFluid)) {
 							var fluid = ion.fluidManager.GetFluidAsync(appState.setup.highFluid).Result;
-							analyzer.highSideManifold.ptChart = PTChart.New(ion, analyzer.highSideManifold.ptChart.state, fluid);
+							analyzer.highSideManifold.ptChart = new PTChart(fluid, analyzer.highSideManifold.ptChart.state);
 						}
 					}
 				}
@@ -1228,8 +1228,9 @@
 		// TODO ahodder@appioninc.com: Using Task.Result synchronously
 		private void SyncManifold(IION ion, Manifold manifold, RemoteManifold rm) {
 			var fs = (Fluid.EState)rm.fluidState;
-			if (!manifold.ptChart.fluid.name.Equals(rm.fluid) || manifold.ptChart.state != fs) {
-				manifold.ptChart = PTChart.New(ion, fs, ion.fluidManager.LoadFluidAsync(rm.fluid).Result);
+			if (!manifold.ptChart.fluid.name.Equals(rm.fluidName) || manifold.ptChart.state != fs) {
+        var fluid = ion.fluidManager.LoadFluidAsync(rm.fluidName).Result;
+        manifold.ptChart = fluid.GetPtChart(fs);
 			}
 		}
 

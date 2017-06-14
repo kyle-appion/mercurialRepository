@@ -533,9 +533,14 @@ namespace ION.Droid.Fragments._Analyzer {
     /// <param name="index">Index.</param>
     private void OnSensorMountClicked(AnalyzerView view, Analyzer analyzer, int index) {
       if (analyzer.HasSensorAt(index)) {
-        var side = Analyzer.ESide.Low;
-        analyzer.GetSideOfIndex(index, out side);
-        new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        var s = analyzer[index];
+        if (s is GaugeDeviceSensor) {
+          var side = Analyzer.ESide.Low;
+          analyzer.GetSideOfIndex(index, out side);
+          new ViewerDialog(this.Activity, analyzer, analyzer[index], side).Show();
+        } else if (s is ManualSensor) {
+          new ManualSensorEditDialog(Activity, s as ManualSensor).Show();
+        }
       } else {
 				if (!analyzer.isEditable) {
 					return;

@@ -609,13 +609,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+          lowSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          highSideManifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -636,21 +636,20 @@
 					RemoveManifold(ESide.Low);
 					lowSideManifold = manifold;
 					if (manifold != null && manifold.ptChart == null) {
-						manifold.ptChart = PTChart.New(ion, Fluid.EState.Dew);
+          manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Dew);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
-				return true;
+				  return true;
 				case ESide.High:
 					RemoveManifold(ESide.High);
 					highSideManifold = manifold;
 					if (manifold != null && manifold.ptChart == null) {
-						manifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble);
+						manifold.ptChart = ion.fluidManager.lastUsedFluid.GetPtChart(Fluid.EState.Bubble);
 					}
 					NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
-				return true;
+				  return true;
 				default:
           return false;
-					//throw new Exception("Cannot set primary manifold: unknown side: " + side);
 			}
 		}
 
@@ -669,13 +668,13 @@
         case ESide.Low:
           RemoveManifold(ESide.Low);
           lowSideManifold = new Manifold(sensor);
-          lowSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Bubble, remoteFluid);
+          lowSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Bubble);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.Low));
           return true;
         case ESide.High:
           RemoveManifold(ESide.High);
           highSideManifold = new Manifold(sensor);
-          highSideManifold.ptChart = PTChart.New(ion, Fluid.EState.Dew, remoteFluid);
+          highSideManifold.ptChart = remoteFluid.GetPtChart(Fluid.EState.Dew);
           NotifyOfAnalyzerEvent(new AnalyzerEvent(AnalyzerEvent.EType.ManifoldAdded, ESide.High));
           return true;
         default:
@@ -863,8 +862,9 @@
         lowSideManifold = high;
         highSideManifold = low;
 
-				lowSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Dew, lowSideManifold.ptChart.fluid);
-				highSideManifold.ptChart = PTChart.New(this.ion, Fluid.EState.Bubble, highSideManifold.ptChart.fluid);
+        // Update the systems sides for the ptchart.
+        lowSideManifold.ptChart = lowSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Dew);
+        highSideManifold.ptChart = highSideManifold.ptChart.fluid.GetPtChart(Fluid.EState.Bubble);
 
 				lowSideManifold.SetSecondarySensor(null);
 				highSideManifold.SetSecondarySensor(null);

@@ -65,7 +65,7 @@
 					fluid = ion.fluidManager.GetFluidAsync(fluidName).Result;
 				}
 
-				ret.ptChart = PTChart.New(ion, state, fluid);
+        ret.ptChart = fluid.GetPtChart(state);
 			}
 
 			// Read sensor properties

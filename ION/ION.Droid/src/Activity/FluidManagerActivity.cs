@@ -1,6 +1,6 @@
-﻿using ION.Droid.Dialog;
-using ION.Droid.Views;
-namespace ION.Droid.Activity {
+﻿namespace ION.Droid.Activity {
+
+  using System.Collections.Generic;
 
   using Android.App;
   using Android.Content;
@@ -19,7 +19,9 @@ namespace ION.Droid.Activity {
   using ION.Core.App;
   using ION.Core.Fluids;
 
+	using ION.Droid.Dialog;
   using ION.Droid.Fragments;
+	using ION.Droid.Views;
 
 	[Activity(Label = "@string/fluid_manager", Theme = "@style/TerminalActivityTheme", ScreenOrientation=ScreenOrientation.Portrait)]      
 	public class FluidManagerActivity : Activity, ViewPager.IOnPageChangeListener {
@@ -179,8 +181,15 @@ namespace ION.Droid.Activity {
     /// Invalidates the 
     /// </summary>
     private void Invalidate() {
-      preferred.fluidList = ion.fluidManager.preferredFluids;
-      library.fluidList = ion.fluidManager.GetAvailableFluidNames();
+      var plist = new List<string>(ion.fluidManager.preferredFluids);
+      var llist = new List<string>(ion.fluidManager.GetAvailableFluidNames());
+
+			plist.Sort(new AlphabeticalStringComparer());
+			llist.Sort(new AlphabeticalStringComparer());
+
+
+      preferred.fluidList = plist;
+      library.fluidList = llist;
     }
   }
 
