@@ -341,12 +341,15 @@
     }
 
     private void OnAltitudeEvent(GpsAltitudeProvider provider, AltitudeEvent e) {
-      Log.V(this, "The GpsAltitudeProvider sent us a location of: " + e);
-      if (lastKnownLocation != null) {
-        var loc = lastKnownLocation;
-        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, loc.longitude, loc.latitude);
-      } else {
-        lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+      try {
+        if (lastKnownLocation != null) {
+          var loc = lastKnownLocation;
+          lastKnownLocation = new SimpleLocation(true, e.location.Altitude, loc.longitude, loc.latitude);
+        } else {
+          lastKnownLocation = new SimpleLocation(true, e.location.Altitude, e.location.Longitude, e.location.Latitude);
+        }
+      } catch (Exception ex) {
+        Log.E(this, "Failed to resolve altitude event", ex);
       }
     }
 

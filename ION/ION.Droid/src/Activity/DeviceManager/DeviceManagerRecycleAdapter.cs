@@ -73,6 +73,7 @@ namespace ION.Droid.Activity.DeviceManager {
 		}
 		IFilter<IDevice> __deviceFilter;
 
+    private DeviceManagerActivity activity;
 		private IION ion;
 		private BitmapCache cache;
 
@@ -93,8 +94,9 @@ namespace ION.Droid.Activity.DeviceManager {
 		/// </summary>
 		private IDevice expandedDevice;
 
-		public DeviceManagerRecycleAdapter(IION ion, BitmapCache cache) {
-			this.ion = ion;
+		public DeviceManagerRecycleAdapter(DeviceManagerActivity activity, BitmapCache cache) {
+      this.activity = activity;
+			this.ion = activity.ion;
 			this.cache = cache;
 
 			var connected = new Section(ESection.Connected);
@@ -131,7 +133,7 @@ namespace ION.Droid.Activity.DeviceManager {
 				case EViewType.Section:
 					return new SectionViewHolder(parent);
 				case EViewType.IDevice:
-					return new DeviceViewHolder(rv, cache);
+          return new DeviceViewHolder(rv, cache, OnDeviceConnectClicked);
 				case EViewType.Sensor:
 					return new SensorViewHolder(parent, ion, cache);
 				case EViewType.Space:
@@ -709,6 +711,20 @@ namespace ION.Droid.Activity.DeviceManager {
 					}
 			}
 		}
+
+    private void OnDeviceConnectClicked(IDevice device) {
+      if (activity.CheckPermissionsAndStates()) {
+				switch (device.connection.connectionState) {
+					case EConnectionState.Disconnected:
+          case EConnectionState.Broadcasting:
+						device.connection.Connect();
+						break;
+					default:
+						device.connection.Disconnect();
+						break;
+				}
+      }
+    }
 
 		private void OnDeviceManagerEvent(DeviceManagerEvent de) {
 			lock (this) {

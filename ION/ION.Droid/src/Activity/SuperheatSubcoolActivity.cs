@@ -814,6 +814,7 @@
       }
 
       if (pressureSensor == null) {
+        saturatedTemperatureTextView.Text = "";
         return;
       }
 

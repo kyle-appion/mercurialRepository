@@ -45,7 +45,7 @@ namespace ION.Droid.Activity.DeviceManager {
     private ImageView status { get; set; }
     private ProgressBar progress { get; set; }
 
-		public DeviceViewHolder(SwipeRecyclerView rv, BitmapCache cache) : base(rv, Resource.Layout.list_item_device_manager_device, Resource.Layout.list_item_button) {
+		public DeviceViewHolder(SwipeRecyclerView rv, BitmapCache cache, Action<IDevice> onConnectClick) : base(rv, Resource.Layout.list_item_device_manager_device, Resource.Layout.list_item_button) {
       this.cache = cache;
       icon = ItemView.FindViewById<ImageView>(Resource.Id.icon);
 			type = ItemView.FindViewById<TextView>(Resource.Id.type);
@@ -56,13 +56,8 @@ namespace ION.Droid.Activity.DeviceManager {
 			progress = ItemView.FindViewById<ProgressBar>(Resource.Id.loading);
 
       connect.SetOnClickListener(new ViewClickAction((v) => {
-        switch (record.data.connection.connectionState) {
-          case EConnectionState.Disconnected:
-            record.data.connection.Connect();
-            break;
-          default:
-            record.data.connection.Disconnect();
-            break;
+        if (onConnectClick != null) {
+          onConnectClick(record.data);
         }
       }));
 
