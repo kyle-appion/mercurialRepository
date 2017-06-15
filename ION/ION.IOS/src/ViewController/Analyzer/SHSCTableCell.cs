@@ -61,7 +61,7 @@ namespace ION.IOS.ViewController.Analyzer {
       if (lhSensor.manifold.secondarySensor != null) {
 				var stateCheck = new ScalarSpan();
         if(lhSensor.manifold.primarySensor.type == ESensorType.Pressure){
-          var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.isRelative);
+          var calculation = lhSensor.manifold.ptChart.CalculateTemperatureDelta(lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.isRelative);
 	        stateCheck = calculation;  
 					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;
@@ -69,7 +69,7 @@ namespace ION.IOS.ViewController.Analyzer {
           cellHeader.Text = lhSensor.shFluidState.Text;
 					tempReading.Text = calculation.magnitude.ToString("N")+ " " + calculation.unit.ToString();
         } else {
-          var calculation = lhSensor.manifold.ptChart.CalculateSystemTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
+          var calculation = lhSensor.manifold.ptChart.CalculateTemperatureDelta(lhSensor.manifold.secondarySensor.measurement, lhSensor.manifold.primarySensor.measurement, lhSensor.manifold.secondarySensor.isRelative);
           stateCheck = calculation;  
 					if (!lhSensor.manifold.ptChart.fluid.mixture && calculation < 0) {
             calculation = calculation * -1;

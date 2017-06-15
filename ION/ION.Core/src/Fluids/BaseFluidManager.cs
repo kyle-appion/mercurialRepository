@@ -53,7 +53,7 @@
     public bool isInitialized { get { return __isInitialized; } } bool __isInitialized;
 
     // Overridden from IFliudManager
-    public Fluid lastUsedFluid { get; private set; }
+    public Fluid lastUsedFluid { get; set; }
 
     // Overridden from IFluidManager
     public HashSet<string> preferredFluids {
@@ -155,8 +155,7 @@
     }
 
     // Implemented from IFluidManager
-    public Task<Fluid> LoadFluidAsync(string fluidName) {
-      return Task.Factory.StartNew(() => {
+    public async Task<Fluid> LoadFluidAsync(string fluidName) {
         Fluid ret = null;
 
         if (__cache.ContainsKey(fluidName)) {
@@ -177,7 +176,6 @@
         } else {
           return ret;
         }
-      });
     }
 
     // Overridden from IFluidManager
