@@ -59,6 +59,9 @@
     // Implemented for IPreferences
     public IAlarmPreferences alarm { get { return _alarm; } }
 
+    public FluidPreferences _fluid { get; private set; }
+    public IFluidPreferences fluid { get { return _fluid; } }
+
     public LocationPreferences _location { get; private set; }
     // Implemented for IPreferences
     public ILocationPreferences location { get { return _location; } }
@@ -102,6 +105,7 @@
     private AppPrefs() {
       _device = new DevicePreferences(this);
       _alarm = new AlarmPreferences(this);
+      _fluid = new FluidPreferences(this);
       _location = new LocationPreferences(this);
       _units = new UnitPreferences(this);
       _report =  new ReportPreferences(this);
@@ -335,6 +339,44 @@
       allowsVibrate = true;
       allowsSounds = true;
 		}
+  }
+
+  public class FluidPreferences : DerivedPreferences, IFluidPreferences {
+    private const string KEY_FLUID_PREFERRED = "settings_fluid_preferred";
+    private const string KEY_FLUID_FAVORITES = "settings_fluid_favorites";
+
+    public string preferredFluid {
+      get {
+        return GetString(KEY_FLUID_PREFERRED);
+      } 
+      set {
+        PutString(KEY_FLUID_PREFERRED, value);
+      }
+    }
+
+    public string[] favorites {
+      get {
+        var tok = GetString(KEY_FLUID_FAVORITES);
+        if (tok != null) {
+          var ret = tok.Split(',');
+          return ret;
+        } else {
+          return null;
+        }
+      }
+      set {
+        var data = string.Join(",", value);
+        PutString(KEY_FLUID_FAVORITES, data);
+      }
+    }
+
+    public FluidPreferences(AppPrefs prefs) : base(prefs) {
+    }
+
+    public override void InitDefaults() {
+      preferredFluid = "R22";
+      favorites = new string[] { "R22", "R134a", "R407C", "R410A" };
+    }
   }
 
   public class LocationPreferences : DerivedPreferences, ILocationPreferences {

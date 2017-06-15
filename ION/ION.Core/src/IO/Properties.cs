@@ -39,8 +39,8 @@
     /// </summary>
     /// <returns>The file.</returns>
     /// <param name="file">File.</param>
-    public static Task<Properties> FromFileAsync(IFile file) {
-      return Task.Factory.StartNew(() => {
+    public async static Task<Properties> FromFileAsync(IFile file) {
+//      return Task.Factory.StartNew(() => {
         using (var reader = new System.IO.StreamReader(file.OpenForReading())) {
           var dict = new Dictionary<string, string>();
 
@@ -57,7 +57,7 @@
 
           return new Properties(dict);
         }
-      });
+//      });
     }
 
     /// <summary>
@@ -66,8 +66,8 @@
     /// </summary>
     /// <returns>The stream async.</returns>
     /// <param name="stream">Stream.</param>
-    public static Task<Properties> FromStreamAsync(Stream stream) {
-      return Task.Factory.StartNew(() => {
+    public async static Task<Properties> FromStreamAsync(Stream stream) {
+//      return Task.Factory.StartNew(() => {
         using (var reader = new StreamReader(stream)) {
           var dict = new Dictionary<string, string>();
 
@@ -84,7 +84,7 @@
 
           return new Properties(dict);
         }
-      });
+//      });
   	}
   }
 }

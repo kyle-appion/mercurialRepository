@@ -107,7 +107,7 @@
     /// Attempts to connect the connection's remote terminus.
     /// </summary>
     /// <returns>The async.</returns>
-    public bool Connect() {
+    public bool Connect(bool passive = false) {
       lock (locker) {
         if (EConnectionState.Disconnected != connectionState) {
           return false;

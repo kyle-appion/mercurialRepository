@@ -17,6 +17,13 @@
 
   public class PTChart {
 
+    public static PTChart New(IION ion, Fluid.EState state, Fluid fluid = null) {
+      if (fluid == null) {
+        fluid = ion.fluidManager.lastUsedFluid;
+      }
+      return new PTChart(fluid, state);
+    }
+
     public Scalar minAbsolutePressure { get { return fluid.GetMinimumPressure(state); } }
     public Scalar minRelativePressure {
       get {
@@ -72,6 +79,14 @@
 			this.elevationProvider = elevationProvider;
 		}
 
+    public Scalar GetPressure(Scalar temperature, bool isRelative) {
+      if (isRelative) {
+        return GetRelativePressure(temperature);
+      } else {
+        return GetAbsolutePressure(temperature);
+      }
+    }
+
     /// <summary>
     /// Queries the absolute pressure for the fluid at the given temperature.
     /// </summary>
@@ -125,6 +140,14 @@
       return GetTemperatureFromAbsolutePressure(absPressure);
     }
 
+    public ScalarSpan CalculateTemperatureDelta(Scalar pressure, Scalar temperature, bool isRelative) {
+      if (isRelative) {
+        return CalculateTemperatureDeltaRelative(pressure, temperature);
+      } else {
+				return CalculateTemperatureDeltaAbsolute(pressure, temperature);
+			}
+    }
+
     /// <summary>
     /// Calculates the effective superheat or subcool of the fluid given the two gauge measurements.
     /// </summary>
@@ -147,6 +170,17 @@
       }
     }
 
+		/// <summary>
+		/// Calculates the effective superheat or subcool of the fluid given the two gauge measurements.
+		/// </summary>
+		/// <returns>The temperature delta relative.</returns>
+		/// <param name="relativePressure">Relative pressure.</param>
+		/// <param name="measuredTemperature">Measured temperature.</param>
+		public ScalarSpan CalculateTemperatureDeltaRelative(Scalar relativePressure, Scalar measuredTemperature) {
+			var absPressure = Physics.ConvertRelativePressureToAbsolute(relativePressure, elevationProvider());
+			return CalculateTemperatureDeltaAbsolute(absPressure, measuredTemperature);
+		}
+
     /// <summary>
     /// Calculates the superheat for the fluid.
     /// </summary>
@@ -168,16 +202,5 @@
 			var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
 			return satTemp - measuredTemperature;
 		}
-
-    /// <summary>
-    /// Calculates the effective superheat or subcool of the fluid given the two gauge measurements.
-    /// </summary>
-    /// <returns>The temperature delta relative.</returns>
-    /// <param name="relativePressure">Relative pressure.</param>
-    /// <param name="measuredTemperature">Measured temperature.</param>
-    public ScalarSpan CalculateTemperatureDeltaRelative(Scalar relativePressure, Scalar measuredTemperature) {
-      var absPressure = Physics.ConvertRelativePressureToAbsolute(relativePressure, elevationProvider());
-      return CalculateTemperatureDeltaAbsolute(absPressure, measuredTemperature);
-    }
   }
 }
