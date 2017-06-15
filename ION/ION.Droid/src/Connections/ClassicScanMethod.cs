@@ -85,18 +85,20 @@
     /// </summary>
     /// <param name="device">Device.</param>
     private void VerifyDevice(BluetoothDevice device) {
-      lock (manager.locker) {
-        if (!manager.HasConnectionForAddress(device.Address)) {
-          if (Protocol.APPION_CLASSIC_DEVICE_NAME.Equals(device.Name)) {
-            Task.Factory.StartNew(async () => {
-              var sn = await ClassicConnection.ResolveSerialNumber(device);
-              if (sn != null) {
-                manager.OnClassicDeviceFound(sn, device);
-              }
-            });
-          }
-        }
-      }
-    }
+/*
+		  lock (manager.locker) {
+				if (!manager.HasConnectionForAddress(device.Address)) {
+				  if (Protocol.APPION_CLASSIC_DEVICE_NAME.Equals(device.Name)) {
+					Task.Factory.StartNew(async () => {
+					  var sn = await ClassicConnection.ResolveSerialNumber(device);
+					  if (sn != null) {
+						manager.OnClassicDeviceFound(sn, device);
+					  }
+					});
+				  }
+				}
+		  }
+*/
+		}
   }
 }

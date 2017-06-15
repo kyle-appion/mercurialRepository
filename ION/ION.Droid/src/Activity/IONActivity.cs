@@ -278,7 +278,7 @@
 					onDeny();
 				}
       });
-        adb.SetPositiveButton(Resource.String.enable_bluetooth, (obj, e) => {
+      adb.SetPositiveButton(Resource.String.enable_bluetooth, (obj, e) => {
         var dialog = obj as Dialog;
         dialog.Dismiss();
         ShowEnableBluetoothDialog();

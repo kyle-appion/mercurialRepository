@@ -484,7 +484,7 @@
 					var fluidName = data?.GetStringExtra(FluidManagerActivity.EXTRA_SELECTED);
 					if (fluidName != null) {
 						// TODO ahodder@appioninc.com: loading dialog?
-						var fluid = await ion.fluidManager.GetFluidAsync(fluidName);
+            var fluid = await ion.fluidManager.GetFluidAsync(fluidName);
 						var state = (ptChart == null) ? Fluid.EState.Bubble : ptChart.state;
             ptChart = fluid.GetPtChart(state);
 					}
