@@ -188,6 +188,10 @@
     /// <value>The temperature clear.</value>
     private Button temperatureClearView { get; set; }
     /// <summary>
+    /// The view that contains all or the shsc views.
+    /// </summary>
+    private View deltaView;
+    /// <summary>
     /// The text view that will display the fluid state for the calculation.
     /// </summary>
     /// <value>The fluid state text view.</value>
@@ -273,6 +277,8 @@
           pressureEntryView.Enabled = true;
 					pressureClearView.Visibility = ViewStates.Gone;
 				}
+
+        UpdateCalculationMeasurements();
       }
     } Sensor __pressureSensor;
     /// <summary>
@@ -311,7 +317,9 @@
           temperatureEntryView.Enabled = true;
           temperatureClearView.Visibility = ViewStates.Gone;
         }
-      }
+
+				UpdateCalculationMeasurements();
+			}
     } Sensor __temperatureSensor;
     /// <summary>
     /// The unit container for the pressure sensor.
@@ -705,9 +713,9 @@
       saturatedTemperatureTextView = satTempView.FindViewById<TextView>(Resource.Id.measurement);
       saturatedTemperatureUnitView = satTempView.FindViewById<TextView>(Resource.Id.unit);
 
-      var calculations = FindViewById(Resource.Id.ptchart_calculations);
-      fluidStateTextView = calculations.FindViewById<TextView>(Resource.Id.title);
-      calculationTextView = calculations.FindViewById<TextView>(Resource.Id.measurement);
+      deltaView = FindViewById(Resource.Id.ptchart_calculations);
+      fluidStateTextView = deltaView.FindViewById<TextView>(Resource.Id.title);
+      calculationTextView = deltaView.FindViewById<TextView>(Resource.Id.measurement);
     }
 
     /// <summary>
@@ -801,6 +809,10 @@
     /// Updates the state of the calculation measurement.
     /// </summary>
     private void UpdateCalculationMeasurements() {
+      if (pressureSensor == null || temperatureSensor == null) {
+        deltaView.Visibility = ViewStates.Gone;
+      }
+
       if (pressureSensor == null) {
         return;
       }
@@ -827,7 +839,9 @@
         return;
       }
 
-      ScalarSpan delta;
+      deltaView.Visibility = ViewStates.Visible;
+
+			ScalarSpan delta;
       if (pressureSensor.isRelative) {
         delta = ptChart.CalculateTemperatureDeltaRelative(pressureSensor.measurement, temperatureSensor.measurement);
       } else {
