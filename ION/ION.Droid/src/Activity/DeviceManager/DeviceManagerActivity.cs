@@ -49,10 +49,6 @@
     public const string EXTRA_SENSOR = "ion.droid.activity.extra.device_manager.SENSOR";
 
 		/// <summary>
-		/// The state flag that indicates that the activity has requested bluetooth permissions.
-		/// </summary>
-		private const int STATE_REQUESTED_BLUETOOTH_ON = 1 << 0;
-		/// <summary>
 		/// The state flags that indicates that the activity has requested that the gps be turned on.
 		/// </summary>
 		private const int STATE_REQUESTED_LOCATION_ON = 1 << 1;
@@ -146,7 +142,7 @@
 			InvalidateOptionsMenu();
 			ActionBar.SetIcon(GetColoredDrawable(Resource.Drawable.ic_nav_devmanager, Resource.Color.gray));
 
-      adapter = new DeviceManagerRecycleAdapter(ion, cache);
+      adapter = new DeviceManagerRecycleAdapter(this, cache);
       adapter.deviceFilter = BuildDeviceFilter(filter);
       adapter.sensorFilter = BuildSensorFilter(filter);
       if (Intent.ActionPick.Equals(Intent.Action)) {
@@ -249,15 +245,14 @@
 		/// efficiency. If all of the the necessary permisions are present, then we will return true. Otherwise, we will
 		/// return false.
 		/// </summary>
-		private bool CheckPermissionsAndStates() {
+		public bool CheckPermissionsAndStates() {
 			var bm = (BluetoothManager)GetSystemService(BluetoothService);
 
 			// Check bluetooth state
-			if (!isBluetoothOn && (permissionStates & STATE_REQUESTED_BLUETOOTH_ON) == 0) {
+      if (!isBluetoothOn) {
 				RequestBluetoothAdapterOn(() => {
 					Finish();
 				});
-				permissionStates |= STATE_REQUESTED_BLUETOOTH_ON;
 				return false;
 			} else if ((int)Android.OS.Build.VERSION.SdkInt >= 23) {
 				// TODO ahodder@appioninc.com: Insert non hardcoded value

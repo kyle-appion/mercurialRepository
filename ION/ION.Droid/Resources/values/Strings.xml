@@ -252,7 +252,7 @@
   <string name="error">Error</string>
   <string name="error_bluetooth">Bluetooth Error</string>
   <string name="error_bluetooth_enable_fail">Failed to enable bluetooth.</string>
-  <string name="error_bluetooth_scan_module_off">Scan cannot be started, bluetooth is off on your device. You must enable bluetooth to start a scan.</string>
+  <string name="error_bluetooth_scan_module_off">Bluetooth is off on your device. You must enable bluetooth to start a scan or connect to a gauge.</string>
   <string name="error_location_failed_to_get_address">Failed to find address using your current location</string>
   <string name="error_location_disabled">Location Disabled</string>
   <string name="error_failed_to_delete">Failed to Delete</string>
