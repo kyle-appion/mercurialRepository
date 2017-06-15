@@ -102,7 +102,7 @@ namespace ION.IOS.ViewController.FluidManager {
         Log.D(this, "Called fluid selected delegate");
         if (onFluidSelectedDelegate != null) {
           Log.D(this, "Returning fluid " + selectedFluid);
-          onFluidSelectedDelegate(await fluidManager.GetFluidAsync(selectedFluid));
+          onFluidSelectedDelegate(await fluidManager.LoadFluidAsync(selectedFluid));
         }
       }
     }

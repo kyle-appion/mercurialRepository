@@ -8,18 +8,21 @@
   using Android.Content;
   using Android.Content.PM;
   using Android.OS;
+  using Android.Support.V4.Widget;
   using Android.Support.V7.Widget;
   using Android.Views;
   using Android.Widget;
 
 	using Appion.Commons.Util;
 
+  using ION.Core.Connections;
   using ION.Core.Devices;
   using ION.Core.Devices.Filters;
   using ION.Core.Sensors;
   using ION.Core.Sensors.Filters;
 
   using ION.Droid.Connections;
+  using ION.Droid.Dialog;
   using ION.Droid.Sensors;
   using ION.Droid.Views;
 
@@ -34,7 +37,7 @@
   }
 
   [Activity(Label="@string/device_manager", Icon="@drawable/ic_nav_devmanager", Theme="@style/AppTheme", ScreenOrientation=ScreenOrientation.Portrait)]
-  public class DeviceManagerActivity : IONActivity {
+  public class DeviceManagerActivity : IONActivity, SwipeRefreshLayout.IOnRefreshListener {
     /// <summary>
     /// The extra key that is used to pull a masked Filter enum which is used to filter only the given devices.
     /// </summary>
@@ -58,6 +61,10 @@
 		/// </summary>
 		private const int STATE_REQUESTED_LOCATION_PERM = 1 << 2;
 
+    /// <summary>
+    /// The view continer that will display the scanning spin wheel.
+    /// </summary>
+    private SwipeRefreshLayout swiper;
     /// <summary>
     /// The view that will display all of the devices for the activity.
     /// </summary>
@@ -94,7 +101,6 @@
 
     // Overridden from IONActivity
     protected override void OnCreate(Bundle state) {
-      RequestWindowFeature(WindowFeatures.IndeterminateProgress);
       base.OnCreate(state);
 
       SetContentView(Resource.Layout.activity_device_manager);
@@ -102,10 +108,12 @@
       ActionBar.SetDisplayHomeAsUpEnabled(true);
       ActionBar.SetHomeButtonEnabled(true);
 
+      swiper = FindViewById<SwipeRefreshLayout>(Resource.Id.swiper);
       list = FindViewById<RecyclerView>(Resource.Id.list);
       empty = FindViewById<TextView>(Resource.Id.view);
       empty.Visibility = ViewStates.Gone;
 
+      swiper.SetOnRefreshListener(this);
       list.SetLayoutManager(new LinearLayoutManager(this));
 
       if (Intent.HasExtra(EXTRA_DEVICE_FILTER)) {
@@ -117,6 +125,7 @@
       empty.Visibility = ViewStates.Gone;
       list.Visibility = ViewStates.Visible;
       connectionManager = ion.deviceManager.connectionManager as AndroidConnectionManager;
+      connectionManager.onScanStateChanged += OnScanStateChanged;
     }
 
     // Overridden from Activity
@@ -127,6 +136,10 @@
     // Overridden from Activity
     protected override void OnResume() {
       base.OnResume();
+
+      if (!CheckPermissionsAndStates()) {
+        return;
+      }
 
 			ion.deviceManager.onDeviceManagerEvent += OnDeviceManagerEvent;
 
@@ -150,7 +163,7 @@
     protected override void OnPause() {
       base.OnPause();
 
-			ion.deviceManager.ForgetFoundDevices();
+      ion.deviceManager.ForgetFoundDevices();
 
       ion.deviceManager.onDeviceManagerEvent -= OnDeviceManagerEvent;
       connectionManager.StopScan();
@@ -158,7 +171,9 @@
       if (ion.preferences.device.allowLongRangeMode) {
         connectionManager.StartBroadcastScan();
       }
-      adapter.Release();
+      if (adapter != null) {
+        adapter.Release();
+      }
       list.SetAdapter(null);
     }
 
@@ -192,15 +207,17 @@
 
       var scanView = (TextView)scan.ActionView;
       scanView.SetOnClickListener(new ViewClickAction((view) => {
-				ToggleClassicScan();
+        if (connectionManager.isScanning) {
+          connectionManager.StopScan();
+        } else {
+          connectionManager.StartScan();
+        }
       }));
 
-      if (connectionManager.isClassicScanning) {
+      if (connectionManager.isScanning) {
         scanView.SetText(Resource.String.scanning);
-        SetProgressBarIndeterminateVisibility(true);
       } else {
         scanView.SetText(Resource.String.scan);
-        SetProgressBarIndeterminateVisibility(false);
       }
 
       return true;
@@ -218,35 +235,14 @@
       }
     }
 
-		/// <summary>
-		/// Toggles whether or not the activity should perform a scan operation.
-		/// </summary>
-    private void ToggleClassicScan() {
-      ClearPermissionStates();
-      if (CheckPermissionsAndStates()) {
-        if (!connectionManager.StartScan()) {
-          Error(GetString(Resource.String.bluetooth_error_scan_failed));
-        } else {
-          if (connectionManager.isClassicScanning) {
-            connectionManager.StopScan();
-            handler.PostDelayed(() => {
-              connectionManager.StartScan();
-            }, 500);
-          } else {
-            connectionManager.StopScan();
-            handler.PostDelayed(() => {
-              connectionManager.StartClassicScan();
-              handler.PostDelayed(() => {
-                connectionManager.StopScan();
-                handler.PostDelayed(() => {
-                  connectionManager.StopScan();
-                }, 500);
-              }, 12000);
-            }, 500);
-          }
-        }
+    // Implemented for SwipeRefreshListener.IOnRefreshListener
+    public void OnRefresh() {
+      if (!connectionManager.isScanning) {
+        connectionManager.StartScan();
       }
-		}
+
+      swiper.Refreshing = connectionManager.isScanning;
+    }
 
 		/// <summary>
 		/// Checks the application's permission state to see if we have all of the necessary permissions to operate at full
@@ -258,7 +254,9 @@
 
 			// Check bluetooth state
 			if (!isBluetoothOn && (permissionStates & STATE_REQUESTED_BLUETOOTH_ON) == 0) {
-				RequestBluetoothAdapterOn();
+				RequestBluetoothAdapterOn(() => {
+					Finish();
+				});
 				permissionStates |= STATE_REQUESTED_BLUETOOTH_ON;
 				return false;
 			} else if ((int)Android.OS.Build.VERSION.SdkInt >= 23) {
@@ -290,6 +288,13 @@
 		private void ClearPermissionStates() {
 			permissionStates = 0;
 		}
+
+    /// <summary>
+    /// Called when the connection manager changes its scan state.
+    /// </summary>
+    private void OnScanStateChanged(IConnectionManager connectionManager) {
+      swiper.Refreshing = connectionManager.isScanning;
+    }
 
     /// <summary>
     /// Called when the user clicks the return sensor in the adapter.

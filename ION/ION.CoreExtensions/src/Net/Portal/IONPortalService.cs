@@ -1106,7 +1106,7 @@
 				if (analyzer.lowSideManifold != null) {
 					if (analyzer.lowSideManifold != null) {
 						if (!analyzer.lowSideManifold.ptChart.fluid.name.Equals(appState.setup.lowFluid)) {
-							var fluid = ion.fluidManager.GetFluidAsync(appState.setup.lowFluid).Result;
+							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.lowFluid).Result;
               analyzer.lowSideManifold.ptChart = new PTChart(fluid, analyzer.lowSideManifold.ptChart.state);
 						}
 					}
@@ -1168,7 +1168,7 @@
 				if (analyzer.highSideManifold != null) {
 					if (analyzer.highSideManifold != null) {
 						if (!analyzer.highSideManifold.ptChart.fluid.name.Equals(appState.setup.highFluid)) {
-							var fluid = ion.fluidManager.GetFluidAsync(appState.setup.highFluid).Result;
+							var fluid = ion.fluidManager.LoadFluidAsync(appState.setup.highFluid).Result;
 							analyzer.highSideManifold.ptChart = new PTChart(fluid, analyzer.highSideManifold.ptChart.state);
 						}
 					}

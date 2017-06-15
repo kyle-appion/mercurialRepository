@@ -310,7 +310,6 @@
     <Compile Include="src\Content\ManifoldParcelable.cs" />
     <Compile Include="src\Util\AndroidLogger.cs" />
     <Compile Include="src\Connections\BaseLeConnection.cs" />
-    <Compile Include="src\Connections\AndroidConnectionManager.cs" />
     <Compile Include="src\Connections\Api18BleScanMethod.cs" />
     <Compile Include="src\Connections\Api21BleScanMethod.cs" />
     <Compile Include="src\Connections\ClassicScanMethod.cs" />
@@ -329,6 +328,7 @@
     <Compile Include="src\Activity\Report\ReportOverlay.cs" />
     <Compile Include="src\Activity\Report\SimpleGraphRenderer.cs" />
     <Compile Include="src\Activity\Report\IGraphRenderer.cs" />
+    <Compile Include="src\Connections\AndroidConnectionManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
