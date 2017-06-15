@@ -142,7 +142,8 @@
             throw new Exception("Cannot calculate temperature delta with unknown fluid state: " + state);
 				}        
       } else {
-        return measuredTemperature - GetTemperature(absolutePressure, true).ConvertTo(measuredTemperature.unit);
+        var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
+        return measuredTemperature - satTemp;
       }
     }
 
@@ -153,7 +154,7 @@
     /// <param name="absolutePressure">Absolute pressure.</param>
     /// <param name="measuredTemperature">Measured temperature.</param>
     public ScalarSpan CalculateSuperheatAbsolute(Scalar absolutePressure, Scalar measuredTemperature) {
-      var satTemp = GetTemperature(absolutePressure, false);
+      var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
       return measuredTemperature - satTemp;
     }
 
@@ -164,7 +165,7 @@
 		/// <param name="absolutePressure">Absolute pressure.</param>
 		/// <param name="measuredTemperature">Measured temperature.</param>
 		public ScalarSpan CalculateSubcoolAbsolute(Scalar absolutePressure, Scalar measuredTemperature) {
-			var satTemp = GetTemperature(absolutePressure, false);
+			var satTemp = GetTemperature(absolutePressure, false).ConvertTo(measuredTemperature.unit);
 			return satTemp - measuredTemperature;
 		}
 
