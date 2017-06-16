@@ -43,7 +43,7 @@ using CoreFoundation;
 						
       batteryPercentage = (int)(UIDevice.CurrentDevice.BatteryLevel * 100);
       
-			long freeSpace = (long)NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
+			int freeSpace = (int)NSFileManager.DefaultManager.GetFileSystemAttributes (Environment.GetFolderPath (Environment.SpecialFolder.Personal)).FreeSize;
 			//freeSpace /= 1024;
 			//freeSpace /= 1024;
 			//freeSpace /= 1000;
