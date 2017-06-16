@@ -426,15 +426,17 @@ namespace ION.IOS.ViewController.Analyzer
 								Console.WriteLine("lowHighSensor low side manifold was  null when adding a secondary sensor");
 								ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.Low,__manifold.primarySensor,__manifold.ptChart.fluid);
 							}						
-							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(__manifold.secondarySensor);		
+							ion.currentAnalyzer.lowSideManifold.SetSecondarySensor(__manifold.secondarySensor);
+              ion.currentAnalyzer.lowFluid = __manifold.ptChart.fluid;
 								Console.WriteLine("lowHighSensor set low side secondary sensor to " + __manifold.secondarySensor.name);
 						} else if (LabelSubview.BackgroundColor == UIColor.Red){
 							if(ion.currentAnalyzer.highSideManifold == null){
 							Console.WriteLine("lowHighSensor high side manifold was  null when adding a secondary sensor");
 								ion.currentAnalyzer.SetRemoteManifold(Core.Content.Analyzer.ESide.High,__manifold.primarySensor,__manifold.ptChart.fluid);
 							}
-							ion.currentAnalyzer.highSideManifold.SetSecondarySensor(__manifold.secondarySensor);		
-							Console.WriteLine("lowHighSensor set high side secondary sensor to " + __manifold.secondarySensor.name);
+							ion.currentAnalyzer.highSideManifold.SetSecondarySensor(__manifold.secondarySensor);
+						  ion.currentAnalyzer.highFluid = __manifold.ptChart.fluid;
+						Console.WriteLine("lowHighSensor set high side secondary sensor to " + __manifold.secondarySensor.name);
 						}
 					} else {
 						
@@ -606,7 +608,10 @@ namespace ION.IOS.ViewController.Analyzer
       var vc = __analyzerviewcontroller;
       var scsh = vc.InflateViewController<SuperheatSubcoolViewController>(BaseIONViewController.VC_SUPERHEAT_SUBCOOL);
       scsh.initialManifold = manifold;
-      vc.NavigationController.PushViewController(scsh, true);
+      if (LabelSubview.BackgroundColor == UIColor.Red) {
+        scsh.lowHigh = 1;
+      }
+			vc.NavigationController.PushViewController(scsh, true);
     }
     /// <summary>
     /// EVENT TO OPEN THE PT CHART VIEW CONTROLLER

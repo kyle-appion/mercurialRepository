@@ -206,7 +206,7 @@
               // The connection already exists. Update the last time that it was seen.
               var d = ion.deviceManager[sn];
               if (d == null) {
-                Log.E(this, "Failed to get device from device manager");
+                //Log.E(this, "Failed to get device from device manager");
                 return;
               }
               NotifyDeviceFound(sn, uuid.ToString(), null, d.protocol.version);
