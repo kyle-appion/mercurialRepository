@@ -1,8 +1,6 @@
 ﻿namespace ION.Droid.Preferences {
 
   using System;
-  using System.Text;
-  using System.Threading.Tasks;
 
   using Android.Content;
 
@@ -10,7 +8,6 @@
   using Appion.Commons.Util;
 
   using ION.Core.App;
-  using ION.Core.Fluids;
   using ION.Core.Sensors;
 
   /// <summary>
@@ -618,7 +615,6 @@
         var ret = UnitLookup.GetUnit(int.Parse(prefs.GetString(key, null)));
         return ret;
       } catch (Exception e) {
-        Log.E(this, "Failed to retrieve unit for key: " + key, e);
         AssertUnitSet(preferenceKey, backup.quantity, backup);
         return backup;
       }
