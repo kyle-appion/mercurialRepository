@@ -14,6 +14,7 @@
             ion:typeface="droidsans"
             ion:autoSizeText="false"
             android:id="@id/name"
+            android:textColor="@color/white"
             android:textSize="@dimen/workbench_viewer_header_text_size"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black">
+        android:background="@color/white">
         <ImageView
             android:id="@id/icon"
             android:layout_width="@dimen/workbench_viewer_device_icon_width"
@@ -44,9 +45,10 @@
         <ION.Droid.Widgets.TypefaceTextView
             ion:typeface="droidsans_bold"
             ion:autoSizeText="true"
+            android:background="@color/blue"
             android:id="@id/measurement"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1" />
         <LinearLayout
             android:orientation="vertical"
@@ -54,16 +56,26 @@
             android:layout_height="match_parent">
             <LinearLayout
                 android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1">
                 <ImageView
                     android:id="@id/battery"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent" />
-                <ImageView
-                    android:id="@id/battery"
-                    android:layout_width="@dimen/workbench_viewer_status_icon_width"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/workbench_viewer_status_icon_height" />
+                <FrameLayout
+                    android:layout_width="@dimen/workbench_viewer_status_icon_width"
+                    android:layout_height="@dimen/workbench_viewer_status_icon_height">
+                    <ImageView
+                        android:id="@id/connection"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <ProgressBar
+                        android:id="@id/progress"
+                        android:indeterminate="true"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
             </LinearLayout>
             <ION.Droid.Widgets.TypefaceTextView
                 ion:typeface="droidsans"
